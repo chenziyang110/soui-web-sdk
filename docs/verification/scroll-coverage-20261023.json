@@ -75,7 +75,58 @@
   "limits": [
     "Controlled readiness input; TileGrid and raster workers are not executed",
     "LayerTreeHost recordDraw integration and real GUI behavior are not covered",
-    "Full patched kernel build and GUI/performance acceptance are separate requirements",
-    "Failing baseline is retained; aggregate suite exit is 1 while both corrected tests exit 0"
-  ]
+    "Failing baseline is retained; aggregate suite exit is 1 while both corrected tests exit 0",
+    "Full x86 CPU kernel built; full x64 browser kernel and system matrix remain unverified",
+    "Instrumented HTML integration observed; uninstrumented final-package acceptance remains separate",
+    "Continuous sample gaps shortened in this run but actual input cadences differ; no FPS or universal smoothness claim"
+  ],
+  "fullKernelBuild": {
+    "architecture": "x86",
+    "configuration": "Release",
+    "compositor": "CPU",
+    "exitCode": 0,
+    "kernelBytes": 28116992,
+    "kernelSha256": "6E293A3C8BF6F4F4CF32162B8BD01B165017C4BF7F34AF18A9B481A3E6B81185",
+    "modifiedSourceFilesMatchFreeze": 5,
+    "kernelSourceFiles": 23545,
+    "sourceBeforeAfterByteIdentical": true,
+    "fixedPrebuiltReplaced": false,
+    "fullX64KernelBuilt": false
+  },
+  "htmlIntegration": {
+    "environment": "Windows 10 10.0.19045 isolated guest",
+    "sameUiPayloadAndDiagnosticPlugin": true,
+    "onlyRuntimeKernelDiffers": true,
+    "baselineKernelSha256": "E9E34583FF13A59111F7E55AE76593C892603BC099A4E50357E26ED72F394E8B",
+    "correctedKernelSha256": "6E293A3C8BF6F4F4CF32162B8BD01B165017C4BF7F34AF18A9B481A3E6B81185",
+    "baselinePid": 6660,
+    "correctedPid": 7860,
+    "operationsObserved": [
+      "isolated wheel",
+      "continuous wheel down and up",
+      "14 pixel thumb drag",
+      "return to start page",
+      "confirm cancellation and exit"
+    ],
+    "exitCodes": [
+      1,
+      1
+    ],
+    "nativeWheelMessagesPerRun": [
+      16,
+      16
+    ],
+    "nativeWheelSegmentsPerRun": [
+      4,
+      4
+    ],
+    "allPixelSamplesValid": true,
+    "droppedRecords": [
+      0,
+      0
+    ],
+    "pixelScope": "4096 sampled BGR points in a fixed body ROI; not complete image or screen presentation",
+    "performanceConclusion": "Limited observation only; different actual native input spans and one run per kernel do not establish overall smoothness or universal latency improvement",
+    "unInstrumentedFinalPackageValidated": false
+  }
 }
