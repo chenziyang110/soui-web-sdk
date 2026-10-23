@@ -171,6 +171,31 @@ result failure(const char* code, const char* message) noexcept {
   }
 }
 
+// Capture the native error at the failing call site, before formatting or RAII
+// teardown can replace it. Numeric diagnostics disclose no resource root or token.
+int socket_error_code() noexcept {
+#ifdef _WIN32
+  return ::WSAGetLastError();
+#else
+  return errno;
+#endif
+}
+
+result listener_failure(const char* operation, int error) noexcept {
+  try {
+#ifdef _WIN32
+    constexpr auto domain = "WSAGetLastError";
+#else
+    constexpr auto domain = "errno";
+#endif
+    return result::failure("resource_server_unavailable",
+        std::string("Unable to ") + operation + " the local resource listener (" +
+        domain + "=" + std::to_string(error) + ").");
+  } catch (...) {
+    return failure("resource_server_unavailable", "Unable to start the local resource listener.");
+  }
+}
+
 bool reserve_server() noexcept {
   auto current = live_servers.load(std::memory_order_relaxed);
   while (current < maximum_live_servers) {
@@ -571,14 +596,24 @@ result resource_server::start(const std::filesystem::path& root) noexcept {
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
     address.sin_port = 0;
-    if (::bind(state->listener, reinterpret_cast<const sockaddr*>(&address), sizeof(address)) != 0 ||
-        ::listen(state->listener, 8) != 0)
-      return failure("resource_server_unavailable", "Unable to bind the local resource listener.");
+    if (::bind(state->listener, reinterpret_cast<const sockaddr*>(&address), sizeof(address)) != 0) {
+      const int error = socket_error_code();
+      return listener_failure("bind", error);
+    }
+    if (::listen(state->listener, 8) != 0) {
+      const int error = socket_error_code();
+      return listener_failure("listen on", error);
+    }
     socket_length address_size = sizeof(address);
-    if (::getsockname(state->listener, reinterpret_cast<sockaddr*>(&address), &address_size) != 0 ||
-        address.sin_family != AF_INET || address.sin_addr.s_addr != htonl(INADDR_LOOPBACK) ||
+    if (::getsockname(state->listener, reinterpret_cast<sockaddr*>(&address), &address_size) != 0) {
+      const int error = socket_error_code();
+      return listener_failure("inspect", error);
+    }
+    // A successful system call with an unexpected address has no native error.
+    // Do not attach an unrelated stale errno/WSA error to this invariant failure.
+    if (address.sin_family != AF_INET || address.sin_addr.s_addr != htonl(INADDR_LOOPBACK) ||
         !address.sin_port)
-      return failure("resource_server_unavailable", "Unable to inspect the local resource listener.");
+      return failure("resource_server_unavailable", "The local resource listener returned an unexpected address.");
     state->host = "127.0.0.1:" + std::to_string(ntohs(address.sin_port));
     state->uri = "http://" + state->host + state->prefix;
 

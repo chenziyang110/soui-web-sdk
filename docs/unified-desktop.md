@@ -478,3 +478,13 @@ Promise；异步确认先拒绝本次请求，保存完成或用户明确确认�
 自动读取或写入剪贴板。模态对话框及系统剪贴板仍使用既有原生同步API；网页超时
 不代表系统操作自动取消，不新增后台OS权限或硬取消承诺。
 见[ADR-0139](adr/0139-explicit-desktop-services.md)。
+
+### 资源监听启动错误诊断
+
+`resource_server_unavailable` 仍是监听服务启动失败的稳定错误 code。
+bind、listen、getsockname 系统调用失败分别在消息中标明操作和即时原生数值错误
+（POSIX `errno`、Windows `WSAGetLastError`），不包含资源根、URL 或能力令牌。
+数值只适用于相应系统，不能把任意失败统一归因于权限；成功调用后地址不满足
+loopback 不变量时不附带旧的系统错误码。不会自动退回 file://、更换绑定地址或放宽安全设置。
+生成应用启动初始化失败会向 stderr 写入错误并退出；Finder 双击时未显示窗口
+本身不能区分资源解析、监听器、AppKit 或其他初始化失败，需核对同一最终包的实际诊断。
