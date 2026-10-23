@@ -75,7 +75,7 @@ function expectationsValid(value) {
   if (!value || typeof value !== 'object' || Array.isArray(value) ||
       Object.keys(value).some(key => !['platform', 'arch'].includes(key))) fail('invalid_expectations');
   if (value.platform !== undefined && !['windows', 'linux', 'macos'].includes(value.platform)) fail('invalid_expectations');
-  if (value.arch !== undefined && !['x86', 'x64', 'arm32', 'arm64'].includes(value.arch)) fail('invalid_expectations');
+  if (value.arch !== undefined && !['x86', 'x64', 'arm32', 'arm64', 'universal2'].includes(value.arch)) fail('invalid_expectations');
 }
 function verifyStage(input, expectations = {}) {
   try {

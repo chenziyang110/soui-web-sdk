@@ -116,3 +116,69 @@ test('PE rejects EFI/native subsystems rather than labeling them Windows apps', 
   bytes.writeUInt16LE(3, 156); fs.writeFileSync(options.binary, bytes);
   assert.equal(inspectBinary(options.binary).platform, 'windows');
 }));
+
+function universalFixture(wide = false, little = false) {
+  const bytes = Buffer.alloc(32768);
+  const put32 = (value, at) => little ? bytes.writeUInt32LE(value, at) : bytes.writeUInt32BE(value, at);
+  const put64 = (value, at) => little ? bytes.writeBigUInt64LE(BigInt(value), at) : bytes.writeBigUInt64BE(BigInt(value), at);
+  put32(wide ? 0xcafebabf : 0xcafebabe, 0); put32(2, 4);
+  for (let i = 0; i < 2; ++i) {
+    const at = 8 + i * (wide ? 32 : 20), offset = i ? 16384 : 4096;
+    const cpu = i ? 0x100000c : 0x1000007, subtype = i ? 0 : 3;
+    put32(cpu, at); put32(subtype, at + 4);
+    if (wide) { put64(offset, at + 8); put64(64, at + 16); }
+    else { put32(offset, at + 8); put32(64, at + 12); }
+    put32(7, at + (wide ? 24 : 16));
+    bytes.writeUInt32LE(0xfeedfacf, offset); bytes.writeUInt32LE(cpu, offset + 4);
+    bytes.writeUInt32LE(subtype, offset + 8); bytes.writeUInt32LE(2, offset + 12);
+    bytes.writeUInt32LE(1, offset + 16); bytes.writeUInt32LE(24, offset + 20);
+    bytes.writeUInt32LE(0x32, offset + 32); bytes.writeUInt32LE(24, offset + 36);
+    bytes.writeUInt32LE(1, offset + 40);
+    bytes.writeUInt32LE((i ? 14 : 13) * 65536 + 2 * 256, offset + 44);
+  }
+  return bytes;
+}
+test('universal2 accepts both fat widths, rejects swapped byte order and delivers intact', () => fixture(options => {
+  for (const wide of [false, true]) for (const little of [false, true]) {
+    fs.writeFileSync(options.binary, universalFixture(wide, little));
+    if (little) assert.throws(() => inspectBinary(options.binary), /Swapped-endian/);
+    else assert.deepEqual(inspectBinary(options.binary), { platform: 'macos', arch: 'universal2', format: 'Mach-O', minimumOSVersion: '14.2.0' });
+  }
+  const lib64 = universalFixture(true); lib64.writeUInt32BE(0x80000003, 12); lib64.writeUInt32LE(0x80000003, 4104);
+  fs.writeFileSync(options.binary, lib64);
+  stage({ ...options, platform: 'macos', arch: 'universal2', identifier: 'org.example.universal' });
+  const { verifyStage } = require('../../tools/verify-desktop-app.cjs');
+  assert.equal(verifyStage(options.output, { platform: 'macos', arch: 'universal2' }).ok, true);
+  assert.deepEqual(fs.readFileSync(path.join(options.output, 'Example.app/Contents/MacOS/Example')), fs.readFileSync(options.binary));
+  const doctor = fs.readFileSync(path.join(options.output, 'doctor.sh'), 'utf8');
+  assert.match(doctor, /if \[ "\$host_arch" = x64 \] \|\| \[ "\$host_arch" = arm64 \]; then/);
+  if (process.platform !== 'win32') {
+    const { archiveStage } = require('../../tools/archive-desktop-app.cjs');
+    assert.equal(archiveStage(options.output, path.join(path.dirname(options.output), 'delivery'), { arch: 'universal2' }).architecture, 'universal2');
+  }
+}));
+test('universal2 rejects malformed fat tables and slices without borrowing adjacent bytes', () => fixture(options => {
+  const changes = [
+    b => b.writeUInt32BE(3, 4), // Extra slice.
+    b => b.writeUInt32BE(0x1000007, 40), // Duplicate CPU.
+    b => b.writeBigUInt64BE(4096n, 48), // Overlap.
+    b => b.writeBigUInt64BE(16n, 16), // Inside table.
+    b => b.writeBigUInt64BE(129n, 16), // Misaligned.
+    b => b.writeBigUInt64BE(1n << 63n, 16), // Unsafe integer/range.
+    b => b.writeBigUInt64BE(40000n, 24), // Beyond EOF.
+    b => b.writeBigUInt64BE(128n, 16), // Field-aligned but not loader page-aligned.
+    b => b.writeUInt32BE(32, 32), // Invalid alignment.
+    b => b.writeUInt32BE(1, 36), // Reserved.
+    b => b.writeUInt32LE(0, 4100), // CPU disagrees with table.
+    b => b.writeUInt32LE(2, 4104), // Subtype disagrees with table.
+    b => b.writeUInt32LE(6, 4108), // Dylib, not executable.
+    b => b.writeUInt32LE(2, 4136), // iOS, not macOS.
+    b => b.writeBigUInt64BE(40n, 24), // Load commands cross slice boundary.
+  ];
+  for (const change of changes) {
+    const bytes = universalFixture(true); change(bytes); fs.writeFileSync(options.binary, bytes);
+    assert.throws(() => inspectBinary(options.binary));
+  }
+  assert.throws(() => stage({ ...options, arch: 'universal2' }), /Unsupported/);
+  assert.equal(fs.existsSync(options.output), false);
+}));

@@ -43,3 +43,18 @@ test('Windows diagnostics use read-only official registry discovery, never an ex
   assert.match(script.content, /UNKNOWN WEBVIEW2_REGISTRY_CANDIDATE/);
   assert.doesNotMatch(script.content, /Set-ExecutionPolicy|Bypass|SetValue|Start-Process/);
 });
+
+test('universal2 doctor matches only its two execution architectures (shell fixture, not macOS)', { skip: process.platform === 'win32' }, () => {
+  const script = generatePreflight({ platform: 'macos', arch: 'universal2' }).content;
+  assert.equal(spawnSync('/bin/sh', ['-n'], { input: script }).status, 0);
+  for (const host of ['x86_64', 'arm64', 'unknown']) {
+    const stub = `uname() { case "$1" in -s) printf 'Darwin\\n';; -m) printf '${host}\\n';; esac; }\n`;
+    const result = spawnSync('/bin/sh', [], { input: stub + script, encoding: 'utf8', timeout: 5000 });
+    if (host === 'unknown') {
+      assert.match(result.stdout, /^UNKNOWN ARCH_COMPATIBILITY /m);
+      assert.doesNotMatch(result.stdout, /^PASS ARCH_NATIVE /m);
+    } else assert.match(result.stdout, /^PASS ARCH_NATIVE /m);
+  }
+  assert.throws(() => generatePreflight({ platform: 'linux', arch: 'universal2' }));
+  assert.throws(() => generatePreflight({ platform: 'windows', arch: 'universal2' }));
+});

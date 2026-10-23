@@ -2,6 +2,10 @@
 
 ## 未发布维护
 
+- macOS 应用 staging/verification/archive 支持受限 universal2（big-endian fat32/64，
+  恰好通用 x64 与 arm64 两个slice），校验范围、对齐、内部身份和最低系统版本；
+  doctor识别两个宿主架构。仅合成结构交付检查，不代表Mac原生编译/运行或签名通过。
+
 - Linux 无返回值脚本求值按 WebKitGTK 错误域及 INVALID_RESULT 码忽略未使用
   完成值的序列化失败（如 postMessage 返回的 Promise），不再误报脚本失败；
   原样提交脚本，仍报告真实语法/运行异常，不放宽导航代际或沙箱边界。

@@ -14,9 +14,11 @@ node tools/stage-desktop-app.cjs \
 ```
 
 Windows 使用 `--platform windows` 和 PE 程序；macOS 使用 `--platform macos`
-和 thin Mach-O 程序，并传入 `--identifier org.example.app`。版本是应用自身版本，
+和 thin 或受限 universal2 Mach-O 程序，并传入 `--identifier org.example.app`。版本是应用自身版本，
 不是 SDK VERSION；工具不修改 SDK 版本或许可。二进制头的平台和架构必须与参数
-相符，未知格式、未支持组合及 universal/fat 输入明确拒绝，不靠文件扩展名推断。
+相符，未知格式、未支持组合明确拒绝，不靠文件扩展名推断。macOS universal2
+使用 `--arch universal2`，仅接受big-endian fat32/64内恰好一个通用x64及arm64
+可执行slice，验证表范围/对齐/重叠与内部身份；其他fat组合和swapped-endian容器拒绝。
 ELF 只接受 Linux/System V ABI 的可执行入口，动态 PIE 要求 PT_INTERP，静态 PIE
 保守拒绝；Mach-O 必须声明 macOS 平台，最低系统版本从载荷读取且不低于12.0。
 PE 只接受 Windows GUI/console 子系统，不接收 DLL、驱动或 EFI 映像。
@@ -205,3 +207,13 @@ CLI 和导出的 `stage(options)` 使用同一输入校验，并在创建输出�
 可选反向 DNS identifier 最多4096字符，与已有 verifier manifest 上限一致；
 生成器仍采用更小的240字符限制。过长标识直接拒绝，而不是生成随后无法校验的
 目录。此修复不替代可信、复制期间不可变输入要求，也不宣称防并发文件系统修改。
+
+## universal2 交付范围
+
+已有 `desktop-macos-universal2` SDK 的架构属性由CMake staging入口直接传给
+工具；必须使用同样包含x64与arm64的应用，薄片应用不能冒充universal2。
+验证器和归档共享二进制身份判断，doctor接受x64/arm64宿主但未知架构仍UNKNOWN。
+整个.app最低系统版本取两个slice及框架下限的最大值；不修改输入二进制/签名。
+当前仅在Linux执行合成结构解析与stage→verify→archive检查，不是Mac编译、
+签名、公证或两个slice的运行验收。旧工具拒绝新架构值，请使用同版SDK工具。
+见[ADR-0136](adr/0136-universal2-application-staging.md)。

@@ -33,9 +33,10 @@ function validateOptions(options) {
   if (!/^[A-Za-z][A-Za-z0-9_-]{0,63}$/.test(options.name) || !portableName(options.name))
     throw new Error('Application name must be a portable ASCII name, starting with a letter (max 64 characters).');
   if (!['windows', 'linux', 'macos'].includes(options.platform) ||
-      !['x86', 'x64', 'arm32', 'arm64'].includes(options.arch) ||
+      !['x86', 'x64', 'arm32', 'arm64', 'universal2'].includes(options.arch) ||
+      (options.arch === 'universal2' && options.platform !== 'macos') ||
       (options.platform === 'windows' && options.arch === 'arm32') ||
-      (options.platform === 'macos' && !['x64', 'arm64'].includes(options.arch)))
+      (options.platform === 'macos' && !['x64', 'arm64', 'universal2'].includes(options.arch)))
     throw new Error('Unsupported platform/architecture combination.');
   if (!/^\d{1,5}\.\d{1,5}\.\d{1,5}$/.test(options.version))
     throw new Error('Application --version must have three numeric components (not an SDK version claim).');
@@ -68,10 +69,48 @@ function noSymlinkAncestors(input) {
   }
   return absolute;
 }
+function inspectMachSlice(sliceRead) {
+  const head = sliceRead(0, 32);
+  if (head.readUInt32LE(0) !== 0xfeedfacf) throw new Error('Expected a little-endian 64-bit Mach-O slice.');
+  const arch = { 0x1000007: 'x64', 0x100000c: 'arm64' }[head.readUInt32LE(4)];
+  if (!arch || head.readUInt32LE(12) !== 2) throw new Error('Unsupported Mach-O executable.');
+  const count = head.readUInt32LE(16), size = head.readUInt32LE(20);
+  if (!count || count > 4096 || size > 1024 * 1024 || size < count * 8)
+    throw new Error('Invalid Mach-O load command bounds.');
+  const commands = sliceRead(32, size);
+  let position = 0, minimum = null;
+  for (let index = 0; index < count; ++index) {
+    if (position + 8 > size) throw new Error('Truncated Mach-O load command.');
+    const command = commands.readUInt32LE(position), length = commands.readUInt32LE(position + 4);
+    if (length < 8 || length % 8 || length > size - position) throw new Error('Invalid Mach-O load command size.');
+    if ([0x25, 0x2f, 0x30].includes(command)) throw new Error('Mach-O targets a non-macOS Apple platform.');
+    if (command === 0x32 || command === 0x24) {
+      if (minimum !== null) throw new Error('Ambiguous Mach-O platform declarations.');
+      if (length < (command === 0x32 ? 24 : 16)) throw new Error('Truncated Mach-O platform declaration.');
+      if (command === 0x32 && commands.readUInt32LE(position + 8) !== 1)
+        throw new Error('Mach-O build platform is not macOS.');
+      const version = commands.readUInt32LE(position + (command === 0x32 ? 12 : 8));
+      if (version === 0) throw new Error('Mach-O minimum OS version is missing.');
+      minimum = Math.max(version, 12 * 65536);
+    }
+    position += length;
+  }
+  if (position !== size || minimum === null) throw new Error('Mach-O requires an unambiguous macOS platform declaration.');
+  return { arch, cpu: head.readUInt32LE(4), subtype: head.readUInt32LE(8), minimum };
+}
+function macIdentity(arch, minimum) {
+  return { platform: 'macos', arch, format: 'Mach-O', minimumOSVersion:
+    `${minimum >>> 16}.${(minimum >>> 8) & 255}.${minimum & 255}` };
+}
 function inspectBinary(file) {
   const descriptor = fs.openSync(file, 'r');
   try {
+    const fileBytes = fs.fstatSync(descriptor, { bigint: true }).size;
+    if (fileBytes > BigInt(maximumFileBytes)) throw new Error('Executable exceeds inspection size limit.');
+    const fileSize = Number(fileBytes);
     const read = (offset, size) => {
+      if (!Number.isSafeInteger(offset) || offset < 0 || offset + size > fileSize)
+        throw new Error('Truncated executable header.');
       const bytes = Buffer.alloc(size);
       if (fs.readSync(descriptor, bytes, 0, size, offset) !== size) throw new Error('Truncated executable header.');
       return bytes;
@@ -130,34 +169,45 @@ function inspectBinary(file) {
       return { platform: 'windows', arch, format: 'PE' };
     }
     if (head.readUInt32LE(0) === 0xfeedfacf) {
-      const arch = { 0x1000007: 'x64', 0x100000c: 'arm64' }[head.readUInt32LE(4)];
-      if (!arch || head.readUInt32LE(12) !== 2) throw new Error('Unsupported Mach-O executable.');
-      const count = head.readUInt32LE(16), size = head.readUInt32LE(20);
-      if (!count || count > 4096 || size > 1024 * 1024 || size < count * 8)
-        throw new Error('Invalid Mach-O load command bounds.');
-      const commands = read(32, size);
-      let position = 0, minimum = null;
-      for (let index = 0; index < count; ++index) {
-        if (position + 8 > size) throw new Error('Truncated Mach-O load command.');
-        const command = commands.readUInt32LE(position), length = commands.readUInt32LE(position + 4);
-        if (length < 8 || length % 8 || length > size - position) throw new Error('Invalid Mach-O load command size.');
-        if ([0x25, 0x2f, 0x30].includes(command)) throw new Error('Mach-O targets a non-macOS Apple platform.');
-        if (command === 0x32 || command === 0x24) {
-          if (minimum !== null) throw new Error('Ambiguous Mach-O platform declarations.');
-          if (length < (command === 0x32 ? 24 : 16)) throw new Error('Truncated Mach-O platform declaration.');
-          if (command === 0x32 && commands.readUInt32LE(position + 8) !== 1)
-            throw new Error('Mach-O build platform is not macOS.');
-          const version = commands.readUInt32LE(position + (command === 0x32 ? 12 : 8));
-          if (version === 0) throw new Error('Mach-O minimum OS version is missing.');
-          minimum = Math.max(version, 12 * 65536);
-        }
-        position += length;
-      }
-      if (position !== size || minimum === null) throw new Error('Mach-O requires an unambiguous macOS platform declaration.');
-      return { platform: 'macos', arch, format: 'Mach-O', minimumOSVersion:
-        `${minimum >>> 16}.${(minimum >>> 8) & 255}.${minimum & 255}` };
+      const slice = inspectMachSlice(read);
+      return macIdentity(slice.arch, slice.minimum);
     }
-    throw new Error('Unknown executable format; universal/fat Mach-O is not supported in this staging increment.');
+    const magic = head.readUInt32BE(0);
+    if ([0xcafebabe, 0xcafebabf, 0xbebafeca, 0xbfbafeca].includes(magic)) {
+      const little = magic === 0xbebafeca || magic === 0xbfbafeca;
+      if (little) throw new Error('Swapped-endian fat containers are not supported by the macOS loader.');
+      const wide = magic === 0xcafebabf;
+      const u32 = (bytes, at) => bytes.readUInt32BE(at);
+      const u64 = (bytes, at) => bytes.readBigUInt64BE(at);
+      if (u32(head, 4) !== 2) throw new Error('Universal2 requires exactly two architecture slices.');
+      const stride = wide ? 32 : 20, end = 8 + stride * 2;
+      const table = read(8, stride * 2), slices = [], architectures = new Set();
+      let minimum = 0;
+      for (let at = 0; at < table.length; at += stride) {
+        const cpu = u32(table, at), subtype = u32(table, at + 4);
+        const offset = wide ? u64(table, at + 8) : BigInt(u32(table, at + 8));
+        const size = wide ? u64(table, at + 16) : BigInt(u32(table, at + 12));
+        const alignment = u32(table, at + (wide ? 24 : 16));
+        if (alignment > 31 || offset < BigInt(end) || size < 32n ||
+            offset + size > BigInt(fileSize) || offset % (1n << BigInt(alignment)) !== 0n ||
+            (wide && u32(table, at + 28) !== 0)) throw new Error('Invalid universal2 slice bounds or alignment.');
+        if (slices.some(other => offset < other.end && other.start < offset + size))
+          throw new Error('Overlapping universal2 slices.');
+        if (!((cpu === 0x1000007 && [3, 0x80000003].includes(subtype)) || (cpu === 0x100000c && subtype === 0)) || architectures.has(cpu))
+          throw new Error('Universal2 requires generic x86_64 and arm64 slices.');
+        if (offset % BigInt(cpu === 0x100000c ? 16384 : 4096) !== 0n)
+          throw new Error('Mach-O slice does not satisfy loader page alignment.');
+        const slice = inspectMachSlice((relative, count) => {
+          if (BigInt(relative) + BigInt(count) > size) throw new Error('Mach-O read exceeds its slice.');
+          return read(Number(offset) + relative, count);
+        });
+        if (slice.cpu !== cpu || slice.subtype !== subtype) throw new Error('Mach-O slice identity differs from fat table.');
+        minimum = Math.max(minimum, slice.minimum);
+        architectures.add(cpu); slices.push({ start: offset, end: offset + size });
+      }
+      return macIdentity('universal2', minimum);
+    }
+    throw new Error('Unknown or unsupported executable format.');
   } finally { fs.closeSync(descriptor); }
 }
 function scanAssets(root) {
@@ -254,7 +304,7 @@ function stage(options) {
     linux: ['Compatible Linux distribution, libc/C++ runtime and display session', 'GTK >= 3.24 and WebKitGTK 4.1 >= 2.40, including system helper processes and resources', 'Other shared libraries required by the supplied binary; inspect on the target machine'],
     macos: [`macOS >= ${identity.minimumOSVersion || '12.0'}`, 'System AppKit/Foundation/WebKit frameworks', 'Any additional libraries required by the supplied binary'],
   }[options.platform];
-  generated('DEPENDENCIES.txt', `Development application directory, not a self-contained installer.\nRequired target runtime (not bundled or installed):\n${dependencies.map(item => `- ${item}`).join('\n')}\n\nRuntime diagnostics: ${doctor.filename} (no Node required). Linux: launch.sh --doctor; macOS: /bin/sh doctor.sh; Windows: PowerShell -NoProfile -File doctor.ps1 under existing execution policy.\nDiagnostic output uses fixed status codes and no user paths; redirect it explicitly if a report is needed. Exit 0 is not runtime acceptance. No persistent application log is captured.\nNo signing, notarization, runtime installation or GUI acceptance performed.\nBinary headers establish format/architecture only, not ABI/dependency compatibility.\nConservative format support excludes static PIE without PT_INTERP and fat/universal Mach-O.\nInput assets must be trusted and immutable during staging; this is not a filesystem sandbox.\nThe optional HTTP resource service supports files up to 8 MiB even though staging permits larger assets.\nInclude all applicable application/SDK/third-party license notices before distribution.\n`);
+  generated('DEPENDENCIES.txt', `Development application directory, not a self-contained installer.\nRequired target runtime (not bundled or installed):\n${dependencies.map(item => `- ${item}`).join('\n')}\n\nRuntime diagnostics: ${doctor.filename} (no Node required). Linux: launch.sh --doctor; macOS: /bin/sh doctor.sh; Windows: PowerShell -NoProfile -File doctor.ps1 under existing execution policy.\nDiagnostic output uses fixed status codes and no user paths; redirect it explicitly if a report is needed. Exit 0 is not runtime acceptance. No persistent application log is captured.\nNo signing, notarization, runtime installation or GUI acceptance performed.\nBinary headers establish format/architecture only, not ABI/dependency compatibility.\nConservative format support excludes static PIE without PT_INTERP; macOS accepts thin or bounded x86_64/arm64 universal2 Mach-O.\nInput assets must be trusted and immutable during staging; this is not a filesystem sandbox.\nThe optional HTTP resource service supports files up to 8 MiB even though staging permits larger assets.\nInclude all applicable application/SDK/third-party license notices before distribution.\n`);
   const manifest = { schema: 'soui.desktop.application-stage/1', name: options.name,
     applicationVersion: options.version, identifier: options.identifier || null,
     platform: identity.platform, architecture: identity.arch, executableFormat: identity.format,

@@ -4,7 +4,7 @@
 // Discovery is deliberately weaker than loader/ABI/native-runtime verification.
 function generatePreflight({ platform, arch, minimumOSVersion = '12.0' }) {
   if (!['linux', 'windows', 'macos'].includes(platform) ||
-      !['x86', 'x64', 'arm32', 'arm64'].includes(arch)) throw new Error('Unsupported preflight target.');
+      !['x86', 'x64', 'arm32', 'arm64', 'universal2'].includes(arch) || (arch === 'universal2' && platform !== 'macos')) throw new Error('Unsupported preflight target.');
   if (platform === 'macos' && !/^\d{1,5}\.\d{1,5}(?:\.\d{1,5})?$/.test(minimumOSVersion))
     throw new Error('Invalid minimum macOS version.');
   if (platform === 'windows') return { filename: 'doctor.ps1', mode: 0o644, content: windows(arch) };
@@ -80,7 +80,7 @@ case "$host_platform" in
   *) report MISSING PLATFORM_MACOS 'Run this application on its declared macOS target.'; exit 1;;
 esac
 case "$(uname -m 2>/dev/null)" in x86_64) host_arch=x64;; arm64) host_arch=arm64;; *) host_arch=unknown;; esac
-if [ "$host_arch" = '${arch}' ]; then
+if ${arch === 'universal2' ? '[ "$host_arch" = x64 ] || [ "$host_arch" = arm64 ]' : `[ "$host_arch" = '${arch}' ]`}; then
   report PASS ARCH_NATIVE 'Reported execution architecture matches the application.'
 else
   report UNKNOWN ARCH_COMPATIBILITY 'Check native architecture and any required Rosetta support; emulation is not tested.'
