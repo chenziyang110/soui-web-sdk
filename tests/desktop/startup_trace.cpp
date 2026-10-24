@@ -85,7 +85,7 @@ void cases() {
   child([] {
     trace::mark(static_cast<trace::stage>(std::numeric_limits<unsigned>::max()));
     for (unsigned repeat = 0; repeat < 3; ++repeat) {
-      for (unsigned i = 0; i <= static_cast<unsigned>(trace::stage::mac_run_return); ++i)
+      for (unsigned i = 0; i <= static_cast<unsigned>(trace::stage::dialog_inactive_skip); ++i)
         trace::mark(static_cast<trace::stage>(i));
     }
     return !available_lock();  // The sink owns its lock until process exit.
@@ -104,7 +104,7 @@ void cases() {
     ++lines;
     position = end + 1;
   }
-  CHECK(lines == 36);
+  CHECK(lines == 43);
   CHECK(available_lock());
   CHECK(::unlink(path) == 0);
 

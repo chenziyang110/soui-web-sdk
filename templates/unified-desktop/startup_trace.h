@@ -56,7 +56,14 @@ enum class stage : unsigned {
   mac_load_enter,
   mac_load_return,
   mac_run_enter,
-  mac_run_return
+  mac_run_return,
+  mac_policy_initial_regular,
+  mac_policy_initial_other,
+  mac_policy_setter_accepted,
+  mac_policy_setter_refused,
+  mac_policy_observed_regular,
+  mac_policy_observed_other,
+  dialog_inactive_skip
 };
 
 #if defined(SOUI_STARTUP_TRACE_ENABLED) && SOUI_STARTUP_TRACE_ENABLED && \
@@ -110,11 +117,18 @@ inline constexpr record records[] = {
   literal("SOUI_STARTUP_TRACE/1 mac_load_enter\n"),
   literal("SOUI_STARTUP_TRACE/1 mac_load_return\n"),
   literal("SOUI_STARTUP_TRACE/1 mac_run_enter\n"),
-  literal("SOUI_STARTUP_TRACE/1 mac_run_return\n")
+  literal("SOUI_STARTUP_TRACE/1 mac_run_return\n"),
+  literal("SOUI_STARTUP_TRACE/1 mac_policy_initial_regular\n"),
+  literal("SOUI_STARTUP_TRACE/1 mac_policy_initial_other\n"),
+  literal("SOUI_STARTUP_TRACE/1 mac_policy_setter_accepted\n"),
+  literal("SOUI_STARTUP_TRACE/1 mac_policy_setter_refused\n"),
+  literal("SOUI_STARTUP_TRACE/1 mac_policy_observed_regular\n"),
+  literal("SOUI_STARTUP_TRACE/1 mac_policy_observed_other\n"),
+  literal("SOUI_STARTUP_TRACE/1 dialog_inactive_skip\n")
 };
 inline constexpr std::size_t stage_count = sizeof(records) / sizeof(records[0]);
 inline constexpr std::size_t maximum_bytes = 16 * 1024;
-static_assert(stage_count == static_cast<unsigned>(stage::mac_run_return) + 1);
+static_assert(stage_count == static_cast<unsigned>(stage::dialog_inactive_skip) + 1);
 constexpr std::size_t whitelist_bytes() noexcept {
   std::size_t bytes = 0;
   for (const auto& entry : records) bytes += entry.size;

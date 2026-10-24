@@ -86,3 +86,13 @@ org.soui.startuptraceconsumer 正确；exe 为 0755，父目录可遍历；两�
 失败根因，不自动签名或修改安全设置。尚未确认进程进入 main，也未获得真实窗口、
 错误提示或 Bridge 运行证据。用户正常 Finder 启动后的阶段记录仍待取得；空 trace
 不能区分未进入代码和 sink 拒绝写入。本次只交付可观测性，不宣称根因修复。
+
+## 后续结果（保留上述旧包事实）
+
+之后工具可用性恢复，正常 CUA 启动旧 StartupTraceConsumer 获得阶段记录：
+已经过 listener/sharedApplication/activation，初始化返回并完成析构后进入
+`dialog_modal_enter`，未返回；这次不是此前 shell 的 bind/EPERM 路径。
+据此实施的观测激活策略修复，在独立新消费者完成限定真实窗口、Bridge、模块/
+同源 fetch 和正常关闭验证，见 [ADR-0145](0145-observed-macos-activation-policy.md)。
+上述空 trace、LaunchServices 错误及未签名检查仍为各自旧次操作的事实，不覆盖或
+改写为成功，也不将新候选的最小实跑推广为全能力或其他平台验收。

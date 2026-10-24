@@ -13,6 +13,18 @@ endif()
 add_test(NAME sdk.desktop.startup-report COMMAND soui_desktop_startup_report)
 set_tests_properties(sdk.desktop.startup-report PROPERTIES TIMEOUT 10 LABELS "desktop;contract;no-gui")
 
+# Production request dispatcher, without creating an AppKit window.
+add_executable(soui_desktop_macos_close_request macos_close_request.cpp)
+target_compile_features(soui_desktop_macos_close_request PRIVATE cxx_std_17)
+add_test(NAME sdk.desktop.macos-close-request COMMAND soui_desktop_macos_close_request)
+set_tests_properties(sdk.desktop.macos-close-request PROPERTIES TIMEOUT 10 LABELS "desktop;contract;no-gui")
+
+# Pure policy test, not an AppKit or permission/GUI test.
+add_executable(soui_desktop_macos_activation_policy macos_activation_policy.cpp)
+target_compile_features(soui_desktop_macos_activation_policy PRIVATE cxx_std_17)
+add_test(NAME sdk.desktop.macos-activation-policy COMMAND soui_desktop_macos_activation_policy)
+set_tests_properties(sdk.desktop.macos-activation-policy PROPERTIES TIMEOUT 10 LABELS "desktop;contract;no-gui")
+
 # The disabled build intentionally has no generated trace configuration/header.
 add_executable(soui_desktop_startup_trace_disabled startup_trace.cpp)
 target_compile_features(soui_desktop_startup_trace_disabled PRIVATE cxx_std_17)

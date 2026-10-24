@@ -6,9 +6,11 @@ GTK3/WebKitGTK、AppKit/WKWebView 或 Win32/WebView2 后端。业务代码不需
 `#ifdef`。示例位于 [examples/unified-desktop](../examples/unified-desktop)。
 
 这是未发布开发功能，不是 Electron 全功能替代或“全部架构完美运行”声明。
-Windows 代码尚未目标编译；macOS 于2026-10-23完成限定 universal2 原生编译及
-安装SDK交付链；最终 DeliveryConsumerFinal 的 Finder 无窗口现象根因尚未确认。
-旧 SouiMacVerify 的应用激活失败不能套用到最终包，见[历史记录](macos-native-validation-20261023.md)。
+Windows 代码尚未目标编译；macOS 已完成限定 universal2 原生编译及安装SDK交付链，
+2026-10-24 新候选在 ARM Mac 正常 CUA 启动后完成最小窗口、Bridge、模块/同源 fetch
+与正常关闭验证，见[新候选记录](adr/0145-observed-macos-activation-policy.md)。
+旧 DeliveryConsumerFinal 的 Finder 无窗口及 SouiMacVerify 激活失败仍属各自旧包证据，
+不能用新包成功改写历史；完整六纵切原生交互和 Intel slice 执行仍未验收。
 Linux于2026-10-22完成限定真实GUI、Bridge和模块
 验证，见[记录](linux-native-validation-20261022.md)。后续环境快照丢失该自构建
 运行时，新增部署RPATH策略尚未重新GUI验收，不能推广为干净目标机部署通过。
@@ -22,7 +24,7 @@ Linux于2026-10-22完成限定真实GUI、Bridge和模块
 |---|---|---|---|
 | Linux | x64、ARM64 | GTK 3.24+、WebKitGTK 4.1 2.40+、C++17、正常图形会话 | Debian 13 x64 / GCC 14.2 / GTK 3.24.49 / WebKitGTK 2.52.6 编译链接、安装消费者通过；限定x64 GUI/Bridge/模块链已验证；后续部署策略未复验，ARM64未编译 |
 | Linux | x86、ARM32 | 仅当目标发行版提供上述架构的完整开发/运行包；需正确 ISA/浮点 ABI/sysroot | 未编译或 GUI 验证，不承诺所有 32 位发行版可用 |
-| macOS | x64、ARM64、universal2 | macOS 12+，Apple SDK，Objective-C++17/ARC，AppKit、Foundation、WebKit、CoreFoundation | AppleClang 21 原生 universal2 编译/链接、安装SDK消费者与交付通过；ARM宿主fake契约通过；最终包Finder无窗口根因待确认，旧包激活失败不外推；Intel slice未运行 |
+| macOS | x64、ARM64、universal2 | macOS 12+，Apple SDK，Objective-C++17/ARC，AppKit、Foundation、WebKit、CoreFoundation | AppleClang 21 原生 universal2 编译/链接、安装SDK消费者与交付通过；ARM宿主fake契约通过；2026-10-24新候选限定真实窗口/Bridge/模块/fetch/关闭通过；完整原生交互及Intel slice执行未验收 |
 | Windows | x86、x64、ARM64 | MSVC-compatible C++17、Windows SDK、匹配架构 WebView2 SDK loader、当前受支持 Evergreen Runtime | 源码实现与审查；未编译/运行 |
 | Windows ARM32、macOS x86/ARM32、ARM64EC | 不支持 | 不伪造缺失的后端发行物或现代 32 位 macOS 支持 | 配置拒绝 |
 

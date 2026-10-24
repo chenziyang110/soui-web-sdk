@@ -1,5 +1,7 @@
 #include "../backend.h"
 #include "../startup_trace.h"
+#include "../macos_activation_policy.h"
+#include "../macos_close_request.h"
 #include "../resource_uri.h"
 
 #import <AppKit/AppKit.h>
@@ -732,12 +734,8 @@ NSMenu* application_menu() {
   // receiver alive in the caller's pool when shutdown clears state->window.
   NSWindow* __autoreleasing closing_window = sender;
   auto state = _state.lock();
-  if (is_live(state) && closing_window == state->window) {
-    // Approval may synchronously close the window and clear events. Keep both
-    // the shared state and a copy of the callback alive through that decision.
-    const auto callback = state->events.close_requested;
-    if (callback) { try { callback(); } catch (...) {} }
-  }
+  soui::desktop::detail::request_macos_native_close(state,
+      state && closing_window == state->window);
   // Common approval invokes backend::close(), whose shutdown revokes this
   // delegate before closing. Never let AppKit bypass a veto or ask twice.
   return NO;
@@ -954,8 +952,15 @@ NSMenu* application_menu() {
 }
 
 - (void)webViewDidClose:(WKWebView*)webView {
+  id __attribute__((objc_precise_lifetime)) delegate = self;
+  (void)delegate;
+  // Script window.close() is a request, not permission to bypass unsaved-work
+  // approval. Keep WebKit's callback receiver alive if approval closes it now.
+  WKWebView* __autoreleasing closing_webview = webView;
   auto state = _state.lock();
-  if (is_live(state) && webView == state->webview) shut_down(state, true);
+  soui::desktop::detail::request_macos_native_close(state,
+      state && closing_webview == state->webview);
+  // A veto preserves the native window; it cannot undo WebKit's DOM-side work.
 }
 
 - (void)webView:(WKWebView*)webView
@@ -1197,6 +1202,7 @@ class wkwebview_backend final : public backend {
         soui_sdk_startup_trace::mark(soui_sdk_startup_trace::stage::mac_shared_application_enter);
         NSApplication* app = [NSApplication sharedApplication];
         soui_sdk_startup_trace::mark(soui_sdk_startup_trace::stage::mac_shared_application_return);
+        if (!app) return result::failure("E_APPLICATION", "Could not create the macOS application");
         auto group = current_application.lock();
         if (group && group->retired) group.reset();
         if (!group) {
@@ -1208,9 +1214,23 @@ class wkwebview_backend final : public backend {
           group->previous_activation = app.activationPolicy;
           group->previous_menu = app.mainMenu;
           soui_sdk_startup_trace::mark(soui_sdk_startup_trace::stage::mac_activation_enter);
-          const bool activated = [app setActivationPolicy:NSApplicationActivationPolicyRegular];
+          const bool initially_regular = group->previous_activation == NSApplicationActivationPolicyRegular;
+          soui_sdk_startup_trace::mark(initially_regular
+              ? soui_sdk_startup_trace::stage::mac_policy_initial_regular
+              : soui_sdk_startup_trace::stage::mac_policy_initial_other);
+          const auto activation = ensure_regular_activation_policy(initially_regular,
+              [&]() {
+                const bool accepted = [app setActivationPolicy:NSApplicationActivationPolicyRegular];
+                soui_sdk_startup_trace::mark(accepted
+                    ? soui_sdk_startup_trace::stage::mac_policy_setter_accepted
+                    : soui_sdk_startup_trace::stage::mac_policy_setter_refused);
+                return accepted;
+              }, [&]() { return app.activationPolicy == NSApplicationActivationPolicyRegular; });
+          soui_sdk_startup_trace::mark(activation.regular
+              ? soui_sdk_startup_trace::stage::mac_policy_observed_regular
+              : soui_sdk_startup_trace::stage::mac_policy_observed_other);
           soui_sdk_startup_trace::mark(soui_sdk_startup_trace::stage::mac_activation_return);
-          if (!activated)
+          if (!activation.regular)
             return result::failure("E_APPLICATION", "Could not activate a regular macOS application");
           group->delegate = [[SOUIDesktopApplicationDelegate alloc] initWithGroup:group];
           group->installed_menu = application_menu();

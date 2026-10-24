@@ -50,6 +50,12 @@ bool show_startup_error(const std::string& sanitized_text) noexcept {
         alert.messageText = @"Application startup failed";
         alert.informativeText = message;
         [alert addButtonWithTitle:@"OK"];
+        // Do not leave an inactive application waiting on a potentially unseen
+        // app-modal alert. This snapshot is not a guarantee of later visibility.
+        if (!NSApp.isActive) {
+          trace::mark(trace::stage::dialog_inactive_skip);
+          return false;
+        }
         trace::mark(trace::stage::dialog_modal_enter);
         const auto response = [alert runModal];
         trace::mark(trace::stage::dialog_modal_return);
