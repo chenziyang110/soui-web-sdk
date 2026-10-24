@@ -19,13 +19,20 @@ test('creates a relocatable minimal project and refuses overwrite', () => fixtur
   assert.match(cmake, /soui_sync_application_assets\(TARGET HelloApp ASSETS/);
   assert.equal(cmake.includes('copy_directory'), false);
   assert.match(cmake, /HelloApp/);
-  for (const name of ['startup_report.h', 'startup_dialog.h', 'startup_dialog.cpp', 'startup_dialog_macos.mm'])
+  for (const name of ['startup_report.h', 'startup_dialog.h', 'startup_dialog.cpp', 'startup_dialog_macos.mm', 'startup_trace.h'])
     assert.ok(fs.statSync(path.join(output, name)).isFile());
   assert.match(fs.readFileSync(path.join(output, 'main.cpp'), 'utf8'), /--diagnose/);
   assert.match(cmake, /startup_dialog_macos\.mm/);
   assert.match(cmake, /PkgConfig::SOUI_APP_GTK/);
   assert.equal(cmake.includes(root), false);
   assert.equal(cmake.includes('@APP_'), false);
+  assert.match(cmake, /option\(SOUI_APP_STARTUP_TRACE [^\n]+ OFF\)/);
+  assert.match(cmake, /SOUI_APP_STARTUP_TRACE_FILE "" CACHE STRING/);
+  assert.match(cmake, /target_compile_definitions\(HelloApp PRIVATE SOUI_STARTUP_TRACE_ENABLED=1\)/);
+  assert.match(cmake, /#define SOUI_STARTUP_TRACE_FILE "@SOUI_STARTUP_TRACE_FILE_ESCAPED@"/);
+  assert.equal(fs.existsSync(path.join(output, 'startup_trace_config.h')), false);
+  assert.deepEqual(fs.readFileSync(path.join(output, 'startup_trace.h')),
+    fs.readFileSync(path.join(__dirname, '../../sdk/src/desktop/startup_trace.h')));
   for (const name of ['desktop.mjs', 'desktop.d.mts'])
     assert.deepEqual(fs.readFileSync(path.join(output, 'web', 'soui', name)),
       fs.readFileSync(path.join(__dirname, '../../sdk/desktop/frontend', name)));
@@ -83,7 +90,7 @@ test('installed generator rejects source overlap and incomplete frontend before 
     assert.equal(fs.existsSync(output), false);
     fs.writeFileSync(file, saved);
   }
-  for (const name of ['startup_report.h', 'startup_dialog.h', 'startup_dialog.cpp', 'startup_dialog_macos.mm']) {
+  for (const name of ['startup_report.h', 'startup_dialog.h', 'startup_dialog.cpp', 'startup_dialog_macos.mm', 'startup_trace.h']) {
     const file = path.join(share, 'templates/unified-desktop', name);
     const saved = fs.readFileSync(file);
     fs.unlinkSync(file);

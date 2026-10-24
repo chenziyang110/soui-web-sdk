@@ -13,6 +13,32 @@ endif()
 add_test(NAME sdk.desktop.startup-report COMMAND soui_desktop_startup_report)
 set_tests_properties(sdk.desktop.startup-report PROPERTIES TIMEOUT 10 LABELS "desktop;contract;no-gui")
 
+# The disabled build intentionally has no generated trace configuration/header.
+add_executable(soui_desktop_startup_trace_disabled startup_trace.cpp)
+target_compile_features(soui_desktop_startup_trace_disabled PRIVATE cxx_std_17)
+if(MSVC)
+  target_compile_options(soui_desktop_startup_trace_disabled PRIVATE /utf-8 /W4)
+  set_property(TARGET soui_desktop_startup_trace_disabled PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+else()
+  target_compile_options(soui_desktop_startup_trace_disabled PRIVATE -Wall -Wextra -Wpedantic)
+endif()
+add_test(NAME sdk.desktop.startup-trace-disabled COMMAND soui_desktop_startup_trace_disabled)
+set_tests_properties(sdk.desktop.startup-trace-disabled PROPERTIES TIMEOUT 10 LABELS "desktop;contract;no-gui")
+if(UNIX)
+  set(_soui_trace_test_dir "${CMAKE_CURRENT_BINARY_DIR}/startup-trace-test")
+  file(MAKE_DIRECTORY "${_soui_trace_test_dir}")
+  file(WRITE "${_soui_trace_test_dir}/startup_trace_config.h"
+    "#define SOUI_STARTUP_TRACE_FILE R\"soui(${_soui_trace_test_dir}/trace.log)soui\"\n")
+  add_executable(soui_desktop_startup_trace startup_trace.cpp)
+  target_compile_features(soui_desktop_startup_trace PRIVATE cxx_std_17)
+  target_compile_definitions(soui_desktop_startup_trace PRIVATE
+    SOUI_STARTUP_TRACE_ENABLED=1 SOUI_STARTUP_TRACE_TEST=1)
+  target_include_directories(soui_desktop_startup_trace PRIVATE "${_soui_trace_test_dir}")
+  target_compile_options(soui_desktop_startup_trace PRIVATE -Wall -Wextra -Wpedantic)
+  add_test(NAME sdk.desktop.startup-trace COMMAND soui_desktop_startup_trace)
+  set_tests_properties(sdk.desktop.startup-trace PROPERTIES TIMEOUT 15 LABELS "desktop;contract;no-gui")
+endif()
+
 add_executable(soui_desktop_contract
   contract.cpp
   ../../sdk/src/desktop/assets.cpp

@@ -1,4 +1,5 @@
 #include "../backend.h"
+#include "../startup_trace.h"
 #include "../resource_uri.h"
 
 #import <AppKit/AppKit.h>
@@ -1193,7 +1194,9 @@ class wkwebview_backend final : public backend {
         NSString* root_path = cocoa_string(root.native());
         if (!title || !root_path)
           return result::failure("E_UTF8", "Title and resource root must be valid UTF-8");
+        soui_sdk_startup_trace::mark(soui_sdk_startup_trace::stage::mac_shared_application_enter);
         NSApplication* app = [NSApplication sharedApplication];
+        soui_sdk_startup_trace::mark(soui_sdk_startup_trace::stage::mac_shared_application_return);
         auto group = current_application.lock();
         if (group && group->retired) group.reset();
         if (!group) {
@@ -1204,7 +1207,10 @@ class wkwebview_backend final : public backend {
           group->application = app;
           group->previous_activation = app.activationPolicy;
           group->previous_menu = app.mainMenu;
-          if (![app setActivationPolicy:NSApplicationActivationPolicyRegular])
+          soui_sdk_startup_trace::mark(soui_sdk_startup_trace::stage::mac_activation_enter);
+          const bool activated = [app setActivationPolicy:NSApplicationActivationPolicyRegular];
+          soui_sdk_startup_trace::mark(soui_sdk_startup_trace::stage::mac_activation_return);
+          if (!activated)
             return result::failure("E_APPLICATION", "Could not activate a regular macOS application");
           group->delegate = [[SOUIDesktopApplicationDelegate alloc] initWithGroup:group];
           group->installed_menu = application_menu();
@@ -1228,12 +1234,16 @@ class wkwebview_backend final : public backend {
         config.preferences.javaScriptCanOpenWindowsAutomatically = NO;
         [config.userContentController addScriptMessageHandler:delegate name:@"soui"];
         const NSRect rect = NSMakeRect(0, 0, settings.width, settings.height);
+        soui_sdk_startup_trace::mark(soui_sdk_startup_trace::stage::mac_window_enter);
         state_->window = [[NSWindow alloc] initWithContentRect:rect
             styleMask:NSWindowStyleMaskTitled | NSWindowStyleMaskClosable |
                       NSWindowStyleMaskMiniaturizable | NSWindowStyleMaskResizable
             backing:NSBackingStoreBuffered defer:NO];
+        soui_sdk_startup_trace::mark(soui_sdk_startup_trace::stage::mac_window_return);
         state_->window.releasedWhenClosed = NO;
+        soui_sdk_startup_trace::mark(soui_sdk_startup_trace::stage::mac_webview_enter);
         state_->webview = [[WKWebView alloc] initWithFrame:rect configuration:config];
+        soui_sdk_startup_trace::mark(soui_sdk_startup_trace::stage::mac_webview_return);
         if (!state_->window || !state_->webview || !state_->delegate) {
           shut_down(state_, false);
           if (state_->loop_owner) {
@@ -1253,8 +1263,12 @@ class wkwebview_backend final : public backend {
         state_->accepting_work.store(true, std::memory_order_release);
         state_->last_window_state = observe_window_state(state_).value;
         if (settings.visible) {
+          soui_sdk_startup_trace::mark(soui_sdk_startup_trace::stage::mac_show_enter);
           [state_->window makeKeyAndOrderFront:nil];
+          soui_sdk_startup_trace::mark(soui_sdk_startup_trace::stage::mac_show_return);
+          soui_sdk_startup_trace::mark(soui_sdk_startup_trace::stage::mac_activate_enter);
           [app activateIgnoringOtherApps:YES];
+          soui_sdk_startup_trace::mark(soui_sdk_startup_trace::stage::mac_activate_return);
         }
         return result::success();
       } else {
@@ -1290,6 +1304,7 @@ class wkwebview_backend final : public backend {
       WKUserScript* script = [[WKUserScript alloc] initWithSource:script_string
           injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:YES];
       [controller addUserScript:script];
+      soui_sdk_startup_trace::mark(soui_sdk_startup_trace::stage::mac_load_enter);
       if (url.isFileURL) {
         // The sole file-system read grant is the canonical configured resource root.
         state_->navigation =
@@ -1299,6 +1314,7 @@ class wkwebview_backend final : public backend {
         // Do not change ATS or grant file access to the HTTP document.
         state_->navigation = [state_->webview loadRequest:[NSURLRequest requestWithURL:url]];
       }
+      soui_sdk_startup_trace::mark(soui_sdk_startup_trace::stage::mac_load_return);
       if (!state_->navigation) {
         state_->native_navigation_ticket = false;
         state_->document_failed = true;
@@ -1320,7 +1336,9 @@ class wkwebview_backend final : public backend {
     @autoreleasepool {
       while (!group->quit_requested) {
         group->running = true;
+        soui_sdk_startup_trace::mark(soui_sdk_startup_trace::stage::mac_run_enter);
         [group->application run];
+        soui_sdk_startup_trace::mark(soui_sdk_startup_trace::stage::mac_run_return);
         group->running = false;
         if (!group->quit_requested) {
           const auto callback = group->request_quit;

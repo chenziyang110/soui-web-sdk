@@ -10,6 +10,28 @@ target_link_libraries(soui_desktop PUBLIC Soui::Runtime)
 target_include_directories(soui_desktop PUBLIC
   "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>" "$<INSTALL_INTERFACE:include>")
 target_include_directories(soui_desktop PRIVATE "${SOUI_DISTRIBUTION_ROOT}/third_party/include/json")
+# Private diagnostic build only. Never export the switch or the task file path.
+option(SOUI_DESKTOP_STARTUP_TRACE "Enable bounded macOS startup stage tracing" OFF)
+set(SOUI_DESKTOP_STARTUP_TRACE_FILE "" CACHE STRING "Explicit precreated empty 0600 SDK task trace file")
+if(SOUI_DESKTOP_STARTUP_TRACE)
+  if(NOT SOUI_TARGET_OS STREQUAL "macos")
+    message(FATAL_ERROR "Startup tracing is supported only for explicit macOS diagnostic builds")
+  endif()
+  if(NOT IS_ABSOLUTE "${SOUI_DESKTOP_STARTUP_TRACE_FILE}" OR
+      NOT SOUI_DESKTOP_STARTUP_TRACE_FILE MATCHES "^/")
+    message(FATAL_ERROR "Startup tracing requires an explicit absolute task file")
+  endif()
+  string(HEX "${SOUI_DESKTOP_STARTUP_TRACE_FILE}" _soui_desktop_trace_path_hex)
+  if(SOUI_DESKTOP_STARTUP_TRACE_FILE MATCHES ";" OR
+      _soui_desktop_trace_path_hex MATCHES "^([0-9a-f][0-9a-f])*(0[0-9a-f]|1[0-9a-f]|7f|c2[89][0-9a-f])")
+    message(FATAL_ERROR "Startup tracing paths must not contain controls or semicolons")
+  endif()
+  string(REPLACE "\\" "\\\\" SOUI_STARTUP_TRACE_FILE_ESCAPED "${SOUI_DESKTOP_STARTUP_TRACE_FILE}")
+  string(REPLACE "\"" "\\\"" SOUI_STARTUP_TRACE_FILE_ESCAPED "${SOUI_STARTUP_TRACE_FILE_ESCAPED}")
+  configure_file(startup_trace_config.h.in "${CMAKE_CURRENT_BINARY_DIR}/startup_trace_config.h" @ONLY)
+  target_compile_definitions(soui_desktop PRIVATE SOUI_STARTUP_TRACE_ENABLED=1)
+  target_include_directories(soui_desktop PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
+endif()
 set(SOUI_DESKTOP_HAS_X11_SHORTCUTS FALSE)
 if(SOUI_TARGET_OS STREQUAL "linux")
   set(SOUI_DESKTOP_WEBKIT_HELPER_DIR "" CACHE STRING

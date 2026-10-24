@@ -82,7 +82,8 @@ staging 目录，不重新构建或覆盖它。stage目标创建产物后也会�
 输出目录不得与模板树或 SDK frontend 适配源树重叠；生成器在创建任何目录前
 拒绝此类输出，避免新项目污染后续生成所需的 SDK 源文件。
 
-生成器在创建输出前检查 CMakeLists.txt、main.cpp 及 web 下的 index.html、
+生成器在创建输出前检查 CMakeLists.txt、main.cpp、startup_report.h、startup_dialog.h、
+startup_dialog.cpp、startup_dialog_macos.mm、startup_trace.h 及 web 下的 index.html、
 app.mjs、feature.mjs、details.mjs、config.json、style.css。缺失必需依赖时
 报告缺失路径并拒绝写出半成品；README 等可选文档不作为运行依赖。
 
@@ -114,3 +115,28 @@ helper 的部署仍由应用负责。它不会打包 WebKit、清洗所有绝对
 使用交付目录现有 doctor 入口。Linux 原生错误框使用既有 GTK3，Windows 使用 user32，
 Mac 模板额外编译 Objective-C++17/ARC helper 并链接系统 AppKit。
 旧生成项目不会被覆盖；需重新生成到新目录，或人工迁移 main、startup_* 源及 CMake 接线。
+
+## macOS 显式启动阶段取证
+
+仅诊断构建可开启 `SOUI_APP_STARTUP_TRACE`（默认 OFF），同时显式指定
+`SOUI_APP_STARTUP_TRACE_FILE` 为绝对路径。非 macOS 目标拒绝开启；路径不得包含
+控制字符或分号。配置将路径写入本地构建头和诊断二进制，不添加公共业务 API、
+默认日志路径或环境变量 fallback，不能把此类二进制作为正式分发产物。
+
+运行前由操作者在可信任务目录独占创建一个新的空普通文件，精确权限 0600，
+当前用户所有且只有一个硬链接。文件与祖先目录不得可由不可信方修改。应用只用
+append/no-follow 打开现有文件并持有非阻塞独占锁，不创建文件或目录、不截断、不
+chmod；已有内容、权限/身份/链接不符或锁被占用时直接停止取证，不换路径或重试。
+固定阶段每进程只写一次，每次写前复查文件，累计上限 16 KiB；不记录任意错误原文、
+路径、PID、URL、令牌或网页数据，也不上传。协作锁不防御同 uid 的外部恶意改写。
+
+SDK 内部阶段另由 SDK 构建的 `SOUI_DESKTOP_STARTUP_TRACE` 与
+`SOUI_DESKTOP_STARTUP_TRACE_FILE` 显式开启，必须使用另一个独占创建的空文件；
+SDK 配置不会传给应用。同一路径只会使后打开的组件拒绝记录，不会覆盖既有记录。
+需要同时取证时分别配置、分别准备文件，不能复用上轮非空文件。
+
+模板记录 main、initialize/run/quit/析构以及错误提示的进入/返回，错误框进一步记录
+AppKit 初始化、屏幕查询和 modal 调用。缺少 return 只定位最后可观察调用，不证明
+死锁；无记录也可能是未进入 main 或文件校验拒绝。`--diagnose` 可产生同类记录，
+但隐藏命令行初始化不能替代正常桌面启动上下文，不证明 Finder 无窗口根因已解决。
+默认 OFF 时标记为空操作，不改变激活策略、事件循环、监听器或权限。

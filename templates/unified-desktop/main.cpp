@@ -1,11 +1,20 @@
 #include <soui/desktop/app.h>
 #include "startup_report.h"
 #include "startup_dialog.h"
+#define SOUI_STARTUP_TRACE_NAMESPACE soui_app_startup_trace
+#include "startup_trace.h"
 #include <iostream>
 #include <stdexcept>
 #include <string_view>
 
 namespace {
+namespace trace = soui_app_startup_trace;
+struct trace_at_scope_exit {
+  trace::stage value;
+  bool enabled{true};
+  ~trace_at_scope_exit() noexcept { if (enabled) trace::mark(value); }
+};
+
 soui_app::startup_report start_application(bool diagnose, bool& failure_reported) {
   using soui_app::make_startup_report;
   using soui_app::startup_stage;
@@ -37,17 +46,30 @@ soui_app::startup_report start_application(bool diagnose, bool& failure_reported
       failure_reported = true;
     };
   }
+  // Reverse destruction order brackets the app itself, including exception
+  // unwinding. A failed constructor must not claim an app was destroyed.
+  trace_at_scope_exit destroyed{trace::stage::app_destroy_return, false};
   soui::desktop::application app(settings, std::move(handlers));
+  destroyed.enabled = true;
+  const trace_at_scope_exit destroying{trace::stage::app_destroy_enter};
+  trace::mark(trace::stage::app_initialize_enter);
   const auto initialized = app.initialize();
+  trace::mark(trace::stage::app_initialize_return);
   if (!initialized.ok) return make_startup_report(startup_stage::initialize, initialized);
   if (diagnose) {
     // Hidden initialization only: no business callbacks or application event loop.
     // This does not establish page load, Bridge, GUI or runtime acceptance.
+    trace::mark(trace::stage::app_quit_enter);
     const auto stopped = app.quit();
+    trace::mark(trace::stage::app_quit_return);
     return make_startup_report(startup_stage::initialize, stopped);
   }
+  trace::mark(trace::stage::app_run_enter);
   const auto run = app.run();
+  trace::mark(trace::stage::app_run_return);
+  trace::mark(trace::stage::app_quit_enter);
   const auto stopped = app.quit();
+  trace::mark(trace::stage::app_quit_return);
   if (runtime_failed) return runtime_failure;
   if (!run.ok) return make_startup_report(startup_stage::run, run);
   return make_startup_report(startup_stage::run, stopped);
@@ -55,6 +77,8 @@ soui_app::startup_report start_application(bool diagnose, bool& failure_reported
 }  // namespace
 
 int main(int argc, char** argv) {
+  trace::mark(trace::stage::app_main_enter);
+  const trace_at_scope_exit exiting{trace::stage::app_exit};
   const bool diagnose = argc == 2 && std::string_view(argv[1]) == "--diagnose";
   if (argc != 1 && !diagnose) {
     std::cerr << "Usage: @APP_NAME@ [--diagnose]\n";
@@ -73,7 +97,9 @@ int main(int argc, char** argv) {
   else if (report.code != "ok") {
     const auto text = soui_app::startup_report_text(report);
     if (!failure_reported) std::cerr << text << '\n';
+    trace::mark(trace::stage::app_error_ui_enter);
     (void)soui_app::show_startup_error(text); // Best effort; stderr remains available.
+    trace::mark(trace::stage::app_error_ui_return);
   }
   return report.code == "ok" ? 0 : 1;
 }

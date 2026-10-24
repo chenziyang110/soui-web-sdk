@@ -1,5 +1,6 @@
 #include <soui/desktop/app.h>
 #include "backend.h"
+#include "startup_trace.h"
 #include "protocol.h"
 #include "assets.h"
 #include "asset_executor.h"
@@ -965,7 +966,9 @@ result application::initialize() {
   if (!state->native) return result::failure("not_supported", "No desktop backend was built.");
   state->asset_channel->target = state->native.get();
   if (state->settings.enable_resource_server) {
+    soui_sdk_startup_trace::mark(soui_sdk_startup_trace::stage::sdk_listener_enter);
     const auto started = state->resources.start(state->settings.resource_root);
+    soui_sdk_startup_trace::mark(soui_sdk_startup_trace::stage::sdk_listener_return);
     if (!started.ok) return started;
   }
   const std::weak_ptr<application_state> weak = state;
