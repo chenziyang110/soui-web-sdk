@@ -42,8 +42,8 @@ x86/x64/ARM32/ARM64 与 macOS x64/ARM64/universal2 的目标策略。
 新增 `tools/package-desktop.cjs` 统一构建、测试、安装与 SDK 开发快照打包入口，
 不是应用安装器。窗口状态/关闭保护、独立授权系统服务、层级菜单、宿主全局快捷键及
 打开/保存路径选择已接入统一接口。Linux 有历史限定真实 GUI/Bridge 证据，最新功能尚未
-重新进行原生交互验收；macOS universal2 最新六纵切原生编译与安装 SDK 到独立双架构应用的交付链已过，但 GUI 激活受阻。
-Windows 目标编译及其余架构实测仍待验收。当前状态见[集中验收矩阵](docs/acceptance/unified-desktop-2026-10-23.md)。
+重新进行原生交互验收；macOS universal2 构建交付及 Apple Silicon 主机限定窗口/Bridge/模块/fetch、DOM 关闭否决探针已过。
+Windows x64 Release 的安装 SDK、独立消费者交付及真实 WebView2 Bridge/模块/fetch/公开关闭探针已过，未做视觉人工交互；其他架构及完整原生能力仍待验收。当前状态见[集中验收矩阵](docs/acceptance/unified-desktop-2026-10-23.md)。
 现有下载包不含这些未发布功能，不能据此宣称 Electron 全功能兼容。
 
 <a id="capabilities"></a>

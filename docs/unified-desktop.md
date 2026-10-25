@@ -6,7 +6,9 @@ GTK3/WebKitGTK、AppKit/WKWebView 或 Win32/WebView2 后端。业务代码不需
 `#ifdef`。示例位于 [examples/unified-desktop](../examples/unified-desktop)。
 
 这是未发布开发功能，不是 Electron 全功能替代或“全部架构完美运行”声明。
-Windows 代码尚未目标编译；macOS 已完成限定 universal2 原生编译及安装SDK交付链，
+Windows x64 Release 已完成 MSVC 原生编译、安装 SDK 与独立消费者交付，真实 WebView2
+探针的 Bridge/模块/同源 fetch/公开关闭通过，未做视觉人工交互，见[限定记录](acceptance/unified-desktop-2026-10-23.md)。
+macOS 已完成限定 universal2 原生编译及安装SDK交付链，
 2026-10-24 新候选在 ARM Mac 正常 CUA 启动后完成最小窗口、Bridge、模块/同源 fetch
 与正常关闭验证，见[新候选记录](adr/0145-observed-macos-activation-policy.md)。
 旧 DeliveryConsumerFinal 的 Finder 无窗口及 SouiMacVerify 激活失败仍属各自旧包证据，
@@ -25,7 +27,7 @@ Linux于2026-10-22完成限定真实GUI、Bridge和模块
 | Linux | x64、ARM64 | GTK 3.24+、WebKitGTK 4.1 2.40+、C++17、正常图形会话 | Debian 13 x64 / GCC 14.2 / GTK 3.24.49 / WebKitGTK 2.52.6 编译链接、安装消费者通过；限定x64 GUI/Bridge/模块链已验证；后续部署策略未复验，ARM64未编译 |
 | Linux | x86、ARM32 | 仅当目标发行版提供上述架构的完整开发/运行包；需正确 ISA/浮点 ABI/sysroot | 未编译或 GUI 验证，不承诺所有 32 位发行版可用 |
 | macOS | x64、ARM64、universal2 | macOS 12+，Apple SDK，Objective-C++17/ARC，AppKit、Foundation、WebKit、CoreFoundation | AppleClang 21 原生 universal2 编译/链接、安装SDK消费者与交付通过；ARM宿主fake契约通过；2026-10-24新候选限定真实窗口/Bridge/模块/fetch/关闭通过；完整原生交互及Intel slice执行未验收 |
-| Windows | x86、x64、ARM64 | MSVC-compatible C++17、Windows SDK、匹配架构 WebView2 SDK loader、当前受支持 Evergreen Runtime | 源码实现与审查；未编译/运行 |
+| Windows | x86、x64、ARM64 | MSVC-compatible C++17、Windows SDK、匹配架构 WebView2 SDK loader、当前受支持 Evergreen Runtime | x64 Release / MSVC 19.44 原生编译、安装 SDK 与独立消费者交付通过；真实 WebView2 Bridge/模块/fetch/公开关闭探针通过，无视觉人工交互；x86、ARM64 未编译运行 |
 | Windows ARM32、macOS x86/ARM32、ARM64EC | 不支持 | 不伪造缺失的后端发行物或现代 32 位 macOS 支持 | 配置拒绝 |
 
 Windows 后端必须能查询 `ICoreWebView2_18`，否则初始化失败关闭；接口引入于 SDK
@@ -332,7 +334,7 @@ fetch，不宣称这些功能已在三引擎实测通过，也不是 Electron AP
 主体。详见 [ADR-0125](adr/0125-opt-in-loopback-resource-origin.md)。
 
 本增量只做必要构建、语法与高风险边界检查，完整统一回归延后：
-- Windows 编译与三引擎完整模块、动态 import、相对资源、fetch、CSP 运行验收；macOS限定编译已通过，GUI仍阻塞。
+- 三引擎完整模块、相对资源、CSP 与目标环境矩阵；Mac 新候选及 Windows x64 已有下述限定原生链路证据，不覆盖完整兼容性。
 - 真实 HTTP Host/方法/编码/大小/慢连接及窗口关闭、导航、进行中请求的竞争。
 - 多窗口源隔离、存储行为、目标机网络策略，以及各架构和安装包回归。
 这些待验收项不能由下方早期基线测试结果替代。
@@ -359,7 +361,7 @@ ctest --preset desktop -R sdk.desktop.linux-native --output-on-failure
 ```
 
 原生测试有真实页面/JavaScript/Bridge、剪贴板、目录取消、线程调度、重载和
-关闭用例，缺少显示服务时必须失败。Windows 编译尚未执行；macOS限定原生编译已通过，但这些原生交互仍未验收。
+关闭用例，缺少显示服务时必须失败。Windows x64 编译及限定 WebView2 探针、Mac 新候选最小窗口与 DOM 关闭否决已有独立证据；不能据此视为这些完整原生交互均已验收。
 多窗口/原生动作还须在目标机手动检查：
 
 - 根窗口关闭后子窗口继续响应，最后一个窗口关闭才退出，显式 quit 关闭整个组。

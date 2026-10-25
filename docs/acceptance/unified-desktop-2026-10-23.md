@@ -5,6 +5,8 @@
 对应阶段二打开/保存路径选择完成的源码。
 本记录不修改生产 acceptance.json，不构成 releaseReady、签名、安装器或全架构通过结论。
 
+后续限定证据追加至 2026-10-24；各段绑定各自源码基线，历史结果不被覆盖。
+
 ## 实现范围
 
 | 纵切 | 当前实现 | 未完成的验收 |
@@ -131,7 +133,7 @@ Mac 子任务核对 9 个增量文件 blob 与上述基线一致。显式 Xcode 
 
 本次未运行应用、`--diagnose` 或 GUI，未签名；原生提示的实际可见性、Finder 启动、
 真实窗口/Bridge/系统服务交互仍未验收。编译和交付通过不表示旧诊断包的启动根因已解决。
-Windows 原生构建、新增 Linux GUI 路径及其他未测架构仍保留原有缺口。
+在该次历史检查时，Windows 原生构建、新增 Linux GUI 路径及其他未测架构仍缺证据；后续结果见下文。
 
 ## 平台/架构事实矩阵
 
@@ -139,8 +141,9 @@ Windows 原生构建、新增 Linux GUI 路径及其他未测架构仍保留原�
 |---|---|---|
 | Linux x64 | GTK/WebKitGTK；X11 快捷键按依赖启用 | 历史真实 GUI/Bridge/ESM/fetch 已过；当前六纵切仅公共回归及后端语法检查，运行时快照丢失，未重跑 GUI |
 | Linux ARM64/x86/ARM32 | 架构策略存在，32 位取决发行版完整依赖 | 未目标编译/运行；不能由 x64 或合成矩阵推断 |
-| macOS arm64/x64/universal2 | WKWebView，现代 64 位目标 | 第六纵切双 slice 原生构建、ARM 宿主 fake 351/0；非 GUI，Intel slice 未运行；最终最新 SDK/adapter 的双架构消费者安装交付链已过，未验证 GUI |
-| Windows x86/x64/ARM64 | WebView2 实现及目标策略 | 尚无匹配 Windows SDK/MSVC 目标编译或运行证据 |
+| macOS arm64/x64/universal2 | WKWebView，现代 64 位目标 | universal2 构建及安装交付通过；2026-10-24 新候选在 Apple Silicon 主机限定窗口/Bridge/模块/fetch/关闭和 DOM 否决探针通过；Intel slice 未运行，完整系统交互未验收 |
+| Windows x64 | WebView2 实现及目标策略 | 2026-10-24 Release / MSVC 构建安装、原模板与独立探针交付通过；真实 WebView2 Bridge/模块/fetch/公开关闭探针通过，无视觉人工交互 |
+| Windows x86/ARM64 | WebView2 实现及目标策略 | 未目标编译/运行，不能从 x64 推断 |
 | Windows ARM32 桌面、macOS 32 位、ARM64EC | 不作为此统一桌面支持目标 | 明确拒绝/不支持，不标未测试即可支持 |
 
 Linux Wayland（包括处于 Wayland 会话中的 XWayland）及未知会话的全局快捷键明确
@@ -160,5 +163,72 @@ Linux Wayland（包括处于 Wayland 会话中的 XWayland）及未知会话的�
 Linux 历史证据见 [2026-10-22 记录](../linux-native-validation-20261022.md)，
 Mac 环境/历史交付与 GUI 阻塞见 [2026-10-23 记录](../macos-native-validation-20261023.md)。
 旧记录均保留自己的基线；新路径策略及六纵切不能继承历史 GUI 通过结论。
-仍需可用目标图形会话的同业务窗口/菜单/系统服务交互，以及 Windows 和未测架构证据。
+后续 Mac 新候选窗口/资源及 DOM 关闭否决证据见 [ADR-0145](../adr/0145-observed-macos-activation-policy.md)
+和 [ADR-0138](../adr/0138-cancellable-user-close.md)；Windows x64 限定证据见下节。
+仍需同业务菜单/系统服务等完整原生交互，以及其余未测架构证据。
 在这些门槛关闭前保持 draft；不更改版本/许可、不合并或发布、不声称“一切平台架构完美运行”。
+
+## Windows x64 Release：限定原生验证（2026-10-24）
+
+源码基线为 [220aed8ce822d7f60fb50da3d7fefd7b90869954](https://github.com/chenziyang110/soui-web-sdk/commit/220aed8ce822d7f60fb50da3d7fefd7b90869954)，SDK 工作树无修改。
+目标报告于 18:13 UTC 完成；本轮未发现或修复 SDK 生产源码缺陷。
+
+### 工具链与执行范围
+
+- 主机报告 Windows `10.0.26200` x64，构建为 Release；MSVC `19.44.35229`、
+  Windows SDK `10.0.19041.0`、CMake `3.31.6-msvc6`、Ninja `1.12.1`。
+  实际生成器为 Visual Studio 17 2022，`-A x64 -T v143`，选择 SDK 19041；
+  SDK tests/example 为 OFF，不把安装的 Ninja 当成本轮实际生成器。
+- WebView2 SDK `1.0.4258.31`、实际 Runtime `155.0.4283.62`。
+  官方安装器阶段 17:26:40–17:27:02 UTC 退出 0；包装回执曾因
+  `Set-Content -NoClobber` 报错，但安装只执行一次，捕获进程退出结果及实物签名核对成功。
+  三项组件阶段 17:30:48–17:44:59 UTC 退出 0，无重启。
+- 早期隔离构建因 Ctrl-C 返回 1，不计为通过；后续正常主机 SDK configure/build/install
+  均为 0。原模板与专用探针分别生成、configure/build/stage/verify，以及
+  `validate-native-run.cjs` 均为 0。不包含完整契约套件或旧 SOUI/Miniblink 路径验收。
+
+以下路径相对目标机本任务目录，不写入用户名或绝对开发机路径：SDK 源码为
+`soui-web-sdk-win103-src`，其构建/安装为 `out/desktop`、`out/desktop-install`；
+原模板项目 `SouiWindowsConsumer`，专用探针项目 `SouiWindowsConsumerProbe`。
+两者均生成 17 个源文件，交付可执行文件位于各自
+`build/staged-Release/SouiWindowsConsumer.exe`。原模板未修改、未启动；仅探针改动：
+
+| 探针源文件 | 行数 | SHA-256 |
+|---|---:|---|
+| main.cpp | 149 | `3a20455cf3e1c9a4f37e8f5cdbec9ff15a8588a8fb52aa863512f933943f4b70` |
+| web/app.mjs | 25 | `56cac00605016f21412f6fdd8d628d7cce9eff34b40aee9390798b7d107f5d89` |
+
+### 交付身份与真实运行
+
+| 载荷 | verifier 文件/字节（不含清单） | 可执行文件字节及 SHA-256 | 清单 SHA-256 |
+|---|---|---|---|
+| 原模板 | 11 / 584,416 | 557,056 / `73830ace63aab4db1285f8639881b33b2b79409ebe1d61786b90628a8f7af343` | `507af2061034094110a1bba1ba8dc98b99bc2a78665b083574d1f485efc8ce54` |
+| 专用探针 | 11 / 586,793 | 559,104 / `bd01d2b3206f236c64c6f28c8c67e17c2985b7e4dd6a432c8b06ccbfc20eb46b` | `02a4d5ebc28d066f0bcc59fe4b47743835c3a629c62f41f844938c2d156aa785` |
+
+两份清单各 2,572 bytes，含清单的实际目录分别为 12 文件 / 586,988 bytes、
+12 文件 / 589,365 bytes。两者 `nativeRuntimeVerified` 仍为 `false`，不篡改
+通用完整性清单以替代独立运行证据。
+
+仅启动探针的确切交付 exe，工作目录为该 staging 目录，`Start-Process` 使用
+`WindowStyle Normal`，应用 `settings.visible=true`，无参数、无 `--diagnose`。
+这表示请求可见窗口，不是人已看到窗口的证据。运行从
+`18:06:11.9300535Z` 至 `18:06:16.9337970Z`，`WaitForExit(45000)` 返回 true，
+进程及外层执行均退出 0，无强制终止。stdout 为 799 bytes，SHA-256
+`c8d5ba01257250d01f4905ba1b11852b495da510d7cc31e5b2d391d0a9ee720f`；stderr 为 0 bytes。
+
+报告 schema 为 `soui.windows-native-probe/1`：
+- `native_ok/resources/constructed/destroyed/initialized/run/quit/backend_webview2/close_dispatch/close_request/watchdog_joined` 均为 true。
+- `info/report/finish/ready/closed/approvals` 均为 1，`errors/page_errors` 均为 0。
+- `timed_out/timeout_dispatch_failed/unexpected` 均为 false，`failure_stage/code` 为空，`page_failure=null`。
+- 页面实际 `app.info` 为 identifier `org.soui.windowsconsumer`、name `SouiWindowsConsumer`、version `0.1.0`；
+  加载链为 static module → dynamic module → same-origin fetch，随后公开关闭路径和正常销毁完成。
+
+本机保存的 `handoff.md` 为 11,814 bytes，SHA-256
+`27d7c5a58b201c35080e255c54454f6021211144946295665064afc21f286951`；
+`windows-native-logs/windows-x64-evidence-handoff.json` 为 21,996 bytes，SHA-256
+`6ea2bd6bfb1b5083925140ef79adc6b344d2f1771431ffaed9f01a790865a2c9`。
+这些证据只保存在目标任务目录，未作为仓库附件上传，以上是结果及身份记录，不假造可下载附件。
+
+本次无截图或视觉人工交互；公开关闭探针不是 DOM 关闭否决、系统退出或全部六纵切验收。
+x86/ARM64、其他 Windows 版本、菜单/托盘/快捷键/剪贴板/对话框等原生交互仍未覆盖。
+不据此宣称正式分发、签名、生产就绪或全部平台架构通过。

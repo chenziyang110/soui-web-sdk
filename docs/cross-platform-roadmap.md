@@ -1,6 +1,6 @@
 # PR #103：一份业务代码的跨平台桌面迭代路线
 
-更新：2026-10-23。目标是统一窗口、Bridge 和常用系统能力，让同一份 C++/Web 业务
+更新：2026-10-24。目标是统一窗口、Bridge 和常用系统能力，让同一份 C++/Web 业务
 接入 Windows、Linux、macOS；以 Electron 式开发体验为参照，不承诺全部 Electron
 API 或不同系统 WebView 的逐像素等价。完成模板或一个最小接口不等于完成此目标。
 本路线是后续代码与验收的统一清单，继续同一 draft PR，不在此执行正式发布。
@@ -14,7 +14,7 @@ API 或不同系统 WebView 的逐像素等价。完成模板或一个最小接�
 | 前端资源 | 根限定 HTTP 加载、ESM/fetch路径、异步有界readAsset | 三引擎真实兼容验收未闭环；不将模板或 Node VM 当浏览器证据 |
 | 系统能力 | 剪贴板、目录/打开/保存路径对话框、层级popup菜单、托盘、原生全局快捷键 | 原生交互及平台可用性待集中验收；应用内快捷键/Portal 等后续能力未实现；基础服务已独立授权 |
 | 交付 | 安装SDK、生成项目、stage、doctor、verify、archive、universal2身份校验 | 干净目标机依赖与启动验证；签名/公证/安装器不在未经批准的发布范围内 |
-| 目标证据 | Linux历史限定GUI/Bridge；Mac最新六纵切universal2编译与最终安装交付 | Mac最终双架构安装交付已过；最终 DeliveryConsumerFinal 的 Finder 无窗口现象根因未确认；Windows尚未目标编译；其余架构未实机验证 |
+| 目标证据 | Linux历史限定GUI/Bridge；Mac universal2 构建交付与 Apple Silicon 新候选最小窗口/Bridge及DOM关闭否决；Windows x64 Release 构建交付与真实 WebView2 Bridge/模块/fetch/公开关闭探针 | Windows 无视觉人工交互，完整系统能力与其余架构仍待验收；旧 DeliveryConsumerFinal 失败不因新包成功改写。详见[集中记录](acceptance/unified-desktop-2026-10-23.md)及[Mac记录](adr/0145-observed-macos-activation-policy.md) |
 
 原 Windows Host 的实现是迁移参考，不原样替换旧业务契约。系统辅助功能 Agent、UIA、
 远程自动化等不是本次口头目标自动产生的承诺。全局快捷键属于常用系统能力候选，
