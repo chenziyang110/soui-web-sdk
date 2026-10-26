@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <sstream>
+#include <streambuf>
 #include <stdexcept>
 #include <thread>
 #include <utility>
@@ -139,6 +140,65 @@ void cold_allocation_failure(Identity identity, Mode detailed) {
   std::ostringstream serialized; Exporter exporter(serialized,source);
   require(!exporter.begin() && !exporter.finish(), "unavailable diagnostics fabricated complete trace");
 }
+void context_has_no_hot_allocation() {
+  require(sdk_trace::register_current_thread(),"context owner registration failed");
+  require(vendor_trace::register_current_thread(),"vendor context owner registration failed");
+  sdk_trace::event outer; outer.task_id=sdk_trace::next_task_id();
+  const auto vendor_id=vendor_trace::next_task_id();
+  require(outer.task_id>0 && outer.task_id<0x8000000000000000ULL && vendor_id>0x8000000000000000ULL,
+    "module task identity partition differs");
+  require(sdk_trace::set_current_context(outer),"valid trace context rejected");
+  sdk_trace::event child=outer; child.related_id=outer.task_id; child.task_id=sdk_trace::next_task_id();
+  fail_next_trace_allocation.store(true);
+  {
+    sdk_trace::context_scope scope(child);
+    sdk_trace::event inherited;
+    const bool found=sdk_trace::current_context(inherited);
+    (void)sdk_trace::record(child);
+    sdk_trace::add(sdk_trace::counter::copy_bytes,4);
+    sdk_trace::observe_duration(sdk_trace::duration_metric::engine_fifo,3);
+    if(!found || inherited.task_id!=child.task_id)fail_next_trace_allocation.store(false);
+  }
+  const bool no_allocation=fail_next_trace_allocation.exchange(false);
+  sdk_trace::event restored;
+  require(no_allocation && sdk_trace::current_context(restored) && restored.task_id==outer.task_id,
+    "context propagation allocated or failed to restore");
+  sdk_trace::clear_current_context();
+  require(!sdk_trace::current_context(restored),"context clear retained causal relation");
+  sdk_trace::note_causal_loss();
+  require(sdk_trace::process_recorder().snapshot().causal_lost==1,"explicit causal loss was hidden");
+  sdk_trace::detach_current_thread();vendor_trace::detach_current_thread();
+}
+class counting_buffer final : public std::streambuf {
+ public:
+  std::uint64_t bytes{0};
+ protected:
+  std::streamsize xsputn(const char*,std::streamsize count) override {
+    bytes+=static_cast<std::uint64_t>(count);return count;
+  }
+  int_type overflow(int_type value) override {
+    if(!traits_type::eq_int_type(value,traits_type::eof()))++bytes;
+    return traits_type::not_eof(value);
+  }
+};
+void export_limit_cannot_claim_complete() {
+  sdk_trace::recorder source;
+  require(source.configure(sdk_trace::current_identity(1,3),sdk_trace::mode::detailed),"limit session configure failed");
+  auto producer=source.attach_current_thread();
+  counting_buffer buffer;std::ostream output(&buffer);sdk_trace::exporter exporter(output,source);
+  require(exporter.begin(),"limit header failed");
+  sdk_trace::event value;value.point=sdk_trace::stage::task_begin;value.task_id=1;
+  for(std::uint64_t index=1;index<=sdk_trace::maximum_export_events+1;++index) {
+    value.qpc=index;require(producer.record(value)==sdk_trace::record_result::recorded,"limit fixture overflowed producer");
+    if(index%256==0)(void)exporter.drain(256);
+  }
+  (void)exporter.drain(256);const auto capped_bytes=buffer.bytes;
+  (void)exporter.drain(256);
+  source.stop();producer=sdk_trace::writer{};
+  require(exporter.limit_reached() && !exporter.finish() && buffer.bytes==capped_bytes &&
+    buffer.bytes<64ULL*1024*1024 && source.snapshot().causal_lost==1,
+    "export cap wrote indefinitely or fabricated complete end");
+}
 }
 
 int main() {
@@ -157,6 +217,8 @@ int main() {
     require(static_cast<unsigned>(vendor_trace::record(vendor_trace::event{})) == 6, "vendor hot path lazily registered");
     require(sdk_trace::process_recorder().snapshot().unregistered_writes == 1, "SDK unregistered write hidden");
     require(vendor_trace::process_recorder().snapshot().unregistered_writes == 1, "vendor unregistered write hidden");
+    context_has_no_hot_allocation();
+    export_limit_cannot_claim_complete();
     return 0;
   } catch (const std::exception& error) {
     std::cerr << error.what() << '\n'; return 1;

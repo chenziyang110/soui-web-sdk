@@ -58,7 +58,8 @@ enum class counter : std::uint32_t {
 };
 enum class duration_metric : std::uint32_t {
   lock_wait, lock_hold, client_callback, input_queue, task_queue,
-  layout, record, resource_wait, composite, count,
+  layout, record, resource_wait, composite, engine_native, engine_provider,
+  engine_input, engine_fifo, webview2_owner, serialization, count,
 };
 constexpr auto counter_count = static_cast<std::size_t>(counter::count);
 constexpr auto duration_metric_count = static_cast<std::size_t>(duration_metric::count);
