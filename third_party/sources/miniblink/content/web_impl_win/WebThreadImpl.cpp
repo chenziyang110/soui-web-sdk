@@ -330,10 +330,9 @@ void WebThreadImpl::postDelayedTaskWithPriorityCrossThread(
     }
 
     if (isCurrentThread()) {
-        // A positive delay starts at the post, not at the beginning of a
-        // potentially long callback. Immediate tasks retain batch ordering.
-        double createTime = delayMs > 0 ? WTF::currentTime() : m_currentFrameCreateTime;
-        postDelayedTaskImpl(location, payload.release(), delayMs, &createTime, priority, nullptr);
+        // Without a cross-thread insertion order, startFromOtherThread calls
+        // start(), which already samples currentTime() for every delay.
+        postDelayedTaskImpl(location, payload.release(), delayMs, nullptr, priority, nullptr);
         if (m_isMainThread && !m_firingTimers && !m_willExit
             && !m_timerHeap.empty() && m_timerHeap[0]->m_nextFireTime <= currentTime())
             requestSharedTimerContinuation();
