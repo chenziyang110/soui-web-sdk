@@ -121,6 +121,11 @@ void WebPage::setDrawMinInterval(double drawMinInterval)
         m_pageImpl->setDrawMinInterval(drawMinInterval);
 }
 
+bool WebPage::cancelInputState()
+{
+    return m_pageImpl && m_pageImpl->cancelInputState();
+}
+
 void WebPage::setMainFrameRate(int rate)
 {
     if (m_pageImpl) m_pageImpl->setMainFrameRate(rate);
