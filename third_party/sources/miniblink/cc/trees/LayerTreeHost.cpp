@@ -3195,8 +3195,8 @@ void LayerTreeHost::drawFrameInCompositeThread()
         lastCompositeTime, &animationDirtyRects);
     {
         WTF::Locker<WTF::Mutex> sceneLocker(m_sceneTransactionMutex);
-        if (m_activeSceneTraceContext.frame_id)
-            currentRenderTraceContext() = m_activeSceneTraceContext;
+        // Unknown active identity must not inherit a newer pending frame.
+        currentRenderTraceContext() = m_activeSceneTraceContext;
     }
 
     m_compositeMutex.lock();
@@ -3208,9 +3208,12 @@ void LayerTreeHost::drawFrameInCompositeThread()
         addAndMergeDirty(&dirtyRects, animationDirtyRects[i]);
 
     m_canvasPaintBlocked = false;
+    uint64_t paintedFrame = 0;
     for (size_t i = 0; i < dirtyRects.size() && !m_isDestroying; ++i) {
         const SkRect& r = dirtyRects[i];
-        paintToMemoryCanvasInCompositeThread(r);
+        const uint64_t actualFrame = paintToMemoryCanvasInCompositeThread(r);
+        if (actualFrame)
+            paintedFrame = actualFrame;
     }
 
 #if defined(SOUI_GPU_COMPOSITOR)
@@ -3229,11 +3232,16 @@ void LayerTreeHost::drawFrameInCompositeThread()
     }
 #endif
 
-    if (!dirtyRects.isEmpty() && !m_canvasPaintBlocked) {
+    const bool paintCompleted = !m_canvasPaintBlocked && !m_isDestroying;
+    {
         WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
-        m_presentedMainFrameId = committedFrame;
-        if (m_unpresentedInputFrameId == committedFrame)
+        m_presentedMainFrameId = FrameBufferLeasePolicy::completedPaintFrame(
+            m_presentedMainFrameId, paintedFrame, paintCompleted);
+        if (FrameBufferLeasePolicy::retiresInputCoverage(
+            m_unpresentedInputFrameId, paintedFrame, paintCompleted)) {
             m_unpresentedInputTrace.clear();
+            m_unpresentedInputFrameId = 0;
+        }
     }
     postDrawFrame();
     if ((animationNeedsAnotherFrame || scrollNeedsAnotherFrame)
@@ -3344,7 +3352,7 @@ void LayerTreeHost::requestPaintToMemoryCanvasToUiThread(const SkRect& r)
     queueLegacyPaintLocked();
 }
 
-void LayerTreeHost::paintToMemoryCanvasInCompositeThread(const SkRect& r)
+uint64_t LayerTreeHost::paintToMemoryCanvasInCompositeThread(const SkRect& r)
 {
     RenderMutexLock<WTF::Mutex> locker(m_compositeMutex);
     SkRect paintRect = r;
@@ -3360,16 +3368,16 @@ void LayerTreeHost::paintToMemoryCanvasInCompositeThread(const SkRect& r)
         std::lock_guard<std::mutex> stateLock(m_uiPaintRetry->mutex);
         m_uiPaintRetry->drawWaiting = true;
         m_uiPaintRetry->resource.wait();
-        return;
+        return 0;
     }
 
     SkRect clientRect = SkRect::MakeXYWH(m_clientRect.x(), m_clientRect.y(), m_clientRect.width(), m_clientRect.height());
     if (!paintRect.intersect(clientRect))
-        return;
+        return 0;
 
     if (!m_memoryCanvas) {
         ASSERT(false);
-        return;
+        return 0;
     }
 
     m_isDrawDirty = true;
@@ -3401,7 +3409,7 @@ void LayerTreeHost::paintToMemoryCanvasInCompositeThread(const SkRect& r)
             // submits one window buffer at the end of the frame.
             if (m_gpuSurface->directPresent()) {
                 (void)needNotifUi;
-                return;
+                return renderTraceContext().frame_id;
             }
             gpuCanvas->flush();
             if (m_gpuSurface->present()) {
@@ -3414,7 +3422,7 @@ void LayerTreeHost::paintToMemoryCanvasInCompositeThread(const SkRect& r)
                         m_uiThreadClient->paintToMemoryCanvasInUiThread(
                             m_memoryCanvas, blink::IntRect(0, diagnosticY, m_clientRect.width(), 1));
                 }
-                return;
+                return renderTraceContext().frame_id;
             }
             SkIRect readRect = SkIRect::MakeXYWH(static_cast<int>(paintRect.x()),
                                                  static_cast<int>(paintRect.y()),
@@ -3423,9 +3431,9 @@ void LayerTreeHost::paintToMemoryCanvasInCompositeThread(const SkRect& r)
             if (m_gpuSurface->readback(m_memoryCanvas, readRect)) {
                 m_gpuSurface->recordPresented();
                 if (!needNotifUi)
-                    return;
+                    return renderTraceContext().frame_id;
                 requestPaintToMemoryCanvasToUiThread(paintRect);
-                return;
+                return renderTraceContext().frame_id;
             }
         }
     }
@@ -3435,12 +3443,13 @@ void LayerTreeHost::paintToMemoryCanvasInCompositeThread(const SkRect& r)
 
     bool needNotifUi = drawToCanvas(m_memoryCanvas, paintRect); // 绘制脏矩形
     m_frameBuffers[m_currentFrameBufferSlot]->traceContext = renderTraceContext();
+    const uint64_t paintedFrame = m_frameBuffers[m_currentFrameBufferSlot]->traceContext.frame_id;
 #if defined(ENABLE_WKE) && ENABLE_WKE == 1
     wke::diagnostics::renderer_draw_completed(WKE_RENDER_DIAGNOSTICS_DRAW_BITMAP_RASTER);
 #endif
 
     if (!needNotifUi)
-        return;
+        return paintedFrame;
 
     bool direct = m_independentPresentationEnabled;
 #if ENABLE_WKE == 1
@@ -3458,10 +3467,11 @@ void LayerTreeHost::paintToMemoryCanvasInCompositeThread(const SkRect& r)
             RenderDurationScope callbackDuration(trace::duration_metric::client_callback);
             client->paintToMemoryCanvasInUiThread(lease.canvas(), rect);
         }
-        return;
+        return paintedFrame;
     }
 
     requestPaintToMemoryCanvasToUiThread(paintRect);
+    return paintedFrame;
 }
 
 LayerTreeHost::FrameBuffer::FrameBuffer(std::unique_ptr<SkCanvas> value, uint64_t sizeGeneration,

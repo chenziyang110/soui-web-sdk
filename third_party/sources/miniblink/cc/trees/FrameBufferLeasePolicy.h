@@ -7,6 +7,14 @@
 namespace cc {
 class FrameBufferLeasePolicy {
 public:
+    static uint64_t completedPaintFrame(uint64_t previous, uint64_t painted, bool complete)
+    {
+        return complete && painted > previous ? painted : previous;
+    }
+    static bool retiresInputCoverage(uint64_t coverageFrame, uint64_t painted, bool complete)
+    {
+        return complete && painted && coverageFrame == painted;
+    }
     static const size_t maximumSlots = 2;
     static const uint64_t maximumBytes = 256ULL * 1024 * 1024;
     static bool bytesForSize(int width, int height, uint64_t* bytes)

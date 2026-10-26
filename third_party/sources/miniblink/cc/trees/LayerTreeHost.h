@@ -313,7 +313,7 @@ private:
     void postAnimationFinishedToUiThread(int layerId, int group, double monotonicTime);
     void dispatchAnimationFinishedOnMainThread(int layerId, int group, double monotonicTime);
     void paintToMemoryCanvasInUiThread(const SkRect& paintRect);
-    void paintToMemoryCanvasInCompositeThread(const SkRect& r);
+    uint64_t paintToMemoryCanvasInCompositeThread(const SkRect& r);
     bool submitSceneTransaction(ScrollTreeSnapshot&& scrollTree,
         int64 firstActionId, int64 lastActionId, bool resourcesReady);
     bool hasInFlightScene() const;

@@ -1,5 +1,7 @@
 #include "cc/trees/ScrollTreeSnapshot.h"
 #include "cc/raster/RasterSchedulingPolicy.h"
+#include "cc/trees/FrameBufferLeasePolicy.h"
+#include "cc/trees/InputFrameCoverage.h"
 #include <cstdio>
 #include <utility>
 
@@ -16,6 +18,34 @@ static cc::SceneTransaction transaction(uint64_t base, uint64_t version,
 }
 int main()
 {
+    cc::SceneCoordinator blockedPresentation;
+    require(blockedPresentation.submit(transaction(0, 1, 0, 0, true))
+        && blockedPresentation.activateReady());
+    require(blockedPresentation.submit(transaction(1, 2, 10, 12, false)));
+    const uint64_t oldActiveFrame = 100, newerPendingFrame = 101;
+    cc::InputFrameCoverage unpresented, recovery;
+    cc::InputFrameCoverage::Event newerInput;
+    newerInput.view_id = newerInput.view_generation = 1;
+    newerInput.document_generation = newerInput.geometry_generation = 1;
+    newerInput.input_first = newerInput.input_last = 7;
+    newerInput.frame_id = newerPendingFrame;
+    require(unpresented.append(newerInput));
+    require(blockedPresentation.activeVersion() == 1 && !blockedPresentation.activateReady());
+    auto progress = cc::FrameBufferLeasePolicy::completedPaintFrame(99, oldActiveFrame, true);
+    require(progress == oldActiveFrame && progress != newerPendingFrame);
+    require(!cc::FrameBufferLeasePolicy::retiresInputCoverage(newerPendingFrame, oldActiveFrame, true));
+    require(unpresented.size() == 1); // Old active pixels do not retire the blocked newer frame.
+    require(blockedPresentation.cancelPendingForAction(11));
+    for (size_t index = 0; index < unpresented.size(); ++index)
+        require(recovery.append(unpresented.at(index)));
+    require(recovery.size() == 1 && recovery.at(0).input_first == 7);
+    require(cc::FrameBufferLeasePolicy::completedPaintFrame(progress, 0, true) == progress);
+    require(cc::FrameBufferLeasePolicy::completedPaintFrame(progress, newerPendingFrame, false) == progress);
+    require(!cc::FrameBufferLeasePolicy::retiresInputCoverage(newerPendingFrame, newerPendingFrame, false));
+    require(blockedPresentation.submit(transaction(1, 3, 13, 14, false)));
+    require(blockedPresentation.markResourcesReadyThroughAction(14) && blockedPresentation.activateReady());
+    require(cc::FrameBufferLeasePolicy::completedPaintFrame(progress, newerPendingFrame, true) == newerPendingFrame);
+    require(cc::FrameBufferLeasePolicy::retiresInputCoverage(newerPendingFrame, newerPendingFrame, true));
     cc::SceneCoordinator scene;
     require(scene.submit(transaction(0, 1, 0, 0, true)) && scene.activateReady());
     require(scene.submit(transaction(1, 2, 10, 12, false)));
