@@ -400,10 +400,18 @@ LRESULT CWebWindow::_windowProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
         break;
 
     case WM_SIZE: {
+        if (::GetCurrentThreadId() != wkeThreadId || m_hWnd != hwnd
+            || !isOwnedCloseWindow(hwnd, this))
+            return 0;
         content::PaintActivityScope activity(m_paintLifetime);
         if (!activity)
             return 0;
         _syncHostVisibility(hwnd, wParam == SIZE_MINIMIZED);
+        if (wParam == SIZE_MINIMIZED)
+            return 0; // Preserve the last real viewport until actual restore geometry arrives.
+        if (::GetCurrentThreadId() != wkeThreadId || m_hWnd != hwnd
+            || !isOwnedCloseWindow(hwnd, this))
+            return 0; // A synchronous publication callout may have changed attachment.
         RECT rc = { 0 };
         ::GetClientRect(hwnd, &rc);
         int width = rc.right - rc.left;

@@ -27,7 +27,13 @@ struct Page {
     Page* webPageImpl() { return this; }
     Page* layerTreeHost() { return this; }
     bool hostVisible() const { return visible; }
-    bool setHostVisible(bool value) { ++calls; if (!accept) return false; visible = value; return true; }
+    std::function<void()> duringPublication;
+    bool setHostVisible(bool value) {
+        ++calls;
+        if (duringPublication) { auto call = std::move(duringPublication); call(); }
+        if (!accept) return false;
+        visible = value; return true;
+    }
 };
 DWORD thread_id = 11;
 unsigned show_calls = 0, repaints = 0;
@@ -168,10 +174,10 @@ static void visibilityCases()
     view->visibilityMessage(window, WM_SIZE, SIZE_RESTORED);
     fixture::require(!view->page.visible && view->resizes == 1);
     view->visibilityMessage(window, WM_SIZE, SIZE_MINIMIZED);
-    fixture::require(!view->page.visible && view->resizes == 2);
+    fixture::require(!view->page.visible && view->resizes == 1 && fixture::repaints == 1);
     fixture::windows[root].iconic = false;
     view->visibilityMessage(window, WM_SIZE, SIZE_RESTORED);
-    fixture::require(view->page.visible && view->resizes == 3 && fixture::repaints == 3);
+    fixture::require(view->page.visible && view->resizes == 2 && fixture::repaints == 2);
     view->page.accept = false;
     fixture::require(!view->_syncHostVisibility(window, true) && view->m_hostVisible);
     const unsigned rejected = view->page.calls;
@@ -179,10 +185,37 @@ static void visibilityCases()
     fixture::require(view->_syncHostVisibility(window, true) && !view->page.visible
         && view->page.calls == rejected + 1);
     fixture::require(view->_syncHostVisibility(window) && view->page.visible);
+    view->page.visible = false; view->page.accept = false;
+    const unsigned beforeRejectedResize = view->resizes, beforeRejectedRepaint = fixture::repaints;
+    view->visibilityMessage(window, WM_SIZE, SIZE_RESTORED);
+    fixture::require(!view->m_hostVisibilityKnown && view->resizes == beforeRejectedResize + 1
+        && fixture::repaints == beforeRejectedRepaint + 1); // Valid geometry survives a publication rejection.
+    view->page.accept = true; fixture::require(view->_syncHostVisibility(window));
     const unsigned beforeIdentity = view->page.calls;
     fixture::windows[window].property = reinterpret_cast<void*>(uintptr_t(0x999));
     fixture::require(!view->_syncHostVisibility(window) && view->page.calls == beforeIdentity);
+    const unsigned beforeResize = view->resizes, beforeRepaint = fixture::repaints;
+    view->visibilityMessage(window, WM_SIZE, SIZE_RESTORED);
+    fixture::require(view->page.calls == beforeIdentity && view->resizes == beforeResize
+        && fixture::repaints == beforeRepaint); // Same HWND with a different native property.
     fixture::windows[window].property = view;
+    const HWND other = reinterpret_cast<HWND>(uintptr_t(0x203));
+    fixture::windows[other] = {true, view}; view->m_hWnd = other;
+    view->visibilityMessage(window, WM_SIZE, SIZE_RESTORED);
+    fixture::require(view->page.calls == beforeIdentity && view->resizes == beforeResize
+        && fixture::repaints == beforeRepaint); // Old HWND still has this property after reattachment.
+    view->m_hWnd = window;
+    view->page.visible = false;
+    view->page.duringPublication = [&] { view->m_hWnd = other; };
+    view->visibilityMessage(window, WM_SIZE, SIZE_RESTORED);
+    fixture::require(view->resizes == beforeResize && fixture::repaints == beforeRepaint);
+    view->m_hWnd = window; fixture::windows[other].property = nullptr;
+    const unsigned afterReentry = view->page.calls;
+    fixture::thread_id = 12;
+    view->visibilityMessage(window, WM_SIZE, SIZE_RESTORED);
+    fixture::thread_id = 11;
+    fixture::require(view->page.calls == afterReentry && view->resizes == beforeResize
+        && fixture::repaints == beforeRepaint); // Foreign caller cannot mutate the owner viewport.
     const unsigned showCalls = fixture::show_calls;
     fixture::thread_id = 12; view->show(false); fixture::thread_id = 11;
     fixture::require(fixture::show_calls == showCalls && state->policy.active == 0);
