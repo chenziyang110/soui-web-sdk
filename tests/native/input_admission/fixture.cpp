@@ -28,6 +28,11 @@ input_packet packet(input_kind kind, std::uint64_t sequence) {
 }
 int main() {
   try {
+    require(input_generation_applies(input_kind::character, {1, 2, 3}, {1, 2, 4})
+        && input_generation_applies(input_kind::ime_commit, {1, 2, 3}, {1, 2, 4})
+        && input_generation_applies(input_kind::key_up, {1, 2, 3}, {1, 2, 4}), "geometry change discarded nonspatial edge");
+    require(!input_generation_applies(input_kind::pointer_down, {1, 2, 3}, {1, 2, 4})
+        && !input_generation_applies(input_kind::character, {1, 2, 3}, {1, 3, 4}), "spatial/document barrier bypassed");
     std::vector<std::uint64_t> observed;
     observed.reserve(256);
     input_mailbox mailbox([&](const input_packet* value) { observed.push_back(value ? value->sequence : 0); });
@@ -70,6 +75,16 @@ int main() {
     drain(allocation);
     allocation.close();
     require(allocation.post(text) == input_admission_result::stopped, "closed mailbox accepted work");
+
+    input_mailbox limited([](const input_packet*) {});
+    auto blocked_key = packet(input_kind::key_down, 1); blocked_key.key_code = 65; blocked_key.generation = {1, 2, 3};
+    limited.block_document(blocked_key.generation);
+    require(limited.post(blocked_key) == input_admission_result::stopped, "unsupported native recovery resumed unknown state");
+    blocked_key.kind = input_kind::key_up;
+    require(limited.post(blocked_key) == input_admission_result::stopped, "blocked document claimed release delivered");
+    blocked_key.kind = input_kind::key_down; blocked_key.generation.document = 3;
+    require(limited.post(blocked_key) == input_admission_result::accepted, "new document did not recover after observed physical release");
+    drain(limited);
 
     struct mock_service final : detail::engine_input_service {
       std::atomic<bool> ready{false}; std::atomic<unsigned> calls{0};

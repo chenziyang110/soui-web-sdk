@@ -8,7 +8,9 @@
 
 输入接纳返回 typed result，旧 `engine_input_sink::post_input(bool)` 由默认适配保留。每 Host 使用 64 普通项、16 边沿项、256 KiB 文本总量、单事件 64 KiB 的 FIFO mailbox；普通 DOM mousemove 和 wheel 不合并。Engine 另有最多 32 个共享生命周期 input service，固定大小注册表轮转，每次最多处理 8 项和 1 ms 协作预算。通知只设置 pending 和已有 wake event；不占用 ordinary/control/renewal/cleanup FIFO credit，不动态分配 continuation，不等待 UI 排空。
 
-容量、分配或恢复状态拒绝不报告成功。首次过载封住新接纳，先处理全部已接纳输入，最后执行独立取消标记；标记不占边沿额度。恢复在 Engine owner 释放已按下键/按钮、取消未提交 composition 并清除 focus 状态。恢复期间观察实际 key/button 状态；恢复后仍按住的键/按钮被隔离到真实 release，防止重复 keydown/character 重新造成粘键。已接纳的字符、composition commit 或边沿不会为恢复腾空间而丢弃。导航/关闭的 generation 失效继续明确终止旧输入。
+容量、分配或恢复状态拒绝不报告成功。首次过载封住新接纳，先处理全部已接纳输入，最后执行独立取消标记；标记不占边沿额度。恢复经带能力检查的 `cancelInputState` 在 Engine owner 清除原生 click/drag/touch 状态、取消未提交 composition 并清除 focus，不伪造 keyup/mouseup 或新的 user gesture。恢复期间观察实际 key/button 状态；恢复后仍按住的键/按钮被隔离到真实 release。已接纳的字符、composition commit 或边沿不会为恢复腾空间而丢弃。仅 geometry 变化不淘汰 key/character/IME，view/document 改变则明确取消旧文档输入；旧 geometry 的空间边沿封段并进入恢复。
+
+旧 DLL 缺少取消能力或取消拒绝时，blur/composition-cancel 只算有限恢复：`input_recovery_limited=true`、causal loss，并停止该 view/document 的新接纳直到导航建立新 document。期间仍观察物理 release；不假装未知的原生按下状态已恢复，也不通过合成抬起制造 click。新 source kernel 的取消能力、无额外 click/未提交文本以及下一次正常按下仍需专人验证。
 
 Engine 保留 mailbox 共享所有权；Host 关闭在 Engine owner 清除处理器并注销服务，再释放 adapter。服务回调不在注册表或 mailbox mutex 内运行，不通过消息携带裸指针。
 

@@ -1186,6 +1186,7 @@ host_result dynamic_miniblink_adapter::mount(const host_config& config) {
     return failure("E_HOST_WINDOW_MISSING", "A SOUI host window is required for the child WebView.");
   if (engine_thread_ != nullptr || webview_window_ != nullptr)
     return failure("E_ALREADY_STARTED", "The Miniblink engine thread is already running.");
+  input_recovery_limited_.store(false, std::memory_order_release);
 #ifdef SOUI_BRIDGE_BENCHMARK
   benchmark_result_slot_.reset();
 #endif
@@ -2348,21 +2349,30 @@ void dynamic_miniblink_adapter::cancel_input_on_engine() {
 #ifdef _WIN32
   if (!webview_) return;
   const auto view = static_cast<wkeWebView>(webview_);
-  for (std::size_t key = 0; key < input_keys_on_engine_.size(); ++key) {
-    if (!input_keys_on_engine_[key]) continue;
-    input_keys_on_engine_[key] = false;
-    if (wkeFireKeyUpEvent) (void)wkeFireKeyUpEvent(view, static_cast<unsigned>(key), 0, false);
-    if (webview_ != view) return;
+  bool native_cancelled = false;
+  const bool had_state = input_pointer_on_engine_ || ime_composing_
+      || std::any_of(input_keys_on_engine_.begin(), input_keys_on_engine_.end(), [](bool down) { return down; });
+  // A fabricated release can dispatch click/user-gesture callbacks. The source
+  // kernel cancels native state explicitly; legacy providers get blur semantics.
+#ifdef WKE_INPUT_UI_CAP_CANCEL_INPUT
+  if (wkeGetInputUiApi) {
+    const auto* api = wkeGetInputUiApi(WKE_INPUT_UI_ABI_VERSION);
+    if (api && api->abiVersion == WKE_INPUT_UI_ABI_VERSION
+        && api->structSize >= offsetof(wkeInputUiApi, cancelInputState) + sizeof(api->cancelInputState)
+        && (api->capabilities & WKE_INPUT_UI_CAP_CANCEL_INPUT) && api->cancelInputState)
+      native_cancelled = api->cancelInputState(view) == WKE_INPUT_UI_OK;
   }
-  if (input_pointer_on_engine_) {
-    input_pointer_on_engine_ = false;
-    if (wkeFireMouseEvent) (void)wkeFireMouseEvent(view, WM_LBUTTONUP, input_pointer_x_, input_pointer_y_, 0);
-    if (webview_ != view) return;
+#endif
+  if (had_state && !native_cancelled) {
+    input_recovery_limited_.store(true, std::memory_order_release);
+    if (input_mailbox_) std::static_pointer_cast<detail::input_mailbox>(input_mailbox_)->block_document(interaction_router_.generation());
   }
-  if (ime_composing_ && !ime_committed_ && wkeCancelComposition) (void)wkeCancelComposition(view);
+  input_keys_on_engine_.fill(false);
+  input_pointer_on_engine_ = false;
+  if (!native_cancelled && ime_composing_ && !ime_committed_ && wkeCancelComposition) (void)wkeCancelComposition(view);
   ime_composing_ = ime_committed_ = false;
   if (webview_ != view) return;
-  if (wkeKillFocus) wkeKillFocus(view);
+  if (!native_cancelled && wkeKillFocus) wkeKillFocus(view);
   if (webview_ == view && input_focus_requested_.load(std::memory_order_acquire) && wkeSetFocus) wkeSetFocus(view);
 #endif
 }
@@ -2371,14 +2381,25 @@ void dynamic_miniblink_adapter::dispatch_input_on_engine(input_packet packet) {
 #ifdef _WIN32
   const auto context_receipt = execution_context_receipt();
   if (!accepts_execution_context_receipt(context_receipt)) return;
+  const auto applicable = [&packet](interaction_generation current) {
+    return input_generation_applies(packet.kind, packet.generation, current);
+  };
+  const auto request_cancellation = [this, &packet] {
+    input_packet cancel;
+    cancel.kind = input_kind::cancel; cancel.generation = packet.generation; cancel.sequence = packet.sequence;
+    (void)post_input_typed(cancel);
+  };
   if (cursor_broker_) {
     if (!cursor_broker_->input_allowed() || !update_cursor_identity_on_engine() ||
         !accepts_execution_context_receipt(context_receipt) || !cursor_broker_->input_allowed()) return;
     const auto identity = cursor_broker_->identity();
-    if (!(packet.generation == interaction_generation{identity.viewGeneration,
-          identity.documentGeneration, identity.geometryGeneration})) return;
+    if (!applicable({identity.viewGeneration, identity.documentGeneration, identity.geometryGeneration})) {
+      if (packet.generation.view == identity.viewGeneration && packet.generation.document == identity.documentGeneration)
+        request_cancellation();
+      return;
+    }
   }
-  if (webview_ == nullptr || !(packet.generation == interaction_router_.generation())) return;
+  if (webview_ == nullptr || !applicable(interaction_router_.generation())) return;
   const auto view = static_cast<wkeWebView>(webview_);
   switch (packet.kind) {
     case input_kind::wheel:
@@ -2490,9 +2511,7 @@ void dynamic_miniblink_adapter::dispatch_input_on_engine(input_packet packet) {
       ime_committed_ = false;
       break;
     case input_kind::capture_lost:
-      if (input_pointer_on_engine_ && wkeFireMouseEvent)
-        (void)wkeFireMouseEvent(view, WM_LBUTTONUP, input_pointer_x_, input_pointer_y_, 0);
-      input_pointer_on_engine_ = false;
+      if (input_pointer_on_engine_) request_cancellation();
       break;
     case input_kind::cancel:
       cancel_input_on_engine();
@@ -2512,6 +2531,14 @@ bool dynamic_miniblink_adapter::handle_native_window_message(
   const HWND child = static_cast<HWND>(webview_window_);
   auto route = [this](input_packet packet) {
     const auto routed = interaction_router_.route(packet, *this, *this);
+    if (routed.disposition == route_disposition::rejected_stale
+        && (packet.kind == input_kind::pointer_down || packet.kind == input_kind::pointer_up)) {
+      const auto current = interaction_router_.generation();
+      if (current.view == packet.generation.view && current.document == packet.generation.document) {
+        input_packet cancel; cancel.kind = input_kind::cancel; cancel.generation = current; cancel.sequence = packet.sequence;
+        (void)post_input_typed(cancel);
+      }
+    }
     // Rejection is an explicit cancellation/recovery outcome, never success.
     if (routed.disposition == route_disposition::rejected_sink) {
       if (webview_window_ && GetCapture() == static_cast<HWND>(webview_window_)) ReleaseCapture();
@@ -2930,7 +2957,8 @@ std::string dynamic_miniblink_adapter::application_diagnostics() {
       application_ready_receipt_.load(std::memory_order_acquire) == receipt;
   std::string diagnostics = std::string{"document="} + (document_ready() ? "ready" : "waiting") +
          ",bridge=" + (bridge_ready ? "ready" : "waiting") +
-         ",draw_interval_ms=" + std::to_string(configured_draw_min_interval_.load());
+         ",draw_interval_ms=" + std::to_string(configured_draw_min_interval_.load()) +
+         ",input_recovery_limited=" + (input_recovery_limited_.load(std::memory_order_acquire) ? "true" : "false");
   {
     std::lock_guard<std::mutex> lock(state_mutex_);
     if (!probe_report_.empty()) diagnostics += "," + probe_report_;

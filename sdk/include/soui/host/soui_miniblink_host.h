@@ -188,6 +188,7 @@ class dynamic_miniblink_adapter final : public webview_host_adapter,
   bool input_pointer_on_engine_{false};
   int input_pointer_x_{0}, input_pointer_y_{0};
   std::atomic<bool> input_focus_requested_{false};
+  std::atomic<bool> input_recovery_limited_{false};
   const void* interaction_api_{nullptr};
   void* interaction_endpoint_{nullptr};
   const void* cursor_api_{nullptr};

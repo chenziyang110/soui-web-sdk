@@ -20,7 +20,7 @@ route_result interaction_router::route(const input_packet& packet,
                                         engine_input_sink& engine) {
   std::lock_guard<std::mutex> lock(mutex_);
   if (!active_) return {route_disposition::rejected_inactive, last_sequence_, visual_sample_};
-  if (!(packet.generation == generation_))
+  if (!input_generation_applies(packet.kind, packet.generation, generation_))
     return {route_disposition::rejected_stale, last_sequence_, visual_sample_};
   if (packet.sequence == 0 || packet.sequence <= last_sequence_)
     return {route_disposition::rejected_out_of_order, last_sequence_, visual_sample_};
@@ -30,7 +30,7 @@ route_result interaction_router::route(const input_packet& packet,
     scroll_sample sample = visual_sample_;
     if (independent.submit_wheel(packet, sample)) {
       visual_sample_ = sample;
-      return {route_disposition::independent, packet.sequence, visual_sample_};
+      return {route_disposition::independent, packet.sequence, visual_sample_, input_admission_result::accepted};
     }
   }
 

@@ -21,6 +21,17 @@ class input_mailbox final : public engine_input_service {
   [[nodiscard]] input_admission_result post(const input_packet& packet) noexcept {
     std::lock_guard<std::mutex> lock(mutex_);
     if (closed_ || quiescing_) return input_admission_result::stopped;
+    observed_generation_ = packet.generation;
+    if (blocked_) {
+      if (packet.generation.view == blocked_generation_.view && packet.generation.document == blocked_generation_.document) {
+        observe_physical(packet);
+        return input_admission_result::stopped;
+      }
+      blocked_ = false;
+      quarantined_keys_ = physical_keys_;
+      quarantined_pointer_ = physical_pointer_;
+      quarantined_ime_ = physical_ime_;
+    }
     observe_physical(packet);
     if (recovering_ || quarantined(packet)) return input_admission_result::recovering;
     if (packet.kind == input_kind::cancel) { request_recovery(); return input_admission_result::accepted; }
@@ -44,6 +55,9 @@ class input_mailbox final : public engine_input_service {
   }
 
   [[nodiscard]] bool pending() const noexcept override { return pending_.load(std::memory_order_acquire); }
+  void block_document(interaction_generation generation) noexcept {
+    std::lock_guard<std::mutex> lock(mutex_); blocked_generation_ = generation; blocked_ = true;
+  }
   void quiesce() noexcept override { std::lock_guard<std::mutex> lock(mutex_); quiescing_ = true; }
   void service() noexcept override {
     const auto deadline = std::chrono::steady_clock::now() + std::chrono::milliseconds(1);
@@ -64,7 +78,11 @@ class input_mailbox final : public engine_input_service {
       }
       // Neither Engine nor mailbox mutex is held across WKE/client reentry.
       try { if (dispatch_) dispatch_(recover ? nullptr : &packet); }
-      catch (...) { std::lock_guard<std::mutex> lock(mutex_); request_recovery(); }
+      catch (...) {
+        std::lock_guard<std::mutex> lock(mutex_);
+        if (recover) { blocked_generation_ = observed_generation_; blocked_ = true; }
+        request_recovery();
+      }
       if (recover) {
         std::lock_guard<std::mutex> lock(mutex_);
         quarantined_keys_ = physical_keys_;
@@ -116,6 +134,9 @@ class input_mailbox final : public engine_input_service {
   std::atomic<bool> pending_{false};
   std::size_t head_{0}, tail_{0}, count_{0}, ordinary_{0}, edges_{0}, bytes_{0};
   bool closed_{false}, quiescing_{false}, recovering_{false};
+  bool blocked_{false};
+  interaction_generation blocked_generation_;
+  interaction_generation observed_generation_;
   std::array<bool, 256> physical_keys_{}, quarantined_keys_{};
   bool physical_pointer_{false}, quarantined_pointer_{false}, physical_ime_{false}, quarantined_ime_{false};
 };

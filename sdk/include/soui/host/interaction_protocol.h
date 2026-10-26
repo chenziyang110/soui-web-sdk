@@ -35,6 +35,14 @@ enum class input_kind : std::uint32_t {
   cancel,
 };
 
+[[nodiscard]] inline bool input_generation_applies(input_kind kind, interaction_generation received,
+                                                   interaction_generation current) noexcept {
+  if (received.view != current.view || received.document != current.document) return false;
+  const bool spatial = kind == input_kind::pointer_move || kind == input_kind::pointer_down
+      || kind == input_kind::pointer_up || kind == input_kind::wheel;
+  return !spatial || received.geometry == current.geometry;
+}
+
 struct scroll_sample {
   std::uint64_t scene_version{0};
   std::uint64_t view_id{0};
