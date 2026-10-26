@@ -1054,6 +1054,37 @@ struct state : std::enable_shared_from_this<state> {
             }).Get(), &token);
     if (FAILED(hr)) return hresult_failure("WebView2 NewWindowRequested", hr);
 
+    hr = webview->add_WindowCloseRequested(
+        Callback<ICoreWebView2WindowCloseRequestedEventHandler>(
+            [weak](ICoreWebView2* sender, IUnknown*) -> HRESULT {
+              const auto self = weak.lock();
+              if (!self || !self->active() || self->webview.Get() != sender) return S_OK;
+              try {
+                // Finish the COM event before approval can close its Controller.
+                // A DOM close is a proposal, just like the native titlebar close.
+                const auto queued = self->enqueue([weak] {
+                  const auto target = weak.lock();
+                  if (!target || !target->active()) return;
+                  try {
+                    const auto callback = target->events.close_requested;
+                    if (callback) callback();
+                  } catch (...) {
+                    try {
+                      target->report(result::failure("E_CALLBACK", "The desktop close request failed"));
+                    } catch (...) {}
+                  }
+                });
+                if (!queued.ok) self->report(queued);
+              } catch (...) {
+                // Failure is not permission to bypass the host's close policy.
+                try {
+                  self->report(result::failure("E_CALLBACK", "The desktop close request failed"));
+                } catch (...) {}
+              }
+              return S_OK;
+            }).Get(), &token);
+    if (FAILED(hr)) return hresult_failure("WebView2 WindowCloseRequested", hr);
+
     hr = secured_webview->add_DownloadStarting(
         Callback<ICoreWebView2DownloadStartingEventHandler>(
             [](ICoreWebView2*, ICoreWebView2DownloadStartingEventArgs* args) -> HRESULT {
