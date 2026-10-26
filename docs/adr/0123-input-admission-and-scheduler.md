@@ -90,6 +90,12 @@ Host pump 不再扫描 SOUI_GPU_PRESENT_TRACE 文件或依赖 swapped 文本判�
 
 新增 native/provider/input/FIFO/serialization 成本直方图。`SOUI_ENGINE_SHARED_TURN_BUDGET_US=100..5000` 是默认关闭的协作总预算候选：native/FIFO 截止取组件与总剩余的较早值；provider/input/FIFO 每轮至少保留一次有界服务以保证进展。单次 provider/输入批次或用户回调仍可超时，候选不能冒充抢占。没有 profile 时不默认采用、不凭常数推算收益；跨 MiniBlink provider 批次的更细剩余预算协议仍待数据决定。
 
+### W10 WebView2 owner candidates
+
+`SOUI_WEBVIEW2_OWNER_BUDGET_US=100..5000` 默认0/off，输出批次保留16项硬数量界限并至少给首项一次机会；单次 COM/序列化仍不抢占。`SOUI_WEBVIEW2_PREPARE_OUTPUT=1` 默认off，只把纯 JSON/UTF16 准备放到 output mutex 外，所有 WebView2 COM 仍在实际 owner STA。两条路径使用同一 serializer；缓存 raw+UTF16 总量计入原64KiB item/lane payload额度，装不下或准备失败就回原 owner转换，不新增队列或借用关键lane。
+
+实际入队后记录 queue QPC，owner/serialization分别计时；serialization 不包含 COM 调用。输出在准备后/owner source查询后重新检查 stop、document/generation，Post 的实际 ComPtr 保持到返回，旧响应不能把重入后的新 document 标 ready。UI hot borrow 只 pin 既有冷注册、从不注册/分配，确保重入 unmount 不能在 pump 最后记录前 detach。Runtime version获取不变；真实 COM、兼容性、吞吐和 p95/p99 仍待专人配对 profile，源码算术fixture不作为实际 owner进展证据。
+
 ### 最终关闭 fence
 
 `BlinkPlatformImpl::closeThread()` 保留原 registry 数量/指针检查和真实 join 流程，失败诊断后 `std::terminate()`，调试器继续也不能到达 `delete this` 或成功 finalize。worker fixture 保留实际生产 fence，`concurrent-registry-close` 改为预期非继续失败，新增 `registry-live-fence`；严格验证尚未释放的原 worker/scheduler/event/registry。最终 wkeFinalize 的完成 guard 由集成包配套，不能在 fence 失败后签发完成收据。

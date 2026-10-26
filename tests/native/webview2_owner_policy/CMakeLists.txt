@@ -1,0 +1,3 @@
+add_executable(soui_webview2_owner_policy_tests fixture.cpp)
+target_compile_features(soui_webview2_owner_policy_tests PRIVATE cxx_std_17)
+add_test(NAME sdk.native.webview2-owner-policy COMMAND soui_webview2_owner_policy_tests)
