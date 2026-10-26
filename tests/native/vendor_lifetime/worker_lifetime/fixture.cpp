@@ -305,12 +305,15 @@ struct SchedulerReceipt {
     std::atomic<unsigned> disposed{0};
     double stepSeconds = 0;
     HANDLE completed = nullptr;
+    HANDLE retired = nullptr;
 };
 class SchedulerTask final : public blink::WebThread::Task {
 public:
     SchedulerTask(SchedulerReceipt& receipt, content::WebThreadImpl* owner, unsigned index, bool repost)
         : receipt_(receipt), owner_(owner), index_(index), repost_(repost) { }
-    ~SchedulerTask() override { ++receipt_.disposed; }
+    ~SchedulerTask() override {
+        if (++receipt_.disposed == SchedulerReceipt::taskCount && receipt_.retired) ::SetEvent(receipt_.retired);
+    }
     void run() override {
         ++receipt_.runs[index_];
         ++schedulerTaskRuns;
@@ -748,18 +751,21 @@ bool workerSchedulerBudgetCase(bool clockBudget) {
     SchedulerReceipt receipt;
     receipt.stepSeconds = clockBudget ? 0.001 : 0;
     receipt.completed = makeGate();
+    receipt.retired = makeGate();
     controlledSchedulerClock = true;
     workerSchedulerProbe = true;
     auto* thread = static_cast<content::WebThreadImpl*>(platform->createThread("FixtureWorker"));
     thread->postTask(FROM_HERE, new SchedulerTask(receipt, thread, 0, true));
     const bool completed = waitGate(receipt.completed);
+    const bool retired_while_idle = completed && waitGate(receipt.retired);
     delete thread;
     ::CloseHandle(receipt.completed);
+    ::CloseHandle(receipt.retired);
     note("worker-first-yield-ready-tasks", workerFirstYieldRuns);
     const bool originalBudget = clockBudget
         ? workerFirstYieldRuns > 32 && workerFirstYieldRuns < SchedulerReceipt::taskCount
         : workerMidChainWaits == 0;
-    return completed && originalBudget && schedulerTasksExactlyOnce(receipt) && cleanWorkerReceipt();
+    return completed && retired_while_idle && originalBudget && schedulerTasksExactlyOnce(receipt) && cleanWorkerReceipt();
 }
 bool mainSchedulerShutdownCase() {
     SchedulerReceipt receipt;

@@ -258,6 +258,7 @@ void WebThreadImpl::threadEntryPoint()
         DWORD dReturn = ::WaitForSingleObject(m_hEvent, INFINITE);
 
         startTriggerTasks();
+        retireCompletedTasksForOwner(); // A retirement-only worker wake must consume its bounded backlog.
 
         while ((!m_timerHeap.empty() || hasPendingTaskAdmission()) && !m_willExit) {
             schedulerTasks();

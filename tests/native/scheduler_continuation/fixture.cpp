@@ -202,8 +202,8 @@ int run(){
     content::initializeOffScreenTimerWindow();thread.updateSharedTimer();
     content::TimerWindowWndProc(window,WM_TIMER,stale,0);expect(runs==0,"same reused HWND rejects old native ticket");
     reset(thread);failWait=failTimer=true;thread.add(101);thread.schedulerTasks();
-    expect(content::deadlineTicket==0,"total native scheduling failure never claims armed wake");
-    failWait=failTimer=false;thread.updateSharedTimer();expect(content::deadlineTicket!=0,"scheduling failure retries same deadline");
+    expect(content::deadlineTicket==0&&content::deadlineRetry,"total native scheduling failure retains truthful retry intent");
+    failWait=failTimer=false;thread.serviceOwnerOpportunity();expect(content::deadlineTicket!=0&&runs==0,"actual owner opportunity retries future deadline without early execution");
     reset(thread);content::continuationSerial=(std::numeric_limits<UINT_PTR>::max)();
     expect(!content::requestSharedTimerContinuation(),"continuation serial never wraps");
     content::stopSharedTimer();

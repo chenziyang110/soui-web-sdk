@@ -12,7 +12,7 @@ static UINT continuationMessage = 0, timerFiredMessage = 0;
 static SRWLOCK continuationLock = SRWLOCK_INIT;
 static UINT_PTR continuationSerial = 0, pendingContinuation = 0;
 static UINT_PTR nativeTimerSerial = 1001, timerID = 0, deadlineTicket = 0;
-static bool continuationClosed = true, continuationDeferred = false;
+static bool continuationClosed = true, continuationDeferred = false, deadlineRetry = false;
 static HANDLE deadlineTimer = nullptr, deadlineWait = nullptr;
 static double armedDeadline = 0;
 class SharedTimerContinuationLock {
@@ -53,6 +53,7 @@ static void cancelSharedTimerDeadline()
     {
         SharedTimerContinuationLock lock;
         deadlineTicket = 0; armedDeadline = 0;
+        deadlineRetry = false;
         wait = deadlineWait; deadlineWait = nullptr;
     }
     // Callback takes publication lock. Wait outside it before HANDLE reuse.
@@ -131,7 +132,7 @@ static void serviceSharedTimerOwnerOpportunity()
     bool deferred = false;
     {
         SharedTimerContinuationLock lock;
-        deferred = !continuationClosed && continuationDeferred;
+        deferred = !continuationClosed && (continuationDeferred || deadlineRetry);
     }
     if (deferred && !CheckReEnter::getEnterCount()) {
         cancelSharedTimerDeadline();
@@ -179,6 +180,7 @@ static void setSharedTimerFireDeadline(double deadline)
     else if (!deadlineWait) {
         SharedTimerContinuationLock lock;
         armedDeadline = 0; deadlineTicket = 0;
+        deadlineRetry = true; // Owner opportunity must retry future-only work too.
     }
 }
 void setSharedTimerFireInterval(double interval)
