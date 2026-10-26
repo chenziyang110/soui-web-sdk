@@ -13,6 +13,7 @@
 #include <stdexcept>
 #include <string>
 #include "net/ActivatingObjCheck.h"
+#include "content/common/PaintLifetime.h"
 
 enum class Fault { none, activation, handler, engine, liveInsert };
 enum class AllocationStage { outside, activation, shell };
@@ -22,6 +23,7 @@ static int injected = 0, shellAllocations = 0, shellFrees = 0;
 static int handlerAllocations = 0, handlerFrees = 0, handlerLive = 0;
 static int registryAdds = 0, registryRemoves = 0, engineEntries = 0;
 static int closeCalls = 0, pageDataLive = 0, brokerEntries = 0;
+static int deferredCloseCalls = 0;
 static bool engineReturned = false;
 static intptr_t expectedId = 0;
 static const char* childSite = nullptr;
@@ -44,6 +46,8 @@ public:
     void _initPage(COLORREF);
     void _initHandler();
     void _initMemoryDC();
+    content::PaintClosePermit acquirePaintClosePermit(content::PaintCloseKind);
+    std::shared_ptr<content::PaintLifetimeState> m_paintLifetime;
     HWND m_hWnd;
     bool m_transparent;
     int m_width, m_height;
@@ -120,6 +124,14 @@ public:
 };
 }
 template<class T> std::unique_ptr<T> adoptRef(T* pointer) { return std::unique_ptr<T>(pointer); }
+namespace blink {
+// Cold owner declaration seam; no actual scheduler/worker is exercised here.
+class Platform {
+public:
+    static Platform* current() { static Platform value; return &value; }
+    WebThread* mainThread() { return nullptr; }
+};
+}
 namespace content {
 class WebPage {
 public:
@@ -127,6 +139,8 @@ public:
     ~WebPage();
     static WTF::HashSet<WebPage*>* m_webPageSet;
     WebPageImpl* m_pageImpl;
+    std::shared_ptr<content::PaintLifetimeState> paintState;
+    std::shared_ptr<content::PaintLifetimeState> paintLifetimeState() const { return paintState; }
     WTF::RefPtr<net::PageNetExtraData> m_pageNetExtraData;
     wke::CWebView* m_wkeWebView;
     void* m_wkeClientHandler;
@@ -146,6 +160,7 @@ public:
         // Actual _initPage call executes this declaration support seam.
         ++engineEntries;
         if (fault == Fault::engine) { fault = Fault::none; ++injected; throw std::bad_alloc(); }
+        paintState = std::make_shared<content::PaintLifetimeState>();
         engineReturned = true;
         return true;
     }
@@ -156,6 +171,11 @@ WTF::HashSet<WebPage*>* WebPage::m_webPageSet = nullptr;
 #include "extracted/web_page.h"
 }
 namespace wke {
+using PaintState = content::PaintLifetimeState;
+using PaintKind = content::PaintCloseKind;
+// Constructor fixture never queues an active callback close; scheduler is a seam.
+static void queuePaintClose(const std::shared_ptr<PaintState>&) { ++deferredCloseCalls; }
+#include "extracted/paint_lifetime.h"
 #include "extracted/web_view.h"
 }
 
@@ -260,7 +280,10 @@ int main(int argc, char** argv) {
     } else if (std::strcmp(name, "view-success") == 0) {
         auto* view = wke::CWebView::createForCursorBroker(0); auto* page = view->m_webPage;
         ok &= require(net::ActivatingObjCheck::inst()->isActivating(view->m_id) && view->m_id == expectedId && wke::g_liveWebViews.count(view) == 1 && engineEntries == 1 && handlerLive == 1, "successful real constructor registrations");
+        const auto paintState = view->m_paintLifetime;
         delete view;
+        ok &= require(paintState->policy.dead && !paintState->target && deferredCloseCalls == 0
+            && content::paintLifetimeRuntime().drained(), "actual idle paint binding invalidates before shell close");
         ok &= require(!net::ActivatingObjCheck::inst()->isActivating(expectedId) && wke::g_liveWebViews.empty() && closeCalls == 1, "successful source destructor unregisters");
         delete page;
         ok &= require(emptyPageRegistry() && handlerLive == 0 && handlerFrees == 1, "fixture shell ownership cleanup");
