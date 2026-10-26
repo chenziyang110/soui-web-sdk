@@ -8,6 +8,7 @@
 #include "input_mailbox.h"
 #include "input_sequence.h"
 #include "host_frame_policy.h"
+#include "input_trace_hooks.h"
 #include "cursor_broker.h"
 #include "main_context_gate.h"
 #include "runtime_shutdown_poll.h"
@@ -23,6 +24,7 @@
 #include <cstdint>
 #include <cstring>
 #include <cstdlib>
+#include <exception>
 #include <fstream>
 #include <functional>
 #include <future>
@@ -59,6 +61,7 @@
 #endif
 
 namespace soui::sdk {
+namespace input_trace = diagnostics::input_frame_trace;
 namespace {
 
 // Never reset: a later mount cannot make an old native lookup current again.
@@ -1201,6 +1204,7 @@ host_result dynamic_miniblink_adapter::mount(const host_config& config) {
   if (engine_thread_ != nullptr || webview_window_ != nullptr)
     return failure("E_ALREADY_STARTED", "The Miniblink engine thread is already running.");
   input_recovery_limited_.store(false, std::memory_order_release);
+  input_trace_view_id_.store(0, std::memory_order_release);
 #ifdef SOUI_BRIDGE_BENCHMARK
   benchmark_result_slot_.reset();
 #endif
@@ -1257,6 +1261,8 @@ host_result dynamic_miniblink_adapter::mount(const host_config& config) {
     owner_window_ = nullptr; bridge_adapter_ = nullptr;
     return acquired;
   }
+  try { input_trace_owner_ = std::make_unique<detail::trace_thread_registration>(); }
+  catch (...) { input_trace::note_causal_loss(); } // Diagnostic OOM cannot reject product startup.
   auto& runtime = process_runtime();
   if (runtime.cursor_realm.low || runtime.cursor_realm.high) {
     if (!invalidate_main_context()) {
@@ -1320,7 +1326,8 @@ host_result dynamic_miniblink_adapter::mount(const host_config& config) {
       else cancel_input_on_engine();
     }, [engine = engine_thread_](std::atomic<std::uint64_t>& head, std::atomic<bool>& pending, bool first, bool recovery) {
       return detail::engine_admission::commit_input(*engine, head, pending, first, recovery);
-    }, [engine = engine_thread_] { return detail::engine_admission::input_cutoff(*engine); });
+    }, [engine = engine_thread_] { return detail::engine_admission::input_cutoff(*engine); },
+        input_trace_view_id_.load(std::memory_order_acquire));
   } catch (...) { return failed_startup(failure("E_INPUT_CAPACITY", "The bounded input mailbox could not be allocated.")); }
   if (!detail::engine_admission::register_input(*engine_thread_, input_mailbox_))
     return failed_startup(failure("E_INPUT_CAPACITY", "The process already owns the maximum 32 input Hosts."));
@@ -1433,6 +1440,10 @@ host_result dynamic_miniblink_adapter::mount_on_engine(const host_config& config
   webview_ = view;
   engine_input_generation_ = interaction_generation_;
   engine_requested_document_generation_ = engine_input_generation_.document;
+  trace_document_confirmed_ = trace_geometry_applied_ = false;
+  const int trace_view_id = wkeGetWebviewId ? wkeGetWebviewId(view) : 0;
+  input_trace_view_id_.store(trace_view_id > 0 ? static_cast<std::uint64_t>(trace_view_id) : 0, std::memory_order_release);
+  if (trace_view_id <= 0) input_trace::note_causal_loss();
 #ifdef SOUI_BRIDGE_BENCHMARK
   append_host_smoke_log(resource_root_, "webview-created");
 #endif
@@ -1589,6 +1600,7 @@ host_result dynamic_miniblink_adapter::finish_mount_on_engine(const host_config&
   append_host_smoke_log(resource_root_, "local-page-requested");
 #endif
   wkeResize(view, width, height);
+  if (webview_ == view) { trace_geometry_applied_ = true; publish_view_trace_identity_on_engine(); }
   if (startup_cancelled_.load(std::memory_order_acquire))
     return failure("E_CURSOR_STARTUP_CANCELLED", "Startup was cancelled during the initial navigation.");
   admission.complete = true;
@@ -1786,6 +1798,7 @@ host_result dynamic_miniblink_adapter::unmount() {
     bridge_set_owner_window(*static_cast<bridge_adapter*>(bridge_adapter_), nullptr, 0);
   owner_window_ = nullptr;
   bridge_adapter_ = nullptr;
+  input_trace_owner_.reset(); // Shared UI writer detaches only after the last Host retires.
   startup_window_protected_ = false; // Only after actual owned endpoint and child cleanup.
 #endif
   document_ready_ = false;
@@ -2012,6 +2025,7 @@ host_result dynamic_miniblink_adapter::reload() {
     }
     if (!current()) { result = failure("E_CONTEXT_PENDING", "The reload was superseded before execution."); return; }
     if (!cursor_broker_) engine_requested_document_generation_ = requested_document;
+    trace_document_confirmed_ = false;
     wkeReload(static_cast<wkeWebView>(webview_));
     result = success("WebView reload requested on the engine thread.");
   });
@@ -2059,7 +2073,9 @@ host_result dynamic_miniblink_adapter::resize(int width, int height) {
         wkeResize(static_cast<wkeWebView>(view), width, height);
         if (webview_ != view) return;
         engine_input_generation_.geometry = geometry;
+        trace_geometry_applied_ = true;
         if (cursor_broker_) (void)update_cursor_identity_on_engine();
+        publish_view_trace_identity_on_engine();
       });
   if (admitted != detail::engine_admission_result::accepted)
     return engine_admission_failure(admitted,"The Miniblink owner thread rejected resize.");
@@ -2115,6 +2131,26 @@ void dynamic_miniblink_adapter::pump() {
       })) {
     pump_pending_ = false;
   }
+#endif
+}
+
+void dynamic_miniblink_adapter::publish_view_trace_identity_on_engine() noexcept {
+#if defined(_WIN32) && defined(WKE_INPUT_UI_CAP_VIEW_CONTEXT)
+  if (!webview_ || !trace_document_confirmed_ || !trace_geometry_applied_) return;
+  input_trace::event identity;
+  identity.view_id = input_trace_view_id_.load(std::memory_order_acquire);
+  identity.view_generation = engine_input_generation_.view;
+  identity.document_generation = engine_input_generation_.document;
+  identity.geometry_generation = engine_input_generation_.geometry;
+  // Zero input range: this is a confirmed base identity, never a TLS input push.
+  if (identity.view_id && wkeGetInputUiApi) {
+    const auto* api = wkeGetInputUiApi(WKE_INPUT_UI_ABI_VERSION);
+    if (api && api->abiVersion == WKE_INPUT_UI_ABI_VERSION
+        && api->structSize >= offsetof(wkeInputUiApi, setViewTraceIdentity) + sizeof(api->setViewTraceIdentity)
+        && (api->capabilities & WKE_INPUT_UI_CAP_VIEW_CONTEXT) && api->setViewTraceIdentity
+        && api->setViewTraceIdentity(static_cast<wkeWebView>(webview_), &identity, sizeof(identity)) == WKE_INPUT_UI_OK) return;
+  }
+  input_trace::note_causal_loss();
 #endif
 }
 
@@ -2295,12 +2331,17 @@ input_packet dynamic_miniblink_adapter::make_input_packet(input_kind kind) noexc
   packet.sequence = detail::claim_input_sequence(next_input_sequence_);
   if (!packet.sequence) {
     input_recovery_limited_.store(true, std::memory_order_release);
+    input_trace::note_causal_loss();
     input_packet cancel; cancel.kind = input_kind::cancel; cancel.generation = packet.generation;
     (void)post_input_typed(cancel);
     if (input_mailbox_) std::static_pointer_cast<detail::input_mailbox>(input_mailbox_)->block_document(packet.generation);
   }
   const auto now = std::chrono::steady_clock::now().time_since_epoch();
   packet.timestamp_seconds = std::chrono::duration<double>(now).count();
+  auto event = detail::input_event(packet, input_trace::stage::host_receive);
+  event.view_id = input_trace_view_id_.load(std::memory_order_acquire);
+  event.related_id = input_injection_tag_;
+  (void)input_trace::record(event);
   return packet;
 }
 
@@ -2437,6 +2478,7 @@ void dynamic_miniblink_adapter::cancel_input_on_engine() {
 #endif
   if (had_state && !native_cancelled) {
     input_recovery_limited_.store(true, std::memory_order_release);
+    input_trace::note_causal_loss(); // A limited legacy recovery cannot certify a complete chain.
     if (input_mailbox_) std::static_pointer_cast<detail::input_mailbox>(input_mailbox_)->block_document(engine_input_generation_);
   }
   input_keys_on_engine_.fill(false);
@@ -2451,6 +2493,11 @@ void dynamic_miniblink_adapter::cancel_input_on_engine() {
 
 void dynamic_miniblink_adapter::dispatch_input_on_engine(input_packet packet) {
 #ifdef _WIN32
+  struct rejected_input {
+    const input_packet& packet; std::uint64_t view_id; bool began{false}; int exceptions{std::uncaught_exceptions()};
+    ~rejected_input() { if (!began && std::uncaught_exceptions() == exceptions) (void)input_trace::record(detail::input_event(packet,
+        input_trace::stage::input_terminal, input_trace::reason::stale_generation, input_trace::terminal::stale, view_id)); }
+  } rejection{packet, input_trace_view_id_.load(std::memory_order_acquire)};
   const auto context_receipt = execution_context_receipt();
   if (!accepts_execution_context_receipt(context_receipt)) return;
   const auto applicable = [&packet](interaction_generation current) {
@@ -2458,7 +2505,7 @@ void dynamic_miniblink_adapter::dispatch_input_on_engine(input_packet packet) {
   };
   const auto request_cancellation = [this, &packet] {
     input_packet cancel;
-    cancel.kind = input_kind::cancel; cancel.generation = packet.generation; cancel.sequence = packet.sequence;
+    cancel.kind = input_kind::cancel; cancel.generation = packet.generation; // Anonymous internal recovery, original input owns stale terminal.
     (void)post_input_typed(cancel);
   };
   if (cursor_broker_) {
@@ -2473,6 +2520,42 @@ void dynamic_miniblink_adapter::dispatch_input_on_engine(input_packet packet) {
   }
   if (webview_ == nullptr || !applicable(engine_input_generation_)) return;
   const auto view = static_cast<wkeWebView>(webview_);
+  rejection.began = true;
+  auto dispatch_trace = detail::input_event(packet, input_trace::stage::engine_begin);
+  dispatch_trace.view_id = input_trace_view_id_.load(std::memory_order_acquire);
+  (void)input_trace::record(dispatch_trace);
+  input_trace::context_scope dispatch_context(dispatch_trace);
+  struct handler_return {
+    input_trace::event value; int exceptions{std::uncaught_exceptions()};
+    ~handler_return() {
+      value.point = input_trace::stage::handler_return; value.qpc = 0;
+      if (std::uncaught_exceptions() != exceptions) value.why = input_trace::reason::cancelled;
+      (void)input_trace::record(value);
+    }
+  } handler_finished{dispatch_trace};
+#ifdef WKE_INPUT_UI_CAP_INPUT_CONTEXT
+  struct native_trace_scope {
+    const wkeInputUiApi* api{nullptr}; wkeWebView view{nullptr};
+    dynamic_miniblink_adapter* owner{nullptr}; input_trace::event clear;
+    ~native_trace_scope() {
+      if (api && (owner->webview_ != view || api->setInputTraceContext(view, &clear, sizeof(clear)) != WKE_INPUT_UI_OK)) input_trace::note_causal_loss();
+    }
+  } native_context;
+  const bool same_geometry = packet.generation.geometry == engine_input_generation_.geometry;
+  if (!same_geometry) input_trace::note_causal_loss(); // Both identities need a future schema field; keep the received identity truthful.
+  if (same_geometry && wkeGetInputUiApi) {
+    const auto* api = wkeGetInputUiApi(WKE_INPUT_UI_ABI_VERSION);
+    if (api && api->abiVersion == WKE_INPUT_UI_ABI_VERSION
+        && api->structSize >= offsetof(wkeInputUiApi, setInputTraceContext) + sizeof(api->setInputTraceContext)
+        && (api->capabilities & WKE_INPUT_UI_CAP_INPUT_CONTEXT) && api->setInputTraceContext
+        && api->setInputTraceContext(view, &dispatch_trace, sizeof(dispatch_trace)) == WKE_INPUT_UI_OK) {
+      native_context.api = api; native_context.view = view; native_context.owner = this;
+      native_context.clear = dispatch_trace;
+      native_context.clear.input_first = native_context.clear.input_last = 0;
+    }
+  }
+  if (same_geometry && !native_context.api) input_trace::note_causal_loss();
+#endif
   switch (packet.kind) {
     case input_kind::wheel:
       if (wkeFireMouseWheelEvent != nullptr)
@@ -2601,21 +2684,45 @@ bool dynamic_miniblink_adapter::handle_native_window_message(
   const WPARAM wparam = static_cast<WPARAM>(wparam_value);
   const LPARAM lparam = static_cast<LPARAM>(lparam_value);
   const HWND child = static_cast<HWND>(webview_window_);
+  struct injection_context {
+    std::uint32_t& slot; std::uint32_t previous;
+    ~injection_context() { slot = previous; }
+  } injection{input_injection_tag_, input_injection_tag_};
+  input_injection_tag_ = input_trace::decode_injection_tag(static_cast<std::uint64_t>(static_cast<ULONG_PTR>(GetMessageExtraInfo())));
   auto route = [this](input_packet packet) {
     const auto routed = interaction_router_.route(packet, *this, *this);
     if (routed.disposition == route_disposition::rejected_stale
         && (packet.kind == input_kind::pointer_down || packet.kind == input_kind::pointer_up)) {
       const auto current = interaction_router_.generation();
       if (current.view == packet.generation.view && current.document == packet.generation.document) {
-        input_packet cancel; cancel.kind = input_kind::cancel; cancel.generation = current; cancel.sequence = packet.sequence;
+        input_packet cancel; cancel.kind = input_kind::cancel; cancel.generation = current; // Original owns rejected/stale terminal.
         (void)post_input_typed(cancel);
       }
     }
+    const bool accepted = routed.disposition == route_disposition::engine || routed.disposition == route_disposition::independent;
+    const bool stale = routed.disposition == route_disposition::rejected_stale || routed.disposition == route_disposition::rejected_inactive;
+    const auto reason = accepted ? input_trace::reason::accepted : (stale ? input_trace::reason::stale_generation :
+        routed.admission == input_admission_result::stopped ? input_trace::reason::stopped : input_trace::reason::capacity);
+    const auto view_id = input_trace_view_id_.load(std::memory_order_acquire);
+    (void)input_trace::record(detail::input_event(packet, input_trace::stage::admission, reason, input_trace::terminal::none, view_id));
+    input_trace::add(accepted ? input_trace::counter::admission_accepted : input_trace::counter::admission_rejected);
+    if (!accepted) (void)input_trace::record(detail::input_event(packet, input_trace::stage::input_terminal, reason,
+        stale ? input_trace::terminal::stale : input_trace::terminal::rejected, view_id));
     // Rejection is an explicit cancellation/recovery outcome, never success.
     if (routed.disposition == route_disposition::rejected_sink) {
       if (webview_window_ && GetCapture() == static_cast<HWND>(webview_window_)) ReleaseCapture();
       wheel_smoothing_.reset();
     }
+  };
+  auto reject_text = [this](const input_packet& packet, input_trace::reason why) {
+    const auto view_id = input_trace_view_id_.load(std::memory_order_acquire);
+    (void)input_trace::record(detail::input_event(packet, input_trace::stage::admission,
+        why, input_trace::terminal::none, view_id));
+    input_trace::add(input_trace::counter::admission_rejected);
+    (void)input_trace::record(detail::input_event(packet, input_trace::stage::input_terminal,
+        why, input_trace::terminal::rejected, view_id));
+    input_packet cancellation; cancellation.kind = input_kind::cancel; cancellation.generation = packet.generation;
+    (void)post_input_typed(cancellation);
   };
   auto pointer_packet = [this, lparam](input_kind kind, WPARAM flags) {
     input_packet packet = make_input_packet(kind);
@@ -2808,13 +2915,18 @@ bool dynamic_miniblink_adapter::handle_native_window_message(
       const HIMC context = ImmGetContext(child);
       if (context != nullptr) {
         bool text_rejected = false;
-        auto copy_text = [context, &text_rejected](DWORD selector) {
+        auto text_error = input_trace::reason::invalid;
+        auto copy_text = [context, &text_rejected, &text_error](DWORD selector) {
           std::u16string text;
           const LONG bytes = ImmGetCompositionStringW(context, selector, nullptr, 0);
-          if (!detail::input_mailbox::valid_native_text_bytes(bytes)) { text_rejected = true; return text; }
+          if (!detail::input_mailbox::valid_native_text_bytes(bytes)) {
+            text_rejected = true;
+            if (bytes > static_cast<LONG>(detail::input_mailbox::event_byte_limit)) text_error = input_trace::reason::capacity;
+            return text;
+          }
           if (bytes > 0) {
             try { text.resize(static_cast<std::size_t>(bytes) / sizeof(char16_t)); }
-            catch (...) { text_rejected = true; return text; }
+            catch (...) { text_rejected = true; text_error = input_trace::reason::capacity; return text; }
             const LONG copied = ImmGetCompositionStringW(context, selector, text.data(), bytes);
             if (copied != bytes) { text_rejected = true; text.clear(); }
           }
@@ -2824,7 +2936,7 @@ bool dynamic_miniblink_adapter::handle_native_window_message(
           input_packet packet = make_input_packet(input_kind::ime_update);
           packet.text = copy_text(GCS_COMPSTR);
           if (text_rejected) {
-            route(make_input_packet(input_kind::cancel));
+            reject_text(packet, text_error);
             ImmReleaseContext(child, context);
             result = 0; return true;
           }
@@ -2839,13 +2951,16 @@ bool dynamic_miniblink_adapter::handle_native_window_message(
           input_packet packet = make_input_packet(input_kind::ime_commit);
           packet.text = copy_text(GCS_RESULTSTR);
           if (text_rejected) {
-            route(make_input_packet(input_kind::cancel));
+            reject_text(packet, text_error);
             ImmReleaseContext(child, context);
             result = 0; return true;
           }
           route(std::move(packet));
         }
         ImmReleaseContext(child, context);
+      } else if (lparam & (GCS_COMPSTR | GCS_RESULTSTR)) {
+        const auto packet = make_input_packet((lparam & GCS_RESULTSTR) ? input_kind::ime_commit : input_kind::ime_update);
+        reject_text(packet, input_trace::reason::invalid);
       }
       result = 0;
       return true;
@@ -3320,6 +3435,7 @@ bool dynamic_miniblink_adapter::notify_main_context_created(void* originating_vi
   document_ready_ = false;
   application_ready_ = false;
   try {
+  trace_document_confirmed_ = false;
   if (!still_pending() || !advance_cursor_document_on_engine() || !still_pending()) return false;
   if (!cursor_broker_) engine_input_generation_.document = engine_requested_document_generation_;
 #ifdef _WIN32
@@ -3637,7 +3753,10 @@ void dynamic_miniblink_adapter::on_document_ready() {
   // Only the main-world context callback can advance the controlled epoch.
   const auto receipt = execution_context_receipt();
   if (!accepts_execution_context_receipt(receipt) ||
-      (cursor_broker_ && !cursor_broker_->input_allowed()) || !install_js_bindings(receipt) ||
+      (cursor_broker_ && !cursor_broker_->input_allowed())) return;
+  trace_document_confirmed_ = true;
+  publish_view_trace_identity_on_engine();
+  if (!accepts_execution_context_receipt(receipt) || !install_js_bindings(receipt) ||
       !accepts_execution_context_receipt(receipt)) return;
   document_ready_receipt_.store(receipt, std::memory_order_release);
   document_ready_ = true;

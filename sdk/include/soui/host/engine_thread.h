@@ -1,6 +1,7 @@
 #pragma once
 
 #include <soui/diagnostics/runtime_metrics.h>
+#include <soui/diagnostics/input_frame_trace.h>
 #include <chrono>
 #include <condition_variable>
 #include <cstddef>
@@ -90,7 +91,7 @@ class engine_thread final {
   std::condition_variable work_ready_;
   std::condition_variable state_changed_;
   std::condition_variable idle_;
-  struct queued_work { task callback; std::uint64_t enqueued_us{0}; std::size_t lane{0}; std::uint64_t order{0}; };
+  struct queued_work { task callback; std::uint64_t enqueued_us{0}; std::size_t lane{0}; diagnostics::input_frame_trace::event trace; std::uint64_t order{0}; };
   std::array<queued_work, queue_capacity> work_{};
   std::size_t head_{0}, tail_{0}, queued_{0};
   std::array<std::size_t, 4> lane_queued_{};

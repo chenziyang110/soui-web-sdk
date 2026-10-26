@@ -19,6 +19,7 @@
 #endif
 
 namespace soui::sdk {
+namespace input_trace = diagnostics::input_frame_trace;
 namespace detail {
 struct engine_capacity_state final {
   engine_capacity_state() noexcept {
@@ -349,6 +350,17 @@ detail::engine_admission_result engine_thread::post_internal(task work,detail::e
     work_[tail_].callback.swap(work);
     work_[tail_].enqueued_us=metrics_mode_ == diagnostics::mode::scalar ? diagnostics::detail::now_us() : 0;
     work_[tail_].lane=category;
+    auto& trace = work_[tail_].trace;
+    trace = {};
+    (void)input_trace::current_context(trace);
+    trace.thread_id = trace.producer_slot = 0;
+    trace.flags = 0; trace.outcome = input_trace::terminal::none;
+    trace.frame_id = trace.action_first = trace.action_last = trace.value = 0;
+    trace.related_id = trace.task_id;
+    trace.task_id = input_trace::next_task_id();
+    trace.point = input_trace::stage::task_posted;
+    trace.qpc = input_trace::now_qpc();
+    (void)input_trace::record(trace);
     tail_=(tail_+1)%queue_capacity; ++queued_; ++lane_queued_[category];
     if (ticket) { ticket->active_=false; capacity_->reserved[category].fetch_sub(1,std::memory_order_acq_rel); }
     if (metrics_mode_ == diagnostics::mode::scalar) {
@@ -425,6 +437,11 @@ void engine_thread::request_stop(bool drain_pending) {
       state_ = engine_thread_state::stopping;
     if (state_ == engine_thread_state::stopping && !drain_pending) {
       if (metrics_mode_ == diagnostics::mode::scalar) diagnostics::detail::add(metrics_.discarded_on_stop_total,queued_,metrics_saturated_);
+      for (std::size_t count = 0; count < queued_; ++count) {
+        auto trace = work_[(head_ + count) % queue_capacity].trace;
+        trace.point = input_trace::stage::task_cancelled; trace.why = input_trace::reason::stopped; trace.qpc = 0;
+        (void)input_trace::record(trace);
+      }
       for (std::size_t i=0;i<queue_capacity;++i) retired[i].swap(work_[i].callback);
       head_=tail_=queued_=0; lane_queued_={};
     }
@@ -538,6 +555,17 @@ void engine_thread::run(initializer initialize, task shutdown) noexcept {
   } catch (...) {
     initialized = false;
   }
+  const bool trace_attached = initialized && input_trace::register_current_thread();
+  struct trace_registration {
+    initializer& initialize; task& shutdown; bool attached;
+    ~trace_registration() {
+      // Parameter captures can reenter/record too. Retire them before the
+      // actual thread writer detaches, outside every Engine/state mutex.
+      { initializer retired; retired.swap(initialize); }
+      { task retired; retired.swap(shutdown); }
+      if (attached) input_trace::detach_current_thread();
+    }
+  } trace_owner{initialize, shutdown, trace_attached};
 
   {
     std::lock_guard<std::mutex> lock(mutex_);
@@ -607,6 +635,7 @@ void engine_thread::run(initializer initialize, task shutdown) noexcept {
         + std::chrono::milliseconds(2);
     for (unsigned count = 0; count < max_tasks_per_turn; ++count) {
       task current;
+      input_trace::event task_trace;
       {
         std::unique_lock<std::mutex> lock(mutex_);
 #ifndef _WIN32
@@ -621,19 +650,30 @@ void engine_thread::run(initializer initialize, task shutdown) noexcept {
         if (queued_ == 0) break;
         if (older_input_locked(work_[head_].order)) break;
         current.swap(work_[head_].callback);
+        task_trace = work_[head_].trace;
         --lane_queued_[work_[head_].lane];
         head_=(head_+1)%queue_capacity; --queued_;
         ++executing_;
         if (metrics_mode_ == diagnostics::mode::scalar) callback_started_us_=diagnostics::detail::now_us();
       }
+      const auto queued_qpc = task_trace.qpc;
+      task_trace.point = input_trace::stage::task_begin;
+      task_trace.qpc = input_trace::now_qpc();
+      if (queued_qpc && task_trace.qpc >= queued_qpc)
+        input_trace::observe_duration(input_trace::duration_metric::task_queue, task_trace.qpc - queued_qpc);
+      (void)input_trace::record(task_trace);
+      input_trace::context_scope task_context(task_trace);
       try {
         current();
       } catch (...) {
+        task_trace.why = input_trace::reason::cancelled;
         // An isolated host callback must not kill the process-wide engine owner.
       }
       // The executing slot covers capture retirement as well as the call.
       // A capture destructor can reenter this Engine only outside mutex_.
       { task retired; retired.swap(current); }
+      task_trace.point = input_trace::stage::task_end; task_trace.qpc = 0;
+      (void)input_trace::record(task_trace);
       {
         std::lock_guard<std::mutex> lock(mutex_);
         --executing_;

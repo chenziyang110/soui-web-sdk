@@ -63,6 +63,18 @@ producer 待接纳任务有相同索引，mutex 内一次只选择/移除一个�
 
 必要用例源码覆盖容量/字节/OOM边界、已接纳 FIFO、恢复顺序、按住键隔离、IME commit、两 Host 进展、注销/停止与迟到通知。编译和运行由专人执行；当前只允许源码审查和 `git diff --check`，不据源码候选宣称性能通过。
 
+### W01 接入与 W09 宿主成本
+
+SDK 与 vendor 各自保留 POD 当前因果上下文：TaskPair/Timer 和固定 Engine FIFO 保存同一 input range/generation、非零 task ID、parent ID 和真实 QPC；post/begin/end/cancel 明确分开。实际引擎 dispatch 完成 generation 检查后设置 vendor view context，返回时 RAII 清除；T3b/visible 标志不伪造。T1 的 SendInput 标记仅写 related_id，不作身份/授权依据。已接纳输入关闭/异常终态显式记录；UI 使用共享 thread scope，最后 Host 退役才 detach，worker 在真实 loop 退出后 detach。
+
+实际 wkeGetWebviewId 的正 ID 在冷 owner 创建后、UI 输入可用前发布；不可用则 unknown/causal loss，不用指针充当 view ID。非输入 base identity 仅在实际 documentready 与已返回的同 view wkeResize 两个条件成立后经 cap0x40 setter 发布；导航意图不发布。输入上下文经 cap0x8/field boundary/OK0 验证，返回时清除；跨 geometry 的非空间输入保留收到时的身份与功能投递，但不伪造 native frame range，明确 causal loss。
+
+内部恢复标记 sequence=0，不为原 physical input 再签第二个 terminal；原 rejection/stale/exception/close 各有唯一终态所有者。IME 查询/拷贝失败为已经创建的 T1 签一次 rejection，再请求匿名恢复，不生成虚假的第二次 T1。回归 SOURCE 通过实际 recorder/mailbox/router 对原 copy rejection、handler exception、queued close 和显式 cancel 统计恰好一个 terminal。worker 严格 closure 追加实际 vendor InputFrameTrace.h/cpp（16 live sources、15 source copies），未用 trace stub 替代。
+
+### 最终关闭 fence
+
+`BlinkPlatformImpl::closeThread()` 保留原 registry 数量/指针检查和真实 join 流程，失败诊断后 `std::terminate()`，调试器继续也不能到达 `delete this` 或成功 finalize。worker fixture 保留实际生产 fence，`concurrent-registry-close` 改为预期非继续失败，新增 `registry-live-fence`；严格验证尚未释放的原 worker/scheduler/event/registry。最终 wkeFinalize 的完成 guard 由集成包配套，不能在 fence 失败后签发完成收据。
+
 ### W05/W07 optional Host policy adoption
 
 Normal fractional CPU pacing requires matched cap0x10; older kernels retain their legacy integer/experimental policy. The normal Host sets mirrorRequired=false once after DIRECT_HWND presentation succeeds, only through version/field-boundary/cap0x4/non-null/OK0 checks. Failed adoption restores explicit mirrorRequired=true. Benchmark/DC consumers retain the mirror; B's sticky DC/transparent/layered/nonindependent rules override false. No per-frame mirror toggle or new old-DLL requirement is introduced.

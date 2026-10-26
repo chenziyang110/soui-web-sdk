@@ -42,7 +42,8 @@ route_result interaction_router::route(const input_packet& packet,
     input_packet cancellation;
     cancellation.kind = input_kind::cancel;
     cancellation.generation = packet.generation;
-    cancellation.sequence = packet.sequence;
+    // Internal recovery owns no second terminal for the rejected packet.
+    cancellation.sequence = 0;
     (void)engine.post_input_typed(cancellation);
     return {route_disposition::rejected_sink, 0, visual_sample_, input_admission_result::no_memory};
   }

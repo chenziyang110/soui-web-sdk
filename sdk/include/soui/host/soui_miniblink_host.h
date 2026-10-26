@@ -23,7 +23,7 @@
 
 namespace soui::sdk {
 
-namespace detail { class bridge_request_budget; class cursor_broker_endpoint; }
+namespace detail { class bridge_request_budget; class cursor_broker_endpoint; class trace_thread_registration; }
 
 inline constexpr std::uint32_t bridge_event_message = 0x84D2U;
 inline constexpr std::uint32_t ime_position_message = 0x84D3U;
@@ -138,6 +138,7 @@ class dynamic_miniblink_adapter final : public webview_host_adapter,
   [[nodiscard]] host_result close_cursor_endpoint();
   [[nodiscard]] bool advance_cursor_document_on_engine();
   [[nodiscard]] bool update_cursor_identity_on_engine();
+  void publish_view_trace_identity_on_engine() noexcept;
   void sync_cursor_input_generation() noexcept;
   void pump_on_engine();
   [[nodiscard]] bool create_input_window();
@@ -184,11 +185,15 @@ class dynamic_miniblink_adapter final : public webview_host_adapter,
   std::atomic<std::uint64_t> bridge_generation_{0};
   interaction_router interaction_router_;
   std::shared_ptr<detail::engine_input_service> input_mailbox_;
+  std::unique_ptr<detail::trace_thread_registration> input_trace_owner_;
   std::array<bool, 256> input_keys_on_engine_{};
   bool input_pointer_on_engine_{false};
   int input_pointer_x_{0}, input_pointer_y_{0};
   std::atomic<bool> input_focus_requested_{false};
   std::atomic<bool> input_recovery_limited_{false};
+  std::uint32_t input_injection_tag_{0}; // UI diagnostic context; never authorization.
+  std::atomic<std::uint64_t> input_trace_view_id_{0};
+  bool trace_document_confirmed_{false}, trace_geometry_applied_{false}; // Engine owner, actual callbacks/resize only.
   const void* interaction_api_{nullptr};
   void* interaction_endpoint_{nullptr};
   const void* cursor_api_{nullptr};

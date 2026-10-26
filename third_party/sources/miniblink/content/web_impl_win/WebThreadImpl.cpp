@@ -252,6 +252,8 @@ void WebThreadImpl::threadEntryPoint()
     BlinkPlatformImpl::onCurrentThreadWhenWebThreadImplCreated(this);
     if (blink::Platform::current()->currentThread() != this)
         throw std::runtime_error("WebThread TLS initialization failed");
+    (void)input_frame_trace::register_current_thread();
+    struct TraceDetach { ~TraceDetach() { input_frame_trace::detach_current_thread(); } } traceDetach;
     m_hadThreadInit.store(true, std::memory_order_release);
 
     while (!m_willExit) {
@@ -287,8 +289,18 @@ void WebThreadImpl::postTask(const blink::WebTraceLocation& location, blink::Web
 
 void WebThreadImpl::postDelayedTaskImpl(
     const blink::WebTraceLocation& location, blink::WebThread::Task* task, 
-    long long delayMs, double* createTimeOnOtherThread, int priority, unsigned* heapInsertionOrder)
+    long long delayMs, double* createTimeOnOtherThread, int priority, unsigned* heapInsertionOrder, const input_frame_trace::event* trace)
 {
+    input_frame_trace::event localTrace;
+    if (!trace) {
+        (void)input_frame_trace::current_context(localTrace);
+        localTrace.thread_id = localTrace.producer_slot = 0;
+        localTrace.flags = 0; localTrace.outcome = input_frame_trace::terminal::none;
+        localTrace.frame_id = localTrace.action_first = localTrace.action_last = localTrace.value = 0;
+        localTrace.related_id = localTrace.task_id;
+        localTrace.task_id = input_frame_trace::next_task_id();
+    }
+    const auto* effectiveTrace = trace ? trace : &localTrace;
     // Consume the posted task exactly once, including failed timer creation.
     std::unique_ptr<blink::WebThread::Task> payload(task);
     std::unique_ptr<WebTimerBase> timer;
@@ -305,11 +317,21 @@ void WebThreadImpl::postDelayedTaskImpl(
             if (grown < required + 1) grown = required + 1;
             m_timerHeap.reserve(grown);
         }
-        timer.reset(WebTimerBase::create(this, location, payload.get(), priority));
+        timer.reset(WebTimerBase::create(this, location, payload.get(), priority, effectiveTrace));
         payload.release(); // Timer now owns the task, including shutdown drain.
         timer->startFromOtherThread((double)delayMs / 1000.0, createTimeOnOtherThread, heapInsertionOrder);
+        if (!trace) {
+            timer->m_trace.point = input_frame_trace::stage::task_posted;
+            timer->m_trace.qpc = input_frame_trace::now_qpc();
+            (void)input_frame_trace::record(timer->m_trace);
+        }
         timer.release(); // Timer heap now owns this self-deleting timer.
     } catch (...) {
+        if (!timer) {
+            auto cancelled = *effectiveTrace; cancelled.point = input_frame_trace::stage::task_cancelled;
+            cancelled.why = input_frame_trace::reason::cancelled; cancelled.qpc = 0;
+            (void)input_frame_trace::record(cancelled);
+        }
         // RAII destroys whichever owner actually received the payload.
     }
 }
@@ -356,6 +378,9 @@ void WebThreadImpl::postDelayedTaskWithPriorityCrossThread(
 #if defined(SOUI_WORKER_SHUTDOWN_DIAGNOSTICS) && SOUI_WORKER_SHUTDOWN_DIAGNOSTICS
         pair->task->diagnosticQueueCommitted(); // Actual insertion, still serialized with willExit.
 #endif
+        pair->trace.point = input_frame_trace::stage::task_posted;
+        pair->trace.qpc = input_frame_trace::now_qpc();
+        (void)input_frame_trace::record(pair->trace);
         pair.release();
     } catch (...) {
         m_pendingIndex.discardEmpty(priority);
@@ -390,6 +415,12 @@ WebThreadImpl::TaskPair::TaskPair(const blink::WebTraceLocation& location, blink
     this->priority = priority;
     this->createTime = WTF::monotonicallyIncreasingTime();
     this->heapInsertionOrder = WebThreadImpl::getNewCurrentHeapInsertionOrder();
+    (void)input_frame_trace::current_context(this->trace);
+    this->trace.thread_id = this->trace.producer_slot = 0;
+    this->trace.flags = 0; this->trace.outcome = input_frame_trace::terminal::none;
+    this->trace.frame_id = this->trace.action_first = this->trace.action_last = this->trace.value = 0;
+    this->trace.related_id = this->trace.task_id;
+    this->trace.task_id = input_frame_trace::next_task_id();
     this->pendingPosition = 0;
     this->scheduling.value = this;
     this->scheduling.deadline = this->createTime + static_cast<double>(delayMs) / 1000.0;
@@ -398,6 +429,12 @@ WebThreadImpl::TaskPair::TaskPair(const blink::WebTraceLocation& location, blink
 
 WebThreadImpl::TaskPair::~TaskPair()
 {
+    if (task) {
+        trace.point = input_frame_trace::stage::task_cancelled;
+        trace.why = input_frame_trace::reason::cancelled;
+        trace.qpc = 0;
+        (void)input_frame_trace::record(trace);
+    }
     delete task; // Only untransferred work remains here (cancel-before-run).
 }
 
@@ -448,7 +485,7 @@ void WebThreadImpl::startTriggerTasks(unsigned* remainingAdmissions, double admi
         std::unique_ptr<TaskPair> pair(selected);
         blink::WebThread::Task* payload = pair->task;
         pair->task = nullptr;
-        postDelayedTaskImpl(pair->location, payload, pair->delayMs, &pair->createTime, pair->priority, &pair->heapInsertionOrder);
+        postDelayedTaskImpl(pair->location, payload, pair->delayMs, &pair->createTime, pair->priority, &pair->heapInsertionOrder, &pair->trace);
         if (remainingAdmissions) --*remainingAdmissions;
     }
 }
