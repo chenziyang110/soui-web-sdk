@@ -12,6 +12,7 @@
 #include <WebView2.h>
 
 #include "../backend.h"
+#include "../deferred_failure.h"
 #include "../resource_uri.h"
 
 #include <algorithm>
@@ -359,6 +360,7 @@ struct state : std::enable_shared_from_this<state> {
   bool closed{false};
   bool created{false};
   bool dispatching{false};
+  bool finishing_failure{false};
   bool visible{true};
   bool window_state_known{false};
   window_state last_window_state{};
@@ -375,6 +377,7 @@ struct state : std::enable_shared_from_this<state> {
   backend_events events;
   result terminal_status{result::success()};
   result shutdown_status{result::success()};
+  deferred_failure<state> pending_failure;
   ComPtr<ICoreWebView2Environment> environment;
   ComPtr<ICoreWebView2Controller> controller;
   ComPtr<ICoreWebView2> webview;
@@ -841,19 +844,25 @@ struct state : std::enable_shared_from_this<state> {
     }
     // Finish COM event handlers before notifying the application or closing its
     // controller. In particular, never run a modal user callback inside WebView2.
-    if (!window || !PostMessageW(window, failure_message, 0, 0)) finish_failure();
+    pending_failure.schedule(weak_from_this());
+    if (window) PostMessageW(window, failure_message, 0, 0);
+    // If posting fails, the outer UI pump consumes pending_failure. Never run
+    // arbitrary application error callbacks inline on this COM callback stack.
   }
 
   void finish_failure() {
-    if (closed) return;
-    const auto error_callback = events.error;
-    if (error_callback) {
-      try { error_callback(terminal_status); } catch (...) {}
-    }
+    if (closed || terminal_status.ok || finishing_failure) return;
+    finishing_failure = true;
+    pending_failure.cancel();
+    try {
+      const auto error_callback = events.error;
+      if (error_callback) error_callback(terminal_status);
+    } catch (...) {}
     shutdown(true);
   }
 
   result shutdown(bool notify, bool destroy_window = true) {
+    pending_failure.cancel();
     if (closed) return shutdown_status;
     closed = true;  // Revoke all async completions before releasing COM objects.
     ++generation;
@@ -1536,12 +1545,27 @@ class windows_backend final : public backend {
     } reset{loop_running_};
     MSG message{};
     while (!quit_loop_requested_) {
+      deferred_failure<state>::drain([](const std::shared_ptr<state>& failed) {
+        failed->finish_failure();
+      });
+      if (quit_loop_requested_) break;
+      // A callback may have queued another terminal failure without a native
+      // wakeup. Finish another bounded batch instead of blocking with it idle.
+      if (deferred_failure<state>::pending()) continue;
       const BOOL received = GetMessageW(&message, nullptr, 0, 0);
+      const DWORD receive_error = received == -1 ? GetLastError() : ERROR_SUCCESS;
+      if (received <= 0) {
+        deferred_failure<state>::drain([](const std::shared_ptr<state>& failed) {
+          failed->finish_failure();
+        });
+      }
       if (received == -1) {
-        const result failure = win32_failure("GetMessageW");
+        const result failure = hresult_failure("GetMessageW", HRESULT_FROM_WIN32(
+            receive_error ? receive_error : ERROR_GEN_FAILURE));
         request_group_quit();
         return failure;
       }
+      if (quit_loop_requested_) break;
       if (!received) {
         request_group_quit();
         // WM_QUIT has been consumed, but approval may be deferred or denied.

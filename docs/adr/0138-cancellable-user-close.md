@@ -87,6 +87,35 @@ soui_desktop.lib SHA-256 为
 两轮均无视觉验收；注册失败、队列饱和/异常、失效 sender、导航竞态及完整平台矩阵
 仍未执行，不改变通用 manifest 的 nativeRuntimeVerified 或发布资格。
 
+## Windows 致命错误投递失败不得同步调用用户回调
+
+`report()` 是非致命、有界的 best-effort 诊断。关闭提案在原生队列满时拒绝入队，
+保持窗口及旧工作，不因错误通知也无法入队而强制关闭；公共 error 回调没有逐条必达承诺。
+
+致命 `fail()` 不同：它保存首个 terminal_status 并停止接收工作。原实现的
+PostMessage 失败回退直接 finish_failure；ProcessFailed 或 Controller 初始化完成
+回调均能走到这里。有效 HWND 也可能因消息队列配额而投递失败，这并不证明窗口已毁。
+同步 error 回调可进入模态消息循环，违反 WebView2 的回调重入约束；这属于静态可证实的
+控制流缺陷，尚未运行复现挂起。不是声称 Controller.Close 在所有事件中都被官方禁止。
+
+决定：每个 state 内嵌一个无分配、UI 线程所属的待处理失败节点，保存 weak owner。
+fail 只标记终态、排入待处理列表并尝试原消息投递，绝不因投递失败内联通知/销毁。
+现有 failure 消息和 SDK 外层 run 泵共同消费该节点；run 在下一次 GetMessage 前处理，
+且先派发已取出的普通消息，避免清理后把旧 HWND 消息送到被复用的窗口。
+节点按 FIFO 排列，每次只消费入口时数量，禁止嵌套消费；调用前锁定 owner 并取消节点。
+若回调新增终态仍待处理，run 继续下一有界批次，不带着无唤醒的挂起项进入 GetMessage。
+显式 shutdown、
+节点析构或正常消息消费均撤销挂起项，根窗口关闭后仍可处理同线程 child 的终态。
+finish_failure 忽略没有失败的 state 及重复/重入通知，防止迟到消息误关新窗口。
+
+不新增线程、权限、第二唤醒通道或无界可靠错误队列；不以同步用户回调保住诊断。
+SDK 泵须恢复运行才会消费挂起终态，不能承诺任意系统资源故障下无条件继续调度。
+致命初始化/进程失败清理仍不是可否决的用户关闭提案。公共 API/ABI 不变。
+验证使用生产私有节点的生命周期回归及 Windows 后端对象编译，未执行的断言和原生
+PostMessage 配额/COM 故障注入必须单独标记，不继承之前候选的运行通过。
+官方依据：[PostMessage 限额](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-postmessagew)
+及 [WebView2 重入限制](https://learn.microsoft.com/en-us/microsoft-edge/webview2/concepts/threading-model)。
+
 ## macOS DOM 关闭通知也须审批
 
 WKUIDelegate 的 `webViewDidClose:` 可能由初始主文档的 `window.close()` 触发，

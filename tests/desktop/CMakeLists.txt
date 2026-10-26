@@ -13,6 +13,18 @@ endif()
 add_test(NAME sdk.desktop.startup-report COMMAND soui_desktop_startup_report)
 set_tests_properties(sdk.desktop.startup-report PROPERTIES TIMEOUT 10 LABELS "desktop;contract;no-gui")
 
+# Production terminal-failure queue, without creating native windows or COM.
+add_executable(soui_desktop_deferred_failure deferred_failure.cpp)
+target_compile_features(soui_desktop_deferred_failure PRIVATE cxx_std_17)
+if(MSVC)
+  target_compile_options(soui_desktop_deferred_failure PRIVATE /utf-8 /W4)
+  set_property(TARGET soui_desktop_deferred_failure PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+else()
+  target_compile_options(soui_desktop_deferred_failure PRIVATE -Wall -Wextra -Wpedantic)
+endif()
+add_test(NAME sdk.desktop.deferred-failure COMMAND soui_desktop_deferred_failure)
+set_tests_properties(sdk.desktop.deferred-failure PROPERTIES TIMEOUT 10 LABELS "desktop;contract;no-gui")
+
 # Production request dispatcher, without creating an AppKit window.
 add_executable(soui_desktop_macos_close_request macos_close_request.cpp)
 target_compile_features(soui_desktop_macos_close_request PRIVATE cxx_std_17)
