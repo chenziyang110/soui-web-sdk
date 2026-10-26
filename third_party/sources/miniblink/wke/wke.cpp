@@ -2304,6 +2304,10 @@ void WKE_CALL_TYPE wkeOnDraggableRegionsChanged(wkeWebView webWindow, wkeDraggab
 
 void WKE_CALL_TYPE wkeShowWindow(wkeWebView webWindow, bool showFlag)
 {
+    if (::GetCurrentThreadId() != wke::wkeThreadId || !wke::wkeIsInit
+        || workerFinalizationCompleted || !webWindow
+        || wke::g_liveWebViews.find(webWindow) == wke::g_liveWebViews.end())
+        return;
     wke::checkThreadCallIsValid(__FUNCTION__);
     if (wke::CWebWindow* window = static_cast<wke::CWebWindow*>(webWindow))
         return window->show(showFlag);

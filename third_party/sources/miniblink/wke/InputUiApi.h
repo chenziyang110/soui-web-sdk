@@ -97,8 +97,9 @@ typedef struct _wkeInputUiApi {
     int (WKE_INPUT_UI_CALL* traceSnapshot)(wkeInputUiTraceSnapshot* snapshot);
     int (WKE_INPUT_UI_CALL* traceDrain)(void* output, unsigned int eventBytes,
         unsigned int capacity, unsigned int* count);
-    /* Remaining operations are owner-thread only, capability and pointer gated.
-       Opaque view values are actual wkeWebView handles, never remote pointers. */
+    /* View/owner operations require the native owner, capability and pointer gates.
+       Opaque view values are actual wkeWebView handles, never remote pointers.
+       External producer leases at the tail use their separate calling-thread rule. */
     void (WKE_INPUT_UI_CALL* serviceOwnerOpportunity)(void);
     int (WKE_INPUT_UI_CALL* setUiMirrorConsumerRequired)(void* view, unsigned int required);
     int (WKE_INPUT_UI_CALL* uiMirrorConsumerRequired)(void* view, unsigned int* required);
@@ -110,7 +111,9 @@ typedef struct _wkeInputUiApi {
     int (WKE_INPUT_UI_CALL* setViewTraceIdentity)(void* view, const void* event, unsigned int eventBytes);
     int (WKE_INPUT_UI_CALL* setHostVisible)(void* view, unsigned int visible);
     /* Cold, calling-thread-affine producer leases; no implicit hot attach.
-       The caller retains the actual module until its final release returns. */
+       Retain the initialized module through producer-thread TLS teardown;
+       final lease release alone never qualifies a generic FreeLibrary.
+       Borrowed internal writers require their loop to outlive the borrow. */
     int (WKE_INPUT_UI_CALL* retainTraceProducer)(void);
     void (WKE_INPUT_UI_CALL* releaseTraceProducer)(void);
 } wkeInputUiApi;

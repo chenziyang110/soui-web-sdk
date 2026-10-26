@@ -2,6 +2,7 @@
 find_program(NODE_EXECUTABLE node REQUIRED)
 set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
   "${CMAKE_CURRENT_SOURCE_DIR}/generate.cjs"
+  "${SOUI_DISTRIBUTION_ROOT}/third_party/sources/miniblink/cc/trees/RenderDiagnosticTrace.h"
   "${SOUI_DISTRIBUTION_ROOT}/third_party/sources/miniblink/content/common/InputFrameTrace.h"
   "${SOUI_DISTRIBUTION_ROOT}/third_party/sources/miniblink/content/common/PaintLifetime.h"
   "${SOUI_DISTRIBUTION_ROOT}/third_party/sources/miniblink/cc/input/ScrollController.h"
