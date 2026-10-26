@@ -59,6 +59,7 @@
 #include "content/devtools/DevToolsClient.h"
 #include "content/devtools/DevToolsAgent.h"
 #include "cc/trees/LayerTreeHost.h"
+#include "cc/trees/FrameDeadlinePolicy.h"
 #include "cc/base/BdColor.h"
 #include "ui/gfx/win/dpi.h"
 #include <algorithm>
@@ -255,6 +256,7 @@ WebPageImpl::WebPageImpl(COLORREF bdColor)
     m_executeMainFrameCount = 0;
     m_lastFrameTimeMonotonic = 0;
     m_mainFrameInterval = 0;
+    m_renderFrameId = 0;
     m_nextMainFrameTime = 0;
     m_popupHandle = nullptr;
     m_postCloseWidgetSoonMessage = false;
@@ -496,15 +498,8 @@ public:
                 if (m_page->m_mainFrameInterval > 0) {
                     double& deadline = m_page->m_nextMainFrameTime;
                     const double interval = m_page->m_mainFrameInterval;
-                    if (deadline <= 0) deadline = m_lastFrameTimeMonotonic + interval;
-                    else {
-                        // Preserve fractional phase, skipping missed frames instead of bursting.
-                        while (deadline <= m_lastFrameTimeMonotonic) {
-                            const double behind = m_lastFrameTimeMonotonic - deadline;
-                            const long long missed = static_cast<long long>(behind / interval);
-                            deadline += (missed + 1) * interval;
-                        }
-                    }
+                    deadline = cc::nextFrameDeadline(deadline,
+                        m_lastFrameTimeMonotonic, interval);
                 }
                 if (m_page->m_mainFrameInterval > 0)
                     m_page->m_lastFrameTimeMonotonic = m_lastFrameTimeMonotonic;
@@ -523,6 +518,11 @@ public:
             m_page->setNeedsCommitAndNotLayout();
 
         m_host->endRecordActions();
+        if (m_isComefromMainFrame) {
+            ++m_page->m_renderFrameId;
+            m_host->setMainFrameDeadline(m_page->m_renderFrameId,
+                m_lastFrameTimeMonotonic, m_page->m_mainFrameInterval);
+        }
 
         if (m_page->m_mainFrameInterval <= 0)
             m_page->m_lastFrameTimeMonotonic = m_lastFrameTimeMonotonic;
@@ -983,6 +983,7 @@ void WebPageImpl::setViewportSize(const IntSize& size)
     if (m_viewportSize == size)
         return;
     m_viewportSize = size;
+    m_nextMainFrameTime = 0;
 
     ASSERT(pageInited == m_state);
     if (pageDestroying == m_state)
@@ -1351,6 +1352,8 @@ void WebPageImpl::setMainFrameRate(int rate)
     const double interval = rate ? 1.0 / rate : 0;
     if (interval == m_mainFrameInterval) return;
     m_mainFrameInterval = interval;
+    if (m_layerTreeHost && interval > 0)
+        m_layerTreeHost->setDrawMinInterval(interval);
     m_nextMainFrameTime = 0;
     if (pageInited == m_state) setNeedsCommit();
 }

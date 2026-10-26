@@ -212,6 +212,7 @@ public:
     static void clearCanvas(SkCanvas* canvas, const SkRect& rect, bool useLayeredBuffer);
 
     void setDrawMinInterval(double drawMinInterval);
+    void setMainFrameDeadline(uint64_t frameId, double target, double interval);
     void setIndependentPresentationEnabled(bool enabled);
     
     void postPaintMessage(const SkRect& paintRect);
@@ -328,7 +329,11 @@ private:
 
     double m_lastCompositeTime;
     double m_lastPaintTime;
-    mutable double m_lastRecordTime;
+    double m_nextCompositeFrameTime;
+    uint64_t m_pendingMainFrameId;
+    uint64_t m_presentedMainFrameId;
+    double m_pendingMainFrameDeadline;
+    bool m_unifiedFrameDeadline;
     double m_drawMinInterval;
 
     static const int m_paintMessageQueueSize = 200;

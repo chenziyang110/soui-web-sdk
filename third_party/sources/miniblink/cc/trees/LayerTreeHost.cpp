@@ -10,6 +10,7 @@
 
 #include <algorithm>
 #include "cc/trees/LayerTreeHost.h"
+#include "cc/trees/FrameDeadlinePolicy.h"
 #if defined(SOUI_GPU_COMPOSITOR)
 #include "cc/trees/GpuSkiaSurface.h"
 #endif
@@ -429,7 +430,7 @@ static double configuredDrawMinInterval()
                                                  sizeof(overrideValue));
     if (length > 0 && length < sizeof(overrideValue)) {
         const int milliseconds = std::atoi(overrideValue);
-        if (milliseconds >= 0 && milliseconds <= 1000)
+        if (milliseconds > 0 && milliseconds <= 1000)
             return static_cast<double>(milliseconds) / 1000.0;
     }
 
@@ -481,7 +482,11 @@ LayerTreeHost::LayerTreeHost(LayerTreeHostClent* hostClient, LayerTreeHostUiThre
     m_isDrawDirty = true;
     m_lastCompositeTime = 0.0;
     m_lastPaintTime = 0.0;
-    m_lastRecordTime = 0.0;
+    m_nextCompositeFrameTime = 0.0;
+    m_pendingMainFrameId = 0;
+    m_presentedMainFrameId = 0;
+    m_pendingMainFrameDeadline = 0;
+    m_unifiedFrameDeadline = false;
     m_drawFrameCount = 0;
     m_drawFrameFinishCount = 0;
     m_requestApplyActionsCount = 0;
@@ -831,12 +836,8 @@ bool LayerTreeHost::canRecordActions() const
     if (!m_actionsFrameGroup || m_actionsFrameGroup->getFramesSize() > 30)
         return false;
     
-    double lastRecordTime = WTF::monotonicallyIncreasingTime();
-    double detTime = lastRecordTime - m_lastRecordTime;
-    if (detTime < m_drawMinInterval)
-        return false;
-    m_lastRecordTime = lastRecordTime;
-
+    // Admission is resource-only. WebPageImpl owns commit pacing; adding
+    // another last-record interval here would defer an already-paced frame.
     return true;
 }
 
@@ -1678,6 +1679,7 @@ void LayerTreeHost::setViewportSize(const blink::WebSize& deviceViewportSize)
     m_deviceViewportSize = deviceViewportSize;
     m_clientRect = blink::IntRect(blink::IntPoint(), m_deviceViewportSize);
     m_hasResize = true;
+    m_nextCompositeFrameTime = 0;
     {
         std::lock_guard<std::mutex> retryLock(m_uiPaintRetry->mutex);
         m_uiPaintRetry->policy.invalidate();
@@ -1751,7 +1753,20 @@ void LayerTreeHost::registerForAnimations(blink::WebLayer* layer)
 // composite or trigger updateAnimations() or layout() calls until it becomes visible.
 void LayerTreeHost::setVisible(bool visible)
 {
-    m_visible = visible;
+    bool restored = false;
+    {
+        WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
+        restored = !m_visible && visible;
+        m_visible = visible;
+        m_nextCompositeFrameTime = 0;
+        if (restored && !m_clientRect.isEmpty())
+            addAndMergeDirty(&m_dirtyRectsForComposite, SkRect::MakeWH(
+                m_clientRect.width(), m_clientRect.height()));
+    }
+    if (restored) {
+        m_hostClient->onLayerTreeSetNeedsCommit();
+        requestDrawFrameToRunIntoCompositeThread();
+    }
 }
 
 // Sets the current page scale factor and minimum / maximum limits. Both limits are initially 1 (no page scale allowed).
@@ -2666,7 +2681,22 @@ void LayerTreeHost::clearCanvas(SkCanvas* canvas, const SkRect& rect, bool useLa
 
 void LayerTreeHost::setDrawMinInterval(double drawMinInterval)
 {
+    if (!(drawMinInterval > 0) || !std::isfinite(drawMinInterval)
+        || drawMinInterval > 1.0)
+        return;
+    WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
     m_drawMinInterval = drawMinInterval;
+    m_nextCompositeFrameTime = 0;
+}
+
+void LayerTreeHost::setMainFrameDeadline(uint64_t frameId, double target, double interval)
+{
+    WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
+    m_unifiedFrameDeadline = interval > 0;
+    if (!m_unifiedFrameDeadline || !frameId || frameId <= m_pendingMainFrameId)
+        return;
+    m_pendingMainFrameId = frameId;
+    m_pendingMainFrameDeadline = target;
 }
 
 void LayerTreeHost::setIndependentPresentationEnabled(bool enabled)
@@ -2733,16 +2763,33 @@ void LayerTreeHost::drawFrameInCompositeThread()
     atomicDecrement(&m_drawFrameCount);
     m_compositeMutex.unlock();
 
-    double lastCompositeTime = WTF::monotonicallyIncreasingTime();
-    double detTime = lastCompositeTime - m_lastCompositeTime;
-    if (detTime < m_drawMinInterval && !m_isDestroying) { // 如果刷新频率太快，缓缓再画
-        const long long remainingDelayMs = static_cast<long long>(
-            std::ceil((m_drawMinInterval - detTime) * 1000.0));
-        requestDrawFrameAfterDelay(remainingDelayMs);
+    const double lastCompositeTime = WTF::monotonicallyIncreasingTime();
+    uint64_t committedFrame = 0;
+    long long pacingDelay = 0;
+    {
+        WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
+        if (!m_visible && !m_isDestroying) {
+            atomicDecrement(&m_drawFrameFinishCount);
+            return;
+        }
+        committedFrame = m_pendingMainFrameId;
+        const bool alreadyPaced = m_unifiedFrameDeadline
+            && committedFrame > m_presentedMainFrameId
+            && lastCompositeTime >= m_pendingMainFrameDeadline;
+        if (!alreadyPaced && !m_isDestroying)
+            pacingDelay = LegacyPaintRetryPolicy::delayMilliseconds(
+                lastCompositeTime, m_nextCompositeFrameTime);
+        if (!pacingDelay) {
+            m_nextCompositeFrameTime = nextFrameDeadline(
+                m_nextCompositeFrameTime, lastCompositeTime, m_drawMinInterval);
+            m_lastCompositeTime = lastCompositeTime;
+        }
+    }
+    if (pacingDelay > 0) {
+        requestDrawFrameAfterDelay(pacingDelay);
         atomicDecrement(&m_drawFrameFinishCount);
         return;
     }
-    m_lastCompositeTime = lastCompositeTime;
 
 #if 0
     LARGE_INTEGER performanceCount = { 0 };
@@ -2790,6 +2837,10 @@ void LayerTreeHost::drawFrameInCompositeThread()
     }
 #endif
 
+    if (!dirtyRects.isEmpty()) {
+        WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
+        m_presentedMainFrameId = committedFrame;
+    }
     postDrawFrame();
     if ((animationNeedsAnotherFrame || scrollNeedsAnotherFrame)
         && !m_isDestroying) {
@@ -2828,7 +2879,7 @@ void LayerTreeHost::queueLegacyPaintLocked()
     LegacyPaintRetryPolicy::Ticket ticket;
     {
         std::lock_guard<std::mutex> retryLock(m_uiPaintRetry->mutex);
-        ticket = m_uiPaintRetry->policy.arm(now, m_lastPaintTime,
+        ticket = m_uiPaintRetry->policy.arm(now, m_unifiedFrameDeadline ? 0 : m_lastPaintTime,
             m_drawMinInterval);
     }
     if (!ticket.sequence)
