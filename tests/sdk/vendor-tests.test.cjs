@@ -32,7 +32,7 @@ function jsonRegistry(names) {
     tests: names.map(name => ({name, command: ['not-executed.exe'], properties: []}))});
 }
 const sdkName = 'sdk.native.contract';
-const allNames = [sdkName, ...manifest.names];
+const allNames = [sdkName, ...manifest.names, ...manifest.auxiliaryNames];
 
 test('a missing cache cannot authorize unit or vendor acceptance', t => {
   const f = fixture(t);
@@ -77,17 +77,19 @@ test('generated application and relative-root inputs cannot stand in for root na
   assert.throws(() => configuration(f.root, 'x64', 'Release'), /generated app/);
 });
 test('ON accepts all 66 registered names and OFF preserves SDK registration only', () => {
-  assert.deepEqual(registry(jsonRegistry(allNames), 'ON'), {registeredVendorTests: 66, registeredNativeTests: 67});
+  assert.deepEqual(registry(jsonRegistry(allNames), 'ON'), {registeredVendorTests: 66, registeredNativeTests: 71});
   assert.deepEqual(registry(jsonRegistry([sdkName]), 'OFF'), {registeredVendorTests: 0, registeredNativeTests: 1});
 });
 test('one missing, extra, duplicate or disabled vendor case rejects the whole registry', () => {
-  assert.throws(() => registry(jsonRegistry(allNames.slice(0, -1)), 'ON'), /all 66 exact names/);
+  assert.throws(() => registry(jsonRegistry(allNames.filter(name => name !== manifest.names[0])), 'ON'), /all 66 exact names/);
   assert.throws(() => registry(jsonRegistry([...allNames, 'kernel.native.unexpected']), 'ON'), /all 66 exact names/);
   assert.throws(() => registry(jsonRegistry([...allNames, manifest.names[0]]), 'ON'), /Duplicate/);
   const disabled = JSON.parse(jsonRegistry(allNames));
   disabled.tests[1].properties.push({name: 'DISABLED', value: true});
   assert.throws(() => registry(JSON.stringify(disabled), 'ON'), /disabled/);
   assert.throws(() => registry(jsonRegistry(allNames), 'OFF'), /OFF cache conflicts/);
+  assert.throws(() => registry(jsonRegistry(allNames.filter(name => name !== manifest.auxiliaryNames[0])), 'ON'), /exact scheduler source contracts/);
+  assert.throws(() => registry(jsonRegistry([...allNames, 'scheduler.unexpected']), 'ON'), /exact scheduler source contracts/);
 });
 test('empty, malformed or SDK-free CTest output is not a zero-test success', () => {
   assert.throws(() => registry(jsonRegistry([]), 'OFF'), /empty/);

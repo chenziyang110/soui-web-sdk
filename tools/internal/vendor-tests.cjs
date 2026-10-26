@@ -75,14 +75,20 @@ function registry(raw, mode) {
   const vendor = value.tests.filter(test => test.name.startsWith('kernel.native'));
   const actual = vendor.map(test => test.name).sort();
   const expected = manifest.names;
+  const auxiliary = manifest.auxiliaryNames;
+  need(Array.isArray(auxiliary) && auxiliary.length === 4 && new Set(auxiliary).size === 4 &&
+    auxiliary.every(name => typeof name === 'string' && name.startsWith('scheduler.')) &&
+    JSON.stringify(auxiliary) === JSON.stringify([...auxiliary].sort()), 'Invalid exact auxiliary vendor names');
+  const actualAuxiliary = names.filter(name => name.startsWith('scheduler.')).sort();
   need(manifest.schema === 'soui.vendor-test-names/v1' && Array.isArray(expected) && expected.length === 66 &&
     new Set(expected).size === 66 && expected.every(name => name.startsWith('kernel.native.')) &&
     JSON.stringify(expected) === JSON.stringify([...expected].sort()), 'Invalid exact vendor names manifest');
   if (mode === 'ON') {
+    need(JSON.stringify(actualAuxiliary) === JSON.stringify(auxiliary), 'Vendor ON registry lacks exact scheduler source contracts');
     need(JSON.stringify(actual) === JSON.stringify(expected), 'Vendor ON registry must contain all 66 exact names with no extra kernel.native tests');
     need(vendor.every(test => !(test.properties || []).some(property => property.name === 'DISABLED' && property.value)), 'A registered vendor test is disabled');
   }
-  else need(actual.length === 0, 'Vendor OFF cache conflicts with registered kernel.native tests');
+  else need(actual.length === 0 && actualAuxiliary.length === 0, 'Vendor OFF cache conflicts with registered kernel.native tests');
   return {registeredVendorTests: actual.length, registeredNativeTests: names.length};
 }
 function inspect(root, architecture, config, ctest, required = false, options = {}) {
