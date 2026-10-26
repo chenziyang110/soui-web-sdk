@@ -463,3 +463,5 @@ foreach(json_diagnostics IN ITEMS 0 1)
   add_test(NAME sdk.native.json-destruction-${json_diagnostics} COMMAND ${json_destruction_target})
   set_tests_properties(sdk.native.json-destruction-${json_diagnostics} PROPERTIES TIMEOUT 60)
 endforeach()
+
+add_subdirectory(host_frame_policy)
