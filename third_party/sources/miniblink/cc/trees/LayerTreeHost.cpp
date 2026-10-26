@@ -10,6 +10,7 @@
 
 #include <algorithm>
 #include "cc/trees/LayerTreeHost.h"
+#include "cc/trees/RenderDiagnosticTrace.h"
 #include "cc/trees/FrameDeadlinePolicy.h"
 #include "cc/trees/ResourceNotificationPolicy.h"
 #include "cc/trees/RenderTrace.h"
@@ -444,95 +445,6 @@ static bool featureEnabledByDefault(const char* environmentName)
     const DWORD length = GetEnvironmentVariableA(environmentName, option,
         sizeof(option));
     return !(length == 1 && option[0] == '0');
-}
-
-static void appendCompositorScrollTrace(const char* reason,
-    const ScrollTreeSnapshot* tree, int x, int y, double deltaX,
-    double deltaY, bool hasPendingTree, size_t pendingInputCount)
-{
-    char path[MAX_PATH] = {};
-    const DWORD pathLength = GetEnvironmentVariableA(
-        "SOUI_INTERACTION_TRACE", path, sizeof(path));
-    if (!pathLength || pathLength >= sizeof(path))
-        return;
-
-    const ScrollNodeSnapshot* hitNode = nullptr;
-    bool hitRegion = false;
-    if (tree) {
-        const std::vector<ScrollHitTestRegion>& regions =
-            tree->hitTestRegions();
-        for (size_t index = regions.size(); index > 0; --index) {
-            const ScrollHitTestRegion& region = regions[index - 1];
-            if (!region.bounds.contains(x, y))
-                continue;
-            hitRegion = true;
-            hitNode = tree->findNode(region.target);
-            break;
-        }
-    }
-
-    char line[1024] = {};
-    const int length = std::snprintf(line, sizeof(line),
-        "reason=%s x=%d y=%d dx=%.3f dy=%.3f tree=%u pending_tree=%u pending_inputs=%u hit_region=%u hit_node=%u eligible=%u coverage=%u reasons=%u axes=%u scene=%llu min=(%.1f,%.1f) max=(%.1f,%.1f) coverage_min=(%.1f,%.1f) coverage_max=(%.1f,%.1f) prediction=(%.1f,%.1f)\r\n",
-        reason, x, y, deltaX, deltaY, tree ? 1U : 0U,
-        hasPendingTree ? 1U : 0U,
-        static_cast<unsigned>(pendingInputCount), hitRegion ? 1U : 0U,
-        hitNode ? 1U : 0U,
-        hitNode && hitNode->compositorEligible() ? 1U : 0U,
-        hitNode && hitNode->coverageComplete ? 1U : 0U,
-        hitNode ? hitNode->mainThreadReasons : 0U,
-        hitNode ? hitNode->inputAxes : 0U,
-        hitNode ? static_cast<unsigned long long>(hitNode->sceneVersion) : 0ULL,
-        hitNode ? hitNode->minimumOffset.x : 0.0,
-        hitNode ? hitNode->minimumOffset.y : 0.0,
-        hitNode ? hitNode->maximumOffset.x : 0.0,
-        hitNode ? hitNode->maximumOffset.y : 0.0,
-        hitNode ? hitNode->coverageMinimum.x : 0.0,
-        hitNode ? hitNode->coverageMinimum.y : 0.0,
-        hitNode ? hitNode->coverageMaximum.x : 0.0,
-        hitNode ? hitNode->coverageMaximum.y : 0.0,
-        hitNode ? hitNode->inputPrediction.x : 0.0,
-        hitNode ? hitNode->inputPrediction.y : 0.0);
-    if (length <= 0)
-        return;
-
-    HANDLE file = CreateFileA(path, FILE_APPEND_DATA,
-        FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_ALWAYS,
-        FILE_ATTRIBUTE_NORMAL, nullptr);
-    if (file == INVALID_HANDLE_VALUE)
-        return;
-    DWORD written = 0;
-    WriteFile(file, line,
-        static_cast<DWORD>(std::min(length,
-            static_cast<int>(sizeof(line) - 1))), &written, nullptr);
-    if (tree) {
-        const std::vector<ScrollNodeSnapshot>& nodes = tree->nodes();
-        for (size_t index = 0; index < nodes.size(); ++index) {
-            const ScrollNodeSnapshot& node = nodes[index];
-            if (!node.viewportClip.contains(x, y))
-                continue;
-            const int nodeLength = std::snprintf(line, sizeof(line),
-                "  node[%u] id=%llu parent=%llu eligible=%u coverage=%u reasons=%u axes=%u scene=%llu clip=(%.1f,%.1f,%.1f,%.1f) min=(%.1f,%.1f) max=(%.1f,%.1f)\r\n",
-                static_cast<unsigned>(index),
-                static_cast<unsigned long long>(node.key.nodeId),
-                static_cast<unsigned long long>(node.parent.nodeId),
-                node.compositorEligible() ? 1U : 0U,
-                node.coverageComplete ? 1U : 0U,
-                node.mainThreadReasons, node.inputAxes,
-                static_cast<unsigned long long>(node.sceneVersion),
-                node.viewportClip.x, node.viewportClip.y,
-                node.viewportClip.width, node.viewportClip.height,
-                node.minimumOffset.x, node.minimumOffset.y,
-                node.maximumOffset.x, node.maximumOffset.y);
-            if (nodeLength > 0) {
-                WriteFile(file, line,
-                    static_cast<DWORD>(std::min(nodeLength,
-                        static_cast<int>(sizeof(line) - 1))), &written,
-                    nullptr);
-            }
-        }
-    }
-    CloseHandle(file);
 }
 
 #if defined(SOUI_GPU_COMPOSITOR)
@@ -2331,8 +2243,7 @@ bool LayerTreeHost::handleCompositorWheelInput(int x, int y,
     if (!featureEnabledByDefault("SOUI_COMPOSITOR_SCROLL")
         || m_isDestroying || !std::isfinite(deltaX) || !std::isfinite(deltaY)
         || !std::isfinite(monotonicTime)) {
-        appendCompositorScrollTrace("disabled-or-invalid", nullptr, x, y,
-            deltaX, deltaY, false, 0);
+        recordInteractionDiagnostic(trace::interaction_diagnostic_code::disabled_or_invalid);
         return false;
     }
 
@@ -2342,10 +2253,7 @@ bool LayerTreeHost::handleCompositorWheelInput(int x, int y,
         if (!m_activeInputScrollTree || m_pendingCompositorScrollTree
             || (inputIdentity && !m_activeInputScrollTree->matchesInputIdentity(*inputIdentity))
             || m_pendingCompositorScrollInputs.size() >= 512) {
-            appendCompositorScrollTrace("scene-unavailable",
-                m_activeInputScrollTree, x, y, deltaX, deltaY,
-                m_pendingCompositorScrollTree != nullptr,
-                m_pendingCompositorScrollInputs.size());
+            recordInteractionDiagnostic(trace::interaction_diagnostic_code::scene_unavailable);
             return false;
         }
 
@@ -2368,9 +2276,7 @@ bool LayerTreeHost::handleCompositorWheelInput(int x, int y,
         }
 
         if (!target) {
-            appendCompositorScrollTrace("no-eligible-hit",
-                m_activeInputScrollTree, x, y, deltaX, deltaY, false,
-                m_pendingCompositorScrollInputs.size());
+            recordInteractionDiagnostic(trace::interaction_diagnostic_code::no_eligible_hit);
             return false;
         }
         if (m_nextCompositorInputSequence == (std::numeric_limits<uint64_t>::max)())
@@ -2390,9 +2296,7 @@ bool LayerTreeHost::handleCompositorWheelInput(int x, int y,
             return false; // No prediction/receipt mutation; original Engine fallback remains exact.
         }
         if (!target->advanceInputPrediction(ScrollVector(deltaX, deltaY))) {
-            appendCompositorScrollTrace("delta-not-consumed",
-                m_activeInputScrollTree, x, y, deltaX, deltaY, false,
-                m_pendingCompositorScrollInputs.size());
+            recordInteractionDiagnostic(trace::interaction_diagnostic_code::delta_not_consumed);
             return false;
         }
 
@@ -2407,9 +2311,7 @@ bool LayerTreeHost::handleCompositorWheelInput(int x, int y,
         m_latchedScrollNode = target->key;
         m_lastCompositorWheelTime = monotonicTime;
         accepted = true;
-        appendCompositorScrollTrace("accepted", m_activeInputScrollTree,
-            x, y, deltaX, deltaY, false,
-            m_pendingCompositorScrollInputs.size());
+        recordInteractionDiagnostic(trace::interaction_diagnostic_code::accepted);
     }
 
     if (accepted) {
@@ -2430,8 +2332,7 @@ bool LayerTreeHost::captureCompositorScrollBarrier(int x, int y,
     if (!inputActivity)
         return false;
     if (!barrier || m_isDestroying) {
-        appendCompositorScrollTrace("barrier-capture-invalid", nullptr,
-            x, y, 0.0, 0.0, false, 0);
+        recordInteractionDiagnostic(trace::interaction_diagnostic_code::barrier_capture_invalid);
         return false;
     }
 
@@ -2442,15 +2343,13 @@ bool LayerTreeHost::captureCompositorScrollBarrier(int x, int y,
         WTF::Locker<WTF::Mutex> locker(m_compositorScrollInputMutex);
         if (!m_activeInputScrollTree
             || (inputIdentity && !m_activeInputScrollTree->matchesInputIdentity(*inputIdentity))) {
-            appendCompositorScrollTrace("barrier-capture-no-tree", nullptr,
-                x, y, 0.0, 0.0, false, 0);
+            recordInteractionDiagnostic(trace::interaction_diagnostic_code::barrier_capture_no_tree);
             return false;
         }
         const ScrollNodeSnapshot* target =
             m_activeInputScrollTree->scrollTargetAt(x, y);
         if (!target || !target->compositorEligible()) {
-            appendCompositorScrollTrace("barrier-capture-no-target",
-                m_activeInputScrollTree, x, y, 0.0, 0.0, false, 0);
+            recordInteractionDiagnostic(trace::interaction_diagnostic_code::barrier_capture_no_target);
             return false;
         }
         targetKey = target->key;
@@ -2462,8 +2361,7 @@ bool LayerTreeHost::captureCompositorScrollBarrier(int x, int y,
     CompositorScrollState* state = findCompositorScrollState(
         m_compositorScrollStates, targetKey);
     if (!state) {
-        appendCompositorScrollTrace("barrier-capture-no-state", nullptr,
-            x, y, 0.0, 0.0, false, 0);
+        recordInteractionDiagnostic(trace::interaction_diagnostic_code::barrier_capture_no_state);
         return false;
     }
     *barrier = state->controller.captureBarrier();
@@ -2478,11 +2376,8 @@ bool LayerTreeHost::captureCompositorScrollBarrier(int x, int y,
     } else {
         barrier->sceneVersion = targetSceneVersion;
     }
-    appendCompositorScrollTrace(barrier->valid
-            ? "barrier-capture-accepted" : "barrier-capture-rejected",
-        nullptr, x, y, barrier->visualOffset.x,
-        barrier->visualOffset.y, false,
-        static_cast<size_t>(barrier->sampleSequence));
+    recordInteractionDiagnostic(barrier->valid
+            ? trace::interaction_diagnostic_code::barrier_capture_accepted : trace::interaction_diagnostic_code::barrier_capture_rejected);
     return barrier->valid;
 }
 
@@ -2490,16 +2385,12 @@ bool LayerTreeHost::synchronizeCompositorScrollBarrier(
     const ScrollBarrier& barrier)
 {
     if (m_isDestroying || !barrier.valid) {
-        appendCompositorScrollTrace("barrier-sync-invalid", nullptr,
-            0, 0, barrier.visualOffset.x, barrier.visualOffset.y,
-            false, static_cast<size_t>(barrier.sampleSequence));
+        recordInteractionDiagnostic(trace::interaction_diagnostic_code::barrier_sync_invalid);
         return false;
     }
 
     if (barrier.key.nodeId > static_cast<uint64_t>(INT_MAX)) {
-        appendCompositorScrollTrace("barrier-sync-invalid-layer-id", nullptr,
-            0, 0, barrier.visualOffset.x, barrier.visualOffset.y,
-            false, static_cast<size_t>(barrier.sampleSequence));
+        recordInteractionDiagnostic(trace::interaction_diagnostic_code::barrier_sync_invalid_layer_id);
         return false;
     }
 
@@ -2516,30 +2407,21 @@ bool LayerTreeHost::synchronizeCompositorScrollBarrier(
         if (!m_activeInputScrollTree
             || m_activeInputScrollTree->sceneVersion()
                 < barrier.sceneVersion) {
-            appendCompositorScrollTrace("barrier-sync-future-scene",
-                m_activeInputScrollTree, 0, 0, barrier.visualOffset.x,
-                barrier.visualOffset.y, false,
-                static_cast<size_t>(barrier.sampleSequence));
+            recordInteractionDiagnostic(trace::interaction_diagnostic_code::barrier_sync_future_scene);
             return false;
         }
         activeInputScene = m_activeInputScrollTree->sceneVersion();
         ScrollNodeSnapshot* active =
             m_activeInputScrollTree->findMutableNode(barrier.key);
         if (active && active->sceneVersion < barrier.sceneVersion) {
-            appendCompositorScrollTrace("barrier-sync-tree-mismatch",
-                m_activeInputScrollTree, 0, 0, barrier.visualOffset.x,
-                barrier.visualOffset.y, false,
-                static_cast<size_t>(barrier.sampleSequence));
+            recordInteractionDiagnostic(trace::interaction_diagnostic_code::barrier_sync_tree_mismatch);
             return false;
         }
         requiresRetiredStateProof = (!active
                 && activeInputScene >= barrier.sceneVersion)
             || (active && active->scrollEpoch != barrier.scrollEpoch);
         if (!ownerMatches && !requiresRetiredStateProof) {
-            appendCompositorScrollTrace("barrier-sync-owner-mismatch",
-                m_activeInputScrollTree, layerId, 0,
-                barrier.visualOffset.x, barrier.visualOffset.y, false,
-                static_cast<size_t>(barrier.sampleSequence));
+            recordInteractionDiagnostic(trace::interaction_diagnostic_code::barrier_sync_owner_mismatch);
             return false;
         }
         // An owner reconciliation may replace the tree at this or a newer
@@ -2630,24 +2512,17 @@ bool LayerTreeHost::synchronizeCompositorScrollBarrier(
     if (ownerMatches) {
         if (!dispatchCompositorScrollOnMainThread(layerId, synchronized,
                 barrier.visualOffset)) {
-            appendCompositorScrollTrace("barrier-sync-owner-rejected", nullptr,
-                layerId, 0, barrier.visualOffset.x, barrier.visualOffset.y,
-                false, static_cast<size_t>(barrier.sampleSequence));
+            recordInteractionDiagnostic(trace::interaction_diagnostic_code::barrier_sync_owner_rejected);
             return false;
         }
     } else if (!retiredStateProvesReconciliation) {
-        appendCompositorScrollTrace("barrier-sync-owner-rejected", nullptr,
-            layerId, 0, barrier.visualOffset.x, barrier.visualOffset.y,
-            false, static_cast<size_t>(barrier.sampleSequence));
+        recordInteractionDiagnostic(trace::interaction_diagnostic_code::barrier_sync_owner_rejected);
         return false;
     }
-    appendCompositorScrollTrace(retiredStateProvesReconciliation
-            ? "barrier-sync-retired-accepted"
-            : (synchronizedController ? "barrier-sync-accepted"
-                                      : "barrier-sync-forward-accepted"),
-        nullptr,
-        layerId, 0, barrier.visualOffset.x, barrier.visualOffset.y,
-        false, static_cast<size_t>(barrier.sampleSequence));
+    recordInteractionDiagnostic(retiredStateProvesReconciliation
+            ? trace::interaction_diagnostic_code::barrier_sync_retired_accepted
+            : (synchronizedController ? trace::interaction_diagnostic_code::barrier_sync_accepted
+                                      : trace::interaction_diagnostic_code::barrier_sync_forward_accepted));
     if (synchronizedController)
         requestDrawFrameToRunIntoCompositeThread();
     return true;

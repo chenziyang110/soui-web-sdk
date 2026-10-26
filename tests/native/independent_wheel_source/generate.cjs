@@ -27,7 +27,8 @@ for (const source of [
   'cc/input/ScrollController.h', 'cc/input/ScrollController.cpp',
   'cc/trees/ScrollTreeSnapshot.h', 'cc/trees/ScrollTreeSnapshot.cpp',
   'cc/trees/InputFrameCoverage.h', 'cc/trees/IndependentInputTrace.h',
-  'cc/trees/DrawFrameWakePolicy.h', 'cc/trees/LegacyPaintRetryPolicy.h',
+  'cc/trees/DrawFrameWakePolicy.h', 'cc/trees/RenderDiagnosticTrace.h',
+  'cc/trees/LegacyPaintRetryPolicy.h',
   'cc/trees/ResourceNotificationPolicy.h']) save(source, source);
 const host = 'cc/trees/LayerTreeHost.cpp';
 save(host, 'retry_state.inc', 'struct UiPaintRetryState {', '// The queue owns this object.');

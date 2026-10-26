@@ -1,6 +1,7 @@
 // Production-bound regression SOURCE. No native window/compositor is created.
 #include "cc/trees/ScrollTreeSnapshot.h"
 #include "cc/trees/DrawFrameWakePolicy.h"
+#include "cc/trees/RenderDiagnosticTrace.h"
 #include "cc/trees/LegacyPaintRetryPolicy.h"
 #include "cc/trees/ResourceNotificationPolicy.h"
 #include "content/common/PaintLifetime.h"
@@ -33,6 +34,15 @@ void require(bool value) { if (!value) { ++failures; std::fputs("independent whe
 // Explicit dependency fake for the recorder's allocation-free TLS API. No
 // producer registration, record or clock is used by these admission cases.
 namespace content { namespace input_frame_trace {
+record_result record(event value) noexcept
+{
+    fixture::require(value.point == stage::interaction_diagnostic && value.value && value.value <= 20);
+    fixture::require(!value.qpc && !value.view_id && !value.view_generation && !value.document_generation
+        && !value.geometry_generation && !value.input_first && !value.input_last && !value.task_id
+        && !value.frame_id && !value.action_first && !value.action_last && !value.related_id && !value.flags
+        && value.why == reason::none && value.outcome == terminal::none);
+    return record_result::scalar_only;
+}
 static thread_local event fixture_context;
 static thread_local bool fixture_context_valid = false;
 bool current_context(event& value) noexcept { if (!fixture_context_valid) return false; value = fixture_context; return true; }
@@ -83,6 +93,7 @@ struct Scheduler {
 struct Composite { Scheduler owner; Scheduler& platformThread() { return owner; } };
 }
 namespace cc {
+namespace trace = content::input_frame_trace;
 struct UiPaintRetryState;
 struct CompositorScrollInput;
 struct CompositorScrollReceipt { uint64_t sceneVersion = 0, inputSequence = 0; double offsetX = 0, offsetY = 0; };
@@ -115,7 +126,6 @@ public:
 #include "input_payload.inc"
 #include "draw_task.inc"
 bool featureEnabledByDefault(const char*) { return true; }
-void appendCompositorScrollTrace(const char*, const ScrollTreeSnapshot*, int, int, double, double, bool, size_t) { }
 #include "draw_wake.inc"
 #include "owner_retry.inc"
 #include "wheel.inc"
