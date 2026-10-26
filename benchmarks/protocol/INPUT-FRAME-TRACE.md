@@ -12,7 +12,9 @@ exporter 由非 engine consumer 有界 drain，默认每次 256 项、最大 102
 
 冷启动诊断 storage 分配失败时 available=false，各操作安全拒绝，不能使应用或 DLL 启动失败。默认 scalar 仍具有实际 PID/FILETIME/QPC frequency，零 run_id 不允许正式导出。duration_metric 0–8 保留原语义，9–14 分别为 engine_native、engine_provider、engine_input、engine_fifo、webview2_owner、serialization，直方图共 15×64。
 
-v1 ASCII NDJSON 的保守字节上界：每 point 13 个 uint64 均最多 20 位，固定键与有限 uint32 字段合计少于 640 字节；header 少于 512 字节；29 stage、16 counter、15×64 duration 与其他字段的 end 少于 32768 字节。因此完整 exporter 上界为 `100000×640+512+32768=64033280` 字节，小于 64MiB。exporter 冷启动固定经典 locale/十进制并清 width，consumer 从 begin 到 finish 独占 ostream；自定义 WKE/落盘 consumer 同样必须同时限制总项数与总字节。
+v1 ASCII NDJSON 的保守字节上界：每 point 13 个 uint64 均最多 20 位，固定键与有限 uint32 字段合计少于 640 字节；header 少于 512 字节；31 stage、16 counter、15×64 duration 与其他字段的 end 少于 32768 字节。因此完整 exporter 上界为 `100000×640+512+32768=64033280` 字节，小于 64MiB。exporter 冷启动固定经典 locale/十进制并清 width，consumer 从 begin 到 finish 独占 ostream；自定义 WKE/落盘 consumer 同样必须同时限制总项数与总字节。
+
+stage29 `interaction_diagnostic` 和 stage30 `gpu_present_diagnostic` 仅替换实验热路径文件日志。它们由全新 event 构造，`why/outcome/flags` 与全部 view/generation/input/task/frame/action/related 关系字段必须为零，只有 `value` 使用镜像 header 的固定 `interaction_diagnostic_code`（1..20）或 `gpu_present_diagnostic_code`（1..4）。thread/producer/QPC 仍由 recorder 正常校验。这些数值只说明诊断分支经过，不证明 admission、资源资格、frame submit、coverage 或 visible，也不能输入到 native causal-context API。旧31维以外 stage 一律拒绝；两端 header/库与 reader 必须按同一冻结提交配套。
 
 事件 offset28 的 producer_slot 由 recorder 发布时写为 1–32；调用方和 context setter 必须提供 0。它区分生命周期注册流，允许 OS thread_id 复用。reader 只要求同一 slot 的 owner/QPC 一致，允许旧/新 slot 在 drain 时交错，不按全局或 OS thread wire 顺序强行排序。同 tick 跨 producer 顺序明确未知；tick 量化与工具误差另报，不捏造严格先后。
 

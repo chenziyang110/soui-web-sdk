@@ -31,6 +31,17 @@ static_assert(sizeof(sdk_trace::identity) == sizeof(vendor_trace::identity), "Mi
 static_assert(offsetof(sdk_trace::event, input_first) == offsetof(vendor_trace::event, input_first), "Mirrored event offsets differ");
 static_assert(static_cast<unsigned>(sdk_trace::stage::scene_activated) ==
               static_cast<unsigned>(vendor_trace::stage::scene_activated), "Mirrored stage codes differ");
+static_assert(sdk_trace::stage_count == 31 && vendor_trace::stage_count == 31 &&
+              static_cast<unsigned>(sdk_trace::stage::interaction_diagnostic) == 29 &&
+              static_cast<unsigned>(vendor_trace::stage::interaction_diagnostic) == 29 &&
+              static_cast<unsigned>(sdk_trace::stage::gpu_present_diagnostic) == 30 &&
+              static_cast<unsigned>(vendor_trace::stage::gpu_present_diagnostic) == 30,
+              "Diagnostic stage contract differs");
+static_assert(static_cast<std::uint64_t>(sdk_trace::interaction_diagnostic_code::barrier_sync_forward_accepted) ==
+              static_cast<std::uint64_t>(vendor_trace::interaction_diagnostic_code::barrier_sync_forward_accepted) &&
+              static_cast<std::uint64_t>(sdk_trace::gpu_present_diagnostic_code::swap_succeeded) ==
+              static_cast<std::uint64_t>(vendor_trace::gpu_present_diagnostic_code::swap_succeeded),
+              "Mirrored diagnostic code domains differ");
 static_assert(sdk_trace::decode_injection_tag(0x53400001ULL) == 1 &&
               sdk_trace::decode_injection_tag(0x153400001ULL) == 0 &&
               sdk_trace::decode_injection_tag(0x53400000ULL) == 0,
@@ -111,6 +122,42 @@ void owner_and_invalid_fields() {
   value.point = Stage::host_receive;
   value.input_first = 1; value.input_last = 2;
   require(static_cast<unsigned>(producer.record(value)) == 4, "unidentified input association accepted");
+}
+
+template<class Recorder, class Event>
+void noncausal_diagnostic_fields() {
+  Recorder source;
+  auto producer = source.attach_current_thread();
+  Event value;
+  using Stage = decltype(value.point);
+  for (const Stage point : {Stage::interaction_diagnostic, Stage::gpu_present_diagnostic}) {
+    value = Event{}; value.point = point;
+    const std::uint64_t maximum = point == Stage::interaction_diagnostic ? 20 : 4;
+    for (std::uint64_t code = 1; code <= maximum; ++code) {
+      value.value = code;
+      require(static_cast<unsigned>(producer.record(value)) == 1, "fixed diagnostic code rejected");
+    }
+    value.value = maximum + 1;
+    require(static_cast<unsigned>(producer.record(value)) == 4, "unknown diagnostic code accepted");
+    value.value = 0;
+    require(static_cast<unsigned>(producer.record(value)) == 4, "zero diagnostic code accepted");
+    value.value = 1;
+    std::uint64_t Event::* relations[] = {&Event::view_id, &Event::view_generation,
+      &Event::document_generation, &Event::geometry_generation, &Event::input_first,
+      &Event::input_last, &Event::task_id, &Event::frame_id, &Event::action_first,
+      &Event::action_last, &Event::related_id};
+    for (auto relation : relations) {
+      value.*relation = 1;
+      require(static_cast<unsigned>(producer.record(value)) == 4, "diagnostic fabricated relation accepted");
+      value.*relation = 0;
+    }
+    value.flags = 4;
+    require(static_cast<unsigned>(producer.record(value)) == 4, "diagnostic causal flag accepted");
+    value.flags = 0; value.why = static_cast<decltype(value.why)>(1);
+    require(static_cast<unsigned>(producer.record(value)) == 4, "diagnostic reason namespace mixed");
+    value.why = static_cast<decltype(value.why)>(0); value.outcome = static_cast<decltype(value.outcome)>(1);
+    require(static_cast<unsigned>(producer.record(value)) == 4, "diagnostic terminal accepted");
+  }
 }
 
 template<class Recorder, class Event>
@@ -291,6 +338,8 @@ int main() {
     storage_is_pinned<vendor_trace::recorder, vendor_trace::event>();
     owner_and_invalid_fields<sdk_trace::recorder, sdk_trace::event>();
     owner_and_invalid_fields<vendor_trace::recorder, vendor_trace::event>();
+    noncausal_diagnostic_fields<sdk_trace::recorder, sdk_trace::event>();
+    noncausal_diagnostic_fields<vendor_trace::recorder, vendor_trace::event>();
     scalar_has_no_event_queue<sdk_trace::recorder, sdk_trace::event>();
     scalar_has_no_event_queue<vendor_trace::recorder, vendor_trace::event>();
     cold_allocation_failure<sdk_trace::recorder,sdk_trace::event,sdk_trace::identity,sdk_trace::mode,sdk_trace::exporter>(sdk_trace::current_identity(1,2),sdk_trace::mode::detailed);

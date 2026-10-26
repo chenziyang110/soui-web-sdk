@@ -9,7 +9,7 @@ const stages = Object.freeze({host_receive:1, admission:2, engine_begin:3, handl
   task_cancelled:14, wake_requested:15, wake_consumed:16, bridge_request:17,
   bridge_response:18, layout_begin:19, layout_end:20, record_begin:21, record_end:22,
   composite_begin:23, composite_end:24, frame_coverage:25, resource_wait:26,
-  scene_pending:27, scene_activated:28});
+  scene_pending:27, scene_activated:28, interaction_diagnostic:29, gpu_present_diagnostic:30});
 function insist(condition, message) { if (!condition) throw new Error(message); }
 function exact(value, zero = true) {
   insist(typeof value === 'string' && /^(0|[1-9][0-9]{0,19})$/.test(value) &&
@@ -68,7 +68,7 @@ function checkTrace(rows) {
     exact(end.attempted) >= exact(end.recorded), 'Trace event/queue accounting differs');
   for (const key of ['counter_saturated','owner_violation','invalid_event','clock_invalid'])
     insist(typeof end[key] === 'boolean', 'Trace fault flag missing');
-  insist(Array.isArray(end.stages) && end.stages.length === 29 &&
+  insist(Array.isArray(end.stages) && end.stages.length === 31 &&
     Array.isArray(end.counters) && end.counters.length === 16 &&
     Array.isArray(end.durations) && end.durations.length === 15, 'Scalar arrays have wrong dimensions');
   for (const count of [...end.stages, ...end.counters]) exact(count);
@@ -76,10 +76,10 @@ function checkTrace(rows) {
     insist(Array.isArray(histogram) && histogram.length === 64, 'Duration histogram is not bounded');
     for (const count of histogram) exact(count);
   }
-  const perProducer = new Map(), tickProducers=new Map(), actualStages=Array(29).fill(0n), points = rows.slice(1,-1);
+  const perProducer = new Map(), tickProducers=new Map(), actualStages=Array(31).fill(0n), points = rows.slice(1,-1);
   for (const point of points) {
     insist(point?.event === 'trace.point' && point.version === 1 &&
-      whole(point.point,1,28) && whole(point.why,0,16) && whole(point.outcome,0,6) &&
+      whole(point.point,1,30) && whole(point.why,0,16) && whole(point.outcome,0,6) &&
       whole(point.flags,0,7) && whole(point.thread_id,1) &&
       whole(point.producer_slot,1,end.registered_threads), 'Invalid trace POD fields');
     for (const key of ids) exact(point[key], key !== 'qpc');
@@ -98,6 +98,13 @@ function checkTrace(rows) {
     if (point.point === stages.input_terminal) insist(point.input_first !== '0' && point.outcome !== 0, 'Input terminal is missing');
     if (point.point === stages.frame_coverage) insist((point.flags & 1) !== 0, 'Frame coverage was inferred');
     if (point.flags & 1) insist(point.frame_id !== '0' && point.input_first !== '0', 'Coverage has no frame/input');
+    if (point.point === stages.interaction_diagnostic || point.point === stages.gpu_present_diagnostic) {
+      const maximumCode=point.point===stages.interaction_diagnostic?20n:4n;
+      insist(exact(point.value)>0n && exact(point.value)<=maximumCode &&
+        point.why===0 && point.outcome===0 && point.flags===0 &&
+        ids.filter(key=>key!=='qpc' && key!=='value').every(key=>point[key]==='0'),
+      'Noncausal diagnostic has an unknown code or fabricated relation');
+    }
   }
   insist(perProducer.size <= end.registered_threads, 'Trace has unregistered producers');
   insist(begin.mode === 'detailed' || points.length === 0, 'Scalar mode contains detailed events');

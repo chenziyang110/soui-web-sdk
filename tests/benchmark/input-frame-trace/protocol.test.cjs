@@ -13,7 +13,7 @@ function point(code,qpc,sequence,related=0,outcome=0) {
     action_first:'0',action_last:'0',value:'0',related_id:String(related)};
 }
 function traceRows(points) {
-  const stages=Array(29).fill('0');
+  const stages=Array(31).fill('0');
   for(const point of points)stages[point.point]=String(Number(stages[point.point])+1);
   return [{event:'trace.begin',schema:'soui.input-frame-trace/v1',version:1,run_id:run,
     process_id:11,process_incarnation:'134360000000000001',qpc_frequency:'1000',mode:'detailed',
@@ -64,6 +64,23 @@ const check=value=>burst.checkBurst(value.input,value.streams,value.desktop,valu
 test('canonical uint64 rejects rounding, leading zero, exponent and overflow',()=>{
   assert.equal(trace.exact('18446744073709551615'),18446744073709551615n);
   for(const value of [9007199254740992,'01','1e3','-1','18446744073709551616'])assert.throws(()=>trace.exact(value));
+});
+
+test('diagnostic stages use only fixed value codes and never create causal relations',()=>{
+  for(const [stage,maximum] of [[trace.stages.interaction_diagnostic,20],[trace.stages.gpu_present_diagnostic,4]]) {
+    const event=point(stage,1000,0);
+    for(const key of ['view_id','view_generation','document_generation','geometry_generation'])event[key]='0';
+    event.value=String(maximum);
+    const checked=trace.checkTrace(traceRows([event]));
+    assert.equal(checked.points[0].input_first,'0');
+    for(const mutate of [p=>p.value='0',p=>p.value=String(maximum+1),p=>p.frame_id='1',
+      p=>p.task_id='1',p=>p.related_id='1',p=>p.view_id='1',p=>p.why=1,p=>p.outcome=1,p=>p.flags=4]) {
+      const altered=structuredClone(event);mutate(altered);
+      assert.throws(()=>trace.checkTrace(traceRows([altered])),/diagnostic/);
+    }
+  }
+  const unknown=traceRows([point(1,1000,1)]);unknown[1].point=31;
+  assert.throws(()=>trace.checkTrace(unknown),/POD/);
 });
 test('captured-image samples never inflate visible sample count or full native chain',()=>{
   const result=check(fixture());assert.equal(result.input_count,3);assert.equal(result.desktop_samples,2);
