@@ -23,7 +23,7 @@
 
 namespace soui::sdk {
 
-namespace detail { class bridge_request_budget; class cursor_broker_endpoint; class trace_thread_registration; }
+namespace detail { class bridge_request_budget; class cursor_broker_endpoint; class trace_thread_registration; class native_trace_ui_lease; }
 
 inline constexpr std::uint32_t bridge_event_message = 0x84D2U;
 inline constexpr std::uint32_t ime_position_message = 0x84D3U;
@@ -189,6 +189,7 @@ class dynamic_miniblink_adapter final : public webview_host_adapter,
   interaction_router interaction_router_;
   std::shared_ptr<detail::engine_input_service> input_mailbox_;
   std::unique_ptr<detail::trace_thread_registration> input_trace_owner_;
+  std::shared_ptr<detail::native_trace_ui_lease> native_input_trace_owner_;
   std::array<bool, 256> input_keys_on_engine_{};
   bool input_pointer_on_engine_{false};
   int input_pointer_x_{0}, input_pointer_y_{0};

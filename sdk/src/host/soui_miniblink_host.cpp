@@ -57,6 +57,7 @@
 #include <windows.h>
 #include <windowsx.h>
 #include "runtime_shutdown_api.h"
+#include "native_trace_ui_lease.h"
 #ifdef SOUI_SOURCE_KERNEL_HOST
 #include "source_kernel_api.h"
 #endif
@@ -1259,6 +1260,21 @@ host_result dynamic_miniblink_adapter::mount(const host_config& config) {
   }
   try { input_trace_owner_ = std::make_unique<detail::trace_thread_registration>(); }
   catch (...) { input_trace::note_causal_loss(); } // Diagnostic OOM cannot reject product startup.
+#ifdef WKE_INPUT_UI_CAP_EXTERNAL_TRACE_PRODUCER
+  // acquire_runtime returned only after native initialization/start succeeded.
+  // Its original LoadLibrary reference is process-lifetime (the initialized
+  // finalizer deliberately does not FreeLibrary), including later mount failure.
+  // Native detach pauses TLS; the lease's extra scoped reference is not the
+  // lifetime owner of the native TLS registration. Never move this before acquire.
+  try {
+    const auto* api = wkeGetInputUiApi ? wkeGetInputUiApi(WKE_INPUT_UI_ABI_VERSION) : nullptr;
+    if (api && api->abiVersion == WKE_INPUT_UI_ABI_VERSION
+        && api->structSize >= offsetof(wkeInputUiApi, releaseTraceProducer) + sizeof(api->releaseTraceProducer)
+        && (api->capabilities & WKE_INPUT_UI_CAP_EXTERNAL_TRACE_PRODUCER) && api->retainTraceProducer && api->releaseTraceProducer)
+      native_input_trace_owner_ = detail::native_trace_ui_lease::acquire(static_cast<HMODULE>(module_), reinterpret_cast<const void*>(wkeGetInputUiApi),
+          api->retainTraceProducer, api->releaseTraceProducer);
+  } catch (...) { input_trace::note_causal_loss(); }
+#endif
   auto& runtime = process_runtime();
   if (runtime.cursor_realm.low || runtime.cursor_realm.high) {
     if (!invalidate_main_context()) {
@@ -1790,6 +1806,7 @@ host_result dynamic_miniblink_adapter::unmount() {
     bridge_set_owner_window(*static_cast<bridge_adapter*>(bridge_adapter_), nullptr, 0);
   owner_window_ = nullptr;
   bridge_adapter_ = nullptr;
+  native_input_trace_owner_.reset(); // Same actual UI thread, after successful native/child teardown.
   input_trace_owner_.reset(); // Shared UI writer detaches only after the last Host retires.
   startup_window_protected_ = false; // Only after actual owned endpoint and child cleanup.
 #endif
@@ -2714,6 +2731,9 @@ bool dynamic_miniblink_adapter::handle_native_window_message(
     unsigned int message, std::uintptr_t wparam_value, std::intptr_t lparam_value,
     std::intptr_t& result) {
 #ifdef _WIN32
+  const auto native_trace_call = native_input_trace_owner_; // Hot shared pin only; no attach/allocation.
+  const detail::trace_thread_borrow sdk_trace_call;
+  (void)native_trace_call;
   const WPARAM wparam = static_cast<WPARAM>(wparam_value);
   const LPARAM lparam = static_cast<LPARAM>(lparam_value);
   const HWND child = static_cast<HWND>(webview_window_);

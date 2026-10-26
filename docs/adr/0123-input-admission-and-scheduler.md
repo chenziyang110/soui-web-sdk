@@ -76,6 +76,8 @@ Native visibility uses optional cap0x100/setHostVisible with version/field-bound
 
 SDK 与 vendor 各自保留 POD 当前因果上下文：TaskPair/Timer 和固定 Engine FIFO 保存同一 input range/generation、非零 task ID、parent ID 和真实 QPC；post/begin/end/cancel 明确分开。实际引擎 dispatch 完成 generation 检查后设置 vendor view context，返回时 RAII 清除；T3b/visible 标志不伪造。T1 的 SendInput 标记仅写 related_id，不作身份/授权依据。已接纳输入关闭/异常终态显式记录；UI 使用共享 thread scope，最后 Host 退役才 detach，worker 在真实 loop 退出后 detach。
 
+Vendor UI producer 通过 cap0x200/完整字段边界/函数地址同模块验证，在成功 acquire_runtime 之后、输入激活之前冷 retain。同一实际 UI 线程的最多八个弱缓存项按 getter/module/function 精确共享；native handler 只复制既有 shared token，重入 last-unmount 不会提前 detach。实际线程 cookie 由 token 保持，异线程最终析构只报 causal loss 并保留模块引用，不能调用另一线程 TLS release 或卸载其 writer。native release 仅暂停 TLS，不能赋予通用 DLL 卸载资格：此专用 Host 路径依赖初始化成功 runtime 的原始 LoadLibrary 引用始终保留到进程结束（实际 finalize 也不 FreeLibrary）；初始化/start 失败在 cold retain 前返回。helper 明确要求该 process-pinned module 并校验所属一致。SOURCE 覆盖缺少/不匹配 process pin、共享/失败/重入最后调用/异线程保留边界，实际 DLL 注册与最终 drain 尚待专人验证。
+
 实际 wkeGetWebviewId 的正 ID 在冷 owner 创建后、UI 输入可用前发布；不可用则 unknown/causal loss，不用指针充当 view ID。非输入 base identity 仅在实际 documentready 与已返回的同 view wkeResize 两个条件成立后经 cap0x40 setter 发布；导航意图不发布。输入上下文经 cap0x8/field boundary/OK0 验证，返回时清除；跨 geometry 的非空间输入保留收到时的身份与功能投递，但不伪造 native frame range，明确 causal loss。
 
 内部恢复标记 sequence=0，不为原 physical input 再签第二个 terminal；原 rejection/stale/exception/close 各有唯一终态所有者。IME 查询/拷贝失败为已经创建的 T1 签一次 rejection，再请求匿名恢复，不生成虚假的第二次 T1。回归 SOURCE 通过实际 recorder/mailbox/router 对原 copy rejection、handler exception、queued close 和显式 cancel 统计恰好一个 terminal。worker 严格 closure 追加实际 vendor InputFrameTrace.h/cpp（16 live sources、15 source copies），未用 trace stub 替代。
