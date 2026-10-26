@@ -1,0 +1,550 @@
+diff --git a/third_party/sources/miniblink/cc/trees/LayerTreeHost.cpp b/third_party/sources/miniblink/cc/trees/LayerTreeHost.cpp
+index b8b43e3c8116f863d5e5d39994886c719bc0bfd8..5cd40dcf3a98e632f1f6b28275c7acafbcd8eece 100644
+--- a/third_party/sources/miniblink/cc/trees/LayerTreeHost.cpp
++++ b/third_party/sources/miniblink/cc/trees/LayerTreeHost.cpp
+@@ -4,6 +4,9 @@
+ #include <cstdio>
+ #include <cstdlib>
+ #include <limits>
++#include <memory>
++#include <mutex>
++#include <new>
+ 
+ #include <algorithm>
+ #include "cc/trees/LayerTreeHost.h"
+@@ -49,6 +52,42 @@ using namespace blink;
+ 
+ namespace cc {
+ 
++struct UiPaintRetryState {
++    explicit UiPaintRetryState(LayerTreeHost* target) : host(target) { }
++    std::mutex mutex;
++    LayerTreeHost* host;
++    LegacyPaintRetryPolicy policy;
++};
++
++// The queue owns this object. Rejection/cancellation disposes only its ticket;
++// dirty rectangles remain owned by LayerTreeHost until a successful dispatch.
++class UiPaintRetryTask : public blink::WebThread::Task {
++public:
++    UiPaintRetryTask(const std::shared_ptr<UiPaintRetryState>& state,
++        const LegacyPaintRetryPolicy::Ticket& ticket)
++        : m_state(state), m_ticket(ticket) { }
++    ~UiPaintRetryTask() override
++    {
++        std::lock_guard<std::mutex> lock(m_state->mutex);
++        m_state->policy.dispose(m_ticket);
++    }
++    void run() override
++    {
++        LayerTreeHost* host;
++        {
++            std::lock_guard<std::mutex> lock(m_state->mutex);
++            host = m_state->host;
++        }
++        // Host creation, destruction, resize and this callback share the
++        // Blink owner. The retained state remains valid after host teardown.
++        if (host)
++            host->runLegacyPaintRetry(m_ticket);
++    }
++private:
++    std::shared_ptr<UiPaintRetryState> m_state;
++    LegacyPaintRetryPolicy::Ticket m_ticket;
++};
++
+ struct CompositorAnimationState {
+     CompositorAnimationState(int targetLayerId,
+         cc_blink::WebCompositorAnimationImpl* compositorAnimation)
+@@ -430,7 +469,7 @@ LayerTreeHost::LayerTreeHost(LayerTreeHostClent* hostClient, LayerTreeHostUiThre
+     m_isDestroying = false;
+     
+     m_memoryCanvas = nullptr;
+-    m_paintToMemoryCanvasInUiThreadTaskCount = 0;
++    m_uiPaintRetry = std::make_shared<UiPaintRetryState>(this);
+ #if defined(SOUI_GPU_COMPOSITOR)
+     m_gpuSurface = nullptr;
+     m_gpuInitAttempted = false;
+@@ -490,10 +529,11 @@ LayerTreeHost::~LayerTreeHost()
+     requestApplyActionsToRunIntoCompositeThread(true);
+ 
+     m_compositeMutex.lock();
+-    for (auto it : m_wrapSelfForUiThreads) {
+-        it->m_host = nullptr;
++    {
++        std::lock_guard<std::mutex> retryLock(m_uiPaintRetry->mutex);
++        m_uiPaintRetry->host = nullptr;
++        m_uiPaintRetry->policy.close();
+     }
+-    m_wrapSelfForUiThreads.clear();
+     for (auto it : m_animationFinishedTasks)
+         it->host = nullptr;
+     m_animationFinishedTasks.clear();
+@@ -504,7 +544,6 @@ LayerTreeHost::~LayerTreeHost()
+     m_scrollUpdateTasks.clear();
+     m_compositeMutex.unlock();
+ 
+-    //while (0 != m_paintToMemoryCanvasInUiThreadTaskCount) { ::Sleep(20); }
+     waitForApplyActions();
+ 
+     ASSERT(0 == m_actionsFrameGroup->getFramesSize());
+@@ -1639,6 +1678,13 @@ void LayerTreeHost::setViewportSize(const blink::WebSize& deviceViewportSize)
+     m_deviceViewportSize = deviceViewportSize;
+     m_clientRect = blink::IntRect(blink::IntPoint(), m_deviceViewportSize);
+     m_hasResize = true;
++    {
++        std::lock_guard<std::mutex> retryLock(m_uiPaintRetry->mutex);
++        m_uiPaintRetry->policy.invalidate();
++    }
++    // Old-size damage cannot be painted into the replacement canvas. Its
++    // first compositor draw publishes full current-size damage instead.
++    m_dirtyRectsForUi.clear();
+ #if defined(SOUI_GPU_COMPOSITOR)
+     // A size change is a safe point to retry a GPU context that was
+     // unavailable during startup (for example after a display driver reset).
+@@ -2773,105 +2819,82 @@ void LayerTreeHost::paintToMemoryCanvasInUiThread(const SkRect& paintRect)
+     m_uiThreadClient->paintToMemoryCanvasInUiThread(m_memoryCanvas, intPaintRect);
+ }
+ 
+-void LayerTreeHost::WrapSelfForUiThread::endPaint() {
+-    LayerTreeHost* host = m_host;
+-    WrapSelfForUiThread* next = nullptr;
+-    int* taskCount = nullptr;
+-    if (host) {
+-        WTF::Locker<WTF::Mutex> locker(host->m_compositeMutex);
+-        host->m_wrapSelfForUiThreads.remove(this);
+-        taskCount = &host->m_paintToMemoryCanvasInUiThreadTaskCount;
+-        // Keep one coalesced follow-up for dirty regions that arrived while
+-        // this task was painting. Do not build an unbounded UI task queue.
+-        if (!host->m_isDestroying && !host->m_dirtyRectsForUi.isEmpty()) {
+-            next = new WrapSelfForUiThread(host);
+-            host->m_wrapSelfForUiThreads.add(next);
+-            atomicIncrement(taskCount);
+-        }
+-    }
+-
+-    delete this;
+-
+-    if (taskCount)
+-        atomicDecrement(taskCount);
+-    if (next)
+-        Platform::current()->mainThread()->postTask(FROM_HERE,
+-            WTF::bind(&LayerTreeHost::WrapSelfForUiThread::paintInUiThread, next));
+-}
+-
+-void LayerTreeHost::WrapSelfForUiThread::paintInUiThread()
++void LayerTreeHost::queueLegacyPaintLocked()
+ {
+-    if (!m_host) {
+-        delete this;
++    if (m_isDestroying || m_dirtyRectsForUi.isEmpty() || m_hasResize || !m_memoryCanvas
++        || !Platform::current() || !Platform::current()->mainThread())
+         return;
++    const double now = WTF::monotonicallyIncreasingTime();
++    LegacyPaintRetryPolicy::Ticket ticket;
++    {
++        std::lock_guard<std::mutex> retryLock(m_uiPaintRetry->mutex);
++        ticket = m_uiPaintRetry->policy.arm(now, m_lastPaintTime,
++            m_drawMinInterval);
+     }
+-
+-    double lastPaintTime = WTF::monotonicallyIncreasingTime();
+-    double detTime = lastPaintTime - m_host->m_lastPaintTime;
+-    if (detTime < m_host->m_drawMinInterval) {
+-        m_host->requestPaintToMemoryCanvasToUiThread(IntRect());
+-        endPaint();
++    if (!ticket.sequence)
++        return;
++    UiPaintRetryTask* task = new (std::nothrow) UiPaintRetryTask(m_uiPaintRetry, ticket);
++    if (!task) {
++        std::lock_guard<std::mutex> retryLock(m_uiPaintRetry->mutex);
++        m_uiPaintRetry->policy.dispose(ticket);
+         return;
+     }
+-    m_host->m_lastPaintTime = lastPaintTime;
+-
+-    m_host->m_compositeMutex.lock();
+-    Vector<SkRect> dirtyRectsForUi = m_host->m_dirtyRectsForUi;
+-    m_host->m_dirtyRectsForUi.clear();
+-    m_host->m_compositeMutex.unlock();
+-
+-    for (size_t i = 0; i < dirtyRectsForUi.size(); ++i) {
+-        m_host->paintToMemoryCanvasInUiThread(dirtyRectsForUi[i]);
+-    }
+-
+-    endPaint();
+-}
+-
+-LayerTreeHost::WrapSelfForUiThread::~WrapSelfForUiThread()
+-{
+-    
+-}
+-
+-void LayerTreeHost::WrapSelfForUiThread::willProcessTask()
+-{
+-    Platform::current()->mainThread()->removeTaskObserver(this);
+-    paintInUiThread();
++    const long long delay = LegacyPaintRetryPolicy::delayMilliseconds(now, ticket.deadline);
++    if (delay > 0)
++        Platform::current()->mainThread()->postDelayedTask(FROM_HERE, task, delay);
++    else
++        Platform::current()->mainThread()->postTask(FROM_HERE, task);
+ }
+ 
+-void LayerTreeHost::WrapSelfForUiThread::didProcessTask()
++void LayerTreeHost::runLegacyPaintRetry(const LegacyPaintRetryPolicy::Ticket& ticket)
+ {
+-    Platform::current()->mainThread()->removeTaskObserver(this);
+-    paintInUiThread();
++    Vector<SkRect> dirtyRects;
++    const std::shared_ptr<UiPaintRetryState> state = m_uiPaintRetry;
++    {
++        WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
++        bool accepted;
++        {
++            std::lock_guard<std::mutex> retryLock(state->mutex);
++            accepted = state->policy.accepts(ticket);
++            state->policy.dispose(ticket);
++        }
++        if (!accepted || m_isDestroying || m_hasResize || !m_memoryCanvas) {
++            queueLegacyPaintLocked();
++            return;
++        }
++        const double now = WTF::monotonicallyIncreasingTime();
++        if (now < ticket.deadline) {
++            // A premature wake retains damage and schedules actual remaining
++            // time. It never creates a ready-task throttle loop.
++            queueLegacyPaintLocked();
++            return;
++        }
++        m_lastPaintTime = now;
++        dirtyRects.swap(m_dirtyRectsForUi);
++    }
++    for (size_t i = 0; i < dirtyRects.size(); ++i) {
++        LayerTreeHost* host;
++        {
++            std::lock_guard<std::mutex> retryLock(state->mutex);
++            host = state->host;
++            if (state->policy.generation() != ticket.generation)
++                return;
++        }
++        if (!host)
++            return;
++        host->paintToMemoryCanvasInUiThread(dirtyRects[i]);
++    }
+ }
+ 
+ void LayerTreeHost::requestPaintToMemoryCanvasToUiThread(const SkRect& r)
+ {
+-//     char* output = (char*)malloc(0x100);
+-//     sprintf(output, "LayerTreeHost::requestPaintToMemoryCanvasToUiThread: %f %f\n", r.x(), r.y());
+-//     OutputDebugStringA(output);
+-//     free(output);
+-
+     WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
+-
+-    if (r.isEmpty() && m_paintToMemoryCanvasInUiThreadTaskCount > 1)
+-        return;
+-
+     SkRect dirtyRect(r);
+-    SkRect clientRect = SkRect::MakeXYWH(m_clientRect.x(), m_clientRect.y(), m_clientRect.width(), m_clientRect.height());
+-    if (!dirtyRect.intersect(clientRect))
+-        return;
+-
+-    addAndMergeDirty(&m_dirtyRectsForUi, dirtyRect);
+-
+-    // A single task drains the merged dirty list. Additional requests while
+-    // it is queued or painting are merged and scheduled by endPaint().
+-    if (m_paintToMemoryCanvasInUiThreadTaskCount != 0)
+-        return;
+-
+-    WrapSelfForUiThread* wrap = new WrapSelfForUiThread(this);
+-    m_wrapSelfForUiThreads.add(wrap);
+-    atomicIncrement(&m_paintToMemoryCanvasInUiThreadTaskCount);
+-    Platform::current()->mainThread()->postTask(FROM_HERE, WTF::bind(&LayerTreeHost::WrapSelfForUiThread::paintInUiThread, wrap)); //addTaskObserver(wrap);
++    const SkRect clientRect = SkRect::MakeXYWH(m_clientRect.x(), m_clientRect.y(),
++        m_clientRect.width(), m_clientRect.height());
++    if (!r.isEmpty() && dirtyRect.intersect(clientRect))
++        addAndMergeDirty(&m_dirtyRectsForUi, dirtyRect);
++    queueLegacyPaintLocked();
+ }
+ 
+ void LayerTreeHost::paintToMemoryCanvasInCompositeThread(const SkRect& r)
+diff --git a/third_party/sources/miniblink/cc/trees/LayerTreeHost.h b/third_party/sources/miniblink/cc/trees/LayerTreeHost.h
+index 6fd9487f2c052e30dcd7af54c713f8823c5d5ef5..aff300365cc9e5421efd1fb532afa97b90cba613 100644
+--- a/third_party/sources/miniblink/cc/trees/LayerTreeHost.h
++++ b/third_party/sources/miniblink/cc/trees/LayerTreeHost.h
+@@ -3,6 +3,8 @@
+ 
+ #include "third_party/WebKit/public/platform/WebLayerTreeView.h"
+ #include "cc/trees/ScrollTreeSnapshot.h"
++#include "cc/trees/LegacyPaintRetryPolicy.h"
++#include <memory>
+ #include "third_party/WebKit/public/platform/WebThread.h"
+ #include "third_party/WebKit/Source/platform/geometry/IntRect.h"
+ #include "third_party/WebKit/Source/platform/geometry/IntSize.h"
+@@ -44,6 +46,8 @@ class TileGrid;
+ class LayerChangeAction;
+ class CompositingLayer;
+ class ActionsFrameGroup;
++struct UiPaintRetryState;
++class UiPaintRetryTask;
+ struct CompositorAnimationState;
+ struct CompositorAnimationFinishedTask;
+ struct CompositorScrollState;
+@@ -240,6 +244,10 @@ public:
+ 
+ private:
+     void requestPaintToMemoryCanvasToUiThread(const SkRect& r);
++    void queueLegacyPaintLocked();
++    void runLegacyPaintRetry(const LegacyPaintRetryPolicy::Ticket& ticket);
++    friend class UiPaintRetryTask;
++    std::shared_ptr<UiPaintRetryState> m_uiPaintRetry;
+     void onApplyActionsInCompositeThread(bool needCheck);
+     void waitForApplyActions();
+     void waitForDrawFrame();
+@@ -332,19 +340,6 @@ private:
+     int m_requestApplyActionsCount;
+     int m_requestApplyActionsFinishCount;
+ 
+-    struct WrapSelfForUiThread : public blink::WebThread::TaskObserver {
+-        WrapSelfForUiThread(LayerTreeHost* host)
+-            : m_host(host) { }
+-        LayerTreeHost* m_host;
+-        void paintInUiThread();
+-        void endPaint();
+-
+-        virtual ~WrapSelfForUiThread() override;
+-        virtual void willProcessTask() override;
+-        virtual void didProcessTask() override;
+-    };
+-    friend WrapSelfForUiThread;
+-    WTF::HashSet<WrapSelfForUiThread*> m_wrapSelfForUiThreads;
+     friend CompositorAnimationFinishedTask;
+     WTF::HashSet<CompositorAnimationFinishedTask*> m_animationFinishedTasks;
+     friend CompositorScrollUpdateTask;
+diff --git a/third_party/sources/miniblink/cc/trees/LegacyPaintRetryPolicy.h b/third_party/sources/miniblink/cc/trees/LegacyPaintRetryPolicy.h
+new file mode 100644
+index 0000000000000000000000000000000000000000..76b167c0c61bec6d5402542fd777ac11ab82347b
+--- /dev/null
++++ b/third_party/sources/miniblink/cc/trees/LegacyPaintRetryPolicy.h
+@@ -0,0 +1,85 @@
++#ifndef CC_TREES_LEGACY_PAINT_RETRY_POLICY_H_
++#define CC_TREES_LEGACY_PAINT_RETRY_POLICY_H_
++
++#include <cmath>
++#include <cstdint>
++#include <limits>
++
++namespace cc {
++
++// Owner supplies synchronization. A cancelled queue entry retains its ticket
++// until disposal: resize must not manufacture a second outstanding wake.
++class LegacyPaintRetryPolicy {
++public:
++    explicit LegacyPaintRetryPolicy(uint64_t lastSequence = 0, uint64_t generation = 1)
++        : m_sequence(lastSequence), m_generation(generation) { }
++    struct Ticket {
++        uint64_t sequence = 0;
++        uint64_t generation = 0;
++        double deadline = 0;
++    };
++
++    Ticket arm(double now, double lastPaint, double interval)
++    {
++        if (m_closed || m_queued || !std::isfinite(now)
++            || !std::isfinite(lastPaint) || !std::isfinite(interval)
++            || interval < 0)
++            return Ticket();
++        if (m_sequence == (std::numeric_limits<uint64_t>::max)()) {
++            m_closed = true; // Never alias a still-retained historical task.
++            return Ticket();
++        }
++        const double due = lastPaint > 0 ? lastPaint + interval : now;
++        if (!std::isfinite(due))
++            return Ticket();
++        m_queued = true;
++        ++m_sequence;
++        return Ticket{m_sequence, m_generation, due > now ? due : now};
++    }
++
++    bool accepts(const Ticket& ticket) const
++    {
++        return !m_closed && m_queued && ticket.sequence == m_sequence
++            && ticket.generation == m_generation;
++    }
++
++    void dispose(const Ticket& ticket)
++    {
++        if (ticket.sequence == m_sequence)
++            m_queued = false;
++    }
++
++    void invalidate()
++    {
++        if (m_generation == (std::numeric_limits<uint64_t>::max)())
++            m_closed = true;
++        else
++            ++m_generation;
++    }
++    void close() { m_closed = true; invalidate(); }
++    bool queued() const { return m_queued; }
++    uint64_t generation() const { return m_generation; }
++
++    static long long delayMilliseconds(double now, double deadline)
++    {
++        if (!std::isfinite(now) || !std::isfinite(deadline))
++            return 1000;
++        const double remaining = deadline - now;
++        if (!(remaining > 0))
++            return 0;
++        // Long compatibility intervals use bounded chunks until the true
++        // deadline. Clock anomalies never cause an undefined numeric cast.
++        return remaining >= 1.0 ? 1000
++            : static_cast<long long>(std::ceil(remaining * 1000.0));
++    }
++
++private:
++    uint64_t m_sequence = 0;
++    uint64_t m_generation = 1;
++    bool m_queued = false;
++    bool m_closed = false;
++};
++
++} // namespace cc
++
++#endif // CC_TREES_LEGACY_PAINT_RETRY_POLICY_H_
+diff --git a/third_party/sources/miniblink/content/browser/SharedTimerWin.h b/third_party/sources/miniblink/content/browser/SharedTimerWin.h
+index b8ebd2858c190e02670ea13bdd33a744787a030c..a08d39b136ba3f8eba6429431483f9001b850005 100644
+--- a/third_party/sources/miniblink/content/browser/SharedTimerWin.h
++++ b/third_party/sources/miniblink/content/browser/SharedTimerWin.h
+@@ -34,7 +34,8 @@ namespace content {
+ 
+ const LPCWSTR kTimerWindowClassName = L"MiniBlinkTimerWindowClass";
+  
+-static UINT timerID;
++static UINT_PTR timerID;
++static UINT_PTR nativeTimerSerial = 1001; // Above both reserved legacy timer IDs.
+ static void sharedTimerFiredFunction();
+ 
+ static HANDLE timer;
+@@ -112,13 +113,21 @@ static LRESULT CALLBACK TimerWindowWndProc(HWND hWnd, UINT message, WPARAM wPara
+         CheckReEnter::decrementEnterCount();
+         return 0;
+     }
++    if (message == WM_TIMER || message == timerFiredMessage) {
++        SharedTimerContinuationLock lock;
++        // KillTimer does not remove a message already fetched by the owner.
++        // Reject deliveries from a closed or replaced window before callbacks.
++        if (continuationClosed || hWnd != continuationWindow
++            || (message == WM_TIMER && wParam != timerID && wParam != endHighResTimerID))
++            return 0;
++    }
+     if (0 != CheckReEnter::getEnterCount())
+         return 0;
+     CheckReEnter::incrementEnterCount();
+ 
+     LRESULT result = 0;
+     if (message == WM_TIMER) {
+-        if (wParam == sharedTimerID) {
++        if (timerID && wParam == timerID) {
+             //KillTimer(timerWindowHandle, sharedTimerID);
+             sharedTimerFiredFunction();
+         } else if (wParam == endHighResTimerID) {
+@@ -127,7 +136,10 @@ static LRESULT CALLBACK TimerWindowWndProc(HWND hWnd, UINT message, WPARAM wPara
+             timeEndPeriod(timerResolution);
+         }
+     } else if (message == timerFiredMessage) {
+-        InterlockedExchange(&pendingTimers, 0);
++        if (!InterlockedExchange(&pendingTimers, 0)) {
++            CheckReEnter::decrementEnterCount();
++            return 0;
++        }
+         processingCustomTimerMessage = true;
+         sharedTimerFiredFunction();
+         processingCustomTimerMessage = false;
+@@ -169,9 +181,9 @@ void setSharedTimerFireInterval(double interval)
+ 
+     if (lastIntervalInMS == intervalInMS)
+         return;
+-    lastIntervalInMS = intervalInMS;
+-
+     initializeOffScreenTimerWindow();
++    if (!timerWindowHandle)
++        return; // Never create an unrelated thread timer on window failure.
+     bool timerSet = false;
+ 
+     // shouldUseHighResolutionTimers begin
+@@ -213,7 +225,17 @@ void setSharedTimerFireInterval(double interval)
+             timerID = 0;
+         }
+     } else {
+-        timerID = SetTimer(timerWindowHandle, sharedTimerID, intervalInMS, 0);
++        // Native timer IDs also never alias a previous owner incarnation.
++        if (!timerID && nativeTimerSerial != (std::numeric_limits<UINT_PTR>::max)())
++            timerID = ++nativeTimerSerial;
++        if (timerID && SetTimer(timerWindowHandle, timerID, intervalInMS, 0))
++            lastIntervalInMS = intervalInMS;
++        else {
++            if (timerID)
++                ::KillTimer(timerWindowHandle, timerID);
++            timerID = 0;
++            lastIntervalInMS = -1; // Failed replacement must not suppress a retry.
++        }
+         timer = 0;
+     }
+ }
+@@ -225,6 +247,7 @@ void stopSharedTimer()
+         continuationClosed = true;
+         continuationWindow = nullptr;
+         pendingContinuation = 0;
++        continuationDeferred = false;
+     }
+     if (timerQueue && timer) {
+         ::pDeleteTimerQueueTimer(timerQueue, timer, 0);
+@@ -236,7 +259,13 @@ void stopSharedTimer()
+         timerID = 0;
+     }
+ 
+-    ::DestroyWindow(timerWindowHandle);
++    const HWND closedWindow = timerWindowHandle;
++    timerWindowHandle = nullptr;
++    lastIntervalInMS = -1; // The same interval must initialize a new owner window.
++    InterlockedExchange(&pendingTimers, 0);
++    processingCustomTimerMessage = false;
++    if (closedWindow)
++        ::DestroyWindow(closedWindow);
+     ::UnregisterClassW(kTimerWindowClassName, NULL);
+ }
+ 
+diff --git a/third_party/sources/miniblink/content/web_impl_win/TaskSchedulingPolicy.h b/third_party/sources/miniblink/content/web_impl_win/TaskSchedulingPolicy.h
+index 8ccd06937cbeeaea9bb37bcaaf741969165c12e4..415a2a7237594b4f972413771f75cf4948c9e20f 100644
+--- a/third_party/sources/miniblink/content/web_impl_win/TaskSchedulingPolicy.h
++++ b/third_party/sources/miniblink/content/web_impl_win/TaskSchedulingPolicy.h
+@@ -13,6 +13,9 @@ struct ReadyTask {
+ };
+ 
+ // The caller's heap-front check guarantees at least one eligible task.
++// Normal oracle: aged (>= 50 ms) precedes fresh; aged deadline then priority;
++// fresh priority then deadline. Drain ignores aging/eligibility, priority first.
++// Exact keys retain current vector encounter order, which is not a FIFO promise.
+ template<class Timer, class Describe>
+ size_t selectReadyTimer(const std::vector<Timer*>& timers, double fireTime, bool draining, Describe describe)
+ {
+diff --git a/third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp b/third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp
+index 4d6ca44d9fb615adc4e1d5e76039345301864cb1..afb13590e4321022ae396949f20d4aac8fa6cd98 100644
+--- a/third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp
++++ b/third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp
+@@ -330,10 +330,9 @@ void WebThreadImpl::postDelayedTaskWithPriorityCrossThread(
+     }
+ 
+     if (isCurrentThread()) {
+-        // A positive delay starts at the post, not at the beginning of a
+-        // potentially long callback. Immediate tasks retain batch ordering.
+-        double createTime = delayMs > 0 ? WTF::currentTime() : m_currentFrameCreateTime;
+-        postDelayedTaskImpl(location, payload.release(), delayMs, &createTime, priority, nullptr);
++        // Without a cross-thread insertion order, startFromOtherThread calls
++        // start(), which already samples currentTime() for every delay.
++        postDelayedTaskImpl(location, payload.release(), delayMs, nullptr, priority, nullptr);
+         if (m_isMainThread && !m_firingTimers && !m_willExit
+             && !m_timerHeap.empty() && m_timerHeap[0]->m_nextFireTime <= currentTime())
+             requestSharedTimerContinuation();

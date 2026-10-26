@@ -44,10 +44,15 @@ int main()
     generationEnd.dispose(old);
     require(!generationEnd.arm(1, 0, 0.01).sequence);
     cc::LegacyPaintRetryPolicy invalid;
-    require(!invalid.arm(1, 0, 0).sequence);
+    require(!invalid.arm(1, 0, -1).sequence);
     require(!invalid.arm((std::numeric_limits<double>::infinity)(), 0, 0.01).sequence);
     require(cc::LegacyPaintRetryPolicy::delayMilliseconds(0,
         (std::numeric_limits<double>::infinity)()) == 1000);
     require(cc::LegacyPaintRetryPolicy::delayMilliseconds(-1e300, 1e300) == 1000);
+    cc::LegacyPaintRetryPolicy longInterval;
+    const auto longWait = longInterval.arm(1.1, 1.0, 2.0);
+    require(longWait.sequence && longWait.deadline == 3.0);
+    require(cc::LegacyPaintRetryPolicy::delayMilliseconds(1.1, longWait.deadline) == 1000);
+    require(cc::LegacyPaintRetryPolicy::delayMilliseconds(3.0, longWait.deadline) == 0);
     return failures ? 1 : 0;
 }

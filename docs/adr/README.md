@@ -1,5 +1,7 @@
 # 架构决策记录（ADR）
 
+2026-10-26：[ADR-0122 输入到可见反馈](0122-input-to-visible-feedback.md)定义分阶段实现、接口、兼容和专人验证边界，当前不代表编译、运行或性能验收。
+
 当公共 API、Bridge 协议、权限、线程与生命周期、兼容目标、SDK 包格式或核心依赖发生变化时，在本目录新增 ADR。
 
 文件命名：`NNNN-short-title.md`，编号递增。状态使用 `proposed`、`accepted`、`superseded` 或 `deprecated`。已接受 ADR 不回写历史结论；后续变化新增 ADR，并在旧记录中标明替代关系。

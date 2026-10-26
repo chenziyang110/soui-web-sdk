@@ -23,7 +23,7 @@ public:
     {
         if (m_closed || m_queued || !std::isfinite(now)
             || !std::isfinite(lastPaint) || !std::isfinite(interval)
-            || !(interval > 0) || interval > 1.0)
+            || interval < 0)
             return Ticket();
         if (m_sequence == (std::numeric_limits<uint64_t>::max)()) {
             m_closed = true; // Never alias a still-retained historical task.
@@ -67,8 +67,8 @@ public:
         const double remaining = deadline - now;
         if (!(remaining > 0))
             return 0;
-        // Supported intervals are <= 1s. An anomalous clock value is still
-        // revisited by one bounded delayed wake, never an undefined cast.
+        // Long compatibility intervals use bounded chunks until the true
+        // deadline. Clock anomalies never cause an undefined numeric cast.
         return remaining >= 1.0 ? 1000
             : static_cast<long long>(std::ceil(remaining * 1000.0));
     }
