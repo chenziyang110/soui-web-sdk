@@ -61,6 +61,7 @@ public:
 
     void fire();
     void serviceOwnerOpportunity(); // Optional bounded SDK message-pump hook.
+    void retireCompletedTasksForOwner(); // At most32 already-completed tasks; no task execution.
     void fireForShutdown();
     
     void suspendTimerQueue();
@@ -124,6 +125,7 @@ private:
     std::atomic<bool> m_threadClosed;
 
     int m_firingTimers; // Reentrancy guard.
+    bool m_retiringCompletedTasks = false;
     WebSchedulerImpl* m_webSchedulerImpl;
 
     // 不能用wtf的函数，否则退出后wtf被关闭了，就不能访问了

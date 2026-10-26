@@ -30,11 +30,22 @@ static void sharedTimerFiredFunction();
 // Static DLL state plus a ticket: no task/owner pointer crosses this boundary.
 static VOID CALLBACK sharedDeadlineSignaled(PVOID parameter, BOOLEAN)
 {
-    SharedTimerContinuationLock lock;
     const UINT_PTR ticket = reinterpret_cast<UINT_PTR>(parameter);
-    if (!continuationClosed && ticket && ticket == deadlineTicket)
-        ::PostMessage(continuationWindow, timerFiredMessage, ticket, 0);
-    // A pending native timer covers PostMessage failure.
+    HWND window = nullptr;
+    UINT message = 0;
+    {
+        SharedTimerContinuationLock lock;
+        if (continuationClosed || !ticket || ticket != deadlineTicket) return;
+        window = continuationWindow; message = timerFiredMessage;
+        if (::PostMessage(window, message, ticket, 0)) return;
+        // Native SetTimer can also have failed. Retain explicit owner work
+        // rather than claiming that an unverified fallback owns the deadline.
+        continuationDeferred = true;
+    }
+    // No publication lock across a native call that may enter the owner. This
+    // callback never unregisters its own wait or closes/rearms its timer.
+    if (::GetWindowThreadProcessId(window, nullptr) != ::GetCurrentThreadId())
+        ::SendNotifyMessageW(window, message, ticket, 0);
 }
 static void cancelSharedTimerDeadline()
 {
@@ -182,7 +193,10 @@ void stopSharedTimer()
         pendingContinuation = 0; continuationDeferred = false;
     }
     cancelSharedTimerDeadline();
-    if (deadlineTimer) { ::CloseHandle(deadlineTimer); deadlineTimer = nullptr; }
+    if (deadlineTimer) {
+        if (!::CloseHandle(deadlineTimer)) std::terminate();
+        deadlineTimer = nullptr; // Failed close retains the only reference.
+    }
     const HWND closed = timerWindowHandle; timerWindowHandle = nullptr;
     if (closed) ::DestroyWindow(closed);
     ::UnregisterClassW(kTimerWindowClassName, nullptr);

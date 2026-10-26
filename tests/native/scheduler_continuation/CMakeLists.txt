@@ -28,3 +28,9 @@ set_property(TARGET scheduler_continuation_contract PROPERTY MSVC_RUNTIME_LIBRAR
 enable_testing()
 add_test(NAME scheduler.continuation.contract COMMAND scheduler_continuation_contract)
 set_tests_properties(scheduler.continuation.contract PROPERTIES TIMEOUT 10)
+foreach(failure IN ITEMS close unregister)
+  add_test(NAME scheduler.deadline.${failure}-failure COMMAND "${CMAKE_COMMAND}"
+    "-DEXECUTABLE=$<TARGET_FILE:scheduler_continuation_contract>" "-DFAILURE=${failure}"
+    -P "${CMAKE_CURRENT_SOURCE_DIR}/expect-deadline-failure.cmake")
+  set_tests_properties(scheduler.deadline.${failure}-failure PROPERTIES TIMEOUT 10)
+endforeach()

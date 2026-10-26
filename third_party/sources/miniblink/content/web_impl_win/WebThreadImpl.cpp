@@ -571,21 +571,29 @@ blink::WebScheduler* WebThreadImpl::scheduler() const
 
 void WebThreadImpl::deleteUnusedTimers()
 {
-    for (size_t i = 0; i < m_unusedTimersToDelete.size(); ++i) {
-        WebTimerBase* timer = m_unusedTimersToDelete[i];
-
-#if 0
-        if (1 == timer->refCount()) {
-            for (size_t j = 0; j < m_timerHeap.size(); ++j) {
-                WebTimerBase* timerOther = m_timerHeap[j];
-                if (timerOther == timer)
-                    DebugBreak();
-            }
-        }
-#endif
+    // Shutdown drains the complete retained set. Remove ownership before a
+    // destructor can reenter; no provider/producer lock spans deref().
+    while (!m_unusedTimersToDelete.empty()) {
+        WebTimerBase* timer = m_unusedTimersToDelete.back();
+        m_unusedTimersToDelete.pop_back();
         timer->deref();
     }
-    m_unusedTimersToDelete.clear();
+}
+
+void WebThreadImpl::retireCompletedTasksForOwner()
+{
+    if (!isCurrentThread() || m_willExit || m_firingTimers || m_retiringCompletedTasks) return;
+    m_retiringCompletedTasks = true;
+    struct RetirementGuard { bool& active; ~RetirementGuard() { active = false; } } guard = { m_retiringCompletedTasks };
+    for (unsigned count = 0; count < 32 && !m_unusedTimersToDelete.empty(); ++count) {
+        WebTimerBase* timer = m_unusedTimersToDelete.back();
+        m_unusedTimersToDelete.pop_back();
+        timer->deref(); // Completed task only, outside callbacks and all locks.
+    }
+    if (!m_unusedTimersToDelete.empty()) {
+        if (m_hEvent) ::SetEvent(m_hEvent);
+        else if (m_isMainThread && !requestSharedTimerContinuation()) armSharedTimerRecovery();
+    }
 }
 
 void WebThreadImpl::deleteTimersOnExit()
@@ -675,13 +683,12 @@ void WebThreadImpl::schedulerTasks()
 void WebThreadImpl::schedulerTasks(bool allowMainThreadBudget)
 {
     // Do a re-entrancy check.
-    if (m_firingTimers > 0 /*|| m_suspendTimerQueue*/) 
+    if (m_firingTimers > 0 || m_retiringCompletedTasks /*|| m_suspendTimerQueue*/)
         return;
+    retireCompletedTasksForOwner();
     ++m_firingTimers;
 
     ASSERT(m_threadId == WTF::currentThread());
-    
-    deleteUnusedTimers();
 
     double fireTime = monotonicallyIncreasingTime();
     double timeToQuit = fireTime + maxDurationOfFiringTimers;
@@ -742,6 +749,7 @@ void WebThreadImpl::schedulerTasks(bool allowMainThreadBudget)
     }
     
     --m_firingTimers;
+    retireCompletedTasksForOwner(); // Last task releases resources without another idle pulse.
 
     updateSharedTimer();
     if (boundedMainThread && !m_willExit && !m_firingTimers
@@ -752,7 +760,8 @@ void WebThreadImpl::schedulerTasks(bool allowMainThreadBudget)
 
 void WebThreadImpl::serviceOwnerOpportunity()
 {
-    if (!m_isMainThread || m_willExit || m_firingTimers || !isCurrentThread() || CheckReEnter::getEnterCount()) return;
+    if (!m_isMainThread || m_willExit || m_firingTimers || m_retiringCompletedTasks || !isCurrentThread() || CheckReEnter::getEnterCount()) return;
+    retireCompletedTasksForOwner();
     if (hasPendingTaskAdmission() || (!m_timerHeap.empty() && m_timerHeap[0]->m_nextFireTime <= monotonicallyIncreasingTime())) {
         CheckReEnter::incrementEnterCount();
         sharedTimerFiredFunction();
@@ -764,7 +773,7 @@ void WebThreadImpl::updateSharedTimer()
 {
     if (!m_isMainThread || m_willExit || m_firingTimers) return;
     initializeOffScreenTimerWindow();
-    const bool ready = hasPendingTaskAdmission()
+    const bool ready = !m_unusedTimersToDelete.empty() || hasPendingTaskAdmission()
         || (!m_timerHeap.empty() && m_timerHeap[0]->m_nextFireTime <= monotonicallyIncreasingTime());
     if (ready) {
         cancelSharedTimerDeadline();

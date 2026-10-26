@@ -3,6 +3,7 @@
 #include <windows.h>
 #include <algorithm>
 #include <cstdio>
+#include <cstring>
 #include <deque>
 #include <functional>
 #include <string>
@@ -15,14 +16,17 @@ std::deque<Message> messages;
 double now = 100, step = 0;
 DWORD queueStatus = 0;
 int enters = 0, failures = 0, assertions = 0;
-bool failPost = false, failTimer = false, failWait = false;
+bool failPost = false, failTimer = false, failWait = false, failSetWaitable = false;
+bool crossThread = false, failNotify = false, failClose = false, failUnregister = false;
+unsigned notifyAttempts = 0, closeAttempts = 0;
 unsigned postAttempts = 0, timerCalls = 0, registrations = 0, unregistrations = 0, runs = 0, destroyed = 0;
 LONGLONG dueTicks = 0;
 HWND window = reinterpret_cast<HWND>(static_cast<UINT_PTR>(1));
 WAITORTIMERCALLBACK callback = nullptr;
 PVOID callbackParameter = nullptr;
 BOOL WINAPI post(HWND w, UINT id, WPARAM a, LPARAM b) { ++postAttempts; if (failPost) return FALSE; messages.push_back({w,id,a,b}); return TRUE; }
-DWORD WINAPI windowThread(HWND, LPDWORD) { return ::GetCurrentThreadId(); }
+DWORD WINAPI windowThread(HWND, LPDWORD) { return ::GetCurrentThreadId() + (crossThread ? 1 : 0); }
+BOOL WINAPI notify(HWND w, UINT id, WPARAM a, LPARAM b) { ++notifyAttempts; if (failNotify) return FALSE; messages.push_back({w,id,a,b}); return TRUE; }
 DWORD WINAPI status(UINT flags) { return queueStatus & (flags | (flags << 16)); }
 LRESULT WINAPI defaultProc(HWND, UINT, WPARAM, LPARAM) { return 0; }
 UINT_PTR WINAPI setTimer(HWND, UINT_PTR id, UINT, TIMERPROC) { ++timerCalls; return failTimer ? 0 : id; }
@@ -35,15 +39,26 @@ ATOM WINAPI registerClass(const WNDCLASSEXW*) { return 1; }
 HWND WINAPI createWindow(DWORD,LPCWSTR,LPCWSTR,DWORD,int,int,int,int,HWND,HMENU,HINSTANCE,LPVOID) { return window; }
 UINT WINAPI registerMessage(LPCWSTR name) { return std::wstring(name).find(L"DeadlineReady") != std::wstring::npos ? WM_APP+101 : WM_APP+102; }
 HANDLE WINAPI createWaitable(LPSECURITY_ATTRIBUTES, BOOL, LPCWSTR) { return reinterpret_cast<HANDLE>(static_cast<UINT_PTR>(3)); }
-BOOL WINAPI setWaitable(HANDLE,const LARGE_INTEGER* due,LONG,PTIMERAPCROUTINE,LPVOID,BOOL) { dueTicks=due->QuadPart; return TRUE; }
+BOOL WINAPI setWaitable(HANDLE,const LARGE_INTEGER* due,LONG,PTIMERAPCROUTINE,LPVOID,BOOL) { dueTicks=due->QuadPart; return !failSetWaitable; }
 BOOL WINAPI cancelWaitable(HANDLE) { return TRUE; }
-BOOL WINAPI closeHandle(HANDLE) { return TRUE; }
+BOOL WINAPI closeHandle(HANDLE value) {
+    ++closeAttempts;
+    if (failClose) {
+        std::printf("deadline-close-failure retained-handle=%u wait-retired=%u\n", value != nullptr, callback == nullptr);
+        std::fflush(stdout); return FALSE;
+    }
+    return TRUE;
+}
 BOOL WINAPI registerWait(PHANDLE output,HANDLE,WAITORTIMERCALLBACK fn,PVOID param,ULONG,ULONG) {
     ++registrations; if (failWait) return FALSE;
     *output=reinterpret_cast<HANDLE>(static_cast<UINT_PTR>(4)); callback=fn; callbackParameter=param; return TRUE;
 }
 BOOL WINAPI unregisterWait(HANDLE,HANDLE) {
     ++unregistrations;
+    if (failUnregister) {
+        std::printf("deadline-unregister-failure timer-not-closed=%u\n", closeAttempts == 0);
+        std::fflush(stdout); return FALSE;
+    }
     // An in-flight callback is drained after its ticket was invalidated.
     if (callback) callback(callbackParameter,TRUE);
     callback=nullptr; callbackParameter=nullptr; return TRUE;
@@ -60,19 +75,23 @@ class WebTimerBase {
 public:
     WebThreadImpl* owner; double m_nextFireTime; int m_priority=200; std::function<void()> callback;
     content::task_scheduling::DeadlinePriorityIndex::Entry scheduling;
+    bool deferDelete=false;
     ~WebTimerBase(){++fixture::destroyed;}
     double repeatInterval()const{return 0;}
     void heapDelete();
     void setNextFireTime(double,void*){}
-    void fired(){++fixture::runs;fixture::now+=fixture::step;if(callback)callback();delete this;}
+    void fired();
+    void deref(){delete this;}
 };
 class WebThreadImpl {
 public:
     unsigned m_threadId=1; int m_firingTimers=0;
-    bool m_isMainThread=true,m_willExit=false;
+    bool m_isMainThread=true,m_willExit=false,m_retiringCompletedTasks=false;
+    HANDLE m_hEvent=nullptr;
     std::vector<WebTimerBase*> m_timerHeap;
+    std::vector<WebTimerBase*> m_unusedTimersToDelete;
     task_scheduling::DeadlinePriorityIndex m_timerIndex;
-    void schedulerTasks();void schedulerTasks(bool);void updateSharedTimer();void serviceOwnerOpportunity();void enableScheduler();
+    void schedulerTasks();void schedulerTasks(bool);void updateSharedTimer();void serviceOwnerOpportunity();void enableScheduler();void retireCompletedTasksForOwner();
     void fire(){schedulerTasks();} bool isCurrentThread()const{return true;}
     void deleteUnusedTimers(){} void startTriggerTasks(unsigned*,double){}
     bool hasPendingTaskAdmission(){return false;}void willProcessTasks(){}void didProcessTasks(){}
@@ -83,8 +102,9 @@ public:
         m_timerIndex.insert(timer->scheduling); m_timerHeap.push_back(timer);
         std::stable_sort(m_timerHeap.begin(),m_timerHeap.end(),[](const auto*a,const auto*b){return a->m_nextFireTime<b->m_nextFireTime;});
     }
-    void clear(){for(auto*t:m_timerHeap){m_timerIndex.erase(t->scheduling);delete t;}m_timerHeap.clear();}
+    void clear(){for(auto*t:m_timerHeap){m_timerIndex.erase(t->scheduling);delete t;}m_timerHeap.clear();for(auto*t:m_unusedTimersToDelete)delete t;m_unusedTimersToDelete.clear();}
 };
+void WebTimerBase::fired(){++fixture::runs;fixture::now+=fixture::step;if(callback)callback();if(deferDelete)owner->m_unusedTimersToDelete.push_back(this);else delete this;}
 void WebTimerBase::heapDelete(){owner->m_timerIndex.erase(scheduling);auto&heap=owner->m_timerHeap;heap.erase(std::find(heap.begin(),heap.end(),this));}
 class CheckReEnter {public:static int getEnterCount(){return fixture::enters;}static void incrementEnterCount(){++fixture::enters;}static void decrementEnterCount(){--fixture::enters;}};
 }
@@ -92,6 +112,7 @@ namespace blink {class Platform {public:content::WebThreadImpl*owner=nullptr;sta
 #undef PostMessage
 #undef DefWindowProc
 #define PostMessage fixture::post
+#define SendNotifyMessageW fixture::notify
 #define GetWindowThreadProcessId fixture::windowThread
 #define GetQueueStatus fixture::status
 #define DefWindowProc fixture::defaultProc
@@ -114,6 +135,7 @@ namespace blink {class Platform {public:content::WebThreadImpl*owner=nullptr;sta
 namespace content {
 #include "scheduler.inc"
 #include "enable.inc"
+#include "retire.inc"
 }
 namespace fixture {
 bool dispatchOne(){if(messages.empty())return false;auto m=messages.front();messages.pop_front();content::TimerWindowWndProc(m.window,m.id,m.first,m.second);return true;}
@@ -121,7 +143,7 @@ void drainMessages(){for(unsigned i=0;i<1024&&!messages.empty();++i)dispatchOne(
 void reset(content::WebThreadImpl&thread){
     thread.clear();content::cancelSharedTimerDeadline();messages.clear();
     {content::SharedTimerContinuationLock lock;content::pendingContinuation=0;content::continuationDeferred=false;}
-    now=100;step=0;queueStatus=0;enters=0;failPost=failTimer=failWait=false;runs=destroyed=postAttempts=0;
+    now=100;step=0;queueStatus=0;enters=0;failPost=failTimer=failWait=failSetWaitable=failNotify=crossThread=false;runs=destroyed=postAttempts=notifyAttempts=0;
 }
 int run(){
     content::WebThreadImpl thread;blink::Platform::current()->owner=&thread;
@@ -130,6 +152,11 @@ int run(){
     thread.schedulerTasks();expect(runs==32&&messages.size()==1,"ready batch yields at32 with coalesced wake");
     drainMessages();expect(runs==256&&destroyed==256,"ready work drains exactly once without clock advance");
     expect(content::armedDeadline==0,"ready drain becomes idle");
+    reset(thread);thread.add();thread.m_timerHeap.back()->deferDelete=true;
+    thread.schedulerTasks();expect(runs==1&&destroyed==1&&thread.m_unusedTimersToDelete.empty()&&messages.empty(),"last completed Task retires without another pulse");
+    reset(thread);for(unsigned i=0;i<40;++i){auto*timer=new content::WebTimerBase{&thread,0,200,{},{}};thread.m_unusedTimersToDelete.push_back(timer);}
+    thread.retireCompletedTasksForOwner();expect(destroyed==32&&thread.m_unusedTimersToDelete.size()==8&&!messages.empty(),"retirement is bounded and schedules remainder");
+    drainMessages();expect(destroyed==40&&thread.m_unusedTimersToDelete.empty(),"retirement remainder progresses");
     reset(thread);
     thread.add(100.050);thread.schedulerTasks();
     expect(runs==0&&content::deadlineTicket&&dueTicks<0,"future arms relative one-shot");
@@ -140,6 +167,17 @@ int run(){
     oldCallback(oldParameter,TRUE);expect(messages.empty(),"old callback ticket cannot consume rearm");
     now=100.051;callback(callbackParameter,TRUE);drainMessages();
     expect(runs==1&&content::armedDeadline==0,"deadline runs once then cancels fallback");
+    reset(thread);failTimer=true;thread.add(101);thread.schedulerTasks();
+    expect(content::deadlineWait&&!content::timerID,"wait registered while native timer fails");
+    failPost=true;crossThread=true;now=101;callback(callbackParameter,TRUE);
+    expect(notifyAttempts==1&&content::continuationDeferred&&!messages.empty(),"failed deadline post uses cross-thread notify with deferred receipt");
+    failPost=false;drainMessages();expect(runs==1,"wait/native/post combination retains exactly-once progress");
+    reset(thread);failTimer=failPost=failNotify=crossThread=true;thread.add(101);thread.schedulerTasks();now=101;
+    callback(callbackParameter,TRUE);expect(messages.empty()&&content::continuationDeferred,"all delivery failures retain owner intent");
+    failPost=failTimer=failNotify=crossThread=false;thread.serviceOwnerOpportunity();expect(runs==1,"owner opportunity recovers retained deadline intent");
+    reset(thread);failSetWaitable=true;thread.add(101);const auto beforeRegistration=registrations;thread.schedulerTasks();
+    expect(registrations==beforeRegistration&&content::timerID&&!content::deadlineWait,"failed waitable arm preserves native timer fallback");
+    now=101;content::TimerWindowWndProc(window,WM_TIMER,content::timerID,0);expect(runs==1,"waitable arm failure does not lose future task");
     reset(thread);
     for(unsigned i=0;i<64;++i)thread.add();
     thread.schedulerTasks();queueStatus=QS_KEY<<16;dispatchOne();
@@ -172,4 +210,13 @@ int run(){
     std::printf("assertions=%d failures=%d source-only-delivery=true\n",assertions,failures);return failures?1:0;
 }
 }
-int main(){return fixture::run();}
+int main(int argc,char**argv){
+    if(argc==2){
+        content::WebThreadImpl thread;blink::Platform::current()->owner=&thread;thread.add(101);thread.schedulerTasks();
+        fixture::failClose=std::strcmp(argv[1],"--failure-close")==0;
+        fixture::failUnregister=std::strcmp(argv[1],"--failure-unregister")==0;
+        if(!fixture::failClose&&!fixture::failUnregister)return 2;
+        content::stopSharedTimer();std::puts("unexpected-successful-stop");return 3;
+    }
+    return fixture::run();
+}

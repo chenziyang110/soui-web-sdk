@@ -45,6 +45,10 @@ Regression SOURCE covers paused first-head publication, FIFO appended during a n
 
 原 tick 隐含调用的 observer、临时 V8 对象清理和取消 timer 释放仍在真实 scheduler turn/关闭中执行；不为无任务 idle 人造这些周期回调。SDK cold hook 在 provider finalization 前撤销，旧 DLL 无能力时保留 fallback。
 
+Deadline callback 的 PostMessage 失败会先发布 deferred owner intent，再在 publication lock 外有限 SendNotifyMessage；不假定 native SetTimer 一定成功，也不在 wait callback 中取消/关闭自己的注册。CloseHandle 失败保留原 timer 引用并非继续失败；UnregisterWaitEx 失败不能继续复用/关闭尚可能被等待的 timer。所有 OS 唤醒资源同时失败时仅有保留 intent，任意外部嵌入泵的时限仍不作保证。
+
+正常 scheduler 在 callback/observer 返回、m_firingTimers 降为零后最多退休 32 个 completed timer。退休先从拥有 vector 移除再 deref，析构不持任何 provider/producer lock，重入由独立 retirement guard 抑制；余项显式续调度/worker event。开始下一 turn 的退休也有同一界限；shutdown 完整排空。最后一项 Task 的析构不再依赖另一个 idle pulse，支持 close receipt 在真实资源释放后闭合。
+
 官方契约参考：[SetTimer 最小 10 ms](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-settimer)、[SendNotifyMessage 跨线程不等待](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-sendnotifymessagew)。构建和时钟/睡眠/失败/Win7 兼容仍未实测。
 
 ### W04 索引和接纳
