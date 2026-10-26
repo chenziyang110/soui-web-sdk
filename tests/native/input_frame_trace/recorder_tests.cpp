@@ -53,6 +53,9 @@ void ring_and_lifecycle(Identity identity, Mode detailed) {
   auto producer = source.attach_current_thread();
   require(static_cast<bool>(producer), "cold registration failed");
   require(!source.attach_current_thread(), "duplicate active owner registered");
+  std::ostringstream serialized;
+  Exporter exporter(serialized, source);
+  require(exporter.begin(), "export header refused actual identity");
   Event value;
   using Stage = decltype(value.point);
   value.point = Stage::task_posted;
@@ -64,12 +67,9 @@ void ring_and_lifecycle(Identity identity, Mode detailed) {
   value.qpc = 1025;
   require(static_cast<unsigned>(producer.record(value)) == 3, "full ring did not refuse");
   require(source.snapshot().dropped == 1, "overflow was not reported");
-  require(source.drain(output.data(), 1).count == 1 && output[0].qpc == 1, "FIFO drain differs");
+  require(exporter.drain(1).count == 1 && serialized.str().find("\"qpc\":\"1\"")!=std::string::npos, "FIFO drain differs");
   value.qpc = 1026;
   require(static_cast<unsigned>(producer.record(value)) == 0, "drain did not restore bounded capacity");
-  std::ostringstream serialized;
-  Exporter exporter(serialized, source);
-  require(exporter.begin(), "export header refused actual identity");
   require(!exporter.finish(), "active producer exported complete");
   source.stop();
   require(!source.quiescent(), "stop falsely implies producer quiescence");
@@ -222,6 +222,26 @@ void source_failure_after_begin_refuses_end() {
   require(exporter.begin(),"source failure fixture header rejected");source.available=false;
   require(!exporter.finish(),"unavailable backend fabricated complete end after begin");
 }
+void split_consumer_cannot_complete() {
+  sdk_trace::recorder source;require(source.configure(sdk_trace::current_identity(3,4),sdk_trace::mode::detailed),"split source configure failed");
+  auto producer=source.attach_current_thread();sdk_trace::event value;value.qpc=1;
+  require(producer.record(value)==sdk_trace::record_result::recorded,"split producer failed");
+  require(source.drain(&value,1).count==1,"other consumer did not drain");
+  source.stop();producer=sdk_trace::writer{};
+  std::ostringstream output;sdk_trace::exporter exporter(output,source);
+  require(exporter.begin()&&!exporter.finish(),"split/missing records fabricated complete end");
+}
+void concurrent_live_queue_bound() {
+  sdk_trace::recorder source;require(source.configure(sdk_trace::current_identity(4,5),sdk_trace::mode::detailed),"live bound configure failed");
+  std::thread producer([&]{auto writer=source.attach_current_thread();sdk_trace::event value;
+    for(std::uint64_t n=1;n<=10000;++n){value.qpc=n;(void)writer.record(value);}});
+  std::thread consumer([&]{std::array<sdk_trace::event,64> values;
+    for(unsigned n=0;n<10000;++n)(void)source.drain(values.data(),values.size());});
+  bool bounded=true;
+  for(unsigned n=0;n<10000;++n){const auto snapshot=source.snapshot();
+    if(snapshot.queued>static_cast<std::uint64_t>(snapshot.registered_threads)*sdk_trace::events_per_thread)bounded=false;}
+  producer.join();consumer.join();source.stop();require(bounded,"live occupancy exceeded physical ring bound");
+}
 }
 
 int main() {
@@ -243,6 +263,8 @@ int main() {
     context_has_no_hot_allocation();
     export_limit_cannot_claim_complete();
     source_failure_after_begin_refuses_end();
+    split_consumer_cannot_complete();
+    concurrent_live_queue_bound();
     return 0;
   } catch (const std::exception& error) {
     std::cerr << error.what() << '\n'; return 1;

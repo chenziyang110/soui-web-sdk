@@ -313,7 +313,9 @@ scalar_snapshot recorder::snapshot() const noexcept {
     // approximate live occupancy can never underflow. Final snapshots are exact.
     const auto consumed = slot.consumed.load(std::memory_order_acquire);
     const auto published = slot.published.load(std::memory_order_acquire);
-    sum(result.queued, published - consumed, result.counter_saturated);
+    // Live loads can span both producer and consumer advancement. Clamp this
+    // conservative estimate to the physical slot bound; quiescent is exact.
+    sum(result.queued, (std::min)(published-consumed,static_cast<std::uint64_t>(events_per_thread)), result.counter_saturated);
     for (std::size_t n = 0; n < stage_count; ++n)
       sum(result.stages[n], slot.stages[n].load(std::memory_order_relaxed), result.counter_saturated);
     for (std::size_t n = 0; n < counter_count; ++n)
@@ -484,7 +486,7 @@ bool exporter::finish() {
   if (finished_) return true;
   if (!begun_ || limit_reached_ || !output_.good()) return false;
   const auto value = source_.snapshot();
-  if (!value.available || !value.quiescent || value.queued) return false;
+  if (!value.available || !value.quiescent || value.queued || value.recorded!=exported_) return false;
   output_ << "{\"event\":\"trace.end\",\"complete\":true,\"registered_threads\":" << value.registered_threads
           << ",\"active_producers\":" << value.active_producers;
   exact(output_, "attempted", value.attempted); exact(output_, "recorded", value.recorded);
