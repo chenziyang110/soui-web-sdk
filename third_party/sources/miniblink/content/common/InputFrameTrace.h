@@ -81,7 +81,8 @@ struct event final {
   stage point{stage::host_receive};
   reason why{reason::none};
   terminal outcome{terminal::none};
-  std::uint32_t flags{0}, thread_id{0}, reserved{0};
+  // Callers supply producer_slot=0; publication stamps lifetime slot1..32.
+  std::uint32_t flags{0}, thread_id{0}, producer_slot{0};
   std::uint64_t qpc{0}, view_id{0};
   std::uint64_t view_generation{0}, document_generation{0}, geometry_generation{0};
   std::uint64_t input_first{0}, input_last{0}, task_id{0}, frame_id{0};

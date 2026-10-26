@@ -77,7 +77,7 @@ bool range_valid(std::uint64_t first, std::uint64_t last) noexcept {
 bool valid(const event& value) noexcept {
   const auto point = static_cast<std::uint32_t>(value.point);
   if (value.struct_size != sizeof(event) || value.version != abi_version ||
-      !point || point >= stage_count || value.reserved ||
+      !point || point >= stage_count || value.producer_slot ||
       static_cast<std::uint32_t>(value.why) > static_cast<std::uint32_t>(reason::cancelled) ||
       static_cast<std::uint32_t>(value.outcome) > static_cast<std::uint32_t>(terminal::rejected) ||
       (value.flags & ~(coverage_valid | content_marker_same_submission | microtask_causality_established)) ||
@@ -110,7 +110,7 @@ void write_event(std::ostream& output, const event& value) {
          << static_cast<std::uint32_t>(value.point) << ",\"why\":"
          << static_cast<std::uint32_t>(value.why) << ",\"outcome\":"
          << static_cast<std::uint32_t>(value.outcome) << ",\"flags\":" << value.flags
-         << ",\"thread_id\":" << value.thread_id;
+         << ",\"thread_id\":" << value.thread_id << ",\"producer_slot\":" << value.producer_slot;
   exact(output, "qpc", value.qpc); exact(output, "view_id", value.view_id);
   exact(output, "view_generation", value.view_generation);
   exact(output, "document_generation", value.document_generation);
@@ -174,6 +174,7 @@ record_result writer::record(event value) noexcept {
   add_single(slot.stages[static_cast<std::size_t>(value.point)], 1, state);
   if (state.recording_mode == mode::scalar) return record_result::scalar_only;
   value.thread_id = slot.owner_thread;
+  value.producer_slot = static_cast<std::uint32_t>(slot_+1);
   if (!value.qpc) value.qpc = now_qpc();
   if (!value.qpc || value.qpc < slot.last_qpc) {
     state.clock_invalid.store(true, std::memory_order_relaxed);
