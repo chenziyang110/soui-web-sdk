@@ -76,17 +76,20 @@ test('generated application and relative-root inputs cannot stand in for root na
   fs.writeFileSync(path.join(f.root, 'project.json'), '{}');
   assert.throws(() => configuration(f.root, 'x64', 'Release'), /generated app/);
 });
-test('ON accepts all 69 registered names and OFF preserves SDK registration only', () => {
-  assert.deepEqual(registry(jsonRegistry(allNames), 'ON'), {registeredVendorTests: 69, registeredNativeTests: 74});
+test('ON accepts all 76 registered names and OFF preserves SDK registration only', () => {
+  assert.deepEqual(registry(jsonRegistry(allNames), 'ON'), {registeredVendorTests: 76, registeredNativeTests: 81});
   assert.deepEqual(registry(jsonRegistry([sdkName]), 'OFF'), {registeredVendorTests: 0, registeredNativeTests: 1});
 });
 test('one missing, extra, duplicate or disabled vendor case rejects the whole registry', () => {
-  assert.throws(() => registry(jsonRegistry(allNames.filter(name => name !== manifest.names[0])), 'ON'), /all 69 exact names/);
-  assert.throws(() => registry(jsonRegistry([...allNames, 'kernel.native.unexpected']), 'ON'), /all 69 exact names/);
+  assert.throws(() => registry(jsonRegistry(allNames.filter(name => name !== manifest.names[0])), 'ON'), /all 76 exact names/);
+  assert.throws(() => registry(jsonRegistry([...allNames, 'kernel.native.unexpected']), 'ON'), /all 76 exact names/);
   assert.throws(() => registry(jsonRegistry([...allNames, manifest.names[0]]), 'ON'), /Duplicate/);
   const disabled = JSON.parse(jsonRegistry(allNames));
   disabled.tests[1].properties.push({name: 'DISABLED', value: true});
   assert.throws(() => registry(JSON.stringify(disabled), 'ON'), /disabled/);
+  const auxiliaryDisabled = JSON.parse(jsonRegistry(allNames));
+  auxiliaryDisabled.tests.find(item => item.name === manifest.auxiliaryNames[0]).properties.push({name: 'DISABLED', value: true});
+  assert.throws(() => registry(JSON.stringify(auxiliaryDisabled), 'ON'), /disabled/);
   assert.throws(() => registry(jsonRegistry(allNames), 'OFF'), /OFF cache conflicts/);
   assert.throws(() => registry(jsonRegistry(allNames.filter(name => name !== manifest.auxiliaryNames[0])), 'ON'), /exact scheduler source contracts/);
   assert.throws(() => registry(jsonRegistry([...allNames, 'scheduler.unexpected']), 'ON'), /exact scheduler source contracts/);
@@ -106,6 +109,7 @@ test('an actual registry subprocess error propagates instead of producing an acc
 test('manifest follows every actual vendor CMake case registration', () => {
   const leaves = ['tests/native/CMakeLists.txt', 'tests/native/vendor_lifetime/CMakeLists.txt',
     'tests/native/input_ui_policies.cmake', 'tests/native/render_deadline_policy/CMakeLists.txt',
+    'tests/native/window_close_lifetime/CMakeLists.txt', 'tests/native/independent_wheel_source/CMakeLists.txt',
     'tests/native/vendor_lifetime/worker_lifetime/CMakeLists.txt', 'tests/native/vendor_lifetime/dragdata/CMakeLists.txt',
     'tests/native/vendor_lifetime/ctor_shell/CMakeLists.txt', 'tests/native/vendor_lifetime/legacy_drag/CMakeLists.txt',
     'tests/native/request_close/CMakeLists.txt'];
@@ -121,7 +125,7 @@ test('manifest follows every actual vendor CMake case registration', () => {
       }
     }
   }
-  assert.equal(names.size, 69);
+  assert.equal(names.size, 76);
   assert.deepEqual([...names].sort(), manifest.names);
 });
 
@@ -144,7 +148,21 @@ test('central vendor preflight covers the union of actual leaf source inputs', (
     'content/web_impl_win/TaskSchedulingPolicy.h', 'content/web_impl_win/TaskSchedulingIndex.h',
     'content/common/InputFrameTrace.cpp', 'content/common/InputFrameTrace.h',
     'cc/trees/FrameDeadlinePolicy.h', 'cc/trees/LegacyPaintRetryPolicy.h',
-    'cc/trees/ResourceNotificationPolicy.h'].map(relative => prefix + relative));
+    'cc/trees/ResourceNotificationPolicy.h',
+    'cc/trees/FrameBufferLeasePolicy.h',
+    'cc/trees/InputFrameCoverage.h',
+    'cc/trees/IndependentInputTrace.h',
+    'cc/trees/ViewTraceIdentity.h',
+    'cc/trees/DrawFrameWakePolicy.h',
+    'cc/raster/RasterSchedulingPolicy.h',
+    'cc/raster/RasterCandidateBudget.h',
+    'content/common/PaintLifetime.h',
+    'cc/input/ScrollController.h',
+    'cc/input/ScrollController.cpp',
+    'cc/trees/ScrollTreeSnapshot.h',
+    'cc/trees/ScrollTreeSnapshot.cpp',
+    'cc/trees/LayerTreeHost.cpp',
+    'wke/wkeWebWindow.cpp'].map(relative => prefix + relative));
   const worker = JSON.parse(fs.readFileSync(path.join(repository, 'tests/native/vendor_lifetime/worker_lifetime/source-map.json'), 'utf8'));
   worker.sources.forEach(source => expected.add(source.path));
   const legacy = JSON.parse(fs.readFileSync(path.join(repository, 'tests/native/vendor_lifetime/legacy_drag/source-map.json'), 'utf8'));
@@ -159,7 +177,7 @@ test('central vendor preflight covers the union of actual leaf source inputs', (
   const required = module.match(/set\(_soui_vendor_required\s+([\s\S]*?)\n\)/);
   assert.ok(required, 'Actual central required inputs are required');
   const actual = [...required[1].matchAll(/"([^"]+)"/g)].map(match => match[1]);
-  assert.equal(expected.size, 33);
+  assert.equal(expected.size, 47);
   assert.equal(new Set(actual).size, actual.length);
   assert.deepEqual(actual.sort(), [...expected].sort());
 });
@@ -174,7 +192,7 @@ test('private source freeze binds all actual required files and rejects one abse
   const required = moduleText.match(/set\(_soui_vendor_required\s+([\s\S]*?)\n\)/);
   assert.ok(required);
   const names = [...required[1].matchAll(/"([^"]+)"/g)].map(match => match[1]).sort();
-  assert.equal(names.length, 33);
+  assert.equal(names.length, 47);
   fs.mkdirSync(path.join(f.root, 'cmake'));
   fs.writeFileSync(path.join(f.root, 'cmake/SouiVendorTests.cmake'), moduleText);
   for (const [index, name] of names.entries()) {

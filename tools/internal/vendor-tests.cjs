@@ -32,9 +32,9 @@ function requiredSourcePaths(root) {
   const blocks = [...text.matchAll(/^set\(_soui_vendor_required\s*\r?\n([\s\S]*?)^\)\s*$/gm)];
   need(blocks.length === 1, 'Missing or ambiguous vendor required source contract');
   const rows = blocks[0][1].split(/\r?\n/).filter(row => row.trim());
-  need(rows.length === 33 && rows.every(row => /^\s*"third_party\/sources\/miniblink\/[A-Za-z0-9_./-]+"\s*$/.test(row)), 'Invalid exact 33 vendor source contract');
+  need(rows.length === 47 && rows.every(row => /^\s*"third_party\/sources\/miniblink\/[A-Za-z0-9_./-]+"\s*$/.test(row)), 'Invalid exact 47 vendor source contract');
   const names = rows.map(row => row.trim().slice(1, -1)).sort();
-  need(new Set(names).size === 33 && names.every(name => !name.split('/').includes('..')), 'Duplicate or escaping vendor source');
+  need(new Set(names).size === 47 && names.every(name => !name.split('/').includes('..')), 'Duplicate or escaping vendor source');
   return names.map(name => inputs.pin(path.join(root, name)));
 }
 function configuration(root, architecture, config, required = false, options = {}) {
@@ -80,13 +80,13 @@ function registry(raw, mode) {
     auxiliary.every(name => typeof name === 'string' && name.startsWith('scheduler.')) &&
     JSON.stringify(auxiliary) === JSON.stringify([...auxiliary].sort()), 'Invalid exact auxiliary vendor names');
   const actualAuxiliary = names.filter(name => name.startsWith('scheduler.')).sort();
-  need(manifest.schema === 'soui.vendor-test-names/v1' && Array.isArray(expected) && expected.length === 69 &&
-    new Set(expected).size === 69 && expected.every(name => name.startsWith('kernel.native.')) &&
+  need(manifest.schema === 'soui.vendor-test-names/v1' && Array.isArray(expected) && expected.length === 76 &&
+    new Set(expected).size === 76 && expected.every(name => name.startsWith('kernel.native.')) &&
     JSON.stringify(expected) === JSON.stringify([...expected].sort()), 'Invalid exact vendor names manifest');
   if (mode === 'ON') {
     need(JSON.stringify(actualAuxiliary) === JSON.stringify(auxiliary), 'Vendor ON registry lacks exact scheduler source contracts');
-    need(JSON.stringify(actual) === JSON.stringify(expected), 'Vendor ON registry must contain all 69 exact names with no extra kernel.native tests');
-    need(vendor.every(test => !(test.properties || []).some(property => property.name === 'DISABLED' && property.value)), 'A registered vendor test is disabled');
+    need(JSON.stringify(actual) === JSON.stringify(expected), 'Vendor ON registry must contain all 76 exact names with no extra kernel.native tests');
+    need(value.tests.filter(test => test.name.startsWith('kernel.native') || auxiliary.includes(test.name)).every(test => !(test.properties || []).some(property => property.name === 'DISABLED' && property.value)), 'A registered vendor test is disabled');
   }
   else need(actual.length === 0 && actualAuxiliary.length === 0, 'Vendor OFF cache conflicts with registered kernel.native tests');
   return {registeredVendorTests: actual.length, registeredNativeTests: names.length};

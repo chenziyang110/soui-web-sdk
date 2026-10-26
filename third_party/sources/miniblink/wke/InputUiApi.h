@@ -17,6 +17,9 @@
 #define WKE_INPUT_UI_CAP_FRACTIONAL_FRAME_POLICY 0x10ULL
 #define WKE_INPUT_UI_CAP_CANCEL_INPUT 0x20ULL
 #define WKE_INPUT_UI_CAP_VIEW_CONTEXT 0x40ULL
+#define WKE_INPUT_UI_CAP_SCENE_INPUT_IDENTITY 0x80ULL
+#define WKE_INPUT_UI_CAP_HOST_VISIBILITY 0x100ULL
+#define WKE_INPUT_UI_CAP_EXTERNAL_TRACE_PRODUCER 0x200ULL
 
 #define WKE_INPUT_UI_OK 0
 #define WKE_INPUT_UI_INVALID 1
@@ -105,6 +108,11 @@ typedef struct _wkeInputUiApi {
     int (WKE_INPUT_UI_CALL* cancelInputState)(void* view);
     /* Confirmed document/geometry identity, input range zero. Does not push TLS. */
     int (WKE_INPUT_UI_CALL* setViewTraceIdentity)(void* view, const void* event, unsigned int eventBytes);
+    int (WKE_INPUT_UI_CALL* setHostVisible)(void* view, unsigned int visible);
+    /* Cold, calling-thread-affine producer leases; no implicit hot attach.
+       The caller retains the actual module until its final release returns. */
+    int (WKE_INPUT_UI_CALL* retainTraceProducer)(void);
+    void (WKE_INPUT_UI_CALL* releaseTraceProducer)(void);
 } wkeInputUiApi;
 #pragma pack(pop)
 
