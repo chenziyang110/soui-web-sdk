@@ -31,6 +31,8 @@ enum class input_kind : std::uint32_t {
   ime_update,
   ime_commit,
   ime_end,
+  capture_lost,
+  cancel,
 };
 
 struct scroll_sample {
@@ -98,10 +100,17 @@ class independent_input_sink {
       const input_packet& packet, scroll_sample& sample) = 0;
 };
 
+enum class input_admission_result : std::uint8_t {
+  accepted, coalesced, stale, capacity, stopped, invalid, no_memory, recovering, cancelled,
+};
+
 class engine_input_sink {
  public:
   virtual ~engine_input_sink() = default;
   [[nodiscard]] virtual bool post_input(const input_packet& packet) = 0;
+  [[nodiscard]] virtual input_admission_result post_input_typed(const input_packet& packet) {
+    return post_input(packet) ? input_admission_result::accepted : input_admission_result::capacity;
+  }
 };
 
 enum class route_disposition {
@@ -117,6 +126,7 @@ struct route_result {
   route_disposition disposition{route_disposition::rejected_inactive};
   std::uint64_t accepted_sequence{0};
   scroll_sample visual_sample;
+  input_admission_result admission{input_admission_result::invalid};
 };
 
 class interaction_router final {

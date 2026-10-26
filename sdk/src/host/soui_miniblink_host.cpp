@@ -5,6 +5,7 @@
 #include "bridge_pending_script.h"
 #include "bridge_request_budget.h"
 #include "engine_admission.h"
+#include "input_mailbox.h"
 #include "cursor_broker.h"
 #include "main_context_gate.h"
 #include "runtime_shutdown_poll.h"
@@ -1298,6 +1299,14 @@ host_result dynamic_miniblink_adapter::mount(const host_config& config) {
   if (startup_cancelled_.load(std::memory_order_acquire) || !startup_window_matches())
     return failed_startup(failure("E_CURSOR_STARTUP_CANCELLED", "Startup was cancelled before showing the child."));
 
+  try {
+    input_mailbox_ = std::make_shared<detail::input_mailbox>([this](const input_packet* packet) {
+      if (packet) dispatch_input_on_engine(*packet);
+      else cancel_input_on_engine();
+    });
+  } catch (...) { return failed_startup(failure("E_INPUT_CAPACITY", "The bounded input mailbox could not be allocated.")); }
+  if (!detail::engine_admission::register_input(*engine_thread_, input_mailbox_))
+    return failed_startup(failure("E_INPUT_CAPACITY", "The process already owns the maximum 32 input Hosts."));
   interaction_router_.activate(interaction_generation_);
   ShowWindow(static_cast<HWND>(webview_window_), SW_SHOW);
   if (startup_cancelled_.load(std::memory_order_acquire) || !startup_window_matches())
@@ -1682,6 +1691,7 @@ host_result dynamic_miniblink_adapter::unmount() {
 #ifdef _WIN32
   if (unmount_running_) return failure("E_BUSY", "WebView teardown is already in progress.");
   lifecycle_operation_guard unmount_guard(unmount_running_);
+  input_focus_requested_.store(false, std::memory_order_release);
   bridge_accepting_.store(false, std::memory_order_release);
   if (execution_context_receipt()) (void)invalidate_main_context();
   else (void)detail::context_lookup_revision<>::advance(native_context_lookup_revision);
@@ -1696,6 +1706,16 @@ host_result dynamic_miniblink_adapter::unmount() {
   test_agent_.reset();
 #endif
   interaction_router_.deactivate();
+  if (input_mailbox_ && engine_thread_) {
+    const auto mailbox = input_mailbox_;
+    mailbox->quiesce();
+    const auto closed = invoke_lifecycle(engine_thread_, [this, mailbox] {
+      cancel_input_on_engine();
+      detail::engine_admission::unregister_input(*engine_thread_, mailbox);
+    }, detail::engine_lane::cleanup);
+    if (!closed) return engine_admission_failure(closed.admission, "Input owner retirement is pending.", true);
+    input_mailbox_.reset();
+  }
   wheel_smoothing_.reset();
   bridge_generation_.fetch_add(1, std::memory_order_acq_rel);
   if (event_lifetime_) {
@@ -2313,8 +2333,38 @@ bool dynamic_miniblink_adapter::capture_scroll_barrier(
 }
 
 bool dynamic_miniblink_adapter::post_input(const input_packet& packet) {
-  return engine_thread_ != nullptr
-      && engine_thread_->post([this, packet] { dispatch_input_on_engine(packet); });
+  return post_input_typed(packet) == input_admission_result::accepted;
+}
+
+input_admission_result dynamic_miniblink_adapter::post_input_typed(const input_packet& packet) {
+  if (!engine_thread_ || !input_mailbox_) return input_admission_result::stopped;
+  const auto mailbox = std::static_pointer_cast<detail::input_mailbox>(input_mailbox_);
+  const auto result = mailbox->post(packet);
+  if (mailbox->pending()) detail::engine_admission::notify_input(*engine_thread_);
+  return result;
+}
+
+void dynamic_miniblink_adapter::cancel_input_on_engine() {
+#ifdef _WIN32
+  if (!webview_) return;
+  const auto view = static_cast<wkeWebView>(webview_);
+  for (std::size_t key = 0; key < input_keys_on_engine_.size(); ++key) {
+    if (!input_keys_on_engine_[key]) continue;
+    input_keys_on_engine_[key] = false;
+    if (wkeFireKeyUpEvent) (void)wkeFireKeyUpEvent(view, static_cast<unsigned>(key), 0, false);
+    if (webview_ != view) return;
+  }
+  if (input_pointer_on_engine_) {
+    input_pointer_on_engine_ = false;
+    if (wkeFireMouseEvent) (void)wkeFireMouseEvent(view, WM_LBUTTONUP, input_pointer_x_, input_pointer_y_, 0);
+    if (webview_ != view) return;
+  }
+  if (ime_composing_ && !ime_committed_ && wkeCancelComposition) (void)wkeCancelComposition(view);
+  ime_composing_ = ime_committed_ = false;
+  if (webview_ != view) return;
+  if (wkeKillFocus) wkeKillFocus(view);
+  if (webview_ == view && input_focus_requested_.load(std::memory_order_acquire) && wkeSetFocus) wkeSetFocus(view);
+#endif
 }
 
 void dynamic_miniblink_adapter::dispatch_input_on_engine(input_packet packet) {
@@ -2366,6 +2416,9 @@ void dynamic_miniblink_adapter::dispatch_input_on_engine(input_packet packet) {
         if (webview_ != view || !accepts_execution_context_receipt(context_receipt)) break;
       }
       unsigned int message = WM_MOUSEMOVE;
+      input_pointer_x_ = packet.x; input_pointer_y_ = packet.y;
+      if (packet.kind == input_kind::pointer_down) input_pointer_on_engine_ = true;
+      if (packet.kind == input_kind::pointer_up) input_pointer_on_engine_ = false;
       if (packet.kind == input_kind::pointer_down)
         message = packet.double_click ? WM_LBUTTONDBLCLK : WM_LBUTTONDOWN;
       if (packet.kind == input_kind::pointer_up) message = WM_LBUTTONUP;
@@ -2373,10 +2426,12 @@ void dynamic_miniblink_adapter::dispatch_input_on_engine(input_packet packet) {
       break;
     }
     case input_kind::key_down:
+      if (packet.key_code < input_keys_on_engine_.size()) input_keys_on_engine_[packet.key_code] = true;
       if (wkeFireKeyDownEvent != nullptr)
         (void)wkeFireKeyDownEvent(view, packet.key_code, packet.modifiers, packet.system_key);
       break;
     case input_kind::key_up:
+      if (packet.key_code < input_keys_on_engine_.size()) input_keys_on_engine_[packet.key_code] = false;
       if (wkeFireKeyUpEvent != nullptr)
         (void)wkeFireKeyUpEvent(view, packet.key_code, packet.modifiers, packet.system_key);
       break;
@@ -2434,6 +2489,14 @@ void dynamic_miniblink_adapter::dispatch_input_on_engine(input_packet packet) {
       ime_composing_ = false;
       ime_committed_ = false;
       break;
+    case input_kind::capture_lost:
+      if (input_pointer_on_engine_ && wkeFireMouseEvent)
+        (void)wkeFireMouseEvent(view, WM_LBUTTONUP, input_pointer_x_, input_pointer_y_, 0);
+      input_pointer_on_engine_ = false;
+      break;
+    case input_kind::cancel:
+      cancel_input_on_engine();
+      break;
   }
 #else
   (void)packet;
@@ -2448,7 +2511,12 @@ bool dynamic_miniblink_adapter::handle_native_window_message(
   const LPARAM lparam = static_cast<LPARAM>(lparam_value);
   const HWND child = static_cast<HWND>(webview_window_);
   auto route = [this](input_packet packet) {
-    (void)interaction_router_.route(packet, *this, *this);
+    const auto routed = interaction_router_.route(packet, *this, *this);
+    // Rejection is an explicit cancellation/recovery outcome, never success.
+    if (routed.disposition == route_disposition::rejected_sink) {
+      if (webview_window_ && GetCapture() == static_cast<HWND>(webview_window_)) ReleaseCapture();
+      wheel_smoothing_.reset();
+    }
   };
   auto pointer_packet = [this, lparam](input_kind kind, WPARAM flags) {
     input_packet packet = make_input_packet(kind);
@@ -2512,7 +2580,11 @@ bool dynamic_miniblink_adapter::handle_native_window_message(
       break;
     }
     case WM_CAPTURECHANGED:
+      route(make_input_packet(input_kind::capture_lost));
+      pressed_chrome_ = chrome_action::none;
+      break;
     case WM_CANCELMODE:
+      route(make_input_packet(input_kind::cancel));
       pressed_chrome_ = chrome_action::none;
       break;
     case ime_position_message: {
@@ -2532,10 +2604,12 @@ bool dynamic_miniblink_adapter::handle_native_window_message(
       result = 1;
       return true;
     case WM_SETFOCUS:
+      input_focus_requested_.store(true, std::memory_order_release);
       route(make_input_packet(input_kind::focus));
       result = 0;
       return true;
     case WM_KILLFOCUS:
+      input_focus_requested_.store(false, std::memory_order_release);
       route(make_input_packet(input_kind::blur));
       result = 0;
       return true;
@@ -2634,18 +2708,28 @@ bool dynamic_miniblink_adapter::handle_native_window_message(
     case WM_IME_COMPOSITION: {
       const HIMC context = ImmGetContext(child);
       if (context != nullptr) {
-        auto copy_text = [context](DWORD selector) {
+        bool text_rejected = false;
+        auto copy_text = [context, &text_rejected](DWORD selector) {
           std::u16string text;
           const LONG bytes = ImmGetCompositionStringW(context, selector, nullptr, 0);
           if (bytes > 0) {
-            text.resize(static_cast<std::size_t>(bytes) / sizeof(char16_t));
-            (void)ImmGetCompositionStringW(context, selector, text.data(), bytes);
+            if (bytes > static_cast<LONG>(detail::input_mailbox::event_byte_limit)
+                || bytes % sizeof(char16_t)) { text_rejected = true; return text; }
+            try { text.resize(static_cast<std::size_t>(bytes) / sizeof(char16_t)); }
+            catch (...) { text_rejected = true; return text; }
+            const LONG copied = ImmGetCompositionStringW(context, selector, text.data(), bytes);
+            if (copied != bytes) { text_rejected = true; text.clear(); }
           }
           return text;
         };
         if ((lparam & GCS_COMPSTR) != 0) {
           input_packet packet = make_input_packet(input_kind::ime_update);
           packet.text = copy_text(GCS_COMPSTR);
+          if (text_rejected) {
+            route(make_input_packet(input_kind::cancel));
+            ImmReleaseContext(child, context);
+            result = 0; return true;
+          }
           const LONG cursor = ImmGetCompositionStringW(
               context, GCS_CURSORPOS, nullptr, 0);
           packet.selection_start = cursor >= 0 ? static_cast<int>(cursor)
@@ -2656,6 +2740,11 @@ bool dynamic_miniblink_adapter::handle_native_window_message(
         if ((lparam & GCS_RESULTSTR) != 0) {
           input_packet packet = make_input_packet(input_kind::ime_commit);
           packet.text = copy_text(GCS_RESULTSTR);
+          if (text_rejected) {
+            route(make_input_packet(input_kind::cancel));
+            ImmReleaseContext(child, context);
+            result = 0; return true;
+          }
           route(std::move(packet));
         }
         ImmReleaseContext(child, context);

@@ -34,7 +34,18 @@ route_result interaction_router::route(const input_packet& packet,
     }
   }
 
-  input_packet engine_packet = packet;
+  input_packet engine_packet;
+  try { engine_packet = packet; }
+  catch (...) {
+    // Allocation failure also seals the mailbox segment. No partially copied
+    // character/commit is reported accepted and the marker needs no text copy.
+    input_packet cancellation;
+    cancellation.kind = input_kind::cancel;
+    cancellation.generation = packet.generation;
+    cancellation.sequence = packet.sequence;
+    (void)engine.post_input_typed(cancellation);
+    return {route_disposition::rejected_sink, 0, visual_sample_, input_admission_result::no_memory};
+  }
   // The press captures one immutable visual-state barrier. The release stays
   // behind it in the engine FIFO, so taking a second barrier would let a newer
   // scene split one physical click into two different hit-test states.
@@ -46,9 +57,10 @@ route_result interaction_router::route(const input_packet& packet,
       engine_packet.barrier = captured;
     }
   }
-  if (!engine.post_input(engine_packet))
-    return {route_disposition::rejected_sink, packet.sequence, visual_sample_};
-  return {route_disposition::engine, packet.sequence, visual_sample_};
+  const auto admission = engine.post_input_typed(engine_packet);
+  if (admission != input_admission_result::accepted && admission != input_admission_result::coalesced)
+    return {route_disposition::rejected_sink, 0, visual_sample_, admission};
+  return {route_disposition::engine, packet.sequence, visual_sample_, admission};
 }
 
 interaction_generation interaction_router::generation() const noexcept {

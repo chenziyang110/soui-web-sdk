@@ -56,6 +56,9 @@ class engine_admission final {
   [[nodiscard]] static engine_admission_result reserve_reply(engine_thread&, engine_lane, engine_reply_ticket&);
   [[nodiscard]] static engine_admission_result submit_reply(engine_thread&, engine_reply_ticket&, engine_thread::task);
   [[nodiscard]] static engine_capacity_snapshot observe(const engine_thread&);
+  [[nodiscard]] static bool register_input(engine_thread&, const std::shared_ptr<engine_input_service>&);
+  static void unregister_input(engine_thread&, const std::shared_ptr<engine_input_service>&);
+  static void notify_input(engine_thread&) noexcept;
   // Owner-only borrow of the actual mounted Host Engine; invalidated by teardown.
   // No callback, state setter, permission or wire endpoint is introduced.
   [[nodiscard]] static engine_thread* host_engine(dynamic_miniblink_adapter&) noexcept;

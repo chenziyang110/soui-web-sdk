@@ -1,5 +1,6 @@
 #include <soui/host/engine_thread.h>
 #include "engine_admission.h"
+#include "engine_input_service.h"
 #include "../runtime/diagnostics/runtime_metrics_internal.h"
 
 #include <atomic>
@@ -55,6 +56,13 @@ engine_admission_result engine_admission::submit_reply(engine_thread& engine,eng
   return engine.post_internal(std::move(work),ticket.lane_,&ticket);
 }
 engine_capacity_snapshot engine_admission::observe(const engine_thread& engine) { return engine.capacity_snapshot(); }
+bool engine_admission::register_input(engine_thread& engine, const std::shared_ptr<engine_input_service>& service) {
+  return engine.register_input_service(service);
+}
+void engine_admission::unregister_input(engine_thread& engine, const std::shared_ptr<engine_input_service>& service) {
+  engine.unregister_input_service(service);
+}
+void engine_admission::notify_input(engine_thread& engine) noexcept { engine.notify_input_service(); }
 } // namespace detail
 
 #ifdef _WIN32
@@ -209,6 +217,65 @@ bool engine_thread::post(task work) {
   return post_internal(std::move(work),detail::engine_lane::ordinary,nullptr) == detail::engine_admission_result::accepted;
 }
 
+bool engine_thread::register_input_service(const std::shared_ptr<detail::engine_input_service>& service) {
+  if (!service) return false;
+  std::lock_guard<std::mutex> lock(mutex_);
+  if (state_ != engine_thread_state::running) return false;
+  for (const auto& slot : input_services_) if (slot == service) return true;
+  for (auto& slot : input_services_) {
+    if (!slot) { slot = service; return true; }
+  }
+  return false;
+}
+
+void engine_thread::unregister_input_service(const std::shared_ptr<detail::engine_input_service>& service) {
+  if (!is_owner_thread()) return;
+  std::shared_ptr<detail::engine_input_service> retired;
+  {
+    std::lock_guard<std::mutex> lock(mutex_);
+    for (auto& slot : input_services_) if (slot == service) { retired.swap(slot); break; }
+  }
+  if (retired) retired->close(); // Callback/capture retirement stays outside mutex_.
+}
+
+void engine_thread::notify_input_service() noexcept {
+  std::lock_guard<std::mutex> lock(mutex_);
+#ifdef _WIN32
+  if (wake_event_) SetEvent(static_cast<HANDLE>(wake_event_));
+#endif
+  work_ready_.notify_one();
+}
+
+bool engine_thread::has_pending_input_locked() const noexcept {
+  for (const auto& service : input_services_) if (service && service->pending()) return true;
+  return false;
+}
+
+void engine_thread::service_one_input() {
+  std::shared_ptr<detail::engine_input_service> selected;
+  bool stopping = false;
+  {
+    std::lock_guard<std::mutex> lock(mutex_);
+    for (std::size_t count = 0; count < input_services_.size(); ++count) {
+      const auto index = (next_input_service_ + count) % input_services_.size();
+      if (input_services_[index] && input_services_[index]->pending()) {
+        selected = input_services_[index];
+        next_input_service_ = (index + 1) % input_services_.size();
+        ++executing_;
+        stopping = state_ == engine_thread_state::stopping;
+        break;
+      }
+    }
+  }
+  if (selected) {
+    if (stopping) selected->quiesce();
+    selected->service();
+    std::lock_guard<std::mutex> lock(mutex_);
+    --executing_;
+    if (!queued_ && !executing_ && !has_pending_input_locked()) idle_.notify_all();
+  }
+}
+
 detail::engine_admission_result engine_thread::post_internal(task work,detail::engine_lane lane,
                                                             detail::engine_reply_ticket* ticket) {
   using result=detail::engine_admission_result;
@@ -295,7 +362,7 @@ bool engine_thread::drain_for(std::chrono::milliseconds timeout) {
   if (timeout.count() < 0) return false;
   std::unique_lock<std::mutex> lock(mutex_);
   return idle_.wait_for(lock, timeout,
-                        [this] { return queued_ == 0 && executing_ == 0; });
+                        [this] { return queued_ == 0 && executing_ == 0 && !has_pending_input_locked(); });
 }
 
 void engine_thread::request_stop(bool drain_pending) {
@@ -446,7 +513,7 @@ void engine_thread::run(initializer initialize, task shutdown) noexcept {
       std::unique_lock<std::mutex> lock(mutex_);
       if (state_ != engine_thread_state::stopping) {
         const HANDLE wake_event = static_cast<HANDLE>(wake_event_);
-        const bool wait_for_work = queued_ == 0;
+        const bool wait_for_work = queued_ == 0 && !has_pending_input_locked();
         lock.unlock();
         if (wait_for_work) {
           (void)MsgWaitForMultipleObjectsEx(
@@ -478,6 +545,7 @@ void engine_thread::run(initializer initialize, task shutdown) noexcept {
       }
     }
 #endif
+    service_one_input();
     // Service a bounded FIFO batch too. One task per native batch makes an
     // input burst accumulate behind expensive paint messages, even though
     // neither queue is strictly starved. Neither budget can preempt a callback.
@@ -490,10 +558,10 @@ void engine_thread::run(initializer initialize, task shutdown) noexcept {
         std::unique_lock<std::mutex> lock(mutex_);
 #ifndef _WIN32
         work_ready_.wait(lock, [this] {
-          return state_ == engine_thread_state::stopping || queued_ != 0;
+          return state_ == engine_thread_state::stopping || queued_ != 0 || has_pending_input_locked();
         });
 #endif
-        if (queued_ == 0 && state_ == engine_thread_state::stopping) {
+        if (queued_ == 0 && state_ == engine_thread_state::stopping && !has_pending_input_locked()) {
           stopping_complete = true;
           break;
         }
@@ -524,6 +592,14 @@ void engine_thread::run(initializer initialize, task shutdown) noexcept {
   }
 
   bool shutdown_succeeded = true;
+  // Close retained input handlers before runtime teardown, outside Engine mutex_.
+  std::array<std::shared_ptr<detail::engine_input_service>, 32> retired_inputs;
+  {
+    std::lock_guard<std::mutex> lock(mutex_);
+    retired_inputs.swap(input_services_);
+    next_input_service_ = 0;
+  }
+  for (auto& service : retired_inputs) if (service) service->close();
   try {
     if (shutdown) shutdown();
   } catch (...) {
