@@ -176,5 +176,3 @@ class exporter final {
 };
 
 } } // namespace content::input_frame_trace
-
-
