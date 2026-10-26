@@ -1,0 +1,3 @@
+add_executable(soui_host_frame_policy_tests fixture.cpp)
+target_compile_features(soui_host_frame_policy_tests PRIVATE cxx_std_17)
+add_test(NAME sdk.native.host-frame-policy COMMAND soui_host_frame_policy_tests)
