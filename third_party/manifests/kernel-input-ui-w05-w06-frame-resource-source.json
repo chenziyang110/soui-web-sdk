@@ -1,0 +1,142 @@
+{
+  "schema": "soui.kernel-source-delta/v1",
+  "sdkVersion": "0.5.0",
+  "status": "source-only-unreleased-candidate",
+  "scope": "W05/W06 fractional deadlines and producer resource notifications; repair actual owner finalization flag; native visibility follows in integration; no compilation or execution",
+  "baseCommit": "5bbfe4d4c9acd4e64461516921ae493e1f49d82f",
+  "sourceIdentityScope": "Only listed staged source delta; historical import and prebuilt identities unchanged",
+  "patch": {
+    "path": "third_party/patches/miniblink/0019-input-ui-frame-resource.patch",
+    "bytes": 29034,
+    "sha256": "bf2345330d3d3ccab5bb735a5cb49b98df8c3e6e8ad812f9fd5bd510318cd27d"
+  },
+  "files": [
+    {
+      "path": "third_party/sources/miniblink/cc/raster/RasterTask.cpp",
+      "before": {
+        "bytes": 20703,
+        "sha256": "82d81eb667cc35959a094608f519b67cb988f58b8baf168534c070dcde33a91b"
+      },
+      "after": {
+        "bytes": 21030,
+        "sha256": "edefcc66eab531ba9ab88095edaefee0ebb67b05d933489707465db0de75af27"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/cc/raster/RasterTask.h",
+      "before": {
+        "bytes": 5517,
+        "sha256": "1884bef9532bbb94ab6b07958a1981605693d58a338fede6dfe5de9199fe242e"
+      },
+      "after": {
+        "bytes": 5635,
+        "sha256": "860b3ce3cab95535a0d9de58c04b5e7beba0553976d498be7de7f4c598d5ac9d"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/cc/trees/ActionsFrameGroup.cpp",
+      "before": {
+        "bytes": 8835,
+        "sha256": "4f339a05d2710439d0af96fa0b75e215758ebf80e838eac8bac4b49f95c9a9b1"
+      },
+      "after": {
+        "bytes": 8881,
+        "sha256": "b05a4eaf15d24fa5bd43ada98dc9542755a9b4ebf5efbac769a4a5698267d024"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/cc/trees/FrameDeadlinePolicy.h",
+      "before": {
+        "absent": true
+      },
+      "after": {
+        "bytes": 722,
+        "sha256": "ea6ff974032ad7e55baeb60c669acdf5bf26a85fe5056a63a6cfb595750e8c03"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/cc/trees/LayerTreeHost.cpp",
+      "before": {
+        "bytes": 116358,
+        "sha256": "0a5d2b3126e6e004fcd604087122f762bd6e8aa5c1dea89bac28ccccab37d432"
+      },
+      "after": {
+        "bytes": 123274,
+        "sha256": "5cdd7cf1ec67cee1f70471f4f222ec11c8e3e6b2223a0c798149f0bbe18ddaeb"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/cc/trees/LayerTreeHost.h",
+      "before": {
+        "bytes": 13219,
+        "sha256": "77e2a1b4e6bb3ba16bb2c703e0ab67ab95a773465199de7186326d0892f0f670"
+      },
+      "after": {
+        "bytes": 14066,
+        "sha256": "f36f8662f20765f0b86e6f1cda9cd144731f30e8ba989d2d01f8bb2df3816b18"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/cc/trees/ResourceNotificationPolicy.h",
+      "before": {
+        "absent": true
+      },
+      "after": {
+        "bytes": 1587,
+        "sha256": "8842f61da7edbdbba792b9b5c86e92dcadaf472b3f52b051943c9226608e0365"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/content/browser/WebPageImpl.cpp",
+      "before": {
+        "bytes": 85865,
+        "sha256": "2606c9511e3bb6846f2fe0b58708bde97260547d91576bba5d270d65bfb41207"
+      },
+      "after": {
+        "bytes": 86036,
+        "sha256": "5a13eb80c348d1c9b1d4bebc2be928b0723154ff54045f3e760bcc9714696093"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/content/browser/WebPageImpl.h",
+      "before": {
+        "bytes": 11979,
+        "sha256": "038ded95395e2e53ace7cc73b3c31f70228b1323921e8a28cb4d2d1e4d9c868d"
+      },
+      "after": {
+        "bytes": 12009,
+        "sha256": "23801752bdd109f7c66d6e64078d55dc1f57b17159ebbc6302b8e32054a762a7"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/wke/InputUiApi.cpp",
+      "before": {
+        "bytes": 8690,
+        "sha256": "f31eceeea730169dc9dfb94e00bd3581763851438b1d094f1bbecfe89b05c157"
+      },
+      "after": {
+        "bytes": 8745,
+        "sha256": "624e911472e262f4a3ddd9907845a7f1fdb8b0fff8e5e919f6463f121e61ce4b"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/wke/wke.cpp",
+      "before": {
+        "bytes": 98786,
+        "sha256": "146f0b5bdf43c1da4f0c860aabc599c66e9d361d217fcb18ffd7798f8c7483f3"
+      },
+      "after": {
+        "bytes": 98885,
+        "sha256": "82737fd90be98118d27b8c98a20a610ecc0080b54286ff2d5291fc3adcdae729"
+      }
+    }
+  ],
+  "validation": {
+    "finalSourceCompiled": false,
+    "finalTestsExecuted": false,
+    "reversePatchCheckPerformed": true,
+    "forwardReplayExecuted": false
+  },
+  "candidateBinaryIdentity": null,
+  "releaseReady": false
+}
