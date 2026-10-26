@@ -22,4 +22,16 @@ Engine 保留 mailbox 共享所有权；Host 关闭在 Engine owner 清除处理
 
 ## 验证交接
 
+### W02 input/FIFO admission ordinal fence
+
+The fixed Engine FIFO and each accepted input/cancellation marker share an Engine-mutex admission ordinal. The mailbox copies/preflights its payload under its own mutex first; assigning the ordinal and publishing the first atomic head/pending state are one Engine-mutex transaction. Only nonthrow fixed-slot mutation follows publication. Engine reads only atomic mailbox state while holding its mutex and releases it before mailbox callbacks, so the lock order is mailbox then Engine, never the reverse. This closes the paused-after-assignment publication gap.
+
+An input batch stops before the current FIFO head, and FIFO cannot pop while an older published input head remains. A batch selected when FIFO was empty rechecks the FIFO head before each pop, including FIFO work appended by a callback. Resize/navigation/close therefore cannot cross older accepted edges, and newer input cannot cross an older resize. Round-robin input batches remain at most eight items/one cooperative millisecond. A FIFO task has at most 32*(80+1) previously accepted input items/markers ahead; newer admission cannot extend that predecessor set. This bounds item work, not callback wall time.
+
+Normal ordinals never wrap and use 1..MAX-1; exhaustion rejects normal work explicitly. Recovery and existing cleanup capacity may use MAX, with recovery winning that sole tie so the marker cannot be excluded forever. Rejected input still requests ordered cancellation when the owner is running/stopping. No accepted DOM edge is deleted to make room, and FIFO lane quotas remain unchanged. Native IME negative byte counts are errors requiring cancellation; zero bytes remains a valid empty result.
+
+Dispatch validates owner-applied context/geometry, never the UI's newer resize intent. Captured geometry becomes applied only after the actual same-view wkeResize returns; cursor publication uses that applied geometry while retaining live view/document/receipt checks. MoveWindow follows FIFO admission because it can synchronously route new-geometry input. Generic document intent is sampled only at actual main-context creation; trace base readiness remains a separate confirmed boundary.
+
+Regression SOURCE covers paused first-head publication, FIFO appended during a no-cutoff batch, more-than-one-batch resize/close ordering, MAX recovery/cleanup ties, rejected ordinal publication, and negative/zero/odd/oversize IMM byte lengths. These cases have not been compiled or executed.
+
 必要用例源码覆盖容量/字节/OOM边界、已接纳 FIFO、恢复顺序、按住键隔离、IME commit、两 Host 进展、注销/停止与迟到通知。编译和运行由专人执行；当前只允许源码审查和 `git diff --check`，不据源码候选宣称性能通过。

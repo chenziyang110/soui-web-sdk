@@ -63,6 +63,12 @@ void engine_admission::unregister_input(engine_thread& engine, const std::shared
   engine.unregister_input_service(service);
 }
 void engine_admission::notify_input(engine_thread& engine) noexcept { engine.notify_input_service(); }
+std::uint64_t engine_admission::commit_input(engine_thread& engine, std::atomic<std::uint64_t>& head,
+    std::atomic<bool>& pending, bool publish_head, bool recovery) { return engine.commit_input_order(head, pending, publish_head, recovery); }
+std::uint64_t engine_admission::input_cutoff(const engine_thread& engine) {
+  std::lock_guard<std::mutex> lock(engine.mutex_);
+  return engine.queued_ ? engine.work_[engine.head_].order : 0;
+}
 } // namespace detail
 
 #ifdef _WIN32
@@ -254,11 +260,14 @@ bool engine_thread::has_pending_input_locked() const noexcept {
 void engine_thread::service_one_input() {
   std::shared_ptr<detail::engine_input_service> selected;
   bool stopping = false;
+  std::uint64_t cutoff = 0;
   {
     std::lock_guard<std::mutex> lock(mutex_);
     for (std::size_t count = 0; count < input_services_.size(); ++count) {
       const auto index = (next_input_service_ + count) % input_services_.size();
-      if (input_services_[index] && input_services_[index]->pending()) {
+      cutoff = queued_ ? work_[head_].order : 0;
+      if (input_services_[index] && input_services_[index]->pending()
+          && detail::input_order_precedes(input_services_[index]->oldest_order(), cutoff)) {
         selected = input_services_[index];
         next_input_service_ = (index + 1) % input_services_.size();
         ++executing_;
@@ -269,11 +278,37 @@ void engine_thread::service_one_input() {
   }
   if (selected) {
     if (stopping) selected->quiesce();
-    selected->service();
+    selected->service_before(cutoff);
     std::lock_guard<std::mutex> lock(mutex_);
     --executing_;
     if (!queued_ && !executing_ && !has_pending_input_locked()) idle_.notify_all();
   }
+}
+
+std::uint64_t engine_thread::next_admission_order_locked() noexcept {
+  if (admission_order_ >= (std::numeric_limits<std::uint64_t>::max)() - 1) return 0;
+  return ++admission_order_;
+}
+
+std::uint64_t engine_thread::commit_input_order(std::atomic<std::uint64_t>& head,
+    std::atomic<bool>& pending, bool publish_head, bool recovery) {
+  std::lock_guard<std::mutex> lock(mutex_);
+  if (state_ != engine_thread_state::running
+      && !(recovery && state_ == engine_thread_state::stopping)) return 0;
+  auto order = next_admission_order_locked();
+  if (!order && recovery) order = (std::numeric_limits<std::uint64_t>::max)();
+  if (!order) return 0;
+  // Payload copy/preflight already finished under channel lock. Publication
+  // before releasing Engine mutex closes the reserve-before-publish gap.
+  if (publish_head) head.store(order, std::memory_order_release);
+  pending.store(true, std::memory_order_release);
+  return order;
+}
+
+bool engine_thread::older_input_locked(std::uint64_t order) const noexcept {
+  for (const auto& service : input_services_)
+    if (service && service->pending() && detail::input_order_precedes(service->oldest_order(), order)) return true;
+  return false;
 }
 
 detail::engine_admission_result engine_thread::post_internal(task work,detail::engine_lane lane,
@@ -296,6 +331,12 @@ detail::engine_admission_result engine_thread::post_internal(task work,detail::e
     }
     // Credits guarantee a free physical slot. No callable allocation/destruction under this lock.
     if (queued_ >= queue_capacity || work_[tail_].callback) std::terminate();
+    auto order = next_admission_order_locked();
+    if (!order) {
+      if (lane == detail::engine_lane::cleanup) order = (std::numeric_limits<std::uint64_t>::max)();
+      else return result::full; // Cleanup retains its existing out-of-band close credit.
+    }
+    work_[tail_].order = order;
     work_[tail_].callback.swap(work);
     work_[tail_].enqueued_us=metrics_mode_ == diagnostics::mode::scalar ? diagnostics::detail::now_us() : 0;
     work_[tail_].lane=category;
@@ -566,6 +607,7 @@ void engine_thread::run(initializer initialize, task shutdown) noexcept {
           break;
         }
         if (queued_ == 0) break;
+        if (older_input_locked(work_[head_].order)) break;
         current.swap(work_[head_].callback);
         --lane_queued_[work_[head_].lane];
         head_=(head_+1)%queue_capacity; --queued_;

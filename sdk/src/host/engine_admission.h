@@ -5,6 +5,7 @@
 #include <array>
 #include <cstdint>
 #include <memory>
+#include <atomic>
 
 namespace soui::sdk { class dynamic_miniblink_adapter; }
 
@@ -59,6 +60,9 @@ class engine_admission final {
   [[nodiscard]] static bool register_input(engine_thread&, const std::shared_ptr<engine_input_service>&);
   static void unregister_input(engine_thread&, const std::shared_ptr<engine_input_service>&);
   static void notify_input(engine_thread&) noexcept;
+  [[nodiscard]] static std::uint64_t commit_input(engine_thread&, std::atomic<std::uint64_t>& head,
+      std::atomic<bool>& pending, bool publish_head, bool recovery);
+  [[nodiscard]] static std::uint64_t input_cutoff(const engine_thread&);
   // Owner-only borrow of the actual mounted Host Engine; invalidated by teardown.
   // No callback, state setter, permission or wire endpoint is introduced.
   [[nodiscard]] static engine_thread* host_engine(dynamic_miniblink_adapter&) noexcept;

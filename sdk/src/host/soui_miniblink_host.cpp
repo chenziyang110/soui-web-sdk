@@ -1304,7 +1304,9 @@ host_result dynamic_miniblink_adapter::mount(const host_config& config) {
     input_mailbox_ = std::make_shared<detail::input_mailbox>([this](const input_packet* packet) {
       if (packet) dispatch_input_on_engine(*packet);
       else cancel_input_on_engine();
-    });
+    }, [engine = engine_thread_](std::atomic<std::uint64_t>& head, std::atomic<bool>& pending, bool first, bool recovery) {
+      return detail::engine_admission::commit_input(*engine, head, pending, first, recovery);
+    }, [engine = engine_thread_] { return detail::engine_admission::input_cutoff(*engine); });
   } catch (...) { return failed_startup(failure("E_INPUT_CAPACITY", "The bounded input mailbox could not be allocated.")); }
   if (!detail::engine_admission::register_input(*engine_thread_, input_mailbox_))
     return failed_startup(failure("E_INPUT_CAPACITY", "The process already owns the maximum 32 input Hosts."));
@@ -1415,6 +1417,8 @@ host_result dynamic_miniblink_adapter::mount_on_engine(const host_config& config
     return failure("E_WEBVIEW_CREATE", "Miniblink could not create a child WebView.");
   }
   webview_ = view;
+  engine_input_generation_ = interaction_generation_;
+  engine_requested_document_generation_ = engine_input_generation_.document;
 #ifdef SOUI_BRIDGE_BENCHMARK
   append_host_smoke_log(resource_root_, "webview-created");
 #endif
@@ -1947,7 +1951,7 @@ host_result dynamic_miniblink_adapter::reload() {
   benchmark_result_slot_.reset();
 #endif
   host_result result = failure("E_ENGINE_THREAD", "The reload did not reach the Miniblink owner thread.");
-  const auto invoked = invoke_lifecycle(engine_thread_, [this, reload_receipt, &result] {
+  const auto invoked = invoke_lifecycle(engine_thread_, [this, reload_receipt, requested_document = interaction_generation_.document, &result] {
     const auto current = [this, reload_receipt] {
       return reload_receipt ? detail::main_context_gate<>::pending(cursor_context_receipt_, reload_receipt)
                             : execution_context_receipt() == 0;
@@ -1980,6 +1984,7 @@ host_result dynamic_miniblink_adapter::reload() {
       return;
     }
     if (!current()) { result = failure("E_CONTEXT_PENDING", "The reload was superseded before execution."); return; }
+    if (!cursor_broker_) engine_requested_document_generation_ = requested_document;
     wkeReload(static_cast<wkeWebView>(webview_));
     result = success("WebView reload requested on the engine thread.");
   });
@@ -2030,14 +2035,20 @@ host_result dynamic_miniblink_adapter::resize(int width, int height) {
   }
   next_input_sequence_ = 0;
   wheel_smoothing_.reset();
-  MoveWindow(static_cast<HWND>(webview_window_), 0, 0, width, height, TRUE);
-  const auto admitted=detail::engine_admission::post(*engine_thread_,detail::engine_lane::ordinary,[this, width, height] {
+  const auto geometry = interaction_generation_.geometry;
+  const auto admitted=detail::engine_admission::post(*engine_thread_,detail::engine_lane::ordinary,[this, width, height, geometry] {
+        if (webview_ == nullptr || wkeResize == nullptr) return;
+        const auto view = webview_;
+        wkeResize(static_cast<wkeWebView>(view), width, height);
+        if (webview_ != view) return;
+        engine_input_generation_.geometry = geometry;
         if (cursor_broker_) (void)update_cursor_identity_on_engine();
-        if (webview_ != nullptr && wkeResize != nullptr)
-          wkeResize(static_cast<wkeWebView>(webview_), width, height);
       });
   if (admitted != detail::engine_admission_result::accepted)
     return engine_admission_failure(admitted,"The Miniblink owner thread rejected resize.");
+  // MoveWindow may synchronously route input. Its FIFO barrier must already
+  // exist before any new-geometry native message can be accepted.
+  MoveWindow(static_cast<HWND>(webview_window_), 0, 0, width, height, TRUE);
   return success("SOUI window resized; engine resize queued.");
 #else
   (void)width;
@@ -2083,7 +2094,8 @@ bool dynamic_miniblink_adapter::update_cursor_identity_on_engine() {
   const auto view = webview_;
   const auto* broker = cursor_broker_.get();
   const auto* api = static_cast<const wkeCursorBrokerApi*>(cursor_api_);
-  const auto identity = cursor_broker_->identity();
+  auto identity = cursor_broker_->identity();
+  identity.geometryGeneration = engine_input_generation_.geometry;
   if (!valid_cursor_api(api)) { cursor_transition_pending_ = true; return false; }
   const auto status = api->updateIdentity(cursor_broker_->token(), &identity);
   if (webview_ != view || cursor_broker_.get() != broker || execution_context_receipt() != receipt) {
@@ -2093,10 +2105,10 @@ bool dynamic_miniblink_adapter::update_cursor_identity_on_engine() {
   const auto latest = cursor_broker_->identity();
   const bool current = status == WKE_CURSOR_BROKER_OK &&
       identity.viewGeneration == latest.viewGeneration && identity.documentGeneration == latest.documentGeneration &&
-      identity.geometryGeneration == latest.geometryGeneration;
-  cursor_transition_pending_ = !current;
-  // Every engine input/pump rechecks the full tuple, so a concurrent UI resize
-  // cannot lose its pending update through this diagnostic flag.
+      identity.geometryGeneration == engine_input_generation_.geometry;
+  cursor_transition_pending_ = !current || identity.geometryGeneration != latest.geometryGeneration;
+  // UI geometry is an intent until its FIFO resize returns. Keep broker
+  // publication on applied geometry while still checking live view/document.
   return current;
 #else
   return true;
@@ -2107,6 +2119,9 @@ bool dynamic_miniblink_adapter::advance_cursor_document_on_engine() {
 #ifdef _WIN32
   if (!cursor_broker_) return true;
   if (!cursor_broker_->advance_document()) { cursor_transition_pending_ = true; return false; }
+  const auto identity = cursor_broker_->identity();
+  engine_input_generation_.view = identity.viewGeneration;
+  engine_input_generation_.document = identity.documentGeneration;
   return update_cursor_identity_on_engine();
 #endif
   return true;
@@ -2365,7 +2380,7 @@ void dynamic_miniblink_adapter::cancel_input_on_engine() {
 #endif
   if (had_state && !native_cancelled) {
     input_recovery_limited_.store(true, std::memory_order_release);
-    if (input_mailbox_) std::static_pointer_cast<detail::input_mailbox>(input_mailbox_)->block_document(interaction_router_.generation());
+    if (input_mailbox_) std::static_pointer_cast<detail::input_mailbox>(input_mailbox_)->block_document(engine_input_generation_);
   }
   input_keys_on_engine_.fill(false);
   input_pointer_on_engine_ = false;
@@ -2393,13 +2408,13 @@ void dynamic_miniblink_adapter::dispatch_input_on_engine(input_packet packet) {
     if (!cursor_broker_->input_allowed() || !update_cursor_identity_on_engine() ||
         !accepts_execution_context_receipt(context_receipt) || !cursor_broker_->input_allowed()) return;
     const auto identity = cursor_broker_->identity();
-    if (!applicable({identity.viewGeneration, identity.documentGeneration, identity.geometryGeneration})) {
+    if (!applicable({identity.viewGeneration, identity.documentGeneration, engine_input_generation_.geometry})) {
       if (packet.generation.view == identity.viewGeneration && packet.generation.document == identity.documentGeneration)
         request_cancellation();
       return;
     }
   }
-  if (webview_ == nullptr || !applicable(interaction_router_.generation())) return;
+  if (webview_ == nullptr || !applicable(engine_input_generation_)) return;
   const auto view = static_cast<wkeWebView>(webview_);
   switch (packet.kind) {
     case input_kind::wheel:
@@ -2739,9 +2754,8 @@ bool dynamic_miniblink_adapter::handle_native_window_message(
         auto copy_text = [context, &text_rejected](DWORD selector) {
           std::u16string text;
           const LONG bytes = ImmGetCompositionStringW(context, selector, nullptr, 0);
+          if (!detail::input_mailbox::valid_native_text_bytes(bytes)) { text_rejected = true; return text; }
           if (bytes > 0) {
-            if (bytes > static_cast<LONG>(detail::input_mailbox::event_byte_limit)
-                || bytes % sizeof(char16_t)) { text_rejected = true; return text; }
             try { text.resize(static_cast<std::size_t>(bytes) / sizeof(char16_t)); }
             catch (...) { text_rejected = true; return text; }
             const LONG copied = ImmGetCompositionStringW(context, selector, text.data(), bytes);
@@ -3250,6 +3264,7 @@ bool dynamic_miniblink_adapter::notify_main_context_created(void* originating_vi
   application_ready_ = false;
   try {
   if (!still_pending() || !advance_cursor_document_on_engine() || !still_pending()) return false;
+  if (!cursor_broker_) engine_input_generation_.document = engine_requested_document_generation_;
 #ifdef _WIN32
   if (webview_ != view || cursor_broker_.get() != broker || (controlled && !broker)) return false;
   const auto context_identity = cursor_broker_ ? cursor_broker_->identity() : wkeCursorBrokerIdentity{};

@@ -1,5 +1,6 @@
 #include "../../../sdk/src/host/input_mailbox.h"
 #include "../../../sdk/src/host/engine_admission.h"
+#include "ordinal_cases.h"
 #include <atomic>
 #include <cstdlib>
 #include <iostream>
@@ -95,6 +96,7 @@ int main() {
     };
     engine_thread engine;
     require(engine.start([] { return true; }), "engine startup");
+    input_ordinal_cases::run(engine);
     std::array<std::shared_ptr<mock_service>, 32> hosts;
     for (auto& host : hosts) { host = std::make_shared<mock_service>(); require(detail::engine_admission::register_input(engine, host), "host capacity before32"); }
     require(!detail::engine_admission::register_input(engine, std::make_shared<mock_service>()), "host registry exceeded32");

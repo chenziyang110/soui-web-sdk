@@ -213,6 +213,8 @@ class dynamic_miniblink_adapter final : public webview_host_adapter,
   bool cursor_close_pending_{false};
   bool cursor_vendor_destroyed_{false};
   interaction_generation interaction_generation_;
+  interaction_generation engine_input_generation_; // Engine owner: actually applied context/resize.
+  std::uint64_t engine_requested_document_generation_{1}; // Captured by the actual owner reload; confirmed at context creation.
   std::atomic<std::uint64_t> next_input_sequence_{0};
   wheel_smoothing_policy wheel_smoothing_;
   std::atomic<std::uint32_t> wheel_scroll_lines_{3};
