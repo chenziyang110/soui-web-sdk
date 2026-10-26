@@ -153,7 +153,8 @@ set_property(TARGET soui_engine_thread_timeout_tests PROPERTY MSVC_RUNTIME_LIBRA
 add_test(NAME sdk.native.engine-diagnostic-timeout COMMAND soui_engine_thread_timeout_tests)
 set_tests_properties(sdk.native.engine-diagnostic-timeout PROPERTIES TIMEOUT 30)
 add_executable(soui_engine_thread_startup_tests engine_thread_startup_tests.cpp
-  "${SOUI_DISTRIBUTION_ROOT}/sdk/src/host/engine_thread.cpp")
+  "${SOUI_DISTRIBUTION_ROOT}/sdk/src/host/engine_thread.cpp"
+  "${SOUI_DISTRIBUTION_ROOT}/sdk/src/runtime/diagnostics/input_frame_trace.cpp")
 # This target compiles the real engine implementation once, with a private seam.
 # The installed SDK is compiled separately without this definition or hook code.
 target_include_directories(soui_engine_thread_startup_tests PRIVATE "${SOUI_DISTRIBUTION_ROOT}/sdk/include")
@@ -465,3 +466,5 @@ foreach(json_diagnostics IN ITEMS 0 1)
 endforeach()
 
 add_subdirectory(host_frame_policy)
+
+add_subdirectory(native_trace_ui_lease)
