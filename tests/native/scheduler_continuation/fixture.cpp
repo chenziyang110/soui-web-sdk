@@ -16,6 +16,7 @@ std::deque<Message> messages;
 std::vector<std::wstring> messageNames;
 DWORD queueStatus = 0;
 bool failPost = false;
+bool failTimer = false;
 unsigned postAttempts = 0, timerCalls = 0, runs = 0, destroyed = 0;
 double now = 100.0, step = 0;
 int enters = 0, failures = 0, assertions = 0;
@@ -28,7 +29,7 @@ BOOL WINAPI post(HWND w, UINT id, WPARAM a, LPARAM b) {
 }
 DWORD WINAPI status(UINT flags) { return queueStatus & (flags | (flags << 16)); }
 LRESULT WINAPI defaultProc(HWND, UINT, WPARAM, LPARAM) { return 0; }
-UINT_PTR WINAPI setTimer(HWND, UINT_PTR id, UINT, TIMERPROC) { ++timerCalls; return id; }
+UINT_PTR WINAPI setTimer(HWND, UINT_PTR id, UINT, TIMERPROC) { ++timerCalls; return failTimer ? 0 : id; }
 BOOL WINAPI killTimer(HWND, UINT_PTR) { return TRUE; }
 BOOL WINAPI destroyWindow(HWND) { return TRUE; }
 BOOL WINAPI unregisterClass(LPCWSTR, HINSTANCE) { return TRUE; }
@@ -168,6 +169,18 @@ int run() {
     blink::Platform::current()->owner = &thread;
     content::setSharedTimerFireInterval(0.016);
     expect(timerCalls == 1, "periodic fallback remains armed");
+    expect(content::timerID > content::endHighResTimerID,
+        "native generation IDs do not alias reserved legacy timer IDs");
+    failTimer = true;
+    content::setSharedTimerFireInterval(0.020);
+    expect(content::timerID == 0 && content::lastIntervalInMS < 0,
+        "failed timer replacement cancels known native timer and invalidates interval cache");
+    failTimer = false;
+    const unsigned failedTimerCalls = timerCalls;
+    content::setSharedTimerFireInterval(0.020);
+    expect(timerCalls == failedTimerCalls + 1 && content::timerID != 0,
+        "same interval retries after SetTimer failure");
+    content::setSharedTimerFireInterval(0.016);
 
     resetCase(thread);
     addTasks(thread, 256);

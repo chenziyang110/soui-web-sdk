@@ -35,7 +35,7 @@ namespace content {
 const LPCWSTR kTimerWindowClassName = L"MiniBlinkTimerWindowClass";
  
 static UINT_PTR timerID;
-static UINT_PTR nativeTimerSerial = 1000;
+static UINT_PTR nativeTimerSerial = 1001; // Above both reserved legacy timer IDs.
 static void sharedTimerFiredFunction();
 
 static HANDLE timer;
@@ -230,8 +230,12 @@ void setSharedTimerFireInterval(double interval)
             timerID = ++nativeTimerSerial;
         if (timerID && SetTimer(timerWindowHandle, timerID, intervalInMS, 0))
             lastIntervalInMS = intervalInMS;
-        else
+        else {
+            if (timerID)
+                ::KillTimer(timerWindowHandle, timerID);
             timerID = 0;
+            lastIntervalInMS = -1; // Failed replacement must not suppress a retry.
+        }
         timer = 0;
     }
 }
