@@ -110,4 +110,6 @@ SDK输入handler为冷分配共享拥有对象，锁内只copy pin、锁外call/
 
 W09默认预算0/off；显式100..5000us只协调协作批次，单个provider/JS回调仍不可抢占，细化跨provider剩余预算等profile。Bridge逐事件开文件/日志专用格式化与owner pump重复GPU日志读均移除；GPU状态只取本child HWND的实际属性，缺证据用CPU保守策略，不取其他surface进程全局实验值。
 
-worker严格来源为16个完整输入、15段复制、22个payload。仅对已独立审过的两份C trace原件/whole-copy更新pins，其他原件/片段/payload/关闭proof全部精确一致；LLVM observer的新generated-source角色将在源码冻结前补齐，不能依靠过时夹具或放宽unknown-source门槛交接。
+worker严格来源为16个完整输入、15段复制、22个payload。仅对已独立审过的两份C trace原件/whole-copy更新pins，其他原件/片段/payload/关闭proof全部精确一致；LLVM observer新增6个严格角色已补齐：5个固定writer recipe的46个输出路径、8个实际编译对象，包含wheel的两个generated.cpp；index只允许0生成。每个来源/对象对先由真实Ninja绑定选择，再从冻结writer+原字节推导，拒绝未知source和build后manifest授权。
+
+SDK本批LLVM观察器已静态重绑16/15/22 worker形状与3个canonical LF writer SHA；原有未知来源/篡改拒绝保持。新增SOURCE覆盖缺失/错配compiler unit、额外object、未知header/manifest及writer/pin篡改。只完成PowerShell语法树解析、原字节/散列/源码差异检查，没有执行脚本主体、SOURCE案例或编译。host_visibility复制均为UTF8（AutoRecord含非ASCII），使用/utf-8；window native_close片段保留CP936，其余没有以重新编码冒充原件。
