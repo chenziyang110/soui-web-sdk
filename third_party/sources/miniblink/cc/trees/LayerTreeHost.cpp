@@ -11,6 +11,7 @@
 #include <algorithm>
 #include "cc/trees/LayerTreeHost.h"
 #include "cc/trees/FrameDeadlinePolicy.h"
+#include "cc/trees/ResourceNotificationPolicy.h"
 #if defined(SOUI_GPU_COMPOSITOR)
 #include "cc/trees/GpuSkiaSurface.h"
 #endif
@@ -58,6 +59,7 @@ struct UiPaintRetryState {
     std::mutex mutex;
     LayerTreeHost* host;
     LegacyPaintRetryPolicy policy;
+    ResourceNotificationPolicy resource;
 };
 
 // The queue owns this object. Rejection/cancellation disposes only its ticket;
@@ -88,6 +90,79 @@ private:
     std::shared_ptr<UiPaintRetryState> m_state;
     LegacyPaintRetryPolicy::Ticket m_ticket;
 };
+
+static void queueResourceProgress(const std::shared_ptr<UiPaintRetryState>& state,
+    bool failureRetry = false);
+
+class ResourceProgressTask : public blink::WebThread::Task {
+public:
+    ResourceProgressTask(const std::shared_ptr<UiPaintRetryState>& state,
+        uint64_t ticket, uint64_t generation, bool failureRetry)
+        : m_state(state), m_ticket(ticket), m_generation(generation)
+        , m_failureRetry(failureRetry) { }
+    ~ResourceProgressTask() override
+    {
+        bool retry = false;
+        {
+            std::lock_guard<std::mutex> lock(m_state->mutex);
+            if (m_state->resource.dispose(m_ticket))
+                retry = !m_ran && !m_failureRetry && m_state->host;
+        }
+        // One exceptional 100ms fallback after a rejected/cancelled post.
+        // A second rejection retains intent for the next owner service call.
+        if (retry)
+            queueResourceProgress(m_state, true);
+    }
+    void run() override
+    {
+        m_ran = true;
+        LayerTreeHost* host;
+        {
+            std::lock_guard<std::mutex> lock(m_state->mutex);
+            host = m_state->host;
+        }
+        if (host)
+            host->runResourceProgress(m_ticket, m_generation);
+    }
+private:
+    std::shared_ptr<UiPaintRetryState> m_state;
+    uint64_t m_ticket;
+    uint64_t m_generation;
+    bool m_failureRetry;
+    bool m_ran = false;
+};
+
+static void queueResourceProgress(const std::shared_ptr<UiPaintRetryState>& state,
+    bool failureRetry)
+{
+    uint64_t ticket = 0;
+    uint64_t generation = 0;
+    {
+        std::lock_guard<std::mutex> lock(state->mutex);
+        if (!state->host)
+            return;
+        const auto armed = state->resource.arm(state->policy.generation());
+        ticket = armed.sequence;
+        generation = armed.generation;
+        if (!ticket)
+            return;
+    }
+    ResourceProgressTask* task = new (std::nothrow) ResourceProgressTask(
+        state, ticket, generation, failureRetry);
+    if (!task) {
+        std::lock_guard<std::mutex> lock(state->mutex);
+        state->resource.dispose(ticket);
+        return;
+    }
+    if (!Platform::current() || !Platform::current()->mainThread()) {
+        delete task;
+        return;
+    }
+    if (failureRetry)
+        Platform::current()->mainThread()->postDelayedTask(FROM_HERE, task, 100);
+    else
+        Platform::current()->mainThread()->postTask(FROM_HERE, task);
+}
 
 struct CompositorAnimationState {
     CompositorAnimationState(int targetLayerId,
@@ -430,7 +505,7 @@ static double configuredDrawMinInterval()
                                                  sizeof(overrideValue));
     if (length > 0 && length < sizeof(overrideValue)) {
         const int milliseconds = std::atoi(overrideValue);
-        if (milliseconds > 0 && milliseconds <= 1000)
+        if (milliseconds >= 0 && milliseconds <= 1000)
             return static_cast<double>(milliseconds) / 1000.0;
     }
 
@@ -823,22 +898,91 @@ static bool compareAction(LayerChangeAction*& left, LayerChangeAction*& right)
     return left->actionId() < right->actionId();
 }
 
+LayerTreeHost::RecordBlockReason LayerTreeHost::recordBlockReason() const
+{
+    if (m_isDestroying)
+        return RecordBlockReason::Destroying;
+    if (hasInFlightScene())
+        return RecordBlockReason::InFlightScene;
+    if (!m_actionsFrameGroup)
+        return RecordBlockReason::MissingAction;
+    if (!m_actionsFrameGroup->containComefromMainframeLocked())
+        return RecordBlockReason::None;
+    if (RasterTaskWorkerThreadPool::shared()->getPendingRasterTaskNum() > 10)
+        return RecordBlockReason::Raster;
+    if (m_actionsFrameGroup->getFramesSize() > 30)
+        return RecordBlockReason::MissingAction;
+    return RecordBlockReason::None;
+}
+
 bool LayerTreeHost::canRecordActions() const
 {
-    if (hasInFlightScene())
-        return false;
-    if (!m_actionsFrameGroup->containComefromMainframeLocked())
-        return true;
+    return recordBlockReason() == RecordBlockReason::None;
+}
 
-    if (RasterTaskWorkerThreadPool::shared()->getPendingRasterTaskNum() > 10)
-        return false;
+void LayerTreeHost::registerResourceWait()
+{
+    std::lock_guard<std::mutex> lock(m_uiPaintRetry->mutex);
+    m_uiPaintRetry->resource.wait();
+}
 
-    if (!m_actionsFrameGroup || m_actionsFrameGroup->getFramesSize() > 30)
-        return false;
-    
-    // Admission is resource-only. WebPageImpl owns commit pacing; adding
-    // another last-record interval here would defer an already-paced frame.
-    return true;
+void LayerTreeHost::clearResourceWait()
+{
+    std::lock_guard<std::mutex> lock(m_uiPaintRetry->mutex);
+    m_uiPaintRetry->resource.clearWait();
+}
+
+void LayerTreeHost::notifyResourceProgress(bool actionDirty)
+{
+    {
+        std::lock_guard<std::mutex> lock(m_uiPaintRetry->mutex);
+        if (!m_uiPaintRetry->host)
+            return;
+        m_uiPaintRetry->resource.notify(actionDirty);
+    }
+    queueResourceProgress(m_uiPaintRetry);
+}
+
+void LayerTreeHost::notifyRasterCompletion(const std::shared_ptr<UiPaintRetryState>& state)
+{
+    // Safe after the pending-task count reaches zero: this handle pins only
+    // cancellation state, and never dereferences a potentially destroyed host.
+    queueResourceProgress(state);
+}
+
+void LayerTreeHost::runResourceProgress(uint64_t ticket, uint64_t generation)
+{
+    bool dirty = false;
+    bool waiting = false;
+    bool stale = false;
+    {
+        std::lock_guard<std::mutex> lock(m_uiPaintRetry->mutex);
+        const auto intent = m_uiPaintRetry->resource.consume(
+            ResourceNotificationPolicy::Ticket{ticket, generation},
+            m_uiPaintRetry->policy.generation());
+        stale = intent.stale;
+        dirty = intent.dirty;
+        waiting = intent.waiting;
+    }
+    if (stale) {
+        queueResourceProgress(m_uiPaintRetry);
+        return;
+    }
+    if (m_isDestroying)
+        return;
+    retryPendingOwnerWork();
+    if (dirty)
+        setLayerTreeDirty();
+    else if (waiting)
+        m_hostClient->onLayerTreeSetNeedsCommit();
+}
+
+void LayerTreeHost::retryPendingOwnerWork()
+{
+    // Cheap owner service entry: retained dirty after an exceptional rejection
+    // is retried here, without a permanent timer or an engine drain loop.
+    WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
+    queueLegacyPaintLocked();
 }
 
 void LayerTreeHost::beginRecordActions(bool isComefromMainframe)
@@ -853,13 +997,16 @@ void LayerTreeHost::endRecordActions()
     if (m_isDestroying)
         return;
     m_actionsFrameGroup->endRecordActions();
+    requestApplyActionsToRunIntoCompositeThread(false);
 }
 
 void LayerTreeHost::appendLayerChangeAction(LayerChangeAction* action)
 {
     m_actionsFrameGroup->saveLayerChangeAction(action);
-
-    setLayerTreeDirty();
+    // Producer completion wakes the compositor and owner once each. Never
+    // call WebPageImpl/JS directly from a raster worker.
+    requestApplyActionsToRunIntoCompositeThread(false);
+    notifyResourceProgress(true);
 }
 
 int64 LayerTreeHost::genActionId()
@@ -1494,6 +1641,7 @@ void LayerTreeHost::onActionFrameApplied(int64 throughActionId)
     }
     if (ready)
         requestDrawFrameToRunIntoCompositeThread();
+    notifyResourceProgress();
 }
 
 inline SkRect unionRect(const SkRect& a, const SkRect& b)
@@ -2394,6 +2542,8 @@ bool LayerTreeHost::tickCompositorScroll(double monotonicTime,
         }
     }
 
+    if (activatedSceneTree)
+        notifyResourceProgress();
     ScrollTreeSnapshot* pendingTree = nullptr;
     WTF::Vector<CompositorScrollInput*> inputs;
     {
@@ -2845,11 +2995,10 @@ void LayerTreeHost::drawFrameInCompositeThread()
     if ((animationNeedsAnotherFrame || scrollNeedsAnotherFrame)
         && !m_isDestroying) {
         requestDrawFrameToRunIntoCompositeThread();
-    } else if (!frameReady && !m_isDestroying) {
-        // An incomplete transaction is waiting for producer work; do not turn
-        // that wait into a zero-delay compositor spin loop.
-        requestDrawFrameAfterDelay(8);
     }
+    // Incomplete action/resource transactions are resumed by producer
+    // publication, not a periodic draw task. No resource fence is bypassed.
+    (void)frameReady;
     atomicDecrement(&m_drawFrameFinishCount);
 }
 

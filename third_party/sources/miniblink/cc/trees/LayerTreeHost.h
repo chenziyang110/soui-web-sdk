@@ -48,6 +48,7 @@ class CompositingLayer;
 class ActionsFrameGroup;
 struct UiPaintRetryState;
 class UiPaintRetryTask;
+class ResourceProgressTask;
 struct CompositorAnimationState;
 struct CompositorAnimationFinishedTask;
 struct CompositorScrollState;
@@ -179,7 +180,15 @@ public:
     int64 frontRasteringIndex();
     void popRasteringIndex();
 
+    enum class RecordBlockReason { None, Destroying, InFlightScene, Raster, MissingAction };
+    RecordBlockReason recordBlockReason() const;
     bool canRecordActions() const;
+    void registerResourceWait();
+    void clearResourceWait();
+    void notifyResourceProgress(bool actionDirty = false);
+    std::shared_ptr<UiPaintRetryState> resourceNotificationState() const { return m_uiPaintRetry; }
+    static void notifyRasterCompletion(const std::shared_ptr<UiPaintRetryState>& state);
+    void retryPendingOwnerWork();
     void beginRecordActions(bool isComefromMainframe);
     void endRecordActions();
 
@@ -248,6 +257,8 @@ private:
     void queueLegacyPaintLocked();
     void runLegacyPaintRetry(const LegacyPaintRetryPolicy::Ticket& ticket);
     friend class UiPaintRetryTask;
+    friend class ResourceProgressTask;
+    void runResourceProgress(uint64_t ticket, uint64_t generation);
     std::shared_ptr<UiPaintRetryState> m_uiPaintRetry;
     void onApplyActionsInCompositeThread(bool needCheck);
     void waitForApplyActions();

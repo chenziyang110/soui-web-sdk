@@ -869,6 +869,7 @@ void WebPageImpl::beginMainFrame()
         return;
 
     if (/*needsCommit*/true) {
+        m_layerTreeHost->retryPendingOwnerWork();
         executeMainFrame();
         m_layerTreeHost->requestDrawFrameToRunIntoCompositeThread();
     }
@@ -886,9 +887,13 @@ void WebPageImpl::executeMainFrame()
     //double lastFrameTimeMonotonic = WTF::monotonicallyIncreasingTime();
 
     if (!m_layerTreeHost->canRecordActions()) {
-        // Resource/fence pressure cannot make progress by executing the same
-        // commit repeatedly in one ready-task drain. Keep one deferred retry.
-        scheduleCommit(1);
+        // Register before rechecking: completion before registration is seen
+        // by the recheck, and completion afterwards owns one merged wake.
+        m_layerTreeHost->registerResourceWait();
+        if (m_layerTreeHost->canRecordActions()) {
+            m_layerTreeHost->clearResourceWait();
+            scheduleCommit(0);
+        }
         atomicDecrement(&m_executeMainFrameCount);
         return;
     }

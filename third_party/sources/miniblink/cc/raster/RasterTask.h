@@ -32,6 +32,7 @@
 #define cc_raster_RasterTask_h
 
 #include "wtf/Vector.h"
+#include <memory>
 #include "skia/ext/refptr.h"
 #include "third_party/skia/include/core/SkPicture.h"
 #include "third_party/WebKit/Source/platform/geometry/IntRect.h"
@@ -58,6 +59,7 @@ class TileGrid;
 class Tile;
 class RasterTaskWorkerThreadPool;
 class LayerTreeHost;
+struct UiPaintRetryState;
 class SkBitmapRefWrap;
 class TileActionInfoVector;
 class LayerChangeActionBlend;
@@ -119,6 +121,7 @@ public:
     void appendUnnecessaryTileToEvictAfterDrawFrame(Tile* tile);
 
     void waitHostRasteringIndexOld();
+    std::shared_ptr<UiPaintRetryState> resourceNotificationState() const;
 
     int getPendingRasterTaskNum() const;
 
