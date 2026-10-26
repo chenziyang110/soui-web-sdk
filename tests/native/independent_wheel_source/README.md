@@ -1,0 +1,5 @@
+Production-bound regression SOURCE only. Nothing here has been generated, compiled or run in this package.
+
+`generate.cjs <distribution-root> <generated-directory>` copies exact source/header bytes with hashes. Compile `fixture.cpp` with the generated `cc/input/ScrollController.cpp` and `cc/trees/ScrollTreeSnapshot.cpp`, C++17, generated include root, and MSVC `/source-charset:.936 /execution-charset:utf-8`. It creates no native window or compositor. Actual admission, payload, wake receipt, queue and owner retry methods are extracted; rendering and the receiving scheduler are explicit dependency fakes.
+
+Cases cover payload/reserve failure before prediction, receipt exhaustion, active-scene geometry mismatch, accepted publication followed by wake OOM/rejection/cancellation, exact one-time owner retry processing, and close with a late receipt. Root owns CMake registration; suggested target `soui_independent_wheel_source_tests`, suggested CTest `independent.wheel.source`, unregistered until Root wires them. Existing scroll ACK/fence oracles must remain unchanged.

@@ -2,6 +2,7 @@
 #define CC_TREES_SCROLL_TREE_SNAPSHOT_H_
 
 #include "cc/input/ScrollController.h"
+#include "cc/trees/IndependentInputTrace.h"
 
 #include <cstdint>
 #include <array>
@@ -29,6 +30,8 @@ public:
 
     void setSceneVersion(uint64_t sceneVersion);
     uint64_t sceneVersion() const { return m_sceneVersion; }
+    void setInputIdentity(const content::input_frame_trace::event& value) { m_inputIdentity.set(value); }
+    bool matchesInputIdentity(const content::input_frame_trace::event& value) const { return m_inputIdentity.matches(value); }
     void addNode(const ScrollNodeSnapshot& node);
     void addHitTestRegion(const ScrollHitTestRegion& region);
     ScrollNodeSnapshot* findMutableNode(const ScrollNodeKey& key);
@@ -45,6 +48,7 @@ public:
     bool isValid() const;
 
 private:
+    SceneInputIdentity m_inputIdentity;
     uint64_t m_sceneVersion;
     std::vector<ScrollNodeSnapshot> m_nodes;
     std::vector<ScrollHitTestRegion> m_hitTestRegions;

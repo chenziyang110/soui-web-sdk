@@ -61,6 +61,7 @@ struct UiPaintRetryState {
     LayerTreeHost* host;
     LegacyPaintRetryPolicy policy;
     ResourceNotificationPolicy resource;
+    DrawFrameWakePolicy drawWake;
     bool recordWaiting = false;
     bool rerasterRequired = false;
     bool drawWaiting = false;
@@ -93,6 +94,44 @@ public:
 private:
     std::shared_ptr<UiPaintRetryState> m_state;
     LegacyPaintRetryPolicy::Ticket m_ticket;
+};
+
+class DrawFrameTask final : public blink::WebThread::Task {
+public:
+    DrawFrameTask(const std::shared_ptr<UiPaintRetryState>& state, uint64_t ticket)
+        : m_state(state), m_ticket(ticket) { }
+    ~DrawFrameTask() override
+    {
+        if (m_ran)
+            return;
+        std::lock_guard<std::mutex> lock(m_state->mutex);
+        if (m_state->drawWake.reject(m_ticket) && m_state->host) {
+            // Host teardown must take this same state lock before clearing host.
+            atomicDecrement(&m_state->host->m_drawFrameCount);
+            atomicDecrement(&m_state->host->m_drawFrameFinishCount);
+            m_state->host->m_hasRejectedDrawWake.store(true);
+        }
+    }
+    void run() override
+    {
+        LayerTreeHost* host = nullptr;
+        {
+            std::lock_guard<std::mutex> lock(m_state->mutex);
+            if (m_state->drawWake.claim(m_ticket)) {
+                m_ran = true;
+                host = m_state->host;
+                if (host)
+                    host->m_hasRejectedDrawWake.store(false);
+            }
+        }
+        // Only the composite owner executes this task; host teardown joins it.
+        if (host)
+            host->drawFrameInCompositeThread();
+    }
+private:
+    std::shared_ptr<UiPaintRetryState> m_state;
+    uint64_t m_ticket;
+    bool m_ran = false;
 };
 
 static void queueResourceProgress(const std::shared_ptr<UiPaintRetryState>& state,
@@ -271,13 +310,18 @@ static void rememberRetiredCompositorScrollState(
 struct CompositorScrollInput {
     CompositorScrollInput(const ScrollNodeKey& targetNode,
         uint64_t sequence, const ScrollVector& inputDelta,
-        double inputTime, bool useSmoothMotion)
+        double inputTime, bool useSmoothMotion, uint64_t targetEpoch,
+        const content::input_frame_trace::event* identity)
         : node(targetNode)
         , inputSequence(sequence)
         , delta(inputDelta)
         , monotonicTime(inputTime)
         , smooth(useSmoothMotion)
+        , epoch(targetEpoch)
+        , hasTrace(identity != nullptr)
     {
+        if (identity)
+            traceIdentity = *identity;
     }
 
     ScrollNodeKey node;
@@ -285,6 +329,9 @@ struct CompositorScrollInput {
     ScrollVector delta;
     double monotonicTime;
     bool smooth;
+    uint64_t epoch;
+    bool hasTrace;
+    content::input_frame_trace::event traceIdentity;
 };
 
 static CompositorScrollState* findCompositorScrollState(
@@ -617,10 +664,17 @@ LayerTreeHost::~LayerTreeHost()
     requestApplyActionsToRunIntoCompositeThread(true);
 
     m_compositeMutex.lock();
+    trace::event destroyedInput;
+    while (m_independentInputTrace.takeAny(&destroyedInput)) {
+        destroyedInput.flags = 0; destroyedInput.outcome = trace::terminal::cancelled;
+        destroyedInput.why = trace::reason::destroyed;
+        recordRenderStage(trace::stage::input_terminal, destroyedInput);
+    }
     {
         std::lock_guard<std::mutex> retryLock(m_uiPaintRetry->mutex);
         m_uiPaintRetry->host = nullptr;
         m_uiPaintRetry->policy.close();
+        m_uiPaintRetry->drawWake.close();
     }
     for (auto it : m_animationFinishedTasks)
         it->host = nullptr;
@@ -674,8 +728,16 @@ LayerTreeHost::~LayerTreeHost()
 
     {
         WTF::Locker<WTF::Mutex> locker(m_compositorScrollInputMutex);
-        for (size_t i = 0; i < m_pendingCompositorScrollInputs.size(); ++i)
-            delete m_pendingCompositorScrollInputs[i];
+        for (size_t i = 0; i < m_pendingCompositorScrollInputs.size(); ++i) {
+            auto* input = m_pendingCompositorScrollInputs[i];
+            if (input->hasTrace) {
+                auto value = input->traceIdentity;
+                value.flags = 0; value.outcome = trace::terminal::cancelled;
+                value.why = trace::reason::destroyed;
+                recordRenderStage(trace::stage::input_terminal, value);
+            }
+            delete input;
+        }
         m_pendingCompositorScrollInputs.clear();
         delete m_pendingCompositorScrollTree;
         m_pendingCompositorScrollTree = nullptr;
@@ -1052,8 +1114,15 @@ void LayerTreeHost::retryPendingOwnerWork()
 {
     // Cheap owner service entry: retained dirty after an exceptional rejection
     // is retried here, without a permanent timer or an engine drain loop.
-    WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
-    queueLegacyPaintLocked();
+    bool retryDraw = false;
+    {
+        WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
+        queueLegacyPaintLocked();
+        std::lock_guard<std::mutex> lock(m_uiPaintRetry->mutex);
+        retryDraw = m_uiPaintRetry->drawWake.needsRetry();
+    }
+    if (retryDraw)
+        requestDrawFrameToRunIntoCompositeThread();
 }
 
 void LayerTreeHost::beginRecordActions(bool isComefromMainframe)
@@ -1236,6 +1305,10 @@ void LayerTreeHost::recordDraw()
     ScrollTreeSnapshot scrollTree;
     std::vector<ScrollRasterCoverageRequest> coverageRequests;
     updateLayersDrawProperties(&scrollTree, &coverageRequests);
+    {
+        WTF::Locker<WTF::Mutex> identityLock(m_compositeMutex);
+        scrollTree.setInputIdentity(m_viewTraceIdentity.value());
+    }
     const int64 actionBefore = m_actionsFrameGroup->newestActionId();
 
     cc::RasterTaskGroup* taskGroup = RasterTaskWorkerThreadPool::shared()->beginPostRasterTask(this);
@@ -2101,32 +2174,47 @@ blink::IntRect LayerTreeHost::getClientRect()
 
 void LayerTreeHost::requestDrawFrameToRunIntoCompositeThread()
 {
-    WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
-    if (!m_compositeThread) {
-        RELEASE_ASSERT(!m_uiThreadClient);
-        return;
-    }
-    if (0 != m_drawFrameCount)
-        return;
-
-    atomicIncrement(&m_drawFrameCount);
-    atomicIncrement(&m_drawFrameFinishCount);
-    m_compositeThread->platformThread().postTask(FROM_HERE, WTF::bind(&LayerTreeHost::drawFrameInCompositeThread, this));
+    queueDrawFrameWake(0);
 }
 
 void LayerTreeHost::requestDrawFrameAfterDelay(long long delayMs)
 {
+    queueDrawFrameWake(std::max<long long>(1, delayMs));
+}
+
+void LayerTreeHost::queueDrawFrameWake(long long delayMs)
+{
     WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
     if (!m_compositeThread || m_isDestroying)
         return;
-    if (0 != m_drawFrameCount)
+    if (m_drawFrameCount)
         return;
-
+    uint64_t ticket;
+    {
+        std::lock_guard<std::mutex> lock(m_uiPaintRetry->mutex);
+        m_uiPaintRetry->drawWake.request();
+        ticket = m_uiPaintRetry->drawWake.arm();
+    }
+    if (!ticket) {
+        m_hasRejectedDrawWake.store(true);
+        return;
+    }
+    auto* task = new (std::nothrow) DrawFrameTask(m_uiPaintRetry, ticket);
+    if (!task) {
+        std::lock_guard<std::mutex> lock(m_uiPaintRetry->mutex);
+        m_uiPaintRetry->drawWake.reject(ticket);
+        m_hasRejectedDrawWake.store(true);
+        return;
+    }
     atomicIncrement(&m_drawFrameCount);
     atomicIncrement(&m_drawFrameFinishCount);
-    m_compositeThread->platformThread().postDelayedTask(FROM_HERE,
-        WTF::bind(&LayerTreeHost::drawFrameInCompositeThread, this),
-        std::max<long long>(1, delayMs));
+    m_hasRejectedDrawWake.store(false);
+    // WebThread owns/disposes the task on every admission/timer failure.
+    // Its receipt clears only this wake, preserving published input and damage.
+    if (delayMs > 0)
+        m_compositeThread->platformThread().postDelayedTask(FROM_HERE, task, delayMs);
+    else
+        m_compositeThread->platformThread().postTask(FROM_HERE, task);
 }
 
 bool LayerTreeHost::addCompositorAnimation(int layerId,
@@ -2225,8 +2313,14 @@ bool LayerTreeHost::submitCompositorScrollTree(
 
 bool LayerTreeHost::handleCompositorWheelInput(int x, int y,
     double deltaX, double deltaY, double monotonicTime, bool smooth,
-    CompositorScrollReceipt* receipt)
+    CompositorScrollReceipt* receipt,
+    const content::input_frame_trace::event* inputIdentity)
 {
+    if (receipt)
+        *receipt = CompositorScrollReceipt();
+    content::PaintActivityScope inputActivity(m_paintLifetime);
+    if (!inputActivity)
+        return false;
     if (!featureEnabledByDefault("SOUI_COMPOSITOR_SCROLL")
         || m_isDestroying || !std::isfinite(deltaX) || !std::isfinite(deltaY)
         || !std::isfinite(monotonicTime)) {
@@ -2239,6 +2333,7 @@ bool LayerTreeHost::handleCompositorWheelInput(int x, int y,
     {
         WTF::Locker<WTF::Mutex> locker(m_compositorScrollInputMutex);
         if (!m_activeInputScrollTree || m_pendingCompositorScrollTree
+            || (inputIdentity && !m_activeInputScrollTree->matchesInputIdentity(*inputIdentity))
             || m_pendingCompositorScrollInputs.size() >= 512) {
             appendCompositorScrollTrace("scene-unavailable",
                 m_activeInputScrollTree, x, y, deltaX, deltaY,
@@ -2271,6 +2366,22 @@ bool LayerTreeHost::handleCompositorWheelInput(int x, int y,
                 m_pendingCompositorScrollInputs.size());
             return false;
         }
+        if (m_nextCompositorInputSequence == (std::numeric_limits<uint64_t>::max)())
+            return false;
+        const uint64_t sequence = m_nextCompositorInputSequence + 1;
+        std::unique_ptr<CompositorScrollInput> payload(new (std::nothrow) CompositorScrollInput(
+            target->key, sequence, ScrollVector(deltaX, deltaY), monotonicTime,
+            smooth, target->scrollEpoch, inputIdentity));
+        if (!payload)
+            return false;
+        try {
+            if (m_pendingCompositorScrollInputs.size() == m_pendingCompositorScrollInputs.capacity()) {
+                const size_t capacity = m_pendingCompositorScrollInputs.capacity();
+                m_pendingCompositorScrollInputs.reserve(std::min<size_t>(512, capacity ? capacity * 2 : 16));
+            }
+        } catch (...) {
+            return false; // No prediction/receipt mutation; original Engine fallback remains exact.
+        }
         if (!target->advanceInputPrediction(ScrollVector(deltaX, deltaY))) {
             appendCompositorScrollTrace("delta-not-consumed",
                 m_activeInputScrollTree, x, y, deltaX, deltaY, false,
@@ -2278,12 +2389,8 @@ bool LayerTreeHost::handleCompositorWheelInput(int x, int y,
             return false;
         }
 
-        ++m_nextCompositorInputSequence;
-        if (!m_nextCompositorInputSequence)
-            ++m_nextCompositorInputSequence;
-        m_pendingCompositorScrollInputs.append(new CompositorScrollInput(
-            target->key, m_nextCompositorInputSequence,
-            ScrollVector(deltaX, deltaY), monotonicTime, smooth));
+        m_pendingCompositorScrollInputs.push_back(payload.release()); // Reserved, pointer-only, nonthrowing.
+        m_nextCompositorInputSequence = sequence;
         if (receipt) {
             receipt->sceneVersion = target->sceneVersion;
             receipt->inputSequence = m_nextCompositorInputSequence;
@@ -2298,14 +2405,23 @@ bool LayerTreeHost::handleCompositorWheelInput(int x, int y,
             m_pendingCompositorScrollInputs.size());
     }
 
-    if (accepted)
-        requestDrawFrameToRunIntoCompositeThread();
+    if (accepted) {
+        if (inputIdentity && InputFrameCoverage::validRange(*inputIdentity)) {
+            trace::context_scope acceptedInput(*inputIdentity); // TLS only; the actual post hook records its own event.
+            requestDrawFrameToRunIntoCompositeThread();
+        } else {
+            requestDrawFrameToRunIntoCompositeThread();
+        }
+    }
     return accepted;
 }
 
 bool LayerTreeHost::captureCompositorScrollBarrier(int x, int y,
-    ScrollBarrier* barrier)
+    ScrollBarrier* barrier, const content::input_frame_trace::event* inputIdentity)
 {
+    content::PaintActivityScope inputActivity(m_paintLifetime);
+    if (!inputActivity)
+        return false;
     if (!barrier || m_isDestroying) {
         appendCompositorScrollTrace("barrier-capture-invalid", nullptr,
             x, y, 0.0, 0.0, false, 0);
@@ -2317,7 +2433,8 @@ bool LayerTreeHost::captureCompositorScrollBarrier(int x, int y,
     uint64_t targetScrollEpoch = 0;
     {
         WTF::Locker<WTF::Mutex> locker(m_compositorScrollInputMutex);
-        if (!m_activeInputScrollTree) {
+        if (!m_activeInputScrollTree
+            || (inputIdentity && !m_activeInputScrollTree->matchesInputIdentity(*inputIdentity))) {
             appendCompositorScrollTrace("barrier-capture-no-tree", nullptr,
                 x, y, 0.0, 0.0, false, 0);
             return false;
@@ -2428,8 +2545,14 @@ bool LayerTreeHost::synchronizeCompositorScrollBarrier(
                 m_pendingCompositorScrollInputs[i];
             if (input->node == barrier.key
                 && input->inputSequence <= barrier.throughInputSequence) {
+                if (input->hasTrace) {
+                    auto value = input->traceIdentity;
+                    value.flags = 0; value.outcome = trace::terminal::cancelled;
+                    value.why = trace::reason::superseded;
+                    recordRenderStage(trace::stage::input_terminal, value);
+                }
                 delete input;
-                m_pendingCompositorScrollInputs.remove(i);
+                m_pendingCompositorScrollInputs.erase(m_pendingCompositorScrollInputs.begin() + i);
             } else {
                 ++i;
             }
@@ -2697,7 +2820,7 @@ bool LayerTreeHost::tickCompositorScroll(double monotonicTime,
     if (activatedSceneTree)
         notifyResourceProgress();
     ScrollTreeSnapshot* pendingTree = nullptr;
-    WTF::Vector<CompositorScrollInput*> inputs;
+    std::vector<CompositorScrollInput*> inputs;
     {
         WTF::Locker<WTF::Mutex> locker(m_compositorScrollInputMutex);
         pendingTree = m_pendingCompositorScrollTree;
@@ -2724,9 +2847,20 @@ bool LayerTreeHost::tickCompositorScroll(double monotonicTime,
         CompositorScrollInput* input = inputs[i];
         CompositorScrollState* state = findCompositorScrollState(
             m_compositorScrollStates, input->node);
-        if (state) {
-            state->controller.enqueueDelta(input->inputSequence,
-                input->delta, input->monotonicTime, input->smooth);
+        const bool enqueued = state && state->controller.enqueueDelta(input->inputSequence,
+            input->delta, input->monotonicTime, input->smooth);
+        if (input->hasTrace) {
+            if (!enqueued || !m_viewTraceIdentity.accepts(input->traceIdentity)
+                || state->controller.activeNode().scrollEpoch != input->epoch) {
+                auto value = input->traceIdentity;
+                value.flags = 0; value.outcome = trace::terminal::stale;
+                value.why = trace::reason::stale_generation;
+                recordRenderStage(trace::stage::input_terminal, value);
+            } else if (!m_independentInputTrace.append(input->traceIdentity, input->node,
+                input->epoch, input->inputSequence, input->monotonicTime, input->smooth)) {
+                trace::add(trace::counter::causal_ranges_dropped);
+                trace::note_causal_loss();
+            }
         }
         delete input;
     }
@@ -2749,6 +2883,8 @@ bool LayerTreeHost::tickCompositorScroll(double monotonicTime,
                 layer->setCompositorScrollDelta(
                     visual.x - node.baseOffset.x,
                     visual.y - node.baseOffset.y);
+                m_independentInputTrace.adopt(sample.key, sample.scrollEpoch,
+                    sample.throughInputSequence, monotonicTime, sample.valid);
                 postCompositorScrollUpdateToMainThread(state->layerId,
                     sample, visual);
             }
@@ -2778,6 +2914,13 @@ bool LayerTreeHost::tickCompositorScroll(double monotonicTime,
                     oldNode.viewportClip.width, oldNode.viewportClip.height));
                 addCompositorScrollbarDamage(dirtyRects, oldNode);
                 layerIt->value->clearCompositorScrollDelta();
+            }
+            trace::event discarded;
+            while (m_independentInputTrace.takeNode(state->controller.activeNode().key,
+                state->controller.activeNode().scrollEpoch, &discarded)) {
+                discarded.flags = 0; discarded.outcome = trace::terminal::stale;
+                discarded.why = trace::reason::stale_generation;
+                recordRenderStage(trace::stage::input_terminal, discarded);
             }
             delete state;
             m_compositorScrollStates.remove(i);
@@ -2809,6 +2952,13 @@ bool LayerTreeHost::tickCompositorScroll(double monotonicTime,
                     m_retiredCompositorScrollStates,
                     state->controller.captureBarrier(),
                     pendingTree->sceneVersion());
+                trace::event discarded;
+                while (m_independentInputTrace.takeNode(state->controller.activeNode().key,
+                    state->controller.activeNode().scrollEpoch, &discarded)) {
+                    discarded.flags = 0; discarded.outcome = trace::terminal::stale;
+                    discarded.why = trace::reason::stale_generation;
+                    recordRenderStage(trace::stage::input_terminal, discarded);
+                }
             }
             if (!state) {
                 state = new CompositorScrollState(
@@ -3062,6 +3212,9 @@ bool LayerTreeHost::setViewTraceIdentity(const content::input_frame_trace::event
         m_unpresentedInputFrameId = 0;
     for (size_t index = 0; index < retired.size(); ++index)
         recordStaleInputTrace(retired.at(index));
+    trace::event independentStale;
+    while (m_independentInputTrace.takeStale(m_viewTraceIdentity.value(), &independentStale))
+        recordStaleInputTrace(independentStale);
     // Scene and owning framebuffer descriptors remain immutable snapshots.
     m_frameTraceContext = m_viewTraceIdentity.value();
     return true;
@@ -3368,6 +3521,17 @@ void LayerTreeHost::requestPaintToMemoryCanvasToUiThread(const SkRect& r)
     queueLegacyPaintLocked();
 }
 
+void LayerTreeHost::publishIndependentCoverageForPaint(const content::input_frame_trace::event& actualFrame)
+{
+    trace::event executor;
+    const bool hasExecutor = trace::current_context(executor);
+    trace::event value;
+    while (m_independentInputTrace.takeForPaint(actualFrame, &value)) {
+        value.task_id = hasExecutor ? executor.task_id : 0;
+        recordRenderStage(trace::stage::frame_coverage, value);
+    }
+}
+
 uint64_t LayerTreeHost::paintToMemoryCanvasInCompositeThread(const SkRect& r)
 {
     RenderMutexLock<WTF::Mutex> locker(m_compositeMutex);
@@ -3460,6 +3624,7 @@ uint64_t LayerTreeHost::paintToMemoryCanvasInCompositeThread(const SkRect& r)
     bool needNotifUi = drawToCanvas(m_memoryCanvas, paintRect); // 绘制脏矩形
     m_frameBuffers[m_currentFrameBufferSlot]->traceContext = renderTraceContext();
     const uint64_t paintedFrame = m_frameBuffers[m_currentFrameBufferSlot]->traceContext.frame_id;
+    publishIndependentCoverageForPaint(m_frameBuffers[m_currentFrameBufferSlot]->traceContext);
 #if defined(ENABLE_WKE) && ENABLE_WKE == 1
     wke::diagnostics::renderer_draw_completed(WKE_RENDER_DIAGNOSTICS_DRAW_BITMAP_RASTER);
 #endif

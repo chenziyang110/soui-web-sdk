@@ -7,10 +7,12 @@
 #include "cc/trees/FrameBufferLeasePolicy.h"
 #include "cc/trees/InputFrameCoverage.h"
 #include "cc/trees/ViewTraceIdentity.h"
+#include "cc/trees/DrawFrameWakePolicy.h"
 #include "content/common/PaintLifetime.h"
 #include "cc/raster/RasterCandidateBudget.h"
 #include <memory>
 #include <atomic>
+#include <vector>
 #include "third_party/WebKit/public/platform/WebThread.h"
 #include "third_party/WebKit/Source/platform/geometry/IntRect.h"
 #include "third_party/WebKit/Source/platform/geometry/IntSize.h"
@@ -55,6 +57,7 @@ class ActionsFrameGroup;
 struct UiPaintRetryState;
 class UiPaintRetryTask;
 class ResourceProgressTask;
+class DrawFrameTask;
 struct CompositorAnimationState;
 struct CompositorAnimationFinishedTask;
 struct CompositorScrollState;
@@ -197,6 +200,7 @@ public:
     std::shared_ptr<UiPaintRetryState> resourceNotificationState() const { return m_uiPaintRetry; }
     static void notifyRasterCompletion(const std::shared_ptr<UiPaintRetryState>& state);
     void retryPendingOwnerWork();
+    bool hasRejectedDrawWake() const { return m_hasRejectedDrawWake.load(); }
     void beginRecordActions(bool isComefromMainframe);
     void endRecordActions();
 
@@ -290,9 +294,11 @@ public:
     void onRasterActionCancelled(int64 actionId);
     bool handleCompositorWheelInput(int x, int y, double deltaX,
         double deltaY, double monotonicTime, bool smooth,
-        CompositorScrollReceipt* receipt = nullptr);
+        CompositorScrollReceipt* receipt = nullptr,
+        const content::input_frame_trace::event* inputIdentity = nullptr);
     bool captureCompositorScrollBarrier(int x, int y,
-        ScrollBarrier* barrier);
+        ScrollBarrier* barrier,
+        const content::input_frame_trace::event* inputIdentity = nullptr);
     bool synchronizeCompositorScrollBarrier(const ScrollBarrier& barrier);
 
 private:
@@ -308,6 +314,9 @@ private:
     void waitForDrawFrame();
     void drawFrameInCompositeThread();
     void requestDrawFrameAfterDelay(long long delayMs);
+    void queueDrawFrameWake(long long delayMs);
+    void publishIndependentCoverageForPaint(const content::input_frame_trace::event& actualFrame);
+    friend class DrawFrameTask;
     bool tickCompositorAnimations(double monotonicTime, Vector<SkRect>* dirtyRects);
     bool tickCompositorScroll(double monotonicTime, Vector<SkRect>* dirtyRects);
     void postCompositorScrollUpdateToMainThread(int layerId,
@@ -364,7 +373,7 @@ private:
     WTF::Vector<CompositorAnimationState*> m_compositorAnimations;
     WTF::Vector<CompositorScrollState*> m_compositorScrollStates;
     WTF::Vector<RetiredCompositorScrollState*> m_retiredCompositorScrollStates;
-    WTF::Vector<CompositorScrollInput*> m_pendingCompositorScrollInputs;
+    std::vector<CompositorScrollInput*> m_pendingCompositorScrollInputs;
     WTF::Mutex m_compositorScrollInputMutex;
     ScrollTreeSnapshot* m_pendingCompositorScrollTree;
     ScrollTreeSnapshot* m_activeInputScrollTree;
@@ -401,6 +410,7 @@ private:
     bool m_unifiedFrameDeadline;
     std::shared_ptr<content::PaintLifetimeState> m_paintLifetime;
     ViewTraceIdentity m_viewTraceIdentity;
+    IndependentInputTrace m_independentInputTrace;
     InputFrameCoverage m_pendingInputTrace;
     InputFrameCoverage m_unpresentedInputTrace;
     uint64_t m_unpresentedInputFrameId = 0;
@@ -413,6 +423,7 @@ private:
     Vector<SkRect> m_dirtyRectsForComposite;
     Vector<SkRect> m_dirtyRectsForUi;
     int m_postpaintMessageCount;
+    std::atomic<bool> m_hasRejectedDrawWake{false};
     int m_drawFrameCount;
     int m_drawFrameFinishCount;
     int m_requestApplyActionsCount;

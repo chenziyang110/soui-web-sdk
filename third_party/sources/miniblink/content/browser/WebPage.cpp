@@ -126,6 +126,15 @@ std::shared_ptr<content::PaintLifetimeState> WebPage::paintLifetimeState() const
     return m_pageImpl ? m_pageImpl->m_layerTreeHost->paintLifetimeState() : nullptr;
 }
 
+void WebPage::retryRejectedDrawWake()
+{
+    if (!m_pageImpl || !m_pageImpl->m_layerTreeHost->hasRejectedDrawWake())
+        return;
+    PaintActivityScope activity(m_pageImpl->m_layerTreeHost->paintLifetimeState());
+    if (activity)
+        m_pageImpl->m_layerTreeHost->retryPendingOwnerWork();
+}
+
 bool WebPage::cancelInputState()
 {
     return m_pageImpl && m_pageImpl->cancelInputState();

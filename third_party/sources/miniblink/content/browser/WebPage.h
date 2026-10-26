@@ -119,6 +119,7 @@ public:
     void setInputTraceContext(const content::input_frame_trace::event& value);
     bool uiMirrorConsumerRequired() const;
     std::shared_ptr<content::PaintLifetimeState> paintLifetimeState() const;
+    void retryRejectedDrawWake();
 
     void setNeedsCommit();
     bool needsCommit() const;

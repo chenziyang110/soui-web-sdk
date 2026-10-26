@@ -184,6 +184,8 @@ void CWebView::serviceDeferredPaintCloses()
         }
         if (kind != PaintKind::none)
             invokePaintClose(target, kind);
+        else
+            target->webPage()->retryRejectedDrawWake();
     }
 }
 bool CWebView::preparePaintShutdown()
