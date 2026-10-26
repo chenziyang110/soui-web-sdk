@@ -32,9 +32,9 @@ function requiredSourcePaths(root) {
   const blocks = [...text.matchAll(/^set\(_soui_vendor_required\s*\r?\n([\s\S]*?)^\)\s*$/gm)];
   need(blocks.length === 1, 'Missing or ambiguous vendor required source contract');
   const rows = blocks[0][1].split(/\r?\n/).filter(row => row.trim());
-  need(rows.length === 27 && rows.every(row => /^\s*"third_party\/sources\/miniblink\/[A-Za-z0-9_./-]+"\s*$/.test(row)), 'Invalid exact 27 vendor source contract');
+  need(rows.length === 29 && rows.every(row => /^\s*"third_party\/sources\/miniblink\/[A-Za-z0-9_./-]+"\s*$/.test(row)), 'Invalid exact 29 vendor source contract');
   const names = rows.map(row => row.trim().slice(1, -1)).sort();
-  need(new Set(names).size === 27 && names.every(name => !name.split('/').includes('..')), 'Duplicate or escaping vendor source');
+  need(new Set(names).size === 29 && names.every(name => !name.split('/').includes('..')), 'Duplicate or escaping vendor source');
   return names.map(name => inputs.pin(path.join(root, name)));
 }
 function configuration(root, architecture, config, required = false, options = {}) {
@@ -75,11 +75,11 @@ function registry(raw, mode) {
   const vendor = value.tests.filter(test => test.name.startsWith('kernel.native'));
   const actual = vendor.map(test => test.name).sort();
   const expected = manifest.names;
-  need(manifest.schema === 'soui.vendor-test-names/v1' && Array.isArray(expected) && expected.length === 64 &&
-    new Set(expected).size === 64 && expected.every(name => name.startsWith('kernel.native.')) &&
+  need(manifest.schema === 'soui.vendor-test-names/v1' && Array.isArray(expected) && expected.length === 66 &&
+    new Set(expected).size === 66 && expected.every(name => name.startsWith('kernel.native.')) &&
     JSON.stringify(expected) === JSON.stringify([...expected].sort()), 'Invalid exact vendor names manifest');
   if (mode === 'ON') {
-    need(JSON.stringify(actual) === JSON.stringify(expected), 'Vendor ON registry must contain all 64 exact names with no extra kernel.native tests');
+    need(JSON.stringify(actual) === JSON.stringify(expected), 'Vendor ON registry must contain all 66 exact names with no extra kernel.native tests');
     need(vendor.every(test => !(test.properties || []).some(property => property.name === 'DISABLED' && property.value)), 'A registered vendor test is disabled');
   }
   else need(actual.length === 0, 'Vendor OFF cache conflicts with registered kernel.native tests');
