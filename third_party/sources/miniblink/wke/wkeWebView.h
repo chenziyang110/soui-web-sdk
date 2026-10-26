@@ -10,6 +10,7 @@
 #include "third_party/WebKit/Source/platform/geometry/IntRect.h"
 #include <map>
 #include <set>
+#include "content/common/PaintLifetime.h"
 //#include <net/ProxyType.h>
 
 //////////////////////////////////////////////////////////////////////////
@@ -139,6 +140,12 @@ public:
     virtual bool create();
     static CWebView* createForCursorBroker(COLORREF color);
     virtual void destroy() override;
+    content::PaintClosePermit acquirePaintClosePermit(content::PaintCloseKind kind);
+    void quiescePaintCallbacks();
+    bool paintCallbacksDrained() const;
+    static void serviceDeferredPaintCloses();
+    static bool preparePaintShutdown();
+    static bool resumePaintRuntime();
 
     const utf8* name() const override;
     const wchar_t* nameW() const;
@@ -374,6 +381,7 @@ protected:
     blink::IntRect m_dirtyArea;
 
     content::WebPage* m_webPage;
+    std::shared_ptr<content::PaintLifetimeState> m_paintLifetime;
 
     float m_zoomFactor;
 

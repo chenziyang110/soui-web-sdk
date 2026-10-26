@@ -7,6 +7,7 @@
 #include "cc/trees/FrameBufferLeasePolicy.h"
 #include "cc/trees/InputFrameCoverage.h"
 #include "cc/trees/ViewTraceIdentity.h"
+#include "content/common/PaintLifetime.h"
 #include "cc/raster/RasterCandidateBudget.h"
 #include <memory>
 #include <atomic>
@@ -255,6 +256,7 @@ public:
     //bool getIsUseLayeredBuffer() const { return m_useLayeredBuffer; }
     static void clearCanvas(SkCanvas* canvas, const SkRect& rect, bool useLayeredBuffer);
 
+    const std::shared_ptr<content::PaintLifetimeState>& paintLifetimeState() const { return m_paintLifetime; }
     void setDrawMinInterval(double drawMinInterval);
     void setMainFrameDeadline(uint64_t frameId, double target, double interval);
     bool setViewTraceIdentity(const content::input_frame_trace::event& value);
@@ -395,6 +397,7 @@ private:
     uint64_t m_presentedMainFrameId;
     double m_pendingMainFrameDeadline;
     bool m_unifiedFrameDeadline;
+    std::shared_ptr<content::PaintLifetimeState> m_paintLifetime;
     ViewTraceIdentity m_viewTraceIdentity;
     InputFrameCoverage m_pendingInputTrace;
     InputFrameCoverage m_unpresentedInputTrace;

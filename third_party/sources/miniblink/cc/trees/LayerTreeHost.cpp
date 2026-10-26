@@ -525,6 +525,7 @@ static double configuredDrawMinInterval()
 
 LayerTreeHost::LayerTreeHost(LayerTreeHostClent* hostClient, LayerTreeHostUiThreadClient* uiThreadClient)
 {
+    m_paintLifetime = std::make_shared<content::PaintLifetimeState>();
     m_rootLayer = nullptr;
     m_rootCCLayer = nullptr;
     m_deviceScaleFactor = 1.0f;
@@ -3111,6 +3112,9 @@ void LayerTreeHost::postPaintMessage(const SkRect& paintRect)
 
 void LayerTreeHost::firePaintEvent(HDC hdc, const RECT* paintRect)
 {
+    content::PaintActivityScope paintActivity(m_paintLifetime);
+    if (!paintActivity)
+        return;
     FrameBufferLease lease = acquireFrameBufferLease();
     if (!lease || !paintRect)
         return;
@@ -3126,6 +3130,12 @@ void LayerTreeHost::firePaintEvent(HDC hdc, const RECT* paintRect)
 
 void LayerTreeHost::drawFrameInCompositeThread()
 {
+    content::PaintActivityScope paintActivity(m_paintLifetime);
+    if (!paintActivity) {
+        atomicDecrement(&m_drawFrameCount);
+        atomicDecrement(&m_drawFrameFinishCount);
+        return;
+    }
     m_compositeMutex.lock();
     if (1 != m_drawFrameCount)
         DebugBreak();
@@ -3257,6 +3267,9 @@ void LayerTreeHost::drawFrameInCompositeThread()
 
 void LayerTreeHost::paintToMemoryCanvasInUiThread(const SkRect& paintRect)
 {
+    content::PaintActivityScope paintActivity(m_paintLifetime);
+    if (!paintActivity)
+        return;
     FrameBufferLease lease;
     LayerTreeHostUiThreadClient* client = nullptr;
     {
@@ -3303,6 +3316,9 @@ void LayerTreeHost::queueLegacyPaintLocked()
 
 void LayerTreeHost::runLegacyPaintRetry(const LegacyPaintRetryPolicy::Ticket& ticket)
 {
+    content::PaintActivityScope paintActivity(m_paintLifetime);
+    if (!paintActivity)
+        return;
     Vector<SkRect> dirtyRects;
     const std::shared_ptr<UiPaintRetryState> state = m_uiPaintRetry;
     {

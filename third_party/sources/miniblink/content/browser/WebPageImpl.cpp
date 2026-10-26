@@ -1005,6 +1005,9 @@ void WebPageImpl::setViewportSize(const IntSize& size)
 
 void WebPageImpl::firePaintEvent(HDC hdc, const RECT* paintRect)
 {
+    content::PaintActivityScope paintActivity(m_layerTreeHost->paintLifetimeState());
+    if (!paintActivity)
+        return;
     CHECK_FOR_REENTER(this, (void)0);
     freeV8TempObejctOnOneFrameBefore();
 
@@ -1016,6 +1019,9 @@ void WebPageImpl::firePaintEvent(HDC hdc, const RECT* paintRect)
 
 HDC WebPageImpl::viewDC()
 {
+    content::PaintActivityScope paintActivity(m_layerTreeHost->paintLifetimeState());
+    if (!paintActivity)
+        return nullptr;
     // A borrowed DC is current at acquisition and may change at the next
     // owner paint/resize. Requesting it permanently restores mirror updates.
     setUiMirrorConsumerRequired(true);
@@ -1397,6 +1403,9 @@ void WebPageImpl::paintToMemoryCanvasInUiThread(SkCanvas* canvas, const IntRect&
 
 void WebPageImpl::paintToBit(void* bits, int pitch)
 {
+    content::PaintActivityScope paintActivity(m_layerTreeHost->paintLifetimeState());
+    if (!paintActivity)
+        return;
     CHECK_FOR_REENTER(this, (void)0);
 
     beginMainFrame();

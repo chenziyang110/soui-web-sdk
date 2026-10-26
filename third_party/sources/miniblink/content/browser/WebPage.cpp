@@ -121,6 +121,11 @@ void WebPage::setDrawMinInterval(double drawMinInterval)
         m_pageImpl->setDrawMinInterval(drawMinInterval);
 }
 
+std::shared_ptr<content::PaintLifetimeState> WebPage::paintLifetimeState() const
+{
+    return m_pageImpl ? m_pageImpl->m_layerTreeHost->paintLifetimeState() : nullptr;
+}
+
 bool WebPage::cancelInputState()
 {
     return m_pageImpl && m_pageImpl->cancelInputState();

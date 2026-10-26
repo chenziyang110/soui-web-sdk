@@ -1,6 +1,7 @@
 
 #ifndef content_WebPage_h
 #define content_WebPage_h
+#include "content/common/PaintLifetime.h"
 
 #include "content/common/InputFrameTrace.h"
 #include "content/browser/WebPageState.h"
@@ -117,6 +118,7 @@ public:
     bool setViewTraceIdentity(const content::input_frame_trace::event& value);
     void setInputTraceContext(const content::input_frame_trace::event& value);
     bool uiMirrorConsumerRequired() const;
+    std::shared_ptr<content::PaintLifetimeState> paintLifetimeState() const;
 
     void setNeedsCommit();
     bool needsCommit() const;

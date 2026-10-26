@@ -9,6 +9,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 namespace wke {
+extern DWORD wkeThreadId;
 
 CWebWindow::CWebWindow(COLORREF c)
     : CWebView(c)
@@ -78,7 +79,11 @@ bool CWebWindow::createWindow(HWND parent, wkeWindowType type, int x, int y, int
 
 void CWebWindow::destroy()
 {
-    _destroyWindow();
+    if (::GetCurrentThreadId() != wkeThreadId)
+        return;
+    auto permit = acquirePaintClosePermit(content::PaintCloseKind::window);
+    if (permit)
+        _destroyWindow();
 }
 
 void CWebWindow::onPaintUpdated(wkePaintUpdatedCallback callback, void* callbackParam)
