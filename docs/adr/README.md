@@ -73,3 +73,5 @@
 
 - [ADR-0119：在临时光栅覆盖边界保留已接收的滚动目标](0119-preserve-scroll-target-beyond-raster-coverage.md)（proposed；源码候选与端到端验证分开）
 - [ADR-0120：区分合成滚动确认与外部滚动意图](0120-preserve-compositor-scroll-acknowledgements.md)（proposed；默认整数元素滚动源码候选；完整 x86 构建、限定 GUI 位移与同值 CSS 取消已验证，性能及完整配置资格未完成）
+- [ADR-0122：输入到可见反馈的实施契约](0122-input-to-visible-feedback.md)（代码交付与性能资格分开）
+- [ADR-0125：有界输入、任务与可见帧关联](0125-input-frame-trace.md)（源码候选；编译与执行未运行）

@@ -6,6 +6,8 @@
 
 实时远端核查：PR104 → PR105 → PR107 → PR108 → PR109 → PR110 均 open/unmerged；PR107–110 为 Draft。PR110 head 与指定基线一致。后续 PR 明确标 base，保持 Draft。其他工作树和 DevTools 候选未修改。
 
+W00 已提交 [Draft PR111](https://github.com/chenziyang110/soui-web-sdk/pull/111)，base 为 PR110；源码 head `ca58a1b0f5e2e97e6df84051bdc1cb9954a956f4`。这只是第一工作包，后续输入、调度、帧/资源和交付继续推进。
+
 ## 工作包台账
 
 | 包 | 需求与实现边界 | 回归/命令/证据 | 状态 |
@@ -39,3 +41,13 @@ A 独占 SDK 输入/引擎与 vendor 任务调度，B 独占渲染/资源/帧和
 - 静态依赖审计 `npm --prefix sdk/web audit --json` 本轮退出 0，报告 0 项漏洞；范围仅该包的锁定依赖，不扩大到全部 vendor 或许可结论。
 
 验证人员一次执行两个架构的 scheduler_continuation、worker_lifetime 和[legacy deadline](../../tests/native/render_deadline_policy/README.md)入口，失败只回到相应工作包。随后真实核查提前唤醒、投递拒绝、resize/close、legacy dirty 与默认 DIRECT_HWND/independent 两条路径。当前 dormant `#if 0` custom timerqueue 分支未获安全资格，W03 将替换；不得在 W00 单独打开。W00 不证明输入完整链路或性能目标通过，后续 W01–W12 继续推进。
+
+## W01 基础记录与协议边界
+
+基础源码为 `sdk/{include/soui,src/runtime}/diagnostics/input_frame_trace.*` 和独立 vendor `content/common/InputFrameTrace.*`；通过 `wkeGetInputUiApi(1)` 的数值 POD 前缀连接。SDK consumer 在 `miniblink_trace_source.*` 冷固定实际模块、进程/创建时刻、QPC 频率、run/mode，每批校验 ABI、区间、slot owner 与非回退时钟。独立静态审查已覆盖保留模块的 RAII、same-tick 与 OS TID 复用、跨原子 snapshot 竞态、损坏批次整批拒绝及完整导出的反例；修正并发冷 bootstrap 幂等竞态。没有执行这些源码案例。
+
+每进程至多32个 producer lifetime slot，每流1024项；仅相同实际 TLS cookie 可以暂停/恢复，复用 OS TID 不复用身份。详细模式需冷开启；scalar 不分配详细数组。导出在非 engine consumer，每源总量100000项；任何 loss、错误或未完全 quiescent/排空不得作为完整因果结果。新协议独立于既有 serial-ACK/DPI/IME 协议；缺少 T3b 或物理光子测量不能补值。实际生产调用点随 A/B 所有权工作包接入，基础模块存在不等于所有阶段已经可量测。
+
+静态补齐默认 vendor 注册：原64项加 provider registry-live-fence 和 input-frame-trace，共66个精确名称；preflight 原27项加两个实际 trace 源文件为29项，继续逐名/逐文件核对。SDK backend-validator 单独注册。工具尚未查询真实 CTest registry，以上只是源码注册契约，不是测试通过数。主 producer 在 wkeInitialize 真实 owner 初始化前注册，完整 platform shutdown/renderer_finalized 后才 detach；provider close fence 失败不能从 DebugBreak 继续走成功卸载。
+
+专人先运行 trace/backend validator、精确 registry 和新协议的 reader fixture，再做一次 trace scalar/detailed 扰动预检。关联 reader 必须检查实际阶段交集与样本数；SDK/vendor/API 版本失配、其他 consumer 取走记录、trace 超限均不得生成合格的 complete capture。随后才进行同产品配对；未冻结的生产调用点不提交正式性能结果。

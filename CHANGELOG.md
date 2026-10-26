@@ -2,6 +2,8 @@
 
 ## 未发布维护
 
+- 输入到可见反馈系列新增有界 QPC 记录、可选数值内核能力、真实公共 SDK 量测 Host，以及同产品/burst 配对 reader。旧 serial-ACK/DPI/IME 协议保留；采集丢失、身份失配和未知因果阶段不会被当作性能通过。见 [实施台账](docs/maintenance/input-to-ui-implementation-20261026.md)；调用点随后续工作包集成，本轮未编译或实测，固定预编译包未替换。
+
 - 主线程响应源码候选：新增任务入队唤醒和就绪积压续调度，将跨线程任务接纳纳入 32 项 / 2 ms 协作预算；资源受阻的 commit 保留单个延后重试。同线程计时原本已从实际提交时刻开始，不计为新增收益。原生输入让步、关闭排空及来源补丁见 [ADR-0121](docs/adr/0121-ready-task-continuation.md)。按维护者要求最终编译和实测交由 PR 验证人员完成，未替换 DLL，也未声明端到端性能达标。
 - 合成滚动 ACK 源码候选：在 Blink 整数规范化后保留累计坐标，避免普通回传误增 epoch；同值 CSS/Home 等明确外部意图仍撤销旧目标。新增原始 receipt/有限数/边界回归与来源说明，见 [ADR-0120](docs/adr/0120-preserve-compositor-scroll-acknowledgements.md)。两架构原生回归、完整 x86 构建及限定 GUI 位移/同值 CSS 取消已验证；新增 C++ virtual 要求相关 client 一同重编，固定预编译包、默认计时器和发布资格不变，整体流畅度另验。
 - 滚动目标保留源码候选：将已接收的逻辑目标与当前 raster coverage 内可显示的位置分开，覆盖就绪后继续，暂停期间不请求空动画帧；即时输入也累加未完成目标。保留真实内容边界、点击屏障和新 epoch 的取消规则，帧需求在 ready 场景激活后汇总。背景、已知缩覆盖限制及分层验证见 [ADR-0119](docs/adr/0119-preserve-scroll-target-beyond-raster-coverage.md)；未替换固定预编译包，尚不构成整体流畅度或发布验收。
