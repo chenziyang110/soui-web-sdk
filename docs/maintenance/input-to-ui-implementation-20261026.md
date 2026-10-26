@@ -99,3 +99,5 @@ Native visibility setter只在owner调用；hide保留dirty/action/资源/scene/
 可选API逐字段按version/structSize/cap/null/OK0检查：mirror0x4、input context0x8、cancel0x20、confirmed view0x40、active-scene gate0x80、visibility0x100、external producer0x200。外部producer只冷租用，调用线程配对释放；借用已有内部writer要求内部loop存活覆盖借用期，SDK UI持有实际DLL引用至最后hot borrow退出后释放。没有热路径自动注册。
 
 本批新增根登记为78个kernel.native精确名称＋4个scheduler辅助名称、50个preflight源文件；native window/visibility/wheel/diagnostic fixture按当前生产字节提取并明确依赖fake，不等于真实Win32/GL/COM通过。旧constructor/drag来源门槛也必须随实际变更闭合，不能只刷新SHA掩盖旧片段。
+
+原生窗口wrapper也已接到真实状态：CWebWindow show、WM_SHOWWINDOW、WM_WINDOWPOSCHANGED(default先行)、WM_SIZE均在whole activity期间采样实际attached HWND/root iconic，并核对LTH状态后才合并同ack。最小化不覆盖有效viewport，外部CAPI改变visibility会使旧ack失效。沿用window-close-lifetime-source同一入口，来源现为3个文件/8段复制；未运行。
