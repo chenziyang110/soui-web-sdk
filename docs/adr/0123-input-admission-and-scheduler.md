@@ -47,4 +47,14 @@ Regression SOURCE covers paused first-head publication, FIFO appended during a n
 
 官方契约参考：[SetTimer 最小 10 ms](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-settimer)、[SendNotifyMessage 跨线程不等待](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-sendnotifymessagew)。构建和时钟/睡眠/失败/Win7 兼容仍未实测。
 
+### W04 索引和接纳
+
+保留既有拥有 timer 的 deadline heap，在它旁边建立非拥有索引：priority AVL 每节点包含该 priority 的 deadline heap，并缓存子树最小 deadline。最高 priority 的就绪候选通过子树摘要直接查询；aged 候选取全局最早 deadline，50 ms 老化是查询条件，比较器不随时钟改变。不做全量 future 扫描或先完成整个 promotion 批次才能执行的屏障；少量高优先级 ready 不会被大量未到期 future 的维护挡住。任意整数 priority 仍受支持。
+
+exact equal priority/deadline 的身份顺序从旧 heap encounter order 改为不回绕的 uint64 queue-entry order，这是明确兼容差异；旧实现不能追认 FIFO，对照回归只对策略键要求相同，等键身份单独验证新规则。
+
+producer 待接纳任务有相同索引，mutex 内一次只选择/移除一个，拥有 vector 用 swap-last 移除避免 erase 搬移。每四次接纳保留一次 oldest-deadline 份额，其余优先已到期/老化工作；普通 main turn 仍最多 32 项并与 2 ms 截止共享，worker 接纳也按 32 项/50 ms 有界。关闭拒绝新 producer 后允许有限既有集合排空。所有任务和析构仍在 producer lock 外转移/执行，取消索引随同原所有权恰好移除一次。
+
+索引每个活动 Timer/TaskPair 增加一个固定 Entry 和一个非拥有指针；priority 节点数量不超过不同活动 priority 数加四个标准空节点。四个标准 bucket 保留向量高水容量以避免每帧重新分配，其他空节点立即释放。`statistics()` 报告活动项、节点和保留结构字节（不含 allocator 元数据/不透明 Task 载荷）。节点/向量容量在 timer 状态变化前准备，失败不破坏原活动索引。原第三方 void post 的不透明 Task 载荷与全局 admission 项数仍没有统一新容量协议；本包没有为性能新增静默删除/进程 fail-fast，也不声称这个既有限制已关闭。后续 typed tryPost/逐调用方失败策略必须另行覆盖全部关键 caller。
+
 必要用例源码覆盖容量/字节/OOM边界、已接纳 FIFO、恢复顺序、按住键隔离、IME commit、两 Host 进展、注销/停止与迟到通知。编译和运行由专人执行；当前只允许源码审查和 `git diff --check`，不据源码候选宣称性能通过。

@@ -103,14 +103,12 @@ WebThreadImpl::WebThreadImpl(const char* name)
     , m_threadClosed(false)
     , m_firingTimers(0)
     , m_webSchedulerImpl(nullptr)
-    , m_taskPairAdmissionCursor(0)
     , m_isObserversDirty(false)
     , m_name(name)
     , m_suspendTimerQueue(false)
     , m_hadThreadInit(false)
     , m_threadHandle(nullptr)
     , m_hasPlatformRegistration(false)
-    , m_currentFrameCreateTime(0)
     , m_isMainThread(0 == strcmp("MainThread", name))
 {
     std::unique_ptr<WebSchedulerImpl> scheduler(new WebSchedulerImpl(this));
@@ -261,10 +259,10 @@ void WebThreadImpl::threadEntryPoint()
 
         startTriggerTasks();
 
-        while (!m_timerHeap.empty() && !m_willExit) {
+        while ((!m_timerHeap.empty() || hasPendingTaskAdmission()) && !m_willExit) {
             schedulerTasks();
-            if (m_timerHeap.empty() || m_willExit)
-                break;
+            if (m_willExit) break;
+            if (m_timerHeap.empty()) continue;
             // Wait for the actual next deadline rather than imposing a fixed
             // 10ms pause on raster/compositor work. A new task or shutdown
             // signals m_hEvent and interrupts this wait immediately.
@@ -350,12 +348,16 @@ void WebThreadImpl::postDelayedTaskWithPriorityCrossThread(
         return; // Pair owns the rejected payload outside the critical section.
     }
     try {
+        m_pendingIndex.prepare(priority);
+        pair->pendingPosition = m_taskPairsToPost.size();
         m_taskPairsToPost.push_back(pair.get());
+        m_pendingIndex.insert(pair->scheduling);
 #if defined(SOUI_WORKER_SHUTDOWN_DIAGNOSTICS) && SOUI_WORKER_SHUTDOWN_DIAGNOSTICS
         pair->task->diagnosticQueueCommitted(); // Actual insertion, still serialized with willExit.
 #endif
         pair.release();
     } catch (...) {
+        m_pendingIndex.discardEmpty(priority);
         ::LeaveCriticalSection(&m_taskPairsMutex);
         return;
     }
@@ -374,36 +376,11 @@ void WebThreadImpl::postDelayedTask(const blink::WebTraceLocation& location, bli
 bool WebThreadImpl::hasReadyTaskAtOrAbove(int minimumPriority)
 {
     const double now = monotonicallyIncreasingTime();
-    bool hasReadyTask = false;
     ::EnterCriticalSection(&m_taskPairsMutex);
-    for (size_t i = 0; i < m_taskPairsToPost.size(); ++i) {
-        const TaskPair* pair = m_taskPairsToPost[i];
-        if (pair->priority >= minimumPriority
-            && pair->createTime + static_cast<double>(pair->delayMs) / 1000.0 <= now) {
-            hasReadyTask = true;
-            break;
-        }
-    }
+    const bool pending = m_pendingIndex.hasReadyAtOrAbove(minimumPriority, now);
     ::LeaveCriticalSection(&m_taskPairsMutex);
-    if (hasReadyTask || !isCurrentThread())
-        return hasReadyTask;
-
-    for (size_t i = m_taskPairAdmissionCursor; i < m_taskPairsBeingAdmitted.size(); ++i) {
-        const TaskPair* pair = m_taskPairsBeingAdmitted[i];
-        if (pair->priority >= minimumPriority
-            && pair->createTime + static_cast<double>(pair->delayMs) / 1000.0 <= now)
-            return true;
-    }
-    for (size_t i = 0; i < m_timerHeap.size(); ++i) {
-        const WebTimerBase* timer = m_timerHeap[i];
-        if (timer->m_priority >= minimumPriority
-            && timer->m_nextFireTime <= now) {
-            return true;
-        }
-    }
-    return false;
+    return pending || (isCurrentThread() && m_timerIndex.hasReadyAtOrAbove(minimumPriority, now));
 }
-
 WebThreadImpl::TaskPair::TaskPair(const blink::WebTraceLocation& location, blink::WebThread::Task* task, long long delayMs, int priority)
 {
     this->location = location;
@@ -412,6 +389,10 @@ WebThreadImpl::TaskPair::TaskPair(const blink::WebTraceLocation& location, blink
     this->priority = priority;
     this->createTime = WTF::monotonicallyIncreasingTime();
     this->heapInsertionOrder = WebThreadImpl::getNewCurrentHeapInsertionOrder();
+    this->pendingPosition = 0;
+    this->scheduling.value = this;
+    this->scheduling.deadline = this->createTime + static_cast<double>(delayMs) / 1000.0;
+    this->scheduling.priority = priority;
 }
 
 WebThreadImpl::TaskPair::~TaskPair()
@@ -419,31 +400,14 @@ WebThreadImpl::TaskPair::~TaskPair()
     delete task; // Only untransferred work remains here (cancel-before-run).
 }
 
-void WebThreadImpl::TaskPair::sortByPriority(std::vector<WebThreadImpl::TaskPair*>* tasks)
-{
-    for (size_t i = 0; i < tasks->size(); ++i) {
-        for (size_t j = i + 1; j < tasks->size(); ++j) {
-            int a = tasks->at(i)->priority;
-            int b = tasks->at(j)->priority;
-            if (!(a < b))
-                continue;
-
-            WebThreadImpl::TaskPair* ptr = tasks->at(i);
-            *(&tasks->at(i)) = tasks->at(j);
-            *(&tasks->at(j)) = ptr;
-        }
-    }
-}
-
 void WebThreadImpl::startTriggerTasks()
 {
-    startTriggerTasks(nullptr, 0);
+    unsigned remaining = mainThreadTaskBudget;
+    startTriggerTasks(m_willExit ? nullptr : &remaining, monotonicallyIncreasingTime() + maxDurationOfFiringTimers);
 }
 
 bool WebThreadImpl::hasPendingTaskAdmission()
 {
-    if (m_taskPairAdmissionCursor < m_taskPairsBeingAdmitted.size())
-        return true;
     ::EnterCriticalSection(&m_taskPairsMutex);
     const bool pending = !m_taskPairsToPost.empty();
     ::LeaveCriticalSection(&m_taskPairsMutex);
@@ -455,29 +419,38 @@ void WebThreadImpl::startTriggerTasks(unsigned* remainingAdmissions, double admi
 #if (defined ENABLE_WKE) && (ENABLE_WKE == 1)
     wke::freeV8TempObejctOnOneFrameBefore();
 #endif
-    m_currentFrameCreateTime = WTF::monotonicallyIncreasingTime();
-    
+    unsigned workerAdmissions = mainThreadTaskBudget;
+    if (!remainingAdmissions && !m_willExit) {
+        remainingAdmissions = &workerAdmissions;
+        admissionDeadline = monotonicallyIncreasingTime() + maxDurationOfFiringTimers;
+    }
     while (!remainingAdmissions || (*remainingAdmissions && monotonicallyIncreasingTime() < admissionDeadline)) {
-        if (m_taskPairAdmissionCursor == m_taskPairsBeingAdmitted.size()) {
-            m_taskPairsBeingAdmitted.clear();
-            m_taskPairAdmissionCursor = 0;
-            ::EnterCriticalSection(&m_taskPairsMutex);
-            m_taskPairsBeingAdmitted.swap(m_taskPairsToPost); // No allocation while locked.
-            ::LeaveCriticalSection(&m_taskPairsMutex);
-            if (m_taskPairsBeingAdmitted.empty())
-                break;
+        TaskPair* selected = nullptr;
+        ::EnterCriticalSection(&m_taskPairsMutex);
+        // Three eligible priority admissions and one oldest-deadline share.
+        // A future flood cannot hide new interaction behind an owner batch;
+        // the fourth share still advances background/future registration.
+        auto* entry = (++m_admissionShare % 4) ? m_pendingIndex.select(monotonicallyIncreasingTime(), false) : nullptr;
+        if (!entry) entry = m_pendingIndex.oldest();
+        if (entry) {
+            selected = static_cast<TaskPair*>(entry->value);
+            m_pendingIndex.erase(*entry);
+            const size_t position = selected->pendingPosition;
+            if (position + 1 != m_taskPairsToPost.size()) {
+                m_taskPairsToPost[position] = m_taskPairsToPost.back();
+                m_taskPairsToPost[position]->pendingPosition = position;
+            }
+            m_taskPairsToPost.pop_back();
         }
-        std::unique_ptr<TaskPair> pair(m_taskPairsBeingAdmitted[m_taskPairAdmissionCursor]);
-        m_taskPairsBeingAdmitted[m_taskPairAdmissionCursor++] = nullptr;
+        ::LeaveCriticalSection(&m_taskPairsMutex);
+        if (!selected) break;
+        std::unique_ptr<TaskPair> pair(selected);
         blink::WebThread::Task* payload = pair->task;
-        pair->task = nullptr; // Ownership transfers even if timer admission fails.
-        postDelayedTaskImpl(pair->location, payload, pair->delayMs,
-            &pair->createTime, pair->priority, &pair->heapInsertionOrder);
-        if (remainingAdmissions)
-            --*remainingAdmissions;
+        pair->task = nullptr;
+        postDelayedTaskImpl(pair->location, payload, pair->delayMs, &pair->createTime, pair->priority, &pair->heapInsertionOrder);
+        if (remainingAdmissions) --*remainingAdmissions;
     }
 }
-
 bool WebThreadImpl::isCurrentThread() const 
 {
     return threadId() == WTF::currentThread();
@@ -626,12 +599,9 @@ void WebThreadImpl::deleteTimersOnExit()
 
 void WebThreadImpl::deleteTaskPairsToPostOnExit()
 {
-    for (size_t i = m_taskPairAdmissionCursor; i < m_taskPairsBeingAdmitted.size(); ++i)
-        delete m_taskPairsBeingAdmitted[i];
-    m_taskPairsBeingAdmitted.clear();
-    m_taskPairAdmissionCursor = 0;
     for (size_t i = 0; i < m_taskPairsToPost.size(); ++i) {
         TaskPair* taskPair = m_taskPairsToPost[i];
+        m_pendingIndex.erase(taskPair->scheduling);
         delete taskPair;
     }
     m_taskPairsToPost.clear();
@@ -733,11 +703,9 @@ void WebThreadImpl::schedulerTasks(bool allowMainThreadBudget)
     while (!m_timerHeap.empty() && (m_timerHeap[0]->m_nextFireTime <= fireTime || m_willExit)
         && (!boundedMainThread || monotonicallyIncreasingTime() < mainThreadTimeToQuit)) {
         hasFire = true;
-        const size_t selectedIndex = task_scheduling::selectReadyTimer(
-            m_timerHeap, fireTime, m_willExit, [](const WebTimerBase* value) {
-                return task_scheduling::ReadyTask{value->m_nextFireTime, value->m_priority};
-            });
-        WebTimerBase* timer = m_timerHeap[selectedIndex];
+        auto* selected = m_timerIndex.select(fireTime, m_willExit);
+        ASSERT(selected);
+        WebTimerBase* timer = static_cast<WebTimerBase*>(selected->value);
         timer->m_nextFireTime = 0;
         timer->heapDelete();
 

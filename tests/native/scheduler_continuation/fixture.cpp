@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 #include "TaskSchedulingPolicy.h"
+#include "TaskSchedulingIndex.h"
 namespace fixture {
 struct Message { HWND window; UINT id; WPARAM first; LPARAM second; };
 std::deque<Message> messages;
@@ -58,6 +59,7 @@ class WebThreadImpl;
 class WebTimerBase {
 public:
     WebThreadImpl* owner; double m_nextFireTime; int m_priority=200; std::function<void()> callback;
+    content::task_scheduling::DeadlinePriorityIndex::Entry scheduling;
     ~WebTimerBase(){++fixture::destroyed;}
     double repeatInterval()const{return 0;}
     void heapDelete();
@@ -69,17 +71,21 @@ public:
     unsigned m_threadId=1; int m_firingTimers=0;
     bool m_isMainThread=true,m_willExit=false;
     std::vector<WebTimerBase*> m_timerHeap;
+    task_scheduling::DeadlinePriorityIndex m_timerIndex;
     void schedulerTasks();void schedulerTasks(bool);void updateSharedTimer();void serviceOwnerOpportunity();
     void fire(){schedulerTasks();} bool isCurrentThread()const{return true;}
     void deleteUnusedTimers(){} void startTriggerTasks(unsigned*,double){}
     bool hasPendingTaskAdmission(){return false;}void willProcessTasks(){}void didProcessTasks(){}
     void add(double deadline=fixture::now,std::function<void()> callback={}){
-        m_timerHeap.push_back(new WebTimerBase{this,deadline,200,std::move(callback)});
+        auto* timer = new WebTimerBase{this,deadline,200,std::move(callback),{}};
+        m_timerIndex.prepare(200);
+        timer->scheduling.value = timer; timer->scheduling.deadline = deadline; timer->scheduling.priority = 200;
+        m_timerIndex.insert(timer->scheduling); m_timerHeap.push_back(timer);
         std::stable_sort(m_timerHeap.begin(),m_timerHeap.end(),[](const auto*a,const auto*b){return a->m_nextFireTime<b->m_nextFireTime;});
     }
-    void clear(){for(auto*t:m_timerHeap)delete t;m_timerHeap.clear();}
+    void clear(){for(auto*t:m_timerHeap){m_timerIndex.erase(t->scheduling);delete t;}m_timerHeap.clear();}
 };
-void WebTimerBase::heapDelete(){auto&heap=owner->m_timerHeap;heap.erase(std::find(heap.begin(),heap.end(),this));}
+void WebTimerBase::heapDelete(){owner->m_timerIndex.erase(scheduling);auto&heap=owner->m_timerHeap;heap.erase(std::find(heap.begin(),heap.end(),this));}
 class CheckReEnter {public:static int getEnterCount(){return fixture::enters;}static void incrementEnterCount(){++fixture::enters;}static void decrementEnterCount(){--fixture::enters;}};
 }
 namespace blink {class Platform {public:content::WebThreadImpl*owner=nullptr;static Platform*current(){static Platform p;return&p;}content::WebThreadImpl*currentThread(){return owner;}};}

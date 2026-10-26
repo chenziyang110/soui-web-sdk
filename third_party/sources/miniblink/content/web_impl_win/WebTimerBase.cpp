@@ -323,6 +323,7 @@ void WebTimerBase::deleteLastOne()
 
 void WebTimerBase::heapDelete()
 {
+    m_threadTimers->m_timerIndex.erase(m_scheduling);
     ASSERT(m_nextFireTime == 0);
     heapPop();
     deleteLastOne();
@@ -331,6 +332,7 @@ void WebTimerBase::heapDelete()
 
 void WebTimerBase::heapDeleteMin()
 {
+    m_threadTimers->m_timerIndex.erase(m_scheduling);
     ASSERT(m_nextFireTime == 0);
     heapPopMin();
     deleteLastOne();
@@ -379,6 +381,17 @@ void WebTimerBase::setNextFireTime(double newTime, unsigned* heapInsertionOrder)
     // Keep heap valid while changing the next-fire time.
     double oldTime = m_nextFireTime;
     if (oldTime != newTime) {
+        // Every allocation precedes mutation; existing active timers survive OOM.
+        if (newTime != 0) {
+            if (oldTime == 0 && timerHeap().size() == timerHeap().capacity()) {
+                const size_t size = timerHeap().size();
+                const size_t maximum = timerHeap().max_size();
+                if (size == maximum) throw std::bad_alloc();
+                timerHeap().reserve(size > maximum / 2 ? maximum : (size ? size * 2 : 16));
+            }
+            m_threadTimers->m_timerIndex.prepare(m_priority, oldTime != 0);
+            m_threadTimers->m_timerIndex.erase(m_scheduling, true);
+        }
         m_nextFireTime = newTime;
 
 //         static unsigned currentHeapInsertionOrder = 0;
@@ -399,6 +412,12 @@ void WebTimerBase::setNextFireTime(double newTime, unsigned* heapInsertionOrder)
         else
             heapIncreaseKey();
 
+        if (newTime != 0) {
+            m_scheduling.value = this;
+            m_scheduling.deadline = newTime;
+            m_scheduling.priority = m_priority;
+            m_threadTimers->m_timerIndex.insert(m_scheduling);
+        }
         bool isFirstTimerInHeap = m_heapIndex == 0;
 
         if (wasFirstTimerInHeap || isFirstTimerInHeap)

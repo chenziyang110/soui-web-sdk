@@ -24,6 +24,7 @@ function save(relative, target, begin, end) {
 }
 save('content/browser/SharedTimerWin.h', 'SharedTimerWin.h');
 save('content/web_impl_win/TaskSchedulingPolicy.h', 'TaskSchedulingPolicy.h');
+save('content/web_impl_win/TaskSchedulingIndex.h', 'TaskSchedulingIndex.h');
 save('content/web_impl_win/WebThreadImpl.cpp', 'budgets.inc',
   'static const double maxDurationOfFiringTimers', 'namespace {');
 save('content/web_impl_win/WebThreadImpl.cpp', 'scheduler.inc',

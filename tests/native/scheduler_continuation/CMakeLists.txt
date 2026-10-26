@@ -11,6 +11,7 @@ set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
   "${CMAKE_CURRENT_SOURCE_DIR}/generate.cjs"
   "${SOUI_DISTRIBUTION_ROOT}/third_party/sources/miniblink/content/browser/SharedTimerWin.h"
   "${SOUI_DISTRIBUTION_ROOT}/third_party/sources/miniblink/content/web_impl_win/TaskSchedulingPolicy.h"
+  "${SOUI_DISTRIBUTION_ROOT}/third_party/sources/miniblink/content/web_impl_win/TaskSchedulingIndex.h"
   "${SOUI_DISTRIBUTION_ROOT}/third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp")
 execute_process(COMMAND "${NODE_EXECUTABLE}" "${CMAKE_CURRENT_SOURCE_DIR}/generate.cjs"
   "${SOUI_DISTRIBUTION_ROOT}" "${CMAKE_CURRENT_BINARY_DIR}/generated"
