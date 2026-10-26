@@ -72,7 +72,7 @@ public:
     bool m_isMainThread=true,m_willExit=false;
     std::vector<WebTimerBase*> m_timerHeap;
     task_scheduling::DeadlinePriorityIndex m_timerIndex;
-    void schedulerTasks();void schedulerTasks(bool);void updateSharedTimer();void serviceOwnerOpportunity();
+    void schedulerTasks();void schedulerTasks(bool);void updateSharedTimer();void serviceOwnerOpportunity();void enableScheduler();
     void fire(){schedulerTasks();} bool isCurrentThread()const{return true;}
     void deleteUnusedTimers(){} void startTriggerTasks(unsigned*,double){}
     bool hasPendingTaskAdmission(){return false;}void willProcessTasks(){}void didProcessTasks(){}
@@ -113,6 +113,7 @@ namespace blink {class Platform {public:content::WebThreadImpl*owner=nullptr;sta
 #include "SharedTimerWin.h"
 namespace content {
 #include "scheduler.inc"
+#include "enable.inc"
 }
 namespace fixture {
 bool dispatchOne(){if(messages.empty())return false;auto m=messages.front();messages.pop_front();content::TimerWindowWndProc(m.window,m.id,m.first,m.second);return true;}
@@ -150,6 +151,9 @@ int run(){
     reset(thread);for(unsigned i=0;i<64;++i)thread.add();thread.schedulerTasks();
     enters=1;dispatchOne();expect(runs==32&&content::continuationDeferred,"nested callback defers");
     enters=0;thread.serviceOwnerOpportunity();drainMessages();expect(runs==64,"reentry recovery progresses");
+    reset(thread);for(unsigned i=0;i<64;++i)thread.add();thread.schedulerTasks();
+    thread.m_firingTimers=1;dispatchOne();expect(runs==32,"internal scheduler reentry is suppressed");
+    thread.enableScheduler();drainMessages();expect(runs==64,"enabling scheduler rearms work after consumed continuation");
     reset(thread);failPost=true;for(unsigned i=0;i<64;++i)thread.add();thread.schedulerTasks();
     expect(messages.empty()&&content::timerID,"post failure retains a native deadline fallback");
     failPost=false;now=100.011;content::TimerWindowWndProc(window,WM_TIMER,content::timerID,0);drainMessages();

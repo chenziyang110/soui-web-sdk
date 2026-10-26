@@ -29,6 +29,8 @@ save('content/web_impl_win/WebThreadImpl.cpp', 'budgets.inc',
   'static const double maxDurationOfFiringTimers', 'namespace {');
 save('content/web_impl_win/WebThreadImpl.cpp', 'scheduler.inc',
   'void WebThreadImpl::schedulerTasks()', 'std::vector<WebTimerBase*>& WebThreadImpl::timerHeap()');
+save('content/web_impl_win/WebThreadImpl.cpp', 'enable.inc',
+  'void WebThreadImpl::enableScheduler()', 'void WebThreadImpl::fire()');
 fs.writeFileSync(path.join(output, 'source-binding.json'), JSON.stringify({
   schema: 'scheduler-continuation-contract/1', dependencyMode: 'deterministic-fakes-no-host-ui', entries
 }, null, 2) + '\n');

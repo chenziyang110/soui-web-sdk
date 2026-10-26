@@ -624,7 +624,9 @@ void WebThreadImpl::disableScheduler()
 
 void WebThreadImpl::enableScheduler()
 {
+    ASSERT(m_firingTimers > 0);
     --m_firingTimers;
+    if (!m_firingTimers) updateSharedTimer(); // Reopen after a consumed nested continuation.
 }
 
 void WebThreadImpl::fire()
