@@ -160,6 +160,7 @@ class recorder final : public trace_source {
   [[nodiscard]] writer attach_current_thread();
   void stop() noexcept; // Nonblocking. Existing writer handles pin all storage.
   [[nodiscard]] bool quiescent() const noexcept;
+  [[nodiscard]] bool available() const noexcept { return static_cast<bool>(storage_); }
   [[nodiscard]] scalar_snapshot snapshot() const noexcept override;
   // Exactly one consumer. Busy rejects; count and scan are both bounded.
   [[nodiscard]] drain_result drain(event* output, std::size_t capacity) noexcept override;
