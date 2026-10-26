@@ -14,7 +14,7 @@ constexpr BOOL TRUE = 1, FALSE = 0;
 constexpr unsigned WM_NCDESTROY = 0x82;
 namespace wke { class CWebView; class CWebWindow; void wkeDestroyWebView(CWebWindow*); }
 namespace fixture {
-enum class result { failure, success, deleted_but_false, identity_lost };
+enum class result { failure, success, deleted_but_false, identity_lost, another_attached_window };
 struct Window { bool alive = true; void* property = nullptr; };
 std::map<HWND, Window> windows;
 result next_result = result::failure;
@@ -88,6 +88,10 @@ BOOL DestroyWindow(HWND window)
         return FALSE;
     }
     auto* view = static_cast<wke::CWebWindow*>(fixture::windows[window].property);
+    if (fixture::next_result == fixture::result::another_attached_window) {
+        view->m_hWnd = reinterpret_cast<HWND>(uintptr_t(0x105));
+        fixture::windows[view->m_hWnd] = {true, view};
+    }
     view->nativeDestroyed(window); // Exact production NCDESTROY bytes can delete view here.
     fixture::windows[window].alive = false;
     return fixture::next_result == fixture::result::deleted_but_false ? FALSE : TRUE;
@@ -146,5 +150,23 @@ int main()
     view->nativeDestroyed(window);
     fixture::windows[window].alive = false;
     fixture::require(runtime.drained() && fixture::destroyed_views == 3);
+
+    view = new wke::CWebWindow(reinterpret_cast<HWND>(uintptr_t(0x104)));
+    state = view->m_paintLifetime;
+    fixture::next_result = fixture::result::another_attached_window;
+    {
+        content::PaintClosePermit permit(state, Kind::view);
+        fixture::require(!view->_destroyWindow());
+        fixture::require(view->m_hWnd == reinterpret_cast<HWND>(uintptr_t(0x105)));
+        fixture::require(!state->policy.dead && state->policy.nativeFailed && !state->policy.nativeRetryable);
+        fixture::require(fixture::destroyed_views == 3 && !runtime.drained());
+    }
+    // The old receipt cannot clear failure for the newly attached resource.
+    // Model explicit external repair of ownership, then deliver its exact NC.
+    state->policy.nativeWindow = reinterpret_cast<uintptr_t>(view->m_hWnd);
+    const auto repairedWindow = view->m_hWnd;
+    view->nativeDestroyed(repairedWindow);
+    fixture::windows[repairedWindow].alive = false;
+    fixture::require(runtime.drained() && fixture::destroyed_views == 4);
     return fixture::failures ? 1 : 0;
 }

@@ -320,9 +320,18 @@ LRESULT CWebWindow::_windowProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
             std::lock_guard<std::mutex> lock(runtime.mutex);
             const bool wasPending = m_paintLifetime->policy.pending != content::PaintCloseKind::none;
             const bool wasFailed = m_paintLifetime->policy.nativeFailed;
+            if (m_hWnd != hwnd) {
+                m_paintLifetime->policy.noteNativeFailure(false);
+                syncNativeCloseCounts(runtime, m_paintLifetime->policy, wasPending, wasFailed);
+                return 0; // Old NC receipt cannot erase another attached HWND or delete its owner.
+            }
             if (!m_paintLifetime->policy.nativeWindow)
                 m_paintLifetime->policy.nativeWindow = reinterpret_cast<uintptr_t>(hwnd);
-            m_paintLifetime->policy.noteNativeDestroyed(reinterpret_cast<uintptr_t>(hwnd));
+            if (!m_paintLifetime->policy.noteNativeDestroyed(reinterpret_cast<uintptr_t>(hwnd))) {
+                m_paintLifetime->policy.noteNativeFailure(false);
+                syncNativeCloseCounts(runtime, m_paintLifetime->policy, wasPending, wasFailed);
+                return 0;
+            }
             syncNativeCloseCounts(runtime, m_paintLifetime->policy, wasPending, wasFailed);
         }
         m_hWnd = NULL;
