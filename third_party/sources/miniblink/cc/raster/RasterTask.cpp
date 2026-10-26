@@ -19,6 +19,7 @@
 #include "config.h"
 #include <atomic>
 #include "cc/raster/RasterTask.h"
+#include "cc/trees/RenderTrace.h"
 
 #include "cc/raster/RasterResouce.h"
 #include "cc/raster/RasterFilters.h"
@@ -75,6 +76,7 @@ RasterTaskWorkerThreadPool::~RasterTaskWorkerThreadPool()
 
 static void initializeRasterTaskThread(blink::WebThreadSupportingGC* webThreadSupportingGC)
 {
+    (void)content::input_frame_trace::register_current_thread();
     webThreadSupportingGC->initialize();
 }
 
@@ -94,6 +96,7 @@ void RasterTaskWorkerThreadPool::init(int threadNum)
 static void shutdownRasterThread(blink::WebThreadSupportingGC* webThread, std::atomic<int>* waitCount)
 {
     webThread->shutdown();
+    content::input_frame_trace::detach_current_thread();
     waitCount->fetch_sub(1, std::memory_order_release);
 }
 
@@ -350,6 +353,8 @@ public:
     {
         SkBitmap* bitmap = new SkBitmap;
         bitmap->allocN32Pixels(dirtyRect.width(), dirtyRect.height());
+        trace::add(trace::counter::raster_bytes,
+            static_cast<uint64_t>(bitmap->width()) * bitmap->height() * 4);
 
         // Uses kPremul_SkAlphaType since the result is not known to be opaque.
         SkImageInfo info = SkImageInfo::MakeN32(dirtyRect.width(), dirtyRect.height(), m_isOpaque ? kOpaque_SkAlphaType : kPremul_SkAlphaType);

@@ -126,6 +126,11 @@ bool WebPage::cancelInputState()
     return m_pageImpl && m_pageImpl->cancelInputState();
 }
 
+void WebPage::setInputTraceContext(const content::input_frame_trace::event& value)
+{
+    if (m_pageImpl) m_pageImpl->setInputTraceContext(value);
+}
+
 void WebPage::setUiMirrorConsumerRequired(bool required)
 {
     if (m_pageImpl) m_pageImpl->setUiMirrorConsumerRequired(required);

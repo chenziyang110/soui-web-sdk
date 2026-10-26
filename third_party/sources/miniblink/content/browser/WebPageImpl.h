@@ -186,6 +186,7 @@ public:
     void setDrawMinInterval(double drawMinInterval);
     void setMainFrameRate(int rate);
     void setUiMirrorConsumerRequired(bool required);
+    void setInputTraceContext(const content::input_frame_trace::event& value);
     bool uiMirrorConsumerRequired() const { return m_uiMirrorConsumerRequired.load(); }
 
     void loadHistoryItem(int64 frameId, const blink::WebHistoryItem& item, blink::WebHistoryLoadType type, blink::WebURLRequest::CachePolicy policy);
@@ -312,6 +313,7 @@ public:
     double m_lastFrameTimeMonotonic;
     double m_mainFrameInterval;
     uint64_t m_renderFrameId;
+    cc::InputDispatchTraceStack m_inputTraceStack;
     double m_nextMainFrameTime;
 
     SkCanvas* m_memoryCanvasForUi;

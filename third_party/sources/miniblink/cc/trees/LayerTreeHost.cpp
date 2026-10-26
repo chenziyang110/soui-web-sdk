@@ -12,6 +12,7 @@
 #include "cc/trees/LayerTreeHost.h"
 #include "cc/trees/FrameDeadlinePolicy.h"
 #include "cc/trees/ResourceNotificationPolicy.h"
+#include "cc/trees/RenderTrace.h"
 #if defined(SOUI_GPU_COMPOSITOR)
 #include "cc/trees/GpuSkiaSurface.h"
 #endif
@@ -383,6 +384,7 @@ LayerTreeHost* gLayerTreeHost = nullptr;
 
 static void initializeCompositeThread(blink::WebThreadSupportingGC* webThreadSupportingGC)
 {
+    (void)content::input_frame_trace::register_current_thread();
     webThreadSupportingGC->initialize();
 }
 
@@ -603,6 +605,7 @@ static void shutdownCompositeThread(blink::WebThreadSupportingGC* webThread,
     delete gpuSurface;
 #endif
     webThread->shutdown();
+    content::input_frame_trace::detach_current_thread();
     waitCount->fetch_sub(1, std::memory_order_release);
 }
 
@@ -979,6 +982,7 @@ void LayerTreeHost::runResourceProgress(uint64_t ticket, uint64_t generation)
             m_uiPaintRetry->drawWaiting = false;
         }
     }
+    trace::add(trace::counter::resource_notifications);
     if (stale) {
         queueResourceProgress(m_uiPaintRetry);
         return;
@@ -1196,6 +1200,8 @@ void LayerTreeHost::recordDraw()
     const bool noRasterCommit = taskGroup->endPostRasterTask();
     const int64 actionAfter = m_actionsFrameGroup->newestActionId();
     const bool hasActions = actionAfter > actionBefore;
+    m_recordedTraceActionFirst = hasActions ? actionBefore + 1 : 0;
+    m_recordedTraceActionLast = hasActions ? actionAfter : 0;
     const bool resourcesReady = noRasterCommit || !hasActions;
     refreshScrollRasterCoverage(this, &scrollTree, coverageRequests,
         !resourcesReady);
@@ -1642,6 +1648,21 @@ bool LayerTreeHost::submitSceneTransaction(const ScrollTreeSnapshot& scrollTree,
         transaction.resourcesReady = resourcesReady;
         transaction.scrollTree = scrollTree;
         accepted = m_sceneCoordinator.submit(transaction);
+        if (accepted) {
+            m_pendingSceneTraceContext = renderTraceContext();
+            m_pendingSceneTraceContext.input_first = m_pendingSceneTraceContext.input_last = 0;
+            m_pendingSceneTraceContext.action_first = firstActionId > 0 ? firstActionId : 0;
+            m_pendingSceneTraceContext.action_last = lastActionId > 0 ? lastActionId : 0;
+            m_pendingSceneTraceContext.related_id = scrollTree.sceneVersion();
+        }
+    }
+    if (accepted) {
+        trace::add(trace::counter::scene_pending);
+        auto value = renderTraceContext();
+        value.action_first = firstActionId > 0 ? firstActionId : 0;
+        value.action_last = lastActionId > 0 ? lastActionId : 0;
+        value.related_id = scrollTree.sceneVersion();
+        recordRenderStage(trace::stage::scene_pending, value);
     }
     if (accepted && resourcesReady)
         requestDrawFrameToRunIntoCompositeThread();
@@ -1656,8 +1677,16 @@ void LayerTreeHost::onActionFrameApplied(int64 throughActionId)
         ready = m_sceneCoordinator.markResourcesReadyThroughAction(
             throughActionId);
     }
-    if (ready)
+    if (ready) {
+        trace::event value;
+        {
+            WTF::Locker<WTF::Mutex> locker(m_sceneTransactionMutex);
+            value = m_pendingSceneTraceContext;
+        }
+        value.action_last = throughActionId > 0 ? throughActionId : 0;
+        recordRenderStage(trace::stage::resources_ready, value);
         requestDrawFrameToRunIntoCompositeThread();
+    }
     notifyResourceProgress();
 }
 
@@ -2569,6 +2598,9 @@ bool LayerTreeHost::tickCompositorScroll(double monotonicTime,
     {
         WTF::Locker<WTF::Mutex> sceneLocker(m_sceneTransactionMutex);
         if (m_sceneCoordinator.activateReady()) {
+            m_activeSceneTraceContext = m_pendingSceneTraceContext;
+            trace::add(trace::counter::scene_activated);
+            recordRenderStage(trace::stage::scene_activated, m_activeSceneTraceContext);
             activatedSceneTree = new ScrollTreeSnapshot(
                 m_sceneCoordinator.activeScene().scrollTree);
         }
@@ -2863,8 +2895,7 @@ void LayerTreeHost::clearCanvas(SkCanvas* canvas, const SkRect& rect, bool useLa
 
 void LayerTreeHost::setDrawMinInterval(double drawMinInterval)
 {
-    if (!(drawMinInterval > 0) || !std::isfinite(drawMinInterval)
-        || drawMinInterval > 1.0)
+    if (drawMinInterval < 0 || !std::isfinite(drawMinInterval))
         return;
     WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
     m_drawMinInterval = drawMinInterval;
@@ -2875,10 +2906,42 @@ void LayerTreeHost::setMainFrameDeadline(uint64_t frameId, double target, double
 {
     WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
     m_unifiedFrameDeadline = interval > 0;
-    if (!m_unifiedFrameDeadline || !frameId || frameId <= m_pendingMainFrameId)
+    if (!frameId || frameId <= m_pendingMainFrameId)
         return;
     m_pendingMainFrameId = frameId;
     m_pendingMainFrameDeadline = target;
+    m_frameTraceContext.frame_id = frameId;
+    m_frameTraceContext.action_first = m_recordedTraceActionFirst;
+    m_frameTraceContext.action_last = m_recordedTraceActionLast;
+    if (m_pendingInputTrace.size()) {
+        m_frameTraceContext = m_pendingInputTrace.at(0);
+        m_frameTraceContext.input_first = m_frameTraceContext.input_last = 0;
+        m_frameTraceContext.frame_id = frameId;
+        m_frameTraceContext.action_first = m_recordedTraceActionFirst;
+        m_frameTraceContext.action_last = m_recordedTraceActionLast;
+        for (size_t index = 0; index < m_pendingInputTrace.size(); ++index) {
+            auto value = m_pendingInputTrace.at(index);
+            value.frame_id = frameId;
+            value.action_first = m_recordedTraceActionFirst;
+            value.action_last = m_recordedTraceActionLast;
+            value.flags = trace::coverage_valid; // Processed, not proven visible content.
+            recordRenderStage(trace::stage::frame_coverage, value);
+            recordRenderStage(trace::stage::commit_complete, value);
+        }
+        m_pendingInputTrace.clear();
+    } else {
+        m_frameTraceContext.frame_id = frameId;
+        recordRenderStage(trace::stage::commit_complete, m_frameTraceContext);
+    }
+}
+
+void LayerTreeHost::noteProcessedInputTrace(const content::input_frame_trace::event& value)
+{
+    WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
+    if (!m_pendingInputTrace.append(value)) {
+        trace::add(trace::counter::causal_ranges_dropped);
+        trace::note_causal_loss();
+    }
 }
 
 void LayerTreeHost::setIndependentPresentationEnabled(bool enabled)
@@ -2910,6 +2973,7 @@ void LayerTreeHost::firePaintEvent(HDC hdc, const RECT* paintRect)
     FrameBufferLease lease = acquireFrameBufferLease();
     if (!lease || !paintRect)
         return;
+    RenderTraceContextScope frameScope(lease.buffer->traceContext);
     if (!lease.buffer->alpha)
         skia::DrawToNativeContext(lease.canvas(), hdc, paintRect->left,
             paintRect->top, paintRect);
@@ -2929,6 +2993,7 @@ void LayerTreeHost::drawFrameInCompositeThread()
 
     const double lastCompositeTime = WTF::monotonicallyIncreasingTime();
     uint64_t committedFrame = 0;
+    trace::event frameContext;
     long long pacingDelay = 0;
     {
         WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
@@ -2937,6 +3002,7 @@ void LayerTreeHost::drawFrameInCompositeThread()
             return;
         }
         committedFrame = m_pendingMainFrameId;
+        frameContext = m_frameTraceContext;
         const bool alreadyPaced = m_unifiedFrameDeadline
             && committedFrame > m_presentedMainFrameId
             && lastCompositeTime >= m_pendingMainFrameDeadline;
@@ -2950,6 +3016,7 @@ void LayerTreeHost::drawFrameInCompositeThread()
         }
     }
     if (pacingDelay > 0) {
+        trace::add(trace::counter::pacing_wakes);
         requestDrawFrameAfterDelay(pacingDelay);
         atomicDecrement(&m_drawFrameFinishCount);
         return;
@@ -2964,6 +3031,9 @@ void LayerTreeHost::drawFrameInCompositeThread()
     gLastCount = performanceCount.LowPart;
 #endif
 
+    RenderTraceContextScope frameTraceScope(frameContext);
+    RenderDurationScope compositeDuration(trace::duration_metric::composite);
+    recordRenderStage(trace::stage::composite_begin);
     bool frameReady = preDrawFrame(); // 这里也会发起Commit
 
     Vector<SkRect> animationDirtyRects;
@@ -2971,6 +3041,11 @@ void LayerTreeHost::drawFrameInCompositeThread()
         lastCompositeTime, &animationDirtyRects);
     const bool scrollNeedsAnotherFrame = tickCompositorScroll(
         lastCompositeTime, &animationDirtyRects);
+    {
+        WTF::Locker<WTF::Mutex> sceneLocker(m_sceneTransactionMutex);
+        if (m_activeSceneTraceContext.frame_id)
+            currentRenderTraceContext() = m_activeSceneTraceContext;
+    }
 
     m_compositeMutex.lock();
     Vector<SkRect> dirtyRects = m_dirtyRectsForComposite;
@@ -3014,6 +3089,7 @@ void LayerTreeHost::drawFrameInCompositeThread()
     // Incomplete action/resource transactions are resumed by producer
     // publication, not a periodic draw task. No resource fence is bypassed.
     (void)frameReady;
+    recordRenderStage(trace::stage::composite_end);
     atomicDecrement(&m_drawFrameFinishCount);
 }
 
@@ -3027,8 +3103,11 @@ void LayerTreeHost::paintToMemoryCanvasInUiThread(const SkRect& paintRect)
         client = m_uiThreadClient;
     }
     if (lease && client) {
+        RenderTraceContextScope frameScope(lease.buffer->traceContext);
         const blink::IntRect rect(paintRect.x(), paintRect.y(),
             paintRect.width(), paintRect.height());
+        trace::add(trace::counter::client_callbacks);
+        RenderDurationScope callbackDuration(trace::duration_metric::client_callback);
         client->paintToMemoryCanvasInUiThread(lease.canvas(), rect);
     }
 }
@@ -3113,7 +3192,7 @@ void LayerTreeHost::requestPaintToMemoryCanvasToUiThread(const SkRect& r)
 
 void LayerTreeHost::paintToMemoryCanvasInCompositeThread(const SkRect& r)
 {
-    std::unique_lock<WTF::Mutex> locker(m_compositeMutex);
+    RenderMutexLock<WTF::Mutex> locker(m_compositeMutex);
     SkRect paintRect = r;
 #if defined(SOUI_GPU_COMPOSITOR)
     bool resized = m_hasResize;
@@ -3201,6 +3280,7 @@ void LayerTreeHost::paintToMemoryCanvasInCompositeThread(const SkRect& r)
         clearCanvas(m_memoryCanvas, paintRect, m_hasTransparentBackground);
 
     bool needNotifUi = drawToCanvas(m_memoryCanvas, paintRect); // 绘制脏矩形
+    m_frameBuffers[m_currentFrameBufferSlot]->traceContext = renderTraceContext();
 #if defined(ENABLE_WKE) && ENABLE_WKE == 1
     wke::diagnostics::renderer_draw_completed(WKE_RENDER_DIAGNOSTICS_DRAW_BITMAP_RASTER);
 #endif
@@ -3218,8 +3298,12 @@ void LayerTreeHost::paintToMemoryCanvasInCompositeThread(const SkRect& r)
         const blink::IntRect rect(paintRect.x(), paintRect.y(),
             paintRect.width(), paintRect.height());
         locker.unlock();
-        if (lease && client)
+        if (lease && client) {
+            trace::add(trace::counter::client_callbacks);
+            RenderTraceContextScope frameScope(lease.buffer->traceContext);
+            RenderDurationScope callbackDuration(trace::duration_metric::client_callback);
             client->paintToMemoryCanvasInUiThread(lease.canvas(), rect);
+        }
         return;
     }
 
@@ -3262,6 +3346,7 @@ LayerTreeHost::FrameBufferLease LayerTreeHost::acquireFrameBufferLeaseLocked()
 {
     if (m_isDestroying || m_hasResize || !m_memoryCanvas)
         return FrameBufferLease();
+    trace::add(trace::counter::buffer_leases);
     return FrameBufferLease(m_frameBuffers[m_currentFrameBufferSlot], m_uiPaintRetry);
 }
 LayerTreeHost::FrameBufferLease LayerTreeHost::acquireFrameBufferLease()
@@ -3334,6 +3419,8 @@ bool LayerTreeHost::prepareWritableFrameBufferLocked()
                 if (m_hasTransparentBackground)
                     clearCanvas(next->canvas.get(), m_clientRect, true);
                 next->canvas->drawBitmap(bitmap, 0, 0, nullptr);
+                trace::add(trace::counter::copy_operations);
+                trace::add(trace::counter::copy_bytes, next->bytes);
             }
         }
     }

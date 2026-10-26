@@ -2,6 +2,7 @@
 #ifndef content_WebPage_h
 #define content_WebPage_h
 
+#include "content/common/InputFrameTrace.h"
 #include "content/browser/WebPageState.h"
 
 #include "third_party/WebKit/Source/platform/geometry/IntSize.h"
@@ -113,6 +114,7 @@ public:
     void setMainFrameRate(int rate);
     bool cancelInputState();
     void setUiMirrorConsumerRequired(bool required);
+    void setInputTraceContext(const content::input_frame_trace::event& value);
     bool uiMirrorConsumerRequired() const;
 
     void setNeedsCommit();

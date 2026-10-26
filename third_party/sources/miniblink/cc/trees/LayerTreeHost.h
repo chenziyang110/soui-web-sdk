@@ -5,6 +5,7 @@
 #include "cc/trees/ScrollTreeSnapshot.h"
 #include "cc/trees/LegacyPaintRetryPolicy.h"
 #include "cc/trees/FrameBufferLeasePolicy.h"
+#include "cc/trees/InputFrameCoverage.h"
 #include <memory>
 #include "third_party/WebKit/public/platform/WebThread.h"
 #include "third_party/WebKit/Source/platform/geometry/IntRect.h"
@@ -210,6 +211,7 @@ public:
         int width;
         int height;
         bool alpha;
+        content::input_frame_trace::event traceContext;
     };
     struct FrameBufferLease {
         FrameBufferLease();
@@ -250,6 +252,7 @@ public:
 
     void setDrawMinInterval(double drawMinInterval);
     void setMainFrameDeadline(uint64_t frameId, double target, double interval);
+    void noteProcessedInputTrace(const content::input_frame_trace::event& value);
     void setIndependentPresentationEnabled(bool enabled);
     
     void postPaintMessage(const SkRect& paintRect);
@@ -355,6 +358,8 @@ private:
     ScrollTreeSnapshot* m_activeInputScrollTree;
     mutable WTF::Mutex m_sceneTransactionMutex;
     SceneCoordinator m_sceneCoordinator;
+    content::input_frame_trace::event m_pendingSceneTraceContext;
+    content::input_frame_trace::event m_activeSceneTraceContext;
     uint64_t m_activeCompositorScrollVersion;
     uint64_t m_nextScrollSceneVersion;
     uint64_t m_nextCompositorInputSequence;
@@ -379,6 +384,10 @@ private:
     uint64_t m_presentedMainFrameId;
     double m_pendingMainFrameDeadline;
     bool m_unifiedFrameDeadline;
+    InputFrameCoverage m_pendingInputTrace;
+    content::input_frame_trace::event m_frameTraceContext;
+    int64 m_recordedTraceActionFirst = 0;
+    int64 m_recordedTraceActionLast = 0;
     double m_drawMinInterval;
 
     static const int m_paintMessageQueueSize = 200;
