@@ -62,6 +62,7 @@ struct UiPaintRetryState {
     LegacyPaintRetryPolicy policy;
     ResourceNotificationPolicy resource;
     bool recordWaiting = false;
+    bool rerasterRequired = false;
     bool drawWaiting = false;
 };
 
@@ -384,7 +385,6 @@ LayerTreeHost* gLayerTreeHost = nullptr;
 
 static void initializeCompositeThread(blink::WebThreadSupportingGC* webThreadSupportingGC)
 {
-    (void)content::input_frame_trace::register_current_thread();
     webThreadSupportingGC->initialize();
 }
 
@@ -605,7 +605,6 @@ static void shutdownCompositeThread(blink::WebThreadSupportingGC* webThread,
     delete gpuSurface;
 #endif
     webThread->shutdown();
-    content::input_frame_trace::detach_current_thread();
     waitCount->fetch_sub(1, std::memory_order_release);
 }
 
@@ -888,7 +887,16 @@ bool LayerTreeHost::isLayerTreeDirty() const
 
 void LayerTreeHost::requestRepaint(const blink::IntRect& repaintRect)
 {
-    m_hostClient->onLayerTreeInvalidateRect(blink::WebRect(repaintRect));
+    if (WTF::isMainThread()) {
+        m_hostClient->onLayerTreeInvalidateRect(blink::WebRect(repaintRect));
+        return;
+    }
+    // Action application is compositor-owned. Publish damage directly and
+    // wake the owner only through the merged completion path.
+    postPaintMessage(SkRect::MakeXYWH(repaintRect.x(), repaintRect.y(),
+        repaintRect.width(), repaintRect.height()));
+    requestDrawFrameToRunIntoCompositeThread();
+    notifyResourceProgress();
 }
 
 void LayerTreeHost::requestDrawFrameLocked(DirtyLayers* dirtyLayers, Vector<Tile*>* tilesToUIThreadRelease)
@@ -955,6 +963,33 @@ void LayerTreeHost::notifyResourceProgress(bool actionDirty)
     queueResourceProgress(m_uiPaintRetry);
 }
 
+RasterCandidateBudget LayerTreeHost::inspectRasterCandidateScene(uint64_t* generation)
+{
+    RasterCandidateBudget budget;
+    WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
+    if (generation)
+        *generation = m_frameBufferGeneration;
+    if (m_isDestroying || hasInFlightScene()
+        || RasterTaskWorkerThreadPool::shared()->getPendingRasterTaskNum() != 0) {
+        budget.reject(RasterCandidateBudget::Failure::ExistingWork);
+        return budget;
+    }
+    if (m_liveCCLayers.size() > RasterCandidateBudget::maximumLayers) {
+        budget.reject(RasterCandidateBudget::Failure::LayerLimit);
+        return budget;
+    }
+    for (auto it = m_liveCCLayers.begin(); it != m_liveCCLayers.end(); ++it) {
+        if (!it->value->inspectRasterCandidateResidentBudget(&budget))
+            break;
+    }
+    return budget;
+}
+bool LayerTreeHost::matchesRasterCandidateGeneration(uint64_t generation)
+{
+    WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
+    return !m_isDestroying && generation == m_frameBufferGeneration;
+}
+
 void LayerTreeHost::notifyRasterCompletion(const std::shared_ptr<UiPaintRetryState>& state)
 {
     // Safe after the pending-task count reaches zero: this handle pins only
@@ -966,6 +1001,7 @@ void LayerTreeHost::runResourceProgress(uint64_t ticket, uint64_t generation)
 {
     bool dirty = false;
     bool waiting = false;
+    bool rerasterRequired = false;
     bool stale = false;
     bool drawWaiting = false;
     {
@@ -980,6 +1016,8 @@ void LayerTreeHost::runResourceProgress(uint64_t ticket, uint64_t generation)
         if (!stale) {
             m_uiPaintRetry->recordWaiting = false;
             m_uiPaintRetry->drawWaiting = false;
+            rerasterRequired = m_uiPaintRetry->rerasterRequired;
+            m_uiPaintRetry->rerasterRequired = false;
         }
     }
     trace::add(trace::counter::resource_notifications);
@@ -992,7 +1030,18 @@ void LayerTreeHost::runResourceProgress(uint64_t ticket, uint64_t generation)
     retryPendingOwnerWork();
     if (drawWaiting)
         requestDrawFrameToRunIntoCompositeThread();
-    if (dirty)
+    if (rerasterRequired) {
+        // Owner-side full invalidation reinstates every content tile whose
+        // dirty state was consumed by the rejected raster group.
+        for (auto it = m_liveLayers.begin(); it != m_liveLayers.end(); ++it)
+            it->value->invalidate();
+        {
+            WTF::Locker<WTF::Mutex> sceneLock(m_sceneTransactionMutex);
+            m_rasterRecoveryNeedsInvalidation = false;
+        }
+        postPaintMessage(SkRect::MakeWH(m_clientRect.width(), m_clientRect.height()));
+    }
+    if (dirty || rerasterRequired)
         setLayerTreeDirty();
     else if (waiting)
         m_hostClient->onLayerTreeSetNeedsCommit();
@@ -1043,6 +1092,7 @@ bool LayerTreeHost::preDrawFrame()
 bool LayerTreeHost::applyActions(bool needCheck)
 {
     ASSERT(!m_compositeThread || !isMainThread());
+    WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
     return m_actionsFrameGroup->applyActions(needCheck);
 }
 
@@ -1205,7 +1255,7 @@ void LayerTreeHost::recordDraw()
     const bool resourcesReady = noRasterCommit || !hasActions;
     refreshScrollRasterCoverage(this, &scrollTree, coverageRequests,
         !resourcesReady);
-    submitSceneTransaction(scrollTree,
+    submitSceneTransaction(std::move(scrollTree),
         hasActions ? actionBefore + 1 : 0,
         hasActions ? actionAfter : 0,
         resourcesReady);
@@ -1625,7 +1675,7 @@ void LayerTreeHost::updateLayersDrawProperties(ScrollTreeSnapshot* output,
         m_nextScrollSceneVersion, ScrollNodeKey(), &scrollTree, coverageRequests);
     attachCompositorScrollbarSnapshots(m_rootLayer, this, &scrollTree);
     if (output)
-        *output = scrollTree;
+        *output = std::move(scrollTree);
 }
 
 bool LayerTreeHost::hasInFlightScene() const
@@ -1634,26 +1684,29 @@ bool LayerTreeHost::hasInFlightScene() const
     return m_sceneCoordinator.hasPending() || m_sceneCoordinator.hasReady();
 }
 
-bool LayerTreeHost::submitSceneTransaction(const ScrollTreeSnapshot& scrollTree,
+bool LayerTreeHost::submitSceneTransaction(ScrollTreeSnapshot&& scrollTree,
     int64 firstActionId, int64 lastActionId, bool resourcesReady)
 {
+    const uint64_t sceneVersion = scrollTree.sceneVersion();
     bool accepted = false;
     {
         WTF::Locker<WTF::Mutex> locker(m_sceneTransactionMutex);
+        if (m_rasterRecoveryPending && m_rasterRecoveryNeedsInvalidation)
+            return false;
         SceneTransaction transaction;
         transaction.baseVersion = m_sceneCoordinator.activeVersion();
         transaction.newVersion = scrollTree.sceneVersion();
         transaction.firstActionId = firstActionId;
         transaction.lastActionId = lastActionId;
         transaction.resourcesReady = resourcesReady;
-        transaction.scrollTree = scrollTree;
-        accepted = m_sceneCoordinator.submit(transaction);
+        transaction.scrollTree = std::move(scrollTree);
+        accepted = m_sceneCoordinator.submit(std::move(transaction));
         if (accepted) {
             m_pendingSceneTraceContext = renderTraceContext();
             m_pendingSceneTraceContext.input_first = m_pendingSceneTraceContext.input_last = 0;
             m_pendingSceneTraceContext.action_first = firstActionId > 0 ? firstActionId : 0;
             m_pendingSceneTraceContext.action_last = lastActionId > 0 ? lastActionId : 0;
-            m_pendingSceneTraceContext.related_id = scrollTree.sceneVersion();
+            m_pendingSceneTraceContext.related_id = sceneVersion;
         }
     }
     if (accepted) {
@@ -1661,12 +1714,42 @@ bool LayerTreeHost::submitSceneTransaction(const ScrollTreeSnapshot& scrollTree,
         auto value = renderTraceContext();
         value.action_first = firstActionId > 0 ? firstActionId : 0;
         value.action_last = lastActionId > 0 ? lastActionId : 0;
-        value.related_id = scrollTree.sceneVersion();
+        value.related_id = sceneVersion;
         recordRenderStage(trace::stage::scene_pending, value);
     }
     if (accepted && resourcesReady)
         requestDrawFrameToRunIntoCompositeThread();
     return accepted;
+}
+
+void LayerTreeHost::onRasterActionCancelled(int64 actionId)
+{
+    {
+        WTF::Locker<WTF::Mutex> locker(m_sceneTransactionMutex);
+        const uint64_t failedScene = m_sceneCoordinator.hasPending()
+            ? m_sceneCoordinator.pendingScene().newVersion : m_sceneCoordinator.activeVersion();
+        m_sceneCoordinator.cancelPendingForAction(actionId);
+        m_rasterRecoveryPending = true;
+        m_rasterRecoveryNeedsInvalidation = true;
+        if (failedScene > m_rasterRecoveryAfterScene)
+            m_rasterRecoveryAfterScene = failedScene;
+    }
+    {
+        WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
+        for (size_t index = 0; index < m_unpresentedInputTrace.size(); ++index) {
+            if (!m_pendingInputTrace.append(m_unpresentedInputTrace.at(index))) {
+                trace::add(trace::counter::causal_ranges_dropped);
+                trace::note_causal_loss();
+            }
+        }
+        m_unpresentedInputTrace.clear();
+    }
+    {
+        std::lock_guard<std::mutex> lock(m_uiPaintRetry->mutex);
+        m_uiPaintRetry->rerasterRequired = true;
+        m_uiPaintRetry->resource.notify(true);
+    }
+    queueResourceProgress(m_uiPaintRetry);
 }
 
 void LayerTreeHost::onActionFrameApplied(int64 throughActionId)
@@ -2598,6 +2681,9 @@ bool LayerTreeHost::tickCompositorScroll(double monotonicTime,
     {
         WTF::Locker<WTF::Mutex> sceneLocker(m_sceneTransactionMutex);
         if (m_sceneCoordinator.activateReady()) {
+            if (m_rasterRecoveryPending && !m_rasterRecoveryNeedsInvalidation
+                && m_sceneCoordinator.activeVersion() > m_rasterRecoveryAfterScene)
+                m_rasterRecoveryPending = false;
             m_activeSceneTraceContext = m_pendingSceneTraceContext;
             trace::add(trace::counter::scene_activated);
             recordRenderStage(trace::stage::scene_activated, m_activeSceneTraceContext);
@@ -2910,6 +2996,8 @@ void LayerTreeHost::setMainFrameDeadline(uint64_t frameId, double target, double
         return;
     m_pendingMainFrameId = frameId;
     m_pendingMainFrameDeadline = target;
+    m_unpresentedInputTrace = m_pendingInputTrace;
+    m_unpresentedInputFrameId = frameId;
     m_frameTraceContext.frame_id = frameId;
     m_frameTraceContext.action_first = m_recordedTraceActionFirst;
     m_frameTraceContext.action_last = m_recordedTraceActionLast;
@@ -2928,7 +3016,13 @@ void LayerTreeHost::setMainFrameDeadline(uint64_t frameId, double target, double
             recordRenderStage(trace::stage::frame_coverage, value);
             recordRenderStage(trace::stage::commit_complete, value);
         }
-        m_pendingInputTrace.clear();
+        bool keepForRecovery = false;
+        {
+            WTF::Locker<WTF::Mutex> sceneLock(m_sceneTransactionMutex);
+            keepForRecovery = m_rasterRecoveryPending;
+        }
+        if (!keepForRecovery)
+            m_pendingInputTrace.clear();
     } else {
         m_frameTraceContext.frame_id = frameId;
         recordRenderStage(trace::stage::commit_complete, m_frameTraceContext);
@@ -3035,6 +3129,17 @@ void LayerTreeHost::drawFrameInCompositeThread()
     RenderDurationScope compositeDuration(trace::duration_metric::composite);
     recordRenderStage(trace::stage::composite_begin);
     bool frameReady = preDrawFrame(); // 这里也会发起Commit
+    {
+        WTF::Locker<WTF::Mutex> sceneLock(m_sceneTransactionMutex);
+        if (m_rasterRecoveryPending && (m_rasterRecoveryNeedsInvalidation
+            || !m_sceneCoordinator.hasReady())) {
+            // The previous canvas remains the only visible scene while a
+            // replacement reraster is outstanding. Do not consume its dirty.
+            recordRenderStage(trace::stage::composite_end);
+            atomicDecrement(&m_drawFrameFinishCount);
+            return;
+        }
+    }
 
     Vector<SkRect> animationDirtyRects;
     const bool animationNeedsAnotherFrame = tickCompositorAnimations(
@@ -3080,6 +3185,8 @@ void LayerTreeHost::drawFrameInCompositeThread()
     if (!dirtyRects.isEmpty() && !m_canvasPaintBlocked) {
         WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
         m_presentedMainFrameId = committedFrame;
+        if (m_unpresentedInputFrameId == committedFrame)
+            m_unpresentedInputTrace.clear();
     }
     postDrawFrame();
     if ((animationNeedsAnotherFrame || scrollNeedsAnotherFrame)

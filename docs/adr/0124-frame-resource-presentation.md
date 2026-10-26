@@ -14,7 +14,7 @@ W06 把 record 的资源准入与 pacing 分开。owner 注册资源等待后重
 
 W07 使用最多两个有尺寸/设备代际的画布槽。呈现、DC/截图读取在锁内取得持有所有权的 lease，锁外调用客户端或 GDI；lease 仍被读取时不可覆写该槽。两槽均被持有时保留 dirty，并在释放后由完成通知重试。不能解锁后保留裸像素。mirror 的默认消费者需求为 true；只有 capability 检查通过且 DIRECT_HWND 无 DC/截图消费者时才跳过镜像。首次请求 DC 强制恢复消费者并从当前画布建立快照。透明窗口、首帧、resize 保留全量处理。保留已有 dirty copy，新增计数不能将其重复算作新优化。
 
-W08 的多 worker、可见资源优先候选默认关闭，仅接受 2–4 个 worker，带任务/估计 raster 字节上限。不能取消已开始工作或把缺失资源标为 ready；准入不足时采用明确的有界回退，保证 action 完整性。可见/预取优先级以 viewport coverage 为依据，不能扩大既有预取范围来隐藏露白。缺 profile 时状态为“待数据决定采用”。
+W08 的多 worker、可见资源优先候选默认关闭，仅接受 2–4 个 worker，带任务/估计 raster 字节上限。不能取消已开始工作或把缺失资源标为 ready；在任何候选 dispatch 前先核对整帧受控资源；未知/超限形状只走原 worker0。不得以近似 picture 大小替代引用所有权上界，当前通用 picture 的可用资格域仍未证明，W08 资格门保持开放。可见/预取优先级以 viewport coverage 为依据，不能扩大既有预取范围来隐藏露白。缺 profile 时状态为“待数据决定采用”。
 
 W09 先记录 layout/record、scene 构造与复制、copy bytes、锁持有和客户端 callback 时间，再选择后续缓存。确定性的 scene pending→ready→active 所有权转移可直接消除重复 vector copy；版本、action fence 和 input prediction 不变。未经测量的布局或稳定节点缓存不默认启用，导航、尺寸、DPI/style/geometry 和 scroll epoch 的失效是采用前置条件。
 

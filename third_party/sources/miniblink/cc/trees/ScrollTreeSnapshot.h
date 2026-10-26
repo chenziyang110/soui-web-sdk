@@ -4,6 +4,7 @@
 #include "cc/input/ScrollController.h"
 
 #include <cstdint>
+#include <array>
 #include <vector>
 
 namespace cc {
@@ -69,8 +70,11 @@ public:
     SceneCoordinator();
 
     bool submit(const SceneTransaction& transaction);
+    bool submit(SceneTransaction&& transaction);
     bool markResourcesReady(uint64_t sceneVersion);
     bool markResourcesReadyThroughAction(int64_t actionId);
+    bool cancelPendingForAction(int64_t actionId);
+    bool cancellationReceiptsOverflowed() const { return m_cancelledOverflow; }
     bool activateReady();
 
     uint64_t activeVersion() const { return m_active.newVersion; }
@@ -85,6 +89,12 @@ private:
     SceneTransaction m_ready;
     bool m_hasPending;
     bool m_hasReady;
+    static const size_t maximumCancellationReceipts = 64;
+    std::array<int64_t, maximumCancellationReceipts> m_cancelledActions{};
+    size_t m_cancelledCount = 0;
+    int64_t m_cancelledHighWatermark = 0;
+    bool m_cancelledOverflow = false;
+    bool containsCancelledAction(int64_t first, int64_t last) const;
 };
 
 } // namespace cc

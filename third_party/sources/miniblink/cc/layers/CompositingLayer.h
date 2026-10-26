@@ -1,6 +1,7 @@
 #ifndef cc_LayerForCompositing_h
 #define cc_LayerForCompositing_h
 
+#include "cc/raster/RasterCandidateBudget.h"
 #include "third_party/WebKit/Source/wtf/Vector.h"
 #include "third_party/WebKit/public/platform/WebCanvas.h"
 #include "third_party/skia/include/core/SkColor.h"
@@ -82,6 +83,7 @@ public:
     bool drawToCanvasChildren(LayerTreeHost* host, SkCanvas* canvas, const SkRect& clip, float parentOpacity, int deep, const SkMatrix44* compositorParentTransform = nullptr);
 
     size_t tilesSize() const;
+    bool inspectRasterCandidateResidentBudget(RasterCandidateBudget* budget) const;
 
     SkColor getBackgroundColor() const;
 

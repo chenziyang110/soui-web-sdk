@@ -202,7 +202,6 @@ int64_t WebPageImpl::m_firstFrameId = 0;
 
 WebPageImpl::WebPageImpl(COLORREF bdColor)
 {
-    (void)content::input_frame_trace::register_current_thread();
     m_pagePtr = 0;
     m_bdColor = bdColor; //  RGB(199, 237, 204) | 0xff000000;
     m_createDevToolsAgentTaskObserver = nullptr;

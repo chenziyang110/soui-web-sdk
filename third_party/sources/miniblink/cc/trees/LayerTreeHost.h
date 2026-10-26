@@ -6,7 +6,9 @@
 #include "cc/trees/LegacyPaintRetryPolicy.h"
 #include "cc/trees/FrameBufferLeasePolicy.h"
 #include "cc/trees/InputFrameCoverage.h"
+#include "cc/raster/RasterCandidateBudget.h"
 #include <memory>
+#include <atomic>
 #include "third_party/WebKit/public/platform/WebThread.h"
 #include "third_party/WebKit/Source/platform/geometry/IntRect.h"
 #include "third_party/WebKit/Source/platform/geometry/IntSize.h"
@@ -188,6 +190,8 @@ public:
     void registerResourceWait();
     void clearResourceWait();
     void notifyResourceProgress(bool actionDirty = false);
+    RasterCandidateBudget inspectRasterCandidateScene(uint64_t* generation);
+    bool matchesRasterCandidateGeneration(uint64_t generation);
     std::shared_ptr<UiPaintRetryState> resourceNotificationState() const { return m_uiPaintRetry; }
     static void notifyRasterCompletion(const std::shared_ptr<UiPaintRetryState>& state);
     void retryPendingOwnerWork();
@@ -276,6 +280,7 @@ public:
     bool hasCompositorAnimation(int layerId);
     bool submitCompositorScrollTree(const ScrollTreeSnapshot& scrollTree);
     void onActionFrameApplied(int64 throughActionId);
+    void onRasterActionCancelled(int64 actionId);
     bool handleCompositorWheelInput(int x, int y, double deltaX,
         double deltaY, double monotonicTime, bool smooth,
         CompositorScrollReceipt* receipt = nullptr);
@@ -306,11 +311,11 @@ private:
     void dispatchAnimationFinishedOnMainThread(int layerId, int group, double monotonicTime);
     void paintToMemoryCanvasInUiThread(const SkRect& paintRect);
     void paintToMemoryCanvasInCompositeThread(const SkRect& r);
-    bool submitSceneTransaction(const ScrollTreeSnapshot& scrollTree,
+    bool submitSceneTransaction(ScrollTreeSnapshot&& scrollTree,
         int64 firstActionId, int64 lastActionId, bool resourcesReady);
     bool hasInFlightScene() const;
     
-    bool m_isDestroying;
+    std::atomic<bool> m_isDestroying;
 
     LayerTreeHostClent* m_hostClient;
     LayerTreeHostUiThreadClient* m_uiThreadClient;
@@ -360,6 +365,9 @@ private:
     SceneCoordinator m_sceneCoordinator;
     content::input_frame_trace::event m_pendingSceneTraceContext;
     content::input_frame_trace::event m_activeSceneTraceContext;
+    bool m_rasterRecoveryPending = false;
+    bool m_rasterRecoveryNeedsInvalidation = false;
+    uint64_t m_rasterRecoveryAfterScene = 0;
     uint64_t m_activeCompositorScrollVersion;
     uint64_t m_nextScrollSceneVersion;
     uint64_t m_nextCompositorInputSequence;
@@ -385,6 +393,8 @@ private:
     double m_pendingMainFrameDeadline;
     bool m_unifiedFrameDeadline;
     InputFrameCoverage m_pendingInputTrace;
+    InputFrameCoverage m_unpresentedInputTrace;
+    uint64_t m_unpresentedInputFrameId = 0;
     content::input_frame_trace::event m_frameTraceContext;
     int64 m_recordedTraceActionFirst = 0;
     int64 m_recordedTraceActionLast = 0;
