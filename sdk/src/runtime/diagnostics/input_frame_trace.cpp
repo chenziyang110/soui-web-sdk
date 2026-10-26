@@ -426,7 +426,7 @@ context_scope::~context_scope() {
   if (previous_valid_) (void)set_current_context(previous_);
 }
 
-exporter::exporter(std::ostream& output, recorder& source) noexcept : output_(output), source_(source) {}
+exporter::exporter(std::ostream& output, trace_source& source) noexcept : output_(output), source_(source) {}
 bool exporter::begin() {
   if (begun_ || finished_) return false;
   const auto snapshot = source_.snapshot();

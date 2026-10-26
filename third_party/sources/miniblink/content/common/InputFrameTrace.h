@@ -137,10 +137,18 @@ class writer final {
   std::size_t slot_{maximum_threads};
 };
 
-class recorder final {
+class trace_source {
+ public:
+  virtual ~trace_source() = default;
+  virtual scalar_snapshot snapshot() const noexcept = 0;
+  virtual drain_result drain(event* output, std::size_t capacity) noexcept = 0;
+  virtual void note_causal_loss(std::uint64_t amount = 1) noexcept = 0;
+};
+
+class recorder final : public trace_source {
  public:
   recorder() noexcept;
-  ~recorder();
+  ~recorder() override;
   recorder(const recorder&) = delete;
   recorder& operator=(const recorder&) = delete;
   recorder(recorder&&) = delete;
@@ -150,11 +158,11 @@ class recorder final {
   writer attach_current_thread();
   void stop() noexcept; // Nonblocking. Existing writer handles pin all storage.
   bool quiescent() const noexcept;
-  scalar_snapshot snapshot() const noexcept;
+  scalar_snapshot snapshot() const noexcept override;
   // Exactly one consumer. Busy rejects; count and scan are both bounded.
-  drain_result drain(event* output, std::size_t capacity) noexcept;
+  drain_result drain(event* output, std::size_t capacity) noexcept override;
   void note_unregistered_write() noexcept;
-  void note_causal_loss(std::uint64_t amount = 1) noexcept;
+  void note_causal_loss(std::uint64_t amount = 1) noexcept override;
  private:
   std::shared_ptr<detail::state> storage_;
   identity fallback_identity_;
@@ -196,7 +204,7 @@ class context_scope final {
 // all producers released and every buffered event drained. No file is opened.
 class exporter final {
  public:
-  exporter(std::ostream& output, recorder& source) noexcept;
+  exporter(std::ostream& output, trace_source& source) noexcept;
   exporter(const exporter&) = delete;
   exporter& operator=(const exporter&) = delete;
   bool begin();
@@ -205,7 +213,7 @@ class exporter final {
   bool limit_reached() const noexcept { return limit_reached_; }
  private:
   std::ostream& output_;
-  recorder& source_;
+  trace_source& source_;
   bool begun_{false}, finished_{false};
   bool limit_reached_{false};
   std::size_t exported_{0};
