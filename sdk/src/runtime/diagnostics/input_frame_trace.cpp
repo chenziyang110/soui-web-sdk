@@ -376,13 +376,33 @@ recorder& process_recorder() noexcept { return global_recorder; }
 bool register_current_thread() {
   if (local_writer && *local_writer) return true;
   thread_local local_registration registration; // constructed only in this cold API.
+  if (registration.producer) {
+    auto& state=*registration.producer.storage_;
+    state.registrars.fetch_add(1,std::memory_order_acq_rel);
+    bool resumed=false;
+    {
+      std::lock_guard<std::mutex> lock(state.registration_mutex);
+      auto& slot=*state.threads[registration.producer.slot_];
+      const auto owner=GetCurrentThreadId();bool duplicate=false;
+      const auto count=state.registered.load(std::memory_order_acquire);
+      for(std::size_t index=0;index<count;++index)
+        if(state.threads[index]->owner_thread==owner&&state.threads[index]->active.load(std::memory_order_acquire))duplicate=true;
+      if(!state.stopped.load(std::memory_order_acquire)&&slot.owner_thread==owner&&!duplicate) {
+        slot.active.store(true,std::memory_order_release);resumed=true;
+      } else add_multiple(state.registration_rejections,state);
+    }
+    state.registrars.fetch_sub(1,std::memory_order_release);
+    if(resumed)local_writer=&registration.producer;
+    return resumed;
+  }
   registration.producer = global_recorder.attach_current_thread();
   if (!registration.producer) return false;
   local_writer = &registration.producer;
   return true;
 }
 void detach_current_thread() noexcept {
-  if (local_writer) *local_writer = writer{};
+  if (local_writer && *local_writer)
+    local_writer->storage_->threads[local_writer->slot_]->active.store(false,std::memory_order_release);
   local_writer = nullptr; context_valid = false;
 }
 record_result record(event value) noexcept {

@@ -168,6 +168,14 @@ void context_has_no_hot_allocation() {
   sdk_trace::note_causal_loss();
   require(sdk_trace::process_recorder().snapshot().causal_lost==1,"explicit causal loss was hidden");
   sdk_trace::detach_current_thread();vendor_trace::detach_current_thread();
+  for(unsigned mount=0;mount<100;++mount) {
+    require(sdk_trace::register_current_thread()&&vendor_trace::register_current_thread(),"same TLS owner could not resume");
+    sdk_trace::detach_current_thread();vendor_trace::detach_current_thread();
+  }
+  require(sdk_trace::process_recorder().snapshot().registered_threads==1 &&
+    vendor_trace::process_recorder().snapshot().registered_threads==1 &&
+    sdk_trace::process_recorder().snapshot().active_producers==0,
+    "same-thread mount cycles consumed slots or retained an active producer");
 }
 class counting_buffer final : public std::streambuf {
  public:

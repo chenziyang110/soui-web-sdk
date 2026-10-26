@@ -131,6 +131,8 @@ class writer final {
   void observe_duration(duration_metric metric, std::uint64_t ticks) noexcept;
  private:
   friend class recorder;
+  friend bool register_current_thread();
+  friend void detach_current_thread() noexcept;
   writer(std::shared_ptr<detail::state> storage, std::size_t slot) noexcept;
   void release() noexcept;
   std::shared_ptr<detail::state> storage_;
