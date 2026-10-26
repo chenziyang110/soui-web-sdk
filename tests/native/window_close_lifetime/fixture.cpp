@@ -161,12 +161,9 @@ int main()
         fixture::require(!state->policy.dead && state->policy.nativeFailed && !state->policy.nativeRetryable);
         fixture::require(fixture::destroyed_views == 3 && !runtime.drained());
     }
-    // The old receipt cannot clear failure for the newly attached resource.
-    // Model explicit external repair of ownership, then deliver its exact NC.
-    state->policy.nativeWindow = reinterpret_cast<uintptr_t>(view->m_hWnd);
-    const auto repairedWindow = view->m_hWnd;
-    view->nativeDestroyed(repairedWindow);
-    fixture::windows[repairedWindow].alive = false;
-    fixture::require(runtime.drained() && fixture::destroyed_views == 4);
+    // Permanent unknown ownership is an expected negative result. Teardown
+    // only the fake world; do not manufacture a native success/drain receipt.
+    fixture::require(!runtime.drained() && state->policy.nativeFailed);
+    delete view;
     return fixture::failures ? 1 : 0;
 }
