@@ -3,6 +3,7 @@
 
 #include <cmath>
 #include <cstdint>
+#include <limits>
 
 namespace cc {
 
@@ -10,6 +11,8 @@ namespace cc {
 // until disposal: resize must not manufacture a second outstanding wake.
 class LegacyPaintRetryPolicy {
 public:
+    explicit LegacyPaintRetryPolicy(uint64_t lastSequence = 0, uint64_t generation = 1)
+        : m_sequence(lastSequence), m_generation(generation) { }
     struct Ticket {
         uint64_t sequence = 0;
         uint64_t generation = 0;
@@ -18,13 +21,19 @@ public:
 
     Ticket arm(double now, double lastPaint, double interval)
     {
-        if (m_closed || m_queued)
+        if (m_closed || m_queued || !std::isfinite(now)
+            || !std::isfinite(lastPaint) || !std::isfinite(interval)
+            || !(interval > 0) || interval > 1.0)
+            return Ticket();
+        if (m_sequence == (std::numeric_limits<uint64_t>::max)()) {
+            m_closed = true; // Never alias a still-retained historical task.
+            return Ticket();
+        }
+        const double due = lastPaint > 0 ? lastPaint + interval : now;
+        if (!std::isfinite(due))
             return Ticket();
         m_queued = true;
         ++m_sequence;
-        if (!m_sequence)
-            ++m_sequence;
-        const double due = lastPaint > 0 ? lastPaint + interval : now;
         return Ticket{m_sequence, m_generation, due > now ? due : now};
     }
 
@@ -40,15 +49,28 @@ public:
             m_queued = false;
     }
 
-    void invalidate() { ++m_generation; }
+    void invalidate()
+    {
+        if (m_generation == (std::numeric_limits<uint64_t>::max)())
+            m_closed = true;
+        else
+            ++m_generation;
+    }
     void close() { m_closed = true; invalidate(); }
     bool queued() const { return m_queued; }
     uint64_t generation() const { return m_generation; }
 
     static long long delayMilliseconds(double now, double deadline)
     {
-        return deadline > now
-            ? static_cast<long long>(std::ceil((deadline - now) * 1000.0)) : 0;
+        if (!std::isfinite(now) || !std::isfinite(deadline))
+            return 1000;
+        const double remaining = deadline - now;
+        if (!(remaining > 0))
+            return 0;
+        // Supported intervals are <= 1s. An anomalous clock value is still
+        // revisited by one bounded delayed wake, never an undefined cast.
+        return remaining >= 1.0 ? 1000
+            : static_cast<long long>(std::ceil(remaining * 1000.0));
     }
 
 private:
