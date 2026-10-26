@@ -37,5 +37,14 @@ Dispatch validates owner-applied context/geometry, never the UI's newer resize i
 Resize preflights its next nonwrapping geometry but publishes UI geometry only after FIFO admission succeeds. Failed admission leaves UI generation/sequence/window untouched and can be retried after capacity returns. Input sequence is monotonic across geometry changes; only document/view transitions reset it. Its allocator makes at most eight CAS attempts, never wraps, and reports zero on failure; the Host requests ordered cancellation and seals that document with limited recovery until a new document/view. Received trace identity is immutable. Cross-geometry nonspatial dispatch remains functional but has explicit native-causality loss until a schema can carry both geometries.
 
 Regression SOURCE covers paused first-head publication, FIFO appended during a no-cutoff batch, more-than-one-batch resize/close ordering, MAX recovery/cleanup ties, rejected ordinal publication, and negative/zero/odd/oversize IMM byte lengths. These cases have not been compiled or executed.
+### W03 deadline 实现
+
+主线程不再安装固定 16 ms 周期 tick。ready 合并窗口续调度；future 只保留最早绝对单调 deadline；idle 取消 native timer 和注册 wait。waitable timer 动态探测高精度创建标志，失败回到 Win7 auto-reset timer；不调用永久 `timeBeginPeriod`。相对截止采用向上取整，owner 收到消息重查单调时间，提前消息重新安排而不执行 future。
+
+每次安排含不回绕票号，thread-pool wait 只投递静态窗口和票号。取消先失效票号，再在 publication lock 外 `UnregisterWaitEx(INVALID_HANDLE_VALUE)` 等待回调退役，之后才能取消/复用/关闭 timer HANDLE。native WM_TIMER 使用同票号作为低优先级故障兜底；ready 遇原生压力/重入暂停生产者补投，临时 10 ms fallback 仅为未解决工作存在。SDK 经尺寸/版本/能力验证的可选 WKE 表，在每个有界 native batch 后给 owner 一次调度机会；旧嵌入者保留低优先级消息泵约束，不能声称任意外部消息泵的硬实时上限。跨线程 posted 队列耗尽时可用不等待 owner 的 SendNotifyMessage；同线程保持异步 post 语义。
+
+原 tick 隐含调用的 observer、临时 V8 对象清理和取消 timer 释放仍在真实 scheduler turn/关闭中执行；不为无任务 idle 人造这些周期回调。SDK cold hook 在 provider finalization 前撤销，旧 DLL 无能力时保留 fallback。
+
+官方契约参考：[SetTimer 最小 10 ms](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-settimer)、[SendNotifyMessage 跨线程不等待](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-sendnotifymessagew)。构建和时钟/睡眠/失败/Win7 兼容仍未实测。
 
 必要用例源码覆盖容量/字节/OOM边界、已接纳 FIFO、恢复顺序、按住键隔离、IME commit、两 Host 进展、注销/停止与迟到通知。编译和运行由专人执行；当前只允许源码审查和 `git diff --check`，不据源码候选宣称性能通过。

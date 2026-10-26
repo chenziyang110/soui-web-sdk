@@ -59,6 +59,7 @@ public:
     void schedulerTasks();
 
     void fire();
+    void serviceOwnerOpportunity(); // Optional bounded SDK message-pump hook.
     void fireForShutdown();
     
     void suspendTimerQueue();

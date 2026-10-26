@@ -1,7 +1,6 @@
-// Pure dependency contract. No host window, timer, input or browser is created.
-// SharedTimerWin and schedulerTasks are compiled from exact production bytes.
+// Exact production scheduler/window sources, deterministic Win32 dependencies.
+// This fixture source is delivered unexecuted.
 #include <windows.h>
-#include <mmsystem.h>
 #include <algorithm>
 #include <cstdio>
 #include <deque>
@@ -9,24 +8,20 @@
 #include <string>
 #include <vector>
 #include "TaskSchedulingPolicy.h"
-
 namespace fixture {
 struct Message { HWND window; UINT id; WPARAM first; LPARAM second; };
 std::deque<Message> messages;
-std::vector<std::wstring> messageNames;
+double now = 100, step = 0;
 DWORD queueStatus = 0;
-bool failPost = false;
-bool failTimer = false;
-unsigned postAttempts = 0, timerCalls = 0, runs = 0, destroyed = 0;
-double now = 100.0, step = 0;
 int enters = 0, failures = 0, assertions = 0;
+bool failPost = false, failTimer = false, failWait = false;
+unsigned postAttempts = 0, timerCalls = 0, registrations = 0, unregistrations = 0, runs = 0, destroyed = 0;
+LONGLONG dueTicks = 0;
 HWND window = reinterpret_cast<HWND>(static_cast<UINT_PTR>(1));
-BOOL WINAPI post(HWND w, UINT id, WPARAM a, LPARAM b) {
-    ++postAttempts;
-    if (failPost) return FALSE;
-    messages.push_back({w, id, a, b});
-    return TRUE;
-}
+WAITORTIMERCALLBACK callback = nullptr;
+PVOID callbackParameter = nullptr;
+BOOL WINAPI post(HWND w, UINT id, WPARAM a, LPARAM b) { ++postAttempts; if (failPost) return FALSE; messages.push_back({w,id,a,b}); return TRUE; }
+DWORD WINAPI windowThread(HWND, LPDWORD) { return ::GetCurrentThreadId(); }
 DWORD WINAPI status(UINT flags) { return queueStatus & (flags | (flags << 16)); }
 LRESULT WINAPI defaultProc(HWND, UINT, WPARAM, LPARAM) { return 0; }
 UINT_PTR WINAPI setTimer(HWND, UINT_PTR id, UINT, TIMERPROC) { ++timerCalls; return failTimer ? 0 : id; }
@@ -34,321 +29,137 @@ BOOL WINAPI killTimer(HWND, UINT_PTR) { return TRUE; }
 BOOL WINAPI destroyWindow(HWND) { return TRUE; }
 BOOL WINAPI unregisterClass(LPCWSTR, HINSTANCE) { return TRUE; }
 HMODULE WINAPI module(LPCWSTR) { return nullptr; }
-FARPROC WINAPI proc(HMODULE, LPCSTR) { return nullptr; }
+FARPROC WINAPI proc(HMODULE, LPCSTR) { return nullptr; } // Win7 compatible path.
 ATOM WINAPI registerClass(const WNDCLASSEXW*) { return 1; }
-HWND WINAPI createWindow(DWORD, LPCWSTR, LPCWSTR, DWORD, int, int, int, int,
-    HWND, HMENU, HINSTANCE, LPVOID) { return window; }
-UINT WINAPI registerMessage(LPCWSTR name) {
-    messageNames.emplace_back(name);
-    return WM_APP + 100 + static_cast<UINT>(messageNames.size());
+HWND WINAPI createWindow(DWORD,LPCWSTR,LPCWSTR,DWORD,int,int,int,int,HWND,HMENU,HINSTANCE,LPVOID) { return window; }
+UINT WINAPI registerMessage(LPCWSTR name) { return std::wstring(name).find(L"DeadlineReady") != std::wstring::npos ? WM_APP+101 : WM_APP+102; }
+HANDLE WINAPI createWaitable(LPSECURITY_ATTRIBUTES, BOOL, LPCWSTR) { return reinterpret_cast<HANDLE>(static_cast<UINT_PTR>(3)); }
+BOOL WINAPI setWaitable(HANDLE,const LARGE_INTEGER* due,LONG,PTIMERAPCROUTINE,LPVOID,BOOL) { dueTicks=due->QuadPart; return TRUE; }
+BOOL WINAPI cancelWaitable(HANDLE) { return TRUE; }
+BOOL WINAPI closeHandle(HANDLE) { return TRUE; }
+BOOL WINAPI registerWait(PHANDLE output,HANDLE,WAITORTIMERCALLBACK fn,PVOID param,ULONG,ULONG) {
+    ++registrations; if (failWait) return FALSE;
+    *output=reinterpret_cast<HANDLE>(static_cast<UINT_PTR>(4)); callback=fn; callbackParameter=param; return TRUE;
 }
-MMRESULT WINAPI endPeriod(UINT) { return TIMERR_NOERROR; }
-void expect(bool condition, const char* name) {
-    ++assertions;
-    if (!condition) { ++failures; std::printf("FAIL: %s\n", name); }
+BOOL WINAPI unregisterWait(HANDLE,HANDLE) {
+    ++unregistrations;
+    // An in-flight callback is drained after its ticket was invalidated.
+    if (callback) callback(callbackParameter,TRUE);
+    callback=nullptr; callbackParameter=nullptr; return TRUE;
 }
+void expect(bool value,const char* text) { ++assertions; if(!value){++failures;std::printf("FAIL: %s\n",text);} }
 }
-namespace WTF { inline unsigned currentThread() { return 1; } }
-inline double currentTime() { return fixture::now; }
+namespace WTF { inline unsigned currentThread(){return 1;} }
+inline double monotonicallyIncreasingTime(){return fixture::now;}
 #define ASSERT(expression) ((void)0)
 namespace content {
 #include "budgets.inc"
 class WebThreadImpl;
 class WebTimerBase {
 public:
-    WebThreadImpl* owner;
-    double m_nextFireTime;
-    int m_priority = 200;
-    std::function<void()> callback;
-    ~WebTimerBase() { ++fixture::destroyed; }
-    double repeatInterval() const { return 0; }
+    WebThreadImpl* owner; double m_nextFireTime; int m_priority=200; std::function<void()> callback;
+    ~WebTimerBase(){++fixture::destroyed;}
+    double repeatInterval()const{return 0;}
     void heapDelete();
-    void setNextFireTime(double, void*) {}
-    void fired() { ++fixture::runs; fixture::now += fixture::step; if (callback) callback(); delete this; }
+    void setNextFireTime(double,void*){}
+    void fired(){++fixture::runs;fixture::now+=fixture::step;if(callback)callback();delete this;}
 };
 class WebThreadImpl {
 public:
-    unsigned m_threadId = 1;
-    int m_firingTimers = 0;
-    bool m_isMainThread = true, m_willExit = false;
+    unsigned m_threadId=1; int m_firingTimers=0;
+    bool m_isMainThread=true,m_willExit=false;
     std::vector<WebTimerBase*> m_timerHeap;
-    void schedulerTasks();
-    void schedulerTasks(bool);
-    void updateSharedTimer();
-    void fire() { schedulerTasks(); }
-    void deleteUnusedTimers() {}
-    void startTriggerTasks() {}
-    void startTriggerTasks(unsigned*, double) {}
-    bool hasPendingTaskAdmission() { return false; }
-    void willProcessTasks() {}
-    void didProcessTasks() {}
-    void add(double deadline = fixture::now, std::function<void()> callback = {}) {
-        auto* timer = new WebTimerBase{this, deadline, 200, std::move(callback)};
-        m_timerHeap.push_back(timer);
-        std::stable_sort(m_timerHeap.begin(), m_timerHeap.end(), [](const auto* a, const auto* b) {
-            return a->m_nextFireTime < b->m_nextFireTime;
-        });
+    void schedulerTasks();void schedulerTasks(bool);void updateSharedTimer();void serviceOwnerOpportunity();
+    void fire(){schedulerTasks();} bool isCurrentThread()const{return true;}
+    void deleteUnusedTimers(){} void startTriggerTasks(unsigned*,double){}
+    bool hasPendingTaskAdmission(){return false;}void willProcessTasks(){}void didProcessTasks(){}
+    void add(double deadline=fixture::now,std::function<void()> callback={}){
+        m_timerHeap.push_back(new WebTimerBase{this,deadline,200,std::move(callback)});
+        std::stable_sort(m_timerHeap.begin(),m_timerHeap.end(),[](const auto*a,const auto*b){return a->m_nextFireTime<b->m_nextFireTime;});
     }
-    void clear() { for (auto* timer : m_timerHeap) delete timer; m_timerHeap.clear(); }
+    void clear(){for(auto*t:m_timerHeap)delete t;m_timerHeap.clear();}
 };
-void WebTimerBase::heapDelete() {
-    auto& heap = owner->m_timerHeap;
-    heap.erase(std::find(heap.begin(), heap.end(), this));
+void WebTimerBase::heapDelete(){auto&heap=owner->m_timerHeap;heap.erase(std::find(heap.begin(),heap.end(),this));}
+class CheckReEnter {public:static int getEnterCount(){return fixture::enters;}static void incrementEnterCount(){++fixture::enters;}static void decrementEnterCount(){--fixture::enters;}};
 }
-class CheckReEnter {
-public:
-    static int getEnterCount() { return fixture::enters; }
-    static void incrementEnterCount() { ++fixture::enters; }
-    static void decrementEnterCount() { --fixture::enters; }
-};
-}
-namespace blink {
-class Platform {
-public:
-    content::WebThreadImpl* owner = nullptr;
-    static Platform* current() { static Platform platform; return &platform; }
-    content::WebThreadImpl* currentThread() { return owner; }
-};
-}
+namespace blink {class Platform {public:content::WebThreadImpl*owner=nullptr;static Platform*current(){static Platform p;return&p;}content::WebThreadImpl*currentThread(){return owner;}};}
 #undef PostMessage
 #undef DefWindowProc
-#undef GetModuleHandle
-#undef RegisterClassEx
-#undef RegisterWindowMessage
 #define PostMessage fixture::post
+#define GetWindowThreadProcessId fixture::windowThread
 #define GetQueueStatus fixture::status
 #define DefWindowProc fixture::defaultProc
 #define SetTimer fixture::setTimer
 #define KillTimer fixture::killTimer
 #define DestroyWindow fixture::destroyWindow
 #define UnregisterClassW fixture::unregisterClass
-#define GetModuleHandle fixture::module
 #define GetModuleHandleW fixture::module
 #define GetProcAddress fixture::proc
-#define RegisterClassEx fixture::registerClass
+#define RegisterClassExW fixture::registerClass
 #define CreateWindowExW fixture::createWindow
-#define RegisterWindowMessage fixture::registerMessage
-#define timeEndPeriod fixture::endPeriod
-#pragma warning(push)
-// Unchanged vendor source uses UINT for SetTimer's return and shadows timer.
-#pragma warning(disable: 4244 4459)
+#define RegisterWindowMessageW fixture::registerMessage
+#define CreateWaitableTimerW fixture::createWaitable
+#define SetWaitableTimer fixture::setWaitable
+#define CancelWaitableTimer fixture::cancelWaitable
+#define RegisterWaitForSingleObject fixture::registerWait
+#define UnregisterWaitEx fixture::unregisterWait
+#define CloseHandle fixture::closeHandle
 #include "SharedTimerWin.h"
 namespace content {
 #include "scheduler.inc"
 }
-#pragma warning(pop)
-
 namespace fixture {
-void resetCase(content::WebThreadImpl& thread) {
-    thread.clear();
-    // Consume queued requests through the actual window procedure before resetting counters.
-    queueStatus = QS_MOUSEMOVE << 16;
-    while (!messages.empty()) {
-        auto message = messages.front(); messages.pop_front();
-        content::TimerWindowWndProc(message.window, message.id, message.first, message.second);
-    }
-    queueStatus = 0; enters = 0; now = 100.0; step = 0;
-    postAttempts = 0; runs = 0; destroyed = 0; failPost = false;
-    thread.m_isMainThread = true; thread.m_willExit = false;
+bool dispatchOne(){if(messages.empty())return false;auto m=messages.front();messages.pop_front();content::TimerWindowWndProc(m.window,m.id,m.first,m.second);return true;}
+void drainMessages(){for(unsigned i=0;i<1024&&!messages.empty();++i)dispatchOne();expect(messages.empty(),"finite continuation chain");}
+void reset(content::WebThreadImpl&thread){
+    thread.clear();content::cancelSharedTimerDeadline();messages.clear();
+    {content::SharedTimerContinuationLock lock;content::pendingContinuation=0;content::continuationDeferred=false;}
+    now=100;step=0;queueStatus=0;enters=0;failPost=failTimer=failWait=false;runs=destroyed=postAttempts=0;
 }
-bool dispatchOne() {
-    if (messages.empty()) return false;
-    const auto message = messages.front(); messages.pop_front();
-    content::TimerWindowWndProc(message.window, message.id, message.first, message.second);
-    return true;
-}
-void addTasks(content::WebThreadImpl& thread, unsigned count) {
-    for (unsigned i = 0; i < count; ++i) thread.add();
-}
-void drainMessages() {
-    for (unsigned i = 0; i < 1024 && !messages.empty(); ++i) dispatchOne();
-    expect(messages.empty(), "continuation chain is finite");
-}
-int run() {
-    content::WebThreadImpl thread;
-    blink::Platform::current()->owner = &thread;
-    content::setSharedTimerFireInterval(0.016);
-    expect(timerCalls == 1, "periodic fallback remains armed");
-    expect(content::timerID > content::endHighResTimerID,
-        "native generation IDs do not alias reserved legacy timer IDs");
-    failTimer = true;
-    content::setSharedTimerFireInterval(0.020);
-    expect(content::timerID == 0 && content::lastIntervalInMS < 0,
-        "failed timer replacement cancels known native timer and invalidates interval cache");
-    failTimer = false;
-    const unsigned failedTimerCalls = timerCalls;
-    content::setSharedTimerFireInterval(0.020);
-    expect(timerCalls == failedTimerCalls + 1 && content::timerID != 0,
-        "same interval retries after SetTimer failure");
-    content::setSharedTimerFireInterval(0.016);
-
-    resetCase(thread);
-    addTasks(thread, 256);
-    thread.schedulerTasks();
-    expect(runs == 32, "first batch retains 32-task budget");
-    expect(messages.size() == 1, "ready backlog posts one continuation without waiting for timer");
-    thread.schedulerTasks();
-    expect(messages.size() == 1, "repeated scheduling coalesces pending continuation");
-    drainMessages();
-    expect(runs == 256 && destroyed == 256, "all ready tasks complete and dispose exactly once before another tick");
-    expect(now == 100.0, "no simulated timer time was advanced to drain ready chain");
-
-    resetCase(thread);
-    std::function<void()> replenish;
-    replenish = [&] { if (runs < 128) thread.add(now, replenish); };
-    thread.add(now, replenish);
-    thread.schedulerTasks();
-    expect(runs == 32 && messages.size() == 1, "self-replenishing chain yields with one continuation");
-    queueStatus = QS_KEY << 16;
-    dispatchOne();
-    expect(runs == 32 && messages.empty(), "input arriving after post interrupts continuous ready chain");
-    queueStatus = 0;
-    content::TimerWindowWndProc(window, WM_TIMER, content::timerID, 0);
-    drainMessages();
-    expect(runs == 128 && destroyed == 128, "self-replenishing tasks complete exactly once");
-
-    resetCase(thread);
-    step = 0.001;
-    addTasks(thread, 16);
-    thread.schedulerTasks();
-    expect(runs >= 2 && runs <= 3, "time budget is preserved");
-    expect(messages.size() == 1, "time-budget exit also continues ready work");
-    drainMessages();
-    expect(runs == 16 && destroyed == 16, "time-limited chain completes once");
-
-    const UINT nativeFlags[] = { QS_MOUSEMOVE, QS_MOUSEBUTTON, QS_KEY, QS_RAWINPUT, QS_PAINT, QS_TIMER, QS_HOTKEY };
-    for (UINT flag : nativeFlags) {
-        resetCase(thread);
-        addTasks(thread, 70);
-        thread.schedulerTasks();
-        queueStatus = flag << 16; // Currently pending, even when LOWORD is zero.
-        expect(dispatchOne(), "pending-native case has continuation to consume");
-        expect(runs == 32 && messages.empty(), "pending native work gets the turn without immediate repost");
-        const unsigned attemptsBeforePressure = postAttempts;
-        for (unsigned i = 0; i < 64; ++i) content::requestSharedTimerContinuation();
-        expect(postAttempts == attemptsBeforePressure && messages.empty(),
-            "producers cannot refill posted wakes while native work is pending");
-        queueStatus = 0;
-        content::TimerWindowWndProc(window, WM_TIMER, content::timerID, 0);
-        drainMessages();
-        expect(runs == 70 && destroyed == 70, "fallback resumes work after native pressure clears");
-    }
-
-    resetCase(thread);
-    addTasks(thread, 64);
-    thread.schedulerTasks();
-    queueStatus = QS_MOUSEMOVE; // Historical change only, no currently pending input.
-    dispatchOne();
-    expect(runs == 64, "LOWORD changes do not create a false pending-input stall");
-
-    resetCase(thread);
-    addTasks(thread, 70);
-    thread.schedulerTasks();
-    enters = 1;
-    dispatchOne();
-    expect(runs == 32 && messages.empty(), "nested delivery does not enter scheduler or immediately repost");
-    enters = 0;
-    content::TimerWindowWndProc(window, WM_TIMER, content::timerID, 0);
-    expect(messages.size() == 1, "owner timer reopens wake gate after nested delivery");
-    drainMessages();
-    expect(runs == 70, "reentry recovery completes remaining work");
-
-    resetCase(thread);
-    addTasks(thread, 70);
-    thread.schedulerTasks();
-    thread.m_firingTimers = 1;
-    dispatchOne();
-    expect(runs == 32 && messages.empty(), "scheduler's own reentry guard also prevents nested execution");
-    thread.m_firingTimers = 0;
-    thread.schedulerTasks();
-    drainMessages();
-    expect(runs == 70, "scheduler reentry does not lose the next continuation");
-
-    resetCase(thread);
-    addTasks(thread, 64);
-    thread.schedulerTasks();
-    const Message stale = messages.front();
-    dispatchOne();
-    addTasks(thread, 64);
-    thread.schedulerTasks();
-    content::TimerWindowWndProc(stale.window, stale.id, stale.first, stale.second);
-    expect(runs == 96 && messages.size() == 1, "stale ticket cannot consume a newer pending wake");
-    const Message current = messages.front();
-    content::TimerWindowWndProc(reinterpret_cast<HWND>(static_cast<UINT_PTR>(2)),
-        current.id, current.first, current.second);
-    expect(runs == 96 && messages.size() == 1, "wrong window cannot consume the current wake");
-    dispatchOne();
-    expect(runs == 128 && destroyed == 128, "current ticket remains usable after stale deliveries");
-
-    resetCase(thread);
-    failPost = true;
-    addTasks(thread, 70);
-    thread.schedulerTasks();
-    expect(postAttempts == 1 && messages.empty(), "failed post leaves no queued request");
-    failPost = false;
-    thread.schedulerTasks();
-    expect(messages.size() == 1, "failed post does not latch pending forever");
-    drainMessages();
-
-    resetCase(thread);
-    addTasks(thread, 32);
-    thread.add(101.0);
-    thread.schedulerTasks();
-    expect(runs == 32 && messages.empty(), "future-only remainder never requests immediate continuation");
-    now = 101.0;
-    thread.schedulerTasks();
-    expect(runs == 33 && messages.empty(), "future task runs at deadline and empty heap does not spin");
-
-    resetCase(thread);
-    thread.m_isMainThread = false;
-    addTasks(thread, 96);
-    thread.schedulerTasks();
-    expect(runs == 96 && messages.empty(), "worker keeps original throughput policy");
-    resetCase(thread);
-    addTasks(thread, 96);
-    thread.schedulerTasks(false);
-    expect(runs == 96 && messages.empty(), "pre-shutdown drain has no normal continuation");
-    resetCase(thread);
-    thread.m_willExit = true;
-    addTasks(thread, 96);
-    thread.schedulerTasks();
-    expect(runs == 96 && messages.empty(), "exit drain keeps original policy");
-
-    resetCase(thread);
-    addTasks(thread, 70);
-    thread.schedulerTasks();
-    const UINT_PTR oldTimer = content::timerID;
+int run(){
+    content::WebThreadImpl thread;blink::Platform::current()->owner=&thread;
+    thread.updateSharedTimer();expect(timerCalls==0&&content::armedDeadline==0,"idle owns no periodic timer");
+    for(unsigned i=0;i<256;++i)thread.add();
+    thread.schedulerTasks();expect(runs==32&&messages.size()==1,"ready batch yields at32 with coalesced wake");
+    drainMessages();expect(runs==256&&destroyed==256,"ready work drains exactly once without clock advance");
+    expect(content::armedDeadline==0,"ready drain becomes idle");
+    reset(thread);
+    thread.add(100.050);thread.schedulerTasks();
+    expect(runs==0&&content::deadlineTicket&&dueTicks<0,"future arms relative one-shot");
+    expect(content::timerID>1001,"native fallback ticket excludes reserved legacy IDs");
+    auto oldCallback=callback;auto oldParameter=callbackParameter;auto oldTicket=content::deadlineTicket;
+    oldCallback(oldParameter,TRUE);dispatchOne();
+    expect(runs==0&&content::deadlineTicket!=oldTicket,"early callback rearms without running future work");
+    oldCallback(oldParameter,TRUE);expect(messages.empty(),"old callback ticket cannot consume rearm");
+    now=100.051;callback(callbackParameter,TRUE);drainMessages();
+    expect(runs==1&&content::armedDeadline==0,"deadline runs once then cancels fallback");
+    reset(thread);
+    for(unsigned i=0;i<64;++i)thread.add();
+    thread.schedulerTasks();queueStatus=QS_KEY<<16;dispatchOne();
+    const auto attempts=postAttempts;
+    for(unsigned i=0;i<64;++i)content::requestSharedTimerContinuation();
+    expect(runs==32&&postAttempts==attempts&&content::continuationDeferred,"native pressure suppresses producer refill");
+    queueStatus=0;thread.serviceOwnerOpportunity();drainMessages();
+    expect(runs==64,"SDK owner opportunity resumes without waiting16ms");
+    reset(thread);for(unsigned i=0;i<64;++i)thread.add();thread.schedulerTasks();
+    enters=1;dispatchOne();expect(runs==32&&content::continuationDeferred,"nested callback defers");
+    enters=0;thread.serviceOwnerOpportunity();drainMessages();expect(runs==64,"reentry recovery progresses");
+    reset(thread);failPost=true;for(unsigned i=0;i<64;++i)thread.add();thread.schedulerTasks();
+    expect(messages.empty()&&content::timerID,"post failure retains a native deadline fallback");
+    failPost=false;now=100.011;content::TimerWindowWndProc(window,WM_TIMER,content::timerID,0);drainMessages();
+    expect(runs==64,"post failure does not lose ready tasks");
+    reset(thread);thread.add(101);thread.schedulerTasks();const auto stale=content::deadlineTicket;
+    content::stopSharedTimer();content::TimerWindowWndProc(window,WM_TIMER,stale,0);
+    expect(runs==0&&!content::deadlineTimer&&!content::deadlineWait,"stop drains registered wait before closing handle");
+    content::initializeOffScreenTimerWindow();thread.updateSharedTimer();
+    content::TimerWindowWndProc(window,WM_TIMER,stale,0);expect(runs==0,"same reused HWND rejects old native ticket");
+    reset(thread);failWait=failTimer=true;thread.add(101);thread.schedulerTasks();
+    expect(content::deadlineTicket==0,"total native scheduling failure never claims armed wake");
+    failWait=failTimer=false;thread.updateSharedTimer();expect(content::deadlineTicket!=0,"scheduling failure retries same deadline");
+    reset(thread);content::continuationSerial=(std::numeric_limits<UINT_PTR>::max)();
+    expect(!content::requestSharedTimerContinuation(),"continuation serial never wraps");
     content::stopSharedTimer();
-    dispatchOne();
-    expect(runs == 32 && messages.empty(), "queued continuation after stop does not execute tasks");
-    content::TimerWindowWndProc(window, WM_TIMER, content::timerID, 0);
-    content::TimerWindowWndProc(window, content::timerFiredMessage, 0, 0);
-    expect(runs == 32, "fetched native and custom timer messages cannot execute after stop");
-    const unsigned attemptsBeforeStoppedBatch = postAttempts;
-    thread.schedulerTasks();
-    expect(postAttempts == attemptsBeforeStoppedBatch && messages.empty(), "stop prevents new continuation posts");
-    thread.clear();
-
-    const HWND oldWindow = window;
-    const unsigned beforeRecreate = timerCalls;
-    window = reinterpret_cast<HWND>(static_cast<UINT_PTR>(2));
-    content::setSharedTimerFireInterval(0.016);
-    expect(timerCalls == beforeRecreate + 1 && content::timerWindowHandle == window,
-        "same interval after stop creates and arms the new owner window");
-    addTasks(thread, 64);
-    thread.schedulerTasks();
-    content::TimerWindowWndProc(oldWindow, WM_TIMER, oldTimer, 0);
-    content::TimerWindowWndProc(window, WM_TIMER, oldTimer, 0);
-    content::TimerWindowWndProc(oldWindow, content::timerFiredMessage, 0, 0);
-    expect(runs == 96 && messages.size() == 1, "old window timer deliveries cannot run a new owner");
-    drainMessages();
-    expect(runs == 128, "new owner continuation remains live after recreation");
-    content::continuationSerial = (std::numeric_limits<UINT_PTR>::max)();
-    content::requestSharedTimerContinuation();
-    expect(messages.empty(), "ticket exhaustion never wraps or aliases an old delivery");
-    content::stopSharedTimer();
-    std::printf("assertions=%d failures=%d mode=deterministic-production-source host-ui=false\n", assertions, failures);
-    return failures ? 1 : 0;
+    std::printf("assertions=%d failures=%d source-only-delivery=true\n",assertions,failures);return failures?1:0;
 }
 }
-int main() { return fixture::run(); }
+int main(){return fixture::run();}

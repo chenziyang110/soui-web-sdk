@@ -50,6 +50,8 @@ class engine_thread final {
   [[nodiscard]] bool invoke(task work,
                             std::chrono::milliseconds timeout = std::chrono::seconds(10));
   [[nodiscard]] bool drain_for(std::chrono::milliseconds timeout);
+  // Cold owner/startup capability hook. Clear on owner before provider unload.
+  [[nodiscard]] bool set_owner_opportunity(task callback);
   // On the engine owner this only requests stopping; an outside owner must join.
   void stop(bool drain_pending = true);
   enum class stop_result { stopped, pending, failed };
@@ -96,6 +98,7 @@ class engine_thread final {
   std::array<std::shared_ptr<detail::engine_input_service>, 32> input_services_{};
   std::size_t next_input_service_{0};
   std::uint64_t admission_order_{0}; // Serialized with FIFO/input head publication, never wraps.
+  task owner_opportunity_;
   std::shared_ptr<detail::engine_capacity_state> capacity_;
   std::uint64_t capacity_generation_{0};
   const diagnostics::mode metrics_mode_;

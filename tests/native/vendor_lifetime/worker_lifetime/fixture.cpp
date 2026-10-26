@@ -237,6 +237,7 @@ void operator delete[](void* pointer, std::size_t) noexcept { ::operator delete(
 #undef DefWindowProc
 #define DefWindowProc fixture::sourceDefWindowProc
 #define currentTime fixtureSchedulerTime
+#define monotonicallyIncreasingTime fixtureSchedulerTime
 #include "content/web_impl_win/WebThreadImpl.cpp"
 #include "content/web_impl_win/WebTimerBase.cpp"
 namespace content {
@@ -266,6 +267,7 @@ int CheckReEnter::s_kEnterCount = 0;
 #undef UnregisterClassW
 #undef DefWindowProc
 #undef currentTime
+#undef monotonicallyIncreasingTime
 
 blink::Platform* blink::Platform::current() { return fixture::platform; }
 
@@ -551,18 +553,8 @@ bool mainThreadCase() {
     auto* thread = static_cast<content::WebThreadImpl*>(platform->currentThread());
     const bool mainIdentity = thread && thread->isCurrentThread() && thread->threadId() == engineThreadId
         && platform->currentThread() == thread && platform->m_threadNum == 1;
-    // Wait for an actual first timer dispatch, so the existing main-thread frame
-    // timestamp is set by the real fire()/startTriggerTasks() before posting.
-    bool firstNativeTick = false;
-    const ULONGLONG firstTickDeadline = ::GetTickCount64() + boundMs;
-    while (!firstNativeTick && ::GetTickCount64() < firstTickDeadline) {
-        ::MsgWaitForMultipleObjectsEx(0, nullptr, 50, QS_ALLINPUT, MWMO_INPUTAVAILABLE);
-        MSG message{};
-        while (::PeekMessageW(&message, nullptr, 0, 0, PM_REMOVE)) {
-            if (message.hwnd == nativeWindow && message.message == WM_TIMER) firstNativeTick = true;
-            ::TranslateMessage(&message); ::DispatchMessageW(&message);
-        }
-    }
+    // Deadline scheduling leaves an idle MainThread without a periodic tick.
+    const bool firstNativeTick = content::armedDeadline == 0;
     TaskReceipt receipt; receipt.ran = makeGate();
     thread->postTask(FROM_HERE, new KnownTask(receipt, thread));
     const ULONGLONG deadline = ::GetTickCount64() + boundMs;
@@ -573,9 +565,9 @@ bool mainThreadCase() {
     }
     const bool taskRan = receipt.run == 1 && receipt.tid == engineThreadId && receipt.tlsMatches;
     const HWND window = nativeWindow;
-    const bool nativeAlive = window && ::IsWindow(window) && windowAcquired == 1 && timerAcquired >= 1;
+    const bool nativeAlive = window && ::IsWindow(window) && windowAcquired == 1 && content::armedDeadline == 0;
     delete thread;
-    const bool nativeReleased = windowDestroyed == 1 && !::IsWindow(window) && timerKilled >= 1 && classUnregistered == 1;
+    const bool nativeReleased = windowDestroyed == 1 && !::IsWindow(window) && !content::deadlineWait && !content::deadlineTimer && classUnregistered == 1;
     ::CloseHandle(receipt.ran);
     return mainIdentity && firstNativeTick && taskRan && receipt.disposed == 1 && nativeAlive && nativeReleased
         && launchAttempts == 0 && eventAttempts == 0 && platform->m_threadNum == 0 && platform->m_threads.empty()
@@ -596,8 +588,8 @@ bool dispatchSchedulerTurn(const TaskReceipt* requiredReceipt = nullptr) {
         MSG message{};
         while (::PeekMessageW(&message, nullptr, 0, 0, PM_REMOVE)) {
             const bool schedulerTurn = message.hwnd == nativeWindow
-                && ((message.message == WM_TIMER && message.wParam == 1000)
-                    || message.message == content::continuationMessage);
+                && ((message.message == WM_TIMER && message.wParam == content::timerID)
+                    || message.message == content::continuationMessage || message.message == content::timerFiredMessage);
             ::TranslateMessage(&message);
             ::DispatchMessageW(&message);
             // A continuation can deliberately yield to pending native work.
@@ -644,7 +636,7 @@ bool mainSchedulerContinuationCase() {
     // Isolate the posted continuation. With the native fallback disabled only
     // in this test, retained ready tasks must still finish through the real
     // window procedure. This is not a hardware-input fairness measurement.
-    const bool fallbackStopped = sourceKillTimer(nativeWindow, 1000) != FALSE;
+    const bool fallbackStopped = content::armedDeadline == 0; // Idle has no fallback to disable.
     TaskReceipt future;
     future.ran = makeGate();
     thread->postDelayedTask(FROM_HERE, new KnownTask(future, thread), 500);
@@ -685,7 +677,7 @@ private:
 bool mainSchedulerFirstWakeCase() {
     auto* thread = schedulerMainThread();
     if (!thread || !nativeWindow) return false;
-    const bool fallbackStopped = sourceKillTimer(nativeWindow, 1000) != FALSE;
+    const bool fallbackStopped = content::armedDeadline == 0; // Idle has no fallback to disable.
     TaskReceipt receipt;
     receipt.ran = makeGate();
     thread->postTask(FROM_HERE, new KnownTask(receipt, thread));
@@ -721,7 +713,7 @@ bool mainSchedulerAdmissionCase(bool closeWithPendingAdmission) {
     SchedulerReceipt receipt;
     auto* thread = schedulerMainThread();
     if (!thread || !nativeWindow) return false;
-    const bool fallbackStopped = sourceKillTimer(nativeWindow, 1000) != FALSE;
+    const bool fallbackStopped = content::armedDeadline == 0; // Idle has no fallback to disable.
     SchedulerAdmissionProducer producer{thread, &receipt};
     HANDLE native = reinterpret_cast<HANDLE>(::_beginthreadex(nullptr, 0,
         postFutureSchedulerBatch, &producer, 0, nullptr));
