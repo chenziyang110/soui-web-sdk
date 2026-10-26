@@ -5,6 +5,7 @@
 #include <atomic>
 #include <iomanip>
 #include <limits>
+#include <locale>
 #include <mutex>
 #include <ostream>
 #include <sstream>
@@ -455,6 +456,7 @@ bool exporter::begin() {
   const auto& session = snapshot.session;
   if (!snapshot.available || !session.process_id || !session.process_incarnation || !session.qpc_frequency ||
       !(session.run_id_high || session.run_id_low)) return false;
+  output_.imbue(std::locale::classic()); output_.flags(std::ios_base::dec); output_.width(0);
   output_ << std::dec << "{\"event\":\"trace.begin\",\"schema\":\"soui.input-frame-trace/v1\",\"version\":1,\"run_id\":\""
           << run_id(session) << "\",\"process_id\":" << session.process_id;
   exact(output_, "process_incarnation", session.process_incarnation);
