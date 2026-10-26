@@ -96,6 +96,7 @@ inline PaintLifetimeRuntime& paintLifetimeRuntime()
 }
 class PaintActivityScope {
 public:
+    PaintActivityScope() = default;
     explicit PaintActivityScope(const std::shared_ptr<PaintLifetimeState>& state) : m_state(state)
     {
         auto& runtime = paintLifetimeRuntime();
@@ -121,6 +122,19 @@ public:
             m_state->onIdle(m_state);
     }
     explicit operator bool() const { return m_entered; }
+    PaintActivityScope(PaintActivityScope&& other) noexcept
+        : m_state(std::move(other.m_state)), m_entered(other.m_entered)
+    { other.m_entered = false; }
+    PaintActivityScope& operator=(PaintActivityScope&& other) noexcept
+    {
+        if (this != &other) {
+            PaintActivityScope previous(std::move(*this));
+            m_state = std::move(other.m_state);
+            m_entered = other.m_entered;
+            other.m_entered = false;
+        }
+        return *this;
+    }
     PaintActivityScope(const PaintActivityScope&) = delete;
     PaintActivityScope& operator=(const PaintActivityScope&) = delete;
 private:

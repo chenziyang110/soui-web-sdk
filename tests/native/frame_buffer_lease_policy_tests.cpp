@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <memory>
 #include <set>
+#include <thread>
 
 static int failures = 0;
 static void require(bool value) { if (!value) { ++failures; std::fputs("framebuffer lease requirement failed\n", stderr); } }
@@ -109,5 +110,49 @@ int main()
     views.insert(1); // Reused address is a fresh lookup, not an old queued target.
     for (unsigned count = 33; count <= 40; ++count) require(cursor.next(views) == count);
     require(cursor.next(views) == 1); // Fair wrap across bounded owner calls.
+
+    // BitInfo-style foreign lifetime: pixel deletion and completion publication
+    // both finish while the activity pin still holds owner/module close pending.
+    auto heldState = std::make_shared<content::PaintLifetimeState>();
+    std::atomic<bool> pixelsReleasedWhilePinned{false}, notifiedWhilePinned{false};
+    struct HeldBitInfoSource {
+        content::PaintActivityScope activity; // Destroyed last, as in FrameBufferLease.
+        std::shared_ptr<int> pixels;
+        std::shared_ptr<content::PaintLifetimeState> state;
+        std::atomic<bool>& notified;
+        HeldBitInfoSource(const std::shared_ptr<content::PaintLifetimeState>& value,
+            std::atomic<bool>& deleted, std::atomic<bool>& notification)
+            : activity(value), pixels(new int(1), [&deleted](int* pixel) {
+                auto& runtime = content::paintLifetimeRuntime();
+                std::lock_guard<std::mutex> lock(runtime.mutex);
+                deleted.store(runtime.active != 0);
+                delete pixel;
+            }), state(value), notified(notification) { }
+        ~HeldBitInfoSource()
+        {
+            pixels.reset();
+            auto& runtime = content::paintLifetimeRuntime();
+            std::lock_guard<std::mutex> lock(runtime.mutex);
+            notified.store(runtime.active != 0 && state->policy.active != 0
+                && state->policy.pending == Kind::view);
+        }
+    };
+    auto heldBitInfo = std::make_unique<HeldBitInfoSource>(heldState,
+        pixelsReleasedWhilePinned, notifiedWhilePinned);
+    {
+        content::PaintClosePermit ownerClose(heldState, Kind::view);
+        require(!ownerClose && !heldState->policy.ready());
+    }
+    require(!content::paintLifetimeRuntime().drained());
+    std::thread foreignRelease([held = std::move(heldBitInfo)]() mutable { held.reset(); });
+    foreignRelease.join();
+    require(pixelsReleasedWhilePinned && notifiedWhilePinned && heldState->policy.ready());
+    {
+        content::PaintClosePermit ownerClose(heldState, Kind::view);
+        require(bool(ownerClose));
+        heldState->policy.invalidate(); // Actual close may delete the old target now.
+        require(!content::paintLifetimeRuntime().drained()); // Close callout still on stack.
+    }
+    require(content::paintLifetimeRuntime().drained());
     return failures ? 1 : 0;
 }

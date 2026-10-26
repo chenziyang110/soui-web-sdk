@@ -222,7 +222,8 @@ public:
     struct FrameBufferLease {
         FrameBufferLease();
         FrameBufferLease(std::shared_ptr<FrameBuffer> value,
-            std::shared_ptr<UiPaintRetryState> state);
+            std::shared_ptr<UiPaintRetryState> state,
+            const std::shared_ptr<content::PaintLifetimeState>& lifetime);
         ~FrameBufferLease();
         FrameBufferLease(FrameBufferLease&& other) noexcept;
         FrameBufferLease& operator=(FrameBufferLease&& other) noexcept;
@@ -230,6 +231,7 @@ public:
         FrameBufferLease& operator=(const FrameBufferLease&) = delete;
         explicit operator bool() const { return !!buffer; }
         SkCanvas* canvas() const;
+        content::PaintActivityScope activity; // Declared first: release after buffer/notification.
         std::shared_ptr<FrameBuffer> buffer;
         std::shared_ptr<UiPaintRetryState> completionState;
     };

@@ -3497,8 +3497,15 @@ LayerTreeHost::FrameBuffer::FrameBuffer(std::unique_ptr<SkCanvas> value, uint64_
 LayerTreeHost::FrameBuffer::~FrameBuffer() = default;
 LayerTreeHost::FrameBufferLease::FrameBufferLease() = default;
 LayerTreeHost::FrameBufferLease::FrameBufferLease(std::shared_ptr<FrameBuffer> value,
-    std::shared_ptr<UiPaintRetryState> state)
-    : buffer(std::move(value)), completionState(std::move(state)) { }
+    std::shared_ptr<UiPaintRetryState> state,
+    const std::shared_ptr<content::PaintLifetimeState>& lifetime)
+    : activity(lifetime), buffer(std::move(value)), completionState(std::move(state))
+{
+    if (!activity) {
+        buffer.reset();
+        completionState.reset();
+    }
+}
 LayerTreeHost::FrameBufferLease::~FrameBufferLease()
 {
     buffer.reset();
@@ -3506,17 +3513,20 @@ LayerTreeHost::FrameBufferLease::~FrameBufferLease()
         LayerTreeHost::notifyRasterCompletion(completionState);
 }
 LayerTreeHost::FrameBufferLease::FrameBufferLease(FrameBufferLease&& other) noexcept
-    : buffer(std::move(other.buffer)), completionState(std::move(other.completionState)) { }
+    : activity(std::move(other.activity)), buffer(std::move(other.buffer))
+    , completionState(std::move(other.completionState)) { }
 LayerTreeHost::FrameBufferLease& LayerTreeHost::FrameBufferLease::operator=(FrameBufferLease&& other) noexcept
 {
     if (this == &other)
         return *this;
+    content::PaintActivityScope retiredActivity(std::move(activity));
     buffer.reset();
     if (completionState)
         LayerTreeHost::notifyRasterCompletion(completionState);
     buffer = std::move(other.buffer);
     completionState = std::move(other.completionState);
-    return *this;
+    activity = std::move(other.activity);
+    return *this; // retiredActivity releases last, with no later host/platform access.
 }
 SkCanvas* LayerTreeHost::FrameBufferLease::canvas() const
 {
@@ -3526,8 +3536,10 @@ LayerTreeHost::FrameBufferLease LayerTreeHost::acquireFrameBufferLeaseLocked()
 {
     if (m_isDestroying || m_hasResize || !m_memoryCanvas)
         return FrameBufferLease();
-    trace::add(trace::counter::buffer_leases);
-    return FrameBufferLease(m_frameBuffers[m_currentFrameBufferSlot], m_uiPaintRetry);
+    FrameBufferLease lease(m_frameBuffers[m_currentFrameBufferSlot], m_uiPaintRetry, m_paintLifetime);
+    if (lease)
+        trace::add(trace::counter::buffer_leases);
+    return lease;
 }
 LayerTreeHost::FrameBufferLease LayerTreeHost::acquireFrameBufferLease()
 {
