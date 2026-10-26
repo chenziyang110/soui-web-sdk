@@ -16,6 +16,7 @@ static_assert(trace::duration_metric_count <= WKE_INPUT_UI_DURATION_CAPACITY, "T
 static_assert(trace::duration_buckets == WKE_INPUT_UI_DURATION_BUCKETS, "Trace histogram ABI mismatch");
 
 std::mutex drainMutex;
+std::mutex configurationMutex; // Cold bootstrap only; never a producer/consumer lock.
 std::atomic<unsigned long long> drainedEvents{0};
 std::atomic<bool> exportLimitReached{false};
 
@@ -25,6 +26,7 @@ int WKE_INPUT_UI_CALL configureTrace(const wkeInputUiTraceConfig* config)
         || config->abiVersion != WKE_INPUT_UI_ABI_VERSION || config->mode > 1
         || !(config->runIdHigh || config->runIdLow))
         return WKE_INPUT_UI_INVALID;
+    std::lock_guard<std::mutex> bootstrap(configurationMutex);
     trace::identity identity;
     identity.process_id = config->processId;
     identity.run_id_high = config->runIdHigh;
