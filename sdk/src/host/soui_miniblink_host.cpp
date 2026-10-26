@@ -9,6 +9,7 @@
 #include "input_sequence.h"
 #include "host_frame_policy.h"
 #include "applied_input_identity.h"
+#include "host_visibility_policy.h"
 #include "input_trace_hooks.h"
 #include "cursor_broker.h"
 #include "main_context_gate.h"
@@ -1328,6 +1329,7 @@ host_result dynamic_miniblink_adapter::mount(const host_config& config) {
     return failed_startup(failure("E_INPUT_CAPACITY", "The process already owns the maximum 32 input Hosts."));
   interaction_router_.activate(interaction_generation_);
   ShowWindow(static_cast<HWND>(webview_window_), SW_SHOW);
+  pump(); // Publish actual visibility through the existing bounded owner opportunity.
   if (startup_cancelled_.load(std::memory_order_acquire) || !startup_window_matches())
     return failed_startup(failure("E_CURSOR_STARTUP_CANCELLED", "Startup was cancelled while showing the child."));
 #ifdef SOUI_TEST_KIT
@@ -1436,6 +1438,7 @@ host_result dynamic_miniblink_adapter::mount_on_engine(const host_config& config
   engine_input_generation_ = interaction_generation_;
   engine_requested_document_generation_ = engine_input_generation_.document;
   engine_document_confirmed_ = engine_geometry_applied_ = false;
+  detail::host_visibility_policy::invalidate(host_visibility_dirty_, host_visibility_applied_);
   publish_applied_input_identity_on_engine();
   const int trace_view_id = wkeGetWebviewId ? wkeGetWebviewId(view) : 0;
   input_trace_view_id_.store(trace_view_id > 0 ? static_cast<std::uint64_t>(trace_view_id) : 0, std::memory_order_release);
@@ -1905,6 +1908,7 @@ host_result dynamic_miniblink_adapter::close_cursor_endpoint() {
 }
 
 void dynamic_miniblink_adapter::unmount_on_engine() {
+  detail::host_visibility_policy::invalidate(host_visibility_dirty_, host_visibility_applied_);
   engine_document_confirmed_ = false;
   publish_applied_input_identity_on_engine();
 #ifdef _WIN32
@@ -1949,7 +1953,8 @@ host_result dynamic_miniblink_adapter::show(bool visible) {
     return failure("E_NOT_STARTED", "The child WebView has not been created.");
   }
   ShowWindow(static_cast<HWND>(webview_window_), visible ? SW_SHOW : SW_HIDE);
-  return success(visible ? "WebView shown." : "WebView hidden without cancelling native tasks.");
+  pump();
+  return success(visible ? "WebView show requested." : "WebView hide requested.");
 #else
   (void)visible;
   return failure("E_UNSUPPORTED", "The SOUI/Miniblink adapter requires a Windows host.");
@@ -2125,13 +2130,39 @@ host_result dynamic_miniblink_adapter::focus() {
 
 void dynamic_miniblink_adapter::pump() {
 #ifdef _WIN32
-  if (engine_thread_ == nullptr || pump_pending_.exchange(true)) return;
+  sample_host_visibility(); // Parent minimize/restore may change visibility without show().
+  if (engine_thread_ == nullptr || unmount_running_ || pump_pending_.exchange(true)) return;
   if (!engine_thread_->post([this] {
+        struct completed { std::atomic<bool>& pending; ~completed() { pending.store(false, std::memory_order_release); } } completion{pump_pending_};
         pump_on_engine();
-        pump_pending_ = false;
       })) {
     pump_pending_ = false;
   }
+#endif
+}
+
+void dynamic_miniblink_adapter::sample_host_visibility() noexcept {
+#ifdef _WIN32
+  const auto child = static_cast<HWND>(webview_window_);
+  const auto owner = static_cast<HWND>(owner_window_);
+  const HWND root = GetAncestor(owner ? owner : child, GA_ROOTOWNER);
+  const bool visible = child && IsWindowVisible(child) && (!root || !IsIconic(root));
+  detail::host_visibility_policy::request(host_visible_intent_, host_visibility_dirty_, visible);
+#endif
+}
+
+void dynamic_miniblink_adapter::apply_host_visibility_on_engine() noexcept {
+#if defined(_WIN32) && defined(WKE_INPUT_UI_CAP_VISIBILITY)
+  if (!webview_ || !wkeGetInputUiApi) return;
+  const auto* api = wkeGetInputUiApi(WKE_INPUT_UI_ABI_VERSION);
+  if (!api || api->abiVersion != WKE_INPUT_UI_ABI_VERSION
+      || api->structSize < offsetof(wkeInputUiApi, setHostVisible) + sizeof(api->setHostVisible)
+      || !(api->capabilities & WKE_INPUT_UI_CAP_VISIBILITY) || !api->setHostVisible) return;
+  const auto view = static_cast<wkeWebView>(webview_);
+  (void)detail::host_visibility_policy::apply_one(host_visible_intent_, host_visibility_dirty_, host_visibility_applied_,
+      [this, api, view](bool visible) {
+        return api->setHostVisible(view, visible ? 1U : 0U) == WKE_INPUT_UI_OK && webview_ == view;
+      });
 #endif
 }
 
@@ -2234,6 +2265,7 @@ void dynamic_miniblink_adapter::sync_cursor_input_generation() noexcept {
 
 void dynamic_miniblink_adapter::pump_on_engine() {
 #ifdef _WIN32
+  apply_host_visibility_on_engine();
   if (cursor_broker_) (void)update_cursor_identity_on_engine();
   if (webview_ != nullptr && wkeUpdate != nullptr) {
     bool gpu_active = false;

@@ -66,6 +66,12 @@ producer 待接纳任务有相同索引，mutex 内一次只选择/移除一个�
 
 必要用例源码覆盖容量/字节/OOM边界、已接纳 FIFO、恢复顺序、按住键隔离、IME commit、两 Host 进展、注销/停止与迟到通知。编译和运行由专人执行；当前只允许源码审查和 `git diff --check`，不据源码候选宣称性能通过。
 
+### W05/W07 optional Host policy adoption
+
+Normal fractional CPU pacing requires matched cap0x10; older kernels retain their legacy integer/experimental policy. The normal Host sets mirrorRequired=false once after DIRECT_HWND presentation succeeds, only through version/field-boundary/cap0x4/non-null/OK0 checks. Failed adoption restores explicit mirrorRequired=true. Benchmark/DC consumers retain the mirror; B's sticky DC/transparent/layered/nonindependent rules override false. No per-frame mirror toggle or new old-DLL requirement is introduced.
+
+Native visibility uses optional cap0x100/setHostVisible with version/field-boundary/pointer/OK0 checks. UI show/hide and each existing UI pump sample IsWindowVisible(child) plus !IsIconic(root owner). A fixed latest bool/dirty bit feeds the existing one-pending Engine pump; no new queue/timer is created, failed publication stays unknown/pending for the next opportunity, and unmount cannot queue more pump captures. Stable state avoids repeated calls; observed hide/show retains dirty even when final bool matches, so B true publication always resets phases and requests full fresh work. No DOM input or JS visibility event is synthesized/coalesced. SDK acknowledgement means actual setter OK only, never desktop present or runtime-exit completion; old DLL keeps native-window fallback.
+
 ### W01 接入与 W09 宿主成本
 
 SDK 与 vendor 各自保留 POD 当前因果上下文：TaskPair/Timer 和固定 Engine FIFO 保存同一 input range/generation、非零 task ID、parent ID 和真实 QPC；post/begin/end/cancel 明确分开。实际引擎 dispatch 完成 generation 检查后设置 vendor view context，返回时 RAII 清除；T3b/visible 标志不伪造。T1 的 SendInput 标记仅写 related_id，不作身份/授权依据。已接纳输入关闭/异常终态显式记录；UI 使用共享 thread scope，最后 Host 退役才 detach，worker 在真实 loop 退出后 detach。
@@ -83,7 +89,3 @@ Bridge 逐事件开文件的实验 logger 改为数值阶段事件，去掉调�
 ### 最终关闭 fence
 
 `BlinkPlatformImpl::closeThread()` 保留原 registry 数量/指针检查和真实 join 流程，失败诊断后 `std::terminate()`，调试器继续也不能到达 `delete this` 或成功 finalize。worker fixture 保留实际生产 fence，`concurrent-registry-close` 改为预期非继续失败，新增 `registry-live-fence`；严格验证尚未释放的原 worker/scheduler/event/registry。最终 wkeFinalize 的完成 guard 由集成包配套，不能在 fence 失败后签发完成收据。
-
-### W05/W07 optional Host policy adoption
-
-Normal fractional CPU pacing requires matched cap0x10; older kernels retain their legacy integer/experimental policy. The normal Host sets mirrorRequired=false once after DIRECT_HWND presentation succeeds, only through version/field-boundary/cap0x4/non-null/OK0 checks. Failed adoption restores explicit mirrorRequired=true. Benchmark/DC consumers retain the mirror; B's sticky DC/transparent/layered/nonindependent rules override false. No per-frame mirror toggle or new old-DLL requirement is introduced.

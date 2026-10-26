@@ -142,6 +142,8 @@ class dynamic_miniblink_adapter final : public webview_host_adapter,
   [[nodiscard]] bool independent_input_identity_applied(interaction_generation) const noexcept;
   void sync_cursor_input_generation() noexcept;
   void pump_on_engine();
+  void sample_host_visibility() noexcept;
+  void apply_host_visibility_on_engine() noexcept;
   [[nodiscard]] bool create_input_window();
   [[nodiscard]] bool destroy_input_window();
   void refresh_wheel_settings() noexcept;
@@ -228,6 +230,8 @@ class dynamic_miniblink_adapter final : public webview_host_adapter,
   std::atomic<std::uint32_t> wheel_scroll_lines_{3};
   std::atomic<std::uint32_t> wheel_scroll_characters_{1};
   std::atomic<bool> pump_pending_{false};
+  std::atomic<bool> host_visible_intent_{false}, host_visibility_dirty_{true};
+  std::atomic<int> host_visibility_applied_{-1}; // Unknown until capability-checked owner OK; not a desktop-present receipt.
   bool ime_composing_{false};
   window_chrome window_chrome_;
   chrome_action pressed_chrome_{chrome_action::none}; // UI-thread only

@@ -4,6 +4,7 @@
 #include "terminal_cases.h"
 #include "wake_cases.h"
 #include "applied_identity_cases.h"
+#include "visibility_cases.h"
 #include "../../../sdk/src/host/cooperative_turn_budget.h"
 #include <atomic>
 #include <cstdlib>
@@ -94,6 +95,7 @@ int main() {
     require(limited.post(blocked_key) == input_admission_result::accepted, "new document did not recover after observed physical release");
     drain(limited);
     input_terminal_cases::run(fail_next_allocation);
+    host_visibility_cases::run();
 
     struct mock_service final : detail::engine_input_service {
       std::atomic<bool> ready{false}; std::atomic<unsigned> calls{0};
