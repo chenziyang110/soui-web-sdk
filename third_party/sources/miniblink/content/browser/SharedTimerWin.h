@@ -6,6 +6,7 @@
 #include "content/browser/CheckReEnter.h"
 
 #include <mmsystem.h>
+#include <limits>
 
 // These aren't in winuser.h with the MSVS 2003 Platform SDK, 
 // so use default values in that case.
@@ -40,6 +41,24 @@ static HANDLE timer;
 static HWND timerWindowHandle = 0;
 
 static UINT timerFiredMessage = 0;
+// A successful cross-thread admission may request a wake. The lock protects
+// only publication/post/close, never task execution or a native window callback.
+static SRWLOCK continuationLock = SRWLOCK_INIT;
+static UINT continuationMessage = 0;
+static HWND continuationWindow = nullptr;
+static UINT_PTR continuationSerial = 0;
+static UINT_PTR pendingContinuation = 0;
+static bool continuationClosed = true;
+static bool continuationDeferred = false;
+
+class SharedTimerContinuationLock {
+public:
+    SharedTimerContinuationLock() { ::AcquireSRWLockExclusive(&continuationLock); }
+    ~SharedTimerContinuationLock() { ::ReleaseSRWLockExclusive(&continuationLock); }
+private:
+    SharedTimerContinuationLock(const SharedTimerContinuationLock&) = delete;
+    SharedTimerContinuationLock& operator=(const SharedTimerContinuationLock&) = delete;
+};
 static HANDLE timerQueue;
 static bool highResTimerActive;
 static bool processingCustomTimerMessage = false;
@@ -55,8 +74,44 @@ enum {
     endHighResTimerID = 1001,
 };
 
+static void requestSharedTimerContinuation()
+{
+    SharedTimerContinuationLock lock;
+    if (continuationClosed || continuationDeferred || pendingContinuation || !continuationWindow || !continuationMessage
+        || continuationSerial == (std::numeric_limits<UINT_PTR>::max)())
+        return;
+    pendingContinuation = ++continuationSerial;
+    if (!::PostMessage(continuationWindow, continuationMessage, pendingContinuation, 0))
+        pendingContinuation = 0; // The periodic timer remains the fallback.
+}
+
 static LRESULT CALLBACK TimerWindowWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+    if (continuationMessage && message == continuationMessage) {
+        {
+            SharedTimerContinuationLock lock;
+            // A stale delivery must not consume a newer wake, including after
+            // window reuse. Tickets are never reset within the DLL lifetime.
+            if (continuationClosed || hWnd != continuationWindow || !pendingContinuation
+                || wParam != pendingContinuation)
+                return 0;
+            pendingContinuation = 0;
+            // Producers must not refill posted messages while native input
+            // is waiting. A real scheduler turn reopens the wake gate.
+            continuationDeferred = true;
+        }
+        // Consume before checking reentry so a nested delivery cannot latch a
+        // wake forever. No dependency lock is held while entering the scheduler.
+        if (CheckReEnter::getEnterCount())
+            return 0;
+        const UINT nativeWork = QS_INPUT | QS_PAINT | QS_TIMER | QS_HOTKEY;
+        if (HIWORD(::GetQueueStatus(nativeWork)) & nativeWork)
+            return 0; // Yield to native work; do not immediately repost.
+        CheckReEnter::incrementEnterCount();
+        sharedTimerFiredFunction();
+        CheckReEnter::decrementEnterCount();
+        return 0;
+    }
     if (0 != CheckReEnter::getEnterCount())
         return 0;
     CheckReEnter::incrementEnterCount();
@@ -85,6 +140,11 @@ static LRESULT CALLBACK TimerWindowWndProc(HWND hWnd, UINT message, WPARAM wPara
 
 static void sharedTimerFiredFunction()
 {
+    {
+        SharedTimerContinuationLock lock;
+        if (!continuationClosed)
+            continuationDeferred = false;
+    }
     content::WebThreadImpl* threadImpl = nullptr;
     threadImpl = (content::WebThreadImpl*)(blink::Platform::current()->currentThread());
     threadImpl->fire();
@@ -160,6 +220,12 @@ void setSharedTimerFireInterval(double interval)
 
 void stopSharedTimer()
 {
+    {
+        SharedTimerContinuationLock lock;
+        continuationClosed = true;
+        continuationWindow = nullptr;
+        pendingContinuation = 0;
+    }
     if (timerQueue && timer) {
         ::pDeleteTimerQueueTimer(timerQueue, timer, 0);
         timer = 0;
@@ -207,6 +273,13 @@ static void initializeOffScreenTimerWindow()
                        //::SetTimer(timerWindowHandle, (UINT_PTR)timerWindowHandle, 50, 0);
 
     timerFiredMessage = RegisterWindowMessage(L"com.weolar.Miniblink.TimerFired");
+    continuationMessage = RegisterWindowMessage(L"com.weolar.Miniblink.ReadyTaskContinuation");
+    {
+        SharedTimerContinuationLock lock;
+        continuationWindow = timerWindowHandle;
+        continuationClosed = !continuationWindow || !continuationMessage;
+        continuationDeferred = false;
+    }
 }
 
 }

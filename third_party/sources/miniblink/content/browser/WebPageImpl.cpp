@@ -59,6 +59,7 @@
 #include "cc/trees/LayerTreeHost.h"
 #include "cc/base/BdColor.h"
 #include "ui/gfx/win/dpi.h"
+#include <algorithm>
 #include <vector>
 #include <atomic>
 #include <memory>
@@ -826,6 +827,11 @@ private:
 
 void WebPageImpl::setNeedsCommitAndNotLayout()
 {
+    scheduleCommit(0);
+}
+
+void WebPageImpl::scheduleCommit(long long minimumDelayMs)
+{
 //     if (0 != m_needsCommit)
 //         return;
 //     atomicIncrement(&m_needsCommit);
@@ -835,9 +841,13 @@ void WebPageImpl::setNeedsCommitAndNotLayout()
         blink::Platform* platfrom = blink::Platform::current();
         WebThreadImpl* threadImpl = (WebThreadImpl*)platfrom->mainThread();
         const double remainingMs = (m_nextMainFrameTime - WTF::monotonicallyIncreasingTime()) * 1000.0;
+        long long delayMs = minimumDelayMs;
         if (m_mainFrameInterval > 0 && remainingMs > 0) {
-            const long long delayMs = remainingMs >= 34 ? 34 : static_cast<long long>(remainingMs + 0.999);
-            threadImpl->postDelayedTask(FROM_HERE, new CommitTask(this), delayMs > 0 ? delayMs : 1);
+            const long long frameDelayMs = remainingMs >= 34 ? 34 : static_cast<long long>(remainingMs + 0.999);
+            delayMs = (std::max)(delayMs, frameDelayMs > 0 ? frameDelayMs : 1);
+        }
+        if (delayMs > 0) {
+            threadImpl->postDelayedTask(FROM_HERE, new CommitTask(this), delayMs);
         } else {
             threadImpl->postTask(FROM_HERE, new CommitTask(this));
         }
@@ -874,7 +884,9 @@ void WebPageImpl::executeMainFrame()
     //double lastFrameTimeMonotonic = WTF::monotonicallyIncreasingTime();
 
     if (!m_layerTreeHost->canRecordActions()) {
-        setNeedsCommitAndNotLayout();
+        // Resource/fence pressure cannot make progress by executing the same
+        // commit repeatedly in one ready-task drain. Keep one deferred retry.
+        scheduleCommit(1);
         atomicDecrement(&m_executeMainFrameCount);
         return;
     }
