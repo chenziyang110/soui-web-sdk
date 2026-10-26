@@ -3,8 +3,21 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <atomic>
 
 namespace cc {
+class UiMirrorConsumerPolicy {
+public:
+    void setExplicitRequired(bool required) { m_explicit.store(required); }
+    void noteDcConsumer() { m_dc.store(true); }
+    bool required(bool independent, bool transparent) const
+    {
+        return m_explicit.load() || m_dc.load() || !independent || transparent;
+    }
+private:
+    std::atomic<bool> m_explicit{true};
+    std::atomic<bool> m_dc{false};
+};
 class FrameBufferLeasePolicy {
 public:
     static uint64_t completedPaintFrame(uint64_t previous, uint64_t painted, bool complete)

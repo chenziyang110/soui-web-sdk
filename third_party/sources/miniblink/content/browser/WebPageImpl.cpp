@@ -227,7 +227,7 @@ WebPageImpl::WebPageImpl(COLORREF bdColor)
     m_navigationController = new NavigationController(this);
     m_layerTreeHost = new cc::LayerTreeHost(this, this);
     m_memoryCanvasForUi = nullptr;
-    m_uiMirrorConsumerRequired.store(true);
+    m_uiMirrorConsumers.setExplicitRequired(true);
     m_paintCallbackAlive = std::make_shared<std::atomic<bool>>(true);
     m_disablePaint = false;
     m_firstDrawCount = 0;
@@ -1024,7 +1024,7 @@ HDC WebPageImpl::viewDC()
         return nullptr;
     // A borrowed DC is current at acquisition and may change at the next
     // owner paint/resize. Requesting it permanently restores mirror updates.
-    setUiMirrorConsumerRequired(true);
+    m_uiMirrorConsumers.noteDcConsumer();
     copyToMemoryCanvasForUi(IntRect());
     WTF::Locker<WTF::Mutex> mirrorLock(m_uiMirrorMutex);
     bool useLayeredBuffer = m_layerTreeHost->getHasTransparentBackground();
@@ -1080,14 +1080,20 @@ void WebPageImpl::setInputTraceContext(const content::input_frame_trace::event& 
 
 void WebPageImpl::setUiMirrorConsumerRequired(bool required)
 {
-    m_uiMirrorConsumerRequired.store(required);
+    m_uiMirrorConsumers.setExplicitRequired(required);
+}
+
+bool WebPageImpl::uiMirrorConsumerRequired() const
+{
+    const bool layered = m_hWnd && (::GetWindowLongPtr(m_hWnd, GWL_EXSTYLE) & WS_EX_LAYERED);
+    return m_uiMirrorConsumers.required(
+        m_layerTreeHost->independentPresentationEnabled(),
+        layered || m_layerTreeHost->getHasTransparentBackground());
 }
 
 void WebPageImpl::copyToMemoryCanvasForUi(const IntRect& paintRect, SkCanvas* sourceCanvas)
 {
-    const bool noMirrorConsumer = !m_uiMirrorConsumerRequired.load();
-    const bool direct = m_layerTreeHost->independentPresentationEnabled();
-    if (direct && noMirrorConsumer && !m_layerTreeHost->getHasTransparentBackground())
+    if (!uiMirrorConsumerRequired())
         return;
     // The old environment experiment may only confirm an explicit consumer
     // contract. It can no longer make a requested DC silently stale.

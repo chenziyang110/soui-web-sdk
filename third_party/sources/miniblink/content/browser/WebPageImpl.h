@@ -188,7 +188,7 @@ public:
     void setUiMirrorConsumerRequired(bool required);
     bool setViewTraceIdentity(const content::input_frame_trace::event& value);
     void setInputTraceContext(const content::input_frame_trace::event& value);
-    bool uiMirrorConsumerRequired() const { return m_uiMirrorConsumerRequired.load(); }
+    bool uiMirrorConsumerRequired() const;
 
     void loadHistoryItem(int64 frameId, const blink::WebHistoryItem& item, blink::WebHistoryLoadType type, blink::WebURLRequest::CachePolicy policy);
     void loadURL(int64 frameId, const wchar_t* url, const blink::Referrer& referrer, const wchar_t* extraHeaders);
@@ -319,7 +319,7 @@ public:
 
     SkCanvas* m_memoryCanvasForUi;
     WTF::Mutex m_uiMirrorMutex;
-    std::atomic<bool> m_uiMirrorConsumerRequired;
+    cc::UiMirrorConsumerPolicy m_uiMirrorConsumers;
     std::shared_ptr<std::atomic<bool>> m_paintCallbackAlive;
     bool m_disablePaint;
     int m_firstDrawCount;

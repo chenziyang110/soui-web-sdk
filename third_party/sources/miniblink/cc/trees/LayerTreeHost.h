@@ -333,7 +333,7 @@ private:
     blink::IntRect m_clientRect;
     float m_deviceScaleFactor;
     blink::WebColor m_backgroundColor;
-    bool m_hasTransparentBackground;
+    std::atomic<bool> m_hasTransparentBackground;
     bool m_independentPresentationEnabled;
     bool m_visible;
     float m_pageScaleFactor;

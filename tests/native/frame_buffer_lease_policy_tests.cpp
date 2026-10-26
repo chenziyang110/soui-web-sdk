@@ -24,6 +24,15 @@ int main()
     secondLease.reset();
     lease.reset();
     require(Policy::writableSlot(0, front.use_count(), 0) == 0);
+    cc::UiMirrorConsumerPolicy mirror;
+    require(mirror.required(true, false)); // Legacy explicit-consumer default.
+    mirror.setExplicitRequired(false);
+    require(!mirror.required(true, false)); // Confirmed DIRECT_HWND with no DC consumer.
+    require(mirror.required(false, false) && mirror.required(true, true));
+    mirror.noteDcConsumer();
+    require(mirror.required(true, false));
+    mirror.setExplicitRequired(false);
+    require(mirror.required(true, false)); // Later Host configuration cannot revoke a DC.
 
     using Kind = content::PaintCloseKind;
     auto paint = std::make_shared<content::PaintLifetimeState>();
