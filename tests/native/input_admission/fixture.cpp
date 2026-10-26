@@ -3,6 +3,7 @@
 #include "ordinal_cases.h"
 #include "terminal_cases.h"
 #include "wake_cases.h"
+#include "applied_identity_cases.h"
 #include "../../../sdk/src/host/cooperative_turn_budget.h"
 #include <atomic>
 #include <cstdlib>
@@ -105,6 +106,7 @@ int main() {
     require(engine.start([] { return true; }), "engine startup");
     input_ordinal_cases::run(engine);
     input_wake_cases::run(engine);
+    applied_identity_cases::run(engine);
     trace::event context; context.input_first = context.input_last = 123; context.view_generation = 1;
     std::atomic<bool> inherited{false};
     {

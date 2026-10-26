@@ -138,7 +138,8 @@ class dynamic_miniblink_adapter final : public webview_host_adapter,
   [[nodiscard]] host_result close_cursor_endpoint();
   [[nodiscard]] bool advance_cursor_document_on_engine();
   [[nodiscard]] bool update_cursor_identity_on_engine();
-  void publish_view_trace_identity_on_engine() noexcept;
+  void publish_applied_input_identity_on_engine() noexcept;
+  [[nodiscard]] bool independent_input_identity_applied(interaction_generation) const noexcept;
   void sync_cursor_input_generation() noexcept;
   void pump_on_engine();
   [[nodiscard]] bool create_input_window();
@@ -193,7 +194,9 @@ class dynamic_miniblink_adapter final : public webview_host_adapter,
   std::atomic<bool> input_recovery_limited_{false};
   std::uint32_t input_injection_tag_{0}; // UI diagnostic context; never authorization.
   std::atomic<std::uint64_t> input_trace_view_id_{0};
-  bool trace_document_confirmed_{false}, trace_geometry_applied_{false}; // Engine owner, actual callbacks/resize only.
+  bool engine_document_confirmed_{false}, engine_geometry_applied_{false}; // Engine owner, actual callbacks/resize only.
+  mutable std::mutex applied_input_identity_mutex_;
+  interaction_generation applied_input_identity_; // Actual owner-applied tuple; not a scene-current claim.
   const void* interaction_api_{nullptr};
   void* interaction_endpoint_{nullptr};
   const void* cursor_api_{nullptr};

@@ -8,6 +8,7 @@
 #include "input_mailbox.h"
 #include "input_sequence.h"
 #include "host_frame_policy.h"
+#include "applied_input_identity.h"
 #include "input_trace_hooks.h"
 #include "cursor_broker.h"
 #include "main_context_gate.h"
@@ -1434,7 +1435,8 @@ host_result dynamic_miniblink_adapter::mount_on_engine(const host_config& config
   webview_ = view;
   engine_input_generation_ = interaction_generation_;
   engine_requested_document_generation_ = engine_input_generation_.document;
-  trace_document_confirmed_ = trace_geometry_applied_ = false;
+  engine_document_confirmed_ = engine_geometry_applied_ = false;
+  publish_applied_input_identity_on_engine();
   const int trace_view_id = wkeGetWebviewId ? wkeGetWebviewId(view) : 0;
   input_trace_view_id_.store(trace_view_id > 0 ? static_cast<std::uint64_t>(trace_view_id) : 0, std::memory_order_release);
   if (trace_view_id <= 0) input_trace::note_causal_loss();
@@ -1594,7 +1596,7 @@ host_result dynamic_miniblink_adapter::finish_mount_on_engine(const host_config&
   append_host_smoke_log(resource_root_, "local-page-requested");
 #endif
   wkeResize(view, width, height);
-  if (webview_ == view) { trace_geometry_applied_ = true; publish_view_trace_identity_on_engine(); }
+  if (webview_ == view) { engine_geometry_applied_ = true; publish_applied_input_identity_on_engine(); }
   if (startup_cancelled_.load(std::memory_order_acquire))
     return failure("E_CURSOR_STARTUP_CANCELLED", "Startup was cancelled during the initial navigation.");
   admission.complete = true;
@@ -1903,6 +1905,8 @@ host_result dynamic_miniblink_adapter::close_cursor_endpoint() {
 }
 
 void dynamic_miniblink_adapter::unmount_on_engine() {
+  engine_document_confirmed_ = false;
+  publish_applied_input_identity_on_engine();
 #ifdef _WIN32
   append_host_smoke_log(resource_root_, "adapter-unmount-start");
   std::string closing_session;
@@ -2019,7 +2023,8 @@ host_result dynamic_miniblink_adapter::reload() {
     }
     if (!current()) { result = failure("E_CONTEXT_PENDING", "The reload was superseded before execution."); return; }
     if (!cursor_broker_) engine_requested_document_generation_ = requested_document;
-    trace_document_confirmed_ = false;
+    engine_document_confirmed_ = false;
+    publish_applied_input_identity_on_engine();
     wkeReload(static_cast<wkeWebView>(webview_));
     result = success("WebView reload requested on the engine thread.");
   });
@@ -2064,12 +2069,14 @@ host_result dynamic_miniblink_adapter::resize(int width, int height) {
   const auto admitted=detail::engine_admission::post(*engine_thread_,detail::engine_lane::ordinary,[this, width, height, geometry] {
         if (webview_ == nullptr || wkeResize == nullptr) return;
         const auto view = webview_;
+        engine_geometry_applied_ = false;
+        publish_applied_input_identity_on_engine();
         wkeResize(static_cast<wkeWebView>(view), width, height);
         if (webview_ != view) return;
         engine_input_generation_.geometry = geometry;
-        trace_geometry_applied_ = true;
+        engine_geometry_applied_ = true;
         if (cursor_broker_) (void)update_cursor_identity_on_engine();
-        publish_view_trace_identity_on_engine();
+        publish_applied_input_identity_on_engine();
       });
   if (admitted != detail::engine_admission_result::accepted)
     return engine_admission_failure(admitted,"The Miniblink owner thread rejected resize.");
@@ -2128,9 +2135,11 @@ void dynamic_miniblink_adapter::pump() {
 #endif
 }
 
-void dynamic_miniblink_adapter::publish_view_trace_identity_on_engine() noexcept {
+void dynamic_miniblink_adapter::publish_applied_input_identity_on_engine() noexcept {
+  const bool qualified = webview_ && engine_document_confirmed_ && engine_geometry_applied_;
+  detail::applied_input_identity::publish(applied_input_identity_mutex_, applied_input_identity_, qualified ? engine_input_generation_ : interaction_generation{});
 #if defined(_WIN32) && defined(WKE_INPUT_UI_CAP_VIEW_CONTEXT)
-  if (!webview_ || !trace_document_confirmed_ || !trace_geometry_applied_) return;
+  if (!qualified) return;
   input_trace::event identity;
   identity.view_id = input_trace_view_id_.load(std::memory_order_acquire);
   identity.view_generation = engine_input_generation_.view;
@@ -2145,6 +2154,21 @@ void dynamic_miniblink_adapter::publish_view_trace_identity_on_engine() noexcept
         && api->setViewTraceIdentity(static_cast<wkeWebView>(webview_), &identity, sizeof(identity)) == WKE_INPUT_UI_OK) return;
   }
   input_trace::note_causal_loss();
+#endif
+}
+
+bool dynamic_miniblink_adapter::independent_input_identity_applied(interaction_generation generation) const noexcept {
+#if defined(_WIN32) && defined(WKE_INPUT_UI_CAP_SCENE_INPUT_IDENTITY) && defined(WKE_INPUT_UI_CAP_VIEW_CONTEXT)
+  if (!input_trace_view_id_.load(std::memory_order_acquire) || !wkeGetInputUiApi) return false;
+  const auto* api = wkeGetInputUiApi(WKE_INPUT_UI_ABI_VERSION);
+  constexpr auto required = WKE_INPUT_UI_CAP_SCENE_INPUT_IDENTITY | WKE_INPUT_UI_CAP_VIEW_CONTEXT;
+  if (!api || api->abiVersion != WKE_INPUT_UI_ABI_VERSION
+      || api->structSize < offsetof(wkeInputUiApi, setViewTraceIdentity) + sizeof(api->setViewTraceIdentity)
+      || (api->capabilities & required) != required || !api->setViewTraceIdentity) return false;
+  return detail::applied_input_identity::matches(applied_input_identity_mutex_, applied_input_identity_, generation);
+#else
+  (void)generation;
+  return false; // Old kernels cannot prove the active scene's document/geometry.
 #endif
 }
 
@@ -2342,6 +2366,7 @@ input_packet dynamic_miniblink_adapter::make_input_packet(input_kind kind) noexc
 bool dynamic_miniblink_adapter::submit_wheel(const input_packet& packet,
                                              scroll_sample& sample) {
 #ifdef _WIN32
+  if (!independent_input_identity_applied(packet.generation)) return false;
   const auto* api = static_cast<const wkeInteractionApi*>(interaction_api_);
   if (api == nullptr || interaction_endpoint_ == nullptr || api->submitWheel == nullptr)
     return false;
@@ -2402,6 +2427,7 @@ bool dynamic_miniblink_adapter::submit_wheel(const input_packet& packet,
 bool dynamic_miniblink_adapter::capture_scroll_barrier(
     const input_packet& packet, scroll_sample& sample) {
 #ifdef _WIN32
+  if (!independent_input_identity_applied(packet.generation)) return false;
   const auto* api = static_cast<const wkeInteractionApi*>(interaction_api_);
   if (api == nullptr || interaction_endpoint_ == nullptr
       || api->captureScrollBarrier == nullptr)
@@ -3434,7 +3460,8 @@ bool dynamic_miniblink_adapter::notify_main_context_created(void* originating_vi
   document_ready_ = false;
   application_ready_ = false;
   try {
-  trace_document_confirmed_ = false;
+  engine_document_confirmed_ = false;
+  publish_applied_input_identity_on_engine();
   if (!still_pending() || !advance_cursor_document_on_engine() || !still_pending()) return false;
   if (!cursor_broker_) engine_input_generation_.document = engine_requested_document_generation_;
 #ifdef _WIN32
@@ -3758,8 +3785,8 @@ void dynamic_miniblink_adapter::on_document_ready() {
   const auto receipt = execution_context_receipt();
   if (!accepts_execution_context_receipt(receipt) ||
       (cursor_broker_ && !cursor_broker_->input_allowed())) return;
-  trace_document_confirmed_ = true;
-  publish_view_trace_identity_on_engine();
+  engine_document_confirmed_ = true;
+  publish_applied_input_identity_on_engine();
   if (!accepts_execution_context_receipt(receipt) || !install_js_bindings(receipt) ||
       !accepts_execution_context_receipt(receipt)) return;
   document_ready_receipt_.store(receipt, std::memory_order_release);
