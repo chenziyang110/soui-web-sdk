@@ -8,6 +8,7 @@
 #include <chrono>
 #include <functional>
 #include <limits>
+#include <memory>
 #include <mutex>
 #include <utility>
 
@@ -26,7 +27,7 @@ class input_mailbox final : public engine_input_service {
   using order_committer = std::function<std::uint64_t(std::atomic<std::uint64_t>&, std::atomic<bool>&, bool, bool)>;
   using cutoff_reader = std::function<std::uint64_t()>;
   explicit input_mailbox(handler dispatch, order_committer commit = {}, cutoff_reader cutoff = {}, std::uint64_t view_id = 0)
-      : dispatch_(std::move(dispatch)), commit_(std::move(commit)), cutoff_(std::move(cutoff)), trace_view_id_(view_id) {}
+      : dispatch_(std::make_shared<handler>(std::move(dispatch))), commit_(std::move(commit)), cutoff_(std::move(cutoff)), trace_view_id_(view_id) {}
 
   [[nodiscard]] input_admission_result post(const input_packet& packet) noexcept {
     input_packet retired; // Rejected payload retirement follows mutex release.
@@ -78,14 +79,13 @@ class input_mailbox final : public engine_input_service {
   void block_document(interaction_generation generation) noexcept {
     std::lock_guard<std::mutex> lock(mutex_); blocked_generation_ = generation; blocked_ = true;
   }
-  [[nodiscard]] bool take_wake_request() noexcept { return !wake_pending_.exchange(true, std::memory_order_acq_rel); }
   void quiesce() noexcept override { std::lock_guard<std::mutex> lock(mutex_); quiescing_ = true; }
   void service() noexcept override { service_before(0); }
   void service_before(std::uint64_t exclusive_order) noexcept override {
-    wake_pending_.store(false, std::memory_order_release);
     const auto deadline = std::chrono::steady_clock::now() + std::chrono::milliseconds(1);
     for (unsigned count = 0; count < 8; ++count) {
       input_packet packet;
+      std::shared_ptr<handler> dispatch; // Cold-owned callable pin; copying it never allocates.
       bool recover = false;
       std::uint64_t queued_qpc = 0;
       {
@@ -111,47 +111,56 @@ class input_mailbox final : public engine_input_service {
           if (!input_order_precedes(recovery_order_, cutoff)) return;
           recover = true; packet.kind = input_kind::cancel;
           packet.generation = recovery_generation_; packet.sequence = recovery_sequence_;
+          recovery_sequence_ = 0; // The in-flight marker now exclusively owns its terminal.
         }
         else { publish_head(); return; }
+        dispatch = dispatch_;
       }
       const auto began = input_trace::now_qpc();
       if (queued_qpc && began >= queued_qpc)
         input_trace::observe_duration(input_trace::duration_metric::input_queue, began - queued_qpc);
       // Neither Engine nor mailbox mutex is held across WKE/client reentry.
-      try { if (dispatch_) dispatch_(recover ? nullptr : &packet); }
+      try { if (dispatch && *dispatch) (*dispatch)(recover ? nullptr : &packet); }
       catch (...) {
         input_trace::note_causal_loss();
         if (!recover) (void)input_trace::record(input_event(packet, input_trace::stage::input_terminal,
             input_trace::reason::cancelled, input_trace::terminal::cancelled, trace_view_id_));
         std::lock_guard<std::mutex> lock(mutex_);
-        if (recover) { blocked_generation_ = observed_generation_; blocked_ = true; }
-        request_recovery();
+        if (!closed_) {
+          if (recover) { blocked_generation_ = observed_generation_; blocked_ = true; }
+          request_recovery();
+        }
+      }
+      bool closed = false;
+      {
+        std::lock_guard<std::mutex> lock(mutex_);
+        closed = closed_;
+        if (recover && !closed) {
+          quarantined_keys_ = physical_keys_;
+          quarantined_pointer_ = physical_pointer_;
+          quarantined_ime_ = physical_ime_;
+          recovering_ = false;
+          recovery_order_ = 0;
+          publish_head();
+        }
       }
       if (recover) {
         input_trace::add(input_trace::counter::input_recoveries);
         if (packet.sequence) (void)input_trace::record(input_event(packet, input_trace::stage::input_terminal,
-            input_trace::reason::recovery, input_trace::terminal::cancelled, trace_view_id_));
-        std::lock_guard<std::mutex> lock(mutex_);
-        quarantined_keys_ = physical_keys_;
-        quarantined_pointer_ = physical_pointer_;
-        quarantined_ime_ = physical_ime_;
-        recovering_ = false;
-        recovery_sequence_ = 0;
-        recovery_order_ = 0;
-        publish_head();
+            closed ? input_trace::reason::destroyed : input_trace::reason::recovery, input_trace::terminal::cancelled, trace_view_id_));
       }
+      if (closed) return; // Reentrant close cannot reopen pending/quarantine state.
       if (std::chrono::steady_clock::now() >= deadline) return;
     }
   }
   void close() noexcept override {
     // Owner-only: no service callback can be concurrently using dispatch_.
     std::array<input_packet, ordinary_limit + edge_limit> retired;
-    handler released;
+    std::shared_ptr<handler> released;
     {
       std::lock_guard<std::mutex> lock(mutex_);
       closed_ = true; pending_.store(false, std::memory_order_release);
       published_head_.store(0, std::memory_order_release);
-      wake_pending_.store(false, std::memory_order_release);
       for (std::size_t index = 0; index < count_; ++index) {
         const auto& packet = items_[(head_ + index) % items_.size()];
         (void)input_trace::record(input_event(packet, input_trace::stage::input_terminal,
@@ -219,13 +228,12 @@ class input_mailbox final : public engine_input_service {
   std::array<input_packet, ordinary_limit + edge_limit> items_{};
   std::array<std::uint64_t, ordinary_limit + edge_limit> orders_{};
   std::array<std::uint64_t, ordinary_limit + edge_limit> queued_qpc_{};
-  handler dispatch_;
+  std::shared_ptr<handler> dispatch_;
   order_committer commit_;
   cutoff_reader cutoff_;
   const std::uint64_t trace_view_id_;
   std::atomic<bool> pending_{false};
   std::atomic<std::uint64_t> published_head_{0};
-  std::atomic<bool> wake_pending_{false};
   std::size_t head_{0}, tail_{0}, count_{0}, ordinary_{0}, edges_{0}, bytes_{0};
   bool closed_{false}, quiescing_{false}, recovering_{false};
   bool blocked_{false};

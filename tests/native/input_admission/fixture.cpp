@@ -2,6 +2,7 @@
 #include "../../../sdk/src/host/engine_admission.h"
 #include "ordinal_cases.h"
 #include "terminal_cases.h"
+#include "wake_cases.h"
 #include "../../../sdk/src/host/cooperative_turn_budget.h"
 #include <atomic>
 #include <cstdlib>
@@ -47,7 +48,6 @@ int main() {
       require(mailbox.post(packet(input_kind::pointer_move, index)) == input_admission_result::accepted, "ordinary quota");
     auto key = packet(input_kind::key_down, 65); key.key_code = 65;
     require(mailbox.post(key) == input_admission_result::accepted, "move flood stole key edge reserve");
-    require(mailbox.take_wake_request() && !mailbox.take_wake_request(), "internal wake requests did not coalesce");
     auto commit = packet(input_kind::ime_commit, 66); commit.text = u"accepted text";
     require(mailbox.post(commit) == input_admission_result::accepted, "move flood stole IME commit reserve");
     require(mailbox.post(packet(input_kind::pointer_move, 67)) == input_admission_result::capacity, "full move quota not rejected");
@@ -104,6 +104,7 @@ int main() {
     engine_thread engine;
     require(engine.start([] { return true; }), "engine startup");
     input_ordinal_cases::run(engine);
+    input_wake_cases::run(engine);
     trace::event context; context.input_first = context.input_last = 123; context.view_generation = 1;
     std::atomic<bool> inherited{false};
     {

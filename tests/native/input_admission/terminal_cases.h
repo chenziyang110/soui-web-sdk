@@ -47,14 +47,34 @@ inline void run(std::atomic<bool>& fail_next_allocation) {
     check(explicit_cancel.post(input) == input_admission_result::accepted, "explicit cancel admission");
     explicit_cancel.service();
   }
-  std::array<unsigned, 4> terminals{};
+  {
+    bool destroyed = false, in_callback = false, destroyed_during_callback = false;
+    struct capture {
+      bool& destroyed; bool& inside; bool& bad;
+      capture(bool& destroyed, bool& inside, bool& bad) : destroyed(destroyed), inside(inside), bad(bad) {}
+      ~capture() { destroyed = true; if (inside) bad = true; }
+    };
+    auto lifetime = std::make_shared<capture>(destroyed, in_callback, destroyed_during_callback);
+    detail::input_mailbox* selected = nullptr;
+    detail::input_mailbox closing([&, lifetime](const input_packet*) {
+      in_callback = true; selected->close();
+      check(!destroyed, "close destroyed the executing handler capture");
+      in_callback = false;
+    }, {}, {}, 1);
+    selected = &closing; lifetime.reset();
+    auto input = original; input.text.clear(); input.kind = input_kind::cancel; input.sequence = 900005;
+    check(closing.post(input) == input_admission_result::accepted, "reentrant cancel admission");
+    closing.service();
+    check(!closing.pending() && destroyed && !destroyed_during_callback, "reentrant close reopened mailbox or retired capture early");
+  }
+  std::array<unsigned, 5> terminals{};
   std::array<trace::event, 256> records{};
   for (unsigned batch = 0; batch < 32; ++batch) {
     const auto drained = trace::process_recorder().drain(records.data(), records.size());
     check(!drained.busy, "single source consumer unexpectedly busy");
     for (std::size_t index = 0; index < drained.count; ++index) {
       const auto& value = records[index];
-      if (value.point == trace::stage::input_terminal && value.input_first >= 900001 && value.input_first <= 900004)
+      if (value.point == trace::stage::input_terminal && value.input_first >= 900001 && value.input_first <= 900005)
         ++terminals[static_cast<std::size_t>(value.input_first - 900001)];
     }
     if (!drained.count) break;

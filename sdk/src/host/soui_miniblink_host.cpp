@@ -2448,7 +2448,7 @@ input_admission_result dynamic_miniblink_adapter::post_input_typed(const input_p
   if (!engine_thread_ || !input_mailbox_) return input_admission_result::stopped;
   const auto mailbox = std::static_pointer_cast<detail::input_mailbox>(input_mailbox_);
   const auto result = mailbox->post(packet);
-  if (mailbox->pending() && mailbox->take_wake_request()) detail::engine_admission::notify_input(*engine_thread_);
+  if (mailbox->pending()) detail::engine_admission::notify_input(*engine_thread_); // Native auto-reset event coalesces notifications.
   return result;
 }
 
@@ -2520,13 +2520,18 @@ void dynamic_miniblink_adapter::dispatch_input_on_engine(const input_packet& pac
   (void)input_trace::record(dispatch_trace);
   input_trace::context_scope dispatch_context(dispatch_trace);
   struct handler_return {
-    input_trace::event value; int exceptions{std::uncaught_exceptions()};
+    input_trace::event value; dynamic_miniblink_adapter* owner; wkeWebView view; int exceptions{std::uncaught_exceptions()};
     ~handler_return() {
       value.point = input_trace::stage::handler_return; value.qpc = 0;
       if (std::uncaught_exceptions() != exceptions) value.why = input_trace::reason::cancelled;
       (void)input_trace::record(value);
+      if (std::uncaught_exceptions() == exceptions && owner->webview_ != view) {
+        value.point = input_trace::stage::input_terminal; value.why = input_trace::reason::destroyed;
+        value.outcome = input_trace::terminal::cancelled; value.qpc = 0;
+        (void)input_trace::record(value);
+      }
     }
-  } handler_finished{dispatch_trace};
+  } handler_finished{dispatch_trace, this, view};
 #ifdef WKE_INPUT_UI_CAP_INPUT_CONTEXT
   struct native_trace_scope {
     const wkeInputUiApi* api{nullptr}; wkeWebView view{nullptr};
