@@ -5,7 +5,7 @@
 对应阶段二打开/保存路径选择完成的源码。
 本记录不修改生产 acceptance.json，不构成 releaseReady、签名、安装器或全架构通过结论。
 
-后续限定证据追加至 2026-10-24；各段绑定各自源码基线，历史结果不被覆盖。
+后续限定证据追加至 2026-10-26；各段绑定各自源码基线，历史结果不被覆盖。
 
 ## 实现范围
 
@@ -142,7 +142,7 @@ Mac 子任务核对 9 个增量文件 blob 与上述基线一致。显式 Xcode 
 | Linux x64 | GTK/WebKitGTK；X11 快捷键按依赖启用 | 历史真实 GUI/Bridge/ESM/fetch 已过；当前六纵切仅公共回归及后端语法检查，运行时快照丢失，未重跑 GUI |
 | Linux ARM64/x86/ARM32 | 架构策略存在，32 位取决发行版完整依赖 | 未目标编译/运行；不能由 x64 或合成矩阵推断 |
 | macOS arm64/x64/universal2 | WKWebView，现代 64 位目标 | universal2 构建及安装交付通过；2026-10-24 新候选在 Apple Silicon 主机限定窗口/Bridge/模块/fetch/关闭和 DOM 否决探针通过；Intel slice 未运行，完整系统交互未验收 |
-| Windows x64 | WebView2 实现及目标策略 | 2026-10-24 Release / MSVC 构建安装、原模板与独立探针交付通过；真实 WebView2 Bridge/模块/fetch/公开关闭探针通过，无视觉人工交互 |
+| Windows x64 | WebView2 实现及目标策略 | 2026-10-24 Release / MSVC 构建安装、原模板与独立探针交付通过；真实 WebView2 Bridge/模块/fetch/公开关闭探针通过；2026-10-26 原模板可见窗口/app.info/模块/fetch、原生标题栏最大化/还原及正常窗口关闭通过；原模板进程退出码和完整交互未测 |
 | Windows x86/ARM64 | WebView2 实现及目标策略 | 未目标编译/运行，不能从 x64 推断 |
 | Windows ARM32 桌面、macOS 32 位、ARM64EC | 不作为此统一桌面支持目标 | 明确拒绝/不支持，不标未测试即可支持 |
 
@@ -191,7 +191,7 @@ Mac 环境/历史交付与 GUI 阻塞见 [2026-10-23 记录](../macos-native-val
 `soui-web-sdk-win103-src`，其构建/安装为 `out/desktop`、`out/desktop-install`；
 原模板项目 `SouiWindowsConsumer`，专用探针项目 `SouiWindowsConsumerProbe`。
 两者均生成 17 个源文件，交付可执行文件位于各自
-`build/staged-Release/SouiWindowsConsumer.exe`。原模板未修改、未启动；仅探针改动：
+`build/staged-Release/SouiWindowsConsumer.exe`。该次原模板未修改、未启动；仅探针改动：
 
 | 探针源文件 | 行数 | SHA-256 |
 |---|---:|---|
@@ -229,6 +229,75 @@ Mac 环境/历史交付与 GUI 阻塞见 [2026-10-23 记录](../macos-native-val
 `6ea2bd6bfb1b5083925140ef79adc6b344d2f1771431ffaed9f01a790865a2c9`。
 这些证据只保存在目标任务目录，未作为仓库附件上传，以上是结果及身份记录，不假造可下载附件。
 
-本次无截图或视觉人工交互；公开关闭探针不是 DOM 关闭否决、系统退出或全部六纵切验收。
+2026-10-24 该次无截图或视觉人工交互；公开关闭探针不是 DOM 关闭否决、系统退出或全部六纵切验收。
 x86/ARM64、其他 Windows 版本、菜单/托盘/快捷键/剪贴板/对话框等原生交互仍未覆盖。
 不据此宣称正式分发、签名、生产就绪或全部平台架构通过。
+
+<a id="windows-original-template-gui-20261026"></a>
+
+## Windows x64 原模板可见 GUI 补充（2026-10-26）
+
+本节复用源码基线 `220aed8ce822d7f60fb50da3d7fefd7b90869954` 的既有 SDK 与原模板
+Release 交付物；本轮未改源码，未重复安装、编译、stage/verify 或探针。
+本节文档基线是 `27b146c013500f4d38093c8fc6be9fb3ab931a8e`，它相对前者仅修改四份文档；
+不能将文档提交写成已编译或运行的源码身份。原 stage 清单的 `nativeRuntimeVerified=false`
+及生产 `acceptance.json` 均未修改，不作 `releaseReady` 声明。
+
+### 交付身份
+
+主机 DESKTOP-4URQ5CB，Windows x64 Release，现有 WebView2 Runtime 文件版本
+`155.0.4283.62`（只读元数据），Computer Use skill `26.1021.31345`。
+下列路径相对 Windows 本任务目录：原模板 exe 为
+`SouiWindowsConsumer/build/staged-Release/SouiWindowsConsumer.exe`，清单为同目录
+`application-manifest.json`。2026-10-26 `06:07:33.0304777Z` 的只读核对退出 0，
+源码工作树干净；11 个清单文件 / 584,416 bytes 均匹配大小和 SHA-256。
+包含清单的目录仍为 12 文件 / 586,988 bytes，与上节交付物一致。
+
+| 文件 | 字节 | SHA-256 |
+|---|---:|---|
+| SouiWindowsConsumer.exe | 557,056 | `73830ace63aab4db1285f8639881b33b2b79409ebe1d61786b90628a8f7af343` |
+| application-manifest.json | 2,572 | `507af2061034094110a1bba1ba8dc98b99bc2a78665b083574d1f485efc8ce54` |
+
+### 实际窗口操作与结果
+
+本轮使用受支持的原生 CUA 接口，无 shell UI 自动化、注入、代批或安全设置变更。
+
+1. `06:05:02.853Z` 原生应用和窗口清单均成功返回，均无匹配目标。唯一正常启动
+   `cua.computer.launch_app` 于 `06:05:34.036Z` 发起，`06:05:41.160Z` 返回成功；
+   精确目标为上述原模板 exe，无参数、无 `--diagnose`，本轮无审批错误或已知有效待批。
+2. `06:05:48.990Z` 找到唯一窗口 67808，标题 `SouiWindowsConsumer`，process 标识匹配该
+   stage exe。实际截图显示页面及初始文字 `Frontend module loaded. Choose a check above.`。
+3. 点击真实页面 `Read application info`，可访问文本和截图均显示 identifier
+   `org.soui.windowsconsumer`、name `SouiWindowsConsumer`、version `0.1.0`。
+4. 点击 `Load module and JSON`，页面显示 `static module → dynamic module → same-origin fetch`，
+   config.application 为 `SouiWindowsConsumer`，message 为
+   `Edit this frontend without adding platform branches.`。这是实际页面的结果，不是静态源码推断。
+5. 操作原生标题栏“最大化”及“还原”：截图尺寸为
+   `1026×752 → 1920×1032 → 1026×752`，模块结果保持可见。
+   **这只验证原生标题栏交互，未验证网页 window-controls API 或状态事件。**
+6. `06:10:33.170Z` 点击原生关闭按钮，`06:10:33.286Z` 返回。随后状态捕获报告
+   `window is not a usable app window`；`06:10:40.418Z` 原生窗口和应用清单均无匹配项。
+   通过的是正常窗口关闭及窗口/CUA 应用条目消失；未强杀。
+   **CUA 未提供进程退出码，不能推定 exit 0、进程析构或全部关闭稳定性通过。**
+
+### 截图、报告与历史边界
+
+5 张未经编辑、仅含本应用的真实 JPEG（初始、app.info、模块/fetch、最大化、还原）
+仅留存在同一任务 `01a16ebd-4aed-7366-8d42-1b27ebbce009` 的原生 CUA 图片输出。
+没有独立本地图片路径，也没有返回的附件或 Library ID；本节不假造仓库图片或下载链接。
+
+本机任务目录保存 `windows-pr103-original-consumer-gui-pass-20261026.md`
+（4,825 bytes，SHA-256 `c72c266cc3e7906bc5a467250e256ab3ddfe2aa09d4b310ee02e3819caad7793`）
+和 `windows-native-logs/original-consumer-gui-pass-20261026.json`
+（7,734 bytes，SHA-256 `d4310c58319ed97bd385736be916e25f65785d533507b872561cf9fb6496b227`）。
+这些是本地证据身份，不表示文件已作为仓库附件上传。
+
+保留此前 GUI 阻塞：2026-10-25 的两次原模板启动请求均因
+`Computer Use app approval timed out` 未获得成功回执；其中第二次为
+`16:02:21.301Z–16:07:21.323Z`。随后的原生清单未找到目标，执行结果仍未确认。
+旧请求已超时，不是当前待批；本轮成功不改写这些历史失败，也不改写旧 Mac 包的失败。
+
+原模板进程退出码、网页窗口控制 API/事件、DOM 关闭/否决、多窗口和系统退出、
+最小化/还原、手动移动、焦点/DPI/IME/多屏、菜单/托盘/全局快捷键、剪贴板及
+目录/打开/保存路径对话框、长稳、其他架构/配置/Windows 版本及完整平台矩阵仍待验收。
+保留 draft、既有版本/许可和全部生产/分发门槛，不据此签名、合并或发布。

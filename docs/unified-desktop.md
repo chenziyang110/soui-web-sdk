@@ -7,7 +7,8 @@ GTK3/WebKitGTK、AppKit/WKWebView 或 Win32/WebView2 后端。业务代码不需
 
 这是未发布开发功能，不是 Electron 全功能替代或“全部架构完美运行”声明。
 Windows x64 Release 已完成 MSVC 原生编译、安装 SDK 与独立消费者交付，真实 WebView2
-探针的 Bridge/模块/同源 fetch/公开关闭通过，未做视觉人工交互，见[限定记录](acceptance/unified-desktop-2026-10-23.md)。
+探针的 Bridge/模块/同源 fetch/公开关闭通过；2026-10-26 原模板补充可见窗口、app.info、
+模块/同源 fetch、原生标题栏最大化/还原及正常窗口关闭验证。原模板进程退出码和网页窗口控制 API 未测，见[限定记录](acceptance/unified-desktop-2026-10-23.md#windows-original-template-gui-20261026)。
 macOS 已完成限定 universal2 原生编译及安装SDK交付链，
 2026-10-24 新候选在 ARM Mac 正常 CUA 启动后完成最小窗口、Bridge、模块/同源 fetch
 与正常关闭验证，见[新候选记录](adr/0145-observed-macos-activation-policy.md)。
@@ -27,7 +28,7 @@ Linux于2026-10-22完成限定真实GUI、Bridge和模块
 | Linux | x64、ARM64 | GTK 3.24+、WebKitGTK 4.1 2.40+、C++17、正常图形会话 | Debian 13 x64 / GCC 14.2 / GTK 3.24.49 / WebKitGTK 2.52.6 编译链接、安装消费者通过；限定x64 GUI/Bridge/模块链已验证；后续部署策略未复验，ARM64未编译 |
 | Linux | x86、ARM32 | 仅当目标发行版提供上述架构的完整开发/运行包；需正确 ISA/浮点 ABI/sysroot | 未编译或 GUI 验证，不承诺所有 32 位发行版可用 |
 | macOS | x64、ARM64、universal2 | macOS 12+，Apple SDK，Objective-C++17/ARC，AppKit、Foundation、WebKit、CoreFoundation | AppleClang 21 原生 universal2 编译/链接、安装SDK消费者与交付通过；ARM宿主fake契约通过；2026-10-24新候选限定真实窗口/Bridge/模块/fetch/关闭通过；完整原生交互及Intel slice执行未验收 |
-| Windows | x86、x64、ARM64 | MSVC-compatible C++17、Windows SDK、匹配架构 WebView2 SDK loader、当前受支持 Evergreen Runtime | x64 Release / MSVC 19.44 原生编译、安装 SDK 与独立消费者交付通过；真实 WebView2 Bridge/模块/fetch/公开关闭探针通过，无视觉人工交互；x86、ARM64 未编译运行 |
+| Windows | x86、x64、ARM64 | MSVC-compatible C++17、Windows SDK、匹配架构 WebView2 SDK loader、当前受支持 Evergreen Runtime | x64 Release / MSVC 19.44 原生编译、安装 SDK 与独立消费者交付通过；真实 WebView2 Bridge/模块/fetch/公开关闭探针通过；2026-10-26 原模板可见窗口/app.info/模块/fetch、原生标题栏最大化/还原及正常窗口关闭通过；原模板退出码及完整交互未测，x86、ARM64 未编译运行 |
 | Windows ARM32、macOS x86/ARM32、ARM64EC | 不支持 | 不伪造缺失的后端发行物或现代 32 位 macOS 支持 | 配置拒绝 |
 
 Windows 后端必须能查询 `ICoreWebView2_18`，否则初始化失败关闭；接口引入于 SDK
