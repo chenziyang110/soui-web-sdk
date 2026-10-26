@@ -4,6 +4,7 @@
 // the actual Engine FIFO and mailbox; no copied admission algorithm is used.
 #include "../../../sdk/src/host/input_mailbox.h"
 #include "../../../sdk/src/host/engine_admission.h"
+#include "../../../sdk/src/host/input_sequence.h"
 #include <condition_variable>
 #include <limits>
 #include <stdexcept>
@@ -26,6 +27,9 @@ inline detail::input_mailbox::cutoff_reader cutoff(engine_thread& engine) {
 }
 inline void run(engine_thread& engine) {
   constexpr auto maximum = (std::numeric_limits<std::uint64_t>::max)();
+  std::atomic<std::uint64_t> sequence{maximum - 1};
+  check(detail::claim_input_sequence(sequence) == maximum && detail::claim_input_sequence(sequence) == 0
+      && sequence.load() == maximum, "input sequence wrapped/reused at exhaustion");
   static_assert(detail::input_order_precedes(maximum, maximum), "MAX recovery must precede MAX cleanup");
   static_assert(!detail::input_order_precedes(2, 1) && detail::input_order_precedes(1, 2), "normal exclusive fence");
   static_assert(!detail::input_mailbox::valid_native_text_bytes(-1)

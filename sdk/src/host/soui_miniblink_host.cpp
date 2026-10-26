@@ -6,6 +6,7 @@
 #include "bridge_request_budget.h"
 #include "engine_admission.h"
 #include "input_mailbox.h"
+#include "input_sequence.h"
 #include "cursor_broker.h"
 #include "main_context_gate.h"
 #include "runtime_shutdown_poll.h"
@@ -2022,20 +2023,10 @@ host_result dynamic_miniblink_adapter::resize(int width, int height) {
   if (engine_thread_ == nullptr || webview_window_ == nullptr || width <= 0 || height <= 0) {
     return failure("E_INVALID_ARGUMENT", "A live WebView and positive dimensions are required.");
   }
-  window_chrome_.set_viewport_width(width);
-  if (cursor_broker_) {
-    if (!cursor_broker_->advance_geometry())
-      return failure("E_CURSOR_GENERATION", "The controlled geometry generation could not advance.");
-    cursor_transition_pending_ = true;
-    sync_cursor_input_generation();
-  } else {
-    interaction_generation_.geometry += 1;
-    if (!interaction_generation_.geometry) interaction_generation_.geometry = 1;
-    interaction_router_.activate(interaction_generation_);
-  }
-  next_input_sequence_ = 0;
-  wheel_smoothing_.reset();
-  const auto geometry = interaction_generation_.geometry;
+  const auto current_geometry = cursor_broker_ ? cursor_broker_->identity().geometryGeneration : interaction_generation_.geometry;
+  if (current_geometry == (std::numeric_limits<std::uint64_t>::max)())
+    return failure("E_CURSOR_GENERATION", "The geometry generation is exhausted.");
+  const auto geometry = current_geometry + 1;
   const auto admitted=detail::engine_admission::post(*engine_thread_,detail::engine_lane::ordinary,[this, width, height, geometry] {
         if (webview_ == nullptr || wkeResize == nullptr) return;
         const auto view = webview_;
@@ -2046,6 +2037,20 @@ host_result dynamic_miniblink_adapter::resize(int width, int height) {
       });
   if (admitted != detail::engine_admission_result::accepted)
     return engine_admission_failure(admitted,"The Miniblink owner thread rejected resize.");
+  // A failed FIFO admission leaves UI generation/sequence/window untouched.
+  // Only this UI owner advances geometry, so preflight cannot be superseded
+  // by another resize while post() commits; close still fails closed.
+  if (cursor_broker_) {
+    if (!cursor_broker_->advance_geometry())
+      return failure("E_CURSOR_GENERATION", "The controlled view closed during resize admission.");
+    cursor_transition_pending_ = true;
+    sync_cursor_input_generation();
+  } else {
+    interaction_generation_.geometry = geometry;
+    interaction_router_.activate(interaction_generation_);
+  }
+  window_chrome_.set_viewport_width(width);
+  wheel_smoothing_.reset();
   // MoveWindow may synchronously route input. Its FIFO barrier must already
   // exist before any new-geometry native message can be accepted.
   MoveWindow(static_cast<HWND>(webview_window_), 0, 0, width, height, TRUE);
@@ -2133,8 +2138,9 @@ void dynamic_miniblink_adapter::sync_cursor_input_generation() noexcept {
   const auto identity = cursor_broker_->identity();
   const interaction_generation current{identity.viewGeneration, identity.documentGeneration, identity.geometryGeneration};
   if (!(interaction_generation_ == current)) {
+    const bool changed_document = interaction_generation_.view != current.view || interaction_generation_.document != current.document;
     interaction_generation_ = current;
-    next_input_sequence_ = 0;
+    if (changed_document) next_input_sequence_ = 0;
     wheel_smoothing_.reset();
   }
   const auto receipt = execution_context_receipt();
@@ -2241,7 +2247,13 @@ input_packet dynamic_miniblink_adapter::make_input_packet(input_kind kind) noexc
   input_packet packet;
   packet.kind = kind;
   packet.generation = interaction_generation_;
-  packet.sequence = next_input_sequence_.fetch_add(1) + 1;
+  packet.sequence = detail::claim_input_sequence(next_input_sequence_);
+  if (!packet.sequence) {
+    input_recovery_limited_.store(true, std::memory_order_release);
+    input_packet cancel; cancel.kind = input_kind::cancel; cancel.generation = packet.generation;
+    (void)post_input_typed(cancel);
+    if (input_mailbox_) std::static_pointer_cast<detail::input_mailbox>(input_mailbox_)->block_document(packet.generation);
+  }
   const auto now = std::chrono::steady_clock::now().time_since_epoch();
   packet.timestamp_seconds = std::chrono::duration<double>(now).count();
   return packet;

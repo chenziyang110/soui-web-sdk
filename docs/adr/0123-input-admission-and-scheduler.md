@@ -32,6 +32,8 @@ Normal ordinals never wrap and use 1..MAX-1; exhaustion rejects normal work expl
 
 Dispatch validates owner-applied context/geometry, never the UI's newer resize intent. Captured geometry becomes applied only after the actual same-view wkeResize returns; cursor publication uses that applied geometry while retaining live view/document/receipt checks. MoveWindow follows FIFO admission because it can synchronously route new-geometry input. Generic document intent is sampled only at actual main-context creation; trace base readiness remains a separate confirmed boundary.
 
+Resize preflights its next nonwrapping geometry but publishes UI geometry only after FIFO admission succeeds. Failed admission leaves UI generation/sequence/window untouched and can be retried after capacity returns. Input sequence is monotonic across geometry changes; only document/view transitions reset it. Its allocator makes at most eight CAS attempts, never wraps, and reports zero on failure; the Host requests ordered cancellation and seals that document with limited recovery until a new document/view. Received trace identity is immutable. Cross-geometry nonspatial dispatch remains functional but has explicit native-causality loss until a schema can carry both geometries.
+
 Regression SOURCE covers paused first-head publication, FIFO appended during a no-cutoff batch, more-than-one-batch resize/close ordering, MAX recovery/cleanup ties, rejected ordinal publication, and negative/zero/odd/oversize IMM byte lengths. These cases have not been compiled or executed.
 
 必要用例源码覆盖容量/字节/OOM边界、已接纳 FIFO、恢复顺序、按住键隔离、IME commit、两 Host 进展、注销/停止与迟到通知。编译和运行由专人执行；当前只允许源码审查和 `git diff --check`，不据源码候选宣称性能通过。
