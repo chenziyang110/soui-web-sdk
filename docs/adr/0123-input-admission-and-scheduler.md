@@ -62,10 +62,7 @@ producer 待接纳任务有相同索引，mutex 内一次只选择/移除一个�
 索引每个活动 Timer/TaskPair 增加一个固定 Entry 和一个非拥有指针；priority 节点数量不超过不同活动 priority 数加四个标准空节点。四个标准 bucket 保留向量高水容量以避免每帧重新分配，其他空节点立即释放。`statistics()` 报告活动项、节点和保留结构字节（不含 allocator 元数据/不透明 Task 载荷）。节点/向量容量在 timer 状态变化前准备，失败不破坏原活动索引。原第三方 void post 的不透明 Task 载荷与全局 admission 项数仍没有统一新容量协议；本包没有为性能新增静默删除/进程 fail-fast，也不声称这个既有限制已关闭。后续 typed tryPost/逐调用方失败策略必须另行覆盖全部关键 caller。
 
 必要用例源码覆盖容量/字节/OOM边界、已接纳 FIFO、恢复顺序、按住键隔离、IME commit、两 Host 进展、注销/停止与迟到通知。编译和运行由专人执行；当前只允许源码审查和 `git diff --check`，不据源码候选宣称性能通过。
-<<<<<<< HEAD
-=======
 
 ### W05/W07 optional Host policy adoption
 
 Normal fractional CPU pacing requires matched cap0x10; older kernels retain their legacy integer/experimental policy. The normal Host sets mirrorRequired=false once after DIRECT_HWND presentation succeeds, only through version/field-boundary/cap0x4/non-null/OK0 checks. Failed adoption restores explicit mirrorRequired=true. Benchmark/DC consumers retain the mirror; B's sticky DC/transparent/layered/nonindependent rules override false. No per-frame mirror toggle or new old-DLL requirement is introduced.
-
