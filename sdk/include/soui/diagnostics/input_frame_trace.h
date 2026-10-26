@@ -132,6 +132,7 @@ class writer final {
  private:
   friend class recorder;
   friend bool register_current_thread();
+  friend bool current_thread_registered() noexcept;
   friend void detach_current_thread() noexcept;
   writer(std::shared_ptr<detail::state> storage, std::size_t slot) noexcept;
   void release() noexcept;
@@ -179,6 +180,9 @@ class recorder final : public trace_source {
 [[nodiscard]] std::uint64_t now_qpc() noexcept;
 recorder& process_recorder() noexcept;
 [[nodiscard]] bool register_current_thread(); // Cold; never called by record.
+// O(1) TLS handle/active query only; no attach/allocation/counter side effects.
+// stop() rejects writes but does not detach an existing active producer.
+[[nodiscard]] bool current_thread_registered() noexcept;
 void detach_current_thread() noexcept;
 [[nodiscard]] record_result record(event value) noexcept;
 void add(counter metric, std::uint64_t amount = 1) noexcept;

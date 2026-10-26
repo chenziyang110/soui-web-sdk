@@ -403,6 +403,11 @@ bool register_current_thread() {
   local_writer = &registration.producer;
   return true;
 }
+bool current_thread_registered() noexcept {
+  if (!local_writer || !*local_writer) return false;
+  const auto& slot = *local_writer->storage_->threads[local_writer->slot_];
+  return slot.active.load(std::memory_order_acquire);
+}
 void detach_current_thread() noexcept {
   if (local_writer && *local_writer)
     local_writer->storage_->threads[local_writer->slot_]->active.store(false,std::memory_order_release);
