@@ -22,7 +22,7 @@ W00 已提交 [Draft PR111](https://github.com/chenziyang110/soui-web-sdk/pull/1
 | W07 | 两槽256MiB lease、有效mirror/DC sticky、锁外callback、paint/native close收据 | SOURCE与既有严格字节闭包、owner/shutdown/late callback静态复核；未执行 | 代码完成待编译 |
 | W08 | raster诊断、可见/预取预算、开始前取消receipt、fenced scene恢复；默认1 worker | raster-scheduling-policy/render-scene-transaction源码；未知非空SkPicture owner在dispatch前回退worker0；未执行 | 资格基础设施完成，可用资格域与采用待数据 |
 | W09 | render scene移动；Bridge/GPU日志移出热路径；const packet；分项成本与默认关闭总turn预算候选 | wake/reentrant close/terminal唯一性SOURCE；layout缓存和更细provider预算待profile | 确定性源码完成，条件采用待数据 |
-| W10 | WebView2 输出批次实耗时、转换/JSON/deque/广播诊断；COM/授权/撤销保持 | 未 profile；Runtime 外部内部调度另列边界 | 待设计/诊断与数据 |
+| W10 | WebView2 owner/serialization诊断；默认关闭elapsed/worker prepared表示；opaque COM前后身份复验和nested pump guard | owner-policy及既有容量/导航SOURCE，actual target与credit静态审查；未编译/未真实COM | 代码完成待编译，条件采用待数据 |
 | W11 | GPU 独立设计/诊断候选；device loss/生命周期/深度/软件回退 | 软件主线和 profile 尚缺，未启用 | 待数据，未关闭 |
 | W12 | 精确需求→源码→回归源码→命令→证据→状态；原编码补丁/来源/注册；暂存区清单；分批 Draft PR | 由集成负责人随各包刷新；所有未执行保持未执行 | 持续集成中 |
 
@@ -113,3 +113,7 @@ W09默认预算0/off；显式100..5000us只协调协作批次，单个provider/J
 worker严格来源为16个完整输入、15段复制、22个payload。仅对已独立审过的两份C trace原件/whole-copy更新pins，其他原件/片段/payload/关闭proof全部精确一致；LLVM observer新增6个严格角色已补齐：5个固定writer recipe的46个输出路径、8个实际编译对象，包含wheel的两个generated.cpp；index只允许0生成。每个来源/对象对先由真实Ninja绑定选择，再从冻结writer+原字节推导，拒绝未知source和build后manifest授权。
 
 SDK本批LLVM观察器已静态重绑16/15/22 worker形状与3个canonical LF writer SHA；原有未知来源/篡改拒绝保持。新增SOURCE覆盖缺失/错配compiler unit、额外object、未知header/manifest及writer/pin篡改。只完成PowerShell语法树解析、原字节/散列/源码差异检查，没有执行脚本主体、SOURCE案例或编译。host_visibility复制均为UTF8（AutoRecord含非ASCII），使用/utf-8；window native_close片段保留CP936，其余没有以重新编码冒充原件。
+
+## WebView2独立包
+
+[ADR-0127](../adr/0127-webview2-owner-output.md)记录可选输出预算/表示、实际ComPtr目标、get_Source opaque callout前后身份、nested pump guard和回退。原16项上限、来源/会话/代际/授权、lane及64KiB credit不扩张。两项性能候选默认关闭，真实Runtime版本、COM存活、输入公平性和CPU/serialization成本由专人冻结profile；不能用policy/fake SOURCE替代真实COM。当前renderer全部改动与作者最后已审代码逐字节一致，根已登记sdk.native.webview2-owner-policy。
