@@ -1561,6 +1561,7 @@ void close_approval_contract(files& fixture) {
       CHECK(error.code == "close_callback_failed");
       CHECK(app->request_close().code == "close_busy");
       CHECK(app->request_quit().code == "close_busy");
+      throw std::runtime_error("error reporting failure");
     };
     application root(fixture.settings(), handlers); app = &root;
     CHECK(root.initialize().ok);
@@ -1573,7 +1574,7 @@ void close_approval_contract(files& fixture) {
     CHECK(approvals == 3 && errors == 1 && native->active.load());
     throwing = false; allow = true;
     CHECK(root.request_close().ok);
-    CHECK(approvals == 4 && native->counts->closed == 1);
+    CHECK(approvals == 4 && errors == 1 && native->counts->closed == 1);
   }
   {
     application* app = nullptr;
@@ -1594,6 +1595,62 @@ void close_approval_contract(files& fixture) {
     auto* native = latest;
     native->send(native->envelope(1));
     CHECK(approvals == 1 && native->counts->closed == 1);
+  }
+  {
+    application* app = nullptr;
+    fake_backend* native = nullptr;
+    bool in_callback = false, allow = false;
+    int approvals = 0;
+    std::string navigated_uri, navigated_preload;
+    callbacks handlers;
+    handlers.invoke = [&](std::string_view, std::string_view) {
+      in_callback = true;
+      CHECK(app->request_close().ok);
+      CHECK(app->request_close().ok);
+      const auto previous_uri = native->uri;
+      const auto previous_preload = native->preload;
+      CHECK(app->navigate("second.html").ok);
+      navigated_uri = native->uri;
+      navigated_preload = native->preload;
+      CHECK(navigated_uri != previous_uri && navigated_preload != previous_preload);
+      CHECK(approvals == 0);
+      in_callback = false;
+      return std::string("{}");
+    };
+    handlers.close_requested = [&](window_id) {
+      CHECK(!in_callback);
+      CHECK(native->uri == navigated_uri && native->preload == navigated_preload);
+      ++approvals;
+      return allow;
+    };
+    application root(fixture.settings(), handlers); app = &root;
+    CHECK(root.initialize().ok); native = latest;
+    native->send(native->envelope(1));
+    // Approval belongs to the window, even after document authorization changes.
+    CHECK(approvals == 1 && native->active.load() && native->counts->closed == 0);
+    allow = true;
+    CHECK(root.request_close().ok);
+    CHECK(approvals == 2 && native->counts->closed == 1);
+  }
+  {
+    int approvals = 0;
+    std::function<void()> late_request;
+    std::shared_ptr<native_counts> counts;
+    {
+      callbacks handlers;
+      handlers.close_requested = [&](window_id) { ++approvals; return true; };
+      application root(fixture.settings(), handlers);
+      CHECK(root.initialize().ok);
+      counts = latest->counts;
+      late_request = latest->events.close_requested;
+      CHECK(static_cast<bool>(late_request));
+      CHECK(root.request_close().ok);
+      late_request();
+      CHECK(approvals == 1 && counts->closed == 1);
+    }
+    // Keep only a weak backend notification, never a destroyed fake pointer.
+    late_request();
+    CHECK(approvals == 1 && counts->closed == 1);
   }
   {
     application* app = nullptr;
