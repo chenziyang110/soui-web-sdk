@@ -2,6 +2,7 @@
 #include "../../../sdk/src/host/engine_admission.h"
 #include "ordinal_cases.h"
 #include "terminal_cases.h"
+#include "../../../sdk/src/host/cooperative_turn_budget.h"
 #include <atomic>
 #include <cstdlib>
 #include <iostream>
@@ -46,6 +47,7 @@ int main() {
       require(mailbox.post(packet(input_kind::pointer_move, index)) == input_admission_result::accepted, "ordinary quota");
     auto key = packet(input_kind::key_down, 65); key.key_code = 65;
     require(mailbox.post(key) == input_admission_result::accepted, "move flood stole key edge reserve");
+    require(mailbox.take_wake_request() && !mailbox.take_wake_request(), "internal wake requests did not coalesce");
     auto commit = packet(input_kind::ime_commit, 66); commit.text = u"accepted text";
     require(mailbox.post(commit) == input_admission_result::accepted, "move flood stole IME commit reserve");
     require(mailbox.post(packet(input_kind::pointer_move, 67)) == input_admission_result::capacity, "full move quota not rejected");
@@ -121,6 +123,13 @@ int main() {
     for (const auto& host : hosts) require(host->calls == 1, "a Host was starved or serviced twice");
     require(engine.invoke([&] { for (const auto& host : hosts) detail::engine_admission::unregister_input(engine, host); }), "owner unregister");
     engine.stop();
+    const detail::cooperative_turn_budget::clock::time_point start{};
+    const detail::cooperative_turn_budget shared(1000, start), legacy(0, start);
+    const auto local = start + std::chrono::milliseconds(2);
+    require(shared.limit(local) == start + std::chrono::milliseconds(1), "shared budget did not cap component deadline");
+    require(legacy.limit(local) == local, "default policy changed independent budgets");
+    require(detail::cooperative_turn_budget(99, start).limit(local) == local
+        && detail::cooperative_turn_budget(5001, start).limit(local) == local, "out-of-range budget changed default");
     std::cout << "input mailbox source regression cases complete\n";
     return 0;
   } catch (const std::exception& error) { std::cerr << error.what() << '\n'; return 1; }

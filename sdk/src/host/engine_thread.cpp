@@ -1,6 +1,8 @@
 #include <soui/host/engine_thread.h>
 #include "engine_admission.h"
 #include "engine_input_service.h"
+#include "input_trace_hooks.h"
+#include "cooperative_turn_budget.h"
 #include "../runtime/diagnostics/runtime_metrics_internal.h"
 
 #include <atomic>
@@ -20,6 +22,23 @@
 
 namespace soui::sdk {
 namespace input_trace = diagnostics::input_frame_trace;
+namespace {
+unsigned configured_turn_budget() noexcept {
+#ifdef _WIN32
+  wchar_t text[16]{};
+  const auto length = GetEnvironmentVariableW(L"SOUI_ENGINE_SHARED_TURN_BUDGET_US", text, 16);
+  if (!length || length >= 16) return 0;
+  unsigned value = 0;
+  for (unsigned index = 0; index < length; ++index) {
+    if (text[index] < L'0' || text[index] > L'9' || value > 5000) return 0;
+    value = value * 10 + static_cast<unsigned>(text[index] - L'0');
+  }
+  return value >= 100 && value <= 5000 ? value : 0;
+#else
+  return 0;
+#endif
+}
+}
 namespace detail {
 struct engine_capacity_state final {
   engine_capacity_state() noexcept {
@@ -96,7 +115,8 @@ void close_engine_wake_event(HANDLE event) noexcept {
 
 engine_thread::engine_thread() : engine_thread(diagnostics::mode::disabled) {}
 engine_thread::engine_thread(diagnostics::mode mode) : metrics_mode_(mode),
-    metrics_epoch_(mode == diagnostics::mode::scalar ? diagnostics::detail::epoch() : 0) {}
+    metrics_epoch_(mode == diagnostics::mode::scalar ? diagnostics::detail::epoch() : 0),
+    coordinated_budget_us_(configured_turn_budget()) {}
 diagnostics::status engine_thread::read_runtime_metrics(diagnostics::queue& out) const noexcept {
   out = {};
   if (metrics_mode_ != diagnostics::mode::scalar) return diagnostics::status::disabled;
@@ -586,6 +606,7 @@ void engine_thread::run(initializer initialize, task shutdown) noexcept {
 
   bool stopping_complete = false;
   for (;;) {
+    auto turn_budget = detail::cooperative_turn_budget(coordinated_budget_us_);
 #ifdef _WIN32
     {
       std::unique_lock<std::mutex> lock(mutex_);
@@ -597,14 +618,16 @@ void engine_thread::run(initializer initialize, task shutdown) noexcept {
           (void)MsgWaitForMultipleObjectsEx(
               1, &wake_event, INFINITE, QS_ALLINPUT, MWMO_INPUTAVAILABLE);
         }
+        turn_budget = detail::cooperative_turn_budget(coordinated_budget_us_);
         {
+          const detail::trace_duration native_cost(input_trace::duration_metric::engine_native);
           MSG message{};
           // A native callback may repost itself indefinitely. Yield to the
           // FIFO and stopping state after a bounded batch, even if the
           // Windows queue never becomes empty.
           constexpr unsigned max_native_messages_per_turn = 32;
-          const auto native_deadline = std::chrono::steady_clock::now()
-              + std::chrono::milliseconds(2);
+          const auto native_deadline = turn_budget.limit(std::chrono::steady_clock::now()
+              + std::chrono::milliseconds(2));
           for (unsigned count = 0; count < max_native_messages_per_turn
                && PeekMessageW(&message, nullptr, 0, 0, PM_REMOVE) != FALSE;
                ++count) {
@@ -624,15 +647,17 @@ void engine_thread::run(initializer initialize, task shutdown) noexcept {
     }
 #endif
     if (owner_opportunity_) {
+      const detail::trace_duration provider_cost(input_trace::duration_metric::engine_provider);
       try { owner_opportunity_(); } catch (...) { /* Cooperative provider boundary. */ }
     }
-    service_one_input();
+    { const detail::trace_duration input_cost(input_trace::duration_metric::engine_input); service_one_input(); }
     // Service a bounded FIFO batch too. One task per native batch makes an
     // input burst accumulate behind expensive paint messages, even though
     // neither queue is strictly starved. Neither budget can preempt a callback.
     constexpr unsigned max_tasks_per_turn = 32;
-    const auto task_deadline = std::chrono::steady_clock::now()
-        + std::chrono::milliseconds(2);
+    const auto task_deadline = turn_budget.limit(std::chrono::steady_clock::now()
+        + std::chrono::milliseconds(2));
+    const detail::trace_duration fifo_cost(input_trace::duration_metric::engine_fifo);
     for (unsigned count = 0; count < max_tasks_per_turn; ++count) {
       task current;
       input_trace::event task_trace;

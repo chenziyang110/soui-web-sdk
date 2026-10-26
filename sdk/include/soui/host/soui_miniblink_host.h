@@ -144,7 +144,7 @@ class dynamic_miniblink_adapter final : public webview_host_adapter,
   [[nodiscard]] bool create_input_window();
   [[nodiscard]] bool destroy_input_window();
   void refresh_wheel_settings() noexcept;
-  void dispatch_input_on_engine(input_packet packet);
+  void dispatch_input_on_engine(const input_packet& packet);
   void cancel_input_on_engine();
   [[nodiscard]] bool submit_wheel(const input_packet& packet,
                                   scroll_sample& sample) override;

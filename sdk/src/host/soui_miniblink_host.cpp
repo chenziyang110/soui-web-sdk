@@ -216,7 +216,9 @@ void WKE_CALL_TYPE record_benchmark_paint(wkeWebView, void*, HDC dc, int, int, i
 jsValue WKE_CALL_TYPE benchmark_motion_callback(jsExecState es, void* param) {
   const int index = jsToInt(es, jsArg(es, 0));
   if (!param || index < 0 || index > 120) return jsBoolean(false);
-  { std::ofstream trace(cycle_evidence_path.parent_path() / "motion-steps.log", std::ios::app); trace << index << '\n'; }
+  input_trace::event trace;
+  trace.point = input_trace::stage::bridge_request; trace.value = static_cast<unsigned>(index);
+  (void)input_trace::record(trace);
   static_cast<soui::sdk::dynamic_miniblink_adapter*>(param)->benchmark_motion(static_cast<unsigned>(index));
   return jsBoolean(true);
 }
@@ -238,29 +240,21 @@ host_result failure(std::string code, std::string message) {
 }
 
 void bridge_diagnostic_trace(const void* adapter, std::string_view phase,
-                             std::string_view request_id = {},
-                             std::string_view detail = {}) {
-#ifdef _WIN32
-  char enabled[2]{};
-  if (GetEnvironmentVariableA("SOUI_BRIDGE_TRACE", enabled, sizeof(enabled)) != 1 ||
-      enabled[0] != '1') return;
-  char temporary[MAX_PATH + 1]{};
-  const DWORD length = GetTempPathA(MAX_PATH, temporary);
-  if (!length || length > MAX_PATH) return;
-  static std::mutex trace_mutex;
-  std::lock_guard<std::mutex> lock(trace_mutex);
-  std::ofstream trace(std::filesystem::path(temporary) /
-      ("soui-bridge-trace-" + std::to_string(GetCurrentProcessId()) + ".log"),
-      std::ios::app | std::ios::binary);
-  trace << GetCurrentThreadId() << ' ' << adapter << ' ' << phase;
-  if (!request_id.empty()) trace << " id=" << request_id;
-  if (!detail.empty()) trace << ' ' << detail;
-  trace << '\n';
-#else
-  (void)adapter; (void)phase; (void)request_id; (void)detail;
-#endif
+                             std::string_view request_id = {}, std::string_view detail = {}) noexcept {
+  (void)adapter; (void)request_id; (void)detail;
+  input_trace::event value;
+  (void)input_trace::current_context(value);
+  value.point = phase.find("response") != std::string_view::npos || phase.find("resolver") != std::string_view::npos
+      ? input_trace::stage::bridge_response : input_trace::stage::bridge_request;
+  value.qpc = 0;
+  // Numeric fixed phase identity only; no strings/requests/JSON enter the ring.
+  std::uint32_t code = 2166136261U;
+  for (const unsigned char character : phase) code = (code ^ character) * 16777619U;
+  value.value = code;
+  if (phase.find("drop") != std::string_view::npos || phase.find("failed") != std::string_view::npos
+      || phase.find("rejected") != std::string_view::npos) value.why = input_trace::reason::cancelled;
+  (void)input_trace::record(value);
 }
-
 host_result success(std::string message = {}) { return {true, {}, std::move(message)}; }
 
 bool contains_remote_runtime_reference(const std::filesystem::path& path,
@@ -2454,7 +2448,7 @@ input_admission_result dynamic_miniblink_adapter::post_input_typed(const input_p
   if (!engine_thread_ || !input_mailbox_) return input_admission_result::stopped;
   const auto mailbox = std::static_pointer_cast<detail::input_mailbox>(input_mailbox_);
   const auto result = mailbox->post(packet);
-  if (mailbox->pending()) detail::engine_admission::notify_input(*engine_thread_);
+  if (mailbox->pending() && mailbox->take_wake_request()) detail::engine_admission::notify_input(*engine_thread_);
   return result;
 }
 
@@ -2491,7 +2485,7 @@ void dynamic_miniblink_adapter::cancel_input_on_engine() {
 #endif
 }
 
-void dynamic_miniblink_adapter::dispatch_input_on_engine(input_packet packet) {
+void dynamic_miniblink_adapter::dispatch_input_on_engine(const input_packet& packet) {
 #ifdef _WIN32
   struct rejected_input {
     const input_packet& packet; std::uint64_t view_id; bool began{false}; int exceptions{std::uncaught_exceptions()};
@@ -3589,7 +3583,10 @@ host_result dynamic_miniblink_adapter::try_enqueue_bridge_message(
     return failure("E_BRIDGE_QUEUE", "The asynchronous native bridge queue is unavailable.");
   if (request.empty() || request.size() > max_bridge_message_bytes)
     return failure("E_LIMIT_MESSAGE_SIZE", "Bridge message exceeds 64 KiB.");
-  const auto packet = bounded_bridge_packet(request);
+  const auto packet = [&] {
+    const detail::trace_duration serialization_cost(input_trace::duration_metric::serialization);
+    return bounded_bridge_packet(request);
+  }();
   const auto request_id = packet_string(packet, "requestId");
   const auto method = packet_string(packet, "method");
   if (request_id.empty() || method.empty())
@@ -3640,7 +3637,7 @@ host_result dynamic_miniblink_adapter::try_enqueue_bridge_message(
       if (response.size() > max_bridge_message_bytes)
         response=bridge_error(request_id,"E_LIMIT_MESSAGE_SIZE","Native response exceeds 64 KiB.");
     } catch (...) { response=bridge_error(request_id,"E_NATIVE_EXCEPTION","The native handler failed."); }
-    bridge_diagnostic_trace(this,"worker.response",request_id,"bytes="+std::to_string(response.size()));
+    bridge_diagnostic_trace(this,"worker.response",request_id);
     if (generation != bridge_generation_.load(std::memory_order_acquire) ||
         !accepts_execution_context_receipt(context_receipt) || engine_thread_ == nullptr) {
       budget->record_drop(detail::bridge_request_budget::drop::stale_context);
@@ -3679,18 +3676,20 @@ void dynamic_miniblink_adapter::resolve_bridge_response(
     bridge_diagnostic_trace(this, "resolver.drop", request_id);
     return;
   }
-  const auto script = bridge_resolution_script(request_id, response);
+  const auto script = [&] {
+    const detail::trace_duration serialization_cost(input_trace::duration_metric::serialization);
+    return bridge_resolution_script(request_id, response);
+  }();
   if (!accepts_execution_context_receipt(context_receipt) ||
       generation != bridge_generation_.load(std::memory_order_acquire)) return;
   const auto view = static_cast<wkeWebView>(webview_);
-  const auto result = wkeRunJS(view, script.c_str());
+  (void)wkeRunJS(view, script.c_str());
   if (webview_ != view || !accepts_execution_context_receipt(context_receipt) ||
       generation != bridge_generation_.load(std::memory_order_acquire)) {
     bridge_diagnostic_trace(this, "resolver.context-changed", request_id);
     return;
   }
-  bridge_diagnostic_trace(this, "resolver.ran", request_id,
-      "result=" + std::to_string(static_cast<long long>(result)));
+  bridge_diagnostic_trace(this, "resolver.ran", request_id);
 #else
   (void)request_id;
   (void)response;
@@ -4070,9 +4069,7 @@ jsValue WKE_CALL_TYPE native_post_message(jsExecState es, void*) {
     if (!adapter->accepts_execution_context_receipt(context_receipt)) return jsUndefined();
     const bool waiting_is_string = jsIsString(waiting);
     if (!adapter->owns_execution_context(es, context_receipt)) return jsUndefined();
-    bridge_diagnostic_trace(adapter, "binding.resolver-created", request_id,
-        "value=" + std::to_string(static_cast<long long>(waiting)) +
-        " string=" + (waiting_is_string ? std::string{"1"} : std::string{"0"}));
+    bridge_diagnostic_trace(adapter, "binding.resolver-created", request_id);
     if (waiting_is_string) return waiting;
     host_result admitted;
     try { admitted = adapter->try_enqueue_bridge_message(std::string(request), native_user_gesture, context_receipt); }

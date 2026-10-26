@@ -78,9 +78,11 @@ class input_mailbox final : public engine_input_service {
   void block_document(interaction_generation generation) noexcept {
     std::lock_guard<std::mutex> lock(mutex_); blocked_generation_ = generation; blocked_ = true;
   }
+  [[nodiscard]] bool take_wake_request() noexcept { return !wake_pending_.exchange(true, std::memory_order_acq_rel); }
   void quiesce() noexcept override { std::lock_guard<std::mutex> lock(mutex_); quiescing_ = true; }
   void service() noexcept override { service_before(0); }
   void service_before(std::uint64_t exclusive_order) noexcept override {
+    wake_pending_.store(false, std::memory_order_release);
     const auto deadline = std::chrono::steady_clock::now() + std::chrono::milliseconds(1);
     for (unsigned count = 0; count < 8; ++count) {
       input_packet packet;
@@ -149,6 +151,7 @@ class input_mailbox final : public engine_input_service {
       std::lock_guard<std::mutex> lock(mutex_);
       closed_ = true; pending_.store(false, std::memory_order_release);
       published_head_.store(0, std::memory_order_release);
+      wake_pending_.store(false, std::memory_order_release);
       for (std::size_t index = 0; index < count_; ++index) {
         const auto& packet = items_[(head_ + index) % items_.size()];
         (void)input_trace::record(input_event(packet, input_trace::stage::input_terminal,
@@ -222,6 +225,7 @@ class input_mailbox final : public engine_input_service {
   const std::uint64_t trace_view_id_;
   std::atomic<bool> pending_{false};
   std::atomic<std::uint64_t> published_head_{0};
+  std::atomic<bool> wake_pending_{false};
   std::size_t head_{0}, tail_{0}, count_{0}, ordinary_{0}, edges_{0}, bytes_{0};
   bool closed_{false}, quiescing_{false}, recovering_{false};
   bool blocked_{false};

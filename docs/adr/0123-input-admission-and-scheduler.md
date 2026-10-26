@@ -71,6 +71,10 @@ SDK 与 vendor 各自保留 POD 当前因果上下文：TaskPair/Timer 和固定
 
 内部恢复标记 sequence=0，不为原 physical input 再签第二个 terminal；原 rejection/stale/exception/close 各有唯一终态所有者。IME 查询/拷贝失败为已经创建的 T1 签一次 rejection，再请求匿名恢复，不生成虚假的第二次 T1。回归 SOURCE 通过实际 recorder/mailbox/router 对原 copy rejection、handler exception、queued close 和显式 cancel 统计恰好一个 terminal。worker 严格 closure 追加实际 vendor InputFrameTrace.h/cpp（16 live sources、15 source copies），未用 trace stub 替代。
 
+Bridge 逐事件开文件的实验 logger 改为数值阶段事件，去掉调用处日志专用字符串格式化；旧 `SOUI_BRIDGE_TRACE` 不再创建文件。细节通过统一 recorder/exporter 开关导出。mailbox 内部 wake 合并，拥有 packet 在 owner 借用 const reference，避免 dispatch 的第二次文本复制；不改变 DOM 事件数量。
+
+新增 native/provider/input/FIFO/serialization 成本直方图。`SOUI_ENGINE_SHARED_TURN_BUDGET_US=100..5000` 是默认关闭的协作总预算候选：native/FIFO 截止取组件与总剩余的较早值；provider/input/FIFO 每轮至少保留一次有界服务以保证进展。单次 provider/输入批次或用户回调仍可超时，候选不能冒充抢占。没有 profile 时不默认采用、不凭常数推算收益；跨 MiniBlink provider 批次的更细剩余预算协议仍待数据决定。
+
 ### 最终关闭 fence
 
 `BlinkPlatformImpl::closeThread()` 保留原 registry 数量/指针检查和真实 join 流程，失败诊断后 `std::terminate()`，调试器继续也不能到达 `delete this` 或成功 finalize。worker fixture 保留实际生产 fence，`concurrent-registry-close` 改为预期非继续失败，新增 `registry-live-fence`；严格验证尚未释放的原 worker/scheduler/event/registry。最终 wkeFinalize 的完成 guard 由集成包配套，不能在 fence 失败后签发完成收据。

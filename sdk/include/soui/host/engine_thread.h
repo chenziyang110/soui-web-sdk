@@ -106,6 +106,7 @@ class engine_thread final {
   const std::uint64_t metrics_epoch_;
   diagnostics::queue metrics_;
   bool metrics_saturated_{false};
+  const unsigned coordinated_budget_us_{0}; // Profile candidate; default preserves independent budgets.
   std::uint64_t callback_started_us_{0};
   std::thread worker_;
   std::thread::id owner_thread_{};
