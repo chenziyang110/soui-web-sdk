@@ -50,7 +50,9 @@ target_compile_options(soui_native_owner_metrics_tests PRIVATE /utf-8 /W4 /U_DEB
 set_property(TARGET soui_native_owner_metrics_tests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
 add_test(NAME sdk.native.owner-metrics-serialization COMMAND soui_native_owner_metrics_tests)
 set_tests_properties(sdk.native.owner-metrics-serialization PROPERTIES TIMEOUT 10)
-add_executable(soui_source_kernel_api_tests source_kernel_api_tests.cpp)
+add_executable(soui_source_kernel_api_tests source_kernel_api_tests.cpp
+  "${SOUI_DISTRIBUTION_ROOT}/sdk/src/runtime/diagnostics/input_frame_trace.cpp")
+target_include_directories(soui_source_kernel_api_tests PRIVATE "${SOUI_DISTRIBUTION_ROOT}/sdk/include")
 target_compile_features(soui_source_kernel_api_tests PRIVATE cxx_std_17)
 target_compile_options(soui_source_kernel_api_tests PRIVATE /utf-8 /W4 /U_DEBUG)
 target_compile_definitions(soui_source_kernel_api_tests PRIVATE
@@ -78,6 +80,21 @@ foreach(cursor_target soui_cursor_resource_tests soui_cursor_broker_scope_tests)
   target_compile_definitions(${cursor_target} PRIVATE UNICODE _UNICODE NOMINMAX WINVER=0x0601 _WIN32_WINNT=0x0601)
   set_property(TARGET ${cursor_target} PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
 endforeach()
+
+add_subdirectory(input_frame_trace_backend)
+if(SOUI_BUILD_VENDOR_TESTS)
+  add_executable(soui_input_frame_trace_tests input_frame_trace/recorder_tests.cpp
+    "${SOUI_DISTRIBUTION_ROOT}/sdk/src/runtime/diagnostics/input_frame_trace.cpp"
+    "${SOUI_DISTRIBUTION_ROOT}/third_party/sources/miniblink/content/common/InputFrameTrace.cpp")
+  target_include_directories(soui_input_frame_trace_tests PRIVATE
+    "${SOUI_DISTRIBUTION_ROOT}/sdk/include"
+    "${SOUI_DISTRIBUTION_ROOT}/third_party/sources/miniblink")
+  target_compile_features(soui_input_frame_trace_tests PRIVATE cxx_std_17)
+  target_compile_definitions(soui_input_frame_trace_tests PRIVATE NOMINMAX WINVER=0x0601 _WIN32_WINNT=0x0601)
+  target_compile_options(soui_input_frame_trace_tests PRIVATE /utf-8 /W4)
+  add_test(NAME kernel.native.input-frame-trace COMMAND soui_input_frame_trace_tests)
+  set_tests_properties(kernel.native.input-frame-trace PROPERTIES TIMEOUT 30)
+endif()
 target_link_libraries(soui_cursor_broker_scope_tests PRIVATE user32 gdi32)
 add_test(NAME sdk.native.cursor-resources COMMAND soui_cursor_resource_tests)
 add_test(NAME sdk.native.cursor-broker-scopes COMMAND soui_cursor_broker_scope_tests)
