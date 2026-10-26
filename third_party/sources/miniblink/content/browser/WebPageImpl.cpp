@@ -448,7 +448,7 @@ public:
 
     void leave()
     {
-        auto frameContext = cc::renderTraceContext();
+        auto frameContext = m_host ? m_host->traceContextForFrame() : cc::renderTraceContext();
         if (m_isComefromMainFrame) {
             frameContext.frame_id = m_page->m_renderFrameId;
             frameContext.input_first = frameContext.input_last = 0;
@@ -1034,6 +1034,13 @@ HDC WebPageImpl::viewDC()
         return nullptr;
     HDC hDC = device->GetBitmapDCUgly(m_hWnd);
     return hDC;
+}
+
+bool WebPageImpl::setViewTraceIdentity(const content::input_frame_trace::event& value)
+{
+    if (!WTF::isMainThread() || m_state != pageInited || !m_layerTreeHost)
+        return false;
+    return m_layerTreeHost->setViewTraceIdentity(value);
 }
 
 void WebPageImpl::setInputTraceContext(const content::input_frame_trace::event& value)

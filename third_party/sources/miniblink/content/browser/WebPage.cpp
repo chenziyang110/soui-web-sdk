@@ -126,6 +126,11 @@ bool WebPage::cancelInputState()
     return m_pageImpl && m_pageImpl->cancelInputState();
 }
 
+bool WebPage::setViewTraceIdentity(const content::input_frame_trace::event& value)
+{
+    return m_pageImpl && m_pageImpl->setViewTraceIdentity(value);
+}
+
 void WebPage::setInputTraceContext(const content::input_frame_trace::event& value)
 {
     if (m_pageImpl) m_pageImpl->setInputTraceContext(value);

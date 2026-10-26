@@ -6,6 +6,7 @@
 #include "cc/trees/LegacyPaintRetryPolicy.h"
 #include "cc/trees/FrameBufferLeasePolicy.h"
 #include "cc/trees/InputFrameCoverage.h"
+#include "cc/trees/ViewTraceIdentity.h"
 #include "cc/raster/RasterCandidateBudget.h"
 #include <memory>
 #include <atomic>
@@ -256,6 +257,8 @@ public:
 
     void setDrawMinInterval(double drawMinInterval);
     void setMainFrameDeadline(uint64_t frameId, double target, double interval);
+    bool setViewTraceIdentity(const content::input_frame_trace::event& value);
+    content::input_frame_trace::event traceContextForFrame();
     void noteProcessedInputTrace(const content::input_frame_trace::event& value);
     void setIndependentPresentationEnabled(bool enabled);
     
@@ -392,6 +395,7 @@ private:
     uint64_t m_presentedMainFrameId;
     double m_pendingMainFrameDeadline;
     bool m_unifiedFrameDeadline;
+    ViewTraceIdentity m_viewTraceIdentity;
     InputFrameCoverage m_pendingInputTrace;
     InputFrameCoverage m_unpresentedInputTrace;
     uint64_t m_unpresentedInputFrameId = 0;

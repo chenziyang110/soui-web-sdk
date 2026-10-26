@@ -27,3 +27,7 @@ W09 先记录 layout/record、scene 构造与复制、copy bytes、锁持有和�
 ## 验证交接与当前边界
 
 维护者明确授权本阶段只实现代码、回归源码和静态审查；本 agent 不编译、不执行测试、VM、benchmark 或 profiling。验证人员一次性执行可控时钟、早唤醒/拒绝/关闭、通知注册前中后、资源取消、像素/alpha/DC、双槽持有、resize/DPI、scene/action/scroll ACK、低核与多核矩阵，并配对测 trace 开销。源码测试不等于已通过测试，缺数据的采用决定和生产门槛保持未关闭。
+
+## Confirmed view trace identity follow-up
+
+The owner may bind confirmed view/document/geometry metadata without an input dispatch. The setter accepts a zero-input event and stores only identity fields; it neither pushes input TLS nor changes production scenes, action fences, pacing or buffers. New frame layout/record/commit metadata starts from this base. Existing scene and framebuffer lease descriptors keep their captured identity. A newer identity retires only pending processed coverage with explicit stale terminals; bounded diagnostic overflow records causal loss. Late old-generation dispatch returns cannot repopulate coverage. Navigation intent alone is insufficient for this setter. The SOURCE cases cover first non-input frame identity, invalid/stale updates, geometry/document transitions, causal isolation and immutable captured descriptors. No compilation or test execution is authorized.

@@ -186,6 +186,7 @@ public:
     void setDrawMinInterval(double drawMinInterval);
     void setMainFrameRate(int rate);
     void setUiMirrorConsumerRequired(bool required);
+    bool setViewTraceIdentity(const content::input_frame_trace::event& value);
     void setInputTraceContext(const content::input_frame_trace::event& value);
     bool uiMirrorConsumerRequired() const { return m_uiMirrorConsumerRequired.load(); }
 

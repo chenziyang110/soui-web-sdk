@@ -1226,6 +1226,7 @@ static void refreshScrollRasterCoverage(LayerTreeHost* host,
 
 void LayerTreeHost::recordDraw()
 {
+    m_recordedTraceActionFirst = m_recordedTraceActionLast = 0;
     if (blink::RuntimeEnabledFeatures::headlessEnabled())
         return;
     if (!m_rootLayer)
@@ -2998,6 +2999,8 @@ void LayerTreeHost::setMainFrameDeadline(uint64_t frameId, double target, double
     m_pendingMainFrameDeadline = target;
     m_unpresentedInputTrace = m_pendingInputTrace;
     m_unpresentedInputFrameId = frameId;
+    m_frameTraceContext = m_viewTraceIdentity.frameContext(renderTraceContext());
+    m_frameTraceContext.input_first = m_frameTraceContext.input_last = 0;
     m_frameTraceContext.frame_id = frameId;
     m_frameTraceContext.action_first = m_recordedTraceActionFirst;
     m_frameTraceContext.action_last = m_recordedTraceActionLast;
@@ -3029,9 +3032,53 @@ void LayerTreeHost::setMainFrameDeadline(uint64_t frameId, double target, double
     }
 }
 
+static void recordStaleInputTrace(content::input_frame_trace::event value)
+{
+    value.flags = 0;
+    value.why = trace::reason::stale_generation;
+    value.outcome = trace::terminal::stale;
+    value.frame_id = value.action_first = value.action_last = value.related_id = 0;
+    recordRenderStage(trace::stage::input_terminal, value);
+}
+
+bool LayerTreeHost::setViewTraceIdentity(const content::input_frame_trace::event& value)
+{
+    WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
+    const auto previous = m_viewTraceIdentity.value();
+    if (!m_viewTraceIdentity.set(value))
+        return false;
+    if (InputFrameCoverage::sameGeneration(previous, value))
+        return true;
+    InputFrameCoverage retired;
+    size_t lost = 0;
+    m_viewTraceIdentity.retainCurrent(m_pendingInputTrace, retired, lost);
+    m_viewTraceIdentity.retainCurrent(m_unpresentedInputTrace, retired, lost);
+    if (lost) {
+        trace::add(trace::counter::causal_ranges_dropped, lost);
+        trace::note_causal_loss(lost);
+    }
+    if (!m_unpresentedInputTrace.size())
+        m_unpresentedInputFrameId = 0;
+    for (size_t index = 0; index < retired.size(); ++index)
+        recordStaleInputTrace(retired.at(index));
+    // Scene and owning framebuffer descriptors remain immutable snapshots.
+    m_frameTraceContext = m_viewTraceIdentity.value();
+    return true;
+}
+
+content::input_frame_trace::event LayerTreeHost::traceContextForFrame()
+{
+    WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
+    return m_viewTraceIdentity.frameContext(renderTraceContext());
+}
+
 void LayerTreeHost::noteProcessedInputTrace(const content::input_frame_trace::event& value)
 {
     WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
+    if (!m_viewTraceIdentity.accepts(value)) {
+        recordStaleInputTrace(value);
+        return;
+    }
     if (!m_pendingInputTrace.append(value)) {
         trace::add(trace::counter::causal_ranges_dropped);
         trace::note_causal_loss();
