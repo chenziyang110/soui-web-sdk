@@ -83,6 +83,13 @@ bool readViewEvent(wke::CWebView* view, const void* input, unsigned bytes, trace
         && ((!value.input_first && !value.input_last)
             || (value.input_first && value.input_last >= value.input_first));
 }
+int WKE_INPUT_UI_CALL setVisibility(void* opaque, unsigned visible)
+{
+    auto* view = liveOwnerView(opaque);
+    if (!view || !view->webPage()) return WKE_INPUT_UI_UNAVAILABLE;
+    if (visible > 1) return WKE_INPUT_UI_INVALID;
+    return view->webPage()->setHostVisible(visible != 0) ? WKE_INPUT_UI_OK : WKE_INPUT_UI_REJECTED;
+}
 int WKE_INPUT_UI_CALL setMirror(void* opaque, unsigned required)
 {
     auto* view = liveOwnerView(opaque);
@@ -247,9 +254,10 @@ const wkeInputUiApi* WKE_CALL_TYPE wkeGetInputUiApi(unsigned requestedVersion)
         WKE_INPUT_UI_CAP_TRACE | WKE_INPUT_UI_CAP_OWNER_OPPORTUNITY
             | WKE_INPUT_UI_CAP_FRACTIONAL_FRAME_POLICY | WKE_INPUT_UI_CAP_MIRROR_CONSUMER
             | WKE_INPUT_UI_CAP_INPUT_CONTEXT | WKE_INPUT_UI_CAP_CANCEL_INPUT
-            | WKE_INPUT_UI_CAP_VIEW_CONTEXT | WKE_INPUT_UI_CAP_SCENE_INPUT_IDENTITY,
+            | WKE_INPUT_UI_CAP_VIEW_CONTEXT | WKE_INPUT_UI_CAP_SCENE_INPUT_IDENTITY
+            | WKE_INPUT_UI_CAP_VISIBILITY,
         &configureTrace, &stopTrace, &snapshotTrace, &drainTrace,
         &serviceOwner, &setMirror, &queryMirror, &setInputContext, &cancelInput, &setViewContext,
-        nullptr, nullptr, nullptr };
+        &setVisibility, nullptr, nullptr };
     return requestedVersion == WKE_INPUT_UI_ABI_VERSION ? &api : nullptr;
 }

@@ -30,6 +30,7 @@ set(_soui_vendor_required
   "third_party/sources/miniblink/cc/trees/ScrollTreeSnapshot.h"
   "third_party/sources/miniblink/cc/trees/ViewTraceIdentity.h"
   "third_party/sources/miniblink/content/browser/CheckReEnter.cpp"
+  "third_party/sources/miniblink/content/browser/HostVisibilityPolicy.h"
   "third_party/sources/miniblink/content/browser/SharedTimerWin.h"
   "third_party/sources/miniblink/content/browser/WebPage.cpp"
   "third_party/sources/miniblink/content/browser/WebPageImpl.cpp"

@@ -43,3 +43,5 @@ target_sources(soui_independent_input_trace_tests PRIVATE
 
 add_subdirectory(window_close_lifetime)
 add_subdirectory(independent_wheel_source)
+
+add_subdirectory(host_visibility_source)
