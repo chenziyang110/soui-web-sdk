@@ -82,6 +82,7 @@ foreach(cursor_target soui_cursor_resource_tests soui_cursor_broker_scope_tests)
 endforeach()
 
 add_subdirectory(input_frame_trace_backend)
+add_subdirectory(input_admission)
 if(SOUI_BUILD_VENDOR_TESTS)
   add_executable(soui_input_frame_trace_tests input_frame_trace/recorder_tests.cpp
     "${SOUI_DISTRIBUTION_ROOT}/sdk/src/runtime/diagnostics/input_frame_trace.cpp"
