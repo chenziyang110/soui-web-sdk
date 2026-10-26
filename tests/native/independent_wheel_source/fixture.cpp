@@ -97,7 +97,6 @@ public:
     uint64_t m_nextCompositorInputSequence = 0;
     ScrollNodeKey m_latchedScrollNode;
     double m_lastCompositorWheelTime = 0;
-    int m_drawFrameCount = 0, m_drawFrameFinishCount = 0;
     std::atomic<bool> m_hasRejectedDrawWake{false};
     std::shared_ptr<UiPaintRetryState> m_uiPaintRetry;
     fixture::Composite thread;
@@ -128,7 +127,7 @@ LayerTreeHost::~LayerTreeHost()
 }
 void LayerTreeHost::drawFrameInCompositeThread()
 {
-    --m_drawFrameCount; --m_drawFrameFinishCount;
+    --m_uiPaintRetry->drawQueuedCount; --m_uiPaintRetry->drawFinishCount;
     // Draw/Skia is a dependency fake; actual wake/admission methods are bound above.
     for (auto* input : m_pendingCompositorScrollInputs) { ++processed; delete input; }
     m_pendingCompositorScrollInputs.clear();
@@ -183,9 +182,9 @@ int main()
         const bool accepted = host.handleCompositorWheelInput(5, 5, 0, 10, 100, false, &receipt, &input);
         fixture::fail_after = -1;
         fixture::require(accepted && fixture::prediction(host) == 10 && host.m_pendingCompositorScrollInputs.size() == 1);
-        fixture::require(host.m_hasRejectedDrawWake && !host.m_drawFrameCount && host.m_uiPaintRetry->drawWake.needsRetry());
+        fixture::require(host.m_hasRejectedDrawWake && !host.m_uiPaintRetry->drawQueuedCount && host.m_uiPaintRetry->drawWake.needsRetry());
         host.thread.owner.reject = false; host.retryPendingOwnerWork(); host.thread.owner.runOne();
-        fixture::require(host.processed == 1 && fixture::prediction(host) == 10 && !host.m_drawFrameCount);
+        fixture::require(host.processed == 1 && fixture::prediction(host) == 10 && !host.m_uiPaintRetry->drawQueuedCount);
     }
     {
         cc::LayerTreeHost host; fixture::setup(host);
@@ -203,12 +202,23 @@ int main()
         fixture::require(host.handleCompositorWheelInput(5, 5, 0, 10, 100, false, &receipt, &input));
         fixture::require(host.thread.owner.posted_input == input.input_first);
         host.thread.owner.tasks.clear(); // Accepted wake cancelled before execution/registration.
-        fixture::require(!host.m_drawFrameCount && host.m_uiPaintRetry->drawWake.needsRetry());
+        fixture::require(!host.m_uiPaintRetry->drawQueuedCount && host.m_uiPaintRetry->drawWake.needsRetry());
         host.retryPendingOwnerWork(); host.thread.owner.runOne(); fixture::require(host.processed == 1);
         host.requestDrawFrameToRunIntoCompositeThread();
         host.m_uiPaintRetry->host = nullptr; host.m_uiPaintRetry->drawWake.close();
-        host.m_drawFrameCount = 91; host.thread.owner.tasks.clear();
-        fixture::require(host.m_drawFrameCount == 91); // Late receipt cannot touch a closed/reused host.
+        fixture::require(host.m_uiPaintRetry->drawQueuedCount == 1 && host.m_uiPaintRetry->drawFinishCount == 1);
+        host.thread.owner.tasks.clear(); // Actual disposal retires the queued obligation after close.
+        fixture::require(host.m_uiPaintRetry->drawQueuedCount == 0 && host.m_uiPaintRetry->drawFinishCount == 0);
+    }
+    {
+        cc::LayerTreeHost host; fixture::setup(host);
+        fixture::require(host.handleCompositorWheelInput(5, 5, 0, 10, 100, false, &receipt, &input));
+        const auto closing = host.m_uiPaintRetry;
+        fixture::require(closing->drawQueuedCount == 1 && closing->drawFinishCount == 1);
+        closing->host = nullptr; closing->drawWake.close();
+        host.thread.owner.runOne(); // Closed queued task runs no host code, then is actually disposed.
+        fixture::require(closing->drawQueuedCount == 0 && closing->drawFinishCount == 0);
+        fixture::require(host.processed == 0 && host.m_pendingCompositorScrollInputs.size() == 1);
     }
     return fixture::failures ? 1 : 0;
 }

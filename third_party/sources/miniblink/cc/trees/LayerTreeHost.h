@@ -424,8 +424,6 @@ private:
     Vector<SkRect> m_dirtyRectsForUi;
     int m_postpaintMessageCount;
     std::atomic<bool> m_hasRejectedDrawWake{false};
-    int m_drawFrameCount;
-    int m_drawFrameFinishCount;
     int m_requestApplyActionsCount;
     int m_requestApplyActionsFinishCount;
 

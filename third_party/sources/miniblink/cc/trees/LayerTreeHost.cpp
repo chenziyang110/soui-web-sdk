@@ -62,6 +62,8 @@ struct UiPaintRetryState {
     LegacyPaintRetryPolicy policy;
     ResourceNotificationPolicy resource;
     DrawFrameWakePolicy drawWake;
+    std::atomic<int> drawQueuedCount{0};
+    std::atomic<int> drawFinishCount{0};
     bool recordWaiting = false;
     bool rerasterRequired = false;
     bool drawWaiting = false;
@@ -105,12 +107,13 @@ public:
         if (m_ran)
             return;
         std::lock_guard<std::mutex> lock(m_state->mutex);
-        if (m_state->drawWake.reject(m_ticket) && m_state->host) {
-            // Host teardown must take this same state lock before clearing host.
-            atomicDecrement(&m_state->host->m_drawFrameCount);
-            atomicDecrement(&m_state->host->m_drawFrameFinishCount);
+        const bool rejected = m_state->drawWake.reject(m_ticket);
+        // Every constructed/posted task owns one actual counter obligation.
+        // Retire it even after close clears the raw host and invalidates tickets.
+        m_state->drawQueuedCount.fetch_sub(1);
+        m_state->drawFinishCount.fetch_sub(1);
+        if (rejected && m_state->host)
             m_state->host->m_hasRejectedDrawWake.store(true);
-        }
     }
     void run() override
     {
@@ -118,8 +121,8 @@ public:
         {
             std::lock_guard<std::mutex> lock(m_state->mutex);
             if (m_state->drawWake.claim(m_ticket)) {
-                m_ran = true;
                 host = m_state->host;
+                m_ran = host != nullptr;
                 if (host)
                     host->m_hasRejectedDrawWake.store(false);
             }
@@ -617,8 +620,6 @@ LayerTreeHost::LayerTreeHost(LayerTreeHostClent* hostClient, LayerTreeHostUiThre
     m_presentedMainFrameId = 0;
     m_pendingMainFrameDeadline = 0;
     m_unifiedFrameDeadline = false;
-    m_drawFrameCount = 0;
-    m_drawFrameFinishCount = 0;
     m_requestApplyActionsCount = 0;
     m_requestApplyActionsFinishCount = 0;
     m_postpaintMessageCount = 0;
@@ -793,7 +794,7 @@ void LayerTreeHost::waitForDrawFrame()
     int finishCount = 0;
     do {
         m_compositeMutex.lock();
-        finishCount = m_drawFrameFinishCount;
+        finishCount = m_uiPaintRetry->drawFinishCount;
         m_compositeMutex.unlock();
         Sleep(20);
     } while (0 != finishCount);
@@ -2187,7 +2188,7 @@ void LayerTreeHost::queueDrawFrameWake(long long delayMs)
     WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
     if (!m_compositeThread || m_isDestroying)
         return;
-    if (m_drawFrameCount)
+    if (m_uiPaintRetry->drawQueuedCount)
         return;
     uint64_t ticket;
     {
@@ -2206,8 +2207,8 @@ void LayerTreeHost::queueDrawFrameWake(long long delayMs)
         m_hasRejectedDrawWake.store(true);
         return;
     }
-    atomicIncrement(&m_drawFrameCount);
-    atomicIncrement(&m_drawFrameFinishCount);
+    m_uiPaintRetry->drawQueuedCount.fetch_add(1);
+    m_uiPaintRetry->drawFinishCount.fetch_add(1);
     m_hasRejectedDrawWake.store(false);
     // WebThread owns/disposes the task on every admission/timer failure.
     // Its receipt clears only this wake, preserving published input and damage.
@@ -3285,14 +3286,14 @@ void LayerTreeHost::drawFrameInCompositeThread()
 {
     content::PaintActivityScope paintActivity(m_paintLifetime);
     if (!paintActivity) {
-        atomicDecrement(&m_drawFrameCount);
-        atomicDecrement(&m_drawFrameFinishCount);
+        m_uiPaintRetry->drawQueuedCount.fetch_sub(1);
+        m_uiPaintRetry->drawFinishCount.fetch_sub(1);
         return;
     }
     m_compositeMutex.lock();
-    if (1 != m_drawFrameCount)
+    if (1 != m_uiPaintRetry->drawQueuedCount)
         DebugBreak();
-    atomicDecrement(&m_drawFrameCount);
+    m_uiPaintRetry->drawQueuedCount.fetch_sub(1);
     m_compositeMutex.unlock();
 
     const double lastCompositeTime = WTF::monotonicallyIncreasingTime();
@@ -3302,7 +3303,7 @@ void LayerTreeHost::drawFrameInCompositeThread()
     {
         WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
         if (!m_visible && !m_isDestroying) {
-            atomicDecrement(&m_drawFrameFinishCount);
+            m_uiPaintRetry->drawFinishCount.fetch_sub(1);
             return;
         }
         committedFrame = m_pendingMainFrameId;
@@ -3322,7 +3323,7 @@ void LayerTreeHost::drawFrameInCompositeThread()
     if (pacingDelay > 0) {
         trace::add(trace::counter::pacing_wakes);
         requestDrawFrameAfterDelay(pacingDelay);
-        atomicDecrement(&m_drawFrameFinishCount);
+        m_uiPaintRetry->drawFinishCount.fetch_sub(1);
         return;
     }
 
@@ -3346,7 +3347,7 @@ void LayerTreeHost::drawFrameInCompositeThread()
             // The previous canvas remains the only visible scene while a
             // replacement reraster is outstanding. Do not consume its dirty.
             recordRenderStage(trace::stage::composite_end);
-            atomicDecrement(&m_drawFrameFinishCount);
+            m_uiPaintRetry->drawFinishCount.fetch_sub(1);
             return;
         }
     }
@@ -3415,7 +3416,7 @@ void LayerTreeHost::drawFrameInCompositeThread()
     // publication, not a periodic draw task. No resource fence is bypassed.
     (void)frameReady;
     recordRenderStage(trace::stage::composite_end);
-    atomicDecrement(&m_drawFrameFinishCount);
+    m_uiPaintRetry->drawFinishCount.fetch_sub(1);
 }
 
 void LayerTreeHost::paintToMemoryCanvasInUiThread(const SkRect& paintRect)
