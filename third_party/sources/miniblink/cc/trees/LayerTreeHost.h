@@ -4,6 +4,7 @@
 #include "third_party/WebKit/public/platform/WebLayerTreeView.h"
 #include "cc/trees/ScrollTreeSnapshot.h"
 #include "cc/trees/LegacyPaintRetryPolicy.h"
+#include "cc/trees/FrameBufferLeasePolicy.h"
 #include <memory>
 #include "third_party/WebKit/public/platform/WebThread.h"
 #include "third_party/WebKit/Source/platform/geometry/IntRect.h"
@@ -199,6 +200,33 @@ public:
     CompositingLayer* getCCLayerById(int id);
     bool isRootCCLayerEmpty() const { return !m_rootCCLayer; }
 
+    struct FrameBuffer {
+        FrameBuffer(std::unique_ptr<SkCanvas> value, uint64_t sizeGeneration, int w, int h,
+            bool alphaValue);
+        ~FrameBuffer();
+        std::unique_ptr<SkCanvas> canvas;
+        uint64_t generation;
+        uint64_t bytes;
+        int width;
+        int height;
+        bool alpha;
+    };
+    struct FrameBufferLease {
+        FrameBufferLease();
+        FrameBufferLease(std::shared_ptr<FrameBuffer> value,
+            std::shared_ptr<UiPaintRetryState> state);
+        ~FrameBufferLease();
+        FrameBufferLease(FrameBufferLease&& other) noexcept;
+        FrameBufferLease& operator=(FrameBufferLease&& other) noexcept;
+        FrameBufferLease(const FrameBufferLease&) = delete;
+        FrameBufferLease& operator=(const FrameBufferLease&) = delete;
+        explicit operator bool() const { return !!buffer; }
+        SkCanvas* canvas() const;
+        std::shared_ptr<FrameBuffer> buffer;
+        std::shared_ptr<UiPaintRetryState> completionState;
+    };
+    FrameBufferLease acquireFrameBufferLease();
+    bool independentPresentationEnabled();
     SkCanvas* getMemoryCanvasLocked();
     void releaseMemoryCanvasLocked();
 
@@ -207,12 +235,12 @@ public:
 
     struct BitInfo {
         uint32_t* pixels;
-        SkCanvas* tempCanvas;
+        FrameBufferLease lease;
         int width;
         int height;
     };
     BitInfo* getBitBegin();
-    void getBitEnd(const BitInfo* bitInfo);
+    static void getBitEnd(const BitInfo* bitInfo);
 
     void requestDrawFrameToRunIntoCompositeThread();
     void requestApplyActionsToRunIntoCompositeThread(bool needCheck);
@@ -336,7 +364,13 @@ private:
     WTF::OwnPtr<blink::WebThreadSupportingGC> m_compositeThread;
     WTF::Mutex m_compositeMutex;
     WTF::Mutex m_rootCCLayerMutex;
-    SkCanvas* m_memoryCanvas;
+    SkCanvas* m_memoryCanvas; // Borrowed only while m_compositeMutex is held.
+    std::shared_ptr<FrameBuffer> m_frameBuffers[FrameBufferLeasePolicy::maximumSlots];
+    size_t m_currentFrameBufferSlot;
+    uint64_t m_frameBufferGeneration;
+    bool m_canvasPaintBlocked;
+    bool prepareWritableFrameBufferLocked();
+    FrameBufferLease acquireFrameBufferLeaseLocked();
 
     double m_lastCompositeTime;
     double m_lastPaintTime;

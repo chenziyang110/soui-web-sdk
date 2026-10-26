@@ -263,6 +263,8 @@ WebPageImpl::WebPageImpl(COLORREF bdColor)
     m_navigationController = new NavigationController(this);
     m_layerTreeHost = new cc::LayerTreeHost(this, this);
     m_memoryCanvasForUi = nullptr;
+    m_uiMirrorConsumerRequired.store(true);
+    m_paintCallbackAlive = std::make_shared<std::atomic<bool>>(true);
     m_disablePaint = false;
     m_firstDrawCount = 0;
     m_webFrameClient = new content::WebFrameClientImpl();
@@ -306,6 +308,7 @@ WebPageImpl::WebPageImpl(COLORREF bdColor)
 
 WebPageImpl::~WebPageImpl()
 {
+    m_paintCallbackAlive->store(false);
     ASSERT(pageDestroyed == m_state);
     m_platformCursor.dispose();
     m_state = pageDestroyed;
@@ -323,14 +326,15 @@ WebPageImpl::~WebPageImpl()
     if (m_draggableRegion)
         ::DeleteObject(m_draggableRegion);
 
-    if (m_memoryCanvasForUi)
-        delete m_memoryCanvasForUi;
-    m_memoryCanvasForUi = nullptr;
     
     m_navigationController = nullptr;
 
     delete m_layerTreeHost;
     m_layerTreeHost = nullptr;
+    if (m_memoryCanvasForUi)
+        delete m_memoryCanvasForUi;
+    m_memoryCanvasForUi = nullptr;
+
 
     // 鍦≒age::~Page()涓攢姣?
     if (m_webFrameClient)
@@ -1022,6 +1026,11 @@ void WebPageImpl::firePaintEvent(HDC hdc, const RECT* paintRect)
 
 HDC WebPageImpl::viewDC()
 {
+    // A borrowed DC is current at acquisition and may change at the next
+    // owner paint/resize. Requesting it permanently restores mirror updates.
+    setUiMirrorConsumerRequired(true);
+    copyToMemoryCanvasForUi(IntRect());
+    WTF::Locker<WTF::Mutex> mirrorLock(m_uiMirrorMutex);
     bool useLayeredBuffer = m_layerTreeHost->getHasTransparentBackground();
     if (!m_memoryCanvasForUi && !m_viewportSize.isEmpty()) {
         m_memoryCanvasForUi = skia::CreatePlatformCanvas(m_viewportSize.width(), m_viewportSize.height(), !useLayeredBuffer);
@@ -1037,11 +1046,28 @@ HDC WebPageImpl::viewDC()
     return hDC;
 }
 
-void WebPageImpl::copyToMemoryCanvasForUi(const IntRect& paintRect)
+void WebPageImpl::setUiMirrorConsumerRequired(bool required)
 {
-    if (cpuUiMirrorDisabled())
-        return;
+    m_uiMirrorConsumerRequired.store(required);
+}
 
+void WebPageImpl::copyToMemoryCanvasForUi(const IntRect& paintRect, SkCanvas* sourceCanvas)
+{
+    const bool noMirrorConsumer = !m_uiMirrorConsumerRequired.load();
+    const bool direct = m_layerTreeHost->independentPresentationEnabled();
+    if (direct && noMirrorConsumer && !m_layerTreeHost->getHasTransparentBackground())
+        return;
+    // The old environment experiment may only confirm an explicit consumer
+    // contract. It can no longer make a requested DC silently stale.
+    (void)cpuUiMirrorDisabled();
+    cc::LayerTreeHost::FrameBufferLease lease;
+    if (!sourceCanvas) {
+        lease = m_layerTreeHost->acquireFrameBufferLease();
+        sourceCanvas = lease.canvas();
+    }
+    if (!sourceCanvas)
+        return;
+    WTF::Locker<WTF::Mutex> mirrorLock(m_uiMirrorMutex);
     bool useLayeredBuffer = m_layerTreeHost->getHasTransparentBackground();
     if (m_hWnd && !useLayeredBuffer) {
         LONG windowStyle = GetWindowLongPtr(m_hWnd, GWL_EXSTYLE);
@@ -1049,11 +1075,7 @@ void WebPageImpl::copyToMemoryCanvasForUi(const IntRect& paintRect)
         m_layerTreeHost->setHasTransparentBackground(useLayeredBuffer);
     }
 
-    SkCanvas* memoryCanvas = m_layerTreeHost->getMemoryCanvasLocked();
-    if (!memoryCanvas) {
-        m_layerTreeHost->releaseMemoryCanvasLocked();
-        return;
-    }
+    SkCanvas* memoryCanvas = sourceCanvas;
     
     bool isCreatedThisTime = false;
     int width = memoryCanvas->imageInfo().width();
@@ -1072,10 +1094,8 @@ void WebPageImpl::copyToMemoryCanvasForUi(const IntRect& paintRect)
         m_memoryCanvasForUi = nullptr;
     }
 
-    if (!m_memoryCanvasForUi) {
-        m_layerTreeHost->releaseMemoryCanvasLocked();
+    if (!m_memoryCanvasForUi)
         return;
-    }
 
     if (useLayeredBuffer && !isCreatedThisTime)
         cc::LayerTreeHost::clearCanvas(m_memoryCanvasForUi, IntRect(0, 0, width, height), useLayeredBuffer);
@@ -1110,7 +1130,7 @@ void WebPageImpl::copyToMemoryCanvasForUi(const IntRect& paintRect)
         }
 
     }
-    m_layerTreeHost->releaseMemoryCanvasLocked();
+
 }
 
 bool WebPageImpl::isDrawDirty()
@@ -1267,6 +1287,7 @@ void WebPageImpl::paintToMemoryCanvasInUiThread(SkCanvas* canvas, const IntRect&
 {
     if (m_disablePaint)
         return;
+    const auto callbackAlive = m_paintCallbackAlive;
 
     //if (0 == m_firstDrawCount && !canPaintToScreen(m_webViewImpl)) { }
     ++m_firstDrawCount;
@@ -1309,7 +1330,7 @@ void WebPageImpl::paintToMemoryCanvasInUiThread(SkCanvas* canvas, const IntRect&
         ::ReleaseDC(hWnd, hdc);
     }
 
-    copyToMemoryCanvasForUi(paintRect);
+    copyToMemoryCanvasForUi(paintRect, canvas);
 
 #if (defined ENABLE_WKE) && (ENABLE_WKE == 1)
     if (m_pagePtr->wkeHandler().paintUpdatedCallback) {
@@ -1321,6 +1342,8 @@ void WebPageImpl::paintToMemoryCanvasInUiThread(SkCanvas* canvas, const IntRect&
 #endif
 
     skia::EndPlatformPaint(canvas);
+    if (!callbackAlive->load())
+        return;
 
     cc::LayerTreeHost::BitInfo* bitInfo = nullptr;
 #if (defined ENABLE_WKE) && (ENABLE_WKE == 1)
@@ -1333,7 +1356,7 @@ void WebPageImpl::paintToMemoryCanvasInUiThread(SkCanvas* canvas, const IntRect&
 
             m_pagePtr->wkeHandler().paintBitUpdatedCallback(webview, paintBitUpdatedCallbackParam,
                 bitInfo->pixels, &r, bitInfo->width, bitInfo->height);
-            m_layerTreeHost->getBitEnd(bitInfo);
+            cc::LayerTreeHost::getBitEnd(bitInfo);
         }
     }
 #endif

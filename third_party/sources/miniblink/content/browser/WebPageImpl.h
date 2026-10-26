@@ -2,6 +2,8 @@
 #define WebPageImpl_h
 
 #include "content/browser/WebPageState.h"
+#include <atomic>
+#include <memory>
 #include "content/ui/PopupMenuWinClient.h"
 #include "content/ui/WinCursorResources.h"
 
@@ -183,6 +185,8 @@ public:
     cc::LayerTreeHost* layerTreeHost() { return m_layerTreeHost; }
     void setDrawMinInterval(double drawMinInterval);
     void setMainFrameRate(int rate);
+    void setUiMirrorConsumerRequired(bool required);
+    bool uiMirrorConsumerRequired() const { return m_uiMirrorConsumerRequired.load(); }
 
     void loadHistoryItem(int64 frameId, const blink::WebHistoryItem& item, blink::WebHistoryLoadType type, blink::WebURLRequest::CachePolicy policy);
     void loadURL(int64 frameId, const wchar_t* url, const blink::Referrer& referrer, const wchar_t* extraHeaders);
@@ -232,7 +236,7 @@ public:
     int m_autoRecordActionsCount;
     bool m_runningInMouseMessage;
 
-    void copyToMemoryCanvasForUi(const blink::IntRect& paintRect);
+    void copyToMemoryCanvasForUi(const blink::IntRect& paintRect, SkCanvas* sourceCanvas = nullptr);
 
     void handleMouseWhenDraging(UINT message);
     void onEnterDragSimulate();
@@ -311,6 +315,9 @@ public:
     double m_nextMainFrameTime;
 
     SkCanvas* m_memoryCanvasForUi;
+    WTF::Mutex m_uiMirrorMutex;
+    std::atomic<bool> m_uiMirrorConsumerRequired;
+    std::shared_ptr<std::atomic<bool>> m_paintCallbackAlive;
     bool m_disablePaint;
     int m_firstDrawCount;
 

@@ -126,6 +126,15 @@ bool WebPage::cancelInputState()
     return m_pageImpl && m_pageImpl->cancelInputState();
 }
 
+void WebPage::setUiMirrorConsumerRequired(bool required)
+{
+    if (m_pageImpl) m_pageImpl->setUiMirrorConsumerRequired(required);
+}
+bool WebPage::uiMirrorConsumerRequired() const
+{
+    return !m_pageImpl || m_pageImpl->uiMirrorConsumerRequired();
+}
+
 void WebPage::setMainFrameRate(int rate)
 {
     if (m_pageImpl) m_pageImpl->setMainFrameRate(rate);

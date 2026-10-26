@@ -60,6 +60,8 @@ struct UiPaintRetryState {
     LayerTreeHost* host;
     LegacyPaintRetryPolicy policy;
     ResourceNotificationPolicy resource;
+    bool recordWaiting = false;
+    bool drawWaiting = false;
 };
 
 // The queue owns this object. Rejection/cancellation disposes only its ticket;
@@ -545,6 +547,9 @@ LayerTreeHost::LayerTreeHost(LayerTreeHostClent* hostClient, LayerTreeHostUiThre
     m_isDestroying = false;
     
     m_memoryCanvas = nullptr;
+    m_currentFrameBufferSlot = 0;
+    m_frameBufferGeneration = 1;
+    m_canvasPaintBlocked = false;
     m_uiPaintRetry = std::make_shared<UiPaintRetryState>(this);
 #if defined(SOUI_GPU_COMPOSITOR)
     m_gpuSurface = nullptr;
@@ -644,9 +649,9 @@ LayerTreeHost::~LayerTreeHost()
         delete webThread;
     }
 
-    if (m_memoryCanvas)
-        delete m_memoryCanvas;
     m_memoryCanvas = nullptr;
+    for (size_t index = 0; index < FrameBufferLeasePolicy::maximumSlots; ++index)
+        m_frameBuffers[index].reset();
 #if defined(SOUI_GPU_COMPOSITOR)
     // A surface is normally owned and released by the compositor thread.
     // Keep this fallback for hosts that never created that thread.
@@ -923,13 +928,17 @@ bool LayerTreeHost::canRecordActions() const
 void LayerTreeHost::registerResourceWait()
 {
     std::lock_guard<std::mutex> lock(m_uiPaintRetry->mutex);
+    m_uiPaintRetry->recordWaiting = true;
     m_uiPaintRetry->resource.wait();
 }
 
 void LayerTreeHost::clearResourceWait()
 {
     std::lock_guard<std::mutex> lock(m_uiPaintRetry->mutex);
+    m_uiPaintRetry->recordWaiting = false;
     m_uiPaintRetry->resource.clearWait();
+    if (m_uiPaintRetry->drawWaiting)
+        m_uiPaintRetry->resource.wait();
 }
 
 void LayerTreeHost::notifyResourceProgress(bool actionDirty)
@@ -955,6 +964,7 @@ void LayerTreeHost::runResourceProgress(uint64_t ticket, uint64_t generation)
     bool dirty = false;
     bool waiting = false;
     bool stale = false;
+    bool drawWaiting = false;
     {
         std::lock_guard<std::mutex> lock(m_uiPaintRetry->mutex);
         const auto intent = m_uiPaintRetry->resource.consume(
@@ -962,7 +972,12 @@ void LayerTreeHost::runResourceProgress(uint64_t ticket, uint64_t generation)
             m_uiPaintRetry->policy.generation());
         stale = intent.stale;
         dirty = intent.dirty;
-        waiting = intent.waiting;
+        waiting = intent.waiting && m_uiPaintRetry->recordWaiting;
+        drawWaiting = intent.waiting && m_uiPaintRetry->drawWaiting;
+        if (!stale) {
+            m_uiPaintRetry->recordWaiting = false;
+            m_uiPaintRetry->drawWaiting = false;
+        }
     }
     if (stale) {
         queueResourceProgress(m_uiPaintRetry);
@@ -971,6 +986,8 @@ void LayerTreeHost::runResourceProgress(uint64_t ticket, uint64_t generation)
     if (m_isDestroying)
         return;
     retryPendingOwnerWork();
+    if (drawWaiting)
+        requestDrawFrameToRunIntoCompositeThread();
     if (dirty)
         setLayerTreeDirty();
     else if (waiting)
@@ -1827,6 +1844,8 @@ void LayerTreeHost::setViewportSize(const blink::WebSize& deviceViewportSize)
     m_deviceViewportSize = deviceViewportSize;
     m_clientRect = blink::IntRect(blink::IntPoint(), m_deviceViewportSize);
     m_hasResize = true;
+    if (m_frameBufferGeneration != (std::numeric_limits<uint64_t>::max)())
+        ++m_frameBufferGeneration;
     m_nextCompositeFrameTime = 0;
     {
         std::lock_guard<std::mutex> retryLock(m_uiPaintRetry->mutex);
@@ -1850,7 +1869,14 @@ blink::WebSize LayerTreeHost::deviceViewportSize() const
 
 void LayerTreeHost::setDeviceScaleFactor(float scale)
 {
+    WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
+    if (m_deviceScaleFactor == scale)
+        return;
     m_deviceScaleFactor = scale;
+    m_nextCompositeFrameTime = 0;
+    m_hasResize = true;
+    if (m_frameBufferGeneration != (std::numeric_limits<uint64_t>::max)())
+        ++m_frameBufferGeneration;
 }
 
 float LayerTreeHost::deviceScaleFactor() const
@@ -1882,6 +1908,12 @@ void LayerTreeHost::setHasTransparentBackground(bool b)
     if (m_hasTransparentBackground == b)
         return;
     m_hasTransparentBackground = b;
+    {
+        WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
+        m_hasResize = true;
+        if (m_frameBufferGeneration != (std::numeric_limits<uint64_t>::max)())
+            ++m_frameBufferGeneration;
+    }
     recursiveSetColor(&m_liveLayers, m_hasTransparentBackground, m_backgroundColor);
 }
 
@@ -2875,33 +2907,15 @@ void LayerTreeHost::postPaintMessage(const SkRect& paintRect)
 
 void LayerTreeHost::firePaintEvent(HDC hdc, const RECT* paintRect)
 {
-    m_compositeMutex.lock();
-    if (!m_memoryCanvas || m_clientRect.isEmpty()) {
-        m_compositeMutex.unlock();
+    FrameBufferLease lease = acquireFrameBufferLease();
+    if (!lease || !paintRect)
         return;
-    }
-    m_compositeMutex.unlock();
-
-#if 0
-    HPEN hpen = CreatePen(PS_SOLID, 10, RGB(11, 22, 33));
-    HBRUSH hbrush = CreateSolidBrush(RGB(0xf3, 22, 33));
-
-    SelectObject(hdc, hpen);
-    SelectObject(hdc, hbrush);
-
-    Rectangle(hdc, paintRect->left, paintRect->top, paintRect->right, paintRect->bottom);
-
-    DeleteObject(hpen);
-    DeleteObject(hbrush);
-#endif
-
-    WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
-
-    if (!m_hasTransparentBackground)
-        skia::DrawToNativeContext(m_memoryCanvas, hdc, paintRect->left, paintRect->top, paintRect);
+    if (!lease.buffer->alpha)
+        skia::DrawToNativeContext(lease.canvas(), hdc, paintRect->left,
+            paintRect->top, paintRect);
     else {
-        RECT rc = blink::intRectToWinRect(m_clientRect);
-        skia::DrawToNativeLayeredContext(m_memoryCanvas, hdc, paintRect, &rc);
+        RECT client = {0, 0, lease.buffer->width, lease.buffer->height};
+        skia::DrawToNativeLayeredContext(lease.canvas(), hdc, paintRect, &client);
     }
 }
 
@@ -2966,6 +2980,7 @@ void LayerTreeHost::drawFrameInCompositeThread()
     for (size_t i = 0; i < animationDirtyRects.size(); ++i)
         addAndMergeDirty(&dirtyRects, animationDirtyRects[i]);
 
+    m_canvasPaintBlocked = false;
     for (size_t i = 0; i < dirtyRects.size() && !m_isDestroying; ++i) {
         const SkRect& r = dirtyRects[i];
         paintToMemoryCanvasInCompositeThread(r);
@@ -2987,7 +3002,7 @@ void LayerTreeHost::drawFrameInCompositeThread()
     }
 #endif
 
-    if (!dirtyRects.isEmpty()) {
+    if (!dirtyRects.isEmpty() && !m_canvasPaintBlocked) {
         WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
         m_presentedMainFrameId = committedFrame;
     }
@@ -3004,19 +3019,18 @@ void LayerTreeHost::drawFrameInCompositeThread()
 
 void LayerTreeHost::paintToMemoryCanvasInUiThread(const SkRect& paintRect)
 {
-    if (!m_uiThreadClient)
-        return;
-
-//     DWORD nowTime = (DWORD)(WTF::currentTimeMS() * 100);
-//     DWORD detTime = nowTime - g_nowTime;
-//     InterlockedExchange((LONG*)&g_nowTime, nowTime);
-
-//     String out = String::format("LayerTreeHost.paintToMemoryCanvasInUiThread: %d\n", detTime);
-//     OutputDebugStringA(out.utf8().data());
-
-    WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
-    blink::IntRect intPaintRect(paintRect.x(), paintRect.y(), paintRect.width(), paintRect.height());
-    m_uiThreadClient->paintToMemoryCanvasInUiThread(m_memoryCanvas, intPaintRect);
+    FrameBufferLease lease;
+    LayerTreeHostUiThreadClient* client = nullptr;
+    {
+        WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
+        lease = acquireFrameBufferLeaseLocked();
+        client = m_uiThreadClient;
+    }
+    if (lease && client) {
+        const blink::IntRect rect(paintRect.x(), paintRect.y(),
+            paintRect.width(), paintRect.height());
+        client->paintToMemoryCanvasInUiThread(lease.canvas(), rect);
+    }
 }
 
 void LayerTreeHost::queueLegacyPaintLocked()
@@ -3099,20 +3113,21 @@ void LayerTreeHost::requestPaintToMemoryCanvasToUiThread(const SkRect& r)
 
 void LayerTreeHost::paintToMemoryCanvasInCompositeThread(const SkRect& r)
 {
-    WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
+    std::unique_lock<WTF::Mutex> locker(m_compositeMutex);
     SkRect paintRect = r;
 #if defined(SOUI_GPU_COMPOSITOR)
     bool resized = m_hasResize;
 #endif
 
-    if ((!m_memoryCanvas || m_hasResize) && !m_clientRect.isEmpty()) {
-        m_hasResize = false;
+    if (m_hasResize || !m_memoryCanvas)
         paintRect = m_clientRect;
-
-        if (m_memoryCanvas)
-            delete m_memoryCanvas;
-        m_memoryCanvas = skia::CreatePlatformCanvas(m_clientRect.width(), m_clientRect.height(), !m_hasTransparentBackground);
-        clearCanvas(m_memoryCanvas, m_clientRect, m_hasTransparentBackground);
+    if (!prepareWritableFrameBufferLocked()) {
+        addAndMergeDirty(&m_dirtyRectsForComposite, paintRect);
+        m_canvasPaintBlocked = true;
+        std::lock_guard<std::mutex> stateLock(m_uiPaintRetry->mutex);
+        m_uiPaintRetry->drawWaiting = true;
+        m_uiPaintRetry->resource.wait();
+        return;
     }
 
     SkRect clientRect = SkRect::MakeXYWH(m_clientRect.x(), m_clientRect.y(), m_clientRect.width(), m_clientRect.height());
@@ -3193,23 +3208,139 @@ void LayerTreeHost::paintToMemoryCanvasInCompositeThread(const SkRect& r)
     if (!needNotifUi)
         return;
 
-    if (m_independentPresentationEnabled) {
-        blink::IntRect intPaintRect(paintRect.x(), paintRect.y(),
-            paintRect.width(), paintRect.height());
-        m_uiThreadClient->paintToMemoryCanvasInUiThread(
-            m_memoryCanvas, intPaintRect);
-        return;
-    }
-
+    bool direct = m_independentPresentationEnabled;
 #if ENABLE_WKE == 1
-    if (blink::RuntimeEnabledFeatures::updataInOtherThreadEnabled()) {
-        blink::IntRect intPaintRect(paintRect.x(), paintRect.y(), paintRect.width(), paintRect.height());
-        m_uiThreadClient->paintToMemoryCanvasInUiThread(m_memoryCanvas, intPaintRect);
+    direct |= blink::RuntimeEnabledFeatures::updataInOtherThreadEnabled();
+#endif
+    if (direct) {
+        FrameBufferLease lease = acquireFrameBufferLeaseLocked();
+        LayerTreeHostUiThreadClient* client = m_uiThreadClient;
+        const blink::IntRect rect(paintRect.x(), paintRect.y(),
+            paintRect.width(), paintRect.height());
+        locker.unlock();
+        if (lease && client)
+            client->paintToMemoryCanvasInUiThread(lease.canvas(), rect);
         return;
     }
-#endif
 
     requestPaintToMemoryCanvasToUiThread(paintRect);
+}
+
+LayerTreeHost::FrameBuffer::FrameBuffer(std::unique_ptr<SkCanvas> value, uint64_t sizeGeneration,
+    int w, int h, bool alphaValue)
+    : canvas(std::move(value)), generation(sizeGeneration), bytes(static_cast<uint64_t>(w) * h * 4)
+    , width(w), height(h), alpha(alphaValue) { }
+LayerTreeHost::FrameBuffer::~FrameBuffer() = default;
+LayerTreeHost::FrameBufferLease::FrameBufferLease() = default;
+LayerTreeHost::FrameBufferLease::FrameBufferLease(std::shared_ptr<FrameBuffer> value,
+    std::shared_ptr<UiPaintRetryState> state)
+    : buffer(std::move(value)), completionState(std::move(state)) { }
+LayerTreeHost::FrameBufferLease::~FrameBufferLease()
+{
+    buffer.reset();
+    if (completionState)
+        LayerTreeHost::notifyRasterCompletion(completionState);
+}
+LayerTreeHost::FrameBufferLease::FrameBufferLease(FrameBufferLease&& other) noexcept
+    : buffer(std::move(other.buffer)), completionState(std::move(other.completionState)) { }
+LayerTreeHost::FrameBufferLease& LayerTreeHost::FrameBufferLease::operator=(FrameBufferLease&& other) noexcept
+{
+    if (this == &other)
+        return *this;
+    buffer.reset();
+    if (completionState)
+        LayerTreeHost::notifyRasterCompletion(completionState);
+    buffer = std::move(other.buffer);
+    completionState = std::move(other.completionState);
+    return *this;
+}
+SkCanvas* LayerTreeHost::FrameBufferLease::canvas() const
+{
+    return buffer ? buffer->canvas.get() : nullptr;
+}
+LayerTreeHost::FrameBufferLease LayerTreeHost::acquireFrameBufferLeaseLocked()
+{
+    if (m_isDestroying || m_hasResize || !m_memoryCanvas)
+        return FrameBufferLease();
+    return FrameBufferLease(m_frameBuffers[m_currentFrameBufferSlot], m_uiPaintRetry);
+}
+LayerTreeHost::FrameBufferLease LayerTreeHost::acquireFrameBufferLease()
+{
+    WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
+    return acquireFrameBufferLeaseLocked();
+}
+bool LayerTreeHost::independentPresentationEnabled()
+{
+    WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
+    return m_independentPresentationEnabled;
+}
+bool LayerTreeHost::prepareWritableFrameBufferLocked()
+{
+    uint64_t required = 0;
+    if (m_hasResize && m_frameBufferGeneration == (std::numeric_limits<uint64_t>::max)())
+        return false;
+    if (!FrameBufferLeasePolicy::bytesForSize(m_clientRect.width(),
+            m_clientRect.height(), &required))
+        return false;
+    const int writable = FrameBufferLeasePolicy::writableSlot(m_currentFrameBufferSlot,
+        m_frameBuffers[0].use_count(), m_frameBuffers[1].use_count());
+    if (writable < 0)
+        return false;
+    std::shared_ptr<FrameBuffer>& next = m_frameBuffers[writable];
+    const bool valid = next && next->generation == m_frameBufferGeneration
+        && next->width == m_clientRect.width() && next->height == m_clientRect.height()
+        && next->alpha == m_hasTransparentBackground;
+    if (!valid) {
+        // Free only an unleased slot. A retained reader always pins its own
+        // old generation; at most two slots and 256MiB are retained by the pool.
+        next.reset();
+        if (static_cast<size_t>(writable) == m_currentFrameBufferSlot)
+            m_memoryCanvas = nullptr;
+        uint64_t retained = 0;
+        for (size_t index = 0; index < FrameBufferLeasePolicy::maximumSlots; ++index) {
+            if (m_frameBuffers[index])
+                retained += m_frameBuffers[index]->bytes;
+        }
+        if (required > FrameBufferLeasePolicy::maximumBytes - retained) {
+            for (size_t index = 0; index < FrameBufferLeasePolicy::maximumSlots; ++index) {
+                if (index != static_cast<size_t>(writable) && m_frameBuffers[index]
+                    && m_frameBuffers[index].use_count() == 1) {
+                    retained -= m_frameBuffers[index]->bytes;
+                    m_frameBuffers[index].reset();
+                }
+            }
+            if (required > FrameBufferLeasePolicy::maximumBytes - retained)
+                return false;
+        }
+        try {
+            std::unique_ptr<SkCanvas> canvas(skia::CreatePlatformCanvas(
+                m_clientRect.width(), m_clientRect.height(), !m_hasTransparentBackground));
+            if (!canvas)
+                return false;
+            clearCanvas(canvas.get(), m_clientRect, m_hasTransparentBackground);
+            next = std::make_shared<FrameBuffer>(std::move(canvas), m_frameBufferGeneration,
+                m_clientRect.width(), m_clientRect.height(), m_hasTransparentBackground);
+        } catch (const std::bad_alloc&) {
+            return false;
+        }
+    }
+    if (static_cast<size_t>(writable) != m_currentFrameBufferSlot) {
+        const std::shared_ptr<FrameBuffer>& previous = m_frameBuffers[m_currentFrameBufferSlot];
+        if (previous && previous->generation == m_frameBufferGeneration
+            && previous->alpha == m_hasTransparentBackground) {
+            SkBaseDevice* device = skia::GetTopDevice(*previous->canvas);
+            if (device) {
+                const SkBitmap& bitmap = device->accessBitmap(false);
+                if (m_hasTransparentBackground)
+                    clearCanvas(next->canvas.get(), m_clientRect, true);
+                next->canvas->drawBitmap(bitmap, 0, 0, nullptr);
+            }
+        }
+    }
+    m_currentFrameBufferSlot = static_cast<size_t>(writable);
+    m_memoryCanvas = next->canvas.get();
+    m_hasResize = false;
+    return true;
 }
 
 SkCanvas* LayerTreeHost::getMemoryCanvasLocked()
@@ -3243,130 +3374,54 @@ void LayerTreeHost::enablePaint()
 
 LayerTreeHost::BitInfo* LayerTreeHost::getBitBegin()
 {
-    WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
-    if (!m_memoryCanvas)
+    FrameBufferLease lease = acquireFrameBufferLease();
+    if (!lease)
         return nullptr;
-
-    int width = m_clientRect.width();
-    int height = m_clientRect.height();
-
-    DWORD cBytes = width * height * 4;
-    SkBaseDevice* device = (SkBaseDevice*)m_memoryCanvas->getTopDevice();
+    SkBaseDevice* device = skia::GetTopDevice(*lease.canvas());
     if (!device)
         return nullptr;
-
     const SkBitmap& bitmap = device->accessBitmap(false);
-    SkCanvas* tempCanvas = nullptr;
-    uint32_t* pixels = nullptr;
-
-    if (bitmap.info().width() != width || bitmap.info().height() != height) {
-        tempCanvas = skia::CreatePlatformCanvas(width, height, !m_hasTransparentBackground);
-        clearCanvas(tempCanvas, m_clientRect, m_hasTransparentBackground);
-        tempCanvas->drawBitmap(bitmap, 0, 0, nullptr);
-        device = (SkBaseDevice*)tempCanvas->getTopDevice();
-        if (!device) {
-            delete tempCanvas;
-            return nullptr;
-        }
-        const SkBitmap& tempBitmap = device->accessBitmap(false);
-        pixels = tempBitmap.getAddr32(0, 0);
-    } else
-        pixels = bitmap.getAddr32(0, 0);
-
-    m_compositeMutex.lock();
-
-    BitInfo* bitInfo = new BitInfo();
-    bitInfo->pixels = pixels;
-    bitInfo->tempCanvas = tempCanvas;
-    bitInfo->width = width;
-    bitInfo->height = height;
-    return bitInfo;
+    BitInfo* info = new (std::nothrow) BitInfo();
+    if (!info)
+        return nullptr;
+    info->pixels = bitmap.getAddr32(0, 0);
+    info->width = lease.buffer->width;
+    info->height = lease.buffer->height;
+    info->lease = std::move(lease);
+    {
+        WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
+        if (m_frameBuffers[m_currentFrameBufferSlot] == info->lease.buffer)
+            m_isDrawDirty = false;
+    }
+    return info;
 }
 
 void LayerTreeHost::getBitEnd(const BitInfo* bitInfo)
 {
-    m_isDrawDirty = false;
-
-    if (bitInfo->tempCanvas) {
-        delete m_memoryCanvas;
-        m_memoryCanvas = bitInfo->tempCanvas;
-    }
-    m_compositeMutex.unlock();
-
+    // No host dereference: a client may close/resize while retaining pixels.
     delete bitInfo;
 }
 
 void LayerTreeHost::paintToBit(void* bits, int pitch)
 {
-#if 1
-    BitInfo* bitInfo = getBitBegin();
-    if (!bitInfo)
+    if (!bits)
         return;
-    uint32_t* pixels = bitInfo->pixels;;
-    int width = bitInfo->width;
-    int height = bitInfo->height;
-
-    if (pitch == 0 || pitch == width * 4) {
-        memcpy(bits, pixels, width * height * 4);
+    BitInfo* info = getBitBegin();
+    if (!info)
+        return;
+    const int rowBytes = info->width * 4;
+    if (pitch == 0 || pitch == rowBytes) {
+        memcpy(bits, info->pixels, static_cast<size_t>(rowBytes) * info->height);
     } else {
-        unsigned char* src = (unsigned char*)pixels;
-        unsigned char* dst = (unsigned char*)bits;
-        for (int i = 0; i < height; ++i) {
-            memcpy(dst, src, width * 4);
-            src += width * 4;
-            dst += pitch;
+        const unsigned char* source = reinterpret_cast<const unsigned char*>(info->pixels);
+        unsigned char* destination = static_cast<unsigned char*>(bits);
+        for (int row = 0; row < info->height; ++row) {
+            memcpy(destination, source, rowBytes);
+            source += rowBytes;
+            destination += pitch;
         }
     }
-    getBitEnd(bitInfo);
-#else
-    WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
-    if (!m_memoryCanvas)
-        return;
-
-    int width = m_clientRect.width();
-    int height = m_clientRect.height();
-
-    DWORD cBytes = width * height * 4;
-    SkBaseDevice* device = (SkBaseDevice*)m_memoryCanvas->getTopDevice();
-    if (!device)
-        return;
-
-    const SkBitmap& bitmap = device->accessBitmap(false);
-    SkCanvas* tempCanvas = nullptr;
-    uint32_t* pixels = nullptr;
-
-    if (bitmap.info().width() != width || bitmap.info().height() != height) {
-        tempCanvas = skia::CreatePlatformCanvas(width, height, !m_hasTransparentBackground);
-        clearCanvas(tempCanvas, m_clientRect, m_hasTransparentBackground);
-        tempCanvas->drawBitmap(bitmap, 0, 0, nullptr);
-        device = (SkBaseDevice*)tempCanvas->getTopDevice();
-        if (!device)
-            return;
-        const SkBitmap& tempBitmap = device->accessBitmap(false);
-        pixels = tempBitmap.getAddr32(0, 0);
-    } else
-        pixels = bitmap.getAddr32(0, 0);
-
-    if (pitch == 0 || pitch == width * 4) {
-        memcpy(bits, pixels, width * height * 4);
-    } else {
-        unsigned char* src = (unsigned char*)pixels;
-        unsigned char* dst = (unsigned char*)bits;
-        for (int i = 0; i < height; ++i) {
-            memcpy(dst, src, width * 4);
-            src += width * 4;
-            dst += pitch;
-        }
-    }
-
-    m_isDrawDirty = false;
-
-    if (tempCanvas) {
-        delete m_memoryCanvas;
-        m_memoryCanvas = tempCanvas;
-    }
-
-#endif
+    getBitEnd(info);
 }
 
 } // cc
