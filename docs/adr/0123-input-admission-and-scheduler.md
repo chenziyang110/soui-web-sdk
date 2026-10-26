@@ -22,6 +22,8 @@ Engine 保留 mailbox 共享所有权；Host 关闭在 Engine owner 清除处理
 
 ## 验证交接
 
+输入恢复原语已实现，但新的 CANCEL_INPUT 能力在渲染 callback lifetime guard 接入前保持关闭。W07 将以同一个有界 activity pin 包住 composition cancel/blur 的完整回调栈并开放能力；不能仅靠 CheckReEnter 或 C++ try/catch 保护被原始 close 删除的 Impl。该中间 Draft 组合在缺能力时使用上述明确的有限恢复，不能称新内核的取消资格已关闭。最终系列需包括该依赖后再编译实测。
+
 ### W02 input/FIFO admission ordinal fence
 
 The fixed Engine FIFO and each accepted input/cancellation marker share an Engine-mutex admission ordinal. The mailbox copies/preflights its payload under its own mutex first; assigning the ordinal and publishing the first atomic head/pending state are one Engine-mutex transaction. Only nonthrow fixed-slot mutation follows publication. Engine reads only atomic mailbox state while holding its mutex and releases it before mailbox callbacks, so the lock order is mailbox then Engine, never the reverse. This closes the paused-after-assignment publication gap.

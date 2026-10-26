@@ -174,8 +174,8 @@ const wkeInputUiApi* WKE_CALL_TYPE wkeGetInputUiApi(unsigned requestedVersion)
 {
     // Fields become available only with their actual owner/view implementation.
     static const wkeInputUiApi api = { sizeof(wkeInputUiApi), WKE_INPUT_UI_ABI_VERSION,
-        WKE_INPUT_UI_CAP_TRACE | WKE_INPUT_UI_CAP_CANCEL_INPUT,
+        WKE_INPUT_UI_CAP_TRACE,
         &configureTrace, &stopTrace, &snapshotTrace, &drainTrace,
-        nullptr, nullptr, nullptr, nullptr, &cancelInput, nullptr };
+        nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
     return requestedVersion == WKE_INPUT_UI_ABI_VERSION ? &api : nullptr;
 }
