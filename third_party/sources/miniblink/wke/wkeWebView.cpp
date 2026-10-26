@@ -268,7 +268,7 @@ bool CWebView::create()
 
 void CWebView::destroy()
 {
-    if (!WTF::isMainThread() || !brokerMayDestroyRawView(this))
+    if (!paintOwner() || !brokerMayDestroyRawView(this))
         return;
     auto permit = acquirePaintClosePermit(content::PaintCloseKind::direct);
     if (permit)

@@ -62,6 +62,22 @@ int main()
         require(content::paintLifetimeRuntime().callouts == 2);
     }
     require(content::paintLifetimeRuntime().drained());
+    auto cancellation = std::make_shared<content::PaintLifetimeState>();
+    {
+        content::PaintActivityScope cancelApi(cancellation);
+        require(bool(cancelApi));
+        content::PaintClosePermit compositionCallbackClose(cancellation, Kind::view);
+        require(!compositionCallbackClose && cancellation->policy.active == 1);
+        // Composition/blur and CHECK_FOR_REENTER destructors finish under the ABI pin.
+        require(cancellation->policy.pending == Kind::view && !cancellation->policy.ready());
+        require(!content::PaintActivityScope(cancellation)); // A sealed cancel entry is rejected.
+    }
+    require(cancellation->policy.ready());
+    {
+        content::PaintClosePermit afterCancelReturn(cancellation, Kind::view);
+        require(bool(afterCancelReturn));
+    }
+    require(content::paintLifetimeRuntime().drained());
 
     content::PaintLifetimePolicy deferred;
     require(deferred.enter() && !deferred.request(Kind::window));
