@@ -13,15 +13,15 @@ W00 已提交 [Draft PR111](https://github.com/chenziyang110/soui-web-sdk/pull/1
 | 包 | 需求与实现边界 | 回归/命令/证据 | 状态 |
 | --- | --- | --- | --- |
 | W00 | 同线程无效计时收益更正；continuation 生命周期/重建；legacy 单 deadline 重试；默认独立路径与 scheduler oracle | 生产代码与回归源码已集成并完成静态复核；[来源增量](../../third_party/manifests/kernel-input-ui-w00-source.json)；入口 scheduler_continuation、worker_lifetime、render_deadline_policy；未编译/未运行 | 代码完成待编译 |
-| W01 | 统一 QPC/身份/关联；默认关闭有界 ring；scalar 指标；替换逐事件实验文件日志；同产品与 burst 新协议 | 公共数值契约冻结中；严格旧协议保留；无执行结果 | 实现中 |
-| W02 | 64普通+16边沿 mailbox、32 Host轮转、与FIFO共享接纳序号；接纳后resize代际发布、序号不回绕；取消不制造gesture | input_admission生产源码fixture、ordinal_cases及真实DOM/resize失败场景已交付；未编译/未运行；native cancel能力等W07 callback guard才开放 | 源码已集成，能力激活依赖W07 |
+| W01 | 统一QPC/身份/因果上下文；SDK+vendor冷producer、任务/FIFO/input/render调用点及严格reader | trace/terminal/backend/native-lease必要SOURCE已集成；T3b仍未知，跨geometry非空间native因果明确缺失；未执行 | 代码完成待编译 |
+| W02 | 64普通+16边沿、256KiB文本mailbox/单event64KiB、32 Host公平/ordinal FIFO、显式cancel和隔离恢复 | cancel能力已在W07 guard后启用；input-mailbox/DOM/IME场景均未执行 | 代码完成待编译 |
 | W03 | ready/future/idle 单次 deadline、Win7 fallback、owner机会、wait退役/失败意图；已运行Task有界退休 | scheduler_continuation真实提取源码及worker_lifetime最后Task/96项退休回归源码；字节映射14/13/22核对；未执行 | 代码完成待编译 |
 | W04 | priority AVL+deadline heap摘要；50ms老化；3 eligible/1 oldest接纳；显式entry-order tie | scheduler_index 100000次seeded oracle/OOM源码、原拥有heap及shutdown fixture；未执行 | 代码完成待编译 |
-| W05 | QPC商/余数及vendor分数phase；main frame deadline去重复门；Host按cap0x10采用 | fractional_frame_phase源码；native visibility接线静态查出缺口，另包补齐；未编译/未运行 | 算术/截止代码完成，可见性组合待集成 |
+| W05 | 分数frame phase、显式CPU间隔兼容、native及SDK真实show/minimize/restore接线 | fractional/host-frame/visibility SOURCE与原生窗口3文件8复制；未执行 | 代码完成待编译 |
 | W06 | typed阻塞原因；生产者完成合并通知、注册后重查；移除正常1ms/8ms资源轮询 | resource_notification_policy与实际action/scene/raster链已集成；投递拒绝保留intent；未执行 | 代码完成待编译 |
-| W07 | 两槽/256MiB pool、generation lease；有效mirror需求与DC sticky；锁外client/GDI；paint活动与native close receipt | frame-buffer-lease-policy、window-close-lifetime-source与实际broker/endpoint fixture源码；未执行 | 代码集成与来源闭合中，待编译 |
+| W07 | 两槽256MiB lease、有效mirror/DC sticky、锁外callback、paint/native close收据 | SOURCE与既有严格字节闭包、owner/shutdown/late callback静态复核；未执行 | 代码完成待编译 |
 | W08 | raster诊断、可见/预取预算、开始前取消receipt、fenced scene恢复；默认1 worker | raster-scheduling-policy/render-scene-transaction源码；未知非空SkPicture owner在dispatch前回退worker0；未执行 | 资格基础设施完成，可用资格域与采用待数据 |
-| W09 | render scene所有权移动与诊断已集成；SDK日志/packet/共享预算另包；mutable tree仍保留锁 | scene transaction源码与明确immutable命令候选设计；无profile | 部分源码完成，其余集成/采用待数据 |
+| W09 | render scene移动；Bridge/GPU日志移出热路径；const packet；分项成本与默认关闭总turn预算候选 | wake/reentrant close/terminal唯一性SOURCE；layout缓存和更细provider预算待profile | 确定性源码完成，条件采用待数据 |
 | W10 | WebView2 输出批次实耗时、转换/JSON/deque/广播诊断；COM/授权/撤销保持 | 未 profile；Runtime 外部内部调度另列边界 | 待设计/诊断与数据 |
 | W11 | GPU 独立设计/诊断候选；device loss/生命周期/深度/软件回退 | 软件主线和 profile 尚缺，未启用 | 待数据，未关闭 |
 | W12 | 精确需求→源码→回归源码→命令→证据→状态；原编码补丁/来源/注册；暂存区清单；分批 Draft PR | 由集成负责人随各包刷新；所有未执行保持未执行 | 持续集成中 |
@@ -101,3 +101,13 @@ Native visibility setter只在owner调用；hide保留dirty/action/资源/scene/
 本批新增根登记为78个kernel.native精确名称＋4个scheduler辅助名称、50个preflight源文件；native window/visibility/wheel/diagnostic fixture按当前生产字节提取并明确依赖fake，不等于真实Win32/GL/COM通过。旧constructor/drag来源门槛也必须随实际变更闭合，不能只刷新SHA掩盖旧片段。
 
 原生窗口wrapper也已接到真实状态：CWebWindow show、WM_SHOWWINDOW、WM_WINDOWPOSCHANGED(default先行)、WM_SIZE均在whole activity期间采样实际attached HWND/root iconic，并核对LTH状态后才合并同ack。最小化不覆盖有效viewport，外部CAPI改变visibility会使旧ack失效。沿用window-close-lifetime-source同一入口，来源现为3个文件/8段复制；未运行。
+
+## SDK因果接线与采用边界
+
+Render/close/visibility组合已冻结于 [Draft PR120](https://github.com/chenziyang110/soui-web-sdk/pull/120)，依赖PR119。当前SDK包补齐真实T1/admission/T2/T3a、Engine FIFO/Bridge/native TaskPair/Timer上下文、base identity实际docready+resize确认和独立输入applied tuple门禁；不伪造microtask完成、T7或光子时间。native UI producer租约只在成功initialized process module之后安装，模块身份/函数/版本/大小/cap均核对；hot scope跨最后unmount保持实际调用所有者。
+
+SDK输入handler为冷分配共享拥有对象，锁内只copy pin、锁外call/destruction。recovery terminal转移到in-flight local，重入close不重复签终态；迟到empty wake不能毒化后续post，每次pending仍用原auto-reset event合并。SDK实际核心文件已与作者最后审过版本逐字节核对；补齐跨W10共享的trace_thread_borrow定义、直接engine startup目标中的actual trace.cpp，以及native UI lease根登记。
+
+W09默认预算0/off；显式100..5000us只协调协作批次，单个provider/JS回调仍不可抢占，细化跨provider剩余预算等profile。Bridge逐事件开文件/日志专用格式化与owner pump重复GPU日志读均移除；GPU状态只取本child HWND的实际属性，缺证据用CPU保守策略，不取其他surface进程全局实验值。
+
+worker严格来源为16个完整输入、15段复制、22个payload。仅对已独立审过的两份C trace原件/whole-copy更新pins，其他原件/片段/payload/关闭proof全部精确一致；LLVM observer的新generated-source角色将在源码冻结前补齐，不能依靠过时夹具或放宽unknown-source门槛交接。

@@ -1,0 +1,67 @@
+{
+  "schema": "soui.kernel-source-delta/v1",
+  "sdkVersion": "0.5.0",
+  "status": "source-only-unreleased-candidate",
+  "scope": "W01 native TaskPair and Timer causal hooks paired with SDK FIFO/input context and cold producer lifetimes; only current traced source, uncompiled and unrun",
+  "baseCommit": "ec530a40f8612058a31603b0687bc4142f1231c7",
+  "sourceIdentityScope": "Only listed staged source delta; historical import and prebuilt identities unchanged",
+  "patch": {
+    "path": "third_party/patches/miniblink/0023-input-ui-native-causal-hooks.patch",
+    "bytes": 12467,
+    "sha256": "c0252cfd22fe5f6a37fc008275915cb0e8396b601a5a09f88a259686b5aeaba8"
+  },
+  "files": [
+    {
+      "path": "third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp",
+      "before": {
+        "bytes": 28738,
+        "sha256": "37bda207774c23f2c2e53a651e417237a62198be45cfb7d4dc4633c600a9657f"
+      },
+      "after": {
+        "bytes": 30838,
+        "sha256": "d32ca7726ec6edda098b36f8fe578dcd98868cfa187bbef54818cb5edc893a44"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.h",
+      "before": {
+        "bytes": 4853,
+        "sha256": "fd62e06705986a96f0d6263fab2d1de3ba71493b7aadcd1e2205ec45f51a5184"
+      },
+      "after": {
+        "bytes": 4986,
+        "sha256": "a886ed6f388ccd94aba8d238ae9e9963c6da2c02c5ec345b4cd503d8a649d058"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/content/web_impl_win/WebTimerBase.cpp",
+      "before": {
+        "bytes": 13971,
+        "sha256": "96986df526a75bc6fd077840e910ca75aaedf19f0d54920f2b16ce7ec965c458"
+      },
+      "after": {
+        "bytes": 15627,
+        "sha256": "f902f45a4512b98ff1ad3663798188247272383ff9d80cc725188dd97b2fb28d"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/content/web_impl_win/WebTimerBase.h",
+      "before": {
+        "bytes": 4572,
+        "sha256": "dd9b7ef01e3059858262fcac1bca94222b64340072bb8f0e2f723139eed74c19"
+      },
+      "after": {
+        "bytes": 4787,
+        "sha256": "2f53eb00f4ba3e316775db516f8f188dd503a957cd19cb6ca4c1ccf1629b6d51"
+      }
+    }
+  ],
+  "validation": {
+    "finalSourceCompiled": false,
+    "finalTestsExecuted": false,
+    "reversePatchCheckPerformed": true,
+    "forwardReplayExecuted": false
+  },
+  "candidateBinaryIdentity": null,
+  "releaseReady": false
+}
