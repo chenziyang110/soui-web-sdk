@@ -4,6 +4,7 @@
 #include "request_capacity.h"
 #include "preparation_lifetime.h"
 #include "owner_output_policy.h"
+#include "owner_callout_policy.h"
 #include "../../src/host/input_trace_hooks.h"
 #include <soui/diagnostics/input_frame_trace.h>
 
@@ -426,6 +427,7 @@ struct webview2_adapter::state {
   bool allow_navigation{false}, document_ready{false}, application_ready{false};
   bool reload_preparing{false};
   bool diagnostic_query_pending{false};
+  bool pump_running{false}; // Actual UI owner; COM reentry cannot start a second drain batch.
   unsigned owner_budget_us{0}; // Candidate: zero preserves the existing16-item policy.
   bool prepare_output{false}; // Candidate: disabled until paired profile selects it.
   std::unique_ptr<detail::trace_thread_registration> trace_owner;
@@ -536,9 +538,12 @@ HRESULT boundary(const std::weak_ptr<state>& weak, Function function) noexcept {
 }
 bool current_source(const std::shared_ptr<state>& value) {
   const auto core = value->core; // Pin the actual owner COM object across reentry.
+  const auto generation = value->generation;
   if (!core) return false;
   task_string source;
-  return SUCCEEDED(core->get_Source(&source.value)) && source.value && trusted_entry(source.value);
+  return detail::owner_callout_current([&] {
+    return live(value) && value->core.Get() == core.Get() && value->generation == generation;
+  }, [&] { return SUCCEEDED(core->get_Source(&source.value)) && source.value && trusted_entry(source.value); });
 }
 std::string serialize_output(const state::output& output) {
   const auto packet = output.event
@@ -1212,32 +1217,44 @@ void webview2_adapter::pump() {
   auto value = state_;
   value->wake_pending.store(false, std::memory_order_release);
   if (!require_mounted(value).ok) return;
+  const detail::owner_pump_guard pumping(value->pump_running);
+  if (!pumping) return;
   const detail::trace_thread_borrow trace_operation;
   const detail::trace_duration owner_cost(input_trace::duration_metric::webview2_owner);
   try {
     if (value->worker_done.load(std::memory_order_acquire)) throw std::runtime_error("Bridge worker exited unexpectedly");
-    if (!value->application_ready && !value->diagnostic_query_pending && current_source(value) &&
+    if (!value->application_ready && !value->diagnostic_query_pending &&
         clock_type::now() - value->diagnostic_query_at >= std::chrono::seconds(1)) {
-      value->diagnostic_query_pending = true;
-      value->diagnostic_query_at = clock_type::now();
-      const std::weak_ptr<state> weak(value);
+      const auto diagnostic_target = value->core;
       const auto queried_generation = value->generation;
-      const auto queried = value->core->ExecuteScript(
-          LR"((function(){return {document:document.readyState,visibility:document.visibilityState,binding:typeof window.__souiNativePostMessage};})())",
-          Callback<ICoreWebView2ExecuteScriptCompletedHandler>(
-              [weak, queried_generation](HRESULT result, LPCWSTR raw) -> HRESULT {
-                const auto current = weak.lock();
-                if (!live(current) || current->generation != queried_generation || !current_source(current)) return S_OK;
-                current->diagnostic_query_pending = false;
-                try {
-                  if (SUCCEEDED(result) && raw) {
-                    current->page_diagnostics = utf8(raw);
+      const auto diagnostic_current = [&] {
+        return value->current == state::phase::mounted && value->generation == queried_generation
+            && value->core.Get() == diagnostic_target.Get();
+      };
+      if (diagnostic_target && current_source(value) && diagnostic_current()) {
+        value->diagnostic_query_pending = true;
+        value->diagnostic_query_at = clock_type::now();
+        const std::weak_ptr<state> weak(value);
+        const auto queried = diagnostic_target->ExecuteScript(
+            LR"((function(){return {document:document.readyState,visibility:document.visibilityState,binding:typeof window.__souiNativePostMessage};})())",
+            Callback<ICoreWebView2ExecuteScriptCompletedHandler>(
+                [weak, queried_generation](HRESULT result, LPCWSTR raw) -> HRESULT {
+                  const auto current = weak.lock();
+                  if (!current || current->current != state::phase::mounted || current->generation != queried_generation) return S_OK;
+                  const auto target = current->core;
+                  if (!target || !current_source(current) || current->current != state::phase::mounted
+                      || current->generation != queried_generation || current->core.Get() != target.Get()) return S_OK;
+                  current->diagnostic_query_pending = false;
+                  try {
+                    if (SUCCEEDED(result) && raw) {
+                      current->page_diagnostics = utf8(raw);
+                    }
                   }
-                }
-                catch (...) {}
-                return S_OK;
-              }).Get());
-      if (FAILED(queried)) value->diagnostic_query_pending = false;
+                  catch (...) {}
+                  return S_OK;
+                }).Get());
+        if (FAILED(queried) && diagnostic_current()) value->diagnostic_query_pending = false;
+      }
     }
     // Owner notification drains a bounded batch; workers never invoke WebView2 COM.
     const detail::owner_output_budget output_budget(value->owner_budget_us);

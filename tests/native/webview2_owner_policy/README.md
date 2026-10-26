@@ -10,6 +10,13 @@ one-output progress rule, exact raw+UTF16 cache bytes and overflow boundaries,
 and strict bounded decimal configuration. It does not instantiate COM or prove
 real owner-loop progress, queue delivery or performance.
 
+The extracted actual `owner_callout_policy.h` additionally has fake-callout
+SOURCE for get_Source reentering close/navigation, keeping the selected target
+alive and preserving new-document diagnostic flags. The same owner-pump guard
+rejects nested drain entry, so opaque COM reentry cannot multiply the16-item
+batch or deliver later output ahead of the active call. These are dependency
+fakes, with no real COM execution.
+
 Candidates remain off by default:
 
 - `SOUI_WEBVIEW2_OWNER_BUDGET_US=100..5000`: optional elapsed deadline for the

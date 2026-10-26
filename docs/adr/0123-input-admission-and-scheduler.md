@@ -96,6 +96,8 @@ Host pump 不再扫描 SOUI_GPU_PRESENT_TRACE 文件或依赖 swapped 文本判�
 
 实际入队后记录 queue QPC，owner/serialization分别计时；serialization 不包含 COM 调用。输出在准备后/owner source查询后重新检查 stop、document/generation，Post 的实际 ComPtr 保持到返回，旧响应不能把重入后的新 document 标 ready。UI hot borrow 只 pin 既有冷注册、从不注册/分配，确保重入 unmount 不能在 pump 最后记录前 detach。Runtime version获取不变；真实 COM、兼容性、吞吐和 p95/p99 仍待专人配对 profile，源码算术fixture不作为实际 owner进展证据。
 
+get_Source 的 opaque callout 前后都校验实际 core pin/generation/live；diagnostic ExecuteScript 使用本次实际 target，返回/完成后不得清除新 document 或 closed 状态的 flags。独立 owner-pump guard 拒绝重入 drain，16项上限不会在同一重入树内倍增。抽取的实际 callout guard 有 close/navigation/目标寿命与重入 SOURCE fake，未执行真实 COM。
+
 ### 最终关闭 fence
 
 `BlinkPlatformImpl::closeThread()` 保留原 registry 数量/指针检查和真实 join 流程，失败诊断后 `std::terminate()`，调试器继续也不能到达 `delete this` 或成功 finalize。worker fixture 保留实际生产 fence，`concurrent-registry-close` 改为预期非继续失败，新增 `registry-live-fence`；严格验证尚未释放的原 worker/scheduler/event/registry。最终 wkeFinalize 的完成 guard 由集成包配套，不能在 fence 失败后签发完成收据。
