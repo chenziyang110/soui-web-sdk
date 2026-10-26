@@ -78,12 +78,22 @@ preview.11 Win7 SP1 x86 [第三轮客体](../verification/production-validation/
 
 ## 跨平台开发状态
 
-`Soui::Runtime` 新增无窗口跨平台构建路径；另有独立 `Soui::Desktop` 系统
-WebView 后端和统一示例。Linux 真实头库编译链接与独立安装消费已通过，但 GUI
-环境受限，窗口/JavaScript 集成尚未验收；Windows/macOS 源码未目标编译运行。
-受管理多窗口、平面菜单和窗口所属托盘已有实现，仍缺目标机交互证据；Linux
-托盘依赖 XEmbed 宿主，无兼容宿主明确失败。原有完整快捷键、可访问性、Agent
-及应用安装/签名/更新流程尚未全部迁移。统一 SDK 开发 ZIP 不是正式安装器。
+`Soui::Runtime` 提供无窗口跨平台构建路径；另有独立 `Soui::Desktop` 系统 WebView
+后端和统一示例。截至 2026-10-26，Linux x64 已有真实头库编译链接、独立安装消费
+及历史窗口/Bridge/模块证据；最新六纵切未重新完成 Linux GUI 验收。
+macOS universal2 已完成构建及安装消费，Apple Silicon 主机有新候选窗口/Bridge/
+模块及 DOM 关闭否决的限定证据，Intel slice 未实际运行。
+Windows x64 Release 已完成 SDK、原模板及探针交付构建，原模板有可见窗口、
+app.info、模块/同源 fetch、原生标题栏最大化/还原及正常窗口关闭证据，进程退出码未采集。
+后续 WebView2 DOM 关闭审批修复的生产候选，在扩展独立 fixture 首轮自然退出 0；
+最终 fixture 增加空 handle 防御和错误记录后编译成功，但正常启动被 OS 拒绝，
+**最终 fixture 运行仍受阻**，不能继承首轮通过结论。错误原文乱码，无可靠原生数值码，
+不能确定具体策略产品；生产候选及链接 SDK 字节未变，详见 [ADR 0138](adr/0138-cancellable-user-close.md)。
+六纵切已有实现，但目标机菜单/托盘/快捷键、剪贴板/对话框及完整关闭交互仍缺证据；
+Linux 托盘依赖 XEmbed 宿主，无兼容宿主明确失败。其他架构、目标系统、DPI/IME/
+多屏及长稳矩阵未完成；完整可访问性、Agent 与安装/签名/更新流程尚未全部迁移。
+统一 SDK 开发 ZIP 不是正式安装器。各次源码与产物身份见
+[集中限定验收记录](acceptance/unified-desktop-2026-10-23.md)，旧证据不授予最终 head 全绿。
 矩阵/fake/VM 测试不代替实机。详见[统一桌面限制](unified-desktop.md)
 及[Runtime 范围](cross-platform.md)。
 本开发 PR 不改变既有发布与生产门槛，也不替换冻结的 0.5.0 包。
