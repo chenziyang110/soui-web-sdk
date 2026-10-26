@@ -13,6 +13,11 @@ constexpr std::uint32_t abi_version = 1;
 constexpr std::size_t maximum_threads = 32;
 constexpr std::size_t events_per_thread = 1024;
 constexpr std::size_t duration_buckets = 64;
+// Diagnostic correlation only; never input authority. x64 upper bits must be zero.
+constexpr std::uint32_t decode_injection_tag(std::uint64_t tag) noexcept {
+  return tag <= 0xffffffffULL && (tag & 0xfff00000ULL) == 0x53400000ULL &&
+      (tag & 0xfffffULL) ? static_cast<std::uint32_t>(tag & 0xfffffULL) : 0U;
+}
 
 enum class mode : std::uint32_t { scalar = 0, detailed = 1 };
 enum class stage : std::uint32_t {
@@ -46,7 +51,8 @@ enum class counter : std::uint32_t {
   copy_operations, copy_bytes, raster_bytes, lock_contentions,
   scene_pending, scene_activated, resource_notifications, pacing_wakes,
   client_callbacks, buffer_leases, admission_accepted, admission_rejected,
-  admission_coalesced, input_recoveries, count,
+  admission_coalesced, input_recoveries, causal_ranges_dropped,
+  causal_context_dropped, count,
 };
 enum class duration_metric : std::uint32_t {
   lock_wait, lock_hold, client_callback, input_queue, task_queue,
@@ -93,7 +99,7 @@ struct scalar_snapshot final {
   mode recording_mode{mode::scalar};
   std::uint32_t registered_threads{0}, active_producers{0}, pending_registrations{0};
   std::uint64_t attempted{0}, recorded{0}, dropped{0}, queued{0};
-  std::uint64_t unregistered_writes{0}, registration_rejections{0};
+  std::uint64_t unregistered_writes{0}, registration_rejections{0}, causal_lost{0};
   bool stopped{false}, quiescent{false}, counter_saturated{false};
   bool owner_violation{false}, invalid_event{false}, clock_invalid{false};
   std::array<std::uint64_t, stage_count> stages{};
@@ -143,6 +149,7 @@ class recorder final {
   // Exactly one consumer. Busy rejects; count and scan are both bounded.
   drain_result drain(event* output, std::size_t capacity) noexcept;
   void note_unregistered_write() noexcept;
+  void note_causal_loss(std::uint64_t amount = 1) noexcept;
  private:
   std::shared_ptr<detail::state> storage_;
 };
@@ -157,6 +164,24 @@ void detach_current_thread() noexcept;
 record_result record(event value) noexcept;
 void add(counter metric, std::uint64_t amount = 1) noexcept;
 void observe_duration(duration_metric metric, std::uint64_t ticks) noexcept;
+// Constant-initialized TLS POD only; no lazy allocation or implicit registration.
+bool current_context(event& output) noexcept;
+bool set_current_context(const event& value) noexcept;
+void clear_current_context() noexcept;
+std::uint64_t next_task_id() noexcept; // zero => diagnostic loss, never wrap/reuse.
+void note_causal_loss(std::uint64_t amount = 1) noexcept;
+class context_scope final {
+ public:
+  explicit context_scope(const event& value) noexcept;
+  ~context_scope();
+  context_scope(const context_scope&) = delete;
+  context_scope& operator=(const context_scope&) = delete;
+  context_scope(context_scope&&) = delete;
+  context_scope& operator=(context_scope&&) = delete;
+ private:
+  event previous_;
+  bool previous_valid_{false}, installed_{false};
+};
 
 // Caller-driven, nonengine export. No automatic thread, timer or queue posts.
 // begin/drain may run while producers live; finish refuses until stopped,

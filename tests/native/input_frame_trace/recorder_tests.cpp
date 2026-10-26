@@ -17,6 +17,10 @@ static_assert(sizeof(sdk_trace::identity) == sizeof(vendor_trace::identity), "Mi
 static_assert(offsetof(sdk_trace::event, input_first) == offsetof(vendor_trace::event, input_first), "Mirrored event offsets differ");
 static_assert(static_cast<unsigned>(sdk_trace::stage::scene_activated) ==
               static_cast<unsigned>(vendor_trace::stage::scene_activated), "Mirrored stage codes differ");
+static_assert(sdk_trace::decode_injection_tag(0x53400001ULL) == 1 &&
+              sdk_trace::decode_injection_tag(0x153400001ULL) == 0 &&
+              sdk_trace::decode_injection_tag(0x53400000ULL) == 0,
+              "Diagnostic tags must reject upper bits and zero sequence");
 
 namespace {
 void require(bool condition, const char* message) {

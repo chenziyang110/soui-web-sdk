@@ -40,7 +40,7 @@ struct state final {
   std::atomic<bool> stopped{false}, consumer_busy{false};
   std::atomic<bool> saturated{false}, owner_violation{false};
   std::atomic<bool> invalid_event{false}, clock_invalid{false};
-  atomic_count unregistered{0}, registration_rejections{0}, invalid_writes{0};
+  atomic_count unregistered{0}, registration_rejections{0}, invalid_writes{0}, causal_lost{0};
   std::atomic<std::uint32_t> registered{0};
   std::atomic<std::uint32_t> registrars{0};
   std::array<std::unique_ptr<thread_storage>, maximum_threads> threads;
@@ -277,6 +277,7 @@ scalar_snapshot recorder::snapshot() const noexcept {
   result.clock_invalid = state.clock_invalid.load(std::memory_order_relaxed);
   result.unregistered_writes = state.unregistered.load(std::memory_order_relaxed);
   result.registration_rejections = state.registration_rejections.load(std::memory_order_relaxed);
+  result.causal_lost = state.causal_lost.load(std::memory_order_relaxed);
   result.dropped = state.invalid_writes.load(std::memory_order_relaxed);
   for (std::size_t index = 0; index < result.registered_threads; ++index) {
     const auto& slot = *state.threads[index];
@@ -321,12 +322,25 @@ drain_result recorder::drain(event* output, std::size_t capacity) noexcept {
   return result;
 }
 void recorder::note_unregistered_write() noexcept { add_multiple(storage_->unregistered, *storage_); }
+void recorder::note_causal_loss(std::uint64_t amount) noexcept {
+  if (!amount) return;
+  const auto previous = storage_->causal_lost.fetch_add(amount, std::memory_order_relaxed);
+  if (amount > maximum_count - previous) {
+    storage_->saturated.store(true, std::memory_order_relaxed);
+    storage_->causal_lost.store(maximum_count, std::memory_order_relaxed);
+  }
+}
 
 namespace {
 recorder global_recorder; // storage allocated before application event handling.
 thread_local writer* local_writer = nullptr; // trivial TLS; no hot initialization.
+constexpr event empty_context{};
+thread_local event local_context = empty_context;
+thread_local bool context_valid = false;
+std::atomic<std::uint64_t> task_sequence{0x8000000000000001ULL};
+constexpr std::uint64_t task_sequence_limit = 0xffffffffffffffffULL;
 struct local_registration final {
-  ~local_registration() { local_writer = nullptr; }
+  ~local_registration() { local_writer = nullptr; context_valid = false; }
   writer producer;
 };
 }
@@ -341,7 +355,7 @@ bool register_current_thread() {
 }
 void detach_current_thread() noexcept {
   if (local_writer) *local_writer = writer{};
-  local_writer = nullptr;
+  local_writer = nullptr; context_valid = false;
 }
 record_result record(event value) noexcept {
   if (!local_writer) { global_recorder.note_unregistered_write(); return record_result::unregistered; }
@@ -354,6 +368,34 @@ void add(counter metric, std::uint64_t amount) noexcept {
 void observe_duration(duration_metric metric, std::uint64_t ticks) noexcept {
   if (!local_writer) { global_recorder.note_unregistered_write(); return; }
   local_writer->observe_duration(metric, ticks);
+}
+bool current_context(event& output) noexcept {
+  if (!local_writer || !*local_writer || !context_valid) return false;
+  output = local_context; return true;
+}
+bool set_current_context(const event& value) noexcept {
+  if (!local_writer || !*local_writer) { global_recorder.note_unregistered_write(); return false; }
+  if (!valid(value)) { note_causal_loss(); return false; }
+  local_context = value; context_valid = true; return true;
+}
+void clear_current_context() noexcept { context_valid = false; local_context = empty_context; }
+void note_causal_loss(std::uint64_t amount) noexcept { global_recorder.note_causal_loss(amount); }
+std::uint64_t next_task_id() noexcept {
+  if (!local_writer || !*local_writer) { global_recorder.note_unregistered_write(); return 0; }
+  auto value = task_sequence.load(std::memory_order_relaxed);
+  for (unsigned attempt = 0; attempt < 8; ++attempt) {
+    if (!value || value == task_sequence_limit) break;
+    if (task_sequence.compare_exchange_weak(value,value+1,std::memory_order_relaxed)) return value;
+  }
+  note_causal_loss(); add(counter::causal_context_dropped); return 0;
+}
+context_scope::context_scope(const event& value) noexcept {
+  previous_valid_ = current_context(previous_); installed_ = set_current_context(value);
+}
+context_scope::~context_scope() {
+  if (!installed_) return;
+  clear_current_context();
+  if (previous_valid_) (void)set_current_context(previous_);
 }
 
 exporter::exporter(std::ostream& output, recorder& source) noexcept : output_(output), source_(source) {}
@@ -396,6 +438,7 @@ bool exporter::finish() {
   exact(output_, "dropped", value.dropped); exact(output_, "queued", value.queued);
   exact(output_, "unregistered_writes", value.unregistered_writes);
   exact(output_, "registration_rejections", value.registration_rejections);
+  exact(output_, "causal_lost", value.causal_lost);
   output_ << ",\"counter_saturated\":" << (value.counter_saturated ? "true" : "false")
           << ",\"owner_violation\":" << (value.owner_violation ? "true" : "false")
           << ",\"invalid_event\":" << (value.invalid_event ? "true" : "false")
