@@ -207,6 +207,21 @@ void export_limit_cannot_claim_complete() {
     buffer.bytes<64ULL*1024*1024 && source.snapshot().causal_lost==1,
     "export cap wrote indefinitely or fabricated complete end");
 }
+void source_failure_after_begin_refuses_end() {
+  class failing_source final : public sdk_trace::trace_source {
+   public:
+    bool available{true};
+    sdk_trace::scalar_snapshot snapshot() const noexcept override {
+      sdk_trace::scalar_snapshot result;result.available=available;
+      result.session=sdk_trace::current_identity(2,3);result.stopped=true;result.quiescent=true;return result;
+    }
+    sdk_trace::drain_result drain(sdk_trace::event*,std::size_t) noexcept override{return {};}
+    void note_causal_loss(std::uint64_t) noexcept override{}
+  } source;
+  std::ostringstream output;sdk_trace::exporter exporter(output,source);
+  require(exporter.begin(),"source failure fixture header rejected");source.available=false;
+  require(!exporter.finish(),"unavailable backend fabricated complete end after begin");
+}
 }
 
 int main() {
@@ -227,6 +242,7 @@ int main() {
     require(vendor_trace::process_recorder().snapshot().unregistered_writes == 1, "vendor unregistered write hidden");
     context_has_no_hot_allocation();
     export_limit_cannot_claim_complete();
+    source_failure_after_begin_refuses_end();
     return 0;
   } catch (const std::exception& error) {
     std::cerr << error.what() << '\n'; return 1;

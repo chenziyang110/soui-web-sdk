@@ -484,7 +484,7 @@ bool exporter::finish() {
   if (finished_) return true;
   if (!begun_ || limit_reached_ || !output_.good()) return false;
   const auto value = source_.snapshot();
-  if (!value.quiescent || value.queued) return false;
+  if (!value.available || !value.quiescent || value.queued) return false;
   output_ << "{\"event\":\"trace.end\",\"complete\":true,\"registered_threads\":" << value.registered_threads
           << ",\"active_producers\":" << value.active_producers;
   exact(output_, "attempted", value.attempted); exact(output_, "recorded", value.recorded);
