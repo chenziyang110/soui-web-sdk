@@ -124,7 +124,7 @@ test('central vendor preflight covers the union of actual leaf source inputs', (
   const prefix = 'third_party/sources/miniblink/';
   const expected = new Set(['wke/wke.cpp', 'net/ActivatingObjCheck.cpp', 'net/ActivatingObjCheck.h',
     'wke/CursorDescriptorBroker.cpp', 'wke/CursorDescriptorBroker.h', 'wke/wke_cursor_broker.h',
-    'content/web_impl_win/TaskSchedulingPolicy.h',
+    'content/web_impl_win/TaskSchedulingPolicy.h', 'content/web_impl_win/TaskSchedulingIndex.h',
     'content/common/InputFrameTrace.cpp', 'content/common/InputFrameTrace.h'].map(relative => prefix + relative));
   const worker = JSON.parse(fs.readFileSync(path.join(repository, 'tests/native/vendor_lifetime/worker_lifetime/source-map.json'), 'utf8'));
   worker.sources.forEach(source => expected.add(source.path));
@@ -140,7 +140,7 @@ test('central vendor preflight covers the union of actual leaf source inputs', (
   const required = module.match(/set\(_soui_vendor_required\s+([\s\S]*?)\n\)/);
   assert.ok(required, 'Actual central required inputs are required');
   const actual = [...required[1].matchAll(/"([^"]+)"/g)].map(match => match[1]);
-  assert.equal(expected.size, 29);
+  assert.equal(expected.size, 30);
   assert.equal(new Set(actual).size, actual.length);
   assert.deepEqual(actual.sort(), [...expected].sort());
 });
@@ -155,7 +155,7 @@ test('private source freeze binds all actual required files and rejects one abse
   const required = moduleText.match(/set\(_soui_vendor_required\s+([\s\S]*?)\n\)/);
   assert.ok(required);
   const names = [...required[1].matchAll(/"([^"]+)"/g)].map(match => match[1]).sort();
-  assert.equal(names.length, 29);
+  assert.equal(names.length, 30);
   fs.mkdirSync(path.join(f.root, 'cmake'));
   fs.writeFileSync(path.join(f.root, 'cmake/SouiVendorTests.cmake'), moduleText);
   for (const [index, name] of names.entries()) {

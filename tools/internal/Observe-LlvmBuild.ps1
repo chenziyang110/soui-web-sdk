@@ -291,9 +291,9 @@ function GeneratedTestDependencies([string]$root,[string]$build,[string]$configu
    $candidates[(Norm (Join-Path $base 'interaction_endpoint_source.inc'))]=[ordered]@{source=$allowed[(Norm $sourcePath)];range=$range;output='interaction_endpoint_source.inc'}
   }elseif($role.kind-ceq'worker'){
    [void](GeneratedTestWriter $root ($role.directory+'/CMakeLists.txt') '11383ab178986c14403e83d3c5222de5ca9166614750092b6e0de339de72f9ae' $allowed $readBytes)
-   [void](GeneratedTestWriter $root ($role.directory+'/source-bytes.cmake') '2171f85404ec51b3c6cf8c0b680c9d18939489ebf493daf0cf414b8236cc043f' $allowed $readBytes)
-   $mapText=GeneratedTestWriter $root ($role.directory+'/source-map.json') '1f2790552d2de87f8ed7f0b6c53d93ee80d156b69415c30f9c98b808f4d69b56' $allowed $readBytes;$map=$mapText|ConvertFrom-Json
-   Need ($map.schema-ceq'worker-lifetime-source-map/1'-and$map.sources.Count-eq13-and$map.copies.Count-eq12-and$map.payloads.Count-eq22) 'Exact frozen worker source map'
+   [void](GeneratedTestWriter $root ($role.directory+'/source-bytes.cmake') '73f4a5ce9cf44d321deb7523b4ea4100a596f8806c9777fe077afa9803ee3d45' $allowed $readBytes)
+   $mapText=GeneratedTestWriter $root ($role.directory+'/source-map.json') '5988addabac8130d74e0a9b160a03f7154a5ee6927f42c7622249984296f83fd' $allowed $readBytes;$map=$mapText|ConvertFrom-Json
+   Need ($map.schema-ceq'worker-lifetime-source-map/1'-and$map.sources.Count-eq14-and$map.copies.Count-eq13-and$map.payloads.Count-eq22) 'Exact frozen worker source map'
    foreach($relative in @('CMakeLists.txt','source-bytes.cmake','source-map.json')){$support.Add($allowed[(Norm (Join-Path $root ($role.directory+'/'+$relative)))])}
    $sources=@{};foreach($p in $map.sources){$relative=GeneratedTestRelative $p.path;$value=Join-Path $root $relative;Need (-not$sources.ContainsKey((Norm $value))) 'Unique frozen worker source';$raw=GeneratedTestFrozen $value $allowed $readBytes;Need ($raw.Length-eq$p.bytes-and(GeneratedTestHash $raw)-ceq$p.sha256) 'Worker map whole-source pin differs';$sources[(Norm $value)]=$raw;$support.Add($allowed[(Norm $value)])}
    foreach($p in $map.payloads){$relative=GeneratedTestRelative $p.path;$value=Join-Path $root ($role.directory+'/'+$relative);$raw=GeneratedTestFrozen $value $allowed $readBytes;Need ($raw.Length-eq$p.bytes-and(GeneratedTestHash $raw)-ceq$p.sha256) 'Worker map payload pin differs';$support.Add($allowed[(Norm $value)])}

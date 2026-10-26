@@ -32,9 +32,9 @@ function requiredSourcePaths(root) {
   const blocks = [...text.matchAll(/^set\(_soui_vendor_required\s*\r?\n([\s\S]*?)^\)\s*$/gm)];
   need(blocks.length === 1, 'Missing or ambiguous vendor required source contract');
   const rows = blocks[0][1].split(/\r?\n/).filter(row => row.trim());
-  need(rows.length === 29 && rows.every(row => /^\s*"third_party\/sources\/miniblink\/[A-Za-z0-9_./-]+"\s*$/.test(row)), 'Invalid exact 29 vendor source contract');
+  need(rows.length === 30 && rows.every(row => /^\s*"third_party\/sources\/miniblink\/[A-Za-z0-9_./-]+"\s*$/.test(row)), 'Invalid exact 30 vendor source contract');
   const names = rows.map(row => row.trim().slice(1, -1)).sort();
-  need(new Set(names).size === 29 && names.every(name => !name.split('/').includes('..')), 'Duplicate or escaping vendor source');
+  need(new Set(names).size === 30 && names.every(name => !name.split('/').includes('..')), 'Duplicate or escaping vendor source');
   return names.map(name => inputs.pin(path.join(root, name)));
 }
 function configuration(root, architecture, config, required = false, options = {}) {
