@@ -45,3 +45,5 @@ add_subdirectory(window_close_lifetime)
 add_subdirectory(independent_wheel_source)
 
 add_subdirectory(host_visibility_source)
+
+add_subdirectory(render_diagnostic_source)
