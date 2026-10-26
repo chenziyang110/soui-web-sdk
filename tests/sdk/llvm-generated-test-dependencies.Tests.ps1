@@ -1,5 +1,5 @@
 [CmdletBinding()]
-param([Parameter(Mandatory)][string]$CandidatePath,[Parameter(Mandatory)][string]$BaselinePath,[Parameter(Mandatory)][string]$FailureDirectory)
+param([Parameter(Mandatory)][string]$CandidatePath,[string]$BaselinePath='',[string]$FailureDirectory='',[string]$RecipeRoot='')
 $ErrorActionPreference='Stop'
 function Need([bool]$value,[string]$message){if(-not$value){throw $message}}
 function Norm([string]$value){$value.Replace('\','/').ToLowerInvariant()}
@@ -8,8 +8,90 @@ function Declarations([string]$path,[string[]]$names){
  $tokens=$null;$errors=$null;$ast=[Management.Automation.Language.Parser]::ParseFile($path,[ref]$tokens,[ref]$errors);Need ($errors.Count-eq0) 'PowerShell syntax'
  foreach($name in $names){$nodes=@($ast.FindAll({param($node)$node-is[Management.Automation.Language.FunctionDefinitionAst]-and$node.Name-ceq$name},$true));Need ($nodes.Count-eq1) ('Unique pure declaration: '+$name);$nodes[0].Extent.Text}
 }
-$names=@('GeneratedTestHash','GeneratedTestRelative','GeneratedTestFrozen','GeneratedTestWriter','GeneratedTestInterval','GeneratedTestMarker','GeneratedTestActual','GeneratedTestDependencies','NinjaDependencyBlocks','DependencyBindings')
+$names=@('GeneratedTestHash','GeneratedTestRelative','GeneratedTestFrozen','GeneratedTestWriter','GeneratedTestInterval','GeneratedTestMarker','GeneratedTestActual','GeneratedTestRecipes','GeneratedTestRecipeMarker','GeneratedTestRecipeDependencies','GeneratedTestDependencies','NinjaDependencyBlocks','DependencyBindings')
 foreach($declaration in @(Declarations $CandidatePath $names)){. ([scriptblock]::Create($declaration))}
+if($RecipeRoot){
+ # New recipe SOURCE contracts use authored graph/dependency records and actual
+ # frozen writer/source bytes. No build output, source-binding manifest, CMake,
+ # generator, compiler or observer entry point is used. Delivered unexecuted.
+ $root=[IO.Path]::GetFullPath($RecipeRoot);$build=Join-Path $root 'out/authored-observer-recipe';$configuration='Release'
+ $recipes=@(GeneratedTestRecipes);$pins=@{};$physical=@{};$records=@();$pairs=@();$cases=[Collections.Generic.List[object]]::new();$failed=0
+ $expectedCounts=@{'scheduler-continuation'=7;'scheduler-index'=0;'window-close-lifetime'=8;'independent-wheel'=18;'host-visibility'=10;'render-diagnostic'=3}
+ function FreezeRecipeInput([string]$path){$key=Norm $path;if($pins.ContainsKey($key)){return};$bytes=[IO.File]::ReadAllBytes($path);$pins[$key]=@{path=$path;bytes=$bytes.Length;sha256=(GeneratedTestHash $bytes)};$physical[$key]=$bytes}
+ foreach($role in $recipes){
+  FreezeRecipeInput (Join-Path $root ($role.directory+'/CMakeLists.txt'))
+  if($null-ne$role.writer){FreezeRecipeInput (Join-Path $root ($role.directory+'/generate.cjs'))}
+  foreach($source in $role.whole.Keys){FreezeRecipeInput (Join-Path $root ('third_party/sources/miniblink/'+$source))}
+  foreach($part in $role.fragments){FreezeRecipeInput (Join-Path $root ('third_party/sources/miniblink/'+$part[0]))}
+  $outputs=@($role.whole.Values)+@($role.fragments|ForEach-Object{$_[1]});$base=Join-Path $build ($role.directory+'/generated')
+  foreach($unit in $role.units){
+   $object=Join-Path $build ($role.directory+'/CMakeFiles/'+$role.target+'.dir/'+$configuration+'/'+$unit+'.obj')
+   $isGenerated=$unit.StartsWith('generated/',[StringComparison]::Ordinal)
+   $source=Join-Path $(if($isGenerated){$build}else{$root}) ($role.directory+'/'+$unit)
+   $headers=@();if(-not$isGenerated){foreach($output in $outputs){if($output-notmatch'\.cpp$'){$headers+=@{resolved=(Join-Path $base $output)}}}}
+   $records+=@{object=$object;status='VALID';headers=$headers};$pairs+=@{object=$object;source=$source}
+  }
+ }
+ $reader={param($path)Need ($physical.ContainsKey((Norm $path))) 'Only authored frozen source reads';return ,$physical[(Norm $path)]}
+ function CheckRecipe([string]$name,[scriptblock]$body){try{&$body|Out-Null;$cases.Add(@{name=$name;passed=$true})}catch{$script:failed++;$cases.Add(@{name=$name;passed=$false;error=[string]$_})}}
+ function RejectRecipe([scriptblock]$body,[string]$reason){$message=$null;try{&$body|Out-Null}catch{$message=[string]$_};Need ($null-ne$message-and$message.Contains($reason,[StringComparison]::Ordinal)) ('Expected strict recipe rejection: '+$message)}
+ function CloneRecipe($value){$value|ConvertTo-Json -Depth 100 -Compress|ConvertFrom-Json -AsHashtable}
+ function RecipeRows($selected=$records,$bindings=$pairs,$frozen=$pins,[scriptblock]$read=$reader){@(GeneratedTestDependencies $root $build $configuration $frozen $selected $read $bindings)}
+ $derived=@()
+ CheckRecipe 'Six frozen roles cover 46 exact paths and both standalone compiler sources' {
+  $script:derived=RecipeRows;Need ($recipes.Count-eq6-and$derived.Count-eq46-and$records.Count-eq8) 'Frozen new-role dimensions'
+  foreach($family in $expectedCounts.Keys){Need (@($derived|Where-Object{$_.writerFamily-ceq$family}).Count-eq$expectedCounts[$family]) ('Recipe output extent: '+$family)}
+  foreach($suffix in @('/generated/cc/input/ScrollController.cpp','/generated/cc/trees/ScrollTreeSnapshot.cpp')){
+   $row=@($derived|Where-Object{(Norm $_.pin.path).EndsWith($suffix,[StringComparison]::Ordinal)})
+   Need ($row.Count-eq1-and$row[0].exactWholeFile-and$row[0].selectedObjects.Count-eq1-and(Norm $row[0].selectedObject).EndsWith(($suffix.Substring('/generated'.Length)+'.obj'),[StringComparison]::OrdinalIgnoreCase)) 'Real generated compiler source admission'
+  }
+ }
+ CheckRecipe 'No selected recipe has no derived permission' {Need ((RecipeRows @() @()).Count-eq0) 'No selected graph'}
+ CheckRecipe 'Validated compiler source/object pairs are required' {RejectRecipe {RecipeRows $records @()} 'Exact generated recipe compiler source/object binding'}
+ foreach($role in $recipes){
+  $targetPrefix=Norm (Join-Path $build ($role.directory+'/CMakeFiles/'+$role.target+'.dir/'+$configuration+'/'))
+  $object=($records|Where-Object{(Norm $_.object).StartsWith($targetPrefix,[StringComparison]::Ordinal)}|Select-Object -First 1).object
+  CheckRecipe ($role.kind+': mismatched compiler source') {$next=CloneRecipe $pairs;($next|Where-Object{(Norm $_.object)-ceq(Norm $object)}).source=Join-Path $root 'tests/native/unknown.cpp';RejectRecipe {RecipeRows $records $next} 'Exact generated recipe compiler source/object binding'}
+  CheckRecipe ($role.kind+': stale dependency object') {$next=CloneRecipe $records;($next|Where-Object{(Norm $_.object)-ceq(Norm $object)}).status='STALE';RejectRecipe {RecipeRows $next} 'Unique selected generated recipe object binding'}
+  CheckRecipe ($role.kind+': unknown output and manifest are not authority') {$next=CloneRecipe $records;($next|Where-Object{(Norm $_.object)-ceq(Norm $object)}).headers+=@{resolved=(Join-Path $build ($role.directory+'/generated/source-binding.json'))};RejectRecipe {RecipeRows $next} 'Unknown generated test dependency'}
+  $writer=Join-Path $root ($role.directory+'/CMakeLists.txt')
+  CheckRecipe ($role.kind+': absent frozen CMake writer') {$next=$pins.Clone();$next.Remove((Norm $writer));RejectRecipe {RecipeRows $records $pairs $next} 'Generated test source was not frozen'}
+  if($null-ne$role.writer){
+   $writer=Join-Path $root ($role.directory+'/generate.cjs')
+   CheckRecipe ($role.kind+': modified generator cannot be blessed by new input pin') {
+    $tamperedWriterKey=Norm $writer;$changed=$physical[$tamperedWriterKey]+[byte]10;$next=$pins.Clone();$next[$tamperedWriterKey]=@{path=$writer;bytes=$changed.Length;sha256=(GeneratedTestHash $changed)}
+    $read={param($path)if((Norm $path)-ceq$tamperedWriterKey){return ,$changed};return ,$physical[(Norm $path)]}
+    RejectRecipe {RecipeRows $records $pairs $next $read} 'Unsupported frozen generated test writer'
+   }
+   $proof=@($derived|Where-Object{$_.writerFamily-ceq$role.kind-and-not$_.pin.path.EndsWith('.cpp',[StringComparison]::Ordinal)}|Select-Object -First 1)
+   if($proof.Count){
+    CheckRecipe ($role.kind+': missing complete generated dependency') {$next=CloneRecipe $records;foreach($record in $next){$record.headers=@($record.headers|Where-Object{(Norm $_.resolved)-cne(Norm $proof[0].pin.path)})};RejectRecipe {RecipeRows $next} 'Complete selected generated test dependency set required'}
+    CheckRecipe ($role.kind+': duplicate header in one object') {$next=CloneRecipe $records;$record=$next|Where-Object{@($_.headers|Where-Object{(Norm $_.resolved)-ceq(Norm $proof[0].pin.path)}).Count};$record.headers+=@{resolved=$proof[0].pin.path};RejectRecipe {RecipeRows $next} 'Duplicate selected generated test dependency'}
+    CheckRecipe ($role.kind+': generated path cannot masquerade as frozen') {$next=$pins.Clone();$next[(Norm $proof[0].pin.path)]=$proof[0].pin;RejectRecipe {RecipeRows $records $pairs $next} 'Generated test output cannot masquerade'}
+    CheckRecipe ($role.kind+': mutated actual output remains rejected') {$raw=[byte[]]$proof[0].expectedBytes.Clone();$raw[0]=$raw[0]-bxor1;RejectRecipe {GeneratedTestActual $proof[0] $proof[0].pin $raw} 'differs from frozen exact source bytes'}
+   }
+  }
+ }
+ $wheel=$recipes|Where-Object{$_.kind-ceq'independent-wheel'};$wheelPrefix=Norm (Join-Path $build ($wheel.directory+'/CMakeFiles/'+$wheel.target+'.dir/'+$configuration+'/'))
+ $cppObject=($records|Where-Object{(Norm $_.object).StartsWith($wheelPrefix,[StringComparison]::Ordinal)-and(Norm $_.object).EndsWith('scrollcontroller.cpp.obj',[StringComparison]::Ordinal)}).object
+ CheckRecipe 'Missing standalone generated compiler unit cannot inherit fixture admission' {$next=@($records|Where-Object{(Norm $_.object)-cne(Norm $cppObject)});RejectRecipe {RecipeRows $next} 'Complete selected generated recipe compiler units'}
+ CheckRecipe 'Extra compiler unit cannot hide inside a known target' {$next=CloneRecipe $records;$next+=@{object=(Join-Path $build ($wheel.directory+'/CMakeFiles/'+$wheel.target+'.dir/'+$configuration+'/generated/unknown.cpp.obj'));status='VALID';headers=@()};RejectRecipe {RecipeRows $next} 'Complete selected generated recipe compiler units'}
+ CheckRecipe 'Known generated source cannot authorize a second unrecognized compiler object' {$next=CloneRecipe $pairs;$copy=CloneRecipe ($pairs|Where-Object{(Norm $_.object)-ceq(Norm $cppObject)});$copy.object=Join-Path $build 'unknown/generated.cpp.obj';$next+=@($copy);RejectRecipe {RecipeRows $records $next} 'cannot authorize another object'}
+ CheckRecipe 'Shared generated header records both actual compiler users once' {
+  $next=CloneRecipe $records;$header=Join-Path $build ($wheel.directory+'/generated/cc/input/ScrollController.h');($next|Where-Object{(Norm $_.object)-ceq(Norm $cppObject)}).headers+=@{resolved=$header}
+  $rows=RecipeRows $next;$proof=@($rows|Where-Object{(Norm $_.pin.path)-ceq(Norm $header)});Need ($rows.Count-eq46-and$proof.Count-eq1-and$proof[0].selectedObjects.Count-eq2) 'Per-object usage is retained without duplicate path permission'
+ }
+ CheckRecipe 'First following end marker matches writer semantics and preserves raw encoding bytes' {
+  $raw=[byte[]](66,10,65,13,10,0,129,10,90,10,90,10);$range=GeneratedTestRecipeMarker $raw 'A' 'Z'
+  Need ($range.startByte-eq2-and$range.endByteExclusive-eq8-and[BitConverter]::ToString($range.bytes)-ceq'41-0D-0A-00-81-0A') 'Raw byte slice, not decoded/reformatted source'
+  RejectRecipe {GeneratedTestRecipeMarker ([Text.Encoding]::ASCII.GetBytes('A A Z')) 'A' 'Z'} 'one unique begin marker'
+  RejectRecipe {GeneratedTestRecipeMarker ([Text.Encoding]::ASCII.GetBytes('Z A')) 'A' 'Z'} 'following end marker'
+ }
+ $report=[ordered]@{schema='soui.generated-test-recipe-source-tests/1';sourceOnly=$true;graph='authored dependency/source-object contracts, not captured compilation';passed=($failed-eq0);counts=@{total=$cases.Count;failed=$failed;derived=$derived.Count;selectedObjects=$records.Count};cases=$cases.ToArray();actorsInvoked=0;qualificationPassed=$false;releaseReady=$false}
+ $report|ConvertTo-Json -Depth 100
+ if($failed){exit 1};return
+}
+Need ($BaselinePath.Length-gt0-and$FailureDirectory.Length-gt0) 'Historical captured mode requires BaselinePath and FailureDirectory; current SOURCE recipes use RecipeRoot'
 foreach($declaration in @(Declarations $BaselinePath @('DependencyPin'))){. ([scriptblock]::Create($declaration))}
 # Only AST-extracted functions run. The observer entry point and tools never run.
 $cfg=Get-Content -LiteralPath (Join-Path $FailureDirectory 'llvm-observer-inputs.json') -Raw|ConvertFrom-Json
