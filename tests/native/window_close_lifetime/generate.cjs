@@ -35,6 +35,12 @@ extract('wke/wkeWebWindow.cpp', 'native_receipt.inc',
   '    case WM_NCDESTROY:', '    case WM_TIMER:');
 extract('wke/wkeWebView.cpp', 'callback_once.inc',
   'bool CWebView::takeWindowDestroyCallback()', 'void CWebView::quiescePaintCallbacks()');
+extract('wke/wkeWebWindow.cpp', 'window_visibility.inc',
+  'bool CWebWindow::_syncHostVisibility(', 'void CWebWindow::enable(');
+extract('wke/wkeWebWindow.cpp', 'visibility_messages.inc',
+  '    case WM_SHOWWINDOW:', '    case WM_CREATE:');
+extract('wke/wkeWebWindow.cpp', 'resize_visibility.inc',
+  '    case WM_SIZE: {', '    case WM_DROPFILES:');
 fs.writeFileSync(path.join(output, 'source-binding.json'), JSON.stringify({
   schema: 'window-close-lifetime-source/1', dependencyMode: 'deterministic-fakes-no-native-window', entries
 }, null, 2) + '\n');

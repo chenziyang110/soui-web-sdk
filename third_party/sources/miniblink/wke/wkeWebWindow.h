@@ -43,6 +43,7 @@ protected:
     bool _createWindow(const wkeWindowCreateInfo* info);
     bool _destroyWindow();
     void _initCallbacks();
+    bool _syncHostVisibility(HWND window, bool forceHidden = false);
 
     static LRESULT CALLBACK _staticWindowProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
     LRESULT _windowProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
@@ -81,6 +82,8 @@ protected:
     };
     State m_state;
     bool m_gpuPresent;
+    bool m_hostVisibilityKnown;
+    bool m_hostVisible;
 };
 
 };//namespace wke
