@@ -339,6 +339,7 @@ HANDLE makeGate() {
 }
 bool waitGate(HANDLE gate) { return ::WaitForSingleObject(gate, boundMs) == WAIT_OBJECT_0; }
 unsigned __stdcall registryContender(void*) {
+    std::set_terminate(terminated);
     closingRegistry = true;
     platform->closeThread();
     closingRegistry = false;
@@ -373,8 +374,11 @@ void summary(bool passed, const char* reason, bool expectedFailFast = false) {
     std::fflush(stdout);
 }
 [[noreturn]] void terminated() {
-    const bool expectedCase = isCase("native-wait-fails") || isCase("worker-self-delete");
-    const bool seamObserved = isCase("worker-self-delete") ? ::GetCurrentThreadId() == workerNativeId
+    const bool registryFence = isCase("registry-live-fence") || isCase("concurrent-registry-close");
+    const bool expectedCase = isCase("native-wait-fails") || isCase("worker-self-delete") || registryFence;
+    const bool seamObserved = registryFence ? debugBreaks >= 1 && (isCase("registry-live-fence")
+        || (closeInspections == 1 && inspectedCount == 1 && inspectedReady == 1))
+        : isCase("worker-self-delete") ? ::GetCurrentThreadId() == workerNativeId
         : injectedWaitFailures + injectedExitFailures == 1;
     const bool retained = platform && platform->m_threadNum == 1 && platform->m_threads.size() == 1
         && workerFrees == 0 && schedulerFrees == 0 && workerClosed == 0 && eventClosed == 0;
@@ -805,6 +809,11 @@ bool dispatch() {
     if (isCase("ready-acquire-visibility")) return visibilityCase();
     if (isCase("native-exit-delayed")) return delayedExitCase();
     if (isCase("concurrent-registry-close")) return concurrentRegistryCase();
+    if (isCase("registry-live-fence")) {
+        (void)platform->createThread("FixtureWorker");
+        platform->closeThread();
+        return false; // DebugBreak returning must not permit close success.
+    }
     if (isCase("main-thread-compatibility")) return mainThreadCase();
     if (isCase("main-scheduler-task-budget")) return mainSchedulerBudgetCase(false);
     if (isCase("main-scheduler-clock-budget")) return mainSchedulerBudgetCase(true);
