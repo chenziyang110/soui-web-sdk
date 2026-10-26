@@ -105,6 +105,7 @@ int main()
     shutdown.pending = 1; require(!shutdown.drained()); shutdown.pending = 0;
     shutdown.queued = 1; require(!shutdown.drained()); shutdown.queued = 0;
     shutdown.callouts = 1; require(!shutdown.drained()); shutdown.callouts = 0;
+    shutdown.nativeFailures = 1; require(!shutdown.drained()); shutdown.nativeFailures = 0;
     require(shutdown.drained());
     content::paintLifetimeRuntime().closing = true;
     auto afterShutdown = std::make_shared<content::PaintLifetimeState>();
@@ -170,5 +171,30 @@ int main()
         require(!content::paintLifetimeRuntime().drained()); // Close callout still on stack.
     }
     require(content::paintLifetimeRuntime().drained());
+
+    content::PaintLifetimePolicy nativeClose;
+    require(nativeClose.request(Kind::view) && nativeClose.takeDestroyCallback());
+    require(nativeClose.beginNativeWindow(0x100));
+    nativeClose.noteNativeFailure(true); // Injected DestroyWindow failure; exact owner is still live.
+    nativeClose.finish(Kind::view);
+    require(nativeClose.nativeFailed && nativeClose.nativeRetryable && nativeClose.ready());
+    require(!nativeClose.reserveTask()); // Failure never immediately reposts a close loop.
+    require(nativeClose.request(Kind::view) && !nativeClose.takeDestroyCallback());
+    require(!nativeClose.noteNativeDestroyed(0x200) && nativeClose.nativeFailed);
+    require(!nativeClose.beginNativeWindow(0x200)); // Different/reused HWND cannot clear the old fault.
+    require(nativeClose.beginNativeWindow(0x100));
+    require(nativeClose.noteNativeDestroyed(0x100)); // Exact NCDESTROY receipt before reentrant view delete.
+    nativeClose.invalidate();
+    require(nativeClose.dead && nativeClose.nativeDestroyed && !nativeClose.nativeFailed);
+    require(!nativeClose.request(Kind::view) && !nativeClose.takeDestroyCallback());
+    nativeClose.finish(Kind::view); // Independent callout receipt survives deletion of its target.
+
+    content::PaintLifetimePolicy unknownWindow;
+    require(unknownWindow.beginNativeWindow(0x300));
+    unknownWindow.noteNativeFailure(false); // Failed native call and unproven window identity.
+    require(unknownWindow.ready() && unknownWindow.nativeFailed);
+    require(!unknownWindow.request(Kind::window) && !unknownWindow.request(Kind::view));
+    require(!unknownWindow.reserveTask() && !unknownWindow.noteNativeDestroyed(0x301));
+    require(unknownWindow.nativeFailed); // Permanent failure stays pending; never counted as drain success.
     return failures ? 1 : 0;
 }

@@ -18,6 +18,7 @@ public:
     bool createWindow(HWND parent, wkeWindowType type, int x, int y, int width, int height);
     
     virtual void destroy() override;
+    bool prepareNativeWindowClose() override;
 
     void show(bool b);
     void enable(bool b);
@@ -40,7 +41,7 @@ protected:
     virtual void onDocumentReady(wkeDocumentReadyCallback callback, void* callbackParam) override;
 
     bool _createWindow(const wkeWindowCreateInfo* info);
-    void _destroyWindow();
+    bool _destroyWindow();
     void _initCallbacks();
 
     static LRESULT CALLBACK _staticWindowProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);

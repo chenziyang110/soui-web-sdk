@@ -29,7 +29,8 @@ public:
     }
     bool request(PaintCloseKind kind)
     {
-        if (dead || kind == PaintCloseKind::none || (callouts & mask(kind)))
+        if (dead || kind == PaintCloseKind::none || (callouts & mask(kind))
+            || (nativeFailed && !nativeRetryable))
             return false;
         sealed = true;
         if (active) {
@@ -44,7 +45,7 @@ public:
     }
     uint64_t reserveTask()
     {
-        if (dead || active || pending == PaintCloseKind::none || queued
+        if (dead || active || nativeFailed || pending == PaintCloseKind::none || queued
             || serial == (std::numeric_limits<uint64_t>::max)())
             return 0;
         return queued = ++serial;
@@ -53,11 +54,48 @@ public:
     bool ready() const { return !dead && !active && pending != PaintCloseKind::none; }
     void finish(PaintCloseKind kind) { callouts &= ~mask(kind); }
     void invalidate() { dead = sealed = true; pending = PaintCloseKind::none; }
+    bool beginNativeWindow(uintptr_t window)
+    {
+        if (nativeFailed && nativeWindow != window)
+            return false;
+        nativeWindow = window;
+        nativeDestroyed = false;
+        return true;
+    }
+    bool noteNativeDestroyed(uintptr_t window)
+    {
+        if (!window || nativeWindow != window)
+            return false;
+        nativeDestroyed = true;
+        nativeFailed = nativeRetryable = false;
+        if (pending == PaintCloseKind::window)
+            pending = PaintCloseKind::none;
+        return true;
+    }
+    void noteNativeFailure(bool retryable)
+    {
+        nativeFailed = true;
+        nativeDestroyed = false;
+        nativeRetryable = retryable;
+        sealed = true;
+        if (!dead)
+            pending = PaintCloseKind::window;
+    }
+    bool takeDestroyCallback()
+    {
+        if (dead || destroyCallbackDelivered)
+            return false;
+        destroyCallbackDelivered = true;
+        return true;
+    }
     static unsigned mask(PaintCloseKind kind) { return kind == PaintCloseKind::window ? 2U : 1U; }
     uint64_t active = 0, serial = 0, queued = 0;
     PaintCloseKind pending = PaintCloseKind::none;
     unsigned callouts = 0;
     bool sealed = false, dead = false;
+    uintptr_t nativeWindow = 0;
+    bool nativeDestroyed = false, nativeFailed = false, nativeRetryable = false;
+    bool destroyCallbackDelivered = false;
 };
 
 struct PaintLifetimeState {
@@ -68,9 +106,9 @@ struct PaintLifetimeState {
 };
 struct PaintLifetimeRuntime {
     std::mutex mutex;
-    uint64_t active = 0, pending = 0, queued = 0, callouts = 0;
+    uint64_t active = 0, pending = 0, queued = 0, callouts = 0, nativeFailures = 0;
     bool closing = false;
-    bool drained() const { return !active && !pending && !queued && !callouts; }
+    bool drained() const { return !active && !pending && !queued && !callouts && !nativeFailures; }
 };
 template<class Key> class PaintCloseServiceCursor {
 public:

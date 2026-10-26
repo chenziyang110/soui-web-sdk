@@ -123,7 +123,7 @@ static void invalidatePaintLifetime(const std::shared_ptr<PaintState>& state)
 {
     auto& runtime = content::paintLifetimeRuntime();
     std::lock_guard<std::mutex> lock(runtime.mutex);
-    if (state->policy.active)
+    if (state->policy.active || state->policy.nativeFailed)
         std::terminate(); // A raw delete may never unwind a live paint stack.
     if (state->policy.pending != PaintKind::none)
         --runtime.pending;
@@ -140,6 +140,14 @@ content::PaintClosePermit CWebView::acquirePaintClosePermit(content::PaintCloseK
         queuePaintClose(m_paintLifetime);
     return permit;
 }
+bool CWebView::takeWindowDestroyCallback()
+{
+    auto& runtime = content::paintLifetimeRuntime();
+    std::lock_guard<std::mutex> lock(runtime.mutex);
+    return m_paintLifetime->policy.takeDestroyCallback();
+}
+bool CWebView::prepareNativeWindowClose() { return true; }
+
 void CWebView::quiescePaintCallbacks()
 {
     auto& runtime = content::paintLifetimeRuntime();
@@ -248,6 +256,7 @@ CWebView::CWebView(COLORREF color)
 
 CWebView::~CWebView()
 {
+    auto destructorPermit = acquirePaintClosePermit(content::PaintCloseKind::view);
     invalidatePaintLifetime(m_paintLifetime);
     net::ActivatingObjCheck::inst()->remove(m_id);
     g_liveWebViews.erase(this);
@@ -271,7 +280,7 @@ void CWebView::destroy()
     if (!paintOwner() || !brokerMayDestroyRawView(this))
         return;
     auto permit = acquirePaintClosePermit(content::PaintCloseKind::direct);
-    if (permit)
+    if (permit && prepareNativeWindowClose())
         delete this;
 }
 

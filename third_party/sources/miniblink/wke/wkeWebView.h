@@ -141,6 +141,8 @@ public:
     static CWebView* createForCursorBroker(COLORREF color);
     virtual void destroy() override;
     content::PaintClosePermit acquirePaintClosePermit(content::PaintCloseKind kind);
+    bool takeWindowDestroyCallback();
+    virtual bool prepareNativeWindowClose();
     void quiescePaintCallbacks();
     bool paintCallbacksDrained() const;
     static void serviceDeferredPaintCloses();

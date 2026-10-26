@@ -6,10 +6,35 @@
 #include "content/browser/WebPage.h"
 #include "cc/base/BdColor.h"
 #include "base/strings/string_util.h"
+#include <exception>
 ////////////////////////////////////////////////////////////////////////////
 
 namespace wke {
 extern DWORD wkeThreadId;
+
+namespace {
+static bool isOwnedCloseWindow(HWND window, CWebWindow* identity)
+{
+    DWORD process = 0;
+    return window && ::IsWindow(window)
+        && ::GetWindowThreadProcessId(window, &process) == ::GetCurrentThreadId()
+        && process == ::GetCurrentProcessId()
+        && ::GetPropW(window, L"wkeWebWindow") == reinterpret_cast<HANDLE>(identity);
+}
+static void syncNativeCloseCounts(content::PaintLifetimeRuntime& runtime,
+    const content::PaintLifetimePolicy& policy, bool wasPending, bool wasFailed)
+{
+    const bool pending = policy.pending != content::PaintCloseKind::none;
+    if (pending != wasPending) {
+        if (pending) ++runtime.pending;
+        else --runtime.pending;
+    }
+    if (policy.nativeFailed != wasFailed) {
+        if (policy.nativeFailed) ++runtime.nativeFailures;
+        else --runtime.nativeFailures;
+    }
+}
+} // namespace
 
 CWebWindow::CWebWindow(COLORREF c)
     : CWebView(c)
@@ -31,7 +56,9 @@ CWebWindow::CWebWindow(COLORREF c)
 
 CWebWindow::~CWebWindow()
 {
-    destroy();
+    auto destructorPermit = acquirePaintClosePermit(content::PaintCloseKind::view);
+    if (!paintCallbacksDrained() || !prepareNativeWindowClose())
+        std::terminate(); // Supported destroy preflights before delete; bypass cannot continue unsafely.
 }
 
 bool CWebWindow::createWindow(const wkeWindowCreateInfo* info)
@@ -84,6 +111,11 @@ void CWebWindow::destroy()
     auto permit = acquirePaintClosePermit(content::PaintCloseKind::window);
     if (permit)
         _destroyWindow();
+}
+
+bool CWebWindow::prepareNativeWindowClose()
+{
+    return _destroyWindow();
 }
 
 void CWebWindow::onPaintUpdated(wkePaintUpdatedCallback callback, void* callbackParam)
@@ -170,14 +202,64 @@ bool CWebWindow::_createWindow(const wkeWindowCreateInfo* info)
     return TRUE;
 }
 
-void CWebWindow::_destroyWindow()
+bool CWebWindow::_destroyWindow()
 {
-    if (kWkeWebWindowDestroing == m_state)
-        return;
+    const HWND window = m_hWnd;
+    const auto lifetime = m_paintLifetime;
+    CWebWindow* const identity = this;
+    const State previousState = m_state;
+    if (!window) {
+        auto& runtime = content::paintLifetimeRuntime();
+        std::lock_guard<std::mutex> lock(runtime.mutex);
+        return !lifetime->policy.nativeFailed || lifetime->policy.nativeDestroyed;
+    }
+    if (m_state == kWkeWebWindowDestroing)
+        return false;
     m_state = kWkeWebWindowDestroing;
-
-    ::KillTimer(m_hWnd, (UINT_PTR)this);
-    ::DestroyWindow(m_hWnd); // 这里会重入到本函�?
+    const bool ownedBefore = isOwnedCloseWindow(window, identity);
+    {
+        auto& runtime = content::paintLifetimeRuntime();
+        std::lock_guard<std::mutex> lock(runtime.mutex);
+        const bool wasPending = lifetime->policy.pending != content::PaintCloseKind::none;
+        const bool wasFailed = lifetime->policy.nativeFailed;
+        if (!ownedBefore || !lifetime->policy.beginNativeWindow(reinterpret_cast<uintptr_t>(window))) {
+            lifetime->policy.noteNativeFailure(false);
+            syncNativeCloseCounts(runtime, lifetime->policy, wasPending, wasFailed);
+            return false; // Unknown/reused HWND never authorizes native destruction.
+        }
+    }
+    ::KillTimer(window, reinterpret_cast<UINT_PTR>(identity));
+    const BOOL destroyed = ::DestroyWindow(window); // 这里会重入到本函�?
+    // NCDESTROY may have deleted identity. Only opaque captured values and the
+    // independent tombstone may be used until exact live ownership is proven.
+    const bool ownedAfter = isOwnedCloseWindow(window, identity);
+    auto& runtime = content::paintLifetimeRuntime();
+    std::lock_guard<std::mutex> lock(runtime.mutex);
+    const bool wasPending = lifetime->policy.pending != content::PaintCloseKind::none;
+    const bool wasFailed = lifetime->policy.nativeFailed;
+    const bool targetAlive = !lifetime->policy.dead
+        && lifetime->target == static_cast<CWebView*>(identity);
+    bool complete = destroyed || lifetime->policy.nativeDestroyed;
+    if (complete) {
+        lifetime->policy.noteNativeDestroyed(reinterpret_cast<uintptr_t>(window));
+        if (targetAlive) {
+            if (identity->m_hWnd == window)
+                identity->m_hWnd = nullptr;
+            if (!identity->m_hWnd)
+                identity->m_state = kWkeWebWindowDestroyed;
+            else {
+                lifetime->policy.noteNativeFailure(false); // A different attached HWND is unproven.
+                complete = false;
+            }
+        }
+    } else {
+        const bool retryable = targetAlive && ownedAfter && identity->m_hWnd == window;
+        lifetime->policy.noteNativeFailure(retryable);
+        if (retryable)
+            identity->m_state = previousState; // Same retained owner and exact original window only.
+    }
+    syncNativeCloseCounts(runtime, lifetime->policy, wasPending, wasFailed);
+    return complete;
 }
 
 void CWebWindow::_initCallbacks()
@@ -233,6 +315,16 @@ LRESULT CWebWindow::_windowProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
     case WM_NCDESTROY:
         ::KillTimer(hwnd, (UINT_PTR)this);
         ::RemovePropW(hwnd, L"wkeWebWindow");
+        {
+            auto& runtime = content::paintLifetimeRuntime();
+            std::lock_guard<std::mutex> lock(runtime.mutex);
+            const bool wasPending = m_paintLifetime->policy.pending != content::PaintCloseKind::none;
+            const bool wasFailed = m_paintLifetime->policy.nativeFailed;
+            if (!m_paintLifetime->policy.nativeWindow)
+                m_paintLifetime->policy.nativeWindow = reinterpret_cast<uintptr_t>(hwnd);
+            m_paintLifetime->policy.noteNativeDestroyed(reinterpret_cast<uintptr_t>(hwnd));
+            syncNativeCloseCounts(runtime, m_paintLifetime->policy, wasPending, wasFailed);
+        }
         m_hWnd = NULL;
         wkeDestroyWebView(this);
         return 0;
