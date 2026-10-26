@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <atomic>
 #include <cstddef>
 #include <cstdint>
 #include <iosfwd>
@@ -13,6 +14,7 @@ constexpr std::uint32_t abi_version = 1;
 constexpr std::size_t maximum_threads = 32;
 constexpr std::size_t events_per_thread = 1024;
 constexpr std::size_t duration_buckets = 64;
+constexpr std::size_t maximum_export_events = 100000;
 // Diagnostic correlation only; never input authority. x64 upper bits must be zero.
 constexpr std::uint32_t decode_injection_tag(std::uint64_t tag) noexcept {
   return tag <= 0xffffffffULL && (tag & 0xfff00000ULL) == 0x53400000ULL &&
@@ -101,6 +103,7 @@ struct scalar_snapshot final {
   std::uint64_t attempted{0}, recorded{0}, dropped{0}, queued{0};
   std::uint64_t unregistered_writes{0}, registration_rejections{0}, causal_lost{0};
   bool stopped{false}, quiescent{false}, counter_saturated{false};
+  bool available{false};
   bool owner_violation{false}, invalid_event{false}, clock_invalid{false};
   std::array<std::uint64_t, stage_count> stages{};
   std::array<std::uint64_t, counter_count> counters{};
@@ -134,7 +137,7 @@ class writer final {
 
 class recorder final {
  public:
-  recorder();
+  recorder() noexcept;
   ~recorder();
   recorder(const recorder&) = delete;
   recorder& operator=(const recorder&) = delete;
@@ -152,6 +155,9 @@ class recorder final {
   void note_causal_loss(std::uint64_t amount = 1) noexcept;
  private:
   std::shared_ptr<detail::state> storage_;
+  identity fallback_identity_;
+  std::atomic<std::uint64_t> unavailable_writes_{0}, unavailable_causal_{0};
+  std::atomic<bool> unavailable_stopped_{false};
 };
 
 // Actual process identity/QPC only. run_id is supplied by the run supervisor.
@@ -194,10 +200,13 @@ class exporter final {
   bool begin();
   drain_result drain(std::size_t budget = 256);
   bool finish();
+  bool limit_reached() const noexcept { return limit_reached_; }
  private:
   std::ostream& output_;
   recorder& source_;
   bool begun_{false}, finished_{false};
+  bool limit_reached_{false};
+  std::size_t exported_{0};
 };
 
 } } // namespace content::input_frame_trace

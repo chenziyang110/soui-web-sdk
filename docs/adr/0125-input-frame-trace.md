@@ -18,6 +18,7 @@
 6. host receive、engine begin、handler return、commit complete、resources ready 和 submit 分开。microtasks complete 仅在建立关系时记录；请求 commit 不能记为完成。desktop observed 仍只是桌面图像观察，物理显示未测。
 7. 终态区分 visible、coalesced、cancelled、stale、not_visible、rejected。合并不改变 DOM 输入投递策略；coalesced 记录和帧 coverage 共同保留最老及最新输入年龄。所有 uint64 字段导出为规范十进制字符串，JSON Number 不承载 tick 或身份。
 8. 溢出、未注册、错误 owner、非法字段、时钟失败和 counter saturation 都明确导出。有丢记录的详细轮次不能用于完整因果结论；采样模式不声称完整。新同产品双提交和 burst reader 独立版本化，旧 serial-ACK/DPI/IME 校验不放宽。
+9. 冷启动 storage 分配/构造失败只使诊断 available=false，不允许终止应用或 DLL 初始化；缺失 storage 的所有操作安全拒绝。默认 scalar 身份仍冷采实际 PID/FILETIME/QPC frequency，run_id 保留零直到显式 configure。exporter 每会话最多 100000 事件，超限标 causal_lost、limit_reached 并拒绝 complete end，不创建无界日志。
 
 ## 备选方案、兼容与回退
 

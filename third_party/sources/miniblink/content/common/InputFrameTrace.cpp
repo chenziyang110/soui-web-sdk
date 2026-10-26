@@ -210,9 +210,18 @@ void writer::observe_duration(duration_metric metric, std::uint64_t ticks) noexc
   add_single(slot.durations[index][bucket], 1, state);
 }
 
-recorder::recorder() : storage_(std::make_shared<detail::state>()) {}
+recorder::recorder() noexcept : fallback_identity_(current_identity(0,0)) {
+  try {
+    storage_ = std::make_shared<detail::state>();
+    storage_->session = fallback_identity_;
+  } catch (...) {
+    // Diagnostics is unavailable. snapshot().available=false exposes this cold
+    // allocation/construction failure; product/DLL startup must continue.
+  }
+}
 recorder::~recorder() { stop(); }
 bool recorder::configure(identity session, mode requested) noexcept {
+  if (!storage_) return false;
   std::lock_guard<std::mutex> lock(storage_->registration_mutex);
   const auto actual = current_identity(session.run_id_high, session.run_id_low);
   if (storage_->configured || storage_->registered.load(std::memory_order_relaxed) ||
@@ -226,6 +235,7 @@ bool recorder::configure(identity session, mode requested) noexcept {
   return true;
 }
 writer recorder::attach_current_thread() {
+  if (!storage_) { unavailable_writes_.fetch_add(1,std::memory_order_relaxed); return {}; }
   struct registration_guard final {
     explicit registration_guard(std::atomic<std::uint32_t>& value) noexcept : count(value) {
       count.fetch_add(1, std::memory_order_acq_rel);
@@ -254,8 +264,12 @@ writer recorder::attach_current_thread() {
   state.registered.store(count + 1, std::memory_order_release);
   return writer(storage_, count);
 }
-void recorder::stop() noexcept { storage_->stopped.store(true, std::memory_order_release); }
+void recorder::stop() noexcept {
+  if (storage_) storage_->stopped.store(true, std::memory_order_release);
+  else unavailable_stopped_.store(true,std::memory_order_release);
+}
 bool recorder::quiescent() const noexcept {
+  if (!storage_) return unavailable_stopped_.load(std::memory_order_acquire);
   if (!storage_->stopped.load(std::memory_order_acquire)) return false;
   if (storage_->registrars.load(std::memory_order_acquire)) return false;
   const auto count = storage_->registered.load(std::memory_order_acquire);
@@ -264,8 +278,17 @@ bool recorder::quiescent() const noexcept {
   return true;
 }
 scalar_snapshot recorder::snapshot() const noexcept {
+  if (!storage_) {
+    scalar_snapshot result; result.session = fallback_identity_;
+    result.stopped = unavailable_stopped_.load(std::memory_order_acquire);
+    result.quiescent = result.stopped;
+    result.unregistered_writes = unavailable_writes_.load(std::memory_order_relaxed);
+    result.causal_lost = unavailable_causal_.load(std::memory_order_relaxed);
+    return result;
+  }
   std::lock_guard<std::mutex> lock(storage_->registration_mutex);
   scalar_snapshot result;
+  result.available = true;
   const auto& state = *storage_;
   result.session = state.session; result.recording_mode = state.recording_mode;
   result.registered_threads = state.registered.load(std::memory_order_acquire);
@@ -303,7 +326,7 @@ scalar_snapshot recorder::snapshot() const noexcept {
 }
 drain_result recorder::drain(event* output, std::size_t capacity) noexcept {
   drain_result result;
-  if (!output || !capacity) return result;
+  if (!storage_ || !output || !capacity) return result;
   auto& state = *storage_;
   if (state.consumer_busy.exchange(true, std::memory_order_acquire)) { result.busy = true; return result; }
   const auto count = state.registered.load(std::memory_order_acquire);
@@ -321,9 +344,13 @@ drain_result recorder::drain(event* output, std::size_t capacity) noexcept {
   state.consumer_busy.store(false, std::memory_order_release);
   return result;
 }
-void recorder::note_unregistered_write() noexcept { add_multiple(storage_->unregistered, *storage_); }
+void recorder::note_unregistered_write() noexcept {
+  if (storage_) add_multiple(storage_->unregistered, *storage_);
+  else unavailable_writes_.fetch_add(1,std::memory_order_relaxed);
+}
 void recorder::note_causal_loss(std::uint64_t amount) noexcept {
   if (!amount) return;
+  if (!storage_) { unavailable_causal_.fetch_add(amount,std::memory_order_relaxed); return; }
   const auto previous = storage_->causal_lost.fetch_add(amount, std::memory_order_relaxed);
   if (amount > maximum_count - previous) {
     storage_->saturated.store(true, std::memory_order_relaxed);
@@ -403,7 +430,7 @@ bool exporter::begin() {
   if (begun_ || finished_) return false;
   const auto snapshot = source_.snapshot();
   const auto& session = snapshot.session;
-  if (!session.process_id || !session.process_incarnation || !session.qpc_frequency ||
+  if (!snapshot.available || !session.process_id || !session.process_incarnation || !session.qpc_frequency ||
       !(session.run_id_high || session.run_id_low)) return false;
   output_ << std::dec << "{\"event\":\"trace.begin\",\"schema\":\"soui.input-frame-trace/v1\",\"version\":1,\"run_id\":\""
           << run_id(session) << "\",\"process_id\":" << session.process_id;
@@ -415,21 +442,26 @@ bool exporter::begin() {
 }
 drain_result exporter::drain(std::size_t budget) {
   drain_result result;
-  if (!begun_ || finished_ || !output_.good()) return result;
-  budget = (std::min)(budget, events_per_thread);
+  if (!begun_ || finished_ || limit_reached_ || !output_.good()) return result;
+  if (exported_ == maximum_export_events) {
+    if (source_.snapshot().queued) { limit_reached_ = true; source_.note_causal_loss(); }
+    return result;
+  }
+  budget = (std::min)((std::min)(budget, events_per_thread), maximum_export_events-exported_);
   std::array<event, 256> buffer;
   while (result.count < budget) {
     const auto next = source_.drain(buffer.data(), (std::min)(buffer.size(), budget - result.count));
     if (next.busy) { result.busy = true; break; }
     for (std::size_t n = 0; n < next.count; ++n) write_event(output_, buffer[n]);
     result.count += next.count;
+    exported_ += next.count;
     if (!next.count || !output_.good()) break;
   }
   return result;
 }
 bool exporter::finish() {
   if (finished_) return true;
-  if (!begun_ || !output_.good()) return false;
+  if (!begun_ || limit_reached_ || !output_.good()) return false;
   const auto value = source_.snapshot();
   if (!value.quiescent || value.queued) return false;
   output_ << "{\"event\":\"trace.end\",\"complete\":true,\"registered_threads\":" << value.registered_threads

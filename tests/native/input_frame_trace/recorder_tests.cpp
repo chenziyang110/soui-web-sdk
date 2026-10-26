@@ -2,12 +2,25 @@
 #include "content/common/InputFrameTrace.h"
 
 #include <array>
+#include <atomic>
 #include <cstddef>
+#include <cstdlib>
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
 #include <thread>
 #include <utility>
+#include <new>
+
+// Isolated fixture-only failure injection; production has no test allocator.
+std::atomic<bool> fail_next_trace_allocation{false};
+void* operator new(std::size_t bytes) {
+  if (fail_next_trace_allocation.exchange(false)) throw std::bad_alloc();
+  if (void* value = std::malloc(bytes ? bytes : 1)) return value;
+  throw std::bad_alloc();
+}
+void operator delete(void* value) noexcept { std::free(value); }
+void operator delete(void* value, std::size_t) noexcept { std::free(value); }
 
 namespace sdk_trace = soui::sdk::diagnostics::input_frame_trace;
 namespace vendor_trace = content::input_frame_trace;
@@ -107,8 +120,24 @@ void scalar_has_no_event_queue() {
   for (unsigned n = 0; n < 2048; ++n)
     require(static_cast<unsigned>(producer.record(value)) == 1, "scalar allocated/filled an event ring");
   const auto snapshot = source.snapshot();
+  require(snapshot.available && snapshot.session.process_id && snapshot.session.process_incarnation &&
+          snapshot.session.qpc_frequency && !snapshot.session.run_id_high && !snapshot.session.run_id_low,
+          "default scalar snapshot lacks actual identity/frequency");
   require(snapshot.attempted == 2048 && snapshot.recorded == 0 && snapshot.queued == 0 &&
           snapshot.dropped == 0 && snapshot.stages[1] == 2048, "scalar accounting differs");
+}
+template<class Recorder, class Event, class Identity, class Mode, class Exporter>
+void cold_allocation_failure(Identity identity, Mode detailed) {
+  fail_next_trace_allocation.store(true);
+  Recorder source;
+  require(!source.snapshot().available, "cold allocation failure was hidden");
+  require(!source.configure(identity,detailed) && !source.attach_current_thread(), "unavailable recorder accepted producer");
+  source.note_unregistered_write(); source.note_causal_loss(); source.stop();
+  require(source.quiescent() && source.snapshot().causal_lost == 1, "unavailable recorder lifecycle fault");
+  Event output;
+  require(source.drain(&output,1).count == 0, "unavailable recorder drained storage");
+  std::ostringstream serialized; Exporter exporter(serialized,source);
+  require(!exporter.begin() && !exporter.finish(), "unavailable diagnostics fabricated complete trace");
 }
 }
 
@@ -122,6 +151,8 @@ int main() {
     owner_and_invalid_fields<vendor_trace::recorder, vendor_trace::event>();
     scalar_has_no_event_queue<sdk_trace::recorder, sdk_trace::event>();
     scalar_has_no_event_queue<vendor_trace::recorder, vendor_trace::event>();
+    cold_allocation_failure<sdk_trace::recorder,sdk_trace::event,sdk_trace::identity,sdk_trace::mode,sdk_trace::exporter>(sdk_trace::current_identity(1,2),sdk_trace::mode::detailed);
+    cold_allocation_failure<vendor_trace::recorder,vendor_trace::event,vendor_trace::identity,vendor_trace::mode,vendor_trace::exporter>(vendor_trace::current_identity(1,2),vendor_trace::mode::detailed);
     require(static_cast<unsigned>(sdk_trace::record(sdk_trace::event{})) == 6, "SDK hot path lazily registered");
     require(static_cast<unsigned>(vendor_trace::record(vendor_trace::event{})) == 6, "vendor hot path lazily registered");
     require(sdk_trace::process_recorder().snapshot().unregistered_writes == 1, "SDK unregistered write hidden");
