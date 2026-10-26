@@ -128,16 +128,24 @@ std::shared_ptr<content::PaintLifetimeState> WebPage::paintLifetimeState() const
 
 void WebPage::retryRejectedDrawWake()
 {
-    if (!m_pageImpl || !m_pageImpl->m_layerTreeHost->hasRejectedDrawWake())
+    if (!m_pageImpl || (!m_pageImpl->m_layerTreeHost->hasRejectedDrawWake()
+        && !m_pageImpl->hasVisibilityOwnerRetry()))
         return;
     PaintActivityScope activity(m_pageImpl->m_layerTreeHost->paintLifetimeState());
-    if (activity)
+    if (activity) {
         m_pageImpl->m_layerTreeHost->retryPendingOwnerWork();
+        m_pageImpl->retryVisibilityOwnerWork();
+    }
 }
 
 bool WebPage::cancelInputState()
 {
     return m_pageImpl && m_pageImpl->cancelInputState();
+}
+
+bool WebPage::setHostVisible(bool visible)
+{
+    return m_pageImpl && m_pageImpl->setHostVisible(visible);
 }
 
 bool WebPage::setViewTraceIdentity(const content::input_frame_trace::event& value)

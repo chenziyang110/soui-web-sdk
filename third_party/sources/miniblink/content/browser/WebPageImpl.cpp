@@ -1,4 +1,6 @@
 ﻿#include "content/browser/WebPageImpl.h"
+#include "content/browser/HostVisibilityPolicy.h"
+#include <new>
 #include "wke/RendererModelState.h"
 
 #include "base/basictypes.h"
@@ -198,6 +200,12 @@ void WebPageImpl::unregisterDestroyNotif(DestroyNotif* destroyNotif)
         m_destroyNotifs.remove(pos);
 }
 
+struct HostVisibilityWakeState {
+    explicit HostVisibilityWakeState(WebPageImpl* value) : page(value) { }
+    WebPageImpl* page;
+    HostVisibilityPolicy policy;
+};
+
 int64_t WebPageImpl::m_firstFrameId = 0;
 
 WebPageImpl::WebPageImpl(COLORREF bdColor)
@@ -214,6 +222,7 @@ WebPageImpl::WebPageImpl(COLORREF bdColor)
     m_platformEventHandler = nullptr;
     m_postMouseLeave = false;
     //m_needsCommit = 0;
+    m_hostVisibility = std::make_shared<HostVisibilityWakeState>(this);
     m_commitCount = 0;
     m_needsLayout = 1;
     m_layerDirty = 1;
@@ -272,6 +281,8 @@ WebPageImpl::WebPageImpl(COLORREF bdColor)
 
 WebPageImpl::~WebPageImpl()
 {
+    m_hostVisibility->page = nullptr;
+    m_hostVisibility->policy.close();
     m_paintCallbackAlive->store(false);
     ASSERT(pageDestroyed == m_state);
     m_platformCursor.dispose();
@@ -466,7 +477,8 @@ public:
         }
         bool isLayout = 0 != layerDirty || 0 != needsLayout;
 
-        if ((isLayout || m_isLayout) && m_isComefromMainFrame) {
+        if ((isLayout || m_isLayout) && m_isComefromMainFrame
+            && m_page->m_hostVisibility->policy.visible()) {
             if (m_page->m_mainFrameInterval <= 0 || m_lastFrameTimeMonotonic >= m_page->m_nextMainFrameTime) {
                 WebBeginFrameArgs frameArgs(m_lastFrameTimeMonotonic, 0, m_lastFrameTimeMonotonic - m_page->m_lastFrameTimeMonotonic);
                 if (m_page->m_mainFrameInterval > 0) {
@@ -482,15 +494,18 @@ public:
                 // Keep animation pending while allowing layout/paint actions to flush.
                 m_page->setNeedsCommit();
             }
-            cc::recordRenderStage(cc::trace::stage::layout_begin);
-            {
-                cc::RenderDurationScope layoutDuration(cc::trace::duration_metric::layout);
-                m_page->m_webViewImpl->layout();
+            if (m_page->m_hostVisibility->policy.visible()) {
+                cc::recordRenderStage(cc::trace::stage::layout_begin);
+                {
+                    cc::RenderDurationScope layoutDuration(cc::trace::duration_metric::layout);
+                    m_page->m_webViewImpl->layout();
+                }
+                cc::recordRenderStage(cc::trace::stage::layout_end);
             }
-            cc::recordRenderStage(cc::trace::stage::layout_end);
         }
 
-        if (m_isComefromMainFrame) {
+        const bool recorded = m_isComefromMainFrame && m_page->m_hostVisibility->policy.visible();
+        if (recorded) {
             cc::recordRenderStage(cc::trace::stage::record_begin);
             {
                 cc::RenderDurationScope recordDuration(cc::trace::duration_metric::record);
@@ -498,11 +513,14 @@ public:
             }
             cc::recordRenderStage(cc::trace::stage::record_end);
         }
-        else if (isLayout || m_isLayout)
+        else if (isLayout || m_isLayout || m_isComefromMainFrame) {
+            InterlockedExchange(reinterpret_cast<long volatile*>(&m_page->m_layerDirty), 1);
+            InterlockedExchange(reinterpret_cast<long volatile*>(&m_page->m_needsLayout), 1);
             m_page->setNeedsCommitAndNotLayout();
+        }
 
         m_host->endRecordActions();
-        if (m_isComefromMainFrame) {
+        if (recorded) {
             m_host->setMainFrameDeadline(m_page->m_renderFrameId,
                 m_lastFrameTimeMonotonic, m_page->m_mainFrameInterval);
         }
@@ -692,6 +710,8 @@ void WebPageImpl::doClose()
     // Reentry destructors also reach here: actual owned task drain is mandatory.
     if (!wke::brokerDrained(m_pagePtr->wkeWebView()))
         return;
+    m_hostVisibility->page = nullptr;
+    m_hostVisibility->policy.close();
     m_platformCursor.dispose();
     m_layerTreeHost->requestApplyActionsToRunIntoCompositeThread(false);
 #if (defined ENABLE_WKE) && (ENABLE_WKE == 1)
@@ -773,7 +793,7 @@ DEFINE_DEBUG_ONLY_GLOBAL(WTF::RefCountedLeakCounter, commitTaskCounter, ("conten
 class CommitTask : public blink::WebThread::Task, public WebPageImpl::DestroyNotif {
 public:
     CommitTask(WebPageImpl* client)
-        : m_client(client)
+        : m_client(client), m_ran(false)
     {
         m_client->registerDestroyNotif(this);
 #ifndef NDEBUG
@@ -784,6 +804,7 @@ public:
     virtual ~CommitTask() override
     {
         if (m_client) {
+            if (!m_ran) atomicDecrement(&m_client->m_commitCount);
             m_client->unregisterDestroyNotif(this);
         }
 #ifndef NDEBUG
@@ -801,13 +822,73 @@ public:
         if (!m_client)
             return;
         
+        m_ran = true;
         atomicDecrement(&m_client->m_commitCount);
         m_client->beginMainFrame();
     }
 
 private:
     WebPageImpl* m_client;
+    bool m_ran;
 };
+
+class VisibilityRestoreTask final : public blink::WebThread::Task {
+public:
+    VisibilityRestoreTask(const std::shared_ptr<HostVisibilityWakeState>& state, uint64_t ticket)
+        : m_state(state), m_ticket(ticket) { }
+    ~VisibilityRestoreTask() override
+    {
+        if (!m_ran) m_state->policy.reject(m_ticket);
+    }
+    void run() override
+    {
+        if (!m_state->policy.claim(m_ticket)) return;
+        m_ran = true;
+        WebPageImpl* page = m_state->page;
+        if (page) page->beginMainFrame();
+    }
+private:
+    std::shared_ptr<HostVisibilityWakeState> m_state;
+    uint64_t m_ticket;
+    bool m_ran = false;
+};
+
+bool WebPageImpl::scheduleVisibilityRestore()
+{
+    const uint64_t ticket = m_hostVisibility->policy.arm();
+    if (!ticket) return !m_hostVisibility->policy.retry();
+    auto* task = new (std::nothrow) VisibilityRestoreTask(m_hostVisibility, ticket);
+    if (!task) { m_hostVisibility->policy.reject(ticket); return false; }
+    // The owner scheduler consumes/disposes this receipt on every rejection.
+    blink::Platform::current()->mainThread()->postTask(FROM_HERE, task);
+    return !m_hostVisibility->policy.retry();
+}
+
+bool WebPageImpl::hasVisibilityOwnerRetry() const
+{
+    return m_hostVisibility->policy.retry();
+}
+void WebPageImpl::retryVisibilityOwnerWork()
+{
+    if (m_hostVisibility->policy.retry()) scheduleVisibilityRestore();
+}
+
+bool WebPageImpl::setHostVisible(bool visible)
+{
+    if (!blink::Platform::current() || !blink::Platform::current()->mainThread()
+        || !blink::Platform::current()->mainThread()->isCurrentThread() || m_state != pageInited)
+        return false;
+    PaintActivityScope activity(m_layerTreeHost->paintLifetimeState());
+    if (!activity || !m_hostVisibility->policy.set(visible)) return false;
+    if (visible) {
+        m_nextMainFrameTime = 0;
+        m_lastFrameTimeMonotonic = WTF::monotonicallyIncreasingTime();
+        InterlockedExchange(reinterpret_cast<long volatile*>(&m_layerDirty), 1);
+        InterlockedExchange(reinterpret_cast<long volatile*>(&m_needsLayout), 1);
+    }
+    m_layerTreeHost->setVisible(visible);
+    return !visible || scheduleVisibilityRestore();
+}
 
 void WebPageImpl::setNeedsCommitAndNotLayout()
 {
@@ -816,6 +897,12 @@ void WebPageImpl::setNeedsCommitAndNotLayout()
 
 void WebPageImpl::scheduleCommit(long long minimumDelayMs)
 {
+    if (!m_hostVisibility->policy.visible()) return;
+    if (m_hostVisibility->policy.fresh()) {
+        m_hostVisibility->policy.request();
+        scheduleVisibilityRestore();
+        return;
+    }
 //     if (0 != m_needsCommit)
 //         return;
 //     atomicIncrement(&m_needsCommit);
@@ -846,6 +933,8 @@ void WebPageImpl::setNeedsCommit()
 
 void WebPageImpl::beginMainFrame()
 {
+    PaintActivityScope activity(m_layerTreeHost->paintLifetimeState());
+    if (!activity || !m_hostVisibility->policy.visible()) return;
     //bool needsCommit = m_needsCommit;
     if (pageInited != m_state)
         return;
@@ -862,8 +951,11 @@ void WebPageImpl::executeMainFrame()
     freeV8TempObejctOnOneFrameBefore();
     //atomicDecrement(&m_needsCommit);
 
-    if (0 != m_executeMainFrameCount || m_isEnterDebugLoop)
+    if (!m_hostVisibility->policy.visible()) return;
+    if (0 != m_executeMainFrameCount || m_isEnterDebugLoop) {
+        m_hostVisibility->policy.request();
         return;
+    }
     atomicIncrement(&m_executeMainFrameCount);
 
     //double lastFrameTimeMonotonic = WTF::monotonicallyIncreasingTime();
@@ -895,6 +987,7 @@ void WebPageImpl::executeMainFrame()
             content::input_frame_trace::note_causal_loss();
         else
             ++m_renderFrameId;
+        m_hostVisibility->policy.recording();
         AutoRecordActions autoRecordActions(this, m_layerTreeHost, true);
     }
     
@@ -1328,6 +1421,7 @@ bool HDCToFile(HDC Context)
 // 鏈嚱鏁板彲鑳借璋冪敤鍦╱i绾跨▼锛屼篃鍙互鏄悎鎴愮嚎绋嬨€傚紑鍚绾跨▼缁樺埗锛屽垯鍦ㄥ悎鎴愮嚎绋?
 void WebPageImpl::paintToMemoryCanvasInUiThread(SkCanvas* canvas, const IntRect& paintRect)
 {
+    if (!m_layerTreeHost->hostVisible()) return;
     if (m_disablePaint)
         return;
     const auto callbackAlive = m_paintCallbackAlive;

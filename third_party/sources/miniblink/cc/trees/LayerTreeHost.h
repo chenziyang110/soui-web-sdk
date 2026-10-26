@@ -156,6 +156,7 @@ public:
     // Sets whether this view is visible. In threaded mode, a view that is not visible will not
     // composite or trigger updateAnimations() or layout() calls until it becomes visible.
     virtual void setVisible(bool) override;
+    bool hostVisible() const { return m_visible.load(); }
 
     // Sets the current page scale factor and minimum / maximum limits. Both limits are initially 1 (no page scale allowed).
     virtual void setPageScaleFactorAndLimits(float pageScaleFactor, float minimum, float maximum) override;
@@ -346,7 +347,7 @@ private:
     blink::WebColor m_backgroundColor;
     std::atomic<bool> m_hasTransparentBackground;
     bool m_independentPresentationEnabled;
-    bool m_visible;
+    std::atomic<bool> m_visible;
     float m_pageScaleFactor;
     float m_minimum;
     float m_maximum;

@@ -1118,6 +1118,7 @@ void LayerTreeHost::retryPendingOwnerWork()
     bool retryDraw = false;
     {
         WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
+        if (!m_visible.load()) return;
         queueLegacyPaintLocked();
         std::lock_guard<std::mutex> lock(m_uiPaintRetry->mutex);
         retryDraw = m_uiPaintRetry->drawWake.needsRetry();
@@ -1298,7 +1299,7 @@ static void refreshScrollRasterCoverage(LayerTreeHost* host,
 void LayerTreeHost::recordDraw()
 {
     m_recordedTraceActionFirst = m_recordedTraceActionLast = 0;
-    if (blink::RuntimeEnabledFeatures::headlessEnabled())
+    if (!m_visible.load() || blink::RuntimeEnabledFeatures::headlessEnabled())
         return;
     if (!m_rootLayer)
         return;
@@ -2121,17 +2122,22 @@ void LayerTreeHost::registerForAnimations(blink::WebLayer* layer)
 // composite or trigger updateAnimations() or layout() calls until it becomes visible.
 void LayerTreeHost::setVisible(bool visible)
 {
-    bool restored = false;
     {
         WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
-        restored = !m_visible && visible;
-        m_visible = visible;
+        m_visible.store(visible);
         m_nextCompositeFrameTime = 0;
-        if (restored && !m_clientRect.isEmpty())
-            addAndMergeDirty(&m_dirtyRectsForComposite, SkRect::MakeWH(
-                m_clientRect.width(), m_clientRect.height()));
+        m_lastPaintTime = 0;
+        {
+            std::lock_guard<std::mutex> retryLock(m_uiPaintRetry->mutex);
+            m_uiPaintRetry->policy.invalidate();
+        }
+        // Repeated true is a real restore intent after UI transition coalescing.
+        if (visible && !m_clientRect.isEmpty()) {
+            const SkRect full = SkRect::MakeWH(m_clientRect.width(), m_clientRect.height());
+            addAndMergeDirty(&m_dirtyRectsForComposite, full);
+        }
     }
-    if (restored) {
+    if (visible) {
         m_hostClient->onLayerTreeSetNeedsCommit();
         requestDrawFrameToRunIntoCompositeThread();
     }
@@ -2186,7 +2192,7 @@ void LayerTreeHost::requestDrawFrameAfterDelay(long long delayMs)
 void LayerTreeHost::queueDrawFrameWake(long long delayMs)
 {
     WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
-    if (!m_compositeThread || m_isDestroying)
+    if (!m_compositeThread || m_isDestroying || !m_visible.load())
         return;
     if (m_uiPaintRetry->drawQueuedCount)
         return;
@@ -3428,6 +3434,7 @@ void LayerTreeHost::paintToMemoryCanvasInUiThread(const SkRect& paintRect)
     LayerTreeHostUiThreadClient* client = nullptr;
     {
         WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
+        if (!m_visible.load()) return;
         lease = acquireFrameBufferLeaseLocked();
         client = m_uiThreadClient;
     }
@@ -3443,7 +3450,7 @@ void LayerTreeHost::paintToMemoryCanvasInUiThread(const SkRect& paintRect)
 
 void LayerTreeHost::queueLegacyPaintLocked()
 {
-    if (m_isDestroying || m_dirtyRectsForUi.isEmpty() || m_hasResize || !m_memoryCanvas
+    if (m_isDestroying || !m_visible.load() || m_dirtyRectsForUi.isEmpty() || m_hasResize || !m_memoryCanvas
         || !Platform::current() || !Platform::current()->mainThread())
         return;
     const double now = WTF::monotonicallyIncreasingTime();
@@ -3483,7 +3490,7 @@ void LayerTreeHost::runLegacyPaintRetry(const LegacyPaintRetryPolicy::Ticket& ti
             accepted = state->policy.accepts(ticket);
             state->policy.dispose(ticket);
         }
-        if (!accepted || m_isDestroying || m_hasResize || !m_memoryCanvas) {
+        if (!accepted || m_isDestroying || !m_visible.load() || m_hasResize || !m_memoryCanvas) {
             queueLegacyPaintLocked();
             return;
         }
@@ -3537,6 +3544,11 @@ uint64_t LayerTreeHost::paintToMemoryCanvasInCompositeThread(const SkRect& r)
 {
     RenderMutexLock<WTF::Mutex> locker(m_compositeMutex);
     SkRect paintRect = r;
+    if (!m_visible.load()) {
+        addAndMergeDirty(&m_dirtyRectsForComposite, paintRect);
+        m_canvasPaintBlocked = true;
+        return 0;
+    }
 #if defined(SOUI_GPU_COMPOSITOR)
     bool resized = m_hasResize;
 #endif

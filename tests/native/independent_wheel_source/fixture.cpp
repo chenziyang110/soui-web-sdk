@@ -89,6 +89,7 @@ struct CompositorScrollReceipt { uint64_t sceneVersion = 0, inputSequence = 0; d
 class LayerTreeHost {
 public:
     bool m_isDestroying = false;
+    std::atomic<bool> m_visible{true};
     WTF::Mutex m_compositeMutex, m_compositorScrollInputMutex;
     std::shared_ptr<content::PaintLifetimeState> m_paintLifetime = std::make_shared<content::PaintLifetimeState>();
     ScrollTreeSnapshot* m_activeInputScrollTree = nullptr;

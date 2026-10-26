@@ -115,6 +115,7 @@ public:
     void setMainFrameRate(int rate);
     bool cancelInputState();
     void setUiMirrorConsumerRequired(bool required);
+    bool setHostVisible(bool visible);
     bool setViewTraceIdentity(const content::input_frame_trace::event& value);
     void setInputTraceContext(const content::input_frame_trace::event& value);
     bool uiMirrorConsumerRequired() const;

@@ -40,6 +40,7 @@ class CWebView;
 
 namespace content {
 
+struct HostVisibilityWakeState;
 class WebFrameClientImpl;
 class WebPage;
 class PlatformEventHandler;
@@ -186,6 +187,10 @@ public:
     void setDrawMinInterval(double drawMinInterval);
     void setMainFrameRate(int rate);
     void setUiMirrorConsumerRequired(bool required);
+    bool setHostVisible(bool visible);
+    bool hasVisibilityOwnerRetry() const;
+    void retryVisibilityOwnerWork();
+    bool scheduleVisibilityRestore();
     bool setViewTraceIdentity(const content::input_frame_trace::event& value);
     void setInputTraceContext(const content::input_frame_trace::event& value);
     bool uiMirrorConsumerRequired() const;
@@ -307,6 +312,7 @@ public:
     HWND m_popupHandle;
     int m_debugCount;
     //int m_needsCommit;
+    std::shared_ptr<HostVisibilityWakeState> m_hostVisibility;
     int m_commitCount;
     int m_needsLayout;
     int m_layerDirty;
