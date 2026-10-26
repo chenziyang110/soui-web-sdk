@@ -1,6 +1,6 @@
 # W11 GPU 候选交接与采用门槛
 
-日期：2026-10-26。状态：设计/诊断候选，默认不启用、待软件 profile。未改 GPU 生产代码，未编译/测试/benchmark/VM；不代表本轮已经实现硬件后端。决策见 ADR-0126。
+日期：2026-10-26。状态：设计/诊断候选，默认不启用、待软件 profile。本独立W11文档包不新增GPU后端实现，继承软件栈的数值诊断；未编译/测试/benchmark/VM；不代表本轮已经实现硬件后端。决策见 ADR-0126。
 
 ## 已核查入口与诊断缺口
 
@@ -13,7 +13,7 @@
 | `LayerTreeHost::paintToMemoryCanvasInCompositeThread/drawFrameInCompositeThread` | 实验分支绘制/读回、帧末直接呈现 | callback/锁与 owner lifetime；失败时 dirty/事务恢复；不将软件lease资格推广GPU |
 | `shutdownCompositeThread/~LayerTreeHost` | 合成线程删除 surface 后 shutdown，仍有既有等待路径 | 有界恰好一次 cleanup/late通知/任务析构、真实join、不得UI强删或假drained |
 
-核查基于集成树 HEAD `45b1c12527f9705c5b5af5065e723404cb72b21a` 与当时 live 符号，最终 SourceManifest 仍待集成冻结。历史 ADR-0005/GPU 生命周期失败与资源记录保留原身份，不当作本候选测量结果。现有实验 GPU callback 的复合锁/重入边界、设备恢复和关闭资格仍缺。
+当前独立GPU/交接PR以其实际head及执行前 `git rev-parse HEAD` 为准；生产源码继承Draft PR122，根 `source-manifest.json` 与各raw delta固定身份。表中源码能力按最终软件树符号重新静态核对，不用旧worker head代替最终候选。历史 ADR-0005/GPU 生命周期失败与资源记录保留原身份，不当作本候选测量结果。现有实验 GPU callback 的复合锁/重入边界、设备恢复和关闭资格仍缺。
 
 ## 两阶段交接
 
@@ -54,3 +54,5 @@
 输入状态错误、动作/coverage/fence/ACK不守恒、露白/错帧、死锁/UAF、持续资源增长或回退失效，立即关闭 GPU 候选并保留失败证据。相同环境原因两次无效停止该场景；不是无限重试或强删关闭检查。专人只重跑受改动影响集合，软件主线不因待GPU数据阻塞交付。
 
 重新触发采用评估的条件必须具体：新的软件关键路径 profile 显示可GPU化瓶颈、可验证的 bounded-present/fence 能力、已定位并修复的恢复/资源问题，或新的受控目标设备。当前待办是上述证据与独立硬件实现；缺数据不是不采用证据。
+
+后续采用还必须遵循[专人交接](input-ui-specialist-handoff-20261026.md)的统一至少5个有效交替pairs、每候选至少10000条可判定输入、实际stage/visible样本分别计数，以及unknown/无效轮次/两次同因失败停止规则；不能以5对小样本或GPU吞吐替代输入尾延迟与资源资格。

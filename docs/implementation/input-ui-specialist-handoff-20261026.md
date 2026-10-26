@@ -1,8 +1,24 @@
 # 输入到可见反馈：专人一次性交接
 
-日期：2026-10-26。本文交接源码、fixture 和下一次执行顺序。实施阶段没有构建、执行测试、运行 benchmark/profile 或启动 VM；下列命令全部未执行，空白结果不能解释为通过。基线为 `44eff565bf9ab7778a8b9fdaa5403cc3b6f568ed`（Draft PR110，依赖链仍须 Root 核对）。**最终集成 candidate head 尚待 Root 冻结**；任何 worker commit、本文 commit 或旧预编译 DLL 都不能代替它。
+日期：2026-10-26。本阶段已交付生产源码、必要回归SOURCE、独立静态审查、ADR、严格来源和分批Draft PR。未配置/编译、未执行C++ SOURCE/CTest、应用、真实COM/GL、benchmark/profile或VM；下列执行命令均未运行。只做源码/差异/语法/字节与来源清单元数据核对；只读内存提取未落地测试产物。
 
-Root 冻结后向验证人员填写唯一交接单：baseline/candidate 的完整 commit 与依赖、各自匹配的 SDK 公共头/LIB/内核 DLL/Host EXE、量测源码 commit、页面/工具/配置/载荷散列、source manifest/补丁、工具链/架构、物理目标环境和输出目录。C++ 布局变化必须匹配重编，不能把新 Host 头和旧 core LIB 混用。Root 最终逐项核对 worker fixture 的 **16 个 live source / 15 个复制输入**映射，以及新增 trace `.cpp` 的单次实际编译闭包；此数量是待核对口径，不是来源门槛已经通过的证据。
+最终集成候选为本独立GPU/交接Draft的分支 `codex/input-ui-gpu-handoff-20261026`，以该PR实际head及执行前`git rev-parse HEAD`一致为准。正文不以worker提交或前序快照替代最终head。基线是PR110的`44eff565bf9ab7778a8b9fdaa5403cc3b6f568ed`；PR109、尚未实测的PR110和最终候选必须分别冻结，不能把异条件数字拼为收益曲线。
+
+| Draft依赖 | 范围 | 已发布源码head |
+|---|---|---|
+| [110](https://github.com/chenziyang110/soui-web-sdk/pull/110) | 基线/ready continuation | `44eff565bf9ab7778a8b9fdaa5403cc3b6f568ed` |
+| [111](https://github.com/chenziyang110/soui-web-sdk/pull/111) | W00 | `ca58a1b0f5e2e97e6df84051bdc1cb9954a956f4` |
+| [116](https://github.com/chenziyang110/soui-web-sdk/pull/116) | W01基础/协议 | `8718ccb30c3e14539e16c374217aa172b967523b` |
+| [117](https://github.com/chenziyang110/soui-web-sdk/pull/117) | W02接纳 | `d558e363ec84cecfb1c46d022f4ea9a91e5c9b79` |
+| [118](https://github.com/chenziyang110/soui-web-sdk/pull/118) | W03/W04 | `5bbfe4d4c9acd4e64461516921ae493e1f49d82f` |
+| [119](https://github.com/chenziyang110/soui-web-sdk/pull/119) | W05/W06 | `b0690ea9f13d7b8f86eb25d126269ef6f3c7e696` |
+| [120](https://github.com/chenziyang110/soui-web-sdk/pull/120) | W07/场景/关闭与W08守卫 | `ec530a40f8612058a31603b0687bc4142f1231c7` |
+| [121](https://github.com/chenziyang110/soui-web-sdk/pull/121) | SDK调用点/冷租约/W09 | `af3f94054343774ea33efa5eaace1baffdbdd89b` |
+| [122](https://github.com/chenziyang110/soui-web-sdk/pull/122) | W10 | `4ed101d6118900fdd048b905edbd6e54506cf66a` |
+
+本分支只增加W11设计/诊断候选和W12交接，没有启用或实现新的合格GPU后端。根`source-manifest.json`、`third_party/manifests/kernel-input-ui-*-source.json`和raw patch0015–0023固定各包来源；固定prebuilt保持历史身份，releaseReady/performanceGate不据此变true。worker最终16 live/15 copies/22payload已逐字节核对，仅审过C trace两whole原件更新；原关闭proof保持。全局SOURCE静态登记为78个精确kernel名称+4个scheduler辅助名称，50项preflight，SDK新增leaf另外列于下表。这些数量不是运行通过数。
+
+验证人员从独立干净checkout和独占输出根填写一次冻结单：最终完整commit、匹配重编的SDK公共头/LIB/内核DLL/Host EXE、量测源码、页面/工具/配置/载荷散列、清单/raw patch、工具链/架构、实际Runtime版本、物理目标环境、命令和产物身份。C++布局变化必须整体匹配，禁止新头/旧DLL混用。原dirty开发目录与其他任务构建不参与验证。
 
 ## 需求、源码、fixture、证据与状态
 
@@ -26,7 +42,7 @@ Root 冻结后向验证人员填写唯一交接单：baseline/candidate 的完�
 
 ## 原生 fixture 的准确注册闭包
 
-`V` 表示 `third_party/sources/miniblink`。以下是 Root 最终严格 registry 的核对清单；“建议”名称尚未全局注册，不得把表中名字当成已经可运行。必须在实际 `ctest --show-only=json-v1` 中检查名称、命令、架构和来源完全匹配，不放宽已有 exact-set gate。Release 下的显式失败返回逻辑须保留。
+`V` 表示 `third_party/sources/miniblink`。以下名称已在最终根CMake/精确清单作源码登记与静态核对，仍须由专人查询实际配置生成的registry；静态登记不等于目标已构建或已运行。必须在实际 `ctest --show-only=json-v1` 中检查名称、命令、架构和来源完全匹配，不放宽已有 exact-set gate。Release 下的显式失败返回逻辑须保留。
 
 | 实际源码/leaf | CMake executable target | CTest 名称 | 必要实际编译输入/注册注意 |
 |---|---|---|---|
@@ -38,22 +54,22 @@ Root 冻结后向验证人员填写唯一交接单：baseline/candidate 的完�
 | `scheduler_index/fixture.cpp` | `scheduler_index_contract` | `scheduler.index.contract` | 实际 `TaskSchedulingIndex.h` / `TaskSchedulingPolicy.h`；不得复刻被测算法或悄悄退回旧 vector 实现 |
 | `scheduler_fairness_tests.cpp`（既有修改入口） | `soui_scheduler_fairness_tests` | `kernel.native.scheduler-fairness` | 实际 vendor header；原策略 oracle 与新 index tie-break/aging 分开证明 |
 | `vendor_lifetime/worker_lifetime/fixture.cpp` | `soui_worker_lifetime_regressions`；source-byte target `soui_worker_lifetime_source_bytes` | 现有 23 个 `kernel.native.worker-lifetime.<case>` 名称保持；特别核对 `worker-scheduler-no-count-cap`、`worker-scheduler-clock-budget`、各 `main-scheduler-*` 和 `registry-live-fence` | 由 `source-map.json` / `source-bytes.cmake` 对实际原始编码 bytes 生成；Root 最终核对 16 live/15 copies 与实际 trace `.cpp` 单次编译。保留 stubs、宏、`user32`/`winmm`、fail-fast 包装；不改成旧 opaque LIB |
-| `fractional_frame_phase_tests.cpp` | 建议 `soui_fractional_frame_phase_tests` | 建议 `kernel.native.fractional-frame-phase` | SDK `frame_rate_policy.h` + V`/cc/trees/FrameDeadlinePolicy.h`，均为实际 header；两个 include root，无 vendor `.cpp` |
-| `resource_notification_policy_tests.cpp` | 建议 `soui_resource_notification_policy_tests` | 建议 `kernel.native.resource-notification-policy` | 实际 V`/cc/trees/ResourceNotificationPolicy.h`，header-only |
-| `frame_buffer_lease_policy_tests.cpp` | 建议 `soui_frame_buffer_lease_policy_tests` | 建议 `kernel.native.frame-buffer-lease-policy` | 实际 V`/cc/trees/FrameBufferLeasePolicy.h` 与 `content/common/PaintLifetime.h`，header-only + C++ thread；包含 activity/cancel/foreign-release/mirror 源码案例，仍不是完整 GDI/Host 生命周期执行 |
-| `input_frame_coverage_tests.cpp` | 建议 `soui_input_frame_coverage_tests` | 建议 `kernel.native.input-frame-coverage` | 实际 V`/cc/trees/{InputFrameCoverage.h,ViewTraceIdentity.h}` 及 trace POD header；helper fixture 无需另编 trace `.cpp` |
-| `raster_scheduling_policy_tests.cpp` | 建议 `soui_raster_scheduling_policy_tests` | 建议 `kernel.native.raster-scheduling-policy` | 实际 V`/cc/raster/{RasterSchedulingPolicy.h,RasterCandidateBudget.h}`，header-only；不能由合成 budget 成功宣称真实 SkPicture 资格通过 |
-| `render_scene_transaction_tests.cpp` | 建议 `soui_render_scene_transaction_tests` | 建议 `kernel.native.render-scene-transaction` | **实际 V`/cc/input/ScrollController.cpp` 和 `cc/trees/ScrollTreeSnapshot.cpp`**，因为 ScrollRect/ScrollNodeKey 等构造不是 inline；参考现有 scroll leaf 的 include/stubs/宏/CRT，不能只编 header 或链接旧 lib |
-| `window_close_lifetime/{fixture.cpp,generate.cjs}` | `soui_window_close_lifetime_source_tests`（Root 登记待冻结） | Root 选定 `kernel.native.window-close-lifetime-source` | 实际 `wkeWebWindow.cpp` close helper/`_destroyWindow`/NCDESTROY、native show/visibility messages/resize，及 `wkeWebView.cpp` callback-once/preflight，并复制 `PaintLifetime.h`；3 sources→8 copies（7 exact ranges +1 whole header），从原5 copies增加3个可见性片段。保留 CP936 source bytes/实际 source-charset 配置。使用 deterministic OS/page/scheduler fakes，不创建 HWND，不证明真实 Win32 close/visibility 已通过 |
-| `webview2_owner_policy/fixture.cpp` | `soui_webview2_owner_policy_tests` | `sdk.native.webview2-owner-policy` | leaf 已定义，Root 全局登记待冻结；实际 `owner_output_policy.h` 与 `owner_callout_policy.h`，header/fake SOURCE 检查预算/配额/严格解析、getter 重入/target pin/new-document flags 与 nested guard；不加载 COM/真实 Runtime |
-| `host_frame_policy/fixture.cpp` | `soui_host_frame_policy_tests` | `sdk.native.host-frame-policy` | leaf 已定义，Root 全局登记待冻结；实际 SDK `host_frame_policy.h` 的 controller/CPU override/legacy/显式 main/GPU 选择及安全 ceil interval，纯 policy，无 SDK recorder/vendor/WebView2 链接依赖；不证明真实 cadence/显示效果 |
-| `independent_input_trace_tests.cpp` | 建议 `soui_independent_input_trace_tests` | 建议 `kernel.native.independent-input-trace` | 实际 `IndependentInputTrace.h` / `InputFrameCoverage.h` / `ScrollTreeSnapshot.h`，并编译当前 `ScrollController.cpp`、`ScrollTreeSnapshot.cpp`；测试 consumed receipt 与 visual sample、zero visual、smooth 同 tick、generation/scene 权限及 overflow，不授予 visible/content-marker 标志 |
-| `independent_wheel_source/{fixture.cpp,generate.cjs}` | `soui_independent_wheel_source_tests`（Root 登记待冻结） | Root 选定 `kernel.native.independent-wheel-source` | 按 bytes/hash 复制/提取实际 payload、admission、draw wake/Task receipt 和 owner retry；18 个复制均为实际 UTF8 字节，使用冻结 CMake 的 `/utf-8`，并编译生成的实际 `cc/input/ScrollController.cpp` / `cc/trees/ScrollTreeSnapshot.cpp`。保留 generated include；receiving scheduler/render 是明确 dependency fakes，不创建 HWND/compositor |
-| `host_visibility_source/{fixture.cpp,generate.cjs}` | `soui_host_visibility_source_tests`（Root 登记待冻结） | Root 选定 `kernel.native.host-visibility-source` | worker `e769c980` 的实际 `HostVisibilityPolicy.h` / restore Task / owner / main frame / AutoRecord / LTH setVisible；6 原始 source →10 copies（4 whole headers、5 WebPageImpl fragments、1 LTH fragment），实际字节为 UTF8（含 AutoRecord 非 ASCII），使用 Root 冻结 CMake 的 `/utf-8`；仅生成 include + fixture，不另链接 vendor `.cpp`。SOURCE 验证失败/OOM/隐藏保留 dirty 与 close 后 queued disposal/late run；不创建 HWND。恢复只强制 composite full damage，并保留已有 legacy UI dirty，不新增 DIRECT_HWND mirror copy |
-| `render_diagnostic_source/{fixture.cpp,generate.cjs}` | `soui_render_diagnostic_source_tests`（Root 登记待冻结） | Root 选定 `kernel.native.render-diagnostic-source` | worker `5e27085d` 的实际 `InputFrameTrace.h` / `RenderDiagnosticTrace.h` / `GpuSkiaSurface::present`，3 sources→3 copies，fixture + generated includes，不另链接 vendor `.cpp`。GL/recorder 是显式 fakes；检查 SwapBuffers/count/frameDirty 行为与 stage29/30 零关系固定码，不证明实际 GPU 资源/呈现资格，也不执行 GL |
-| `native_trace_ui_lease/fixture.cpp` | `soui_native_trace_ui_lease_tests` | `sdk.native.native-trace-ui-lease` | leaf 已定义，Root 全局登记待冻结；编译实际 SDK `native_trace_ui_lease.h`，链接匹配 `Soui::Sdk` scalar diagnostics，module/API 是显式 fakes。覆盖共线程多 Host/不同 getter/module、active-call pin 跨最后 unmount、pin/retain 失败、foreign 最终析构保留引用并记 loss；不加载 DLL，不证明真实 producer 注册/退出已通过 |
+| `fractional_frame_phase_tests.cpp` | `soui_fractional_frame_phase_tests` | `kernel.native.fractional-frame-phase` | SDK `frame_rate_policy.h` + V`/cc/trees/FrameDeadlinePolicy.h`，均为实际 header；两个 include root，无 vendor `.cpp` |
+| `resource_notification_policy_tests.cpp` | `soui_resource_notification_policy_tests` | `kernel.native.resource-notification-policy` | 实际 V`/cc/trees/ResourceNotificationPolicy.h`，header-only |
+| `frame_buffer_lease_policy_tests.cpp` | `soui_frame_buffer_lease_policy_tests` | `kernel.native.frame-buffer-lease-policy` | 实际 V`/cc/trees/FrameBufferLeasePolicy.h` 与 `content/common/PaintLifetime.h`，header-only + C++ thread；包含 activity/cancel/foreign-release/mirror 源码案例，仍不是完整 GDI/Host 生命周期执行 |
+| `input_frame_coverage_tests.cpp` | `soui_input_frame_coverage_tests` | `kernel.native.input-frame-coverage` | 实际 V`/cc/trees/{InputFrameCoverage.h,ViewTraceIdentity.h}` 及 trace POD header；helper fixture 无需另编 trace `.cpp` |
+| `raster_scheduling_policy_tests.cpp` | `soui_raster_scheduling_policy_tests` | `kernel.native.raster-scheduling-policy` | 实际 V`/cc/raster/{RasterSchedulingPolicy.h,RasterCandidateBudget.h}`，header-only；不能由合成 budget 成功宣称真实 SkPicture 资格通过 |
+| `render_scene_transaction_tests.cpp` | `soui_render_scene_transaction_tests` | `kernel.native.render-scene-transaction` | **实际 V`/cc/input/ScrollController.cpp` 和 `cc/trees/ScrollTreeSnapshot.cpp`**，因为 ScrollRect/ScrollNodeKey 等构造不是 inline；参考现有 scroll leaf 的 include/stubs/宏/CRT，不能只编 header 或链接旧 lib |
+| `window_close_lifetime/{fixture.cpp,generate.cjs}` | `soui_window_close_lifetime_source_tests`（根已登记） | `kernel.native.window-close-lifetime-source` | 实际 `wkeWebWindow.cpp` close helper/`_destroyWindow`/NCDESTROY、native show/visibility messages/resize，及 `wkeWebView.cpp` callback-once/preflight，并复制 `PaintLifetime.h`；3 sources→8 copies（7 exact ranges +1 whole header），从原5 copies增加3个可见性片段。保留 CP936 source bytes/实际 source-charset 配置。使用 deterministic OS/page/scheduler fakes，不创建 HWND，不证明真实 Win32 close/visibility 已通过 |
+| `webview2_owner_policy/fixture.cpp` | `soui_webview2_owner_policy_tests` | `sdk.native.webview2-owner-policy` | leaf 已定义，根已登记，未执行；实际 `owner_output_policy.h` 与 `owner_callout_policy.h`，header/fake SOURCE 检查预算/配额/严格解析、getter 重入/target pin/new-document flags 与 nested guard；不加载 COM/真实 Runtime |
+| `host_frame_policy/fixture.cpp` | `soui_host_frame_policy_tests` | `sdk.native.host-frame-policy` | leaf 已定义，根已登记，未执行；实际 SDK `host_frame_policy.h` 的 controller/CPU override/legacy/显式 main/GPU 选择及安全 ceil interval，纯 policy，无 SDK recorder/vendor/WebView2 链接依赖；不证明真实 cadence/显示效果 |
+| `independent_input_trace_tests.cpp` | `soui_independent_input_trace_tests` | `kernel.native.independent-input-trace` | 实际 `IndependentInputTrace.h` / `InputFrameCoverage.h` / `ScrollTreeSnapshot.h`，并编译当前 `ScrollController.cpp`、`ScrollTreeSnapshot.cpp`；测试 consumed receipt 与 visual sample、zero visual、smooth 同 tick、generation/scene 权限及 overflow，不授予 visible/content-marker 标志 |
+| `independent_wheel_source/{fixture.cpp,generate.cjs}` | `soui_independent_wheel_source_tests`（根已登记） | `kernel.native.independent-wheel-source` | 按 bytes/hash 复制/提取实际 payload、admission、draw wake/Task receipt 和 owner retry；18 个复制均为实际 UTF8 字节，使用冻结 CMake 的 `/utf-8`，并编译生成的实际 `cc/input/ScrollController.cpp` / `cc/trees/ScrollTreeSnapshot.cpp`。保留 generated include；receiving scheduler/render 是明确 dependency fakes，不创建 HWND/compositor |
+| `host_visibility_source/{fixture.cpp,generate.cjs}` | `soui_host_visibility_source_tests`（根已登记） | `kernel.native.host-visibility-source` | worker `e769c980` 的实际 `HostVisibilityPolicy.h` / restore Task / owner / main frame / AutoRecord / LTH setVisible；6 原始 source →10 copies（4 whole headers、5 WebPageImpl fragments、1 LTH fragment），实际字节为 UTF8（含 AutoRecord 非 ASCII），使用 Root 冻结 CMake 的 `/utf-8`；仅生成 include + fixture，不另链接 vendor `.cpp`。SOURCE 验证失败/OOM/隐藏保留 dirty 与 close 后 queued disposal/late run；不创建 HWND。恢复只强制 composite full damage，并保留已有 legacy UI dirty，不新增 DIRECT_HWND mirror copy |
+| `render_diagnostic_source/{fixture.cpp,generate.cjs}` | `soui_render_diagnostic_source_tests`（根已登记） | `kernel.native.render-diagnostic-source` | worker `5e27085d` 的实际 `InputFrameTrace.h` / `RenderDiagnosticTrace.h` / `GpuSkiaSurface::present`，3 sources→3 copies，fixture + generated includes，不另链接 vendor `.cpp`。GL/recorder 是显式 fakes；检查 SwapBuffers/count/frameDirty 行为与 stage29/30 零关系固定码，不证明实际 GPU 资源/呈现资格，也不执行 GL |
+| `native_trace_ui_lease/fixture.cpp` | `soui_native_trace_ui_lease_tests` | `sdk.native.native-trace-ui-lease` | leaf 已定义，根已登记，未执行；编译实际 SDK `native_trace_ui_lease.h`，链接匹配 `Soui::Sdk` scalar diagnostics，module/API 是显式 fakes。覆盖共线程多 Host/不同 getter/module、active-call pin 跨最后 unmount、pin/retain 失败、foreign 最终析构保留引用并记 loss；不加载 DLL，不证明真实 producer 注册/退出已通过 |
 
-所有建议项和已存在 leaf 都须由 Root 对最终 global registry/source closure 逐项确认；缺少全局项不能算零项通过。独立 wheel 的 queued-close 计数修复已在 worker `f95efc75` 静态复核：实际 Task disposal 退休共享 obligation，不能直接清零假 drain。上述源码修复不构成已运行证据。
+以上leaf的最终global源码登记/来源已核对；专人的实际registry若缺项或多项应失败，不能算零项通过。独立 wheel 的 queued-close 计数修复已在 worker `f95efc75` 静态复核：实际 Task disposal 退休共享 obligation，不能直接清零假 drain。上述源码修复不构成已运行证据。
 
 完整产品还必须实际编译 A/B 接入的 `WebThreadImpl.cpp` / `WebTimerBase.cpp` / `WebPage.cpp` / `WebPageImpl.cpp`、`LayerTreeHost.cpp` / `ActionsFrameGroup.cpp` / `RasterTask.cpp` / `LayerChangeAction.cpp` / `ScrollTreeSnapshot.cpp` / `CompositingLayer.cpp` / `TileGrid.cpp`，以及 `wkeWebView.cpp` / `wkeWebWindow.cpp` / `CursorDescriptorBroker.cpp` / Root `wke.cpp` / `InputUiApi.cpp` 和 vendor trace module。policy target 不需要链接这些大单元，却也不能证明这些单元已编译或接线正确。
 
@@ -69,10 +85,13 @@ $inputUiRoot = '<冻结源码根绝对路径>'
 $inputUiArch = 'x64' # 关键正确性随后以 x86 再执行一次；不是双架构性能笛卡尔积。
 $inputUiConfig = 'Release'
 $inputUiCtest = '<冻结 ctest.exe 绝对路径>'
+$inputUiPowerShell = '<冻结 PowerShell 可执行文件绝对路径>'
 $inputUiBuild = Join-Path $inputUiRoot "out/$inputUiArch"
+$inputUiDependencyOutput = '<本轮独占的依赖输出根>'
 
+node tools/internal/source-archive.cjs verify
 & ./tools/Doctor.ps1 -Architecture $inputUiArch
-& ./tools/Build-Dependencies.ps1 -Architecture $inputUiArch -Component All
+& ./tools/Build-Dependencies.ps1 -Architecture $inputUiArch -Component Miniblink -OutputRoot $inputUiDependencyOutput
 # 先按冻结的依赖来源/部署契约绑定本次重建 DLL/LIB，再构建应用；禁止跑旧 prebuilt。
 & ./tools/Build.ps1 -Architecture $inputUiArch -Configuration $inputUiConfig -WithVendorTests -WithWebView2 -FreshConfigure
 node tools/internal/vendor-tests.cjs inspect $inputUiRoot $inputUiArch $inputUiConfig $inputUiCtest true
@@ -84,8 +103,11 @@ node tools/internal/vendor-tests.cjs inspect $inputUiRoot $inputUiArch $inputUiC
 Root 冻结实际 registry 后把下面选择表达式与实际注册名逐项比对，再运行相关集合一次；不匹配或返回零项就是交接失败。若使用 `Test.ps1 -RequireVendorTests` 完成相同集合及严格门槛，不再重复下面同样的 CTest；不使用 `-NativeOnly` 绕过 vendor/unit 门槛。
 
 ```powershell
-$inputUiSelection = '^(sdk\.native\.(input-mailbox|input-frame-backend-validation|interaction-router|frame-pacer|host-frame-policy|source-kernel-api|webview2-capacity|webview2-prepare|webview2-preparation-lifetime|webview2-owner-policy|native-trace-ui-lease)|kernel\.native\.(input-frame-trace|legacy-paint-deadline|scheduler-fairness|fractional-frame-phase|resource-notification-policy|frame-buffer-lease-policy|input-frame-coverage|raster-scheduling-policy|render-scene-transaction|independent-input-trace|independent-wheel-source|window-close-lifetime-source|host-visibility-source|render-diagnostic-source|scroll-coverage|worker-lifetime\..*)|scheduler\.(continuation\.contract|index\.contract|deadline\.(close|unregister)-failure))$'
+$inputUiSelection = '^(sdk\.native\.(input-mailbox|input-frame-backend-validation|interaction-router|frame-pacer|host-frame-policy|source-kernel-api|engine-startup-rollback|webview2-capacity|webview2-prepare|webview2-preparation-lifetime|webview2-owner-policy|native-trace-ui-lease)|kernel\.native\.(input-frame-trace|legacy-paint-deadline|scheduler-fairness|fractional-frame-phase|resource-notification-policy|frame-buffer-lease-policy|input-frame-coverage|raster-scheduling-policy|render-scene-transaction|independent-input-trace|independent-wheel-source|window-close-lifetime-source|host-visibility-source|render-diagnostic-source|scroll-coverage|lifetime\.(endpoint|ctor_shell|dragdata)-.*|request-close\..*|worker-lifetime\..*)|scheduler\.(continuation\.contract|index\.contract|deadline\.(close|unregister)-failure))$'
 & $inputUiCtest --test-dir $inputUiBuild -C $inputUiConfig -R $inputUiSelection --output-on-failure
+& $inputUiPowerShell -NoProfile -File tests/sdk/llvm-generated-test-dependencies.Tests.ps1 `
+  -CandidatePath (Join-Path $inputUiRoot 'tools/internal/Observe-LlvmBuild.ps1') -RecipeRoot $inputUiRoot
+# 上条仅验证observer规则的authored graph反例，不是实际编译/Ninja证据。
 node --test tests/benchmark/input-frame-trace/api-mirror.test.cjs tests/benchmark/input-frame-trace/protocol.test.cjs tests/benchmark/input-frame-trace/series.test.cjs
 # 原生工具 preflight 需显式绑定实际本轮工具，不能跳过后记为通过。
 $env:BENCHMARK_BURST_INPUT_EXE = '<本轮 BurstInput.exe 绝对路径>'
@@ -93,7 +115,7 @@ $env:BENCHMARK_OWNED_RUNNER_EXE = '<本轮 OwnedProcessRunner.exe 绝对路径>'
 node --test tests/benchmark/input-frame-trace/native-preflight.test.cjs
 ```
 
-若 continuation/index/legacy leaf 尚未纳入根 registry，可以按 leaf 的实际 CMake 单独 configure/build/CTest，但必须在交接单记录独立 build root、source gate 和结果，不能把不存在的全局项算作执行。Root 优先完成全局精确登记；上面的建议名称须与冻结 registry 核对后使用。其他既有 scroll barrier/CSS Home/coverage/ACK 用例按实际影响集运行，不为凑数量重跑无变化的全套冷/热启动。
+continuation/index/legacy及新render SOURCE都已纳入根源码登记，先核对实际registry再运行一次；不另建重复leaf执行来补同一集合。若实际缺项，先修复配置/来源并记录失败，不能用不存在的全局项或旧fixture补位。其他既有 scroll barrier/CSS Home/coverage/ACK 用例按实际影响集运行，不为凑数量重跑无变化的全套冷/热启动。
 
 真实 x86/x64 正确性补充：实际 IME（Unicode SendInput 不能替代）、drag/selection/key-char/focus/capture 与 Ctrl+wheel、两 Host 洪流公平、512 ordinary slot 满时 resize 拒绝与恢复、导航/重载/关闭积压；default DIRECT_HWND 与 legacy；永不 ready/取消/迟到资源；透明/alpha、DC/截图需求、resize/DPI；paint callback 重入/嵌套 pump、最后 foreign lease 释放、拒投/分配失败、真正 Task 销毁和最终 Runtime join。保留 accepted/rejected/recovery 及 DOM/pixel 原件，不以无崩溃替代状态守恒。
 
@@ -114,7 +136,7 @@ QEMU/隔离 guest 只用于功能、故障注入和关闭验证；noVNC 图像�
 | independent wheel 的 publication / sample / paint | 分别在 payload/reserve 前失败、receipt 耗尽、发布后 draw Task OOM/拒绝/取消/延迟；zero/net-zero、smooth 同 tick、真实 sample 的 visual delta、buffer 受阻、scene 变化、 queued task 时关闭 | publication 前失败不动 prediction；publication 后保留输入/dirty，实际 task receipt 恰好退休并由既有有界 owner 机会重试。仅 consumed receipt 且真实 visual sample 应用于 layer/paint 才发对应 processed coverage，不能以 receipt 接纳冒充 visible |
 | W01 独立 UI producer / 多次 submit | 同 UI 冷 native producer 租约、内部 loop 已注册时仅 borrow、多个 Host 共线程、最后 owner 退出、旧 ABI/失败；同 main/scene frame_id 多次独立 native submit | query/attach/detach、实际 SDK/vendor producer slot/lifetime、unregistered/dropped/causal loss及模块持有。`frame_id` 不是 native submit 唯一 ID；T6 保留 stream/producer/wire 事件与明确关联，跨 producer 同 tick 次序未知；没有关联就 unknown |
 
-上述 W05 可见性与 native UI 租约的最终 capability/Root glue/source identity 由冻结单确认；本文不把进行中的接线或静态 helper 案例称为实机通过。W10 在相同 Runtime/负载上另做 default、elapsed-only、prepared-only、combined 四组：核对事件/响应 JSON、raw+prepared/lane saturation、OOM 回退、导航 revoke/late response、真实 STA COM 重入/关闭、后台进展与序列化/owner QPC，按 profile 决定是否采用。
+W05 native/SDK与native UI租约的最终capability/Root glue已静态接通，source identity见冻结单；静态helper及fake案例仍不构成实机通过。W10 在相同 Runtime/负载上另做 default、elapsed-only、prepared-only、combined 四组：核对事件/响应 JSON、raw+prepared/lane saturation、OOM 回退、导航 revoke/late response、真实 STA COM 重入/关闭、后台进展与序列化/owner QPC，按 profile 决定是否采用。
 
 ## 工具预检和 W01 profile 的交接点
 
@@ -152,3 +174,9 @@ node benchmarks/protocol/same-product-input-series.cjs '<系列结果根目录>'
 每次启动前遵守 series `nextAction`：相同环境原因连续两次 invalid 停该场景；一次关键输入/像素/fence/关闭/资源守恒产品失败停该候选并保留原件，先关闭/回退相关候选再定位。日志丢失、身份/QPC 不符、意外遮挡、锁屏/RDP/桌面切换/拓扑变化、duplication 失败、marker 不可见或外部负载等不能平均进有效结果。计划内 hide/遮挡仅是功能段，不补零 T7；恢复后重建有效观察。禁止无限自动重试、STOP 改自然退出或强删 fence/close 检查。
 
 最终返回一个冻结身份索引和原始证据目录：构建命令/输出/退出码、实际 registry/source-byte 检查、每个相关 CTest/真实场景结果、trace 扰动门槛、每轮有效/无效原因和计数、实际阶段/E2E 分布及采样数、资源/后台进展、剩余 unknown、候选开关和回退。报告分别标“代码完成待编译 / 编译通过待实测 / 正确性通过待性能 / 限定场景通过 / 未通过”，不得只给平均 FPS、PR 数量或绿色总灯。Root 按发现修复并只重跑受影响集合，最终集成候选一次有界核心复验；不合并、不发布。
+
+## 静态来源闭包与保留的采用门槛
+
+LLVM observer静态重绑真实writer，6个新角色中index只允许0生成；5个固定recipe共46个路径、8个已验证source/object关系，包含wheel两个generated.cpp。拒绝缺失/额外/错配unit、未知header、writer/pin篡改和build后source-binding.json授权。worker canonical LF hash与16/15/22实际map一致；实际compiler/Ninja/动态DLL证据仍须专人返回。新SDK-linked回归目标显式使用MD/U_DEBUG和15s超时。
+
+W08尚缺真实非空SkPicture引用所有权/驻留字节的可证明资格域；当前默认单worker，未知owner在任何并发dispatch前回退。W09 layout/几何缓存、immutable list及更细provider剩余预算等待成本profile；W09/W10性能开关默认关闭。W11交付独立具体设计、诊断入口和故障/资源/采用矩阵，GPU device/fence/软件恢复/关闭实现及资格仍待数据和后续工作。以上仍是未关闭工作，不可称全部优化实现。T3b、未证明同内容提交的T7以及物理发光阶段保持未知。
