@@ -122,6 +122,19 @@ test('manifest follows every actual vendor CMake case registration', () => {
   assert.equal(names.size, 66);
   assert.deepEqual([...names].sort(), manifest.names);
 });
+
+test('auxiliary scheduler names bind the actual standalone source fixtures', () => {
+  const names = new Set();
+  for (const leaf of ['scheduler_continuation', 'scheduler_index']) {
+    const source = fs.readFileSync(path.join(repository, 'tests/native', leaf, 'CMakeLists.txt'), 'utf8');
+    for (const match of source.matchAll(/add_test\(NAME\s+(scheduler\.[^\s)$]+)\s/g)) names.add(match[1]);
+    for (const loop of source.matchAll(/foreach\(failure IN ITEMS\s+([^)]*)\)([\s\S]*?)endforeach\(\)/g)) {
+      for (const registration of loop[2].matchAll(/add_test\(NAME\s+(scheduler\.[^\s)]+)\s/g))
+        for (const failure of loop[1].trim().split(/\s+/)) names.add(registration[1].replace('${failure}', failure));
+    }
+  }
+  assert.deepEqual([...names].sort(), manifest.auxiliaryNames);
+});
 test('central vendor preflight covers the union of actual leaf source inputs', () => {
   const prefix = 'third_party/sources/miniblink/';
   const expected = new Set(['wke/wke.cpp', 'net/ActivatingObjCheck.cpp', 'net/ActivatingObjCheck.h',
