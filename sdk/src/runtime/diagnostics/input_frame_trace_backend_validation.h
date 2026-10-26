@@ -60,6 +60,13 @@ struct event_validator final {
     if (value.point == stage::microtasks_complete && !(value.flags & microtask_causality_established)) return false;
     if ((value.flags & coverage_valid) && (!value.frame_id || !value.input_first)) return false;
     if (value.point == stage::frame_coverage && !(value.flags & coverage_valid)) return false;
+    if (value.point == stage::interaction_diagnostic || value.point == stage::gpu_present_diagnostic) {
+      const std::uint64_t maximum = value.point == stage::interaction_diagnostic ? 20 : 4;
+      if (!value.value || value.value > maximum || value.why != reason::none || value.outcome != terminal::none ||
+          value.flags || value.view_id || value.view_generation || value.document_generation || value.geometry_generation ||
+          value.input_first || value.input_last || value.task_id || value.frame_id || value.action_first || value.action_last || value.related_id)
+        return false;
+    }
     const auto index = value.producer_slot - 1;
     if ((owners[index] && owners[index] != value.thread_id) || value.qpc < clocks[index]) return false;
     owners[index] = value.thread_id; clocks[index] = value.qpc;

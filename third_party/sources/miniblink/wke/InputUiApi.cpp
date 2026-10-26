@@ -12,6 +12,7 @@
 #include <atomic>
 #include <cstring>
 #include <mutex>
+#include <limits>
 
 namespace wke { bool inputUiOwnerAvailable(); }
 
@@ -123,6 +124,38 @@ int WKE_INPUT_UI_CALL setViewContext(void* opaque, const void* input, unsigned b
     if (!readViewEvent(view, input, bytes, value) || value.input_first || value.input_last)
         return WKE_INPUT_UI_INVALID;
     return view->webPage()->setViewTraceIdentity(value) ? WKE_INPUT_UI_OK : WKE_INPUT_UI_REJECTED;
+}
+
+struct ExternalTraceLease { unsigned users; bool ownsWriter; };
+thread_local ExternalTraceLease externalTraceLease = {0, false}; // Constant TLS, cold entry only.
+int WKE_INPUT_UI_CALL retainTraceProducer()
+{
+    if (externalTraceLease.users == (std::numeric_limits<unsigned>::max)())
+        return WKE_INPUT_UI_REJECTED;
+    if (!externalTraceLease.users) {
+        const auto state = trace::process_recorder().snapshot();
+        if (!state.available) return WKE_INPUT_UI_UNAVAILABLE;
+        if (state.stopped) return WKE_INPUT_UI_REJECTED;
+        const bool registered = trace::current_thread_registered();
+        if (!registered) {
+            try { if (!trace::register_current_thread()) return WKE_INPUT_UI_REJECTED; }
+            catch (...) { return WKE_INPUT_UI_REJECTED; }
+        }
+        externalTraceLease.ownsWriter = !registered;
+    }
+    ++externalTraceLease.users;
+    return WKE_INPUT_UI_OK;
+}
+void WKE_INPUT_UI_CALL releaseTraceProducer()
+{
+    if (!externalTraceLease.users) {
+        trace::note_causal_loss(); // Wrong-thread/unmatched release never detaches another TLS writer.
+        return;
+    }
+    if (!--externalTraceLease.users && externalTraceLease.ownsWriter) {
+        externalTraceLease.ownsWriter = false;
+        trace::detach_current_thread();
+    }
 }
 
 int WKE_INPUT_UI_CALL configureTrace(const wkeInputUiTraceConfig* config)
@@ -255,9 +288,9 @@ const wkeInputUiApi* WKE_CALL_TYPE wkeGetInputUiApi(unsigned requestedVersion)
             | WKE_INPUT_UI_CAP_FRACTIONAL_FRAME_POLICY | WKE_INPUT_UI_CAP_MIRROR_CONSUMER
             | WKE_INPUT_UI_CAP_INPUT_CONTEXT | WKE_INPUT_UI_CAP_CANCEL_INPUT
             | WKE_INPUT_UI_CAP_VIEW_CONTEXT | WKE_INPUT_UI_CAP_SCENE_INPUT_IDENTITY
-            | WKE_INPUT_UI_CAP_VISIBILITY,
+            | WKE_INPUT_UI_CAP_VISIBILITY | WKE_INPUT_UI_CAP_EXTERNAL_TRACE_PRODUCER,
         &configureTrace, &stopTrace, &snapshotTrace, &drainTrace,
         &serviceOwner, &setMirror, &queryMirror, &setInputContext, &cancelInput, &setViewContext,
-        &setVisibility, nullptr, nullptr };
+        &setVisibility, &retainTraceProducer, &releaseTraceProducer };
     return requestedVersion == WKE_INPUT_UI_ABI_VERSION ? &api : nullptr;
 }
