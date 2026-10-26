@@ -1,8 +1,18 @@
 'use strict';
 const trace = require('./input-frame-trace.cjs');
-const {decodeMarkerHex} = require('./desktop-visual.cjs');
 const {isDeepStrictEqual} = require('node:util');
 const {insist,exact,whole,milliseconds,distribution} = trace;
+function decodeBurstMarkerHex(hex) {
+  insist(typeof hex==='string'&&/^[a-f0-9]{32}$/.test(hex),'Invalid burst marker bytes');
+  const data=Buffer.from(hex,'hex');let crc=65535;
+  for(let n=0;n<16;++n){if(n===12||n===13)continue;crc^=data[n]<<8;for(let bit=0;bit<8;++bit)crc=((crc<<1)^((crc&32768)?4129:0))&65535;}
+  insist(data.readUInt16LE(0)===0x53a7&&data.readUInt16LE(12)===crc&&
+    (data[11]&15)===1,'Burst marker CRC/magic/flags invalid');
+  const result={nonce:data.readUInt32LE(2),ack:data.readUIntLE(6,3),frame:data.readUInt16LE(9),
+    scene:data[11]&7,motion:false,deliveredUnits:data.readUInt16LE(14)|((data[11]>>>4)<<16)};
+  insist(result.nonce>0&&result.ack<0x100000&&result.deliveredUnits<=result.ack&&result.deliveredUnits<=100000,
+    'Burst delivery counter exceeds ACK');return result;
+}
 function verifyInput(rows) {
   insist(Array.isArray(rows) && rows.length >= 3 && rows.length <= 100002, 'Invalid bounded burst rows');
   const begin = rows[0], end = rows.at(-1);
@@ -22,8 +32,9 @@ function verifyInput(rows) {
   let previous = start;
   inputs.forEach((row,index)=>{
     insist(row.event === 'input.inject' && exact(row.sequence,false) === BigInt(index+1) &&
-      row.sent === (begin.kind === 'wheel' ? 2 : 1) && row.client_x === 100+index%1000 &&
-      row.client_y === 100+Math.floor(index/1000), 'Burst injection sequence/trajectory differs');
+      row.sent === 1 && row.client_x === (begin.kind==='wheel'?100:100+index%1000) &&
+      row.client_y === (begin.kind==='wheel'?100:100+Math.floor(index/1000)) &&
+      row.wheel_delta === (begin.kind==='wheel'?-120:0), 'Burst injection sequence/trajectory/fixed wheel units differ');
     const scheduled = start+BigInt(Math.floor(index/begin.hz))*frequency+
       BigInt(index%begin.hz)*frequency/BigInt(begin.hz);
     const before = exact(row.before_qpc,false), after = exact(row.after_qpc,false);
@@ -54,7 +65,7 @@ function checkDesktop(rows,input,options) {
     calibration.observation_error_ms <= 1000 && calibration.device_pixel_ratio === 1,
     'Explicit frozen observation error/DPR calibration required');
   const observations=[], pointers=[];
-  let output=null,pending=null,ready=false,lastPresent=0n,lastAck=0,lastFrame=0,frameCount=0,omittedImages=0;
+  let output=null,pending=null,ready=false,lastPresent=0n,lastAck=0,lastFrame=0,lastDelivered=0,frameCount=0,omittedImages=0;
   for (const row of rows.slice(1,-1)) {
     if (row.event === 'desktop.output') {
       insist(!output && !pending && typeof row.deviceName === 'string' &&
@@ -88,30 +99,39 @@ function checkDesktop(rows,input,options) {
     insist(row.event==='desktop.frame' && ready && pending && row.lastPresentQpc===pending.lastPresentQpc &&
       exact(row.observedQpc,false)>=exact(row.lastPresentQpc,false) && row.nonce===source.nonce &&
       whole(row.ack,lastAck,source.requested) && whole(row.frame,lastFrame,65535) && row.scene===1 &&
+      whole(row.deliveredUnits,lastDelivered,row.ack) && (source.kind!=='wheel'||row.deliveredUnits===row.ack) &&
       row.motion===false && row.contentSequence===row.ack && row.width===1100 && row.height===720,
       'Burst marker/content/generation changed');
-    const decoded=decodeMarkerHex(row.markerHex);
+    const decoded=decodeBurstMarkerHex(row.markerHex);
     insist(decoded.nonce===row.nonce && decoded.ack===row.ack && decoded.frame===row.frame &&
-      decoded.scene===row.scene && decoded.motion===row.motion, 'Raw marker bytes differ');
+      decoded.scene===row.scene && decoded.motion===row.motion && decoded.deliveredUnits===row.deliveredUnits, 'Raw marker bytes differ');
     if (row.ack>lastAck) {
       insist(row.frame>lastFrame, 'New ACK lacks a completed content frame');
       const injection=input.inputs[row.ack-1], present=exact(row.lastPresentQpc,false);
       insist(present>=exact(injection.before_qpc,false), 'Desktop content predates its input');
       observations.push({sequence:row.ack,present_qpc:row.lastPresentQpc,observed_qpc:row.observedQpc,
         crossed_inputs:row.ack-lastAck-1,accumulated_frames:pending.accumulatedFrames,
+        previous_ack:lastAck,delivered_units:row.deliveredUnits,
+        complete_image_history:omittedImages+pending.accumulatedFrames-1===0,
         lower_ms:present>=exact(injection.after_qpc)?milliseconds(present-exact(injection.after_qpc),input.frequency):
           -milliseconds(exact(injection.after_qpc)-present,input.frequency),
         upper_ms:milliseconds(present-exact(injection.before_qpc),input.frequency)});
     }
-    omittedImages+=pending.accumulatedFrames-1; ++frameCount; lastAck=row.ack; lastFrame=row.frame; pending=null;
+    omittedImages+=pending.accumulatedFrames-1; ++frameCount; lastAck=row.ack; lastFrame=row.frame;lastDelivered=row.deliveredUnits; pending=null;
   }
   insist(!pending && lastAck===source.requested && exact(end.frames)===BigInt(frameCount) &&
     exact(end.pointerOnly)===BigInt(pointers.length), 'Desktop final ACK/accounting incomplete');
-  return {observations,omittedImages,frameCount,pointerOnly:pointers.length,
+  return {observations,omittedImages,frameCount,pointerOnly:pointers.length,deliveredUnits:lastDelivered,
     observationErrorMs:calibration.observation_error_ms};
 }
 function checkBurst(inputRows,streams,desktopRows,options={}) {
-  const input=verifyInput(inputRows), joined=trace.joinTraces(streams), identity=joined.identity;
+  const input=verifyInput(inputRows);
+  insist(Array.isArray(streams) && (streams.length>0 || options.allowUnavailableStages===true),'Missing internal streams without explicit E2E-only mode');
+  const joined=streams.length?trace.joinTraces(streams):{identity:{run_id:input.begin.run_id,
+    process_id:input.begin.target_pid,process_incarnation:input.begin.process_incarnation,qpc_frequency:input.begin.qpc_frequency},
+    points:[],streams:[],fullCausalEligible:false,equal_tick_cross_producer_groups:0,
+    equal_tick_order:'internal-stage-evidence-unavailable'};
+  const identity=joined.identity;
   insist(input.begin.run_id===identity.run_id && input.begin.target_pid===identity.process_id &&
     input.begin.process_incarnation===identity.process_incarnation && input.begin.qpc_frequency===identity.qpc_frequency,
     'Burst/trace exact identity mismatch');
@@ -146,7 +166,8 @@ function checkBurst(inputRows,streams,desktopRows,options={}) {
   for(const members of byGeneration.values())members.sort((a,b)=>a.native<b.native?-1:a.native>b.native?1:0);
   let relations=0;
   for(const point of joined.points) {
-    if(![...nativeStages,5].includes(point.point) || point.input_first==='0')continue;
+    if(![...nativeStages,5].includes(point.point) || point.input_first==='0' ||
+      ([6,7,8].includes(point.point)&&point.frame_id==='0'))continue;
     const generation=[point.view_id,point.view_generation,point.document_generation,point.geometry_generation].join('/');
     const members=byGeneration.get(generation)||[], first=exact(point.input_first),last=exact(point.input_last);
     let low=0,high=members.length;
@@ -181,13 +202,20 @@ function checkBurst(inputRows,streams,desktopRows,options={}) {
     if(times.has(3))hostToEngine.push(milliseconds(times.get(3)-times.get(1),input.frequency));
     if(times.has(8))hostToSubmit.push(milliseconds(times.get(8)-times.get(1),input.frequency));
   }
+  const visualSuperseded=new Map();
+  if(options.controlledWorkload===true)for(const observation of desktop.observations) {
+    if(!observation.complete_image_history || observation.delivered_units!==observation.sequence)continue;
+    for(let sequence=observation.previous_ack+1;sequence<observation.sequence;++sequence)
+      visualSuperseded.set(sequence,exact(observation.present_qpc));
+  }
   const ages=[]; let oldest=1,newest=0;
   for (const observation of desktop.observations) {
     const present=exact(observation.present_qpc); visible.set(observation.sequence,present);
     while(newest<input.inputs.length && exact(input.inputs[newest].before_qpc)<=present) ++newest;
     while(oldest<=newest) {
       const host=mapping.get(oldest), terminal=host && terminalByKey.get(key(host));
-      const ended=visible.get(oldest) ?? (terminal && terminal.outcome!==1 ? exact(terminal.qpc) : undefined);
+      const ended=visible.get(oldest) ?? visualSuperseded.get(oldest) ??
+        (terminal && terminal.outcome!==1 ? exact(terminal.qpc) : undefined);
       if (ended===undefined || ended>present) break;
       ++oldest;
     }
@@ -196,11 +224,16 @@ function checkBurst(inputRows,streams,desktopRows,options={}) {
       latest_injected_sequence:String(newest),latest_input_age_ms:milliseconds(present-exact(input.inputs[newest-1].before_qpc),input.frequency)});
   }
   const unresolved=[];let unprovenVisibleTerminals=0;
+  const classifications={visible:0,coalesced:0,cancelled:0,stale:0,not_visible:0,rejected:0,unknown:0};
+  const outcomes=['unknown','visible','coalesced','cancelled','stale','not_visible','rejected'];
   for(let sequence=1;sequence<=input.inputs.length;++sequence) {
     const host=mapping.get(sequence), terminal=host && terminalByKey.get(key(host));
     if(terminal && host)insist(exact(terminal.qpc)>=exact(host.qpc),'Input terminal predates host processing');
     if(!visible.has(sequence) && terminal?.outcome===1)++unprovenVisibleTerminals;
-    if (!visible.has(sequence) && (!terminal || terminal.outcome===1)) unresolved.push(sequence);
+    const category=terminal&&terminal.outcome!==1?outcomes[terminal.outcome]:visible.has(sequence)?'visible':
+      visualSuperseded.has(sequence)?'coalesced':'unknown';
+    ++classifications[category];
+    if(category==='unknown')unresolved.push(sequence);
   }
   const intervals=desktop.observations.slice(1).map((value,index)=>milliseconds(
     exact(value.present_qpc)-exact(desktop.observations[index].present_qpc),input.frequency));
@@ -208,23 +241,29 @@ function checkBurst(inputRows,streams,desktopRows,options={}) {
     exact(value.before_qpc)-exact(input.inputs[index].before_qpc),input.frequency));
   const injectionSpan=exact(input.inputs.at(-1).before_qpc)-exact(input.inputs[0].before_qpc);
   return {schema:'soui.burst-input-check/v1',run_id:input.begin.run_id,
+    qpc_frequency:input.begin.qpc_frequency,
     requested_hz:input.begin.hz,actual_span_hz:injectionSpan>0n?
       (input.inputs.length-1)*1000/milliseconds(injectionSpan,input.frequency):null,
     injection_intervals_ms:injectionIntervals.length?distribution(injectionIntervals):null,
     scheduling_lateness_ms:distribution(input.inputs.map(value=>milliseconds(
       exact(value.before_qpc)-exact(value.scheduled_qpc),input.frequency))),
-    input_count:input.inputs.length,mapped_host_inputs:mapping.size,unobserved_injections:input.inputs.length-mapping.size,
+    input_count:input.inputs.length,mapped_host_inputs:mapping.size,
+    stage_evidence:streams.length?'available':'unavailable',
+    unobserved_injections:streams.length?input.inputs.length-mapping.size:null,
     desktop_samples:desktop.observations.length,unresolved_inputs:unresolved.length,
+    input_terminal_counts:classifications,classified_input_count:input.inputs.length-classifications.unknown,
+    proven_visual_coalesced_inputs:visualSuperseded.size,delivered_units:desktop.deliveredUnits,
     unproven_visible_terminals:unprovenVisibleTerminals,
     unresolved_input_sequences:unresolved,desktop_omitted_images:desktop.omittedImages,
     ack_crossed_inputs:desktop.observations.reduce((sum,item)=>sum+item.crossed_inputs,0),
     fullCausalEligible:joined.fullCausalEligible,fullCausalComplete:joined.fullCausalEligible &&
       mapping.size===input.inputs.length && unresolved.length===0 && desktop.omittedImages===0 &&
-      nativeComplete===input.inputs.length && microtasksComplete===input.inputs.length,
+      nativeComplete===input.inputs.length && microtasksComplete===input.inputs.length && unprovenVisibleTerminals===0,
     native_stage_samples:stageSamples,native_path_complete_inputs:nativeComplete,
     proven_microtask_inputs:microtasksComplete,unknown_microtask_inputs:input.inputs.length-microtasksComplete,
     host_to_engine_ms:hostToEngine.length?distribution(hostToEngine):null,
     host_to_submit_ms:hostToSubmit.length?distribution(hostToSubmit):null,
+    stage_values_ms:{host_to_engine:hostToEngine,host_to_submit:hostToSubmit},
     // Specific captured-image response; omitted images cannot prove first display.
     captured_image_upper_ms:distribution(desktop.observations.map(value=>value.upper_ms)),
     captured_image_intervals_ms:intervals.length?distribution(intervals):null,
@@ -238,4 +277,4 @@ function checkBurst(inputRows,streams,desktopRows,options={}) {
     t7_endpoint:'captured-compositor-image-not-scanout',
     physicalPresentation:false,performanceGate:false,releaseReady:false};
 }
-module.exports={verifyInput,checkDesktop,checkBurst};
+module.exports={verifyInput,checkDesktop,checkBurst,decodeBurstMarkerHex};

@@ -76,6 +76,15 @@ void validate_target(HANDLE process, HWND window, DWORD pid, POINT origin) {
       ClientToScreen(window,&current) && current.x == origin.x && current.y == origin.y,
       "Target foreground, geometry or held process changed");
 }
+void validate_hit(HWND owner,DWORD pid,int x,int y) {
+  POINT screen{x,y};require(ClientToScreen(owner,&screen),"Input target coordinate unavailable");
+  const auto hit=WindowFromPoint(screen);DWORD actual{};GetWindowThreadProcessId(hit,&actual);
+  require(hit&&hit!=owner&&IsChild(owner,hit)&&actual==pid,"Input did not hit the actual SDK Host child");
+  POINT child=screen;RECT area{};
+  require(ScreenToClient(hit,&child)&&GetClientRect(hit,&area)&&area.right==1100&&area.bottom==720&&
+    child.x==x&&child.y==y&&child.x>=0&&child.y>=0&&child.x<area.right&&child.y<area.bottom,
+    "Parent/child Host content coordinates differ");
+}
 LONG normalize(int value, int origin, int extent) {
   require(extent > 0 && value >= origin && static_cast<std::int64_t>(value)-origin < extent,
       "Input point is outside frozen virtual desktop");
@@ -115,6 +124,9 @@ int wmain(int argc, wchar_t** argv) {
     require(lease.value && GetLastError() != ERROR_ALREADY_EXISTS, "Concurrent injector invalidates run");
     window_search search{pid}; require(EnumWindows(find_window,reinterpret_cast<LPARAM>(&search)) &&
       search.found && !search.duplicate, "Target needs exactly one1100x720 content window");
+    wchar_t target_class[64]{};
+    require(GetClassNameW(search.found,target_class,64) && std::wstring(target_class)==L"SouiInputUiHostV1",
+      "Burst tool requires its public SDK harness window");
     require(SetProcessDPIAware() || GetLastError() == ERROR_ACCESS_DENIED, "Injector DPI policy unavailable");
     ShowWindow(search.found,SW_RESTORE); SetForegroundWindow(search.found);
     POINT origin{}; require(ClientToScreen(search.found,&origin), "Target origin unavailable");
@@ -123,6 +135,12 @@ int wmain(int argc, wchar_t** argv) {
     const auto nonce = static_cast<std::uint32_t>(nonce_raw ? nonce_raw : 1);
     const int vx = GetSystemMetrics(SM_XVIRTUALSCREEN), vy = GetSystemMetrics(SM_YVIRTUALSCREEN);
     const int vw = GetSystemMetrics(SM_CXVIRTUALSCREEN), vh = GetSystemMetrics(SM_CYVIRTUALSCREEN);
+    if(wheel) {
+      INPUT position{};position.type=INPUT_MOUSE;
+      position.mi.dx=normalize(origin.x+100,vx,vw);position.mi.dy=normalize(origin.y+100,vy,vh);
+      position.mi.dwFlags=MOUSEEVENTF_MOVE|MOUSEEVENTF_ABSOLUTE|MOUSEEVENTF_VIRTUALDESK;
+      require(SendInput(1,&position,sizeof(INPUT))==1,"Wheel baseline cursor placement failed");
+    }
     std::vector<injection> rows(count); // All allocation occurs before injection.
     handle timer(make_timer()); require(timer.value != nullptr, "Waitable timer unavailable");
     LARGE_INTEGER frequency{}; require(QueryPerformanceFrequency(&frequency) && frequency.QuadPart > 0,
@@ -146,19 +164,20 @@ int wmain(int argc, wchar_t** argv) {
     try {
       for (std::uint32_t index = 0; index < count; ++index) {
         observer.check(); validate_target(process.value,search.found,pid,origin);
-        auto& row = rows[index]; row.x = 100+static_cast<int>(index%1000); row.y = 100+static_cast<int>(index/1000);
+        auto& row = rows[index]; row.x = wheel?100:100+static_cast<int>(index%1000); row.y = wheel?100:100+static_cast<int>(index/1000);
         const auto offset = (index/hz)*hz_qpc + (index%hz)*hz_qpc/hz;
         require(start <= (std::numeric_limits<std::uint64_t>::max)()-offset, "QPC deadline overflow");
         row.scheduled = start+offset; wait_deadline(timer.value,process.value,row.scheduled,hz_qpc);
-        INPUT packets[2]{}; packets[0].type = INPUT_MOUSE;
+        validate_hit(search.found,pid,row.x,row.y);
+        INPUT packets[1]{}; packets[0].type = INPUT_MOUSE;
         packets[0].mi.dx = normalize(origin.x+row.x,vx,vw); packets[0].mi.dy = normalize(origin.y+row.y,vy,vh);
         packets[0].mi.dwFlags = MOUSEEVENTF_MOVE|MOUSEEVENTF_ABSOLUTE|MOUSEEVENTF_VIRTUALDESK|MOUSEEVENTF_MOVE_NOCOALESCE;
         const auto tag = static_cast<ULONG_PTR>(0x53400000U | (index+1));
-        if (wheel) { packets[1].type = INPUT_MOUSE; packets[1].mi.dwFlags = MOUSEEVENTF_WHEEL;
-          packets[1].mi.mouseData = static_cast<DWORD>(index%2 ? WHEEL_DELTA : -WHEEL_DELTA); packets[1].mi.dwExtraInfo = tag; }
+        if (wheel) { packets[0].mi.dwFlags = MOUSEEVENTF_WHEEL;
+          packets[0].mi.mouseData = static_cast<DWORD>(-WHEEL_DELTA);packets[0].mi.dwExtraInfo = tag; }
         else packets[0].mi.dwExtraInfo = tag;
-        row.before = qpc(); row.sent = SendInput(wheel ? 2 : 1,packets,sizeof(INPUT)); row.after = qpc();
-        ++attempted; require(row.sent == (wheel ? 2U : 1U), "SendInput partial/failure"); ++completed;
+        row.before = qpc(); row.sent = SendInput(1,packets,sizeof(INPUT)); row.after = qpc();
+        ++attempted; require(row.sent == 1, "SendInput partial/failure"); ++completed;
       }
       observer.wait_final_ack(count); success = true;
     } catch (const std::exception& error) { std::cerr << error.what() << '\n'; }
@@ -168,12 +187,17 @@ int wmain(int argc, wchar_t** argv) {
       const auto& row = rows[index];
       write_line(file.value,"{\"event\":\"input.inject\",\"sequence\":"+quoted(index+1)+
         ",\"scheduled_qpc\":"+quoted(row.scheduled)+",\"before_qpc\":"+quoted(row.before)+",\"after_qpc\":"+quoted(row.after)+
-        ",\"sent\":"+std::to_string(row.sent)+",\"client_x\":"+std::to_string(row.x)+",\"client_y\":"+std::to_string(row.y)+"}");
+        ",\"sent\":"+std::to_string(row.sent)+",\"client_x\":"+std::to_string(row.x)+",\"client_y\":"+std::to_string(row.y)+
+        ",\"wheel_delta\":"+std::to_string(wheel?-WHEEL_DELTA:0)+"}");
     }
     try { observer.finish(); } catch (const std::exception& error) { std::cerr << error.what() << '\n'; success = false; }
     write_line(file.value,"{\"event\":\"burst.end\",\"completed\":"+std::string(success ? "true" : "false")+
       ",\"attempted\":"+std::to_string(attempted)+",\"sent\":"+std::to_string(completed)+",\"ended_qpc\":"+quoted(ended)+"}");
     require(FlushFileBuffers(file.value), "Burst trace flush failed");
+    const auto close_name=L"Local\\SOUI-InputUi-Finish-"+std::to_wstring(pid)+L"-"+std::to_wstring(expected)+L"-"+
+      std::wstring(run.begin(),run.end());
+    handle close_event(OpenEventW(EVENT_MODIFY_STATE,FALSE,close_name.c_str()));
+    if(!close_event.value||!SetEvent(close_event.value)){std::cerr<<"Harness normal close signal failed\n";success=false;}
     return success ? 0 : 1;
   } catch (const std::exception& error) { std::cerr << error.what() << '\n'; return 1; }
 }

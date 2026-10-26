@@ -2,12 +2,14 @@
   'use strict';
   // Chrome49-compatible frozen workload. Real feedback background and marker
   // share one canvas update; the observer independently reads its content pixel.
-  var runMatch = /(?:^|[?&])run=([a-f0-9]{32})(?:&|$)/.exec(location.search);
-  var kindMatch = /(?:^|[?&])kind=(pointer_move|wheel)(?:&|$)/.exec(location.search);
+  var seed=window.souiBurstConfig;
+  var query=seed?'?run='+seed.run+'&kind='+seed.kind:(location.search||location.hash.replace(/^#/,'?'));
+  var runMatch = /(?:^|[?&])run=([a-f0-9]{32})(?:&|$)/.exec(query);
+  var kindMatch = /(?:^|[?&])kind=(pointer_move|wheel)(?:&|$)/.exec(query);
   if (!runMatch || !kindMatch || window.devicePixelRatio !== 1) throw new Error('Frozen run/kind and DPR1 required');
   var nonce = parseInt(runMatch[1].slice(24),16) || 1;
   var kind = kindMatch[1], canvas = document.getElementById('feedback'), context = canvas.getContext('2d');
-  var sequence = 0, frame = 0, pending = false, seenCount = 0, rejected = 0, invalid = false;
+  var sequence = 0, frame = 0, pending = false, seenCount = 0, rejected = 0, invalid = false, wheelUnits=0;
   var seen = new Uint32Array(100000);
   function render() {
     pending = false;
@@ -21,8 +23,10 @@
     bytes[0]=167; bytes[1]=83;
     for (i=0;i<4;++i) bytes[2+i]=((invalid?0:nonce)>>>(i*8))&255;
     for (i=0;i<3;++i) bytes[6+i]=(sequence>>>(i*8))&255;
-    bytes[9]=frame&255; bytes[10]=(frame>>>8)&255; bytes[11]=1;
-    for (i=0;i<12;++i) { crc^=bytes[i]<<8; for(bit=0;bit<8;++bit) crc=((crc<<1)^((crc&32768)?4129:0))&65535; }
+    var delivered=kind==='wheel'?wheelUnits/120:seenCount;
+    bytes[9]=frame&255; bytes[10]=(frame>>>8)&255; bytes[11]=1|((delivered>>>16)<<4);
+    bytes[14]=delivered&255;bytes[15]=(delivered>>>8)&255;
+    for (i=0;i<16;++i) { if(i===12||i===13)continue;crc^=bytes[i]<<8; for(bit=0;bit<8;++bit) crc=((crc<<1)^((crc&32768)?4129:0))&65535; }
     bytes[12]=crc&255; bytes[13]=(crc>>>8)&255;
     for (i=0;i<128;++i) {
       context.fillStyle=(bytes[i>>>3]&(1<<(i&7)))?'#ffffff':'#000000';
@@ -31,9 +35,17 @@
   }
   function receive(event) {
     var x=event.clientX-100,y=event.clientY-100;
-    if (x<0 || x>=1000 || y<0 || y>=100 || x!==Math.floor(x) || y!==Math.floor(y)) return;
-    var next=y*1000+x+1;
-    if (next<=sequence || seenCount>=seen.length) {
+    var next;
+    if(kind==='wheel') {
+      event.preventDefault();
+      if(typeof event.wheelDelta!=='number' || event.wheelDelta>=0 || (-event.wheelDelta)%120!==0)invalid=true;
+      else wheelUnits-=event.wheelDelta;
+      next=wheelUnits/120;
+    } else {
+      if (x<0 || x>=1000 || y<0 || y>=100 || x!==Math.floor(x) || y!==Math.floor(y)) return;
+      next=y*1000+x+1;
+    }
+    if (invalid || next<=sequence || next>100000 || seenCount>=seen.length) {
       ++rejected; invalid=true;
       if(!pending){pending=true;requestAnimationFrame(render);}
       return;

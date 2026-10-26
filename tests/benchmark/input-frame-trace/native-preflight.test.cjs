@@ -8,6 +8,7 @@ const {launch,stop}=require('../../../benchmarks/protocol/run-one.cjs');
 const executable=process.env.BENCHMARK_BURST_INPUT_EXE;
 const runner=process.env.BENCHMARK_OWNED_RUNNER_EXE;
 const available=process.platform==='win32' && executable && runner && fs.existsSync(executable) && fs.existsSync(runner);
+const hostExecutable=process.env.BENCHMARK_INPUT_UI_HOST_EXE;
 // SOURCE ONLY in this delivery. The verifier explicitly supplies compiled tools.
 test('owned burst preflight refuses missing target and wrong birth before output/input',
   {skip:!available,timeout:15000},async()=>{
@@ -29,4 +30,14 @@ test('owned burst preflight refuses missing target and wrong birth before output
         assert.equal(end.closureConfirmed,true);assert.equal(end.terminatedOwnedJob,false);
       } finally { stop([run]);await run.finished; }
     }
+  });
+test('real public SDK harness rejects missing configuration under owned supervision',
+  {skip:!(process.platform==='win32'&&hostExecutable&&runner&&fs.existsSync(hostExecutable)&&fs.existsSync(runner)),timeout:10000},async()=>{
+    const folder=path.resolve(__dirname,'../../../out','input-ui-host-preflight-'+crypto.randomUUID());
+    fs.mkdirSync(folder,{recursive:true});
+    const run=launch('host',hostExecutable,[],path.dirname(hostExecutable),folder,process.env,{runner,timeoutMs:5000});
+    try{await run.ready;const result=await run.finished;assert.equal(result.code,1);
+      assert.equal(fs.existsSync(path.join(folder,'host-ready.json')),false);
+      assert.equal(result.ownedProcess.terminal.activeProcesses,0);
+    }finally{stop([run]);await run.finished;}
   });

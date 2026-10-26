@@ -58,13 +58,14 @@ void line(HANDLE output, const std::string& text) {
 }
 std::uint16_t crc(const std::array<unsigned char,16>& data) {
   std::uint16_t value = 0xffff;
-  for (unsigned n = 0; n < 12; ++n) {
+  for (unsigned n = 0; n < 16; ++n) {
+    if(n==12||n==13)continue;
     value ^= static_cast<std::uint16_t>(data[n]) << 8;
     for (unsigned b = 0; b < 8; ++b) value = static_cast<std::uint16_t>((value << 1) ^ ((value & 0x8000) ? 0x1021 : 0));
   }
   return value;
 }
-struct marker { std::uint32_t nonce{}, ack{}, frame{}; unsigned scene{}; bool motion{}; std::array<unsigned char,16> bytes{}; std::uint32_t content_sequence{}; };
+struct marker { std::uint32_t nonce{}, ack{}, frame{}; unsigned scene{}; bool motion{}; std::array<unsigned char,16> bytes{}; std::uint32_t content_sequence{},delivered_units{}; };
 std::string marker_hex(const marker& value) {
   std::string result; result.reserve(32); constexpr char digits[]="0123456789abcdef";
   for(auto byte:value.bytes){result+=digits[byte>>4];result+=digits[byte&15];}
@@ -80,15 +81,17 @@ marker decode(const D3D11_MAPPED_SUBRESOURCE& map) {
     require(dark || light, "Desktop marker has ambiguous pixels");
     if (light) data[i / 8] |= static_cast<unsigned char>(1U << (i % 8));
   }
-  require(data[0] == 0xa7 && data[1] == 0x53 && data[14] == 0 && data[15] == 0, "Desktop marker magic/reserved bits invalid");
+  require(data[0] == 0xa7 && data[1] == 0x53, "Burst marker magic invalid");
   require(crc(data) == (static_cast<unsigned>(data[12]) | (static_cast<unsigned>(data[13]) << 8)), "Desktop marker CRC invalid");
   auto little = [&data](unsigned start, unsigned count) { std::uint32_t value{}; for (unsigned n=0;n<count;++n) value |= static_cast<std::uint32_t>(data[start+n]) << (n*8); return value; };
   const unsigned flags = data[11];
-  require((flags & 0xf0) == 0 && (flags & 7) >= 1 && (flags & 7) <= 5, "Desktop marker flags invalid");
+  require((flags & 7)==1 && (flags & 8)==0, "Burst marker flags invalid");
   marker result{little(2,4),little(6,3),little(9,2),flags & 7,(flags & 8) != 0};
   // ACK uses 24 bits in the wire marker; only 20 are admitted. Frame uses 16.
   require(result.nonce && result.ack < (1U << 20), "Desktop marker counter invalid");
   result.bytes=data;
+  result.delivered_units=data[14]|(static_cast<std::uint32_t>(data[15])<<8)|((flags>>4)<<16);
+  require(result.delivered_units<=result.ack&&result.delivered_units<=100000,"Burst delivery counter exceeds ACK");
   const auto* content=static_cast<const unsigned char*>(map.pData)+34*map.RowPitch+2*4;
   result.content_sequence=content[2]|(static_cast<std::uint32_t>(content[1])<<8)|(static_cast<std::uint32_t>(content[0])<<16);
   return result;
@@ -181,10 +184,10 @@ struct burst_desktop_observer::state {
         require(value.nonce==expected_nonce,"Burst marker does not bind the requested run");
         require(value.content_sequence==value.ack,"Burst content pixel differs from marker ACK");
         if(!ready)line(file.p,"{\"event\":\"desktop.ready\",\"lastPresentQpc\":"+quoted(present)+",\"nonce\":"+std::to_string(value.nonce)+",\"ack\":"+std::to_string(value.ack)+"}");
-        {std::lock_guard<std::mutex> lock(mutex);if(ready)require(value.nonce==latest.nonce&&value.ack>=latest.ack&&value.frame>=latest.frame,"Desktop marker lifetime/counters changed");latest=value;ready=true;}changed.notify_all();
+        {std::lock_guard<std::mutex> lock(mutex);if(ready)require(value.nonce==latest.nonce&&value.ack>=latest.ack&&value.frame>=latest.frame&&value.delivered_units>=latest.delivered_units,"Desktop marker lifetime/counters changed");latest=value;ready=true;}changed.notify_all();
         ++frames;require(frames<=40000,"Desktop sample limit exceeded");
         RECT client{};require(GetClientRect(window,&client),"Desktop client dimensions unavailable");
-        line(file.p,"{\"event\":\"desktop.frame\",\"lastPresentQpc\":"+quoted(present)+",\"observedQpc\":"+quoted(tick())+",\"nonce\":"+std::to_string(value.nonce)+",\"ack\":"+std::to_string(value.ack)+",\"frame\":"+std::to_string(value.frame)+",\"scene\":"+std::to_string(value.scene)+",\"motion\":"+(value.motion?"true":"false")+",\"markerHex\":\""+marker_hex(value)+"\",\"contentSequence\":"+std::to_string(value.content_sequence)+",\"width\":"+std::to_string(client.right)+",\"height\":"+std::to_string(client.bottom)+"}");
+        line(file.p,"{\"event\":\"desktop.frame\",\"lastPresentQpc\":"+quoted(present)+",\"observedQpc\":"+quoted(tick())+",\"nonce\":"+std::to_string(value.nonce)+",\"ack\":"+std::to_string(value.ack)+",\"frame\":"+std::to_string(value.frame)+",\"scene\":"+std::to_string(value.scene)+",\"motion\":"+(value.motion?"true":"false")+",\"markerHex\":\""+marker_hex(value)+"\",\"contentSequence\":"+std::to_string(value.content_sequence)+",\"deliveredUnits\":"+std::to_string(value.delivered_units)+",\"width\":"+std::to_string(client.right)+",\"height\":"+std::to_string(client.bottom)+"}");
         release.release();
       }
       line(file.p,"{\"event\":\"desktop.end\",\"completed\":"+std::string(normal_stop.load()?"true":"false")+",\"frames\":"+quoted(frames)+",\"pointerOnly\":"+quoted(pointer_only)+",\"endedQpc\":"+quoted(tick())+"}");require(FlushFileBuffers(file.p),"Desktop trace flush failed");

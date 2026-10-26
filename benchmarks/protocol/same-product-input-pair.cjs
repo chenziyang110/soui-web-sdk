@@ -32,13 +32,16 @@ function checkRun(root) {
   insist(record?.schema==='soui.same-product-input-run/v1' && typeof record.product_id==='string' &&
     /^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/.test(record.product_id) &&
     /^[a-f0-9]{40}$/.test(record.source_commit) && /^[a-f0-9]{32}$/.test(record.run_id) &&
+    /^[a-f0-9]{40}$/.test(record.measurement_source_commit) &&
     typeof record.capture_root==='string' && path.isAbsolute(record.capture_root) &&
     ['miniblink-software','webview2'].includes(record.renderer) &&
     typeof record.runtime_version==='string' && record.runtime_version.length>0 && record.runtime_version.length<=256 &&
+    ['full','e2e'].includes(record.trace_mode) &&
     digest(record.host_exe_sha256) && digest(record.tools?.input_sha256) && digest(record.tools?.owned_runner_sha256),
     'Invalid same-product source/payload identity');
   for (const [key,filename] of [['payload_manifest','payload-manifest.json'],['environment','environment.json'],
     ['configuration','configuration.json'],['workload','workload.json'],['calibration','calibration.json'],
+    ['host_ready','host-ready.json'],['host_result','host-result.json'],
     ['input','burst-input.ndjson'],['desktop','burst-desktop.ndjson']])
     verifiedDescriptor(root,record.evidence?.[key],filename);
   const payload=owned.readRunJson(root,'payload-manifest.json');
@@ -72,17 +75,24 @@ function checkRun(root) {
     String(begin.hz),String(begin.requested),path.join(record.capture_root,'burst-input.ndjson'),
     path.join(record.capture_root,'burst-desktop.ndjson'),begin.kind];
   insist(isDeepStrictEqual(processes.input.context.args,expectedArgs), 'Owned burst launch did not bind held target/session');
+  const ready=owned.readRunJson(root,'host-ready.json'),closed=owned.readRunJson(root,'host-result.json');
+  insist(ready?.schema==='soui.input-ui-host-ready/v1'&&ready.run_id===record.run_id&&ready.pid===processes.host.subject.pid&&
+    ready.creationFileTime===processes.host.subject.creationFileTime&&closed?.schema==='soui.input-ui-host-result/v1'&&
+    closed.run_id===record.run_id&&closed.process_id===processes.host.subject.pid&&
+    closed.process_incarnation===processes.host.subject.creationFileTime&&closed.normal_runtime_close===true&&
+    (record.trace_mode!=='full'||(closed.trace_complete===true&&closed.trace_capability_confirmed===true))&&
+    trace.exact(closed.started_qpc,false)<=trace.exact(begin.started_qpc,false)&&
+    trace.exact(closed.ended_qpc,false)>=trace.exact(inputRows.at(-1).ended_qpc,false),
+    'Harness ready/normal-close/clock identity incomplete');
   insist(Array.isArray(record.host_arguments) && isDeepStrictEqual(processes.host.context.args,record.host_arguments),
     'Host arguments differ from frozen launch');
-  insist(Array.isArray(record.traces) && record.traces.length>0 && record.traces.length<=4, 'Missing bounded trace streams');
+  insist(Array.isArray(record.traces) && (record.traces.length>0 || record.trace_mode==='e2e') && record.traces.length<=4,
+    'Missing bounded trace streams');
   const names=new Set();
   const streams=record.traces.map(item=>{
     insist(/^trace-(sdk|vendor|webview2|application)\.ndjson$/.test(item?.path) && !names.has(item.path), 'Invalid duplicate trace path');
     names.add(item.path); return traceRows(root,item);
   });
-  const result=checkBurst(inputRows,streams,owned.readRunLines(root,'burst-desktop.ndjson'),
-    {ownedTarget:processes.host.subject,ownedInjector:processes.input.subject,
-      calibration:owned.readRunJson(root,'calibration.json')});
   const workload=owned.readRunJson(root,'workload.json');
   insist(workload?.schema==='soui.burst-workload/v1' && workload.kind===begin.kind && workload.hz===begin.hz &&
     workload.requested===begin.requested && workload.content_width===1100 && workload.content_height===720 &&
@@ -96,11 +106,15 @@ function checkRun(root) {
     environment.rdp===false && environment.display_topology_changed===false &&
     Array.isArray(environment.invalid_reasons) && environment.invalid_reasons.length===0,
     'Environment records an invalid measurement round');
-  return {record,result,workload,environment};
+  const result=checkBurst(inputRows,streams,owned.readRunLines(root,'burst-desktop.ndjson'),
+    {ownedTarget:processes.host.subject,ownedInjector:processes.input.subject,
+      allowUnavailableStages:record.trace_mode==='e2e',controlledWorkload:true,
+      calibration:owned.readRunJson(root,'calibration.json')});
+  return {record,result,workload,environment,closed};
 }
-function checkPair(left,right) {
-  const baseline=checkRun(left), candidate=checkRun(right), before=baseline.record, after=candidate.record;
-  for(const key of ['product_id','renderer','runtime_version']) insist(before[key]===after[key], 'Different products/renderers/runtime cannot form this pair');
+function compareRuns(baseline,candidate) {
+  const before=baseline.record, after=candidate.record;
+  for(const key of ['product_id','renderer','runtime_version','trace_mode','measurement_source_commit']) insist(before[key]===after[key], 'Different products/renderers/runtime/trace modes/measurement sources cannot form this pair');
   insist(before.source_commit!==after.source_commit && before.run_id!==after.run_id, 'Two distinct source commits/runs required');
   for(const key of ['environment','configuration','workload'])
     insist(before.evidence[key].sha256===after.evidence[key].sha256, 'Pair environment/configuration/workload differs');
@@ -114,10 +128,11 @@ function checkPair(left,right) {
     // of loaded DLL memory, OS isolation, physical devices or instrument accuracy.
     physicalPresentation:false,performanceGate:false,releaseReady:false};
 }
+function checkPair(left,right){return compareRuns(checkRun(left),checkRun(right));}
 if(require.main===module) {
   try {
     insist(process.argv.length===4,'Usage: node same-product-input-pair.cjs BASELINE_RUN CANDIDATE_RUN');
     console.log(JSON.stringify(checkPair(process.argv[2],process.argv[3]),null,2));
   } catch(error) { console.error(error.message); process.exitCode=1; }
 }
-module.exports={checkRun,checkPair,verifiedDescriptor};
+module.exports={checkRun,checkPair,compareRuns,verifiedDescriptor};
