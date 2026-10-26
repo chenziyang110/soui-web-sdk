@@ -255,8 +255,6 @@ class dynamic_miniblink_adapter final : public webview_host_adapter,
   std::atomic<int> configured_draw_min_interval_{-1};
   std::atomic<int> configured_main_frame_rate_{-1};
   bool experimental_main_frame_scheduler_{false};
-  bool gpu_trace_active_{false};
-  std::filesystem::path gpu_trace_path_;
 #ifdef SOUI_BRIDGE_BENCHMARK
   [[nodiscard]] std::string collect_benchmark_result_on_engine();
   std::filesystem::path benchmark_dataset_;

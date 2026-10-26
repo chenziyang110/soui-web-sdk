@@ -84,6 +84,8 @@ Handler 在构造时冷分配共享拥有对象，服务在 mutex 内取得 shar
 
 Bridge 逐事件开文件的实验 logger 改为数值阶段事件，去掉调用处日志专用字符串格式化；旧 `SOUI_BRIDGE_TRACE` 不再创建文件。细节通过统一 recorder/exporter 开关导出。每次 pending 接纳仍通知原 Engine auto-reset event，由系统 event 合并；自定义 wake_pending 合并未采用，延迟 producer 不能毒化后续 wake。拥有 packet 在 owner 借用 const reference，避免 dispatch 的第二次文本复制；不改变 DOM 事件数量。
 
+Host pump 不再扫描 SOUI_GPU_PRESENT_TRACE 文件或依赖 swapped 文本判断 GPU活跃；也不把其他view的进程环境flag/count当作当前surface状态。只消费该实际child HWND已发布的 GPU_ACTIVE/PRESENT_COUNT标量；无状态时保守使用CPU策略/无present证据。legacy benchmark/vendor实验日志格式不变。
+
 新增 native/provider/input/FIFO/serialization 成本直方图。`SOUI_ENGINE_SHARED_TURN_BUDGET_US=100..5000` 是默认关闭的协作总预算候选：native/FIFO 截止取组件与总剩余的较早值；provider/input/FIFO 每轮至少保留一次有界服务以保证进展。单次 provider/输入批次或用户回调仍可超时，候选不能冒充抢占。没有 profile 时不默认采用、不凭常数推算收益；跨 MiniBlink provider 批次的更细剩余预算协议仍待数据决定。
 
 ### 最终关闭 fence

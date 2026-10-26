@@ -1404,13 +1404,6 @@ host_result dynamic_miniblink_adapter::mount_on_engine(const host_config& config
   benchmark_dataset_ = config.benchmark_dataset;
 #endif
   resource_root_ = canonical_path(config.resource_root);
-  gpu_trace_active_ = false;
-  gpu_trace_path_.clear();
-  char gpu_trace_option[MAX_PATH] = {};
-  const DWORD gpu_trace_length = GetEnvironmentVariableA("SOUI_GPU_PRESENT_TRACE", gpu_trace_option,
-                                                         sizeof(gpu_trace_option));
-  if (gpu_trace_length > 0 && gpu_trace_length < sizeof(gpu_trace_option))
-    gpu_trace_path_ = std::filesystem::path{gpu_trace_option};
 #ifdef SOUI_BRIDGE_BENCHMARK
   cycle_evidence_path = resource_root_.parent_path() / "task-cycles.ndjson";
   gallery_checkpoint_path = config.benchmark_output_directory.empty() ? std::filesystem::path{} : config.benchmark_output_directory / "gallery-checkpoints.ndjson";
@@ -1936,8 +1929,6 @@ void dynamic_miniblink_adapter::unmount_on_engine() {
   append_host_smoke_log(resource_root_, webview_ ? "adapter-cursor-close-pending" : "adapter-webview-destroyed");
   module_ = nullptr; // borrowed module; only application exit finalizes it
   resource_root_.clear();
-  gpu_trace_path_.clear();
-  gpu_trace_active_ = false;
 #endif
   document_ready_ = false;
   application_ready_ = false;
@@ -2270,29 +2261,14 @@ void dynamic_miniblink_adapter::pump_on_engine() {
   if (webview_ != nullptr && wkeUpdate != nullptr) {
     bool gpu_active = false;
     if (bridge_adapter_ != nullptr && webview_window_ != nullptr) {
-      char active_option[2] = {};
-      const bool process_active = GetEnvironmentVariableA("SOUI_GPU_ACTIVE", active_option,
-                                                          sizeof(active_option)) == 1 && active_option[0] == '1';
-      if (!gpu_trace_active_ && !gpu_trace_path_.empty()) {
-        std::ifstream trace(gpu_trace_path_, std::ios::in | std::ios::binary);
-        std::string content((std::istreambuf_iterator<char>(trace)), std::istreambuf_iterator<char>());
-        if (content.find("swapped=1") != std::string::npos)
-          gpu_trace_active_ = true;
-      }
-      gpu_active = gpu_trace_active_ ||
-          GetPropA(static_cast<HWND>(webview_window_), "SOUI_GPU_ACTIVE") != nullptr || process_active;
+      // Only this actual child surface's published scalar status is evidence.
+      // A process flag or experiment log may describe a different/old surface.
+      gpu_active = GetPropA(static_cast<HWND>(webview_window_), "SOUI_GPU_ACTIVE") != nullptr;
       static_cast<bridge_adapter*>(bridge_adapter_)->set_gpu_active(gpu_active);
       const auto present_property = GetPropA(static_cast<HWND>(webview_window_), "SOUI_GPU_PRESENT_COUNT");
       std::uint64_t present_count = present_property
           ? static_cast<std::uint64_t>(reinterpret_cast<ULONG_PTR>(present_property))
           : 0;
-      if (!present_property) {
-        char present_option[32] = {};
-        const DWORD present_length = GetEnvironmentVariableA("SOUI_GPU_PRESENT_COUNT",
-                                                               present_option, sizeof(present_option));
-        if (present_length && present_length < sizeof(present_option))
-          present_count = _strtoui64(present_option, nullptr, 10);
-      }
       static_cast<bridge_adapter*>(bridge_adapter_)->set_present_count(present_count);
     }
     const int rate = bridge_adapter_ ? static_cast<bridge_adapter*>(bridge_adapter_)->active_frame_rate() : 60;
