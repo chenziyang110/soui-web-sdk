@@ -9,8 +9,47 @@ const schema = 'soui.desktop.managed-assets/1';
 const maximumFileBytes = 256 * 1024 * 1024;
 const maximumTotalBytes = 1024 * 1024 * 1024;
 const maximumManifestBytes = 64 * 1024 * 1024;
+const validationFailures = new WeakSet();
+const filesystemCodes = new Set([
+  'EACCES', 'EAGAIN', 'EBADF', 'EBUSY', 'EEXIST', 'EFAULT', 'EFBIG', 'EINTR',
+  'EINVAL', 'EIO', 'EISDIR', 'ELOOP', 'EMFILE', 'ENAMETOOLONG', 'ENFILE',
+  'ENODEV', 'ENOENT', 'ENOMEM', 'ENOSPC', 'ENOSYS', 'ENOTDIR', 'ENOTEMPTY',
+  'ENOTSUP', 'ENXIO', 'EOVERFLOW', 'EPERM', 'EROFS', 'ETXTBSY', 'EXDEV',
+  'ERR_INVALID_ARG_TYPE', 'ERR_INVALID_ARG_VALUE', 'ERR_OUT_OF_RANGE',
+]);
+const filesystemCalls = new Set([
+  'open', 'read', 'write', 'close', 'mkdir', 'mkdtemp', 'rmdir', 'rename',
+  'unlink', 'lstat', 'stat', 'scandir', 'readdir', 'realpath',
+]);
 
-function fail(message) { throw new Error(message); }
+function fail(message) {
+  const error = new Error(message);
+  validationFailures.add(error);
+  throw error;
+}
+function ownValue(error, name) {
+  try {
+    const field = Object.getOwnPropertyDescriptor(error, name);
+    return field && Object.hasOwn(field, 'value') ? field.value : undefined;
+  } catch { return undefined; }
+}
+function syncFailure(error, syncPhase, workspace, fixedMessage) {
+  const code = ownValue(error, 'code');
+  const syscall = ownValue(error, 'syscall');
+  const errno = ownValue(error, 'errno');
+  const safeCode = filesystemCodes.has(code) ? code : undefined;
+  // Only locally authored validation messages are safe to keep verbatim.
+  const reason = validationFailures.has(error) ? ownValue(error, 'message') :
+    safeCode ? `Filesystem operation failed (${safeCode}).` : 'Filesystem operation failed.';
+  const failure = new Error(fixedMessage === undefined ?
+    `${reason}${workspace ? ` Generated workspace ${path.basename(workspace)} retained; stop builds and inspect it for manual recovery.` : ''}` : fixedMessage);
+  failure.syncPhase = syncPhase; // Internal fixed literals, never error-supplied input.
+  if (safeCode !== undefined) failure.code = safeCode;
+  if (filesystemCalls.has(syscall)) failure.syscall = syscall;
+  if (Number.isInteger(errno) && errno >= -2147483648 && errno <= 2147483647) failure.errno = errno;
+  // Do not copy native message, path/dest, stack, cause, or arbitrary properties.
+  return failure;
+}
 function portable(name) {
   return name.length > 0 && Buffer.byteLength(name) <= 240 &&
     !/[<>:"/\\|?*\x00-\x1f\x7f-\x9f]/.test(name) && !/[. ]$/.test(name) &&
@@ -143,9 +182,11 @@ function removeVerifiedTree(root, expected) {
 }
 function syncAssets(input, output) {
   let lock, workspace;
+  let syncPhase = 'validate-source';
   try {
     const source = directory(input);
     const sourceIdentity = crypto.createHash('sha256').update(source).digest('hex');
+    syncPhase = 'validate-output';
     const absolute = path.resolve(output), basename = path.basename(absolute);
     if (!portable(basename) || Buffer.byteLength(basename) > 180) fail('Invalid output directory name.');
     const parent = directory(path.dirname(absolute));
@@ -153,54 +194,73 @@ function syncAssets(input, output) {
     if (within(source, target) || within(target, source)) fail('Input and output must not overlap.');
     const manifestPath = `${target}.soui-assets.json`;
     const lockPath = `${target}.soui-assets.lock`;
+    syncPhase = 'acquire-lock';
     const lockFd = fs.openSync(lockPath, 'wx');
     lock = lockPath;
     fs.closeSync(lockFd);
+    syncPhase = 'inspect-output';
     const exists = statIfPresent(target);
     const owned = statIfPresent(manifestPath);
     if (Boolean(exists) !== Boolean(owned)) fail('Refusing to adopt an existing output or orphan ownership manifest; choose a new output.');
     let previous;
     if (exists) {
+      syncPhase = 'read-ownership';
       const manifest = readManifest(manifestPath);
       if (!manifest || manifest.schema !== schema || manifest.sourceIdentity !== sourceIdentity) fail('Ownership schema or source identity does not match.');
+      syncPhase = 'inspect-previous';
       previous = inventory(target);
       if (!same(manifest.inventory, previous)) fail('Managed output contains edits or extra entries; nothing was deleted.');
     }
+    syncPhase = 'inspect-source';
     const next = inventory(source);
     if (previous && same(previous, next)) return { changed: false, files: next.files.length };
+    syncPhase = 'create-workspace';
     workspace = fs.mkdtempSync(path.join(parent, `.${basename}.soui-tmp-`));
     const fresh = path.join(workspace, 'new');
     const freshManifest = path.join(workspace, 'new.json');
+    syncPhase = 'create-tree';
     fs.mkdirSync(fresh);
     for (const dir of next.directories) fs.mkdirSync(path.join(fresh, dir));
+    syncPhase = 'copy-assets';
     for (const file of next.files) {
       copyBounded(path.join(source, file.path), path.join(fresh, file.path), file);
     }
+    syncPhase = 'verify-tree';
     if (!same(inventory(fresh), next)) fail('Input changed during copy.');
+    syncPhase = 'write-manifest';
     fs.writeFileSync(freshManifest, JSON.stringify({ schema, sourceIdentity, inventory: next }) + '\n', { flag: 'wx' });
     // There is no portable atomic two-path swap. A failure preserves the workspace
     // and any old tree/manifest for manual recovery; never silently delete backups.
     if (previous) {
+      syncPhase = 'verify-previous';
       if (!same(inventory(target), previous)) fail('Managed output changed before replacement.');
+      syncPhase = 'backup-tree';
       fs.renameSync(target, path.join(workspace, 'previous'));
+      syncPhase = 'backup-manifest';
       fs.renameSync(manifestPath, path.join(workspace, 'previous.json'));
     }
+    syncPhase = 'publish-tree';
     fs.renameSync(fresh, target);
+    syncPhase = 'publish-manifest';
     fs.renameSync(freshManifest, manifestPath);
     if (previous) {
+      syncPhase = 'remove-backup-tree';
       removeVerifiedTree(path.join(workspace, 'previous'), previous);
+      syncPhase = 'remove-backup-manifest';
       fs.unlinkSync(path.join(workspace, 'previous.json'));
     }
+    syncPhase = 'remove-workspace';
     fs.rmdirSync(workspace);
     workspace = null;
     return { changed: true, files: next.files.length };
   } catch (error) {
-    // Native filesystem errors contain absolute user paths: expose only their code.
-    const reason = error.code ? `Filesystem operation failed (${error.code}).` : error.message;
-    fail(`${reason}${workspace ? ` Generated workspace ${path.basename(workspace)} retained; stop builds and inspect it for manual recovery.` : ''}`);
+    throw syncFailure(error, syncPhase, workspace);
   } finally {
     if (lock) {
-      try { fs.unlinkSync(lock); } catch { fail('Could not remove owned synchronization lock; inspect it before retrying.'); }
+      try { fs.unlinkSync(lock); } catch (error) {
+        throw syncFailure(error, 'release-lock', undefined,
+          'Could not remove owned synchronization lock; inspect it before retrying.');
+      }
     }
   }
 }
