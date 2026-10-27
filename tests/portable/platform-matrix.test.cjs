@@ -17,7 +17,7 @@ const cmakeCandidates = [
 ].filter(Boolean);
 const cmake = cmakeCandidates.find((command) => {
   const result = spawnSync(command, ['--version'], { encoding: 'utf8', timeout: 10000 });
-  return !result.error && result.status === 0;
+  return !result.error && !result.signal && result.status === 0;
 });
 const notSupported = (fn, message) => assert.throws(fn, (error) => {
   assert.equal(error.code, 'not_supported');
@@ -184,17 +184,30 @@ test('system WebView source policy is distinct from the legacy desktop binaries'
   notSupported(() => platform.requireCapability(platform.resolveTarget({ os: 'windows', arch: 'arm32' }), 'system_desktop'));
 });
 
-test('CLI produces JSON and fails unsupported requirements with nonzero status', () => {
-  const matrix = spawnSync(process.execPath, [cli, '--matrix', '--json'], { encoding: 'utf8' });
+function runCommand(command, args, options) {
+  const result = spawnSync(command, args, options);
+  assert.ifError(result.error);
+  assert.ok(!result.signal, `Child terminated by ${result.signal}`);
+  assert.ok(Number.isInteger(result.status), 'Child did not report a normal exit status');
+  return result;
+}
+
+function runCli(args) {
+  return runCommand(process.execPath, [cli, ...args],
+    { encoding: 'utf8', timeout: 10000, windowsHide: true });
+}
+
+test('CLI produces JSON and fails unsupported requirements with nonzero status', { timeout: 50000 }, () => {
+  const matrix = runCli(['--matrix', '--json']);
   assert.equal(matrix.status, 0, matrix.stderr);
   assert.equal(JSON.parse(matrix.stdout).kind, 'support_matrix');
-  const arm = spawnSync(process.execPath, [cli, '--os', 'windows', '--arch', 'aarch64', '--pointer-size', '8'], { encoding: 'utf8' });
+  const arm = runCli(['--os', 'windows', '--arch', 'aarch64', '--pointer-size', '8']);
   assert.equal(arm.status, 0, arm.stderr);
   assert.equal(JSON.parse(arm.stdout).target.arch, 'arm64');
-  const refused = spawnSync(process.execPath, [cli, '--os', 'linux', '--arch', 'x64', '--require', 'desktop_host'], { encoding: 'utf8' });
+  const refused = runCli(['--os', 'linux', '--arch', 'x64', '--require', 'desktop_host']);
   assert.notEqual(refused.status, 0);
   assert.equal(JSON.parse(refused.stderr).error, 'not_supported');
-  const unknown = spawnSync(process.execPath, [cli, '--arch', 'riscv64'], { encoding: 'utf8' });
+  const unknown = runCli(['--arch', 'riscv64']);
   assert.notEqual(unknown.status, 0);
   assert.equal(JSON.parse(unknown.stderr).error, 'not_supported');
 });
@@ -205,7 +218,7 @@ test('CLI rejects ambiguous/missing arguments and ignored probe options', () => 
   }
 });
 
-test('missing local CMake reports unavailable without downloading tools', () => {
+test('missing local CMake reports unavailable without downloading tools', { timeout: 20000 }, () => {
   const result = platform.probeToolchain({ os: 'linux', arch: 'x64' }, { cmake: path.join(root, 'nonexistent-cmake-for-test') });
   assert.equal(result.status, 'unavailable');
   assert.equal(result.stage, 'cmake');
@@ -225,13 +238,13 @@ function cmakeScript(variables, extra = '') {
     ].join('\n');
     const file = path.join(directory, 'test.cmake');
     fs.writeFileSync(file, source);
-    return spawnSync(cmake, ['-P', file], { encoding: 'utf8', timeout: 30000 });
+    return runCommand(cmake, ['-P', file], { encoding: 'utf8', timeout: 30000 });
   } finally {
     fs.rmSync(directory, { recursive: true, force: true });
   }
 }
 
-test('CMake synthetic target variables normalize aliases and preserve ARM64', { skip: !cmake && 'CMake is not installed' }, () => {
+test('CMake synthetic target variables normalize aliases and preserve ARM64', { skip: !cmake && 'CMake is not installed', timeout: 160000 }, () => {
   for (const [system, processor, pointer, expected] of [
     ['Windows', 'AMD64', 8, 'windows/x64'], ['Windows', 'ARM64', 8, 'windows/arm64'],
     ['Linux', 'armv7l', 4, 'linux/arm32'], ['Linux', 'i686', 4, 'linux/x86'],
@@ -243,7 +256,7 @@ test('CMake synthetic target variables normalize aliases and preserve ARM64', { 
   }
 });
 
-test('CMake cross builds use declared target rather than host processor', { skip: !cmake && 'CMake is not installed' }, () => {
+test('CMake cross builds use declared target rather than host processor', { skip: !cmake && 'CMake is not installed', timeout: 70000 }, () => {
   const result = cmakeScript({
     CMAKE_SYSTEM_NAME: 'Linux', CMAKE_HOST_SYSTEM_NAME: 'Windows',
     CMAKE_SYSTEM_PROCESSOR: 'aarch64', CMAKE_HOST_SYSTEM_PROCESSOR: 'AMD64',
@@ -259,7 +272,7 @@ test('CMake cross builds use declared target rather than host processor', { skip
   assert.match(x86.stdout, /TARGET=windows\/x86/);
 });
 
-test('CMake Windows VS and compiler architecture selections override the host processor', { skip: !cmake && 'CMake is not installed' }, () => {
+test('CMake Windows VS and compiler architecture selections override the host processor', { skip: !cmake && 'CMake is not installed', timeout: 220000 }, () => {
   for (const [selection, arch, pointerSize] of [['ARM', 'arm32', 4], ['ARM64', 'arm64', 8]]) {
     for (const field of ['CMAKE_GENERATOR_PLATFORM', 'CMAKE_VS_PLATFORM_NAME', 'CMAKE_CXX_COMPILER_ARCHITECTURE_ID']) {
       const result = cmakeScript({
@@ -279,7 +292,7 @@ test('CMake Windows VS and compiler architecture selections override the host pr
   assert.match(target.stdout, /TARGET=windows\/arm64;/);
 });
 
-test('CMake rejects unknown systems/architectures, ARM64EC and pointer conflicts', { skip: !cmake && 'CMake is not installed' }, () => {
+test('CMake rejects unknown systems/architectures, ARM64EC and pointer conflicts', { skip: !cmake && 'CMake is not installed', timeout: 340000 }, () => {
   const base = { CMAKE_SYSTEM_NAME: 'Linux', CMAKE_SYSTEM_PROCESSOR: 'x86_64', CMAKE_SIZEOF_VOID_P: 8 };
   for (const override of [
     { CMAKE_SYSTEM_NAME: 'FreeBSD' }, { CMAKE_SYSTEM_PROCESSOR: 'mips64' },
@@ -297,7 +310,7 @@ test('CMake rejects unknown systems/architectures, ARM64EC and pointer conflicts
   }
 });
 
-test('CMake macOS multi-architecture normalization matches the Node contract', { skip: !cmake && 'CMake is not installed' }, () => {
+test('CMake macOS multi-architecture normalization matches the Node contract', { skip: !cmake && 'CMake is not installed', timeout: 160000 }, () => {
   for (const arches of ['x86_64;arm64', 'arm64;x86_64', 'arm64;x86_64;arm64']) {
     const result = cmakeScript({
       CMAKE_SYSTEM_NAME: 'Darwin', CMAKE_SYSTEM_PROCESSOR: 'arm64',
@@ -320,7 +333,7 @@ test('CMake macOS multi-architecture normalization matches the Node contract', {
   assert.match(thinCross.stdout, /TARGET=macos\/x64;ARCHES=x64/);
 });
 
-test('CMake dependency requests explicitly fail on unsupported target', { skip: !cmake && 'CMake is not installed' }, () => {
+test('CMake dependency requests explicitly fail on unsupported target', { skip: !cmake && 'CMake is not installed', timeout: 280000 }, () => {
   for (const capability of ['desktop_host', 'soui_prebuilt', 'miniblink_prebuilt']) {
     for (const [system, arch] of [['Linux', 'x86_64'], ['Windows', 'ARM64'], ['Darwin', 'arm64']]) {
       const result = cmakeScript({
@@ -333,12 +346,16 @@ test('CMake dependency requests explicitly fail on unsupported target', { skip: 
   }
 });
 
-test('local compiler probe configures and links only its exact requested target', { skip: !cmake && 'CMake is not installed', timeout: 180000 }, () => {
+test('local compiler probe configures and links only its exact requested target', { skip: !cmake && 'CMake is not installed', timeout: 260000 }, () => {
   const target = platform.resolveTarget({ os: process.platform, arch: process.arch });
   const result = platform.probeToolchain(target, { cmake });
   assert.equal(result.status, 'available', JSON.stringify(result));
   assert.equal(result.stage, 'compile_and_link');
   assert.equal(result.runtimeValidation, 'not_tested');
+});
+
+test('local compiler probe rejects a mismatched requested target', { skip: !cmake && 'CMake is not installed', timeout: 260000 }, () => {
+  const target = platform.resolveTarget({ os: process.platform, arch: process.arch });
   const mismatched = { ...target, os: target.os === 'windows' ? 'linux' : 'windows' };
   const refused = platform.probeToolchain(mismatched, { cmake });
   assert.equal(refused.status, 'unavailable');
@@ -348,7 +365,7 @@ test('local compiler probe configures and links only its exact requested target'
 
 test('real configure rejects an ARM cross-toolchain that accidentally uses the x64 host compiler', {
   skip: (!cmake || process.platform !== 'linux' || process.arch !== 'x64') && 'Requires a Linux x64 compiler host',
-  timeout: 120000,
+  timeout: 130000,
 }, () => {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'soui-wrong-cross-test-'));
   try {
@@ -363,7 +380,7 @@ test('real configure rejects an ARM cross-toolchain that accidentally uses the x
     // compiler. This is deliberately a broken but otherwise configurable file.
     const toolchain = path.join(directory, 'wrong-toolchain.cmake');
     fs.writeFileSync(toolchain, 'set(CMAKE_SYSTEM_NAME Linux)\nset(CMAKE_SYSTEM_PROCESSOR aarch64)\n');
-    const result = spawnSync(cmake, ['-S', directory, '-B', path.join(directory, 'build'),
+    const result = runCommand(cmake, ['-S', directory, '-B', path.join(directory, 'build'),
       `-DCMAKE_TOOLCHAIN_FILE=${toolchain}`], { encoding: 'utf8', timeout: 120000 });
     assert.notEqual(result.status, 0, result.stdout);
     const message = result.stderr.replace(/\s+/g, ' ');
@@ -376,7 +393,7 @@ test('real configure rejects an ARM cross-toolchain that accidentally uses the x
 
 test('real compiler OS macros reject a mislabeled CMAKE_SYSTEM_NAME', {
   skip: (!cmake || process.platform !== 'linux') && 'Requires a Linux compiler host',
-  timeout: 120000,
+  timeout: 130000,
 }, () => {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'soui-wrong-os-test-'));
   try {
@@ -388,7 +405,7 @@ test('real compiler OS macros reject a mislabeled CMAKE_SYSTEM_NAME', {
       'soui_detect_platform()',
       '',
     ].join('\n'));
-    const result = spawnSync(cmake, ['-S', directory, '-B', path.join(directory, 'build')],
+    const result = runCommand(cmake, ['-S', directory, '-B', path.join(directory, 'build')],
       { encoding: 'utf8', timeout: 120000 });
     assert.notEqual(result.status, 0, result.stdout);
     assert.match(result.stderr.replace(/\s+/g, ' '), /compiler OS\/architecture probe failed/);
@@ -399,7 +416,7 @@ test('real compiler OS macros reject a mislabeled CMAKE_SYSTEM_NAME', {
 
 test('real compiler probes reject a false compiler architecture declaration', {
   skip: (!cmake || process.platform !== 'linux' || process.arch !== 'x64') && 'Requires a Linux x64 compiler host',
-  timeout: 120000,
+  timeout: 130000,
 }, () => {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'soui-wrong-compiler-arch-test-'));
   try {
@@ -411,7 +428,7 @@ test('real compiler probes reject a false compiler architecture declaration', {
       'soui_detect_platform()',
       '',
     ].join('\n'));
-    const result = spawnSync(cmake, ['-S', directory, '-B', path.join(directory, 'build')],
+    const result = runCommand(cmake, ['-S', directory, '-B', path.join(directory, 'build')],
       { encoding: 'utf8', timeout: 120000 });
     assert.notEqual(result.status, 0, result.stdout);
     assert.match(result.stderr.replace(/\s+/g, ' '), /conflicting target architecture 'arm64' and compiler target 'x64'/);
@@ -422,7 +439,7 @@ test('real compiler probes reject a false compiler architecture declaration', {
 
 test('legacy libstdc++ ABI fails configuration without weakening TaskStore swap guarantees', {
   skip: !cmake && 'CMake is not installed',
-  timeout: 120000,
+  timeout: 130000,
 }, (context) => {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'soui-legacy-abi-test-'));
   try {
@@ -439,7 +456,7 @@ test('legacy libstdc++ ABI fails configuration without weakening TaskStore swap 
       `include("${path.join(root, 'sdk/cmake/SouiPortableRuntime.cmake').replace(/\\/g, '/')}")`,
       '',
     ].join('\n'));
-    const result = spawnSync(cmake, ['-S', directory, '-B', path.join(directory, 'build')],
+    const result = runCommand(cmake, ['-S', directory, '-B', path.join(directory, 'build')],
       { encoding: 'utf8', timeout: 120000 });
     if (result.status === 0 && result.stdout.includes('SOUI_TEST_NOT_LIBSTDCXX')) {
       context.skip('Selected compiler uses a different standard library; legacy libstdc++ ABI is inapplicable');
@@ -454,7 +471,7 @@ test('legacy libstdc++ ABI fails configuration without weakening TaskStore swap 
 });
 
 
-test('CMake macOS compiler identification accepts slice lists without relaxing other hints', { skip: !cmake && 'CMake is not installed' }, () => {
+test('CMake macOS compiler identification accepts slice lists without relaxing other hints', { skip: !cmake && 'CMake is not installed', timeout: 700000 }, () => {
   const base = { CMAKE_SYSTEM_NAME: 'Darwin', CMAKE_SYSTEM_PROCESSOR: 'arm64',
     CMAKE_OSX_ARCHITECTURES: 'arm64;x86_64', CMAKE_SIZEOF_VOID_P: 8 };
   for (const field of ['CMAKE_C_COMPILER_ARCHITECTURE_ID', 'CMAKE_CXX_COMPILER_ARCHITECTURE_ID']) {

@@ -5,9 +5,26 @@ const fs = require('node:fs');
 const path = require('node:path');
 const os = require('node:os');
 const crypto = require('node:crypto');
-const { parseArgs, filesIn, identity, validateTests, requiredTests, packageDesktop } = require('../../tools/package-desktop.cjs');
+const { parseArgs, filesIn, identity, validateTests, requiredTests, matrixSetupTests, matrixFixture,
+  packageDesktop } = require('../../tools/package-desktop.cjs');
+const legacyRequiredTests = [
+  'sdk.portable.integration', 'sdk.portable.primitives', 'sdk.portable.installed-consumer',
+  'sdk.portable.platform-matrix', 'sdk.desktop.contract', 'sdk.desktop.preload',
+  'sdk.desktop.package-tool', 'sdk.desktop.assets', 'sdk.desktop.asset-executor',
+];
+const expectedMatrixFixture = 'soui_platform_matrix_groups';
+const expectedMatrixSetupTests = [
+  'cli', 'policy', 'cmake-aliases', 'cmake-cross', 'cmake-windows', 'cmake-invalid',
+  'cmake-macos', 'cmake-dependencies', 'cmake-slices', 'probe-native', 'probe-mismatch',
+  'linux-cross', 'linux-os', 'linux-arch', 'abi',
+].map(suffix => `sdk.portable.platform-matrix-${suffix}`);
 function registration() {
-  return { kind: 'ctestInfo', tests: requiredTests.map(name => ({ name, command: ['test-fixture'], properties: [] })) };
+  return { kind: 'ctestInfo', tests: requiredTests.map(name => ({ name, command: ['test-fixture'],
+    properties: name === 'sdk.portable.platform-matrix'
+      ? [{ name: 'FIXTURES_REQUIRED', value: [expectedMatrixFixture] }]
+      : expectedMatrixSetupTests.includes(name)
+        ? [{ name: 'FIXTURES_SETUP', value: [expectedMatrixFixture] }] : [],
+  })) };
 }
 function fixture(t) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'soui-package-'));
@@ -110,6 +127,46 @@ test('required registration rejects missing, duplicate, disabled or commandless 
   }
   assert.throws(() => validateTests('not JSON'), /valid JSON/);
   assert.throws(() => validateTests('{}'), /incomplete/);
+});
+test('platform matrix registration requires every group beyond the legacy aggregate', () => {
+  assert.equal(matrixFixture, expectedMatrixFixture);
+  assert.deepEqual(matrixSetupTests, expectedMatrixSetupTests);
+  assert.deepEqual(requiredTests, [...legacyRequiredTests, ...expectedMatrixSetupTests]);
+  const legacy = registration();
+  legacy.tests = legacy.tests.filter(({ name }) => legacyRequiredTests.includes(name));
+  assert.throws(() => validateTests(JSON.stringify(legacy)), /Required CTest/);
+  for (const missing of expectedMatrixSetupTests) {
+    const listing = registration();
+    listing.tests = listing.tests.filter(({ name }) => name !== missing);
+    assert.throws(() => validateTests(JSON.stringify(listing)), /Required CTest/, missing);
+  }
+});
+test('platform matrix registration validates setup and aggregate fixture relationships', () => {
+  for (const name of [...expectedMatrixSetupTests, 'sdk.portable.platform-matrix']) {
+    const isAggregate = name === 'sdk.portable.platform-matrix';
+    const relationship = isAggregate ? 'FIXTURES_REQUIRED' : 'FIXTURES_SETUP';
+    const inverse = isAggregate ? 'FIXTURES_SETUP' : 'FIXTURES_REQUIRED';
+    for (const change of [
+      entry => { entry.properties = []; },
+      entry => { entry.properties[0].value = ['unrelated-fixture']; },
+      entry => { entry.properties[0].value = []; },
+      entry => { entry.properties[0].value = null; },
+      entry => { entry.properties[0].value = 42; },
+      entry => { entry.properties[0].value = [expectedMatrixFixture, 42]; },
+      entry => { entry.properties.push({ ...entry.properties[0] }); },
+      entry => { entry.properties.push({ name: inverse, value: [expectedMatrixFixture] }); },
+    ]) {
+      const listing = registration();
+      change(listing.tests.find(entry => entry.name === name));
+      assert.throws(() => validateTests(JSON.stringify(listing)), /Required platform matrix fixture/, name);
+    }
+    for (const value of [expectedMatrixFixture, [expectedMatrixFixture],
+      `unrelated-fixture;${expectedMatrixFixture}`, ['unrelated-fixture', expectedMatrixFixture]]) {
+      const listing = registration();
+      listing.tests.find(entry => entry.name === name).properties = [{ name: relationship, value }];
+      assert.deepEqual(validateTests(JSON.stringify(listing)), requiredTests);
+    }
+  }
 });
 test('stale registration stops before executing tests or installing', t => {
   const f = fixture(t); const calls = [];

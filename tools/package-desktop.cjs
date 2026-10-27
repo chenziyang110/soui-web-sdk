@@ -10,10 +10,29 @@ const { spawnSync } = require('node:child_process');
 
 const root = path.resolve(__dirname, '..');
 const configurations = ['Debug', 'Release', 'RelWithDebInfo', 'MinSizeRel'];
+const matrixFixture = 'soui_platform_matrix_groups';
+const matrixSetupTests = [
+  'sdk.portable.platform-matrix-cli',
+  'sdk.portable.platform-matrix-policy',
+  'sdk.portable.platform-matrix-cmake-aliases',
+  'sdk.portable.platform-matrix-cmake-cross',
+  'sdk.portable.platform-matrix-cmake-windows',
+  'sdk.portable.platform-matrix-cmake-invalid',
+  'sdk.portable.platform-matrix-cmake-macos',
+  'sdk.portable.platform-matrix-cmake-dependencies',
+  'sdk.portable.platform-matrix-cmake-slices',
+  'sdk.portable.platform-matrix-probe-native',
+  'sdk.portable.platform-matrix-probe-mismatch',
+  'sdk.portable.platform-matrix-linux-cross',
+  'sdk.portable.platform-matrix-linux-os',
+  'sdk.portable.platform-matrix-linux-arch',
+  'sdk.portable.platform-matrix-abi',
+];
 const requiredTests = [
   'sdk.portable.integration', 'sdk.portable.primitives', 'sdk.portable.installed-consumer',
   'sdk.portable.platform-matrix', 'sdk.desktop.contract', 'sdk.desktop.preload',
   'sdk.desktop.package-tool', 'sdk.desktop.assets', 'sdk.desktop.asset-executor',
+  ...matrixSetupTests,
 ];
 function parseArgs(args) {
   const options = { configuration: 'Release' };
@@ -69,6 +88,7 @@ function validateTests(text) {
   try { listing = JSON.parse(text); } catch { throw new Error('CTest registration is not valid JSON.'); }
   if (!listing || listing.kind !== 'ctestInfo' || !Array.isArray(listing.tests))
     throw new Error('CTest registration is incomplete.');
+  const registered = new Map();
   for (const name of requiredTests) {
     const matches = listing.tests.filter(test => test.name === name);
     if (matches.length !== 1 || !Array.isArray(matches[0].command) || !matches[0].command.length ||
@@ -76,6 +96,22 @@ function validateTests(text) {
         matches[0].properties.some(property => property.name === 'DISABLED' &&
           ![false, 0, '0', 'FALSE', 'OFF'].includes(property.value)))
       throw new Error(`Required CTest is missing, disabled or invalid: ${name}. Reconfigure this checkout.`);
+    registered.set(name, matches[0]);
+  }
+  function hasFixture(test, property) {
+    const entries = test.properties.filter(item => item.name === property);
+    if (!entries.length) return false;
+    if (entries.length !== 1) return null;
+    const value = entries[0].value;
+    const fixtures = Array.isArray(value) ? value : typeof value === 'string' ? value.split(';') : null;
+    if (!fixtures || !fixtures.every(item => typeof item === 'string')) return null;
+    return fixtures.includes(matrixFixture);
+  }
+  for (const name of [...matrixSetupTests, 'sdk.portable.platform-matrix']) {
+    const test = registered.get(name);
+    const setup = matrixSetupTests.includes(name);
+    if (hasFixture(test, 'FIXTURES_SETUP') !== setup || hasFixture(test, 'FIXTURES_REQUIRED') !== !setup)
+      throw new Error(`Required platform matrix fixture is missing or invalid: ${name}. Reconfigure this checkout.`);
   }
   return requiredTests.slice();
 }
@@ -172,4 +208,5 @@ if (require.main === module) {
     process.exitCode = 1;
   }
 }
-module.exports = { parseArgs, readCache, filesIn, identity, validateTests, requiredTests, packageDesktop };
+module.exports = { parseArgs, readCache, filesIn, identity, validateTests, requiredTests,
+  matrixFixture, matrixSetupTests, packageDesktop };

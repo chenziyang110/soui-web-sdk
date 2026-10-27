@@ -184,14 +184,25 @@ function cmakeQuoted(value) {
   return String(value).replace(/\\/g, '/').replace(/"/g, '\\"').replace(/\$/g, '\\$');
 }
 
+function probeProcessFailure(result, diagnostic) {
+  const code = value => typeof value === 'string' && /^[A-Z][A-Z0-9_]{0,31}$/.test(value)
+    ? ` (${value})` : '';
+  // Partial output from an interrupted process is not a compiler rejection.
+  if (result.error) return `CMake process error${code(result.error.code)}.`;
+  if (result.signal) return `CMake process terminated${code(result.signal)}.`;
+  if (!Number.isInteger(result.status)) return 'CMake process did not report a normal exit status.';
+  return result.status === 0 ? null : diagnostic();
+}
+
 // An explicit local probe compiles and links, but never runs, a tiny C++17
 // consumer. The configured target must match the requested target exactly.
 // No tools are downloaded, no packages installed, and no remote CI is invoked.
 function probeToolchain(target, options = {}) {
   const cmake = options.cmake || 'cmake';
   const version = spawnSync(cmake, ['--version'], { encoding: 'utf8', timeout: 10000, windowsHide: true });
-  if (version.error || version.status !== 0) {
-    return { status: 'unavailable', stage: 'cmake', reason: version.error?.message || version.stderr.trim(), runtimeValidation: 'not_tested' };
+  const versionFailure = probeProcessFailure(version, () => (version.stderr || '').trim());
+  if (versionFailure !== null) {
+    return { status: 'unavailable', stage: 'cmake', reason: versionFailure, runtimeValidation: 'not_tested' };
   }
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'soui-platform-probe-'));
   try {
@@ -223,14 +234,18 @@ function probeToolchain(target, options = {}) {
       args.push(`-DCMAKE_OSX_ARCHITECTURES=${target.architectures.map((arch) => arch === 'x64' ? 'x86_64' : 'arm64').join(';')}`);
     }
     const configure = spawnSync(cmake, args, { encoding: 'utf8', timeout: 120000, windowsHide: true });
-    if (configure.error || configure.status !== 0) {
-      return { status: 'unavailable', stage: 'configure', reason: configure.error?.message || (configure.stderr + configure.stdout).slice(-12000), runtimeValidation: 'not_tested' };
+    const configureFailure = probeProcessFailure(configure,
+      () => ((configure.stderr || '') + (configure.stdout || '')).slice(-12000));
+    if (configureFailure !== null) {
+      return { status: 'unavailable', stage: 'configure', reason: configureFailure, runtimeValidation: 'not_tested' };
     }
     const build = spawnSync(cmake, ['--build', buildPath, '--config', 'Release'], { encoding: 'utf8', timeout: 120000, windowsHide: true });
+    const buildFailure = probeProcessFailure(build,
+      () => ((build.stderr || '') + (build.stdout || '')).slice(-12000));
     return {
-      status: !build.error && build.status === 0 ? 'available' : 'unavailable',
+      status: buildFailure === null ? 'available' : 'unavailable',
       stage: 'compile_and_link',
-      reason: build.error?.message || (build.status === 0 ? null : (build.stderr + build.stdout).slice(-12000)),
+      reason: buildFailure,
       scope: 'minimal C++17 target consumer; SDK build and runtime acceptance are separate',
       runtimeValidation: 'not_tested',
     };
