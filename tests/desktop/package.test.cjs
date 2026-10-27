@@ -22,14 +22,14 @@ function fixture(t) {
   ].join('\n'));
   return { root, source, build, output: path.join(root, 'new output'), configuration: 'Release' };
 }
-function populate(stage) {
+function populate(stage, configuration = 'Release') {
   const entries = {
     'lib/cmake/SouiRuntime/SouiRuntimeConfig.cmake': 'set(SouiRuntime_TARGET_OS "linux")\nset(SouiRuntime_TARGET_ARCH "arm64")',
     'lib/cmake/SouiDesktop/SouiDesktopConfig.cmake': 'set(SouiDesktop_BACKEND "webkitgtk")',
     'include/soui/version.h': '#define SOUI_SDK_VERSION_STRING "0.5.0"',
     'include/soui/desktop/app.h': '// public header',
-    'lib/Release/libsoui_desktop.a': 'fixture, not a compiled library',
-    'lib/Release/libsoui_runtime.a': 'fixture runtime library',
+    [`lib/${configuration}/libsoui_desktop.a`]: 'fixture, not a compiled library',
+    [`lib/${configuration}/libsoui_runtime.a`]: 'fixture runtime library',
   };
   for (const [relative, content] of Object.entries(entries)) {
     const filename = path.join(stage, relative);
@@ -138,11 +138,16 @@ test('installed source version, runtime library and selected configuration must 
     assert.throws(() => packageDesktop(f, (_, args) => {
       if (args.includes('--show-only=json-v1')) return JSON.stringify(registration());
       if (args[0] === '--install') {
-        const stage = args.at(-1); populate(stage);
+        const stage = args.at(-1);
+        // Construct the wrong install inventory; directory moves are not this contract.
+        populate(stage, kind === 'configuration' ? 'Debug' : 'Release');
         if (kind === 'version') fs.writeFileSync(path.join(stage, 'include/soui/version.h'),
           '#define SOUI_SDK_VERSION_STRING "0.4.0"');
         if (kind === 'runtime') fs.unlinkSync(path.join(stage, 'lib/Release/libsoui_runtime.a'));
-        if (kind === 'configuration') fs.renameSync(path.join(stage, 'lib/Release'), path.join(stage, 'lib/Debug'));
+        if (kind === 'configuration') for (const library of ['libsoui_desktop.a', 'libsoui_runtime.a']) {
+          assert.equal(fs.existsSync(path.join(stage, 'lib/Debug', library)), true);
+          assert.equal(fs.existsSync(path.join(stage, 'lib/Release', library)), false);
+        }
       }
     }, f.source), kind === 'version' ? /VERSION/ : /library is missing/);
     assert.ok(!fs.readdirSync(f.output).some(name => name.endsWith('.zip')));
