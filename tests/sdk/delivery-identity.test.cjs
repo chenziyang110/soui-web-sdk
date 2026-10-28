@@ -258,6 +258,7 @@ test('deployment replaces stale Web assets and preserves app data outside resour
   const app = path.join(root, 'app');
   write(source, 'index.html', 'new');
   write(source, 'assets/current.js', 'current');
+  write(root, 'LICENSE.md', 'First-party license');
   write(root, 'THIRD_PARTY_NOTICES.md', 'SDK notices');
   write(root, 'third_party/licenses/example-LICENSE.txt', 'Dependency license');
   write(app, 'resources/index.html', 'old');
@@ -279,6 +280,7 @@ test('deployment replaces stale Web assets and preserves app data outside resour
   fs.unlinkSync(path.join(root, 'THIRD_PARTY_NOTICES.md'));
   assert.throws(() => deploy.replace(source, app, root), /ENOENT|missing/);
   assert.equal(fs.readFileSync(path.join(app, 'resources/legal/THIRD_PARTY_NOTICES.md'), 'utf8'), 'SDK notices');
+  write(root, 'LICENSE.md', 'First-party license');
   write(root, 'THIRD_PARTY_NOTICES.md', 'SDK notices');
   const before = identity.source(root).sha256;
   fs.writeFileSync(path.join(root, 'third_party/licenses/example-LICENSE.txt'), 'Altered license');
@@ -288,6 +290,7 @@ test('deployment replaces stale Web assets and preserves app data outside resour
 test('deployment survives a temporary Windows denial while publishing staged resources', {skip: process.platform !== 'win32'}, t => {
   const root = fixture(t), source = path.join(root, 'web'), app = path.join(root, 'app');
   write(source, 'index.html', 'new');
+  write(root, 'LICENSE.md', 'First-party license');
   write(root, 'THIRD_PARTY_NOTICES.md', 'SDK notices');
   write(root, 'third_party/licenses/example-LICENSE.txt', 'Dependency license');
   write(app, 'resources/index.html', 'old');
@@ -309,6 +312,7 @@ test('deployment survives a temporary Windows denial while publishing staged res
 test('deployment bounds persistent Windows publication denials and restores old resources', {skip: process.platform !== 'win32'}, t => {
   const root = fixture(t), source = path.join(root, 'web'), app = path.join(root, 'app');
   write(source, 'index.html', 'new');
+  write(root, 'LICENSE.md', 'First-party license');
   write(root, 'THIRD_PARTY_NOTICES.md', 'SDK notices');
   write(root, 'third_party/licenses/example-LICENSE.txt', 'Dependency license');
   write(app, 'resources/index.html', 'old');
@@ -327,6 +331,7 @@ test('deployment bounds persistent Windows publication denials and restores old 
 test('deployment immediately propagates other publication errors and restores old resources', t => {
   const root = fixture(t), source = path.join(root, 'web'), app = path.join(root, 'app');
   write(source, 'index.html', 'new');
+  write(root, 'LICENSE.md', 'First-party license');
   write(root, 'THIRD_PARTY_NOTICES.md', 'SDK notices');
   write(root, 'third_party/licenses/example-LICENSE.txt', 'Dependency license');
   write(app, 'resources/index.html', 'old');
@@ -345,6 +350,7 @@ test('deployment immediately propagates other publication errors and restores ol
 test('linked resource directories are rejected before deployment changes', t => {
   const root = fixture(t);
   write(root, 'source/index.html', 'new');
+  write(root, 'LICENSE.md', 'First-party license');
   write(root, 'THIRD_PARTY_NOTICES.md', 'SDK notices');
   write(root, 'third_party/licenses/example-LICENSE.txt', 'Dependency license');
   write(root, 'outside/protected.txt', 'keep');

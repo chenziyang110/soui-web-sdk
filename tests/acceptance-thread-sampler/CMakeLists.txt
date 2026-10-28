@@ -10,7 +10,7 @@ get_filename_component(SOUI_ACCEPTANCE_MAIN "${SOUI_ACCEPTANCE_MAIN}" ABSOLUTE
 if(NOT EXISTS "${SOUI_ACCEPTANCE_MAIN}" OR IS_DIRECTORY "${SOUI_ACCEPTANCE_MAIN}")
   message(FATAL_ERROR "SOUI_ACCEPTANCE_MAIN must reference the real acceptance main.cpp")
 endif()
-find_package(SouiSdk 0.5.0 EXACT CONFIG REQUIRED)
+find_package(SouiSdk 0.6.0 EXACT CONFIG REQUIRED)
 get_target_property(sdk_imported Soui::Sdk IMPORTED)
 if(NOT sdk_imported)
   message(FATAL_ERROR "Use the normal installed SDK; do not compile copied SDK TUs")

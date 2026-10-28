@@ -596,7 +596,7 @@ bool dispatchSchedulerTurn(const TaskReceipt* requiredReceipt = nullptr) {
         MSG message{};
         while (::PeekMessageW(&message, nullptr, 0, 0, PM_REMOVE)) {
             const bool schedulerTurn = message.hwnd == nativeWindow
-                && ((message.message == WM_TIMER && message.wParam == 1000)
+                && ((message.message == WM_TIMER && message.wParam == content::timerID)
                     || message.message == content::continuationMessage);
             ::TranslateMessage(&message);
             ::DispatchMessageW(&message);
@@ -644,7 +644,7 @@ bool mainSchedulerContinuationCase() {
     // Isolate the posted continuation. With the native fallback disabled only
     // in this test, retained ready tasks must still finish through the real
     // window procedure. This is not a hardware-input fairness measurement.
-    const bool fallbackStopped = sourceKillTimer(nativeWindow, 1000) != FALSE;
+    const bool fallbackStopped = sourceKillTimer(nativeWindow, content::timerID) != FALSE;
     TaskReceipt future;
     future.ran = makeGate();
     thread->postDelayedTask(FROM_HERE, new KnownTask(future, thread), 500);
@@ -685,7 +685,7 @@ private:
 bool mainSchedulerFirstWakeCase() {
     auto* thread = schedulerMainThread();
     if (!thread || !nativeWindow) return false;
-    const bool fallbackStopped = sourceKillTimer(nativeWindow, 1000) != FALSE;
+    const bool fallbackStopped = sourceKillTimer(nativeWindow, content::timerID) != FALSE;
     TaskReceipt receipt;
     receipt.ran = makeGate();
     thread->postTask(FROM_HERE, new KnownTask(receipt, thread));
@@ -721,7 +721,7 @@ bool mainSchedulerAdmissionCase(bool closeWithPendingAdmission) {
     SchedulerReceipt receipt;
     auto* thread = schedulerMainThread();
     if (!thread || !nativeWindow) return false;
-    const bool fallbackStopped = sourceKillTimer(nativeWindow, 1000) != FALSE;
+    const bool fallbackStopped = sourceKillTimer(nativeWindow, content::timerID) != FALSE;
     SchedulerAdmissionProducer producer{thread, &receipt};
     HANDLE native = reinterpret_cast<HANDLE>(::_beginthreadex(nullptr, 0,
         postFutureSchedulerBatch, &producer, 0, nullptr));
