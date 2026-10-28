@@ -1,5 +1,7 @@
 # SDK API
 
+本页描述 0.6.0 集成后的源码接口。新发布的构建、消费者与 Runtime 结果正在收口，见[发布说明](releases/0.6.0.md)；带 preview 标识的旧记录仍保留各自身份。
+
 ## 可选自动后端宿主
 
 `Soui::AutoHost` 导出 `<soui/host/auto_webview_host.h>`。`auto_host_config` 指定
@@ -13,6 +15,17 @@
 退出屏障由组件持有，MiniBlink 最终进程级退出仍由应用在所有宿主销毁后执行。
 基础 `Soui::Sdk` 和原始宿主 API 保留。使用与验证入口见[自动后端](auto-backend.md)。
 
+## 公共原生受控 DevTools
+
+`<soui/devtools.h>`与公共Host提供原生配置、不透明grant、逐项能力、异步操作编号/有界历史、真实状态观察与撤销。默认disabled；普通Bridge、UIA、CLI和环境变量不发放调试许可。两个内置后端已接入明确的目标销毁策略，WebView2的连接/可见/暂停保持unknown，MiniBlink使用实际受控snapshot。本接口接入两种模板和Workbench，编译/运行证据分开记录，完整D01–D14尚未验收。接入、watch所有权、关闭及资源pin见[DevTools接入](devtools.md)和[ADR0123](adr/0123-public-devtools-candidate.md)。
+
+`preview.8` 的 `<soui/host/soui_miniblink_host.h>` 新增显式双参数构造
+`dynamic_miniblink_adapter(diagnostics::mode, miniblink_local_resource_options)`，
+选择独立的本地 HTTPS 资源原点，资源目录仍通过 `host_config.resource_root` 提供。
+零参数与单参数构造、`host_config` 和公开 adapter 布局/vtable 保留；缺少匹配
+business-resource ABI 的内核明确拒绝。新模式不授予调试许可，源码已接线并等待
+统一验证，资源身份、容量和关闭合同见 [ADR 0135](adr/0135-owned-local-resource-origin.md)。
+
 ## 0.4 现代后端与环境探测
 
 可选 `Soui::WebView2` 导出 `<soui/host/webview2_host.h>`；UI STA 异步准备后使用相同 `webview_host`。`show()` 恢复隐藏视图并保留会话。公共 `<soui/host/runtime_profile.h>` 提供实际系统/PE/架构探测和候选档位选择；Web SDK 导出 `inspectSouiWebFeatures`、`requireSouiWebFeatures`。这些探测不授予原生权限，不代表目标环境认证。完整初始化、通知、关闭和部署契约见 [现代后端](modern-backend.md)。
@@ -25,6 +38,22 @@ MiniBlink 的 `close()/destroy()` 在引擎 FIFO 或 Bridge worker 尚未完成�
 操作准入，pending 期间 reload/show/resize/focus 也返回该状态，pump 只推进清理。
 只有实际清理完成才可销毁对象；排队成功、窗口隐藏或重试计时器不表示关闭成功。
 这不改变进程级 Runtime 关闭入口，详见 [ADR 0118](adr/0118-miniblink-nonblocking-unmount.md)。
+
+WebView2 初始化会在 loader 前拒绝外部 Runtime/profile/浏览器参数或调试环境变量，以及适用的 HKLM/HKCU WebView2 override，返回 `E_WEBVIEW2_LOADER_OVERRIDE`；读取无法核实返回 `E_WEBVIEW2_LOADER_POLICY`。存在策略值但无法完整确定应用身份时返回 `E_POLICY_ID_UNRESOLVED`，即使该值可能属于其他应用也不猜作安全。此时不会创建浏览器或清空进程环境，SDK 不修改注册表或应用 AppID。应用应通过其原生初始化提供可核实的身份，并移除适用于该进程的外部 override；详见 [ADR 0122](adr/0122-webview2-stage0-native-admission.md)。该检查已接入候选实现，真实候选验证仍待完成；检查本身不授予调试许可，公共 DevTools 入口仍须遵守上文的原生策略与目标许可契约。
+
+exclusive 初始化取消后，若原 UI STA 收到真实失败且没有 Controller 的迟到
+completion，`status()` 保留 `E_WEBVIEW2` 和该 HRESULT；已经发生的回调或
+Controller 关闭错误仍优先。应用的取消完成仍只回调一次 `E_CANCELLED`。
+仅在全部初始化借用退休、且严格证明无 Core/Controller/浏览器所有权后，
+后续 `unmount()` 才能释放这组失败初始化引用。普通取消或未知结果不因此
+获得清理资格；`failed_preparation_cleanup_complete()` 不表示浏览器进程退出。
+局部验证与尚未验证的真实 Runtime 范围见 [ADR 0057](adr/0057-exclusive-webview2-runtime-exit-watch.md)。
+
+WebView2 的内部传输按文档、请求 ID 和单次调用 ID 共同匹配回复，避免请求
+本地超时后复用 ID 时，旧回复完成新 Promise。公开 JSON 字符串调用契约不变；
+本地超时仍不代表原生工作已取消。原生组件与内嵌 preload 必须配套重编译，
+内部新旧信封不混用。局部回归、组件编译和真实 Runtime 的验证边界见
+[ADR 0121](adr/0121-webview2-invocation-correlation.md)。
 
 ## 动作契约与受控界面（preview.10）
 
@@ -74,6 +103,36 @@ bridge.register_method("app.ping", "app.ping",
 | `soui::runtime::task_service` | 公共长任务调度、会话归属、事件及取消 |
 
 完整窗口、计时器和关闭顺序参考模板的 `app/main.cpp`。C++ 参数和返回类型以 `sdk/include/soui` 的头文件为准。兼容内核必须同时提供 `wkePrepareWorkerShutdown` 与 `wkeFinalizePrepared`；缺少任一接口时在初始化前返回 `E_DEPENDENCY_API`，不能混用旧 DLL。
+
+MiniBlink 的 `close()/destroy()` 在引擎 FIFO 或 Bridge worker 尚未完成清理时返回
+`E_CURSOR_CLOSE_PENDING`；调用者必须继续持有 Host、借用的 Bridge 和两个 HWND，
+在原关闭总期限内从后续 UI 轮次重试。第一次调用即撤回该适配器的文档和普通
+操作准入，pending 期间 reload/show/resize/focus 也返回该状态，pump 只推进清理。
+排队成功、重试计时器和窗口隐藏均不表示已经完成；只在真实 engine/worker、
+endpoint 和 UI 资源清理后才返回成功。当前 x64 Release 的静态 B 在 A 真暂停时
+返回 pending、保持原生 UI 响应并在显式 Resume 后完成清理的单项已通过。
+同一冻结 SDK/内核的私有消费者还实际通过暂停关闭 inspector、A 和应用三个场景，
+均在原 30/40 秒期限内自然退出；其中 inspector 的关闭是明确的 fixture 策略，
+不是公共 Host 自动管理 DevTools 的契约。同一存续 A 的 inspector 关闭、原生重开
+及旧会话拒绝也已取得私有限定证据；第二次暂停按明确诊断策略收尾，不声称第二次
+原生 X。另一个冻结候选还验证了旧 A 完整关闭后重建新 Host：B/Runtime 保留，实际
+新 context 的 endpoint 不同，即使 receipt/generation 数字重复，旧目标及旧会话请求
+也被拒绝。首轮 owner 超期仍失败，同源码的一次输入流程补测在原期限内通过；
+不证明暂停栈内重建或旧原生消息竞态。公共 reload 后新文档隔离见下文；活跃 B JS、完整 Stage0 和生产验收仍未完成，见
+[ADR 0118](adr/0118-miniblink-nonblocking-unmount.md)。
+当前 SDK 的 `SOUI_TEST_KIT` 条件引用缺少对应 test-kit 目录，其可构建性及关闭行为均未验证，不纳入这一非阻塞结论。相邻旧 devkit 的同步 join 实现不能代证当前 SDK 配置。
+
+MiniBlink `reload()` 也可能返回 `E_RELOAD_PENDING`：保留原 Host/adapter，在同一
+UI owner 的后续轮次继续调用 `reload()`，直到取得同一次操作的最终结果。
+已接纳任务只排队一次；容量不足时保留原撤权转换，不能把 pending 当作已重载。
+`pump()` 不消费 reload 的完成结果，Host 只在最终成功后轮换会话一次。
+关闭可以撤销该 reload，但仍须保留所有者直到原任务和既有清理屏障实际返回。
+Workbench 两处消费者沿用原等待期限；没有新增超时取消或恢复旧文档授权。
+私有消费者的 x64 Release 实测还验证：第一代 inspector 退休后公共 reload 先返回
+pending、随后成功，再等待实际新文档 ready/ACK；新 receipt/document identity 拒绝
+旧目标及会话请求。该限定切片未在暂停栈内调用 reload；关闭后目标重建由上述另一
+候选单独验证，完整 Stage0 A 仍未完成。无 DLL 的实际 FIFO 回归也不证明真实 V8/broker 暂停，范围见
+[ADR 0120](adr/0120-miniblink-nonblocking-reload.md)。
 
 从 preview.3 起，多个 Host 共用进程级 Miniblink 所有者线程。`destroy()` 只销毁本窗口；即使没有窗口，内核仍保留以支持同进程重建。应用最终退出时，先销毁所有 Host，再完成 Runtime 关闭，最后释放应用的 COM 等进程资源。非阻塞 `shutdown_miniblink_runtime()` 返回 `E_RUNTIME_SHUTDOWN_PENDING` 时仍须在原关闭期限内继续调用，不能把首次提交当成成功。最小应用可在 UI 线程调用 `wait_for_miniblink_runtime_shutdown(std::chrono::seconds{20})`；它只重试 pending，按单调总预算处理有限批次消息，保留已读取的 `WM_QUIT`，负预算返回 `E_RUNTIME_SHUTDOWN_ARGUMENT`，零预算只尝试一次，超时返回 `E_RUNTIME_SHUTDOWN_TIMEOUT`。不能从引擎所有者或仍持有 Host 的回调中等待。真实错误及超时不证明内核已释放。仍有 Host 时返回 `E_RUNTIME_IN_USE`；最终关闭后新 Host 启动返回 `E_RUNTIME_SHUTDOWN`。重复关闭 Runtime 可以成功返回。不同窗口必须使用同一内核路径，否则返回 `E_RUNTIME_BINARY`。这不是独立进程或崩溃隔离承诺。
 

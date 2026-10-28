@@ -30,6 +30,7 @@
  */
 
 #include "config.h"
+#include "platform/network/LocalResourceAdmission.h"
 #include "core/loader/PingLoader.h"
 
 #include "core/dom/Document.h"
@@ -43,6 +44,7 @@
 #include "core/inspector/InspectorTraceEvents.h"
 #include "core/loader/FrameLoader.h"
 #include "core/loader/FrameLoaderClient.h"
+#include "core/loader/InspectorResourcePolicy.h"
 #include "core/loader/MixedContentChecker.h"
 #include "core/page/Page.h"
 #include "platform/exported/WrappedResourceRequest.h"
@@ -124,6 +126,10 @@ void PingLoader::sendViolationReport(LocalFrame* frame, const KURL& reportURL, P
 
 void PingLoader::start(LocalFrame* frame, ResourceRequest& request, const FetchInitiatorInfo& initiatorInfo, StoredCredentials credentialsAllowed)
 {
+    if (isLocalResourceNamespace(request.url())) return; // Static GET mode has no ping/beacon endpoint.
+    if (InspectorResourcePolicy::isControlled(frame->document()))
+        return;
+
     if (MixedContentChecker::shouldBlockFetch(frame, request, request.url()))
         return;
 

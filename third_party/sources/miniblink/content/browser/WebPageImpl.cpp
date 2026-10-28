@@ -1725,35 +1725,53 @@ LRESULT WebPageImpl::fireWheelEvent(HWND hWnd, UINT message, WPARAM wParam, LPAR
 
 bool WebPageImpl::fireKeyUpEvent(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+    return fireKeyUpEvent(hWnd, message, wParam, lParam, nullptr);
+}
+
+bool WebPageImpl::fireKeyUpEvent(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam,
+    const InspectorKeyboardSnapshot* keyboardSnapshot)
+{
     CHECK_FOR_REENTER(this, false);
     freeV8TempObejctOnOneFrameBefore();
     AutoRecordActions autoRecordActions(this, m_layerTreeHost, false);
     
-    WebKeyboardEvent keyEvent = PlatformEventHandler::buildKeyboardEvent(WebInputEvent::KeyUp, message, wParam, lParam);
+    WebKeyboardEvent keyEvent = PlatformEventHandler::buildKeyboardEvent(WebInputEvent::KeyUp, message, wParam, lParam, keyboardSnapshot);
     return m_webViewImpl->handleInputEvent(keyEvent);
 }
 
 bool WebPageImpl::fireKeyPressEvent(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+    return fireKeyPressEvent(hWnd, message, wParam, lParam, nullptr);
+}
+
+bool WebPageImpl::fireKeyPressEvent(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam,
+    const InspectorKeyboardSnapshot* keyboardSnapshot)
+{
     CHECK_FOR_REENTER(this, false);
     freeV8TempObejctOnOneFrameBefore();
     AutoRecordActions autoRecordActions(this, m_layerTreeHost, false);
 
-    WebKeyboardEvent keyEvent = PlatformEventHandler::buildKeyboardEvent(WebInputEvent::Char, message, wParam, lParam);
+    WebKeyboardEvent keyEvent = PlatformEventHandler::buildKeyboardEvent(WebInputEvent::Char, message, wParam, lParam, keyboardSnapshot);
     return m_webViewImpl->handleInputEvent(keyEvent);
 }
 
 bool WebPageImpl::fireKeyDownEvent(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+    return fireKeyDownEvent(hWnd, message, wParam, lParam, nullptr);
+}
+
+bool WebPageImpl::fireKeyDownEvent(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam,
+    const InspectorKeyboardSnapshot* keyboardSnapshot)
 {
     CHECK_FOR_REENTER(this, false);
     freeV8TempObejctOnOneFrameBefore();
     AutoRecordActions autoRecordActions(this, m_layerTreeHost, false);
 
     if (m_popup && m_popup->isVisible())
-        return m_popup->fireKeyUpEvent(message, wParam, lParam);
+        return m_popup->fireKeyUpEvent(message, wParam, lParam, keyboardSnapshot);
 
     unsigned int virtualKeyCode = wParam;
-    WebKeyboardEvent keyEvent = PlatformEventHandler::buildKeyboardEvent(WebInputEvent::RawKeyDown, message, wParam, lParam);
+    WebKeyboardEvent keyEvent = PlatformEventHandler::buildKeyboardEvent(WebInputEvent::RawKeyDown, message, wParam, lParam, keyboardSnapshot);
     bool handled = m_webViewImpl->handleInputEvent(keyEvent);
     bool systemKey = false;
     // These events cannot be canceled, and we have no default handling for them.
@@ -2616,7 +2634,7 @@ bool WebPageImpl::runFileChooser(const blink::WebFileChooserParams& params, blin
 
 void WebPageImpl::willEnterDebugLoop()
 {
-    if (m_devToolsAgent)
+    if (m_devToolsAgent && !m_devToolsClient)
         m_isEnterDebugLoop = true;
 
     if (m_devToolsClient)

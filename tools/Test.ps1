@@ -147,6 +147,8 @@ if(-not $NativeOnly){
   if($LASTEXITCODE -ne 0){throw 'Modern delivery evidence tests failed'}
   & node --test (Join-Path $root 'tests/sdk/web-targets.test.cjs') (Join-Path $root 'tests/sdk/web-targets-integration.test.cjs') (Join-Path $root 'tests/sdk/size-report.test.cjs')
   if($LASTEXITCODE -ne 0){throw 'Web target isolation, resource manifests or size reporting tests failed'}
+  & node --test (Join-Path $root 'tests/sdk/compat-polyfills.test.cjs')
+  if($LASTEXITCODE -ne 0){throw 'Chrome 49 compatibility polyfill adaptation tests failed'}
   & node --test (Join-Path $root 'tests/sdk/runtime-deployment.test.cjs') (Join-Path $root 'tests/sdk/runtime-bundle.test.cjs') (Join-Path $root 'tests/sdk/runtime-packaging-integration.test.cjs') (Join-Path $root 'tests/sdk/runtime-build-evidence.test.cjs')
   if($LASTEXITCODE -ne 0){throw 'Runtime dependency manifests, bundle restoration or packaging integration failed'}
   & node --test (Join-Path $root 'tests/sdk/compression-profiles.test.cjs') (Join-Path $root 'tests/sdk/compression-command.test.cjs') (Join-Path $root 'tests/sdk/compression-measurement.test.cjs')
@@ -157,7 +159,7 @@ if(-not $NativeOnly){
   if($LASTEXITCODE -ne 0){throw "Acceptance reader toolchain install failed; inspect $acceptanceInstall"}
   $newReaderTests=@('tests/acceptance/process-address-census.test.cjs','tests/acceptance/unicode-copy.test.cjs','tests/acceptance/resource-validation.test.cjs','tests/acceptance/session-validation.test.cjs',
     'tests/acceptance/installed-host-runner.test.cjs','tests/acceptance/resource-input-reuse.test.cjs','tests/acceptance/llvm-resource-inputs.test.cjs',
-    'tests/tooling/devkit-command.test.cjs','tests/tooling/devkit-delivery.test.cjs','tests/tooling/desktop-smoke.test.cjs') |
+    'tests/tooling/devkit-command.test.cjs','tests/tooling/devkit-delivery.test.cjs','tests/tooling/desktop-smoke.test.cjs','tests/tooling/devtools-inline-capacity.test.cjs') |
     ForEach-Object { Join-Path $root $_ }
   foreach($testFile in $newReaderTests){if(-not [IO.File]::Exists($testFile)){throw "Required adopted test is missing: $testFile"}}
   & node --test @newReaderTests

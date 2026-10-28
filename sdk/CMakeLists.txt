@@ -73,6 +73,7 @@ string(REPLACE "](third_party/licenses/" "](licenses/"
 file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/THIRD_PARTY_NOTICES.install.md" "${_soui_install_notices}")
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/THIRD_PARTY_NOTICES.install.md"
   DESTINATION share/SouiSdk RENAME THIRD_PARTY_NOTICES.md)
+install(FILES "${SOUI_DISTRIBUTION_ROOT}/LICENSE.md" DESTINATION share/SouiSdk)
 install(DIRECTORY "${SOUI_DISTRIBUTION_ROOT}/third_party/licenses/" DESTINATION share/SouiSdk/licenses)
 install(EXPORT SouiSdkTargets NAMESPACE Soui:: DESTINATION lib/cmake/SouiSdk)
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/SouiSdkConfig.cmake"

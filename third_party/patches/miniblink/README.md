@@ -60,3 +60,17 @@
 `0014-ready-task-wake-and-admission.patch` 以 PR109 的 `3293bebe27ba8508bbd9dfe8b6e0d445e7879f3f` 为前件，包含五个原始 vendor 文件的改动：SharedTimerWin、WebThreadImpl 头/实现、WebPageImpl 头/实现。新任务和就绪积压通过合并窗口消息唤醒，跨线程接纳纳入正常主线程预算；正延时按 post 时间计时，资源受阻的 commit 延后重试。原 timer、worker 吞吐预算、显式关闭排空和资源 fence 保留。
 
 前后字节数、散列及补丁身份见 `third_party/manifests/kernel-ready-task-source.json`。此为源码候选；最终编译、补丁重放和运行交由 PR 验证人员完成，不引用早期实验作为最终通过结果。历史导入身份、固定二进制来源及生产门槛保持原义。设计和兼容边界见 ADR-0121。
+
+## WebCrypto 流式摘要：0013
+
+`0013-webcrypto-streaming-digests.patch` 修正 `WebCryptoImpl` 把输入原文当作摘要返回、忽略算法的实现。`DOMPatchSupport` 使用 SHA-1 摘要前十字节识别节点；旧实现会把同名前缀下的文本 `42` 与 `43` 判为相同。修正复用已有 OpenSSL 1.0.2 EVP，实现 SHA-1/256/384/512 的独立流式 context，结果最多 64 字节并保活到 digestor 析构；不再保存整个输入。未知算法、非零长度空指针和 EVP 失败均关闭该操作，finish 只能一次。DOM diff、编辑策略、权限、资源 fence 和截止期保持原规则。
+
+补丁仅改变 `WebCryptoImpl.cpp/.h` 及项目中该 CPP 的私有 OpenSSL include 路径，保留其余编译标志和依赖。前件为任务已冻结的原生源码身份 `94b6f0a0c90172fb4423fb71342abdee80093d13c875d98db80e024531878103`；原始字节前像和有限差异由实际任务记录保存，不修改历史导入清单或 preview14 provenance。`tests/vendor_crypto` 提供直接编译生产适配器的已知向量、分块、生命周期、失败与 DOM 前缀回归入口。当前只有代码及回归准备，尚未编译、运行或宣称 Elements 实测通过；新内核 DLL/Map、配对、部署及原交互回归必须另绑定真实产物。
+
+## Windows 最后字体回退：0014
+
+`0014-windows-system-default-font-fallback.patch` 仅补充 `FontCache::getLastResortFallbackFont` 的 Windows 路径。当前 x86 Elements 选择触发的原始异常记录确认 `determinePrimarySimpleFontData` 返回空值，随后 `ComputedStyle::computedLineHeight` 读取地址 `0x1c`；现有具名回退都可能被严格字体族匹配拒绝，不能据此确认实际失败的字体名称或页面。
+
+有效的原有 `FontPlatformData`/typeface 继续使用原路径。具名候选为空或不含 typeface 时，直接向当前 `SkFontMgr` 请求真实系统默认字体，要求非空且包含 glyph；保留原有效字号、粗斜体合成、方向、subpixel、`ShouldRetain` 和字体缓存所有权。不调用可能生成 `SkEmptyTypeface` 的默认包装，不伪造行高或关闭 Inspector 高亮。
+
+若 OS 字体管理器、默认 typeface 或 glyph 仍不可用，函数明确返回空值；这保留极端系统字体失败边界，不宣称所有字体资源故障已恢复。下游仍要求主字体非空，因此不保证该环境能安全退出或正常启动。此次仅完成源修复和补丁原始字节核对，尚未编译、执行或复测。已有 0013 及其历史验证说明原样保留；新内核、配对与受影响应用的统一短测需另绑定真实产物。

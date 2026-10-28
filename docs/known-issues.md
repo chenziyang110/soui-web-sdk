@@ -1,5 +1,7 @@
 # 已知限制与生产门槛
 
+0.6.0 正在按用户本次授权准备普通 GitHub Release。完整生产资格仍为 `releaseReady=false`，低收益长测和重复演练后置；各缺项和历史失败继续保留。最终新载荷的构建、短测、消费者与资产结果以[本版发布说明](releases/0.6.0.md)收口，不从下列旧候选记录继承。
+
 2026-10-26 新增[任务唤醒与有界接纳候选](maintenance/input-latency-20261026.md)，处理首次任务等待、就绪积压及资源受阻重试。最终源码尚未编译和运行，由 PR 验证人员接手；16 ms 兜底 timer、CPU draw interval、单回调超预算和真实输入尾延迟仍需分别评估，不能宣称已达到极致流畅度。固定二进制及生产门槛不变。
 
 2026-10-23 新增 [ACK 反馈修复候选](maintenance/scroll-ack-feedback-20261023.md)：普通合成滚动的整数回传可能误增 epoch，撤销已接纳目标。候选明确区分 ACK 与外部意图，保留真实边界；默认 fractional=false 的源码静态复核及隔离原生回归已完成：当前两架构各 25+2+19+13 项通过，旧对照各 3/10 并退出 1。完整 x86 内核已构建并获独立 build-only 验收；GUI21 的 800 请求位移误差小于 1e-6，GUI22 同值 CSS 赋值后新 epoch 保持停止。结论限定默认整数元素滚动样本，整体流畅度、完整 x64 内核与发布资格另验。[ADR 0120](adr/0120-preserve-compositor-scroll-acknowledgements.md)保持 proposed，不修改下列历史结果或固定二进制。

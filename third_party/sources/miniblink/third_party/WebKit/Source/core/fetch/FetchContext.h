@@ -32,6 +32,7 @@
 #define FetchContext_h
 
 #include "core/CoreExport.h"
+#include "platform/network/InspectorResourceSnapshot.h"
 #include "core/fetch/CachePolicy.h"
 #include "core/fetch/FetchInitiatorInfo.h"
 #include "core/fetch/FetchRequest.h"
@@ -91,6 +92,8 @@ public:
     virtual bool allowImage(bool, const KURL&) const { return false; }
     virtual bool canRequest(Resource::Type, const ResourceRequest&, const KURL&, const ResourceLoaderOptions&, bool forPreload, FetchRequest::OriginRestriction) const { return false; }
 
+    virtual std::shared_ptr<InspectorResourceState> inspectorResourceState() const { return nullptr; }
+    virtual String inspectorResourceCacheIdentifier() const { return String(); }
     virtual bool isControlledByServiceWorker() const { return false; }
     virtual int64_t serviceWorkerID() const { return -1; }
 

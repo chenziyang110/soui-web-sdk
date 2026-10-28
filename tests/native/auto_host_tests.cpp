@@ -88,6 +88,29 @@ void policy_cases() {
       "Explicit modern profile never downgrades");
 }
 
+void actual_fixed_runtime_path() {
+  wchar_t configured[32768]{};
+  const auto length = GetEnvironmentVariableW(L"SOUI_TEST_WEBVIEW2_FIXED_RUNTIME", configured, 32768);
+  require(length && length < 32768,
+      "Fixed runtime path fixture requires SOUI_TEST_WEBVIEW2_FIXED_RUNTIME (no skip)");
+  std::filesystem::path preferred{configured};
+  preferred.make_preferred();
+  const std::filesystem::path generic{preferred.generic_wstring()};
+  const auto original = generic.native();
+  require(original.find(L'/') != std::wstring::npos, "Fixture must exercise forward-slash runtime input");
+  const auto native = inspect_webview2_runtime(preferred);
+  require(native.result.ok && native.attempted && native.available && native.hresult == S_OK && !native.version.empty(),
+      "Fixed runtime fixture requires a valid runtime for the current architecture (no skip)");
+  const auto forward = inspect_webview2_runtime(generic);
+  require(forward.result.ok && forward.attempted && forward.available &&
+      forward.hresult == native.hresult && forward.version == native.version,
+      "Both separator forms discover the same actual fixed runtime");
+  require(generic.native() == original, "Discovery preserves the caller's fixed runtime path");
+  std::cout << "actual-fixed-runtime-path;native-hresult=" << native.hresult
+            << ";forward-hresult=" << forward.hresult << ";runtime=" << forward.version
+            << ";caller-path=preserved\n";
+}
+
 void actual_profile_path() {
   fixture data{true};
   json_bridge bridge{"app://auto-host-profile-path"};
@@ -220,13 +243,15 @@ int main(int argc, char** argv) {
   try {
     const bool profile_path = argc == 2 && std::string(argv[1]) == "--profile-path";
     const bool callback_exception = argc == 2 && std::string(argv[1]) == "--callback-exception";
-    require(argc == 1 || profile_path || callback_exception, "Unknown auto host fixture option");
+    const bool fixed_runtime_path = argc == 2 && std::string(argv[1]) == "--fixed-runtime-path";
+    require(argc == 1 || profile_path || callback_exception || fixed_runtime_path, "Unknown auto host fixture option");
     policy_cases();
     auto_webview_host no_com;
     require(no_com.start_async({}, [](host_result) {}).code == "E_COM_APARTMENT", "COM STA is required");
     const auto initialized = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
     require(SUCCEEDED(initialized), "Initialize owner STA");
     struct apartment final { ~apartment() { CoUninitialize(); } } com;
+    if (fixed_runtime_path) { actual_fixed_runtime_path(); return 0; }
     if (profile_path) { actual_profile_path(); return 0; }
     if (callback_exception) { actual_callback_exception(); return 0; }
     fixture data;

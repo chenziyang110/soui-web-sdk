@@ -30,9 +30,11 @@
  */
 
 #include "config.h"
+#include "platform/network/LocalResourceAdmission.h"
 #include "core/workers/SharedWorker.h"
 
 #include "bindings/core/v8/ExceptionState.h"
+#include "core/dom/Document.h"
 #include "core/dom/ExceptionCode.h"
 #include "core/dom/ExecutionContext.h"
 #include "core/dom/MessageChannel.h"
@@ -42,6 +44,7 @@
 #include "core/inspector/InspectorInstrumentation.h"
 #include "core/loader/FrameLoader.h"
 #include "core/loader/FrameLoaderClient.h"
+#include "core/loader/InspectorResourcePolicy.h"
 #include "core/workers/SharedWorkerRepositoryClient.h"
 #include "platform/weborigin/KURL.h"
 #include "platform/weborigin/SecurityOrigin.h"
@@ -58,6 +61,15 @@ PassRefPtrWillBeRawPtr<SharedWorker> SharedWorker::create(ExecutionContext* cont
 {
     ASSERT(isMainThread());
     ASSERT_WITH_SECURITY_IMPLICATION(context->isDocument());
+
+    if (hasLocalResourceOwner(context)) {
+        exceptionState.throwSecurityError("Workers are unsupported by this owned local static resource mode.");
+        return nullptr;
+    }
+    if (InspectorResourcePolicy::isControlled(context)) {
+        exceptionState.throwSecurityError("This operation is disabled in the controlled inspector.");
+        return nullptr;
+    }
 
     UseCounter::count(context, UseCounter::SharedWorkerStart);
 

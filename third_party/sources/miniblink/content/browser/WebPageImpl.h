@@ -44,6 +44,7 @@ struct HostVisibilityWakeState;
 class WebFrameClientImpl;
 class WebPage;
 class PlatformEventHandler;
+struct InspectorKeyboardSnapshot;
 class NavigationController;
 class PopupMenuWin;
 class ToolTip;
@@ -155,8 +156,14 @@ public:
     void fireCursorEvent(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam, BOOL* handle);
     LRESULT fireWheelEvent(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
     bool fireKeyUpEvent(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+    bool fireKeyUpEvent(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam,
+        const InspectorKeyboardSnapshot* keyboardSnapshot);
     bool fireKeyDownEvent(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+    bool fireKeyDownEvent(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam,
+        const InspectorKeyboardSnapshot* keyboardSnapshot);
     bool fireKeyPressEvent(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+    bool fireKeyPressEvent(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam,
+        const InspectorKeyboardSnapshot* keyboardSnapshot);
 
     int getCursorInfoType() const;
     void setCursorInfoType(int type);

@@ -1,10 +1,40 @@
 # 交付与发布
 
-当前开发版本 `0.6.0-preview.3` 尚未发布。维护者于 2026-10-16 在 0.5.0 交付后选择首方 MIT 许可，并要求恢复剩余 Issue 的全部关闭条件验证，包括真实 8 小时长测。下文 0.5.0 限定范围记录保留其历史含义，不能用作后续开发版本跳过验收的依据。许可证交付决定见 [ADR-0118](adr/0118-first-party-mit-delivery.md)。
+## 0.6.0 本次授权与执行范围
 
-0.5.0 按下面限定范围进行预发布交付，实际结果见[发布说明](releases/0.5.0.md)。完整生产验收未关闭，机器可读结果保持 `releaseReady: false`。
+本轮目标为普通 GitHub Release `v0.6.0`，纳入本地受控 DevTools 与已合入主线的能力。当前源码、依赖、构建及交付材料正在收口，尚未发布。用户于 2026-10-28 明确选择普通 Release 并后置低收益长测；该决定替代此前候选阶段要求立即执行全部长测的顺序，不修改各验收项或旧失败的事实。见 [ADR-0136](adr/0136-0.6.0-release-scope.md)和[0.6.0 发布说明](releases/0.6.0.md)。
 
-## 0.5.0 本次发布范围
+根版本使用 `0.6.0`，GitHub 分类使用 `prerelease=false`。生产资格继续 `releaseReady=false`、`productionQualificationComplete=false`；没有运行完整 Collector 时，根验收记录保持 `status=unverified`。0.5.0 的实际 GitHub 分类是 prerelease，不能重写为普通 Release 先例。
+
+按实际依赖顺序执行最小充分集合：
+
+1. 审查并冻结新 worktree 中的源、版本、peer、许可与对应源码范围；保护原 dirty 工作区和历史 raw。
+2. 从最终源重建受影响的 MiniBlink 两架构依赖，绑定真实编译输入、导出和产物；其它未变化依赖仅在来源与原件身份明确一致时复用。源码能力不能靠旧 stock DLL 的存在变成已交付运行能力。
+3. 使用所选受支持工具链完成适用的两架构 SDK/应用配置；共同 Node/工具测试只执行一次，Release 每架构执行必要原生回归。同一实际输入已有充分覆盖时，不换入口重复整套用例。
+4. 核对新 SDK 的安装、生成项目、公开 CMake 消费者及实际运行/退出。DevTools 的默认拒绝、可信原生授权、配对资源和目标退休仍须按实际新载荷检查；Modern/Auto 的 Runtime 及双启动路径按交付选择执行。
+5. 对最终应用包解压，验证资源/许可闭集、业务往返和自然收尾；发布前保留原始命令、退出码、跳过、失败和 SHA-256。
+6. 写本轮真实范围报告，更新受影响 SBOM、依赖/配对记录和当前未验收状态；Root 最后暂存、生成/验证源码清单并打包，固定 tag 对应的最终 commit 和资产集合。
+
+D13 千次、D14 八小时、完整性能对比、完整目标系统/输入环境资格和低收益重复升级/搬移演练保留待验。D01–D12 的缺项不得仅以优先级删除。完整 `Verify-Release.ps1` 六阶段若没有执行，不能用代表短验冒称它已通过；当前安装/生成、消费者、资源与权限门以及真实退出不因长测后置而省略。总期限、默认拒绝、失败判定和资源 fence 保持不变。
+
+DevTools 材料选择使用 `Build.ps1 -WithDevToolsPackage` 及文档列出的六个显式路径/pin 参数；它不发 grant，不能与 `-SdkOnly` 混用。源码诊断另用 `-WebProfile source-diagnostic`。MiniBlink Inspector、业务 source map 与原生策略是独立身份；prepared 与公开部署的 delivery 元数据不同，编译输入必须绑定实际消费者读取的那一种，不能复用看似相近的散列。
+
+建议保持既有完整源码 ZIP、source SDK ZIP 和两架构 Starter/ModernStarter/Workbench ZIP，并附逐包 SHA-256、应用 `.zip.json`、Release Manifest/SUMS。额外 Auto ZIP、Bundle、7z 或供应材料以最终实际清单为准；选择后满足相应的启动、恢复或配对门。Modern 不包含 WebView2 Runtime，Auto 不下载 Runtime；打包工具不执行代码签名，不捆绑 Fixed Runtime 或 Windows 字体文件。签名状态按新原件核对后披露。
+
+本轮第三方再分发及对应源码说明见[许可材料](licenses/v0.6.0-redistribution.md)，完整源码资产见发布页。技术合成工具不产生外部批准，MIT 首方许可也不替代第三方条件。
+
+完整收集未执行时，对真实、当前版本的范围报告使用：
+
+```powershell
+node tools/Collect-Verification.cjs --record-unverified `
+  --evidence-reference verification/production-validation/<本轮目录>/<真实范围报告>.json
+```
+
+报告须有 `version: "0.6.0"`、`releaseReady: false`、`productionQualificationComplete: false`。上述路径是操作说明中的占位符，必须改为本轮已存在的实际报告。入口只记录未验收状态并保留旧 acceptance 原字节，不运行测试，不重验外部原件，不输出完整验收通过。它与其他 Collector 串行执行，之后再封存最终源码清单。
+
+以下 0.5.0 与更早流程保留历史身份或用于完整资格验证；本轮事实以新的 0.6.0 范围报告为准。
+
+## 0.5.0 历史发布范围
 
 按维护者 2026-10-16 的要求，发布前采用最小充分验证集合：最终两架构四配置构建、每架构 Release 一次关键回归、SDK 外部消费者、交付包解压启动、现代后端本机 100 Hz 实测和交付清单检查。单次完整原生回归已经覆盖的用例，不再经另一个入口重复全量执行；断言、超时与失败判定保持不变。底层二进制导入仍须核对架构、来源、导出和清单。
 
@@ -46,6 +76,20 @@ node tools/Collect-Verification.cjs --record-unverified --evidence-reference ver
 
 使用 `powershell.exe -File tools/Package.ps1` 生成源码归档及 SHA-256。它先校验当前清单，将固定内容复制到新的 `out/package/source-*`，再次校验再压缩；不会隐式刷新已失效清单。解压后无须 Git 也可执行 `node tools/internal/source-archive.cjs verify`。源码改变后回到维护者 checkout 更新清单，不能在解压目录中无依据重建发布集合。编译工具和 npm 包需要另行准备。
 
+共享工作区或需要组合独立源码根时，另有显式入口，无须改变真实Git暂存区：
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools/Package.ps1 `
+  -SourceRootsBinding C:/candidate/source-roots-binding.json `
+  -PackageWorkspace C:/candidate/fresh-full-source-package
+```
+
+`PackageWorkspace`必须是全新的外部绝对路径；可选`OutputFile`只能位于其`dist/`中。绑定JSON使用`soui.full-source-roots/v1`，恰有`sdk`、`miniblink`、`publicSource`三项，每项为`{root, manifest:{path, bytes, sha256}}`，路径为本地绝对路径。SDK与MiniBlink的原始根可以使用`soui.raw-source/v1`清单：`sourceOnly:true`、实际`root`及完整逐文件`files:[{path,bytes,sha256}]`。原始根不能含私有缓存或额外文件，SDK根不能重复嵌入完整SOUI/MiniBlink；清单pin应放在原始根外。
+
+`publicSource`选择同版本`soui.full-source/v2`清单中的四个固定子树：`third_party/sources/soui`、`.github`、`experiments/webview2-consumer`和`third_party/patches/miniblink`。其清单版本须与SDK raw根的`VERSION`完全相同；旧0.5.0清单不能直接绑定新0.6.0候选。工具按这些明确输入合成新v2清单，复制前后核对外部pin、闭集和逐文件内容，再压缩并执行归档完整性检查；不会刷新旧清单或覆盖既有包。
+
+显式归档的`sourceComposition.sourceOnly=true`、`currentBinaryProvenance=null`及`historicalPrebuiltBinaries=true`保持原义。归档包含完整指定MiniBlink源码，但本身不认证历史预编译二进制与当前源码对应，也不等于当前DevTools内核构建或运行通过；对应关系须另由固定源码输入、真实编译记录和产物散列证明。该路径的数据验证入口为`tests/sdk/full-source-roots.test.cjs`、`delivery-identity.test.cjs`及独立`source-package.test.ps1`；不能把它们称为标准Test已自动全部执行。
+
 通过 Release 启动测试后，运行 `powershell.exe -File tools/Package-Applications.ps1 -Architecture x64` 分别生成 `SouiStarter-<版本>-windows-x64.zip` 和 `SouiWorkbench-<版本>-windows-x64.zip`；x86 同理。它检查源码、构建 ID、完整运行载荷与所有启动场景，再从校验后的独立暂存目录打包。每个包伴随 SHA-256 和 `.zip.json` 大小报告，包含逐文件散列、原生程序/内核/其他运行库/Web 分类大小和压缩参数。不执行代码签名。
 
 现代模板使用 `powershell.exe -File tools/Package-Applications.ps1 -Architecture x64 -Profile modern`。该档位生成 `SouiModernStarter-<版本>-windows-x64.zip`，校验当前 WebView2 载荷与浏览器自然退出记录；x86 同理。共享 Runtime 另行安装，不计入应用 ZIP，也不能将此包称为固定 Runtime 离线包。控制台机器 JSON 保留 Unicode 路径，不依赖 PowerShell 当前代码页。
@@ -54,7 +98,7 @@ node tools/Collect-Verification.cjs --record-unverified --evidence-reference ver
 
 Windows 发布已复制的资源目录时，部署工具与 SDK 安装器采用同一有界策略：仅在源目录仍存在、目标目录尚不存在且返回 EPERM/EACCES 时最多重试五次，累计等待 450 毫秒。持续拒绝继续返回原错误并走原有回滚流程，其他错误立即失败；这不绕过权限检查或允许覆盖意外出现的目标。
 
-交付前验证 SDK 独立构建、模板/Demo 四组配置、安装升级、生成项目独立构建、外部 CMake 引用、源码包完整性、底层依赖源码构建。正式发布还需完成 known-issues.md 中适用门槛。
+交付前验证 SDK 独立构建、模板/Demo 四组配置、安装升级、生成项目独立构建、外部 CMake 引用、源码包完整性、底层依赖源码构建。完整生产资格还需完成 known-issues.md 中适用门槛；本次普通 Release 依据上文 0.6.0 授权范围如实记录，不将未完成项标为通过。
 
 签名证书、产品品牌、安装包、更新服务器与回退策略由实际产品配置。包内没有签名私钥、伪造签名或成品安装器。删除 preview 标签不代表发布验收完成。
 

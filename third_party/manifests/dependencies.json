@@ -1,6 +1,6 @@
 {
   "schema": "soui.dependencies/v2",
-  "sdkVersion": "0.5.0",
+  "sdkVersion": "0.6.0-preview.7",
   "releaseReady": false,
   "dependencies": [
     {
@@ -61,11 +61,11 @@
     },
     {
       "id": "miniblink-build-provenance",
-      "source": "third_party/manifests/kernel-build-050.json",
-      "version": "0.5.0 dual-architecture import",
+      "source": "third_party/manifests/kernel-reuse-devtools-060-preview7.json",
+      "version": "0.6.0-preview.7 dual-architecture import",
       "license": "build identity record",
       "sourceNormalization": "lf",
-      "sha256": "da7fa3fe8666dfd0ec5c4f600c01b271386039f03a0abf0639f3fa2b87b579e7"
+      "sha256": "0a3df8157331017d3616c813e5fd48e6456e7a97d55be1abe00f5cac545775a8"
     },
     {
       "id": "miniblink-cache-budget-patch",
@@ -126,7 +126,7 @@
     {
       "id": "miniblink-x86",
       "source": "third_party/prebuilt/x86/miniblink/node.dll",
-      "version": "imported binary 0.5.0",
+      "version": "imported binary 0.6.0-preview.7",
       "license": "binary redistribution review incomplete",
       "sourceNormalization": "none",
       "sha256": "90a214ca2d416eda8e980cab7aacb80fffef777ace20c06179f41e584dae093b"
@@ -142,7 +142,7 @@
     {
       "id": "miniblink-x64",
       "source": "third_party/prebuilt/x64/miniblink/node.dll",
-      "version": "imported binary 0.5.0",
+      "version": "imported binary 0.6.0-preview.7",
       "license": "binary redistribution review incomplete",
       "sourceNormalization": "none",
       "sha256": "f552226e00c16c9df1ef6cb94081c69b37185c44741197d5a337a4ed70d1fdef"
@@ -161,7 +161,7 @@
       "version": "lockfile",
       "license": "resolved package licenses",
       "sourceNormalization": "lf",
-      "sha256": "93daed232967e7a8005dc64b9217bcaba5e9f516eee92ebeec436873ff6e7295"
+      "sha256": "93cb42bd9f11a9bcb9059f6ec505de87c520dac76cb2ac0c769779add37e5195"
     },
     {
       "id": "template-web",

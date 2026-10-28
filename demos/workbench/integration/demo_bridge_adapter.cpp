@@ -255,7 +255,7 @@ std::filesystem::path bundled_fileinsight_fixture(const wchar_t* fixture_name) {
   if (length == 0 || length >= MAX_PATH) return {};
   std::error_code error;
   const auto fixture = std::filesystem::path(std::wstring(module_path, length)).parent_path() /
-                       "resources" / "fixtures" / fixture_name;
+                       "fixture-data" / fixture_name;
   if (std::filesystem::is_directory(fixture, error) && !error) return fixture;
 #endif
   return {};

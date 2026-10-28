@@ -157,6 +157,64 @@ target_compile_options(soui_interaction_router_tests PRIVATE /utf-8 /W4 /U_DEBUG
 set_property(TARGET soui_interaction_router_tests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
 add_test(NAME sdk.native.interaction-router COMMAND soui_interaction_router_tests)
 set_tests_properties(sdk.native.interaction-router PROPERTIES TIMEOUT 10)
+add_executable(soui_devtools_host_tests devtools_host_tests.cpp)
+target_link_libraries(soui_devtools_host_tests PRIVATE Soui::Sdk)
+target_compile_options(soui_devtools_host_tests PRIVATE /utf-8 /W4 /U_DEBUG /EHsc)
+set_property(TARGET soui_devtools_host_tests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+add_test(NAME sdk.native.devtools-facade-contract COMMAND soui_devtools_host_tests)
+set_tests_properties(sdk.native.devtools-facade-contract PROPERTIES TIMEOUT 10)
+add_executable(soui_devtools_frontend_cleanup_tests devtools_frontend_cleanup_tests.cpp)
+target_link_libraries(soui_devtools_frontend_cleanup_tests PRIVATE Soui::Sdk)
+target_compile_features(soui_devtools_frontend_cleanup_tests PRIVATE cxx_std_17)
+target_compile_options(soui_devtools_frontend_cleanup_tests PRIVATE /utf-8 /W4 /U_DEBUG /EHsc)
+set_property(TARGET soui_devtools_frontend_cleanup_tests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+add_test(NAME sdk.native.devtools-frontend-cleanup COMMAND soui_devtools_frontend_cleanup_tests)
+set_tests_properties(sdk.native.devtools-frontend-cleanup PROPERTIES TIMEOUT 10)
+add_executable(soui_local_resource_snapshot_tests local_resource_snapshot_tests.cpp)
+target_link_libraries(soui_local_resource_snapshot_tests PRIVATE Soui::Sdk)
+target_compile_features(soui_local_resource_snapshot_tests PRIVATE cxx_std_17)
+target_compile_options(soui_local_resource_snapshot_tests PRIVATE /utf-8 /W4 /U_DEBUG /EHsc)
+set_property(TARGET soui_local_resource_snapshot_tests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+add_test(NAME sdk.native.local-resource-snapshot COMMAND soui_local_resource_snapshot_tests)
+set_tests_properties(sdk.native.local-resource-snapshot PROPERTIES TIMEOUT 10)
+add_executable(soui_local_resource_host_tests local_resource_host_tests.cpp
+  "${SOUI_DISTRIBUTION_ROOT}/sdk/src/host/owned_local_resource_session.cpp")
+target_link_libraries(soui_local_resource_host_tests PRIVATE Soui::Sdk)
+target_compile_features(soui_local_resource_host_tests PRIVATE cxx_std_17)
+target_compile_definitions(soui_local_resource_host_tests PRIVATE SOUI_LOCAL_RESOURCE_HOST_TEST_ONLY)
+target_compile_options(soui_local_resource_host_tests PRIVATE /utf-8 /W4 /U_DEBUG /EHsc)
+set_property(TARGET soui_local_resource_host_tests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+add_test(NAME sdk.native.local-resource-host COMMAND soui_local_resource_host_tests)
+set_tests_properties(sdk.native.local-resource-host PROPERTIES TIMEOUT 10)
+if(SOUI_BUILD_VENDOR_TESTS)
+  add_executable(soui_local_resource_state_tests local_resource_state_tests.cpp
+    "${SOUI_DISTRIBUTION_ROOT}/third_party/sources/miniblink/content/web_impl_win/LocalResourceState.cpp"
+    "${SOUI_DISTRIBUTION_ROOT}/third_party/sources/miniblink/content/web_impl_win/LocalResourceAdmissionCell.cpp")
+  target_link_libraries(soui_local_resource_state_tests PRIVATE Soui::Sdk)
+  target_compile_features(soui_local_resource_state_tests PRIVATE cxx_std_17)
+  target_compile_definitions(soui_local_resource_state_tests PRIVATE SOUI_LOCAL_RESOURCE_TESTING=1)
+  target_include_directories(soui_local_resource_state_tests PRIVATE
+    "${SOUI_DISTRIBUTION_ROOT}/third_party/sources/miniblink"
+    "${SOUI_DISTRIBUTION_ROOT}/third_party/sources/miniblink/third_party/WebKit/Source")
+  target_compile_options(soui_local_resource_state_tests PRIVATE /utf-8 /W4 /U_DEBUG /EHsc)
+  set_property(TARGET soui_local_resource_state_tests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+  add_test(NAME sdk.native.local-resource-state COMMAND soui_local_resource_state_tests)
+  set_tests_properties(sdk.native.local-resource-state PROPERTIES TIMEOUT 10)
+  # The production mapper uses actual Blink PODs from the complete kernel source.
+  add_executable(soui_devtools_keyboard_snapshot_tests devtools_keyboard_snapshot_tests.cpp)
+  target_link_libraries(soui_devtools_keyboard_snapshot_tests PRIVATE Soui::Sdk)
+  target_compile_features(soui_devtools_keyboard_snapshot_tests PRIVATE cxx_std_17)
+  target_compile_definitions(soui_devtools_keyboard_snapshot_tests PRIVATE INSIDE_BLINK=1)
+  target_include_directories(soui_devtools_keyboard_snapshot_tests PRIVATE
+    "${SOUI_DISTRIBUTION_ROOT}" "${SOUI_DISTRIBUTION_ROOT}/third_party/sources/miniblink"
+    "${SOUI_DISTRIBUTION_ROOT}/third_party/sources/miniblink/third_party/WebKit"
+    "${SOUI_DISTRIBUTION_ROOT}/third_party/sources/miniblink/third_party/WebKit/Source")
+  target_compile_options(soui_devtools_keyboard_snapshot_tests PRIVATE /utf-8 /W4 /U_DEBUG /EHsc
+    "/FI${SOUI_DISTRIBUTION_ROOT}/third_party/sources/miniblink/third_party/WebKit/Source/config.h")
+  set_property(TARGET soui_devtools_keyboard_snapshot_tests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+  add_test(NAME sdk.native.devtools-keyboard-snapshot COMMAND soui_devtools_keyboard_snapshot_tests)
+  set_tests_properties(sdk.native.devtools-keyboard-snapshot PROPERTIES TIMEOUT 10)
+endif()
 add_executable(soui_miniblink_unmount_tests miniblink_unmount_tests.cpp
   "${SOUI_DISTRIBUTION_ROOT}/sdk/src/host/soui_miniblink_host.cpp")
 # Compile the actual adapter once with a private no-view binding seam. The
@@ -169,7 +227,11 @@ target_compile_options(soui_miniblink_unmount_tests PRIVATE /utf-8 /W4 /U_DEBUG 
 set_property(TARGET soui_miniblink_unmount_tests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
 add_test(NAME sdk.native.miniblink-unmount-continuation COMMAND soui_miniblink_unmount_tests)
 add_test(NAME sdk.native.miniblink-unmount-unused-transfer COMMAND soui_miniblink_unmount_tests unused-transfer)
+add_test(NAME sdk.native.miniblink-reload-continuation COMMAND soui_miniblink_unmount_tests reload)
+add_test(NAME sdk.native.devtools-early-retirement COMMAND soui_miniblink_unmount_tests devtools-early-retirement)
 set_tests_properties(sdk.native.miniblink-unmount-continuation sdk.native.miniblink-unmount-unused-transfer PROPERTIES TIMEOUT 15)
+set_tests_properties(sdk.native.miniblink-reload-continuation PROPERTIES TIMEOUT 15)
+set_tests_properties(sdk.native.devtools-early-retirement PROPERTIES TIMEOUT 15)
 add_executable(soui_engine_thread_timeout_tests engine_thread_timeout_tests.cpp)
 target_link_libraries(soui_engine_thread_timeout_tests PRIVATE Soui::Sdk)
 target_compile_features(soui_engine_thread_timeout_tests PRIVATE cxx_std_17)
@@ -480,6 +542,14 @@ add_test(NAME sdk.native.renderer-model-consumer-data-contract COMMAND soui_rend
 set_tests_properties(sdk.native.renderer-model-consumer-data-contract PROPERTIES TIMEOUT 30)
 
 # Link the private terminal regression against the same rebuilt SDK headers.
+add_executable(soui_view_observation_tests view_observation_tests.cpp)
+target_compile_features(soui_view_observation_tests PRIVATE cxx_std_17)
+target_include_directories(soui_view_observation_tests PRIVATE "${SOUI_DISTRIBUTION_ROOT}/sdk/include")
+target_compile_options(soui_view_observation_tests PRIVATE /utf-8 /W4 /UNDEBUG)
+set_property(TARGET soui_view_observation_tests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+add_test(NAME sdk.native.view-observation-contract COMMAND soui_view_observation_tests)
+set_tests_properties(sdk.native.view-observation-contract PROPERTIES TIMEOUT 30)
+
 include(task_terminal_quota.cmake)
 target_link_options(soui_task_terminal_quota_tests PRIVATE
   "/MAP:${CMAKE_CURRENT_BINARY_DIR}/soui_task_terminal_quota_tests.map")
@@ -508,3 +578,12 @@ add_subdirectory(host_frame_policy)
 add_subdirectory(native_trace_ui_lease)
 
 add_subdirectory(webview2_owner_policy)
+# Pure checks of the production WebView2 owner counters and preparation getter.
+add_executable(soui_webview2_native_observation_tests webview2_native_observation_tests.cpp)
+target_include_directories(soui_webview2_native_observation_tests PRIVATE
+  "${SOUI_DISTRIBUTION_ROOT}/sdk/renderers/webview2")
+target_compile_features(soui_webview2_native_observation_tests PRIVATE cxx_std_17)
+target_compile_options(soui_webview2_native_observation_tests PRIVATE /EHsc /utf-8 /W4 /U_DEBUG /UNDEBUG)
+set_property(TARGET soui_webview2_native_observation_tests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+add_test(NAME sdk.native.webview2-native-observation COMMAND soui_webview2_native_observation_tests)
+set_tests_properties(sdk.native.webview2-native-observation PROPERTIES TIMEOUT 10)

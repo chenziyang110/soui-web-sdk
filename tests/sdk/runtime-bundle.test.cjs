@@ -247,3 +247,27 @@ test('rejects oversized JSON input before parsing or publishing', t => {
   assert.match(result.stderr, /budget/);
   assert.equal(fs.existsSync(f.output), false);
 });
+
+test('application files: bundle round trip retains and revalidates exact data descriptors', t => {
+  const f = fixture(t), app = f.application();
+  f.put('Main/fixture-data/scan.txt', 'native data');
+  const applicationFiles = id.snapshot(app.root, ['fixture-data/scan.txt']).files;
+  app.report.payload = id.payload(app.root, 'Main', 'miniblink', applicationFiles);
+  bundle.pack(f.output, [app]);
+  assert.deepEqual(f.read().applications[0].report.payload.applicationFiles, applicationFiles);
+  bundle.restore(f.output, f.destination);
+  const restored = path.join(f.destination, 'Main');
+  assert.deepEqual(id.verifyPayload(restored, 'Main', app.report.payload), app.report.payload);
+  fs.writeFileSync(path.join(restored, 'fixture-data/scan.txt'), 'native DATA');
+  assert.throws(() => id.verifyPayload(restored, 'Main', app.report.payload), /Application file|payload changed/);
+});
+
+test('application files: bundle cannot use a descriptor to authorize protected or absent rows', t => {
+  const f = fixture(t), app = f.application();
+  app.report.payload.applicationFiles = [app.report.payload.files.find(row => row.path === 'node.dll')];
+  assert.throws(() => bundle.pack(f.output, [app]), /native runtime/);
+  assert.equal(fs.existsSync(f.output), false);
+  app.report.payload.applicationFiles = [{path: 'fixture-data/absent.txt', bytes: 0, sha256: id.hash(Buffer.alloc(0))}];
+  assert.throws(() => bundle.pack(f.output, [app]), /exact payload subset/);
+  assert.equal(fs.existsSync(f.output), false);
+});

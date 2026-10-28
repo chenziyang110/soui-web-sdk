@@ -3,6 +3,7 @@
 #define BUILDING_wke 1
 
 #include <config.h>
+#include "platform/network/LocalResourceAdmission.h"
 
 #include "wke/wkeNetHook.h"
 #include "wke/wke.h"
@@ -176,6 +177,10 @@ void WKE_CALL_TYPE wkeNetChangeRequestUrl(wkeNetJob jobPtr, const char* url)
     wke::checkThreadCallIsValid(__FUNCTION__);
     net::WebURLLoaderInternal* job = (net::WebURLLoaderInternal*)jobPtr;
     blink::KURL newUrl(blink::ParsedURLString, url);
+    if (blink::isLocalResourceNamespace(newUrl)) {
+        job->m_isWkeCanceled = true; job->m_cancelledReason = net::kNormalCancelled;
+        return; // Never rewrite an ordinary curl job into the reserved origin.
+    }
     job->m_response.setURL(newUrl);
     job->firstRequest()->setURL(newUrl);
     job->m_initializeHandleInfo->url = url;
@@ -602,6 +607,7 @@ const utf8* WKE_CALL_TYPE wkeNetGetResponseUrl(wkeWebUrlResponsePtr response)
 
 int WKE_CALL_TYPE wkeNetStartUrlRequest(wkeWebView webView, wkeWebUrlRequestPtr request, void* param, const wkeUrlRequestCallbacks* callbacks)
 {
+    if (!request || blink::isLocalResourceNamespace(request->m_resourceRequest.url())) return 0;
     request->setWebView(webView);
     NetUrlRequest* netRequest = new NetUrlRequest(webView, request, param, callbacks);
     return netRequest->start();

@@ -21,6 +21,7 @@
  */
 
 #include "config.h"
+#include "platform/network/LocalResourceAdmission.h"
 #include "core/xmlhttprequest/XMLHttpRequest.h"
 
 #include "bindings/core/v8/DOMWrapperWorld.h"
@@ -845,6 +846,16 @@ void XMLHttpRequest::createRequest(PassRefPtr<FormData> httpBody, ExceptionState
         return;
     }
 
+    // Local resource admission precedes loadstart and ThreadableLoader client
+    // installation. Exhaustion is a real send() exception, never a synchronous
+    // URLLoader failure delivered to an as-yet unsubscribed RawResource.
+    ResourceRequest localPreflight(m_url);
+    localPreflight.setHTTPMethod(m_method);
+    if (!prepareLocalResourceRequest(executionContext(), localPreflight)) {
+        exceptionState.throwDOMException(NetworkError, "Owned local resource request denied or capacity exhausted.");
+        return;
+    }
+
     // The presence of upload event listeners forces us to use preflighting because POSTing to an URL that does not
     // permit cross origin requests should look exactly like POSTing to an URL that does not respond at all.
     // Also, only async requests support upload progress events.
@@ -868,6 +879,12 @@ void XMLHttpRequest::createRequest(PassRefPtr<FormData> httpBody, ExceptionState
 
     ResourceRequest request(m_url);
     request.setHTTPMethod(m_method);
+    request.setLocalResourceAdmission(localPreflight.localResourceAdmission());
+    if (localPreflight.localResourceAdmissionBlocked()) request.setLocalResourceAdmissionBlocked();
+    if (request.localResourceAdmission() && !admitLocalResourceRequest(request)) {
+        exceptionState.throwDOMException(NetworkError, "Owned local document changed during loadstart.");
+        return;
+    }
     request.setRequestContext(WebURLRequest::RequestContextXMLHttpRequest);
     request.setFetchCredentialsMode(m_includeCredentials ? WebURLRequest::FetchCredentialsModeInclude : WebURLRequest::FetchCredentialsModeSameOrigin);
 
@@ -916,6 +933,9 @@ void XMLHttpRequest::createRequest(PassRefPtr<FormData> httpBody, ExceptionState
         // FIXME: Maybe create() can return null for other reasons too?
         ASSERT(!m_loader);
         m_loader = ThreadableLoader::create(executionContext, this, request, options, resourceLoaderOptions);
+        if (!m_loader && (request.localResourceAdmission() || request.localResourceAdmissionBlocked())) {
+            m_error = true; m_exceptionCode = NetworkError;
+        }
     } else {
         // Use count for XHR synchronous requests.
         UseCounter::count(&executionContext, UseCounter::XMLHttpRequestSynchronous);

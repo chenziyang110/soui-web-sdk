@@ -71,6 +71,14 @@ function version(root) {
       lock.version !== value || lock.packages[''].version !== value) throw new Error('SDK version entries differ from VERSION');
   return value;
 }
+function applicationFilesForTarget(root, target, application) {
+  if (target !== 'SouiWorkbench' || fs.existsSync(id.safePath(root, 'project.json'))) return [];
+  const helper = id.safePath(root, 'demos/workbench/tools/deploy-native-fixtures.cjs');
+  if (!fs.existsSync(helper)) return [];
+  const owner = require(helper);
+  if (typeof owner.verify !== 'function') throw new Error('Workbench native fixture verifier is missing');
+  return id.validateApplicationFiles(owner.verify(id.safePath(root, 'demos/workbench/fixtures'), application));
+}
 function targets(root) {
   const file = id.safePath(root, 'project.json');
   const names = fs.existsSync(file) ? [id.readJson(file).nativeTarget] : ['SouiStarter', 'SouiWorkbench'];
@@ -162,7 +170,8 @@ function finish(root, arch, config, sdkOnly = false, selected = {}) {
     verifyApplicationRuntime(root, path.join(dir, 'bin', config, target), arch, backend(root));
   }
   report.payloads = sdkOnly ? {} : Object.fromEntries(targets(root).map(target =>
-    [target, id.payload(path.join(dir, 'bin', config, target), target, backend(root))]));
+    [target, id.payload(path.join(dir, 'bin', config, target), target, backend(root),
+      applicationFilesForTarget(root, target, path.join(dir, 'bin', config, target)))]));
   if (sdkOnly) report.library = id.snapshot(dir, [`${config}/soui_sdk.lib`]);
   report.optionalLibraries = optionalLibraries(root, arch, config, sdkOnly);
   if (Boolean(report.autoHost) !== Boolean(report.optionalLibraries.autoHost)) throw new Error('Auto host build selection differs from configured library');
@@ -294,6 +303,9 @@ function verifyBuild(root, arch, config, sdkOnly = false, selected = {}) {
     for (const target of targets(root)) {
       verifyApplicationWeb(path.join(dir, 'bin', config, target), recordedWebProfile, defaultWebTarget(root), backend(root) === 'auto' ? root : null);
       verifyApplicationRuntime(root, path.join(dir, 'bin', config, target), arch, backend(root));
+      const applicationFiles = applicationFilesForTarget(root, target, path.join(dir, 'bin', config, target));
+      if (JSON.stringify(report.payloads[target].applicationFiles || []) !== JSON.stringify(applicationFiles))
+        throw new Error('Application data ownership differs from accepted build');
       id.verifyPayload(path.join(dir, 'bin', config, target), target, report.payloads[target], backend(root));
     }
   } else if (!report.library || id.snapshot(dir, [`${config}/soui_sdk.lib`]).sha256 !== report.library.sha256) throw new Error('SDK library drift');

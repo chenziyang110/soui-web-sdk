@@ -326,7 +326,9 @@ void SharedMemoryDataConsumerHandle::Writer::addData(PassOwnPtr<RequestPeer::Rec
         if (m_mode == kApplyBackpressure) {
             dataToPass = (new DelegateThreadSafeReceivedData(data));
         } else {
-            dataToPass = (new FixedReceivedData(data.leakPtr()));
+            // FixedReceivedData copies; retain RAII ownership of the input
+            // until the copy is complete, then let PassOwnPtr release it.
+            dataToPass = (new FixedReceivedData(data.get()));
         }
         m_context->push(adoptPtr(dataToPass));
     }

@@ -12,9 +12,14 @@
 #include <string>
 
 namespace {
+// Replace with the application's trusted native identity/policy decision.
+constexpr bool allow_native_devtools = false;
+constexpr UINT devtools_open_command = 0x6D01, devtools_end_command = 0x6D02;
 struct application {
   HWND window{};
   bool smoke{false}, closing{false};
+  bool diagnostic_prompt{false};
+  int diagnostic_state{-1};
   bool preparation_started{false}, preparation_completed{false}, controller_closed{false};
   int exit_code{0};
   ULONGLONG started{GetTickCount64()};
@@ -26,6 +31,44 @@ struct application {
   std::unique_ptr<soui::sdk::webview_host> host;
   std::unique_ptr<soui::sdk::webview2_runtime_exit_watch> runtime_watch;
   void log(const std::string& value) const { std::ofstream(profile / "smoke.log", std::ios::app) << value << '\n'; }
+  void request_devtools() {
+    if (!allow_native_devtools || closing || diagnostic_prompt || !host || !host->application_ready()) return;
+    diagnostic_prompt=true;
+    struct prompt_guard {bool& active;~prompt_guard(){active=false;}} prompt{diagnostic_prompt};
+    if (MessageBoxW(window,L"允许调试当前业务窗口？调试者可以查看页面数据并执行代码。结束诊断需要关闭此业务窗口，请先保存工作。",
+        L"当前窗口开发者工具",MB_YESNO|MB_ICONWARNING|MB_DEFBUTTON2)!=IDYES) return;
+    soui::sdk::devtools::grant grant;
+    const auto authorized=host->authorize_devtools(grant);
+    if (!authorized.ok) {MessageBoxA(window,authorized.message.c_str(),authorized.code.c_str(),MB_ICONERROR);return;}
+    const auto opened=host->open_devtools(grant);
+    if (!opened.accepted()) MessageBoxA(window,opened.message.c_str(),opened.code.c_str(),MB_ICONERROR);
+    else {log("devtools-open-accepted;attached=unknown;visible=unknown");update_devtools_status();}
+  }
+  void update_devtools_status() {
+    if(!allow_native_devtools || !host || !IsWindow(window))return;
+    const auto status=host->observe_devtools();
+    if(diagnostic_state==static_cast<int>(status.state))return;
+    diagnostic_state=static_cast<int>(status.state);
+    using soui::sdk::devtools::phase;
+    const wchar_t* title=L"SouiModernStarter";
+    switch(status.state) {
+      case phase::opening: title=L"SouiModernStarter — 诊断请求已接受，连接状态未知";break;
+      case phase::attached: title=L"SouiModernStarter — 开发者工具已连接";break;
+      case phase::revoking: title=L"SouiModernStarter — 正在结束诊断";break;
+      case phase::failed: title=L"SouiModernStarter — 诊断失败，请结束诊断";break;
+      case phase::drained: title=L"SouiModernStarter — 诊断已结束";break;
+      default: break;
+    }
+    SetWindowTextW(window,title);
+  }
+  bool translate_devtools(const MSG& message) {
+    if (!host || closing || message.message!=WM_KEYDOWN ||
+        (message.hwnd!=window && !IsChild(window,message.hwnd))) return false;
+    if (!host->devtools_shortcut(static_cast<unsigned>(message.wParam),
+        (GetKeyState(VK_CONTROL)&0x8000)!=0,(GetKeyState(VK_SHIFT)&0x8000)!=0,
+        (GetKeyState(VK_MENU)&0x8000)!=0,(message.lParam&(1LL<<30))!=0)) return false;
+    request_devtools(); return true;
+  }
   void retry_close() {
     if (!SetTimer(window, 2, 20, nullptr)) std::terminate(); // Retained callbacks cannot be abandoned.
   }
@@ -42,15 +85,21 @@ struct application {
       auto result = host ? host->destroy() : soui::sdk::host_result{true, {}, {}};
       // Preparation precedes Host mount; a never-mounted Host has no controller
       // to destroy. Its still-owned adapter must complete unmount explicitly.
-      if (result.ok && renderer) result = renderer->unmount();
+      if (result.ok && renderer && !allow_native_devtools) result = renderer->unmount();
       if (!result.ok) {
         if (result.code != "E_BUSY") { exit_code = 3; log(result.code + ": " + result.message); }
-        retry_close(); return;
+        const auto diagnostic=host ? host->observe_devtools() : soui::sdk::devtools::observation{};
+        if (!allow_native_devtools || diagnostic.resources_retained ||
+            diagnostic.state!=soui::sdk::devtools::phase::failed) {retry_close();return;}
       }
+      const auto diagnostic=host ? host->observe_devtools() : soui::sdk::devtools::observation{};
+      // A previous pump may have physically cleaned a failed retirement. A
+      // subsequent successful destroy cannot clear its failure exit status.
+      if(diagnostic.state==soui::sdk::devtools::phase::failed && !diagnostic.resources_retained)exit_code=3;
       controller_closed = true;
       KillTimer(window, 1);
     }
-    if (preparation_started && !runtime_watch) {
+    if (preparation_started && !runtime_watch && !allow_native_devtools) {
       const auto acquired = renderer->acquire_runtime_exit_watch(runtime_watch);
       if (!acquired.ok) {
         exit_code = 3; log(acquired.code + ": " + acquired.message);
@@ -79,6 +128,7 @@ struct application {
   void pump() {
     if (!host || closing) return;
     host->pump();
+    update_devtools_status();
     const auto result = renderer->status();
     if (!result.ok && result.code != "E_PENDING") {
       exit_code = 3; log(result.code + ": " + result.message);
@@ -99,6 +149,14 @@ LRESULT CALLBACK procedure(HWND window, UINT message, WPARAM wparam, LPARAM lpar
   if (!app) return DefWindowProcW(window, message, wparam, lparam);
   switch (message) {
     case soui::sdk::webview2_event_message: app->pump(); return 0;
+    case soui::sdk::devtools_request_message:
+      if (app->host && app->host->devtools_shortcut(static_cast<unsigned>(wparam),
+          (lparam&1)!=0,(lparam&2)!=0,(lparam&4)!=0)) app->request_devtools();
+      return 0;
+    case WM_COMMAND:
+      if (LOWORD(wparam)==devtools_open_command) {app->request_devtools();return 0;}
+      if (LOWORD(wparam)==devtools_end_command && allow_native_devtools) {app->close();return 0;}
+      break;
     case WM_DPICHANGED: {
       const auto* bounds = reinterpret_cast<const RECT*>(lparam);
       SetWindowPos(window, nullptr, bounds->left, bounds->top, bounds->right - bounds->left,
@@ -120,8 +178,9 @@ LRESULT CALLBACK procedure(HWND window, UINT message, WPARAM wparam, LPARAM lpar
       } else app->pump();
       return 0;
     case WM_DESTROY: PostQuitMessage(app->exit_code); return 0;
-    default: return DefWindowProcW(window, message, wparam, lparam);
+    default: break;
   }
+  return DefWindowProcW(window, message, wparam, lparam);
 }
 int run(HINSTANCE instance, bool smoke) {
   wchar_t executable[32768]{}, local[MAX_PATH]{};
@@ -155,13 +214,29 @@ int run(HINSTANCE instance, bool smoke) {
   auto* renderer = adapter.get();
   app.renderer = renderer;
   app.host = std::make_unique<soui::sdk::webview_host>(std::move(adapter));
+  if (allow_native_devtools) {
+    soui::sdk::devtools::configuration diagnostics;
+    diagnostics.access=soui::sdk::devtools::policy::application_controlled;
+    diagnostics.ending=soui::sdk::devtools::termination::destroy_target;
+    diagnostics.f12=diagnostics.ctrl_shift_i=true;
+    const auto configured=app.host->configure_devtools(diagnostics);
+    if (!configured.ok) throw std::runtime_error(configured.code);
+    HMENU bar=CreateMenu(),menu=CreatePopupMenu();
+    if (!bar || !menu) {if(menu)DestroyMenu(menu);if(bar)DestroyMenu(bar);throw std::runtime_error("Cannot create diagnostic menu");}
+    if (!AppendMenuW(menu,MF_STRING,devtools_open_command,L"打开当前窗口开发者工具") ||
+        !AppendMenuW(menu,MF_STRING,devtools_end_command,L"结束诊断并关闭当前窗口") ||
+        !AppendMenuW(bar,MF_POPUP,reinterpret_cast<UINT_PTR>(menu),L"诊断") || !SetMenu(window,bar)) {
+      DestroyMenu(bar);throw std::runtime_error("Cannot attach diagnostic menu");
+    }
+    DrawMenuBar(window);
+  }
   const auto access = renderer->configure_profile_access(soui::sdk::webview2_profile_access::exclusive);
   if (!access.ok) throw std::runtime_error(access.code);
   app.preparation_started = true;
   renderer->prepare_async([&app, window, smoke](auto result) {
     app.preparation_completed = true;
-    if (result.ok) result = app.renderer->acquire_runtime_exit_watch(app.runtime_watch);
-    if (result.ok && app.runtime_watch->observe().phase == soui::sdk::webview2_runtime_exit_phase::failed)
+    if (result.ok && !allow_native_devtools) result = app.renderer->acquire_runtime_exit_watch(app.runtime_watch);
+    if (result.ok && app.runtime_watch && app.runtime_watch->observe().phase == soui::sdk::webview2_runtime_exit_phase::failed)
       result = {false, "E_RUNTIME_WATCH_FAILED", "The exclusive runtime watch failed before mount."};
     if (result.ok && !app.closing) {
       soui::sdk::host_config config;
@@ -189,7 +264,7 @@ int run(HINSTANCE instance, bool smoke) {
   MSG message{};
   while (IsWindow(window)) {
     const auto result = GetMessageW(&message, nullptr, 0, 0);
-    if (result > 0) { TranslateMessage(&message); DispatchMessageW(&message); }
+    if (result > 0) { if(!app.translate_devtools(message)) {TranslateMessage(&message); DispatchMessageW(&message);} }
     else {
       // An early WM_QUIT or message failure cannot drop a live runtime watch.
       app.exit_code = 3; app.close();
