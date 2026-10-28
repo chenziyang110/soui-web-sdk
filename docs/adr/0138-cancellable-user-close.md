@@ -1,0 +1,221 @@
+# ADR-0138：可取消的用户关闭与整组退出
+
+状态：代码实现；macOS DOM 关闭否决、Windows 本地修复的首轮限定原生 fixture 已通过，Windows 最终防御修正版 fixture 编译成功但运行受阻。其他原生关闭交互仍待验收。程序 close()/quit() 保持强制兼容语义。
+
+新增 request_close()/request_quit() 与同步 close_requested(window_id)->bool。
+未提供回调默认允许；false或异常拒绝，异常另报可控错误，不在原生回调等待网页Promise。
+返回成功仅表示请求被接纳处理，当前已有业务回调时可延后到公共回调队列；不是窗口
+一定关闭的证明。审批期间递归/重复请求拒绝busy，不重复弹确认或无限递归。
+
+原生标题栏/菜单关闭请求只通知公共层；批准后才调用后端close，避免native delegate
+递归再次询问。系统应用退出先预检当前所有窗口；任一拒绝/异常/窗口集合变化都取消
+本轮统一退出，不提前关闭已同意窗口。业务自己显式forceclose属于应用授权行为。
+
+异步确认须返回false取消当前请求，保存或确认后由业务显式close/quit；再次request
+会再次询问。关闭发生在UI线程；关闭动作沿用既有导航、pending任务和晚到回调失效屏障。
+已接纳的关闭请求属于原生窗口，不绑定某一网页代际，导航不会撤销它；审批时读取
+宿主当前业务状态。网页invoke本身仍受既有来源/令牌限制。
+没有自动网页强制关闭能力、没有关闭OS安全保护；示例通过现有显式业务invoke演示
+未保存保护。业务保护状态应随所属文档生命周期更新，不继承旧页面授权。
+
+本轮不拦截OS强制进程终止，不保证系统关机可撤销，也不新增自动持久化、保存对话框
+或异步JS权限协议。聚焦共用层审批/重入/窗口变化回归，真实系统关闭行为另记证据。
+
+## Linux WebKit 关闭通知转交宿主审批
+
+Linux 后端原先只连接 GTK `delete-event`，没有接收 WebKitWebView 的 `close`
+信号。现在对非空、当前 sender 且仍活动的窗口，将通知放入既有有界 native 派发
+队列；离开 WebKit 信号栈后，再检查活动状态及 sender，复制并调用
+`events.close_requested`，进入公共层 `request_close()` 审批。队列中的请求属于
+窗口，不使用 document generation，导航不会撤销已接纳的请求。
+
+派发持有 state，回调副本允许审批期间 shutdown、清空 events 或释放外部 owner。
+shutdown 沿用既有 source 撤销与信号断开；缺失回调不关闭窗口，回调异常由既有
+dispatch 边界捕获并报告 `E_CALLBACK`。队列满或入队分配失败时丢弃本次通知，
+不在 WebKit 信号栈同步调用宿主，也不隐式强制关闭；该失败路径没有额外错误回调。
+程序显式 close/quit 的既有语义不变。
+
+这是 void 通知，不是 WebKit 的取消返回值。只有引擎允许的 `window.close()` 或
+`webkit_web_view_try_close()` 路径才可能发出该信号，不能保证每次 JavaScript 调用
+都会通知。后端不新增 `try_close()` 调用，也不直接销毁 view。引擎可能已进入 page
+closing 状态，宿主否决只阻止宿主主动销毁，不能承诺恢复 DOM 状态或后续通知。
+参见 [WebKitGTK WebView::close](https://webkitgtk.org/reference/webkit2gtk/stable/signal.WebView.close.html)。
+
+2026-10-28：在现有 `linux_document_lifecycle.cpp` production callback 测试中补充
+延迟交付、旧 sender/inactive、空或抛异常回调、派发前 shutdown、导航代际变化、
+队列满及回调释放最后 owner 的检查。sender 仅用作身份哨兵，不创建 GTK/WebView，
+不构成真实 DOM 关闭测试。初次静态审阅后，在 ROBIN11 的 WSL2 Ubuntu 22.04.5
+x86_64、普通用户 UID 1000 下完成真实依赖编译及运行：G++ 11.4.0、GTK 3.24.33、
+GLib/GObject 2.72.4、WebKitGTK/JSC 2.50.4；官方开发包使用 WebKitGTK 4.1 API。
+首次编译因已有菜单连接使用 `G_CONNECT_DEFAULT` 失败；该名称从 GLib 2.74 才提供。
+将其改为语义相同的 `static_cast<GConnectFlags>(0)`，与旧头文件 `g_signal_connect`
+宏采用的零标志一致，不改变菜单回调顺序或参数。
+参见 [GObject ConnectFlags](https://docs.gtk.org/gobject/flags.ConnectFlags.html)。
+
+2026-10-28 11:57 UTC：修复后单单元编译退出 0，按原测试 10 秒上限运行，
+输出 `Linux document lifecycle: 1160 checks, 0 failures`，退出 0，未超时。
+使用仓库 `tests/desktop/CMakeLists.txt` 中该目标的真实源文件、C++17、
+`-Wall -Wextra -Wpedantic`、`sdk/include` 与 pkg-config 的 WebKitGTK/GTK 编译和链接参数，
+未链接重复的 Soui::Desktop、未使用 stubs、未伪造生成头或启用 X11 快捷键宏。
+本机 CMake 3.22.1 低于工程要求 3.24，因此直接调用 G++；这不是完整 CMake 配置或
+CTest 通过证据。该阶段没有执行 Linux 原生关闭/否决、WebKit 信号注册或 GUI 验收，
+没有运行此前被拒的 Windows 程序；不继承其他平台的通过证据。
+
+### 2026-10-28 Linux 隐藏窗口的限定原生验证
+
+后续在提交 `63165bf6e31922a46c20bd52f250958c11fd5dfc` 上，以同一 WSL2 Ubuntu
+依赖和 UID 1000 直接编译链接生产公共层及 Linux 后端，使用单次 `dbus-run-session`
+会话和真实 WebKit 隐藏窗口（`visible=false`）。本地页面完成 Bridge 握手后实际
+调用 `window.close()`，未合成 close 信号，未禁用 WebKit sandbox，未显示或聚焦
+窗口，未使用剪贴板、对话框、快捷键或外网资源。
+
+12:13:57–12:13:58 UTC 的否决例：handshake、armed、approval 各 1；返回 false
+后的 native 派发确认 closed=0、窗口仍被持有且 set_title 成功，随后显式 cleanup
+得到一次 closed。`errors=0/failures=0/watchdog=0`，919 ms，自然退出 0。
+12:14:37 UTC 的批准例：handshake、armed、approval、closed 各 1，无显式 cleanup，
+`errors=0/failures=0/watchdog=0`，848 ms，事件循环及进程自然退出 0。
+两例均受 12 秒失败 watchdog 与外部 20 秒上限约束，未触发强制清理。
+保留非致命 `Dropped Escape call with ulEscapeCode : 0x03007703` stderr。
+
+临时 harness 源 SHA-256：
+`093792a33d387ebc69d26ba50873c105c23951f9155d08cdd8bf16dcd1937160`；
+页面 SHA-256：`46c6ab95a63b0182edfe66ab257df9590b1eb3521e9c958617a5afa7e0d7c5d2`；
+ELF SHA-256：`ea3cdf6b598bffe2e7dfef0e0933b1c55d1b324b8b511ff8cb0c13054db40cb5`。
+源码、构建日志及两例输出保留在该任务的 `pr103-linux-native-close-scratch/`。
+这是上述旧提交的两条原生通知/宿主审批链证据，不是后续 main 集成树的运行通过。
+不证明否决后 DOM 可恢复、重复关闭、故障注入、视觉交互、完整 CMake 或全平台验收。
+
+## Windows DOM 关闭通知也须进入公共审批
+
+WebView2 的 `WindowCloseRequested` 是网页 `window.close()` 通知宿主的入口，
+不是 Win32 `WM_CLOSE`。仅接标题栏消息会让 DOM 请求完全漏过 `close_requested`，
+窗口仍存在也不能算宿主已否决。本地真实 WebView2 fixture 已复现审批次数为 0。
+
+在现有事件初始化中注册该通知并检查 HRESULT，使用 weak-state、活动状态及 sender
+校验。将请求放入既有有界原生派发队列，结束 COM 事件回调后再复制并调用公共关闭
+请求回调，避免批准时在 WebView2 事件栈中销毁 Controller。公共层仍决定允许或否决；
+无回调、失效 sender、队列拒绝或异常都不产生隐式强制关闭。队列复用既有窗口生命周期，
+关闭撤销待处理工作，不新增线程、权限、接口或导航代际授权。
+
+不直接调用 Controller.Close/DestroyWindow，不保证回滚引擎内部 DOM closing 状态，
+也不承诺即时连续 `window.close()` 必有第二次通知。程序 close/quit 语义不变。
+参见 [Microsoft WindowCloseRequested](https://learn.microsoft.com/en-us/microsoft-edge/webview2/reference/win32/icorewebview2?view=webview2-1.0.4191.47#add_windowcloserequested)。
+
+### 2026-10-26 Windows 限定原生复验
+
+独立本地 fixture 链接实际安装的 Soui::Desktop，未改动原模板应用。基线源码
+`220aed8ce822d7f60fb50da3d7fefd7b90869954` 上，公共网页 maximize/restore/getState
+和两次页面/原生状态事件通过，但一次 DOM `window.close()` 后审批次数为 0，
+fixture 于 06:50:43 UTC 自然退出 1。保留该失败，窗口仍在不记为否决通过。
+
+补入通知转发后，在独立输出重建 SDK 并构建同一 fixture，06:59:05–06:59:08 UTC
+实际 WebView2 运行通过：`controlsOk=true`、`domVetoOk=true`、`vetoRequests=1`；
+否决后同文档 Bridge 返回 `closed=0/windowStateLive=true`，最后公共
+`request_close()` 清理触发一次允许及一次 closed，自然进程退出 0。
+`errors=0/timedOut=false`，没有强杀、额外系统权限或外部 UI 注入。
+
+此为本地修复 fixture 的原生证据，不是未修改原模板的 DOM 验收或新的源码提交身份；
+未截图；本次单窗口 fixture 未验证第二次 DOM 关闭批准、队列饱和/异常注入、
+其他架构及完整系统矩阵。
+
+### Windows 关闭回归与独立复审
+
+最小可复现入口已纳入 [Windows DOM 关闭回归](../../tests/desktop/windows-close/README.md)，
+作为安装后独立消费者，默认不注册 GUI 测试。生产补丁独立审查未发现阻断问题；
+Controller.Close 按官方契约停止事件并释放 handler，未另增 token 管理。
+
+2026-10-26 07:15:02–07:15:07 UTC，该回归首轮在实际 WebView2 中自然退出 0，
+`vetoLive=true/staleCountsStable=true/errors=0/timeout=false`。root 的三次连续
+DOM 调用产生一次否决，随后同文档 Bridge/窗口状态可读；两个依次创建的 child
+各收到一次 DOM 批准、一次 closed，各有两次重入请求拒绝 `close_busy`。
+关闭后两次请求拒绝 `closed`、程序 close 幂等；销毁 handle 后公共回调捕获对象
+释放，后建实例不改变旧计数。它验证正常监听注册/关闭生命周期的可观察行为，
+不证明 COM remove 调用次数或每次连续 DOM 调用均触发通知。
+
+该轮 fixture main.cpp SHA-256 为
+`53bb9d8a8fd5e7d8508a827445ceef0b798b2c38f1fd6235d3b714a3106ed1b9`，
+exe 为 `3cbc834724ca2196318dd2abe51bc252f6b043eb833a3127b89bfad9c130be2e`。
+生产候选 windows_webview2.cpp SHA-256 仍为
+`104fe6ecb9875490a2ef9a3c1ddbbfd425b426a533116a4028fcf9a01f62ae48`。
+通过首轮与最终 fixture 构建链接同一已安装 SDK，期间未重编 SDK；生产候选字节未变，
+soui_desktop.lib SHA-256 为
+`5a16780d906556cbee4c23bac4000f413794027ffe037ceb5fe4d4b79277c875`。
+
+复审另修正 fixture 的空 handle 失败路径并保留页面错误原因；最终 main.cpp 为
+`c9ef110709311efa8790d785bfccb6cb4983217af33ff8bfaa8d74d97bcafe34`。
+该版本配置/编译成功、CTest 注册查询为一项，但正常 Start-Process 返回启动拒绝，
+现有记录解释为 Windows 应用程序控制拦截。本地化错误原文已乱码，未捕获可靠的
+原生数值错误码，不能据此确认具体策略产品。PowerShell 退出 1，未取得应用 PID/
+退出码；这与此前 Computer Use 应用审批超时不同，没有改策略、换路线或继续重试。
+因此首轮通过只绑定其原始 fixture 身份，不冒充最终 fixture 已运行。
+两轮均无视觉验收；注册失败、队列饱和/异常、失效 sender、导航竞态及完整平台矩阵
+仍未执行，不改变通用 manifest 的 nativeRuntimeVerified 或发布资格。
+
+## Windows 致命错误投递失败不得同步调用用户回调
+
+`report()` 是非致命、有界的 best-effort 诊断。关闭提案在原生队列满时拒绝入队，
+保持窗口及旧工作，不因错误通知也无法入队而强制关闭；公共 error 回调没有逐条必达承诺。
+
+致命 `fail()` 不同：它保存首个 terminal_status 并停止接收工作。原实现的
+PostMessage 失败回退直接 finish_failure；ProcessFailed 或 Controller 初始化完成
+回调均能走到这里。有效 HWND 也可能因消息队列配额而投递失败，这并不证明窗口已毁。
+同步 error 回调可进入模态消息循环，违反 WebView2 的回调重入约束；这属于静态可证实的
+控制流缺陷，尚未运行复现挂起。不是声称 Controller.Close 在所有事件中都被官方禁止。
+
+决定：每个 state 内嵌一个无分配、UI 线程所属的待处理失败节点，保存 weak owner。
+fail 只标记终态、排入待处理列表并尝试原消息投递，绝不因投递失败内联通知/销毁。
+现有 failure 消息和 SDK 外层 run 泵共同消费该节点；run 在下一次 GetMessage 前处理，
+且先派发已取出的普通消息，避免清理后把旧 HWND 消息送到被复用的窗口。
+节点按 FIFO 排列，每次只消费入口时数量，禁止嵌套消费；调用前锁定 owner 并取消节点。
+若回调新增终态仍待处理，run 继续下一有界批次，不带着无唤醒的挂起项进入 GetMessage。
+显式 shutdown、
+节点析构或正常消息消费均撤销挂起项，根窗口关闭后仍可处理同线程 child 的终态。
+finish_failure 忽略没有失败的 state 及重复/重入通知，防止迟到消息误关新窗口。
+
+不新增线程、权限、第二唤醒通道或无界可靠错误队列；不以同步用户回调保住诊断。
+SDK 泵须恢复运行才会消费挂起终态，不能承诺任意系统资源故障下无条件继续调度。
+致命初始化/进程失败清理仍不是可否决的用户关闭提案。公共 API/ABI 不变。
+验证使用生产私有节点的生命周期回归及 Windows 后端对象编译，未执行的断言和原生
+PostMessage 配额/COM 故障注入必须单独标记，不继承之前候选的运行通过。
+官方依据：[PostMessage 限额](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-postmessagew)
+及 [WebView2 重入限制](https://learn.microsoft.com/en-us/microsoft-edge/webview2/concepts/threading-model)。
+
+## macOS DOM 关闭通知也须审批
+
+WKUIDelegate 的 `webViewDidClose:` 可能由初始主文档的 `window.close()` 触发，
+不能将该通知当成宿主授权。此前直接 shutdown 会绕过 close_requested；现在与
+标题栏关闭共用有界请求分派，保持状态及回调副本存活，由公共审批决定是否销毁
+原生窗口。失效 sender、已关闭状态、无回调或异常都不会隐式强制关闭。程序主动
+close/quit 的既有强制语义与 WebKit 进程终止清理不变。
+
+拒绝只保护宿主窗口与关闭审批，不承诺回滚 WebKit 已进行的 DOM closing 状态或
+恢复网页内部执行。官方实现链路见
+[DOMWindow::close](https://github.com/WebKit/WebKit/blob/main/Source/WebCore/page/DOMWindow.cpp) 和
+[WK Cocoa UI delegate](https://github.com/WebKit/WebKit/blob/main/Source/WebKit/UIProcess/Cocoa/UIDelegate.mm)。
+生产私有分派器的小型 C++ 检查覆盖否决、同意后迟到重复、失效 sender、空回调、
+异常及审批过程中释放外部 owner；不将它计为 WKWebView 的原生 window.close 实测。
+
+### 2026-10-24 macOS 限定原生验证
+
+基于本地修复快照 `4ecaf7fa7221fa564c82e886fced8487e8e3f823`，独立 Mac
+执行记录在 08:56 UTC 完成。后端与私有关闭分派头的两个源码 blob 均匹配；
+补丁检查、应用、差异检查，以及独立 SDK configure/build/install、消费者
+configure/build/stage/verify 均返回 0。两份 SDK 库及消费者可执行文件包含
+arm64、x86_64 两个 slice；真实探针在 Apple Silicon 主机执行，未验收 Intel 运行。
+
+产物为 `out/dom-close-veto-staged/DomCloseVetoConsumer.app`，bundle ID 为
+`org.soui.domclosevetoconsumer`。staging 清单包含 12 个文件、1,449,946 bytes，
+`nativeRuntimeVerified` 仍为 `false`，不因独立专项运行而改写通用交付清单字段。
+
+临时消费者通过业务 Bridge 就绪信号后仅调用一次 DOM `window.close()`；宿主
+`close_requested` 返回 false，再在后续派发中确认原生窗口仍存在、窗口状态可读，
+最后使用公开程序 `close()` 清理。专属报告为：
+
+```text
+PASS armed=1 approvals=1 preserved=1 closes=1 errors=0 timeout=0
+```
+
+正常 CUA 启动调用返回 `AXError.cannotComplete`，因此不把工具返回计为视觉成功，
+也没有本轮截图证据。专项报告证明上述审批及清理链路完成，随后应用清单显示
+`isRunning=false`、`useCount=1`。本结果不证明网页内部 DOM 状态可恢复，不覆盖
+其他关闭入口、全部桌面能力或其他平台；已有小型 C++ 检查与本次原生探针分开计证。

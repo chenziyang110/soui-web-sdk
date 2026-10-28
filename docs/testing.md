@@ -1,5 +1,18 @@
 # 测试与验收
 
+异步资产调度：`ctest --preset desktop -R sdk.desktop.asset-executor --output-on-failure`，
+用真实线程和确定性门闩验证饱和、运行中/排队撤销、结果额度及非阻塞销毁；
+公共契约另验证 UI 投递、导航代际和关闭后结果丢弃。
+
+资产文件边界：`ctest --preset desktop -R sdk.desktop.assets --output-on-failure`，
+使用真实临时文件调用生产读取器。`sdk.desktop.contract` 另测启用/禁用、来源、
+令牌、导航和窗口隔离，`sdk.desktop.preload` 测实际生成的 JavaScript；均不等于
+原生 WebView 已运行通过。
+
+统一桌面开发包工具回归：`node --test tests/desktop/package.test.cjs`。它验证参数、
+目标身份、步骤失败中断、拒绝覆盖/链接和散列，不以模拟命令冒充真实编译。
+完整构建/CTest/安装/压缩入口及平台限制见 [统一桌面入口](unified-desktop.md)。
+
 2026-10-26 的任务唤醒与有界接纳候选提供[确定性契约](../tests/native/scheduler_continuation/README.md)和扩展至 22 项的真实 worker fixture；首任务、跨线程积压、延时起点及关闭验证入口见[交接说明](maintenance/input-latency-20261026.md)。最终源码按维护者要求未继续编译或运行，早期实验不作为当前通过证据。默认 vendor 精确注册清单同步为实际 64 项。
 
 `kernel.native.scroll-ack-feedback` 的[独立入口](../tests/native/scroll_ack_feedback/README.md)直接使用生产 ACK helper、Controller、Snapshot 和默认 client 查询；旧方法对照通过机械提取保持真实生产逻辑。加强快照拒绝断言后的两架构当前 ACK 各 25/25，既有目标、边界、覆盖各 2/2、19/19、13/13，八个当前程序在隔离来宾全部退出 0；旧对照各 3/10 并真实退出 1，整个 suite 仍退出 1。当前记录见[维护说明](maintenance/scroll-ack-feedback-20261023.md)和[验证摘要](verification/scroll-ack-feedback-20261023.json)。完整 x86 内核已自然构建退出 0 并获独立 build-only 验收；另有 GUI21 协议页 800 请求位移及 GUI22 真实同值 CSS 取消的限定观察。helper 状态测试和构建不替代实际来源验证，100 ms 采样也不证明 setter 瞬时 target/velocity 或整体流畅度。
@@ -168,6 +181,37 @@ UIA 原生断言失败会保留 HRESULT。`mutations` 焦点失败还记录客�
 UIA 成功按钮调用的真实事件订阅与拒绝/失败/关闭回归、时钟整数边界回归的原始记录见 [补充记录](../verification/production-validation/0.5-uia-invoke-and-clock-2026-10-16/README.md)。Invoked 通知不重放已执行业务，发送失败由 pump 返回；仅状态变化通知可在后续 pump 重试。
 
 LLVM 增量构建会单独认证生成命令中的工具路径（含 Windows 8.3 路径），即使本轮没有再次运行该工具。此认证只证明工具文件身份；复用产物仍须匹配历史自然构建、当前对象及依赖，不能据此添加实际进程记录。
+
+## 跨平台 Runtime 补充验证
+
+`node --test tests/portable/build-options.test.cjs` 对根目录和独立 `sdk/` 入口分别
+进行真实 CMake 配置，确认 portable/统一 Desktop 与 `SOUI_BUILD_AUTO_HOST=ON`
+混用时给出明确拒绝，且 `SOUI_BUILD_WEBVIEW2=OFF` 不会让自动宿主被静默忽略。
+另两个用例验证根入口在 portable/统一 Desktop 下拒绝
+`SOUI_BUILD_INPUT_UI_BENCHMARKS=ON`；共六项，保留 legacy 默认关闭的测量入口。
+使用现有 CMake 与编译器，可通过 `CMAKE_COMMAND` 及标准 `CMAKE_GENERATOR*`
+环境变量选择工具链；配置输出保存在打印的临时目录。该检查不请求 SDK/应用构建
+或运行，不代表合法组合的完整构建、部署或原生验收通过。
+
+开发中的 portable 档位使用 `cmake --preset portable`、
+`cmake --build --preset portable`、`ctest --preset portable`。
+另验证 `tests/portable/consumer` 对已安装 `SouiRuntime` 包的独立消费。
+完整命令和目标矩阵见 [跨平台说明](cross-platform.md)。合成架构/拒绝测试、
+本机编译、目标机运行与真实桌面验收必须分开报告；不新增远程 CI。
+
+## 统一系统 WebView 桌面补充验证
+
+`cmake --preset desktop`、`cmake --build --preset desktop`、
+`ctest --preset desktop` 构建公共 Desktop 及本机后端。默认只运行无窗口回归：
+共用 application/protocol 使用 fake backend，preload 测试提取实际生产脚本并在
+Node VM 中执行。它们覆盖令牌轮换、旧消息、导航/关闭中的回调、模态重入、有界
+队列、UTF-8 请求字节和 JSON 返回语义，不能替代真实引擎验收。
+
+Linux 的 `soui_desktop_linux_integration` 始终随桌面测试配置编译；只有显式
+`-DSOUI_DESKTOP_GUI_TESTS=ON` 才注册真实 GUI 用例。该用例要求正常图形会话，
+无显示服务应失败，不能自动 skip 或禁用 WebKit sandbox。目标机命令、系统能力
+检查及未执行项见 [统一桌面说明](unified-desktop.md) 和
+[本轮实际记录](acceptance/unified-desktop-2026-10-20.md)。
 
 ## 主线程定时任务批次回归
 

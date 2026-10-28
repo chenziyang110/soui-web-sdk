@@ -67,14 +67,20 @@
     {
       "path": "CHANGELOG.md",
       "normalization": "lf",
-      "bytes": 41294,
-      "sha256": "fb38eccf368ccdca607c1f78bc0af494018d981c77bf310173badcce546dc0e0"
+      "bytes": 53551,
+      "sha256": "66b098f792517fc5e6a047365c34d885c6c8b37fabf522cb9d683c09d2a8d753"
     },
     {
       "path": "CMakeLists.txt",
       "normalization": "lf",
-      "bytes": 1187,
-      "sha256": "580764a807c6201a4f0ed7fe24aece0d300b206ef9c4601a07be7f3ee5c55e4d"
+      "bytes": 2891,
+      "sha256": "2e9ae7f1f24545d334dbb872446490de0ad92741f07e31d685c5f4690e075cbc"
+    },
+    {
+      "path": "CMakePresets.json",
+      "normalization": "lf",
+      "bytes": 3335,
+      "sha256": "8d2cfdec29687dad1c9a9550fcde9d02e23cc7296b3670e519e61c0705e4f89f"
     },
     {
       "path": "CONTRIBUTING.md",
@@ -97,8 +103,8 @@
     {
       "path": "README.md",
       "normalization": "lf",
-      "bytes": 15985,
-      "sha256": "78c9c0ee1ec345a1e30f19036dd78050d3c07c67a1aa4b7bc8c257f29b58fe4e"
+      "bytes": 17542,
+      "sha256": "a33dd08d4cc6caa35b282032f4bcbba26456af2e194bd482a3044663a22fd569"
     },
     {
       "path": "SECURITY.md",
@@ -415,8 +421,14 @@
     {
       "path": "cmake/SouiApplication.cmake",
       "normalization": "lf",
-      "bytes": 3521,
-      "sha256": "48495f8810eeecf3dacfeedf9006530a315e938d726d64fe87a3298c6774e38c"
+      "bytes": 3588,
+      "sha256": "901649944dbd4f02607c91c26a24d8dbe644f4f6124847205db81d7895cb8fab"
+    },
+    {
+      "path": "cmake/SouiPlatform.cmake",
+      "normalization": "lf",
+      "bytes": 11861,
+      "sha256": "c95c2f78889dd980e5cb053ef634e50c3122271eb5d2b0472dcc279f06281e8e"
     },
     {
       "path": "cmake/SouiReferenceSdkConfiguration.cmake",
@@ -435,6 +447,24 @@
       "normalization": "lf",
       "bytes": 1278,
       "sha256": "0fd9bbd5a831591b998e090d65d3dfe241d8b1e288b98c98c20145dd2b1a3c82"
+    },
+    {
+      "path": "cmake/toolchains/Linux-arm32.cmake",
+      "normalization": "lf",
+      "bytes": 414,
+      "sha256": "f5b91ebaaa71d9d45653a67cd272d3265d4ec41afb20490b7380920d7ab519eb"
+    },
+    {
+      "path": "cmake/toolchains/Linux-arm64.cmake",
+      "normalization": "lf",
+      "bytes": 411,
+      "sha256": "f7f752a0f6b9344b01227f10dbfd45531bee16f3ad20c6572008c367a8cea2f9"
+    },
+    {
+      "path": "cmake/toolchains/Linux-x86.cmake",
+      "normalization": "lf",
+      "bytes": 291,
+      "sha256": "8117e001a4a4ba8f26aff40541cf64c86815175f60c851be1e98cb3c049757c5"
     },
     {
       "path": "cmake/toolchains/SouiLLVM22.cmake",
@@ -2075,6 +2105,18 @@
       "sha256": "a0b42adf77e62c4db27afd9f089a2dfc6a0017070e16e62a78d04ead6938c07f"
     },
     {
+      "path": "docs/acceptance/unified-desktop-2026-10-20.md",
+      "normalization": "lf",
+      "bytes": 25629,
+      "sha256": "90017a2695b32b7372743c8c36e89401ea9ccb461673806c3bcd2c0fe8bb2885"
+    },
+    {
+      "path": "docs/acceptance/unified-desktop-2026-10-23.md",
+      "normalization": "lf",
+      "bytes": 22450,
+      "sha256": "ba9652d2ef15f19cc896f10d4c0bc9df66fe550116300f711283450bf8e644ea"
+    },
+    {
       "path": "docs/acceptance/vctip-compiler-tail-investigation.md",
       "normalization": "lf",
       "bytes": 4962,
@@ -2837,6 +2879,18 @@
       "sha256": "54c43c2e550507a999b9e2daf96b5cff4159b959c9ca890e03155c601d594a9b"
     },
     {
+      "path": "docs/adr/0119-unified-system-webview-desktop.md",
+      "normalization": "lf",
+      "bytes": 3978,
+      "sha256": "96ceb51502b3e471c8d3b004cbb64bd8ecf4002e9745bb65529a63b1995d9478"
+    },
+    {
+      "path": "docs/adr/0120-managed-desktop-windows-and-native-actions.md",
+      "normalization": "lf",
+      "bytes": 3293,
+      "sha256": "ab8d584ab18c0cfb78ea96b8672c98998f574181d0563bd8994d83823ac26ffe"
+    },
+    {
       "path": "docs/adr/0120-preserve-compositor-scroll-acknowledgements.md",
       "normalization": "lf",
       "bytes": 7553,
@@ -2849,16 +2903,40 @@
       "sha256": "18983533ec0cd5b4b1ac9c3ff40e9684411403675d7a3d2e74b6c5f1fdc62be4"
     },
     {
+      "path": "docs/adr/0121-unified-desktop-development-package.md",
+      "normalization": "lf",
+      "bytes": 1790,
+      "sha256": "4d2aa07c7b0cda59ed4217fcb418d08d06090c7909cff17013e92de25ef263bd"
+    },
+    {
       "path": "docs/adr/0122-input-to-visible-feedback.md",
       "normalization": "lf",
       "bytes": 6524,
       "sha256": "91b4a09f74457db75392cd987e6e5a78d48c457b2cee5e46e41bb11a46afdbc1"
     },
     {
+      "path": "docs/adr/0122-portable-runtime-core.md",
+      "normalization": "lf",
+      "bytes": 3259,
+      "sha256": "6ba88c552c73aa1c90b9edb3f9b97ed50953a94af0eeb3e45b43e5e01e796829"
+    },
+    {
       "path": "docs/adr/0123-input-admission-and-scheduler.md",
       "normalization": "lf",
       "bytes": 20356,
       "sha256": "0c2a40a01a395fb1fb291990f0f7a20152ba3f287f675fe51c42173f49f8f952"
+    },
+    {
+      "path": "docs/adr/0123-opt-in-local-asset-reader.md",
+      "normalization": "lf",
+      "bytes": 2485,
+      "sha256": "a06f6a860c6b8e327a64d19d8eab58729758e2c70e91c015b025e1828453f988"
+    },
+    {
+      "path": "docs/adr/0124-asynchronous-asset-read-lifetime.md",
+      "normalization": "lf",
+      "bytes": 2641,
+      "sha256": "02b71f44ff52b808c5737f9dc23cfb53db0fe2534fed42102bf533cdb5695542"
     },
     {
       "path": "docs/adr/0124-frame-resource-presentation.md",
@@ -2879,6 +2957,12 @@
       "sha256": "fb3ba251d518e93ad308c81d7d433b0b7ebb7777eb9109a127aa1f7ca27c4c9f"
     },
     {
+      "path": "docs/adr/0125-opt-in-loopback-resource-origin.md",
+      "normalization": "lf",
+      "bytes": 3322,
+      "sha256": "49a90e5c31e0b8e7e74e63217852c164088dee478285e949219841e95c8233db"
+    },
+    {
       "path": "docs/adr/0125-runtime-manifests-and-bundles.md",
       "normalization": "lf",
       "bytes": 2823,
@@ -2897,6 +2981,18 @@
       "sha256": "cbd7bddc9be0bc0db75abe7a6f63ddf99f952366e1e046ccccc501ce2f182397"
     },
     {
+      "path": "docs/adr/0126-relocatable-application-staging.md",
+      "normalization": "lf",
+      "bytes": 2083,
+      "sha256": "835c9389e51cf4d96460e39f416efca136f89f2048e7c0ee2ed97dc8e30a4dd5"
+    },
+    {
+      "path": "docs/adr/0127-application-runtime-preflight.md",
+      "normalization": "lf",
+      "bytes": 1904,
+      "sha256": "300cc0894c50a3eb9b03d4e3e9d23f8e86a62b5872610852d0aa2ca7dbc1fb17"
+    },
+    {
       "path": "docs/adr/0127-automatic-renderer-host.md",
       "normalization": "lf",
       "bytes": 3110,
@@ -2907,6 +3003,120 @@
       "normalization": "lf",
       "bytes": 2444,
       "sha256": "4044ee3786190d512e470f6dc155160077cd8a28991fa3d9f804a46f47af0e98"
+    },
+    {
+      "path": "docs/adr/0128-generated-unified-desktop-project.md",
+      "normalization": "lf",
+      "bytes": 1826,
+      "sha256": "280c1e82e002899e6dd1d7c617dcc75ce66ffd33064ea6a68f661012caf82f1a"
+    },
+    {
+      "path": "docs/adr/0129-staged-application-integrity-verification.md",
+      "normalization": "lf",
+      "bytes": 1821,
+      "sha256": "2d36a6735e5407913caa48f8f23f8b1260454fb584303cde5b2905f21311c62c"
+    },
+    {
+      "path": "docs/adr/0130-verified-application-delivery-archive.md",
+      "normalization": "lf",
+      "bytes": 2028,
+      "sha256": "a17f1e66ccb76eb4749e52d1f035c9e0dd36aecf8b9d2ca05176c462e5f90737"
+    },
+    {
+      "path": "docs/adr/0131-typed-desktop-frontend-adapter.md",
+      "normalization": "lf",
+      "bytes": 1351,
+      "sha256": "ca36df718a620ef14015f54c39730196a972d5224dc280d77469516d248fedaf"
+    },
+    {
+      "path": "docs/adr/0132-managed-development-assets.md",
+      "normalization": "lf",
+      "bytes": 1217,
+      "sha256": "c13fb02217c54b19d7f267deb94fb5a34bcc4a3cec77a89cb480a8ebe9d4180b"
+    },
+    {
+      "path": "docs/adr/0133-explicit-webkit-helper-preflight.md",
+      "normalization": "lf",
+      "bytes": 1587,
+      "sha256": "67d6b6b5635595730c0b8566d6a0a3aa8bd5c0a64959b4092ac360dbb69ae7d4"
+    },
+    {
+      "path": "docs/adr/0134-native-backend-terminal-callbacks.md",
+      "normalization": "lf",
+      "bytes": 2704,
+      "sha256": "e8a369d73918b91fdfa35a127b054410bc03df299f6ccdff8bc755937656eedd"
+    },
+    {
+      "path": "docs/adr/0135-explicit-linux-deployment-rpath.md",
+      "normalization": "lf",
+      "bytes": 2299,
+      "sha256": "c18f2b82039dd3d3f6e8f6b227fdaa60c76bd6e13cbd73ef290c1d788edc7b75"
+    },
+    {
+      "path": "docs/adr/0136-universal2-application-staging.md",
+      "normalization": "lf",
+      "bytes": 3609,
+      "sha256": "b76d623809dd1dd08866d0732c2e6bbf50f2be055fe06e26e44d136e82faf787"
+    },
+    {
+      "path": "docs/adr/0137-observed-window-state-controls.md",
+      "normalization": "lf",
+      "bytes": 2241,
+      "sha256": "df1e02d80bd0e5193d6d7ba419d1147f6127737dac24c18db6b9050085d562b3"
+    },
+    {
+      "path": "docs/adr/0138-cancellable-user-close.md",
+      "normalization": "lf",
+      "bytes": 16891,
+      "sha256": "008d2acb4e8a0207fafed63b92655917c212f492b60c047bf7fa8b79e5b640b7"
+    },
+    {
+      "path": "docs/adr/0139-explicit-desktop-services.md",
+      "normalization": "lf",
+      "bytes": 1869,
+      "sha256": "22316a461d5fb3a05128f5b525ce9c45cacf87f6e88d114152a08190610a88d5"
+    },
+    {
+      "path": "docs/adr/0140-hierarchical-desktop-menus.md",
+      "normalization": "lf",
+      "bytes": 1430,
+      "sha256": "62eff314730f0a8494486903bf6f0672c502f951a494aad618aabc86bad4c80f"
+    },
+    {
+      "path": "docs/adr/0141-window-owned-global-shortcuts.md",
+      "normalization": "lf",
+      "bytes": 3793,
+      "sha256": "84c45d8ff185342759b0bc4f1931ebe876cd03ea8951fc0b56a61a30e43da214"
+    },
+    {
+      "path": "docs/adr/0142-native-file-path-dialogs.md",
+      "normalization": "lf",
+      "bytes": 2822,
+      "sha256": "73cd376658eb9428406259832cd86f59534d3cbfa21a5daa3d17177e376a6a16"
+    },
+    {
+      "path": "docs/adr/0143-generated-startup-diagnostics.md",
+      "normalization": "lf",
+      "bytes": 2640,
+      "sha256": "534a61d4b233c7b1f803c2c0b2d917d73df32cf5b3d035b3704da8a73f69acdb"
+    },
+    {
+      "path": "docs/adr/0144-opt-in-macos-startup-trace.md",
+      "normalization": "lf",
+      "bytes": 7104,
+      "sha256": "f2ed77f457112ae98b62b5d983aa1f0bb46f2444b8256bb2da76234b177c9b2f"
+    },
+    {
+      "path": "docs/adr/0145-observed-macos-activation-policy.md",
+      "normalization": "lf",
+      "bytes": 6430,
+      "sha256": "c60c4480fd1ba722b2b56a5eb42f8077fe3fd254a7854c1855d669262a327646"
+    },
+    {
+      "path": "docs/adr/0146-desktop-application-notices.md",
+      "normalization": "lf",
+      "bytes": 2983,
+      "sha256": "539ecc9b81ccc0970187d0de4520668908bd67c47c07ee8f849deb7c2ef09981"
     },
     {
       "path": "docs/adr/README.md",
@@ -2923,14 +3133,14 @@
     {
       "path": "docs/api.md",
       "normalization": "lf",
-      "bytes": 39166,
-      "sha256": "8f0588ebf60a1eda5c72c89435198509b6746efde812c0aaf61411e3281d0e91"
+      "bytes": 42013,
+      "sha256": "32985ac9c79030f1e7d9e956c08d77d2575777c1be8b0781a622ca8c4c50d4e4"
     },
     {
       "path": "docs/architecture.md",
       "normalization": "lf",
-      "bytes": 8679,
-      "sha256": "6873b86bb7395922c78de1696d6eece2dc84616657ad49e66cdc3f4a9daea024"
+      "bytes": 9587,
+      "sha256": "dd5f87a5b9c064eaf6b51d903db118e82d36ffa7a3987eb601276004589cf6d8"
     },
     {
       "path": "docs/assets/readme-architecture.svg",
@@ -2961,6 +3171,30 @@
       "normalization": "lf",
       "bytes": 5682,
       "sha256": "abd067b755bd97fa387b51855b9b1bbefdeda0d3af1d54e51f263d90b0d1edc0"
+    },
+    {
+      "path": "docs/cross-platform-roadmap.md",
+      "normalization": "lf",
+      "bytes": 6974,
+      "sha256": "389e9a1f02c7671d5213b5f50770c709a6fffc67fb58169ee4d5fea57cd386f1"
+    },
+    {
+      "path": "docs/cross-platform.md",
+      "normalization": "lf",
+      "bytes": 9398,
+      "sha256": "9c81bfbad4a98cf11f539629f37bf5a5c604ff4e8abd1ac792dcf5644e2e10d2"
+    },
+    {
+      "path": "docs/desktop-application-staging.md",
+      "normalization": "lf",
+      "bytes": 17659,
+      "sha256": "a061c1f163a0ede94ea00c504a3cd708ae149bdc694131859403b4fd8ac62eb0"
+    },
+    {
+      "path": "docs/desktop-frontend-adapter.md",
+      "normalization": "lf",
+      "bytes": 8262,
+      "sha256": "b4306225dbf6ad01137245f8bc2a6c42dc05d1c2e0c0b8b997afc07a3a9df3e9"
     },
     {
       "path": "docs/developer-workflow.md",
@@ -3001,8 +3235,14 @@
     {
       "path": "docs/known-issues.md",
       "normalization": "lf",
-      "bytes": 27879,
-      "sha256": "5b7a64bdfd8704c83a8dfc9a257da3b37dbf8e6bcf011d60b21ad5b35469b51c"
+      "bytes": 29785,
+      "sha256": "3d95092a1d03ca80e1851d8580eaeb531d1de10561c69601a239beee2001e846"
+    },
+    {
+      "path": "docs/linux-native-validation-20261022.md",
+      "normalization": "lf",
+      "bytes": 10523,
+      "sha256": "97e67ae2edf9ecce552cba20d73b423fb37054e059e543d35cf3bd7b1e47a54b"
     },
     {
       "path": "docs/llvm-toolchain-entry.md",
@@ -3015,6 +3255,12 @@
       "normalization": "lf",
       "bytes": 4880,
       "sha256": "c4f83dfd4f360cc52147f41b687e2dbdfb98b3d4ab7c4b6af2807ab889ce68e7"
+    },
+    {
+      "path": "docs/macos-native-validation-20261023.md",
+      "normalization": "lf",
+      "bytes": 2922,
+      "sha256": "94c2176639c72ecbd6ea2ac6baae0739be077051154c8f9ab115f0f0a8a4aa29"
     },
     {
       "path": "docs/maintenance/historical-source-map-js-evidence.md",
@@ -3151,14 +3397,26 @@
     {
       "path": "docs/testing.md",
       "normalization": "lf",
-      "bytes": 30802,
-      "sha256": "e293512a4f13436c2b4e793055645b838ea78761edc56d021ff57d72075f195c"
+      "bytes": 33818,
+      "sha256": "3b1d7f92345e0602941836a6928de41e219f45bc7fb970cda9cc2d85103645ed"
     },
     {
       "path": "docs/troubleshooting.md",
       "normalization": "lf",
       "bytes": 1158,
       "sha256": "26e361d5da7b1b484d2f2a61674db5898b30ea82a706769dda5a9d19ec3f65e5"
+    },
+    {
+      "path": "docs/unified-desktop-project-generator.md",
+      "normalization": "lf",
+      "bytes": 3187,
+      "sha256": "884e47ba59a1068f8bb123e5d51fe882ad49d9532b2448cf53fc5080a35ce1aa"
+    },
+    {
+      "path": "docs/unified-desktop.md",
+      "normalization": "lf",
+      "bytes": 37488,
+      "sha256": "52d868c99c8adf695e3d387232a56e495dbf0859b5798f323da84c086d3f21df"
     },
     {
       "path": "docs/verification/scroll-ack-feedback-20261023.json",
@@ -3213,6 +3471,54 @@
       "normalization": "lf",
       "bytes": 3683,
       "sha256": "7fad01f91d6628d6f99a801820eb0d6d8c92a4a4f77ed1738ec96a5b5d362782"
+    },
+    {
+      "path": "examples/unified-desktop/CMakeLists.txt",
+      "normalization": "lf",
+      "bytes": 1245,
+      "sha256": "07f5d0e2a742ff3530944fccf4005cd63894f235a0b7f8af6ba369542c0b79c4"
+    },
+    {
+      "path": "examples/unified-desktop/main.cpp",
+      "normalization": "lf",
+      "bytes": 10570,
+      "sha256": "d822bfd309fa232ab12058a829305c71704444c1ebe804411663ec8289973c72"
+    },
+    {
+      "path": "examples/unified-desktop/web/app.js",
+      "normalization": "lf",
+      "bytes": 7660,
+      "sha256": "81a54c5fe283453098b7809b4734d60fb733a4a1b59b9d6c4aacbe810e8ae3e6"
+    },
+    {
+      "path": "examples/unified-desktop/web/config.json",
+      "normalization": "lf",
+      "bytes": 87,
+      "sha256": "85eab0626eaadd8bfc521b9a308b522afe0923c635d615073f3a3283c34a0a82"
+    },
+    {
+      "path": "examples/unified-desktop/web/feature.mjs",
+      "normalization": "lf",
+      "bytes": 298,
+      "sha256": "50a9e92cba81a0cc175841c87e0dc3519093b7cec730718e3ada2b3192695ce7"
+    },
+    {
+      "path": "examples/unified-desktop/web/index.html",
+      "normalization": "lf",
+      "bytes": 5022,
+      "sha256": "e5ed6587e5b26066eb2953be7721f724d1941d0e064131f70b90002af3844858"
+    },
+    {
+      "path": "examples/unified-desktop/web/module-label.mjs",
+      "normalization": "lf",
+      "bytes": 78,
+      "sha256": "c0691c711c4970c88deaae76c96a71ca56ce175472d2cd52815f387013a226bc"
+    },
+    {
+      "path": "examples/unified-desktop/web/style.css",
+      "normalization": "lf",
+      "bytes": 2034,
+      "sha256": "d3b02066c7d08d70e28919d6a03b2dcc984d575bd4fc1d2409dcb0a49ca01bc8"
     },
     {
       "path": "experiments/webview2-consumer/Build.ps1",
@@ -3313,8 +3619,8 @@
     {
       "path": "sdk/CMakeLists.txt",
       "normalization": "lf",
-      "bytes": 4998,
-      "sha256": "5730d64261d83004bba05e81e10e31aabe659b5e70e66e9507c88d42912832a9"
+      "bytes": 6181,
+      "sha256": "b6000d2614fd1387768225257ff3bdf90889c220f940f082caae91aabd869405"
     },
     {
       "path": "sdk/accessibility/uia/CMakeLists.txt",
@@ -3395,16 +3701,76 @@
       "sha256": "12462b785dbbe593d106ca0913c2114335c6139441e36002dcfde08b0363c2eb"
     },
     {
+      "path": "sdk/cmake/SouiPortableRuntime.cmake",
+      "normalization": "lf",
+      "bytes": 6465,
+      "sha256": "330251ab82357e39176228b3d2c26bb830238f26ca858e9c9c150ec058f1f56e"
+    },
+    {
+      "path": "sdk/cmake/SouiRuntimeConfig.cmake.in",
+      "normalization": "lf",
+      "bytes": 986,
+      "sha256": "9286373a33be7b06566dcdb353096b61659fd34cb25b64622dc783f945dc7020"
+    },
+    {
       "path": "sdk/cmake/SouiSdkConfig.cmake.in",
       "normalization": "lf",
       "bytes": 547,
       "sha256": "90994b13d7caf80e82f9b6d06bbd9e1755b2df0c74780870cd72c994b8497555"
     },
     {
+      "path": "sdk/desktop/CMakeLists.txt",
+      "normalization": "lf",
+      "bytes": 10121,
+      "sha256": "487fac95e7d319b232c0d8bee1353183c02581678199dbb8c3c8b8998c93959a"
+    },
+    {
+      "path": "sdk/desktop/SouiDesktopApplication.cmake",
+      "normalization": "lf",
+      "bytes": 10158,
+      "sha256": "0f780038c5223af96c18485ff1d4ee16b210ac5b709ed63fc57c4d69248e2629"
+    },
+    {
+      "path": "sdk/desktop/SouiDesktopConfig.cmake.in",
+      "normalization": "lf",
+      "bytes": 3949,
+      "sha256": "367c53447e04a34f14f5ed0f807d09709587c0741797a5d432cdda0dfb19f31d"
+    },
+    {
+      "path": "sdk/desktop/frontend/desktop.d.mts",
+      "normalization": "lf",
+      "bytes": 7652,
+      "sha256": "b40ed289ae5e0cdf7872bd618fabf5e7ea86cf8773cdc95ece3cf98aa16637f4"
+    },
+    {
+      "path": "sdk/desktop/frontend/desktop.mjs",
+      "normalization": "lf",
+      "bytes": 12563,
+      "sha256": "ca7ea6b2db666e98a161a1ee7f29ee08606ba64c7d769649449e8b69baf6673c"
+    },
+    {
+      "path": "sdk/desktop/startup_trace_config.h.in",
+      "normalization": "lf",
+      "bytes": 81,
+      "sha256": "4c081ab0d808263f43a252a7cb367d90d9e9038d36ab3bccc3df6e78a476c253"
+    },
+    {
+      "path": "sdk/desktop/webkit_runtime_config.h.in",
+      "normalization": "lf",
+      "bytes": 174,
+      "sha256": "2d4ebd1de01c84aeff83cd2bf5e75777b4f7287dfa750eae73a81974d4fdf035"
+    },
+    {
       "path": "sdk/include/soui/bridge_adapter.h",
       "normalization": "lf",
       "bytes": 1374,
       "sha256": "e172cdf617b5fc0b95dac51c43e2126d98607f41a23c77f00bb3f11d39142079"
+    },
+    {
+      "path": "sdk/include/soui/desktop/app.h",
+      "normalization": "lf",
+      "bytes": 9267,
+      "sha256": "330c271ceae0970588d56e9e43a7e7ee6953c78f5afd563fd222ffedc712ce45"
     },
     {
       "path": "sdk/include/soui/diagnostics/cache_observation.h",
@@ -3689,6 +4055,12 @@
       "sha256": "ad50d780fb2be42a68fcd7c8e5753a01d32cb0be05fc8beec30a634b9ad16711"
     },
     {
+      "path": "sdk/portable/THIRD_PARTY_NOTICES.md",
+      "normalization": "lf",
+      "bytes": 1639,
+      "sha256": "547c0c03fb3a333060dff8d512a3f139805c548ca513c92e7e20b717cd35657f"
+    },
+    {
       "path": "sdk/renderers/auto/auto_host_policy.h",
       "normalization": "lf",
       "bytes": 1780,
@@ -3759,6 +4131,126 @@
       "normalization": "lf",
       "bytes": 142,
       "sha256": "2ec8a06fce206950e8adf28f26b573d6fbe2d634413c63fc49d381621165f79b"
+    },
+    {
+      "path": "sdk/src/desktop/app_paths.cpp",
+      "normalization": "lf",
+      "bytes": 3287,
+      "sha256": "527a45e2579617808022cf1dfe156409e8db8a702cce6222a7b061a8920e4e59"
+    },
+    {
+      "path": "sdk/src/desktop/application.cpp",
+      "normalization": "lf",
+      "bytes": 61226,
+      "sha256": "5a41777cf05e61d8838dc4e92c7a83319e6f70f07764e7dfcc25633a08301bf6"
+    },
+    {
+      "path": "sdk/src/desktop/asset_executor.cpp",
+      "normalization": "lf",
+      "bytes": 6612,
+      "sha256": "e6080ddc8049d3217b69f3a809517a4425ee4a4b8ca5607c1f7b8ec2df4b7a90"
+    },
+    {
+      "path": "sdk/src/desktop/asset_executor.h",
+      "normalization": "lf",
+      "bytes": 2168,
+      "sha256": "220ff423cf2f62ee11cc2632074a90799cc95ff2009153de34ecf722ea729c10"
+    },
+    {
+      "path": "sdk/src/desktop/assets.cpp",
+      "normalization": "lf",
+      "bytes": 6522,
+      "sha256": "445337fc6615146413a1a0c384fa25c2f01f930928881c080f938e1c74a1fbbb"
+    },
+    {
+      "path": "sdk/src/desktop/assets.h",
+      "normalization": "lf",
+      "bytes": 662,
+      "sha256": "2bf0f9104a6add3b6cd607e2e44a5d5667ef643414906a4e0a7b0eb4ae34d29c"
+    },
+    {
+      "path": "sdk/src/desktop/backend.h",
+      "normalization": "lf",
+      "bytes": 4858,
+      "sha256": "1ada3bf6c41deddcbbc2773b0df93173534fb42e9d87f7371cd3f735a3b2e1cd"
+    },
+    {
+      "path": "sdk/src/desktop/backends/linux_runtime_preflight.h",
+      "normalization": "lf",
+      "bytes": 1480,
+      "sha256": "ec5527796c4f606e986af78fdca54b12de17a5040a982215278f0024b82d2f4f"
+    },
+    {
+      "path": "sdk/src/desktop/backends/linux_webkitgtk.cpp",
+      "normalization": "lf",
+      "bytes": 71683,
+      "sha256": "6de9ba2e3a806509ad154d749fa54810c37ed9b00b446eaded169efb72867c8e"
+    },
+    {
+      "path": "sdk/src/desktop/backends/macos_wkwebview.mm",
+      "normalization": "lf",
+      "bytes": 81463,
+      "sha256": "9cb758ce4d12a1b2006d75d2576f03800dfe1c5729f6cf6fd72a6d87ff15607a"
+    },
+    {
+      "path": "sdk/src/desktop/backends/windows_webview2.cpp",
+      "normalization": "lf",
+      "bytes": 88402,
+      "sha256": "ca9a2f8a67eac62b978461a11873e9513608ffa102109ab355fe124b020037eb"
+    },
+    {
+      "path": "sdk/src/desktop/deferred_failure.h",
+      "normalization": "lf",
+      "bytes": 2167,
+      "sha256": "87d435f66a04f94790eb8bde75fbea89a1822296be2928df58bef96b30f69882"
+    },
+    {
+      "path": "sdk/src/desktop/macos_activation_policy.h",
+      "normalization": "lf",
+      "bytes": 737,
+      "sha256": "dbd602a74cabc5396e7725af551b61757809bfa667788525375fc867a33327fe"
+    },
+    {
+      "path": "sdk/src/desktop/macos_close_request.h",
+      "normalization": "lf",
+      "bytes": 697,
+      "sha256": "2d691b1dd0f28e063abb8fa90a9926fb223b0e936b914d2ce5fc4eb0805a9833"
+    },
+    {
+      "path": "sdk/src/desktop/protocol.cpp",
+      "normalization": "lf",
+      "bytes": 10375,
+      "sha256": "856d86d59cd57bb336fe939c68c079f7478a348b49e48ddc15b94bb175674470"
+    },
+    {
+      "path": "sdk/src/desktop/protocol.h",
+      "normalization": "lf",
+      "bytes": 843,
+      "sha256": "d7385fff1b60daf3596f74de459582bcee6b15bc9dd18c8654236550fd32a097"
+    },
+    {
+      "path": "sdk/src/desktop/resource_server.cpp",
+      "normalization": "lf",
+      "bytes": 26968,
+      "sha256": "bdbca8b3f44065ed116e308731a39c155189b713d02c762432dd346355cb2937"
+    },
+    {
+      "path": "sdk/src/desktop/resource_server.h",
+      "normalization": "lf",
+      "bytes": 1257,
+      "sha256": "248356412ddae8a18f9df482c5a21abe4a87f050e7105e367248b8c78811eea1"
+    },
+    {
+      "path": "sdk/src/desktop/resource_uri.h",
+      "normalization": "lf",
+      "bytes": 1793,
+      "sha256": "8ce4d78d486b5610f70adcd434dde9d238475cba99cc97f5099a388eec2361e0"
+    },
+    {
+      "path": "sdk/src/desktop/startup_trace.h",
+      "normalization": "lf",
+      "bytes": 8131,
+      "sha256": "e5670e6dac31735e6aa808bc2d63795795962cfa91fba52b4e8e8996063e956c"
     },
     {
       "path": "sdk/src/host/applied_input_identity.h",
@@ -4013,6 +4505,30 @@
       "sha256": "976f755f6f06b16c337a7c941de56e1ef5e3fe66adc1758f188e280ff541a9ee"
     },
     {
+      "path": "sdk/src/runtime/platform/secure_random.cpp",
+      "normalization": "lf",
+      "bytes": 1199,
+      "sha256": "5fb58bf4311ab77629d8a7288d018aaa188e35d26baf61b6e93478d9df9db737"
+    },
+    {
+      "path": "sdk/src/runtime/platform/secure_random.h",
+      "normalization": "lf",
+      "bytes": 1334,
+      "sha256": "29b8e3e69ff549e70a1f2a19edac75adc10676b048a0f16c81658d951fa51efa"
+    },
+    {
+      "path": "sdk/src/runtime/platform/strict_utf8.h",
+      "normalization": "lf",
+      "bytes": 1461,
+      "sha256": "bdc5394d4b2ecd981f892e3c3ad800e199050602651ebec5949004b83c87d2ba"
+    },
+    {
+      "path": "sdk/src/runtime/platform/uuid_v4.h",
+      "normalization": "lf",
+      "bytes": 1087,
+      "sha256": "1168294acaeeccc68c3e2042b410c01ff0321033ad1979e5b3c43aaa2a91c0e1"
+    },
+    {
       "path": "sdk/src/runtime/services/desktop/desktop_services.cpp",
       "normalization": "lf",
       "bytes": 14078,
@@ -4075,8 +4591,8 @@
     {
       "path": "sdk/src/runtime/services/gui/gui_commands.cpp",
       "normalization": "lf",
-      "bytes": 32672,
-      "sha256": "c4086b56dfb21288db9ce92f9df28cc66a0106c62ff4e79aee8c0cb920316481"
+      "bytes": 32815,
+      "sha256": "22d11b6ecc9f3b3530e4f74b6a8d3ab2e7dc9d03845083ea8a6f496de59aaf52"
     },
     {
       "path": "sdk/src/runtime/services/gui/gui_commands_internal.h",
@@ -4087,8 +4603,8 @@
     {
       "path": "sdk/src/runtime/services/permissions/permission_store.cpp",
       "normalization": "lf",
-      "bytes": 24201,
-      "sha256": "3cc763d1f428239af4ee052bd0ee159ccf9741177cbc68b2b587ec719c8aff8c"
+      "bytes": 23962,
+      "sha256": "5b435e66477d570056fbb9f88ebd26e22299d7311379f2062615d44651bff963"
     },
     {
       "path": "sdk/src/runtime/services/permissions/scope_budget_ledger.h",
@@ -4563,6 +5079,96 @@
       "normalization": "lf",
       "bytes": 577,
       "sha256": "0e996228844dae293c02c5cfae8fe2163b93b758d13f356e6a7fb07520dd4c82"
+    },
+    {
+      "path": "templates/unified-desktop/.gitignore",
+      "normalization": "lf",
+      "bytes": 9,
+      "sha256": "21a5fcfef76f67d88bb9ad647f52e2d4fd901709078d884f3063270c790756a4"
+    },
+    {
+      "path": "templates/unified-desktop/CMakeLists.txt",
+      "normalization": "lf",
+      "bytes": 3590,
+      "sha256": "bf282eace88c1c22a09302cdacaaf0318165fed35da3b3e00b02e03ad0459588"
+    },
+    {
+      "path": "templates/unified-desktop/README.md",
+      "normalization": "lf",
+      "bytes": 10589,
+      "sha256": "55c32b3c4de7a8f092f9421a321ad8323241e186c99166b8b865bff90c6828d5"
+    },
+    {
+      "path": "templates/unified-desktop/main.cpp",
+      "normalization": "lf",
+      "bytes": 4702,
+      "sha256": "074cd44bb4fbb7d8c2733652979f53d33087f93c279770f24222ecd8b02ac404"
+    },
+    {
+      "path": "templates/unified-desktop/startup_dialog.cpp",
+      "normalization": "lf",
+      "bytes": 2746,
+      "sha256": "35f679857b9236e5841135eeb8855fe1010abc94592890307150a7b733984cd9"
+    },
+    {
+      "path": "templates/unified-desktop/startup_dialog.h",
+      "normalization": "lf",
+      "bytes": 604,
+      "sha256": "73a24f98a6017f049cfc2b4ad7e31318f3d0d8b62a5e1232da29c89ba6736a93"
+    },
+    {
+      "path": "templates/unified-desktop/startup_dialog_macos.mm",
+      "normalization": "lf",
+      "bytes": 2770,
+      "sha256": "75d3a4d4335ccd68ab4196cd774807ab1f809ebac7532fb163fc651ea495ddac"
+    },
+    {
+      "path": "templates/unified-desktop/startup_report.h",
+      "normalization": "lf",
+      "bytes": 6913,
+      "sha256": "afd4fd467c3a713f74c2ff35bd2d3189125cc6e0af9fc533a348dcb7d1fd1342"
+    },
+    {
+      "path": "templates/unified-desktop/startup_trace.h",
+      "normalization": "lf",
+      "bytes": 8131,
+      "sha256": "e5670e6dac31735e6aa808bc2d63795795962cfa91fba52b4e8e8996063e956c"
+    },
+    {
+      "path": "templates/unified-desktop/web/app.mjs",
+      "normalization": "lf",
+      "bytes": 661,
+      "sha256": "947f943cbad75fe503f9e42e1fdc52542f5dcdce7d6f402d02f50680aea6c518"
+    },
+    {
+      "path": "templates/unified-desktop/web/config.json",
+      "normalization": "lf",
+      "bytes": 103,
+      "sha256": "c953ece279e340ac015ec1b294284462673ba7689b453e0bee9c0024f38581f4"
+    },
+    {
+      "path": "templates/unified-desktop/web/details.mjs",
+      "normalization": "lf",
+      "bytes": 126,
+      "sha256": "e488cb7050016400fd1bb1440a78205239b81ccf5ed2b910126efca7bafe4d07"
+    },
+    {
+      "path": "templates/unified-desktop/web/feature.mjs",
+      "normalization": "lf",
+      "bytes": 313,
+      "sha256": "e1f4fec8f235054faddcd5fecc92601e69069e04c51f449659fd884a32fc36ad"
+    },
+    {
+      "path": "templates/unified-desktop/web/index.html",
+      "normalization": "lf",
+      "bytes": 940,
+      "sha256": "4a8b388f1a03bac26e09fd1137a922b5343ed94de690a44d70b0094a32ec7e8a"
+    },
+    {
+      "path": "templates/unified-desktop/web/style.css",
+      "normalization": "lf",
+      "bytes": 784,
+      "sha256": "fe46d3d75c683cbe66c38e1f18bce9c3b2ec7ba500ffbd5f651d3161f98e0ce9"
     },
     {
       "path": "tests/acceptance-app/CMakeLists.txt",
@@ -5223,6 +5829,192 @@
       "normalization": "lf",
       "bytes": 9280,
       "sha256": "5050f15708108337feef0e7a7fb01802adec20878d9ac48ec458ac506e11f91e"
+    },
+    {
+      "path": "tests/desktop/CMakeLists.txt",
+      "normalization": "lf",
+      "bytes": 13789,
+      "sha256": "6fbd7581d28f9bb7c64ebd3d72ce9efe457cba118e26b5adb4bd4c3be0e67d95"
+    },
+    {
+      "path": "tests/desktop/archive-app.test.cjs",
+      "normalization": "lf",
+      "bytes": 6931,
+      "sha256": "9f4630ffb410a9af2b1d0a85dfcc8c53fe5a0792b0093a690adbcf4354c4b558"
+    },
+    {
+      "path": "tests/desktop/asset_executor.cpp",
+      "normalization": "lf",
+      "bytes": 22514,
+      "sha256": "532593bcd758f66d1783db4881c1dc66ba53990073a9a6dad6b1ef14596146a5"
+    },
+    {
+      "path": "tests/desktop/assets.cpp",
+      "normalization": "lf",
+      "bytes": 14385,
+      "sha256": "e819dea0a9951d9041993ad2c61dde1712c741b9ed5a12a3f9e6d57fe9f2cdfb"
+    },
+    {
+      "path": "tests/desktop/consumer-architecture.test.cjs",
+      "normalization": "lf",
+      "bytes": 4674,
+      "sha256": "a712940d9279a9567785c456cbf9deeb2e1cb5647074c3237400c4b1969c9e39"
+    },
+    {
+      "path": "tests/desktop/contract.cpp",
+      "normalization": "lf",
+      "bytes": 99341,
+      "sha256": "0c3516c320a04e9b69ff95e1eb7899e0b8a19bd5b538554ac124d96c0a1eb53d"
+    },
+    {
+      "path": "tests/desktop/create-app.test.cjs",
+      "normalization": "lf",
+      "bytes": 6861,
+      "sha256": "ad388fc56fe2cc3ddafd84702dd5021da81a7d7df0224c438a43d94c4e6f4779"
+    },
+    {
+      "path": "tests/desktop/deferred_failure.cpp",
+      "normalization": "lf",
+      "bytes": 4555,
+      "sha256": "90a986520392206ebd75d951cb3c095ee47880e5c807a0436b05ed4a8a3fe974"
+    },
+    {
+      "path": "tests/desktop/frontend-adapter.test.mjs",
+      "normalization": "lf",
+      "bytes": 21215,
+      "sha256": "baf4440ada107fbd19d3a8d644faca93ee679bbf134e13889e9b4f70c7420f02"
+    },
+    {
+      "path": "tests/desktop/linux_document_lifecycle.cpp",
+      "normalization": "lf",
+      "bytes": 14431,
+      "sha256": "efec3eba12a8377a79cf1fccdb9db7a173578bfd2ab738c58adb720a265752e8"
+    },
+    {
+      "path": "tests/desktop/linux_runtime_preflight.cpp",
+      "normalization": "lf",
+      "bytes": 3271,
+      "sha256": "d4e5dae35a11b56974b88eb2e611c17ec7ecb84f17a9dc518ff6ba9b7250b4d5"
+    },
+    {
+      "path": "tests/desktop/macos-wkwebview.md",
+      "normalization": "lf",
+      "bytes": 9183,
+      "sha256": "3700ed3e3a7b4b9ea377a3326e098846f2dc5a5600658af83c3bf6d3474c7774"
+    },
+    {
+      "path": "tests/desktop/macos_activation_policy.cpp",
+      "normalization": "lf",
+      "bytes": 977,
+      "sha256": "f7dcaaba43a2459fa63e561cd9587f593a461576ecc8044326f487051ed601f4"
+    },
+    {
+      "path": "tests/desktop/macos_close_request.cpp",
+      "normalization": "lf",
+      "bytes": 2163,
+      "sha256": "db3c5b1291a734ad497aa1f123f094739a09aeb33d0a3ca05c0b703e862f0fe2"
+    },
+    {
+      "path": "tests/desktop/multiconfig-delivery.test.cjs",
+      "normalization": "lf",
+      "bytes": 3080,
+      "sha256": "5a160197e665a5ad318d4a1972fe89ba8d6d11072276d66405bf5030a5595c72"
+    },
+    {
+      "path": "tests/desktop/notice-cmake.test.cjs",
+      "normalization": "lf",
+      "bytes": 9422,
+      "sha256": "4dd1196431e2a7fbfc48ce8e7437159e7c5d4df717f96bd5ac7817a4ed804e3f"
+    },
+    {
+      "path": "tests/desktop/package.test.cjs",
+      "normalization": "lf",
+      "bytes": 12177,
+      "sha256": "924b8f571b3dd0d8687cd6b3f885d5980e0f6b20047f64be781fb60aef997288"
+    },
+    {
+      "path": "tests/desktop/preflight.test.cjs",
+      "normalization": "lf",
+      "bytes": 3799,
+      "sha256": "8ac54d64a7986b8d04f7611459c6178ac2090498a0141d4314bf3ab5447f5769"
+    },
+    {
+      "path": "tests/desktop/preload.test.cjs",
+      "normalization": "lf",
+      "bytes": 15511,
+      "sha256": "703862d05feb0e76a074363aa6fe87e2a4240687386b3f3bcfd63c38ed980650"
+    },
+    {
+      "path": "tests/desktop/resource_server.cpp",
+      "normalization": "lf",
+      "bytes": 11729,
+      "sha256": "a015875ed11fdf94bfbb3805c4a2589447e9a402e24f11e405564fedbba7509d"
+    },
+    {
+      "path": "tests/desktop/rpath-policy.test.cjs",
+      "normalization": "lf",
+      "bytes": 3509,
+      "sha256": "abf9ecad95126ce2c1b15625d9c765bad911e825c6b5e1b3ddd47b80edfbbdb9"
+    },
+    {
+      "path": "tests/desktop/stage-app.test.cjs",
+      "normalization": "lf",
+      "bytes": 17817,
+      "sha256": "1cc62aaa0ee4cc0dfda16ae0055ad6e329343ca049044bce5ef82e2f0bf87c2c"
+    },
+    {
+      "path": "tests/desktop/startup_report.cpp",
+      "normalization": "lf",
+      "bytes": 13722,
+      "sha256": "6596277ef3aa2d4eb497f64c63fe57451b5249ae349df388cf30d98bb2167aed"
+    },
+    {
+      "path": "tests/desktop/startup_trace.cpp",
+      "normalization": "lf",
+      "bytes": 6820,
+      "sha256": "bfda7a28ae9edf7eba9b1b02d2e3089893203f0215c63ba956c6e7455262e24e"
+    },
+    {
+      "path": "tests/desktop/sync-assets.test.cjs",
+      "normalization": "lf",
+      "bytes": 19689,
+      "sha256": "98e533d00dc9a9dd2a21aef226f41b0532f7ce243a6bbe05f49d8781ef247411"
+    },
+    {
+      "path": "tests/desktop/verify-app.test.cjs",
+      "normalization": "lf",
+      "bytes": 7482,
+      "sha256": "1fe9a2c4a1072de0c6544b8103dd00b00721fe4ff22714a757edeff9f3d5a122"
+    },
+    {
+      "path": "tests/desktop/windows-close/CMakeLists.txt",
+      "normalization": "lf",
+      "bytes": 1388,
+      "sha256": "4870ade029dbe845a24ed41c44f18612275fc3315e5134f2ad871508fbd57492"
+    },
+    {
+      "path": "tests/desktop/windows-close/README.md",
+      "normalization": "lf",
+      "bytes": 2717,
+      "sha256": "d6f8d0893587d72c59e4b47edb8640a1b083df0097803f4f78a4418e0a8a5720"
+    },
+    {
+      "path": "tests/desktop/windows-close/main.cpp",
+      "normalization": "lf",
+      "bytes": 8513,
+      "sha256": "c9ef110709311efa8790d785bfccb6cb4983217af33ff8bfaa8d74d97bcafe34"
+    },
+    {
+      "path": "tests/desktop/windows-close/web/app.mjs",
+      "normalization": "lf",
+      "bytes": 1145,
+      "sha256": "065a9018977c367bbb45cbae19b9805445a14d8f11a99915fd175b8312747d98"
+    },
+    {
+      "path": "tests/desktop/windows-close/web/index.html",
+      "normalization": "lf",
+      "bytes": 184,
+      "sha256": "691adad83ec454fb538bdd12ce86bf5821fa353bc33bfea73c76f29b6c410399"
     },
     {
       "path": "tests/diagnostics/https_server.py",
@@ -6903,6 +7695,72 @@
       "normalization": "lf",
       "bytes": 300,
       "sha256": "ebaf7a7d2aa6367bc1fc37438b36f63a54b6959403516bfc92edd9c00f64d831"
+    },
+    {
+      "path": "tests/portable/CMakeLists.txt",
+      "normalization": "lf",
+      "bytes": 6124,
+      "sha256": "4099a02d548ce08c723c8ff2f51b89400b409eaf3babf2ba76953c4d760e3529"
+    },
+    {
+      "path": "tests/portable/build-options.test.cjs",
+      "normalization": "lf",
+      "bytes": 2196,
+      "sha256": "369a7d505a1e82efd3ffb981c86fc97a23aea64896b8649d6e1c5d09c7b1db41"
+    },
+    {
+      "path": "tests/portable/consumer/CMakeLists.txt",
+      "normalization": "lf",
+      "bytes": 496,
+      "sha256": "2c7c2adca600b446577a0c02a03a4a4c079d6374c112ab3241a51a301074d291"
+    },
+    {
+      "path": "tests/portable/consumer/main.cpp",
+      "normalization": "lf",
+      "bytes": 1174,
+      "sha256": "c7a3a48121c54cb3d94d36da67526aa83c2ab9e088767fc0dcca592a26a03e34"
+    },
+    {
+      "path": "tests/portable/desktop-linux.md",
+      "normalization": "lf",
+      "bytes": 5162,
+      "sha256": "54f26611d4a0b6c94f913676015997c8cd7023e450a7b1a769b718c48b7a9e34"
+    },
+    {
+      "path": "tests/portable/desktop_linux_backend.cpp",
+      "normalization": "lf",
+      "bytes": 15174,
+      "sha256": "a16ef4fe09a1a886697289514958f0e2c06a3ed1075589faaeb88b9ce7b302c0"
+    },
+    {
+      "path": "tests/portable/installed-consumer.cmake.in",
+      "normalization": "lf",
+      "bytes": 4121,
+      "sha256": "99c852502e48640ca327475288b453d534bf63d72c5cdbc8433e5b46fd79b489"
+    },
+    {
+      "path": "tests/portable/platform-matrix-cli.test.cjs",
+      "normalization": "lf",
+      "bytes": 23387,
+      "sha256": "f7c45ffd20eb06b343e7a33fbc700acaa00e9db9a942937af5e4d096142c9031"
+    },
+    {
+      "path": "tests/portable/platform-matrix.test.cjs",
+      "normalization": "lf",
+      "bytes": 26333,
+      "sha256": "f41af4efcd84ff374f9975a25e5380985c5dfb4dd70856c74d5e2aa5014d6cd5"
+    },
+    {
+      "path": "tests/portable/runtime_integration.cpp",
+      "normalization": "lf",
+      "bytes": 40183,
+      "sha256": "8733d313ff26ecf46b39f2337aade54737111a847a228b504831a39da86163f0"
+    },
+    {
+      "path": "tests/portable/runtime_primitives.cpp",
+      "normalization": "lf",
+      "bytes": 15414,
+      "sha256": "e069dfff25c24c83d3f07fb25e6098ae26aed2611d83f9ddd3267a0058d599ae"
     },
     {
       "path": "tests/public-kernel-llvm-inputs.test.ps1",
@@ -180047,10 +180905,28 @@
       "sha256": "2912553fd738291ab389f1271069216b4f1845b710a1eb16b1ac00ea8ca3af9b"
     },
     {
+      "path": "tools/archive-desktop-app.cjs",
+      "normalization": "lf",
+      "bytes": 12507,
+      "sha256": "cdd51e0562b0ed9b178ba3c2e3640a528aa2ce3c1d984877b8822b95c63cb816"
+    },
+    {
       "path": "tools/contractgen/contractgen.js",
       "normalization": "lf",
       "bytes": 5190,
       "sha256": "c52f361f2625c7d56f8ae6c14b4b44181f3bcbe16ca5279dee0ee644d4134703"
+    },
+    {
+      "path": "tools/create-desktop-app.cjs",
+      "normalization": "lf",
+      "bytes": 8476,
+      "sha256": "09b7f61b7b7b1c2ad0ecc816dc2d9b46f4060ac40d1239fca113c205485b1a4e"
+    },
+    {
+      "path": "tools/desktop-preflight.cjs",
+      "normalization": "lf",
+      "bytes": 9422,
+      "sha256": "ac0cdfdbe562037b4eeb7e5fdd11459011e656a14087b0d9b1aa7b648eec7cdc"
     },
     {
       "path": "tools/internal/Build-KernelLibraryArch.cmd",
@@ -180413,6 +181289,18 @@
       "sha256": "7531e785084800262e198731a48f2bc455823b3aa29cea765e8fd9c1c607c476"
     },
     {
+      "path": "tools/package-desktop.cjs",
+      "normalization": "lf",
+      "bytes": 11296,
+      "sha256": "700c3ee820b601df43940be04eb45daf72ed2a03f56018077b5c7f63bd3d53f8"
+    },
+    {
+      "path": "tools/platform-info.cjs",
+      "normalization": "lf",
+      "bytes": 17288,
+      "sha256": "8e00a10f9043af8fece01ab790e44f110551e2ccb2d4818266a132dc6b156a88"
+    },
+    {
       "path": "tools/runtime-doctor/CMakeLists.txt",
       "normalization": "lf",
       "bytes": 963,
@@ -180467,10 +181355,28 @@
       "sha256": "045694102cfd3f76475c376008becca03d50f86b975ea4c282d8742fdaf6a3ff"
     },
     {
+      "path": "tools/stage-desktop-app.cjs",
+      "normalization": "lf",
+      "bytes": 26900,
+      "sha256": "0869c7261e3a52c260c4c749d52e1536ca095af235d667e1025f61ae3ebed0d4"
+    },
+    {
+      "path": "tools/sync-desktop-assets.cjs",
+      "normalization": "lf",
+      "bytes": 13107,
+      "sha256": "883bbe2a0b963255ac088f8cde57615f2b40ea53493852286ea38842f3f63ee4"
+    },
+    {
       "path": "tools/verification-status.cjs",
       "normalization": "lf",
       "bytes": 4808,
       "sha256": "023af4d75e54c22e720ea50830eb9c16f1d19fa0dbc4bc1f8c7b59eb406a32ee"
+    },
+    {
+      "path": "tools/verify-desktop-app.cjs",
+      "normalization": "lf",
+      "bytes": 13615,
+      "sha256": "654ebc6bec14d1847d02f50b3fdbf71c5c882ab13389bd6ed6e7cbf9b699792a"
     },
     {
       "path": "verification/acceptance.json",

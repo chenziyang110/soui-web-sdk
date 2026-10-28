@@ -1,5 +1,41 @@
 # SDK API
 
+## 未发布统一桌面 API
+
+Linux x86_64 已完成限定真实窗口、Bridge 和同源模块资源链路验证，使用带记录
+补丁的 WebKitGTK 2.52.6 自构建运行时；详见
+[2026-10-22 原生验证](linux-native-validation-20261022.md)。不代表其他架构、
+系统发行 WebKit 包、macOS/Windows 或生产验收通过。
+
+Linux 文档失败后的新脚本提交返回 E_LOAD；等待原生 reload 或旧求值通道已取消
+时返回 E_NAVIGATION。正常文档启动不要求额外 ready 门槛，窗口级操作仍保留。
+在途脚本取消不保证其副作用未发生。
+macOS 明确失败或等待重载的文档返回 E_NAVIGATION，进程终止仍优先返回
+E_WEB_PROCESS；正常 precommit 求值不受影响。
+
+Linux 构建可显式提供 SOUI_DESKTOP_WEBKIT_HELPER_DIR；已知部署缺失 helper 时
+initialize 返回 E_WEBKIT_RUNTIME。默认未知不预判，详见[统一桌面入口](unified-desktop.md#linux-显式-helper-部署预检)。
+
+前端 ESM 薄适配、TypeScript 声明与资产解码见 [前端接入](desktop-frontend-adapter.md)。
+
+`application_resource_directory()` 按实际可执行文件位置定位默认前端目录，
+返回 `path_result {status, value}`，不依赖工作目录。应用目录和 CMake staging
+入口见 [应用交付目录](desktop-application-staging.md)。
+
+显式启用 `options.enable_resource_server` 可把应用选定 HTML 和根内资产通过
+每窗口独立的 loopback HTTP 源加载；默认关闭，标准模块/fetch 的真实三引擎
+验收尚待完成。边界见 [本地 HTTP 资源源](unified-desktop.md#显式本地-http-资源源)。
+
+显式启用 `options.enable_asset_read` 可使用 `window.souiDesktop.readAsset(path)`
+读取根内小型资产；默认关闭，保留内置方法名 `soui.asset.read`，返回 MIME、
+字节数和 base64。边界与迁移见 [资产读取契约](unified-desktop.md#显式本地资产读取)。
+
+独立的 `Soui::Desktop` 使用 `<soui/desktop/app.h>`，提供 `application` 窗口组、
+`create_window`、每窗口 Bridge、原生层级菜单、托盘及 command/lifecycle 回调。
+其线程、生命周期、限制和打包方式见 [统一桌面入口](unified-desktop.md)。
+这不是以下 Windows `Soui::Sdk` / TypeScript API 的逐项跨平台替代；既有行为
+和测试结论不会自动转移到新后端。
+
 ## 可选自动后端宿主
 
 `Soui::AutoHost` 导出 `<soui/host/auto_webview_host.h>`。`auto_host_config` 指定
@@ -252,3 +288,11 @@ frame_pacer::start 使用相同范围。工作台的 desktop.rendering.setTarget
 调度目标、系统配置和实际呈现是不同观测；诊断覆盖与计时器回调不证明物理刷新率。
 
 资源缓存观测允许 discardable 模式报告正的 resourceByteLimit；它是驻留记录淘汰阈值。零表示未配置，resourceEffectiveSingleLimit 仍保持独立。8 MiB 策略不代表全部图像堆或进程内存上限，详见 ADR-0102。
+
+# 原生后端失败与关闭边界（实验性统一桌面入口）
+
+Linux 当前文档加载失败或 WebProcess 终止后，旧文档排队的 loaded/message/reload
+回调与未完成求值被撤销；窗口级 dispatch/close 仍可用，显式原生 load/reload
+可开启新代际。macOS 区分系统关闭通知与主动关闭，清理幂等且不递归 close。
+这些内部修复不新增权限或公共 API；具体决策见 ADR-0134，原生运行验收单独记录。
+

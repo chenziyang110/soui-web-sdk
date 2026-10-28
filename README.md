@@ -33,6 +33,20 @@
 
 > **开发版本：`0.6.0-preview.3`（尚未发布）**，以 [VERSION](VERSION) 为准。已发布的 0.5.0 下载与验证范围见 [0.5.0 发布说明](docs/releases/0.5.0.md)。完整生产验收尚未完成，`releaseReady=false`；详情见[已知限制](docs/known-issues.md)，首方代码采用 [MIT 许可](LICENSE.md)。
 
+开发分支新增显式 [跨平台 Runtime](docs/cross-platform.md)：无窗口的任务、权限、
+Bridge 协议和文件扫描可独立构建为 `Soui::Runtime`，覆盖 Windows/Linux
+x86/x64/ARM32/ARM64 与 macOS x64/ARM64/universal2 的目标策略。
+另新增 [统一桌面入口](docs/unified-desktop.md) `Soui::Desktop`：同一份 C++ 与 Web
+源码接入 Linux WebKitGTK、macOS WKWebView、Windows WebView2，包含窗口生命周期、
+独立会话的多窗口、双向 Bridge、层级原生菜单和有明确失败的托盘能力。
+新增 `tools/package-desktop.cjs` 统一构建、测试、安装与 SDK 开发快照打包入口，
+不是应用安装器。窗口状态/关闭保护、独立授权系统服务、层级菜单、宿主全局快捷键及
+打开/保存路径选择已接入统一接口。Linux 有历史限定真实 GUI/Bridge 证据，最新功能尚未
+重新进行原生交互验收；macOS universal2 构建交付及 Apple Silicon 主机限定窗口/Bridge/模块/fetch、DOM 关闭否决探针已过。
+Windows x64 Release 的安装 SDK、独立消费者交付及真实 WebView2 Bridge/模块/fetch/公开关闭探针已过；
+2026-10-26 原模板补充可见窗口、app.info、模块/同源 fetch、原生标题栏最大化/还原及正常窗口关闭验证。原模板进程退出码未测，其他架构及完整原生能力仍待验收。当前状态见[集中验收矩阵](docs/acceptance/unified-desktop-2026-10-23.md)。
+现有下载包不含这些未发布功能，不能据此宣称 Electron 全功能兼容。
+
 <a id="capabilities"></a>
 
 ## 从一个界面，到一整个桌面应用
@@ -283,3 +297,4 @@ pending; the earlier isolated SDKOnly experiment is not their acceptance.
 </p>
 
 <p align="center"><sub>开发与自动化协作请先阅读 <a href="AGENTS.md">AGENTS.md</a>。安全问题请遵循 <a href="SECURITY.md">SECURITY.md</a>。</sub></p>
+
