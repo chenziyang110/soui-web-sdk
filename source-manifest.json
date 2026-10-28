@@ -67,8 +67,8 @@
     {
       "path": "CHANGELOG.md",
       "normalization": "lf",
-      "bytes": 37901,
-      "sha256": "c55b3b63a3f98172f7addf06b40b3396f4d09514f5556f61adbe3f9f3643674e"
+      "bytes": 38433,
+      "sha256": "7ec641be5aba0e05dfc72020e058e1e4ca006fcc7b4cb3eb59b3bfe402f7f96c"
     },
     {
       "path": "CMakeLists.txt",
@@ -2729,6 +2729,12 @@
       "sha256": "679c130c229efb47db7276ce2df62122ac47770834946dcfa54fade94a6e55d7"
     },
     {
+      "path": "docs/adr/0119-preserve-scroll-target-beyond-raster-coverage.md",
+      "normalization": "lf",
+      "bytes": 15026,
+      "sha256": "54c43c2e550507a999b9e2daf96b5cff4159b959c9ca890e03155c601d594a9b"
+    },
+    {
       "path": "docs/adr/0124-web-targets-and-size-analysis.md",
       "normalization": "lf",
       "bytes": 3949,
@@ -2755,8 +2761,8 @@
     {
       "path": "docs/adr/README.md",
       "normalization": "lf",
-      "bytes": 8288,
-      "sha256": "03b6bf6df58bcb964daf262e069454224d57b22c114e307456be99f9950e3b54"
+      "bytes": 8469,
+      "sha256": "9b6c41f7e5e564cd9419946c6fe12ab1739a84cf00c8fe5df9565d512b7c9a2a"
     },
     {
       "path": "docs/adr/llvm-validation-profile.draft.md",
@@ -2827,8 +2833,8 @@
     {
       "path": "docs/known-issues.md",
       "normalization": "lf",
-      "bytes": 25834,
-      "sha256": "597ab513d25b68271a29a10c839c26a88ff4e2626d8aca53ee116e6c12faad14"
+      "bytes": 26697,
+      "sha256": "663194d07bace9ac77bc3ed4d28817301bca84d96fa88c5b9151acf19ec8c7d7"
     },
     {
       "path": "docs/llvm-toolchain-entry.md",
@@ -2853,6 +2859,12 @@
       "normalization": "lf",
       "bytes": 6715,
       "sha256": "be9d23577a2c0d1f0503f42adda148a5e9a901d1486f8f0f1ef8558b4d4c2f65"
+    },
+    {
+      "path": "docs/maintenance/scroll-target-retention-20261023.md",
+      "normalization": "lf",
+      "bytes": 13033,
+      "sha256": "20df27b9e4a78c5460764e1b5dbb5884fe1103b7f8cd9546d073ff20a4a4f38c"
     },
     {
       "path": "docs/migration/task-operation-query.md",
@@ -2953,8 +2965,8 @@
     {
       "path": "docs/testing.md",
       "normalization": "lf",
-      "bytes": 28775,
-      "sha256": "2c8eb35fff98eb400630ac0bf7bede10100924ffd2e2295827d5fd2e78c186b5"
+      "bytes": 29440,
+      "sha256": "3d28ed26e6d49216748fd80fe8397835f890aecd95ca8ff930fef367b29f7650"
     },
     {
       "path": "docs/troubleshooting.md",
@@ -2967,6 +2979,12 @@
       "normalization": "lf",
       "bytes": 5173,
       "sha256": "4d14247fac4a5f03fc0ec060daaf34c114eac08ee7e1ff44fea854b1c968a714"
+    },
+    {
+      "path": "docs/verification/scroll-target-retention-20261023.json",
+      "normalization": "lf",
+      "bytes": 21505,
+      "sha256": "54c3918aaa40bbe041efa1ebd843ed9c30a1b4059bdbaf4a440ae42151bf9fb9"
     },
     {
       "path": "docs/verification/task-store-policy-regression.md",
@@ -5637,6 +5655,30 @@
       "normalization": "lf",
       "bytes": 21728,
       "sha256": "a87a78a3841d8869fb2a3b01b888e0cad5a32a5009ca8041c6d72837b5f7fba3"
+    },
+    {
+      "path": "tests/native/scroll_target_retention/CMakeLists.txt",
+      "normalization": "lf",
+      "bytes": 2316,
+      "sha256": "1ec095756b66cabd937ecd96bfa25a9d7851670528a2a0f52517c7418eee569f"
+    },
+    {
+      "path": "tests/native/scroll_target_retention/README.md",
+      "normalization": "lf",
+      "bytes": 5207,
+      "sha256": "e79e21b17afdea3e8ce573b56f15f4bc15b25d0b5e01c6c7366eb24b87d3c573"
+    },
+    {
+      "path": "tests/native/scroll_target_retention/accepted_target_retention_tests.cpp",
+      "normalization": "lf",
+      "bytes": 11298,
+      "sha256": "4407d57b583b40dbdb6b90e1d06aec9e4ad88c1ca0945b7cb9fb807472d5a4ee"
+    },
+    {
+      "path": "tests/native/scroll_target_retention/target_retention_boundary_tests.cpp",
+      "normalization": "lf",
+      "bytes": 21040,
+      "sha256": "dbeb5391c0f506645fffb142f864a9b4d469d397510bef16a7a9570fc07e338a"
     },
     {
       "path": "tests/native/sdk_contract_tests.cpp",
@@ -10897,14 +10939,14 @@
     {
       "path": "third_party/sources/miniblink/cc/input/ScrollController.cpp",
       "normalization": "lf",
-      "bytes": 22612,
-      "sha256": "196a0e1a7d45dd9d930436712a6740a62348d7f1ceeccaa99a5d1958c5f08dd6"
+      "bytes": 24670,
+      "sha256": "3c0d023013007d3c8269f436c098552001c216d2ac7103f218e4ac8cb60bdef8"
     },
     {
       "path": "third_party/sources/miniblink/cc/input/ScrollController.h",
       "normalization": "lf",
-      "bytes": 6461,
-      "sha256": "2c44839c411fc1dcd62762b02266e708d45276db7143a7af6ad97dfc3e1250b9"
+      "bytes": 6827,
+      "sha256": "f526fdc590b77fec6241296f29c4d1396d672d2e9c75eaa072d36ee73a86cd77"
     },
     {
       "path": "third_party/sources/miniblink/cc/layers/CompositingLayer.cpp",
@@ -11131,8 +11173,8 @@
     {
       "path": "third_party/sources/miniblink/cc/trees/LayerTreeHost.cpp",
       "normalization": "lf",
-      "bytes": 115263,
-      "sha256": "60deee0f32ec8f4cdd178edd0fe1ec7643f5d90bd433100fa93e4dd0b88b8bab"
+      "bytes": 115580,
+      "sha256": "266e5da6e3bf5530168f3be090ddbbb80674859f4894be15329670f3c83c2006"
     },
     {
       "path": "third_party/sources/miniblink/cc/trees/LayerTreeHost.h",

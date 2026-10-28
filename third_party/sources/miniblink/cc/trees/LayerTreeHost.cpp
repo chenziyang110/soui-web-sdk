@@ -2389,7 +2389,6 @@ bool LayerTreeHost::tickCompositorScroll(double monotonicTime,
                     sample, visual);
             }
         }
-        needsAnotherFrame |= state->controller.needsAnimationFrame();
     }
 
     if (pendingTree
@@ -2501,6 +2500,12 @@ bool LayerTreeHost::tickCompositorScroll(double monotonicTime,
             m_latchedScrollNode = ScrollNodeKey();
         }
     }
+
+    // A ready scene can release a target parked at its old raster boundary.
+    // Query after activation so its continuation is scheduled without a new
+    // wheel event; parked targets themselves do not request empty frames.
+    for (size_t i = 0; i < m_compositorScrollStates.size(); ++i)
+        needsAnotherFrame |= m_compositorScrollStates[i]->controller.needsAnimationFrame();
 
     delete pendingTree;
     return needsAnotherFrame;

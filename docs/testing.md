@@ -1,5 +1,7 @@
 # 测试与验收
 
+`tests/native/scroll_target_retention/` 是显式的生产 Controller/Snapshot 回归入口，覆盖相同已接纳输入在早/晚覆盖就绪下的终点、暂停恢复、双轴、真实边界及明确取消。独立构建命令、源码 override 和运行范围见其 [README](../tests/native/scroll_target_retention/README.md)。两架构当前的原始两场景、十九项边界及旧十三项覆盖回归已在隔离来宾通过；这不执行 LayerTreeHost 的真实调度或证明 GUI 性能。默认关闭的收缩诊断保留正确性断言及实际非零失败，不以 `WILL_FAIL` 倒置；开启后需单独报告，不能计入主回归通过数。
+
 2026-10-23 的 x86 Release 实际来宾运行结果见 [输入路由器回归记录](../verification/production-validation/interaction-router-2026-10-23/README.md)。
 
 `sdk.native.interaction-router` 链接生产 `Soui::Sdk`，使用可控输入接收端覆盖十二项滚动屏障回归：滚动后捕获失败（输出未改写或部分改写）、前次屏障残留、成功捕获的完整字段、缓存不被失败污染、抬起提交顺序且不再次捕获屏障、调用方旧屏障和过期代际。构建目标为 `cmake --build out/x86 --config Release --target soui_interaction_router_tests`；在允许执行测试的环境中运行 `ctest --test-dir out/x86 -C Release -R '^sdk\.native\.interaction-router$' --output-on-failure`，x64 使用对应目录。测试不启动窗口或内核，不替代真实滚轮、滚动条、标题拖动、输入延迟或发布验收。
