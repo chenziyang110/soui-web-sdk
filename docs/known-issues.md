@@ -1,6 +1,20 @@
 # 已知限制与生产门槛
 
-0.6.0 正在按用户本次授权准备普通 GitHub Release。完整生产资格仍为 `releaseReady=false`，低收益长测和重复演练后置；各缺项和历史失败继续保留。最终新载荷的构建、短测、消费者与资产结果以[本版发布说明](releases/0.6.0.md)收口，不从下列旧候选记录继承。
+0.6.0 按本次授权采用普通 GitHub Release 分类。两架构内核与必要 SDK 构建、安装消费者、默认应用八次运行及九份供应/应用 ZIP 已有实际记录；受控 GUI 代表例已记录，完整对应源码及最终发布身份见附件清单。`releaseReady=false`、`productionQualificationComplete=false`、`fullDevtoolsGoalComplete=false`。实际范围及保留失败见[发布说明](releases/0.6.0.md)和[RELEASE-FACTS](../verification/production-validation/0.6.0-release-2026-10-29/RELEASE-FACTS.json)，不从下列历史候选继承通过。
+
+## 0.6.0 当前限制
+
+| 项目 | 事实与处置边界 |
+|---|---|
+| ZIP 的跨代码页文件名 | `Package.ps1` / `Package-Applications.ps1` 默认 ZIP 可将非 ASCII 名按本机 ACP 写入并依赖 Unicode Path `0x7075` 扩展；忽略该扩展的解压器可能改坏文件名。当前 Workbench 两包已用官方 7-Zip `-mcu=on` 重封并核对 local/central UTF-8 标志、完整闭集和原 payload；不是打包脚本本身已经修复 |
+| PowerShell 临时解压 | PS5 在长临时路径下曾出现空 stage 或不完整解压；MAX_PATH 只是候选原因，尚无确定根因。保留原失败，并在全新目录解压后逐文件验内容，不以退出 0 代替闭集核验 |
+| source SDK 发布目录 | 规范输出目录两次 rename 返回 EPERM；合法外部目录的公开 pack 成功，原失败仍保留。根因未定，不归因于 MAX_PATH 或 Defender，也不修改权限/覆盖守卫来取得成功 |
+| 非自然构建与操作期限 | 八个辅助 compiler Job 的失败及两次原 C64 GUI 操作超时/强清保留于 RELEASE-FACTS；产物已核、适用尾部接纳或后续新例不改写原监督结果 |
+| 生产及环境资格 | D07 真实租期、D13 千次、D14 八小时、完整性能和目标系统/IME/DPI/多屏资格继续待验，见[长测交接](testing/v0.6.0-long-run-handoff.md)。原期限、owner 身份、默认拒绝和资源 fence 不变 |
+
+## 历史记录
+
+以下日期及旧版本段落保留当时的原始状态，不代表 0.6.0 当前构建或运行范围。
 
 2026-10-26 新增[任务唤醒与有界接纳候选](maintenance/input-latency-20261026.md)，处理首次任务等待、就绪积压及资源受阻重试。最终源码尚未编译和运行，由 PR 验证人员接手；16 ms 兜底 timer、CPU draw interval、单回调超预算和真实输入尾延迟仍需分别评估，不能宣称已达到极致流畅度。固定二进制及生产门槛不变。
 

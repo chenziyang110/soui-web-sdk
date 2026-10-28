@@ -1,0 +1,11 @@
+{
+  "schema": "soui.release06-tooldeps-media-scope-clarification/v1",
+  "originalResult": "result.json",
+  "originalResultSha256": "fb9273de347aa949418fe48d66939aa0f1b6f7ba318ab2b68e400fd0d2a61aac",
+  "noToolRuntimeDependencyDllBytesTransported": true,
+  "runtimeDependenciesCopiedWithinGuest": 79,
+  "portableArchiveToolBinariesTransported": ["7z.exe", "7z.dll"],
+  "clarification": "The original noDllBytesTransported field refers only to the 79 tool-runtime dependencies. It must not be read as claiming that the ISO contains no DLL file: the explicitly cataloged original 7z.dll is present beside 7z.exe.",
+  "mediaOrSourceChanged": false,
+  "runtimeSuccessInferred": false
+}

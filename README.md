@@ -11,7 +11,7 @@
 
 <p align="center">
   <a href="docs/releases/0.6.0.md">0.6.0 发布说明</a> ·
-  <a href="https://github.com/chenziyang110/soui-web-sdk/releases/tag/v0.6.0">下载与 SHA-256</a> ·
+  <a href="https://github.com/chenziyang110/soui-web-sdk/releases/tag/v0.6.0">发布与下载入口</a> ·
   <a href="#quick-start">开始开发</a> ·
   <a href="docs/devtools.md">DevTools</a> ·
   <a href="docs/known-issues.md">已知限制</a>
@@ -19,7 +19,20 @@
 
 SOUI Web SDK 把业务页面、类型化桥接、原生宿主、运行依赖与交付工具放在一套可独立构建的源码工程中。前端编写界面，C++ 注册业务动作和任务，应用决定允许谁调用、何时取消，以及如何结束当前窗口与 Runtime。
 
-**0.6.0 采用普通 GitHub Release 分类。完整生产验收仍为 `releaseReady=false`。** 本轮构建、短测、安装消费者及资产身份正在收口，完成情况逐项记录在[发布说明](docs/releases/0.6.0.md)。发布分类、版本号和编译成功均不能替代生产、目标系统或性能资格。
+**0.6.0 采用普通 GitHub Release 分类；完整资格保持 `releaseReady=false`、`productionQualificationComplete=false`、`fullDevtoolsGoalComplete=false`。** 两架构内核与必要 SDK 构建、安装消费者、默认应用八次启动/自然关闭及九份供应/应用 ZIP 已有实际记录。双后端、双架构的受控 DevTools 代表例及 MiniBlink x86 原始 TSX 断点/单步观察已完成，具体范围见[发布说明](docs/releases/0.6.0.md)；普通 Release 分类不代表生产、目标系统或性能资格。
+
+## 获取 0.6.0
+
+[v0.6.0 发布页](https://github.com/chenziyang110/soui-web-sdk/releases/tag/v0.6.0)是附件、完整对应源码与 SHA-256 的固定入口；最终发布身份以其清单为准。
+
+| 用途 | 资产 |
+|---|---|
+| 创建独立项目 | `SouiSdk-0.6.0-source-sdk.zip`，逐文件锁定的 source SDK |
+| 运行示例 | `SouiStarter`、`SouiModernStarter`、`SouiWorkbench` 的 `-0.6.0-windows-x64.zip` / `-x86.zip`，六包及侧车已核完整内容 |
+| MiniBlink 离线调试材料 | `SouiDevTools-0.6.0-windows-x64.zip` / `-x86.zip`，仍需应用显式配置和原生授权 |
+| 完整对应源码 | `soui-sdk-0.6.0-full-source.zip`，按当前 Git 源清单与显式 UTF-8 文件名封存 |
+
+source SDK 与两份 DevTools 组件包已核逐文件闭集。两架构默认应用的八次运行在 Windows `10.0.20348.587` 完成；Modern 使用 WebView2 Runtime `156.0.4314.50`。这组短测不覆盖全部目标系统、AutoHost 双启动路径或长期稳定性。最终资产名、散列和实际范围以[发布说明](docs/releases/0.6.0.md)及[机器事实记录](verification/production-validation/0.6.0-release-2026-10-29/RELEASE-FACTS.json)为准，下载以发布页实际附件为准。
 
 ## 0.6 带来了什么
 
@@ -174,4 +187,4 @@ verification/               按实际版本和载荷保存的证据
 
 本次授权将低收益长测与重复演练后置。D13 千次生命周期、D14 八小时、完整性能对比及未完成的平台/输入环境资格仍保持待验；D01–D12 的未关闭范围也不因发版自动关闭。正常发布分类不表示这些项目已经通过。签名状态、当前构建和资产 SHA-256 以发布记录为准；本项目打包工具不会制造代码签名。
 
-首方 SDK、模板、Demo 和维护工具采用 [MIT](LICENSE.md)。第三方许可独立保留，见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)与[0.6.0 对应源码及再分发说明](docs/licenses/v0.6.0-redistribution.md)。[完整对应源码 ZIP](https://github.com/chenziyang110/soui-web-sdk/releases/download/v0.6.0/soui-sdk-0.6.0-full-source.zip)与每个资产的 SHA-256 在 Release 中交付；配对 Inspector 与内核还需保留其原始来源和批准材料。问题反馈见 [Issues](https://github.com/chenziyang110/soui-web-sdk/issues)，安全问题遵循 [SECURITY.md](SECURITY.md)。
+首方 SDK、模板、Demo 和维护工具采用 [MIT](LICENSE.md)。第三方许可独立保留，见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)与[0.6.0 对应源码及再分发说明](docs/licenses/v0.6.0-redistribution.md)。完整对应源码资产名为 [`soui-sdk-0.6.0-full-source.zip`](https://github.com/chenziyang110/soui-web-sdk/releases/download/v0.6.0/soui-sdk-0.6.0-full-source.zip)，最终封存与下载状态见发布说明和实际附件；配对 Inspector 与内核还需保留其原始来源和批准材料。问题反馈见 [Issues](https://github.com/chenziyang110/soui-web-sdk/issues)，安全问题遵循 [SECURITY.md](SECURITY.md)。

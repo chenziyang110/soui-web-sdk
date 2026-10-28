@@ -1,0 +1,670 @@
+{
+  "schema": "soui.release.npm-sbom-independent-validation/v1",
+  "createdUtc": "2026-10-28T15:21:18.025914+00:00",
+  "validator": {
+    "python": {
+      "path": "C:/Users/11034/miniconda3/python.exe",
+      "bytes": 104264,
+      "sha256": "ec0ea8d6907787b76dcf8524aaa93e52e167ceee62fa8778e182ea637a3dbc1d"
+    },
+    "jsonschemaVersion": "4.26.0",
+    "draft": "draft-07",
+    "networkResolution": false,
+    "formatChecking": true,
+    "providerNote": "Bundled Python lacks jsonschema; existing local Miniconda jsonschema used without installation."
+  },
+  "schemaPinSource": {
+    "path": "C:/sr06/verification/sbom-native.validation.json",
+    "bytes": 1069,
+    "sha256": "5a9edce3567e0ffa50640cf6a84e228142a681e2322c5b6e685a3a85431f50d6"
+  },
+  "schemaInputs": [
+    {
+      "path": "C:/sr06/out/release-sbom/schemas/cyclonedx-1.5/bom-1.5.schema.json",
+      "bytes": 164769,
+      "sha256": "067f7824b08653839ea050ae9e09ca48375eadc2652b0e2a299476e7db90335b",
+      "url": "https://raw.githubusercontent.com/CycloneDX/specification/1.5/schema/bom-1.5.schema.json",
+      "matchesHistoricalPin": true
+    },
+    {
+      "path": "C:/sr06/out/release-sbom/schemas/cyclonedx-1.5/spdx.schema.json",
+      "bytes": 12322,
+      "sha256": "4f6e2b05c05d26a4f2dc5879fbc2fca94b0a28db46289d0c51345621b71cfbfc",
+      "url": "https://raw.githubusercontent.com/CycloneDX/specification/1.5/schema/spdx.schema.json",
+      "matchesHistoricalPin": true
+    },
+    {
+      "path": "C:/sr06/out/release-sbom/schemas/cyclonedx-1.5/jsf-0.82.schema.json",
+      "bytes": 8058,
+      "sha256": "8bae002c25e723db7ee1f26afde680ae1a2b1a8f6b4b4b0fd65dc3becb090aae",
+      "url": "https://raw.githubusercontent.com/CycloneDX/specification/1.5/schema/jsf-0.82.schema.json",
+      "matchesHistoricalPin": true
+    }
+  ],
+  "rows": [
+    {
+      "name": "web-sdk",
+      "directory": "sdk/web",
+      "collectorSummary": {
+        "path": "C:/sr06/out/release-sbom/npm/Summary.json",
+        "bytes": 1447,
+        "sha256": "a2f4f813289b215f2f6eb62fe53e93927ce94b3468a1ef9146e061dd005431ca"
+      },
+      "collectorExitCode": 0,
+      "lock": {
+        "path": "C:/sr06/sdk/web/package-lock.json",
+        "bytes": 739,
+        "sha256": "93cb42bd9f11a9bcb9059f6ec505de87c520dac76cb2ac0c769779add37e5195"
+      },
+      "lockMatchesCollectorBeforeAndAfter": true,
+      "raw": {
+        "path": "C:/sr06/out/release-sbom/npm/web-sdk.stdout.raw.json",
+        "bytes": 1992,
+        "sha256": "11cbcaa3233ae150d6a47635017898496c0a118fd8c06c5c0faf335a2eb2d4f3"
+      },
+      "output": {
+        "path": "C:/sr06/out/release-sbom/npm/sbom-web-sdk.cdx.json",
+        "bytes": 1992,
+        "sha256": "11cbcaa3233ae150d6a47635017898496c0a118fd8c06c5c0faf335a2eb2d4f3"
+      },
+      "stderr": {
+        "path": "C:/sr06/out/release-sbom/npm/web-sdk.stderr.raw.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "components": 1,
+      "localDistributionRewrites": [],
+      "onlyDeclaredRewrite": true,
+      "validationErrors": {
+        "raw": [],
+        "delivery": []
+      }
+    },
+    {
+      "name": "gui-react",
+      "directory": "sdk/bindings/react",
+      "collectorSummary": {
+        "path": "C:/sr06/out/release-sbom/npm-2/Summary.json",
+        "bytes": 12605,
+        "sha256": "ce55bbcaffa9776758b6aa330fefeec9e7fe34433be97d378bf205fd105f35f6"
+      },
+      "collectorExitCode": 0,
+      "lock": {
+        "path": "C:/sr06/sdk/bindings/react/package-lock.json",
+        "bytes": 3382,
+        "sha256": "931e8f8ba1f9438f435ab2d031a0fd7cab1568626cc2fe555305a2166be7a6a8"
+      },
+      "lockMatchesCollectorBeforeAndAfter": true,
+      "raw": {
+        "path": "C:/sr06/out/release-sbom/npm-2/gui-react.stdout.raw.json",
+        "bytes": 8300,
+        "sha256": "19b5261793a02aea7e100068cc1ab5af3547ffac7d6586aa7cd325152f4fbca2"
+      },
+      "output": {
+        "path": "C:/sr06/out/release-sbom/npm-2/sbom-gui-react.cdx.json",
+        "bytes": 8287,
+        "sha256": "86614b7585e57ce8ec59f4ed6906cb4e1fc954a8fa2066d73918c5674799ed44"
+      },
+      "stderr": {
+        "path": "C:/sr06/out/release-sbom/npm-2/gui-react.stderr.raw.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "components": 8,
+      "localDistributionRewrites": [
+        {
+          "name": "@soui/native-sdk",
+          "version": "0.6.0",
+          "original": "file:C:\\sr06\\sdk\\web",
+          "relative": "../sdk/web"
+        }
+      ],
+      "onlyDeclaredRewrite": true,
+      "validationErrors": {
+        "raw": [],
+        "delivery": []
+      }
+    },
+    {
+      "name": "gui-vue",
+      "directory": "sdk/bindings/vue",
+      "collectorSummary": {
+        "path": "C:/sr06/out/release-sbom/npm-2/Summary.json",
+        "bytes": 12605,
+        "sha256": "ce55bbcaffa9776758b6aa330fefeec9e7fe34433be97d378bf205fd105f35f6"
+      },
+      "collectorExitCode": 0,
+      "lock": {
+        "path": "C:/sr06/sdk/bindings/vue/package-lock.json",
+        "bytes": 11728,
+        "sha256": "51bf8081be82ff490e046fd1960604fab5ddb71923356b7175ec9aa4392413c5"
+      },
+      "lockMatchesCollectorBeforeAndAfter": true,
+      "raw": {
+        "path": "C:/sr06/out/release-sbom/npm-2/gui-vue.stdout.raw.json",
+        "bytes": 25523,
+        "sha256": "d48e245cc57abb48fa4a9bc2882eadd55529245bdc9debf65fea8d52b7e31431"
+      },
+      "output": {
+        "path": "C:/sr06/out/release-sbom/npm-2/sbom-gui-vue.cdx.json",
+        "bytes": 25510,
+        "sha256": "7384ced49dd41f61bc7ffd87afbc7483315a8503bf831ef06936f2c62c7858f3"
+      },
+      "stderr": {
+        "path": "C:/sr06/out/release-sbom/npm-2/gui-vue.stderr.raw.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "components": 25,
+      "localDistributionRewrites": [
+        {
+          "name": "@soui/native-sdk",
+          "version": "0.6.0",
+          "original": "file:C:\\sr06\\sdk\\web",
+          "relative": "../sdk/web"
+        }
+      ],
+      "onlyDeclaredRewrite": true,
+      "validationErrors": {
+        "raw": [],
+        "delivery": []
+      }
+    },
+    {
+      "name": "template",
+      "directory": "templates/desktop-app/web",
+      "collectorSummary": {
+        "path": "C:/sr06/out/release-sbom/npm-2/Summary.json",
+        "bytes": 12605,
+        "sha256": "ce55bbcaffa9776758b6aa330fefeec9e7fe34433be97d378bf205fd105f35f6"
+      },
+      "collectorExitCode": 0,
+      "lock": {
+        "path": "C:/sr06/templates/desktop-app/web/package-lock.json",
+        "bytes": 130655,
+        "sha256": "39d35a469e78f724e73966d2b78cbc2ed9427d53dfd5d5a75dd66cd0ae298ffe"
+      },
+      "lockMatchesCollectorBeforeAndAfter": true,
+      "raw": {
+        "path": "C:/sr06/out/release-sbom/npm-2/template.stdout.raw.json",
+        "bytes": 251496,
+        "sha256": "fd1178da227b2fb5ec2ed2be19c885bb8ad573012c2811f27f1c6f0025fd0505"
+      },
+      "output": {
+        "path": "C:/sr06/out/release-sbom/npm-2/sbom-template.cdx.json",
+        "bytes": 251496,
+        "sha256": "fd1178da227b2fb5ec2ed2be19c885bb8ad573012c2811f27f1c6f0025fd0505"
+      },
+      "stderr": {
+        "path": "C:/sr06/out/release-sbom/npm-2/template.stderr.raw.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "components": 230,
+      "localDistributionRewrites": [],
+      "onlyDeclaredRewrite": true,
+      "validationErrors": {
+        "raw": [],
+        "delivery": []
+      }
+    },
+    {
+      "name": "modern-template",
+      "directory": "templates/modern-app/web",
+      "collectorSummary": {
+        "path": "C:/sr06/out/release-sbom/npm-2/Summary.json",
+        "bytes": 12605,
+        "sha256": "ce55bbcaffa9776758b6aa330fefeec9e7fe34433be97d378bf205fd105f35f6"
+      },
+      "collectorExitCode": 0,
+      "lock": {
+        "path": "C:/sr06/templates/modern-app/web/package-lock.json",
+        "bytes": 28768,
+        "sha256": "366801daa343066c7d1b4f6d5a61758662449929f0c55b933fda70d35a2cccde"
+      },
+      "lockMatchesCollectorBeforeAndAfter": true,
+      "raw": {
+        "path": "C:/sr06/out/release-sbom/npm-2/modern-template.stdout.raw.json",
+        "bytes": 49238,
+        "sha256": "c879d97d7090f737c492069d4ff37965535b53d5b66d264d08c09811baef8fb8"
+      },
+      "output": {
+        "path": "C:/sr06/out/release-sbom/npm-2/sbom-modern-template.cdx.json",
+        "bytes": 49238,
+        "sha256": "c879d97d7090f737c492069d4ff37965535b53d5b66d264d08c09811baef8fb8"
+      },
+      "stderr": {
+        "path": "C:/sr06/out/release-sbom/npm-2/modern-template.stderr.raw.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "components": 48,
+      "localDistributionRewrites": [],
+      "onlyDeclaredRewrite": true,
+      "validationErrors": {
+        "raw": [],
+        "delivery": []
+      }
+    },
+    {
+      "name": "demo",
+      "directory": "demos/workbench/web",
+      "collectorSummary": {
+        "path": "C:/sr06/out/release-sbom/npm-2/Summary.json",
+        "bytes": 12605,
+        "sha256": "ce55bbcaffa9776758b6aa330fefeec9e7fe34433be97d378bf205fd105f35f6"
+      },
+      "collectorExitCode": 0,
+      "lock": {
+        "path": "C:/sr06/demos/workbench/web/package-lock.json",
+        "bytes": 167068,
+        "sha256": "1d5a7c4eee06562a091331a7d169933f35286f5c6d619aff4cdd4584b8a56fde"
+      },
+      "lockMatchesCollectorBeforeAndAfter": true,
+      "raw": {
+        "path": "C:/sr06/out/release-sbom/npm-2/demo.stdout.raw.json",
+        "bytes": 319405,
+        "sha256": "0424b3c2fae270067db89ba43e54017a940214eac9e0babdb895887cd84e2f7d"
+      },
+      "output": {
+        "path": "C:/sr06/out/release-sbom/npm-2/sbom-demo.cdx.json",
+        "bytes": 319405,
+        "sha256": "0424b3c2fae270067db89ba43e54017a940214eac9e0babdb895887cd84e2f7d"
+      },
+      "stderr": {
+        "path": "C:/sr06/out/release-sbom/npm-2/demo.stderr.raw.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "components": 304,
+      "localDistributionRewrites": [],
+      "onlyDeclaredRewrite": true,
+      "validationErrors": {
+        "raw": [],
+        "delivery": []
+      }
+    },
+    {
+      "name": "reference-compat",
+      "directory": "demos/reference-workbench/web-compat",
+      "collectorSummary": {
+        "path": "C:/sr06/out/release-sbom/npm-2/Summary.json",
+        "bytes": 12605,
+        "sha256": "ce55bbcaffa9776758b6aa330fefeec9e7fe34433be97d378bf205fd105f35f6"
+      },
+      "collectorExitCode": 0,
+      "lock": {
+        "path": "C:/sr06/demos/reference-workbench/web-compat/package-lock.json",
+        "bytes": 167788,
+        "sha256": "74ff68042f8b210cac922db10969a7acb0d13ae2ab1b9f7aa1178e7c901376ac"
+      },
+      "lockMatchesCollectorBeforeAndAfter": true,
+      "raw": {
+        "path": "C:/sr06/out/release-sbom/npm-2/reference-compat.stdout.raw.json",
+        "bytes": 320350,
+        "sha256": "e4c226b1448e6eeb348cac5c0b21d2ff5d22218cb18dc26d97603fe18fdc315b"
+      },
+      "output": {
+        "path": "C:/sr06/out/release-sbom/npm-2/sbom-reference-compat.cdx.json",
+        "bytes": 320350,
+        "sha256": "e4c226b1448e6eeb348cac5c0b21d2ff5d22218cb18dc26d97603fe18fdc315b"
+      },
+      "stderr": {
+        "path": "C:/sr06/out/release-sbom/npm-2/reference-compat.stderr.raw.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "components": 305,
+      "localDistributionRewrites": [],
+      "onlyDeclaredRewrite": true,
+      "validationErrors": {
+        "raw": [],
+        "delivery": []
+      }
+    },
+    {
+      "name": "reference-modern",
+      "directory": "demos/reference-workbench/web-modern",
+      "collectorSummary": {
+        "path": "C:/sr06/out/release-sbom/npm-2/Summary.json",
+        "bytes": 12605,
+        "sha256": "ce55bbcaffa9776758b6aa330fefeec9e7fe34433be97d378bf205fd105f35f6"
+      },
+      "collectorExitCode": 0,
+      "lock": {
+        "path": "C:/sr06/demos/reference-workbench/web-modern/package-lock.json",
+        "bytes": 28768,
+        "sha256": "366801daa343066c7d1b4f6d5a61758662449929f0c55b933fda70d35a2cccde"
+      },
+      "lockMatchesCollectorBeforeAndAfter": true,
+      "raw": {
+        "path": "C:/sr06/out/release-sbom/npm-2/reference-modern.stdout.raw.json",
+        "bytes": 49245,
+        "sha256": "b613a1ad06683cc6b8064bc099522cccbbe45d5538c9c81298d7d18453cd23e5"
+      },
+      "output": {
+        "path": "C:/sr06/out/release-sbom/npm-2/sbom-reference-modern.cdx.json",
+        "bytes": 49245,
+        "sha256": "b613a1ad06683cc6b8064bc099522cccbbe45d5538c9c81298d7d18453cd23e5"
+      },
+      "stderr": {
+        "path": "C:/sr06/out/release-sbom/npm-2/reference-modern.stderr.raw.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "components": 48,
+      "localDistributionRewrites": [],
+      "onlyDeclaredRewrite": true,
+      "validationErrors": {
+        "raw": [],
+        "delivery": []
+      }
+    },
+    {
+      "name": "acceptance-tools",
+      "directory": "tests/acceptance",
+      "collectorSummary": {
+        "path": "C:/sr06/out/release-sbom/npm-2/Summary.json",
+        "bytes": 12605,
+        "sha256": "ce55bbcaffa9776758b6aa330fefeec9e7fe34433be97d378bf205fd105f35f6"
+      },
+      "collectorExitCode": 0,
+      "lock": {
+        "path": "C:/sr06/tests/acceptance/package-lock.json",
+        "bytes": 122928,
+        "sha256": "9ea076c633e1f9ed6a968c16d4cd14207304cd7b4e122ad1ef0ebfef9f2964c4"
+      },
+      "lockMatchesCollectorBeforeAndAfter": true,
+      "raw": {
+        "path": "C:/sr06/out/release-sbom/npm-2/acceptance-tools.stdout.raw.json",
+        "bytes": 234677,
+        "sha256": "844296e8e99797e489ab16c587c99317833f5d26b103918aa4d2feb08524fc0d"
+      },
+      "output": {
+        "path": "C:/sr06/out/release-sbom/npm-2/sbom-acceptance-tools.cdx.json",
+        "bytes": 234677,
+        "sha256": "844296e8e99797e489ab16c587c99317833f5d26b103918aa4d2feb08524fc0d"
+      },
+      "stderr": {
+        "path": "C:/sr06/out/release-sbom/npm-2/acceptance-tools.stderr.raw.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "components": 213,
+      "localDistributionRewrites": [],
+      "onlyDeclaredRewrite": true,
+      "validationErrors": {
+        "raw": [],
+        "delivery": []
+      }
+    },
+    {
+      "name": "electron-comparison",
+      "directory": "benchmarks/hosts/electron",
+      "collectorSummary": {
+        "path": "C:/sr06/out/release-sbom/npm-2/Summary.json",
+        "bytes": 12605,
+        "sha256": "ce55bbcaffa9776758b6aa330fefeec9e7fe34433be97d378bf205fd105f35f6"
+      },
+      "collectorExitCode": 0,
+      "lock": {
+        "path": "C:/sr06/benchmarks/hosts/electron/package-lock.json",
+        "bytes": 5842,
+        "sha256": "2434774969c1d5fce41fda2d7ef07d48089717d4ebda8ea19ea34b17925d10e5"
+      },
+      "lockMatchesCollectorBeforeAndAfter": true,
+      "raw": {
+        "path": "C:/sr06/out/release-sbom/npm-2/electron-comparison.stdout.raw.json",
+        "bytes": 13209,
+        "sha256": "6b1bff5c4753031acaeb67d8d51d0ea260c484ab168f9c6328cfa1f2d1ec563d"
+      },
+      "output": {
+        "path": "C:/sr06/out/release-sbom/npm-2/sbom-electron-comparison.cdx.json",
+        "bytes": 13209,
+        "sha256": "6b1bff5c4753031acaeb67d8d51d0ea260c484ab168f9c6328cfa1f2d1ec563d"
+      },
+      "stderr": {
+        "path": "C:/sr06/out/release-sbom/npm-2/electron-comparison.stderr.raw.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "components": 13,
+      "localDistributionRewrites": [],
+      "onlyDeclaredRewrite": true,
+      "validationErrors": {
+        "raw": [],
+        "delivery": []
+      }
+    }
+  ],
+  "validatedDocuments": 20,
+  "allCurrentLocksMatch": true,
+  "originalFirstAttempt": {
+    "directory": "C:/sr06/out/release-sbom/npm",
+    "webSdkReused": true,
+    "guiReactGuardFailureRawPreserved": {
+      "path": "C:/sr06/out/release-sbom/npm/gui-react.stdout.raw.json",
+      "bytes": 8300,
+      "sha256": "9ed719ec8087407883be854832a9a089241fc5a0ec9888a2e2295f86fd89f544"
+    },
+    "notCountedAsAdditionalGraph": true
+  },
+  "githubAuditSnapshot": {
+    "query": {
+      "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/github-open-alert-paths.log",
+      "bytes": 4243,
+      "sha256": "5bdad5b968243f427b4ab4e68fcdfc1adf8620777cd0afdd7d680385b42579e5"
+    },
+    "groups": 17,
+    "openAlerts": 82,
+    "immutableArchiveAlerts": 75,
+    "optionalSourceToolAlerts": [
+      {
+        "count": 2,
+        "path": "benchmarks/hosts/electron/package-lock.json",
+        "severities": [
+          {
+            "count": 1,
+            "severity": "high"
+          },
+          {
+            "count": 1,
+            "severity": "medium"
+          }
+        ]
+      },
+      {
+        "count": 5,
+        "path": "demos/reference-workbench/web-compat/package-lock.json",
+        "severities": [
+          {
+            "count": 1,
+            "severity": "high"
+          },
+          {
+            "count": 1,
+            "severity": "low"
+          },
+          {
+            "count": 3,
+            "severity": "medium"
+          }
+        ]
+      }
+    ],
+    "interpretation": "Open alert records by affected path; not unique advisories and not resolved by six current audits."
+  },
+  "currentSixGraphAudits": {
+    "summary": {
+      "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/docs-prep/WebBuildSummary.json",
+      "bytes": 32573,
+      "sha256": "94e90dcb9303cbea9ca2a02e9d5755a2d77f331432fb1e663c96aa2c8387fb01"
+    },
+    "attempts": [
+      {
+        "name": "sdk-web-audit",
+        "exitCode": 0,
+        "vulnerabilities": {
+          "info": 0,
+          "low": 0,
+          "moderate": 0,
+          "high": 0,
+          "critical": 0,
+          "total": 0
+        },
+        "error": null,
+        "stdout": {
+          "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/docs-prep/web-build-1/sdk-web-audit.stdout.log",
+          "bytes": 358,
+          "sha256": "06c18d6ae5bb95560b3aaf924119c2ecbd29a69e9f4f8a67dc2bb1d7bc726c5e"
+        },
+        "stderr": {
+          "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/docs-prep/web-build-1/sdk-web-audit.stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      {
+        "name": "sdk-bindings-react-audit",
+        "exitCode": 0,
+        "vulnerabilities": {
+          "info": 0,
+          "low": 0,
+          "moderate": 0,
+          "high": 0,
+          "critical": 0,
+          "total": 0
+        },
+        "error": null,
+        "stdout": {
+          "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/docs-prep/web-build-1/sdk-bindings-react-audit.stdout.log",
+          "bytes": 358,
+          "sha256": "e8bbc82d0d656ca6c5d561fcb794dae7591893e0a9812ba4d5dcc40258af1ad3"
+        },
+        "stderr": {
+          "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/docs-prep/web-build-1/sdk-bindings-react-audit.stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      {
+        "name": "sdk-bindings-vue-audit",
+        "exitCode": 1,
+        "vulnerabilities": null,
+        "error": "request to https://registry.npmjs.org/-/npm/v1/security/advisories/bulk failed, reason: Client network socket disconnected before secure TLS connection was established",
+        "stdout": {
+          "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/docs-prep/web-build-1/sdk-bindings-vue-audit.stdout.log",
+          "bytes": 241,
+          "sha256": "d2cfe4991a5ac2f2565e92eaf1960d955c9592c7d8c359dc62cb1d99815c4ac8"
+        },
+        "stderr": {
+          "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/docs-prep/web-build-1/sdk-bindings-vue-audit.stderr.log",
+          "bytes": 362,
+          "sha256": "e7df13eb197867443d43651b67b88d319ddd4995045ae54a6473ade2ea9ea527"
+        }
+      },
+      {
+        "name": "templates-desktop-app-web-audit",
+        "exitCode": 0,
+        "vulnerabilities": {
+          "info": 0,
+          "low": 0,
+          "moderate": 0,
+          "high": 0,
+          "critical": 0,
+          "total": 0
+        },
+        "error": null,
+        "stdout": {
+          "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/docs-prep/web-build-1/templates-desktop-app-web-audit.stdout.log",
+          "bytes": 363,
+          "sha256": "cc74a6611cd3da7ba4f2a0670d2ef1ca70502ef3130a97f33fccb090995254b7"
+        },
+        "stderr": {
+          "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/docs-prep/web-build-1/templates-desktop-app-web-audit.stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      {
+        "name": "templates-modern-app-web-audit",
+        "exitCode": 0,
+        "vulnerabilities": {
+          "info": 0,
+          "low": 0,
+          "moderate": 0,
+          "high": 0,
+          "critical": 0,
+          "total": 0
+        },
+        "error": null,
+        "stdout": {
+          "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/docs-prep/web-build-1/templates-modern-app-web-audit.stdout.log",
+          "bytes": 361,
+          "sha256": "92b38a5bb4e1dac5a52f93bcfc953e6e75fd13134eb2bd45ee96b7c74ec8991a"
+        },
+        "stderr": {
+          "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/docs-prep/web-build-1/templates-modern-app-web-audit.stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      {
+        "name": "demos-workbench-web-audit",
+        "exitCode": 0,
+        "vulnerabilities": {
+          "info": 0,
+          "low": 0,
+          "moderate": 0,
+          "high": 0,
+          "critical": 0,
+          "total": 0
+        },
+        "error": null,
+        "stdout": {
+          "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/docs-prep/web-build-1/demos-workbench-web-audit.stdout.log",
+          "bytes": 364,
+          "sha256": "6ab4462ef131e07486c1d9e39bee3ced20b9440b72e72c315659bf6ac68140d6"
+        },
+        "stderr": {
+          "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/docs-prep/web-build-1/demos-workbench-web-audit.stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      {
+        "name": "sdk-bindings-vue-audit-retry-1",
+        "exitCode": 0,
+        "vulnerabilities": {
+          "info": 0,
+          "low": 0,
+          "moderate": 0,
+          "high": 0,
+          "critical": 0,
+          "total": 0
+        },
+        "error": null,
+        "stdout": {
+          "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/docs-prep/web-build-1/sdk-bindings-vue-audit-retry-1.stdout.log",
+          "bytes": 360,
+          "sha256": "d779408e46397a81b73737e06ea904cb9b8bb82ad1efff44f3e59f363fe8c5f3"
+        },
+        "stderr": {
+          "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/docs-prep/web-build-1/sdk-bindings-vue-audit-retry-1.stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    ],
+    "sixFinalZeroAdvisories": true,
+    "preservedFailedRequest": "sdk-bindings-vue-audit TLS failure; subsequent single retry succeeded."
+  },
+  "errors": [],
+  "schemaValidated": true,
+  "verificationPromoted": false,
+  "nativeSbomUpdated": false,
+  "locksEdited": false,
+  "productExecuted": false,
+  "releaseReady": false,
+  "productionQualificationComplete": false
+}

@@ -1,6 +1,6 @@
 # 变更记录
 
-## 0.6.0（普通 Release 准备中）
+## 0.6.0（2026-10-29，普通 Release）
 
 - 整合公共原生受控 DevTools、匹配的 MiniBlink 离线前端及 WebView2 Runtime 调试入口。默认 disabled；许可由原生应用签发，结束诊断遵循当前目标销毁及真实退休屏障。
 - 增加显式离线源码诊断构建档、资源来源与 inline map 身份边界。诊断构建不授予调试许可，不自动脱敏，不把外置/在线 map 当作 MiniBlink 离线映射来源。
@@ -8,7 +8,9 @@
 - 整合有界输入恢复、owner 调度、帧/资源通知与可选数值关联的源码能力；性能资格、GPU 路径和真实目标系统分别验收，不据此宣称统一帧率或尾延迟达标。
 - 保留独立 ZIP 与完整应用目录，提供显式去重 Bundle 和可选压缩档位；首方 MIT 与第三方声明随对应交付保留。
 - 使用稳定身份 `0.6.0`，同步 C++/Web 包/锁与新 peer 合同；历史 0.5、0.5.1 和各 preview 包的原声明、散列和升级回退输入保持原样。
-- 按用户本次授权采用普通 GitHub Release 分类并后置低收益长测。当前构建、消费者及资产证明仍在收口，完整生产验收保持 `releaseReady=false`。具体状态见 [0.6.0 发布说明](docs/releases/0.6.0.md)。
+- 完成两架构当前内核、必要 SDK 构建与安装消费者；当前默认应用八次启动/自然关闭的公开监督和 smoke 校验通过。实际环境为 Windows `10.0.20348.587`，Modern 两架构 Runtime 为 `156.0.4314.50`。
+- 完成 source SDK、两份 DevTools 组件及六份应用 ZIP 的内容闭集核验；Workbench 两包另以 UTF-8 文件名运输重封，payload 不变，原包与侧车保留。完整对应源码按 Git 源清单和显式 UTF-8 归档，最终 commit、散列和上传身份见 Release 附件清单。
+- 普通 GitHub Release 分类按本次授权执行，低收益长测继续后置。`releaseReady=false`、`productionQualificationComplete=false`、`fullDevtoolsGoalComplete=false`；双后端/双架构的原生授权与自然收尾、MiniBlink x86 TSX 断点及单步代表例已记录；既有编译监督失败与两次操作超时不改写。具体状态见 [0.6.0 发布说明](docs/releases/0.6.0.md)。
 
 
 ## 0.6.0-preview.3（本地候选，未发布）

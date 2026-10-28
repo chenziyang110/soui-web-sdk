@@ -1,0 +1,280 @@
+{
+  "schema": "soui.release-final-inputs-publication-review/v1",
+  "reviewedAt": "2026-10-28 18:53:32 UTC",
+  "reviewKind": "publication-data-review",
+  "verdict": "NO_CREDENTIAL_BLOCKER_FOUND_IN_THE_INDEXED_TWENTY_RAW_RECORDS",
+  "scope": {
+    "index": {
+      "path": "C:/sr06/verification/production-validation/0.6.0-release-2026-10-29/final-scoped/Inputs.index.json",
+      "bytes": 7651,
+      "sha256": "e94b953ff5a2709e7e9b332afa12ae919d9dfa719753d9490e00d62771a3619e"
+    },
+    "rawFiles": 20,
+    "totalRawBytes": 1803703,
+    "exactIndexedRawClosure": true,
+    "indexAndRawFilesUnchanged": true,
+    "independentNonAuthorCodeReviewClaimed": false,
+    "someRecordsPreviouslyAuthoredByReviewer": true,
+    "authorshipDisclosure": "The reviewer previously produced several indexed SDK/consumer/source-SDK/tool records. This review independently reads the promoted copies for byte integrity and publication data only; it is not a non-author implementation review.",
+    "codeOrRuntimeQualificationGranted": false
+  },
+  "integrity": {
+    "allTwentyBytesAndSha256MatchIndex": true,
+    "allUtf8JsonReadable": true,
+    "regularFilesAndNoSymbolicPathComponents": true,
+    "files": [
+      {
+        "path": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/raw/kernel-prep/revision-3/KernelBuildResults.json",
+        "bytes": 5377,
+        "sha256": "db099d37cc7921e5f04d0ba5231299ef1bfae65b81ece2d840c0028b96e4c569"
+      },
+      {
+        "path": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/raw/sdk-build-prep/ScopedBuildSummary.json",
+        "bytes": 24065,
+        "sha256": "7976ad5f72ee15c94a73e5123f6d80d687622ec33a9904d0c87a5deb5281145e"
+      },
+      {
+        "path": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/raw/consumer-prep/InstalledConsumerSummary.json",
+        "bytes": 28645,
+        "sha256": "b0e8fa6b4e5862e1a6ab92c337cd611b94482ec093fff3fa28c743ef21c79731"
+      },
+      {
+        "path": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/raw/vendor-short-prep/VendorShortSummary.json",
+        "bytes": 24126,
+        "sha256": "debafd2bd65b6370a3956768e49444048bc8eb1639713a051d6ba052f2074575"
+      },
+      {
+        "path": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/raw/docs-prep/WebBuildSummary.json",
+        "bytes": 32573,
+        "sha256": "94e90dcb9303cbea9ca2a02e9d5755a2d77f331432fb1e663c96aa2c8387fb01"
+      },
+      {
+        "path": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/raw/docs-prep/metadata-tests.result.json",
+        "bytes": 366,
+        "sha256": "ecc253a2ae31f0f1c543c20aaaa28b87eb91bbe82d6909e5b705f3c37e2f8df1"
+      },
+      {
+        "path": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/raw/sbom-prep/NpmSbomValidation.actual.json",
+        "bytes": 24020,
+        "sha256": "a0fe05bb51ae2038fccd048e8bae2be299f13c91a5bf5b1fb2688ca61975b437"
+      },
+      {
+        "path": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/raw/sbom-prep/PromotedNpmSboms.json",
+        "bytes": 1434,
+        "sha256": "1566831ce166937719d2019dd0c380850ee69587c4efb85e8ffd2037ad0ebce4"
+      },
+      {
+        "path": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/raw/sbom-prep/native-promotion-1/Promotion.actual.json",
+        "bytes": 4920,
+        "sha256": "ac3fe4c61510216faf52cf9079bb80a51799a67dc88f87c03c716f7c3a79a996"
+      },
+      {
+        "path": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/raw/source-sdk-prep/attempt-1cd32d8b-3ac1-4829-8ebd-2f4e149b619a/Summary.actual.json",
+        "bytes": 958035,
+        "sha256": "e60c8e6c36aed33bfd39c51c35ec2ca9ef155e30410cf1336916fbaa2fffea11"
+      },
+      {
+        "path": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/raw/source-sdk-prep/GeneratedArtifacts.actual.json",
+        "bytes": 24783,
+        "sha256": "9d0e76fa7e37a69a8308ca28b70e9f4b7d6462108c78ba9682f199264c778701"
+      },
+      {
+        "path": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/raw/source-sdk-prep/archive/Archive.actual.json",
+        "bytes": 5340,
+        "sha256": "4471fcdfcb45aa135d22dccf438f0017106d443b2a49adca16f73c74994d0d85"
+      },
+      {
+        "path": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/raw/frontend-prep/ComponentArchive-x64.json",
+        "bytes": 3173,
+        "sha256": "1d246beafeb30ea8d26c82a4505d7af183c40e36097ff89526e078ba43d506f4"
+      },
+      {
+        "path": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/raw/frontend-prep/ComponentArchive-x86.json",
+        "bytes": 3173,
+        "sha256": "8e9a85a897caa76245e7453200d86ab6f7d704963efc04136ca0acfeece5ba35"
+      },
+      {
+        "path": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/raw/app-build-prep/attempt-3d82f8e1-d93b-4b4a-8a42-7653760f2e1e/Summary.json",
+        "bytes": 602253,
+        "sha256": "fbbc772b152f4b25eefd3cca661de16c9aa47245f60972d25344b832be1d4d10"
+      },
+      {
+        "path": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/raw/app-build-prep/Authenticode-8.actual.json",
+        "bytes": 1976,
+        "sha256": "dd399e170b007c8576c59a73494653aeb957a6a0c7c6e473ee2cf39886e2400f"
+      },
+      {
+        "path": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/raw/vm-short-prep/PreparedTools-DeliveryActual.json",
+        "bytes": 37305,
+        "sha256": "03bf17149e6e0ced75ec77296629b8b0f8c5020b1ce109c873c989a7a097f47b"
+      },
+      {
+        "path": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/raw/vm-short-prep/media-default-1/result.json",
+        "bytes": 9031,
+        "sha256": "343326a740adff0a38777cde43523e02046a6fcf2cf5eba2a9a65a6c584e9c44"
+      },
+      {
+        "path": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/raw/release-evidence-prep/DefaultVmMediaIndependentReview.json",
+        "bytes": 8686,
+        "sha256": "861d1b7ac40dae854f1a652496b9829e46fe0443d0faa6d886f981c5ac644d0a"
+      },
+      {
+        "path": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/raw/source-sdk-prep/diagnostic/RenameProbe.actual.json",
+        "bytes": 4422,
+        "sha256": "69eec4be22f9a9293baa5f4e8a2182dabba3fba008fb6210cf4af0a277fda279"
+      }
+    ]
+  },
+  "credentialReview": {
+    "jsonStringLeavesInspected": 15278,
+    "detectedActualAccountCredentials": 0,
+    "detectedPrivateKeys": 0,
+    "detectedServiceOrBearerTokens": 0,
+    "detectedPasswords": 0,
+    "knownCredentialPatternMatches": 0,
+    "signedUrlCredentialMatches": 0,
+    "methods": [
+      "Read every indexed raw byte stream; validate UTF-8/JSON and exact SHA/length.",
+      "Scan complete raw text for private-key headers, service-token formats, JWTs, authorization values and URL user/password forms.",
+      "Inspect credential/password/token/private-key/authorization/nonce named string fields and sensitive CLI option contexts.",
+      "Scan signed URL credential parameters and long opaque strings; manually classify all candidate metadata using actual field context."
+    ],
+    "sensitiveNamedStringFields": [
+      {
+        "file": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/raw/app-build-prep/attempt-3d82f8e1-d93b-4b4a-8a42-7653760f2e1e/Summary.json",
+        "where": "results.0.compilerTailPolicy.tailEvidence.nonce",
+        "shape": "hex-identifier",
+        "length": 32,
+        "valueSha256": "283d9f1c4a4c8edecf0c1cc3f5b229cd533b2b4b402bcc5ffdc250e617f0cfd7",
+        "safeLiteral": null,
+        "classification": "historical snapshot correlation nonce",
+        "actualValueIsFixtureLiteral": false,
+        "credential": false,
+        "basis": "soui.owned-tail-verdict/v1 disk-byte evidence, tied to the recorded root/helper PID and birth; both recorded terminals have closureConfirmed=true, activeProcesses=0 and retain passed=false. The nonce selects/correlates a local evidence snapshot, not an account/service authorization.",
+        "valuePublishedByThisReview": false
+      },
+      {
+        "file": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/raw/app-build-prep/attempt-3d82f8e1-d93b-4b4a-8a42-7653760f2e1e/Summary.json",
+        "where": "results.1.compilerTailPolicy.tailEvidence.nonce",
+        "shape": "hex-identifier",
+        "length": 32,
+        "valueSha256": "dbec61795e73dc6f27adf1de3a3eb700e96ae03d6b0309c99058e38eecb950a2",
+        "safeLiteral": null,
+        "classification": "historical snapshot correlation nonce",
+        "actualValueIsFixtureLiteral": false,
+        "credential": false,
+        "basis": "soui.owned-tail-verdict/v1 disk-byte evidence, tied to the recorded root/helper PID and birth; both recorded terminals have closureConfirmed=true, activeProcesses=0 and retain passed=false. The nonce selects/correlates a local evidence snapshot, not an account/service authorization.",
+        "valuePublishedByThisReview": false
+      }
+    ],
+    "historicalNonceContexts": [
+      {
+        "architecture": "x64",
+        "schema": "soui.owned-tail-verdict/v1",
+        "rootIdentity": {
+          "pid": 73780,
+          "creationFileTime": "134376830027287389"
+        },
+        "memberIdentity": {
+          "pid": 37532,
+          "creationFileTime": "134376830764713795",
+          "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\vctip.exe"
+        },
+        "diskBytesOnly": true,
+        "terminal": {
+          "event": "terminal",
+          "reason": "owned-descendants-remain",
+          "elapsedMs": 287924,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 1,
+          "terminatedOwnedJob": true,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 3605,
+          "limitTerminatedProcesses": 0,
+          "passed": false,
+          "preCleanupSnapshotSequence": 6,
+          "tailEvidenceComplete": true
+        },
+        "classification": "retired local process-evidence marker; compiler generic failure preserved"
+      },
+      {
+        "architecture": "x86",
+        "schema": "soui.owned-tail-verdict/v1",
+        "rootIdentity": {
+          "pid": 96572,
+          "creationFileTime": "134376833004815176"
+        },
+        "memberIdentity": {
+          "pid": 88004,
+          "creationFileTime": "134376833061908664",
+          "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x86\\vctip.exe"
+        },
+        "diskBytesOnly": true,
+        "terminal": {
+          "event": "terminal",
+          "reason": "owned-descendants-remain",
+          "elapsedMs": 213699,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 1,
+          "terminatedOwnedJob": true,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 3424,
+          "limitTerminatedProcesses": 0,
+          "passed": false,
+          "preCleanupSnapshotSequence": 6,
+          "tailEvidenceComplete": true
+        },
+        "classification": "retired local process-evidence marker; compiler generic failure preserved"
+      }
+    ],
+    "opaqueCandidateDispositions": {
+      "nativeExportSymbols": 2,
+      "statusOrRoleLabels": 17,
+      "commandArgumentIdentifiers": 13,
+      "pathReferences": 43,
+      "exactHistoricalFailureAttemptIdentifiers": 2,
+      "unresolved": 0
+    },
+    "testLiteralDistinction": {
+      "credentialShapedTestLiteralValuesFound": 0,
+      "testTargetNamesAreNotCredentialValues": true,
+      "examples": [
+        "-DSOUI_DEVTOOLS_PACKAGE_ENABLED=OFF",
+        "soui_local_resource_snapshot_tests",
+        "soui_webview2_native_observation_tests",
+        "soui_devtools_frontend_cleanup_tests",
+        "soui_devtools_keyboard_snapshot_tests"
+      ],
+      "ruleApplied": "A test-related label alone does not establish that a realistic token is safe. Here these values are option names/export symbols/target identifiers; no credential-shaped test value was found. The two real snapshot nonces are separately identified as historical evidence markers rather than falsely called dummy credentials."
+    },
+    "technicalMetadataRetained": [
+      "absolute historical machine/build paths",
+      "PID and process creation identities",
+      "content SHA values",
+      "two historical snapshot correlation nonces",
+      "source/target/schema/status identifiers"
+    ],
+    "requiredCredentialRedactions": [],
+    "recommendation": "The indexed raw records may remain byte-for-byte intact for the stated scoped provenance publication; preserve the original failures and releaseReady=false."
+  },
+  "limits": [
+    "Only Inputs.index.json and its twenty listed raw records were reviewed; referenced artifacts, screenshots, SDK member bodies and Git history were not audited.",
+    "No claim that historical machine paths/identifiers are anonymous.",
+    "No non-author code review, test rerun, product/VM execution, signing authorization or production qualification is supplied."
+  ],
+  "actions": {
+    "csrOrIndexModified": false,
+    "sourceModified": false,
+    "productExecuted": false,
+    "vmAccess": false,
+    "testsRepeated": false,
+    "applicationPackagingExecuted": false,
+    "waitingForRootActualSmokeImportAndPackagingStart": true
+  },
+  "qualificationGranted": false,
+  "releaseReady": false
+}

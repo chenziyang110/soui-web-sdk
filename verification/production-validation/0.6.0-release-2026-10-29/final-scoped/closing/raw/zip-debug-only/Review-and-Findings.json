@@ -1,0 +1,82 @@
+{
+  "schema": "soui.release06-zip-transport-review/v1",
+  "timeUtc": "2026-10-28T19:10:30.195159+00:00",
+  "scope": "Bounded ZIP metadata and pure-data fixture diagnosis, then read-only final repair-script review. No product, compiler or VM execution.",
+  "rootCause": {
+    "status": "not_determined",
+    "observedGuest": "Root independently observed the original failed 50-character stage exists and is empty; final two diagnostic roots absent.",
+    "dotfileHypothesis": "Not supported by inspected metadata or bounded host fixture. All5846 entries flags0 and DOS archive-only attrs0x20. First gitattributes exact raw agrees across originalZIP, pinned catalog and existing official7z readback.",
+    "pathLengthHypothesis": "Candidate only: 4 original member names209 chars would produce full260-char paths under the original50-char stage. Host Archive has cleanup of accumulated outputs on incomplete operation; Guest module behavior and exact initial failure not proved. Root instructed investigation stop after empty-stage evidence."
+  },
+  "metadata": {
+    "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/zip-debug-only/zip-metadata-602e61a5c73b4dd99249850684274a73.json",
+    "bytes": 8730,
+    "sha256": "ca38824c3480cc0c3158cf0903d219b73227bcbb7a3179d2d2e5bcaf9b7f830d"
+  },
+  "pathLengths": {
+    "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/zip-debug-only/path-lengths-e9e7a467f6d94eb5b8c9250291ab7be8.json",
+    "bytes": 17359,
+    "sha256": "353d2bc6121119287b35be9934808a2146ea75ef224c4b1d57469d353abf0806"
+  },
+  "fixture": {
+    "files": 20,
+    "dotPaths": 18,
+    "construction": "Original local compressed records and central metadata preserved; only central offsets/EOCD rebuilt.",
+    "artifact": {
+      "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/zip-debug-only/fixture-668564c339774782a882f01980e83301/original-record-subset.zip",
+      "bytes": 64014,
+      "sha256": "0e52ea975c1c1cb901bc58ad4c3064a9b7551516464b4f95943a82f7e5567ed3"
+    },
+    "actualResults": {
+      "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/zip-debug-only/fixture-668564c339774782a882f01980e83301/result.json",
+      "bytes": 2086,
+      "sha256": "f01e1e58cd1d43adc0f7b08be054097ec3b73b7a48b01dc59e2740b159067563"
+    },
+    "independentReadback": {
+      "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/zip-debug-only/fixture-668564c339774782a882f01980e83301/independent-readback.json",
+      "bytes": 1094,
+      "sha256": "e0c08367ee8e4f1f698f718f42fb94ab8d4740d1c25ad1af9fdbea96c80d6933"
+    },
+    "ps5ProcessExitCode": 1,
+    "ps5Failure": "Expand-Archive and file-count check completed. The later fixture Get-FileHash lookup failed in inherited host module environment; original stdout/stderr retained. Independent Python readback proved extracted20/20 closed set and all raw bytes exact. The process exit1 is not reclassified.",
+    "sevenZipProcessExitCode": 0,
+    "sevenZipIndependentRawExact": true
+  },
+  "repairReview": {
+    "status": "no_blocking_findings_in_inspected_final_scripts",
+    "inspected": [
+      {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vm-short-prep/media-tooldeps-4/DIAG-INSTALL-7Z.PS1",
+        "bytes": 1825,
+        "sha256": "a8e3c8e70c05132a03c1ec25030b3955141794dc7f9bf95061161cde5e964a3f"
+      },
+      {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vm-short-prep/media-tooldeps-4/publish-diag.cjs",
+        "bytes": 3634,
+        "sha256": "cc2056fc67ba5204514fbb37cb8b0c3a898ca614f00a79ba336e74dec02c7716"
+      }
+    ],
+    "checks": [
+      "Original cached CARRIER.JSON fixed SHA e52ba6a8bdcd0f5eed8e1620ba0f8a232c7907a5aa8611b295f3563990911eb8; ZIP bytes/hash inherited from that pinned catalog.",
+      "Pinned official 7z.exe4cd7d776c686427226a151789d2d61f0b2ed2c392148cc4e69c0238362fafecf and adjacent7z.dll5bd20fb38499d95c39594f41d4781b6181b3304b7f1f4d06b0182f514e7eaa74; pinned original Node64.",
+      "Fresh short C:/z06-8hex stage, prior empty stage untouched; final roots required absent before extraction.",
+      "7z test and extract native exits checked immediately; any nonzero stops.",
+      "Publisher checks exact5846 file closed set, every raw byte count/SHA, no symlinks through stage, ordinary single-link files.",
+      "Both SDK1496-file locks and manifest pin checked through original public readLock; four architecture accepted-build readers and compatibility delivery public readers run after raw gate.",
+      "Prepublication evidence written before moves; each destination absence rechecked before rename; no product execution."
+    ],
+    "limitations": [
+      "Read-only script review only. Guest7z startup, extraction and publication remain Root-owned runtime verification.",
+      "Host fixture process exit1 retained as actual.",
+      "No claim of Guest root cause or release readiness."
+    ]
+  },
+  "writesRestrictedTo": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/zip-debug-only",
+  "productStarted": false,
+  "compilerStarted": false,
+  "vmTouched": false,
+  "sourceModified": false,
+  "oldEvidenceOverwritten": false,
+  "releaseReady": false,
+  "learning": "Consume-only analyze context used. Reusable lesson capture deferred to Root owning delivery workflow; no project cognition or Learning indexes mutated."
+}

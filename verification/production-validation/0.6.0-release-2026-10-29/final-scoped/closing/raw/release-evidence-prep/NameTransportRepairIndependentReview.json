@@ -1,0 +1,118 @@
+{
+  "schema": "soui.release06-name-transport-repair-independent-review/v1",
+  "reviewedAt": "2026-10-28T18:54:51.193537+00:00",
+  "reviewer": "/root/remaining_policy_fault",
+  "decision": "ACCEPT_TINY_NAME_TRANSPORT_REPAIR_FOR_THE_UNIQUE_RETAINED_STAGE_ONLY",
+  "blockingFindings": [],
+  "reviewedPins": {
+    "result": {
+      "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vm-short-prep/media-namefix-3/result.json",
+      "bytes": 4879,
+      "sha256": "0bd3c97977574bed2286eed5879ae27f45fe0d1a7953e9c9eeb2fe1d0394b9de"
+    },
+    "iso": {
+      "path": "C:/s06namefixmedia/SouiRelease06NameFix.iso",
+      "bytes": 1122304,
+      "sha256": "b369c8fe0549fbbe7b9d3585f408d3ba84d064f2e2ab8864b2ee25bc78f686df"
+    },
+    "map": {
+      "path": "C:/s06namefixmedia/iso-tree/MAP.JSON",
+      "bytes": 11635,
+      "sha256": "592f8caf4549584b4d9409289baf39f1a66e612afbbcf352fdb435aa3e345659"
+    },
+    "controls": {
+      "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vm-short-prep/media-namefix-3/Controls.actual.json",
+      "bytes": 1410,
+      "sha256": "4b6f4452776b95620f867eae8afbd9b00d72612bb1b25fb876c14d6368ba6b54"
+    },
+    "scripts": [
+      {
+        "path": "C:/s06namefixmedia/iso-tree/namefix.cjs",
+        "bytes": 6000,
+        "sha256": "07f7fe335b09dcdc3e93bf1f3b4395e1879f68d7b9c4bb874856f0cc86d48635"
+      },
+      {
+        "path": "C:/s06namefixmedia/iso-tree/RUN.PS1",
+        "bytes": 1257,
+        "sha256": "d59f2fc79d7232a713f014652ea226966e2629ebad8d07c252afee4f72beb540"
+      },
+      {
+        "path": "C:/s06namefixmedia/iso-tree/DEFAULT-RESUME.PS1",
+        "bytes": 3609,
+        "sha256": "b793f36e2bb4b22d6ac8e37ce28b921a3f98e336f7eb8c8f3bab5f44f76fdb72"
+      },
+      {
+        "path": "C:/s06namefixmedia/iso-tree/DEFAULT-EXPORT.PS1",
+        "bytes": 4230,
+        "sha256": "4086d69675c24f04bd76a4e775f0b66ed834299eebeadfdc5d683faf24a3da0b"
+      }
+    ],
+    "originalInspection": {
+      "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vm-short-prep/media-default-1/ZipFilenameEncoding.actual.json",
+      "bytes": 19026,
+      "sha256": "5c2409e99c181ebaab858099a4b90c0ca65a074c3a8e9f894a542f5135d95fae"
+    },
+    "originalDefaultCatalog": {
+      "path": "C:/s06namefixmedia/iso-tree/DEFAULT-CARRIER.JSON",
+      "bytes": 1037218,
+      "sha256": "826c8b819562d1c989cc62b048f5ef608255b1c73670adcb2dfa8075a1f121cc"
+    }
+  },
+  "independentHeaderAndMapFacts": {
+    "originalZipSha256": "693590a6e3ea44f3f735d1a2c8255bc83945f8e52d2576a30da9949e95ac7eed",
+    "originalCentralEntriesIndependentlyDecoded": 4815,
+    "nonAsciiHeaderPairsIndependentlyRechecked": 17,
+    "everyLocalCentralNameByteAndFlagEqual": true,
+    "utf8FlagForTheseEntries": false,
+    "CP1252FromAndCP936ToDerivedFromActualRawHeaderBytes": true,
+    "all17MapOffsetsAndRawHexMatchOriginalZip": true,
+    "fullExpectedPathIsTheLookupKey": true,
+    "bodyShaIsAContentGuardNotANameSelector": true,
+    "fromAndToEachCaseInsensitiveUnique": true,
+    "fromAndToSetsDisjoint": true,
+    "projected4815PreimageNamesCaseInsensitiveUnique": true,
+    "diagnosticZip5846AsciiNamesUnaffected": "Independently inspected in original header report; no diagnostic payload filename repair is requested."
+  },
+  "staticRepairContract": {
+    "precondition": "RUN:5-10 and namefix:6-9 require all original three destination roots absent and exactly one retained C:/s06-stage-<32hex> directory, matching the explicit stage. Root stage/reparse/path prefix checks keep filesystem mutations in this owner stage. Node64 is pinned to the original extracted bytes.",
+    "trustedMap": "namefix:10-26 hardpins original catalog and17map, uses fatal UTF8 JSON, relative path traversal/colon/backslash rejection and stage-bound full paths; each mapping is redecoded from header hex as windows-1252->gbk. Every target must be absent, with no wildcard/hash search.",
+    "fullPreimage": "namefix:27-31 proves exact projected4815 file-name membership before moving anything, verifies every original raw length/SHA and ordinary single-link identity, and writes the complete Preimage.actual.json outside the stage in a fresh exclusive evidence directory.",
+    "mutation": "namefix:34-36 rechecks each exact source raw pin and destination absence immediately before moving. Only necessary target parent directories are created inside the stage, then17 fixed files are renamed and their raw/device/inode identity checked. There is no file content rewrite, file deletion, overwrite flag, recursive move/delete, extraction or broad repository mutation.",
+    "fullPostimage": "namefix:37-41 requires all original4815 canonical names as an exact file set and each original raw length/SHA before Repair.actual.json can say success. Old empty directories remain; the full map and moved entries preserve a deterministic inverse mapping.",
+    "failureAndReversibility": "Repair is not transactional and does not automatically roll back. An I/O/assertion failure exits nonzero, leaves all bytes/empty directories and complete preimage/map plus Failure.actual.json/moved list for the operator. It never invokes resume after repair failure. Do not rerun the strict full-preimage helper on a partial state or claim an automatic rollback; any inverse operation must use retained exact map/preimage and verify the resulting full set.",
+    "resume": "RUN:11-13 propagates repair nonzero, and only after full success invokes the unchanged UTF8 DEFAULT-RESUME with the same sole stage. That previously reviewed script rechecks original4815 all raw then moves three absent C roots and invokes the same public Guest-Owned controller/Runner/export. It does not bypass public verification or reset any application clock.",
+    "budgetsAndQualification": "No application/grant/compiler/SDK policy changes. Default desktop/modern inner45s/40s+2s and outer180s/90s+2s remain in the unchanged original controller. Product GUI, process natural closure and transport completion still need actual raw results; filename repair cannot grant permission or turn old failures into passes."
+  },
+  "actualMediaFacts": {
+    "sevenFlatReadbackExactMembershipAndAllRawPins": true,
+    "isoActualPinMatched": true,
+    "oldDefaultCarrierAndExporterRawUnchanged": true,
+    "resumeRawUnchangedFromPreviouslyReviewedUtf8Version": true,
+    "mapAndScriptsAreAsciiFilenameCarrierMembers": true,
+    "existingProducerStepsRecordedExitZero": [
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "pureTransportFixturesReexecutedByReviewer": false
+  },
+  "retainedBoundaries": [
+    "The original first ISO ANSI JSON decode failure and subsequent cross-ACP name failure are separate preparation failures before product start, retained as Root-reported actual facts; this static review neither runs nor relabels them.",
+    "Stage expected to match exactly the CP1252-decoded full preimage. Any different code page, name collision, missing/extra file, wrong bytes, existing target or reparse/hardlink refuses; no same-hash fallback.",
+    "Repair receipts are retained at C:/s06-namefix-evidence-<uuid>. The unchanged default COM1 exporter does not automatically include that separate directory; Root must preserve/transport those originals before claiming independent review of actual guest repair, rather than treating this static approval as its execution proof.",
+    "RUN success alone is not complete exported evidence or GUI pass; retain controller/export exits separately and validate complete raw serial frame.",
+    "The out-owned future full-source UTF8 ZIP packaging proposal is a separate data producer decision; this review does not claim the old public Package.ps1 or existing legacy-name ZIP transport passed."
+  ],
+  "stageRepairExecutedByReviewer": false,
+  "productExecuted": false,
+  "vmTouched": false,
+  "compilerStarted": false,
+  "sourceOrMediaEdited": false,
+  "testPassed": null,
+  "guiPassed": null,
+  "releaseReady": false,
+  "productionQualificationComplete": false,
+  "fullDevtoolsGoalComplete": false
+}

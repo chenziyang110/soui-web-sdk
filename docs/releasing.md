@@ -2,9 +2,9 @@
 
 ## 0.6.0 本次授权与执行范围
 
-本轮目标为普通 GitHub Release `v0.6.0`，纳入本地受控 DevTools 与已合入主线的能力。当前源码、依赖、构建及交付材料正在收口，尚未发布。用户于 2026-10-28 明确选择普通 Release 并后置低收益长测；该决定替代此前候选阶段要求立即执行全部长测的顺序，不修改各验收项或旧失败的事实。见 [ADR-0136](adr/0136-0.6.0-release-scope.md)和[0.6.0 发布说明](releases/0.6.0.md)。
+本轮目标为普通 GitHub Release `v0.6.0`，纳入本地受控 DevTools 与已合入主线的能力。两架构构建、有限回归、安装消费者、默认应用八次运行与九份供应/应用 ZIP 已有实际记录；受控 GUI 代表例已记录，完整对应源码及最终发布身份见附件清单，附件上传状态以实际发布页为准。用户于 2026-10-28 明确选择普通 Release 并后置低收益长测；该决定替代此前候选阶段要求立即执行全部长测的顺序，不修改各验收项或旧失败的事实。见 [ADR-0136](adr/0136-0.6.0-release-scope.md)和[0.6.0 发布说明](releases/0.6.0.md)。
 
-根版本使用 `0.6.0`，GitHub 分类使用 `prerelease=false`。生产资格继续 `releaseReady=false`、`productionQualificationComplete=false`；没有运行完整 Collector 时，根验收记录保持 `status=unverified`。0.5.0 的实际 GitHub 分类是 prerelease，不能重写为普通 Release 先例。
+根版本使用 `0.6.0`，GitHub 分类使用 `prerelease=false`。生产资格继续 `releaseReady=false`、`productionQualificationComplete=false`、`fullDevtoolsGoalComplete=false`；没有运行完整 Collector 时，根验收记录保持 `status=unverified`。0.5.0 的实际 GitHub 分类是 prerelease，不能重写为普通 Release 先例。
 
 按实际依赖顺序执行最小充分集合：
 
@@ -13,13 +13,13 @@
 3. 使用所选受支持工具链完成适用的两架构 SDK/应用配置；共同 Node/工具测试只执行一次，Release 每架构执行必要原生回归。同一实际输入已有充分覆盖时，不换入口重复整套用例。
 4. 核对新 SDK 的安装、生成项目、公开 CMake 消费者及实际运行/退出。DevTools 的默认拒绝、可信原生授权、配对资源和目标退休仍须按实际新载荷检查；Modern/Auto 的 Runtime 及双启动路径按交付选择执行。
 5. 对最终应用包解压，验证资源/许可闭集、业务往返和自然收尾；发布前保留原始命令、退出码、跳过、失败和 SHA-256。
-6. 写本轮真实范围报告，更新受影响 SBOM、依赖/配对记录和当前未验收状态；Root 最后暂存、生成/验证源码清单并打包，固定 tag 对应的最终 commit 和资产集合。
+6. 写本轮真实范围报告，更新受影响 SBOM、依赖/配对记录和当前未验收状态；发布维护者最后暂存、生成/验证源码清单并打包，固定 tag 对应的最终 commit 和资产集合。
 
 D13 千次、D14 八小时、完整性能对比、完整目标系统/输入环境资格和低收益重复升级/搬移演练保留待验。D01–D12 的缺项不得仅以优先级删除。完整 `Verify-Release.ps1` 六阶段若没有执行，不能用代表短验冒称它已通过；当前安装/生成、消费者、资源与权限门以及真实退出不因长测后置而省略。总期限、默认拒绝、失败判定和资源 fence 保持不变。
 
 DevTools 材料选择使用 `Build.ps1 -WithDevToolsPackage` 及文档列出的六个显式路径/pin 参数；它不发 grant，不能与 `-SdkOnly` 混用。源码诊断另用 `-WebProfile source-diagnostic`。MiniBlink Inspector、业务 source map 与原生策略是独立身份；prepared 与公开部署的 delivery 元数据不同，编译输入必须绑定实际消费者读取的那一种，不能复用看似相近的散列。
 
-建议保持既有完整源码 ZIP、source SDK ZIP 和两架构 Starter/ModernStarter/Workbench ZIP，并附逐包 SHA-256、应用 `.zip.json`、Release Manifest/SUMS。额外 Auto ZIP、Bundle、7z 或供应材料以最终实际清单为准；选择后满足相应的启动、恢复或配对门。Modern 不包含 WebView2 Runtime，Auto 不下载 Runtime；打包工具不执行代码签名，不捆绑 Fixed Runtime 或 Windows 字体文件。签名状态按新原件核对后披露。
+本版已生成 source SDK ZIP、两架构 DevTools 组件 ZIP 和六份 Starter/ModernStarter/Workbench ZIP；六应用的公开打包、完整解压及侧车身份已核。Workbench 两件另做显式 UTF-8 运输重封并保留原件，payload 不变；这不把原打包命令改写为带 UTF-8 参数的命令。完整源码资产名固定为 `soui-sdk-0.6.0-full-source.zip`，按最终 Git 清单通过不修改的公开 `source-archive.cjs stage` 和官方 7-Zip `-mcu=on` 生成，不记为本轮 `Package.ps1` 已执行。最终 SHA-256、Release Manifest/SUMS 与上传后身份由发布附件及读回记录提供。额外 Auto ZIP、Bundle 或 7z 资产只有实际列入清单并满足相应门后才提供。Modern 不包含 WebView2 Runtime，Auto 不下载 Runtime；打包工具不执行代码签名，不捆绑 Fixed Runtime 或 Windows 字体文件。签名状态按新原件核对后披露。
 
 本轮第三方再分发及对应源码说明见[许可材料](licenses/v0.6.0-redistribution.md)，完整源码资产见发布页。技术合成工具不产生外部批准，MIT 首方许可也不替代第三方条件。
 
@@ -27,10 +27,10 @@ DevTools 材料选择使用 `Build.ps1 -WithDevToolsPackage` 及文档列出的�
 
 ```powershell
 node tools/Collect-Verification.cjs --record-unverified `
-  --evidence-reference verification/production-validation/<本轮目录>/<真实范围报告>.json
+  --evidence-reference verification/production-validation/0.6.0-release-2026-10-29/RELEASE-FACTS.json
 ```
 
-报告须有 `version: "0.6.0"`、`releaseReady: false`、`productionQualificationComplete: false`。上述路径是操作说明中的占位符，必须改为本轮已存在的实际报告。入口只记录未验收状态并保留旧 acceptance 原字节，不运行测试，不重验外部原件，不输出完整验收通过。它与其他 Collector 串行执行，之后再封存最终源码清单。
+先封存上述 RELEASE-FACTS 原件再执行此命令。报告须有 `version: "0.6.0"`、`releaseReady: false`、`productionQualificationComplete: false`、`fullDevtoolsGoalComplete: false`。入口只记录未验收状态并保留旧 acceptance 原字节，不运行测试，不重验外部原件，不输出完整验收通过；根记录保持 `collectionExecuted=false`、`sourceDeliveryVerified=false`、`releaseReady=false`。它与其他 Collector 串行执行，之后再封存最终源码清单。
 
 以下 0.5.0 与更早流程保留历史身份或用于完整资格验证；本轮事实以新的 0.6.0 范围报告为准。
 

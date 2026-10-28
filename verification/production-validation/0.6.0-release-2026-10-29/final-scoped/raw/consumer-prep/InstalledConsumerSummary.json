@@ -1,0 +1,737 @@
+{
+  "root": "C:/sr06",
+  "result": "PASS_TWO_ARCH_INSTALLED_PUBLIC_AND_OPTIONAL_CONSOLE_CONSUMERS",
+  "createdAt": "2026-10-28T15:21:50.147Z",
+  "actual": {
+    "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/consumer-prep/Actual.json",
+    "bytes": 253588,
+    "sha256": "99d3e9731fb5bc1cb75aebe7074b3df0de130ac111dc921f1d0d0022e6080fbb"
+  },
+  "prepared": {
+    "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/consumer-prep/Prepared.json",
+    "bytes": 6099,
+    "sha256": "ae6b39535d53e2bff3152629c2e00c84c5e8685a7597df69c9c849d3c1d51d54"
+  },
+  "cases": [
+    {
+      "architecture": "x64",
+      "prefix": "C:/sr06/out/release-install-x64-release",
+      "files": 473,
+      "bytes": 80903306,
+      "closure": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/consumer-prep/x64-PrefixFiles.json",
+        "bytes": 95378,
+        "sha256": "8fdfb5f98c9e64b9f08b2b44678a2d28fc43ed5fa6d70c4ae123a7c44e420bef"
+      },
+      "copiedPublicFixture": [
+        {
+          "source": {
+            "path": "C:/sr06/tests/package-consumer/CMakeLists.txt",
+            "bytes": 766,
+            "sha256": "d236cac30e7aa0c99a0f351685a178e780fc6b2ad7f19543759292f1c2bb11f7"
+          },
+          "copy": {
+            "path": "C:/sr06/out/release-consumer-x64-release/source/public/CMakeLists.txt",
+            "bytes": 766,
+            "sha256": "d236cac30e7aa0c99a0f351685a178e780fc6b2ad7f19543759292f1c2bb11f7"
+          }
+        },
+        {
+          "source": {
+            "path": "C:/sr06/tests/package-consumer/main.cpp",
+            "bytes": 300,
+            "sha256": "ebaf7a7d2aa6367bc1fc37438b36f63a54b6959403516bfc92edd9c00f64d831"
+          },
+          "copy": {
+            "path": "C:/sr06/out/release-consumer-x64-release/source/public/main.cpp",
+            "bytes": 300,
+            "sha256": "ebaf7a7d2aa6367bc1fc37438b36f63a54b6959403516bfc92edd9c00f64d831"
+          }
+        },
+        {
+          "source": {
+            "path": "C:/sr06/tests/package-consumer/devtools.cpp",
+            "bytes": 1914,
+            "sha256": "7a67eeaf77c2ea65fa6579e0262417d50058dcd216c14ce7073c0f7eb2e7118a"
+          },
+          "copy": {
+            "path": "C:/sr06/out/release-consumer-x64-release/source/public/devtools.cpp",
+            "bytes": 1914,
+            "sha256": "7a67eeaf77c2ea65fa6579e0262417d50058dcd216c14ce7073c0f7eb2e7118a"
+          }
+        }
+      ],
+      "optionalConsumerSource": {
+        "path": "C:/sr06/out/release-consumer-x64-release/source/optional.cpp",
+        "bytes": 1074,
+        "sha256": "0dc68c3d21a56d5c6c4768a2d822352486e32e399266ad65f9d78c6d819ff378"
+      },
+      "wrapper": {
+        "path": "C:/sr06/out/release-consumer-x64-release/source/CMakeLists.txt",
+        "bytes": 916,
+        "sha256": "a064c4744e33afbd7b8122c26ebf919a1c6b65c6141083cf95b9b620756ce4a1"
+      },
+      "installedConfig": [
+        {
+          "path": "C:/sr06/out/release-install-x64-release/lib/cmake/SouiSdk/SouiSdkConfig.cmake",
+          "bytes": 1377,
+          "sha256": "997a104e5ce0e9c4173e037830ddc33592546ebc434cea3e2346481d5c2dce13"
+        },
+        {
+          "path": "C:/sr06/out/release-install-x64-release/lib/cmake/SouiSdk/SouiSdkConfigVersion.cmake",
+          "bytes": 3332,
+          "sha256": "ba163dac84dea975beed6210d53406f709ba1f3ca4065828f94e4710b315df14"
+        },
+        {
+          "path": "C:/sr06/out/release-install-x64-release/lib/cmake/SouiSdk/SouiSdkTargets.cmake",
+          "bytes": 5297,
+          "sha256": "b99f585dce6a426506180718c90b54e0c39d90287567caa28e341f7cca279df9"
+        },
+        {
+          "path": "C:/sr06/out/release-install-x64-release/lib/cmake/SouiSdk/SouiSdkTargets-release.cmake",
+          "bytes": 1863,
+          "sha256": "1172d48a20e1560b8d54da0d2c5abe66368d0026eba582f2564dede703454e88"
+        }
+      ],
+      "installedVersionHeader": {
+        "path": "C:/sr06/out/release-install-x64-release/include/soui/version.h",
+        "bytes": 240,
+        "sha256": "74e0b9639567ae187c236628bec3b0a30e7ad113ee15f78b0cbd4283258f2cc0"
+      },
+      "libraryInputs": [
+        {
+          "path": "C:/sr06/out/release-build/x64/sdk/Release/soui_sdk.lib",
+          "bytes": 57039658,
+          "sha256": "ab67927611d8eb330a7ffc7d54331645230509552859863eea9eedb888ab2b49"
+        },
+        {
+          "path": "C:/sr06/out/release-build/x64/sdk/renderers/webview2/Release/soui_webview2.lib",
+          "bytes": 8306938,
+          "sha256": "fba57307484557bb6bfb860b1d6c4c6a14adf8092409ae4b44f23fe69616b0f2"
+        },
+        {
+          "path": "C:/sr06/out/release-build/x64/sdk/renderers/webview2/Release/soui_auto_host.lib",
+          "bytes": 895652,
+          "sha256": "9e4d884444349e41baf4d407a5c1e671b55984b9b29b65c50862cef888f6915f"
+        }
+      ],
+      "resolvedInstalledLibraries": [
+        {
+          "path": "C:/sr06/out/release-install-x64-release/lib/Release/soui_sdk.lib",
+          "bytes": 57039658,
+          "sha256": "ab67927611d8eb330a7ffc7d54331645230509552859863eea9eedb888ab2b49"
+        },
+        {
+          "path": "C:/sr06/out/release-install-x64-release/lib/Release/soui_webview2.lib",
+          "bytes": 8306938,
+          "sha256": "fba57307484557bb6bfb860b1d6c4c6a14adf8092409ae4b44f23fe69616b0f2"
+        },
+        {
+          "path": "C:/sr06/out/release-install-x64-release/lib/Release/soui_auto_host.lib",
+          "bytes": 895652,
+          "sha256": "9e4d884444349e41baf4d407a5c1e671b55984b9b29b65c50862cef888f6915f"
+        },
+        {
+          "path": "C:/sr06/out/release-install-x64-release/lib/webview2/WebView2LoaderStatic.lib",
+          "bytes": 11463528,
+          "sha256": "e66284970876a616c82e7dcda75a17fd46d04827f9de81d4299b8862d34d25d6"
+        }
+      ],
+      "actionJsonInclude": "C:/sr06/out/release-install-x64-release/include/soui/action-json",
+      "runtimeDoctor": {
+        "path": "C:/sr06/out/release-build/x64/bin/Release/SouiRuntimeDoctor/SouiRuntimeDoctor.exe",
+        "bytes": 254464,
+        "sha256": "c9729e31433cd3bca44c6e92fbd8cf3807a08c711a1b9cf83c1c0d5c47b6bb2c",
+        "machine": "0x8664",
+        "subsystem": 3,
+        "executed": false
+      },
+      "executables": [
+        {
+          "path": "C:/sr06/out/release-consumer-x64-release/build/public/Release/soui_consumer.exe",
+          "bytes": 417280,
+          "sha256": "47096fdf44e6c68e6ab976a6e64f65a930873265678a98da7dd4335154a4d48c",
+          "machine": "0x8664",
+          "subsystem": 3
+        },
+        {
+          "path": "C:/sr06/out/release-consumer-x64-release/build/public/Release/soui_devtools_consumer.exe",
+          "bytes": 755200,
+          "sha256": "6911794646c0cd3dc90a07e1ac827e7e56113d462f23a701839f95d67aca1f93",
+          "machine": "0x8664",
+          "subsystem": 3
+        },
+        {
+          "path": "C:/sr06/out/release-consumer-x64-release/build/Release/soui_optional_consumer.exe",
+          "bytes": 211456,
+          "sha256": "4e5d5d1802226f14c6a8c7f3c453d155f460f305ff26ca8811da8235905b4d5b",
+          "machine": "0x8664",
+          "subsystem": 3
+        }
+      ],
+      "legal": {
+        "legacyFiles": 203,
+        "originalHierarchyFiles": 203,
+        "hierarchiesByteIdentical": true,
+        "redistributionDoc": {
+          "path": "C:/sr06/out/release-install-x64-release/share/SouiSdk/docs/licenses/v0.6.0-redistribution.md",
+          "bytes": 5427,
+          "sha256": "475eeb756afa369a58d19170c86de19de17a407043358cb82b0a002458176f5c"
+        },
+        "noticeRelativeLinksMissing": []
+      },
+      "homeScan": {
+        "formats": "ASCII and UTF16LE, slash/backslash, original/lower/upper case current developer home",
+        "matches": []
+      },
+      "installedUtf8TextNoLocalSourceOrHomePaths": true
+    },
+    {
+      "architecture": "x86",
+      "prefix": "C:/sr06/out/release-install-x86-release",
+      "files": 473,
+      "bytes": 58602650,
+      "closure": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/consumer-prep/x86-PrefixFiles.json",
+        "bytes": 95378,
+        "sha256": "9e949a479eabc46c13c8927fef4e7de3be4f6fe51c8509b992bbe0fa6036aae4"
+      },
+      "copiedPublicFixture": [
+        {
+          "source": {
+            "path": "C:/sr06/tests/package-consumer/CMakeLists.txt",
+            "bytes": 766,
+            "sha256": "d236cac30e7aa0c99a0f351685a178e780fc6b2ad7f19543759292f1c2bb11f7"
+          },
+          "copy": {
+            "path": "C:/sr06/out/release-consumer-x86-release/source/public/CMakeLists.txt",
+            "bytes": 766,
+            "sha256": "d236cac30e7aa0c99a0f351685a178e780fc6b2ad7f19543759292f1c2bb11f7"
+          }
+        },
+        {
+          "source": {
+            "path": "C:/sr06/tests/package-consumer/main.cpp",
+            "bytes": 300,
+            "sha256": "ebaf7a7d2aa6367bc1fc37438b36f63a54b6959403516bfc92edd9c00f64d831"
+          },
+          "copy": {
+            "path": "C:/sr06/out/release-consumer-x86-release/source/public/main.cpp",
+            "bytes": 300,
+            "sha256": "ebaf7a7d2aa6367bc1fc37438b36f63a54b6959403516bfc92edd9c00f64d831"
+          }
+        },
+        {
+          "source": {
+            "path": "C:/sr06/tests/package-consumer/devtools.cpp",
+            "bytes": 1914,
+            "sha256": "7a67eeaf77c2ea65fa6579e0262417d50058dcd216c14ce7073c0f7eb2e7118a"
+          },
+          "copy": {
+            "path": "C:/sr06/out/release-consumer-x86-release/source/public/devtools.cpp",
+            "bytes": 1914,
+            "sha256": "7a67eeaf77c2ea65fa6579e0262417d50058dcd216c14ce7073c0f7eb2e7118a"
+          }
+        }
+      ],
+      "optionalConsumerSource": {
+        "path": "C:/sr06/out/release-consumer-x86-release/source/optional.cpp",
+        "bytes": 1074,
+        "sha256": "0dc68c3d21a56d5c6c4768a2d822352486e32e399266ad65f9d78c6d819ff378"
+      },
+      "wrapper": {
+        "path": "C:/sr06/out/release-consumer-x86-release/source/CMakeLists.txt",
+        "bytes": 916,
+        "sha256": "a064c4744e33afbd7b8122c26ebf919a1c6b65c6141083cf95b9b620756ce4a1"
+      },
+      "installedConfig": [
+        {
+          "path": "C:/sr06/out/release-install-x86-release/lib/cmake/SouiSdk/SouiSdkConfig.cmake",
+          "bytes": 1377,
+          "sha256": "997a104e5ce0e9c4173e037830ddc33592546ebc434cea3e2346481d5c2dce13"
+        },
+        {
+          "path": "C:/sr06/out/release-install-x86-release/lib/cmake/SouiSdk/SouiSdkConfigVersion.cmake",
+          "bytes": 3332,
+          "sha256": "daed14daa7d7d0d00e1e9f23ba575816cc1d7ce72fbdecc7f369619ae8c694f0"
+        },
+        {
+          "path": "C:/sr06/out/release-install-x86-release/lib/cmake/SouiSdk/SouiSdkTargets.cmake",
+          "bytes": 5297,
+          "sha256": "b99f585dce6a426506180718c90b54e0c39d90287567caa28e341f7cca279df9"
+        },
+        {
+          "path": "C:/sr06/out/release-install-x86-release/lib/cmake/SouiSdk/SouiSdkTargets-release.cmake",
+          "bytes": 1863,
+          "sha256": "1172d48a20e1560b8d54da0d2c5abe66368d0026eba582f2564dede703454e88"
+        }
+      ],
+      "installedVersionHeader": {
+        "path": "C:/sr06/out/release-install-x86-release/include/soui/version.h",
+        "bytes": 240,
+        "sha256": "74e0b9639567ae187c236628bec3b0a30e7ad113ee15f78b0cbd4283258f2cc0"
+      },
+      "libraryInputs": [
+        {
+          "path": "C:/sr06/out/release-sdk-x86-release/sdk/Release/soui_sdk.lib",
+          "bytes": 37409002,
+          "sha256": "d4ec7df4957d4110f0ffbd339ff840770e81860faceda18be09e19fc099afafd"
+        },
+        {
+          "path": "C:/sr06/out/release-sdk-x86-release/sdk/renderers/webview2/Release/soui_webview2.lib",
+          "bytes": 5981952,
+          "sha256": "a141bd6f1ed089e039622b0795c43e1af06f7598383c1605a8211f618cf0e5e4"
+        },
+        {
+          "path": "C:/sr06/out/release-sdk-x86-release/sdk/renderers/webview2/Release/soui_auto_host.lib",
+          "bytes": 638128,
+          "sha256": "297a8de92ed44ee0be47f8481c2634ffd02304fd0b33a9872a26c9f98f20d13f"
+        }
+      ],
+      "resolvedInstalledLibraries": [
+        {
+          "path": "C:/sr06/out/release-install-x86-release/lib/Release/soui_sdk.lib",
+          "bytes": 37409002,
+          "sha256": "d4ec7df4957d4110f0ffbd339ff840770e81860faceda18be09e19fc099afafd"
+        },
+        {
+          "path": "C:/sr06/out/release-install-x86-release/lib/Release/soui_webview2.lib",
+          "bytes": 5981952,
+          "sha256": "a141bd6f1ed089e039622b0795c43e1af06f7598383c1605a8211f618cf0e5e4"
+        },
+        {
+          "path": "C:/sr06/out/release-install-x86-release/lib/Release/soui_auto_host.lib",
+          "bytes": 638128,
+          "sha256": "297a8de92ed44ee0be47f8481c2634ffd02304fd0b33a9872a26c9f98f20d13f"
+        },
+        {
+          "path": "C:/sr06/out/release-install-x86-release/lib/webview2/WebView2LoaderStatic.lib",
+          "bytes": 11428262,
+          "sha256": "bd66d0b41302e6d56938e61ded16e32bc66318fd54324b0dae419aeeccfb9b96"
+        }
+      ],
+      "actionJsonInclude": "C:/sr06/out/release-install-x86-release/include/soui/action-json",
+      "runtimeDoctor": {
+        "path": "C:/sr06/out/release-sdk-x86-release/bin/Release/SouiRuntimeDoctor/SouiRuntimeDoctor.exe",
+        "bytes": 202240,
+        "sha256": "7ef8b4c53e89c9d1025bf2133b90358b64d98c3b1bf142c86203a9f9c61b3ca8",
+        "machine": "0x14c",
+        "subsystem": 3,
+        "executed": false
+      },
+      "executables": [
+        {
+          "path": "C:/sr06/out/release-consumer-x86-release/build/public/Release/soui_consumer.exe",
+          "bytes": 356352,
+          "sha256": "5c479662a70200b0f11e55c8bcc95d81339e605dd3862c9b3e2e48a5b2ccebb0",
+          "machine": "0x14c",
+          "subsystem": 3
+        },
+        {
+          "path": "C:/sr06/out/release-consumer-x86-release/build/public/Release/soui_devtools_consumer.exe",
+          "bytes": 665088,
+          "sha256": "aec1b9206edc0c15e101aafec0054caabbd9370fc5f1d31909a698a25ecbcdd2",
+          "machine": "0x14c",
+          "subsystem": 3
+        },
+        {
+          "path": "C:/sr06/out/release-consumer-x86-release/build/Release/soui_optional_consumer.exe",
+          "bytes": 179712,
+          "sha256": "1e1c9358fad6abab08de70a0e616aedc1d44ff0c6424c708c740fe94b36bf7ec",
+          "machine": "0x14c",
+          "subsystem": 3
+        }
+      ],
+      "legal": {
+        "legacyFiles": 203,
+        "originalHierarchyFiles": 203,
+        "hierarchiesByteIdentical": true,
+        "redistributionDoc": {
+          "path": "C:/sr06/out/release-install-x86-release/share/SouiSdk/docs/licenses/v0.6.0-redistribution.md",
+          "bytes": 5427,
+          "sha256": "475eeb756afa369a58d19170c86de19de17a407043358cb82b0a002458176f5c"
+        },
+        "noticeRelativeLinksMissing": []
+      },
+      "homeScan": {
+        "formats": "ASCII and UTF16LE, slash/backslash, original/lower/upper case current developer home",
+        "matches": []
+      },
+      "installedUtf8TextNoLocalSourceOrHomePaths": true
+    }
+  ],
+  "phases": [
+    {
+      "name": "x64-runtime-doctor-build",
+      "executable": "C:/Program Files/CMake/bin/cmake.exe",
+      "args": [
+        "--build",
+        "C:/sr06/out/release-build/x64",
+        "--config",
+        "Release",
+        "--target",
+        "SouiRuntimeDoctor",
+        "--parallel",
+        "1",
+        "--",
+        "/m:1",
+        "/nr:false"
+      ],
+      "pid": 61908,
+      "exitCode": 0,
+      "signal": null,
+      "elapsedMs": 5245,
+      "stdout": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/consumer-prep/x64-runtime-doctor-build.stdout.log",
+        "bytes": 913,
+        "sha256": "d8cac13bf7e634c28eb4d44eb30456cdd2e6fb13e0981e94b523a4696184bd83"
+      },
+      "stderr": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/consumer-prep/x64-runtime-doctor-build.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "x64-install",
+      "executable": "C:/Program Files/CMake/bin/cmake.exe",
+      "args": [
+        "--install",
+        "C:/sr06/out/release-build/x64",
+        "--config",
+        "Release",
+        "--prefix",
+        "C:/sr06/out/release-install-x64-release"
+      ],
+      "pid": 93652,
+      "exitCode": 0,
+      "signal": null,
+      "elapsedMs": 1676,
+      "stdout": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/consumer-prep/x64-install.stdout.log",
+        "bytes": 90295,
+        "sha256": "103023b84713e4aa695d45c1dca262114743203f2dfc09e6becb47e7b6ff0801"
+      },
+      "stderr": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/consumer-prep/x64-install.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "x64-consumer-configure",
+      "executable": "C:/Program Files/CMake/bin/cmake.exe",
+      "args": [
+        "-S",
+        "C:\\sr06\\out\\release-consumer-x64-release\\source",
+        "-B",
+        "C:\\sr06\\out\\release-consumer-x64-release\\build",
+        "-G",
+        "Visual Studio 17 2022",
+        "-A",
+        "x64,version=10.0.19041.0",
+        "-T",
+        "v143,host=x64,version=14.44.35207",
+        "-DCMAKE_PREFIX_PATH=C:/sr06/out/release-install-x64-release",
+        "-DSouiSdk_DIR=C:\\sr06\\out\\release-install-x64-release\\lib\\cmake\\SouiSdk"
+      ],
+      "pid": 23804,
+      "exitCode": 0,
+      "signal": null,
+      "elapsedMs": 6649,
+      "stdout": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/consumer-prep/x64-consumer-configure.stdout.log",
+        "bytes": 572,
+        "sha256": "3afe47d658fec186c1bd1e01e250ac3dc77f0cf8504e3ed1d96239229924af72"
+      },
+      "stderr": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/consumer-prep/x64-consumer-configure.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "x64-consumer-build",
+      "executable": "C:/Program Files/CMake/bin/cmake.exe",
+      "args": [
+        "--build",
+        "C:\\sr06\\out\\release-consumer-x64-release\\build",
+        "--config",
+        "Release",
+        "--target",
+        "soui_consumer",
+        "soui_devtools_consumer",
+        "soui_optional_consumer",
+        "--parallel",
+        "1",
+        "--",
+        "/m:1",
+        "/nr:false"
+      ],
+      "pid": 90952,
+      "exitCode": 0,
+      "signal": null,
+      "elapsedMs": 10485,
+      "stdout": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/consumer-prep/x64-consumer-build.stdout.log",
+        "bytes": 885,
+        "sha256": "a7378ed4f394c660b1b87a48df1eb1eef670b2ec0fa054f48ad84cfbbcc132a4"
+      },
+      "stderr": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/consumer-prep/x64-consumer-build.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "x64-soui_consumer-pure-run",
+      "executable": "C:/sr06/out/release-consumer-x64-release/build/public/Release/soui_consumer.exe",
+      "args": [],
+      "pid": 94736,
+      "exitCode": 0,
+      "signal": null,
+      "elapsedMs": 76,
+      "stdout": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/consumer-prep/x64-soui_consumer-pure-run.stdout.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/consumer-prep/x64-soui_consumer-pure-run.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "x64-soui_devtools_consumer-pure-run",
+      "executable": "C:/sr06/out/release-consumer-x64-release/build/public/Release/soui_devtools_consumer.exe",
+      "args": [],
+      "pid": 40500,
+      "exitCode": 0,
+      "signal": null,
+      "elapsedMs": 74,
+      "stdout": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/consumer-prep/x64-soui_devtools_consumer-pure-run.stdout.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/consumer-prep/x64-soui_devtools_consumer-pure-run.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "x64-soui_optional_consumer-pure-run",
+      "executable": "C:/sr06/out/release-consumer-x64-release/build/Release/soui_optional_consumer.exe",
+      "args": [],
+      "pid": 33472,
+      "exitCode": 0,
+      "signal": null,
+      "elapsedMs": 72,
+      "stdout": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/consumer-prep/x64-soui_optional_consumer-pure-run.stdout.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/consumer-prep/x64-soui_optional_consumer-pure-run.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "x86-runtime-doctor-build",
+      "executable": "C:/Program Files/CMake/bin/cmake.exe",
+      "args": [
+        "--build",
+        "C:/sr06/out/release-sdk-x86-release",
+        "--config",
+        "Release",
+        "--target",
+        "SouiRuntimeDoctor",
+        "--parallel",
+        "1",
+        "--",
+        "/m:1",
+        "/nr:false"
+      ],
+      "pid": 78876,
+      "exitCode": 0,
+      "signal": null,
+      "elapsedMs": 4718,
+      "stdout": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/consumer-prep/x86-runtime-doctor-build.stdout.log",
+        "bytes": 937,
+        "sha256": "393cfbdfcb758b5a78097e9d39887cbcdc322de04f5f59a2f28f75292eed6b92"
+      },
+      "stderr": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/consumer-prep/x86-runtime-doctor-build.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "x86-install",
+      "executable": "C:/Program Files/CMake/bin/cmake.exe",
+      "args": [
+        "--install",
+        "C:/sr06/out/release-sdk-x86-release",
+        "--config",
+        "Release",
+        "--prefix",
+        "C:/sr06/out/release-install-x86-release"
+      ],
+      "pid": 73628,
+      "exitCode": 0,
+      "signal": null,
+      "elapsedMs": 1354,
+      "stdout": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/consumer-prep/x86-install.stdout.log",
+        "bytes": 90295,
+        "sha256": "368a502df50acbb11f0e073841885a76d75a61e755430a79cc14c051289ffa63"
+      },
+      "stderr": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/consumer-prep/x86-install.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "x86-consumer-configure",
+      "executable": "C:/Program Files/CMake/bin/cmake.exe",
+      "args": [
+        "-S",
+        "C:\\sr06\\out\\release-consumer-x86-release\\source",
+        "-B",
+        "C:\\sr06\\out\\release-consumer-x86-release\\build",
+        "-G",
+        "Visual Studio 17 2022",
+        "-A",
+        "Win32,version=10.0.19041.0",
+        "-T",
+        "v143,host=x64,version=14.44.35207",
+        "-DCMAKE_PREFIX_PATH=C:/sr06/out/release-install-x86-release",
+        "-DSouiSdk_DIR=C:\\sr06\\out\\release-install-x86-release\\lib\\cmake\\SouiSdk"
+      ],
+      "pid": 94572,
+      "exitCode": 0,
+      "signal": null,
+      "elapsedMs": 6592,
+      "stdout": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/consumer-prep/x86-consumer-configure.stdout.log",
+        "bytes": 572,
+        "sha256": "67d1056927c3b33689d8e84152ef53c91f33bd9c92b69af94ecca3e20f3555fb"
+      },
+      "stderr": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/consumer-prep/x86-consumer-configure.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "x86-consumer-build",
+      "executable": "C:/Program Files/CMake/bin/cmake.exe",
+      "args": [
+        "--build",
+        "C:\\sr06\\out\\release-consumer-x86-release\\build",
+        "--config",
+        "Release",
+        "--target",
+        "soui_consumer",
+        "soui_devtools_consumer",
+        "soui_optional_consumer",
+        "--parallel",
+        "1",
+        "--",
+        "/m:1",
+        "/nr:false"
+      ],
+      "pid": 93256,
+      "exitCode": 0,
+      "signal": null,
+      "elapsedMs": 10886,
+      "stdout": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/consumer-prep/x86-consumer-build.stdout.log",
+        "bytes": 885,
+        "sha256": "b2159efb7a6b583877f840913a40a00368dc3130d2ad1a044dcb7bd42163c5a5"
+      },
+      "stderr": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/consumer-prep/x86-consumer-build.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "x86-soui_consumer-pure-run",
+      "executable": "C:/sr06/out/release-consumer-x86-release/build/public/Release/soui_consumer.exe",
+      "args": [],
+      "pid": 81120,
+      "exitCode": 0,
+      "signal": null,
+      "elapsedMs": 128,
+      "stdout": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/consumer-prep/x86-soui_consumer-pure-run.stdout.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/consumer-prep/x86-soui_consumer-pure-run.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "x86-soui_devtools_consumer-pure-run",
+      "executable": "C:/sr06/out/release-consumer-x86-release/build/public/Release/soui_devtools_consumer.exe",
+      "args": [],
+      "pid": 91336,
+      "exitCode": 0,
+      "signal": null,
+      "elapsedMs": 145,
+      "stdout": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/consumer-prep/x86-soui_devtools_consumer-pure-run.stdout.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/consumer-prep/x86-soui_devtools_consumer-pure-run.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "x86-soui_optional_consumer-pure-run",
+      "executable": "C:/sr06/out/release-consumer-x86-release/build/Release/soui_optional_consumer.exe",
+      "args": [],
+      "pid": 54548,
+      "exitCode": 0,
+      "signal": null,
+      "elapsedMs": 119,
+      "stdout": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/consumer-prep/x86-soui_optional_consumer-pure-run.stdout.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/consumer-prep/x86-soui_optional_consumer-pure-run.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "runScope": "Six console contract processes: two byte-identical public fixture sources and one thin optional link/data consumer per architecture. No optional discovery/mount function invoked, no business task submitted.",
+  "limitations": [
+    "RuntimeDoctor compiled and installed, never run",
+    "No window/renderer/Runtime/real DLL mount or GUI executed",
+    "WebView2 and AutoHost are installed-target link proof, not backend runtime qualification",
+    "No source-SDK pack, full-source package or new kernel runtime qualification",
+    "Direct CMake/process roots exited naturally0; no Job supervisor or synthetic build-evidence receipt claimed",
+    "No source/tool/index/remote edits by this lane"
+  ],
+  "compilerTail": {
+    "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/consumer-prep/Compilers.after.json",
+    "bytes": 9075,
+    "sha256": "a71112eab68902c2a55a64dd12acdbe6801721cfd0819904475abb0a200b258f"
+  }
+}
