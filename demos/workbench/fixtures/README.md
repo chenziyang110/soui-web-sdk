@@ -1,5 +1,12 @@
 # FileInsight fixtures
 
+These samples are native filesystem data. Workbench deploys the two sample
+directories unchanged to `fixture-data/` beside its executable and exposes them
+only through the existing permission-checked opaque root tokens. They are not
+part of the `resources/` HTTP publication tree, whose ASCII path contract remains
+unchanged. Web public media is built from `web/http-public/`; the older
+`web/public/fixtures/` source copies are retained and are not published by Vite.
+
 `fileinsight-fixture` is the deterministic five-file sample used by the
 FileInsight demo. Its expected logical totals are 5 files / 21 bytes:
 

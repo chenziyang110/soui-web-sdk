@@ -1,0 +1,57 @@
+{
+  "schema": "soui.release.kernel-comspec-repair/v1",
+  "rootCause": "PowerShell command-file launch requires native backslash ComSpec. Forwardslash equivalent names the same EXE but produced cmd syntax failure before helper execution.",
+  "originalProducer": {
+    "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/kernel-prep/Kernel-Producer.ps1",
+    "bytes": 11635,
+    "sha256": "74b08bbe4f80e013ba00c2b0964d7468cdde2d39e0cdfc3a17034db39958c68c"
+  },
+  "newProducer": {
+    "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/kernel-prep/revision-2/Kernel-Producer.ps1",
+    "bytes": 11713,
+    "sha256": "5a287478e4afa0a9a9fd4bf162ecb09c6e80df39425684131ef268288d8fb77d"
+  },
+  "driverUnchanged": {
+    "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/kernel-prep/revision-2/Kernel-Driver.cjs",
+    "bytes": 11916,
+    "sha256": "854866fb534a17aa27163b2d01df2f9dd56d1d9d897fb9773c30235d869db8a0"
+  },
+  "sourceIdentityUnchanged": "9dfab0d696bf804fee196058da2925817d37a396dee10a6befc0c512e35d6826",
+  "functionalDelta": "ComSpec now uses prepared.discovery.NativeProcessPaths.CMD; only other changes isolate fresh output/metadata paths.",
+  "sourceOrPublicHelperEdited": false,
+  "timeoutMs": 14400000,
+  "drainMs": 2000,
+  "originalFailurePreserved": true,
+  "diagnostics": [
+    {
+      "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/kernel-prep/argv-forward.stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/kernel-prep/argv-forward.stderr.log",
+      "bytes": 41,
+      "sha256": "6bf64187472dcd64b7055e5ee036702be3e6b457f7461defd9dc473d481b11ab"
+    },
+    {
+      "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/kernel-prep/argv-native.stdout.log",
+      "bytes": 323,
+      "sha256": "a46c1ec4575be1884c364ff7c492cc8dd18d886054c11fd6179b31653472553e"
+    },
+    {
+      "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/kernel-prep/argv-native.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/kernel-prep/environment-trace.stdout.log",
+      "bytes": 1018,
+      "sha256": "71827a9409d86ce3260a603712ebdcc276664f193bf6a3b023da1716177fb7b0"
+    },
+    {
+      "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/kernel-prep/render-main.stdout.log",
+      "bytes": 2388,
+      "sha256": "9262868955170548a7fde960a6f56ce5a40b17625cc6740a44e46083b28d20d8"
+    }
+  ]
+}

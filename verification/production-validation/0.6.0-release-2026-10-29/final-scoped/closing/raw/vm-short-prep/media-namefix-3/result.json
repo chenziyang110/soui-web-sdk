@@ -1,0 +1,146 @@
+{
+  "schema": "soui.release06-namefix-data-media/v1",
+  "iso": {
+    "path": "C:/s06namefixmedia/SouiRelease06NameFix.iso",
+    "bytes": 1122304,
+    "sha256": "b369c8fe0549fbbe7b9d3585f408d3ba84d064f2e2ab8864b2ee25bc78f686df"
+  },
+  "map": {
+    "path": "C:/s06namefixmedia/iso-tree/MAP.JSON",
+    "bytes": 11635,
+    "sha256": "592f8caf4549584b4d9409289baf39f1a66e612afbbcf352fdb435aa3e345659"
+  },
+  "files": [
+    {
+      "path": "DEFAULT-CARRIER.JSON",
+      "bytes": 1037218,
+      "sha256": "826c8b819562d1c989cc62b048f5ef608255b1c73670adcb2dfa8075a1f121cc"
+    },
+    {
+      "path": "DEFAULT-EXPORT.PS1",
+      "bytes": 4230,
+      "sha256": "4086d69675c24f04bd76a4e775f0b66ed834299eebeadfdc5d683faf24a3da0b"
+    },
+    {
+      "path": "DEFAULT-RESUME.PS1",
+      "bytes": 3609,
+      "sha256": "b793f36e2bb4b22d6ac8e37ce28b921a3f98e336f7eb8c8f3bab5f44f76fdb72"
+    },
+    {
+      "path": "MAP.JSON",
+      "bytes": 11635,
+      "sha256": "592f8caf4549584b4d9409289baf39f1a66e612afbbcf352fdb435aa3e345659"
+    },
+    {
+      "path": "README.TXT",
+      "bytes": 704,
+      "sha256": "8ca2d8ef3d97a6c795c8df37f885e489b294ca8666ab18fdc8bde624d4424e1c"
+    },
+    {
+      "path": "RUN.PS1",
+      "bytes": 1257,
+      "sha256": "d59f2fc79d7232a713f014652ea226966e2629ebad8d07c252afee4f72beb540"
+    },
+    {
+      "path": "namefix.cjs",
+      "bytes": 6000,
+      "sha256": "07f7fe335b09dcdc3e93bf1f3b4395e1879f68d7b9c4bb874856f0cc86d48635"
+    }
+  ],
+  "controls": {
+    "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vm-short-prep/media-namefix-3/Controls.actual.json",
+    "bytes": 1410,
+    "sha256": "4b6f4452776b95620f867eae8afbd9b00d72612bb1b25fb876c14d6368ba6b54"
+  },
+  "plan": {
+    "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vm-short-prep/media-namefix-3/plan.json",
+    "bytes": 2293,
+    "sha256": "f9892eaad1f831f88222974513350268831922284b7f4f2439891a173dc0bd98"
+  },
+  "steps": [
+    {
+      "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+      "args": [
+        "-NoProfile",
+        "-NonInteractive",
+        "-Command",
+        "$ErrorActionPreference=\"Stop\";foreach($p in @('C:\\s06namefixmedia\\iso-tree\\RUN.PS1','C:\\s06namefixmedia\\iso-tree\\DEFAULT-RESUME.PS1','C:\\s06namefixmedia\\iso-tree\\DEFAULT-EXPORT.PS1')){$t=$null;$e=$null;$null=[Management.Automation.Language.Parser]::ParseFile($p,[ref]$t,[ref]$e);if($e.Count){throw ($e|Out-String)}}"
+      ],
+      "cwd": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\vm-short-prep\\media-namefix-3",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 675.3425
+    },
+    {
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "--check",
+        "C:\\s06namefixmedia\\iso-tree\\namefix.cjs"
+      ],
+      "cwd": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\vm-short-prep\\media-namefix-3",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 88.2999
+    },
+    {
+      "executable": "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/pwsh.exe",
+      "args": [
+        "-NoLogo",
+        "-NoProfile",
+        "-NonInteractive",
+        "-Sta",
+        "-File",
+        "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vm-short-prep/media-namefix-3/Write-Iso.ps1",
+        "-Plan",
+        "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vm-short-prep/media-namefix-3/plan.json",
+        "-PlanSha256",
+        "f9892eaad1f831f88222974513350268831922284b7f4f2439891a173dc0bd98"
+      ],
+      "cwd": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\vm-short-prep\\media-namefix-3",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 973.5578
+    },
+    {
+      "executable": "C:/Program Files/7-Zip/7z.exe",
+      "args": [
+        "l",
+        "-slt",
+        "-ba",
+        "-sccUTF-8",
+        "C:\\s06namefixmedia\\SouiRelease06NameFix.iso"
+      ],
+      "cwd": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\vm-short-prep\\media-namefix-3",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 38.0392
+    },
+    {
+      "executable": "C:/Program Files/7-Zip/7z.exe",
+      "args": [
+        "x",
+        "-sccUTF-8",
+        "-y",
+        "-oC:\\s06namefixmedia\\iso-readback",
+        "C:\\s06namefixmedia\\SouiRelease06NameFix.iso"
+      ],
+      "cwd": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\vm-short-prep\\media-namefix-3",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 40.0433
+    }
+  ],
+  "readbackAllRawExact": true,
+  "helperRawSha256": "fbedad4f3f1dd8357df8615f15917572e191681c676eba56d2b23507bf24dc72",
+  "oldIsosOrPayloadsModified": false,
+  "sourceOrSdkModified": false,
+  "stageRepairExecutedHost": false,
+  "productStarted": false,
+  "vmTouched": false,
+  "releaseReady": false
+}

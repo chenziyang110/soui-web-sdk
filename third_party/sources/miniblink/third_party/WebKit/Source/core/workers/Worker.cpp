@@ -3,12 +3,14 @@
 // found in the LICENSE file.
 
 #include "config.h"
+#include "platform/network/LocalResourceAdmission.h"
 #include "core/workers/Worker.h"
 
 #include "bindings/core/v8/ExceptionState.h"
 #include "core/dom/Document.h"
 #include "core/dom/ExceptionCode.h"
 #include "core/frame/UseCounter.h"
+#include "core/loader/InspectorResourcePolicy.h"
 #include "core/workers/WorkerGlobalScopeProxy.h"
 #include "core/workers/WorkerGlobalScopeProxyProvider.h"
 
@@ -23,6 +25,15 @@ PassRefPtrWillBeRawPtr<Worker> Worker::create(ExecutionContext* context, const S
 {
     ASSERT(isMainThread());
     Document* document = toDocument(context);
+    if (hasLocalResourceOwner(document)) {
+        exceptionState.throwSecurityError("Workers are unsupported by this owned local static resource mode.");
+        return nullptr;
+    }
+    if (InspectorResourcePolicy::isControlled(document)) {
+        exceptionState.throwSecurityError("This operation is disabled in the controlled inspector.");
+        return nullptr;
+    }
+
     UseCounter::count(context, UseCounter::WorkerStart);
     if (!document->page()) {
         exceptionState.throwDOMException(InvalidAccessError, "The context provided is invalid.");

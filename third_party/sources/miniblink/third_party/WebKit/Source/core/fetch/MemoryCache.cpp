@@ -20,6 +20,8 @@
     Boston, MA 02110-1301, USA.
 */
 
+// SOUI local changes retained on 2026-10-28: bounded retained-resource capacity
+// and owner-only scalar cache diagnostics. Original licensing remains above.
 #include "config.h"
 #include "core/fetch/MemoryCache.h"
 

@@ -1,0 +1,211 @@
+{
+  "schema": "soui.release06-generated-diagnostic-data-media/v1",
+  "iso": {
+    "path": "C:/s06diagmedia/SouiRelease06Diagnostic.iso",
+    "bytes": 123736064,
+    "sha256": "a5bf0d89b03a7f519850abe59de8113d6f63c74e927a49f9cf6f461fe5a90667"
+  },
+  "zip": {
+    "path": "C:/s06diagmedia/iso-tree-r2/PAYLOAD.ZIP",
+    "bytes": 121146103,
+    "sha256": "29a4554f679472bd18be805f3b4f78a1404802b9a844c18cd3a5d0be89ccd347"
+  },
+  "payloadPlan": {
+    "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vm-short-prep/media-diagnostic-2/PayloadPlan.actual.json",
+    "bytes": 9458,
+    "sha256": "76f2ec820fb9a412de1035ea69fb4fb9f4d3c55b225955e0b39ed9463e473391"
+  },
+  "payloadFiles": 5846,
+  "payloadBytes": 369043711,
+  "flatFiles": [
+    {
+      "path": "CARRIER.JSON",
+      "bytes": 1454842,
+      "sha256": "e52ba6a8bdcd0f5eed8e1620ba0f8a232c7907a5aa8611b295f3563990911eb8"
+    },
+    {
+      "path": "DEFAULT-CARRIER.JSON",
+      "bytes": 1037218,
+      "sha256": "826c8b819562d1c989cc62b048f5ef608255b1c73670adcb2dfa8075a1f121cc"
+    },
+    {
+      "path": "DEFAULT-EXPORT.PS1",
+      "bytes": 4230,
+      "sha256": "4086d69675c24f04bd76a4e775f0b66ed834299eebeadfdc5d683faf24a3da0b"
+    },
+    {
+      "path": "DEFAULT-RESUME.PS1",
+      "bytes": 3609,
+      "sha256": "b793f36e2bb4b22d6ac8e37ce28b921a3f98e336f7eb8c8f3bab5f44f76fdb72"
+    },
+    {
+      "path": "INSTALL.PS1",
+      "bytes": 2696,
+      "sha256": "4cb9e8998033ea6dd8d76e35a7bbeb1036eacac0046b882bc828382cb6293318"
+    },
+    {
+      "path": "OPERATOR.TXT",
+      "bytes": 8316,
+      "sha256": "430be59f311320779ba7ba67146a7ca4ab6fb1cff11da584e6e4476926811e96"
+    },
+    {
+      "path": "PAYLOAD.ZIP",
+      "bytes": 121146103,
+      "sha256": "29a4554f679472bd18be805f3b4f78a1404802b9a844c18cd3a5d0be89ccd347"
+    },
+    {
+      "path": "README.TXT",
+      "bytes": 1506,
+      "sha256": "c090aee936295e834bc5e792f4838ba4ee1f38879e58103fc9b5d23e9bf8db8f"
+    },
+    {
+      "path": "RUN.PS1",
+      "bytes": 1924,
+      "sha256": "afb1ab652f090255f24b1fa66a2e9bc3694f782d94cdb8016b16ed284e0e3d93"
+    },
+    {
+      "path": "case-launch.cjs",
+      "bytes": 12886,
+      "sha256": "6515911d91086cea620331cfadaa0207ede1479d04c4b54ee1ac43c075be356d"
+    }
+  ],
+  "controls": {
+    "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vm-short-prep/media-diagnostic-2/r2-Controls.actual.json",
+    "bytes": 2235,
+    "sha256": "cf82ab5caec10348387c655c86e763c3532e04fed10c4e777fcf32bf5c15e965"
+  },
+  "finalPlan": {
+    "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vm-short-prep/media-diagnostic-2/final-plan.json",
+    "bytes": 2778,
+    "sha256": "d420a51035026d458d72023b0c147888ab645c7a04d6a7ef5e9f215bcedd8a03"
+  },
+  "finalWriter": {
+    "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vm-short-prep/media-diagnostic-2/Write-Iso-final.ps1",
+    "bytes": 7839,
+    "sha256": "a371d0574c08a8b53b7370c244df1daae6120b641bac976155325071b9a3b008"
+  },
+  "steps": [
+    {
+      "executable": "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/pwsh.exe",
+      "args": [
+        "-NoLogo",
+        "-NoProfile",
+        "-NonInteractive",
+        "-Sta",
+        "-File",
+        "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vm-short-prep/media-diagnostic-2/Write-Iso-final.ps1",
+        "-Plan",
+        "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vm-short-prep/media-diagnostic-2/final-plan.json",
+        "-PlanSha256",
+        "d420a51035026d458d72023b0c147888ab645c7a04d6a7ef5e9f215bcedd8a03"
+      ],
+      "cwd": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\vm-short-prep\\media-diagnostic-2",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 1483.7808
+    },
+    {
+      "executable": "C:/Program Files/7-Zip/7z.exe",
+      "args": [
+        "l",
+        "-slt",
+        "-ba",
+        "-sccUTF-8",
+        "C:\\s06diagmedia\\SouiRelease06Diagnostic.iso"
+      ],
+      "cwd": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\vm-short-prep\\media-diagnostic-2",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 43.9668
+    },
+    {
+      "executable": "C:/Program Files/7-Zip/7z.exe",
+      "args": [
+        "x",
+        "-sccUTF-8",
+        "-y",
+        "-oC:\\s06diagmedia\\iso-readback-final",
+        "C:\\s06diagmedia\\SouiRelease06Diagnostic.iso"
+      ],
+      "cwd": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\vm-short-prep\\media-diagnostic-2",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 93.5983
+    }
+  ],
+  "checkedPublicReaders": [
+    {
+      "root": "C:\\s06diagmedia\\zip-readback\\soui-release06-compat-diag",
+      "sdkManifestSha256": "af9e61db01f8af4c8f0458be0821fab169ac26349110433c1d30dfd4f22ec21d",
+      "sdkLockFullRawVerified": true,
+      "architectures": [
+        {
+          "architecture": "x64",
+          "buildId": "c2c2477c-e117-45de-8524-085bb8541131",
+          "sourceSha256": "a038997d7d5b527c3bc9f2085ebbec95127275bf30a7a71bab37728d76e3b73e",
+          "compatibilityDelivery": {
+            "mode": "delivery",
+            "files": 860,
+            "frontendManifestSha256": "0ad753089316c0c0b910afbe95f8706e21d2f5a9436c42d6649c8b387d4bd8ed"
+          }
+        },
+        {
+          "architecture": "x86",
+          "buildId": "8afcfb4d-250c-4b85-9cc5-0f00a1ce3d7a",
+          "sourceSha256": "a038997d7d5b527c3bc9f2085ebbec95127275bf30a7a71bab37728d76e3b73e",
+          "compatibilityDelivery": {
+            "mode": "delivery",
+            "files": 860,
+            "frontendManifestSha256": "0ad753089316c0c0b910afbe95f8706e21d2f5a9436c42d6649c8b387d4bd8ed"
+          }
+        }
+      ]
+    },
+    {
+      "root": "C:\\s06diagmedia\\zip-readback\\soui-release06-modern-diag",
+      "sdkManifestSha256": "af9e61db01f8af4c8f0458be0821fab169ac26349110433c1d30dfd4f22ec21d",
+      "sdkLockFullRawVerified": true,
+      "architectures": [
+        {
+          "architecture": "x64",
+          "buildId": "04a00e24-2a9b-482a-b08f-3ecf5bedae82",
+          "sourceSha256": "048657a3d212c2e785db7985c51dddb9be48cf910db5d3c4968643c49c3b443e",
+          "compatibilityDelivery": null
+        },
+        {
+          "architecture": "x86",
+          "buildId": "0e78f909-f269-461a-be1d-02595b2670e5",
+          "sourceSha256": "048657a3d212c2e785db7985c51dddb9be48cf910db5d3c4968643c49c3b443e",
+          "compatibilityDelivery": null
+        }
+      ]
+    }
+  ],
+  "originalCppHelperRawUnchanged": true,
+  "isoReadbackAllRawExact": true,
+  "defaultResumeNoReextract": true,
+  "defaultCarrierAndExporterRawUnchanged": true,
+  "sourceOrSdkOrFirstIsoModified": false,
+  "priorOwnDataOnlyFailuresRetained": [
+    {
+      "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vm-short-prep/media-diagnostic-2/Failure-82b6fe09-ef0d-42cd-95a3-c5fc5c8c1120.actual.json",
+      "bytes": 2464,
+      "sha256": "0be8fb33e718bdc5daea32763733e5b38b0878c87b3ae2df81ccb98ce1382edd"
+    },
+    {
+      "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vm-short-prep/media-diagnostic-2/SealFailure-97d7a795-442e-4e63-9b22-090a7dcfabb7.json",
+      "bytes": 2093,
+      "sha256": "96e413f6f41736b3cd814c757e1ad789869ad4f01bfb7a0ed43877fbd1dc8ba1"
+    }
+  ],
+  "finalLowercaseCjsExtension": "case-launch.cjs; Node24 uppercase .CJS syntax check was rejected before any ISO or product",
+  "invocationCorrection": "Original final-data attempt invoked r1 writer with r2 plan and correctly hit fixed-path guard; final explicit writer/plan pair is pinned.",
+  "productStarted": false,
+  "compilerStarted": false,
+  "vmTouched": false,
+  "releaseReady": false,
+  "productionQualified": false
+}

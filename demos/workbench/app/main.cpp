@@ -35,6 +35,9 @@
 #include <soui/runtime/services/desktop/menu_service.h>
 #include <soui/runtime/services/desktop/global_shortcut.h>
 #include <soui/version.h>
+#if defined(SOUI_DEVTOOLS_PACKAGE_AVAILABLE) && SOUI_DEVTOOLS_PACKAGE_AVAILABLE
+#include <soui_devtools_package.h>
+#endif
 #include "../integration/demo_bridge_adapter.h"
 #include "work_area_placement.h"
 #include "../../../third_party/include/json/json.hpp"
@@ -61,11 +64,26 @@
 #endif
 
 #if SOUI_DEVKIT_HAS_REAL_SOUI
+#include "native_controls_demo.h"
 namespace {
 
 constexpr UINT resident_close_message = WM_APP + 0x421;
 constexpr UINT resident_exit_message = WM_APP + 0x422;
 constexpr UINT resident_action_message = WM_APP + 0x423;
+// Application-native policy only. Replace this decision with the application's
+// trusted local identity/enterprise policy; Debug and Release share it. No
+// command line, environment or business Bridge action enables this example.
+constexpr bool allow_native_devtools = false;
+// Resource origin selection does not grant a diagnostic session.
+constexpr bool use_local_resource_origin = false;
+constexpr UINT devtools_open_command = 0x6D01;
+constexpr UINT devtools_end_command = 0x6D02;
+constexpr UINT devtools_status_command = 0x6D03;
+bool diagnostic_target_retired_with_failure(soui::sdk::soui_miniblink_host& host) {
+  if (!allow_native_devtools) return false;
+  const auto observed = host.observe_devtools();
+  return observed.state == soui::sdk::devtools::phase::failed && !observed.resources_retained;
+}
 
 std::filesystem::path executable_path() {
   std::wstring value(MAX_PATH, L'\0');
@@ -214,13 +232,13 @@ class diagnostic_timer_policy final {
 };
 #endif
 
-class demo_soui_window final : public SOUI::SHostWnd {
+class demo_soui_window final : public SOUI::SHostWnd, public SOUI::IMessageFilter {
  public:
   demo_soui_window(soui::sdk::soui_miniblink_host& host, soui::demo::demo_bridge_adapter& bridge, bool smoke_test,
                    std::filesystem::path smoke_log, bool background_pacing_experiment = false,
-                   bool prefer_high_resolution = true, bool auto_high_refresh = false)
+                   bool prefer_high_resolution = true, bool auto_high_refresh = false, bool native_frame = false)
       : host_{host}, bridge_{bridge}, smoke_test_{smoke_test}, smoke_log_{std::move(smoke_log)},
-        auto_high_refresh_{auto_high_refresh}, smoke_started_at_{GetTickCount64()} {
+        auto_high_refresh_{auto_high_refresh}, smoke_started_at_{GetTickCount64()}, native_frame_{native_frame} {
     append_smoke_log(smoke_log_, "window-constructed");
 #ifdef SOUI_BRIDGE_BENCHMARK
     background_pacing_experiment_ = background_pacing_experiment;
@@ -229,6 +247,49 @@ class demo_soui_window final : public SOUI::SHostWnd {
     (void)background_pacing_experiment;
     (void)prefer_high_resolution;
 #endif
+  }
+  ~demo_soui_window() override { remove_devtools_filter(); }
+  void configure_native_devtools(SOUI::SMessageLoop* loop, const std::filesystem::path& application_root) {
+    if (!allow_native_devtools) return;
+    if (!loop || !::IsWindow(m_hWnd) || devtools_loop_)
+      throw std::runtime_error("The native diagnostic route requires its retained business window and message loop");
+    soui::sdk::devtools::configuration config;
+    config.access = soui::sdk::devtools::policy::application_controlled;
+    config.ending = soui::sdk::devtools::termination::destroy_target;
+#if defined(SOUI_DEVTOOLS_PACKAGE_AVAILABLE) && SOUI_DEVTOOLS_PACKAGE_AVAILABLE
+    config.frontend_root = application_root / soui::sdk::devtools::package::frontend_subdir;
+    config.frontend_manifest_sha256 = soui::sdk::devtools::package::frontend_manifest_sha256;
+    config.kernel_sha256 = soui::sdk::devtools::package::kernel_sha256;
+#else
+    (void)application_root;
+    throw std::runtime_error("Controlled DevTools requires the reviewed matching native package at build time");
+#endif
+    config.f12 = config.ctrl_shift_i = true;
+    const auto configured = host_.configure_devtools(config); // Before this Host's start.
+    if (!configured.ok) throw std::runtime_error(configured.code + ": " + configured.message);
+    install_devtools_menu();
+    if (!loop->AddMessageFilter(this)) throw std::runtime_error("Cannot register native diagnostic key routing");
+    devtools_loop_ = loop;
+  }
+  BOOL PreTranslateMessage(MSG* message) override {
+    if (!allow_native_devtools || !message || message->message != WM_KEYDOWN ||
+        close_requested_ || resident_close_pending_ || devtools_entry_active_ ||
+        (message->hwnd != m_hWnd && !::IsChild(m_hWnd, message->hwnd))) return FALSE;
+    if (!host_.devtools_shortcut(static_cast<unsigned>(message->wParam),
+        (GetKeyState(VK_CONTROL) & 0x8000) != 0, (GetKeyState(VK_SHIFT) & 0x8000) != 0,
+        (GetKeyState(VK_MENU) & 0x8000) != 0, (message->lParam & (1LL << 30)) != 0)) return FALSE;
+    request_native_devtools();
+    return TRUE;
+  }
+  void cancel_native_devtools_prompt() noexcept {
+    devtools_entry_cancelled_ = true;
+    if (!diagnostic_prompt_ || !::IsWindow(m_hWnd)) return;
+    // This is the application's own active consent dialog, not a backend
+    // inspector-window search. Cancel its modal loop before shutdown's original
+    // deadline; the controller still defers releasing this object until return.
+    const auto popup = ::GetLastActivePopup(m_hWnd);
+    if (popup && popup != m_hWnd && ::GetWindow(popup, GW_OWNER) == m_hWnd)
+      (void)::PostMessageW(popup, WM_COMMAND, diagnostic_dismiss_command_, 0);
   }
   void configure_resident(HWND controller, unsigned slot, std::uint32_t generation) {
     // SHostWnd::OnDestroy otherwise quits for an ordinary top-level HWND.
@@ -239,10 +300,16 @@ class demo_soui_window final : public SOUI::SHostWnd {
     resident_generation_ = generation;
   }
   void stop_for_resident_close() {
+    resident_close_pending_ = true;
+    cancel_native_devtools_prompt();
+    remove_devtools_filter();
+    update_devtools_menu();
     if (IsWindow()) KillTimer(1);
     pacer_.stop();
   }
-  bool resident_dispatch_active() const { return GetCurrentMessage() != nullptr; }
+  bool resident_dispatch_active() const {
+    return GetCurrentMessage() != nullptr || devtools_entry_active_ || diagnostic_prompt_;
+  }
 #ifdef SOUI_BRIDGE_BENCHMARK
   void set_gallery_benchmark(bool all) { gallery_benchmark_=true; gallery_all_=all; }
 #endif
@@ -283,6 +350,18 @@ class demo_soui_window final : public SOUI::SHostWnd {
     QueryPerformanceFrequency(&pump_frequency);
 #endif
     host_.pump();
+    if (allow_native_devtools) {
+      const auto observed = host_.observe_devtools();
+      update_devtools_menu();
+      // The user accepted target retirement before open. After actual native
+      // drain, close only this business HWND through its existing owner route.
+      if (diagnostic_open_requested_ && observed.state == soui::sdk::devtools::phase::drained &&
+          !observed.resources_retained) OnClose();
+      else if (observed.state == soui::sdk::devtools::phase::failed && !observed.resources_retained) {
+        if (!close_exit_code_) close_exit_code_ = 1;
+        OnClose();
+      }
+    }
 #ifdef SOUI_BRIDGE_BENCHMARK
     LARGE_INTEGER pump_end{};
     QueryPerformanceCounter(&pump_end);
@@ -302,7 +381,7 @@ class demo_soui_window final : public SOUI::SHostWnd {
   }
 
   void UpdatePacer() {
-    if (close_requested_) return;
+    if (close_requested_ || resident_close_pending_) return;
     if (!display_refresh_hz_)
       display_refresh_hz_ = soui::sdk::frame_pacer::query_display_refresh(m_hWnd);
     bridge_.set_display_refresh(display_refresh_hz_);
@@ -352,16 +431,35 @@ class demo_soui_window final : public SOUI::SHostWnd {
 
   void OnTimer(UINT_PTR timer_id) {
     if (timer_id != 1U) return;
+    if (allow_native_devtools && devtools_entry_cancelled_ && diagnostic_prompt_) cancel_native_devtools_prompt();
     if (close_requested_) { finish_close_request(); return; }
     UpdatePacer();
     if (!pacer_.target()) PumpHost();
+    if (close_requested_ || resident_close_pending_) return;
     if (!smoke_test_ || smoke_finished_) return;
     if ((++smoke_ticks_ % 60U) == 1U) {
       append_smoke_log(smoke_log_, host_.document_ready() ? "timer-document-ready" : "timer-waiting-document");
       const auto diagnostics = host_.application_diagnostics();
       append_smoke_log(smoke_log_, diagnostics.c_str());
     }
-    if (host_.application_ready()) {
+    if (reload_pending_) {
+      const auto reloaded = host_.reload();
+      if (!reloaded.ok && reloaded.code != "E_RELOAD_PENDING") {
+        finish_smoke_test(4);
+        return;
+      }
+      reload_pending_ = !reloaded.ok;
+    }
+    const bool application_ready = !reload_pending_ && host_.application_ready();
+    // Keep the original budget through both the adapter operation and page
+    // recovery, including time spent observing readiness after reload returns.
+    if (reload_waiting_ready_ && GetTickCount64() - not_ready_since_ > 15000U) {
+      append_smoke_log(smoke_log_, "application-reload-timeout");
+      finish_smoke_test(2);
+      return;
+    }
+    if (application_ready) {
+      reload_waiting_ready_ = false;
       // A benchmark intentionally reloads the React page after the fixed
       // native session TTL. Track readiness transitions instead of measuring
       // the timeout from process start; otherwise the legitimate reload is
@@ -427,8 +525,13 @@ class demo_soui_window final : public SOUI::SHostWnd {
       if (reload_cycle_ < 50U) {
         ++reload_cycle_;
         ready_observed_at_ = 0;
-        smoke_started_at_ = GetTickCount64();
-        if (!host_.reload().ok) finish_smoke_test(4);
+        const auto requested_at = GetTickCount64();
+        smoke_started_at_ = requested_at;
+        not_ready_since_ = requested_at;
+        reload_waiting_ready_ = true;
+        const auto reloaded = host_.reload();
+        reload_pending_ = !reloaded.ok && reloaded.code == "E_RELOAD_PENDING";
+        if (!reloaded.ok && !reload_pending_) finish_smoke_test(4);
         return;
       }
       if (!gc_requested_) {
@@ -463,6 +566,15 @@ class demo_soui_window final : public SOUI::SHostWnd {
     host_.deliver_posted_event(reinterpret_cast<void*>(payload));
     return 0;
   }
+  LRESULT OnNativeCommand(UINT, WPARAM command, LPARAM source) {
+    if (!allow_native_devtools || HIWORD(command) || source) { SetMsgHandled(FALSE); return 0; }
+    if (LOWORD(command) == devtools_open_command) request_native_devtools();
+    else if (LOWORD(command) == devtools_end_command) {
+      const auto observed = host_.observe_devtools();
+      if (diagnostic_open_requested_ || observed.retirement_required) OnClose();
+    } else SetMsgHandled(FALSE);
+    return 0;
+  }
 
   LRESULT OnWindowCommand(UINT, WPARAM command, LPARAM payload) {
     const auto action = static_cast<soui::runtime::window_command>(command);
@@ -473,13 +585,20 @@ class demo_soui_window final : public SOUI::SHostWnd {
     return 0;
   }
 
-  LRESULT OnWindowHitTest(UINT, WPARAM, LPARAM position) {
+  LRESULT OnWindowHitTest(UINT message, WPARAM wparam, LPARAM position) {
+    if (has_native_menu_frame()) return DefWindowProc(message, wparam, position);
     // This WebView-only host does not load SOUI's XML non-client frame.
     // Its full-client input child delegates these edges back to this HWND.
     return soui::runtime::resize_border_hit(m_hWnd, position);
   }
 
+  LRESULT OnNativeNonClient(UINT message, WPARAM wparam, LPARAM lparam) {
+    if (!has_native_menu_frame()) { SetMsgHandled(FALSE); return 0; }
+    return DefWindowProc(message, wparam, lparam);
+  }
+
   void OnClose() {
+    cancel_native_devtools_prompt();
     if (resident_controller_ != nullptr) {
       // The controller destroys this object only after this WndProc returns.
       if (!resident_close_pending_) {
@@ -512,13 +631,21 @@ class demo_soui_window final : public SOUI::SHostWnd {
       catch (...) { if (!close_exit_code_) close_exit_code_ = 1; }
       try { finish_close_request(); } catch (...) { std::terminate(); }
     }
-    try { if (!host_.destroy().ok) std::terminate(); } catch (...) { std::terminate(); }
+    try {
+      if (!host_.destroy().ok) {
+        if (!diagnostic_target_retired_with_failure(host_)) std::terminate();
+        if (!close_exit_code_) close_exit_code_ = 1;
+      }
+    } catch (...) { std::terminate(); }
     return close_exit_code_;
   }
 
  protected:
 
   BEGIN_MSG_MAP_EX(demo_soui_window)
+    MESSAGE_HANDLER_EX(WM_NCCALCSIZE, OnNativeNonClient)
+    MESSAGE_HANDLER_EX(WM_NCACTIVATE, OnNativeNonClient)
+    MESSAGE_HANDLER_EX(WM_NCPAINT, OnNativeNonClient)
     MESSAGE_HANDLER_EX(WM_DISPLAYCHANGE, OnDisplayPathChanged)
     MESSAGE_HANDLER_EX(WM_WINDOWPOSCHANGED, OnDisplayPathChanged)
     MSG_WM_DPICHANGED(OnDpiChanged)
@@ -527,6 +654,7 @@ class demo_soui_window final : public SOUI::SHostWnd {
     MSG_WM_TIMER(OnTimer)
     MSG_WM_CLOSE(OnClose)
     MESSAGE_HANDLER_EX(soui::sdk::bridge_event_message, OnBridgeEvent)
+    MESSAGE_HANDLER_EX(WM_COMMAND, OnNativeCommand)
     MESSAGE_HANDLER_EX(soui::runtime::window_command_message, OnWindowCommand)
     MESSAGE_HANDLER_EX(WM_NCHITTEST, OnWindowHitTest)
     MESSAGE_HANDLER_EX(soui::sdk::frame_pulse_message, OnFramePulse)
@@ -537,14 +665,120 @@ class demo_soui_window final : public SOUI::SHostWnd {
   END_MSG_MAP()
 
  private:
+  bool has_native_menu_frame() const noexcept {
+    return native_frame_ || (allow_native_devtools && devtools_menu_bar_ && ::GetMenu(m_hWnd) == devtools_menu_bar_);
+  }
+  bool native_frame_ = false;
+  void remove_devtools_filter() noexcept {
+    if (devtools_loop_) {
+      if (!devtools_loop_->RemoveMessageFilter(this)) std::terminate();
+      devtools_loop_ = nullptr;
+    }
+  }
+  void install_devtools_menu() {
+    HMENU bar = ::GetMenu(m_hWnd);
+    const bool new_bar = bar == nullptr;
+    if (new_bar) bar = ::CreateMenu();
+    HMENU menu = ::CreatePopupMenu();
+    if (!bar || !menu) {
+      if (menu) ::DestroyMenu(menu);
+      if (new_bar && bar) ::DestroyMenu(bar);
+      throw std::runtime_error("Cannot create native diagnostic menu");
+    }
+    bool attached = false;
+    if (::AppendMenuW(menu, MF_STRING, devtools_open_command, L"打开当前业务窗口的开发者工具") &&
+        ::AppendMenuW(menu, MF_STRING | MF_GRAYED, devtools_end_command, L"结束诊断并关闭当前业务窗口") &&
+        ::AppendMenuW(menu, MF_SEPARATOR, 0, nullptr) &&
+        ::AppendMenuW(menu, MF_STRING | MF_GRAYED, devtools_status_command, L"状态：未请求") &&
+        ::AppendMenuW(bar, MF_POPUP, reinterpret_cast<UINT_PTR>(menu), L"诊断")) attached = true;
+    if (!attached || (new_bar && !::SetMenu(m_hWnd, bar))) {
+      if (!attached) ::DestroyMenu(menu);
+      if (new_bar) ::DestroyMenu(bar);
+      throw std::runtime_error("Cannot attach native diagnostic menu");
+    }
+    devtools_menu_bar_ = bar; devtools_menu_ = menu;
+    // Keep the existing size and activation while reserving a real menu area.
+    if (!::SetWindowPos(m_hWnd, nullptr, 0, 0, 0, 0,
+        SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE))
+      throw std::runtime_error("Cannot calculate the native diagnostic menu frame");
+    ::DrawMenuBar(m_hWnd);
+  }
+  static const wchar_t* diagnostic_truth(soui::sdk::devtools::truth value) noexcept {
+    return value == soui::sdk::devtools::truth::yes ? L"是" :
+      value == soui::sdk::devtools::truth::no ? L"否" : L"未知";
+  }
+  void update_devtools_menu() {
+    if (!allow_native_devtools || !devtools_menu_ || !::IsWindow(m_hWnd)) return;
+    const auto observed = host_.observe_devtools();
+    using phase = soui::sdk::devtools::phase;
+    const wchar_t* state = L"未请求";
+    switch (observed.state) {
+      case phase::opening: state = L"打开请求处理中"; break;
+      case phase::attached: state = L"连接已建立"; break;
+      case phase::revoking: state = L"正在撤销并关闭目标"; break;
+      case phase::drained: state = L"目标已排空"; break;
+      case phase::failed: state = L"失败；检查关闭状态"; break;
+      default: break;
+    }
+    std::wstring label = std::wstring(L"状态：") + state + L"；暂停：" + diagnostic_truth(observed.paused) +
+      L"；窗口可见：" + diagnostic_truth(observed.visible) + L"；许可有效：" + (observed.grant_valid ? L"是" : L"否");
+    if (!observed.code.empty()) {
+      const auto limit = std::min<std::size_t>(observed.code.size(), 96);
+      label += L"；"; label.append(observed.code.begin(), observed.code.begin() + limit);
+    }
+    const bool closing = close_requested_ || resident_close_pending_ || devtools_entry_cancelled_;
+    const bool may_open = !closing && !diagnostic_open_requested_ && host_.session() && host_.document_ready() &&
+      !observed.retirement_required && observed.state != phase::failed;
+    const bool may_end = !closing && (diagnostic_open_requested_ || observed.retirement_required);
+    if (label != devtools_status_ || may_open != devtools_may_open_ || may_end != devtools_may_end_) {
+      ::ModifyMenuW(devtools_menu_, devtools_status_command, MF_BYCOMMAND | MF_STRING | MF_GRAYED,
+        devtools_status_command, label.c_str());
+      ::EnableMenuItem(devtools_menu_, devtools_open_command, MF_BYCOMMAND | (may_open ? MF_ENABLED : MF_GRAYED));
+      ::EnableMenuItem(devtools_menu_, devtools_end_command, MF_BYCOMMAND | (may_end ? MF_ENABLED : MF_GRAYED));
+      ::DrawMenuBar(m_hWnd);
+      devtools_status_ = std::move(label); devtools_may_open_ = may_open; devtools_may_end_ = may_end;
+    }
+  }
+  void request_native_devtools() {
+    if (!allow_native_devtools || close_requested_ || resident_close_pending_ || devtools_entry_cancelled_ ||
+        devtools_entry_active_ || !::IsWindow(m_hWnd) || !host_.session() || !host_.document_ready()) return;
+    if (diagnostic_open_requested_) { update_devtools_menu(); return; }
+    devtools_entry_active_ = true;
+    struct entry_guard { bool& active; ~entry_guard() { active = false; } } entry{devtools_entry_active_};
+    diagnostic_prompt_ = true;
+    diagnostic_dismiss_command_ = IDNO;
+    const auto answer = ::MessageBoxW(m_hWnd,
+      L"允许调试当前业务窗口？调试者可查看页面数据并执行代码。\n\n结束诊断将关闭这个业务窗口；请先保存工作。其他工作窗口由各自许可保护。",
+      L"当前业务窗口的开发者工具", MB_YESNO | MB_ICONWARNING | MB_DEFBUTTON2);
+    diagnostic_prompt_ = false;
+    if (answer != IDYES || close_requested_ || resident_close_pending_ || devtools_entry_cancelled_ || !::IsWindow(m_hWnd)) return;
+    soui::sdk::devtools::grant grant;
+    const auto authorized = host_.authorize_devtools(grant);
+    if (!authorized.ok) {
+      diagnostic_prompt_ = true; diagnostic_dismiss_command_ = IDOK;
+      ::MessageBoxA(m_hWnd, authorized.message.c_str(), authorized.code.c_str(), MB_OK | MB_ICONERROR);
+      diagnostic_prompt_ = false;
+      return;
+    }
+    const auto opened = host_.open_devtools(grant);
+    diagnostic_open_requested_ = opened.accepted();
+    if (!opened.accepted()) {
+      diagnostic_prompt_ = true; diagnostic_dismiss_command_ = IDOK;
+      ::MessageBoxA(m_hWnd, opened.message.c_str(), opened.code.c_str(), MB_OK | MB_ICONERROR);
+      diagnostic_prompt_ = false;
+    }
+    update_devtools_menu();
+  }
   void finish_smoke_test(int exit_code) {
     smoke_finished_ = true;
     request_close(exit_code);
   }
   void request_close(int exit_code) {
+    cancel_native_devtools_prompt();
     if (!close_exit_code_ && exit_code) close_exit_code_ = exit_code;
     if (!close_requested_) {
       close_requested_ = true;
+      update_devtools_menu();
       pacer_.stop();
       if (::IsWindow(m_hWnd) && !SetTimer(1, 50)) std::terminate();
       append_smoke_log(smoke_log_, "host-close-start");
@@ -558,7 +792,8 @@ class demo_soui_window final : public SOUI::SHostWnd {
         close_error_ = closed.code;
         append_smoke_log(smoke_log_, closed.code.c_str());
       }
-      return;
+      if (!diagnostic_target_retired_with_failure(host_)) return;
+      if (!close_exit_code_) close_exit_code_ = 1;
     }
     if (!::IsWindow(m_hWnd)) return;
     if (!DestroyWindow()) {
@@ -599,6 +834,8 @@ class demo_soui_window final : public SOUI::SHostWnd {
 #endif
   bool smoke_finished_{false};
   bool application_ready_seen_{false};
+  bool reload_pending_{false};
+  bool reload_waiting_ready_{false};
   std::filesystem::path smoke_log_;
   unsigned smoke_ticks_{0};
   ULONGLONG smoke_started_at_{0};
@@ -607,6 +844,13 @@ class demo_soui_window final : public SOUI::SHostWnd {
   unsigned resident_slot_{0};
   std::uint32_t resident_generation_{0};
   bool resident_close_pending_{false};
+  SOUI::SMessageLoop* devtools_loop_{nullptr}; // Removed before this window bundle is released.
+  HMENU devtools_menu_bar_{nullptr}; // Borrowed from this HWND after attachment.
+  HMENU devtools_menu_{nullptr}; // Owned by the attached native menu/this HWND.
+  bool devtools_entry_active_{false}, diagnostic_prompt_{false}, devtools_entry_cancelled_{false};
+  bool diagnostic_open_requested_{false}, devtools_may_open_{false}, devtools_may_end_{false};
+  UINT diagnostic_dismiss_command_{IDNO};
+  std::wstring devtools_status_;
 };
 
 #include "resident_controller.h"
@@ -876,6 +1120,8 @@ int run_gui(HINSTANCE instance, const std::vector<std::wstring>& args, resident_
                                  ? repository_renderer
                                  : output_root;
   SComMgr components;
+  const bool native_controls = std::find(args.begin(), args.end(), L"--native-controls") != args.end();
+  native_controls_resources native_resources;
   components.SetDllPath(SOUI::SStringT(renderer_path.wstring().c_str()));
   SOUI::CAutoRefPtr<SOUI::IRenderFactory> render_factory;
   if (!components.CreateRender_GDI((IObjRef**)&render_factory)) {
@@ -885,6 +1131,17 @@ int run_gui(HINSTANCE instance, const std::vector<std::wstring>& args, resident_
     return 1;
   }
   SOUI::SApplication application(render_factory, instance, _T("SOUIWEBDEMO"));
+  if (native_controls) {
+    SOUI::CAutoRefPtr<SOUI::IImgDecoderFactory> decoder;
+    if (!components.CreateImgDecoder((IObjRef**)&decoder)) return 1;
+    render_factory->SetImgDecoderFactory(decoder);
+    native_resources.module = LoadLibraryW((renderer_path / L"soui-sys-resource.dll").c_str());
+    SOUI::CAutoRefPtr<SOUI::IResProvider> system_resources;
+    SOUI::CreateResProvider(SOUI::RES_PE, reinterpret_cast<IObjRef**>(&system_resources));
+    if (!native_resources.module || !system_resources ||
+        !system_resources->Init(reinterpret_cast<WPARAM>(native_resources.module), 0)) return 1;
+    application.LoadSystemNamedResource(system_resources);
+  }
   application.SetAppDir(SOUI::SStringT(kit_root.wstring().c_str()));
   SOUI::CAutoRefPtr<SOUI::IResProvider> ui_resources;
   SOUI::CreateResProvider(SOUI::RES_PE, reinterpret_cast<IObjRef**>(&ui_resources));
@@ -901,6 +1158,7 @@ int run_gui(HINSTANCE instance, const std::vector<std::wstring>& args, resident_
     settings.host.architecture = architecture;
     settings.host.miniblink_binary = miniblink;
     settings.host.resource_root = resources;
+    settings.application_root = output_root;
     settings.width = option_dimension(args, L"--width", 1100);
     settings.height = option_dimension(args, L"--height", 720);
     settings.auto_high_refresh = cpu_high_refresh || (!software_renderer && (gpu_renderer || gpu_readback || auto_renderer));
@@ -910,7 +1168,10 @@ int run_gui(HINSTANCE instance, const std::vector<std::wstring>& args, resident_
   }
 
   soui::demo::demo_bridge_adapter bridge;
-  auto adapter = std::make_unique<soui::sdk::dynamic_miniblink_adapter>();
+  auto adapter = use_local_resource_origin
+      ? std::make_unique<soui::sdk::dynamic_miniblink_adapter>(
+          soui::sdk::diagnostics::mode::disabled, soui::sdk::miniblink_local_resource_options{})
+      : std::make_unique<soui::sdk::dynamic_miniblink_adapter>();
   soui::sdk::soui_miniblink_host host(std::move(adapter));
   bool background_pacing_experiment = false;
   bool prefer_high_resolution = true;
@@ -919,8 +1180,9 @@ int run_gui(HINSTANCE instance, const std::vector<std::wstring>& args, resident_
   prefer_high_resolution = std::find(args.begin(), args.end(), L"--legacy-frame-clock") == args.end();
 #endif
   const bool auto_high_refresh = cpu_high_refresh || (!software_renderer && (gpu_renderer || gpu_readback || auto_renderer));
+  native_controls_demo native_panel;
   demo_soui_window window(host, bridge, webview_smoke_test, smoke_log, background_pacing_experiment,
-                          prefer_high_resolution, auto_high_refresh);
+                          prefer_high_resolution, auto_high_refresh, native_controls);
   try {
 #ifdef SOUI_BRIDGE_BENCHMARK
   const auto gallery_benchmark=option_value(args,L"--gallery-benchmark");
@@ -948,6 +1210,7 @@ int run_gui(HINSTANCE instance, const std::vector<std::wstring>& args, resident_
   config.resource_root = resources;
   config.owner_window = handle;
   config.bridge_adapter = &bridge;
+  window.configure_native_devtools(application.GetMsgLoop(), output_root);
 #ifdef SOUI_BRIDGE_BENCHMARK
   config.benchmark_dataset = option_value(args, L"--benchmark-dataset");
   config.benchmark_output_directory = output_root;
@@ -969,6 +1232,8 @@ int run_gui(HINSTANCE instance, const std::vector<std::wstring>& args, resident_
     return window.finish_shutdown_before_return(application, loop_result);
   }
   append_smoke_log(smoke_log, "host-started");
+  if (native_controls && !native_panel.open(handle))
+    throw std::runtime_error("Cannot create the native SOUI control panel");
   ::SetWindowTextW(handle, L"SOUI + Miniblink AI DevKit");
 #ifdef SOUI_TEST_KIT
   const bool test_kit_hidden = soui::test_kit::enabled();

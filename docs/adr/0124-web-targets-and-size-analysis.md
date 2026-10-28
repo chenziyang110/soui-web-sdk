@@ -59,3 +59,7 @@ releaseReady 或生产声明。未发布工具须随新的 SDK 身份发布，�
 原生消费探针的实际编译、默认目标自动切换和无窗口内核加载。
 拆分后候选复验单列于 [PR 验证范围](../../verification/production-validation/auto-host-pr-2026-10-23/README.md)，
 不能把历史结果当作本候选完整原生验收。
+
+2026-10-23 的[限定验证记录](../../verification/production-validation/web-targets-2026-10-23/README.md)
+包括 62 项新增测试、原兼容回归，以及仓库外 x64 Release 原生消费探针的实际
+编译、默认目标自动切换和无窗口内核加载。它不代表完整当前 SDK 原生验收。

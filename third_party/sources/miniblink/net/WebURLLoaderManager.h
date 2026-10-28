@@ -119,6 +119,8 @@ public:
     void handleDidSentData(WebURLLoaderInternal* job, unsigned long long bytesSent, unsigned long long totalBytesToBeSent);
 
     void continueJob(WebURLLoaderInternal* job);
+    void rejectInspectorJobOnOwner(int jobId);
+    void scheduleInspectorFailure(WebURLLoaderInternal* job);
     void cancelWithHookRedirect(WebURLLoaderInternal* job);
 
     String handleHeaderForBlobOnMainThread(WebURLLoaderInternal* job, size_t totalSize);

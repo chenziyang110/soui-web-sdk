@@ -2,6 +2,7 @@
 #define WKE_CURSOR_DESCRIPTOR_BROKER_H
 
 #include "wke/wkedefine.h"
+#include "wke/LocalResourceApi.h"
 #include <functional>
 #include <memory>
 
@@ -10,6 +11,7 @@ namespace wke {
 struct CursorBrokerControl;
 
 const wkeCursorBrokerApi* cursorBrokerApi(unsigned int version);
+const SouiLocalResourceApi* localResourceApi(unsigned int version);
 bool brokerActive();
 bool brokerMayCreateRawView();
 bool brokerMayDestroyRawView(wkeWebView);

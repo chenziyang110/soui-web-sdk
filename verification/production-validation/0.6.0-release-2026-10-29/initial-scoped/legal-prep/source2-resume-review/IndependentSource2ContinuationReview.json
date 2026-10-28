@@ -1,0 +1,61 @@
+{
+  "schema": "soui.release.source2-continuation-independent-review/v1",
+  "createdUtc": "2026-10-28T15:55:54.773Z",
+  "reviewer": "remaining_resource_gaps",
+  "inputs": [
+    {
+      "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/kernel-prep/revision-3/Kernel-Producer.ps1",
+      "bytes": 14162,
+      "sha256": "ba6dbf1647c2091c1d3c91406fd7eccdcef1714a52e0346990ea78559ca6d849"
+    },
+    {
+      "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/kernel-prep/revision-3/Kernel-Driver.cjs",
+      "bytes": 12144,
+      "sha256": "23704c9866c7f45768592678facd163fd8d05fc292332e23a8bf70067f5f25d5"
+    },
+    {
+      "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/kernel-prep/revision-3/Continue-KernelMainArch.cmd",
+      "bytes": 5860,
+      "sha256": "7e164510baf8e6c2f6ec841a5191670fe288419c010cdfea0dadbfba1decc150"
+    }
+  ],
+  "originalFrozenMainHelper": {
+    "path": "C:/sr06/tools/internal/Build-KernelMainArch.cmd",
+    "bytes": 5815,
+    "sha256": "10ce60eb2b827102e0b10cbdcd17b1c770208030ec02dba1309803797347c5c3"
+  },
+  "rawHelperDeltaExactlyTwoApprovedReplacements": true,
+  "dataReview": {
+    "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/legal-prep/source2-resume-review/ReuseDataReview-r2.json",
+    "bytes": 2726,
+    "sha256": "9dd258c6f8f7b98aaafc7f84613b5a7d54bdb78f9b8bed0998fdde005f919c33"
+  },
+  "sourceIdentity": "26c5b73e4915bb4539e87b987cd8e952005f0fe41d987138d8d8e3b13eb25c95",
+  "checkedContracts": [
+    "Unique GDIPlusReader.cpp body-only const Rect* caller correction; exact current raw matches saved after.",
+    "Source2 full inventory hardpin and snapshot comparison at Prepare and Build.",
+    "1919 immutable preserved copies pinned throughout; x64 original before-only pins checked at Prepare and immediately before invoking continuation.",
+    "Only original current-run2 x64 main IntDir is admitted; DLL must remain absent; source2 uses fresh output/capture/binlog paths and retains v2 failed logs.",
+    "1903 actual current-run2 objects plus PCH allowed; main recipe/provider flags unchanged apart from diagnostic binlog; actual recompiled hash/mtime changes reported rather than forced skipping.",
+    "x86 keeps original fresh-main guard and requires same Source2 x64 natural summary before start.",
+    "LLVM22.1.3/MSVC14.29.30133/WindowsSDK19041 routing unchanged; original whole timeout14400000ms+drain2000ms, no per-library reset.",
+    "Fresh global compiler/ReadyEvent preflight, existing standard capture/verifyStream and natural/forced classification remain unchanged."
+  ],
+  "syntax": {
+    "powershellParserErrors": 0,
+    "nodeCheckExit": 0
+  },
+  "limitations": [
+    "Pre-execution review; no compiler, DLL loading or product execution by reviewer.",
+    "Explicit new Source2 attempt follows preserved naturally failed v2. Review does not turn v2 into success.",
+    "External read pins remain current-only; historical whole-provider bytes and full production qualification are not asserted.",
+    "No per-TU granular closure invented for compound compiler write batches."
+  ],
+  "datedNoticeAssessment": "Current file has no individual license header. Directory membership alone does not establish LGPL per-file applicability. If classified under LGPL, preserve applicable prominent modification/date notice before publication and re-freeze source pins; no fabricated license attribution.",
+  "result": "ZERO_TECHNICAL_BLOCKERS_FOR_AUTHORIZED_SOURCE2_CONTINUATION",
+  "blockers": [],
+  "sourceEdited": false,
+  "indexEdited": false,
+  "productExecuted": false,
+  "releaseReady": false
+}

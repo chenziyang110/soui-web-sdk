@@ -8,6 +8,7 @@
 #include "wke/wkeJsBind.h"
 #include "wke/wkeGlobalVar.h"
 #include "wke/CursorDescriptorBroker.h"
+#include "wke/ViewDiagnosticsState.h"
 #include <stdexcept>
 #include <exception>
 #include <algorithm>
@@ -251,6 +252,7 @@ CWebView::CWebView(COLORREF color)
         m_webPage->wkeHandler().isWke = true;
 
         g_liveWebViews.insert(this);
+        diagnostics::view_created();
     } catch (...) {
         std::terminate();
     }
@@ -263,6 +265,7 @@ CWebView::~CWebView()
     net::ActivatingObjCheck::inst()->remove(m_id);
     g_liveWebViews.erase(this);
     m_webPage->close();
+    diagnostics::view_destroyed();
 }
 
 CWebView* CWebView::createForCursorBroker(COLORREF color)

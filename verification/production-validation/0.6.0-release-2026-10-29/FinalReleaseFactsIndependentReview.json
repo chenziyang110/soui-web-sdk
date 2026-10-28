@@ -1,0 +1,479 @@
+{
+  "schema": "soui.release-facts-independent-static-review/v1",
+  "reviewedAtUtc": "2026-10-28T20:04:54.051717+00:00",
+  "status": "NO_BLOCKING_FACTUAL_FINDINGS_IN_REVIEWED_SCOPE",
+  "blockingFindings": [],
+  "scope": "Read-only review of local current release facts, public documentation changes, promoted indexes/raw outcomes and nine existing archive identities. No product, VM, suite, CRC or archive extraction was run.",
+  "snapshot": {
+    "repository": "C:/sr06",
+    "head": "3964e1a3f39a212befe1e05536f00867ef4fb6fb",
+    "facts": {
+      "path": "C:/sr06/verification/production-validation/0.6.0-release-2026-10-29/RELEASE-FACTS.json",
+      "bytes": 119391,
+      "sha256": "46cb4ce199ca591c0c8c1d47e3318af2e99b7154c0ca84447553e8db5eff4b0d"
+    },
+    "acceptance": {
+      "path": "C:/sr06/verification/acceptance.json",
+      "bytes": 1317,
+      "sha256": "02a06475fbedb5174bbcc0a8a4a5932cfd6ecd8ad385a72b7bc0a522e2843028"
+    },
+    "gitStatus": " M AGENTS.md\n M CHANGELOG.md\n M README.md\n M docs/known-issues.md\n M docs/releases/0.6.0.md\n M docs/releasing.md\n M verification/acceptance.json\n?? verification/history/acceptance-36beff4c00af2e06a79e1cdc2049fa959efbcab8d6987ace4cc4bafe4021b280.json\n?? verification/production-validation/0.6.0-release-2026-10-29/RELEASE-FACTS.json\n?? verification/production-validation/0.6.0-release-2026-10-29/final-scoped/\n",
+    "expectedChangesOnly": true,
+    "expectedChanges": "Six listed documentation files plus acceptance/history and new RELEASE-FACTS/final-scoped evidence. No source or implementation change observed; final source manifest was pending Root at this snapshot."
+  },
+  "docs": {
+    "files": [
+      {
+        "path": "C:/sr06/AGENTS.md",
+        "bytes": 11114,
+        "sha256": "4afdce27bec5b4dd66e3457b6a0a4f7b76a6a6a5ff33441d726890cf5e735460"
+      },
+      {
+        "path": "C:/sr06/CHANGELOG.md",
+        "bytes": 58101,
+        "sha256": "58de0d09f2bec8c05d983d45df7ee4b699d5e54d46f86512deb6c8d9e941dd2b"
+      },
+      {
+        "path": "C:/sr06/README.md",
+        "bytes": 14768,
+        "sha256": "4216bf0aa1f0caa1909fd2673749cf81117b202b97fee7c7e5337c014e170abb"
+      },
+      {
+        "path": "C:/sr06/docs/known-issues.md",
+        "bytes": 29992,
+        "sha256": "47ec6e62298ef214c6870b5eca5e90cc9e8c4c1f28fbf5e748aea1f911de1525"
+      },
+      {
+        "path": "C:/sr06/docs/releases/0.6.0.md",
+        "bytes": 10465,
+        "sha256": "4ab44f2a82967d96529c398f6e9fe90de486ce5e4510fefefac08dd132827623"
+      },
+      {
+        "path": "C:/sr06/docs/releasing.md",
+        "bytes": 17350,
+        "sha256": "0ce797c4c4ac770d281ab6cc87a09ff2d25eac4d08d2b29aecc8c7d6678bcafe"
+      }
+    ],
+    "classification": "Ordinary Release classification is user-authorized; releaseReady, productionQualificationComplete and fullDevtoolsGoalComplete stay false.",
+    "noFalseUploadedClaim": true,
+    "sourceArchiveIdentityPolicy": "Full source ZIP, final commit/tree and source-manifest binding are assigned to external Release-Manifest-0.6.0.json. Asset names and download links are explicitly bounded by actual attachment state; no current upload receipt is claimed.",
+    "runtimeBounds": "Docs retain one Server2022 environment, original failures, limited representative GUI results, no full D01-D12, no D07/D13/D14 or production/performance qualification.",
+    "prScope": "Facts exclude103, keep125 as draft/not merged, separate126 source-byte follow-up from runtime qualification. No new remote PR-state query was performed."
+  },
+  "indexAudit": {
+    "indexes": [
+      {
+        "path": "C:/sr06/verification/production-validation/0.6.0-release-2026-10-29/final-scoped/Inputs.index.json",
+        "bytes": 7651,
+        "sha256": "e94b953ff5a2709e7e9b332afa12ae919d9dfa719753d9490e00d62771a3619e",
+        "files": 20
+      },
+      {
+        "path": "C:/sr06/verification/production-validation/0.6.0-release-2026-10-29/final-scoped/closing/Files.index.json",
+        "bytes": 21993,
+        "sha256": "cae2871a45abe57c33115c2ff0058be70f3e205f1d2039c9c4f6165465cd9fba",
+        "files": 53
+      },
+      {
+        "path": "C:/sr06/verification/production-validation/0.6.0-release-2026-10-29/final-scoped/runtime/default-eight-accepted/Files.index.json",
+        "bytes": 52179,
+        "sha256": "91a5c97c80eeab6232cd4e8e3096d7b7735c704e4521a3c001816cd39c6b019c",
+        "files": 112
+      },
+      {
+        "path": "C:/sr06/verification/production-validation/0.6.0-release-2026-10-29/final-scoped/runtime/default-initial-loader-failure/Files.index.json",
+        "bytes": 8500,
+        "sha256": "c5cd3920d072d7d264e01a2e0a4d8694f7ca6b569a9f9f8f4767d1c17a9387ab",
+        "files": 20
+      },
+      {
+        "path": "C:/sr06/verification/production-validation/0.6.0-release-2026-10-29/final-scoped/runtime/diagnostic-accepted-1/Files.index.json",
+        "bytes": 7427,
+        "sha256": "32df3e821f7d1b059c92f7c9e686322b391eb471b4945f5dd4af3ad4a3f660a1",
+        "files": 16
+      },
+      {
+        "path": "C:/sr06/verification/production-validation/0.6.0-release-2026-10-29/final-scoped/runtime/diagnostic-accepted-2/Files.index.json",
+        "bytes": 7427,
+        "sha256": "e929061150207233c953a37aa4f720a6bc3fddb31ffcc371824baabd430011c0",
+        "files": 16
+      },
+      {
+        "path": "C:/sr06/verification/production-validation/0.6.0-release-2026-10-29/final-scoped/runtime/diagnostic-accepted-3/Files.index.json",
+        "bytes": 7289,
+        "sha256": "09279d8a60a6014bf905539b032a31f7bac0cc3dc91c9df338164848eb0c23ee",
+        "files": 16
+      },
+      {
+        "path": "C:/sr06/verification/production-validation/0.6.0-release-2026-10-29/final-scoped/runtime/diagnostic-accepted-4/Files.index.json",
+        "bytes": 7288,
+        "sha256": "8779451bbee7f108b797e1f03ac084aaf035ac21653c1cc0b6ae527ce86638b7",
+        "files": 16
+      },
+      {
+        "path": "C:/sr06/verification/production-validation/0.6.0-release-2026-10-29/final-scoped/runtime/diagnostic-accepted-5/Files.index.json",
+        "bytes": 7427,
+        "sha256": "11aacca819d4a671ff7d4e4dcd667fde8819322490d4734a4c96e857d299778a",
+        "files": 16
+      },
+      {
+        "path": "C:/sr06/verification/production-validation/0.6.0-release-2026-10-29/final-scoped/runtime/diagnostic-c64-timeout-1/Files.index.json",
+        "bytes": 7510,
+        "sha256": "c3da8e54b6d8e123595cdae08667a0c3d941dd33ce8fc5897e7382760a03d8ba",
+        "files": 16
+      },
+      {
+        "path": "C:/sr06/verification/production-validation/0.6.0-release-2026-10-29/final-scoped/runtime/diagnostic-c64-timeout-2/Files.index.json",
+        "bytes": 7510,
+        "sha256": "40702d20534d42dbb09c841c66bf5510c77c4b86afb5ce426461174c53750ade",
+        "files": 16
+      },
+      {
+        "path": "C:/sr06/verification/production-validation/0.6.0-release-2026-10-29/final-scoped/runtime/gui-observations/Files.index.json",
+        "bytes": 8854,
+        "sha256": "bf85eab2ec6a8ee584c4ce12c443e1238d744cc0afa40adac2abc1cbfd7cc5c8",
+        "files": 26
+      }
+    ],
+    "indexedRows": 343,
+    "indexedUniqueFiles": 343,
+    "indexedBytes": 44495242,
+    "declaredHashesAndBytesAgree": true,
+    "all343OriginBytesAgree": true,
+    "missingOrigins": 0,
+    "sourceTreeClosedSet": {
+      "files": 355,
+      "indexFiles": 12,
+      "indexedPayloadFiles": 343,
+      "unexpected": [],
+      "missing": []
+    },
+    "indicesDoNotGrantQualification": true
+  },
+  "runtimeAudit": {
+    "method": "Parsed raw NDJSON and adjacent finished receipts; checked single terminal, reportSHA, PID/birth, root/supervisor0, completed reason, Job0, no forced cleanup, no stop/fallback and assigned-before-resume/no-breakaway. Compared generated Inputs/context/Facts source, build and executable identities.",
+    "generated": {
+      "naturalStages": 5,
+      "uniqueConsumers": 4,
+      "cases": [
+        {
+          "index": 1,
+          "stage": "compatibility:x64",
+          "pid": 3200,
+          "creationFileTime": "134376897203914670",
+          "timeoutMs": 120000,
+          "drainMs": 2000,
+          "elapsedMs": 33007,
+          "buildId": "c2c2477c-e117-45de-8524-085bb8541131",
+          "sourceSha256": "a038997d7d5b527c3bc9f2085ebbec95127275bf30a7a71bab37728d76e3b73e",
+          "executableSha256": "134c7c730db67e93cf72f45164411c7da8c11c5f8d9c244cfa0975b8545f4c14",
+          "raw": {
+            "path": "C:/sr06/verification/production-validation/0.6.0-release-2026-10-29/final-scoped/runtime/diagnostic-accepted-1/guest/release06-control/evidence/generated-compatibility-x64-0a3e24d1-164b-4058-9fa7-41d11ebe57f6/case.ndjson",
+            "bytes": 806,
+            "sha256": "6167b7913e6833e015d643061384b4151ad765ff96255dcc8f2f1696b3cac1e8"
+          }
+        },
+        {
+          "index": 2,
+          "stage": "compatibility:x86",
+          "pid": 5040,
+          "creationFileTime": "134376897789218333",
+          "timeoutMs": 120000,
+          "drainMs": 2000,
+          "elapsedMs": 88322,
+          "buildId": "8afcfb4d-250c-4b85-9cc5-0f00a1ce3d7a",
+          "sourceSha256": "a038997d7d5b527c3bc9f2085ebbec95127275bf30a7a71bab37728d76e3b73e",
+          "executableSha256": "7dd3a5416b8e85d4e9c4fb7013a7e55616c4de56d9c2d2b7ab941214db8f0d22",
+          "raw": {
+            "path": "C:/sr06/verification/production-validation/0.6.0-release-2026-10-29/final-scoped/runtime/diagnostic-accepted-2/guest/release06-control/evidence/generated-compatibility-x86-35684a37-5250-4326-a267-8a425b71d72e/case.ndjson",
+            "bytes": 806,
+            "sha256": "a23eb67a11fccf64a1eb31c27d0d70fa7c61448706c613b2b2b66ed1a3c1950c"
+          }
+        },
+        {
+          "index": 3,
+          "stage": "modern:x64",
+          "pid": 1012,
+          "creationFileTime": "134376899012501052",
+          "timeoutMs": 120000,
+          "drainMs": 2000,
+          "elapsedMs": 33529,
+          "buildId": "04a00e24-2a9b-482a-b08f-3ecf5bedae82",
+          "sourceSha256": "048657a3d212c2e785db7985c51dddb9be48cf910db5d3c4968643c49c3b443e",
+          "executableSha256": "f926fb5466e94c9a16ca9a81aa24dc8554838539c20d300acc8076b25927fdee",
+          "raw": {
+            "path": "C:/sr06/verification/production-validation/0.6.0-release-2026-10-29/final-scoped/runtime/diagnostic-accepted-3/guest/release06-control/evidence/generated-modern-x64-261ad56a-b67c-4ace-a565-5b84f06e26e6/case.ndjson",
+            "bytes": 10019,
+            "sha256": "03fba16f239ef11f3fd8540d7e20688c9ed348aa4a37f59c301884fc9b09d73e"
+          }
+        },
+        {
+          "index": 4,
+          "stage": "modern:x86",
+          "pid": 2304,
+          "creationFileTime": "134376899571032745",
+          "timeoutMs": 120000,
+          "drainMs": 2000,
+          "elapsedMs": 61311,
+          "buildId": "0e78f909-f269-461a-be1d-02595b2670e5",
+          "sourceSha256": "048657a3d212c2e785db7985c51dddb9be48cf910db5d3c4968643c49c3b443e",
+          "executableSha256": "ec02b3ef68816d064a048097c92d7c2b3f8f5bf7f196218e7162dfb9e341e38d",
+          "raw": {
+            "path": "C:/sr06/verification/production-validation/0.6.0-release-2026-10-29/final-scoped/runtime/diagnostic-accepted-4/guest/release06-control/evidence/generated-modern-x86-e0f7d1f4-9d25-4766-81de-0706b78494f5/case.ndjson",
+            "bytes": 9058,
+            "sha256": "a31bd678a8d563495891aa7ae9ea869a2b5be56600d3dc5c900992f74d1f292c"
+          }
+        },
+        {
+          "index": 5,
+          "stage": "compatibility:x86",
+          "pid": 4988,
+          "creationFileTime": "134376900905115247",
+          "timeoutMs": 120000,
+          "drainMs": 2000,
+          "elapsedMs": 70881,
+          "buildId": "8afcfb4d-250c-4b85-9cc5-0f00a1ce3d7a",
+          "sourceSha256": "a038997d7d5b527c3bc9f2085ebbec95127275bf30a7a71bab37728d76e3b73e",
+          "executableSha256": "7dd3a5416b8e85d4e9c4fb7013a7e55616c4de56d9c2d2b7ab941214db8f0d22",
+          "raw": {
+            "path": "C:/sr06/verification/production-validation/0.6.0-release-2026-10-29/final-scoped/runtime/diagnostic-accepted-5/guest/release06-control/evidence/generated-compatibility-x86-17db7edb-767b-4552-8e53-b1adf2c554e5/case.ndjson",
+            "bytes": 806,
+            "sha256": "0f7071b2158adbd29c87de4f037a58769f9eda7aa09453b09719273120f3e081"
+          }
+        }
+      ],
+      "allOriginalBudgets120000_2000": true,
+      "allRootSupervisorZero": true,
+      "allJobActiveZero": true,
+      "noForce": true,
+      "rawReceiptAndIdentityAgrees": true
+    },
+    "defaults": {
+      "outerSupervisedRuns": 4,
+      "innerApplicationRuns": 8,
+      "rawReceiptAndIdentityAgrees": true,
+      "allRootSupervisorZero": true,
+      "allJobActiveZero": true,
+      "noForce": true,
+      "outerDesktopBudgets180000_2000": true,
+      "outerModernBudgets90000_2000": true,
+      "innerDesktopBudgets45000_2000": true,
+      "innerModernBudgets40000_2000": true,
+      "sourceSha256": "67a8c649a1a08e96e76dd4d0f7782b53f229e1f26ad65e6a2738bc7173555264",
+      "buildIds": {
+        "x64": "7ecb5a92-de8e-4ab1-8b24-19606f889f03",
+        "x86": "6d3166b8-5989-4356-8970-1ab5c879db00"
+      }
+    },
+    "retainedTimeouts": [
+      {
+        "group": "diagnostic-c64-timeout-1",
+        "pid": 3516,
+        "rootExitCode": 124,
+        "supervisorExitCode": 124,
+        "terminatedOwnedJob": true,
+        "activeBeforeCleanup": 1,
+        "activeProcesses": 0,
+        "passed": false,
+        "timeoutMs": 120000,
+        "drainMs": 2000
+      },
+      {
+        "group": "diagnostic-c64-timeout-2",
+        "pid": 696,
+        "rootExitCode": 124,
+        "supervisorExitCode": 124,
+        "terminatedOwnedJob": true,
+        "activeBeforeCleanup": 1,
+        "activeProcesses": 0,
+        "passed": false,
+        "timeoutMs": 120000,
+        "drainMs": 2000
+      }
+    ],
+    "compilerJobFailuresRetained": 8,
+    "gui": {
+      "observations": {
+        "path": "C:/sr06/verification/production-validation/0.6.0-release-2026-10-29/final-scoped/runtime/gui-observations/GUI-Observations.json",
+        "bytes": 4510,
+        "sha256": "f976e494d1d41c3bd537fcafc729d300631f2841d0694d9594bf0444c733d1ee"
+      },
+      "followup": {
+        "path": "C:/sr06/verification/production-validation/0.6.0-release-2026-10-29/final-scoped/runtime/gui-observations/GUI-Step-Mapping-Followup.json",
+        "bytes": 931,
+        "sha256": "5cc8abab32dea3d37cda533baf25f54c8158900c54efc76a087ea94c6938de7c"
+      },
+      "modernSdkAttached": "unknown",
+      "modernSdkPaused": "unknown",
+      "modernSdkVisible": "unknown",
+      "x64Console": "42 belongs to preserved operator-timeout attempt; later native-open/natural-close is a separate natural session.",
+      "x86SourceStep": "Breakpoint main.tsx:12; six physical F10 presses changed same-line mapping columns, then toolbar Step Over reached13. No claim that F10 alone reached a later line.",
+      "fullPausedCloseOrD01D12Inferred": false
+    }
+  },
+  "machine": {
+    "rawEnvironmentEqualsFacts": true,
+    "windows": "10.0.20348.587",
+    "productName": "Windows Server 2022 Standard Evaluation",
+    "modernRuntimeX86": "156.0.4314.50",
+    "modernRuntimeX64": "156.0.4314.50",
+    "environmentVariablesDumped": false,
+    "oneEnvironmentOnly": true
+  },
+  "archiveAudit": {
+    "existingArchives": 9,
+    "allNineCurrentBytesAndShaAgreeWithFacts": true,
+    "tuples": [
+      {
+        "file": "SouiSdk-0.6.0-source-sdk.zip",
+        "bytes": 37437121,
+        "sha256": "99373b7cca69fc133c4344e550ca65d9570cb87c876e495186e0db163c543f8f"
+      },
+      {
+        "file": "SouiDevTools-0.6.0-windows-x64.zip",
+        "bytes": 16729816,
+        "sha256": "ee5117139791cf011026def7fbd119aaa6813ddb870acc48eab26ead76eb755e"
+      },
+      {
+        "file": "SouiDevTools-0.6.0-windows-x86.zip",
+        "bytes": 14243258,
+        "sha256": "53387d24a2a583ef392408f040ab9a6e74c7e820e076d2544cbc1676823cb9e1"
+      },
+      {
+        "file": "SouiStarter-0.6.0-windows-x64.zip",
+        "bytes": 17000886,
+        "sha256": "8dada2eaaaf877e91ac49995e10990b3add2b1176a916daab3c4aa41e7c2cef1"
+      },
+      {
+        "file": "SouiWorkbench-0.6.0-windows-x64.zip",
+        "bytes": 23444811,
+        "sha256": "1cb64a7d282a395b5ea904f305f0c272f4741aaa083c66c18b49d53a5b87eb54"
+      },
+      {
+        "file": "SouiModernStarter-0.6.0-windows-x64.zip",
+        "bytes": 2383323,
+        "sha256": "bb8cb0b4e11e02f2b425d48dae70104064748be58ec97379d268d83d430199f3"
+      },
+      {
+        "file": "SouiStarter-0.6.0-windows-x86.zip",
+        "bytes": 14377869,
+        "sha256": "bc68ff76585a4ba8e5c446fb0d7f98f0b22c54b45f754dac4385ed1e50dc7979"
+      },
+      {
+        "file": "SouiWorkbench-0.6.0-windows-x86.zip",
+        "bytes": 20797749,
+        "sha256": "eb91755b8b2c1218ef2e3b6ed083f570998fadd64ba60212e3e010cf43c4d43b"
+      },
+      {
+        "file": "SouiModernStarter-0.6.0-windows-x86.zip",
+        "bytes": 2304259,
+        "sha256": "39b9fc15219c5ba13170c80918cd7bcca93d6dcf5aff78dbf9f4f7abd5b1e3a2"
+      }
+    ],
+    "sixAppSidecarsAndChecksums": [
+      {
+        "path": "C:/sr06/dist/SouiStarter-0.6.0-windows-x64.zip.json",
+        "bytes": 73509,
+        "sha256": "77e04e1aa61761edeb89e889a668bc52ce8037335528d2f97bb9b913587b06fc"
+      },
+      {
+        "path": "C:/sr06/dist/SouiStarter-0.6.0-windows-x64.zip.sha256",
+        "bytes": 101,
+        "sha256": "c01353505d1c45ee73b66dd7b59aef52a0ed0ab00b3802b09cd366cab4117848"
+      },
+      {
+        "path": "C:/sr06/dist/SouiWorkbench-0.6.0-windows-x64.zip.json",
+        "bytes": 150200,
+        "sha256": "12dd026b70398853e4bcbc9e1c0fd11936c038a4fb664ffa4629f10ec6a0f65c"
+      },
+      {
+        "path": "C:/sr06/dist/SouiWorkbench-0.6.0-windows-x64.zip.sha256",
+        "bytes": 102,
+        "sha256": "ae9951e59ff607ce38ada9f1b2c7d787bc569f5d14cc3707e6add1c7082cf08b"
+      },
+      {
+        "path": "C:/sr06/dist/SouiModernStarter-0.6.0-windows-x64.zip.json",
+        "bytes": 72062,
+        "sha256": "940f002a21260cc44fc93eb0958a25b75a2a7b582d813a424ff17189c29e7272"
+      },
+      {
+        "path": "C:/sr06/dist/SouiModernStarter-0.6.0-windows-x64.zip.sha256",
+        "bytes": 107,
+        "sha256": "3400392b26b5cea9b208574be2eda18b40dace2fa996ffb684f596ded0a83517"
+      },
+      {
+        "path": "C:/sr06/dist/SouiStarter-0.6.0-windows-x86.zip.json",
+        "bytes": 73517,
+        "sha256": "066cb650c145c21925daecb321e665dfdbcecfd7bf037570db29c66c0cb014c3"
+      },
+      {
+        "path": "C:/sr06/dist/SouiStarter-0.6.0-windows-x86.zip.sha256",
+        "bytes": 101,
+        "sha256": "cc24b00ab8b995335ff297d25f231b65173c4f2d727237c7f7e8c96b286d31fc"
+      },
+      {
+        "path": "C:/sr06/dist/SouiWorkbench-0.6.0-windows-x86.zip.json",
+        "bytes": 150213,
+        "sha256": "aedc2c6c5e98171aba527a2e33c6cfdedc1f8f95b4658f8903db7f1ec9058390"
+      },
+      {
+        "path": "C:/sr06/dist/SouiWorkbench-0.6.0-windows-x86.zip.sha256",
+        "bytes": 102,
+        "sha256": "63880bba15b709b333a047883ea91afd412f647abd202fe4d00324be59262367"
+      },
+      {
+        "path": "C:/sr06/dist/SouiModernStarter-0.6.0-windows-x86.zip.json",
+        "bytes": 72081,
+        "sha256": "cfcdd2b3861c8d7bcea9dbacb5398e639e5838bb8d5ed508d1417762612d4431"
+      },
+      {
+        "path": "C:/sr06/dist/SouiModernStarter-0.6.0-windows-x86.zip.sha256",
+        "bytes": 107,
+        "sha256": "78ec37986c88f6868e119edf830d7acbba7f1ffd764a0e492caca6443ab4eeb0"
+      }
+    ],
+    "workbenchTwoRepackedPayloadClaimsRetainOriginalPins": true,
+    "sourceSdkManifest": {
+      "path": "C:/s06sdk/sdk-manifest.json",
+      "bytes": 353462,
+      "sha256": "af9e61db01f8af4c8f0458be0821fab169ac26349110433c1d30dfd4f22ec21d"
+    },
+    "fullSourceArchive": "Pending Root seal at snapshot; not counted among current nine and not independently reviewed here.",
+    "uploads": "No upload receipt claimed or performed by this review."
+  },
+  "acceptanceAudit": {
+    "generator": "Collect-Verification.cjs --record-unverified",
+    "version": "0.6.0",
+    "status": "unverified",
+    "sourceDeliveryVerified": false,
+    "releaseReady": false,
+    "collectionExecuted": false,
+    "currentFactsReferenceExact": true,
+    "previousAcceptanceHashExact": true,
+    "previousAcceptanceBytesEqualPriorHEAD": true
+  },
+  "publicRawCredentialReview": {
+    "scannedTextOrRawFiles": 326,
+    "encodings": "UTF8/UTF16 plus decompressed gzip text; binary PNG/JPEG/ZIP bodies excluded from textual scan; exported raw data counterparts included.",
+    "patterns": "Private-key PEM markers, GitHub tokens, AWS keys, OpenAI keys, Slack tokens, bearer authorization, credentialed URLs, password/API-key/access-token/client-secret/private-key string assignments.",
+    "strongMatches": 0,
+    "genericSecretAssignments": 0,
+    "realCredentialFindings": [],
+    "operationalMetadata": "Owned-process nonce/tags and original source absolute paths are audit/provenance metadata, not identified as reusable external credentials. No generic warning added."
+  },
+  "boundaries": {
+    "finalSourceManifestOrZipReviewed": false,
+    "remoteTagOrReleaseStateQueried": false,
+    "productStarted": false,
+    "vmTouched": false,
+    "suiteRun": false,
+    "crcRepeated": false,
+    "zipExtracted": false,
+    "sourceOrIndexModified": false,
+    "writes": [
+      "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/release-evidence-prep/FinalReleaseFactsIndependentReview.json"
+    ],
+    "releaseReadinessGranted": false,
+    "productionQualificationGranted": false
+  }
+}

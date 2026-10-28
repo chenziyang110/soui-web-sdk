@@ -2,10 +2,10 @@
   "$schema": "http://cyclonedx.org/schema/bom-1.5.schema.json",
   "bomFormat": "CycloneDX",
   "specVersion": "1.5",
-  "serialNumber": "urn:uuid:9e5f8006-0e89-4e36-b915-c015f8a1f385",
+  "serialNumber": "urn:uuid:5d0eb474-ba79-4d19-a21a-f2dc9c756a90",
   "version": 1,
   "metadata": {
-    "timestamp": "2026-10-15T17:24:04.731Z",
+    "timestamp": "2026-10-28T15:11:51.211Z",
     "lifecycles": [
       {
         "phase": "pre-build"
@@ -19,19 +19,26 @@
       }
     ],
     "component": {
-      "bom-ref": "@soui/native-sdk@0.5.0",
+      "bom-ref": "@soui/native-sdk@0.6.0",
       "type": "library",
       "name": "web",
-      "version": "0.5.0",
+      "version": "0.6.0",
       "scope": "required",
-      "purl": "pkg:npm/%40soui/native-sdk@0.5.0",
+      "purl": "pkg:npm/%40soui/native-sdk@0.6.0",
       "properties": [
         {
           "name": "cdx:npm:package:private",
           "value": "true"
         }
       ],
-      "externalReferences": []
+      "externalReferences": [],
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ]
     }
   },
   "components": [
@@ -71,7 +78,7 @@
   ],
   "dependencies": [
     {
-      "ref": "@soui/native-sdk@0.5.0",
+      "ref": "@soui/native-sdk@0.6.0",
       "dependsOn": [
         "typescript@5.9.3"
       ]

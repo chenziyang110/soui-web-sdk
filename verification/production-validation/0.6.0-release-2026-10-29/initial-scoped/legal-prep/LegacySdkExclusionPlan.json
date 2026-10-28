@@ -1,0 +1,2818 @@
+{
+  "schema": "soui.release-sdk-copy-exclusion/v1",
+  "createdUtc": "2026-10-28T14:16:53.340Z",
+  "authorization": "Root explicitly authorized reversible cleanup in task-created C:/sr06; original F root and historical manifests untouched",
+  "sourceRoot": "C:/sr06/third_party/sources/miniblink",
+  "backupRoot": "C:/sr06/out/release-scratch/excluded-sdk",
+  "scope": "Remove two copied legacy Microsoft SDK header directories from new public candidate and automatic tag archive; vendor agent owns project include adjustment; no index operation",
+  "subsets": [
+    {
+      "relative": "vc6",
+      "resolved": "C:/sr06/third_party/sources/miniblink/vc6",
+      "files": 489,
+      "bytes": 17114197,
+      "rosterSha256": "a59549fd2636915466b6ae08734095c0abcd3c03879c090fdc4bafd264d3319a",
+      "members": [
+        {
+          "path": "vc6/include/crt/MPRAPI.H",
+          "bytes": 33778,
+          "sha256": "08ec47e60bf2eacd6d12b45bfcba1934079b490ae399f4232514f0809a878f3a"
+        },
+        {
+          "path": "vc6/include/crt/algorithm",
+          "bytes": 47529,
+          "sha256": "ffa551fd4e09bbbc4656225fce980df0453831e88c43c7309621e7bf5843e616"
+        },
+        {
+          "path": "vc6/include/crt/algorithmvc6.h",
+          "bytes": 3212,
+          "sha256": "2473e1bbc612ac4511503d8626fd96880827a5b6b900909e3b35653d89970192"
+        },
+        {
+          "path": "vc6/include/crt/assert.h",
+          "bytes": 892,
+          "sha256": "ed753fe9318c88975dc91ed1456b3eeadd2d9a7e40076483353c390d68a3be44"
+        },
+        {
+          "path": "vc6/include/crt/bitset",
+          "bytes": 6967,
+          "sha256": "166696475d79d0e0d936c114e63b382c7767d469ad0f8da7f5b9e21dabe3e922"
+        },
+        {
+          "path": "vc6/include/crt/cassert",
+          "bytes": 190,
+          "sha256": "e709b073a73de918439b8e23cb1f6662ac03e5724bf70db4ccba031fd822be94"
+        },
+        {
+          "path": "vc6/include/crt/cctype",
+          "bytes": 361,
+          "sha256": "f2bf6c3738dd2ad101289c3d48689d93ef28f6db28159f15484fb3e50493adc7"
+        },
+        {
+          "path": "vc6/include/crt/cerrno",
+          "bytes": 361,
+          "sha256": "274afc2fa2ae0217edf226e38caaa1d278e61e2cc0f639056bbd686778e779fb"
+        },
+        {
+          "path": "vc6/include/crt/cfloat",
+          "bytes": 247,
+          "sha256": "5c1685f51e2db891db4e6199b55b2bf2b47cda168f954cbe4bf92fb022e59b58"
+        },
+        {
+          "path": "vc6/include/crt/ciso646",
+          "bytes": 252,
+          "sha256": "fd6db88fec9bb55097ec6febd5b513ec17ef032434f1f97756c63103f60ca144"
+        },
+        {
+          "path": "vc6/include/crt/climits",
+          "bytes": 252,
+          "sha256": "4b8d339c4be75b827bc8125625cac53fad19a1058506c6178107e045cd618681"
+        },
+        {
+          "path": "vc6/include/crt/clocale",
+          "bytes": 367,
+          "sha256": "56bdc9566e409535e6728d8b886a86a1a9a342e29dc2022b61452d4b08d607da"
+        },
+        {
+          "path": "vc6/include/crt/cmath",
+          "bytes": 384,
+          "sha256": "a478f4f4d97ad1130432723dad1119ba7d588d5993f309e08dd5340455bcf651"
+        },
+        {
+          "path": "vc6/include/crt/complex",
+          "bytes": 11126,
+          "sha256": "444bea1b3ea175cd3ec321690159df653ab9b1c673890e3c54b1372ef4c65750"
+        },
+        {
+          "path": "vc6/include/crt/conio.h",
+          "bytes": 3019,
+          "sha256": "50a565e8258bde3cb3835c0817798fe3fc9a19efb96935e91f392fa9c35af7e3"
+        },
+        {
+          "path": "vc6/include/crt/crtdbg.h",
+          "bytes": 17570,
+          "sha256": "ffd6b4ab8ce464ca09e041d1aaab1ccb3f0e861fa331d0c3cda4df04d7efc84b"
+        },
+        {
+          "path": "vc6/include/crt/csetjmp",
+          "bytes": 366,
+          "sha256": "fb0e0067ba82e41732ca888e52c14d2b2f3c1a94dea9d463a721d37ab53248f0"
+        },
+        {
+          "path": "vc6/include/crt/csignal",
+          "bytes": 367,
+          "sha256": "1d69f3b5bc3147472050e1eed169aed2bf2a99f012c38558dc6a193cee68b969"
+        },
+        {
+          "path": "vc6/include/crt/cstdarg",
+          "bytes": 367,
+          "sha256": "f79e34a318a53b95bc0234dc59859793c6b2fc56ff810a839eae2cc03e0fbdde"
+        },
+        {
+          "path": "vc6/include/crt/cstddef",
+          "bytes": 641,
+          "sha256": "18fcd636fea0be9c0cb8b05c9e775ec5fe5f5c22537386bb55b93806dc2aa53c"
+        },
+        {
+          "path": "vc6/include/crt/cstdint",
+          "bytes": 105,
+          "sha256": "106bde85e97978e4338c4029d69816f0b2f819192d2b04e2bb2c27edde0d18c2"
+        },
+        {
+          "path": "vc6/include/crt/cstdio",
+          "bytes": 361,
+          "sha256": "60fa52796ecf00126975daa2b611631760a4833828cc44a9489be55a24b43ab4"
+        },
+        {
+          "path": "vc6/include/crt/cstdlib",
+          "bytes": 366,
+          "sha256": "3cf144912d8a9ba4619bffc18a05f790caeba347c06ad996ff4b4a3b7aab4123"
+        },
+        {
+          "path": "vc6/include/crt/cstring",
+          "bytes": 367,
+          "sha256": "b3c7ff042b350ff3da32dca78a4ef9ab6385175adfbdc489991e2b79e92d1bea"
+        },
+        {
+          "path": "vc6/include/crt/ctime",
+          "bytes": 329,
+          "sha256": "eaa0a945cde5b430367d17d5999491488ddf641f4d13c0ad57be06ea00c8d668"
+        },
+        {
+          "path": "vc6/include/crt/ctype.h",
+          "bytes": 10005,
+          "sha256": "5daab25538635c369d6892d6daf768b49cc0c7fa6b2889d2e605649985ed601e"
+        },
+        {
+          "path": "vc6/include/crt/cwchar",
+          "bytes": 361,
+          "sha256": "74ea6624d281f280d7ecbd747125a66a6237a74db40d8162eb461e8dcdfc0224"
+        },
+        {
+          "path": "vc6/include/crt/cwctype",
+          "bytes": 367,
+          "sha256": "20031648d3fb45e3b92e403cedea70ca0275e38934e95ec224e020012fe3f860"
+        },
+        {
+          "path": "vc6/include/crt/deque",
+          "bytes": 22680,
+          "sha256": "e0a32d500e68a5fcef744a5b88576c759bb7aede102ec60c6cb1da75a7b80081"
+        },
+        {
+          "path": "vc6/include/crt/direct.h",
+          "bytes": 2869,
+          "sha256": "5dc077338c7f71c68b31a3a46f1ef0dfc4ad5cbffd3155ae3a2c8ec083f925c4"
+        },
+        {
+          "path": "vc6/include/crt/dos.h",
+          "bytes": 2273,
+          "sha256": "0b671d82c3d1f5b38a93a6fcb41621aee829e92c375e39aeb556764083096109"
+        },
+        {
+          "path": "vc6/include/crt/eh.h",
+          "bytes": 1633,
+          "sha256": "aca1cc6bcaf810cf16dacf0dcfc87225d52090ef9e0dac7f74cce3c691f396d3"
+        },
+        {
+          "path": "vc6/include/crt/emmintrin.h",
+          "bytes": 13249,
+          "sha256": "bc0967f3f60eea8785af0dc46771b301180a55a533dc69903ef0b85848df6005"
+        },
+        {
+          "path": "vc6/include/crt/errno.h",
+          "bytes": 2302,
+          "sha256": "76a09202e43ea44e753455bfe59a5305e15348753a17e55f90f5de666fee4eee"
+        },
+        {
+          "path": "vc6/include/crt/exception",
+          "bytes": 1863,
+          "sha256": "2a76f51649455660d92d830ba32820997e82bbdf4c8e897c788d469c8b66ff29"
+        },
+        {
+          "path": "vc6/include/crt/excpt.h",
+          "bytes": 3145,
+          "sha256": "c85c622afe4f21ec1048a95be1ac3e5d368019087cfb07c9247e79b15a748563"
+        },
+        {
+          "path": "vc6/include/crt/fcntl.h",
+          "bytes": 2394,
+          "sha256": "74d74d4f06cb85a0bb5fcb2a75873a45501703d1509084519f09d248ef42a2f1"
+        },
+        {
+          "path": "vc6/include/crt/float.h",
+          "bytes": 11324,
+          "sha256": "cae12b83c0b7ac3e21a98141a53d1d2f8134013db1290d949b06e7342cc4be0f"
+        },
+        {
+          "path": "vc6/include/crt/fpieee.h",
+          "bytes": 6948,
+          "sha256": "c90dd6f2288ff4fab462834d1c3ab3c2a7b1ded59c5c8863ff4b2ddfaf209da0"
+        },
+        {
+          "path": "vc6/include/crt/fstream",
+          "bytes": 11718,
+          "sha256": "ac6effccb5047ee8d04af7e14d374be6a0ade0b09e16f72da977c5aac5d14fe5"
+        },
+        {
+          "path": "vc6/include/crt/fstream.h",
+          "bytes": 4941,
+          "sha256": "61d024c471951a5948dd23d65365cb4e02fcf48dd6e190c6a3d7ff26bc11bfc9"
+        },
+        {
+          "path": "vc6/include/crt/functional",
+          "bytes": 9671,
+          "sha256": "b165c0d73bc625262bf79e02ced64dad54016fa5a803f97afff89cd1c28456c1"
+        },
+        {
+          "path": "vc6/include/crt/functionalvc6.h",
+          "bytes": 2434,
+          "sha256": "ccab449341a8a7b1e4297602d51bdb4e4496fe4488e64c907de5266fcf8daba5"
+        },
+        {
+          "path": "vc6/include/crt/gl/gl.h",
+          "bytes": 67558,
+          "sha256": "002d1deb128b2b2dfe73b11c29d26d47afd9868b4985ac9b9dffcf3590be37ab"
+        },
+        {
+          "path": "vc6/include/crt/gl/glaux.h",
+          "bytes": 11652,
+          "sha256": "e2a465070790b4d546b81000b74b260f7f7ea3b2f602608f8071fb401ef2e1bd"
+        },
+        {
+          "path": "vc6/include/crt/gl/glu.h",
+          "bytes": 17699,
+          "sha256": "aa67051cd4d60e5f83e22c465c4c821fa684b1cba129b3ae72537a1a7aeec615"
+        },
+        {
+          "path": "vc6/include/crt/initializer_list",
+          "bytes": 1582,
+          "sha256": "23ec8ff939961e4e83eb85afa0f7910d5dd90d587b32675ed7e1f3271c221d01"
+        },
+        {
+          "path": "vc6/include/crt/intsafe.h",
+          "bytes": 55199,
+          "sha256": "11b2fe863a832c2d5c521722fadaf5596320849ecff5499f6a537f882a342a8a"
+        },
+        {
+          "path": "vc6/include/crt/io.h",
+          "bytes": 8109,
+          "sha256": "c30658e54d3a80392339b889ff565a63288c67251a6e1284c3cd5bc240c4aa7d"
+        },
+        {
+          "path": "vc6/include/crt/iomanip",
+          "bytes": 1955,
+          "sha256": "7dcb5d3dd2caf9fc92bc378ce0b9756bd5c9bf37c3ed2435732077e8c73091e0"
+        },
+        {
+          "path": "vc6/include/crt/iomanip.h",
+          "bytes": 4627,
+          "sha256": "7a83ff12c755c141859e2f2f59f23dc336d096c63c8c4315e9e35e694ebefbc0"
+        },
+        {
+          "path": "vc6/include/crt/ios",
+          "bytes": 5157,
+          "sha256": "2fc514550f418ab49bc87f9c2dfb3e64fe0ed51b02c85f50a19b9f89a70cad22"
+        },
+        {
+          "path": "vc6/include/crt/ios.h",
+          "bytes": 9123,
+          "sha256": "6a3fb709c305d4b57d235671f99a416b0954db6e47c5ee6ce807c560e0a07e5f"
+        },
+        {
+          "path": "vc6/include/crt/iosfwd",
+          "bytes": 13314,
+          "sha256": "d3aaa16a7d5c7f188d05fa7f68cf675fec57f29c9e1b00d3706fdfe91b169022"
+        },
+        {
+          "path": "vc6/include/crt/iostream",
+          "bytes": 788,
+          "sha256": "3560926335fe1d9e0525dd59ab624eea8b0a9bee119e1f8e044499b94593b19c"
+        },
+        {
+          "path": "vc6/include/crt/iostream.h",
+          "bytes": 2259,
+          "sha256": "7f474aaa5bb29ed471f1911f38077c169f2fec54919eb305f17e09609709ddc4"
+        },
+        {
+          "path": "vc6/include/crt/iso646.h",
+          "bytes": 400,
+          "sha256": "d8ec080963f33374cd556cf2169c64e9dc549e20c3fbdf545d98cd8df42df0eb"
+        },
+        {
+          "path": "vc6/include/crt/istream",
+          "bytes": 18469,
+          "sha256": "1a82dadd22a2ad8ba94016ee4c2ddb583ebeefc6d1c8fba403f9a4abfbad252c"
+        },
+        {
+          "path": "vc6/include/crt/istream.h",
+          "bytes": 6263,
+          "sha256": "776da78f49d9d02c3e6ee6a071591043e18700e34dd68f86419b37b5583932de"
+        },
+        {
+          "path": "vc6/include/crt/iterator",
+          "bytes": 8159,
+          "sha256": "a4619fd507baa7b683f791f84b7facf0810c5ccd2bd1318dbf794bbfd03bcc2f"
+        },
+        {
+          "path": "vc6/include/crt/limits",
+          "bytes": 14314,
+          "sha256": "1089465381014e0194e8204a0bcf6d15f0bff2b2cdef362a1f8a076d5443677a"
+        },
+        {
+          "path": "vc6/include/crt/limits.h",
+          "bytes": 3989,
+          "sha256": "7dcbbc6a6e8fd500ebdcde66041f6c6bfb3be8f4ad5db374057ad3330a2c3f3e"
+        },
+        {
+          "path": "vc6/include/crt/limitsvc6.h",
+          "bytes": 3225,
+          "sha256": "adc22a59dceb56ceb77a52a02725c3fa19ea6e3506219831df60c4da11a47522"
+        },
+        {
+          "path": "vc6/include/crt/list",
+          "bytes": 14360,
+          "sha256": "45b359f47c2d10171594437e0736d47bf75697ed11f18bec4fec33d7c98eea86"
+        },
+        {
+          "path": "vc6/include/crt/locale",
+          "bytes": 6866,
+          "sha256": "945ea3a302357cc8506c2313842b74b0ffcfc06ef2b646f6fb8bb53b2c132a77"
+        },
+        {
+          "path": "vc6/include/crt/locale.h",
+          "bytes": 3169,
+          "sha256": "5af92d7ed668e66e14f6f1df2bc22a7c56f75b6ac014a931bc9a06a2fa0f4a2e"
+        },
+        {
+          "path": "vc6/include/crt/malloc.h",
+          "bytes": 5018,
+          "sha256": "3e8b53501b0495a78f2a86e9ae7f963bc70af768506a9eb0bb70253d6ba8df1b"
+        },
+        {
+          "path": "vc6/include/crt/map",
+          "bytes": 15071,
+          "sha256": "c4dbbcb482813df8a9b44e77bd2e9f8978402c2cf783f4f9ad361278ff131e81"
+        },
+        {
+          "path": "vc6/include/crt/math.h",
+          "bytes": 19034,
+          "sha256": "64dc7ccc5910e93aea9925ef20d9e5dcc155aa1d7324bdb8c2e54e610d3ca3fd"
+        },
+        {
+          "path": "vc6/include/crt/mbctype.h",
+          "bytes": 3743,
+          "sha256": "5a12cd15dc71d384f6e90fe9e762bf1cd7c202a9f0432f104834d282167c6291"
+        },
+        {
+          "path": "vc6/include/crt/mbstring.h",
+          "bytes": 6977,
+          "sha256": "b12c6e27fe3887e24fb69ab94090a2a6ee8fbca8e7f3f459a1c373a93f7a2c39"
+        },
+        {
+          "path": "vc6/include/crt/memory",
+          "bytes": 5446,
+          "sha256": "40b6e6af82f8aa18348340c2bde898e46c28dc3cc45f654b60065dee7f6bfbf6"
+        },
+        {
+          "path": "vc6/include/crt/memory.h",
+          "bytes": 2384,
+          "sha256": "b6794b63b8b1022085a7d847eb0dded938c2d1194fdfe64a76bcfe789e0eb15d"
+        },
+        {
+          "path": "vc6/include/crt/minmax.h",
+          "bytes": 429,
+          "sha256": "6c547b0962def6b4fc875a9434e47fc6c427efc9375517a193e231f15b2887e3"
+        },
+        {
+          "path": "vc6/include/crt/mmintrin.h",
+          "bytes": 5924,
+          "sha256": "b421200267a6d44fcba2aded570edaa9d5e41a6219af424ff1b75bdc435d63ad"
+        },
+        {
+          "path": "vc6/include/crt/new",
+          "bytes": 1790,
+          "sha256": "5b16a6c5e2858c015743699fd28501070b884d54399ba65895e8d289efbe220f"
+        },
+        {
+          "path": "vc6/include/crt/new.h",
+          "bytes": 2819,
+          "sha256": "6c2d6f5e2cfb5fd9e8130ef24000f3b24716b2dea1a94d5ed24e38253459c565"
+        },
+        {
+          "path": "vc6/include/crt/numeric",
+          "bytes": 3733,
+          "sha256": "7a2954c50f90aabf1180522eef968306598610f51c49ea0fb54d611ad7c1e579"
+        },
+        {
+          "path": "vc6/include/crt/ostream",
+          "bytes": 15453,
+          "sha256": "61c489599b980fa6b9ee73fe26e7adb41c033722301405de1bb50e1d0a020348"
+        },
+        {
+          "path": "vc6/include/crt/ostream.h",
+          "bytes": 4969,
+          "sha256": "378c9796b0fc782b3b19360ef6de133ab73549d4789384cd64cec05cdac3099d"
+        },
+        {
+          "path": "vc6/include/crt/pgobootrun.h",
+          "bytes": 377,
+          "sha256": "b74f1dfededd8d4c4fa32933cf8cc59e2cbd976927913248c4bfe0934a1b3d10"
+        },
+        {
+          "path": "vc6/include/crt/process.h",
+          "bytes": 8806,
+          "sha256": "f29f9d1f2cf6ea679715096d08fa13508e0507effde352717bf3d81a1e7cbb9c"
+        },
+        {
+          "path": "vc6/include/crt/queue",
+          "bytes": 5139,
+          "sha256": "bfa09bba57e88779f97c40d58db9df068ec8f7598ff309ed36114ae179a15cc7"
+        },
+        {
+          "path": "vc6/include/crt/rtcapi.h",
+          "bytes": 2728,
+          "sha256": "918ea495cf583cbc4b58b242258256d76d9f7e43a06311b01533d7cb3dca404d"
+        },
+        {
+          "path": "vc6/include/crt/search.h",
+          "bytes": 2054,
+          "sha256": "914d213a050f95ba2b9ff4416f7e5c47e19ae6a7f75ae0b09866a33a20d7a618"
+        },
+        {
+          "path": "vc6/include/crt/set",
+          "bytes": 12208,
+          "sha256": "870f2c5fda1e2342a9b19f38555bab98967254f2bdd6723b67cd0371bcfb6be2"
+        },
+        {
+          "path": "vc6/include/crt/setjmp.h",
+          "bytes": 5964,
+          "sha256": "bd2ebcf3e56e3886c80c978f48349a5189ec1b523e513c0ada79d5bc2ba230ea"
+        },
+        {
+          "path": "vc6/include/crt/setjmpex.h",
+          "bytes": 811,
+          "sha256": "4b2adfcacb023ad0ac2428d06505460d614aded53160c9912170a50427753964"
+        },
+        {
+          "path": "vc6/include/crt/share.h",
+          "bytes": 811,
+          "sha256": "9a52352c5ddfbeeb388d849e2b6cc1f31d3092285aab9dad5966f3c30305b7e0"
+        },
+        {
+          "path": "vc6/include/crt/signal.h",
+          "bytes": 2340,
+          "sha256": "4bcd6adae61caf52942072649c2eddd7b61cd62a6922ba763ee6385e6b89ec02"
+        },
+        {
+          "path": "vc6/include/crt/specstrings.h",
+          "bytes": 18762,
+          "sha256": "4f0f1673e5bd09553625a95b22227b55b81164f12ff8c4938a4f7cd313a6578a"
+        },
+        {
+          "path": "vc6/include/crt/sstream",
+          "bytes": 9303,
+          "sha256": "af0f552dd19cfc79ea7d38fbcec5671877fea15bc9ab68fb870b1ef891916a64"
+        },
+        {
+          "path": "vc6/include/crt/stack",
+          "bytes": 2208,
+          "sha256": "addbce93630071e2b691fd3970636ca4a684fc23dce78d874e4cd5cabdad0394"
+        },
+        {
+          "path": "vc6/include/crt/stdarg.h",
+          "bytes": 3681,
+          "sha256": "ff282670b75b9be21d51134f74387558f93006a8e64ed597ab16d23474778911"
+        },
+        {
+          "path": "vc6/include/crt/stdbool.h",
+          "bytes": 481,
+          "sha256": "915e6f886019925aed0fe03f7912cd4a380ce92c812670677dd8c625f357b026"
+        },
+        {
+          "path": "vc6/include/crt/stddef.h",
+          "bytes": 2545,
+          "sha256": "6e02039a70f39d1217d8248959d484cb922ddcfa6bfdad61760d88f154bdd3fc"
+        },
+        {
+          "path": "vc6/include/crt/stdexcept",
+          "bytes": 2935,
+          "sha256": "304fb99f44cd05a21646bb8cb15430c751ee47ac332e08888ff7525c17c8b0aa"
+        },
+        {
+          "path": "vc6/include/crt/stdexcpt.h",
+          "bytes": 583,
+          "sha256": "16776186383f7c1308c04cd75a1ac5ee1b24aa504808ace360b82507f962320d"
+        },
+        {
+          "path": "vc6/include/crt/stdint.h",
+          "bytes": 4088,
+          "sha256": "42edf520d8293a66c827f514f4f88baa7740f84e388f3a06e35df26b7f998cbb"
+        },
+        {
+          "path": "vc6/include/crt/stdio.h",
+          "bytes": 11632,
+          "sha256": "4527445e646b9afae54a1b987ee32c651e78f7196acad8fc9c4ac3c5967d136b"
+        },
+        {
+          "path": "vc6/include/crt/stdiostr.h",
+          "bytes": 1953,
+          "sha256": "52a55ace57ae9e2181d4942eaea21cf28b3472c3cdea65fd39ae94dfd8b293d1"
+        },
+        {
+          "path": "vc6/include/crt/stdlib.h",
+          "bytes": 13324,
+          "sha256": "29fe2a3377f8f3f10dbd3a51d48dd209a87343485d1f1163c61e5f8d8c397e1f"
+        },
+        {
+          "path": "vc6/include/crt/stl.h",
+          "bytes": 6473,
+          "sha256": "8f1ca4cf0f9d34c2be7cf89b531d4c4e0b1b64efe5588970dcfede2d470ea438"
+        },
+        {
+          "path": "vc6/include/crt/streamb.h",
+          "bytes": 5166,
+          "sha256": "0e85144c4366e5e9859f299d94e72276420b23c910794f3192789488ec410eb7"
+        },
+        {
+          "path": "vc6/include/crt/streambuf",
+          "bytes": 6283,
+          "sha256": "0f797d718e23ddc40aceaa72ca69b85ccef062c9eee4301a44fbd924e11199b0"
+        },
+        {
+          "path": "vc6/include/crt/string",
+          "bytes": 21513,
+          "sha256": "212c3744aa82870a75b325ddec418cfd1a1ce4bd38c775c064c3e73d7a0708c5"
+        },
+        {
+          "path": "vc6/include/crt/string.h",
+          "bytes": 7564,
+          "sha256": "925213a55ae3aaa0b3d7ccf0d77e7794a36aa2dede679157c9e0b54dbefe8c16"
+        },
+        {
+          "path": "vc6/include/crt/string_vc6.h",
+          "bytes": 1708,
+          "sha256": "e9b4aec5847eb4fbefca5954c881d273878cb1e9b88c596e18a69d388cadbe52"
+        },
+        {
+          "path": "vc6/include/crt/strsafe.h",
+          "bytes": 236771,
+          "sha256": "8322a10c693805842f616eb6c8dfb160232af982a98a0d09a8611bdf1ce2dea2"
+        },
+        {
+          "path": "vc6/include/crt/strstrea.h",
+          "bytes": 3170,
+          "sha256": "ac343be6b629ed840ec0485226434dd3e9256e7ad963effaf7c098c37e9e7511"
+        },
+        {
+          "path": "vc6/include/crt/strstream",
+          "bytes": 3713,
+          "sha256": "eb5a10086505515fdf067f0b59a88c1e400c6edf8c43d007d0c339242a68095a"
+        },
+        {
+          "path": "vc6/include/crt/sys/locking.h",
+          "bytes": 968,
+          "sha256": "32a5e71ca2e655f53ca54bed1c57cb837b3aba8d7116b98a63ed58e5eeab05a6"
+        },
+        {
+          "path": "vc6/include/crt/sys/stat.h",
+          "bytes": 4534,
+          "sha256": "164ea47191373bafa99d41294f23f7e6f10736924f253ef357082fbc0f5556a1"
+        },
+        {
+          "path": "vc6/include/crt/sys/timeb.h",
+          "bytes": 2236,
+          "sha256": "aa3de7778471b1eec305e58cdd807f9c41f65a64fdf14efc662cb16ae7e41a12"
+        },
+        {
+          "path": "vc6/include/crt/sys/types.h",
+          "bytes": 1480,
+          "sha256": "48232ebec821764aca4d914f5571671b365cc5d0a40803f06e8eac78b803c216"
+        },
+        {
+          "path": "vc6/include/crt/sys/utime.h",
+          "bytes": 2828,
+          "sha256": "9c70a807fc559c45964f74e594f50a4240f24c6d2c9a783bacc9ed7fffb4db88"
+        },
+        {
+          "path": "vc6/include/crt/tchar.h",
+          "bytes": 28728,
+          "sha256": "689c644bf798413b245624a7ec2df6c3b6c26dfffbe4370f194c844476fba5fa"
+        },
+        {
+          "path": "vc6/include/crt/time.h",
+          "bytes": 6027,
+          "sha256": "63974ce500a6d35af12134fe8464f76698dee7393b5dc4c2f0ded49184436f33"
+        },
+        {
+          "path": "vc6/include/crt/tuple",
+          "bytes": 27,
+          "sha256": "b8c37e17a995a4e89b2389acb16d77d305afa598310facc7b040f3a3f81b4793"
+        },
+        {
+          "path": "vc6/include/crt/type_traits",
+          "bytes": 46941,
+          "sha256": "0eb069e28b65eb343f672c88414d53adc81d5b3900172146c38a58c12d73607d"
+        },
+        {
+          "path": "vc6/include/crt/typeinfo",
+          "bytes": 2588,
+          "sha256": "f61ae7971577e885545bf94586f9c7ad06297ba31c156685656360ff39e047ae"
+        },
+        {
+          "path": "vc6/include/crt/typeinfo.h",
+          "bytes": 1985,
+          "sha256": "c746d7bd9cc7ee7b97b87331abb5e2928b734f53da86029ab73834363263207a"
+        },
+        {
+          "path": "vc6/include/crt/unordered_map",
+          "bytes": 304,
+          "sha256": "50e1a43bed240c269b3aba41cd3917bf997bf265cc61cb216c9575367c679346"
+        },
+        {
+          "path": "vc6/include/crt/unordered_set",
+          "bytes": 291,
+          "sha256": "1cb6de59b789ff57e02dcc08001035abee163fa835498c8727642ec33d1f8fd2"
+        },
+        {
+          "path": "vc6/include/crt/use_ansi.h",
+          "bytes": 761,
+          "sha256": "2bd7e214f9d61e915fd4de3ca103340e5b66aff308ce8c7a2c208d1d9fd915f1"
+        },
+        {
+          "path": "vc6/include/crt/useoldio.h",
+          "bytes": 1531,
+          "sha256": "beeb9d41f4ca48aefa6a2a43d55af04c17a266582f3207b261fc1c7dfa80a420"
+        },
+        {
+          "path": "vc6/include/crt/utility",
+          "bytes": 14434,
+          "sha256": "a9bc0b8b148fc38065f0181f86eac3e6cd300d0e5561640f5176e2680a93af8e"
+        },
+        {
+          "path": "vc6/include/crt/valarray",
+          "bytes": 29908,
+          "sha256": "6761bf1a61be7fe59781d53c018a3fca79f816e3985b80405c29d45396865ea9"
+        },
+        {
+          "path": "vc6/include/crt/varargs.h",
+          "bytes": 3459,
+          "sha256": "a12151a6921edd4405a230846a16a92ce86eec523899205f8dda30e699191db8"
+        },
+        {
+          "path": "vc6/include/crt/vector",
+          "bytes": 20660,
+          "sha256": "cffc4b1f60d67581cc07af0346601d4881397cfa11545ac78fd6a1de004a00f5"
+        },
+        {
+          "path": "vc6/include/crt/wchar.h",
+          "bytes": 25753,
+          "sha256": "eee37978efdf180bbc374b643c19fc2dbd783923f35034348fd642d63e8648e3"
+        },
+        {
+          "path": "vc6/include/crt/wcstr.h",
+          "bytes": 800,
+          "sha256": "00c58bb2d018c4dfe4cdc1ed08182323b9404038a35bd219548007399cbe5944"
+        },
+        {
+          "path": "vc6/include/crt/wctype.h",
+          "bytes": 5914,
+          "sha256": "3eb0f0fb45941eddd998fd6da10dc0b3dffc5b8b4454af76fbbac8604c3ea7ff"
+        },
+        {
+          "path": "vc6/include/crt/xcomplex",
+          "bytes": 24525,
+          "sha256": "cc375c541c2046c8df459360645897930641e9fa0660a79418a6633c0b7ae63b"
+        },
+        {
+          "path": "vc6/include/crt/xiosbase",
+          "bytes": 6857,
+          "sha256": "84ff7c777c476f0b86fdb337df8af7b7f0ba2afd6e762a7886cd7e642079588d"
+        },
+        {
+          "path": "vc6/include/crt/xlocale",
+          "bytes": 26455,
+          "sha256": "5f4936833127c3c8f9d5a04a0bc5dafdd10ef1541150aa59ee82e167d0b92883"
+        },
+        {
+          "path": "vc6/include/crt/xlocinfo",
+          "bytes": 2973,
+          "sha256": "72d93465696f2aa37fc670ad9a8c145a4a78f6f6dc118c04ec846f444a902775"
+        },
+        {
+          "path": "vc6/include/crt/xlocinfo.h",
+          "bytes": 2959,
+          "sha256": "e6e2c4c32a79a277600a69928c18ae28f9b0aa8d97b9ef6b3479a118e10bbc11"
+        },
+        {
+          "path": "vc6/include/crt/xlocmon",
+          "bytes": 15589,
+          "sha256": "69450c3acd73a0d4009bde7d5d93b6f35abd97a427302acae6954fc151ffc34d"
+        },
+        {
+          "path": "vc6/include/crt/xlocnum",
+          "bytes": 30542,
+          "sha256": "a11959ef5306df2810e37da83f7698ce0cb79914d79cd511b43242e6ef2101c8"
+        },
+        {
+          "path": "vc6/include/crt/xloctime",
+          "bytes": 8381,
+          "sha256": "1a1443fa39c4596ca63503a3d48fef9839f20b23501541ac07ca3ca160fe00e3"
+        },
+        {
+          "path": "vc6/include/crt/xmath.h",
+          "bytes": 3187,
+          "sha256": "d0b0a8b3ef237016bcd9699920881df60b2288eb654fc773b1563b5c6384247e"
+        },
+        {
+          "path": "vc6/include/crt/xmemory",
+          "bytes": 3305,
+          "sha256": "a4ccd6ef2ca247a38ddc5e2c706e7e2dd91a8d56fc5d282e5e5bc460bcd983a2"
+        },
+        {
+          "path": "vc6/include/crt/xmmintrin.h",
+          "bytes": 17543,
+          "sha256": "f4776afbb4375219152ff50b0ed9db257a001d9efa02efcffee1a480ad9fe58e"
+        },
+        {
+          "path": "vc6/include/crt/xstddef",
+          "bytes": 6577,
+          "sha256": "142273c9b7e54aa1fa21f6d59d7957630650965b115edcd060e663b80cda507f"
+        },
+        {
+          "path": "vc6/include/crt/xstring",
+          "bytes": 26323,
+          "sha256": "7b8b5a03131183187a2d475a46ab3ab2e80abe1300e58233bd5ddcc52866f81f"
+        },
+        {
+          "path": "vc6/include/crt/xtr1common",
+          "bytes": 7526,
+          "sha256": "a07c241331f52f6af687a25cbf3211bb8943820f56efde7243cef97193cae7fb"
+        },
+        {
+          "path": "vc6/include/crt/xtree",
+          "bytes": 28035,
+          "sha256": "5f66aa0bd8886f034804b9c4bc02b33661011d7f994c0a91e47cb28137a58d26"
+        },
+        {
+          "path": "vc6/include/crt/xutility",
+          "bytes": 5247,
+          "sha256": "80fbd8e548f0b071de7e4083b5e7bc1079db352db9ffa5141075cb1fd4cd458f"
+        },
+        {
+          "path": "vc6/include/crt/ymath.h",
+          "bytes": 1387,
+          "sha256": "a0545e749bfd0107ac3a3167a37c2bdb66891884f403aadd704b664d8afe880b"
+        },
+        {
+          "path": "vc6/include/crt/yvals.h",
+          "bytes": 2484,
+          "sha256": "c5dbaca87a13943d533e9e98548212fb508fb407c9adc33b619bffd3088d7bc4"
+        },
+        {
+          "path": "vc6/include/wnet/ConcurrencySal.h",
+          "bytes": 15364,
+          "sha256": "cb6615a61d0b1dc26215062ff69630663f18561bd0463d2b6ac4af80339481fa"
+        },
+        {
+          "path": "vc6/include/wnet/LMStats.h",
+          "bytes": 5056,
+          "sha256": "c114084cc570450783f3fd4b664fcfde7c7dbb56b827f78071b73b7989991070"
+        },
+        {
+          "path": "vc6/include/wnet/MSWSockDef.h",
+          "bytes": 1774,
+          "sha256": "5b9bc81a74e63c11665b02be6bd7cbe47821ee91dbebbeae76b3e1ea70fa1d32"
+        },
+        {
+          "path": "vc6/include/wnet/PlatformSTL.h",
+          "bytes": 5516,
+          "sha256": "628f123f45842e3646e34986647756f68677747fdd791ef3e2bfec016287ed60"
+        },
+        {
+          "path": "vc6/include/wnet/Psapi.h",
+          "bytes": 11532,
+          "sha256": "57ffb805cb9351419cc95a8d4234f12e8070d7eb78d3f79d07f58382f84e92a4"
+        },
+        {
+          "path": "vc6/include/wnet/WSPiApi.h",
+          "bytes": 31069,
+          "sha256": "b1495bf2f30d6ebc9ac7db70921c7206206d42792314377861d5b6e31a97da82"
+        },
+        {
+          "path": "vc6/include/wnet/WinBer.h",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "vc6/include/wnet/af_irda.h",
+          "bytes": 8293,
+          "sha256": "48c39f1a1eafcb9bdd4e44f0986809d880ff8090a0b323b297821924c19c5718"
+        },
+        {
+          "path": "vc6/include/wnet/atomic",
+          "bytes": 34324,
+          "sha256": "47128647f16c27562eb5ccb620ed144cbd6b386883efa306ea86207044ecda5e"
+        },
+        {
+          "path": "vc6/include/wnet/atsmedia.h",
+          "bytes": 1066,
+          "sha256": "8b3b08796f8bb2afdb80e0d1d0994540342da2f8139cfeefae617a036150c9e3"
+        },
+        {
+          "path": "vc6/include/wnet/basetsd.h",
+          "bytes": 8560,
+          "sha256": "dacf4228cad56146a526487b421bc061b136e2cece63c3a06da8df0c5d4da830"
+        },
+        {
+          "path": "vc6/include/wnet/basetyps.h",
+          "bytes": 7714,
+          "sha256": "647af054c98e4e2d4958faeede216ce2a52aea200ca83cc2144dd9da8944f4a7"
+        },
+        {
+          "path": "vc6/include/wnet/batclass.h",
+          "bytes": 10401,
+          "sha256": "1e0c9ab5abc50968fb8d82c0072f8e004ae9fc9933265cab0b1c4c412d297071"
+        },
+        {
+          "path": "vc6/include/wnet/bdamedia.h",
+          "bytes": 53632,
+          "sha256": "986fdadfe9535fafd084dffedf51fb343ce89c3e01bf96782652a6bd4c56b349"
+        },
+        {
+          "path": "vc6/include/wnet/bdatypes.h",
+          "bytes": 15606,
+          "sha256": "2665c6eb62c737b890056052af46c46bdd924a179aab8cef2f5f71292af2da3c"
+        },
+        {
+          "path": "vc6/include/wnet/bugcodes.h",
+          "bytes": 53836,
+          "sha256": "c0bd3d9b2eabbb75cb74a90ce7529b002c14621683b3aff048ea408920bcff31"
+        },
+        {
+          "path": "vc6/include/wnet/callconv.inc",
+          "bytes": 7006,
+          "sha256": "17cee05602f08b3858932e7301931a08aae4e3ecf1ac3134a0e20ab66e4db838"
+        },
+        {
+          "path": "vc6/include/wnet/cderr.h",
+          "bytes": 2181,
+          "sha256": "4ee4ffdeedd3f5386ddeab74b638d8bd73fe56f0c25ed9d9a020ff1bb17cecdd"
+        },
+        {
+          "path": "vc6/include/wnet/cfg.h",
+          "bytes": 11369,
+          "sha256": "29373b236f27e50c3155ec597a9b695515567929c5648d45a60330dc8754143e"
+        },
+        {
+          "path": "vc6/include/wnet/cfgmgr32.h",
+          "bytes": 93613,
+          "sha256": "b78a069f1e00dcb9225df70ed5c349fba77970471b8391db862d1631eeb0e11f"
+        },
+        {
+          "path": "vc6/include/wnet/cguid.h",
+          "bytes": 3843,
+          "sha256": "9ddeaa41daf81de29f30beecb228978a4fcf60f464fc9e6b5ac2477d0d0331bd"
+        },
+        {
+          "path": "vc6/include/wnet/comcat.h",
+          "bytes": 30464,
+          "sha256": "21d69e2396a1706b0c1e3244f779bbc36b8ee1d3a67020b3b0fbdc1ff02ae166"
+        },
+        {
+          "path": "vc6/include/wnet/comdef.h",
+          "bytes": 68390,
+          "sha256": "69051af3e48b90ec5909f13b5256e8ab40a5bdb5d3355adea0d3b6a9b369f36f"
+        },
+        {
+          "path": "vc6/include/wnet/comip.h",
+          "bytes": 19982,
+          "sha256": "ae5fa157c920323ab8613a55603138502175b97840bb4e93163f5e4cd7870068"
+        },
+        {
+          "path": "vc6/include/wnet/commctrl.h",
+          "bytes": 341002,
+          "sha256": "77bac1798d72cf048eb02b2433a05cbc46eda4f6b71d24432e0316441b3c6338"
+        },
+        {
+          "path": "vc6/include/wnet/commctrl.rh",
+          "bytes": 8403,
+          "sha256": "b126880719571b51884a2dc210362f9260b42a50caf1f48933b54ecb11f5088a"
+        },
+        {
+          "path": "vc6/include/wnet/commdlg.h",
+          "bytes": 71628,
+          "sha256": "c64a259a97e56a785a012faf987f86be30c4e4bfff01995d0f1297070408a99c"
+        },
+        {
+          "path": "vc6/include/wnet/common.ver",
+          "bytes": 9316,
+          "sha256": "a99d98cee34e7257ee691bff777c93ec259eeba073295ca11ecea262e5661f94"
+        },
+        {
+          "path": "vc6/include/wnet/compstui.h",
+          "bytes": 164127,
+          "sha256": "01c3d22dc6ea401f9aad74f89e8bee163c7b4e33be4c123b4d1a17f4792f9ade"
+        },
+        {
+          "path": "vc6/include/wnet/comutil.h",
+          "bytes": 44460,
+          "sha256": "faf1cb9272241315a090e954982fe86dab6ea1c4d60fdcaafa4f1fd6b85b2dc6"
+        },
+        {
+          "path": "vc6/include/wnet/cpl.h",
+          "bytes": 8093,
+          "sha256": "5f507c1183197cce8e01e25d83919cc299a8ccdd373cb5ae5e45c90dca0b88c7"
+        },
+        {
+          "path": "vc6/include/wnet/d3d.h",
+          "bytes": 86384,
+          "sha256": "b6e5065b3b391852d444e904907d43465ff947ec966d2f7579ed7467b4e83828"
+        },
+        {
+          "path": "vc6/include/wnet/d3d8.h",
+          "bytes": 71002,
+          "sha256": "eaa0f9351c24389a530838779bfe59133ed2b7394b2655191123f714d0aee0f6"
+        },
+        {
+          "path": "vc6/include/wnet/d3d8caps.h",
+          "bytes": 15725,
+          "sha256": "5f4bf7239d71c2c34549b7abb483e033d9090d4c39a9fbfe7eaa554424f19e07"
+        },
+        {
+          "path": "vc6/include/wnet/d3d8types.h",
+          "bytes": 62052,
+          "sha256": "bd6a3f4b4bccf62b09296cfc8fdf3fe2fc9953b577d8b4e76a28ce062ba07f3c"
+        },
+        {
+          "path": "vc6/include/wnet/d3d9.h",
+          "bytes": 98969,
+          "sha256": "a5e7002806a18ed3d2ec1907e61a5eb6823e40ac44acffdb731726503114e2d8"
+        },
+        {
+          "path": "vc6/include/wnet/d3d9caps.h",
+          "bytes": 21742,
+          "sha256": "8f74ff85f92d5b5caee78c0f37f2a376ab601f2b525e926eba50eac79101e382"
+        },
+        {
+          "path": "vc6/include/wnet/d3d9types.h",
+          "bytes": 70640,
+          "sha256": "c342ddb5dbbdbc1c6349d41cf85b8f9b5618cdffe5f2a89b67ff7696ca6ec9b7"
+        },
+        {
+          "path": "vc6/include/wnet/d3dcaps.h",
+          "bytes": 25515,
+          "sha256": "8d89d660a65280cba98bb8b32808408412952f4aa1141f8c48a4f0857e755949"
+        },
+        {
+          "path": "vc6/include/wnet/d3dnthal.h",
+          "bytes": 94023,
+          "sha256": "45e38a43c9945abe8fcbef955a98b0d95b0014378cd2448ba1ca504e2de705f7"
+        },
+        {
+          "path": "vc6/include/wnet/d3dtypes.h",
+          "bytes": 77806,
+          "sha256": "5d35a05626d28d4bbd764315bac8e771aba466597584d502dbce671d4e417df0"
+        },
+        {
+          "path": "vc6/include/wnet/dbghelp.h",
+          "bytes": 21,
+          "sha256": "e39e7887eae7d5daccc3be90d85a2ee82e29020acaf6581430afe2273ad7182d"
+        },
+        {
+          "path": "vc6/include/wnet/dbt.h",
+          "bytes": 15287,
+          "sha256": "c1c917eb7a9763a677d3d7a24219296181740c2788c35103448c3e8f263eddb6"
+        },
+        {
+          "path": "vc6/include/wnet/dde.h",
+          "bytes": 5297,
+          "sha256": "fe91057f5167cb9d59e0c1508665c20f3e4f36ca110d32a099fe6f7bb209f19a"
+        },
+        {
+          "path": "vc6/include/wnet/dde.rh",
+          "bytes": 803,
+          "sha256": "7109b20f39201c9dd06930c18ea20911598ef3a3b82e228b4495176908c0ba18"
+        },
+        {
+          "path": "vc6/include/wnet/ddeml.h",
+          "bytes": 17739,
+          "sha256": "5320cf1d57eb31d90b08ce09b195070abb44dd419a313dca615c2111a96f6178"
+        },
+        {
+          "path": "vc6/include/wnet/ddkernel.h",
+          "bytes": 7669,
+          "sha256": "227beb0c4ca2879c7d91a47787cb40a10c6f474261abe8b2b0f46773cf311d66"
+        },
+        {
+          "path": "vc6/include/wnet/ddkmapi.h",
+          "bytes": 12098,
+          "sha256": "efbc2d6b3806172723cc69fe31a0eb1544b090f4b9f2073da1ab5f71b8467fac"
+        },
+        {
+          "path": "vc6/include/wnet/ddraw.h",
+          "bytes": 240310,
+          "sha256": "8a3a9009419085f04631634f635233165a59c832154e20b5d54549714e919192"
+        },
+        {
+          "path": "vc6/include/wnet/ddrawi.h",
+          "bytes": 140153,
+          "sha256": "ec663b2b7b4ea54774085e2e72a45fcd088f2be9318b8f3f3d604a1273043ec3"
+        },
+        {
+          "path": "vc6/include/wnet/ddrawint.h",
+          "bytes": 89284,
+          "sha256": "10652d48fb803c75c0bb95dc3d1e335c651ada0bee2534c1d2e809ccb8d40938"
+        },
+        {
+          "path": "vc6/include/wnet/delayimp.h",
+          "bytes": 6761,
+          "sha256": "56a4d68970b843e88b6fe0dcd5c22327872d28c8934c267e2d92d38eb5b69e5c"
+        },
+        {
+          "path": "vc6/include/wnet/devguid.h",
+          "bytes": 10357,
+          "sha256": "9047fd2656c6aed1676735934a8b1b25b105c073c442330b1b43eda465f98bd8"
+        },
+        {
+          "path": "vc6/include/wnet/devioctl.h",
+          "bytes": 5411,
+          "sha256": "1c66a35a95fe93311b312c8f095f020d615de17444b82266028c07313238d9ae"
+        },
+        {
+          "path": "vc6/include/wnet/dinput.h",
+          "bytes": 223102,
+          "sha256": "00f953a992902d59ee200934efde24dc9da9283ad75607e01905de1670a8f384"
+        },
+        {
+          "path": "vc6/include/wnet/dinputd.h",
+          "bytes": 32190,
+          "sha256": "c1e6f2094e43fc30d2701a937dfa0d54b3920360b2c99575b6d710d28b9b51a0"
+        },
+        {
+          "path": "vc6/include/wnet/diskguid.h",
+          "bytes": 1626,
+          "sha256": "9800e35f2e24032f187375703a87fd0eed3239499b035df0f2a2c951c6991901"
+        },
+        {
+          "path": "vc6/include/wnet/dispex.h",
+          "bytes": 31086,
+          "sha256": "509d295ef785f049704c4e475bc8a61393bb911408249248b751d40a336f706b"
+        },
+        {
+          "path": "vc6/include/wnet/dlgs.h",
+          "bytes": 5865,
+          "sha256": "f8081d5cd5a7a1b3a98a0494a7535d8cedcf8d68e0bf55604a71a37f0b2b4a63"
+        },
+        {
+          "path": "vc6/include/wnet/dls1.h",
+          "bytes": 9036,
+          "sha256": "73f0bf63968f59e63d7f4e478d505fb77829845682ec46d62ec8acda11f7286c"
+        },
+        {
+          "path": "vc6/include/wnet/dls2.h",
+          "bytes": 4726,
+          "sha256": "f15ba6cc4431821f7f6d67fdfbdff79072d02ade18d3f69c3f54f7f4eb44f6ad"
+        },
+        {
+          "path": "vc6/include/wnet/dmdls.h",
+          "bytes": 7340,
+          "sha256": "ca7045c2c8ab83fb2109ab5fc30a2ae062077281555b3f440ccec413732097aa"
+        },
+        {
+          "path": "vc6/include/wnet/dmemmgr.h",
+          "bytes": 6222,
+          "sha256": "0ad743ea86f6c1ee80d08098efad22b2a2e2bbe8c32eedd517941bc7362214e6"
+        },
+        {
+          "path": "vc6/include/wnet/dmerror.h",
+          "bytes": 26454,
+          "sha256": "093e333fe1db7b93beb1b813ef6c1306ecf56bd42170c04777fe30d9c8a33c3d"
+        },
+        {
+          "path": "vc6/include/wnet/dmksctrl.h",
+          "bytes": 5164,
+          "sha256": "a7ab46358ad4ba78bbec588eaa0de278af0b998042e98dff1ed6b30b0d6d13df"
+        },
+        {
+          "path": "vc6/include/wnet/dmusbuff.h",
+          "bytes": 1738,
+          "sha256": "7a9204cfbb7a9d8c410af368e78da03b286f84d5878f6add613de971d039adc5"
+        },
+        {
+          "path": "vc6/include/wnet/dmusicc.h",
+          "bytes": 35455,
+          "sha256": "c36402bd37a7dfe62464d5cb2acf14c23f78d906d5fdd97760e86fa986005e8c"
+        },
+        {
+          "path": "vc6/include/wnet/docobj.h",
+          "bytes": 49349,
+          "sha256": "1b58822ae497f7b27e33ece95d0ffef252f9b657f6e822e859a24e671102f122"
+        },
+        {
+          "path": "vc6/include/wnet/dsound.h",
+          "bytes": 107960,
+          "sha256": "21c6767e39d558835d2345ab92c162547350787b3d44ac867b7e980ca7441a06"
+        },
+        {
+          "path": "vc6/include/wnet/dvp.h",
+          "bytes": 31958,
+          "sha256": "a347b570290018c6fd40f4f4f0700a847c0570aa2a4d94ce83257ef475f15220"
+        },
+        {
+          "path": "vc6/include/wnet/dx95type.h",
+          "bytes": 43069,
+          "sha256": "9a332ea50cd2a3519bdea8b72787b911add00f2e429f313727f4a854e0a31fa2"
+        },
+        {
+          "path": "vc6/include/wnet/dxmini.h",
+          "bytes": 13161,
+          "sha256": "a854e646f18db5be754ba20be48cde0ae69a7bee3f17ca5c101baadc4cd79828"
+        },
+        {
+          "path": "vc6/include/wnet/emmintrin.h",
+          "bytes": 14819,
+          "sha256": "4cbde86f24a966f15644ada72a7025d56752dda6a087341b07a48a049cf8ac16"
+        },
+        {
+          "path": "vc6/include/wnet/evntprov.h",
+          "bytes": 8363,
+          "sha256": "223ff78926184cbcec56653a38a82a40c8cf35b109c293c3ea8e02e9a5595570"
+        },
+        {
+          "path": "vc6/include/wnet/evntrace.h",
+          "bytes": 33564,
+          "sha256": "b6620baa2cb5ad39dfe902489e8da9874b8c4de943e7cdd95598e5a25b66ec85"
+        },
+        {
+          "path": "vc6/include/wnet/exdisp.h",
+          "bytes": 243973,
+          "sha256": "43b183028b8e348e329a02f9fab2e3a781bfd1e8c36f181288becb3724d8d220"
+        },
+        {
+          "path": "vc6/include/wnet/exposeenums2managed.h",
+          "bytes": 1407,
+          "sha256": "c66624aac1177990e4f2649bd62fca2e559e7792e1ffb96892f9fa690e65678e"
+        },
+        {
+          "path": "vc6/include/wnet/fttypes.h",
+          "bytes": 3483,
+          "sha256": "9b43cabeab0bcf91c75cd655f1eab74589805b603ced77b60a460744a85a4c2b"
+        },
+        {
+          "path": "vc6/include/wnet/gameport.h",
+          "bytes": 9685,
+          "sha256": "697eaf4f415c705d5c28178b5c23c02fb2c4711fd1bc6562ce7e29b42b8d2db4"
+        },
+        {
+          "path": "vc6/include/wnet/guiddef.h",
+          "bytes": 4875,
+          "sha256": "0c74ac849778c0ddcf092049f28d071a9a72e8c62b239296c23ad4f834893f4e"
+        },
+        {
+          "path": "vc6/include/wnet/hidpi.h",
+          "bytes": 78126,
+          "sha256": "c5190924a9c263e7a27188df9df671af73e1600d14c53446d21ad901f54c6f98"
+        },
+        {
+          "path": "vc6/include/wnet/hidsdi.h",
+          "bytes": 14068,
+          "sha256": "af48c9184a7cb4ebe299c5fea5111fab34e64c68e1bd2a5d48ca127198caf297"
+        },
+        {
+          "path": "vc6/include/wnet/hidusage.h",
+          "bytes": 11034,
+          "sha256": "5f3556c5b9a496d8cef782fb79740bed7e31ff7faf443c0f0745f86f4f11906e"
+        },
+        {
+          "path": "vc6/include/wnet/htmlhelp.h",
+          "bytes": 18000,
+          "sha256": "ca9567c24bddd04ba1069a2a4f2e572086167be46ebc69147c85f39cccd5d761"
+        },
+        {
+          "path": "vc6/include/wnet/ia64reg.h",
+          "bytes": 29305,
+          "sha256": "8da7267c1677b567fd1b0b66a130c5dbae29259909f578bfab8746068b3e1cdc"
+        },
+        {
+          "path": "vc6/include/wnet/icmpapi.h",
+          "bytes": 8799,
+          "sha256": "2fbfccab59ee3d70b94330472f7988c09f3f23f8fef990f283973e93f3ce9d0f"
+        },
+        {
+          "path": "vc6/include/wnet/ieverp.h",
+          "bytes": 928,
+          "sha256": "9a7a25925b2918e7edc1befb45246da94679ec7027cb70b1fb7580562cf42324"
+        },
+        {
+          "path": "vc6/include/wnet/imm.h",
+          "bytes": 25794,
+          "sha256": "597f9f33d5dfae74f4992bfa123df6383fabcdda2f3c0299c62faf7378296075"
+        },
+        {
+          "path": "vc6/include/wnet/immdev.h",
+          "bytes": 33654,
+          "sha256": "742ef7b2a414cf9dc62f5249d21404e9999bfe0b7697cd09af0b481caa6f3010"
+        },
+        {
+          "path": "vc6/include/wnet/immintrin.h",
+          "bytes": 21,
+          "sha256": "e39e7887eae7d5daccc3be90d85a2ee82e29020acaf6581430afe2273ad7182d"
+        },
+        {
+          "path": "vc6/include/wnet/initguid.h",
+          "bytes": 801,
+          "sha256": "f934603f6df07be0bf4f904654ea8cc63060ca94c4869a328a8542ce50883fae"
+        },
+        {
+          "path": "vc6/include/wnet/intrin.h",
+          "bytes": 179,
+          "sha256": "ca1b85681df8f3670631d26c093a8fc7c88de7b76d5157bfa5ac0654e0e2ccdf"
+        },
+        {
+          "path": "vc6/include/wnet/intrinvc6.h",
+          "bytes": 5919,
+          "sha256": "7bed8d30a57bebcb55af325bae6bd21e1261824cf78b2d20b520c2112c470132"
+        },
+        {
+          "path": "vc6/include/wnet/inttypes.h",
+          "bytes": 5667,
+          "sha256": "2329e0201adc59ddf094e7bcc5d50767bc597d8fdef576fd029b833e2a7f0c42"
+        },
+        {
+          "path": "vc6/include/wnet/ioevent.h",
+          "bytes": 6458,
+          "sha256": "5594eecffc82e78175744087a3e490d59f86d7fd17b8986934692a3bfbc19c48"
+        },
+        {
+          "path": "vc6/include/wnet/ipexport.h",
+          "bytes": 9584,
+          "sha256": "830b7696182aa2fba03fcb3eee6c9094a6882fede223eda28b2d8aef1c76c516"
+        },
+        {
+          "path": "vc6/include/wnet/iphlpapi.h",
+          "bytes": 18856,
+          "sha256": "d26602d2ea07aa89e246c3400de1ebf71b68bf027d7feb85173aadfbf3452a1f"
+        },
+        {
+          "path": "vc6/include/wnet/ipifcons.h",
+          "bytes": 14553,
+          "sha256": "e3606d24e26f680b88857d34d5ba14b2ea9170efda053222cb00a7ee4064292d"
+        },
+        {
+          "path": "vc6/include/wnet/iprtrmib.h",
+          "bytes": 31618,
+          "sha256": "eecff1448dbe66c3e4937eb88e965f6c64e97662cd88bf2aa7fc8be5fb09e88b"
+        },
+        {
+          "path": "vc6/include/wnet/iptypes.h",
+          "bytes": 8346,
+          "sha256": "105a113837fe242024639d5ef53b82b8e524be759d320711d450e92a65908e00"
+        },
+        {
+          "path": "vc6/include/wnet/isguids.h",
+          "bytes": 723,
+          "sha256": "b5860c70d9213871238839c1f9e1281cb3137447f6dd92e52d07d2251b2cedfb"
+        },
+        {
+          "path": "vc6/include/wnet/kbd.h",
+          "bytes": 99980,
+          "sha256": "611f4b1b2f50a7afb34980bba93483048f88a873ff1bbf5ce908719362d607ae"
+        },
+        {
+          "path": "vc6/include/wnet/kcom.h",
+          "bytes": 7595,
+          "sha256": "f3432b47c62a20e63422257c213b92e4917253491f3583ef7aa0e4ee316e758d"
+        },
+        {
+          "path": "vc6/include/wnet/ks.h",
+          "bytes": 143485,
+          "sha256": "04e6170dffe2c39a1d7586c8b6da983daf0df55125cddf8356c23f6bfe12699c"
+        },
+        {
+          "path": "vc6/include/wnet/ks386.inc",
+          "bytes": 31374,
+          "sha256": "c8bf29db30e35252e794fc3a1492ad3582bba98aa873f99a8b474bf1c9d506be"
+        },
+        {
+          "path": "vc6/include/wnet/ksamd64.inc",
+          "bytes": 21,
+          "sha256": "6472e116856d1a6381156b7a88c13eba8a592a06f62ca1d5f01bebe204341802"
+        },
+        {
+          "path": "vc6/include/wnet/ksdebug.h",
+          "bytes": 2815,
+          "sha256": "100f9b2accbf8757a80fbaa1e9d4df023da498a7d18652955d8a5b449b3c26da"
+        },
+        {
+          "path": "vc6/include/wnet/ksguid.h",
+          "bytes": 609,
+          "sha256": "4991df45ae817a637becfda85af35b7cf5b1359159d5dd6cd6f617681281e05d"
+        },
+        {
+          "path": "vc6/include/wnet/ksia64.h",
+          "bytes": 44762,
+          "sha256": "bba701fa5aad34d62ab2f33703201b0ae8caf7f33ef0cdab5b4b57d9d7a1c47f"
+        },
+        {
+          "path": "vc6/include/wnet/ksmedia.h",
+          "bytes": 227921,
+          "sha256": "888701c381c181a955ec3f0c6d9d22e3518e53854419ee34351b57d1ae6dc1af"
+        },
+        {
+          "path": "vc6/include/wnet/ksproxy.h",
+          "bytes": 21473,
+          "sha256": "a1ef11939a953c8c4fb50ce7644b311eeff00294bd403f482beeec85f67285c2"
+        },
+        {
+          "path": "vc6/include/wnet/ksuuids.h",
+          "bytes": 9049,
+          "sha256": "0e82999b8517e24be98fe9905f5cfdd8096969c9e3f8d76eb9d50ae0a7a571db"
+        },
+        {
+          "path": "vc6/include/wnet/kxamd64.inc",
+          "bytes": 24,
+          "sha256": "e7a45e324c6a17d22cbf61ae891bb9e90bcbc99406db778e92de85802a7620fe"
+        },
+        {
+          "path": "vc6/include/wnet/kxia64.h",
+          "bytes": 46819,
+          "sha256": "4c3b57a51b18ea64ecb1acab0f601508f22b21c44f06537424a8a5bd3cc34d75"
+        },
+        {
+          "path": "vc6/include/wnet/lmcons.h",
+          "bytes": 7360,
+          "sha256": "797ac59790b0a49b417017a16d3d6a832c9d853938958fc23d144f5d21be461b"
+        },
+        {
+          "path": "vc6/include/wnet/lmerr.h",
+          "bytes": 38741,
+          "sha256": "4561d4b0d3c928f3d852f6dc7a810310984b80422c39a9c9c71b79056bd4f6ed"
+        },
+        {
+          "path": "vc6/include/wnet/lmon.h",
+          "bytes": 684,
+          "sha256": "6a7f427f31df668ae82ec093c25baf451f46dca2a4d47e50f86f8326e8c7b9fe"
+        },
+        {
+          "path": "vc6/include/wnet/lzexpand.h",
+          "bytes": 1677,
+          "sha256": "729d1bf5457c92e026894838fa1b673635c64889664d47ddf90c3c1577b0ed51"
+        },
+        {
+          "path": "vc6/include/wnet/macamd64.inc",
+          "bytes": 9757,
+          "sha256": "7a94456c303d65b672c1edbd725144ae2711d1012868ea342d7a990f7534e8ea"
+        },
+        {
+          "path": "vc6/include/wnet/mcdrv.h",
+          "bytes": 31753,
+          "sha256": "4facc39e8235dab3bcdb543abd9ea9c3541da679cafa6c637c96b3b9a4023d58"
+        },
+        {
+          "path": "vc6/include/wnet/mcx.h",
+          "bytes": 23744,
+          "sha256": "e2720a2a1ebb7daaac716b2a6e2eefe2322220cc98a557b33fd70e9ff98be59f"
+        },
+        {
+          "path": "vc6/include/wnet/minidrv.h",
+          "bytes": 7170,
+          "sha256": "32125001c7de26791b92e8e8da418e10a47aaa3591644fb166ac61ea3d2b5dbb"
+        },
+        {
+          "path": "vc6/include/wnet/mmddk.h",
+          "bytes": 25574,
+          "sha256": "4b243e2c61a48fedb070834335d11d0c59c33c90ba840a1237d922ed0711daaf"
+        },
+        {
+          "path": "vc6/include/wnet/mmreg.h",
+          "bytes": 148047,
+          "sha256": "fc909cfb99d29a4804afeabd65f933708a373cdbdd473013ef80ad382bf3c323"
+        },
+        {
+          "path": "vc6/include/wnet/mmsystem.h",
+          "bytes": 171084,
+          "sha256": "302c06d3a4431d1ede77eafeb8fe39b7f6ba9249ba96be32f8258b52c9413556"
+        },
+        {
+          "path": "vc6/include/wnet/msacm.h",
+          "bytes": 56767,
+          "sha256": "884f5bd0bfb08a4f664b013927981e82465affe8e5155264f0c3ea147a26810c"
+        },
+        {
+          "path": "vc6/include/wnet/msacmdrv.h",
+          "bytes": 9997,
+          "sha256": "16c36b8deac6842d23fb0ab42f43458b4b5ad0d71b72aa7449754990d12242e5"
+        },
+        {
+          "path": "vc6/include/wnet/msdatsrc.h",
+          "bytes": 12068,
+          "sha256": "e4997dfac6f6b8b58128087b2f9a25e64df2ee43f7407ebc67a2a08299f2f978"
+        },
+        {
+          "path": "vc6/include/wnet/msports.h",
+          "bytes": 6685,
+          "sha256": "afb2cab870b4872a96cc0a7f6678d9709dab3fac4b4dc099f807491565d7a951"
+        },
+        {
+          "path": "vc6/include/wnet/msstkppg.h",
+          "bytes": 1166,
+          "sha256": "8f0ad556f62304c3b8675a6afb967fdcab9d92bc2febc8b0c5c6b3e34a7cebc9"
+        },
+        {
+          "path": "vc6/include/wnet/mswsock.h",
+          "bytes": 13220,
+          "sha256": "42d1db2616f876c30dcfe769769f339327b21f41e0ff08536b500dbb5f3dcb9a"
+        },
+        {
+          "path": "vc6/include/wnet/msxml.h",
+          "bytes": 446741,
+          "sha256": "9250c0e99490ed62f60d0f7a0e52d959ffbc9c75f5fd0811009ef267ef199204"
+        },
+        {
+          "path": "vc6/include/wnet/msxml.idl",
+          "bytes": 12390,
+          "sha256": "5cb61e9db1509cb26568220c476e66c903a7671e90eca0aa13ab082e16ef0759"
+        },
+        {
+          "path": "vc6/include/wnet/msxmldid.h",
+          "bytes": 3109,
+          "sha256": "349cf06b909bc6bb1c93ab9ebc5df380cc1ba7730eb6093e69dd2ae5e2cf899f"
+        },
+        {
+          "path": "vc6/include/wnet/nb30.h",
+          "bytes": 12527,
+          "sha256": "d38cc40be81c397a59b2337d862ccac35e0579cf5c4563f65f0e00e6bbe147de"
+        },
+        {
+          "path": "vc6/include/wnet/netcfgn.h",
+          "bytes": 43245,
+          "sha256": "1185bab48a879d3a3ef9667abd7a637179cf9a77e804b1d8761f6be37b9f59d4"
+        },
+        {
+          "path": "vc6/include/wnet/netcfgn.idl",
+          "bytes": 7758,
+          "sha256": "cbbee569bb750acc9936bef5e479901d97654d177d750b256180a1fd9c4bcf2c"
+        },
+        {
+          "path": "vc6/include/wnet/netcfgx.h",
+          "bytes": 73655,
+          "sha256": "45f054ef3a73f60379697f494c5071696b0806afcf6fadeecfc29fc34f0f5e07"
+        },
+        {
+          "path": "vc6/include/wnet/netcfgx.idl",
+          "bytes": 17032,
+          "sha256": "15e666c08937c38baf0747d8ae38615bfdca9313d43589ccb6fb187c8ee37ccb"
+        },
+        {
+          "path": "vc6/include/wnet/netevent.h",
+          "bytes": 202359,
+          "sha256": "b25d4f7d9f146c8287a6b128e49026107e5fd11c181d2ade0da77d37ddcc9546"
+        },
+        {
+          "path": "vc6/include/wnet/nettypes.h",
+          "bytes": 2462,
+          "sha256": "d46e091edd47bb826055f936467e1eec8ef90172f30c478bd9ec2a6e7dd58682"
+        },
+        {
+          "path": "vc6/include/wnet/newdev.h",
+          "bytes": 1284,
+          "sha256": "b5365e6c49e3b1df562327b00847c902d5630ababb70ce981161e0add6091dbf"
+        },
+        {
+          "path": "vc6/include/wnet/nspapi.h",
+          "bytes": 18311,
+          "sha256": "0110146607c39a75f3229603b459e98e97b89979e58b3993fb5d72e019ed9651"
+        },
+        {
+          "path": "vc6/include/wnet/nspapip.h",
+          "bytes": 3587,
+          "sha256": "2be52a8e82867cefe70b0cbb2c4547bd7be66ea00f6c700d1577780a110a4995"
+        },
+        {
+          "path": "vc6/include/wnet/nt_vdd.h",
+          "bytes": 5924,
+          "sha256": "e394a81b73896e2b05000106debc61485a692b5f8caf90d85842c3d3f989ec21"
+        },
+        {
+          "path": "vc6/include/wnet/ntdd1394.h",
+          "bytes": 2352,
+          "sha256": "7c43ad074a23f83961dc2ae1fc3444d2cb91b8bd5492f1acd8e5c7f1fd754f0c"
+        },
+        {
+          "path": "vc6/include/wnet/ntdd8042.h",
+          "bytes": 12698,
+          "sha256": "b468b29ac7769cb6a41bbd8f18e55246b5de2a3670460017044e5b05f99d3b37"
+        },
+        {
+          "path": "vc6/include/wnet/ntddbeep.h",
+          "bytes": 1458,
+          "sha256": "812057f80d98b2b70f81a3a6df9115920eb08e87fdddda422841c35c4ac9bbcc"
+        },
+        {
+          "path": "vc6/include/wnet/ntddcdrm.h",
+          "bytes": 14688,
+          "sha256": "2633e3893a50304a4aea2cf92ac982188b14be81fc48bf44dedeb8ed01128305"
+        },
+        {
+          "path": "vc6/include/wnet/ntddcdvd.h",
+          "bytes": 7559,
+          "sha256": "59c1c58ef7e2e58c235413976bd8943f4692d2949738318634ae347a7232ae3d"
+        },
+        {
+          "path": "vc6/include/wnet/ntddchgr.h",
+          "bytes": 24559,
+          "sha256": "915957910c4913b3317b502086f8d20733b924276ab3c9bc61a7fad3df3bf33a"
+        },
+        {
+          "path": "vc6/include/wnet/ntdddisk.h",
+          "bytes": 43077,
+          "sha256": "eedf9d7b373378efcb513de615ddb967c11e4be58f7a50041f6d73acc2fa1bc4"
+        },
+        {
+          "path": "vc6/include/wnet/ntddft.h",
+          "bytes": 5128,
+          "sha256": "374465e256b430a81cb9720745bcd93b89754083f81e9570fd093528777c5285"
+        },
+        {
+          "path": "vc6/include/wnet/ntddft2.h",
+          "bytes": 8896,
+          "sha256": "8ccda989d04cb83df13591c01100fc54ebd0afee24d887d4bfdb21d837c4758b"
+        },
+        {
+          "path": "vc6/include/wnet/ntddkbd.h",
+          "bytes": 8499,
+          "sha256": "40f836de55450572067775a604e73748c51175e744d5b781541426376c32a257"
+        },
+        {
+          "path": "vc6/include/wnet/ntddmmc.h",
+          "bytes": 18415,
+          "sha256": "85f11bca214053f17f6885340ecc91adea08d69ab77940767ea7d49cd2093bb5"
+        },
+        {
+          "path": "vc6/include/wnet/ntddmodm.h",
+          "bytes": 3228,
+          "sha256": "73d187709ab6981289e26e1fd98e63e2438008abbc70716c11c40804ec6e6702"
+        },
+        {
+          "path": "vc6/include/wnet/ntddmou.h",
+          "bytes": 5578,
+          "sha256": "11ff61716fae803908726e99ea2a72b99541c3a4aa0725caf10772cc4e2fbab9"
+        },
+        {
+          "path": "vc6/include/wnet/ntddndis.h",
+          "bytes": 116694,
+          "sha256": "576b9c9d0056b7b737f78ccf12a5629bf579846e161de19ff8e129118bb6ac94"
+        },
+        {
+          "path": "vc6/include/wnet/ntddpar.h",
+          "bytes": 5926,
+          "sha256": "5648ef6913e202fd3eb32b7ebf7237f4176d41abe34d0025e57c6a013811053b"
+        },
+        {
+          "path": "vc6/include/wnet/ntddscsi.h",
+          "bytes": 9673,
+          "sha256": "b677a9f590c9d8e5addd62f459ae25e692834944f468cefea95d7f3daf67272d"
+        },
+        {
+          "path": "vc6/include/wnet/ntddser.h",
+          "bytes": 25451,
+          "sha256": "a3335a8c72f49e34d3b45cec08f15feeb224c2fa52a1a077b94391dbad290f1c"
+        },
+        {
+          "path": "vc6/include/wnet/ntddstor.h",
+          "bytes": 26371,
+          "sha256": "d12a5f0a7f2a6306ada8d524c81d4f9d042281d7442f04ff4b8b8e9b4e7497b1"
+        },
+        {
+          "path": "vc6/include/wnet/ntddtape.h",
+          "bytes": 10490,
+          "sha256": "ffae5eec68fe36ab9d59f452ccbba26d29161d7853096ab268b0feb4b71da013"
+        },
+        {
+          "path": "vc6/include/wnet/ntddtdi.h",
+          "bytes": 2475,
+          "sha256": "633cc64b864ca45531c72aa7df3f70e7373ed34b0d2232f90c8ed2391d9828ce"
+        },
+        {
+          "path": "vc6/include/wnet/ntddvdeo.h",
+          "bytes": 62889,
+          "sha256": "a56ad44e081c91babb7a95b37d6a896087fba5a5863c4918c0bdbef76fcb2e8b"
+        },
+        {
+          "path": "vc6/include/wnet/ntddvol.h",
+          "bytes": 5027,
+          "sha256": "38271500dc87747ed311592b747039e93ec26ad5ba1e704872615bc1641d6795"
+        },
+        {
+          "path": "vc6/include/wnet/ntdef.h",
+          "bytes": 53582,
+          "sha256": "e494fb70c8abae3e7726d79f3f9db371d1f741bd9a7c65ca0f8ab2cebe05fa6e"
+        },
+        {
+          "path": "vc6/include/wnet/ntdskreg.h",
+          "bytes": 4649,
+          "sha256": "476d6b0fd2b01056ddb5a8b97e7ef997309714286404741f532f89fc7d1486f1"
+        },
+        {
+          "path": "vc6/include/wnet/ntiologc.h",
+          "bytes": 35635,
+          "sha256": "b07dfd064fb0cb198eeff5b0d1b45ec30237ce959c3aeec003699a51cbeb212a"
+        },
+        {
+          "path": "vc6/include/wnet/ntmsv1_0.h",
+          "bytes": 24852,
+          "sha256": "0ab6d7e57502290acf0069dc8614da608a8fd65611d7bf64e34ee965ea0fda2f"
+        },
+        {
+          "path": "vc6/include/wnet/ntregapi.h",
+          "bytes": 15110,
+          "sha256": "9b17034bad5e14ed22f40349193ccc3b292895c91289d839eb9ade4bc53fc3e8"
+        },
+        {
+          "path": "vc6/include/wnet/ntsecapi.h",
+          "bytes": 104683,
+          "sha256": "2b27722068829bfd946f4bed4b085d721b10710e7214dec8393926c5917548ae"
+        },
+        {
+          "path": "vc6/include/wnet/ntstatus.h",
+          "bytes": 258103,
+          "sha256": "e3d62f210dac898ee68fc790d1c1e8b8bb4346efeb9a7a9fde64affc1db166ef"
+        },
+        {
+          "path": "vc6/include/wnet/ntverp.h",
+          "bytes": 4926,
+          "sha256": "b110ac7962bb5079791691db096ffd0288270055795082221a11c56913754397"
+        },
+        {
+          "path": "vc6/include/wnet/oaidl.h",
+          "bytes": 205702,
+          "sha256": "5facbcd8a5b621a4547a1927e102d759be9bebccaede50ed78fb89c6c57ccfd4"
+        },
+        {
+          "path": "vc6/include/wnet/oaidl.idl",
+          "bytes": 60667,
+          "sha256": "728aa8c1c7ef6efc898eee09ab18e07a1996dc46e3f040fe9fa9fcd1843eb2f1"
+        },
+        {
+          "path": "vc6/include/wnet/objbase.h",
+          "bytes": 35829,
+          "sha256": "e6fc0bf674e0a36c8f3b88b9f33c15a7db0a3adf8f6683e5411c7cc634127b4a"
+        },
+        {
+          "path": "vc6/include/wnet/objerror.h",
+          "bytes": 343,
+          "sha256": "7eeb2b9d908aa2d5a675731ec2fd0bd888fb4abe75a3c8771a0d45c661698a3a"
+        },
+        {
+          "path": "vc6/include/wnet/objidl.h",
+          "bytes": 444117,
+          "sha256": "5723de08aeedb95fc635df8fd3fc266cf3bff667ef4593eb5d796c180ca2e25d"
+        },
+        {
+          "path": "vc6/include/wnet/objidl.idl",
+          "bytes": 78288,
+          "sha256": "7c4d2a17b59623c042811c46ab1ec6e47ee031e0cf0d128a996d812a242da807"
+        },
+        {
+          "path": "vc6/include/wnet/objsafe.h",
+          "bytes": 7733,
+          "sha256": "b67682f907f19bdf0edbf21163d9890437b7064ed1d4611818289870429a8499"
+        },
+        {
+          "path": "vc6/include/wnet/ocidl.h",
+          "bytes": 232522,
+          "sha256": "c5d47ce54e7f6a949605dca12e06fb64f4337a49fdf89298c8d70b0e494fbf39"
+        },
+        {
+          "path": "vc6/include/wnet/ocidl.idl",
+          "bytes": 41821,
+          "sha256": "bd6dc4b343fcb292c54251f809bdc6bf9aa24816631681023d6d25307b548541"
+        },
+        {
+          "path": "vc6/include/wnet/oemupgex.h",
+          "bytes": 9211,
+          "sha256": "0637213d9f083dd5daf2625bfa9ea5a6e74c88b5ac194c86d33c2cc5f8dbe8bc"
+        },
+        {
+          "path": "vc6/include/wnet/ole.h",
+          "bytes": 25200,
+          "sha256": "af0e8ea3ed79041a737604102f460129021fff028d94861481ff50b88f331c93"
+        },
+        {
+          "path": "vc6/include/wnet/ole2.h",
+          "bytes": 17141,
+          "sha256": "d06bc90018a2832ac176633921d07d9efd663149a080e846124b8cd0caa747ab"
+        },
+        {
+          "path": "vc6/include/wnet/oleacc.h",
+          "bytes": 70151,
+          "sha256": "73cea299d2e1b626fb12de519e39664162061784f044dcf3836a8abc74e4bfd6"
+        },
+        {
+          "path": "vc6/include/wnet/oleauto.h",
+          "bytes": 47532,
+          "sha256": "3e7f86a6887184fd12838c924084d7efae46e4b2c835bc5ef47bce8c32edc2f8"
+        },
+        {
+          "path": "vc6/include/wnet/olectl.h",
+          "bytes": 21769,
+          "sha256": "c7cddd0e581786029aa5477dcde4fb11c8e97adb4bade6fd00af2733e08ac80f"
+        },
+        {
+          "path": "vc6/include/wnet/oleidl.h",
+          "bytes": 141642,
+          "sha256": "f9076f8ef8584ac755e68d09ffa47cb6f4e40f781003ff8fee5ce4c68ac528d2"
+        },
+        {
+          "path": "vc6/include/wnet/oleidl.idl",
+          "bytes": 27978,
+          "sha256": "597d5032fed988a5c38a8ac479d99bdf0e71725c6b0f7e789d8e0354be5643bf"
+        },
+        {
+          "path": "vc6/include/wnet/packoff.h",
+          "bytes": 752,
+          "sha256": "8a19397850d19140f850ee7f70531dec49177d88c662b533edf18a457ba5483b"
+        },
+        {
+          "path": "vc6/include/wnet/packon.h",
+          "bytes": 701,
+          "sha256": "866619fde98307b421a9ffc299e2f2ca9f0463cdc684d89917fd07b1f7d45dcf"
+        },
+        {
+          "path": "vc6/include/wnet/pdrvver.h",
+          "bytes": 4496,
+          "sha256": "221f56e8a425c5147502ab6b4dc42e479e928e34db70f994cdbced023468f76b"
+        },
+        {
+          "path": "vc6/include/wnet/perflib.h",
+          "bytes": 8686,
+          "sha256": "eee5e49222a3c6c58c028a1cb686f77b7593baab55ae6a3ae08ee86e479c76e9"
+        },
+        {
+          "path": "vc6/include/wnet/pmmintrin.h",
+          "bytes": 3109,
+          "sha256": "464aba6e3153764fc3f7284339651e6d57271e607bc4c1dd3d8f09f6dd5650c1"
+        },
+        {
+          "path": "vc6/include/wnet/polarity.h",
+          "bytes": 801,
+          "sha256": "d017001e9ab16f80d00040fcb3974e6148eac844770621ff83bf6e6553aa9d6a"
+        },
+        {
+          "path": "vc6/include/wnet/poppack.h",
+          "bytes": 983,
+          "sha256": "8328e9c1d4694ffd0f65365fa2ab070c569d56cf1d52ab4f5d4e95d8cffea3e9"
+        },
+        {
+          "path": "vc6/include/wnet/powrprof.h",
+          "bytes": 7126,
+          "sha256": "d9fe5078545c1677ca856324ca6d622861a73bbaf05632486baa065bb01fb657"
+        },
+        {
+          "path": "vc6/include/wnet/prcomoem.h",
+          "bytes": 59674,
+          "sha256": "e6183e0d06e8a14abb78da2274a4907f34ac1569ca4bf168298a02ff008505ae"
+        },
+        {
+          "path": "vc6/include/wnet/printoem.h",
+          "bytes": 37576,
+          "sha256": "4fd557c61a764d13cd4142b602ee86cef0b4a03584a18f77ec1968952c7836de"
+        },
+        {
+          "path": "vc6/include/wnet/prntfont.h",
+          "bytes": 18325,
+          "sha256": "e10aa2a53adbcff1a22eb3c1df29340cc1e848a1613d58c4d60e79ba325a53e4"
+        },
+        {
+          "path": "vc6/include/wnet/propidl.h",
+          "bytes": 43222,
+          "sha256": "f057fabe3d659edcc83ee929e42bced410537edb036964198206cca9088a088e"
+        },
+        {
+          "path": "vc6/include/wnet/provexce.h",
+          "bytes": 2468,
+          "sha256": "b8e88aa0ca0a8eddc2a8167e49dc2811531f12e0144606dcb0e0a985f01643b4"
+        },
+        {
+          "path": "vc6/include/wnet/prsht.h",
+          "bytes": 35243,
+          "sha256": "b31b13593a58fad14a21337b5860d885e7fb90bd9f6fa1d094fddf0f014f92c7"
+        },
+        {
+          "path": "vc6/include/wnet/prsht.idl",
+          "bytes": 949,
+          "sha256": "bda31df98b61e60e52cf34ec1ab4a4cd9d1f7e35dc3cc549ae5559012e3e3507"
+        },
+        {
+          "path": "vc6/include/wnet/pshpack1.h",
+          "bytes": 883,
+          "sha256": "6c2e7c6b9facf4e30c45dbb39d62036546d0216159de33da8371c8f56801595d"
+        },
+        {
+          "path": "vc6/include/wnet/pshpack2.h",
+          "bytes": 883,
+          "sha256": "30f0837ae350f5c6ea94d2b681221468bfeea09fff843ed3ab5ea4442bf77fd9"
+        },
+        {
+          "path": "vc6/include/wnet/pshpack4.h",
+          "bytes": 883,
+          "sha256": "375e1a7a14d8910a29ee38c6a05586bafc4de9044c53cf432ae9d52a83a5ad25"
+        },
+        {
+          "path": "vc6/include/wnet/pshpack8.h",
+          "bytes": 883,
+          "sha256": "82501a4634b20edda04ab1d30b40ad5bcd564c1b4572164662f3cfb2438e4aaf"
+        },
+        {
+          "path": "vc6/include/wnet/pshpck16.h",
+          "bytes": 867,
+          "sha256": "141a9386794209384f169bdad0343368aa1cc87c0e349a76f486aaf8a55ef2d0"
+        },
+        {
+          "path": "vc6/include/wnet/qos.h",
+          "bytes": 7085,
+          "sha256": "fb90db0ac592eebd34dcfe12fb00cb124db3d12a155e77530163c977bf03bbc9"
+        },
+        {
+          "path": "vc6/include/wnet/qossp.h",
+          "bytes": 27872,
+          "sha256": "56b31ccc06d9bd02464ee13b91439811eead33a836ea8ba0f67789d655c6e61a"
+        },
+        {
+          "path": "vc6/include/wnet/ras.h",
+          "bytes": 49435,
+          "sha256": "087ad91771a87b80fbd05e51c438d0f806e2ea5c48781660db54c8f59bafe704"
+        },
+        {
+          "path": "vc6/include/wnet/reason.h",
+          "bytes": 4647,
+          "sha256": "ce31044e29ffcc3d1404fe419c2038eefb414be886794ada442a4e4e085d1198"
+        },
+        {
+          "path": "vc6/include/wnet/regia64.h",
+          "bytes": 6798,
+          "sha256": "9337642d2e2f0dd0863d199e39b3a5f6f1051324417c225e3235afbb6a92733d"
+        },
+        {
+          "path": "vc6/include/wnet/regstr.h",
+          "bytes": 75716,
+          "sha256": "03d6040f44d4b42cf6e5201a2e287117e00753b9009695f64e5f53b63c7da6c5"
+        },
+        {
+          "path": "vc6/include/wnet/rpc.h",
+          "bytes": 3506,
+          "sha256": "b932a2b7379517b2aa43cef5efd001d05e2d34471ebcab914c7d388f452efd72"
+        },
+        {
+          "path": "vc6/include/wnet/rpcasync.h",
+          "bytes": 8613,
+          "sha256": "e485cc0da7cb59a84c92444e734bb526a3b4573d6f33fddf02e7230ce354ca7d"
+        },
+        {
+          "path": "vc6/include/wnet/rpcdce.h",
+          "bytes": 50482,
+          "sha256": "89cc97ae2fd855e26a1882bf86732c270f58d4a0404905c4f05587fa4422616b"
+        },
+        {
+          "path": "vc6/include/wnet/rpcdcep.h",
+          "bytes": 19086,
+          "sha256": "0a45a836d7815e6bcb758f6f0bf928c30cd92ca89fad30f6ffc05874f8742d28"
+        },
+        {
+          "path": "vc6/include/wnet/rpcndr.h",
+          "bytes": 73230,
+          "sha256": "69de76f7518ae74c64ef328ecce989eb544b45608302fcee629106c5cd85011e"
+        },
+        {
+          "path": "vc6/include/wnet/rpcnsi.h",
+          "bytes": 14522,
+          "sha256": "4a45bb4605874e44b2ee0aad47483cc0a8c395a0572b6d502064daccd4aba5cb"
+        },
+        {
+          "path": "vc6/include/wnet/rpcnsip.h",
+          "bytes": 1221,
+          "sha256": "406b2e454aa529b4b9e6db38aa9782f109f21829edac71b5cf150ff5faf7462d"
+        },
+        {
+          "path": "vc6/include/wnet/rpcnterr.h",
+          "bytes": 1886,
+          "sha256": "afb3983955018704179be80074e36f49b2302f62e659d8fdcb99db575e62d36d"
+        },
+        {
+          "path": "vc6/include/wnet/rpcproxy.h",
+          "bytes": 17601,
+          "sha256": "23af1b5085808f2478d14305029102ca88b751c6c892b7c1ea5804776a7f94b4"
+        },
+        {
+          "path": "vc6/include/wnet/sal.h",
+          "bytes": 179752,
+          "sha256": "9d9485f3ec22826f4a8a68a3a2e68918105c9b8cabf3d79f38a6d958a825d8ea"
+        },
+        {
+          "path": "vc6/include/wnet/schannel.h",
+          "bytes": 29463,
+          "sha256": "ec5d97de43d89b4eeec6b06d690084087f37dc9df65105150e38eb6804b31a3d"
+        },
+        {
+          "path": "vc6/include/wnet/schnlsp.h",
+          "bytes": 982,
+          "sha256": "4b336009cd77359138afed62ba16b351cd213721bdc9f0f61422a32e727e23fa"
+        },
+        {
+          "path": "vc6/include/wnet/sddl.h",
+          "bytes": 10358,
+          "sha256": "4414d1cd8050c48f7345173624c244f02740304e6464bf461a87d5099a0f36d2"
+        },
+        {
+          "path": "vc6/include/wnet/security.h",
+          "bytes": 1590,
+          "sha256": "c38d7c35ddf8380fe127c5c3cb64499e7ae4b425d35ba0e6eccf14b37097ce50"
+        },
+        {
+          "path": "vc6/include/wnet/servprov.h",
+          "bytes": 6889,
+          "sha256": "c6e65c451b4d8380cb75adb8162c8d0179ceb52689aa195eed5b65b818a1e753"
+        },
+        {
+          "path": "vc6/include/wnet/servprov.idl",
+          "bytes": 3733,
+          "sha256": "82cd8b969936d5543215851d1617b8ac72e53bae0c0afbc5a04c717851d5f701"
+        },
+        {
+          "path": "vc6/include/wnet/setupapi.h",
+          "bytes": 187191,
+          "sha256": "bac768e304f70cc74195fbf339c5cfa9b489bafed6f74940ba65abfa111c8764"
+        },
+        {
+          "path": "vc6/include/wnet/shellapi.h",
+          "bytes": 32352,
+          "sha256": "62c50095f49cf35f63c37468cff1dd30e53e40688899d2e139bb555ec3962cb3"
+        },
+        {
+          "path": "vc6/include/wnet/shldisp.h",
+          "bytes": 282758,
+          "sha256": "47c37bdef623c892bead52b79164cea696910edbf9d4eba5f60727310156d69b"
+        },
+        {
+          "path": "vc6/include/wnet/shlguid.h",
+          "bytes": 32687,
+          "sha256": "5a8e18e9785cb5a02182846abe686c2838c73dab63d456a3a7b8d631e3983ae9"
+        },
+        {
+          "path": "vc6/include/wnet/shlobj.h",
+          "bytes": 218071,
+          "sha256": "905858237d80b8ec00f5b8dc893390603c29e97a899ee9831a2c1c3f743660be"
+        },
+        {
+          "path": "vc6/include/wnet/shlwapi.h",
+          "bytes": 73867,
+          "sha256": "0e3b0b7565af637eb74351f68ff00f494f50f2b3f0ed38bf789b345cc7491fca"
+        },
+        {
+          "path": "vc6/include/wnet/shobjidl.h",
+          "bytes": 388863,
+          "sha256": "482c35249afb8ed3b86ba44fe1dd50f0203b939b1fe9061d8c441056ac3125b4"
+        },
+        {
+          "path": "vc6/include/wnet/shtypes.h",
+          "bytes": 6393,
+          "sha256": "c08865777e4acc6b8f438a9742e3b7d0c5a62c3e347459cbf95f52b611ca2af7"
+        },
+        {
+          "path": "vc6/include/wnet/smmintrin.h",
+          "bytes": 9450,
+          "sha256": "75ddf6b4f862adf201fe6889468b90df4274e8c71c8ecb09701b5062c41cd718"
+        },
+        {
+          "path": "vc6/include/wnet/sspi.h",
+          "bytes": 91606,
+          "sha256": "7906e74d017bc6dfbf33acfeeb191d94b7e252c1be72e1926a7a46f50b2da710"
+        },
+        {
+          "path": "vc6/include/wnet/stdint.h",
+          "bytes": 3925,
+          "sha256": "0f7c9a615f1c7a9c4fb7d49d4ae0194a4e61760db65680abed7cdd2c80fabb14"
+        },
+        {
+          "path": "vc6/include/wnet/sti.h",
+          "bytes": 31822,
+          "sha256": "b8c161da217a930bea6a1ca940598b1aa3797accd0b77632a7ddcab4f5e42548"
+        },
+        {
+          "path": "vc6/include/wnet/stierr.h",
+          "bytes": 4503,
+          "sha256": "1d5a5cf206a0ca5560987d02d6118819c72d348757c238f982b15585da9c4250"
+        },
+        {
+          "path": "vc6/include/wnet/stireg.h",
+          "bytes": 2284,
+          "sha256": "4dc23879cb34f4a74284fbfdda77578802a89fb4497e2fa76a5abb41f558d9e8"
+        },
+        {
+          "path": "vc6/include/wnet/stralign.h",
+          "bytes": 14124,
+          "sha256": "42f48f9e5a43e029816f434e812f90b6a3475a543847e4b309b07d362d738247"
+        },
+        {
+          "path": "vc6/include/wnet/tcpxcv.h",
+          "bytes": 2053,
+          "sha256": "3af618f1fdc4c27a3b8c48f5c2e098f279f390bf83f65de30fa063a53d8c4aaa"
+        },
+        {
+          "path": "vc6/include/wnet/tdi.h",
+          "bytes": 38422,
+          "sha256": "5c07b24cd4828fe957e381eee84f5f4d528bd8436ff16eb9bb2e2d6dc56fcd62"
+        },
+        {
+          "path": "vc6/include/wnet/tdiinfo.h",
+          "bytes": 3924,
+          "sha256": "7d4d4f8cda813380aa8252439cac09b09b0926d86f54449f87368074abc19f0e"
+        },
+        {
+          "path": "vc6/include/wnet/tlhelp32.h",
+          "bytes": 8484,
+          "sha256": "960a9a40d20c6c9ef976c16505d47641a72fdde9b45d52d8bf35e666e3dba121"
+        },
+        {
+          "path": "vc6/include/wnet/tmmintrin.h",
+          "bytes": 4386,
+          "sha256": "93cbb9514591645a3265e39cf6b65d05a1c5c3c86de71b270d64bd19fc60ff95"
+        },
+        {
+          "path": "vc6/include/wnet/traffic.h",
+          "bytes": 12022,
+          "sha256": "0c07a71f301cb8497400df517cc97bd5e1340de44ae507e3d76ce98960e79349"
+        },
+        {
+          "path": "vc6/include/wnet/tvout.h",
+          "bytes": 3828,
+          "sha256": "83d762f9de27b5c2d66d86b9beaace5b87c4a94c8fc48648330c4f28c7abaace"
+        },
+        {
+          "path": "vc6/include/wnet/unexposeenums2managed.h",
+          "bytes": 594,
+          "sha256": "8ba49e4d4ea6066f6a4221d7508f49ee173a7be8ffa665f0e5f41ede2cbddc5b"
+        },
+        {
+          "path": "vc6/include/wnet/unknown.h",
+          "bytes": 1679,
+          "sha256": "d244559a4c6e42bdb80d5ea3461336d6c12004348b8523a044ba75ec7ffe9db7"
+        },
+        {
+          "path": "vc6/include/wnet/unknwn.h",
+          "bytes": 15799,
+          "sha256": "f56528c82e748dee121b7109b7f5a956b473507f6ac537a1fbb4abdc59ce08ac"
+        },
+        {
+          "path": "vc6/include/wnet/unknwn.idl",
+          "bytes": 5117,
+          "sha256": "aa53284d297f0dff11f91cbc47767c9ebad08af912b7a519fd7cca6dd3aa3dd2"
+        },
+        {
+          "path": "vc6/include/wnet/urlmon.h",
+          "bytes": 265176,
+          "sha256": "cf39a2ec2077abbd5fae9b831326632a1353fd5ce882d6b576dcf71e8ea7de46"
+        },
+        {
+          "path": "vc6/include/wnet/urlmon.idl",
+          "bytes": 133699,
+          "sha256": "510a0ea80df7dc148273160d062c2c9dcd670e3698bbb76db1e57193c7ba2cbe"
+        },
+        {
+          "path": "vc6/include/wnet/usb.h",
+          "bytes": 33657,
+          "sha256": "ea5c2452c4ea6c84f3219d77264dc9aeab485a9e25544d84a30f611608866c5c"
+        },
+        {
+          "path": "vc6/include/wnet/usb100.h",
+          "bytes": 7820,
+          "sha256": "f7dcf249e1644dacaa060718322bbc41daa926a076d830e6c94759c08500e532"
+        },
+        {
+          "path": "vc6/include/wnet/usb200.h",
+          "bytes": 2750,
+          "sha256": "4ba57c67be8d7047649959fba7d473cb318c3aa299d1c315a19a2db2d2fbbbae"
+        },
+        {
+          "path": "vc6/include/wnet/usbcamdi.h",
+          "bytes": 16724,
+          "sha256": "c278be13e778a4a7037f1f8df311696c8789fd097437e4140ad629cbf905b688"
+        },
+        {
+          "path": "vc6/include/wnet/usbdi.h",
+          "bytes": 26127,
+          "sha256": "6e22e0d0b671a921b6d13e8c11b775ab5e9c8718284f24061b62ff2b558e9600"
+        },
+        {
+          "path": "vc6/include/wnet/usbioctl.h",
+          "bytes": 23614,
+          "sha256": "2378a1fa378295137d498aa3187107c3580a3490158d4fe5ede2e3c20d0b3d96"
+        },
+        {
+          "path": "vc6/include/wnet/usbiodef.h",
+          "bytes": 4506,
+          "sha256": "bb4024219486489b84a31e23774bf97ccff9648c9f5664216865d72f35fdb398"
+        },
+        {
+          "path": "vc6/include/wnet/usbuser.h",
+          "bytes": 16544,
+          "sha256": "a08cd8579834d2a1b2a392e91a408b2482eabbb67b84bd0ac5628daf9eef44b9"
+        },
+        {
+          "path": "vc6/include/wnet/uuids.h",
+          "bytes": 64020,
+          "sha256": "fb50a45df3d71430d8b0a4782058a6af355270cca18d10bdfe03a32c7168cb23"
+        },
+        {
+          "path": "vc6/include/wnet/vddsvc.h",
+          "bytes": 7853,
+          "sha256": "89042543b15ce758d056192799cc0c42d5ba70ad744f004633b115d93ce0d3c4"
+        },
+        {
+          "path": "vc6/include/wnet/vfw.h",
+          "bytes": 139802,
+          "sha256": "de3aabdc26fecd4c7b8febe674b37ca687cad5f80d89280725fe9f0e33d74079"
+        },
+        {
+          "path": "vc6/include/wnet/warning.h",
+          "bytes": 4754,
+          "sha256": "d789fda95764b25ede4620ce4ba9af30bd36ce6539344e183ab56c4ea2dd3d08"
+        },
+        {
+          "path": "vc6/include/wnet/wbemcli.h",
+          "bytes": 174562,
+          "sha256": "23b053f4d1f0c201bfc6f43c00c32b57e7f2a16f86469fc8a2d83e624ee75aa2"
+        },
+        {
+          "path": "vc6/include/wnet/wbemdisp.h",
+          "bytes": 358189,
+          "sha256": "eb0946870b156887c747ac943ed6c47eb971d8ba5b2fd0b848ecc70ed35520d1"
+        },
+        {
+          "path": "vc6/include/wnet/wbemidl.h",
+          "bytes": 377,
+          "sha256": "0b9cc6167bfdbc1619e819df054d4ac07c71ebc3c88669e2c47ebd6d2facfdc2"
+        },
+        {
+          "path": "vc6/include/wnet/wbemprov.h",
+          "bytes": 61648,
+          "sha256": "24babac0e3b4e3a43a9bb38f95e337b2efb8229013c96b356862d0e2065cc3f2"
+        },
+        {
+          "path": "vc6/include/wnet/wbemtime.h",
+          "bytes": 5952,
+          "sha256": "ed1e3dbb72e90fdbaf58acdb5c31a9e308c1e73f68f20984eaf91a763d301b0d"
+        },
+        {
+          "path": "vc6/include/wnet/wbemtran.h",
+          "bytes": 38360,
+          "sha256": "994a1adc5ecbc356fed772d5ee2af86694571b6e76bf59a836216c07e4339024"
+        },
+        {
+          "path": "vc6/include/wnet/wdbgexts.h",
+          "bytes": 64744,
+          "sha256": "cf6e5e18fa5443a77f5584b7e279387fd49556ede4e9b50ba5174fee8b023533"
+        },
+        {
+          "path": "vc6/include/wnet/wia.h",
+          "bytes": 109824,
+          "sha256": "af5955656d5d82d7b1b989c5c7732342eb4cd2bd94592d4bc9b100b6ac0bfa3d"
+        },
+        {
+          "path": "vc6/include/wnet/wiadef.h",
+          "bytes": 60780,
+          "sha256": "6daada54489fcc9ad698110647f41f0aab9f07b4809c700bdd4db5a18bdbc7c3"
+        },
+        {
+          "path": "vc6/include/wnet/wiadevd.h",
+          "bytes": 2601,
+          "sha256": "d9458ca1877b0b10656a62dd761c0c5e20c48c0bd96c5377084f96f8b542b577"
+        },
+        {
+          "path": "vc6/include/wnet/wiavideo.h",
+          "bytes": 15728,
+          "sha256": "37c63436d82cea42bd4773c4df3be7685c34a5159c97a06f5e682cb9154d0f18"
+        },
+        {
+          "path": "vc6/include/wnet/winable.h",
+          "bytes": 16705,
+          "sha256": "863dcc6c2de88c5e43aa0eb404e6d2678ceac778128b6c9019c8c7b81bb12e7b"
+        },
+        {
+          "path": "vc6/include/wnet/winbase.h",
+          "bytes": 235700,
+          "sha256": "dfe69f2da489a0ace07e0f50e7be3abc5885693c3c43fe620a513a1266d2ece2"
+        },
+        {
+          "path": "vc6/include/wnet/winbase.inl",
+          "bytes": 21875,
+          "sha256": "1b91ddd6d7d6ac379274f9e3e1569603d6093e6122d0c7005158b6ba2f997bd1"
+        },
+        {
+          "path": "vc6/include/wnet/wincon.h",
+          "bytes": 19577,
+          "sha256": "92d90cd045c92839fedce0d5a87a5c2b1c79033e1c48873e850356dbf0c0e7dc"
+        },
+        {
+          "path": "vc6/include/wnet/wincred.h",
+          "bytes": 27749,
+          "sha256": "c7fad1490fe9ca82e82357b6fa932f6db8babe35815db9cb6ea7fbf0cf3e1b72"
+        },
+        {
+          "path": "vc6/include/wnet/wincrypt.h",
+          "bytes": 644308,
+          "sha256": "7d215adbe940235995c156f972bdbb48b3bab501cfb4ae85d8f4a424bc75ec4c"
+        },
+        {
+          "path": "vc6/include/wnet/winddi.h",
+          "bytes": 115149,
+          "sha256": "fdc414aa84d79cd5a2ffd8ff849ebb858fd174cba2054d802ed5c7696c70c7ff"
+        },
+        {
+          "path": "vc6/include/wnet/winddiui.h",
+          "bytes": 16299,
+          "sha256": "8e475f187119f5640cf2a79fc3b3a005f44a25010a8d7d17f5f356f88578b292"
+        },
+        {
+          "path": "vc6/include/wnet/windef.h",
+          "bytes": 8994,
+          "sha256": "54639a9b6ae41e2442ffdc85fc03f3c7e33a2c46ccd71ef740420378627e164f"
+        },
+        {
+          "path": "vc6/include/wnet/windows.h",
+          "bytes": 6102,
+          "sha256": "eeb4e6399421f3f356948ad7550d8c131d7415ab8c570543a0c24e419ae2286e"
+        },
+        {
+          "path": "vc6/include/wnet/windowsvc6.h",
+          "bytes": 9277,
+          "sha256": "7c19f26232abe28e564ce57a473c1661f73f314803091926a74be2d4dc5af42d"
+        },
+        {
+          "path": "vc6/include/wnet/windowsx.h",
+          "bytes": 73802,
+          "sha256": "75cc6c75968d42a3028d0d51fc875ba2331397ce2bbafc8964afa28decb31ce6"
+        },
+        {
+          "path": "vc6/include/wnet/winefs.h",
+          "bytes": 5078,
+          "sha256": "dafb8aa81e4deb89714e9ece2e1e3fac9e5d14985a5cd2f383fbbab846cad0ea"
+        },
+        {
+          "path": "vc6/include/wnet/winerror.h",
+          "bytes": 589361,
+          "sha256": "3ed3a083ebde2fff7c426f541aee7421d0c564ccdbe74a8e2345437f9ca0f925"
+        },
+        {
+          "path": "vc6/include/wnet/wingdi.h",
+          "bytes": 195585,
+          "sha256": "7896fab81ad3446c9fe5e4045f99dcb6e381e65831c21ea4da467475d5aebb35"
+        },
+        {
+          "path": "vc6/include/wnet/winioctl.h",
+          "bytes": 122607,
+          "sha256": "906d87b1f797bf91971fbc39166828180ba2b185305ed644b1021d95eb2e1fc0"
+        },
+        {
+          "path": "vc6/include/wnet/winldap.h",
+          "bytes": 6505,
+          "sha256": "2a9e8eea30e90d04e7dfa1daf1931c8daf45ee6f32416200cfeee6c0270aca73"
+        },
+        {
+          "path": "vc6/include/wnet/winnetwk.h",
+          "bytes": 25358,
+          "sha256": "7d72e708958b1bff83417deb906a247fa2407f980522f3f0ca8743efe98b98a8"
+        },
+        {
+          "path": "vc6/include/wnet/winnls.h",
+          "bytes": 58602,
+          "sha256": "0dcc2acb9803ab41a3e2399260deedca3dd9d2ebcb51f42339513ac0678d978e"
+        },
+        {
+          "path": "vc6/include/wnet/winnls32.h",
+          "bytes": 2100,
+          "sha256": "20550e3bd50249cab90ea1ff984057be1ef2b79aea7113798cb336a293447087"
+        },
+        {
+          "path": "vc6/include/wnet/winnt.h",
+          "bytes": 312984,
+          "sha256": "f9b6fb6a51c6e47eee0a82e9190f52055d9527d5c4d5d92cd7157240715d03c0"
+        },
+        {
+          "path": "vc6/include/wnet/winnt.rh",
+          "bytes": 12767,
+          "sha256": "372897c92134baded345764743f11dc33200c50fdbc9054e2db6f684bff1ab31"
+        },
+        {
+          "path": "vc6/include/wnet/winperf.h",
+          "bytes": 32369,
+          "sha256": "77fbe3c08945f21a000d44b989a93002a04c4ffbc7bfcaa94b3475518138aa56"
+        },
+        {
+          "path": "vc6/include/wnet/winppi.h",
+          "bytes": 1499,
+          "sha256": "08c6caad4350d6107728ca0953beabaeaf9442446014f489fbe9063caeec2599"
+        },
+        {
+          "path": "vc6/include/wnet/winreg.h",
+          "bytes": 22322,
+          "sha256": "4388340a9219cc707736b598f24b7bf5005f9ef59238a51aa2c8cc6c6043ece3"
+        },
+        {
+          "path": "vc6/include/wnet/winresrc.h",
+          "bytes": 580,
+          "sha256": "09a804a88628c2ac6edfcb37730b1318d53beb95166a4fd2b32c22f8b77f4c63"
+        },
+        {
+          "path": "vc6/include/wnet/winscard.h",
+          "bytes": 38012,
+          "sha256": "215e25a99f85353dd4c10f4439bcd5cafa69603cba87febe653dd35f9c02ca13"
+        },
+        {
+          "path": "vc6/include/wnet/winsmcrd.h",
+          "bytes": 12754,
+          "sha256": "9e20b23101049d012e63e10161a6ee7319511a254c451e821bc8ad39b8f3b2ec"
+        },
+        {
+          "path": "vc6/include/wnet/winsock.h",
+          "bytes": 36591,
+          "sha256": "bf0dd2f48a51700451dd9da150eab0c4030b4c49559b0993ddc889c8a59f4559"
+        },
+        {
+          "path": "vc6/include/wnet/winsock2.h",
+          "bytes": 102952,
+          "sha256": "61a8080d8f3e4a343eb03c730ced993230bbd5995774e8581684385ba2c64be2"
+        },
+        {
+          "path": "vc6/include/wnet/winsock2_vc6.h",
+          "bytes": 7641,
+          "sha256": "bbdb7abed46b931cfc4c53ea8f114f2c986cd0344064f584f1f4cfa751f5404a"
+        },
+        {
+          "path": "vc6/include/wnet/winsplp.h",
+          "bytes": 34046,
+          "sha256": "284dd2635f8c9da343a820807d39b50489f8c3ab9e6e5fd9ef8c512dc5db91dc"
+        },
+        {
+          "path": "vc6/include/wnet/winspool.h",
+          "bytes": 77165,
+          "sha256": "88e2323bf8bce329ef0bd7192b79e815053e879bb9597ffe0ab32ca9ad9d219d"
+        },
+        {
+          "path": "vc6/include/wnet/winsvc.h",
+          "bytes": 30132,
+          "sha256": "62867a56ebe289c95fe56fd13adb343c9b637692af3987fd24bfb0e2fe27f56c"
+        },
+        {
+          "path": "vc6/include/wnet/wintrust.h",
+          "bytes": 57269,
+          "sha256": "72f323baae45ae4264cfb067ac20d3cae1c4dbd0c766274356ee0f23c0b888d3"
+        },
+        {
+          "path": "vc6/include/wnet/winuser.h",
+          "bytes": 282163,
+          "sha256": "e7badd3f043022f251a2109bab66ad566e5e6072f68ad752898a3e90186e4988"
+        },
+        {
+          "path": "vc6/include/wnet/winuser.inl",
+          "bytes": 33687,
+          "sha256": "50fde129f81a601dc020af29ae348f8979f39bcc675f5e8edcc291bc8e9a9d7d"
+        },
+        {
+          "path": "vc6/include/wnet/winuser.rh",
+          "bytes": 49737,
+          "sha256": "b35cf797e7bc468d80375ec8736c1db46a6c3cccb9fc618b79ab2ec7627d9a13"
+        },
+        {
+          "path": "vc6/include/wnet/winver.h",
+          "bytes": 9503,
+          "sha256": "68ea2c5e688d8879dd43c24b61b93df1bc47e5d8e85bc440b22b694fa552a2d8"
+        },
+        {
+          "path": "vc6/include/wnet/wmistr.h",
+          "bytes": 17129,
+          "sha256": "500a5a27783889bb5696534a16ccbcfa1e1a3f07298954801798840ba83cf210"
+        },
+        {
+          "path": "vc6/include/wnet/ws2spi.h",
+          "bytes": 22390,
+          "sha256": "0eccf5e5283f493db3338f4c180390e696ceb62444e8bf5ba7dc22576a7956f8"
+        },
+        {
+          "path": "vc6/include/wnet/ws2tcpip.h",
+          "bytes": 21855,
+          "sha256": "0496346c5baf1c44163b9cfe3fd82b8d9eb8fb30ac55c1538bee4bf55ef382e3"
+        },
+        {
+          "path": "vc6/include/wnet/wtypes.h",
+          "bytes": 29318,
+          "sha256": "9dafb6cbf9e9fb1e68c1b1b80defbdb9782f484bc899768ac0f6be567921a193"
+        },
+        {
+          "path": "vc6/include/wnet/wtypes.idl",
+          "bytes": 40888,
+          "sha256": "85739766623e7bcf6bb699c71eed11c5eed9ddc00f16d0b6a264cb1a562377a0"
+        },
+        {
+          "path": "vc6/include/wnet/xatomic.h",
+          "bytes": 69484,
+          "sha256": "ad4e6b4f7e711857efb1363a108552cdd3c92931f9fe0c8d5824d00128d6e21e"
+        },
+        {
+          "path": "vc6/include/wnet/xatomic0.h",
+          "bytes": 5507,
+          "sha256": "c358d388cf2d2575a3f5da7387e5b8de8cb8cc34a27673c9492707f52b2ba3f5"
+        },
+        {
+          "path": "vc6/include/wnet/xmldom.idl",
+          "bytes": 39779,
+          "sha256": "276920306fd240f0ce11a2225eb00df2058eb3d579acf709cb81c5f46bef16ba"
+        },
+        {
+          "path": "vc6/include/wnet/xmldomdid.h",
+          "bytes": 14194,
+          "sha256": "bc89581d5bf2ad9c8ae193cc0c36fa119f0ebb56e6c62690e9c457b064c0431b"
+        },
+        {
+          "path": "vc6/include/wnet/xmldso.idl",
+          "bytes": 1751,
+          "sha256": "f7ac05658b2c41d8939d2975aea53d55cfdeecd076493db44c77aa405eb99fbf"
+        },
+        {
+          "path": "vc6/include/wnet/xmldsodid.h",
+          "bytes": 1335,
+          "sha256": "b4a08a22b8a5c94b2dc9895469b5dd0e2d3b05764466e96ea04524cb9098c30a"
+        },
+        {
+          "path": "vc6/include/wnet/xmmintrin.h",
+          "bytes": 18680,
+          "sha256": "32340ec9b262b48b2476304164814147ec8e8f1a15cfc1084800393155dc9f9a"
+        },
+        {
+          "path": "vc6/include/wnet/xxatomic",
+          "bytes": 49841,
+          "sha256": "c09ca26c51800a7a5a0837e69e6bcfe8751e126177e5c7c66e3d8c5692c01b22"
+        },
+        {
+          "path": "vc6/include/wnet/zmouse.h",
+          "bytes": 7130,
+          "sha256": "409e0f104d706cd95b2dd4e0049c6dff3b3a63e6377a9a330e50855f6721be25"
+        }
+      ]
+    },
+    {
+      "relative": "third_party/GDIPlus",
+      "resolved": "C:/sr06/third_party/sources/miniblink/third_party/GDIPlus",
+      "files": 30,
+      "bytes": 515851,
+      "rosterSha256": "02967961baf55761e389bd21de6f1b2386ea866731e04653b74ad1759fdbeb8b",
+      "members": [
+        {
+          "path": "third_party/GDIPlus/Includes/GdiPlus.h",
+          "bytes": 3278,
+          "sha256": "a611ca0e442528e7ee724646127127db600eabed7af391ced4ed7a0c86c4b5f5"
+        },
+        {
+          "path": "third_party/GDIPlus/Includes/GdiPlusBase.h",
+          "bytes": 817,
+          "sha256": "50549f502138a535d1445fac67864673195a21f0a4f0b15dfdcd93937e4379c3"
+        },
+        {
+          "path": "third_party/GDIPlus/Includes/GdiPlusBitmap.h",
+          "bytes": 21325,
+          "sha256": "959116404432cdd2a8ada0f8166e73bc1c20f0cbb3fe4e464f0cd170bbcb8a81"
+        },
+        {
+          "path": "third_party/GDIPlus/Includes/GdiPlusBrush.h",
+          "bytes": 29851,
+          "sha256": "789aad3a24ad5334820958b3b7d9467f323f11937b0851e94a17b87db58708ed"
+        },
+        {
+          "path": "third_party/GDIPlus/Includes/GdiPlusCachedBitmap.h",
+          "bytes": 1702,
+          "sha256": "a4f7c0da184b3b68dff42f587ebf604e1b4091eae1bdc33ddf09b84469d3b1cd"
+        },
+        {
+          "path": "third_party/GDIPlus/Includes/GdiPlusColor.h",
+          "bytes": 4119,
+          "sha256": "8b8c77e1ce3e71e5e63007fb2ba19f71d566f2351f809b6c1f722ab1acb3367c"
+        },
+        {
+          "path": "third_party/GDIPlus/Includes/GdiPlusColorMatrix.h",
+          "bytes": 1687,
+          "sha256": "0d4b1496b13c4314af15b687c2ebcd9daf52207f3f51b78ea922618b17a8580a"
+        },
+        {
+          "path": "third_party/GDIPlus/Includes/GdiPlusEnums.h",
+          "bytes": 54669,
+          "sha256": "d2ec1167f0146c36dda7f0fb0e751f47a240760a0990b32c2025fd5128d230fd"
+        },
+        {
+          "path": "third_party/GDIPlus/Includes/GdiPlusFlat.h",
+          "bytes": 84723,
+          "sha256": "8ce824125fa2886679ca81f3577cebe14b2a3b21e3d7e8842a44fd1128371310"
+        },
+        {
+          "path": "third_party/GDIPlus/Includes/GdiPlusFont.h",
+          "bytes": 5682,
+          "sha256": "ad02081c21312e6e6cfaf63378130c43a57489964f60fa3151d3ff1577b38b32"
+        },
+        {
+          "path": "third_party/GDIPlus/Includes/GdiPlusFontCollection.h",
+          "bytes": 3252,
+          "sha256": "a3480d8271ca1eb2f26280ce4e1842ad3ef9ca8a15237ef393427ef191e2b509"
+        },
+        {
+          "path": "third_party/GDIPlus/Includes/GdiPlusFontFamily.h",
+          "bytes": 5800,
+          "sha256": "7c9d14d86f621bf08e22e4d4f42b02ee44f85e6c40ba94c82af3c074367fbfad"
+        },
+        {
+          "path": "third_party/GDIPlus/Includes/GdiPlusGpStubs.h",
+          "bytes": 2618,
+          "sha256": "e5376c683f49a92026a75a2ab0a0b51812efddd608d4e18d26f264314ed17ace"
+        },
+        {
+          "path": "third_party/GDIPlus/Includes/GdiPlusGraphics.h",
+          "bytes": 91151,
+          "sha256": "17c8011698206a2337e818ec7a89891534f8428356c52a7601fd8001ee02e40b"
+        },
+        {
+          "path": "third_party/GDIPlus/Includes/GdiPlusHeaders.h",
+          "bytes": 21382,
+          "sha256": "fe21af06afd87cfc25c7bf2e6fab63afc1993e47e32270790ca23fbe3e0aa748"
+        },
+        {
+          "path": "third_party/GDIPlus/Includes/GdiPlusImageCodec.h",
+          "bytes": 1520,
+          "sha256": "cf4f06ed4200252a52c9c4e7a241369944712d8f9fdd6f61c278cf1258a5391f"
+        },
+        {
+          "path": "third_party/GDIPlus/Includes/GdiPlusImaging.h",
+          "bytes": 23728,
+          "sha256": "9f3df6e3786f97eaf8dc3d8e1912f383afe64e2267fd144d7b7b1df2da8ddece"
+        },
+        {
+          "path": "third_party/GDIPlus/Includes/GdiPlusInit.h",
+          "bytes": 3072,
+          "sha256": "208c728a909eaa06b84af66a293065624fbc0477367274f4b5297a184016bdc7"
+        },
+        {
+          "path": "third_party/GDIPlus/Includes/GdiPlusLineCaps.h",
+          "bytes": 6042,
+          "sha256": "c7161027f877e03dfd84c7ea295679148f734ff2d58192c7fbf76c277c935f6e"
+        },
+        {
+          "path": "third_party/GDIPlus/Includes/GdiPlusMatrix.h",
+          "bytes": 8156,
+          "sha256": "9d14f170d68d71b653e8164cdf8162c5c8f94566bd0a07576ae98444ae386c9f"
+        },
+        {
+          "path": "third_party/GDIPlus/Includes/GdiPlusMem.h",
+          "bytes": 1034,
+          "sha256": "15f84c57924db94b522b83aacc1d9e1ac47b7a5339ad27daac2851eedb3f7e9b"
+        },
+        {
+          "path": "third_party/GDIPlus/Includes/GdiPlusMetaFile.h",
+          "bytes": 11431,
+          "sha256": "66b51f5c0a9eef20eece7142bbddb1137579912cdecbb684c77b6b22a954a1a9"
+        },
+        {
+          "path": "third_party/GDIPlus/Includes/GdiPlusMetaHeader.h",
+          "bytes": 7938,
+          "sha256": "5c2bfcc5580e5a7faeea328b48f8e752483d05bd6de7972d5525750bc2799dd3"
+        },
+        {
+          "path": "third_party/GDIPlus/Includes/GdiPlusPath.h",
+          "bytes": 48784,
+          "sha256": "ecc1cd48f6fcf61e24b3576c3108a39064decadfd7590d3843f2bfef32c0d8d6"
+        },
+        {
+          "path": "third_party/GDIPlus/Includes/GdiPlusPen.h",
+          "bytes": 13116,
+          "sha256": "cb0315f52d812b13348a655ac11bc14c94cf48dc72ceb539f987d5ae2f2ef24e"
+        },
+        {
+          "path": "third_party/GDIPlus/Includes/GdiPlusPixelFormats.h",
+          "bytes": 6595,
+          "sha256": "8179ea822c5893398cbbcfe1c5975fd3b02cb8c6c964e7bb4980b332678b0435"
+        },
+        {
+          "path": "third_party/GDIPlus/Includes/GdiPlusRegion.h",
+          "bytes": 12790,
+          "sha256": "fb3b08288b573f4fa3806737427b2b49207f00dbd81b71c6206738b35ad52f2c"
+        },
+        {
+          "path": "third_party/GDIPlus/Includes/GdiPlusStringFormat.h",
+          "bytes": 8971,
+          "sha256": "41b3a082c8c85a0ad7c4cb10b35df1a007f6660278e8bd1f8a1781c2c351444a"
+        },
+        {
+          "path": "third_party/GDIPlus/Includes/GdiPlusTypes.h",
+          "bytes": 17235,
+          "sha256": "3b47bb69a976c9992abc029543bf551ad2923da0786f1300c82260928da176cb"
+        },
+        {
+          "path": "third_party/GDIPlus/Includes/GdiPlusimageAttributes.h",
+          "bytes": 13383,
+          "sha256": "9b9c9c7a347df8da3fa619c6e96d4117eb7b972fbc7242fbf2e1f642a5cfec78"
+        }
+      ]
+    }
+  ],
+  "installedHeaderAlternatives": [
+    {
+      "original": "third_party/GDIPlus/Includes/GdiPlus.h",
+      "installed": "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um/GdiPlus.h",
+      "bytes": 2099,
+      "sha256": "1c420a028f937ae91e5c22e69b4afedfaa0799cb99bdc82790f026ce978e164b"
+    },
+    {
+      "original": "third_party/GDIPlus/Includes/GdiPlusBase.h",
+      "installed": "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um/GdiPlusBase.h",
+      "bytes": 1037,
+      "sha256": "03fcf1ffb77372cbb3294ef990a352a14af069fe1d943a089d099ca689befc19"
+    },
+    {
+      "original": "third_party/GDIPlus/Includes/GdiPlusBitmap.h",
+      "installed": "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um/GdiPlusBitmap.h",
+      "bytes": 25808,
+      "sha256": "a38d4fead29dd30a646aaa7e4d18ca9d92c304891934054f53abb40eea9fd3ff"
+    },
+    {
+      "original": "third_party/GDIPlus/Includes/GdiPlusBrush.h",
+      "installed": "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um/GdiPlusBrush.h",
+      "bytes": 27832,
+      "sha256": "e264c958be90d2165725e05e5992de082ff5077ed307c014ea6b6cc634da49e9"
+    },
+    {
+      "original": "third_party/GDIPlus/Includes/GdiPlusCachedBitmap.h",
+      "installed": "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um/GdiPlusCachedBitmap.h",
+      "bytes": 1368,
+      "sha256": "d2299506a91d4b08780c6fe5026c3f0fa8ac66e221685d8e3c9daa64b6954f75"
+    },
+    {
+      "original": "third_party/GDIPlus/Includes/GdiPlusColor.h",
+      "installed": "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um/GdiPlusColor.h",
+      "bytes": 9995,
+      "sha256": "af04d2dbaf626ae3b67e49071f34ff72cc0b4380550c8d96b799b626c767054f"
+    },
+    {
+      "original": "third_party/GDIPlus/Includes/GdiPlusColorMatrix.h",
+      "installed": "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um/GdiPlusColorMatrix.h",
+      "bytes": 2573,
+      "sha256": "4121d811cab64470852d2278276e974438dd0f080c4b639d43b3ee0da0a7bcb6"
+    },
+    {
+      "original": "third_party/GDIPlus/Includes/GdiPlusEnums.h",
+      "installed": "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um/GdiPlusEnums.h",
+      "bytes": 49759,
+      "sha256": "cbc7bf08d7bbded17a9dfb4851ff62fcab3280ee890a8c1b372d3c097666f77d"
+    },
+    {
+      "original": "third_party/GDIPlus/Includes/GdiPlusFlat.h",
+      "installed": "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um/GdiPlusFlat.h",
+      "bytes": 89402,
+      "sha256": "28a3e8fcf58047d3ac1ad5beb133817687c1ac3a21cc16bc6ae09124b54dcd14"
+    },
+    {
+      "original": "third_party/GDIPlus/Includes/GdiPlusFont.h",
+      "installed": "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um/GdiPlusFont.h",
+      "bytes": 6032,
+      "sha256": "c8a50d0737c4d405199387717abdb0b16b3cd295edc21dc8c4edb925f8a27c67"
+    },
+    {
+      "original": "third_party/GDIPlus/Includes/GdiPlusFontCollection.h",
+      "installed": "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um/GdiPlusFontCollection.h",
+      "bytes": 3533,
+      "sha256": "1d98835e2164dd66fdf89509f6b65f62a6dfb0a808a65b920fdd072afa698f4e"
+    },
+    {
+      "original": "third_party/GDIPlus/Includes/GdiPlusFontFamily.h",
+      "installed": "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um/GdiPlusFontFamily.h",
+      "bytes": 4732,
+      "sha256": "56215103c57f2d997d9f6fe02d9785404e10dc9d1ac4abd651bbe29e85fa6515"
+    },
+    {
+      "original": "third_party/GDIPlus/Includes/GdiPlusGpStubs.h",
+      "installed": "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um/GdiPlusGpStubs.h",
+      "bytes": 2955,
+      "sha256": "524126d539562582dcafc645429152f2a3948c75af8f4f60c5956f88c9dbd794"
+    },
+    {
+      "original": "third_party/GDIPlus/Includes/GdiPlusGraphics.h",
+      "installed": "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um/GdiPlusGraphics.h",
+      "bytes": 89750,
+      "sha256": "d4dc48b583bf93f1be5a1a8653f8f778e66a3a48322d70be403a68455ec23d37"
+    },
+    {
+      "original": "third_party/GDIPlus/Includes/GdiPlusHeaders.h",
+      "installed": "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um/GdiPlusHeaders.h",
+      "bytes": 29298,
+      "sha256": "e055503ecb050b39b87dea146fe9850f35d781fe38561b7ad9fa9d8e8f15dbce"
+    },
+    {
+      "original": "third_party/GDIPlus/Includes/GdiPlusImageCodec.h",
+      "installed": "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um/GdiPlusImageCodec.h",
+      "bytes": 1714,
+      "sha256": "26bcc9ef3bad4ecd4055b318003f5c0224ff424a3a5e88c806d9518c680b9886"
+    },
+    {
+      "original": "third_party/GDIPlus/Includes/GdiPlusImaging.h",
+      "installed": "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um/GdiPlusImaging.h",
+      "bytes": 26635,
+      "sha256": "b829dacfacef4364941303825d69989f48c0e4496c87b685304a31a8742f7f75"
+    },
+    {
+      "original": "third_party/GDIPlus/Includes/GdiPlusInit.h",
+      "installed": "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um/GdiPlusInit.h",
+      "bytes": 5347,
+      "sha256": "7dd5279002b532d973f1944d483d19c3cf4cbaefff2e1d87058862eb7a0423a8"
+    },
+    {
+      "original": "third_party/GDIPlus/Includes/GdiPlusLineCaps.h",
+      "installed": "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um/GdiPlusLineCaps.h",
+      "bytes": 7000,
+      "sha256": "2db40dd42d2738dcce5746563c191bf152c25ee98ec7d48f4c9190a060c5c37b"
+    },
+    {
+      "original": "third_party/GDIPlus/Includes/GdiPlusMatrix.h",
+      "installed": "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um/GdiPlusMatrix.h",
+      "bytes": 9583,
+      "sha256": "13368594244550c5fd17dca07b79273310ca315281eb0d692b9fa377fcb1e903"
+    },
+    {
+      "original": "third_party/GDIPlus/Includes/GdiPlusMem.h",
+      "installed": "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um/GdiPlusMem.h",
+      "bytes": 992,
+      "sha256": "d1758f79857d58666ab417355fd998f0ed12f6e76ae63f6221bce0950ca17519"
+    },
+    {
+      "original": "third_party/GDIPlus/Includes/GdiPlusMetaFile.h",
+      "installed": "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um/GdiPlusMetaFile.h",
+      "bytes": 12924,
+      "sha256": "9a66d8ad3564f38a0d34a494d4d3a0e72c9e825e09415c045241f9ee8daf1b2c"
+    },
+    {
+      "original": "third_party/GDIPlus/Includes/GdiPlusMetaHeader.h",
+      "installed": "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um/GdiPlusMetaHeader.h",
+      "bytes": 8152,
+      "sha256": "2c97b9fc96d0e2611d4ebbe5a94103c6963c8cb44e0661bfa94f02a0dc85c596"
+    },
+    {
+      "original": "third_party/GDIPlus/Includes/GdiPlusPath.h",
+      "installed": "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um/GdiPlusPath.h",
+      "bytes": 48365,
+      "sha256": "bd095533eab5e1bb7fb9577f65f9ea5888b338f4f08754bb760bdd96ca2936eb"
+    },
+    {
+      "original": "third_party/GDIPlus/Includes/GdiPlusPen.h",
+      "installed": "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um/GdiPlusPen.h",
+      "bytes": 13693,
+      "sha256": "ee7b7e8fdb7f6e886641b07328969b8ab50c552545ea83bd6ff1849bfd5df342"
+    },
+    {
+      "original": "third_party/GDIPlus/Includes/GdiPlusPixelFormats.h",
+      "installed": "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um/GdiPlusPixelFormats.h",
+      "bytes": 6985,
+      "sha256": "a8bc2f8f61fb1fa3c005f5bc8a209f2b96b92157a98787c500ae2bd1c007c888"
+    },
+    {
+      "original": "third_party/GDIPlus/Includes/GdiPlusRegion.h",
+      "installed": "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um/GdiPlusRegion.h",
+      "bytes": 15157,
+      "sha256": "7e8e47d8d5edcf96de393fab293eba2e7027bcc98979a4c6ba73b9bb48817e65"
+    },
+    {
+      "original": "third_party/GDIPlus/Includes/GdiPlusStringFormat.h",
+      "installed": "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um/GdiPlusStringFormat.h",
+      "bytes": 8556,
+      "sha256": "34a0c7dffb37fe47824f56697ac829a57189c7262f21b6b73e39d85ed5a96d7b"
+    },
+    {
+      "original": "third_party/GDIPlus/Includes/GdiPlusTypes.h",
+      "installed": "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um/GdiPlusTypes.h",
+      "bytes": 17191,
+      "sha256": "0bf7ce1925ed16c7d2f63d7afc4f6df5143d04efcdf88d5143900a2b31a31073"
+    },
+    {
+      "original": "third_party/GDIPlus/Includes/GdiPlusimageAttributes.h",
+      "installed": "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um/GdiPlusimageAttributes.h",
+      "bytes": 13330,
+      "sha256": "994d46589fda3994d59fe1a07729bd83886536c85c94f04da1f4c3d12be156f5"
+    }
+  ],
+  "installedHeadersAreNotCopiedToRelease": true,
+  "currentBuildReadProvenance": {
+    "path": "C:/soui-k64-p8-20261027-2/miniblink/obj/miniblink.tlog/clang-cl.read.1.tlog",
+    "uniqueGdiPlusHeaders": 30,
+    "claim": "Old build actually used all 30 copied headers. This is not evidence of new build resolution."
+  },
+  "actionsNotYetPerformed": [
+    "backup",
+    "remove",
+    "new-build"
+  ],
+  "productionQualification": false,
+  "externalLegalOpinion": false
+}

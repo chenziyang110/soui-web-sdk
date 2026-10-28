@@ -18,6 +18,7 @@ const tailInputs = ['benchmarks/protocol/owned-tail-evidence.cpp', 'benchmarks/p
 const toolNames = ['OwnedProcessRunner', 'OwnedProcessAssignmentFixture', 'ProcessTreeSampler', 'InputTrace', 'NativeTraceIdentity',
   'OwnedTailProcessFixture', 'OwnedTailMutationFixture', 'OwnedTailApiFixture', 'DisplayCalibration'];
 const displayInput = 'benchmarks/protocol/display-calibration.cpp';
+const cohortInput = 'benchmarks/protocol/owned-process-cohort.h';
 const hash = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
 
 function load(workspace, launches) {
@@ -61,7 +62,7 @@ function fixture(t, architecture) {
   const existing = load(repository, {count: 0}).fingerprint();
   for (const entry of existing.files) write(entry.path, fs.readFileSync(path.join(repository, entry.path)));
   write(sdkCheck, fs.readFileSync(path.join(repository, sdkCheck)));
-  for (const name of tailInputs) write(name, fs.readFileSync(path.join(repository, name)));
+  for (const name of [...tailInputs, cohortInput]) write(name, fs.readFileSync(path.join(repository, name)));
   for (const name of [displayInput, 'benchmarks/protocol/display-calibration.cjs', 'benchmarks/protocol/owned-trace-subject.cjs'])
     write(name, fs.readFileSync(path.join(repository, name)));
   write('tools/internal/owned-process.cjs', '// pure fixture client\n');
@@ -119,7 +120,7 @@ for (const architecture of ['x86', 'x64']) {
     }
   });
 
-  for (const input of tailInputs) {
+  for (const input of [...tailInputs, cohortInput]) {
     test(`${architecture}: changed ${input} invalidates preparation`, t => {
       const f = fixture(t, architecture), before = f.validation.fingerprint().sha256;
       fs.appendFileSync(path.join(f.workspace, input), '\n// changed Tail compilation input fixture\n');

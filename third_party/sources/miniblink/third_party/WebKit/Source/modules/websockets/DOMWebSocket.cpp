@@ -29,6 +29,7 @@
  */
 
 #include "config.h"
+#include "platform/network/LocalResourceAdmission.h"
 #include "modules/websockets/DOMWebSocket.h"
 
 #include "bindings/core/v8/ExceptionState.h"
@@ -49,6 +50,7 @@
 #include "core/frame/csp/ContentSecurityPolicy.h"
 #include "core/inspector/ConsoleMessage.h"
 #include "core/inspector/ScriptCallStack.h"
+#include "core/loader/InspectorResourcePolicy.h"
 #include "modules/websockets/CloseEvent.h"
 #include "platform/Logging.h"
 #include "platform/blob/BlobData.h"
@@ -278,8 +280,19 @@ DOMWebSocket* DOMWebSocket::create(ExecutionContext* context, const String& url,
 
 void DOMWebSocket::connect(const String& url, const Vector<String>& protocols, ExceptionState& exceptionState)
 {
+    if (InspectorResourcePolicy::isControlled(executionContext())) {
+        m_state = CLOSED;
+        exceptionState.throwSecurityError("This operation is disabled in the controlled inspector.");
+        return;
+    }
+
     WTF_LOG(Network, "WebSocket %p connect() url='%s'", this, url.utf8().data());
     m_url = KURL(KURL(), url);
+    if (isLocalResourceNamespace(m_url)) {
+        m_state = CLOSED;
+        exceptionState.throwSecurityError("The owned local resource namespace has no WebSocket endpoint.");
+        return;
+    }
 
     if (executionContext()->securityContext().insecureRequestsPolicy() == SecurityContext::InsecureRequestsUpgrade && m_url.protocol() == "ws") {
         UseCounter::count(executionContext(), UseCounter::UpgradeInsecureRequestsUpgradedRequest);

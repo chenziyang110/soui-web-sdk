@@ -40,6 +40,7 @@ CWebView::CWebView(COLORREF color)
         m_webPage->wkeHandler().isWke = true;
 
         g_liveWebViews.insert(this);
+        diagnostics::view_created();
     } catch (...) {
         std::terminate();
     }
@@ -53,6 +54,7 @@ CWebView::~CWebView()
     net::ActivatingObjCheck::inst()->remove(m_id);
     g_liveWebViews.erase(this);
     m_webPage->close();
+    diagnostics::view_destroyed();
 }
 
 // Exact method bytes from third_party/sources/miniblink/wke/wkeWebView.cpp

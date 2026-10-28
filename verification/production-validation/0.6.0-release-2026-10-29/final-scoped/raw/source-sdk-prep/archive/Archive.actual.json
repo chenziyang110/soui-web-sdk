@@ -1,0 +1,167 @@
+{
+  "schema": "soui.source-sdk-archive-actual/v1",
+  "startedAt": "2026-10-28T18:08:45.456Z",
+  "finishedAt": "2026-10-28T18:08:53.124Z",
+  "archive": {
+    "path": "C:/sr06/dist/SouiSdk-0.6.0-source-sdk.zip",
+    "bytes": 37437121,
+    "sha256": "99373b7cca69fc133c4344e550ca65d9570cb87c876e495186e0db163c543f8f"
+  },
+  "sha256File": {
+    "path": "C:/sr06/dist/SouiSdk-0.6.0-source-sdk.zip.sha256",
+    "bytes": 95,
+    "sha256": "ecee6cd15a44aa94c52f5ce6d9ddbab054458809588653957ece88e8d880c456"
+  },
+  "metadata": {
+    "path": "C:/sr06/dist/SouiSdk-0.6.0-source-sdk.zip.json",
+    "bytes": 1556,
+    "sha256": "908d3742584daebb73dcbd3284d2134aad82a7cdd0bdb79d70c834ac166496ee"
+  },
+  "manifest": {
+    "path": "C:/s06sdk/sdk-manifest.json",
+    "bytes": 353462,
+    "sha256": "af9e61db01f8af4c8f0458be0821fab169ac26349110433c1d30dfd4f22ec21d"
+  },
+  "script": {
+    "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/source-sdk-prep/archive/Archive-SourceSdk.cjs",
+    "bytes": 9382,
+    "sha256": "86d1b5e61d5cba54a234c52f0770efe3f9f97cbcf3e433d2c823b08bf25169d8"
+  },
+  "inputs": {
+    "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/source-sdk-prep/archive/Inputs.actual.json",
+    "bytes": 1480,
+    "sha256": "e210cbc7931917c5971a84db2074bfc605592f0a3e27421f7d65362eaaa6a36f"
+  },
+  "steps": [
+    {
+      "name": "01-verify-source",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "C:/sr06/tools/sdk/soui-sdk.cjs",
+        "verify-source",
+        "--package",
+        "C:/s06sdk",
+        "--source",
+        "C:/sr06"
+      ],
+      "cwd": "C:/sr06",
+      "startedAt": "2026-10-28T18:08:46.090Z",
+      "finishedAt": "2026-10-28T18:08:46.958Z",
+      "elapsedMs": 867.5246,
+      "exitCode": 0,
+      "signal": null,
+      "error": null
+    },
+    {
+      "name": "02-7z-create",
+      "executable": "C:/Program Files/7-Zip/7z.exe",
+      "args": [
+        "a",
+        "-tzip",
+        "-mx5",
+        "-mmt2",
+        "-scsUTF-8",
+        "-sccUTF-8",
+        "-y",
+        "C:/sr06/dist/SouiSdk-0.6.0-source-sdk.zip",
+        "@F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\source-sdk-prep\\archive\\ArchiveMembers.list"
+      ],
+      "cwd": "C:/s06sdk",
+      "startedAt": "2026-10-28T18:08:46.959Z",
+      "finishedAt": "2026-10-28T18:08:49.941Z",
+      "elapsedMs": 2981.9481,
+      "exitCode": 0,
+      "signal": null,
+      "error": null
+    },
+    {
+      "name": "03-7z-test",
+      "executable": "C:/Program Files/7-Zip/7z.exe",
+      "args": [
+        "t",
+        "-sccUTF-8",
+        "C:/sr06/dist/SouiSdk-0.6.0-source-sdk.zip"
+      ],
+      "cwd": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\source-sdk-prep\\archive",
+      "startedAt": "2026-10-28T18:08:49.941Z",
+      "finishedAt": "2026-10-28T18:08:50.296Z",
+      "elapsedMs": 354.6314,
+      "exitCode": 0,
+      "signal": null,
+      "error": null
+    },
+    {
+      "name": "04-7z-list",
+      "executable": "C:/Program Files/7-Zip/7z.exe",
+      "args": [
+        "l",
+        "-slt",
+        "-ba",
+        "-sccUTF-8",
+        "C:/sr06/dist/SouiSdk-0.6.0-source-sdk.zip"
+      ],
+      "cwd": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\source-sdk-prep\\archive",
+      "startedAt": "2026-10-28T18:08:50.296Z",
+      "finishedAt": "2026-10-28T18:08:50.334Z",
+      "elapsedMs": 37.1956,
+      "exitCode": 0,
+      "signal": null,
+      "error": null
+    },
+    {
+      "name": "05-7z-extract",
+      "executable": "C:/Program Files/7-Zip/7z.exe",
+      "args": [
+        "x",
+        "-sccUTF-8",
+        "-y",
+        "-oC:\\sr06\\out\\sdk-archive-check-a4c8a6c4-7f04-47a8-be93-ce3678aede84",
+        "C:/sr06/dist/SouiSdk-0.6.0-source-sdk.zip"
+      ],
+      "cwd": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\source-sdk-prep\\archive",
+      "startedAt": "2026-10-28T18:08:50.342Z",
+      "finishedAt": "2026-10-28T18:08:51.982Z",
+      "elapsedMs": 1639.9582,
+      "exitCode": 0,
+      "signal": null,
+      "error": null
+    }
+  ],
+  "archiveFileCount": 1497,
+  "payloadFileCount": 1496,
+  "archiveDirectoryEntries": [],
+  "extractedRoot": "C:/sr06/out/sdk-archive-check-a4c8a6c4-7f04-47a8-be93-ce3678aede84",
+  "matchedRawMembers": {
+    "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/source-sdk-prep/archive/ExtractedMembers.actual.json",
+    "bytes": 295928,
+    "sha256": "3be1f7b2add9498f14ca4dd14aa4936afcf2ae355687ebf075be393893d3a503"
+  },
+  "rawClosedSetSha256": "3be1f7b2add9498f14ca4dd14aa4936afcf2ae355687ebf075be393893d3a503",
+  "checks": {
+    "publicReadPackageBefore": true,
+    "publicVerifySource": true,
+    "sevenZipTest": true,
+    "archiveFileSetExact": true,
+    "publicReadPackageExtracted": true,
+    "allExtractedMembersRawMatch": true,
+    "sourcePackageUnchanged": true
+  },
+  "scope": {
+    "sourceSdk": true,
+    "prebuiltNativeFiles": 136,
+    "compiledGuiBindingsIncluded": false,
+    "sourceOnlyArchive": true,
+    "compilerStarted": false,
+    "productStarted": false,
+    "vmStarted": false,
+    "runtimeValidationInferred": false,
+    "releaseSignatureClaimed": false,
+    "releaseReady": false,
+    "productionQualificationComplete": false
+  },
+  "preservedCanonicalFailures": [
+    "attempt-751a2d57-16a8-42b7-9b2b-f176c6bcf6e2",
+    "attempt-803330b2-12c6-4fa1-9e79-ef3b4d0558ac"
+  ],
+  "originalWriterOrRetryPolicyModified": false
+}

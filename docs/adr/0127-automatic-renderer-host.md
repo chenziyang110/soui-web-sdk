@@ -1,7 +1,6 @@
 # 0127 — 可选自动后端宿主
 
-状态：已实现。`preview.2` 冻结快照取得 x86/x64 限定启动、降级及交付证据；
-拆分后的 `preview.3` 使用独立身份并单列复验，仍为本地预览候选。
+状态：源码实现纳入 0.6.0；本轮构建、双启动分支及资产验证收口中。原 preview.2/preview.3 和共享工作区的双架构记录均保留原身份，不作为新发布通过。
 
 ## 背景
 
@@ -45,3 +44,5 @@ auto 应用部署独立现代/兼容资源根和同一业务契约。兼容前�
 与整机卸载 Runtime、Win7/PE 实机结果区分。保留失败，不扩大性能或生产准入结论。
 
 本候选结果、历史冻结记录和明确限制见 [PR 验证范围](../../verification/production-validation/auto-host-pr-2026-10-23/README.md)。
+
+本轮结果、原始失败和明确限制见 [验证报告](../../verification/production-validation/auto-host-2026-10-23/README.md)。

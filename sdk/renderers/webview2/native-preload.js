@@ -4,6 +4,8 @@
   var documentId = __SOUI_DOCUMENT_ID__;
   var pending = new Map();
   var closed = false;
+  // Correlation only, never authority. Do not reuse an ID after timeout or post failure.
+  var nextInvocationId = 1;
   var limits = [128, 128, 1];
   var used = [0, 0, 0];
   var encoder = new TextEncoder();
@@ -46,8 +48,9 @@
       return;
     }
     if (data.kind !== 'response' || typeof data.raw !== 'string') return;
-    var entry = release(data.requestId);
-    if (!entry) return;
+    var entry = pending.get(data.requestId);
+    if (!entry || data.invocationId !== entry.invocationId) return;
+    release(data.requestId, entry);
     entry.resolve(data.raw);
   }
   window.chrome.webview.addEventListener('message', receive);
@@ -65,13 +68,15 @@
       if (used[lane] >= limits[lane]) { reject(new Error('Transport capacity exceeded.')); return; }
       var timeout = packet.timeoutMs === undefined ? 10000 : packet.timeoutMs;
       if (!Number.isInteger(timeout) || timeout < 1 || timeout > 60000) { reject(new Error('Invalid timeout.')); return; }
-      var entry = {resolve: resolve, reject: reject, category: lane};
+      if (!Number.isSafeInteger(nextInvocationId)) { reject(new Error('Invocation identity exhausted.')); return; }
+      var invocationId = String(nextInvocationId++);
+      var entry = {resolve: resolve, reject: reject, category: lane, invocationId: invocationId};
       entry.timer = setTimeout(function () {
         if (release(id, entry)) reject(new Error('Native response timed out; native work was not cancelled.'));
       }, timeout);
       pending.set(id, entry);
       ++used[lane];
-      try { window.chrome.webview.postMessage(JSON.stringify({documentId: documentId, request: request})); }
+      try { window.chrome.webview.postMessage(JSON.stringify({documentId: documentId, invocationId: invocationId, request: request})); }
       catch (error) { if (release(id, entry)) reject(error); }
     });
   };

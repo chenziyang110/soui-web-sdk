@@ -1,5 +1,7 @@
 # 构建与源码范围
 
+本页以 0.6.0 源码接口为准。本轮新内核、SDK、应用及消费者的构建/运行证明正在收口，状态见[发布说明](releases/0.6.0.md)；旧候选结果不改挂为当前发布通过。
+
 ## 环境
 
 - Windows x64 开发机、Visual Studio 2022 C++ 桌面开发组件、ATL、v143 工具集。
@@ -36,8 +38,6 @@ powershell.exe -File tools/Build.ps1 -SdkOnly -Architecture x64 -Install
 
 应用和 SDK 的 Debug 配置保留调试信息，但为匹配固定 SOUI 运行库仍使用 `/MD` 和相同的发布版运行库边界，且定义 `NDEBUG`。它不代表底层依赖也以 Debug CRT 编译；不要混入其他配置的 SOUI DLL/LIB。
 
-安装后的 SDK 位于 `out/install/<架构>/`，第三方声明在 `share/SouiSdk/`；外部项目通过 `find_package(SouiSdk CONFIG REQUIRED)` 和 `Soui::Sdk` 引用。此导出包支持 SDK 核心链接；完整应用的资源与运行库部署使用源码包里的 `cmake/SouiApplication.cmake`。
-
 ## 离线 Web 源码诊断档
 
 `Build.ps1` 默认使用 `-WebProfile distribution`，不生成业务 source map。
@@ -48,8 +48,8 @@ powershell.exe -File tools/Build.ps1 -Architecture x64 -Configuration Release -W
 ```
 
 诊断档在 JS 资产中携带 inline map 和源码，并关闭 JS minify。它可能暴露业务
-实现和数据，不提供自动脱敏，也不授予运行时调试权限。模板及 Workbench
-沿用原 React/Vue/legacy 插件和目标；`-SdkOnly` 不接受应用诊断档。
+实现和数据，不提供自动脱敏，也不授予运行时 DevTools 权限。两种模板及
+Workbench 沿用原 React/Vue/legacy 插件和目标；`-SdkOnly` 不接受应用诊断档。
 
 直接调用模板的 `npm run build` 时，显式设置进程内
 `SOUI_WEB_BUILD_PROFILE=source-diagnostic` 选择该档；不设置时为 distribution。
@@ -64,7 +64,9 @@ powershell.exe -File tools/Build.ps1 -Architecture x64 -Configuration Release -W
 无 marker 的旧自定义 Web 构建仅可作为 distribution，经相同源码/map 禁止
 检查后使用。新源码诊断档必须有 marker；不支持外置/在线 map 或临时 HTTP
 服务。诊断信息、预算与验证边界见 [ADR 0119](adr/0119-offline-web-build-profiles.md)。
-真实 TS/TSX 断点验证仍单独记录，不能由静态 map 校验推定通过。
+两个后端的真实 TS/TSX 断点与安装消费者尚需另行认证。
+
+安装后的 SDK 位于 `out/install/<架构>/`，第三方声明在 `share/SouiSdk/`；外部项目通过 `find_package(SouiSdk CONFIG REQUIRED)` 和 `Soui::Sdk` 引用。此导出包支持 SDK 核心链接；完整应用的资源与运行库部署使用源码包里的 `cmake/SouiApplication.cmake`。
 
 ## 底层源码重编译
 
@@ -133,6 +135,12 @@ OwnedProcessRunner 捕获完整进程组的自然退出。`standard-build.cjs` �
 根目录默认保持 `SOUI_BUILD_TESTS=ON`。完整开发源码包含 Miniblink 私有目录时，默认同时注册厂商回归；可搬移的 SDK 源码工作区完全不包含该目录时，默认仅关闭 `SOUI_BUILD_VENDOR_TESTS`，SDK 自身测试仍构建。私有目录存在但缺少任一必需文件会使配置失败，不能把损坏的输入视为精简交付。SDK Core、生成项目和完整开发源码的范围不同，私有测试关闭不表示内核已验收。
 
 需要厂商回归时，从包含完整输入的开发源码根显式执行 `powershell.exe -File tools/Build.ps1 -Architecture x64 -WithVendorTests -FreshConfigure`；x86 使用对应架构。该开关向根 CMake 同时传入 `SOUI_BUILD_TESTS=ON` 和 `SOUI_BUILD_VENDOR_TESTS=ON`，不允许与 `-SdkOnly` 共用，也不接受生成应用目录。构建完成后仍须实际运行 `Test.ps1 -RequireVendorTests`，不能用成功配置或注册清单代替测试结果。
+
+## 可选离线 DevTools 配对材料（候选）
+
+MiniBlink应用可用`tools/Build.ps1 -WithDevToolsPackage`选择经审查的离线inspector与内核；同时显式传入`-DevToolsPackageRoot`、`-DevToolsKernelRelative`、`-DevToolsKernelSha256`、`-DevToolsManifestSha256`、`-DevToolsApprovalRelative`和`-DevToolsApprovalSha256`。材料格式、边界和原生接入见[DevTools候选文档](devtools.md)。不能与`-SdkOnly`或生成的现代后端项目组合；WebView2使用其Runtime自带前端。
+
+这是交付材料选择，不开启原生策略，也不发放grant。默认应用构建显式配置`SOUI_DEVTOOLS_PACKAGE_ENABLED=OFF`，避免继承上次CMake缓存的启用状态。业务源码诊断仍由独立的`-WebProfile source-diagnostic`选择，默认发行档不携带业务源码。当前候选编译通过不代表配对包、真实窗口或生产验收通过。
 
 ## 可选 Windows 辅助功能模块
 

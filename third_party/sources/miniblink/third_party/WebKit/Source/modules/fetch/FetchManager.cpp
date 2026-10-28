@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 #include "config.h"
+#include "platform/network/LocalResourceAdmission.h"
 #include "modules/fetch/FetchManager.h"
 
 #include "bindings/core/v8/ExceptionState.h"
@@ -320,6 +321,10 @@ void FetchManager::Loader::performHTTPFetch(bool corsFlag, bool corsPreflightFla
     ResourceRequest request(m_request->url());
     request.setRequestContext(m_request->context());
     request.setHTTPMethod(m_request->method());
+    if (!prepareLocalResourceRequest(executionContext(), request)) {
+        performNetworkError("Owned local resource request denied or capacity exhausted");
+        return;
+    }
     const Vector<OwnPtr<FetchHeaderList::Header>>& list = m_request->headerList()->list();
     for (size_t i = 0; i < list.size(); ++i) {
         AtomicString name(list[i]->first);

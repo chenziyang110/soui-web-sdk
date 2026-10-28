@@ -1,0 +1,2587 @@
+{
+  "schema": "soui.release-scoped-facts/v1",
+  "version": "0.6.0",
+  "status": "SCOPED_EXECUTED_RESULTS",
+  "snapshotUtc": "2026-10-28T19:57:39.257Z",
+  "releaseReady": false,
+  "productionQualificationComplete": false,
+  "fullDevtoolsGoalComplete": false,
+  "classification": {
+    "authorizedTag": "v0.6.0",
+    "authorizedGithubPrerelease": false,
+    "meaning": "User-authorized ordinary Release classification; does not qualify production, performance, platforms, or complete DevTools goals."
+  },
+  "sourceAndMergeScope": {
+    "capabilityAndFixPullRequests": [
+      101,
+      113,
+      114,
+      112,
+      115,
+      106,
+      104,
+      105,
+      107,
+      108,
+      109,
+      110,
+      111,
+      116,
+      117,
+      118,
+      119,
+      124,
+      120,
+      121,
+      122,
+      123
+    ],
+    "count": 22,
+    "basis": "Root-confirmed actual merged list; previous PR short reports retain their original aa30/7922 source and working-fix identities.",
+    "separateSourceBytesFollowup": {
+      "pullRequest": 126,
+      "merged": true,
+      "scope": "Preserve exact kernel source bytes; not an additional runtime qualification."
+    },
+    "excluded": [
+      {
+        "pullRequest": 103,
+        "scope": "Not adopted in this release capability set."
+      },
+      {
+        "pullRequest": 125,
+        "scope": "Current draft, not merged."
+      }
+    ],
+    "observedIntegrationCommit": "3964e1a3f (observation only; not final release SHA)",
+    "defaultApplicationSourceSha256": "67a8c649a1a08e96e76dd4d0f7782b53f229e1f26ad65e6a2738bc7173555264",
+    "kernelSourceIdentity": "26c5b73e4915bb4539e87b987cd8e952005f0fe41d987138d8d8e3b13eb25c95",
+    "sdkManifest": {
+      "path": "C:/s06sdk/sdk-manifest.json",
+      "bytes": 353462,
+      "sha256": "af9e61db01f8af4c8f0458be0821fab169ac26349110433c1d30dfd4f22ec21d"
+    },
+    "finalReleaseSourceIdentityRecord": "External Release-Manifest-0.6.0.json binds the sealed source-manifest, final Git tree and ZIP without a self-reference cycle."
+  },
+  "scopedCompleted": {
+    "kernelSource2": {
+      "evidence": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/kernel-prep/revision-3/KernelBuildResults.json",
+        "bytes": 5377,
+        "sha256": "db099d37cc7921e5f04d0ba5231299ef1bfae65b81ece2d840c0028b96e4c569"
+      },
+      "files": 23064,
+      "bytes": 305373649,
+      "sourceIdentity": "26c5b73e4915bb4539e87b987cd8e952005f0fe41d987138d8d8e3b13eb25c95",
+      "architectures": [
+        {
+          "architecture": "x64",
+          "dll": {
+            "path": "C:\\sr06\\out\\release-kernel-x64-2\\miniblink\\bin\\miniblink.dll",
+            "bytes": 39204352,
+            "sha256": "d888637d5dd1476dde16b8c5bb28172d7b8ec3495b69c725fa3572013748139a"
+          },
+          "summary": {
+            "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/kernel-prep/revision-3/execution-x64/summary.json",
+            "bytes": 8876,
+            "sha256": "cda6745f15ad20b021f0757d76b2634d52f5f5304830d53569791c6c3493efd0"
+          },
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "activeProcesses": 0,
+          "noForce": true,
+          "requiredExportsPresent": true,
+          "hostImageExecuted": false,
+          "freshCurrentRun2ObjectReuse": 1903,
+          "freshCurrentRun2PchReuse": true
+        },
+        {
+          "architecture": "x86",
+          "dll": {
+            "path": "C:\\sr06\\out\\release-kernel-x86-3\\miniblink\\bin\\node.dll",
+            "bytes": 28318208,
+            "sha256": "dc8c37178f4bbd9260edc973d61af876cf8460178eaf89fa2994fdffc94abc9a"
+          },
+          "summary": {
+            "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/kernel-prep/revision-3/execution-x86/summary.json",
+            "bytes": 8175,
+            "sha256": "e886d7fc94e575eda3bb4d98af999e8eff82abb7d1839b5e7b08725a706d60c2"
+          },
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "activeProcesses": 0,
+          "noForce": true,
+          "requiredExportsPresent": true,
+          "hostImageExecuted": false,
+          "freshCurrentRun2ObjectReuse": 0,
+          "freshCurrentRun2PchReuse": false
+        }
+      ],
+      "matchingStaticLibrariesReusedPerArchitecture": 11,
+      "historicalP9MainObjectOrPchReuse": false,
+      "wholeHistoricalExternalProviderBytesProven": false,
+      "meaning": "New affected main TUs and actual final link; x64 continuation explicitly reused only admitted current-run fresh objects/PCH. Eleven byte-matched static libraries per arch were not recompiled. PE/export/read/link checks are build facts, not DLL runtime proof."
+    },
+    "sdkFourConfigurations": {
+      "libraries": [
+        "soui_sdk",
+        "soui_webview2",
+        "soui_auto_host"
+      ],
+      "configurations": [
+        "x64 Release",
+        "x64 Debug",
+        "x86 Release",
+        "x86 Debug"
+      ],
+      "threeAdditionalConfigEvidence": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/sdk-build-prep/ScopedBuildSummary.json",
+        "bytes": 24065,
+        "sha256": "7976ad5f72ee15c94a73e5123f6d80d687622ec33a9904d0c87a5deb5281145e"
+      },
+      "additionalConfigs": [
+        {
+          "id": "x86-debug",
+          "config": "Debug",
+          "testsPassed": 11,
+          "libraryCount": 3
+        },
+        {
+          "id": "x86-release",
+          "config": "Release",
+          "testsPassed": 11,
+          "libraryCount": 3
+        },
+        {
+          "id": "x64-debug",
+          "config": "Debug",
+          "testsPassed": 0,
+          "libraryCount": 3
+        }
+      ],
+      "x64ReleaseEvidence": [
+        {
+          "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/native-x64-integration-build-2.log",
+          "bytes": 3512,
+          "sha256": "42e9d7bc144ed4b9ec8bed0e785d57d4c1b220814de2956aeaebe97b540f7e29"
+        },
+        {
+          "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/native-x64-integration-tests-1.log",
+          "bytes": 1098,
+          "sha256": "82f2f1829d7f59243962102cc60607220c3a33248fb81a8149d84812b05fe84f"
+        },
+        {
+          "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/native-x64-early-retirement-build.log",
+          "bytes": 1564,
+          "sha256": "b3e020aed2379bfdc06315333dcaa4e05c6f9168da430353f9eb2d37b064b836"
+        },
+        {
+          "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/native-x64-early-retirement.log",
+          "bytes": 258,
+          "sha256": "a15f9441b24b18a78993e02748d8b94bcb81f9e8b599cfb3b55112338370fe55"
+        }
+      ],
+      "x64ReleaseScopedCases": "Seven current integration CTests plus one early-retirement CTest passed; no full native-suite rerun.",
+      "closureLimit": "Direct SDK CMake/CTest roots naturally returned0; these lanes did not use a Windows Job, so no Job0 or global-idle inference. Debug compilation does not establish runtime behavior."
+    },
+    "finiteVendorCases": {
+      "evidence": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vendor-short-prep/VendorShortSummary.json",
+        "bytes": 24126,
+        "sha256": "debafd2bd65b6370a3956768e49444048bc8eb1639713a051d6ba052f2074575"
+      },
+      "uniqueCases": 5,
+      "archCaseExecutions": 10,
+      "architectures": [
+        "x64 Release",
+        "x86 Release"
+      ],
+      "result": "PASS_SELECTED_FINITE_SOURCE_CASES",
+      "strictSourceGatesWeakened": false,
+      "runtimeDllOrProductExecution": false
+    },
+    "installedPublicConsumers": {
+      "evidence": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/consumer-prep/InstalledConsumerSummary.json",
+        "bytes": 28645,
+        "sha256": "b0e8fa6b4e5862e1a6ab92c337cd611b94482ec093fff3fa28c743ef21c79731"
+      },
+      "result": "PASS_TWO_ARCH_INSTALLED_PUBLIC_AND_OPTIONAL_CONSOLE_CONSUMERS",
+      "prefixes": [
+        {
+          "architecture": "x64",
+          "root": "C:/sr06/out/release-install-x64-release",
+          "files": 473,
+          "bytes": 80903306,
+          "closure": {
+            "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/consumer-prep/x64-PrefixFiles.json",
+            "bytes": 95378,
+            "sha256": "8fdfb5f98c9e64b9f08b2b44678a2d28fc43ed5fa6d70c4ae123a7c44e420bef"
+          }
+        },
+        {
+          "architecture": "x86",
+          "root": "C:/sr06/out/release-install-x86-release",
+          "files": 473,
+          "bytes": 58602650,
+          "closure": {
+            "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/consumer-prep/x86-PrefixFiles.json",
+            "bytes": 95378,
+            "sha256": "9e949a479eabc46c13c8927fef4e7de3be4f6fe51c8509b992bbe0fa6036aae4"
+          }
+        }
+      ],
+      "consoleExecutions": 6,
+      "scope": "Public package-consumer, action JSON, and thin optional archive link/data consumer per architecture. No optional discovery/mount or business work invoked; no GUI."
+    },
+    "webAndPureToolChecks": {
+      "webEvidence": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/docs-prep/WebBuildSummary.json",
+        "bytes": 32573,
+        "sha256": "94e90dcb9303cbea9ca2a02e9d5755a2d77f331432fb1e663c96aa2c8387fb01"
+      },
+      "metadataEvidence": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/docs-prep/metadata-tests.result.json",
+        "bytes": 366,
+        "sha256": "ecc253a2ae31f0f1c543c20aaaa28b87eb91bbe82d6909e5b705f3c37e2f8df1"
+      },
+      "result": "WEB_SDK_AND_SCOPED_APPLICATION_BUILDS_COMPLETE",
+      "bindingOriginalEusageRetained": true,
+      "peerTestsPassed": 1,
+      "currentSixLockAuditsFinalExitZeroZeroReportedAdvisories": true,
+      "vueFirstTlsFailureRetained": true,
+      "otherAlertScope": "82 GitHub open-alert path records:75 immutable historical evidence and7 optional source/tool graph records; not82 distinct vulnerabilities and not cleared by the six current graph audits.",
+      "affectedToolsOriginalMixedLog": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/affected-tools.log",
+        "bytes": 15480,
+        "sha256": "e7bd15fb1f8184bc49d1ddb89112ac53ce6a4c986e5f0fc397b90b8a43855c1d"
+      },
+      "deliveryIdentityOriginalMixedLog": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/delivery-identity-final.log",
+        "bytes": 6690,
+        "sha256": "e44f7baecd06be97037689eb262fa4909bdd69895338d24368de03189db3b279"
+      },
+      "targetedLicenseRegressionPasses": [
+        {
+          "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/delivery-identity-license-repair.log",
+          "bytes": 219,
+          "sha256": "67c117bdfda6a98ab8464afb9a399467cdce26bec086d1b1dcd4ab8e38cae1f0"
+        },
+        {
+          "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/delivery-identity-license-doc.log",
+          "bytes": 218,
+          "sha256": "91e46d36e33256b65cd06ed93aba93d0dfae16091d373ab215cf1371feade2f9"
+        }
+      ],
+      "meaning": "Do not sum overlapping tests or label the original mixed tool batch wholly passed. Old PR93/Node50/PS57/runner7 reports remain bound to their original source."
+    },
+    "sbom": {
+      "npmEvidence": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/sbom-prep/NpmSbomValidation.actual.json",
+        "bytes": 24020,
+        "sha256": "a0fe05bb51ae2038fccd048e8bae2be299f13c91a5bf5b1fb2688ca61975b437"
+      },
+      "promotedNpm": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/sbom-prep/PromotedNpmSboms.json",
+        "bytes": 1434,
+        "sha256": "1566831ce166937719d2019dd0c380850ee69587c4efb85e8ffd2037ad0ebce4"
+      },
+      "graphs": 10,
+      "originalAndPortableDocumentsSchemaValidated": 20,
+      "currentLocksUnchanged": true,
+      "guiLocalSdkReferences": "Two actual @soui/native-sdk0.6.0 references made relative as ../sdk/web; original generator/nameguard failure retained.",
+      "nativePromotion": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/sbom-prep/native-promotion-1/Promotion.actual.json",
+        "bytes": 4920,
+        "sha256": "ac3fe4c61510216faf52cf9079bb80a51799a67dc88f87c03c716f7c3a79a996"
+      },
+      "nativeSbom": {
+        "path": "C:/sr06/verification/sbom-native.cdx.json",
+        "bytes": 173894,
+        "sha256": "6602c1bee082530e17f69bf642b9bb7817347560b69c9f6b3a4f30cc3031f45e"
+      },
+      "nativeValidation": {
+        "path": "C:/sr06/verification/sbom-native.validation.json",
+        "bytes": 1739,
+        "sha256": "a108a9bff076f1336e88a14305388e1f4f93b4a4b1b0225fb6d3509c94de612b"
+      },
+      "nativeDeliveredFiles": 136,
+      "actualLinkArchiveInputs": 22,
+      "nativeComponents": 158,
+      "composition": "incomplete",
+      "runtimeQualificationInferred": false
+    },
+    "sourceSdkAndGeneratedProjects": {
+      "preparationEvidence": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/source-sdk-prep/attempt-1cd32d8b-3ac1-4829-8ebd-2f4e149b619a/Summary.actual.json",
+        "bytes": 958035,
+        "sha256": "e60c8e6c36aed33bfd39c51c35ec2ca9ef155e30410cf1336916fbaa2fffea11"
+      },
+      "manifest": {
+        "path": "C:/s06sdk/sdk-manifest.json",
+        "bytes": 353462,
+        "sha256": "af9e61db01f8af4c8f0458be0821fab169ac26349110433c1d30dfd4f22ec21d"
+      },
+      "payloadMembers": 1496,
+      "successfulPublicSteps": [
+        "pack explicit external C:/s06sdk",
+        "verify-source",
+        "two profile inspections",
+        "New-Project compatibility/modern",
+        "two verify-project",
+        "verify-source after"
+      ],
+      "generatedSourceSdkLocksUnchanged": true,
+      "onlyGeneratedNativeOptInConstantsChanged": true,
+      "artifactEvidence": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/source-sdk-prep/GeneratedArtifacts.actual.json",
+        "bytes": 24783,
+        "sha256": "9d0e76fa7e37a69a8308ca28b70e9f4b7d6462108c78ba9682f199264c778701"
+      },
+      "artifacts": [
+        {
+          "architecture": "x64",
+          "profile": "compatibility",
+          "buildId": "c2c2477c-e117-45de-8524-085bb8541131",
+          "sourceSha256": "a038997d7d5b527c3bc9f2085ebbec95127275bf30a7a71bab37728d76e3b73e",
+          "executable": {
+            "path": "C:/soui-release06-compat-diag/out/x64/bin/Release/SouiRelease06CompatDiag/SouiRelease06CompatDiag.exe",
+            "bytes": 1155584,
+            "sha256": "134c7c730db67e93cf72f45164411c7da8c11c5f8d9c244cfa0975b8545f4c14"
+          },
+          "publicArtifactVerified": true,
+          "genericCompilerJobPassed": false,
+          "runtimeStatus": "SCOPED_NATIVE_NATURAL_CLOSURE_VERIFIED",
+          "runtimeCases": [
+            {
+              "pid": 3200,
+              "creationFileTime": "134376897203914670",
+              "sourceSha256": "a038997d7d5b527c3bc9f2085ebbec95127275bf30a7a71bab37728d76e3b73e",
+              "buildId": "c2c2477c-e117-45de-8524-085bb8541131",
+              "genericSupervisionPassed": true,
+              "closureConfirmed": true
+            }
+          ]
+        },
+        {
+          "architecture": "x86",
+          "profile": "compatibility",
+          "buildId": "8afcfb4d-250c-4b85-9cc5-0f00a1ce3d7a",
+          "sourceSha256": "a038997d7d5b527c3bc9f2085ebbec95127275bf30a7a71bab37728d76e3b73e",
+          "executable": {
+            "path": "C:/soui-release06-compat-diag/out/x86/bin/Release/SouiRelease06CompatDiag/SouiRelease06CompatDiag.exe",
+            "bytes": 1008128,
+            "sha256": "7dd3a5416b8e85d4e9c4fb7013a7e55616c4de56d9c2d2b7ab941214db8f0d22"
+          },
+          "publicArtifactVerified": true,
+          "genericCompilerJobPassed": false,
+          "runtimeStatus": "SCOPED_NATIVE_NATURAL_CLOSURE_VERIFIED",
+          "runtimeCases": [
+            {
+              "pid": 5040,
+              "creationFileTime": "134376897789218333",
+              "sourceSha256": "a038997d7d5b527c3bc9f2085ebbec95127275bf30a7a71bab37728d76e3b73e",
+              "buildId": "8afcfb4d-250c-4b85-9cc5-0f00a1ce3d7a",
+              "genericSupervisionPassed": true,
+              "closureConfirmed": true
+            },
+            {
+              "pid": 4988,
+              "creationFileTime": "134376900905115247",
+              "sourceSha256": "a038997d7d5b527c3bc9f2085ebbec95127275bf30a7a71bab37728d76e3b73e",
+              "buildId": "8afcfb4d-250c-4b85-9cc5-0f00a1ce3d7a",
+              "genericSupervisionPassed": true,
+              "closureConfirmed": true
+            }
+          ]
+        },
+        {
+          "architecture": "x64",
+          "profile": "modern",
+          "buildId": "04a00e24-2a9b-482a-b08f-3ecf5bedae82",
+          "sourceSha256": "048657a3d212c2e785db7985c51dddb9be48cf910db5d3c4968643c49c3b443e",
+          "executable": {
+            "path": "C:/soui-release06-modern-diag/out/x64/bin/Release/SouiRelease06ModernDiag/SouiRelease06ModernDiag.exe",
+            "bytes": 849920,
+            "sha256": "f926fb5466e94c9a16ca9a81aa24dc8554838539c20d300acc8076b25927fdee"
+          },
+          "publicArtifactVerified": true,
+          "genericCompilerJobPassed": false,
+          "runtimeStatus": "SCOPED_NATIVE_NATURAL_CLOSURE_VERIFIED",
+          "runtimeCases": [
+            {
+              "pid": 1012,
+              "creationFileTime": "134376899012501052",
+              "sourceSha256": "048657a3d212c2e785db7985c51dddb9be48cf910db5d3c4968643c49c3b443e",
+              "buildId": "04a00e24-2a9b-482a-b08f-3ecf5bedae82",
+              "genericSupervisionPassed": true,
+              "closureConfirmed": true
+            }
+          ]
+        },
+        {
+          "architecture": "x86",
+          "profile": "modern",
+          "buildId": "0e78f909-f269-461a-be1d-02595b2670e5",
+          "sourceSha256": "048657a3d212c2e785db7985c51dddb9be48cf910db5d3c4968643c49c3b443e",
+          "executable": {
+            "path": "C:/soui-release06-modern-diag/out/x86/bin/Release/SouiRelease06ModernDiag/SouiRelease06ModernDiag.exe",
+            "bytes": 733696,
+            "sha256": "ec02b3ef68816d064a048097c92d7c2b3f8f5bf7f196218e7162dfb9e341e38d"
+          },
+          "publicArtifactVerified": true,
+          "genericCompilerJobPassed": false,
+          "runtimeStatus": "SCOPED_NATIVE_NATURAL_CLOSURE_VERIFIED",
+          "runtimeCases": [
+            {
+              "pid": 2304,
+              "creationFileTime": "134376899571032745",
+              "sourceSha256": "048657a3d212c2e785db7985c51dddb9be48cf910db5d3c4968643c49c3b443e",
+              "buildId": "0e78f909-f269-461a-be1d-02595b2670e5",
+              "genericSupervisionPassed": true,
+              "closureConfirmed": true
+            }
+          ]
+        }
+      ],
+      "meaning": "Four generated source-diagnostic artifacts retain their failed compiler Job results. Five later current-payload GUI stages independently completed naturally with unmodified120000/2000 budgets; GUI observations and raw receipts are separate."
+    },
+    "defaultApplicationBuilds": {
+      "evidence": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/app-build-prep/attempt-3d82f8e1-d93b-4b4a-8a42-7653760f2e1e/Summary.json",
+        "bytes": 602253,
+        "sha256": "fbbc772b152f4b25eefd3cca661de16c9aa47245f60972d25344b832be1d4d10"
+      },
+      "sourceSha256": "67a8c649a1a08e96e76dd4d0f7782b53f229e1f26ad65e6a2738bc7173555264",
+      "builds": [
+        {
+          "architecture": "x64",
+          "buildId": "7ecb5a92-de8e-4ab1-8b24-19606f889f03",
+          "compilationCompleted": true,
+          "standardArtifactAccepted": true,
+          "compilerTailAcceptance": true,
+          "genericSupervisionPassed": false,
+          "rootExitCode": 0,
+          "supervisorExitCode": 124
+        },
+        {
+          "architecture": "x86",
+          "buildId": "6d3166b8-5989-4356-8970-1ab5c879db00",
+          "compilationCompleted": true,
+          "standardArtifactAccepted": true,
+          "compilerTailAcceptance": true,
+          "genericSupervisionPassed": false,
+          "rootExitCode": 0,
+          "supervisorExitCode": 124
+        }
+      ],
+      "runtimeStatus": "EIGHT_CURRENT_APPLICATION_RUNS_PUBLIC_READERS_VERIFIED"
+    },
+    "threeExistingDataArchives": {
+      "archives": [
+        {
+          "path": "C:/sr06/dist/SouiSdk-0.6.0-source-sdk.zip",
+          "bytes": 37437121,
+          "sha256": "99373b7cca69fc133c4344e550ca65d9570cb87c876e495186e0db163c543f8f"
+        },
+        {
+          "path": "C:/sr06/dist/SouiDevTools-0.6.0-windows-x64.zip",
+          "bytes": 16729816,
+          "sha256": "ee5117139791cf011026def7fbd119aaa6813ddb870acc48eab26ead76eb755e"
+        },
+        {
+          "path": "C:/sr06/dist/SouiDevTools-0.6.0-windows-x86.zip",
+          "bytes": 14243258,
+          "sha256": "53387d24a2a583ef392408f040ab9a6e74c7e820e076d2544cbc1676823cb9e1"
+        }
+      ],
+      "pinsRecomputedWhileDrafting": true,
+      "readbackEvidence": [
+        {
+          "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/source-sdk-prep/archive/Archive.actual.json",
+          "bytes": 5340,
+          "sha256": "4471fcdfcb45aa135d22dccf438f0017106d443b2a49adca16f73c74994d0d85"
+        },
+        {
+          "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/frontend-prep/ComponentArchive-x64.json",
+          "bytes": 3173,
+          "sha256": "1d246beafeb30ea8d26c82a4505d7af183c40e36097ff89526e078ba43d506f4"
+        },
+        {
+          "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/frontend-prep/ComponentArchive-x86.json",
+          "bytes": 3173,
+          "sha256": "8e9a85a897caa76245e7453200d86ab6f7d704963efc04136ca0acfeece5ba35"
+        }
+      ],
+      "meaning": "One source SDK ZIP plus two DevTools component ZIPs; not three source SDK variants. Actual archive integrity and extracted raw closure verified in existing reports. No application or full-source archive implied; no runtime success inferred."
+    },
+    "authenticode": {
+      "evidence": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/app-build-prep/Authenticode-8.actual.json",
+        "bytes": 1976,
+        "sha256": "dd399e170b007c8576c59a73494653aeb957a6a0c7c6e473ee2cf39886e2400f"
+      },
+      "observedImages": 8,
+      "allStatus": "NotSigned",
+      "scope": "Six default application EXEs and two matching Source2 kernel DLLs. Not an audit of every dependency or eventual uploaded archive."
+    },
+    "validationAndVmTransport": {
+      "preparedTools": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vm-short-prep/PreparedTools-DeliveryActual.json",
+        "bytes": 37305,
+        "sha256": "03bf17149e6e0ced75ec77296629b8b0f8c5020b1ce109c873c989a7a097f47b"
+      },
+      "publicPreparedArchitectures": [
+        "x86",
+        "x64"
+      ],
+      "toolCompilerJobsPassed": false,
+      "defaultOnlyConsoleContractsPassed": 2,
+      "media": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vm-short-prep/media-default-1/result.json",
+        "bytes": 9031,
+        "sha256": "343326a740adff0a38777cde43523e02046a6fcf2cf5eba2a9a65a6c584e9c44"
+      },
+      "independentStaticReview": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/release-evidence-prep/DefaultVmMediaIndependentReview.json",
+        "bytes": 8686,
+        "sha256": "861d1b7ac40dae854f1a652496b9829e46fe0443d0faa6d886f981c5ac644d0a"
+      },
+      "transportNotGuiPass": true,
+      "vmRuntimeResult": "EIGHT_DEFAULT_AND_FIVE_DIAGNOSTIC_STAGES_VERIFIED"
+    },
+    "currentRuntime": {
+      "environment": {
+        "schema": "soui.release06-preparation-environment/v1",
+        "windows": {
+          "ProductName": "Windows Server 2022 Standard Evaluation",
+          "CurrentBuild": "20348",
+          "UBR": 587
+        },
+        "node": {
+          "version": "v24.14.0",
+          "architecture": "x64",
+          "platform": "win32",
+          "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+        },
+        "environmentVariablesDumped": false,
+        "guiAcceptance": null,
+        "qualificationInferred": false
+      },
+      "defaultRuns": {
+        "schema": "soui.release-vm-default-smoke-import/v1",
+        "version": "0.6.0",
+        "importedAt": "2026-10-28T19:18:15.695Z",
+        "extraction": "29e5c1377c1e0f7f41c71a771823a882b3dfb624cf745b696489ac0614e3848b",
+        "outer": [
+          {
+            "stage": "x86:desktop",
+            "pid": 4076,
+            "creationFileTime": "134376883896352951",
+            "genericSupervisionPassed": true,
+            "closureConfirmed": true
+          },
+          {
+            "stage": "x86:modern",
+            "pid": 3484,
+            "creationFileTime": "134376884184477465",
+            "genericSupervisionPassed": true,
+            "closureConfirmed": true
+          },
+          {
+            "stage": "x64:desktop",
+            "pid": 376,
+            "creationFileTime": "134376884305141287",
+            "genericSupervisionPassed": true,
+            "closureConfirmed": true
+          },
+          {
+            "stage": "x64:modern",
+            "pid": 2812,
+            "creationFileTime": "134376884584639317",
+            "genericSupervisionPassed": true,
+            "closureConfirmed": true
+          }
+        ],
+        "copied": [
+          "out/x64/modern-owned-469cafdb-054b-4755-b3a4-bf2f2d691877/after-build.json",
+          "out/x64/modern-owned-469cafdb-054b-4755-b3a4-bf2f2d691877/app.log",
+          "out/x64/modern-owned-469cafdb-054b-4755-b3a4-bf2f2d691877/before-build.json",
+          "out/x64/modern-owned-469cafdb-054b-4755-b3a4-bf2f2d691877/before-profile.json",
+          "out/x64/modern-owned-469cafdb-054b-4755-b3a4-bf2f2d691877/finished.json",
+          "out/x64/modern-owned-469cafdb-054b-4755-b3a4-bf2f2d691877/inputs.json",
+          "out/x64/modern-owned-469cafdb-054b-4755-b3a4-bf2f2d691877/log-origin.json",
+          "out/x64/modern-owned-469cafdb-054b-4755-b3a4-bf2f2d691877/modern-smoke.json",
+          "out/x64/modern-owned-469cafdb-054b-4755-b3a4-bf2f2d691877/owned.ndjson",
+          "out/x64/modern-owned-469cafdb-054b-4755-b3a4-bf2f2d691877/owned.ndjson.context.json",
+          "out/x64/modern-owned-469cafdb-054b-4755-b3a4-bf2f2d691877/stderr.raw",
+          "out/x64/modern-owned-469cafdb-054b-4755-b3a4-bf2f2d691877/stdout.raw",
+          "out/x64/modern-smoke-Release.json",
+          "out/x64/smoke-Release.json",
+          "out/x64/smoke-owned-98f17058-8ba5-412f-b2b2-0b3330e46d1c/SouiStarter-default/app.log",
+          "out/x64/smoke-owned-98f17058-8ba5-412f-b2b2-0b3330e46d1c/SouiStarter-default/finished.json",
+          "out/x64/smoke-owned-98f17058-8ba5-412f-b2b2-0b3330e46d1c/SouiStarter-default/owned.ndjson",
+          "out/x64/smoke-owned-98f17058-8ba5-412f-b2b2-0b3330e46d1c/SouiStarter-default/owned.ndjson.context.json",
+          "out/x64/smoke-owned-98f17058-8ba5-412f-b2b2-0b3330e46d1c/SouiStarter-default/stderr.raw",
+          "out/x64/smoke-owned-98f17058-8ba5-412f-b2b2-0b3330e46d1c/SouiStarter-default/stdout.raw",
+          "out/x64/smoke-owned-98f17058-8ba5-412f-b2b2-0b3330e46d1c/SouiWorkbench-default/app.log",
+          "out/x64/smoke-owned-98f17058-8ba5-412f-b2b2-0b3330e46d1c/SouiWorkbench-default/finished.json",
+          "out/x64/smoke-owned-98f17058-8ba5-412f-b2b2-0b3330e46d1c/SouiWorkbench-default/owned.ndjson",
+          "out/x64/smoke-owned-98f17058-8ba5-412f-b2b2-0b3330e46d1c/SouiWorkbench-default/owned.ndjson.context.json",
+          "out/x64/smoke-owned-98f17058-8ba5-412f-b2b2-0b3330e46d1c/SouiWorkbench-default/stderr.raw",
+          "out/x64/smoke-owned-98f17058-8ba5-412f-b2b2-0b3330e46d1c/SouiWorkbench-default/stdout.raw",
+          "out/x64/smoke-owned-98f17058-8ba5-412f-b2b2-0b3330e46d1c/SouiWorkbench-react/app.log",
+          "out/x64/smoke-owned-98f17058-8ba5-412f-b2b2-0b3330e46d1c/SouiWorkbench-react/finished.json",
+          "out/x64/smoke-owned-98f17058-8ba5-412f-b2b2-0b3330e46d1c/SouiWorkbench-react/owned.ndjson",
+          "out/x64/smoke-owned-98f17058-8ba5-412f-b2b2-0b3330e46d1c/SouiWorkbench-react/owned.ndjson.context.json",
+          "out/x64/smoke-owned-98f17058-8ba5-412f-b2b2-0b3330e46d1c/SouiWorkbench-react/previous-app.log",
+          "out/x64/smoke-owned-98f17058-8ba5-412f-b2b2-0b3330e46d1c/SouiWorkbench-react/stderr.raw",
+          "out/x64/smoke-owned-98f17058-8ba5-412f-b2b2-0b3330e46d1c/SouiWorkbench-react/stdout.raw",
+          "out/x64/smoke-owned-98f17058-8ba5-412f-b2b2-0b3330e46d1c/inputs.json",
+          "out/x64/smoke-owned-98f17058-8ba5-412f-b2b2-0b3330e46d1c/smoke.json",
+          "out/x86/modern-owned-72269260-14b6-400d-a7cb-1916b27b8969/after-build.json",
+          "out/x86/modern-owned-72269260-14b6-400d-a7cb-1916b27b8969/app.log",
+          "out/x86/modern-owned-72269260-14b6-400d-a7cb-1916b27b8969/before-build.json",
+          "out/x86/modern-owned-72269260-14b6-400d-a7cb-1916b27b8969/before-profile.json",
+          "out/x86/modern-owned-72269260-14b6-400d-a7cb-1916b27b8969/finished.json",
+          "out/x86/modern-owned-72269260-14b6-400d-a7cb-1916b27b8969/inputs.json",
+          "out/x86/modern-owned-72269260-14b6-400d-a7cb-1916b27b8969/log-origin.json",
+          "out/x86/modern-owned-72269260-14b6-400d-a7cb-1916b27b8969/modern-smoke.json",
+          "out/x86/modern-owned-72269260-14b6-400d-a7cb-1916b27b8969/owned.ndjson",
+          "out/x86/modern-owned-72269260-14b6-400d-a7cb-1916b27b8969/owned.ndjson.context.json",
+          "out/x86/modern-owned-72269260-14b6-400d-a7cb-1916b27b8969/stderr.raw",
+          "out/x86/modern-owned-72269260-14b6-400d-a7cb-1916b27b8969/stdout.raw",
+          "out/x86/modern-smoke-Release.json",
+          "out/x86/smoke-Release.json",
+          "out/x86/smoke-owned-6796f987-af51-4e1f-ab26-4217dbb6a2e3/SouiStarter-default/app.log",
+          "out/x86/smoke-owned-6796f987-af51-4e1f-ab26-4217dbb6a2e3/SouiStarter-default/finished.json",
+          "out/x86/smoke-owned-6796f987-af51-4e1f-ab26-4217dbb6a2e3/SouiStarter-default/owned.ndjson",
+          "out/x86/smoke-owned-6796f987-af51-4e1f-ab26-4217dbb6a2e3/SouiStarter-default/owned.ndjson.context.json",
+          "out/x86/smoke-owned-6796f987-af51-4e1f-ab26-4217dbb6a2e3/SouiStarter-default/stderr.raw",
+          "out/x86/smoke-owned-6796f987-af51-4e1f-ab26-4217dbb6a2e3/SouiStarter-default/stdout.raw",
+          "out/x86/smoke-owned-6796f987-af51-4e1f-ab26-4217dbb6a2e3/SouiWorkbench-default/app.log",
+          "out/x86/smoke-owned-6796f987-af51-4e1f-ab26-4217dbb6a2e3/SouiWorkbench-default/finished.json",
+          "out/x86/smoke-owned-6796f987-af51-4e1f-ab26-4217dbb6a2e3/SouiWorkbench-default/owned.ndjson",
+          "out/x86/smoke-owned-6796f987-af51-4e1f-ab26-4217dbb6a2e3/SouiWorkbench-default/owned.ndjson.context.json",
+          "out/x86/smoke-owned-6796f987-af51-4e1f-ab26-4217dbb6a2e3/SouiWorkbench-default/stderr.raw",
+          "out/x86/smoke-owned-6796f987-af51-4e1f-ab26-4217dbb6a2e3/SouiWorkbench-default/stdout.raw",
+          "out/x86/smoke-owned-6796f987-af51-4e1f-ab26-4217dbb6a2e3/SouiWorkbench-react/app.log",
+          "out/x86/smoke-owned-6796f987-af51-4e1f-ab26-4217dbb6a2e3/SouiWorkbench-react/finished.json",
+          "out/x86/smoke-owned-6796f987-af51-4e1f-ab26-4217dbb6a2e3/SouiWorkbench-react/owned.ndjson",
+          "out/x86/smoke-owned-6796f987-af51-4e1f-ab26-4217dbb6a2e3/SouiWorkbench-react/owned.ndjson.context.json",
+          "out/x86/smoke-owned-6796f987-af51-4e1f-ab26-4217dbb6a2e3/SouiWorkbench-react/previous-app.log",
+          "out/x86/smoke-owned-6796f987-af51-4e1f-ab26-4217dbb6a2e3/SouiWorkbench-react/stderr.raw",
+          "out/x86/smoke-owned-6796f987-af51-4e1f-ab26-4217dbb6a2e3/SouiWorkbench-react/stdout.raw",
+          "out/x86/smoke-owned-6796f987-af51-4e1f-ab26-4217dbb6a2e3/inputs.json",
+          "out/x86/smoke-owned-6796f987-af51-4e1f-ab26-4217dbb6a2e3/smoke.json"
+        ],
+        "unchanged": [
+          "out/benchmark-protocol-x86/measurement-tools.json",
+          "out/benchmark-protocol/measurement-tools.json",
+          "out/x64/CMakeCache.txt",
+          "out/x64/build-Release.json",
+          "out/x86/CMakeCache.txt",
+          "out/x86/build-Release.json"
+        ],
+        "cases": [
+          {
+            "architecture": "x86",
+            "buildId": "6d3166b8-5989-4356-8970-1ab5c879db00",
+            "sourceSha256": "67a8c649a1a08e96e76dd4d0f7782b53f229e1f26ad65e6a2738bc7173555264",
+            "desktopRuns": [
+              {
+                "target": "SouiStarter",
+                "scenario": "default",
+                "pid": 3196,
+                "creationFileTime": "134376883932070798",
+                "exitCode": 0,
+                "passed": true
+              },
+              {
+                "target": "SouiWorkbench",
+                "scenario": "default",
+                "pid": 2136,
+                "creationFileTime": "134376883979020030",
+                "exitCode": 0,
+                "passed": true
+              },
+              {
+                "target": "SouiWorkbench",
+                "scenario": "react",
+                "pid": 1272,
+                "creationFileTime": "134376884049566246",
+                "exitCode": 0,
+                "passed": true
+              }
+            ],
+            "modern": {
+              "pid": 2904,
+              "creationFileTime": "134376884220069981",
+              "exitCode": 0,
+              "log": "process-start\r\nhost-started;runtime=156.0.4314.50\r\napplication-ready\r\nhost-close-complete\r\n",
+              "passed": true
+            }
+          },
+          {
+            "architecture": "x64",
+            "buildId": "7ecb5a92-de8e-4ab1-8b24-19606f889f03",
+            "sourceSha256": "67a8c649a1a08e96e76dd4d0f7782b53f229e1f26ad65e6a2738bc7173555264",
+            "desktopRuns": [
+              {
+                "target": "SouiStarter",
+                "scenario": "default",
+                "pid": 228,
+                "creationFileTime": "134376884343592300",
+                "exitCode": 0,
+                "passed": true
+              },
+              {
+                "target": "SouiWorkbench",
+                "scenario": "default",
+                "pid": 1272,
+                "creationFileTime": "134376884390164902",
+                "exitCode": 0,
+                "passed": true
+              },
+              {
+                "target": "SouiWorkbench",
+                "scenario": "react",
+                "pid": 3424,
+                "creationFileTime": "134376884454860596",
+                "exitCode": 0,
+                "passed": true
+              }
+            ],
+            "modern": {
+              "pid": 2268,
+              "creationFileTime": "134376884619664024",
+              "exitCode": 0,
+              "log": "process-start\r\nhost-started;runtime=156.0.4314.50\r\napplication-ready\r\nhost-close-complete\r\n",
+              "passed": true
+            }
+          }
+        ],
+        "publicSmokeReadersPassed": true,
+        "applicationRuns": 8,
+        "guiInteractionInferred": false,
+        "releaseReady": false,
+        "productionQualificationComplete": false
+      },
+      "generatedNaturalStages": {
+        "schema": "soui.release-generated-raw-stage-validation/v1",
+        "version": "0.6.0",
+        "cases": [
+          {
+            "index": 1,
+            "stage": "compatibility:x64",
+            "tag": "R06OWNEDD7A92A6A19C043A38C19343027FA0985",
+            "folder": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vm-short-prep/diagnostic-accepted-1",
+            "buildId": "c2c2477c-e117-45de-8524-085bb8541131",
+            "sourceSha256": "a038997d7d5b527c3bc9f2085ebbec95127275bf30a7a71bab37728d76e3b73e",
+            "executable": {
+              "path": "C:/soui-release06-compat-diag/out/x64/bin/Release/SouiRelease06CompatDiag/SouiRelease06CompatDiag.exe",
+              "bytes": 1155584,
+              "sha256": "134c7c730db67e93cf72f45164411c7da8c11c5f8d9c244cfa0975b8545f4c14"
+            },
+            "pid": 3200,
+            "creationFileTime": "134376897203914670",
+            "genericSupervisionPassed": true,
+            "closureConfirmed": true,
+            "log": "process-start\r\nhost-started\r\ndevtools-open-accepted\r\nhost-close-start\r\nE_DEVTOOLS_PENDING\r\nE_CURSOR_CLOSE_PENDING\r\nhost-close-complete\r\n"
+          },
+          {
+            "index": 2,
+            "stage": "compatibility:x86",
+            "tag": "R06OWNED27219D67741C4D9A9128E3DB4B06A6D3",
+            "folder": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vm-short-prep/diagnostic-accepted-2",
+            "buildId": "8afcfb4d-250c-4b85-9cc5-0f00a1ce3d7a",
+            "sourceSha256": "a038997d7d5b527c3bc9f2085ebbec95127275bf30a7a71bab37728d76e3b73e",
+            "executable": {
+              "path": "C:/soui-release06-compat-diag/out/x86/bin/Release/SouiRelease06CompatDiag/SouiRelease06CompatDiag.exe",
+              "bytes": 1008128,
+              "sha256": "7dd3a5416b8e85d4e9c4fb7013a7e55616c4de56d9c2d2b7ab941214db8f0d22"
+            },
+            "pid": 5040,
+            "creationFileTime": "134376897789218333",
+            "genericSupervisionPassed": true,
+            "closureConfirmed": true,
+            "log": "process-start\r\nhost-started\r\ndevtools-open-accepted\r\nhost-close-start\r\nE_DEVTOOLS_PENDING\r\nE_CURSOR_CLOSE_PENDING\r\nhost-close-complete\r\n"
+          },
+          {
+            "index": 3,
+            "stage": "modern:x64",
+            "tag": "R06OWNEDA390ACC8DCC74238864411F8A1B949B5",
+            "folder": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vm-short-prep/diagnostic-accepted-3",
+            "buildId": "04a00e24-2a9b-482a-b08f-3ecf5bedae82",
+            "sourceSha256": "048657a3d212c2e785db7985c51dddb9be48cf910db5d3c4968643c49c3b443e",
+            "executable": {
+              "path": "C:/soui-release06-modern-diag/out/x64/bin/Release/SouiRelease06ModernDiag/SouiRelease06ModernDiag.exe",
+              "bytes": 849920,
+              "sha256": "f926fb5466e94c9a16ca9a81aa24dc8554838539c20d300acc8076b25927fdee"
+            },
+            "pid": 1012,
+            "creationFileTime": "134376899012501052",
+            "genericSupervisionPassed": true,
+            "closureConfirmed": true,
+            "log": "process-start\r\nhost-started;runtime=156.0.4314.50\r\ndevtools-open-accepted;attached=unknown;visible=unknown\r\nhost-close-complete\r\n"
+          },
+          {
+            "index": 4,
+            "stage": "modern:x86",
+            "tag": "R06OWNED022A294719B7426BB44DC7E906025C77",
+            "folder": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vm-short-prep/diagnostic-accepted-4",
+            "buildId": "0e78f909-f269-461a-be1d-02595b2670e5",
+            "sourceSha256": "048657a3d212c2e785db7985c51dddb9be48cf910db5d3c4968643c49c3b443e",
+            "executable": {
+              "path": "C:/soui-release06-modern-diag/out/x86/bin/Release/SouiRelease06ModernDiag/SouiRelease06ModernDiag.exe",
+              "bytes": 733696,
+              "sha256": "ec02b3ef68816d064a048097c92d7c2b3f8f5bf7f196218e7162dfb9e341e38d"
+            },
+            "pid": 2304,
+            "creationFileTime": "134376899571032745",
+            "genericSupervisionPassed": true,
+            "closureConfirmed": true,
+            "log": "process-start\r\nhost-started;runtime=156.0.4314.50\r\ndevtools-open-accepted;attached=unknown;visible=unknown\r\nhost-close-complete\r\n"
+          },
+          {
+            "index": 5,
+            "stage": "compatibility:x86",
+            "tag": "R06OWNED2D7DB3B0CD9349BE81E83CBE9AE462E8",
+            "folder": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vm-short-prep/diagnostic-accepted-5",
+            "buildId": "8afcfb4d-250c-4b85-9cc5-0f00a1ce3d7a",
+            "sourceSha256": "a038997d7d5b527c3bc9f2085ebbec95127275bf30a7a71bab37728d76e3b73e",
+            "executable": {
+              "path": "C:/soui-release06-compat-diag/out/x86/bin/Release/SouiRelease06CompatDiag/SouiRelease06CompatDiag.exe",
+              "bytes": 1008128,
+              "sha256": "7dd3a5416b8e85d4e9c4fb7013a7e55616c4de56d9c2d2b7ab941214db8f0d22"
+            },
+            "pid": 4988,
+            "creationFileTime": "134376900905115247",
+            "genericSupervisionPassed": true,
+            "closureConfirmed": true,
+            "log": "process-start\r\nhost-started\r\ndevtools-open-accepted\r\nhost-close-start\r\nE_DEVTOOLS_PENDING\r\nE_CURSOR_CLOSE_PENDING\r\nhost-close-complete\r\n"
+          }
+        ],
+        "rawNaturalStages": 5,
+        "uniqueConsumers": 4,
+        "guiResultsSeparate": "gui-final/GUI-Observations.json",
+        "releaseReady": false,
+        "productionQualificationComplete": false
+      },
+      "guiEvidence": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/runtime/gui-observations/GUI-Observations.json",
+      "sourceStepEvidence": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/runtime/gui-observations/GUI-Step-Mapping-Followup.json",
+      "scope": "Release only, one Server2022 environment. No physical default-disabled shortcut matrix, paused-close matrix, full Sources panels or full D01-D12 qualification inferred.",
+      "webview2SdkObservation": {
+        "attached": "unknown",
+        "paused": "unknown",
+        "visible": "unknown"
+      },
+      "compatibilityX64Console": "42 observed in preserved operator-timeout attempt; later current-payload native-open/natural-close was independently verified. These are not relabelled as one successful session.",
+      "tsxStep": "MiniBlink x86 actual main.tsx:12 breakpoint. Six physicalF10 presses advanced highlighting columns within source line12; one toolbar Step Over advanced to line13. F10 alone reaching a later source line was not observed.",
+      "pausedCloseInferred": false,
+      "consoleFaviconWarning": "WebView2 favicon.ico net::ERR_FILE_NOT_FOUND retained; application/Console remained usable."
+    },
+    "sixApplicationArchives": {
+      "schema": "soui.release-application-archives/v1",
+      "originalPublicPackageIndex": {
+        "path": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\attempt-c641c161-ad1e-43b9-9207-9581c27b2d10\\Artifacts.actual.json",
+        "bytes": 24049,
+        "sha256": "f9ded5cd1fa4e1ec8ddb8a928d0c78cfa9eb902d1ac5ab76cf0538dd258a3a63"
+      },
+      "publicPackageStages": [
+        {
+          "architecture": "x64",
+          "profile": "compatibility",
+          "targets": [
+            "SouiStarter",
+            "SouiWorkbench"
+          ],
+          "args": [
+            "-NoProfile",
+            "-NonInteractive",
+            "-ExecutionPolicy",
+            "Bypass",
+            "-File",
+            "C:/sr06/tools/Package-Applications.ps1",
+            "-Architecture",
+            "x64",
+            "-Profile",
+            "compatibility",
+            "-CompressionProfile",
+            "zip"
+          ],
+          "natural": {
+            "pid": 44196,
+            "creationFileTime": "134376888730580586",
+            "genericSupervisionPassed": true,
+            "closureConfirmed": true
+          },
+          "actualResult": {
+            "pid": 44196,
+            "creationFileTime": "134376888730580586",
+            "exitCode": 0,
+            "supervisorExitCode": 0,
+            "signal": null,
+            "spawnError": null,
+            "reportError": null,
+            "stopRequested": false,
+            "fallbackUsed": false,
+            "closureConfirmed": true,
+            "passed": true,
+            "terminal": {
+              "event": "terminal",
+              "reason": "completed",
+              "elapsedMs": 11473,
+              "rootExited": true,
+              "rootExitCode": 0,
+              "activeBeforeCleanup": 0,
+              "terminatedOwnedJob": false,
+              "closureConfirmed": true,
+              "activeProcesses": 0,
+              "totalProcesses": 25,
+              "limitTerminatedProcesses": 0,
+              "passed": true
+            },
+            "report": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\attempt-1cba33c7-13b4-493f-8b9c-75530177aeec\\compatibility-x64\\package.ndjson",
+            "reportSha256": "942ea95f6943e4d8a47ebbbe4fd255379760683d37fb2c15b8eb6244b73077f3",
+            "runnerSha256": "f254dadd4eccad3c57d69e98f260d15ee598c0b6441b7fe68fc4ef5b3b7dea83",
+            "executableSha256": "362a356ce7f0940ec74f73a8fc2c990a2cc24a38a11c90bbd8eca947110ad139"
+          },
+          "retainedOriginalPackage": true,
+          "originalCapture": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\attempt-1cba33c7-13b4-493f-8b9c-75530177aeec\\compatibility-x64"
+        },
+        {
+          "architecture": "x64",
+          "profile": "modern",
+          "targets": [
+            "SouiModernStarter"
+          ],
+          "args": [
+            "-NoProfile",
+            "-NonInteractive",
+            "-ExecutionPolicy",
+            "Bypass",
+            "-File",
+            "C:/sr06/tools/Package-Applications.ps1",
+            "-Architecture",
+            "x64",
+            "-Profile",
+            "modern",
+            "-CompressionProfile",
+            "zip"
+          ],
+          "natural": {
+            "pid": 91428,
+            "creationFileTime": "134376890318134192",
+            "genericSupervisionPassed": true,
+            "closureConfirmed": true
+          },
+          "actualResult": {
+            "pid": 91428,
+            "creationFileTime": "134376890318134192",
+            "exitCode": 0,
+            "supervisorExitCode": 0,
+            "signal": null,
+            "spawnError": null,
+            "reportError": null,
+            "stopRequested": false,
+            "fallbackUsed": false,
+            "closureConfirmed": true,
+            "passed": true,
+            "terminal": {
+              "event": "terminal",
+              "reason": "completed",
+              "elapsedMs": 3847,
+              "rootExited": true,
+              "rootExitCode": 0,
+              "activeBeforeCleanup": 0,
+              "terminatedOwnedJob": false,
+              "closureConfirmed": true,
+              "activeProcesses": 0,
+              "totalProcesses": 16,
+              "limitTerminatedProcesses": 0,
+              "passed": true
+            },
+            "report": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\attempt-c641c161-ad1e-43b9-9207-9581c27b2d10\\modern-x64\\package.ndjson",
+            "reportSha256": "41859d9ff2e41993f32ee171c04cb31d91c194d9c8769dcfbc7d20228e805447",
+            "runnerSha256": "f254dadd4eccad3c57d69e98f260d15ee598c0b6441b7fe68fc4ef5b3b7dea83",
+            "executableSha256": "362a356ce7f0940ec74f73a8fc2c990a2cc24a38a11c90bbd8eca947110ad139"
+          },
+          "retainedOriginalPackage": false,
+          "originalCapture": null
+        },
+        {
+          "architecture": "x86",
+          "profile": "compatibility",
+          "targets": [
+            "SouiStarter",
+            "SouiWorkbench"
+          ],
+          "args": [
+            "-NoProfile",
+            "-NonInteractive",
+            "-ExecutionPolicy",
+            "Bypass",
+            "-File",
+            "C:/sr06/tools/Package-Applications.ps1",
+            "-Architecture",
+            "x86",
+            "-Profile",
+            "compatibility",
+            "-CompressionProfile",
+            "zip"
+          ],
+          "natural": {
+            "pid": 33052,
+            "creationFileTime": "134376890375978780",
+            "genericSupervisionPassed": true,
+            "closureConfirmed": true
+          },
+          "actualResult": {
+            "pid": 33052,
+            "creationFileTime": "134376890375978780",
+            "exitCode": 0,
+            "supervisorExitCode": 0,
+            "signal": null,
+            "spawnError": null,
+            "reportError": null,
+            "stopRequested": false,
+            "fallbackUsed": false,
+            "closureConfirmed": true,
+            "passed": true,
+            "terminal": {
+              "event": "terminal",
+              "reason": "completed",
+              "elapsedMs": 10391,
+              "rootExited": true,
+              "rootExitCode": 0,
+              "activeBeforeCleanup": 0,
+              "terminatedOwnedJob": false,
+              "closureConfirmed": true,
+              "activeProcesses": 0,
+              "totalProcesses": 25,
+              "limitTerminatedProcesses": 0,
+              "passed": true
+            },
+            "report": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\attempt-c641c161-ad1e-43b9-9207-9581c27b2d10\\compatibility-x86\\package.ndjson",
+            "reportSha256": "11edbf1f92f5a9afa43e229de3a33999ae04ed8191402de04cf0a677e2ee7203",
+            "runnerSha256": "f254dadd4eccad3c57d69e98f260d15ee598c0b6441b7fe68fc4ef5b3b7dea83",
+            "executableSha256": "362a356ce7f0940ec74f73a8fc2c990a2cc24a38a11c90bbd8eca947110ad139"
+          },
+          "retainedOriginalPackage": false,
+          "originalCapture": null
+        },
+        {
+          "architecture": "x86",
+          "profile": "modern",
+          "targets": [
+            "SouiModernStarter"
+          ],
+          "args": [
+            "-NoProfile",
+            "-NonInteractive",
+            "-ExecutionPolicy",
+            "Bypass",
+            "-File",
+            "C:/sr06/tools/Package-Applications.ps1",
+            "-Architecture",
+            "x86",
+            "-Profile",
+            "modern",
+            "-CompressionProfile",
+            "zip"
+          ],
+          "natural": {
+            "pid": 96976,
+            "creationFileTime": "134376890514610890",
+            "genericSupervisionPassed": true,
+            "closureConfirmed": true
+          },
+          "actualResult": {
+            "pid": 96976,
+            "creationFileTime": "134376890514610890",
+            "exitCode": 0,
+            "supervisorExitCode": 0,
+            "signal": null,
+            "spawnError": null,
+            "reportError": null,
+            "stopRequested": false,
+            "fallbackUsed": false,
+            "closureConfirmed": true,
+            "passed": true,
+            "terminal": {
+              "event": "terminal",
+              "reason": "completed",
+              "elapsedMs": 3954,
+              "rootExited": true,
+              "rootExitCode": 0,
+              "activeBeforeCleanup": 0,
+              "terminatedOwnedJob": false,
+              "closureConfirmed": true,
+              "activeProcesses": 0,
+              "totalProcesses": 16,
+              "limitTerminatedProcesses": 0,
+              "passed": true
+            },
+            "report": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\attempt-c641c161-ad1e-43b9-9207-9581c27b2d10\\modern-x86\\package.ndjson",
+            "reportSha256": "a61d1399c2131d45e568745628a14e85a1dd8834970a3dae790df385e8e1740c",
+            "runnerSha256": "f254dadd4eccad3c57d69e98f260d15ee598c0b6441b7fe68fc4ef5b3b7dea83",
+            "executableSha256": "362a356ce7f0940ec74f73a8fc2c990a2cc24a38a11c90bbd8eca947110ad139"
+          },
+          "retainedOriginalPackage": false,
+          "originalCapture": null
+        }
+      ],
+      "archives": [
+        {
+          "target": "SouiStarter",
+          "architecture": "x64",
+          "profile": "compatibility",
+          "archive": {
+            "path": "C:/sr06/dist/SouiStarter-0.6.0-windows-x64.zip",
+            "bytes": 17000886,
+            "sha256": "8dada2eaaaf877e91ac49995e10990b3add2b1176a916daab3c4aa41e7c2cef1"
+          },
+          "sidecar": {
+            "path": "C:/sr06/dist/SouiStarter-0.6.0-windows-x64.zip.json",
+            "bytes": 73509,
+            "sha256": "77e04e1aa61761edeb89e889a668bc52ce8037335528d2f97bb9b913587b06fc"
+          },
+          "checksum": {
+            "path": "C:/sr06/dist/SouiStarter-0.6.0-windows-x64.zip.sha256",
+            "bytes": 101,
+            "sha256": "c01353505d1c45ee73b66dd7b59aef52a0ed0ab00b3802b09cd366cab4117848"
+          },
+          "payloadSha256": "197595fbaab075cbc019928edfe70325fb37b152d5b41e817679b7a4f5b76c1e",
+          "payloadMembers": 275,
+          "fullExtractionVerified": true,
+          "actualExtractionResult": {
+            "pid": 84428,
+            "creationFileTime": "134376890284495286",
+            "exitCode": 0,
+            "supervisorExitCode": 0,
+            "signal": null,
+            "spawnError": null,
+            "reportError": null,
+            "stopRequested": false,
+            "fallbackUsed": false,
+            "closureConfirmed": true,
+            "passed": true,
+            "terminal": {
+              "event": "terminal",
+              "reason": "completed",
+              "elapsedMs": 398,
+              "rootExited": true,
+              "rootExitCode": 0,
+              "activeBeforeCleanup": 0,
+              "terminatedOwnedJob": false,
+              "closureConfirmed": true,
+              "activeProcesses": 0,
+              "totalProcesses": 2,
+              "limitTerminatedProcesses": 0,
+              "passed": true
+            },
+            "report": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\attempt-c641c161-ad1e-43b9-9207-9581c27b2d10\\compatibility-x64\\extract-SouiStarter.ndjson",
+            "reportSha256": "57c9e41970c8ab0a55f4db365184048ec88e1e6973e41a3d452f390fafa7c79e",
+            "runnerSha256": "f254dadd4eccad3c57d69e98f260d15ee598c0b6441b7fe68fc4ef5b3b7dea83",
+            "executableSha256": "4cd7d776c686427226a151789d2d61f0b2ed2c392148cc4e69c0238362fafecf"
+          },
+          "packageLogs": [
+            {
+              "path": "C:/sr06/out/package/SouiStarter-x64.log",
+              "bytes": 376,
+              "sha256": "a02799c8eac85dfea18cbf624114eb1a1018dddca4e4d287a733b19137844627"
+            },
+            {
+              "path": "C:/sr06/out/package/SouiStarter-x64-test.log",
+              "bytes": 397,
+              "sha256": "26457d9e5245f8c9ec36f2f5b1dae2ff8fb17bbd914bbc82769a940a01a55684"
+            }
+          ],
+          "releaseReady": false
+        },
+        {
+          "target": "SouiWorkbench",
+          "architecture": "x64",
+          "profile": "compatibility",
+          "archive": {
+            "path": "C:/sr06/dist/SouiWorkbench-0.6.0-windows-x64.zip",
+            "bytes": 23444811,
+            "sha256": "1cb64a7d282a395b5ea904f305f0c272f4741aaa083c66c18b49d53a5b87eb54"
+          },
+          "sidecar": {
+            "path": "C:/sr06/dist/SouiWorkbench-0.6.0-windows-x64.zip.json",
+            "bytes": 150200,
+            "sha256": "12dd026b70398853e4bcbc9e1c0fd11936c038a4fb664ffa4629f10ec6a0f65c"
+          },
+          "checksum": {
+            "path": "C:/sr06/dist/SouiWorkbench-0.6.0-windows-x64.zip.sha256",
+            "bytes": 102,
+            "sha256": "ae9951e59ff607ce38ada9f1b2c7d787bc569f5d14cc3707e6add1c7082cf08b"
+          },
+          "originalPublicPackage": {
+            "archive": {
+              "path": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\utf8-transport-e7e707d3-e255-4939-b012-c532dfedba50\\x64\\original-public-package\\SouiWorkbench-0.6.0-windows-x64.zip",
+              "bytes": 23445047,
+              "sha256": "70e6a48f766775d1923f59b2539ed69fd9a4879e8ac1d6a07ae771851f439119"
+            },
+            "sidecar": {
+              "path": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\utf8-transport-e7e707d3-e255-4939-b012-c532dfedba50\\x64\\original-public-package\\SouiWorkbench-0.6.0-windows-x64.zip.json",
+              "bytes": 151713,
+              "sha256": "c4c27f0fe168845cef4be3e62fa8022c6a3b7b38978549cad3427a98f104380f"
+            },
+            "checksum": {
+              "path": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\utf8-transport-e7e707d3-e255-4939-b012-c532dfedba50\\x64\\original-public-package\\SouiWorkbench-0.6.0-windows-x64.zip.sha256",
+              "bytes": 103,
+              "sha256": "43b182082b15011590ed0fbc9ebf28b81ba99c6d8e65a5ecc66d48c94f1b3bd1"
+            }
+          },
+          "payloadSha256": "475fc4a5efac856880f893dcc0e10398dbb813b976255a5dbc932825b8e85568",
+          "payloadMembers": 671,
+          "fullExtractionVerified": true,
+          "unicodeNameAudit": {
+            "path": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\utf8-transport-e7e707d3-e255-4939-b012-c532dfedba50\\x64\\Names.actual.json",
+            "bytes": 1640,
+            "sha256": "3c0aa5b776c2bfae73d0368377e42decd65d1709dd23a421a60db643acdcaf7d"
+          },
+          "transportRepacked": true,
+          "releaseReady": false,
+          "productOrVmStarted": false
+        },
+        {
+          "target": "SouiModernStarter",
+          "architecture": "x64",
+          "profile": "modern",
+          "archive": {
+            "path": "C:/sr06/dist/SouiModernStarter-0.6.0-windows-x64.zip",
+            "bytes": 2383323,
+            "sha256": "bb8cb0b4e11e02f2b425d48dae70104064748be58ec97379d268d83d430199f3"
+          },
+          "sidecar": {
+            "path": "C:/sr06/dist/SouiModernStarter-0.6.0-windows-x64.zip.json",
+            "bytes": 72062,
+            "sha256": "940f002a21260cc44fc93eb0958a25b75a2a7b582d813a424ff17189c29e7272"
+          },
+          "checksum": {
+            "path": "C:/sr06/dist/SouiModernStarter-0.6.0-windows-x64.zip.sha256",
+            "bytes": 107,
+            "sha256": "3400392b26b5cea9b208574be2eda18b40dace2fa996ffb684f596ded0a83517"
+          },
+          "payloadSha256": "15704122ff24f67083e969fe579d80f8eaed6aed3f6228ee231e672b894dc214",
+          "payloadMembers": 266,
+          "fullExtractionVerified": true,
+          "actualExtractionResult": {
+            "pid": 668,
+            "creationFileTime": "134376890358238987",
+            "exitCode": 0,
+            "supervisorExitCode": 0,
+            "signal": null,
+            "spawnError": null,
+            "reportError": null,
+            "stopRequested": false,
+            "fallbackUsed": false,
+            "closureConfirmed": true,
+            "passed": true,
+            "terminal": {
+              "event": "terminal",
+              "reason": "completed",
+              "elapsedMs": 358,
+              "rootExited": true,
+              "rootExitCode": 0,
+              "activeBeforeCleanup": 0,
+              "terminatedOwnedJob": false,
+              "closureConfirmed": true,
+              "activeProcesses": 0,
+              "totalProcesses": 2,
+              "limitTerminatedProcesses": 0,
+              "passed": true
+            },
+            "report": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\attempt-c641c161-ad1e-43b9-9207-9581c27b2d10\\modern-x64\\extract-SouiModernStarter.ndjson",
+            "reportSha256": "8d676de722e6d11ce1ee99f19ac1e29990555519348be535dc364653d5c0b322",
+            "runnerSha256": "f254dadd4eccad3c57d69e98f260d15ee598c0b6441b7fe68fc4ef5b3b7dea83",
+            "executableSha256": "4cd7d776c686427226a151789d2d61f0b2ed2c392148cc4e69c0238362fafecf"
+          },
+          "packageLogs": [
+            {
+              "path": "C:/sr06/out/package/SouiModernStarter-x64.log",
+              "bytes": 385,
+              "sha256": "49e2c0b6599d945d8a015072f44506a41bee201ac701a28d6a8f71a74fa74220"
+            },
+            {
+              "path": "C:/sr06/out/package/SouiModernStarter-x64-test.log",
+              "bytes": 407,
+              "sha256": "3eb3c4c61f790b8fe2bccb98c8fdae640e53b510dcd8317ab9e955373a5d1db7"
+            }
+          ],
+          "releaseReady": false
+        },
+        {
+          "target": "SouiStarter",
+          "architecture": "x86",
+          "profile": "compatibility",
+          "archive": {
+            "path": "C:/sr06/dist/SouiStarter-0.6.0-windows-x86.zip",
+            "bytes": 14377869,
+            "sha256": "bc68ff76585a4ba8e5c446fb0d7f98f0b22c54b45f754dac4385ed1e50dc7979"
+          },
+          "sidecar": {
+            "path": "C:/sr06/dist/SouiStarter-0.6.0-windows-x86.zip.json",
+            "bytes": 73517,
+            "sha256": "066cb650c145c21925daecb321e665dfdbcecfd7bf037570db29c66c0cb014c3"
+          },
+          "checksum": {
+            "path": "C:/sr06/dist/SouiStarter-0.6.0-windows-x86.zip.sha256",
+            "bytes": 101,
+            "sha256": "cc24b00ab8b995335ff297d25f231b65173c4f2d727237c7f7e8c96b286d31fc"
+          },
+          "payloadSha256": "5f092d6a6fa7154816ceafbc6c0b0b873a3bb47bd2b7c80c83a8b7ec775a4a65",
+          "payloadMembers": 275,
+          "fullExtractionVerified": true,
+          "actualExtractionResult": {
+            "pid": 62560,
+            "creationFileTime": "134376890481391179",
+            "exitCode": 0,
+            "supervisorExitCode": 0,
+            "signal": null,
+            "spawnError": null,
+            "reportError": null,
+            "stopRequested": false,
+            "fallbackUsed": false,
+            "closureConfirmed": true,
+            "passed": true,
+            "terminal": {
+              "event": "terminal",
+              "reason": "completed",
+              "elapsedMs": 431,
+              "rootExited": true,
+              "rootExitCode": 0,
+              "activeBeforeCleanup": 0,
+              "terminatedOwnedJob": false,
+              "closureConfirmed": true,
+              "activeProcesses": 0,
+              "totalProcesses": 2,
+              "limitTerminatedProcesses": 0,
+              "passed": true
+            },
+            "report": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\attempt-c641c161-ad1e-43b9-9207-9581c27b2d10\\compatibility-x86\\extract-SouiStarter.ndjson",
+            "reportSha256": "5762f81f989c94ea32492ef7d12fd4361a0eb36c6390edb28dd7edb7a49453ff",
+            "runnerSha256": "f254dadd4eccad3c57d69e98f260d15ee598c0b6441b7fe68fc4ef5b3b7dea83",
+            "executableSha256": "4cd7d776c686427226a151789d2d61f0b2ed2c392148cc4e69c0238362fafecf"
+          },
+          "packageLogs": [
+            {
+              "path": "C:/sr06/out/package/SouiStarter-x86.log",
+              "bytes": 376,
+              "sha256": "96150a2f7b94eb2a55713bc5836c4b2b392ef3dacaa9dc70b3747510ef98b90d"
+            },
+            {
+              "path": "C:/sr06/out/package/SouiStarter-x86-test.log",
+              "bytes": 397,
+              "sha256": "4203ea408ed3fa120a38e169b4b762bbd6b24544cfbcb8c3e0be1ffc26a2f41b"
+            }
+          ],
+          "releaseReady": false
+        },
+        {
+          "target": "SouiWorkbench",
+          "architecture": "x86",
+          "profile": "compatibility",
+          "archive": {
+            "path": "C:/sr06/dist/SouiWorkbench-0.6.0-windows-x86.zip",
+            "bytes": 20797749,
+            "sha256": "eb91755b8b2c1218ef2e3b6ed083f570998fadd64ba60212e3e010cf43c4d43b"
+          },
+          "sidecar": {
+            "path": "C:/sr06/dist/SouiWorkbench-0.6.0-windows-x86.zip.json",
+            "bytes": 150213,
+            "sha256": "aedc2c6c5e98171aba527a2e33c6cfdedc1f8f95b4658f8903db7f1ec9058390"
+          },
+          "checksum": {
+            "path": "C:/sr06/dist/SouiWorkbench-0.6.0-windows-x86.zip.sha256",
+            "bytes": 102,
+            "sha256": "63880bba15b709b333a047883ea91afd412f647abd202fe4d00324be59262367"
+          },
+          "originalPublicPackage": {
+            "archive": {
+              "path": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\utf8-transport-e7e707d3-e255-4939-b012-c532dfedba50\\x86\\original-public-package\\SouiWorkbench-0.6.0-windows-x86.zip",
+              "bytes": 20797985,
+              "sha256": "a6696d3862a3536c2552cd1a635745412e1566136e0c4a0d20c403c7751481ab"
+            },
+            "sidecar": {
+              "path": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\utf8-transport-e7e707d3-e255-4939-b012-c532dfedba50\\x86\\original-public-package\\SouiWorkbench-0.6.0-windows-x86.zip.json",
+              "bytes": 151726,
+              "sha256": "a10923fd50ad6c539a288285af5fe0ebee099fd38b1bb7a93b8dc823e7ad4b0c"
+            },
+            "checksum": {
+              "path": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\utf8-transport-e7e707d3-e255-4939-b012-c532dfedba50\\x86\\original-public-package\\SouiWorkbench-0.6.0-windows-x86.zip.sha256",
+              "bytes": 103,
+              "sha256": "588fb9f97a22af177691b14317fe229b91ced70fb81b82b0d5d09433edfab8fa"
+            }
+          },
+          "payloadSha256": "eaf6cc3b9aafeb057124d8dc0ded10a721b165d09d89bcb1f993b957fa9613a2",
+          "payloadMembers": 671,
+          "fullExtractionVerified": true,
+          "unicodeNameAudit": {
+            "path": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\utf8-transport-e7e707d3-e255-4939-b012-c532dfedba50\\x86\\Names.actual.json",
+            "bytes": 1640,
+            "sha256": "f4c549b8717832695dc71053299127223901e9f97bdfc5a64a5928c33e145972"
+          },
+          "transportRepacked": true,
+          "releaseReady": false,
+          "productOrVmStarted": false
+        },
+        {
+          "target": "SouiModernStarter",
+          "architecture": "x86",
+          "profile": "modern",
+          "archive": {
+            "path": "C:/sr06/dist/SouiModernStarter-0.6.0-windows-x86.zip",
+            "bytes": 2304259,
+            "sha256": "39b9fc15219c5ba13170c80918cd7bcca93d6dcf5aff78dbf9f4f7abd5b1e3a2"
+          },
+          "sidecar": {
+            "path": "C:/sr06/dist/SouiModernStarter-0.6.0-windows-x86.zip.json",
+            "bytes": 72081,
+            "sha256": "cfcdd2b3861c8d7bcea9dbacb5398e639e5838bb8d5ed508d1417762612d4431"
+          },
+          "checksum": {
+            "path": "C:/sr06/dist/SouiModernStarter-0.6.0-windows-x86.zip.sha256",
+            "bytes": 107,
+            "sha256": "78ec37986c88f6868e119edf830d7acbba7f1ffd764a0e492caca6443ab4eeb0"
+          },
+          "payloadSha256": "79f8c3ab5cc2999c0308b83cc4f714436ed7e3210ff3059d1f5f151b9bd46763",
+          "payloadMembers": 266,
+          "fullExtractionVerified": true,
+          "actualExtractionResult": {
+            "pid": 26048,
+            "creationFileTime": "134376890555296435",
+            "exitCode": 0,
+            "supervisorExitCode": 0,
+            "signal": null,
+            "spawnError": null,
+            "reportError": null,
+            "stopRequested": false,
+            "fallbackUsed": false,
+            "closureConfirmed": true,
+            "passed": true,
+            "terminal": {
+              "event": "terminal",
+              "reason": "completed",
+              "elapsedMs": 310,
+              "rootExited": true,
+              "rootExitCode": 0,
+              "activeBeforeCleanup": 0,
+              "terminatedOwnedJob": false,
+              "closureConfirmed": true,
+              "activeProcesses": 0,
+              "totalProcesses": 2,
+              "limitTerminatedProcesses": 0,
+              "passed": true
+            },
+            "report": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\attempt-c641c161-ad1e-43b9-9207-9581c27b2d10\\modern-x86\\extract-SouiModernStarter.ndjson",
+            "reportSha256": "bb24544dc97453714a28968fd6e4d82cc7b35554d8ecc677144594b398a7a3b9",
+            "runnerSha256": "f254dadd4eccad3c57d69e98f260d15ee598c0b6441b7fe68fc4ef5b3b7dea83",
+            "executableSha256": "4cd7d776c686427226a151789d2d61f0b2ed2c392148cc4e69c0238362fafecf"
+          },
+          "packageLogs": [
+            {
+              "path": "C:/sr06/out/package/SouiModernStarter-x86.log",
+              "bytes": 385,
+              "sha256": "e00e2f5f702b49c3d74e3ea770692321f5adfbe609439930417788eecc685376"
+            },
+            {
+              "path": "C:/sr06/out/package/SouiModernStarter-x86-test.log",
+              "bytes": 407,
+              "sha256": "d943a8240fe0d26bfe2500c23772652165751e1536f16e16fb67d08190df2d85"
+            }
+          ],
+          "releaseReady": false
+        }
+      ],
+      "utf8TransportRepackCount": 2,
+      "transportCaptures": [
+        {
+          "name": "archive",
+          "executable": {
+            "path": "C:\\Program Files\\7-Zip\\7z.exe",
+            "requestedPath": "C:\\Program Files\\7-Zip\\7z.exe",
+            "resolvedPath": "C:\\Program Files\\7-Zip\\7z.exe",
+            "bytes": 575488,
+            "sha256": "4cd7d776c686427226a151789d2d61f0b2ed2c392148cc4e69c0238362fafecf"
+          },
+          "args": [
+            "a",
+            "-tzip",
+            "-mx=5",
+            "-mmt=2",
+            "-mcu=on",
+            "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\utf8-transport-e7e707d3-e255-4939-b012-c532dfedba50\\x64\\SouiWorkbench-0.6.0-windows-x64.zip",
+            "*"
+          ],
+          "cwd": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\attempt-c641c161-ad1e-43b9-9207-9581c27b2d10\\compatibility-x64\\extracted-SouiWorkbench",
+          "natural": {
+            "pid": 51724,
+            "creationFileTime": "134376892229084470",
+            "genericSupervisionPassed": true,
+            "closureConfirmed": true
+          },
+          "result": {
+            "pid": 51724,
+            "creationFileTime": "134376892229084470",
+            "exitCode": 0,
+            "supervisorExitCode": 0,
+            "signal": null,
+            "spawnError": null,
+            "reportError": null,
+            "stopRequested": false,
+            "fallbackUsed": false,
+            "closureConfirmed": true,
+            "passed": true,
+            "terminal": {
+              "event": "terminal",
+              "reason": "completed",
+              "elapsedMs": 2055,
+              "rootExited": true,
+              "rootExitCode": 0,
+              "activeBeforeCleanup": 0,
+              "terminatedOwnedJob": false,
+              "closureConfirmed": true,
+              "activeProcesses": 0,
+              "totalProcesses": 2,
+              "limitTerminatedProcesses": 0,
+              "passed": true
+            },
+            "report": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\utf8-transport-e7e707d3-e255-4939-b012-c532dfedba50\\x64\\archive.ndjson",
+            "reportSha256": "fac0f4e54edc744e2c8adbbe1c5804cbd774b0524d4ce64e4e4eae5e6bfa2ee6",
+            "runnerSha256": "f254dadd4eccad3c57d69e98f260d15ee598c0b6441b7fe68fc4ef5b3b7dea83",
+            "executableSha256": "4cd7d776c686427226a151789d2d61f0b2ed2c392148cc4e69c0238362fafecf"
+          },
+          "raw": {
+            "path": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\utf8-transport-e7e707d3-e255-4939-b012-c532dfedba50\\x64\\archive.ndjson",
+            "bytes": 1078,
+            "sha256": "fac0f4e54edc744e2c8adbbe1c5804cbd774b0524d4ce64e4e4eae5e6bfa2ee6"
+          },
+          "context": {
+            "bytes": 745,
+            "sha256": "0346c8255364b38f32f4aa4c0450bead1a873ce967d2c9977471cca842e01420"
+          }
+        },
+        {
+          "name": "integrity",
+          "executable": {
+            "path": "C:\\Program Files\\7-Zip\\7z.exe",
+            "requestedPath": "C:\\Program Files\\7-Zip\\7z.exe",
+            "resolvedPath": "C:\\Program Files\\7-Zip\\7z.exe",
+            "bytes": 575488,
+            "sha256": "4cd7d776c686427226a151789d2d61f0b2ed2c392148cc4e69c0238362fafecf"
+          },
+          "args": [
+            "t",
+            "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\utf8-transport-e7e707d3-e255-4939-b012-c532dfedba50\\x64\\SouiWorkbench-0.6.0-windows-x64.zip"
+          ],
+          "cwd": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\utf8-transport-e7e707d3-e255-4939-b012-c532dfedba50\\x64",
+          "natural": {
+            "pid": 74024,
+            "creationFileTime": "134376892249970626",
+            "genericSupervisionPassed": true,
+            "closureConfirmed": true
+          },
+          "result": {
+            "pid": 74024,
+            "creationFileTime": "134376892249970626",
+            "exitCode": 0,
+            "supervisorExitCode": 0,
+            "signal": null,
+            "spawnError": null,
+            "reportError": null,
+            "stopRequested": false,
+            "fallbackUsed": false,
+            "closureConfirmed": true,
+            "passed": true,
+            "terminal": {
+              "event": "terminal",
+              "reason": "completed",
+              "elapsedMs": 237,
+              "rootExited": true,
+              "rootExitCode": 0,
+              "activeBeforeCleanup": 0,
+              "terminatedOwnedJob": false,
+              "closureConfirmed": true,
+              "activeProcesses": 0,
+              "totalProcesses": 2,
+              "limitTerminatedProcesses": 0,
+              "passed": true
+            },
+            "report": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\utf8-transport-e7e707d3-e255-4939-b012-c532dfedba50\\x64\\integrity.ndjson",
+            "reportSha256": "7b915f3c8c3078d404a3e67bb3120ec5d60d3b1b7080393f59c2476e271037d5",
+            "runnerSha256": "f254dadd4eccad3c57d69e98f260d15ee598c0b6441b7fe68fc4ef5b3b7dea83",
+            "executableSha256": "4cd7d776c686427226a151789d2d61f0b2ed2c392148cc4e69c0238362fafecf"
+          },
+          "raw": {
+            "path": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\utf8-transport-e7e707d3-e255-4939-b012-c532dfedba50\\x64\\integrity.ndjson",
+            "bytes": 1305,
+            "sha256": "7b915f3c8c3078d404a3e67bb3120ec5d60d3b1b7080393f59c2476e271037d5"
+          },
+          "context": {
+            "bytes": 649,
+            "sha256": "12c7fb3c63ced7132ee3a22679773533892afdff4b9ba19f10f32ce47c589c0c"
+          }
+        },
+        {
+          "name": "names",
+          "executable": {
+            "path": "C:\\Users\\11034\\miniconda3\\python.exe",
+            "requestedPath": "C:\\Users\\11034\\miniconda3\\python.exe",
+            "resolvedPath": "C:\\Users\\11034\\miniconda3\\python.exe",
+            "bytes": 104264,
+            "sha256": "ec0ea8d6907787b76dcf8524aaa93e52e167ceee62fa8778e182ea637a3dbc1d"
+          },
+          "args": [
+            "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\full-source-package-prep\\InspectZipNames.py",
+            "--zip",
+            "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\utf8-transport-e7e707d3-e255-4939-b012-c532dfedba50\\x64\\SouiWorkbench-0.6.0-windows-x64.zip",
+            "--expected-json",
+            "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\utf8-transport-e7e707d3-e255-4939-b012-c532dfedba50\\x64\\ExpectedMembers.json",
+            "--require-utf8",
+            "--output",
+            "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\utf8-transport-e7e707d3-e255-4939-b012-c532dfedba50\\x64\\Names.actual.json"
+          ],
+          "cwd": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\utf8-transport-e7e707d3-e255-4939-b012-c532dfedba50\\x64",
+          "natural": {
+            "pid": 88236,
+            "creationFileTime": "134376892252656368",
+            "genericSupervisionPassed": true,
+            "closureConfirmed": true
+          },
+          "result": {
+            "pid": 88236,
+            "creationFileTime": "134376892252656368",
+            "exitCode": 0,
+            "supervisorExitCode": 0,
+            "signal": null,
+            "spawnError": null,
+            "reportError": null,
+            "stopRequested": false,
+            "fallbackUsed": false,
+            "closureConfirmed": true,
+            "passed": true,
+            "terminal": {
+              "event": "terminal",
+              "reason": "completed",
+              "elapsedMs": 138,
+              "rootExited": true,
+              "rootExitCode": 0,
+              "activeBeforeCleanup": 0,
+              "terminatedOwnedJob": false,
+              "closureConfirmed": true,
+              "activeProcesses": 0,
+              "totalProcesses": 2,
+              "limitTerminatedProcesses": 0,
+              "passed": true
+            },
+            "report": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\utf8-transport-e7e707d3-e255-4939-b012-c532dfedba50\\x64\\names.ndjson",
+            "reportSha256": "dc837469fc05b61113626fadd3700e03deaf9a930c059d72f2488ae9947dbe8e",
+            "runnerSha256": "f254dadd4eccad3c57d69e98f260d15ee598c0b6441b7fe68fc4ef5b3b7dea83",
+            "executableSha256": "ec0ea8d6907787b76dcf8524aaa93e52e167ceee62fa8778e182ea637a3dbc1d"
+          },
+          "raw": {
+            "path": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\utf8-transport-e7e707d3-e255-4939-b012-c532dfedba50\\x64\\names.ndjson",
+            "bytes": 1321,
+            "sha256": "dc837469fc05b61113626fadd3700e03deaf9a930c059d72f2488ae9947dbe8e"
+          },
+          "context": {
+            "bytes": 1129,
+            "sha256": "c605550de4e377d84e9a0aa8fc9eb7b2a8291d361a5b3c3398870714a9fb19a9"
+          }
+        },
+        {
+          "name": "extract",
+          "executable": {
+            "path": "C:\\Program Files\\7-Zip\\7z.exe",
+            "requestedPath": "C:\\Program Files\\7-Zip\\7z.exe",
+            "resolvedPath": "C:\\Program Files\\7-Zip\\7z.exe",
+            "bytes": 575488,
+            "sha256": "4cd7d776c686427226a151789d2d61f0b2ed2c392148cc4e69c0238362fafecf"
+          },
+          "args": [
+            "x",
+            "-y",
+            "-oF:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\utf8-transport-e7e707d3-e255-4939-b012-c532dfedba50\\x64\\extracted",
+            "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\utf8-transport-e7e707d3-e255-4939-b012-c532dfedba50\\x64\\SouiWorkbench-0.6.0-windows-x64.zip"
+          ],
+          "cwd": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\utf8-transport-e7e707d3-e255-4939-b012-c532dfedba50\\x64",
+          "natural": {
+            "pid": 95160,
+            "creationFileTime": "134376892254689773",
+            "genericSupervisionPassed": true,
+            "closureConfirmed": true
+          },
+          "result": {
+            "pid": 95160,
+            "creationFileTime": "134376892254689773",
+            "exitCode": 0,
+            "supervisorExitCode": 0,
+            "signal": null,
+            "spawnError": null,
+            "reportError": null,
+            "stopRequested": false,
+            "fallbackUsed": false,
+            "closureConfirmed": true,
+            "passed": true,
+            "terminal": {
+              "event": "terminal",
+              "reason": "completed",
+              "elapsedMs": 714,
+              "rootExited": true,
+              "rootExitCode": 0,
+              "activeBeforeCleanup": 0,
+              "terminatedOwnedJob": false,
+              "closureConfirmed": true,
+              "activeProcesses": 0,
+              "totalProcesses": 2,
+              "limitTerminatedProcesses": 0,
+              "passed": true
+            },
+            "report": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\utf8-transport-e7e707d3-e255-4939-b012-c532dfedba50\\x64\\extract.ndjson",
+            "reportSha256": "8ecc6e4a297a869ef61f19f858f1429d5c1d660718ba6e09f9abc37ed9017025",
+            "runnerSha256": "f254dadd4eccad3c57d69e98f260d15ee598c0b6441b7fe68fc4ef5b3b7dea83",
+            "executableSha256": "4cd7d776c686427226a151789d2d61f0b2ed2c392148cc4e69c0238362fafecf"
+          },
+          "raw": {
+            "path": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\utf8-transport-e7e707d3-e255-4939-b012-c532dfedba50\\x64\\extract.ndjson",
+            "bytes": 1183,
+            "sha256": "8ecc6e4a297a869ef61f19f858f1429d5c1d660718ba6e09f9abc37ed9017025"
+          },
+          "context": {
+            "bytes": 804,
+            "sha256": "737a5d2ab03bdfd8714fbc8ea4b9b9bef6573728e512be4fd65e0136517d6b48"
+          }
+        },
+        {
+          "name": "archive",
+          "executable": {
+            "path": "C:\\Program Files\\7-Zip\\7z.exe",
+            "requestedPath": "C:\\Program Files\\7-Zip\\7z.exe",
+            "resolvedPath": "C:\\Program Files\\7-Zip\\7z.exe",
+            "bytes": 575488,
+            "sha256": "4cd7d776c686427226a151789d2d61f0b2ed2c392148cc4e69c0238362fafecf"
+          },
+          "args": [
+            "a",
+            "-tzip",
+            "-mx=5",
+            "-mmt=2",
+            "-mcu=on",
+            "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\utf8-transport-e7e707d3-e255-4939-b012-c532dfedba50\\x86\\SouiWorkbench-0.6.0-windows-x86.zip",
+            "*"
+          ],
+          "cwd": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\attempt-c641c161-ad1e-43b9-9207-9581c27b2d10\\compatibility-x86\\extracted-SouiWorkbench",
+          "natural": {
+            "pid": 88496,
+            "creationFileTime": "134376892280568812",
+            "genericSupervisionPassed": true,
+            "closureConfirmed": true
+          },
+          "result": {
+            "pid": 88496,
+            "creationFileTime": "134376892280568812",
+            "exitCode": 0,
+            "supervisorExitCode": 0,
+            "signal": null,
+            "spawnError": null,
+            "reportError": null,
+            "stopRequested": false,
+            "fallbackUsed": false,
+            "closureConfirmed": true,
+            "passed": true,
+            "terminal": {
+              "event": "terminal",
+              "reason": "completed",
+              "elapsedMs": 1506,
+              "rootExited": true,
+              "rootExitCode": 0,
+              "activeBeforeCleanup": 0,
+              "terminatedOwnedJob": false,
+              "closureConfirmed": true,
+              "activeProcesses": 0,
+              "totalProcesses": 2,
+              "limitTerminatedProcesses": 0,
+              "passed": true
+            },
+            "report": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\utf8-transport-e7e707d3-e255-4939-b012-c532dfedba50\\x86\\archive.ndjson",
+            "reportSha256": "d5733c72e53e760d9827bae1515cfb49ce89e8f77edbf32f067eab93429e17ed",
+            "runnerSha256": "f254dadd4eccad3c57d69e98f260d15ee598c0b6441b7fe68fc4ef5b3b7dea83",
+            "executableSha256": "4cd7d776c686427226a151789d2d61f0b2ed2c392148cc4e69c0238362fafecf"
+          },
+          "raw": {
+            "path": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\utf8-transport-e7e707d3-e255-4939-b012-c532dfedba50\\x86\\archive.ndjson",
+            "bytes": 1078,
+            "sha256": "d5733c72e53e760d9827bae1515cfb49ce89e8f77edbf32f067eab93429e17ed"
+          },
+          "context": {
+            "bytes": 745,
+            "sha256": "24df7b458f6721b06eaaf85dd2fe13109eb166a918225fd058fedeb5c1578bc5"
+          }
+        },
+        {
+          "name": "integrity",
+          "executable": {
+            "path": "C:\\Program Files\\7-Zip\\7z.exe",
+            "requestedPath": "C:\\Program Files\\7-Zip\\7z.exe",
+            "resolvedPath": "C:\\Program Files\\7-Zip\\7z.exe",
+            "bytes": 575488,
+            "sha256": "4cd7d776c686427226a151789d2d61f0b2ed2c392148cc4e69c0238362fafecf"
+          },
+          "args": [
+            "t",
+            "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\utf8-transport-e7e707d3-e255-4939-b012-c532dfedba50\\x86\\SouiWorkbench-0.6.0-windows-x86.zip"
+          ],
+          "cwd": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\utf8-transport-e7e707d3-e255-4939-b012-c532dfedba50\\x86",
+          "natural": {
+            "pid": 98432,
+            "creationFileTime": "134376892295941917",
+            "genericSupervisionPassed": true,
+            "closureConfirmed": true
+          },
+          "result": {
+            "pid": 98432,
+            "creationFileTime": "134376892295941917",
+            "exitCode": 0,
+            "supervisorExitCode": 0,
+            "signal": null,
+            "spawnError": null,
+            "reportError": null,
+            "stopRequested": false,
+            "fallbackUsed": false,
+            "closureConfirmed": true,
+            "passed": true,
+            "terminal": {
+              "event": "terminal",
+              "reason": "completed",
+              "elapsedMs": 209,
+              "rootExited": true,
+              "rootExitCode": 0,
+              "activeBeforeCleanup": 0,
+              "terminatedOwnedJob": false,
+              "closureConfirmed": true,
+              "activeProcesses": 0,
+              "totalProcesses": 2,
+              "limitTerminatedProcesses": 0,
+              "passed": true
+            },
+            "report": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\utf8-transport-e7e707d3-e255-4939-b012-c532dfedba50\\x86\\integrity.ndjson",
+            "reportSha256": "26840861a7083f243de391fe2a70bfbb220cabdd6a5a65c186bfa50523b764a3",
+            "runnerSha256": "f254dadd4eccad3c57d69e98f260d15ee598c0b6441b7fe68fc4ef5b3b7dea83",
+            "executableSha256": "4cd7d776c686427226a151789d2d61f0b2ed2c392148cc4e69c0238362fafecf"
+          },
+          "raw": {
+            "path": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\utf8-transport-e7e707d3-e255-4939-b012-c532dfedba50\\x86\\integrity.ndjson",
+            "bytes": 1290,
+            "sha256": "26840861a7083f243de391fe2a70bfbb220cabdd6a5a65c186bfa50523b764a3"
+          },
+          "context": {
+            "bytes": 649,
+            "sha256": "2fdba5a0f3a75a16785f9fe5eae0882449854ead79e9a3f2bcf4b1d196d2a2dd"
+          }
+        },
+        {
+          "name": "names",
+          "executable": {
+            "path": "C:\\Users\\11034\\miniconda3\\python.exe",
+            "requestedPath": "C:\\Users\\11034\\miniconda3\\python.exe",
+            "resolvedPath": "C:\\Users\\11034\\miniconda3\\python.exe",
+            "bytes": 104264,
+            "sha256": "ec0ea8d6907787b76dcf8524aaa93e52e167ceee62fa8778e182ea637a3dbc1d"
+          },
+          "args": [
+            "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\full-source-package-prep\\InspectZipNames.py",
+            "--zip",
+            "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\utf8-transport-e7e707d3-e255-4939-b012-c532dfedba50\\x86\\SouiWorkbench-0.6.0-windows-x86.zip",
+            "--expected-json",
+            "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\utf8-transport-e7e707d3-e255-4939-b012-c532dfedba50\\x86\\ExpectedMembers.json",
+            "--require-utf8",
+            "--output",
+            "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\utf8-transport-e7e707d3-e255-4939-b012-c532dfedba50\\x86\\Names.actual.json"
+          ],
+          "cwd": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\utf8-transport-e7e707d3-e255-4939-b012-c532dfedba50\\x86",
+          "natural": {
+            "pid": 87348,
+            "creationFileTime": "134376892298317266",
+            "genericSupervisionPassed": true,
+            "closureConfirmed": true
+          },
+          "result": {
+            "pid": 87348,
+            "creationFileTime": "134376892298317266",
+            "exitCode": 0,
+            "supervisorExitCode": 0,
+            "signal": null,
+            "spawnError": null,
+            "reportError": null,
+            "stopRequested": false,
+            "fallbackUsed": false,
+            "closureConfirmed": true,
+            "passed": true,
+            "terminal": {
+              "event": "terminal",
+              "reason": "completed",
+              "elapsedMs": 139,
+              "rootExited": true,
+              "rootExitCode": 0,
+              "activeBeforeCleanup": 0,
+              "terminatedOwnedJob": false,
+              "closureConfirmed": true,
+              "activeProcesses": 0,
+              "totalProcesses": 2,
+              "limitTerminatedProcesses": 0,
+              "passed": true
+            },
+            "report": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\utf8-transport-e7e707d3-e255-4939-b012-c532dfedba50\\x86\\names.ndjson",
+            "reportSha256": "44233021a915ad3e4683c881c61f51ed061fb8415935f56a387a504110cbb446",
+            "runnerSha256": "f254dadd4eccad3c57d69e98f260d15ee598c0b6441b7fe68fc4ef5b3b7dea83",
+            "executableSha256": "ec0ea8d6907787b76dcf8524aaa93e52e167ceee62fa8778e182ea637a3dbc1d"
+          },
+          "raw": {
+            "path": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\utf8-transport-e7e707d3-e255-4939-b012-c532dfedba50\\x86\\names.ndjson",
+            "bytes": 1321,
+            "sha256": "44233021a915ad3e4683c881c61f51ed061fb8415935f56a387a504110cbb446"
+          },
+          "context": {
+            "bytes": 1129,
+            "sha256": "8c70ffc10540fc24a768a973b2bd2eb0c96547be838adfeaa7ee94d69df69854"
+          }
+        },
+        {
+          "name": "extract",
+          "executable": {
+            "path": "C:\\Program Files\\7-Zip\\7z.exe",
+            "requestedPath": "C:\\Program Files\\7-Zip\\7z.exe",
+            "resolvedPath": "C:\\Program Files\\7-Zip\\7z.exe",
+            "bytes": 575488,
+            "sha256": "4cd7d776c686427226a151789d2d61f0b2ed2c392148cc4e69c0238362fafecf"
+          },
+          "args": [
+            "x",
+            "-y",
+            "-oF:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\utf8-transport-e7e707d3-e255-4939-b012-c532dfedba50\\x86\\extracted",
+            "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\utf8-transport-e7e707d3-e255-4939-b012-c532dfedba50\\x86\\SouiWorkbench-0.6.0-windows-x86.zip"
+          ],
+          "cwd": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\utf8-transport-e7e707d3-e255-4939-b012-c532dfedba50\\x86",
+          "natural": {
+            "pid": 79960,
+            "creationFileTime": "134376892300087461",
+            "genericSupervisionPassed": true,
+            "closureConfirmed": true
+          },
+          "result": {
+            "pid": 79960,
+            "creationFileTime": "134376892300087461",
+            "exitCode": 0,
+            "supervisorExitCode": 0,
+            "signal": null,
+            "spawnError": null,
+            "reportError": null,
+            "stopRequested": false,
+            "fallbackUsed": false,
+            "closureConfirmed": true,
+            "passed": true,
+            "terminal": {
+              "event": "terminal",
+              "reason": "completed",
+              "elapsedMs": 711,
+              "rootExited": true,
+              "rootExitCode": 0,
+              "activeBeforeCleanup": 0,
+              "terminatedOwnedJob": false,
+              "closureConfirmed": true,
+              "activeProcesses": 0,
+              "totalProcesses": 2,
+              "limitTerminatedProcesses": 0,
+              "passed": true
+            },
+            "report": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\utf8-transport-e7e707d3-e255-4939-b012-c532dfedba50\\x86\\extract.ndjson",
+            "reportSha256": "e65ddde0ba3003176b34eb695ea155c6e34f155ae580ff02317a7665a0052b3d",
+            "runnerSha256": "f254dadd4eccad3c57d69e98f260d15ee598c0b6441b7fe68fc4ef5b3b7dea83",
+            "executableSha256": "4cd7d776c686427226a151789d2d61f0b2ed2c392148cc4e69c0238362fafecf"
+          },
+          "raw": {
+            "path": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\app-package-prep\\utf8-transport-e7e707d3-e255-4939-b012-c532dfedba50\\x86\\extract.ndjson",
+            "bytes": 1075,
+            "sha256": "e65ddde0ba3003176b34eb695ea155c6e34f155ae580ff02317a7665a0052b3d"
+          },
+          "context": {
+            "bytes": 804,
+            "sha256": "42c71c90c0a11228dbc8825259ab8eec37e7a518355a64bc84d643a79c254eef"
+          }
+        }
+      ],
+      "closingHashesVerified": true,
+      "allSixArchiveClosuresVerified": true,
+      "sourceSha256": "67a8c649a1a08e96e76dd4d0f7782b53f229e1f26ad65e6a2738bc7173555264",
+      "productOrVmStarted": false,
+      "sdkSourceModified": false,
+      "releaseReady": false,
+      "productionQualificationComplete": false
+    }
+  },
+  "retainedCompilerJobFailures": [
+    {
+      "lane": "default-app-build",
+      "architecture": "x64",
+      "buildId": "7ecb5a92-de8e-4ab1-8b24-19606f889f03",
+      "rootExitCode": 0,
+      "supervisorExitCode": 124,
+      "genericSupervisionPassed": false,
+      "compilerTailAcceptance": true,
+      "standardArtifactAccepted": true,
+      "evidenceDirectory": "C:\\sr06\\out\\standard-build\\attempt-d1d6cc2c-2a85-448f-ae97-290eb651f8d0",
+      "runtimePassed": null
+    },
+    {
+      "lane": "default-app-build",
+      "architecture": "x86",
+      "buildId": "6d3166b8-5989-4356-8970-1ab5c879db00",
+      "rootExitCode": 0,
+      "supervisorExitCode": 124,
+      "genericSupervisionPassed": false,
+      "compilerTailAcceptance": true,
+      "standardArtifactAccepted": true,
+      "evidenceDirectory": "C:\\sr06\\out\\standard-build\\attempt-3ad720d3-ef4c-4382-a189-3e5cc1a67354",
+      "runtimePassed": null
+    },
+    {
+      "lane": "generated-diagnostic-build",
+      "architecture": "x64",
+      "profile": "compatibility",
+      "buildId": "c2c2477c-e117-45de-8524-085bb8541131",
+      "rootExitCode": 0,
+      "supervisorExitCode": 124,
+      "genericSupervisionPassed": false,
+      "compilerTailAcceptance": false,
+      "terminal": {
+        "event": "terminal",
+        "reason": "owned-descendants-remain",
+        "elapsedMs": 122840,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 3,
+        "terminatedOwnedJob": true,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 181,
+        "limitTerminatedProcesses": 0,
+        "passed": false
+      },
+      "raw": {
+        "path": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\source-sdk-prep/build-368ddfb9-dba2-463f-92ce-0448ef960490/compatibility-x64/build.ndjson",
+        "bytes": 249067,
+        "sha256": "fbe4365c03a326c056c351b2d83d231a472a78ddc1c302fa5b86d071c6510d20"
+      },
+      "outcome": {
+        "path": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\source-sdk-prep/build-368ddfb9-dba2-463f-92ce-0448ef960490/compatibility-x64/Outcome.actual.json",
+        "bytes": 254052,
+        "sha256": "d5c2cbc22fa6f34c0d551a70eb59b088c8c6f998095f993cf34c389dcc76b3f7"
+      },
+      "runtimePassed": null
+    },
+    {
+      "lane": "generated-diagnostic-build",
+      "architecture": "x86",
+      "profile": "compatibility",
+      "buildId": "8afcfb4d-250c-4b85-9cc5-0f00a1ce3d7a",
+      "rootExitCode": 0,
+      "supervisorExitCode": 124,
+      "genericSupervisionPassed": false,
+      "compilerTailAcceptance": false,
+      "terminal": {
+        "event": "terminal",
+        "reason": "owned-descendants-remain",
+        "elapsedMs": 105168,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 1,
+        "terminatedOwnedJob": true,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 148,
+        "limitTerminatedProcesses": 0,
+        "passed": false
+      },
+      "raw": {
+        "path": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\source-sdk-prep/build-r2-b226a488-946a-496b-9c2a-b5fea3aa4a6f/compatibility-x86/build.ndjson",
+        "bytes": 215530,
+        "sha256": "796fc1ed0ee14fb58030292d6d29f837457059d24a5af90e524d88731a56e540"
+      },
+      "outcome": {
+        "path": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\source-sdk-prep/build-r2-b226a488-946a-496b-9c2a-b5fea3aa4a6f/compatibility-x86/Outcome.actual.json",
+        "bytes": 255582,
+        "sha256": "89c57d584532775d2b64ae32dd48a7fd0292c39d0936f50d8f2a42db1acd9fa8"
+      },
+      "runtimePassed": null
+    },
+    {
+      "lane": "generated-diagnostic-build",
+      "architecture": "x64",
+      "profile": "modern",
+      "buildId": "04a00e24-2a9b-482a-b08f-3ecf5bedae82",
+      "rootExitCode": 0,
+      "supervisorExitCode": 124,
+      "genericSupervisionPassed": false,
+      "compilerTailAcceptance": false,
+      "terminal": {
+        "event": "terminal",
+        "reason": "owned-descendants-remain",
+        "elapsedMs": 100133,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 1,
+        "terminatedOwnedJob": true,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 171,
+        "limitTerminatedProcesses": 0,
+        "passed": false
+      },
+      "raw": {
+        "path": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\source-sdk-prep/build-r2-b226a488-946a-496b-9c2a-b5fea3aa4a6f/modern-x64/build.ndjson",
+        "bytes": 227590,
+        "sha256": "d298d7bf9f43ee2d2f399a72686601f0ab386114e721e58cdd54509f2b173ab4"
+      },
+      "outcome": {
+        "path": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\source-sdk-prep/build-r2-b226a488-946a-496b-9c2a-b5fea3aa4a6f/modern-x64/Outcome.actual.json",
+        "bytes": 62922,
+        "sha256": "fc8a8d6ce7148cc69b5a5b38463979fe1c8c0cc6b2c6e3591705db57324a4cd6"
+      },
+      "runtimePassed": null
+    },
+    {
+      "lane": "generated-diagnostic-build",
+      "architecture": "x86",
+      "profile": "modern",
+      "buildId": "0e78f909-f269-461a-be1d-02595b2670e5",
+      "rootExitCode": 0,
+      "supervisorExitCode": 124,
+      "genericSupervisionPassed": false,
+      "compilerTailAcceptance": false,
+      "terminal": {
+        "event": "terminal",
+        "reason": "owned-descendants-remain",
+        "elapsedMs": 93615,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 1,
+        "terminatedOwnedJob": true,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 147,
+        "limitTerminatedProcesses": 0,
+        "passed": false
+      },
+      "raw": {
+        "path": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\source-sdk-prep/build-r2-b226a488-946a-496b-9c2a-b5fea3aa4a6f/modern-x86/build.ndjson",
+        "bytes": 211193,
+        "sha256": "ea0901a4fcc79b5007b79fee2aebcf1814ae9869b9603cad71658d22409e6e61"
+      },
+      "outcome": {
+        "path": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\source-sdk-prep/build-r2-b226a488-946a-496b-9c2a-b5fea3aa4a6f/modern-x86/Outcome.actual.json",
+        "bytes": 62934,
+        "sha256": "a385a728d12802eca0a6c9a7c1b0acc434b80dd2377069a3d8d4d636d6e966d6"
+      },
+      "runtimePassed": null
+    },
+    {
+      "lane": "validation-tools-compiler",
+      "architecture": "x64",
+      "rootExitCode": 0,
+      "supervisorExitCode": 124,
+      "genericSupervisionPassed": false,
+      "compilerTailAcceptance": false,
+      "terminal": {
+        "event": "terminal",
+        "reason": "owned-descendants-remain",
+        "elapsedMs": 68995,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 1,
+        "terminatedOwnedJob": true,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 199,
+        "limitTerminatedProcesses": 0,
+        "passed": false
+      },
+      "raw": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vm-short-prep/validation-tools-27d4f9a2-bf96-4605-a2ba-ca0f2e8ca874/x64/prepare.ndjson",
+        "bytes": 259619,
+        "sha256": "ba70a3023e45ac2d53aab0fd3b2ed85c5aa626ace0bdd419635030ed2e691cb6"
+      },
+      "outcome": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vm-short-prep/validation-tools-27d4f9a2-bf96-4605-a2ba-ca0f2e8ca874/x64/Outcome.actual.json",
+        "bytes": 2416,
+        "sha256": "f0d87438b3f35c24879780fe694bef3961708c8c118c81c534b3cef2a200c03f"
+      },
+      "publicPrepared": true,
+      "independentDefaultOnlyConsoleCasePassed": true
+    },
+    {
+      "lane": "validation-tools-compiler",
+      "architecture": "x86",
+      "rootExitCode": 0,
+      "supervisorExitCode": 124,
+      "genericSupervisionPassed": false,
+      "compilerTailAcceptance": false,
+      "terminal": {
+        "event": "terminal",
+        "reason": "owned-descendants-remain",
+        "elapsedMs": 67547,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 1,
+        "terminatedOwnedJob": true,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 199,
+        "limitTerminatedProcesses": 0,
+        "passed": false
+      },
+      "raw": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vm-short-prep/validation-tools-1b192e97-5f36-42fa-8cc8-97f1629b2439/x86/prepare.ndjson",
+        "bytes": 258385,
+        "sha256": "0e17060b127ed6deaeb185904311c84aab20c4d2170046e7bd76252c8692ff56"
+      },
+      "outcome": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vm-short-prep/validation-tools-1b192e97-5f36-42fa-8cc8-97f1629b2439/x86/Outcome.actual.json",
+        "bytes": 2432,
+        "sha256": "56a29cb71bdee15701619ce2f5d538baff1ed08ed8c919e468bdce357f8894b7"
+      },
+      "publicPrepared": true,
+      "independentDefaultOnlyConsoleCasePassed": true
+    }
+  ],
+  "retainedOtherFailures": [
+    {
+      "id": "kernel-v1-ComSpec",
+      "evidence": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/kernel-prep/execution-x64/root-result.json",
+        "bytes": 982,
+        "sha256": "2a30f4aba28d1d7d28da9e15241162909896908e9057c309793de03f34e0e1c7"
+      },
+      "meaning": "Natural root1/supervisor1/Job0 with no compiled main object; launch argv/ComSpec failure retained; subsequent revised producer has its own identity."
+    },
+    {
+      "id": "kernel-v2-GDI-signature",
+      "evidence": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/kernel-prep/revision-2/execution-x64/root-result.json",
+        "bytes": 999,
+        "sha256": "736eea2bdd62094f7a8d76aad97c0d59d0b069154ac09220435af1c5f2f587b1"
+      },
+      "meaning": "Natural root1/supervisor1/Job0; fixed single body-only GDI LockBits pointer adaptation; Source2 actual success does not rewrite Source1 failure."
+    },
+    {
+      "id": "original-sdk-integration-compile",
+      "evidence": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/native-x64-integration-build-1.log",
+        "bytes": 8004,
+        "sha256": "450beddc3693a38da723b404c4df41b90644124f7c1279068e28785f1c3036f6"
+      },
+      "meaning": "Initial dead gpu_trace field initializer compile failure retained; later actual repaired build has separate log."
+    },
+    {
+      "id": "canonical-sdk-pack-EPERM-1",
+      "evidence": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/source-sdk-prep/attempt-751a2d57-16a8-42b7-9b2b-f176c6bcf6e2/01-pack.actual.json",
+        "bytes": 383,
+        "sha256": "84e026d6c1f9832304ded7e101c74e21caf24d78ba3fd57fd6a44c95be4417e2"
+      },
+      "stderr": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/source-sdk-prep/attempt-751a2d57-16a8-42b7-9b2b-f176c6bcf6e2/01-pack.stderr",
+        "bytes": 142,
+        "sha256": "f67377a1d6062b7c7e7b220ed0c1a8255f968bff4f02b06e397a262508da98e1"
+      },
+      "resolved": false
+    },
+    {
+      "id": "canonical-sdk-pack-EPERM-2",
+      "evidence": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/source-sdk-prep/attempt-803330b2-12c6-4fa1-9e79-ef3b4d0558ac/01-pack.actual.json",
+        "bytes": 383,
+        "sha256": "c56cf45c0cb2dd19f963e090b37225ac96402bd84a4ef66a0c5df856e5ef9df9"
+      },
+      "stderr": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/source-sdk-prep/attempt-803330b2-12c6-4fa1-9e79-ef3b4d0558ac/01-pack.stderr",
+        "bytes": 142,
+        "sha256": "d36005c710fb21dba46032a5cb699f899e0ebbd093cd9a364fd3c8fd0655efa5"
+      },
+      "resolved": false
+    },
+    {
+      "id": "canonical-sdk-publication-diagnostic",
+      "evidence": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/source-sdk-prep/diagnostic/RenameProbe.actual.json",
+        "bytes": 4422,
+        "sha256": "69eec4be22f9a9293baa5f4e8a2182dabba3fba008fb6210cf4af0a277fda279"
+      },
+      "meaning": "Enumeration and synthetic sibling rename only. No proven MAX_PATH/Defender root cause, no retry-policy/source writer change; successful explicit external public output does not resolve canonical failure."
+    },
+    {
+      "id": "mixed-tool-and-web-preparation-failures",
+      "meaning": "Original affected-tools/delivery-identity batch failures, first binding install EUSAGE, first Vue audit TLS failure and initial SBOM nameguard failure remain in the cited original reports. Narrow successful corrections do not rewrite them."
+    },
+    {
+      "id": "historical-DevTools-and-PR-failures",
+      "meaning": "Old nonzero, timeout, forced cleanup, unknown observation, no-view/fake/scalar and preview.9 case11 evidence retain their own identities. No old pass or failure is silently reassigned to current0.6 runtime."
+    },
+    {
+      "scope": "VM preparation",
+      "reason": "First carrier JSON read used PS5 default ANSI; corrected UTF8 revealed17 ZIP CP936 names interpreted asCP1252. Both failures preserved; header-derived reversible name repair completed before any application.",
+      "evidence": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/closing"
+    },
+    {
+      "scope": "VM tool startup",
+      "reason": "First currentRunner failed before ready/raw/PID with0xC0000135. Later79 same-source app-local runtime DLL copies left18PE/2markers/source unchanged; default8 then completed. Loader did not name a specific missing DLL.",
+      "evidence": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/runtime/default-initial-loader-failure"
+    },
+    {
+      "scope": "Diagnostic data expansion",
+      "reason": "PS5 Expand-Archive returned with empty long staging tree; MAX_PATH is a candidate, not established cause. Official7z/fresh short stage verified5846 raw files and SDK locks before publication.",
+      "evidence": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/closing"
+    },
+    {
+      "scope": "Root GUI operator",
+      "reason": "Two compatibility:x64 attempts exceeded120000ms; supervisor124/forced Job cleanup remain failed. Later scope-specific natural cases do not overwrite them.",
+      "evidence": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/runtime/diagnostic-c64-timeout-1"
+    },
+    {
+      "scope": "Application archive readback",
+      "reason": "Initial PS7 Expand-Archive decoded CP936 Workbench filenames incorrectly; original public package outputs retained, UTF8 transport repacks preserve payload byte identity.",
+      "evidence": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/closing/raw/app-package-prep"
+    }
+  ],
+  "deferredLongAndEnvironmentQualification": {
+    "handoff": "docs/testing/v0.6.0-long-run-handoff.md",
+    "D07": "Real30-minute business TTL; renewal only in final5minutes, earliest legitimate renewal about25minutes after start; unrenewed branch must cross original30-minute expiry. No accelerated clock/TTL.",
+    "D13": "1000 real open/end cycles per claimed supported backend/architecture in the same original process; warmup/calibration/cleanup not counted.",
+    "D14": "8 real hours per backend in main qualification environment after warmup, actual workload/window receipts and resource samples; queued counters and sleep do not substitute.",
+    "resources": [
+      "PrivateBytes",
+      "WorkingSet",
+      "handles",
+      "threads",
+      "USER/GDI",
+      "views",
+      "pending/active callbacks",
+      "ownedProcesses"
+    ],
+    "ownershipAndStops": "Freeze original PID/birth/held handle, UI owner, Host/document/operation/grant generations and original whole epoch/limits; stop new work on failure/capacity/gap/identity change, preserve first failure and clean within original limit. Forced cleanup is failure handling, never a passing cycle.",
+    "environmentScope": "Complete OS/PE/IME/DPI/multi-window/nonadmin/Runtime-version/upgrade-relocation/performance and unclosedD01-D12 branches remain unverified or partial. x64/one backend/one Runtime does not certify another.",
+    "vmPolicy": "Authorized background QEMU only, exclusive input lease and Root GUI operator; no host product GUI, no test-process restart/disk deletion to hide failures.",
+    "newPlanStillRequired": true,
+    "noUniversalLongTestCommandClaimed": true,
+    "unchangedAcceptedShortsMustNotBeRepeatedWithoutCause": true
+  },
+  "evidencePins": [
+    {
+      "origin": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/kernel-prep/revision-3/KernelBuildResults.json",
+      "path": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/raw/kernel-prep/revision-3/KernelBuildResults.json",
+      "bytes": 5377,
+      "sha256": "db099d37cc7921e5f04d0ba5231299ef1bfae65b81ece2d840c0028b96e4c569"
+    },
+    {
+      "origin": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/sdk-build-prep/ScopedBuildSummary.json",
+      "path": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/raw/sdk-build-prep/ScopedBuildSummary.json",
+      "bytes": 24065,
+      "sha256": "7976ad5f72ee15c94a73e5123f6d80d687622ec33a9904d0c87a5deb5281145e"
+    },
+    {
+      "origin": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/consumer-prep/InstalledConsumerSummary.json",
+      "path": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/raw/consumer-prep/InstalledConsumerSummary.json",
+      "bytes": 28645,
+      "sha256": "b0e8fa6b4e5862e1a6ab92c337cd611b94482ec093fff3fa28c743ef21c79731"
+    },
+    {
+      "origin": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vendor-short-prep/VendorShortSummary.json",
+      "path": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/raw/vendor-short-prep/VendorShortSummary.json",
+      "bytes": 24126,
+      "sha256": "debafd2bd65b6370a3956768e49444048bc8eb1639713a051d6ba052f2074575"
+    },
+    {
+      "origin": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/docs-prep/WebBuildSummary.json",
+      "path": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/raw/docs-prep/WebBuildSummary.json",
+      "bytes": 32573,
+      "sha256": "94e90dcb9303cbea9ca2a02e9d5755a2d77f331432fb1e663c96aa2c8387fb01"
+    },
+    {
+      "origin": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/docs-prep/metadata-tests.result.json",
+      "path": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/raw/docs-prep/metadata-tests.result.json",
+      "bytes": 366,
+      "sha256": "ecc253a2ae31f0f1c543c20aaaa28b87eb91bbe82d6909e5b705f3c37e2f8df1"
+    },
+    {
+      "origin": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/sbom-prep/NpmSbomValidation.actual.json",
+      "path": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/raw/sbom-prep/NpmSbomValidation.actual.json",
+      "bytes": 24020,
+      "sha256": "a0fe05bb51ae2038fccd048e8bae2be299f13c91a5bf5b1fb2688ca61975b437"
+    },
+    {
+      "origin": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/sbom-prep/PromotedNpmSboms.json",
+      "path": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/raw/sbom-prep/PromotedNpmSboms.json",
+      "bytes": 1434,
+      "sha256": "1566831ce166937719d2019dd0c380850ee69587c4efb85e8ffd2037ad0ebce4"
+    },
+    {
+      "origin": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/sbom-prep/native-promotion-1/Promotion.actual.json",
+      "path": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/raw/sbom-prep/native-promotion-1/Promotion.actual.json",
+      "bytes": 4920,
+      "sha256": "ac3fe4c61510216faf52cf9079bb80a51799a67dc88f87c03c716f7c3a79a996"
+    },
+    {
+      "origin": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/source-sdk-prep/attempt-1cd32d8b-3ac1-4829-8ebd-2f4e149b619a/Summary.actual.json",
+      "path": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/raw/source-sdk-prep/attempt-1cd32d8b-3ac1-4829-8ebd-2f4e149b619a/Summary.actual.json",
+      "bytes": 958035,
+      "sha256": "e60c8e6c36aed33bfd39c51c35ec2ca9ef155e30410cf1336916fbaa2fffea11"
+    },
+    {
+      "origin": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/source-sdk-prep/GeneratedArtifacts.actual.json",
+      "path": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/raw/source-sdk-prep/GeneratedArtifacts.actual.json",
+      "bytes": 24783,
+      "sha256": "9d0e76fa7e37a69a8308ca28b70e9f4b7d6462108c78ba9682f199264c778701"
+    },
+    {
+      "origin": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/source-sdk-prep/archive/Archive.actual.json",
+      "path": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/raw/source-sdk-prep/archive/Archive.actual.json",
+      "bytes": 5340,
+      "sha256": "4471fcdfcb45aa135d22dccf438f0017106d443b2a49adca16f73c74994d0d85"
+    },
+    {
+      "origin": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/frontend-prep/ComponentArchive-x64.json",
+      "path": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/raw/frontend-prep/ComponentArchive-x64.json",
+      "bytes": 3173,
+      "sha256": "1d246beafeb30ea8d26c82a4505d7af183c40e36097ff89526e078ba43d506f4"
+    },
+    {
+      "origin": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/frontend-prep/ComponentArchive-x86.json",
+      "path": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/raw/frontend-prep/ComponentArchive-x86.json",
+      "bytes": 3173,
+      "sha256": "8e9a85a897caa76245e7453200d86ab6f7d704963efc04136ca0acfeece5ba35"
+    },
+    {
+      "origin": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/app-build-prep/attempt-3d82f8e1-d93b-4b4a-8a42-7653760f2e1e/Summary.json",
+      "path": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/raw/app-build-prep/attempt-3d82f8e1-d93b-4b4a-8a42-7653760f2e1e/Summary.json",
+      "bytes": 602253,
+      "sha256": "fbbc772b152f4b25eefd3cca661de16c9aa47245f60972d25344b832be1d4d10"
+    },
+    {
+      "origin": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/app-build-prep/Authenticode-8.actual.json",
+      "path": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/raw/app-build-prep/Authenticode-8.actual.json",
+      "bytes": 1976,
+      "sha256": "dd399e170b007c8576c59a73494653aeb957a6a0c7c6e473ee2cf39886e2400f"
+    },
+    {
+      "origin": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vm-short-prep/PreparedTools-DeliveryActual.json",
+      "path": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/raw/vm-short-prep/PreparedTools-DeliveryActual.json",
+      "bytes": 37305,
+      "sha256": "03bf17149e6e0ced75ec77296629b8b0f8c5020b1ce109c873c989a7a097f47b"
+    },
+    {
+      "origin": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vm-short-prep/media-default-1/result.json",
+      "path": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/raw/vm-short-prep/media-default-1/result.json",
+      "bytes": 9031,
+      "sha256": "343326a740adff0a38777cde43523e02046a6fcf2cf5eba2a9a65a6c584e9c44"
+    },
+    {
+      "origin": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/release-evidence-prep/DefaultVmMediaIndependentReview.json",
+      "path": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/raw/release-evidence-prep/DefaultVmMediaIndependentReview.json",
+      "bytes": 8686,
+      "sha256": "861d1b7ac40dae854f1a652496b9829e46fe0443d0faa6d886f981c5ac644d0a"
+    },
+    {
+      "origin": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/source-sdk-prep/diagnostic/RenameProbe.actual.json",
+      "path": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/raw/source-sdk-prep/diagnostic/RenameProbe.actual.json",
+      "bytes": 4422,
+      "sha256": "69eec4be22f9a9293baa5f4e8a2182dabba3fba008fb6210cf4af0a277fda279"
+    }
+  ],
+  "publicationRecordPolicy": {
+    "publicationReceipt": false,
+    "finalTagCommitAndTree": "Release-Manifest-0.6.0.json on GitHub Release",
+    "fullSourceZip": "soui-sdk-0.6.0-full-source.zip",
+    "fullSourceMethod": "Unmodified public sourceArchive.stage plus official7z -mcu=on, complete canonical source-manifest/UTF8/CRC/raw extraction checks",
+    "archiveDigests": "Final ZIP, source-manifest and upload identities are recorded outside the corresponding source archive to avoid a self-reference cycle."
+  },
+  "rawEvidence": {
+    "initialSnapshot": "verification/production-validation/0.6.0-release-2026-10-29/initial-scoped/catalog.json",
+    "sourceKernelProof": "verification/production-validation/0.6.0-source2-kernel-2026-10-29",
+    "initialInputsIndex": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/Inputs.index.json",
+    "runtimeRoot": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/runtime",
+    "closingIndex": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/closing/Files.index.json",
+    "originalInternalAbsolutePaths": "Historical command/input metadata; published byte counterparts are mapped by these indexes."
+  },
+  "currentNineArchiveTuples": [
+    {
+      "file": "SouiSdk-0.6.0-source-sdk.zip",
+      "bytes": 37437121,
+      "sha256": "99373b7cca69fc133c4344e550ca65d9570cb87c876e495186e0db163c543f8f"
+    },
+    {
+      "file": "SouiDevTools-0.6.0-windows-x64.zip",
+      "bytes": 16729816,
+      "sha256": "ee5117139791cf011026def7fbd119aaa6813ddb870acc48eab26ead76eb755e"
+    },
+    {
+      "file": "SouiDevTools-0.6.0-windows-x86.zip",
+      "bytes": 14243258,
+      "sha256": "53387d24a2a583ef392408f040ab9a6e74c7e820e076d2544cbc1676823cb9e1"
+    },
+    {
+      "file": "SouiStarter-0.6.0-windows-x64.zip",
+      "bytes": 17000886,
+      "sha256": "8dada2eaaaf877e91ac49995e10990b3add2b1176a916daab3c4aa41e7c2cef1"
+    },
+    {
+      "file": "SouiWorkbench-0.6.0-windows-x64.zip",
+      "bytes": 23444811,
+      "sha256": "1cb64a7d282a395b5ea904f305f0c272f4741aaa083c66c18b49d53a5b87eb54"
+    },
+    {
+      "file": "SouiModernStarter-0.6.0-windows-x64.zip",
+      "bytes": 2383323,
+      "sha256": "bb8cb0b4e11e02f2b425d48dae70104064748be58ec97379d268d83d430199f3"
+    },
+    {
+      "file": "SouiStarter-0.6.0-windows-x86.zip",
+      "bytes": 14377869,
+      "sha256": "bc68ff76585a4ba8e5c446fb0d7f98f0b22c54b45f754dac4385ed1e50dc7979"
+    },
+    {
+      "file": "SouiWorkbench-0.6.0-windows-x86.zip",
+      "bytes": 20797749,
+      "sha256": "eb91755b8b2c1218ef2e3b6ed083f570998fadd64ba60212e3e010cf43c4d43b"
+    },
+    {
+      "file": "SouiModernStarter-0.6.0-windows-x86.zip",
+      "bytes": 2304259,
+      "sha256": "39b9fc15219c5ba13170c80918cd7bcca93d6dcf5aff78dbf9f4f7abd5b1e3a2"
+    }
+  ],
+  "completedNecessaryShorts": [
+    {
+      "scope": "default applications",
+      "runs": 8,
+      "status": "VERIFIED",
+      "evidence": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/closing/raw/vm-short-prep/DefaultSmokes.actual.json"
+    },
+    {
+      "scope": "generated diagnostics",
+      "uniqueConsumers": 4,
+      "naturalStages": 5,
+      "status": "LIMITED_REPRESENTATIVES_VERIFIED",
+      "evidence": "verification/production-validation/0.6.0-release-2026-10-29/final-scoped/closing/raw/vm-short-prep/DiagnosticSmokes.actual.json"
+    },
+    {
+      "scope": "application archive closures",
+      "archives": 6,
+      "status": "VERIFIED",
+      "workbenchUtf8TransportRepacks": 2
+    }
+  ]
+}

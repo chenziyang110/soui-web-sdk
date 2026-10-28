@@ -9,10 +9,18 @@
 默认发行档不应携带业务源码；需要源码诊断时必须显式声明并绑定产物身份。
 仅改变 Vite 的 sourcemap 选项，无法阻止 SkipWeb 跨档复用。
 
+日期：2026-10-22。状态：已实现待真实运行验证；本地构建与文件边界已验证。
+不冻结 DevTools 公共 API，也不表示真实断点已通过。
+
+## 背景与决定
+
+Stage0 的 inline map 夹具与默认发行档已经分离，但公共 Build、模板和 Web
+身份记录尚无档位。仅改变 Vite 的 sourcemap 选项，无法阻止 SkipWeb 跨档复用。
+
 Build.ps1 增加显式 WebProfile：distribution 为默认，source-diagnostic 为应用
 主动选择。它与原生 Debug/Release、后端、原生工具链相互独立。Build 只在本次
 进程范围传递 SOUI_WEB_BUILD_PROFILE，并恢复原环境；该值不授予运行时调试权限。
-模板及 Workbench 共用受管理的 Web profile helper，保留现有插件和目标。
+两个模板及 Workbench 共用受管理的 Web profile helper，保留现有插件和目标。
 默认不生成 map；诊断档生成 inline map 并关闭 JS minify，便于离线源码调试。
 
 ## 资源与身份
@@ -54,6 +62,8 @@ helper 位于 tools/internal，随现有受管理工具安装；模板仍由 New
 相对路径规则重定位，不依赖开发目录。SDK 不依赖 Demo。旧 0.5.0 包和安装不改。
 这项工作提供构建基础，不开放调试会话。
 
+这项工作仅接上 Stage0C 与后续交付所需的构建基础，不开放调试会话。
+
 验证只运行受影响的 profile、身份、部署边界及各改变的 Web 配置，不重跑原生
 构建或 VM。两个后端的 Release TS/TSX 真实断点、懒加载与异常栈、安装消费者
 和最终生产矩阵仍必须另行执行；静态 map 通过不能代替这些证据。
@@ -61,3 +71,26 @@ helper 位于 tools/internal，随现有受管理工具安装；模板仍由 New
 共享工作区历史曾对各实际 Vite 配置完成两档构建与文件身份检查，并修复
 SDK-only SkipWeb 在原生阶段后漏检输出的问题。该历史结果不绑定拆分后的
 候选，也不能代替真实 Runtime 断点、安装消费者或生产矩阵验证。
+
+2026-10-22 已执行：三个实际 Vite 配置各有两档成功构建；最终 helper 重新
+核对这六份未改写的输出，保留每次构建原源码身份。媒体代理修复后只重建受影响
+的 Workbench 诊断档。诊断 map 数分别为 desktop 3、modern 1、Workbench 297。
+定向 Node 边界批次 113 项通过、2 项因文件链接权限跳过；随后媒体代理 3 项
+通过。独立审查发现 SDK-only SkipWeb 末次漏检，实际回归先失败，再经修复取得
+受影响 integration/入口 18 项通过。失败样本、原命令与字节身份保存在
+out/devtools-stage0/web-build-profiles/verified-local.json 引用的原始记录中。
+未运行原生 Build.ps1、安装消费者、真实 Runtime 或断点；Stage0C 保持待验收。
+
+## 2026-10-23 兼容构建适配
+
+真实本地资源准入拒绝了core-js 3.50.0的旧IE `Object.create` iframe回退。
+Chrome 49支持原生`Object.create`，但CommonJS打包仍带入该不可用分支。
+在兼容Vite配置加载时，通过源控helper核对实际legacy/core-js/SystemJS版本、
+模块原始身份及本项目普通文件边界，再派生只使用原生能力的模块；缺能力明确失败。
+保留其他自动polyfill、SystemJS、Chrome 49目标、资源扫描和map来源核对。
+普通Vite alias不会进入legacy插件的独立子构建，不能作为此处修复。
+适配源和依赖身份随产物证据记录，npm重装后可重复生成，不手改发行JS。
+
+相同日期的现代后端测试变体已真实观察到离线TS debugger暂停与单步。
+兼容变体在VM期限前未完成业务启动，尚未证明断点。完整Stage0C与生产矩阵继续待验；
+上述历史构建通过记录仍绑定原输入，不改挂到此次适配。

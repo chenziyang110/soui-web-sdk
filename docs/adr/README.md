@@ -48,8 +48,6 @@
 
 - [ADR-0093：内存不足时仍可释放 JSON](0093-allocation-free-json-destruction.md)（定向回归通过；完整候选验收进行中）
 - [ADR-0094：应用等待真实 Runtime 关闭](0094-application-runtime-shutdown.md)（真实桌面失败已复现，修复与重验进行中）
-- [ADR-0095：发布汇总的编译档位与冻结输入](0095-release-collection-inputs.md)（实施与当前构建验证进行中）
-- [ADR-0096：SOUI 的显式 LLVM 依赖构建](0096-soui-llvm-dependency-build.md)（两架构组件通过，完整 SDK 验收进行中）
 - [ADR-0097：0.5 内核重建与公开接口验收](0097-kernel-rebuild-import.md)（两架构重建与应用验收进行中）
 - [ADR-0098：公开 Bridge 配额的可重复校准负载](0098-task-store-calibration-workload.md)（独立消费者实施中，生产默认额度未冻结）
 - [ADR-0099：安装消费者的原生构建观察](0099-installed-consumer-debug-capture.md)（x64 实际重载通过，x86 修复重验中）
@@ -87,3 +85,13 @@
 - [ADR-0125：显式运行时依赖与包内内容去重](0125-runtime-manifests-and-bundles.md)
 - [ADR-0126：可选压缩档位与实测开销](0126-optional-compression-profiles.md)
 - [ADR-0127：可选自动后端宿主](0127-automatic-renderer-host.md)
+
+- [ADR-0128：受控业务窗口的 CPU 呈现](0128-controlled-cpu-presentation.md)（业务 HWND 与 Inspector 回调路径分开；真实运行待验）
+- [ADR-0129：SHostWnd 上的原生诊断菜单](0129-native-host-window-menus.md)（仅附加菜单的可信 opt-in 窗口采用系统非客户区；真实动作待验）
+* [0130: Bounded legacy source maps](0130-bounded-legacy-source-maps.md)
+* [0131: Native view lifetime observation](0131-native-view-lifetime-observation.md)
+* [0134：受控 Inspector 的键盘事件快照](0134-controlled-inspector-keyboard-snapshot.md)
+* [0135：MiniBlink 显式本地 HTTPS 资源原点](0135-owned-local-resource-origin.md)
+
+- [ADR-0123：公共原生受控 DevTools](0123-public-devtools-candidate.md)（默认关闭与目标许可；本轮发布资格单列）
+- [ADR-0136：0.6.0 普通 Release 分类与限定范围](0136-0.6.0-release-scope.md)（用户本次授权；生产资格仍未完成）

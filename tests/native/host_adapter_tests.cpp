@@ -4,8 +4,10 @@
 #include <filesystem>
 #include <fstream>
 #include <functional>
+#include <iomanip>
 #include <iostream>
 #include <memory>
+#include <regex>
 #include <stdexcept>
 #include <string>
 #include <type_traits>
@@ -456,9 +458,64 @@ void test_long_resource_path(const host_config& config) {
   require(state->mount_calls==1,"rejected deep resources cannot remount the adapter");
 }
 
+int resource_preflight(const std::filesystem::path& root) {
+  auto state = std::make_shared<adapter_state>();
+  webview_host host(std::make_unique<fake_adapter>(state));
+  host_config config;
+  config.architecture = sizeof(void*) == 8 ? "x64" : "x86";
+  config.resource_root = root;
+  int owner_marker = 0;
+  config.owner_window = &owner_marker; // fake_adapter never interprets this as an HWND.
+  const auto started_at = std::chrono::steady_clock::now();
+  const auto elapsed = [&] {
+    return std::chrono::duration_cast<std::chrono::milliseconds>(
+        std::chrono::steady_clock::now() - started_at).count();
+  };
+  const auto report = [&](const char* phase, const host_result& result) {
+    std::cout << "{\"event\":\"resource-preflight\",\"phase\":" << std::quoted(phase)
+              << ",\"elapsedMs\":" << elapsed() << ",\"ok\":" << (result.ok ? "true" : "false")
+              << ",\"code\":" << std::quoted(result.code)
+              << ",\"mount_calls\":" << state->mount_calls
+              << ",\"unmount_calls\":" << state->unmount_calls << "}\n" << std::flush;
+  };
+  std::cout << "{\"event\":\"resource-preflight\",\"phase\":\"start-begin\","
+               "\"adapter\":\"fake\",\"productRun\":false}\n" << std::flush;
+  host_result started{false, "E_PREFLIGHT_EXCEPTION", {}};
+  bool exception = false;
+  try {
+    // This runs the SDK's real resource admission; no renderer is mounted or loaded.
+    started = host.start(config);
+  } catch (const std::regex_error& error) {
+    exception = true;
+    std::cout << "{\"event\":\"resource-preflight\",\"phase\":\"start-exception\","
+                 "\"exception\":\"regex_error\",\"regexCode\":" << static_cast<int>(error.code())
+              << ",\"elapsedMs\":" << elapsed() << "}\n" << std::flush;
+  } catch (const std::exception&) {
+    exception = true;
+    std::cout << "{\"event\":\"resource-preflight\",\"phase\":\"start-exception\","
+                 "\"exception\":\"std_exception\",\"elapsedMs\":" << elapsed() << "}\n" << std::flush;
+  }
+  report(exception ? "start-failed" : "start-return", started);
+  const auto closed = host.close();
+  report("close-return", closed);
+  const auto destroyed = host.destroy();
+  report("destroy-return", destroyed);
+  if (exception) return 2;
+  return started.ok && closed.ok && destroyed.ok && state->mount_calls == 1 &&
+                 state->unmount_calls == 1 ? 0 : 1;
+}
+
 }  // namespace
 
-int main() {
+int main(int argc, char** argv) {
+  if (argc != 1) {
+    if (argc != 3 || std::string(argv[1]) != "--resource-preflight" ||
+        !std::filesystem::path(argv[2]).is_absolute()) {
+      std::cerr << "usage: soui_host_adapter_tests [--resource-preflight <absolute-directory>]\n";
+      return 64;
+    }
+    return resource_preflight(std::filesystem::path(argv[2]));
+  }
   try {
     const resource_fixture fixture;
     auto config = fixture.config();

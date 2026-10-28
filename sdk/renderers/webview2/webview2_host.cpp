@@ -8,6 +8,10 @@
 #include "../../src/host/input_trace_hooks.h"
 #include <soui/diagnostics/input_frame_trace.h>
 #include "loader_policy.h"
+#include "native_observation.h"
+#ifdef SOUI_HOST_STAGE0_DEVTOOLS_TEST_ONLY
+#include "stage0_devtools.h"
+#endif
 
 #include <windows.h>
 #include <bcrypt.h>
@@ -16,6 +20,7 @@
 #include <WebView2EnvironmentOptions.h>
 #include <exception>
 #include <iterator>
+#include <limits>
 #include <json.hpp>
 #include <atomic>
 #include <chrono>
@@ -148,7 +153,7 @@ struct webview2_runtime_exit_watch::state {
   DWORD failure_win32{};
   UINT32 event_pid{}, callbacks{};
   webview2_browser_exit_kind exit_kind{webview2_browser_exit_kind::absent};
-  bool event_observed{}, signaled{}, registered{}, armed{}, acquired{}, finishing{}, finished{};
+  bool event_observed{}, signaled{}, registered{}, armed{}, acquired{}, finishing{}, finished{}, disposed{};
   ~state() {
     // All resource-bearing states are owned until explicit successful finish.
     if (environment || environment_identity || process || registered || callbacks) std::terminate();
@@ -292,7 +297,7 @@ HRESULT arm_exit_monitor(const std::shared_ptr<exit_state>& value, ICoreWebView2
 bool exit_finished(const std::shared_ptr<exit_state>& value) noexcept {
   if (!value) return true;
   std::lock_guard<std::mutex> lock(value->mutex);
-  return value->finished && !value->callbacks;
+  return (value->finished || value->disposed) && !value->callbacks;
 }
 void check_exit_owner(const std::shared_ptr<exit_state>& value) noexcept {
   if (value && GetCurrentThreadId() != value->ui_thread) std::terminate();
@@ -386,18 +391,82 @@ host_result webview2_runtime_exit_watch::finish() {
   return ok();
 }
 
+host_result webview2_runtime_exit_watch::dispose_failed() {
+  const auto value = state_;
+  if (!value) return error("E_RUNTIME_WATCH_UNAVAILABLE", "The runtime exit watch is moved from.");
+  if (GetCurrentThreadId() != value->ui_thread)
+    return error("E_THREAD", "Failed runtime exit disposal requires its UI STA.");
+  const auto observation = observe();
+  if (observation.phase != webview2_runtime_exit_phase::failed)
+    return error("E_INVALID_STATE", "Only an unsuccessful runtime exit watch may use failed disposal.");
+  bool registered{};
+  {
+    std::lock_guard<std::mutex> lock(value->mutex);
+    if (value->disposed) return ok();
+    if (value->finishing || value->callbacks)
+      return error("E_BUSY", "The unsuccessful runtime exit watch is still borrowed.");
+    if (!value->process || !value->signaled)
+      return error("E_RUNTIME_WATCH_FAILED", "The original browser process termination is unproven.");
+    value->finishing = true;
+    registered = value->registered;
+  }
+  if (registered) {
+    const auto removed = value->environment->remove_BrowserProcessExited(value->token);
+    if (FAILED(removed)) {
+      exit_failure(value, webview2_runtime_exit_error::removal, removed);
+      { std::lock_guard<std::mutex> lock(value->mutex); value->finishing = false; }
+      return error("E_RUNTIME_WATCH_FAILED", "Failed runtime exit event removal failed.");
+    }
+    { std::lock_guard<std::mutex> lock(value->mutex); value->registered = false; }
+  }
+  {
+    std::lock_guard<std::mutex> lock(value->mutex);
+    if (value->callbacks) {
+      value->finishing = false;
+      return error("E_BUSY", "Failed runtime exit callbacks have not returned.");
+    }
+  }
+  // The held handle, not a PID lookup or an event alone, proves termination.
+  const auto waited = WaitForSingleObject(value->process, 0);
+  if (waited != WAIT_OBJECT_0) {
+    exit_failure(value, webview2_runtime_exit_error::process_wait, S_OK,
+        waited == WAIT_FAILED ? GetLastError() : ERROR_SUCCESS);
+    { std::lock_guard<std::mutex> lock(value->mutex); value->finishing = false; }
+    return error("E_RUNTIME_WATCH_FAILED", "Failed runtime exit handle did not confirm termination.");
+  }
+  if (!CloseHandle(value->process)) {
+    exit_failure(value, webview2_runtime_exit_error::process_handle_close, S_OK, GetLastError());
+    { std::lock_guard<std::mutex> lock(value->mutex); value->finishing = false; }
+    return error("E_RUNTIME_WATCH_FAILED", "Failed runtime exit handle release failed.");
+  }
+  value->process = nullptr;
+  value->environment.Reset();
+  value->environment_identity.Reset();
+  {
+    std::lock_guard<std::mutex> lock(value->mutex);
+    if (value->callbacks) {
+      value->finishing = false;
+      return error("E_BUSY", "Failed runtime exit release is still borrowed.");
+    }
+    value->disposed = true;
+    value->finishing = false;
+  }
+  return ok();
+}
+
 struct webview2_adapter::state {
   enum class phase { created, preparing, prepared, mounted, closing, closed, failed };
+  enum class scope_shutdown { not_started, pending, succeeded, failed, unknown };
   struct request {
     std::uint64_t generation{};
-    std::string document_id, id, raw;
+    std::string document_id, id, invocation_id, raw;
     clock_type::time_point deadline;
     bool revoke{false};
     std::shared_ptr<capacity::request_budget::lease> slot;
   };
   struct output {
     std::uint64_t generation{};
-    std::string document_id, id, raw;
+    std::string document_id, id, invocation_id, raw;
     bool event{false};
     bool ready{false};
     std::shared_ptr<capacity::request_budget::lease> slot;
@@ -407,9 +476,16 @@ struct webview2_adapter::state {
   };
   HWND owner{};
   DWORD ui_thread{GetCurrentThreadId()};
+  detail::webview2_native_counters native_counters;
+  std::uint32_t native_process_id{};
+  std::uint64_t native_process_creation{}, native_epoch{};
+  bool native_mutating{};
+  explicit state(bool scalar_observation = false) : native_counters(scalar_observation) {}
   std::filesystem::path profile, fixed_runtime;
   webview2_profile_access profile_access{webview2_profile_access::shared};
+  webview2_profile_access profile_access_before_devtools{webview2_profile_access::shared};
   std::shared_ptr<webview2_runtime_exit_watch::state> exit_monitor;
+  std::unique_ptr<webview2_runtime_exit_watch> devtools_exit_watch;
   bool preparation_failed_without_environment{false};
   bool controller_creation_failed{false};
   HRESULT cancelled_controller_failure{S_OK};
@@ -433,6 +509,12 @@ struct webview2_adapter::state {
   unsigned owner_budget_us{0}; // Candidate: zero preserves the existing16-item policy.
   bool prepare_output{false}; // Candidate: disabled until paired profile selects it.
   std::unique_ptr<detail::trace_thread_registration> trace_owner;
+  // Actual ExecuteScript/protocol completions, including those delivered after
+  // Controller.Close. A cancelled generation does not settle native callbacks.
+  unsigned async_pending{}, async_active{};
+  bool controller_closed{false}, controller_close_active{false}, unmount_active{false};
+  bool devtools_f12{}, devtools_ctrl_shift_i{}, devtools_keys_registered{};
+  EventRegistrationToken devtools_keys_token{};
   clock_type::time_point diagnostic_query_at{};
   std::string page_diagnostics;
   UINT64 navigation_id{};
@@ -446,14 +528,61 @@ struct webview2_adapter::state {
   capacity::priority_policy request_priority, output_priority;
   std::uint64_t generation{1};
   std::string document_id, active_session, session_digest;
-  bool stop_requested{false};
+  bool stop_requested{false}, worker_started{false};
   std::atomic<bool> worker_done{true};
+  std::atomic<scope_shutdown> scope_shutdown_result{scope_shutdown::not_started};
+  std::atomic<bool> scope_ownership_uncertain{false};
   std::atomic<bool> wake_pending{false};
   std::thread worker;
+  bool devtools_enabled{}, destroy_target_accepted{}, native_grant{};
+  bool open_attempted{}, open_accepted{}, retirement_required{};
+  std::uint64_t grant_epoch{};
+  bool product_devtools{}, devtools_revoking{}, devtools_retired{};
+  std::int32_t devtools_native_error{};
+  host_result devtools_failure;
+#ifdef SOUI_HOST_STAGE0_DEVTOOLS_TEST_ONLY
+  bool debugger_enabled{}, debugger_enable_pending{}, pause_pending{}, paused{}, protocol_failed{};
+  unsigned pause_events{}, resume_events{};
+  ComPtr<ICoreWebView2DevToolsProtocolEventReceiver> paused_receiver, resumed_receiver;
+  EventRegistrationToken paused_token{}, resumed_token{};
+  bool paused_registered{}, resumed_registered{};
+#endif
 };
 
 namespace {
 using state = webview2_adapter::state;
+// Separate from lifecycle ownership. The guard only makes intermediate COM
+// assignment/Close/Reset observations busy; it never waits or changes teardown.
+struct native_mutation final {
+  state& value;
+  const bool on_owner;
+  const bool previous;
+  explicit native_mutation(state& input) noexcept : value(input), on_owner(GetCurrentThreadId() == input.ui_thread),
+      previous(on_owner ? input.native_mutating : false) {
+    if (!value.native_counters.enabled()) return;
+    if (!on_owner) { value.native_counters.mark_fault(); return; }
+    value.native_mutating = true;
+  }
+  ~native_mutation() { if (on_owner) value.native_mutating = previous; }
+};
+struct native_policy_borrow final {
+  const std::shared_ptr<state> value;
+  bool entered{};
+  explicit native_policy_borrow(const std::weak_ptr<state>& weak) noexcept : value(weak.lock()) {
+    if (!value || !value->native_counters.enabled()) return;
+    if (GetCurrentThreadId() != value->ui_thread) { value->native_counters.mark_fault(); return; }
+    entered = value->native_counters.enter_policy();
+  }
+  ~native_policy_borrow() { if (entered) value->native_counters.leave_policy(); }
+};
+std::uint64_t next_native_epoch() noexcept {
+  static std::atomic<std::uint64_t> epoch{0};
+  auto value = epoch.load(std::memory_order_relaxed);
+  while (value != (std::numeric_limits<std::uint64_t>::max)()) {
+    if (epoch.compare_exchange_weak(value, value + 1, std::memory_order_relaxed)) return value + 1;
+  }
+  return 0;
+}
 bool live(const std::shared_ptr<state>& value) {
   return value && value->current != state::phase::closing && value->current != state::phase::closed &&
       value->current != state::phase::failed;
@@ -523,10 +652,15 @@ void finish_preparation(const std::shared_ptr<state>& value, const host_result& 
   }
 }
 void wake_owner(const std::shared_ptr<state>& value);
+void stop_bridge_admission(const std::shared_ptr<state>& value);
 void fail(const std::shared_ptr<state>& value, std::string detail) {
   value->failure = error("E_WEBVIEW2", std::move(detail));
   value->document_ready = value->application_ready = false;
   value->current = state::phase::failed;
+  if (value->devtools_enabled) {
+    if (value->product_devtools && value->devtools_failure.code.empty()) value->devtools_failure = value->failure;
+    stop_bridge_admission(value);
+  }
   finish_preparation(value, value->failure);
   wake_owner(value);
 }
@@ -550,7 +684,8 @@ bool current_source(const std::shared_ptr<state>& value) {
 std::string serialize_output(const state::output& output) {
   const auto packet = output.event
       ? json{{"kind", "event"}, {"documentId", output.document_id}, {"data", parse_bounded(output.raw)}}
-      : json{{"kind", "response"}, {"documentId", output.document_id}, {"requestId", output.id}, {"raw", output.raw}};
+      : json{{"kind", "response"}, {"documentId", output.document_id}, {"requestId", output.id},
+          {"invocationId", output.invocation_id}, {"raw", output.raw}};
   return packet.dump();
 }
 void wake_owner(const std::shared_ptr<state>& value) {
@@ -558,6 +693,51 @@ void wake_owner(const std::shared_ptr<state>& value) {
       !PostMessageW(value->owner, sdk::webview2_event_message, 0, 0))
     value->wake_pending.store(false, std::memory_order_release);
 }
+void stop_bridge_admission(const std::shared_ptr<state>& value) {
+  value->native_grant = false;
+  ++value->grant_epoch;
+  {
+    std::lock_guard<std::mutex> lock(value->mutex);
+    if (!value->stop_requested) ++value->generation;
+    value->stop_requested = true;
+    value->requests.clear();
+    value->outputs.clear();
+    value->output_slots = capacity::output_budget{};
+  }
+  value->wake.notify_all();
+}
+
+struct async_receipt final { bool pending{true}; };
+std::shared_ptr<async_receipt> begin_async(const std::shared_ptr<state>& value) {
+  auto receipt = std::make_shared<async_receipt>();
+  ++value->async_pending;
+  return receipt;
+}
+void reject_async(const std::shared_ptr<state>& value, const std::shared_ptr<async_receipt>& receipt) noexcept {
+  if (!receipt->pending) return; // A synchronous completion already settled it.
+  receipt->pending = false;
+  --value->async_pending;
+}
+class async_completion final {
+ public:
+  async_completion(const std::shared_ptr<state>& value, const std::shared_ptr<async_receipt>& receipt)
+      : value_(value), accepted_(receipt->pending) {
+    if (GetCurrentThreadId() != value->ui_thread) value->native_counters.mark_fault();
+    if (!accepted_) value->native_counters.mark_fault();
+    if (!accepted_) return;
+    reject_async(value, receipt);
+    ++value_->async_active;
+  }
+  ~async_completion() {
+    if (accepted_) { --value_->async_active; wake_owner(value_); }
+  }
+  async_completion(const async_completion&) = delete;
+  async_completion& operator=(const async_completion&) = delete;
+  explicit operator bool() const noexcept { return accepted_; }
+ private:
+  std::shared_ptr<state> value_;
+  bool accepted_;
+};
 void push_output(const std::shared_ptr<state>& value, state::output output) {
   {
     std::lock_guard<std::mutex> lock(value->mutex);
@@ -600,6 +780,7 @@ void bridge_worker(const std::shared_ptr<state>& value) noexcept {
   const bool trace_attached = input_trace::register_current_thread();
   struct trace_detach { bool attached; ~trace_detach() { if (attached) input_trace::detach_current_thread(); } } trace_owner{trace_attached};
   std::string session;
+  bool shutdown_failed{false}, ownership_unknown{false};
   const HRESULT apartment = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
   try {
     check(apartment, "Bridge worker COM apartment");
@@ -617,7 +798,10 @@ void bridge_worker(const std::shared_ptr<state>& value) noexcept {
         value->requests.erase(selected);
       }
       if (request.revoke) {
-        if (!session.empty()) value->bridge->shutdown_session(session);
+        if (!session.empty()) {
+          try { value->bridge->shutdown_session(session); }
+          catch (...) { shutdown_failed = true; throw; }
+        }
         session.clear();
         continue;
       }
@@ -627,23 +811,29 @@ void bridge_worker(const std::shared_ptr<state>& value) noexcept {
       }
       std::string response;
       bool ready = false;
+      bool bootstrap_pending = false;
       try {
         if (clock_type::now() >= request.deadline) {
           response = response_error(request.id, "E_TIMEOUT", "Request expired before native dispatch.");
         } else {
           const auto packet = parse_bounded(request.raw);
           const auto method = packet.value("method", std::string{});
-          if (method != "bridge.bootstrap" && (session.empty() || packet.value("sessionId", std::string{}) != session)) {
+          if ((method == "bridge.bootstrap" && !session.empty()) ||
+              (method != "bridge.bootstrap" && (session.empty() || packet.value("sessionId", std::string{}) != session))) {
             response = response_error(request.id, "E_UNAUTHORIZED", "Request belongs to another document session.");
           } else {
             // Handlers must be bounded; long operations use the SDK task service.
             // No browser/JSON claim can grant a native user gesture.
+            if (method == "bridge.bootstrap") bootstrap_pending = true;
             response = value->bridge->handle_json(request.raw, false);
             if (response.size() <= message_limit) {
               const auto result = parse_bounded(response);
               if (result.is_object() && result.value("ok", false)) {
                 if (method == "bridge.bootstrap") {
                   session = result.at("result").at("sessionId").get<std::string>();
+                  if (session.empty() || session.size() > message_limit)
+                    throw std::runtime_error("Bootstrap did not identify its actual session");
+                  bootstrap_pending = false; // This actual session is now owned by the worker.
                   const auto fingerprint = digest(session);
                   std::lock_guard<std::mutex> lock(value->mutex);
                   if (request.generation == value->generation) {
@@ -657,20 +847,28 @@ void bridge_worker(const std::shared_ptr<state>& value) noexcept {
           }
         }
       } catch (...) { response = response_error(request.id, "E_NATIVE_EXCEPTION", "Native request failed."); }
-      push_output(value, {request.generation, request.document_id, request.id, std::move(response),
+      if (bootstrap_pending) {
+        ownership_unknown = true; // Sticky even if a later bootstrap succeeds.
+        value->scope_ownership_uncertain.store(true, std::memory_order_release);
+      }
+      push_output(value, {request.generation, request.document_id, request.id, request.invocation_id, std::move(response),
           false, ready, std::move(request.slot)});
     }
   } catch (...) {
-    // No UI COM work from this thread. The owner observes worker_done/status.
+    ownership_unknown = true; // Preserve missing ownership/drain evidence.
   }
   if (!session.empty()) {
-    try { value->bridge->shutdown_session(session); } catch (...) {}
+    try { value->bridge->shutdown_session(session); } catch (...) { shutdown_failed = true; }
   }
   if (SUCCEEDED(apartment)) CoUninitialize();
+  value->scope_shutdown_result.store(shutdown_failed ? state::scope_shutdown::failed :
+      ownership_unknown ? state::scope_shutdown::unknown : state::scope_shutdown::succeeded, std::memory_order_release);
   value->worker_done.store(true, std::memory_order_release);
   wake_owner(value);
 }
 void invalidate_document(const std::shared_ptr<state>& value) {
+  value->native_grant = false;
+  ++value->grant_epoch;
   value->document_ready = value->application_ready = false;
   value->diagnostic_query_pending = false;
   value->page_diagnostics.clear();
@@ -687,7 +885,7 @@ void invalidate_document(const std::shared_ptr<state>& value) {
     value->output_slots = capacity::output_budget{};
     value->request_priority = capacity::priority_policy{};
     value->output_priority = capacity::priority_policy{};
-    value->requests.push_back({0, {}, {}, {}, {}, true});
+    value->requests.push_back({0, {}, {}, {}, {}, {}, true});
   }
   value->wake.notify_one();
 }
@@ -701,8 +899,9 @@ void register_preload(const std::shared_ptr<state>& value, std::function<void()>
   const std::weak_ptr<state> weak(value);
   auto callback = Callback<ICoreWebView2AddScriptToExecuteOnDocumentCreatedCompletedHandler>(
           [value, weak, completed](HRESULT result, LPCWSTR identifier) -> HRESULT {
+            if (GetCurrentThreadId() != value->ui_thread) value->native_counters.mark_fault();
             auto script_completion = value->preparation.receive(detail::preparation_lifetime::operation::script);
-            if (!script_completion) return S_OK;
+            if (!script_completion) { value->native_counters.mark_fault(); return S_OK; }
             return boundary(weak, [completed, result, identifier](const auto& current) {
               check(result, "Register preload");
               if (!identifier) throw std::runtime_error("Preload identity missing");
@@ -724,9 +923,16 @@ void receive_message(const std::shared_ptr<state>& value, ICoreWebView2WebMessag
   check(args->TryGetWebMessageAsString(&raw.value), "String message expected");
   if (!raw.value || wcsnlen_s(raw.value, 4 * message_limit + 1) > 4 * message_limit) return;
   const auto wire = parse_bounded(utf8(raw.value));
-  if (!wire.is_object() || wire.size() != 2 || !wire.contains("documentId") ||
-      !wire["documentId"].is_string() || !wire.contains("request") || !wire["request"].is_string()) return;
+  if (!wire.is_object() || wire.size() != 3 || !wire.contains("documentId") ||
+      !wire["documentId"].is_string() || !wire.contains("invocationId") ||
+      !wire["invocationId"].is_string() || !wire.contains("request") || !wire["request"].is_string()) return;
   const auto identity = wire["documentId"].get<std::string>();
+  const auto invocation = wire["invocationId"].get<std::string>();
+  // Canonical decimal 1..Number.MAX_SAFE_INTEGER, generated by the paired preload.
+  // This is transport correlation, not admission, authorization or a new requestId.
+  if (invocation.empty() || invocation.size() > 16 || invocation.front() < '1' || invocation.front() > '9' ||
+      invocation.find_first_not_of("0123456789") != std::string::npos ||
+      (invocation.size() == 16 && invocation > "9007199254740991")) return;
   const auto request = wire["request"].get<std::string>();
   if (request.empty() || request.size() > message_limit) return;
   const auto packet = parse_bounded(request);
@@ -750,11 +956,11 @@ void receive_message(const std::shared_ptr<state>& value, ICoreWebView2WebMessag
     auto slot = value->request_slots.acquire(id, generation, category, rejected);
     if (!slot) rejection = rejected == capacity::request_budget::rejection::duplicate ? "E_DUPLICATE_REQUEST" : "E_BUSY";
     else {
-      value->requests.push_back({generation, identity, id, request,
+      value->requests.push_back({generation, identity, id, invocation, request,
           clock_type::now() + std::chrono::milliseconds(timeout), false, std::move(slot)});
     }
   }
-  if (rejection) push_output(value, {generation, identity, id,
+  if (rejection) push_output(value, {generation, identity, id, invocation,
       response_error(id, rejection, "Request was not admitted."), false, false, {}});
   else value->wake.notify_one();
 }
@@ -773,10 +979,13 @@ void install_policy(const std::shared_ptr<state>& value) {
   EventRegistrationToken token{};
   check(value->core->add_NavigationStarting(Callback<ICoreWebView2NavigationStartingEventHandler>(
       [weak](ICoreWebView2*, ICoreWebView2NavigationStartingEventArgs* args) -> HRESULT {
+        native_policy_borrow observation{weak};
         return boundary(weak, [&](const auto& current) {
           task_string uri;
           check(args->get_Uri(&uri.value), "Navigation URI");
-          const bool allowed = current->allow_navigation && uri.value && trusted_entry(uri.value);
+          const bool allowed = current->allow_navigation && uri.value && trusted_entry(uri.value)
+              && !current->retirement_required
+              ;
           check(args->put_Cancel(allowed ? FALSE : TRUE), "Navigation policy");
           if (allowed) {
             current->allow_navigation = false;
@@ -786,10 +995,14 @@ void install_policy(const std::shared_ptr<state>& value) {
         });
       }).Get(), &token), "Navigation policy registration");
   check(value->core->add_FrameNavigationStarting(Callback<ICoreWebView2NavigationStartingEventHandler>(
-      [](ICoreWebView2*, ICoreWebView2NavigationStartingEventArgs* args) -> HRESULT { return args->put_Cancel(TRUE); }
+      [weak](ICoreWebView2*, ICoreWebView2NavigationStartingEventArgs* args) -> HRESULT {
+        native_policy_borrow observation{weak};
+        return args->put_Cancel(TRUE);
+      }
       ).Get(), &token), "Frame policy registration");
   check(value->core->add_NavigationCompleted(Callback<ICoreWebView2NavigationCompletedEventHandler>(
       [weak](ICoreWebView2*, ICoreWebView2NavigationCompletedEventArgs* args) -> HRESULT {
+        native_policy_borrow observation{weak};
         return boundary(weak, [&](const auto& current) {
           UINT64 identity{};
           check(args->get_NavigationId(&identity), "Completed navigation identity");
@@ -801,23 +1014,32 @@ void install_policy(const std::shared_ptr<state>& value) {
         });
       }).Get(), &token), "Navigation completion registration");
   check(value->core->add_NewWindowRequested(Callback<ICoreWebView2NewWindowRequestedEventHandler>(
-      [](ICoreWebView2*, ICoreWebView2NewWindowRequestedEventArgs* args) -> HRESULT { return args->put_Handled(TRUE); }
+      [weak](ICoreWebView2*, ICoreWebView2NewWindowRequestedEventArgs* args) -> HRESULT {
+        native_policy_borrow observation{weak};
+        return args->put_Handled(TRUE);
+      }
       ).Get(), &token), "Popup policy registration");
   check(value->core->add_PermissionRequested(Callback<ICoreWebView2PermissionRequestedEventHandler>(
-      [](ICoreWebView2*, ICoreWebView2PermissionRequestedEventArgs* args) -> HRESULT {
+      [weak](ICoreWebView2*, ICoreWebView2PermissionRequestedEventArgs* args) -> HRESULT {
+        native_policy_borrow observation{weak};
         return args->put_State(COREWEBVIEW2_PERMISSION_STATE_DENY);
       }).Get(), &token), "Permission policy registration");
   check(value->core4->add_DownloadStarting(Callback<ICoreWebView2DownloadStartingEventHandler>(
-      [](ICoreWebView2*, ICoreWebView2DownloadStartingEventArgs* args) -> HRESULT { return args->put_Cancel(TRUE); }
+      [weak](ICoreWebView2*, ICoreWebView2DownloadStartingEventArgs* args) -> HRESULT {
+        native_policy_borrow observation{weak};
+        return args->put_Cancel(TRUE);
+      }
       ).Get(), &token), "Download policy registration");
   check(value->core->add_ProcessFailed(Callback<ICoreWebView2ProcessFailedEventHandler>(
       [weak](ICoreWebView2*, ICoreWebView2ProcessFailedEventArgs*) -> HRESULT {
+        native_policy_borrow observation{weak};
         return boundary(weak, [](const auto& current) { fail(current, "WebView2 renderer process failed"); });
       }).Get(), &token), "Process failure registration");
   check(value->core22->AddWebResourceRequestedFilterWithRequestSourceKinds(L"*", COREWEBVIEW2_WEB_RESOURCE_CONTEXT_ALL,
       COREWEBVIEW2_WEB_RESOURCE_REQUEST_SOURCE_KINDS_ALL), "Resource request filter");
   check(value->core->add_WebResourceRequested(Callback<ICoreWebView2WebResourceRequestedEventHandler>(
       [weak](ICoreWebView2*, ICoreWebView2WebResourceRequestedEventArgs* args) -> HRESULT {
+        native_policy_borrow observation{weak};
         return boundary(weak, [&](const auto& current) {
           ComPtr<ICoreWebView2WebResourceRequest> request;
           task_string uri;
@@ -831,6 +1053,7 @@ void install_policy(const std::shared_ptr<state>& value) {
       }).Get(), &token), "Resource policy registration");
   check(value->core->add_WebMessageReceived(Callback<ICoreWebView2WebMessageReceivedEventHandler>(
       [weak](ICoreWebView2*, ICoreWebView2WebMessageReceivedEventArgs* args) -> HRESULT {
+        native_policy_borrow observation{weak};
         // Malformed/untrusted messages are rejected without breaking the renderer.
         const auto current = weak.lock();
         if (!live(current)) return S_OK;
@@ -845,10 +1068,12 @@ host_result require_mounted(const std::shared_ptr<state>& value) {
   if (value->reload_preparing) return error("E_BUSY", "Reload preparation is in progress.");
   return ok();
 }
+
 HRESULT complete_controller_preparation(const std::shared_ptr<state>& current,
                                        HRESULT controller_result, ICoreWebView2Controller* controller) {
+  if (GetCurrentThreadId() != current->ui_thread) current->native_counters.mark_fault();
   auto completion = current->preparation.receive(detail::preparation_lifetime::operation::controller);
-  if (!completion) return S_OK;
+  if (!completion) { current->native_counters.mark_fault(); return S_OK; }
   const std::weak_ptr<state> weak(current);
   if (!live(current) || current->preparation.cancelled()) {
     if (!controller) {
@@ -859,7 +1084,11 @@ HRESULT complete_controller_preparation(const std::shared_ptr<state>& current,
       return S_OK;
     }
     // A returned completion is not proof that its actual Controller closed.
-    current->controller = controller;
+    {
+      native_mutation observation{*current};
+      current->controller = controller;
+      current->native_counters.acquire(observation.on_owner);
+    }
     if (current->exit_monitor) {
       ComPtr<ICoreWebView2> cancelled_core;
       const auto core_result = controller->get_CoreWebView2(&cancelled_core);
@@ -870,12 +1099,21 @@ HRESULT complete_controller_preparation(const std::shared_ptr<state>& current,
         return armed;
       }
     }
-    const auto closed = controller->Close();
+    HRESULT closed{};
+    {
+      native_mutation observation{*current};
+      closed = controller->Close();
+      current->native_counters.close_result(SUCCEEDED(closed), observation.on_owner);
+    }
     if (FAILED(closed)) {
       current->failure = error("E_WEBVIEW2_CLOSE", hresult_text(closed));
       return closed;
     }
-    current->controller.Reset();
+    {
+      native_mutation observation{*current};
+      current->controller.Reset();
+      current->native_counters.release(observation.on_owner);
+    }
     return S_OK;
   }
   if (GetCurrentThreadId() == current->ui_thread && FAILED(controller_result) && !controller)
@@ -883,11 +1121,53 @@ HRESULT complete_controller_preparation(const std::shared_ptr<state>& current,
   return boundary(weak, [weak, controller_result, controller](const auto& prepared) {
     check(controller_result, "Create WebView2 controller");
     if (!controller) throw std::runtime_error("WebView2 controller missing");
-    prepared->controller = controller;
+    {
+      native_mutation observation{*prepared};
+      prepared->controller = controller;
+      prepared->native_counters.acquire(observation.on_owner);
+    }
     check(controller->get_CoreWebView2(&prepared->core), "Get WebView2 core");
     if (prepared->exit_monitor)
       check(arm_exit_monitor(prepared->exit_monitor, prepared->core.Get()), "Arm exclusive runtime exit watch");
     install_policy(prepared);
+    if (prepared->product_devtools && (prepared->devtools_f12 || prepared->devtools_ctrl_shift_i)) {
+      check(controller->add_AcceleratorKeyPressed(
+          Callback<ICoreWebView2AcceleratorKeyPressedEventHandler>(
+              [weak](ICoreWebView2Controller* sender, ICoreWebView2AcceleratorKeyPressedEventArgs* args) noexcept -> HRESULT {
+                const auto value=weak.lock();
+                if (!value) return S_OK;
+                if (GetCurrentThreadId()!=value->ui_thread) { value->native_counters.mark_fault(); return RPC_E_WRONG_THREAD; }
+                ++value->async_active;
+                struct borrow final {
+                  std::shared_ptr<state> value;
+                  ~borrow(){--value->async_active;wake_owner(value);}
+                } held{value};
+                return boundary(weak,[&](const auto& current){
+                  if (!args || !sender || !current->controller || current->devtools_revoking) return;
+                  ComPtr<IUnknown> expected,actual;
+                  check(current->controller.As(&expected),"Controller identity");
+                  check(sender->QueryInterface(IID_PPV_ARGS(&actual)),"Key sender identity");
+                  if (expected.Get()!=actual.Get()) throw std::runtime_error("Unexpected native key sender");
+                  COREWEBVIEW2_KEY_EVENT_KIND kind{};
+                  COREWEBVIEW2_PHYSICAL_KEY_STATUS physical{};
+                  UINT key{};
+                  check(args->get_KeyEventKind(&kind),"Native key kind");
+                  check(args->get_VirtualKey(&key),"Native virtual key");
+                  check(args->get_PhysicalKeyStatus(&physical),"Native physical key status");
+                  if (kind!=COREWEBVIEW2_KEY_EVENT_KIND_KEY_DOWN || physical.WasKeyDown || physical.IsKeyReleased) return;
+                  const bool control=(GetKeyState(VK_CONTROL)&0x8000)!=0;
+                  const bool shift=(GetKeyState(VK_SHIFT)&0x8000)!=0;
+                  const bool alt=physical.IsMenuKeyDown || (GetKeyState(VK_MENU)&0x8000)!=0;
+                  const bool matches=!alt && ((current->devtools_f12 && key==VK_F12 && !control && !shift) ||
+                      (current->devtools_ctrl_shift_i && key=='I' && control && shift));
+                  if (!matches) return;
+                  check(args->put_Handled(TRUE),"Handle diagnostic shortcut request");
+                  if (!PostMessageW(current->owner,devtools_request_message,key,(control?1:0)|(shift?2:0)|(alt?4:0)))
+                    throw std::runtime_error("Cannot deliver native diagnostic request");
+                });
+              }).Get(),&prepared->devtools_keys_token),"Register window diagnostic keys");
+      prepared->devtools_keys_registered=true;
+    }
     register_preload(prepared, [weak] {
       const auto ready = weak.lock();
       if (!live(ready)) return;
@@ -913,11 +1193,16 @@ host_result retire_failed_controller_preparation(const std::shared_ptr<state>& v
 
 webview2_adapter::webview2_adapter(void* owner, std::filesystem::path profile, std::string preload,
                                  std::filesystem::path fixed_runtime)
-    : state_(std::make_shared<state>()) {
+    : webview2_adapter(owner, std::move(profile), std::move(preload), std::move(fixed_runtime), diagnostics::mode::disabled) {}
+
+webview2_adapter::webview2_adapter(void* owner, std::filesystem::path profile, std::string preload,
+                                 std::filesystem::path fixed_runtime, diagnostics::mode observation)
+    : state_(std::make_shared<state>(observation == diagnostics::mode::scalar)) {
   state_->owner = static_cast<HWND>(owner);
   state_->profile = std::move(profile);
   state_->preload = preload.empty() ? detail::webview2_preload : std::move(preload);
   state_->fixed_runtime = std::move(fixed_runtime);
+  state_->fixed_runtime.make_preferred();
   state_->document_id = document_identity();
   wchar_t owner_budget[16]{};
   const auto owner_budget_length = GetEnvironmentVariableW(L"SOUI_WEBVIEW2_OWNER_BUDGET_US", owner_budget, 16);
@@ -926,12 +1211,93 @@ webview2_adapter::webview2_adapter(void* owner, std::filesystem::path profile, s
   state_->prepare_output = GetEnvironmentVariableW(L"SOUI_WEBVIEW2_PREPARE_OUTPUT", prepare, 2) == 1 && prepare[0] == L'1';
   try { state_->trace_owner = std::make_unique<detail::trace_thread_registration>(); }
   catch (...) { input_trace::note_causal_loss(); }
+  if (state_->native_counters.enabled()) {
+    state_->native_process_id = GetCurrentProcessId();
+    state_->native_epoch = next_native_epoch();
+    FILETIME created{}, exited{}, kernel{}, user{};
+    if (GetProcessTimes(GetCurrentProcess(), &created, &exited, &kernel, &user))
+      state_->native_process_creation = (static_cast<std::uint64_t>(created.dwHighDateTime) << 32) | created.dwLowDateTime;
+    if (!state_->native_process_id || !state_->native_epoch || !state_->native_process_creation)
+      state_->native_counters.mark_fault();
+  }
+}
+
+diagnostics::webview2_resources webview2_adapter::observe_native_resources() const noexcept {
+  diagnostics::webview2_resources result;
+  const auto& value = state_;
+  if (!value->native_counters.enabled()) return result;
+  auto& observation = result.observation;
+  if (GetCurrentThreadId() != value->ui_thread) {
+    observation.state = diagnostics::status::wrong_owner_thread;
+    return result;
+  }
+  result.process_id = value->native_process_id;
+  result.owner_thread_id = value->ui_thread;
+  result.process_creation_file_time = value->native_process_creation;
+  observation.owner_epoch = value->native_epoch;
+  const auto begin = GetTickCount64();
+  if (begin > (std::numeric_limits<std::uint64_t>::max)() / 1000) {
+    observation.state = diagnostics::status::unavailable;
+    observation.clock_invalid = true;
+    return result;
+  }
+  observation.begin_monotonic_us = begin * 1000;
+  if (value->native_mutating || value->controller_close_active || value->unmount_active) {
+    observation.state = diagnostics::status::busy;
+    return result;
+  }
+  const auto counters = value->native_counters.observe();
+  const auto preparation = value->preparation.observe();
+  result.controllers_acquired_total = counters.acquired;
+  result.controllers_released_total = counters.released;
+  result.controllers_closed_total = counters.closed;
+  result.controllers_live = counters.owns_controller ? 1 : 0;
+  result.controller_close_succeeded = counters.current_closed;
+  result.preparation_pending = preparation.pending;
+  result.preparation_active = preparation.active;
+  result.asynchronous_pending = value->async_pending;
+  result.asynchronous_active = value->async_active;
+  result.policy_events_active = counters.policy_active;
+  bool monitor_complete = true;
+  if (value->exit_monitor) {
+    // The actual monitor's callback borrow is independently mutex-owned. Never
+    // call observe() here: it queries process state and has a blocking lock.
+    try {
+      std::unique_lock<std::mutex> lock(value->exit_monitor->mutex, std::try_to_lock);
+      if (!lock.owns_lock()) { observation.state = diagnostics::status::busy; return result; }
+      const auto& monitor = *value->exit_monitor;
+      if (monitor.finishing) { observation.state = diagnostics::status::busy; return result; }
+      result.runtime_exit_events_active = monitor.callbacks;
+      result.runtime_exit_fault = monitor.failure != webview2_runtime_exit_error::none;
+      result.runtime_exit_registered = monitor.registered;
+      result.runtime_exit_finished = monitor.finished || monitor.disposed;
+      result.runtime_exit_pending = monitor.registered && !result.runtime_exit_finished;
+      monitor_complete = result.runtime_exit_finished && !monitor.registered && !monitor.callbacks;
+    } catch (...) { observation.state = diagnostics::status::unavailable; return result; }
+  }
+  result.counter_fault = counters.fault || !result.process_id || !result.process_creation_file_time ||
+      !observation.owner_epoch || counters.owns_controller != static_cast<bool>(value->controller) ||
+      counters.released > counters.closed || counters.closed > counters.acquired ||
+      counters.acquired - counters.released != result.controllers_live;
+  const auto end = GetTickCount64();
+  observation.clock_invalid = end < begin || end > (std::numeric_limits<std::uint64_t>::max)() / 1000;
+  if (!observation.clock_invalid) observation.end_monotonic_us = end * 1000;
+  if (result.counter_fault || result.runtime_exit_fault || observation.clock_invalid || value->current == state::phase::failed)
+    observation.state = diagnostics::status::unavailable;
+  else if (value->current == state::phase::created)
+    observation.state = diagnostics::status::not_started;
+  else observation.state = diagnostics::status::ready;
+  result.terminal_snapshot = observation.state == diagnostics::status::ready && value->current == state::phase::closed &&
+      !result.controllers_live && !result.preparation_pending && !result.preparation_active &&
+      !result.asynchronous_pending && !result.asynchronous_active && !result.policy_events_active && monitor_complete;
+  return result;
 }
 
 webview2_adapter::~webview2_adapter() {
   // Applications must finish close before destruction. Joining preserves the
   // borrowed Bridge's lifetime even when a consumer violates that contract.
   auto value = state_;
+  if (value->async_pending || value->async_active || value->unmount_active) std::terminate();
   if (value->profile_access == webview2_profile_access::exclusive &&
       (GetCurrentThreadId() != value->ui_thread || !value->preparation.settled() || !exit_finished(value->exit_monitor)))
     std::terminate(); // Pending application-exclusive ownership cannot be silently discarded.
@@ -952,7 +1318,11 @@ webview2_adapter::~webview2_adapter() {
     value->bridge->set_event_sink({});
     value->bridge->set_owner_window(nullptr);
   }
-  if (value->controller) (void)value->controller->Close();
+  if (value->controller) {
+    native_mutation observation{*value};
+    const auto closed = value->controller->Close();
+    value->native_counters.close_result(SUCCEEDED(closed), observation.on_owner);
+  }
   value->current = state::phase::closed;
   value->trace_owner.reset();
 }
@@ -963,9 +1333,19 @@ host_result webview2_adapter::configure_profile_access(webview2_profile_access a
   if (value->current != state::phase::created) return error("E_INVALID_STATE", "Profile access is frozen before preparation.");
   if (access != webview2_profile_access::shared && access != webview2_profile_access::exclusive)
     return error("E_INVALID_PARAMS", "Unknown profile access policy.");
+  if (value->product_devtools && access != webview2_profile_access::exclusive)
+    return error("E_DEVTOOLS_POLICY", "Controlled DevTools owns an exclusive target profile.");
+  if (value->product_devtools) value->profile_access_before_devtools = access;
   value->profile_access = access; return ok();
 }
 host_result webview2_adapter::acquire_runtime_exit_watch(std::unique_ptr<webview2_runtime_exit_watch>& output) {
+  if (GetCurrentThreadId() != state_->ui_thread)
+    return error("E_THREAD", "Runtime exit acquisition requires the UI STA.");
+  if (state_->product_devtools)
+    return error("E_RUNTIME_WATCH_ALREADY_ACQUIRED", "Controlled DevTools retains its own runtime exit owner.");
+  return acquire_runtime_exit_watch_owned(output);
+}
+host_result webview2_adapter::acquire_runtime_exit_watch_owned(std::unique_ptr<webview2_runtime_exit_watch>& output) {
   const auto value = state_;
   if (GetCurrentThreadId() != value->ui_thread) return error("E_THREAD", "Runtime exit acquisition requires the UI STA.");
   if (value->profile_access != webview2_profile_access::exclusive)
@@ -1039,8 +1419,10 @@ void webview2_adapter::prepare_async(std::function<void(host_result)> completed)
   const std::weak_ptr<state> weak(value);
   auto callback = Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
           [value, weak](HRESULT result, ICoreWebView2Environment* environment) -> HRESULT {
+            if (GetCurrentThreadId() != value->ui_thread) value->native_counters.mark_fault();
             auto environment_completion = value->preparation.receive(detail::preparation_lifetime::operation::environment);
-            if (!environment_completion || value->preparation.cancelled()) return S_OK;
+            if (!environment_completion) { value->native_counters.mark_fault(); return S_OK; }
+            if (value->preparation.cancelled()) return S_OK;
             return boundary(weak, [weak, result, environment](const auto& current) {
               if (FAILED(result) && !environment) current->preparation_failed_without_environment = true;
               check(result, "Create WebView2 environment");
@@ -1081,8 +1463,10 @@ void webview2_adapter::prepare_async(std::function<void(host_result)> completed)
 }
 
 host_result webview2_adapter::status() const {
-  if (state_->failed_preparation_cleanup_done) return state_->failure;
   if (state_->failure.code == "E_CALLBACK" || state_->failure.code == "E_WEBVIEW2_CLOSE") return state_->failure;
+  if (FAILED(state_->cancelled_controller_failure))
+    return error("E_WEBVIEW2", "Create WebView2 controller: " + hresult_text(state_->cancelled_controller_failure));
+  if (state_->failed_preparation_cleanup_done) return state_->failure;
   if (state_->current == state::phase::failed) return state_->failure;
   if (state_->current == state::phase::created || state_->current == state::phase::preparing)
     return error("E_PENDING", "Preparing WebView2 asynchronously.");
@@ -1128,13 +1512,17 @@ host_result webview2_adapter::mount(const sdk::host_config& config) {
           std::lock_guard<std::mutex> lock(current->mutex);
           if (current->stop_requested || current->active_session.empty() ||
               packet.value("sessionId", std::string{}) != current->active_session) return;
-          output = {current->generation, current->document_id, {}, std::string(raw), true, false};
+          output = {current->generation, current->document_id, {}, {}, std::string(raw), true, false};
         }
         push_output(current, std::move(output));
       } catch (...) {}
     });
     value->worker_done.store(false, std::memory_order_release);
-    try { value->worker = std::thread([value] { bridge_worker(value); }); }
+    value->scope_shutdown_result.store(state::scope_shutdown::pending, std::memory_order_release);
+    try {
+      value->worker = std::thread([value] { bridge_worker(value); });
+      value->worker_started = true;
+    }
     catch (...) { value->worker_done.store(true, std::memory_order_release); throw; }
     value->current = state::phase::mounted;
     value->allow_navigation = true;
@@ -1150,7 +1538,11 @@ host_result webview2_adapter::mount(const sdk::host_config& config) {
     value->wake.notify_all();
     if (value->worker.joinable()) value->worker.join();
     if (value->bridge) { value->bridge->set_event_sink({}); value->bridge->set_owner_window(nullptr); value->bridge = nullptr; }
-    if (value->controller) (void)value->controller->Close();
+    if (value->controller) {
+      native_mutation observation{*value};
+      const auto closed = value->controller->Close();
+      value->native_counters.close_result(SUCCEEDED(closed), observation.on_owner);
+    }
     return value->failure;
   }
 }
@@ -1159,25 +1551,23 @@ host_result webview2_adapter::unmount() {
   auto value = state_;
   if (GetCurrentThreadId() != value->ui_thread) return error("E_THREAD", "Unmount requires the UI STA.");
   if (value->current == state::phase::closed) return ok();
-  if (value->failed_preparation_cleanup_in_progress)
-    return error("E_BUSY", "Failed Controller ownership release is already active.");
+  if (value->failed_preparation_cleanup_in_progress || value->controller_close_active || value->unmount_active)
+    return error("E_BUSY", "WebView2 teardown is already active.");
+  struct unmount_borrow final {
+    bool& active;
+    explicit unmount_borrow(bool& flag) : active(flag) { active = true; }
+    ~unmount_borrow() { active = false; }
+  } borrowed_unmount(value->unmount_active);
   value->preparation.cancel();
   value->current = state::phase::closing;
   finish_preparation(value, error("E_CANCELLED", "WebView2 preparation was cancelled."));
   value->document_ready = value->application_ready = false;
-  {
-    std::lock_guard<std::mutex> lock(value->mutex);
-    value->stop_requested = true;
-    ++value->generation;
-    value->requests.clear();
-    value->outputs.clear();
-    value->output_slots = capacity::output_budget{};
-  }
-  value->wake.notify_all();
+  stop_bridge_admission(value);
   if (!value->preparation.settled())
     return error("E_BUSY", "WebView2 initialization callbacks are finishing bounded teardown.");
   if (!value->worker_done.load(std::memory_order_acquire)) return error("E_BUSY", "Bridge worker is finishing bounded teardown.");
   if (value->worker.joinable()) value->worker.join();
+  if (value->async_active) return error("E_BUSY", "WebView2 callbacks are still borrowed.");
   if (value->bridge) { value->bridge->set_event_sink({}); value->bridge->set_owner_window(nullptr); value->bridge = nullptr; }
   if (value->preparation_failed_without_environment && !value->failure.ok &&
       !value->exit_monitor && !value->environment && !value->controller && !value->core &&
@@ -1185,16 +1575,58 @@ host_result webview2_adapter::unmount() {
     value->failed_preparation_cleanup_done = true; // Local failure cleanup, never a browser exit receipt.
   const auto failed_cleanup = retire_failed_controller_preparation(value);
   if (!failed_cleanup.ok) return failed_cleanup;
-  if (value->exit_monitor && value->core) {
+  if (value->exit_monitor && value->core && !value->controller_closed) {
     UINT32 current_pid{};
     const auto identified = value->core->get_BrowserProcessId(&current_pid);
     if (FAILED(identified) || current_pid != value->exit_monitor->pid)
       exit_failure(value->exit_monitor, webview2_runtime_exit_error::browser_changed, identified);
   }
-  const auto result = value->controller ? value->controller->Close() : S_OK;
-  if (FAILED(result)) return error("E_WEBVIEW2_CLOSE", hresult_text(result));
+  if (!value->controller_closed) {
+    struct close_borrow final {
+      bool& active;
+      explicit close_borrow(bool& flag) : active(flag) { active = true; }
+      ~close_borrow() { active = false; }
+    } borrowed(value->controller_close_active);
+    if (value->devtools_keys_registered) {
+      const auto removed=value->controller->remove_AcceleratorKeyPressed(value->devtools_keys_token);
+      if (FAILED(removed)) return error("E_WEBVIEW2",hresult_text(removed));
+      value->devtools_keys_registered=false;
+    }
+#ifdef SOUI_HOST_STAGE0_DEVTOOLS_TEST_ONLY
+    if (value->paused_registered) {
+      const auto removed = value->paused_receiver->remove_DevToolsProtocolEventReceived(value->paused_token);
+      if (FAILED(removed)) { value->protocol_failed = true; return error("E_WEBVIEW2", hresult_text(removed)); }
+      value->paused_registered = false;
+    }
+    if (value->resumed_registered) {
+      const auto removed = value->resumed_receiver->remove_DevToolsProtocolEventReceived(value->resumed_token);
+      if (FAILED(removed)) { value->protocol_failed = true; return error("E_WEBVIEW2", hresult_text(removed)); }
+      value->resumed_registered = false;
+    }
+#endif
+    HRESULT result = S_OK;
+    if (value->controller) {
+      native_mutation observation{*value};
+      result = value->controller->Close();
+      value->native_counters.close_result(SUCCEEDED(result), observation.on_owner);
+    }
+    if (FAILED(result)) return error("E_WEBVIEW2_CLOSE", hresult_text(result));
+    value->controller_closed = true;
+  }
+  // A paused ExecuteScript can complete only after its target closes. Keep the
+  // original Core/Controller ownership until the real completion has returned.
+  if (value->async_pending || value->async_active)
+    return error("E_BUSY", "WebView2 native completions are finishing after target close.");
+#ifdef SOUI_HOST_STAGE0_DEVTOOLS_TEST_ONLY
+  value->paused_receiver.Reset(); value->resumed_receiver.Reset();
+#endif
   value->core22.Reset(); value->core4.Reset(); value->core3.Reset(); value->core.Reset();
-  value->controller.Reset(); value->environment.Reset();
+  if (value->controller) {
+    native_mutation observation{*value};
+    value->controller.Reset();
+    value->native_counters.release(observation.on_owner);
+  }
+  value->environment.Reset();
   value->current = state::phase::closed;
   value->trace_owner.reset(); // Last UI Host releases the shared producer before export.
   return ok();
@@ -1223,6 +1655,8 @@ host_result webview2_adapter::reload() {
   auto value = state_;
   const auto active = require_mounted(value);
   if (!active.ok) return active;
+  if (value->retirement_required)
+    return error("E_TARGET_RETIREMENT_REQUIRED", "The exposed target must retire before another document can load.");
   try {
     invalidate_document(value);
     value->reload_preparing = true;
@@ -1261,25 +1695,29 @@ void webview2_adapter::pump() {
         value->diagnostic_query_pending = true;
         value->diagnostic_query_at = clock_type::now();
         const std::weak_ptr<state> weak(value);
-        const auto queried = diagnostic_target->ExecuteScript(
-            LR"((function(){return {document:document.readyState,visibility:document.visibilityState,binding:typeof window.__souiNativePostMessage};})())",
-            Callback<ICoreWebView2ExecuteScriptCompletedHandler>(
-                [weak, queried_generation](HRESULT result, LPCWSTR raw) -> HRESULT {
-                  const auto current = weak.lock();
-                  if (!current || current->current != state::phase::mounted || current->generation != queried_generation) return S_OK;
-                  const auto target = current->core;
-                  if (!target || !current_source(current) || current->current != state::phase::mounted
-                      || current->generation != queried_generation || current->core.Get() != target.Get()) return S_OK;
-                  current->diagnostic_query_pending = false;
-                  try {
-                    if (SUCCEEDED(result) && raw) {
-                      current->page_diagnostics = utf8(raw);
-                    }
+        const auto receipt = begin_async(value);
+      const auto queried = diagnostic_target->ExecuteScript(
+          LR"((function(){return {document:document.readyState,visibility:document.visibilityState,binding:typeof window.__souiNativePostMessage};})())",
+          Callback<ICoreWebView2ExecuteScriptCompletedHandler>(
+              [weak, queried_generation, receipt](HRESULT result, LPCWSTR raw) -> HRESULT {
+                const auto current = weak.lock();
+                if (!current) return S_OK;
+                async_completion completed(current, receipt);
+                if (!completed) return S_OK;
+                if (!live(current) || current->generation != queried_generation || !current_source(current)) return S_OK;
+                current->diagnostic_query_pending = false;
+                try {
+                  if (SUCCEEDED(result) && raw) {
+                    current->page_diagnostics = utf8(raw);
                   }
-                  catch (...) {}
-                  return S_OK;
-                }).Get());
-        if (FAILED(queried) && diagnostic_current()) value->diagnostic_query_pending = false;
+                }
+                catch (...) {}
+                return S_OK;
+              }).Get());
+      if (FAILED(queried)) {
+        reject_async(value, receipt);
+        if (diagnostic_current()) value->diagnostic_query_pending = false;
+      }
       }
     }
     // Owner notification drains a bounded batch; workers never invoke WebView2 COM.
@@ -1341,5 +1779,429 @@ std::string webview2_adapter::application_diagnostics() {
   return std::string("webview2;document=") + (document_ready() ? "ready" : "pending") +
       ";application=" + (application_ready() ? "ready" : "pending") + ";page=" + state_->page_diagnostics;
 }
+
+namespace {
+host_result require_devtools_target(const std::shared_ptr<state>& value) {
+  const auto mounted = require_mounted(value);
+  if (!mounted.ok) return mounted;
+  if (!value->devtools_enabled || !value->destroy_target_accepted)
+    return error("E_DEVTOOLS_DISABLED", "Native policy has not accepted target destruction.");
+  if (value->profile_access != webview2_profile_access::exclusive || !value->exit_monitor)
+    return error("E_RUNTIME_WATCH_REQUIRED", "Controlled DevTools requires an exclusive owning runtime watch.");
+  {
+    const auto monitor = value->exit_monitor;
+    std::lock_guard<std::mutex> lock(monitor->mutex);
+    if (!monitor->armed || !monitor->acquired || !monitor->registered || monitor->finished || monitor->finishing ||
+        monitor->event_observed || monitor->failure != webview2_runtime_exit_error::none)
+      return error("E_RUNTIME_WATCH_FAILED", "The original runtime watch is not healthy and owned.");
+  }
+  if (!value->preparation.settled() || value->async_pending || value->async_active
+#ifdef SOUI_HOST_STAGE0_DEVTOOLS_TEST_ONLY
+      || value->protocol_failed
+#endif
+      )
+    return error("E_BUSY", "Native callbacks must settle before DevTools admission.");
+  if (!value->document_ready || !value->application_ready || !current_source(value))
+    return error("E_NOT_READY", "The trusted application document is not ready.");
+  {
+    std::lock_guard<std::mutex> lock(value->mutex);
+    if (value->stop_requested || value->active_session.empty() || value->worker_done.load(std::memory_order_acquire) ||
+        value->scope_ownership_uncertain.load(std::memory_order_acquire))
+      return error("E_UNAUTHORIZED", "The native business session is not active.");
+  }
+  UINT32 pid{};
+  const auto identified = value->core->get_BrowserProcessId(&pid);
+  if (FAILED(identified) || pid != value->exit_monitor->pid)
+    return error("E_RUNTIME_WATCH_FAILED", "The target browser identity changed.");
+  return ok();
+}
+} // namespace
+
+host_result webview2_adapter::configure_devtools_native(const devtools::configuration& config) {
+  const auto value = state_;
+  if (GetCurrentThreadId() != value->ui_thread)
+    return error("E_THREAD", "Native DevTools policy requires the owning UI STA.");
+  if (value->current != state::phase::created)
+    return error("E_BUSY", "Native DevTools policy is fixed before WebView2 preparation.");
+  if (config.access != devtools::policy::disabled && config.access != devtools::policy::application_controlled)
+    return error("E_INVALID_PARAMS", "Unknown native DevTools policy.");
+  const bool enabled = config.access == devtools::policy::application_controlled;
+  if (enabled && config.ending != devtools::termination::destroy_target)
+    return error("E_NOT_SUPPORTED", "WebView2 controlled DevTools requires explicit target destruction.");
+  if (enabled && !value->product_devtools) value->profile_access_before_devtools = value->profile_access;
+  if (!enabled && value->product_devtools) value->profile_access = value->profile_access_before_devtools;
+  value->devtools_enabled = enabled;
+  value->destroy_target_accepted = enabled;
+  value->product_devtools = enabled;
+  value->devtools_f12 = enabled && config.f12;
+  value->devtools_ctrl_shift_i = enabled && config.ctrl_shift_i;
+  if (enabled) value->profile_access = webview2_profile_access::exclusive;
+  return ok();
+}
+
+devtools::capabilities webview2_adapter::devtools_capabilities_native() const {
+  devtools::capabilities result;
+  result.native_open = true;
+  result.destroy_target = true;
+  // OpenDevToolsWindow has no reliable attachment, visibility or close event.
+  // The fixed debugger experiment does not turn these into product observations.
+  return result;
+}
+
+host_result webview2_adapter::prepare_devtools_grant(devtools::target_identity& output) {
+  const auto value = state_;
+  const auto mounted = require_mounted(value);
+  if (!mounted.ok) return mounted;
+  if (!value->product_devtools || !value->devtools_enabled || !value->destroy_target_accepted)
+    return error("E_DEVTOOLS_DISABLED", "Native controlled DevTools has not been configured.");
+  if (value->devtools_revoking || value->devtools_retired)
+    return error("E_TARGET_RETIREMENT_REQUIRED", "This target is already retiring.");
+  if (!value->devtools_exit_watch) {
+    const auto acquired = acquire_runtime_exit_watch_owned(value->devtools_exit_watch);
+    if (!acquired.ok) return acquired;
+  }
+  const auto ready = require_devtools_target(value);
+  if (!ready.ok) return ready;
+  devtools::target_identity target;
+  {
+    std::lock_guard<std::mutex> lock(value->mutex);
+    target.generation = value->generation;
+    target.document = value->document_id;
+    target.ready = true;
+  }
+  ++value->grant_epoch;
+  value->native_grant = true;
+  output = std::move(target);
+  return ok();
+}
+
+devtools::target_identity webview2_adapter::devtools_target_native() const {
+  const auto value = state_;
+  devtools::target_identity result;
+  if (GetCurrentThreadId() != value->ui_thread) return result;
+  std::lock_guard<std::mutex> lock(value->mutex);
+  result.generation = value->generation;
+  result.document = value->document_id;
+  result.ready = value->current == state::phase::mounted && !value->reload_preparing &&
+      value->document_ready && value->application_ready && !value->stop_requested &&
+      !value->active_session.empty() && !value->worker_done.load(std::memory_order_acquire) &&
+      !value->scope_ownership_uncertain.load(std::memory_order_acquire);
+  return result;
+}
+
+host_result webview2_adapter::open_devtools_native() {
+  const auto value = state_;
+  const auto ready = require_devtools_target(value);
+  if (!ready.ok) return ready;
+  if (!value->product_devtools || !value->native_grant || !value->devtools_exit_watch)
+    return error("E_UNAUTHORIZED", "The native Host has not prepared authority for this target.");
+  if (value->devtools_revoking || value->devtools_retired)
+    return error("E_TARGET_RETIREMENT_REQUIRED", "This target is already retiring.");
+  if (value->open_attempted) {
+    if (value->open_accepted) return ok();
+    return error("E_TARGET_RETIREMENT_REQUIRED", "A prior open attempt requires target retirement.");
+  }
+  // COM may reenter the STA, or fail after exposing the target. Install the
+  // document boundary before the call and never undo it on HRESULT failure.
+  value->open_attempted = value->retirement_required = true;
+  const auto result = value->core->OpenDevToolsWindow();
+  value->devtools_native_error = static_cast<std::int32_t>(result);
+  if (FAILED(result)) return error("E_WEBVIEW2", hresult_text(result));
+  value->open_accepted = true;
+  return ok(); // Accepted is not evidence of attachment or a visible window.
+}
+
+host_result webview2_adapter::revoke_devtools_native(devtools::revoke_reason) {
+  const auto value = state_;
+  if (GetCurrentThreadId() != value->ui_thread)
+    return error("E_THREAD", "Native DevTools revocation requires the owning UI STA.");
+  if (!value->product_devtools) return ok();
+  if (value->devtools_retired) return ok();
+  value->devtools_revoking = true;
+  value->document_ready = value->application_ready = false;
+  stop_bridge_admission(value);
+  // There is no inspector-only close receipt. The Host must drive unmount and
+  // the owned browser exit barrier before it may report this revoke drained.
+  return ok();
+}
+
+devtools::observation webview2_adapter::observe_devtools_native() const {
+  const auto value = state_;
+  devtools::observation result;
+  if (GetCurrentThreadId() != value->ui_thread) {
+    result.state = devtools::phase::failed;
+    result.code = "E_THREAD";
+    result.resources_retained = true;
+    return result;
+  }
+  if (!value->product_devtools) return result;
+  result.grant_valid = value->native_grant && devtools_target_native().ready;
+  result.retirement_required = value->retirement_required && !value->devtools_retired;
+  result.pending_callbacks = value->async_pending;
+  result.active_callbacks = value->async_active;
+  result.native_error = value->devtools_native_error;
+  result.resources_retained = value->environment || value->controller || value->core ||
+      !value->preparation.settled() || value->async_pending || value->async_active ||
+      value->worker.joinable() || !value->worker_done.load(std::memory_order_acquire) ||
+      !exit_finished(value->exit_monitor);
+  if (value->devtools_retired) result.state = devtools::phase::drained;
+  else if (value->devtools_revoking) result.state = devtools::phase::revoking;
+  else if (value->open_attempted) result.state = devtools::phase::opening;
+  if (!value->devtools_failure.code.empty()) {
+    result.state = devtools::phase::failed;
+    result.code = value->devtools_failure.code;
+  } else if (value->current == state::phase::failed) {
+    result.state = devtools::phase::failed;
+    result.code = value->failure.code;
+  } else if (value->open_attempted && !value->open_accepted && !value->devtools_revoking && !value->devtools_retired) {
+    result.state = devtools::phase::failed;
+    result.code = "E_WEBVIEW2";
+  }
+  if (value->devtools_exit_watch) {
+    const auto watched = value->devtools_exit_watch->observe();
+    result.active_callbacks = watched.active_callbacks > UINT32_MAX - result.active_callbacks
+        ? UINT32_MAX : result.active_callbacks + watched.active_callbacks;
+    if (watched.phase == webview2_runtime_exit_phase::failed) {
+      result.state = devtools::phase::failed;
+      if (result.code.empty()) result.code = "E_RUNTIME_WATCH_FAILED";
+      result.native_error = watched.hresult;
+    }
+  }
+  return result;
+}
+
+host_result webview2_adapter::finish_devtools_retirement() {
+  const auto value = state_;
+  if (GetCurrentThreadId() != value->ui_thread)
+    return error("E_THREAD", "Native DevTools retirement requires the owning UI STA.");
+  if (!value->product_devtools || value->devtools_retired) return ok();
+  if (value->current != state::phase::closed || !value->preparation.settled() ||
+      !value->worker_done.load(std::memory_order_acquire) || value->worker.joinable() ||
+      value->async_pending || value->async_active || value->controller || value->core || value->environment)
+    return error("E_BUSY", "The original target and callbacks have not finished unmount.");
+
+  const auto shutdown = value->scope_shutdown_result.load(std::memory_order_acquire);
+  if (!value->failure.code.empty() && value->devtools_failure.code.empty()) value->devtools_failure = value->failure;
+  if (value->worker_started && shutdown != state::scope_shutdown::succeeded && value->devtools_failure.code.empty())
+    value->devtools_failure = error("E_DEVTOOLS_SCOPE_DRAIN", "The original business scope did not acknowledge successful revocation.");
+
+  if (value->exit_monitor && !value->devtools_exit_watch) {
+    const auto acquired = acquire_runtime_exit_watch_owned(value->devtools_exit_watch);
+    if (!acquired.ok) return acquired;
+  }
+  if (value->devtools_exit_watch) {
+    const auto watched = value->devtools_exit_watch->observe();
+    if (watched.phase == webview2_runtime_exit_phase::failed) {
+      value->devtools_native_error = watched.hresult;
+      if (value->devtools_failure.code.empty())
+        value->devtools_failure = error("E_RUNTIME_WATCH_FAILED", "The original browser did not prove normal retirement.");
+      const auto disposed = value->devtools_exit_watch->dispose_failed();
+      if (!disposed.ok) return disposed;
+      return value->devtools_failure; // Resources released; the failure is still terminal.
+    }
+    const auto finished = value->devtools_exit_watch->finish();
+    if (!finished.ok) return finished;
+  }
+  if (!value->devtools_failure.code.empty()) return value->devtools_failure;
+  value->devtools_retired = true;
+  return ok();
+}
+
+#ifdef SOUI_HOST_STAGE0_DEVTOOLS_TEST_ONLY
+namespace {
+
+class stage0_event_borrow final {
+ public:
+  explicit stage0_event_borrow(std::shared_ptr<state> value) : value_(std::move(value)) { ++value_->async_active; }
+  ~stage0_event_borrow() { --value_->async_active; wake_owner(value_); }
+  stage0_event_borrow(const stage0_event_borrow&) = delete;
+  stage0_event_borrow& operator=(const stage0_event_borrow&) = delete;
+ private:
+  std::shared_ptr<state> value_;
+};
+
+HRESULT stage0_debugger_event(const std::weak_ptr<state>& weak, ICoreWebView2* sender, bool paused) noexcept {
+  const auto value = weak.lock();
+  if (!value) return S_OK;
+  stage0_event_borrow borrowed(value);
+  if (!live(value) || !value->open_attempted) return S_OK;
+  ComPtr<IUnknown> actual, incoming;
+  if (!sender || FAILED(value->core.As(&actual)) ||
+      FAILED(sender->QueryInterface(IID_PPV_ARGS(&incoming))) || actual.Get() != incoming.Get()) {
+    value->protocol_failed = true;
+    return E_FAIL;
+  }
+  value->paused = paused;
+  if (paused) ++value->pause_events; else ++value->resume_events;
+  return S_OK;
+}
+} // namespace
+
+host_result detail::stage0_webview2_access::configure(webview2_adapter& adapter, bool enabled, bool accept_destroy_target) {
+  const auto value = adapter.state_;
+  if (GetCurrentThreadId() != value->ui_thread) return error("E_THREAD", "Native policy requires the UI STA.");
+  if (value->current != state::phase::created) return error("E_BUSY", "Native policy is fixed before prepare.");
+  if (enabled && (!accept_destroy_target || value->profile_access != webview2_profile_access::exclusive))
+    return error("E_DEVTOOLS_POLICY", "Accept target destruction and exclusive profile ownership before enabling.");
+  value->devtools_enabled = enabled;
+  value->destroy_target_accepted = enabled && accept_destroy_target;
+  return ok();
+}
+
+host_result detail::stage0_webview2_access::grant(webview2_adapter& adapter, stage0_webview2_grant& output) {
+  const auto value = adapter.state_;
+  const auto ready = require_devtools_target(value);
+  if (!ready.ok) return ready;
+  stage0_webview2_grant next;
+  next.owner_ = value;
+  next.process_ = GetCurrentProcessId();
+  next.epoch_ = ++value->grant_epoch;
+  {
+    std::lock_guard<std::mutex> lock(value->mutex);
+    next.generation_ = value->generation;
+    next.document_ = value->document_id;
+  }
+  output = std::move(next);
+  value->native_grant = true;
+  return ok();
+}
+
+host_result detail::stage0_webview2_access::validate(const webview2_adapter& adapter, const stage0_webview2_grant& grant) {
+  const auto value = adapter.state_;
+  const auto ready = require_devtools_target(value);
+  if (!ready.ok) return ready;
+  std::lock_guard<std::mutex> lock(value->mutex);
+  if (!value->native_grant || grant.owner_.lock() != value || grant.process_ != GetCurrentProcessId() ||
+      grant.epoch_ != value->grant_epoch || grant.generation_ != value->generation || grant.document_ != value->document_id)
+    return error("E_UNAUTHORIZED", "The native grant does not belong to this target document.");
+  return ok();
+}
+
+host_result detail::stage0_webview2_access::open(webview2_adapter& adapter, const stage0_webview2_grant& grant) {
+  const auto authorized = validate(adapter, grant);
+  if (!authorized.ok) return authorized;
+  const auto value = adapter.state_;
+  value->open_attempted = value->retirement_required = true;
+  const auto result = value->core->OpenDevToolsWindow();
+  if (FAILED(result)) return error("E_WEBVIEW2", hresult_text(result));
+  value->open_accepted = true;
+  return ok(); // Native accepted only; attached/visible remain unknown.
+}
+
+host_result detail::stage0_webview2_access::revoke_grant(webview2_adapter& adapter) {
+  const auto value = adapter.state_;
+  if (GetCurrentThreadId() != value->ui_thread) return error("E_THREAD", "Grant revocation requires the UI STA.");
+  value->native_grant = false;
+  ++value->grant_epoch;
+  return ok(); // Does not terminate an already connected inspector.
+}
+
+host_result detail::stage0_webview2_access::begin_retirement(webview2_adapter& adapter) {
+  const auto value = adapter.state_;
+  if (GetCurrentThreadId() != value->ui_thread) return error("E_THREAD", "Retirement requires the UI STA.");
+  stop_bridge_admission(value);
+  return ok(); // Admission is closed. Public Host close drives actual drain.
+}
+
+host_result detail::stage0_webview2_access::enable_debugger(webview2_adapter& adapter, const stage0_webview2_grant& grant) {
+  const auto authorized = validate(adapter, grant);
+  if (!authorized.ok) return authorized;
+  const auto value = adapter.state_;
+  if (!value->open_accepted) return error("E_NOT_READY", "Open must be accepted before the fixed pause experiment.");
+  if (value->debugger_enabled) return ok();
+  const std::weak_ptr<state> weak(value);
+  try {
+    if (!value->paused_registered) {
+      check(value->core->GetDevToolsProtocolEventReceiver(L"Debugger.paused", &value->paused_receiver), "Pause receiver");
+      check(value->paused_receiver->add_DevToolsProtocolEventReceived(
+          Callback<ICoreWebView2DevToolsProtocolEventReceivedEventHandler>(
+              [weak](ICoreWebView2* sender, ICoreWebView2DevToolsProtocolEventReceivedEventArgs*) -> HRESULT {
+                return stage0_debugger_event(weak, sender, true);
+              }).Get(), &value->paused_token), "Pause subscription");
+      value->paused_registered = true;
+    }
+    if (!value->resumed_registered) {
+      check(value->core->GetDevToolsProtocolEventReceiver(L"Debugger.resumed", &value->resumed_receiver), "Resume receiver");
+      check(value->resumed_receiver->add_DevToolsProtocolEventReceived(
+          Callback<ICoreWebView2DevToolsProtocolEventReceivedEventHandler>(
+              [weak](ICoreWebView2* sender, ICoreWebView2DevToolsProtocolEventReceivedEventArgs*) -> HRESULT {
+                return stage0_debugger_event(weak, sender, false);
+              }).Get(), &value->resumed_token), "Resume subscription");
+      value->resumed_registered = true;
+    }
+    const auto receipt = begin_async(value);
+    value->debugger_enable_pending = true;
+    const auto submitted = value->core->CallDevToolsProtocolMethod(L"Debugger.enable", L"{}",
+        Callback<ICoreWebView2CallDevToolsProtocolMethodCompletedHandler>(
+            [weak, receipt](HRESULT result, LPCWSTR) -> HRESULT {
+              const auto current = weak.lock();
+              if (!current) return S_OK;
+              async_completion completed(current, receipt);
+              if (!completed) return S_OK;
+              current->debugger_enable_pending = false;
+              if (!live(current) || current->stop_requested) return S_OK;
+              if (FAILED(result)) current->protocol_failed = true;
+              else current->debugger_enabled = true;
+              return S_OK;
+            }).Get());
+    if (FAILED(submitted)) {
+      reject_async(value, receipt); value->debugger_enable_pending = false; value->protocol_failed = true;
+      return error("E_WEBVIEW2", hresult_text(submitted));
+    }
+    return ok();
+  } catch (const std::exception& exception) {
+    value->protocol_failed = true;
+    return error("E_WEBVIEW2", exception.what());
+  }
+}
+
+host_result detail::stage0_webview2_access::request_debugger_pause(webview2_adapter& adapter, const stage0_webview2_grant& grant) {
+  const auto authorized = validate(adapter, grant);
+  if (!authorized.ok) return authorized;
+  const auto value = adapter.state_;
+  if (!value->debugger_enabled || value->paused || value->pause_pending)
+    return error("E_NOT_READY", "The fixed debugger pause is not ready.");
+  const std::weak_ptr<state> weak(value);
+  const auto receipt = begin_async(value);
+  value->pause_pending = true;
+  const auto submitted = value->core->ExecuteScript(L"debugger; void 0;",
+      Callback<ICoreWebView2ExecuteScriptCompletedHandler>(
+          [weak, receipt](HRESULT result, LPCWSTR) -> HRESULT {
+            const auto current = weak.lock();
+            if (!current) return S_OK;
+            async_completion completed(current, receipt);
+            if (!completed) return S_OK;
+            current->pause_pending = false;
+            if (live(current) && !current->stop_requested && FAILED(result)) current->protocol_failed = true;
+            return S_OK;
+          }).Get());
+  if (FAILED(submitted)) {
+    reject_async(value, receipt); value->pause_pending = false; value->protocol_failed = true;
+    return error("E_WEBVIEW2", hresult_text(submitted));
+  }
+  return ok();
+}
+
+detail::stage0_webview2_observation detail::stage0_webview2_access::observe(const webview2_adapter& adapter) {
+  const auto value = adapter.state_;
+  stage0_webview2_observation result;
+  if (GetCurrentThreadId() != value->ui_thread) { result.wrong_thread = true; return result; }
+  result.policy_enabled = value->devtools_enabled;
+  result.grant_valid = value->native_grant && value->current == state::phase::mounted;
+  result.open_attempted = value->open_attempted; result.open_accepted = value->open_accepted;
+  result.retirement_required = value->retirement_required;
+  { std::lock_guard<std::mutex> lock(value->mutex); result.admission_closed = value->stop_requested; }
+  result.worker_done = value->worker_done.load(std::memory_order_acquire);
+  result.worker_joined = result.worker_done && !value->worker.joinable() &&
+      value->scope_shutdown_result.load(std::memory_order_acquire) != state::scope_shutdown::not_started;
+  result.controller_closed = value->controller_closed;
+  result.debugger_enabled = value->debugger_enabled; result.paused = value->paused;
+  result.protocol_failed = value->protocol_failed;
+  result.pending_callbacks = value->async_pending; result.active_callbacks = value->async_active;
+  result.pause_events = value->pause_events; result.resume_events = value->resume_events;
+  result.scope_shutdown = static_cast<stage0_scope_shutdown>(value->scope_shutdown_result.load(std::memory_order_acquire));
+  return result;
+}
+#endif
 
 }  // namespace soui::sdk

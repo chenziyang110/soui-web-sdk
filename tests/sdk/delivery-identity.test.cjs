@@ -252,6 +252,54 @@ test('modern payload does not require Miniblink but preserves full asset identit
   assert.throws(() => identity.payload(root, 'App', 'unknown'), /Unknown renderer/);
 });
 
+function devtoolsDeliveryFixture(t) {
+  const root = fixture(t), kernel = Buffer.alloc(512);
+  kernel.write('MZ'); kernel.writeUInt32LE(0x80, 0x3c);
+  kernel.write('PE\0\0', 0x80); kernel.writeUInt16LE(0x8664, 0x84);
+  write(root, 'App.exe', 'fixture only; never executed');
+  write(root, 'node.dll', kernel); write(root, 'resources/index.html', 'business page');
+  const base = 'devtools/package/';
+  const row = (name, bytes) => {
+    write(root, base + name, bytes);
+    return {path: name, bytes: Buffer.byteLength(bytes), sha256: identity.hash(Buffer.from(bytes))};
+  };
+  const frontend = row('frontend/front_end/inspector.html', '<html>fixture</html>');
+  const member = {...frontend, path: 'front_end/inspector.html'};
+  const manifest = row('frontend/approved-manifest.json', identity.encoded([member]));
+  const legal = row('legal/LICENSE.txt', 'Synthetic material only.');
+  write(root, base + 'package.json', identity.encoded({
+    schema: 'soui.devtools-package/v1', mode: 'delivery', backend: 'miniblink',
+    sdk_version: '0.5.0', architecture: 'x64',
+    kernel: {sha256: identity.hash(kernel), version: 'fixture'},
+    frontend: {manifest_sha256: manifest.sha256, version: 'fixture'},
+    approval_sha256: 'a'.repeat(64), files: [manifest, frontend, legal],
+  }));
+  return root;
+}
+
+test('DevTools payload includes only the verified offline package and paired kernel', t => {
+  const root = devtoolsDeliveryFixture(t);
+  const evidence = identity.payload(root, 'App');
+  assert.equal(evidence.files.length, 7);
+  assert.ok(evidence.files.some(file => file.path === 'devtools/package/frontend/front_end/inspector.html'));
+  identity.verifyPayload(root, 'App', evidence);
+  write(root, 'devtools/package/legal/LICENSE.txt', 'Corrupted material only.');
+  assert.throws(() => identity.payload(root, 'App'), /E_DEVTOOLS_/);
+});
+
+test('DevTools payload rejects files outside the owned package', t => {
+  const root = devtoolsDeliveryFixture(t);
+  write(root, 'devtools/user-data.txt', 'application data');
+  assert.throws(() => identity.payload(root, 'App'), /Unknown runtime file/);
+});
+
+test('DevTools payload rejects a changed paired kernel and another renderer', t => {
+  const root = devtoolsDeliveryFixture(t);
+  assert.throws(() => identity.payload(root, 'App', 'webview2'), /another renderer/);
+  fs.appendFileSync(path.join(root, 'node.dll'), 'changed');
+  assert.throws(() => identity.payload(root, 'App'), /E_DEVTOOLS_/);
+});
+
 test('deployment replaces stale Web assets and preserves app data outside resources', t => {
   const root = fixture(t);
   const source = path.join(root, 'web');
@@ -285,6 +333,35 @@ test('deployment replaces stale Web assets and preserves app data outside resour
   const before = identity.source(root).sha256;
   fs.writeFileSync(path.join(root, 'third_party/licenses/example-LICENSE.txt'), 'Altered license');
   assert.notEqual(identity.source(root).sha256, before);
+});
+
+test('deployment preserves referenced redistribution documentation and rejects missing input before staging', t => {
+  const root = fixture(t), source = path.join(root, 'source'), app = path.join(root, 'app');
+  const document = 'docs/licenses/v0.6.0-redistribution.md';
+  const notice = Buffer.from(`SDK notices\r\n[Corresponding source](${document})\r\n`);
+  const original = Buffer.from('\uFEFF# Redistribution\r\n保留原始字节\r\n');
+  write(root, 'LICENSE.md', 'SDK license');
+  write(root, 'THIRD_PARTY_NOTICES.md', notice);
+  write(root, 'third_party/licenses/example-LICENSE.txt', 'Dependency license');
+  write(source, 'index.html', 'new');
+  write(app, 'resources/index.html', 'old');
+  const mkdir = fs.mkdirSync;
+  let stageAttempts = 0;
+  fs.mkdirSync = function(directory, ...args) {
+    if (path.basename(String(directory)).startsWith('.resources-new-')) ++stageAttempts;
+    return mkdir.call(this, directory, ...args);
+  };
+  try {
+    assert.throws(() => deploy.replace(source, app, root), /SDK legal materials missing.*redistribution/);
+    assert.equal(stageAttempts, 0, 'missing referenced documentation began a transaction');
+  } finally { fs.mkdirSync = mkdir; }
+  assert.equal(fs.readFileSync(path.join(app, 'resources/index.html'), 'utf8'), 'old');
+  assert.deepEqual(fs.readdirSync(app), ['resources']);
+  write(root, document, original);
+  deploy.replace(source, app, root);
+  assert.deepEqual(fs.readFileSync(path.join(app, 'resources/legal', document)), original);
+  assert.deepEqual(fs.readFileSync(path.join(app, 'resources/legal/THIRD_PARTY_NOTICES.md')), notice);
+  assert.equal(fs.readFileSync(path.join(app, 'resources/index.html'), 'utf8'), 'new');
 });
 
 test('deployment survives a temporary Windows denial while publishing staged resources', {skip: process.platform !== 'win32'}, t => {
@@ -366,12 +443,14 @@ test('SDK packages are identical across source EOLs but installed bytes remain p
   const licenseBytes = Buffer.from([0x4c, 0x69, 0x63, 0x65, 0x6e, 0x73, 0x65, 13, 10, 0xa9, 13, 10]);
   for (const name of sdk.managedRoots) write(source, `${name}/fixture.txt`,
     name === 'third_party/licenses' ? licenseBytes : 'one\r\ntwo\r\n');
-  for (const name of sdk.managedFiles) write(source, name, 'tool\r\n');
+  for (const name of sdk.managedFiles) write(source, name,
+    name === 'LICENSE.md' ? licenseBytes : 'tool\r\n');
   write(source, 'sdk/legacy.h', Buffer.from([0xd6, 0xd0, 0xce, 0xc4, 13, 10]));
   sdk.pack(source, path.join(root, 'crlf'), '0.3.0-preview.1');
   for (const name of sdk.managedRoots) write(source, `${name}/fixture.txt`,
     name === 'third_party/licenses' ? licenseBytes : 'one\ntwo\n');
-  for (const name of sdk.managedFiles) write(source, name, 'tool\n');
+  for (const name of sdk.managedFiles) write(source, name,
+    name === 'LICENSE.md' ? licenseBytes : 'tool\n');
   write(source, 'sdk/legacy.h', Buffer.from([0xd6, 0xd0, 0xce, 0xc4, 10]));
   sdk.pack(source, path.join(root, 'lf'), '0.3.0-preview.1');
   assert.deepEqual(sdk.readPackage(path.join(root, 'crlf')), sdk.readPackage(path.join(root, 'lf')));
@@ -379,6 +458,7 @@ test('SDK packages are identical across source EOLs but installed bytes remain p
   sdk.install(path.join(root, 'lf'), project);
   assert.deepEqual(fs.readFileSync(path.join(root, 'lf/payload/third_party/licenses/fixture.txt')), licenseBytes);
   assert.deepEqual(fs.readFileSync(path.join(project, 'third_party/licenses/fixture.txt')), licenseBytes);
+  assert.deepEqual(fs.readFileSync(path.join(project, 'LICENSE.md')), licenseBytes);
   write(project, 'sdk/fixture.txt', 'one\r\ntwo\r\n');
   assert.throws(() => sdk.readLock(project), /modified/);
 });
@@ -416,4 +496,48 @@ test('build and smoke receipts fail closed after changes, empty runs or legacy s
   assert.throws(() => evidence.verifyBuild(root, 'x64', 'Release'), /incomplete/);
   write(root, 'sdk/new.cpp', 'changed during build');
   assert.throws(() => evidence.finish(root, 'x64', 'Release'), /changed during build/);
+});
+
+test('application files: default rejects unknown data and explicit exact rows survive verification', t => {
+  const root = fixture(t);
+  write(root, 'App.exe', 'synthetic executable never run');
+  write(root, 'node.dll', 'synthetic kernel never loaded');
+  write(root, 'resources/index.html', '<main>fixture</main>');
+  const plain = identity.payload(root, 'App');
+  assert.equal(Object.hasOwn(plain, 'applicationFiles'), false);
+  write(root, 'fixture-data/报告.txt', 'native data');
+  const rows = identity.snapshot(root, ['fixture-data/报告.txt']).files;
+  assert.throws(() => identity.payload(root, 'App'), /Unknown runtime file/);
+  const expected = identity.payload(root, 'App', 'miniblink', rows);
+  assert.deepEqual(expected.applicationFiles, rows);
+  assert.deepEqual(identity.verifyPayload(root, 'App', expected), expected);
+  write(root, 'fixture-data/报告.txt', 'native DATA');
+  assert.throws(() => identity.verifyPayload(root, 'App', expected), /Application file|payload changed/);
+  write(root, 'fixture-data/报告.txt', 'native data');
+  write(root, 'fixture-data/unapproved.txt', 'unknown');
+  assert.throws(() => identity.payload(root, 'App', 'miniblink', rows), /Unknown runtime file/);
+});
+
+test('application files: descriptor limits and protected namespaces cannot grant runtime authority', () => {
+  const row = {path: 'fixture-data/file.txt', bytes: 1, sha256: identity.hash(Buffer.from('x'))};
+  for (const name of ['../escape.txt', 'resources/extra.txt', 'Resources/extra.txt', 'devtools/file.txt',
+    'DevTools/file.txt', 'App.exe', 'nested/engine.DLL', '.soui-runtime.json']) {
+    assert.throws(() => identity.validateApplicationFiles([{...row, path: name}]));
+  }
+  assert.throws(() => identity.validateApplicationFiles(Array.from({length: 65},
+    (_, i) => ({...row, path: 'fixture-data/' + i + '.txt'}))), /count/);
+  assert.throws(() => identity.validateApplicationFiles([{...row, bytes: 16 * 1024 * 1024 + 1}]), /bytes/);
+  assert.throws(() => identity.validateApplicationFiles([{...row, normalization: 'lf'}]), /exact/);
+  assert.throws(() => identity.validateApplicationFiles([row, {...row, path: 'FIXTURE-DATA/FILE.TXT'}]), /duplicate/i);
+});
+
+test('application files: expected descriptor must be a byte-exact subset of payload files', t => {
+  const root = fixture(t);
+  write(root, 'App.exe', 'synthetic executable never run');
+  write(root, 'node.dll', 'synthetic kernel never loaded');
+  write(root, 'resources/index.html', '<main>fixture</main>');
+  const expected = identity.payload(root, 'App');
+  const forged = {...expected, applicationFiles: [{path: 'fixture-data/unrecorded.txt', bytes: 1,
+    sha256: identity.hash(Buffer.from('x'))}]};
+  assert.throws(() => identity.verifyPayload(root, 'App', forged), /exact payload subset/);
 });

@@ -1,0 +1,112 @@
+{
+  "mode": "sdk",
+  "root": "C:/sr06",
+  "startedAt": "2026-10-28T14:34:17.978Z",
+  "node": "v24.14.0",
+  "nodeExe": {
+    "path": "C:/nvm4w/nodejs/node.exe",
+    "bytes": 91380224,
+    "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+  },
+  "npmCli": {
+    "path": "C:/nvm4w/nodejs/node_modules/npm/bin/npm-cli.js",
+    "bytes": 56,
+    "sha256": "3ce7cba6f5128dd5f54c98b6a5036b0f850496878cc2e21044b675fe3c594e3e"
+  },
+  "steps": [
+    {
+      "name": "sdk-web-ci",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "C:\\nvm4w\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+        "ci",
+        "--prefer-offline",
+        "--no-audit",
+        "--no-fund"
+      ],
+      "cwd": "C:\\sr06\\sdk\\web",
+      "environment": {},
+      "startedAt": "2026-10-28T14:34:18.114Z",
+      "stdout": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\docs-prep\\web-build-1\\sdk-web-ci.stdout.log",
+      "stderr": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\docs-prep\\web-build-1\\sdk-web-ci.stderr.log",
+      "code": 0,
+      "signal": null,
+      "error": null,
+      "finishedAt": "2026-10-28T14:34:19.803Z",
+      "elapsedMs": 1689,
+      "stdoutPin": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/docs-prep/web-build-1/sdk-web-ci.stdout.log",
+        "bytes": 23,
+        "sha256": "da13ab9d025b19c91553bc7d4c450975d3e4e36dd7c5fef6f223f8008ba39547"
+      },
+      "stderrPin": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/docs-prep/web-build-1/sdk-web-ci.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "sdk-web-build",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "C:\\nvm4w\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+        "run",
+        "build"
+      ],
+      "cwd": "C:\\sr06\\sdk\\web",
+      "environment": {},
+      "startedAt": "2026-10-28T14:34:19.804Z",
+      "stdout": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\docs-prep\\web-build-1\\sdk-web-build.stdout.log",
+      "stderr": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\docs-prep\\web-build-1\\sdk-web-build.stderr.log",
+      "code": 0,
+      "signal": null,
+      "error": null,
+      "finishedAt": "2026-10-28T14:34:20.680Z",
+      "elapsedMs": 876,
+      "stdoutPin": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/docs-prep/web-build-1/sdk-web-build.stdout.log",
+        "bytes": 56,
+        "sha256": "c05e7524aa1f65b587fdbb1a467d47888b90c70454cf42e21d1a4bb01387effd"
+      },
+      "stderrPin": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/docs-prep/web-build-1/sdk-web-build.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "sdk-bindings-react-ci",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "C:\\nvm4w\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+        "ci",
+        "--prefer-offline",
+        "--no-audit",
+        "--no-fund"
+      ],
+      "cwd": "C:\\sr06\\sdk\\bindings\\react",
+      "environment": {},
+      "startedAt": "2026-10-28T14:34:20.690Z",
+      "stdout": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\docs-prep\\web-build-1\\sdk-bindings-react-ci.stdout.log",
+      "stderr": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\docs-prep\\web-build-1\\sdk-bindings-react-ci.stderr.log",
+      "code": 1,
+      "signal": null,
+      "error": null,
+      "finishedAt": "2026-10-28T14:34:21.676Z",
+      "elapsedMs": 986,
+      "stdoutPin": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/docs-prep/web-build-1/sdk-bindings-react-ci.stdout.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderrPin": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/docs-prep/web-build-1/sdk-bindings-react-ci.stderr.log",
+        "bytes": 1263,
+        "sha256": "93ddbe24a1676bbd7a704c3ee038e23e094bdf966cb368da313240fa11445bb4"
+      }
+    }
+  ],
+  "finishedAt": "2026-10-28T14:34:21.677Z",
+  "success": false,
+  "failure": "Error: Command failed: sdk-bindings-react-ci\n    at check (F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\docs-prep\\Build-Web.cjs:52:88)\n    at F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\docs-prep\\Build-Web.cjs:75:7\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)"
+}

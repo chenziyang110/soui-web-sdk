@@ -1,0 +1,274 @@
+{
+  "schema": "soui.release.scoped-evidence-candidate/v1",
+  "createdUtc": "2026-10-28T16:50:57.100Z",
+  "intendedPromotion": "verification/production-validation/0.6.0-release-2026-10-29",
+  "status": "CANDIDATE_FOR_ROOT_REVIEW_NOT_FULL_COLLECTOR",
+  "filesIndex": {
+    "path": "files.json",
+    "bytes": 104972,
+    "sha256": "e820ea78f0dad3ded322987076993e7b2ff1344ed4aa57802593b345aef62989"
+  },
+  "scopes": [
+    {
+      "id": "sdk-four-build-cells",
+      "status": "COMPLETED_WITH_SEPARATE_ORIGINAL_IDENTITIES",
+      "machineSummary": "sdk-build-prep/ScopedBuildSummary.json",
+      "machineCells": [
+        {
+          "id": "x86-debug",
+          "configuration": "Debug"
+        },
+        {
+          "id": "x86-release",
+          "configuration": "Release"
+        },
+        {
+          "id": "x64-debug",
+          "configuration": "Debug"
+        }
+      ],
+      "rootOwnedFourthCell": "x64 Release raw logs, not an invented machine summary/shared Job",
+      "x64ReleaseRuns": [
+        {
+          "raw": "native-x64-integration-build-1.log",
+          "result": "original stale-GPU-field compile failure retained"
+        },
+        {
+          "raw": "native-x64-integration-build-2.log",
+          "result": "corrected build naturally0; original selected seven CTests passed 5.51s"
+        },
+        {
+          "raw": "native-x64-early-retirement.log",
+          "result": "new focus-fence test only, passed0.18s after subsequent fix; previous seven not claimed rerun"
+        }
+      ],
+      "qualification": "SDK/library compilation and selected finite tests only; no shared final commit/source binding invented"
+    },
+    {
+      "id": "installed-consumers",
+      "status": "PASS_SCOPED",
+      "report": "consumer-prep/InstalledConsumerSummary.json",
+      "architectures": 2,
+      "pureConsoleRuns": 6,
+      "limits": [
+        "RuntimeDoctor compiled and installed, never run",
+        "No window/renderer/Runtime/real DLL mount or GUI executed",
+        "WebView2 and AutoHost are installed-target link proof, not backend runtime qualification",
+        "No source-SDK pack, full-source package or new kernel runtime qualification",
+        "Direct CMake/process roots exited naturally0; no Job supervisor or synthetic build-evidence receipt claimed",
+        "No source/tool/index/remote edits by this lane"
+      ]
+    },
+    {
+      "id": "vendor-finite",
+      "status": "PASS_SELECTED_FINITE_SOURCE_CASES",
+      "report": "vendor-short-prep/VendorShortSummary.json",
+      "uniqueCases": 5,
+      "architectureExecutions": 10,
+      "allVendorConfigureStrictGatesPassed": true,
+      "metadataOrFixtureEdits": 0,
+      "unchanged93OrWhole158Rerun": false,
+      "sourceTimingLimitation": "After x64 build start; initial inventory attempts with nonexistent optional-header names failed before writing. Not a before-build snapshot."
+    },
+    {
+      "id": "version-peer-web-preload",
+      "status": "PASS_REPORTED_SCOPES_WITH_RETAINED_EARLY_FAILURES",
+      "reports": [
+        "docs-prep/WebBuildSummary.json",
+        "docs-prep/metadata-tests.result.json",
+        "webview2-preload.log"
+      ],
+      "metadataTests": {
+        "pass": 35,
+        "fail": 0
+      },
+      "preloadTests": {
+        "pass": 12,
+        "fail": 0
+      },
+      "currentAudits": {
+        "finalGraphs": 6,
+        "reportedAdvisories": 0,
+        "originalVueTlsFailureRetained": true
+      },
+      "githubAlertSnapshot": {
+        "openPathRecords": 82,
+        "immutableArchive": 75,
+        "optionalElectron": 2,
+        "optionalReferenceCompat": 5
+      },
+      "scope": "No full transitive dependency/security or renderer runtime clearance"
+    },
+    {
+      "id": "npm-sboms",
+      "status": "PASS_DATA_SCHEMA_SCOPE",
+      "report": "sbom-prep/NpmSbomValidation.actual.json",
+      "uniqueGraphs": 10,
+      "rawAndDeliverySchemaDocuments": 20,
+      "actualLockChanges": 0,
+      "exactLocalUriRewrites": 2,
+      "nativeSbomGeneratedForThisCandidate": false
+    },
+    {
+      "id": "legal-and-fence",
+      "status": "ACTUAL_ASSEMBLY_AND_BOUNDED_STATIC_REVIEW_ONLY",
+      "reports": [
+        "legal-prep/PreparationEvidence.json",
+        "legal-prep/LegacySdkCleanup.actual.json",
+        "legal-prep/SdkFenceReview.json",
+        "legal-prep/install-legal-closure/Patch.actual.json"
+      ],
+      "targetedLegalRegression": {
+        "originalRedExit": 1,
+        "greenSelectedPass": 6
+      },
+      "externalLegalOpinion": false,
+      "oldPreparationFollowupsAreNotCurrentRunPasses": true
+    },
+    {
+      "id": "source2-x64-kernel",
+      "status": "NATURAL_BUILD_ONLY_PASS",
+      "report": "kernel-prep/revision-3/execution-x64/summary.json",
+      "sourceIdentity": "26c5b73e4915bb4539e87b987cd8e952005f0fe41d987138d8d8e3b13eb25c95",
+      "dll": {
+        "path": "C:\\sr06\\out\\release-kernel-x64-2\\miniblink\\bin\\miniblink.dll",
+        "bytes": 39204352,
+        "sha256": "d888637d5dd1476dde16b8c5bb28172d7b8ec3495b69c725fa3572013748139a"
+      },
+      "exitCode": 0,
+      "supervisorExitCode": 0,
+      "jobActive": 0,
+      "elapsedMs": 1427036,
+      "admittedCurrentRun2Objects": 1903,
+      "pchAdmitted": true,
+      "admittedObjectChanges": 0,
+      "staticArchivesReused": 11,
+      "staticArchivesRecompiled": 0,
+      "dllLoaded": false,
+      "runtimeQualification": false
+    },
+    {
+      "id": "compact-material-x64",
+      "status": "PASS_TECHNICAL_ASSEMBLY_AND_READONLY_LEGAL_LAYOUT_SCOPE",
+      "report": "sbom-prep/CurrentX64KernelAndCompactLegalReview.json",
+      "sourceLegalMaterialsRawCompared": 206,
+      "finalLegalRows": 208,
+      "relocatedDeepFiles": 11,
+      "frontendMembers": 650,
+      "compositionRepeatedByReviewer": false,
+      "oldApprovalOrLegalOpinionInherited": false,
+      "nativeGrantCreated": false
+    }
+  ],
+  "retainedFailuresAndSkips": [
+    {
+      "raw": "configure-x64.log",
+      "meaning": "Missing explicit WebView2 SDK root; corrected configure-x64-2.log retained separately"
+    },
+    {
+      "raw": "affected-tools.log",
+      "counts": {
+        "tests": 185,
+        "pass": 182,
+        "fail": 1,
+        "skipped": 2
+      },
+      "meaning": "Original delivery-identity file-level failure; not a whole-suite pass",
+      "skips": [
+        "module symlink: platform could not create fixture link",
+        "frontend symlink: platform could not create fixture link"
+      ]
+    },
+    {
+      "raw": "delivery-identity-final.log",
+      "counts": {
+        "tests": 25,
+        "pass": 24,
+        "fail": 1,
+        "skipped": 0
+      },
+      "meaning": "Original EOL/package expectation failure retained; later targeted single cases are separate, not 25 rerun pass"
+    },
+    {
+      "raws": [
+        "delivery-identity-license-doc.log",
+        "delivery-identity-license-repair.log"
+      ],
+      "meaning": "Each subsequent selected one-case pass remains limited to its actual captured run"
+    },
+    {
+      "raw": "docs-prep/web-build-1/sdk-bindings-react-ci.stderr.log",
+      "meaning": "Original npm ci EUSAGE/install-links omission; corrected binding-only ci/build records retained, no old core build relabel"
+    },
+    {
+      "raw": "docs-prep/web-build-1/sdk-bindings-vue-audit.stdout.log",
+      "meaning": "Original TLS request failure, later one Vue retry naturally0; no lock upgrade"
+    },
+    {
+      "raw": "npm-sbom/npm/gui-react.stdout.raw.json",
+      "meaning": "Initial collector scoped-name guard failure raw; nine corrected outputs are npm-2; web SDK was not recollected"
+    },
+    {
+      "raws": [
+        "kernel-prep/revision-2/ComSpecRepair.json",
+        "kernel-prep/revision-2/execution-x64/root-result.json",
+        "kernel-prep/revision-3/GdiPlusPointerFix.json"
+      ],
+      "meaning": "Original ComSpec failure then v2 GDIPlus signature failure remain nonpass; Source2 is a new explicitly admitted continuation, not rewrite of old exit"
+    },
+    {
+      "raws": [
+        "frontend-prep/CurrentMaterials-x64-failed-1.json",
+        "frontend-prep/CurrentMaterials-x64-2.log",
+        "frontend-prep/CurrentMaterials-x64-3.json"
+      ],
+      "meaning": "Attempt1 strict path-depth rejection and attempt2 assembler manifest-path ENOENT retained; attempt3 actual prepare with compact reversible layout, no guard relaxation"
+    },
+    {
+      "raws": [
+        "legal-prep/source2-resume-review/ReuseDataReview.json",
+        "legal-prep/source2-resume-review/ReuseDataReview-r2.json"
+      ],
+      "meaning": "Independent review reader initially treated ANSI MASM tlog as UTF16; two false errors preserved, corrected reader0 without changing product/original proof"
+    }
+  ],
+  "pending": [
+    {
+      "id": "source2-x86-kernel",
+      "status": "PENDING_NOT_COUNTED_AS_PASS"
+    },
+    {
+      "id": "final-native-import-and-native-sbom",
+      "status": "PENDING_BOTH_ARCH_FINAL_INPUTS_AND_AFFECTED_RUNTIME_EVIDENCE"
+    },
+    {
+      "id": "final-applications-and-vm-natural-retirement",
+      "status": "PENDING_NOT_COUNTED_AS_PASS"
+    },
+    {
+      "id": "source-sdk-and-full-source-archives",
+      "status": "PENDING_FINAL_ASSEMBLY"
+    },
+    {
+      "id": "release-assets-upload-and-signing-state",
+      "status": "PENDING_ACTUAL_ASSETS"
+    },
+    {
+      "id": "D07-D13-D14-OS-IME-DPI-full-production",
+      "status": "DEFERRED_OR_UNVERIFIED_OR_PARTIAL_NO_GATE_RELAXATION"
+    }
+  ],
+  "excludedLargeInputs": [
+    "GB native objects/PCH and actual compiler tlogs are not copied",
+    "Million-line kernel build log is not copied",
+    "Tool executables are not copied; original control-identity report is retained",
+    "Full source/provider snapshots and the 7.2MB Run2ReuseProof remain referenced original inputs; this is not a standalone replay bundle"
+  ],
+  "finalSourceCommit": null,
+  "wholeCollectorGenerated": false,
+  "all185Passed": false,
+  "all25Passed": false,
+  "fullGoalComplete": false,
+  "releaseReady": false,
+  "productionQualificationComplete": false
+}

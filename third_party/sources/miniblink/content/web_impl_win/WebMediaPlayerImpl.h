@@ -134,6 +134,7 @@ public:
     void onLoad(blink::WebMediaPlayer::ReadyState readyState, bool* cancelNotifer);
 
 private:
+    bool m_localResourceRejected;
     bool m_paused;
     bool m_seeking;
     bool m_hasVideo;

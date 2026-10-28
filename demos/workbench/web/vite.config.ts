@@ -5,7 +5,9 @@ import legacy from '@vitejs/plugin-legacy';
 import react from '@vitejs/plugin-react';
 import { vueMiniblinkCompat } from './build/vue-miniblink-compat';
 import {createRequire} from 'node:module';
-const profiles = createRequire(import.meta.url)('../../../tools/internal/web-build-profile.cjs');
+const require = createRequire(import.meta.url);
+const profiles = require('../../../tools/internal/web-build-profile.cjs');
+const compatibility = require('../../../tools/internal/compat-polyfills.cjs').prepareCompatibilityPolyfills(__dirname);
 const webProfile = profiles.buildProfile(undefined, {appSourceDirectories: [
   'apps/demo/src', 'apps/react', 'apps/fileinsight/src', 'packages/sdk',
   'benchmarks/electron-smoothness',
@@ -13,6 +15,8 @@ const webProfile = profiles.buildProfile(undefined, {appSourceDirectories: [
 
 export default defineConfig(({ mode }) => ({
   base: './',
+  // Native FileInsight samples in public/fixtures are not HTTP assets.
+  publicDir: 'http-public',
   plugins: [
     vueMiniblinkCompat(),
     vue(),
@@ -26,6 +30,7 @@ export default defineConfig(({ mode }) => ({
       modernPolyfills: true,
       renderLegacyChunks: true,
     }),
+    compatibility.plugin,
     webProfile.plugin,
   ],
   build: {

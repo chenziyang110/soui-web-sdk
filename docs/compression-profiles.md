@@ -1,6 +1,6 @@
 # 可选压缩档位
 
-本能力属于未发布 SDK 候选，只改变应用或 Bundle 的归档封装。默认仍使用
+本能力纳入 0.6.0 源码交付，只改变应用或 Bundle 的归档封装；本轮资产与测量状态见[发布说明](releases/0.6.0.md)。默认仍使用
 原 ZIP 参数和原文件名；项目配置、载荷、Web 后端、运行目录及已发布固定包
 均沿用原契约。`-Profile` 选择 compatibility/modern/auto 后端，与压缩档位分开。
 
@@ -83,4 +83,10 @@ Job 的 `totalProcesses` 为准。该列表用于解释样本，不是完整进�
 2026-10-23 的 `preview.1` 真实 Starter、Workbench 压缩测量摘录见
 [历史压缩测量](../verification/production-validation/auto-host-pr-2026-10-23/historical-compression.md)。
 该记录绑定原冻结快照，不代表拆分后 `preview.3` 已重测，也不推算下游安装器收益。
+
+2026-10-23 的首轮探针结果见
+[探针实测证据](../verification/production-validation/compression-profiles-2026-10-23/README.md)。
+后续补充的 Starter、Workbench 双架构正式打包、完整还原与原生短启动结果见
+[真实应用验证](../verification/production-validation/compression-real-apps-2026-10-23/README.md)，
+其中单独记录真实载荷的压缩收益、解压耗时和工具内存开销。
 设计与兼容性决定见 [ADR 0126](adr/0126-optional-compression-profiles.md)。

@@ -128,7 +128,7 @@ test('npm peers accept the promised historical and current tuples and reject unp
   // bytes. This never certifies historical SDK or framework behavior/identity.
   for (const [version, accepts] of [['0.5.0-preview.1', true], ['0.5.0', true],
     ['0.4.1-preview.1', false], ['0.5.1-preview.1', true], ['0.5.2-preview.1', false],
-    ['0.6.0-preview.3', true], ['0.6.0-preview.2', false], ['0.6.0', false]]) {
+    ['0.6.0-preview.3', true], ['0.6.0-preview.2', false], ['0.6.0', true], ['0.6.1', false]]) {
     const staging = path.join(root, `sdk-${version}`), consumer = path.join(root, `consumer-${version}`);
     fs.mkdirSync(staging); fs.mkdirSync(consumer);
     const metadata = { ...read(path.join(repository, 'sdk/web/package.json')), version };

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 #include "content/devtools/DevToolsAgent.h"
+#include "content/web_impl_win/LocalResourceState.h"
 #include "content/devtools/DevToolsClient.h"
 #include "content/devtools/DevToolsMgr.h"
 #include "content/browser/CheckReEnter.h"
@@ -17,9 +18,24 @@
 #include "third_party/WebKit/public/platform/Platform.h"
 #include "third_party/WebKit/Source/bindings/core/v8/V8RecursionScope.h"
 #include "gen/blink/platform/RuntimeEnabledFeatures.h"
+#include "third_party/WebKit/Source/core/inspector/MainThreadDebugger.h"
+#include "third_party/WebKit/Source/core/inspector/InspectorTaskRunner.h"
 #include <v8.h>
 
 namespace content {
+namespace {
+// Blink keeps one message-loop object for the process. The actual frame's
+// client callbacks supply the current owner and retain its controlled session.
+struct PauseOwner {
+    DevToolsAgent* agent;
+    int agentId;
+    std::shared_ptr<ControlledDevToolsSession> session;
+};
+std::vector<PauseOwner> s_pauseOwners; // Engine owner only, strict LIFO.
+// Engine-only reentry suppression for this servicing site; never an admission authority.
+bool s_controlledInterruptDrainActive = false;
+}
+
 
 DevToolsAgent::DevToolsAgent(WebPage* page, blink::WebLocalFrame* frame)
 {
@@ -46,6 +62,7 @@ void DevToolsAgent::onAttach(const std::string& hostId)
     if (webAgent) {
         webAgent->attach(blink::WebString::fromUTF8(hostId.c_str()));
         m_isAttached = true;
+        if (m_controlledSession) m_controlledSession->attached();
     }
 }
 
@@ -55,7 +72,18 @@ void DevToolsAgent::onDetach()
     if (webAgent) {
         webAgent->detach();
         m_isAttached = false;
+        if (m_controlledSession) m_controlledSession->detached();
     }
+}
+
+void DevToolsAgent::discardControlledInterrupts()
+{
+    // Owner-only, closing, outside pause/dispatch. This is the inspector task
+    // queue only, never the SDK FIFO. It also works before backend attach:
+    // cancelled descriptors return no agent and retire their reservations.
+    if (!m_controlledSession || m_controlledSession->acceptsInterrupt()) return;
+    blink::MainThreadDebugger* debugger = blink::MainThreadDebugger::instance();
+    if (debugger && debugger->taskRunner()) debugger->taskRunner()->runPendingTasks();
 }
 
 void DevToolsAgent::setDevToolsClient(DevToolsClient* devToolsClient)
@@ -82,17 +110,20 @@ bool DevToolsAgent::isDevToolsClientConnet() const
 
 class InterruptMessageImpl : public blink::WebDevToolsAgent::MessageDescriptor{
 public:
-    InterruptMessageImpl(const std::string& message, DevToolsAgent* agent)
+    InterruptMessageImpl(const std::string& message, DevToolsAgent* agent,
+        const std::shared_ptr<ControlledDevToolsSession>& session = nullptr)
         : m_msg(message)
         , m_agent(agent)
         , m_devToolsAgentId(m_agent->getId())
+        , m_session(session)
     {
+        // Reservation was admitted before descriptor allocation.
     }
-    ~InterruptMessageImpl() override {}
+    ~InterruptMessageImpl() override { if (m_session) m_session->interruptDisposed(m_msg.size()); }
 
     blink::WebDevToolsAgent* agent() override
     {
-        if (!DevToolsMgr::getInst()->isLivedId(m_devToolsAgentId))
+        if ((m_session && !m_session->acceptsInterrupt()) || !DevToolsMgr::getInst()->isLivedId(m_devToolsAgentId))
             return nullptr;
         return m_agent->getWebAgent();
     }
@@ -103,6 +134,7 @@ private:
     std::string m_msg;
     DevToolsAgent* m_agent;
     int m_devToolsAgentId;
+    std::shared_ptr<ControlledDevToolsSession> m_session;
 };
 
 void DevToolsAgent::onMessageReceivedFromFronEnd(const std::string* message)
@@ -113,7 +145,36 @@ void DevToolsAgent::onMessageReceivedFromFronEnd(const std::string* message)
         return;
 
     if (blink::WebDevToolsAgent::shouldInterruptForMessage(blink::WebString::fromUTF8(message->c_str()))) {
-        blink::WebDevToolsAgent::interruptAndDispatch(new InterruptMessageImpl(*message, this));
+        const auto session = m_controlledSession;
+        const int agentId = m_id;
+        if (session && !session->reserveInterrupt(message->size())) return;
+        std::unique_ptr<InterruptMessageImpl> descriptor;
+        try { descriptor.reset(new InterruptMessageImpl(*message, this, session)); }
+        catch (...) { if (session) session->interruptDisposed(message->size()); throw; }
+        blink::WebDevToolsAgent::interruptAndDispatch(descriptor.release());
+        // The interrupt enqueue call has returned; creationMutex is no longer held.
+        // Never read the Engine-only pause LIFO before the actual owner proof.
+        if (!session || !wke::controlledDevToolsEngineThread()) return;
+        if (s_controlledInterruptDrainActive) return;
+        const auto samePausedOwner = [this, agentId, &session]() {
+            if (!wke::controlledDevToolsEngineThread()) return false;
+            if (s_pauseOwners.empty()) return false;
+            const PauseOwner& owner = s_pauseOwners.back();
+            return owner.agent == this && owner.agentId == agentId && owner.session == session
+                && DevToolsMgr::getInst()->isLivedId(agentId)
+                && m_controlledSession == session && session->acceptsInterrupt();
+        };
+        if (!samePausedOwner()) return;
+        blink::WebDevToolsAgent* pausedAgent = getWebAgent();
+        if (!pausedAgent || !samePausedOwner()) return;
+        s_controlledInterruptDrainActive = true;
+        struct DrainExit {
+            ~DrainExit() { s_controlledInterruptDrainActive = false; }
+        } drainExit;
+        // Existing Blink path services the already queued Inspector descriptors.
+        // It does not dispatch this interrupt message a second time or pump SDK FIFO.
+        pausedAgent->dispatchOnInspectorBackend(blink::WebString::fromUTF8(message->c_str()));
+        if (!samePausedOwner()) return; // No further callout after close/identity change.
         return;
     }
     
@@ -156,108 +217,113 @@ void DevToolsAgent::sendProtocolMessage(int callId, const blink::WebString& resp
     if (!m_devToolsClient)
         return;
 
+    if (m_controlledSession) {
+        m_controlledSession->enqueueToClient(callId, response.utf8().data(), state.utf8().data());
+        return;
+    }
+
     blink::Platform::current()->currentThread()->postTask(FROM_HERE,
         new MessageToClientTask(m_devToolsClient, callId, response, state));
 }
 
-class WebKitClientMessageLoopImpl : public blink::WebDevToolsAgentClient::WebKitClientMessageLoop{
+class WebKitClientMessageLoopImpl : public blink::WebDevToolsAgentClient::WebKitClientMessageLoop {
 public:
-    WebKitClientMessageLoopImpl(DevToolsAgent* agent)
-    {
-        m_quit = false;
-        m_agent = agent;
-    }
+    WebKitClientMessageLoopImpl() {}
+    ~WebKitClientMessageLoopImpl() override {}
 
-    ~WebKitClientMessageLoopImpl() override 
+    void runImpl(DevToolsAgent* agent)
     {
-    }
-
-    void runImpl()
-    {
-        MSG msg;
-        while (::GetMessageW(&msg, NULL, 0, 0)) {
-
-            // 为了确保js的Promise能执行，强行执行Microtasks。本来因为isolateData->recursionLevel()的存在，执行不了。
-            // 见third_party\WebKit\Source\core\dom\Microtask.cpp
+        MSG message = {};
+        BOOL result = 0;
+        while ((result = GetMessageW(&message, nullptr, 0, 0)) > 0) {
+            // Existing isolate-wide checkpoint stays observable. It may run
+            // target microtasks too; no claim that all business JS is frozen.
             v8::Isolate* isolate = v8::Isolate::GetCurrent();
             blink::V8RecursionScope recursionScope(isolate);
             isolate->RunMicrotasks();
-
-            ::TranslateMessage(&msg);
-            ::DispatchMessageW(&msg);
-            if (m_quit)
-                return;
+            const auto session = agent->controlledSession();
+            if (session) session->pausedMicrotaskCheckpoint();
+            TranslateMessage(&message);
+            DispatchMessageW(&message);
+            if (!m_quitStack.empty() && m_quitStack.back()) return;
         }
+        // Preserve a real thread quit for the outer engine loop.
+        if (result == 0) PostQuitMessage(static_cast<int>(message.wParam));
     }
-
     void run() override
     {
-        m_agent->willEnterDebugLoopInRun();
-        runImpl();
-        m_quit = false;
-        m_agent->didExitDebugLoopInRun();
+        if (s_pauseOwners.empty()) return;
+        const PauseOwner owner = s_pauseOwners.back(); // Strong session borrow.
+        if (!DevToolsMgr::getInst()->isLivedId(owner.agentId)) return;
+        m_quitStack.push_back(false);
+        owner.agent->willEnterDebugLoopInRun();
+        runImpl(owner.agent);
+        owner.agent->didExitDebugLoopInRun();
+        m_quitStack.pop_back();
     }
-
     void quitNow() override
     {
-        m_quit = true;
+        if (!m_quitStack.empty()) m_quitStack.back() = true;
     }
-
 private:
-    bool m_quit;
-    DevToolsAgent* m_agent;
+    std::vector<bool> m_quitStack;
 };
 
 blink::WebDevToolsAgentClient::WebKitClientMessageLoop* DevToolsAgent::createClientMessageLoop()
 {
-    return new WebKitClientMessageLoopImpl(this);
+    return new WebKitClientMessageLoopImpl();
 }
-
-static bool g_noSetCheckReEnter = false;
 
 void DevToolsAgent::willEnterDebugLoopInRun()
 {
+    // The controlled session pins client, agent and both broker views before
+    // any nested Windows dispatch can request close.
+    bool restoreCheckReEnter = false;
     if (blink::RuntimeEnabledFeatures::updataInOtherThreadEnabled()) {
         RELEASE_ASSERT(0 == CheckReEnter::getEnterCount());
-    } else {
-        if (0 < CheckReEnter::getEnterCount())
-            CheckReEnter::decrementEnterCount();
-        else
-            g_noSetCheckReEnter = true; // 从net的load finish里调用过来的时候，可能计数是0
+    } else if (0 < CheckReEnter::getEnterCount()) {
+        CheckReEnter::decrementEnterCount();
+        restoreCheckReEnter = true;
     }
-    blink::ThreadState* threadState = blink::ThreadState::current();
-    threadState->enterGCForbiddenScope();
-
+    m_debugLoopRestoreCheckReEnter.push_back(restoreCheckReEnter);
+    blink::ThreadState::current()->enterGCForbiddenScope();
     m_page->willEnterDebugLoop();
     m_devToolsClient->willEnterDebugLoop();
 }
 
 void DevToolsAgent::didExitDebugLoopInRun()
 {
-    blink::ThreadState* threadState = blink::ThreadState::current();
-    threadState->leaveGCForbiddenScope();
-    
-    // 放到这，是因为ClientMessageLoopAdapter的顺序是先执行setIgnoreInputEvents(false)，会引发断言
+    blink::ThreadState::current()->leaveGCForbiddenScope();
+    // WebKit still uses page/agent after this callback. Session retirement is
+    // an explicit outer-engine operation, never performed at this point.
     m_page->didExitDebugLoop();
     m_devToolsClient->didExitDebugLoop();
-
     if (blink::RuntimeEnabledFeatures::updataInOtherThreadEnabled()) {
         RELEASE_ASSERT(0 == CheckReEnter::getEnterCount());
-    } else {
-        if (!g_noSetCheckReEnter)
-            CheckReEnter::incrementEnterCount();
-        g_noSetCheckReEnter = false;
+    } else if (!m_debugLoopRestoreCheckReEnter.empty() && m_debugLoopRestoreCheckReEnter.back()) {
+        CheckReEnter::incrementEnterCount();
     }
+    if (!m_debugLoopRestoreCheckReEnter.empty()) m_debugLoopRestoreCheckReEnter.pop_back();
+
 }
 
 void DevToolsAgent::willEnterDebugLoop()
 {
-
+    // Called by ClientMessageLoopAdapter for the actual paused frame, before
+    // input and active-object restoration are borrowed by its global loop.
+    PauseOwner owner = { this, getId(), m_controlledSession };
+    s_pauseOwners.push_back(owner);
+    LocalResourceState::enterPause();
+    if (owner.session) owner.session->enterPause();
 }
 
 void DevToolsAgent::didExitDebugLoop()
 {
-
+    RELEASE_ASSERT(!s_pauseOwners.empty() && s_pauseOwners.back().agent == this);
+    const PauseOwner owner = s_pauseOwners.back();
+    s_pauseOwners.pop_back();
+    if (owner.session) owner.session->exitPause();
+    LocalResourceState::leavePause();
 }
 
 void DevToolsAgent::enableTracing(const blink::WebString& category_filter)

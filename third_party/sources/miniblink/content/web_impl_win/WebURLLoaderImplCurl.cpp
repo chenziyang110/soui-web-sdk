@@ -1,6 +1,8 @@
 #include "config.h"
 
 #include "content/web_impl_win/WebURLLoaderImplCurl.h"
+#include "content/web_impl_win/InspectorMemoryLoad.h"
+#include "content/web_impl_win/LocalResourceMemoryLoad.h"
 #include "content/web_impl_win/WebBlobRegistryImpl.h"
 
 #include "net/WebURLLoaderManager.h"
@@ -160,6 +162,8 @@ WebURLLoaderImplCurl::WebURLLoaderImplCurl()
 
 WebURLLoaderImplCurl::~WebURLLoaderImplCurl()
 {
+    if (m_localResourceLoad) m_localResourceLoad->cancel();
+    if (m_inspectorLoad) m_inspectorLoad->cancel();
     m_client = nullptr;
     m_requestCanceled = true;
 #ifndef NDEBUG
@@ -169,6 +173,10 @@ WebURLLoaderImplCurl::~WebURLLoaderImplCurl()
 
 void WebURLLoaderImplCurl::init()
 {
+    if (m_localResourceLoad) m_localResourceLoad->cancel();
+    if (m_inspectorLoad) m_inspectorLoad->cancel();
+    m_inspectorLoad.reset();
+    m_localResourceLoad.reset();
     m_hadDestroied = nullptr;
     m_jobIds = 0;
     m_blobLoader = nullptr;
@@ -188,6 +196,8 @@ void WebURLLoaderImplCurl::loadSynchronously(
     blink::WebURLError& error,
     blink::WebData& data)
 {
+    if (LocalResourceMemoryLoad::synchronous(request, response, error, data)) return;
+    if (InspectorMemoryLoad::synchronous(request, response, error, data)) return;
     if (KURL(request.url()).isLocalFile() && request.frameType() != blink::WebURLRequest::FrameTypeTopLevel) {
         init();
         String fileName;
@@ -222,6 +232,10 @@ void WebURLLoaderImplCurl::loadSynchronously(
 void WebURLLoaderImplCurl::loadAsynchronously(const blink::WebURLRequest& request, blink::WebURLLoaderClient* client)
 {
     init();
+    m_localResourceLoad = LocalResourceMemoryLoad::create(request, this, client);
+    if (m_localResourceLoad) { m_localResourceLoad->start(); return; }
+    m_inspectorLoad = InspectorMemoryLoad::create(request, this, client);
+    if (m_inspectorLoad) { m_inspectorLoad->start(); return; }
 
     if (KURL(request.url()).isLocalFile() && request.frameType() != blink::WebURLRequest::FrameTypeTopLevel) {
         m_client = client;
@@ -267,6 +281,8 @@ void WebURLLoaderImplCurl::loadAsynchronously(const blink::WebURLRequest& reques
 
 void WebURLLoaderImplCurl::cancel()
 {
+    if (m_localResourceLoad) m_localResourceLoad->cancel();
+    if (m_inspectorLoad) m_inspectorLoad->cancel();
     m_requestCanceled = true;
     m_client = nullptr;
     if (m_blobLoader) {
@@ -308,7 +324,7 @@ void WebURLLoaderImplCurl::fileLoadImpl(const blink::KURL& url)
         client->didReceiveData(this, data.data() + offset, length, -1);
     }
     if (!requestCanceled()) {
-        client->didFinishLoading(this, WTF::currentTime(), data.size());
+        client->didFinishLoading(this, WTF::monotonicallyIncreasingTime(), data.size());
     }
 }
 

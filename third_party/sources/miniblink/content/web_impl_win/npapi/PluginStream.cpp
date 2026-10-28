@@ -25,6 +25,7 @@
  */
 
 #include "config.h"
+#include "platform/network/LocalResourceAdmission.h"
 #include "content/web_impl_win/npapi/PluginStream.h"
 
 #include "content/web_impl_win/WebFileUtilitiesImpl.h"
@@ -132,6 +133,9 @@ void PluginStream::deref()
 void PluginStream::start()
 {
     ASSERT(!m_loadManually);
+    if (blink::isLocalResourceNamespace(m_resourceRequest.url())) {
+        cancelAndDestroyStream(NPRES_NETWORK_ERR); return;
+    }
 
     blink::WebLocalFrameImpl* localFrame = blink::WebLocalFrameImpl::fromFrame(m_frame);
     if (!localFrame || !localFrame->client())

@@ -1,0 +1,20 @@
+{
+  "schema": "soui.release-vm-owned-controller/v1",
+  "root": "C:\\sr06",
+  "selection": [
+    "x86:desktop",
+    "x86:modern",
+    "x64:desktop",
+    "x64:modern"
+  ],
+  "stages": [],
+  "failed": {
+    "message": "Retain the raw report; it is missing, excessive or truncated.",
+    "stack": "Error: Retain the raw report; it is missing, excessive or truncated.\n    at need (C:\\sr06\\tools\\internal\\devkit-command.cjs:15:41)\n    at validateStage (C:\\sr06\\tools\\internal\\devkit-command.cjs:137:3)\n    at main (C:\\release06-control\\Guest-Owned-Smokes.cjs:78:24)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)"
+  },
+  "scope": "full-eight-applications",
+  "passed": false,
+  "fullEightApplicationCohortExecutedInThisAttempt": false,
+  "releaseReady": false,
+  "productionQualified": false
+}

@@ -3,12 +3,15 @@
 // found in the LICENSE file.
 
 #include "config.h"
+#include "platform/network/LocalResourceAdmission.h"
 #include "modules/serviceworkers/NavigatorServiceWorker.h"
 
+#include "bindings/core/v8/ExceptionState.h"
 #include "core/dom/Document.h"
 #include "core/frame/LocalDOMWindow.h"
 #include "core/frame/LocalFrame.h"
 #include "core/frame/Navigator.h"
+#include "core/loader/InspectorResourcePolicy.h"
 #include "modules/serviceworkers/ServiceWorkerContainer.h"
 
 namespace blink {
@@ -61,6 +64,15 @@ ServiceWorkerContainer* NavigatorServiceWorker::serviceWorker(Navigator& navigat
 
 ServiceWorkerContainer* NavigatorServiceWorker::serviceWorker(ExceptionState& exceptionState)
 {
+    if (frame() && hasLocalResourceOwner(frame()->document())) {
+        exceptionState.throwSecurityError("Service workers are unsupported by this owned local static resource mode.");
+        return nullptr;
+    }
+    if (frame() && InspectorResourcePolicy::isControlled(frame()->document())) {
+        exceptionState.throwSecurityError("This operation is disabled in the controlled inspector.");
+        return nullptr;
+    }
+
     if (frame() && !frame()->securityContext()->securityOrigin()->canAccessServiceWorkers()) {
         if (frame()->securityContext()->isSandboxed(SandboxOrigin))
             exceptionState.throwSecurityError("Service worker is disabled because the context is sandboxed and lacks the 'allow-same-origin' flag.");

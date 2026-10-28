@@ -1,0 +1,62 @@
+{
+  "phase": "configure",
+  "arch": "x86",
+  "attempt": "1",
+  "executable": {
+    "path": "C:/Program Files/CMake/bin/cmake.exe",
+    "bytes": 12905544,
+    "sha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379"
+  },
+  "args": [
+    "-S",
+    "C:/sr06",
+    "-B",
+    "C:/sr06/out/release-vendor-x86-1",
+    "-G",
+    "Visual Studio 17 2022",
+    "-A",
+    "Win32,version=10.0.19041.0",
+    "-T",
+    "v143,host=x64,version=14.44.35207",
+    "-DSOUI_BUILD_TEMPLATE=OFF",
+    "-DSOUI_BUILD_DEMOS=OFF",
+    "-DSOUI_BUILD_TESTS=ON",
+    "-DSOUI_BUILD_VENDOR_TESTS=ON",
+    "-DSOUI_BUILD_WEBVIEW2=ON",
+    "-DSOUI_BUILD_AUTO_HOST=ON",
+    "-DSOUI_BUILD_UIA=OFF",
+    "-DSOUI_DEVTOOLS_PACKAGE_ENABLED=OFF",
+    "-DSOUI_WEBVIEW2_SDK_ROOT=C:/sr06/out/webview2-deps/1.0.4258.31/package"
+  ],
+  "cwd": "C:/sr06",
+  "build": "C:/sr06/out/release-vendor-x86-1",
+  "runner": {
+    "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vendor-short-prep/Run-Phase.cjs",
+    "bytes": 3451,
+    "sha256": "a7bf2f0005d3a0581a885b00fc83e7cb78d2af74a599354269e60edb60acc82d"
+  },
+  "startedUtc": "2026-10-28T15:27:47.885Z",
+  "environment": {
+    "MSBUILDDISABLENODEREUSE": "1"
+  },
+  "concurrency": "Root explicitly authorizes finite /m1 lane alongside existing kernel; not a global-idle claim",
+  "productHostStarted": false,
+  "guiStarted": false,
+  "result": "NATURAL_ZERO",
+  "pid": 71556,
+  "exitCode": 0,
+  "signal": null,
+  "finishedUtc": "2026-10-28T15:28:03.198Z",
+  "elapsedMs": 15313,
+  "stdout": {
+    "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vendor-short-prep/x86-configure-1.stdout.log",
+    "bytes": 3001,
+    "sha256": "1344df5984ba564b86fd678e799673e735deebcdcb7f1fa24249f07657b5a35c"
+  },
+  "stderr": {
+    "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vendor-short-prep/x86-configure-1.stderr.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "forced": false
+}

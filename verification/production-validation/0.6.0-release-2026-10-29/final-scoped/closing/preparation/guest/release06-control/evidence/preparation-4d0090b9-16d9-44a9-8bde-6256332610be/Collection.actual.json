@@ -1,0 +1,50 @@
+{
+  "schema": "soui.release06-preparation-collection/v1",
+  "categories": [
+    {
+      "kind": "namefix",
+      "present": true,
+      "directory": "C:\\s06-namefix-evidence-14eff024-c9e3-49d2-b91b-2d38482d0fc1",
+      "files": [
+        "Postimage.actual.json",
+        "Preimage.actual.json",
+        "Repair.actual.json"
+      ],
+      "requiredMissing": [],
+      "hasFailureRaw": false
+    },
+    {
+      "kind": "tooldeps",
+      "present": true,
+      "directory": "C:\\release06-control\\tooldeps-55ed5703-cc6a-4c49-b518-35017ef20b8b",
+      "files": [
+        "Delta.actual.json",
+        "Preflight.actual.json"
+      ],
+      "requiredMissing": [],
+      "hasFailureRaw": false
+    },
+    {
+      "kind": "diagnostic-data",
+      "present": true,
+      "directory": "C:\\release06-control\\diag-install-b38bcf9c-9540-41f4-abc5-d710d49b59db",
+      "files": [
+        "Prepublish.actual.json",
+        "Publication.actual.json"
+      ],
+      "requiredMissing": [],
+      "hasFailureRaw": false
+    }
+  ],
+  "missingOriginalRecords": [],
+  "failedRawPreservedSeparately": [],
+  "sevenZipOriginalLogs": {
+    "status": "missing/not-produced",
+    "reason": "Original7z t/x stdout remained on the guest console. No later rerun or reconstructed log is collected.",
+    "rootConsoleScreenshot": "diag-data-installed.png (separate Root GUI observation, not collected here)"
+  },
+  "sourceScope": "This task name transport repair, tool dependency delta and diagnostic data publication only",
+  "sourceSdkPayloadOrOtherTaskCollected": false,
+  "testPassDecisionMade": false,
+  "releaseReady": false
+}

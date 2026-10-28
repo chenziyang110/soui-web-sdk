@@ -16,6 +16,7 @@ const tailRuntimeInputs=['tools/internal/owned-tail-evidence.cjs','tools/interna
 const names=['OwnedProcessRunner','OwnedProcessAssignmentFixture','ProcessTreeSampler','InputTrace','NativeTraceIdentity',
  'OwnedTailProcessFixture','OwnedTailMutationFixture','OwnedTailApiFixture','DisplayCalibration'];
 const sourceNames=['benchmarks/protocol/CMakeLists.txt','benchmarks/protocol/owned-process-runner.cpp',
+ 'benchmarks/protocol/owned-process-cohort.h',
  'benchmarks/protocol/owned-tail-evidence.cpp','benchmarks/protocol/owned-tail-evidence.h',
  'tests/benchmark/owned-process-assignment-fixture.cpp','benchmarks/protocol/process-tree-sampler.cpp','benchmarks/protocol/input-trace.cpp',
  'benchmarks/protocol/desktop-observer.h','benchmarks/protocol/desktop-observer.cpp',

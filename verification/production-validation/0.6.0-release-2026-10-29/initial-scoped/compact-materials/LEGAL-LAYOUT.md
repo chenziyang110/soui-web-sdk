@@ -1,0 +1,7 @@
+# DevTools 0.6.0 component license layout
+
+This component preserves all 203 source license-material files byte for byte, together with the root LICENSE, THIRD_PARTY_NOTICES and current redistribution instructions.
+Eleven source material paths exceed the bounded offline package path depth. Their original bytes are stored in third_party/licenses/compact/. The adjacent compact-paths.json maps every original source path to its component path, byte count and SHA-256; names use the SHA-256 of the original relative path and do not merge distinct source files.
+The original third_party/licenses/kernel-source/index.json.txt and other historical inventories retain their original bytes. Their retainedAt paths describe the source layout; resolve the eleven relocated entries with compact-paths.json. This mapping is a layout record, not a new source provenance or redistribution approval.
+Root notice links, KERNEL-NOTICES.md and docs/licenses/v0.6.0-redistribution.md retain their source-relative layout. The complete corresponding source is provided alongside this component at https://github.com/chenziyang110/soui-web-sdk/releases/tag/v0.6.0 . The compact source SDK is a development subset.
+The kernel/frontend/approval hashes configure a technical pair. They neither grant native debugging permission nor replace the applicable original licenses. Native application policy remains disabled until its owner explicitly chooses it and issues a target-bound grant.

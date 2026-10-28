@@ -8,6 +8,13 @@ param(
   [ValidateSet('distribution','source-diagnostic')][string]$WebProfile='distribution',
   [switch]$WithWebView2,
   [switch]$WithAutoHost,
+  [switch]$WithDevToolsPackage,
+  [string]$DevToolsPackageRoot,
+  [string]$DevToolsKernelRelative,
+  [string]$DevToolsKernelSha256,
+  [string]$DevToolsManifestSha256,
+  [string]$DevToolsApprovalRelative,
+  [string]$DevToolsApprovalSha256,
   [switch]$WithUia,
   [switch]$WithGuiBindings,
   [switch]$Install,
@@ -23,6 +30,16 @@ param(
 $ErrorActionPreference='Stop'
 $root=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 if($SdkOnly -and $WebProfile -ne 'distribution'){throw 'Source diagnostics require an application Web build; omit SdkOnly.'}
+$devtoolsInputs=@($DevToolsPackageRoot,$DevToolsKernelRelative,$DevToolsKernelSha256,
+  $DevToolsManifestSha256,$DevToolsApprovalRelative,$DevToolsApprovalSha256)
+if($WithDevToolsPackage){
+  if($SdkOnly){throw 'DevTools package deployment requires an application build; omit SdkOnly.'}
+  if(@($devtoolsInputs|Where-Object{[string]::IsNullOrWhiteSpace($_)}).Count){
+    throw 'WithDevToolsPackage requires all six explicit package path and approval pin inputs.'
+  }
+}elseif(@($devtoolsInputs|Where-Object{-not [string]::IsNullOrWhiteSpace($_)}).Count){
+  throw 'DevTools package inputs require explicit WithDevToolsPackage.'
+}
 if($WithVendorTests -and ($SdkOnly -or (Test-Path -LiteralPath (Join-Path $root 'project.json')))){
   throw 'WithVendorTests requires the source devkit root; omit SdkOnly and do not use a generated application.'
 }
@@ -77,9 +94,13 @@ if($generated){
   $projectMetadata=Get-Content -Raw -LiteralPath (Join-Path $root 'project.json') | ConvertFrom-Json
   if($projectMetadata.runtimeProfile -eq 'modern'){$WithWebView2=$true}
   if($projectMetadata.runtimeProfile -eq 'auto'){$WithAutoHost=$true}
+  if($WithDevToolsPackage -and $projectMetadata.runtimeProfile -eq 'modern'){
+    throw 'The offline DevTools package belongs to MiniBlink; WebView2 uses its Runtime frontend.'
+  }
 }
 if($WithAutoHost){
   $WithWebView2=$true
+  if($WithDevToolsPackage){throw 'Auto host does not admit an offline DevTools kernel override.'}
 }
 if(Test-Path -LiteralPath (Join-Path $root 'sdk-lock.json')) {
   & $node.Source (Join-Path $root 'tools/sdk/soui-sdk.cjs') verify-project --project $root
@@ -167,6 +188,20 @@ if($WithWebView2){
 }
 $optional+=('-DSOUI_BUILD_AUTO_HOST='+$(if($WithAutoHost){'ON'}else{'OFF'}))
 $optional+=('-DSOUI_BUILD_UIA='+$(if($WithUia){'ON'}else{'OFF'}))
+if(-not $SdkOnly){
+  # A previous explicit package build cannot silently enable a later ordinary
+  # build. This selects delivery only; native application policy stays disabled.
+  $optional+=('-DSOUI_DEVTOOLS_PACKAGE_ENABLED='+$(if($WithDevToolsPackage){'ON'}else{'OFF'}))
+}
+if($WithDevToolsPackage){
+  $packageRoot=[IO.Path]::GetFullPath($DevToolsPackageRoot)
+  $optional+=@("-DSOUI_DEVTOOLS_FRONTEND_ROOT=$packageRoot",
+    "-DSOUI_DEVTOOLS_KERNEL_RELATIVE=$DevToolsKernelRelative",
+    "-DSOUI_DEVTOOLS_KERNEL_SHA256=$DevToolsKernelSha256",
+    "-DSOUI_DEVTOOLS_MANIFEST_SHA256=$DevToolsManifestSha256",
+    "-DSOUI_DEVTOOLS_APPROVAL_RELATIVE=$DevToolsApprovalRelative",
+    "-DSOUI_DEVTOOLS_APPROVAL_SHA256=$DevToolsApprovalSha256")
+}
 if($WithVendorTests){$optional+=@('-DSOUI_BUILD_TESTS=ON','-DSOUI_BUILD_VENDOR_TESTS=ON')}
 & $cmake.Source @configure @optional
 if($LASTEXITCODE -ne 0){throw 'CMake configure failed'}
