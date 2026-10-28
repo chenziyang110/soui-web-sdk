@@ -1,0 +1,90 @@
+{
+  "schema": "soui.pr117-fixed-body-pin-rebind/1",
+  "head": "d558e363ec84cecfb1c46d022f4ea9a91e5c9b79",
+  "root": "F:/pm28",
+  "createdUtc": "2026-10-28T12:38:30.2672001Z",
+  "scope": [
+    "tests/native/vendor_lifetime/dragdata/CMakeLists.txt",
+    "tests/native/vendor_lifetime/ctor_shell/CMakeLists.txt"
+  ],
+  "gatePins": [
+    {
+      "path": "F:\\pm28\\tests\\native\\vendor_lifetime\\dragdata\\CMakeLists.txt",
+      "bytes": 6154,
+      "sha256": "0afcd2b89a3655ae8083875dc5a578d4beebf93fe3411418e215d9f3a74c9e2d"
+    },
+    {
+      "path": "F:\\pm28\\tests\\native\\vendor_lifetime\\ctor_shell\\CMakeLists.txt",
+      "bytes": 5693,
+      "sha256": "59277ce25bc6bd25b09fd06c291d0cfcc38c2a49c7595321b63d61855e657f9b"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\pr117-dragdata-pin-audit.json",
+      "bytes": 9168,
+      "sha256": "9abb88e4080b7b672659688dde9bac03d866f438519338363b4ac3848d0c47a8"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\pr117-ctor_shell-pin-audit.json",
+      "bytes": 7268,
+      "sha256": "42292a93aca662073ad50c3554e5cd555d16210be649fa4bde4df63b9e359dba"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\pr117-dragdata-pin-rebind.patch",
+      "bytes": 2808,
+      "sha256": "7b483043275ce6fe6382a117c1e708907ec2a79643c9fad92ca936833ee9cf98"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\pr117-ctor-shell-pin-rebind.patch",
+      "bytes": 1027,
+      "sha256": "4c3acf39ffea420d98b2c94d5bcfc30bb2b9ea4b1501452f5544283d57abb0f0"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\audit-dragdata-source-pins.cjs",
+      "bytes": 6079,
+      "sha256": "32e1966df8c73657c89af6516e5a663c3c8442f5cd4ef1c72836149933624cb0"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\pr117-dragdata-reusable-readonly-audit-final.json",
+      "bytes": 6966,
+      "sha256": "ef730a24022ec39149e8abf5b226a262e6ac15f7abecb7e5d9cd0fde86c904c1"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\pr117-main-configure-dragdata-rebound-1.log",
+      "bytes": 621,
+      "sha256": "f4ad449e89dabf9133072318224638e93da39cbddc6f8a2925b5d8807ce419ff"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\pr117-main-configure-dragdata-rebound-1.result.json",
+      "bytes": 804,
+      "sha256": "54deda4ba923012e76d9ea332d52175fd0087123f6ba95db83d0d6f32da0ac02"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\pr117-main-configure-ctor-rebound-2.log",
+      "bytes": 2304,
+      "sha256": "7c1fd159920a759256aee9d9f21e5653c5ba6b0b5e0f5cbfbab23b556d144e48"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\pr117-main-configure-ctor-rebound-2.result.json",
+      "bytes": 811,
+      "sha256": "7617be1b1eddf58794c5af72ea802ac5d7f6773e74fc4ec53cb14f8a327aafed"
+    }
+  ],
+  "uniqueExactFixedBodyRanges": 18,
+  "actualSourcesEqualOriginalPr117": true,
+  "fixtureOrAttrsChanged": false,
+  "productSourceChanged": false,
+  "strictComparisonsChanged": false,
+  "observerChangeRequired": false,
+  "configureExitCode": 0,
+  "vendorOn": true,
+  "architecture": "x64",
+  "windowsSdk": "10.0.19041.0",
+  "webview2Sdk": "1.0.4258.31",
+  "buildExecuted": false,
+  "testsExecuted": false,
+  "helperUsage": "node ABS_OUT/audit-dragdata-source-pins.cjs ABS_ROOT ABS_DRAGDATA_CMAKE [--write]",
+  "helperDefault": "read-only audit",
+  "futureLayers": "Prefer latest authored correct CMake pins; helper may only rebind unchanged original ten fixture bodies and original seven source columns."
+}

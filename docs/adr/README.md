@@ -79,6 +79,8 @@
 - [ADR-0125：有界输入、任务与可见帧关联](0125-input-frame-trace.md)（源码候选；编译与执行未运行）
 
 - [ADR-0127：WebView2 owner 输出与重入边界](0127-webview2-owner-output.md)（proposed，候选默认关闭）
+
+- [ADR-0126：GPU输入到可见反馈独立候选](0126-gpu-input-ui-candidate.md)（proposed，未启用/待数据）
 - [ADR-0118：MiniBlink 关闭的分阶段继续状态](0118-miniblink-nonblocking-unmount.md)
 - [ADR-0119：显式离线 Web 源码诊断构建档](0119-offline-web-build-profiles.md)
 - [ADR-0124：Web 构建目标、资源清单与体积分析](0124-web-targets-and-size-analysis.md)

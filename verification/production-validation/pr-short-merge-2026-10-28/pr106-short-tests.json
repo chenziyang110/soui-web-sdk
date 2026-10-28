@@ -1,0 +1,75 @@
+{
+  "schema": "soui.pr106-integration-short-tests/v1",
+  "recordedAt": "2026-10-28T11:53:35.050Z",
+  "worktree": "C:/pm106",
+  "branch": "codex/pr106-short-merge-20261028",
+  "commit": "71bf89d526dc9cdc936fe96bab7c0e7604ceea11",
+  "mergedMain": "94a5b94a7614bb89e79b472850e04e93edfb7c2d",
+  "tests": [
+    {
+      "command": "node --test tests/sdk/gui-bindings-delivery.test.cjs tests/sdk/legal-notice-materials.test.cjs tests/sdk/delivery-identity.test.cjs tests/sdk/sdk-version.test.cjs",
+      "exitCode": 0,
+      "passed": 49,
+      "skipped": 0,
+      "failed": 0
+    },
+    {
+      "command": "node --test tests/sdk/auto-packaging.test.cjs tests/sdk/web-build-profile-integration.test.cjs tests/sdk/web-targets-integration.test.cjs tests/sdk/size-report.test.cjs",
+      "exitCode": 0,
+      "passed": 48,
+      "skipped": 0,
+      "failed": 0
+    },
+    {
+      "command": "node --test tests/sdk/runtime-deployment.test.cjs tests/sdk/runtime-bundle.test.cjs tests/sdk/runtime-packaging-integration.test.cjs tests/sdk/runtime-build-evidence.test.cjs tests/sdk/auto-smoke.test.cjs",
+      "exitCode": 0,
+      "passed": 90,
+      "skipped": 1,
+      "failed": 0,
+      "skipReason": "File symbolic-link permission unavailable"
+    },
+    {
+      "command": "node --test tests/sdk/gui-bindings-entrypoints.test.cjs tests/sdk/application-package.test.cjs",
+      "exitCode": 0,
+      "passed": 13,
+      "skipped": 0,
+      "failed": 0
+    },
+    {
+      "command": "node --test --test-name-pattern='npm peers' tests/gui-bindings/packages.test.mjs",
+      "exitCode": 0,
+      "passed": 1,
+      "skipped": 0,
+      "failed": 0,
+      "tuples": 8
+    }
+  ],
+  "preparation": [
+    {
+      "command": "node tools/sdk/gui-bindings-delivery.cjs build --root C:/pm106",
+      "exitCode": 0,
+      "scope": "Three actual TypeScript packages; no native build",
+      "evidence": "out/gui-bindings/build.json"
+    },
+    {
+      "command": "npm --prefix tests/gui-bindings ci --ignore-scripts --no-audit --no-fund --install-links",
+      "exitCode": 0
+    }
+  ],
+  "audit": {
+    "command": "npm --prefix sdk/web audit --json",
+    "exitCode": 0,
+    "vulnerabilities": 0
+  },
+  "retainedFailures": [
+    "Before the JSON read fix, all three valid-JSON mutation cases exited zero and failed the new rejection tests. All passed after the fix.",
+    "First offline npm peer test failed on unrelated React registry metadata (react@undefined); the resolution-only fixture now uses fixed local framework metadata tarballs and requires native SDK peer errors for rejected tuples."
+  ],
+  "integrationOwnerPending": [
+    "source-manifest.json remains exactly the PR106 blob 7c079fdb43054042253876ed7b11856d83b79920; Root owns final refresh.",
+    "verification/acceptance.json remains the truthful old 0.5.1-preview.1 unverified record; Root owns archival and official current-version record-unverified refresh."
+  ],
+  "remoteMutations": false,
+  "nativeProductOrGuiExecuted": false,
+  "fullSourceManifestCreateOrVerifyExecuted": false
+}

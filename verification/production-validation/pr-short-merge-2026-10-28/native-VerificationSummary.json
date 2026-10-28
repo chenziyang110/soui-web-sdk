@@ -1,0 +1,1367 @@
+{
+  "schema": "soui.pr-native-necessary-short-results/1",
+  "createdUtc": "2026-10-28T12:02:30.724Z",
+  "originalHead": "aa30a365f65435e67d9d00b86a9c02221fd437c7",
+  "sourceRoot": "C:/pmnat",
+  "architecture": "x64",
+  "configuration": "Release",
+  "compiler": "MSVC 19.44/v143",
+  "windowsSdk": "10.0.19041.0",
+  "sourceFixes": {
+    "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-fix-catalog.json",
+    "bytes": 6145,
+    "sha256": "4d676ca874b5ad7d7349754378d3cbbb79a0d00e1f2c8e594c135be4574fbcfe"
+  },
+  "dependency": {
+    "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-dependency.json",
+    "bytes": 1781,
+    "sha256": "4e080f38372a4de489082992cb41b508071c67dd35da88a30c2c5e546722f380"
+  },
+  "results": [
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-configure-x64-19041.result.json",
+      "bytes": 675,
+      "sha256": "ed0f6441d314336463b4f6728260f8edafaf3d872792816fc85cbf5e071cfdd9",
+      "value": {
+        "phase": "configure",
+        "arguments": [
+          "-S",
+          "C:/pmnat",
+          "-B",
+          "C:/pm-build/x64-19041",
+          "-G",
+          "Visual Studio 17 2022",
+          "-A",
+          "x64,version=10.0.19041.0",
+          "-DCMAKE_SYSTEM_VERSION=10.0.19041.0",
+          "-DSOUI_BUILD_TEMPLATE=OFF",
+          "-DSOUI_BUILD_DEMOS=OFF",
+          "-DSOUI_BUILD_TESTS=ON",
+          "-DSOUI_BUILD_VENDOR_TESTS=ON",
+          "-DSOUI_BUILD_WEBVIEW2=ON",
+          "-DSOUI_BUILD_INPUT_UI_BENCHMARKS=ON",
+          "-DSOUI_WEBVIEW2_SDK_ROOT=F:/work/SOUI_WEB/soui-sdk/out/webview2-deps/1.0.4258.31/package"
+        ],
+        "exitCode": 0,
+        "startedUtc": "2026-10-28T11:45:14.7321484Z",
+        "completedUtc": "2026-10-28T11:46:02.8872666Z"
+      }
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-build-x64-1.result.json",
+      "bytes": 1619,
+      "sha256": "1cb6a19772b3a47c232a373dcb8c9bc1a732434aadedd20294cebb21d3350187",
+      "value": {
+        "head": "aa30a365f65435e67d9d00b86a9c02221fd437c7",
+        "phase": "native-build",
+        "exitCode": 1,
+        "elapsedMs": 94690,
+        "completedUtc": "2026-10-28T11:48:35.8020321Z",
+        "arguments": [
+          "--build",
+          "C:/pm-build/x64-19041",
+          "--config",
+          "Release",
+          "--parallel",
+          "4",
+          "--target",
+          "soui_sdk",
+          "soui_webview2",
+          "SouiInputUiHost",
+          "soui_input_frame_trace_backend_tests",
+          "soui_input_frame_trace_tests",
+          "soui_input_mailbox_tests",
+          "scheduler_continuation_contract",
+          "scheduler_index_contract",
+          "soui_worker_lifetime_regressions",
+          "soui_host_frame_policy_tests",
+          "soui_fractional_frame_phase_tests",
+          "soui_resource_notification_policy_tests",
+          "soui_frame_buffer_lease_policy_tests",
+          "soui_input_frame_coverage_tests",
+          "soui_raster_scheduling_policy_tests",
+          "soui_render_scene_transaction_tests",
+          "soui_independent_input_trace_tests",
+          "soui_window_close_lifetime_source_tests",
+          "soui_independent_wheel_source_tests",
+          "soui_host_visibility_source_tests",
+          "soui_render_diagnostic_source_tests",
+          "soui_native_trace_ui_lease_tests",
+          "soui_webview2_owner_policy_tests",
+          "soui_vendor_endpoint_lifetime_tests",
+          "soui_vendor_activation_lock_tests",
+          "soui_vendor_ctor_shell_tests",
+          "soui_vendor_dragdata_ownership_tests",
+          "soui_vendor_legacy_drag_leaf_tests",
+          "soui_request_close_regressions",
+          "soui_source_kernel_api_tests",
+          "soui_scheduler_fairness_tests",
+          "soui_render_deadline_policy_tests",
+          "--",
+          "/nr:false"
+        ]
+      }
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-build-x64-2.result.json",
+      "bytes": 1485,
+      "sha256": "54089d19b658a72828541571019bd70433b95bf911ac7442b2297e338ef1f153",
+      "value": {
+        "head": "aa30a365f65435e67d9d00b86a9c02221fd437c7",
+        "phase": "native-build-remaining",
+        "exitCode": 0,
+        "elapsedMs": 112747,
+        "completedUtc": "2026-10-28T11:51:14.2454927Z",
+        "arguments": [
+          "--build",
+          "C:/pm-build/x64-19041",
+          "--config",
+          "Release",
+          "--parallel",
+          "4",
+          "--target",
+          "soui_input_mailbox_tests",
+          "scheduler_continuation_contract",
+          "scheduler_index_contract",
+          "soui_worker_lifetime_regressions",
+          "soui_host_frame_policy_tests",
+          "soui_fractional_frame_phase_tests",
+          "soui_resource_notification_policy_tests",
+          "soui_frame_buffer_lease_policy_tests",
+          "soui_input_frame_coverage_tests",
+          "soui_raster_scheduling_policy_tests",
+          "soui_render_scene_transaction_tests",
+          "soui_independent_input_trace_tests",
+          "soui_window_close_lifetime_source_tests",
+          "soui_independent_wheel_source_tests",
+          "soui_host_visibility_source_tests",
+          "soui_render_diagnostic_source_tests",
+          "soui_native_trace_ui_lease_tests",
+          "soui_webview2_owner_policy_tests",
+          "soui_vendor_endpoint_lifetime_tests",
+          "soui_vendor_activation_lock_tests",
+          "soui_vendor_ctor_shell_tests",
+          "soui_vendor_dragdata_ownership_tests",
+          "soui_vendor_legacy_drag_leaf_tests",
+          "soui_request_close_regressions",
+          "soui_source_kernel_api_tests",
+          "soui_scheduler_fairness_tests",
+          "soui_render_deadline_policy_tests",
+          "--",
+          "/nr:false"
+        ]
+      }
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-two-fixtures-build-3.result.json",
+      "bytes": 509,
+      "sha256": "36566dafcdc2f564ac396d156fa9e8bf9ad893a26a9b2891deba6116d9a87bef",
+      "value": {
+        "head": "aa30a365f65435e67d9d00b86a9c02221fd437c7",
+        "phase": "two-affected-fixtures-build",
+        "exitCode": 0,
+        "elapsedMs": 7859,
+        "completedUtc": "2026-10-28T11:55:10.5100483Z",
+        "arguments": [
+          "--build",
+          "C:/pm-build/x64-19041",
+          "--config",
+          "Release",
+          "--parallel",
+          "4",
+          "--target",
+          "soui_input_mailbox_tests",
+          "soui_native_trace_ui_lease_tests",
+          "--",
+          "/nr:false"
+        ],
+        "productionChange": false,
+        "sourceByteGateChange": false
+      }
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-protocol-build.result.json",
+      "bytes": 413,
+      "sha256": "a62ddba2ba2165f0bc9cec78237f3f7ab1ea96a7eaa3b220b8574ef7b34cd685",
+      "value": {
+        "head": "aa30a365f65435e67d9d00b86a9c02221fd437c7",
+        "phase": "protocol-build",
+        "exitCode": 0,
+        "elapsedMs": 9918,
+        "completedUtc": "2026-10-28T11:52:14.7380726Z",
+        "arguments": [
+          "--build",
+          "C:/pm-build/protocol-x64-19041",
+          "--config",
+          "Release",
+          "--parallel",
+          "4",
+          "--target",
+          "BurstInput",
+          "OwnedProcessRunner",
+          "--",
+          "/nr:false"
+        ]
+      }
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-runner-repaired-build.result.json",
+      "bytes": 503,
+      "sha256": "f8e56a8e19cd5ccadf197e9ac02312cd9349655cece22567e4abbf25bb76b558",
+      "value": {
+        "head": "aa30a365f65435e67d9d00b86a9c02221fd437c7",
+        "phase": "only-affected-runner-build",
+        "exitCode": 0,
+        "elapsedMs": 3608,
+        "completedUtc": "2026-10-28T11:57:43.0097187Z",
+        "arguments": [
+          "--build",
+          "C:/pm-build/protocol-x64-19041",
+          "--config",
+          "Release",
+          "--parallel",
+          "4",
+          "--target",
+          "OwnedProcessRunner",
+          "--",
+          "/nr:false"
+        ],
+        "deadlineIncreased": false,
+        "stopBehaviorChanged": false,
+        "failureExitPreserved": true
+      }
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-ctest-x64-1.result.json",
+      "bytes": 720,
+      "sha256": "d7bc8ce5e06ca3ef092fdf9530e4b7e9b960f0bef4962a0e24349a357543ca97",
+      "value": {
+        "head": "aa30a365f65435e67d9d00b86a9c02221fd437c7",
+        "phase": "native-ctest",
+        "exitCode": 8,
+        "elapsedMs": 4394,
+        "startedUtc": "2026-10-28T11:51:34.1338368Z",
+        "completedUtc": "2026-10-28T11:51:38.5303522Z",
+        "selectedTests": 88,
+        "arguments": [
+          "--test-dir",
+          "C:/pm-build/x64-19041",
+          "-C",
+          "Release",
+          "--tests-from-file",
+          "F:/work/SOUI_WEB/out/pr-short-merge-20261028/native-ctest-selection.txt",
+          "--no-tests=error",
+          "--parallel",
+          "4",
+          "--timeout",
+          "20",
+          "--output-on-failure",
+          "--output-junit",
+          "F:/work/SOUI_WEB/out/pr-short-merge-20261028/native-ctest-x64-1.junit.xml"
+        ],
+        "productGui": false,
+        "longTests": false
+      }
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-ctest-two-repaired-2.result.json",
+      "bytes": 630,
+      "sha256": "47c988419084d2a3813cfad4baa398dc0cd9f21eb4efc8104bb4de2d1517f839",
+      "value": {
+        "head": "aa30a365f65435e67d9d00b86a9c02221fd437c7",
+        "phase": "only-two-failed-native-recheck",
+        "exitCode": 0,
+        "elapsedMs": 398,
+        "completedUtc": "2026-10-28T11:55:21.0700119Z",
+        "arguments": [
+          "--test-dir",
+          "C:/pm-build/x64-19041",
+          "-C",
+          "Release",
+          "-R",
+          "^sdk\\.native\\.(input-mailbox|native-trace-ui-lease)$",
+          "--no-tests=error",
+          "--parallel",
+          "2",
+          "--timeout",
+          "20",
+          "--output-on-failure",
+          "--output-junit",
+          "F:/work/SOUI_WEB/out/pr-short-merge-20261028/native-ctest-two-repaired-2.junit.xml"
+        ],
+        "previousPassing86Rerun": false
+      }
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-node-data.result.json",
+      "bytes": 465,
+      "sha256": "98555489e0970127eef86b1655bfcd87281a320111c51f15b54e58b6992e06f4",
+      "value": {
+        "head": "aa30a365f65435e67d9d00b86a9c02221fd437c7",
+        "arguments": [
+          "--test",
+          "tests/benchmark/input-frame-trace/api-mirror.test.cjs",
+          "tests/benchmark/input-frame-trace/protocol.test.cjs",
+          "tests/benchmark/input-frame-trace/series.test.cjs",
+          "tests/sdk/vendor-tests.test.cjs"
+        ],
+        "exitCode": 0,
+        "startedUtc": "2026-10-28T11:46:18.4312269Z",
+        "completedUtc": "2026-10-28T11:47:04.9623128Z",
+        "nativeExecution": false
+      }
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-llvm-recipe-data.result.json",
+      "bytes": 270,
+      "sha256": "35bbf3cf693131c366599574aef1f789ea226eb0278836e8372cb105de0bd5c2",
+      "value": {
+        "head": "aa30a365f65435e67d9d00b86a9c02221fd437c7",
+        "exitCode": 1,
+        "startedUtc": "2026-10-28T11:46:19.1566493Z",
+        "completedUtc": "2026-10-28T11:46:26.2275055Z",
+        "scope": "pure current SOURCE recipe dependency contracts",
+        "nativeExecution": false
+      }
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-llvm-recipe-data-2.result.json",
+      "bytes": 467,
+      "sha256": "1c46b2bded3e86e654d38df7c5f470b1d85e08574cbab93e9247b9eca3d68247",
+      "value": {
+        "head": "aa30a365f65435e67d9d00b86a9c02221fd437c7",
+        "exitCode": 0,
+        "startedUtc": "2026-10-28T11:47:26.8229037Z",
+        "completedUtc": "2026-10-28T11:47:31.4644479Z",
+        "scope": "pure current SOURCE recipe dependency contracts",
+        "nativeExecution": false,
+        "counts": {
+          "selectedObjects": 8,
+          "total": 57,
+          "failed": 0,
+          "derived": 46
+        },
+        "passed": true,
+        "fix": "Normalize both suffix operands before Ordinal path comparison"
+      }
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-node-invalidarg.result.json",
+      "bytes": 1105,
+      "sha256": "039c52ce4abc5270dcf3e25cfea5544cd0c5c4d5d4929a0b611f6c7d06e9eb09",
+      "value": {
+        "head": "aa30a365f65435e67d9d00b86a9c02221fd437c7",
+        "phase": "owned-native-invalidarg",
+        "exitCode": 1,
+        "elapsedMs": 765,
+        "completedUtc": "2026-10-28T11:53:37.5580295Z",
+        "tools": [
+          {
+            "path": "C:\\pm-build\\protocol-x64-19041\\Release\\BurstInput.exe",
+            "bytes": 89088,
+            "sha256": "c99778dea0274bd5028bbe448c87d234e2f1a0c5afa0d8a1f6ce8f13f9d5fd7e"
+          },
+          {
+            "path": "C:\\pm-build\\protocol-x64-19041\\Release\\OwnedProcessRunner.exe",
+            "bytes": 150016,
+            "sha256": "bdf3b5e327176c8ebb1df45aaab567d19f3a90c09279415c6e5b4ec954286685"
+          },
+          {
+            "path": "C:\\pm-build\\x64-19041\\benchmarks\\input-ui-host\\Release\\SouiInputUiHost.exe",
+            "bytes": 847360,
+            "sha256": "a55dcdf2a72dc9b3bddb378e8c4a6144e7236ed43d4e19dd380069b0e967b268"
+          }
+        ],
+        "sourceSafety": {
+          "burst": "PID0/wrong birth fails held target identity before session/window/input/output",
+          "host": "wmain DPI/COM then parse(argc==7) before run/load/CreateWindow/Host.start"
+        },
+        "productGui": false,
+        "businessKernelLoaded": false
+      }
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-node-invalidarg-burst-2.result.json",
+      "bytes": 722,
+      "sha256": "463c5957a0cf9d0631f7e1a9db144c24e4224c1813d80a16ce3dc0e17e2eff8c",
+      "value": {
+        "head": "aa30a365f65435e67d9d00b86a9c02221fd437c7",
+        "phase": "only-failed-burst-invalidarg-recheck",
+        "exitCode": 0,
+        "elapsedMs": 660,
+        "completedUtc": "2026-10-28T11:58:08.4119418Z",
+        "tools": [
+          {
+            "path": "C:\\pm-build\\protocol-x64-19041\\Release\\BurstInput.exe",
+            "bytes": 89088,
+            "sha256": "c99778dea0274bd5028bbe448c87d234e2f1a0c5afa0d8a1f6ce8f13f9d5fd7e"
+          },
+          {
+            "path": "C:\\pm-build\\protocol-x64-19041\\Release\\OwnedProcessRunner.exe",
+            "bytes": 150016,
+            "sha256": "24794a81659b621a9e488beda2c983be6f4939de59c781bc8062e8fc8ea13478"
+          }
+        ],
+        "hostAlreadyPassedNotRerun": true,
+        "productGui": false,
+        "businessKernelLoaded": false
+      }
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-runner-drain-red.result.json",
+      "bytes": 303,
+      "sha256": "066b60225388858e4f312a20929acd54dac6ee8dcfee34e469e053fad70ae8e3",
+      "value": {
+        "phase": "new-nonzero-drain-regressions-before-fix",
+        "exitCode": 1,
+        "elapsedMs": 660,
+        "runnerSha256": "bdf3b5e327176c8ebb1df45aaab567d19f3a90c09279415c6e5b4ec954286685",
+        "expectedFailure": true,
+        "originalFailurePreserved": true,
+        "completedUtc": "2026-10-28T11:57:30.6117935Z"
+      }
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-runner-drain-green.result.json",
+      "bytes": 395,
+      "sha256": "7f07d183a8c86474a602ae1c66862a3c47043098de44f9538700b26566e7f97d",
+      "value": {
+        "phase": "affected-runner-contracts-after-fix",
+        "exitCode": 0,
+        "elapsedMs": 3560,
+        "runnerSha256": "24794a81659b621a9e488beda2c983be6f4939de59c781bc8062e8fc8ea13478",
+        "pattern": "^(native nonzero|nonzero root|dedicated supervisor|timeout closes|a root that exits zero|owned descendants may finish)",
+        "completedUtc": "2026-10-28T11:58:11.3213329Z",
+        "noProductGui": true
+      }
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-interaction-router-build.result.json",
+      "bytes": 411,
+      "sha256": "b82284824966ff6e78aa1341567633df2b1ddc3fc71e41ba2c51b6e60a3cc644",
+      "value": {
+        "head": "aa30a365f65435e67d9d00b86a9c02221fd437c7",
+        "phase": "additional-pr105-router-build",
+        "exitCode": 0,
+        "elapsedMs": 3871,
+        "arguments": [
+          "--build",
+          "C:/pm-build/x64-19041",
+          "--config",
+          "Release",
+          "--parallel",
+          "4",
+          "--target",
+          "soui_interaction_router_tests",
+          "--",
+          "/nr:false"
+        ],
+        "completedUtc": "2026-10-28T11:59:40.6645275Z"
+      }
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-interaction-router-test.result.json",
+      "bytes": 555,
+      "sha256": "31668559d25aafe928147c3b5b8de3f8181074a56c7ebcae18586d63b9b47740",
+      "value": {
+        "head": "aa30a365f65435e67d9d00b86a9c02221fd437c7",
+        "phase": "only-pr105-router-short-check",
+        "exitCode": 0,
+        "elapsedMs": 446,
+        "arguments": [
+          "--test-dir",
+          "C:/pm-build/x64-19041",
+          "-C",
+          "Release",
+          "-R",
+          "^sdk\\.native\\.interaction-router$",
+          "--no-tests=error",
+          "--timeout",
+          "20",
+          "-V",
+          "--output-junit",
+          "F:/work/SOUI_WEB/out/pr-short-merge-20261028/native-interaction-router.junit.xml"
+        ],
+        "completedUtc": "2026-10-28T12:01:30.3607855Z",
+        "previous88Rerun": false
+      }
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-scroll-configure.result.json",
+      "bytes": 715,
+      "sha256": "804d77edc769b8f4fee86c47bb90d14786f47000e94b606edc95e8c53ab0e66d",
+      "value": {
+        "head": "aa30a365f65435e67d9d00b86a9c02221fd437c7",
+        "phase": "existing-standalone-scroll-configure",
+        "exitCode": 0,
+        "elapsedMs": 6981,
+        "arguments": [
+          "-S",
+          "C:/pm-build/scroll-short-source",
+          "-B",
+          "C:/pm-build/scroll-x64-19041",
+          "-G",
+          "Visual Studio 17 2022",
+          "-A",
+          "x64,version=10.0.19041.0",
+          "-DCMAKE_SYSTEM_VERSION=10.0.19041.0",
+          "-DSOUI_SCROLL_KERNEL_ROOT=C:/pmnat/third_party/sources/miniblink",
+          "-DSOUI_BUILD_SCROLL_CONTRACTION_DIAGNOSTIC=OFF",
+          "-DSOUI_ACK_BASELINE_WEBLAYER_SOURCE="
+        ],
+        "wrapperSha256": "9ba9bb0c75813b25e59bcafc366ef879175a8187c8cfa6cc0b6ccc2e8edffa9b",
+        "completedUtc": "2026-10-28T12:00:22.2900625Z"
+      }
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-scroll-build.result.json",
+      "bytes": 545,
+      "sha256": "bcd8032002db48a80bbdd05ff9191ee80d8aa78ce6530c683d60bf47f6610863",
+      "value": {
+        "head": "aa30a365f65435e67d9d00b86a9c02221fd437c7",
+        "phase": "four-existing-scroll-logic-targets",
+        "exitCode": 0,
+        "elapsedMs": 15063,
+        "arguments": [
+          "--build",
+          "C:/pm-build/scroll-x64-19041",
+          "--config",
+          "Release",
+          "--parallel",
+          "4",
+          "--target",
+          "soui_scroll_coverage_tests",
+          "soui_scroll_target_retention_tests",
+          "soui_scroll_target_boundary_tests",
+          "soui_scroll_ack_feedback_tests",
+          "--",
+          "/nr:false"
+        ],
+        "completedUtc": "2026-10-28T12:00:44.6967729Z"
+      }
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-scroll-test.result.json",
+      "bytes": 625,
+      "sha256": "d7b0234b312b9be111834c687685f979784fa1072bce799ff82ae3b0539e3b13",
+      "value": {
+        "head": "aa30a365f65435e67d9d00b86a9c02221fd437c7",
+        "phase": "only-pr107-109-existing-scroll-short-checks",
+        "exitCode": 0,
+        "elapsedMs": 780,
+        "arguments": [
+          "--test-dir",
+          "C:/pm-build/scroll-x64-19041",
+          "-C",
+          "Release",
+          "--no-tests=error",
+          "--parallel",
+          "4",
+          "--timeout",
+          "10",
+          "-V",
+          "--output-junit",
+          "F:/work/SOUI_WEB/out/pr-short-merge-20261028/native-scroll-test.junit.xml"
+        ],
+        "completedUtc": "2026-10-28T12:01:30.7105012Z",
+        "previous88Rerun": false,
+        "baselineOverride": false,
+        "unresolvedContractionDiagnosticEnabled": false
+      }
+    }
+  ],
+  "acceptedScope": {
+    "currentNamedTargets": 39,
+    "sdkAndWebview2LibrariesCompiled": true,
+    "ctestInitial": {
+      "executed": 88,
+      "passed": 86,
+      "failed": 2,
+      "wholeExitCode": 8
+    },
+    "onlyAffectedNativeRecheck": {
+      "executed": 2,
+      "passed": 2,
+      "previous86Rerun": false
+    },
+    "additionalCtest": {
+      "executed": 5,
+      "passed": 5,
+      "internalAssertions": {
+        "router": 12,
+        "coverage": 13,
+        "retention": 2,
+        "boundaries": 19,
+        "ack": 25
+      }
+    },
+    "uniqueNativeCtestPassedAcrossAffectedAttempts": 93,
+    "pureNodeContracts": {
+      "passed": 50,
+      "skipped": 0
+    },
+    "purePowerShellRecipes": {
+      "passed": 57,
+      "originalFailed": 1
+    },
+    "ownedInvalidArgument": {
+      "hostOriginalPassed": true,
+      "originalBurstFailed": true,
+      "burstRepairedPassed": true,
+      "strictNoForceKept": true
+    },
+    "runnerSpecialist": {
+      "newCasesOriginalRed": 2,
+      "postFixPassed": 7,
+      "skipped": 0
+    }
+  },
+  "artifacts": [
+    {
+      "target": "soui_sdk",
+      "path": "C:\\pm-build\\x64-19041\\sdk\\Release\\soui_sdk.lib",
+      "bytes": 50946370,
+      "sha256": "3ad3f5ef4a1d94f6c684787fd28396c86c3c405c23309fd7bb0ccddbf0a9d714"
+    },
+    {
+      "target": "soui_webview2",
+      "path": "C:\\pm-build\\x64-19041\\sdk\\renderers\\webview2\\Release\\soui_webview2.lib",
+      "bytes": 7778776,
+      "sha256": "9897308efebee806a84698e5bc41cb1a647848a892035e8dfafcc210f27d742d"
+    },
+    {
+      "target": "SouiInputUiHost",
+      "path": "C:\\pm-build\\x64-19041\\benchmarks\\input-ui-host\\Release\\SouiInputUiHost.exe",
+      "bytes": 847360,
+      "sha256": "a55dcdf2a72dc9b3bddb378e8c4a6144e7236ed43d4e19dd380069b0e967b268"
+    },
+    {
+      "target": "soui_input_frame_trace_backend_tests",
+      "path": "C:\\pm-build\\x64-19041\\tests\\native\\input_frame_trace_backend\\Release\\soui_input_frame_trace_backend_tests.exe",
+      "bytes": 16896,
+      "sha256": "a8e5af6ed14c4b25d41f12516287753a46a5a6d02762f920419d6ece2106c83b"
+    },
+    {
+      "target": "soui_input_frame_trace_tests",
+      "path": "C:\\pm-build\\x64-19041\\tests\\native\\Release\\soui_input_frame_trace_tests.exe",
+      "bytes": 94720,
+      "sha256": "1ca30d628580d2bf2ca7cea3969b95a57021892b05f3b8f0b34d127604180763"
+    },
+    {
+      "target": "soui_input_mailbox_tests",
+      "path": "C:\\pm-build\\x64-19041\\tests\\native\\input_admission\\Release\\soui_input_mailbox_tests.exe",
+      "bytes": 148992,
+      "sha256": "480aa4a72ebc119fe91863289afa9b7da4403a3b34c06171b4d95196d1ca635e"
+    },
+    {
+      "target": "scheduler_continuation_contract",
+      "path": "C:\\pm-build\\x64-19041\\tests\\native\\scheduler_continuation\\Release\\scheduler_continuation_contract.exe",
+      "bytes": 185344,
+      "sha256": "c7679c5e5acb383458fd0e1a7196b70463a41b49cbef71903100a8d18cdc8f85"
+    },
+    {
+      "target": "scheduler_index_contract",
+      "path": "C:\\pm-build\\x64-19041\\tests\\native\\scheduler_index\\Release\\scheduler_index_contract.exe",
+      "bytes": 43520,
+      "sha256": "4ef1c552adee7ab153be957d01835cc18375d726d90c170668bab34e9eff4ef6"
+    },
+    {
+      "target": "soui_worker_lifetime_regressions",
+      "path": "C:\\pm-build\\x64-19041\\tests\\native\\vendor_lifetime\\worker_lifetime\\Release\\soui_worker_lifetime_regressions.exe",
+      "bytes": 92160,
+      "sha256": "d75764c7ff3a7b19fcb104cd0f817b39c2ccc68e542a027a00c1e7f3381c0c7a"
+    },
+    {
+      "target": "soui_host_frame_policy_tests",
+      "path": "C:\\pm-build\\x64-19041\\tests\\native\\host_frame_policy\\Release\\soui_host_frame_policy_tests.exe",
+      "bytes": 14848,
+      "sha256": "835c36d29422cd2f167f47010c4e392318370724a29f8fa796e6e705dab0e2dd"
+    },
+    {
+      "target": "soui_fractional_frame_phase_tests",
+      "path": "C:\\pm-build\\x64-19041\\tests\\native\\Release\\soui_fractional_frame_phase_tests.exe",
+      "bytes": 12800,
+      "sha256": "0aa4a2aff09a142886797a337ec079bfc0e590f584d7d95300956851ff1d1446"
+    },
+    {
+      "target": "soui_resource_notification_policy_tests",
+      "path": "C:\\pm-build\\x64-19041\\tests\\native\\Release\\soui_resource_notification_policy_tests.exe",
+      "bytes": 10240,
+      "sha256": "5c06f19bbfa6ee10e740962523a786de1df81f9bd0b7b8f2c3d63ba378b0974c"
+    },
+    {
+      "target": "soui_frame_buffer_lease_policy_tests",
+      "path": "C:\\pm-build\\x64-19041\\tests\\native\\Release\\soui_frame_buffer_lease_policy_tests.exe",
+      "bytes": 26112,
+      "sha256": "8c09862690760f6d4791afb5ef67bc651ccf655c6029ed55de90febc406711cb"
+    },
+    {
+      "target": "soui_input_frame_coverage_tests",
+      "path": "C:\\pm-build\\x64-19041\\tests\\native\\Release\\soui_input_frame_coverage_tests.exe",
+      "bytes": 23552,
+      "sha256": "5d762890d91d1c1a7da8520fcc1ac590ffad5cf84afd305d9fef07fd8fdd1aba"
+    },
+    {
+      "target": "soui_raster_scheduling_policy_tests",
+      "path": "C:\\pm-build\\x64-19041\\tests\\native\\Release\\soui_raster_scheduling_policy_tests.exe",
+      "bytes": 11776,
+      "sha256": "cb94926d543fa6d0c3bdae861e043b5b6f0d882dccd7a85bb208fe18cff9dee0"
+    },
+    {
+      "target": "soui_render_scene_transaction_tests",
+      "path": "C:\\pm-build\\x64-19041\\tests\\native\\Release\\soui_render_scene_transaction_tests.exe",
+      "bytes": 28672,
+      "sha256": "5ca65bcaaaf3f1a760c3e676602e99055d319c972cac9cd4941095cb5db0bb34"
+    },
+    {
+      "target": "soui_independent_input_trace_tests",
+      "path": "C:\\pm-build\\x64-19041\\tests\\native\\Release\\soui_independent_input_trace_tests.exe",
+      "bytes": 32256,
+      "sha256": "cd863cb89ab7d7efe3be012cbfa0cdc783d03b7506da6b66bc55da71c338c80e"
+    },
+    {
+      "target": "soui_window_close_lifetime_source_tests",
+      "path": "C:\\pm-build\\x64-19041\\tests\\native\\window_close_lifetime\\Release\\soui_window_close_lifetime_source_tests.exe",
+      "bytes": 32768,
+      "sha256": "f5a97921b28f9930e516e8f7ccc66fdaaa905e71fb2598d5ce93c15f0b8a1fac"
+    },
+    {
+      "target": "soui_independent_wheel_source_tests",
+      "path": "C:\\pm-build\\x64-19041\\tests\\native\\independent_wheel_source\\Release\\soui_independent_wheel_source_tests.exe",
+      "bytes": 35840,
+      "sha256": "1eb16893e2f89f941b41b6c1bb2afbc35a9b25549dd35d775b4947614550c921"
+    },
+    {
+      "target": "soui_host_visibility_source_tests",
+      "path": "C:\\pm-build\\x64-19041\\tests\\native\\host_visibility_source\\Release\\soui_host_visibility_source_tests.exe",
+      "bytes": 43008,
+      "sha256": "12ff469f978d932fb8b310560159ccacf067bd02e1e2a9664848211ac9c15571"
+    },
+    {
+      "target": "soui_render_diagnostic_source_tests",
+      "path": "C:\\pm-build\\x64-19041\\tests\\native\\render_diagnostic_source\\Release\\soui_render_diagnostic_source_tests.exe",
+      "bytes": 16896,
+      "sha256": "60b716c7219bc0f9634e80e60833ee4b8dd6f21773c79dbea09807f34a25bc32"
+    },
+    {
+      "target": "soui_native_trace_ui_lease_tests",
+      "path": "C:\\pm-build\\x64-19041\\tests\\native\\native_trace_ui_lease\\Release\\soui_native_trace_ui_lease_tests.exe",
+      "bytes": 33280,
+      "sha256": "9acd52f32b33967e9095a1d0ba91bd4d13258b76c0789424dc4007251750ff34"
+    },
+    {
+      "target": "soui_webview2_owner_policy_tests",
+      "path": "C:\\pm-build\\x64-19041\\tests\\native\\webview2_owner_policy\\Release\\soui_webview2_owner_policy_tests.exe",
+      "bytes": 18432,
+      "sha256": "9bd3ec9d89eb1287a0a7c1aaa94c281d77bdd3eb1639440bcf184029f790311a"
+    },
+    {
+      "target": "soui_vendor_endpoint_lifetime_tests",
+      "path": "C:\\pm-build\\x64-19041\\tests\\native\\vendor_lifetime\\Release\\soui_vendor_endpoint_lifetime_tests.exe",
+      "bytes": 32256,
+      "sha256": "1b1f31e263ecd3417d6e58e2c26d636e7d7f41dd97add967a08a7fc210ca6147"
+    },
+    {
+      "target": "soui_vendor_activation_lock_tests",
+      "path": "C:\\pm-build\\x64-19041\\tests\\native\\vendor_lifetime\\Release\\soui_vendor_activation_lock_tests.exe",
+      "bytes": 20480,
+      "sha256": "245f4e9d8a0fd89993aa9bd654452028f49ad27c239075be5b8ec43db100f784"
+    },
+    {
+      "target": "soui_vendor_ctor_shell_tests",
+      "path": "C:\\pm-build\\x64-19041\\tests\\native\\vendor_lifetime\\ctor_shell\\Release\\soui_vendor_ctor_shell_tests.exe",
+      "bytes": 35328,
+      "sha256": "50bb2edb898636deca8973f2c7256dc916e9f6956ae55f4ab72931d3f736444b"
+    },
+    {
+      "target": "soui_vendor_dragdata_ownership_tests",
+      "path": "C:\\pm-build\\x64-19041\\tests\\native\\vendor_lifetime\\dragdata\\Release\\soui_vendor_dragdata_ownership_tests.exe",
+      "bytes": 31232,
+      "sha256": "016410f875c0309fca21698d52de040b3102acc0e8559de1ed7e09b8b834670d"
+    },
+    {
+      "target": "soui_vendor_legacy_drag_leaf_tests",
+      "path": "C:\\pm-build\\x64-19041\\tests\\native\\vendor_lifetime\\legacy_drag\\Release\\soui_vendor_legacy_drag_leaf_tests.exe",
+      "bytes": 18944,
+      "sha256": "4647789f83f9013be9dd35bdc401c7ac179e5abfafc40018572fcb1f27ccba2c"
+    },
+    {
+      "target": "soui_request_close_regressions",
+      "path": "C:\\pm-build\\x64-19041\\tests\\native\\request_close\\Release\\soui_request_close_regressions.exe",
+      "bytes": 56320,
+      "sha256": "9244601545890a291449527225809a533af6f8b228b8882e8d124d2d900a0f22"
+    },
+    {
+      "target": "soui_source_kernel_api_tests",
+      "path": "C:\\pm-build\\x64-19041\\tests\\native\\Release\\soui_source_kernel_api_tests.exe",
+      "bytes": 32256,
+      "sha256": "b8f3179f17189deff8e116b5358f9e1d18a6443fecd933b761b4860219e7d3e4"
+    },
+    {
+      "target": "soui_scheduler_fairness_tests",
+      "path": "C:\\pm-build\\x64-19041\\tests\\native\\Release\\soui_scheduler_fairness_tests.exe",
+      "bytes": 21504,
+      "sha256": "5f01459b8dd1c8958c0da6340ce9d17851578b3fde41f7e2cf9cb2c287436077"
+    },
+    {
+      "target": "soui_render_deadline_policy_tests",
+      "path": "C:\\pm-build\\x64-19041\\tests\\native\\render_deadline_policy\\Release\\soui_render_deadline_policy_tests.exe",
+      "bytes": 101376,
+      "sha256": "a6f27215f1a202ac534c3ad8394aaaab35d31eab36667e475d33afc14ad95932"
+    },
+    {
+      "target": "soui_interaction_router_tests",
+      "path": "C:\\pm-build\\x64-19041\\tests\\native\\Release\\soui_interaction_router_tests.exe",
+      "bytes": 35840,
+      "sha256": "6f01dbaf2135632151d5227cfd66d1cf692b89e8335b02f3275000673de84d9a"
+    },
+    {
+      "target": "soui_scroll_coverage_tests",
+      "path": "C:\\pm-build\\scroll-x64-19041\\coverage\\Release\\soui_scroll_coverage_tests.exe",
+      "bytes": 292864,
+      "sha256": "b5434209bb571fbb3c1851e8d46c75d7aa4f4a532ebd39e88eba7000e00bce11"
+    },
+    {
+      "target": "soui_scroll_target_retention_tests",
+      "path": "C:\\pm-build\\scroll-x64-19041\\retention\\Release\\soui_scroll_target_retention_tests.exe",
+      "bytes": 277504,
+      "sha256": "e5174a3406d861c9ad0fb1066da9220b2a17e1142e55f6a17dfc8ffb6205ce6f"
+    },
+    {
+      "target": "soui_scroll_target_boundary_tests",
+      "path": "C:\\pm-build\\scroll-x64-19041\\retention\\Release\\soui_scroll_target_boundary_tests.exe",
+      "bytes": 295936,
+      "sha256": "8364c1aea37a12e55f50ebc4d52dc2958d99974610dc0d2be24ffa0176a8d189"
+    },
+    {
+      "target": "soui_scroll_ack_feedback_tests",
+      "path": "C:\\pm-build\\scroll-x64-19041\\ack\\Release\\soui_scroll_ack_feedback_tests.exe",
+      "bytes": 299008,
+      "sha256": "efd56341917b461f2d86f9f397c6de76dce78509d3fb34e8d55f2018e1dde8bf"
+    },
+    {
+      "target": "BurstInput",
+      "path": "C:\\pm-build\\protocol-x64-19041\\Release\\BurstInput.exe",
+      "bytes": 89088,
+      "sha256": "c99778dea0274bd5028bbe448c87d234e2f1a0c5afa0d8a1f6ce8f13f9d5fd7e"
+    },
+    {
+      "target": "OwnedProcessRunner",
+      "path": "C:\\pm-build\\protocol-x64-19041\\Release\\OwnedProcessRunner.exe",
+      "bytes": 150016,
+      "sha256": "24794a81659b621a9e488beda2c983be6f4939de59c781bc8062e8fc8ea13478"
+    }
+  ],
+  "scrollSummaries": [
+    {
+      "event": "summary",
+      "passed": 19,
+      "failed": 0,
+      "exit_code": 0
+    },
+    {
+      "kind": "ScrollTargetRetention",
+      "event": "summary",
+      "scenarios": 2,
+      "passed_scenarios": 2,
+      "same_endpoint": true,
+      "passed": true,
+      "exit_code": 0
+    }
+  ],
+  "ownedRaw": [
+    {
+      "source": {
+        "path": "C:\\pmnat\\out\\burst-preflight-no-target-928db5fd-6c91-4a67-86bd-cdea86e5fdb8\\input.owned.ndjson",
+        "bytes": 1230,
+        "sha256": "b2fc40259d7751bb5bae712b516c8a2796bd8830ab1b4af89fe00089ba459f03"
+      },
+      "preserved": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-owned-raw\\burst-preflight-no-target-928db5fd-6c91-4a67-86bd-cdea86e5fdb8\\input.owned.ndjson",
+        "bytes": 1230,
+        "sha256": "b2fc40259d7751bb5bae712b516c8a2796bd8830ab1b4af89fe00089ba459f03"
+      }
+    },
+    {
+      "source": {
+        "path": "C:\\pmnat\\out\\burst-preflight-no-target-928db5fd-6c91-4a67-86bd-cdea86e5fdb8\\input.owned.ndjson.context.json",
+        "bytes": 716,
+        "sha256": "34913bc970c8a93178337d3fa358f2117a3a794f793e4b370fdc02981b1bf44d"
+      },
+      "preserved": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-owned-raw\\burst-preflight-no-target-928db5fd-6c91-4a67-86bd-cdea86e5fdb8\\input.owned.ndjson.context.json",
+        "bytes": 716,
+        "sha256": "34913bc970c8a93178337d3fa358f2117a3a794f793e4b370fdc02981b1bf44d"
+      }
+    },
+    {
+      "source": {
+        "path": "C:\\pmnat\\out\\burst-preflight-no-target-928db5fd-6c91-4a67-86bd-cdea86e5fdb8\\input.stderr.log",
+        "bytes": 70,
+        "sha256": "1408221962adb48ab5254cd87a96ccd4fb2fd27761deb3153c594d43ff04be26"
+      },
+      "preserved": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-owned-raw\\burst-preflight-no-target-928db5fd-6c91-4a67-86bd-cdea86e5fdb8\\input.stderr.log",
+        "bytes": 70,
+        "sha256": "1408221962adb48ab5254cd87a96ccd4fb2fd27761deb3153c594d43ff04be26"
+      }
+    },
+    {
+      "source": {
+        "path": "C:\\pmnat\\out\\burst-preflight-no-target-928db5fd-6c91-4a67-86bd-cdea86e5fdb8\\input.stdout.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "preserved": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-owned-raw\\burst-preflight-no-target-928db5fd-6c91-4a67-86bd-cdea86e5fdb8\\input.stdout.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "source": {
+        "path": "C:\\pmnat\\out\\burst-preflight-no-target-b7c1c118-c60f-440a-8cc3-1e87352edc52\\input.owned.ndjson",
+        "bytes": 748,
+        "sha256": "534fac1607a4c348e57be82dcc6e16e92a7785d55ec99a87ba5ebb5bd553b7ff"
+      },
+      "preserved": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-owned-raw\\burst-preflight-no-target-b7c1c118-c60f-440a-8cc3-1e87352edc52\\input.owned.ndjson",
+        "bytes": 748,
+        "sha256": "534fac1607a4c348e57be82dcc6e16e92a7785d55ec99a87ba5ebb5bd553b7ff"
+      }
+    },
+    {
+      "source": {
+        "path": "C:\\pmnat\\out\\burst-preflight-no-target-b7c1c118-c60f-440a-8cc3-1e87352edc52\\input.owned.ndjson.context.json",
+        "bytes": 716,
+        "sha256": "4cf111bbb2212f3e67e287507599bc8383387b9bc1f14e66ea4caca5c6af8760"
+      },
+      "preserved": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-owned-raw\\burst-preflight-no-target-b7c1c118-c60f-440a-8cc3-1e87352edc52\\input.owned.ndjson.context.json",
+        "bytes": 716,
+        "sha256": "4cf111bbb2212f3e67e287507599bc8383387b9bc1f14e66ea4caca5c6af8760"
+      }
+    },
+    {
+      "source": {
+        "path": "C:\\pmnat\\out\\burst-preflight-no-target-b7c1c118-c60f-440a-8cc3-1e87352edc52\\input.stderr.log",
+        "bytes": 70,
+        "sha256": "1408221962adb48ab5254cd87a96ccd4fb2fd27761deb3153c594d43ff04be26"
+      },
+      "preserved": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-owned-raw\\burst-preflight-no-target-b7c1c118-c60f-440a-8cc3-1e87352edc52\\input.stderr.log",
+        "bytes": 70,
+        "sha256": "1408221962adb48ab5254cd87a96ccd4fb2fd27761deb3153c594d43ff04be26"
+      }
+    },
+    {
+      "source": {
+        "path": "C:\\pmnat\\out\\burst-preflight-no-target-b7c1c118-c60f-440a-8cc3-1e87352edc52\\input.stdout.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "preserved": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-owned-raw\\burst-preflight-no-target-b7c1c118-c60f-440a-8cc3-1e87352edc52\\input.stdout.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "source": {
+        "path": "C:\\pmnat\\out\\burst-preflight-wrong-birth-f11c8aa7-afec-4a4d-83b2-4f7bd15bfe07\\input.owned.ndjson",
+        "bytes": 1087,
+        "sha256": "b7b410a5a99c6f597c35222dc526de63d63c6ebf5e184da731c777b495f088dd"
+      },
+      "preserved": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-owned-raw\\burst-preflight-wrong-birth-f11c8aa7-afec-4a4d-83b2-4f7bd15bfe07\\input.owned.ndjson",
+        "bytes": 1087,
+        "sha256": "b7b410a5a99c6f597c35222dc526de63d63c6ebf5e184da731c777b495f088dd"
+      }
+    },
+    {
+      "source": {
+        "path": "C:\\pmnat\\out\\burst-preflight-wrong-birth-f11c8aa7-afec-4a4d-83b2-4f7bd15bfe07\\input.owned.ndjson.context.json",
+        "bytes": 724,
+        "sha256": "c5a51b5cc06f8a76e8c3c98500100f349b8dd40340e8890202425ff4abc2de82"
+      },
+      "preserved": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-owned-raw\\burst-preflight-wrong-birth-f11c8aa7-afec-4a4d-83b2-4f7bd15bfe07\\input.owned.ndjson.context.json",
+        "bytes": 724,
+        "sha256": "c5a51b5cc06f8a76e8c3c98500100f349b8dd40340e8890202425ff4abc2de82"
+      }
+    },
+    {
+      "source": {
+        "path": "C:\\pmnat\\out\\burst-preflight-wrong-birth-f11c8aa7-afec-4a4d-83b2-4f7bd15bfe07\\input.stderr.log",
+        "bytes": 52,
+        "sha256": "d3d1e56fdcbd3741262e6e45540b3171411c29de6e35c520a003ef4034b8b35c"
+      },
+      "preserved": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-owned-raw\\burst-preflight-wrong-birth-f11c8aa7-afec-4a4d-83b2-4f7bd15bfe07\\input.stderr.log",
+        "bytes": 52,
+        "sha256": "d3d1e56fdcbd3741262e6e45540b3171411c29de6e35c520a003ef4034b8b35c"
+      }
+    },
+    {
+      "source": {
+        "path": "C:\\pmnat\\out\\burst-preflight-wrong-birth-f11c8aa7-afec-4a4d-83b2-4f7bd15bfe07\\input.stdout.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "preserved": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-owned-raw\\burst-preflight-wrong-birth-f11c8aa7-afec-4a4d-83b2-4f7bd15bfe07\\input.stdout.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "source": {
+        "path": "C:\\pmnat\\out\\input-ui-host-preflight-5ef1d75c-5dca-4596-bdcc-ccb9206c7f44\\host.owned.ndjson",
+        "bytes": 1290,
+        "sha256": "1f1c41252a6f6720fea3697c4370f7345fa6bf4d052078535d03c9e62006bd7c"
+      },
+      "preserved": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-owned-raw\\input-ui-host-preflight-5ef1d75c-5dca-4596-bdcc-ccb9206c7f44\\host.owned.ndjson",
+        "bytes": 1290,
+        "sha256": "1f1c41252a6f6720fea3697c4370f7345fa6bf4d052078535d03c9e62006bd7c"
+      }
+    },
+    {
+      "source": {
+        "path": "C:\\pmnat\\out\\input-ui-host-preflight-5ef1d75c-5dca-4596-bdcc-ccb9206c7f44\\host.owned.ndjson.context.json",
+        "bytes": 439,
+        "sha256": "723804717878f15186eac424159b0ccb297ae922b3f4cccddfa47eed67ffbfd0"
+      },
+      "preserved": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-owned-raw\\input-ui-host-preflight-5ef1d75c-5dca-4596-bdcc-ccb9206c7f44\\host.owned.ndjson.context.json",
+        "bytes": 439,
+        "sha256": "723804717878f15186eac424159b0ccb297ae922b3f4cccddfa47eed67ffbfd0"
+      }
+    },
+    {
+      "source": {
+        "path": "C:\\pmnat\\out\\input-ui-host-preflight-5ef1d75c-5dca-4596-bdcc-ccb9206c7f44\\host.stderr.log",
+        "bytes": 115,
+        "sha256": "927cd4e892dbbb213b37ba3a9e27865d6e878a7a9c0a1a9904591bac66d128f1"
+      },
+      "preserved": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-owned-raw\\input-ui-host-preflight-5ef1d75c-5dca-4596-bdcc-ccb9206c7f44\\host.stderr.log",
+        "bytes": 115,
+        "sha256": "927cd4e892dbbb213b37ba3a9e27865d6e878a7a9c0a1a9904591bac66d128f1"
+      }
+    },
+    {
+      "source": {
+        "path": "C:\\pmnat\\out\\input-ui-host-preflight-5ef1d75c-5dca-4596-bdcc-ccb9206c7f44\\host.stdout.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "preserved": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-owned-raw\\input-ui-host-preflight-5ef1d75c-5dca-4596-bdcc-ccb9206c7f44\\host.stdout.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "source": {
+        "path": "C:\\pmnat\\out\\owned-runner-tests\\attempt-进程-6p6wlN\\failed-root-drain.cjs",
+        "bytes": 183,
+        "sha256": "8b8c939a8c288020c3bfaf864cf3435c2d1acbdcccbbaf9fb20605144b9fb4cd"
+      },
+      "preserved": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-owned-raw\\owned-runner-tests\\attempt-进程-6p6wlN\\failed-root-drain.cjs",
+        "bytes": 183,
+        "sha256": "8b8c939a8c288020c3bfaf864cf3435c2d1acbdcccbbaf9fb20605144b9fb4cd"
+      }
+    },
+    {
+      "source": {
+        "path": "C:\\pmnat\\out\\owned-runner-tests\\attempt-进程-6p6wlN\\run.ndjson",
+        "bytes": 2258,
+        "sha256": "6fc5d4267fe2cca36080b16503a4c0fe97b6243247a112523700afa8b893cfd6"
+      },
+      "preserved": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-owned-raw\\owned-runner-tests\\attempt-进程-6p6wlN\\run.ndjson",
+        "bytes": 2258,
+        "sha256": "6fc5d4267fe2cca36080b16503a4c0fe97b6243247a112523700afa8b893cfd6"
+      }
+    },
+    {
+      "source": {
+        "path": "C:\\pmnat\\out\\owned-runner-tests\\attempt-进程-DBRrWu\\run.ndjson",
+        "bytes": 1351,
+        "sha256": "264828536ee24c49bb3660921475b4e8698bf52348ea45cb5e26526975b02d1f"
+      },
+      "preserved": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-owned-raw\\owned-runner-tests\\attempt-进程-DBRrWu\\run.ndjson",
+        "bytes": 1351,
+        "sha256": "264828536ee24c49bb3660921475b4e8698bf52348ea45cb5e26526975b02d1f"
+      }
+    },
+    {
+      "source": {
+        "path": "C:\\pmnat\\out\\owned-runner-tests\\attempt-进程-KnEkFR\\controlled.cjs",
+        "bytes": 214,
+        "sha256": "284f2eabea89d77a1d571b185113cf6c6eca2a9a52c8a8575928c508f36c315e"
+      },
+      "preserved": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-owned-raw\\owned-runner-tests\\attempt-进程-KnEkFR\\controlled.cjs",
+        "bytes": 214,
+        "sha256": "284f2eabea89d77a1d571b185113cf6c6eca2a9a52c8a8575928c508f36c315e"
+      }
+    },
+    {
+      "source": {
+        "path": "C:\\pmnat\\out\\owned-runner-tests\\attempt-进程-KnEkFR\\controlled.ndjson",
+        "bytes": 972,
+        "sha256": "81a4e93d89ada3e1aba54547935e116ce33a1acd7aaea7ba9e05459abcb274f4"
+      },
+      "preserved": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-owned-raw\\owned-runner-tests\\attempt-进程-KnEkFR\\controlled.ndjson",
+        "bytes": 972,
+        "sha256": "81a4e93d89ada3e1aba54547935e116ce33a1acd7aaea7ba9e05459abcb274f4"
+      }
+    },
+    {
+      "source": {
+        "path": "C:\\pmnat\\out\\owned-runner-tests\\attempt-进程-KnEkFR\\ready.pid",
+        "bytes": 5,
+        "sha256": "fcf5f8ccff98013b1e1948cd9c081c9ee114e207719fd616c66469e9fd3fa11e"
+      },
+      "preserved": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-owned-raw\\owned-runner-tests\\attempt-进程-KnEkFR\\ready.pid",
+        "bytes": 5,
+        "sha256": "fcf5f8ccff98013b1e1948cd9c081c9ee114e207719fd616c66469e9fd3fa11e"
+      }
+    },
+    {
+      "source": {
+        "path": "C:\\pmnat\\out\\owned-runner-tests\\attempt-进程-mroK2F\\leaf.cjs",
+        "bytes": 90,
+        "sha256": "06bdcec0c9a66d09d6c14d75d820fa13ab63926c9982f85ed63044a866854452"
+      },
+      "preserved": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-owned-raw\\owned-runner-tests\\attempt-进程-mroK2F\\leaf.cjs",
+        "bytes": 90,
+        "sha256": "06bdcec0c9a66d09d6c14d75d820fa13ab63926c9982f85ed63044a866854452"
+      }
+    },
+    {
+      "source": {
+        "path": "C:\\pmnat\\out\\owned-runner-tests\\attempt-进程-mroK2F\\leaf.pid",
+        "bytes": 5,
+        "sha256": "b2feafad30d83cf268265763d89432b5c38ce06408db93e3df6b6e01dfcb5731"
+      },
+      "preserved": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-owned-raw\\owned-runner-tests\\attempt-进程-mroK2F\\leaf.pid",
+        "bytes": 5,
+        "sha256": "b2feafad30d83cf268265763d89432b5c38ce06408db93e3df6b6e01dfcb5731"
+      }
+    },
+    {
+      "source": {
+        "path": "C:\\pmnat\\out\\owned-runner-tests\\attempt-进程-mroK2F\\middle.cjs",
+        "bytes": 185,
+        "sha256": "40f73ae0655037a4cab7c8c73d9b9c1d1f081fbd9f2a972946641e81d0a9d6c1"
+      },
+      "preserved": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-owned-raw\\owned-runner-tests\\attempt-进程-mroK2F\\middle.cjs",
+        "bytes": 185,
+        "sha256": "40f73ae0655037a4cab7c8c73d9b9c1d1f081fbd9f2a972946641e81d0a9d6c1"
+      }
+    },
+    {
+      "source": {
+        "path": "C:\\pmnat\\out\\owned-runner-tests\\attempt-进程-mroK2F\\root.cjs",
+        "bytes": 187,
+        "sha256": "d3034c4bd94a5534793728d9c2fb98c7ba8a2b10013e24032b547c5ddeb4d34e"
+      },
+      "preserved": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-owned-raw\\owned-runner-tests\\attempt-进程-mroK2F\\root.cjs",
+        "bytes": 187,
+        "sha256": "d3034c4bd94a5534793728d9c2fb98c7ba8a2b10013e24032b547c5ddeb4d34e"
+      }
+    },
+    {
+      "source": {
+        "path": "C:\\pmnat\\out\\owned-runner-tests\\attempt-进程-mroK2F\\run.ndjson",
+        "bytes": 3820,
+        "sha256": "e87188cb6e454b7e0b15c84370576ece5be5e25fe0bc5f9ce483eba0241c4c60"
+      },
+      "preserved": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-owned-raw\\owned-runner-tests\\attempt-进程-mroK2F\\run.ndjson",
+        "bytes": 3820,
+        "sha256": "e87188cb6e454b7e0b15c84370576ece5be5e25fe0bc5f9ce483eba0241c4c60"
+      }
+    },
+    {
+      "source": {
+        "path": "C:\\pmnat\\out\\owned-runner-tests\\attempt-进程-oAMdoJ\\failed-root-drain.cjs",
+        "bytes": 183,
+        "sha256": "8b8c939a8c288020c3bfaf864cf3435c2d1acbdcccbbaf9fb20605144b9fb4cd"
+      },
+      "preserved": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-owned-raw\\owned-runner-tests\\attempt-进程-oAMdoJ\\failed-root-drain.cjs",
+        "bytes": 183,
+        "sha256": "8b8c939a8c288020c3bfaf864cf3435c2d1acbdcccbbaf9fb20605144b9fb4cd"
+      }
+    },
+    {
+      "source": {
+        "path": "C:\\pmnat\\out\\owned-runner-tests\\attempt-进程-oAMdoJ\\run.ndjson",
+        "bytes": 1895,
+        "sha256": "0962d46bf22c7fde14bb176071bb3faba12eb69d9e06e30ac7e2529f83ae49f1"
+      },
+      "preserved": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-owned-raw\\owned-runner-tests\\attempt-进程-oAMdoJ\\run.ndjson",
+        "bytes": 1895,
+        "sha256": "0962d46bf22c7fde14bb176071bb3faba12eb69d9e06e30ac7e2529f83ae49f1"
+      }
+    },
+    {
+      "source": {
+        "path": "C:\\pmnat\\out\\owned-runner-tests\\attempt-进程-W0U8BL\\failed-child.pid",
+        "bytes": 5,
+        "sha256": "4e2c2f12895cd93b8cd3128be6a3afa4dcfe18765f67f10233407a768908bd4c"
+      },
+      "preserved": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-owned-raw\\owned-runner-tests\\attempt-进程-W0U8BL\\failed-child.pid",
+        "bytes": 5,
+        "sha256": "4e2c2f12895cd93b8cd3128be6a3afa4dcfe18765f67f10233407a768908bd4c"
+      }
+    },
+    {
+      "source": {
+        "path": "C:\\pmnat\\out\\owned-runner-tests\\attempt-进程-W0U8BL\\failed-root-live-tail.cjs",
+        "bytes": 263,
+        "sha256": "1b75e49600e05530506f03bcfe7594523a201ecf09edf47a970f1fb837bd0d8e"
+      },
+      "preserved": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-owned-raw\\owned-runner-tests\\attempt-进程-W0U8BL\\failed-root-live-tail.cjs",
+        "bytes": 263,
+        "sha256": "1b75e49600e05530506f03bcfe7594523a201ecf09edf47a970f1fb837bd0d8e"
+      }
+    },
+    {
+      "source": {
+        "path": "C:\\pmnat\\out\\owned-runner-tests\\attempt-进程-W0U8BL\\run.ndjson",
+        "bytes": 1894,
+        "sha256": "f69eeab740d500310ec602857681380d43696f246de64396d24624ee377d025d"
+      },
+      "preserved": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-owned-raw\\owned-runner-tests\\attempt-进程-W0U8BL\\run.ndjson",
+        "bytes": 1894,
+        "sha256": "f69eeab740d500310ec602857681380d43696f246de64396d24624ee377d025d"
+      }
+    },
+    {
+      "source": {
+        "path": "C:\\pmnat\\out\\owned-runner-tests\\attempt-进程-w1XR6P\\failed-child.pid",
+        "bytes": 5,
+        "sha256": "e1381f115fda6bf30241dbe44c6fc705aa4ced24b57ae2ba9f67b2fd58bb7cd6"
+      },
+      "preserved": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-owned-raw\\owned-runner-tests\\attempt-进程-w1XR6P\\failed-child.pid",
+        "bytes": 5,
+        "sha256": "e1381f115fda6bf30241dbe44c6fc705aa4ced24b57ae2ba9f67b2fd58bb7cd6"
+      }
+    },
+    {
+      "source": {
+        "path": "C:\\pmnat\\out\\owned-runner-tests\\attempt-进程-w1XR6P\\failed-root-live-tail.cjs",
+        "bytes": 263,
+        "sha256": "1b75e49600e05530506f03bcfe7594523a201ecf09edf47a970f1fb837bd0d8e"
+      },
+      "preserved": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-owned-raw\\owned-runner-tests\\attempt-进程-w1XR6P\\failed-root-live-tail.cjs",
+        "bytes": 263,
+        "sha256": "1b75e49600e05530506f03bcfe7594523a201ecf09edf47a970f1fb837bd0d8e"
+      }
+    },
+    {
+      "source": {
+        "path": "C:\\pmnat\\out\\owned-runner-tests\\attempt-进程-w1XR6P\\run.ndjson",
+        "bytes": 2161,
+        "sha256": "cffef7e3864b3a41e69260edf4a7b07a26babb66feb1f1a775eeacc08136a646"
+      },
+      "preserved": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-owned-raw\\owned-runner-tests\\attempt-进程-w1XR6P\\run.ndjson",
+        "bytes": 2161,
+        "sha256": "cffef7e3864b3a41e69260edf4a7b07a26babb66feb1f1a775eeacc08136a646"
+      }
+    },
+    {
+      "source": {
+        "path": "C:\\pmnat\\out\\owned-runner-tests\\attempt-进程-yr3A2l\\drain.cjs",
+        "bytes": 167,
+        "sha256": "98af8f2f58055e48b850c4d25b45b8ce9d2f33c4968959418016facde8c205ed"
+      },
+      "preserved": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-owned-raw\\owned-runner-tests\\attempt-进程-yr3A2l\\drain.cjs",
+        "bytes": 167,
+        "sha256": "98af8f2f58055e48b850c4d25b45b8ce9d2f33c4968959418016facde8c205ed"
+      }
+    },
+    {
+      "source": {
+        "path": "C:\\pmnat\\out\\owned-runner-tests\\attempt-进程-yr3A2l\\run.ndjson",
+        "bytes": 2268,
+        "sha256": "f15dccb4ba5da77ccade919d815f02e63045d82c08cbc2af07080312fe67c0a3"
+      },
+      "preserved": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-owned-raw\\owned-runner-tests\\attempt-进程-yr3A2l\\run.ndjson",
+        "bytes": 2268,
+        "sha256": "f15dccb4ba5da77ccade919d815f02e63045d82c08cbc2af07080312fe67c0a3"
+      }
+    },
+    {
+      "source": {
+        "path": "C:\\pmnat\\out\\owned-runner-tests\\attempt-进程-yU0fW4\\child.pid",
+        "bytes": 5,
+        "sha256": "9749fb09621b109f411adedea35cec8bc3447e59abb5dc7984de7be2748bdc82"
+      },
+      "preserved": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-owned-raw\\owned-runner-tests\\attempt-进程-yU0fW4\\child.pid",
+        "bytes": 5,
+        "sha256": "9749fb09621b109f411adedea35cec8bc3447e59abb5dc7984de7be2748bdc82"
+      }
+    },
+    {
+      "source": {
+        "path": "C:\\pmnat\\out\\owned-runner-tests\\attempt-进程-yU0fW4\\orphan.cjs",
+        "bytes": 240,
+        "sha256": "aa88c07d8504e7badb567c567070905f0afdb89e886505d5ccc70ccbc3f630bb"
+      },
+      "preserved": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-owned-raw\\owned-runner-tests\\attempt-进程-yU0fW4\\orphan.cjs",
+        "bytes": 240,
+        "sha256": "aa88c07d8504e7badb567c567070905f0afdb89e886505d5ccc70ccbc3f630bb"
+      }
+    },
+    {
+      "source": {
+        "path": "C:\\pmnat\\out\\owned-runner-tests\\attempt-进程-yU0fW4\\run.ndjson",
+        "bytes": 2174,
+        "sha256": "6c56f8396ceb3d45530bce8a5aa9a09253f00ba1ffcc4ee3f1b632187e8a5ddf"
+      },
+      "preserved": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-owned-raw\\owned-runner-tests\\attempt-进程-yU0fW4\\run.ndjson",
+        "bytes": 2174,
+        "sha256": "6c56f8396ceb3d45530bce8a5aa9a09253f00ba1ffcc4ee3f1b632187e8a5ddf"
+      }
+    }
+  ],
+  "boundaries": {
+    "productGuiExecuted": false,
+    "validInputInjected": false,
+    "businessKernelLoaded": false,
+    "installerExecuted": false,
+    "longTestsExecuted": false,
+    "fullKernelBuild": false,
+    "fullPlatformQualification": false,
+    "performanceGate": false,
+    "releaseReady": false,
+    "originalFailuresPreserved": true,
+    "integratedPr106Rebuild": "pending separate final source identity"
+  }
+}
