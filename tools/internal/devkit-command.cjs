@@ -422,7 +422,7 @@ async function previewWorker(args) {
     'E_WEB_DEPENDENCIES','Install the existing package-lock dependencies in this web root before dev.');
   const packageText=fs.readFileSync(pkgFile),lockText=fs.readFileSync(lockFile),pkg=parseStrictJson(packageText.toString('utf8'));
   const vitePackage=identity.safePath(web,'node_modules/vite/package.json'),vitePkg=parseStrictJson(fs.readFileSync(vitePackage,'utf8'));
-  need(['6.4.3','6.4.4','8.3.3'].includes(vitePkg.version)&&pkg.devDependencies?.vite===vitePkg.version,
+  need(['6.4.3','6.4.4','6.4.5','8.3.3'].includes(vitePkg.version)&&pkg.devDependencies?.vite===vitePkg.version,
     'E_WEB_DEPENDENCIES','Install the existing frozen package-lock dependencies in this web root; dependencies are never installed or upgraded by dev.');
   const [major,minor]=process.versions.node.split('.').map(Number);
   need((vitePkg.version==='8.3.3'?major>22||(major===22&&minor>=12):major>22||(major===22&&minor>=12)||(major===20&&minor>=19)),
