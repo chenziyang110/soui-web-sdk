@@ -178,6 +178,7 @@ ActionsFrameGroup::~ActionsFrameGroup()
 
 size_t ActionsFrameGroup::getFramesSize() const
 {
+    WTF::MutexLocker locker(*m_actionsMutex);
     return m_frames.size();
 }
 

@@ -1,0 +1,6 @@
+add_executable(soui_input_mailbox_tests fixture.cpp)
+target_link_libraries(soui_input_mailbox_tests PRIVATE Soui::Sdk)
+target_compile_features(soui_input_mailbox_tests PRIVATE cxx_std_17)
+target_compile_options(soui_input_mailbox_tests PRIVATE /utf-8 /W4 /U_DEBUG)
+set_property(TARGET soui_input_mailbox_tests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+add_test(NAME sdk.native.input-mailbox COMMAND soui_input_mailbox_tests)

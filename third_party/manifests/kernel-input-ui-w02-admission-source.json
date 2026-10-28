@@ -1,0 +1,100 @@
+{
+  "schema": "soui.kernel-source-delta/v1",
+  "sdkVersion": "0.5.0",
+  "status": "source-only-unreleased-candidate",
+  "scope": "W02 bounded typed input mailbox and FIFO ordering, native cancellation primitive; cancellation capability remains gated until W07 callback lifetime integration; no compilation or execution",
+  "baseCommit": "8718ccb30c3e14539e16c374217aa172b967523b",
+  "sourceIdentityScope": "Only listed staged source delta; historical import and prebuilt identities unchanged",
+  "patch": {
+    "path": "third_party/patches/miniblink/0017-input-ui-admission-cancel.patch",
+    "bytes": 9294,
+    "sha256": "0a9e053ee641d50d524ed49b2f01a834cbc8f6d65855429f16500fab8e321547"
+  },
+  "files": [
+    {
+      "path": "third_party/sources/miniblink/content/browser/PlatformEventHandler.cpp",
+      "before": {
+        "bytes": 21005,
+        "sha256": "ffa37856f167e02c5425c5d8381d2f5e5877d3fe2eb78278cbf850236faa8587"
+      },
+      "after": {
+        "bytes": 21666,
+        "sha256": "9120dbaa232d227d87c77025b3cc5f36de1add521744b9a5bdca3d28387c7726"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/content/browser/PlatformEventHandler.h",
+      "before": {
+        "bytes": 2308,
+        "sha256": "01e7769d3ee5e35c0bcecf47060edc9ca227ef9695ee30651e72741d60372362"
+      },
+      "after": {
+        "bytes": 2353,
+        "sha256": "ea9af21c9b34a552697280373da2158d22c0c17b560143fc25d6435ca7930569"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/content/browser/WebPage.cpp",
+      "before": {
+        "bytes": 14334,
+        "sha256": "5ba34fba9a2f44a033d08f7843efb6ca7a508d8529aa084d9ac505e576d2a45d"
+      },
+      "after": {
+        "bytes": 14429,
+        "sha256": "015e7f9613d003c731f1f95d15b701c3a679eb72570b9bbfcffbc02e3ea0eb08"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/content/browser/WebPage.h",
+      "before": {
+        "bytes": 6287,
+        "sha256": "5c0ba03b8a9442d4cc8de7e6377288c89caad9fb34d1e12913619e3feb249fcf"
+      },
+      "after": {
+        "bytes": 6316,
+        "sha256": "a21083f062e98d50bacd998ead03050918cd899b54efdce0bdc915d45fb43bcf"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/content/browser/WebPageImpl.cpp",
+      "before": {
+        "bytes": 83907,
+        "sha256": "d58cbfa8ff8f373ab69cd9acfbbeff3a40f6f3c2a39eb48a607dc33925e0a9c1"
+      },
+      "after": {
+        "bytes": 85865,
+        "sha256": "2606c9511e3bb6846f2fe0b58708bde97260547d91576bba5d270d65bfb41207"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/content/browser/WebPageImpl.h",
+      "before": {
+        "bytes": 11950,
+        "sha256": "0ac9ba1fa2e4a3254bd252c9b293675294852a2e38207ca892e5140a8547682a"
+      },
+      "after": {
+        "bytes": 11979,
+        "sha256": "038ded95395e2e53ace7cc73b3c31f70228b1323921e8a28cb4d2d1e4d9c868d"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/wke/InputUiApi.cpp",
+      "before": {
+        "bytes": 7347,
+        "sha256": "69fd12e1ce7d58bdcd78e6c3cb69ebe5491c5431d5009931c7d43a7f12dbcc11"
+      },
+      "after": {
+        "bytes": 8268,
+        "sha256": "75ca964dc39d5acc6ee09c3e203d0a4ef35ed9ceb45f86b06089cae2d364463e"
+      }
+    }
+  ],
+  "validation": {
+    "finalSourceCompiled": false,
+    "finalTestsExecuted": false,
+    "reversePatchCheckPerformed": true,
+    "forwardReplayExecuted": false
+  },
+  "candidateBinaryIdentity": null,
+  "releaseReady": false
+}

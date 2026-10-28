@@ -143,6 +143,7 @@ public:
     bool fireTimerEvent();
     void fireResizeEvent(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
     void fireCaptureChangedEvent(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+    bool cancelInputState();
     void firePaintEvent(HDC hdc, const RECT* paintRect);
     void fireSetFocusEvent(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
     void fireKillFocusEvent(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
@@ -306,6 +307,7 @@ public:
     int m_executeMainFrameCount;
     double m_lastFrameTimeMonotonic;
     double m_mainFrameInterval;
+    uint64_t m_renderFrameId;
     double m_nextMainFrameTime;
 
     SkCanvas* m_memoryCanvasForUi;

@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <vector>
 #include <atomic>
+#include "content/web_impl_win/TaskSchedulingIndex.h"
 
 #include "base/compiler_specific.h"
 #include "third_party/WebKit/public/platform/Platform.h"
@@ -59,6 +60,8 @@ public:
     void schedulerTasks();
 
     void fire();
+    void serviceOwnerOpportunity(); // Optional bounded SDK message-pump hook.
+    void retireCompletedTasksForOwner(); // At most32 already-completed tasks; no task execution.
     void fireForShutdown();
     
     void suspendTimerQueue();
@@ -81,6 +84,7 @@ public:
 
 private:
     friend class BlinkPlatformImpl;
+    friend class WebTimerBase;
 
     void schedulerTasks(bool allowMainThreadBudget);
     void startTriggerTasks(unsigned* remainingAdmissions, double admissionDeadline);
@@ -92,7 +96,8 @@ private:
     struct TaskPair {
         TaskPair(const blink::WebTraceLocation& location, blink::WebThread::Task* task, long long delayMs, int priority);
         ~TaskPair();
-        static void sortByPriority(std::vector<TaskPair*>*);
+        task_scheduling::DeadlinePriorityIndex::Entry scheduling;
+        std::size_t pendingPosition;
 
         blink::WebTraceLocation location;
         blink::WebThread::Task* task;
@@ -120,15 +125,15 @@ private:
     std::atomic<bool> m_threadClosed;
 
     int m_firingTimers; // Reentrancy guard.
+    bool m_retiringCompletedTasks = false;
     WebSchedulerImpl* m_webSchedulerImpl;
 
     // 不能用wtf的函数，否则退出后wtf被关闭了，就不能访问了
     std::vector<WebTimerBase*> m_timerHeap;
     std::vector<WebTimerBase*> m_unusedTimersToDelete;
     std::vector<TaskPair*> m_taskPairsToPost;
-    // Owner-thread batch. Entries before the cursor have transferred ownership.
-    std::vector<TaskPair*> m_taskPairsBeingAdmitted;
-    std::size_t m_taskPairAdmissionCursor;
+    unsigned m_admissionShare = 0;
+    task_scheduling::DeadlinePriorityIndex m_timerIndex, m_pendingIndex;
     std::vector<TaskObserver*> m_observers;
     bool m_isObserversDirty;
     const char* m_name;
@@ -141,7 +146,6 @@ private:
     HANDLE m_threadHandle;
     bool m_hasPlatformRegistration;
 
-    double m_currentFrameCreateTime; // 当前帧全部使用这个创建时间
     static unsigned m_currentHeapInsertionOrder;
 
     bool m_isMainThread;

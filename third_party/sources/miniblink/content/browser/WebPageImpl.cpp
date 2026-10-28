@@ -12,6 +12,8 @@
 #include "third_party/WebKit/Source/core/page/Page.h"
 #include "third_party/WebKit/Source/core/page/FocusController.h"
 #include "third_party/WebKit/Source/core/input/EventHandler.h"
+#include "third_party/WebKit/Source/core/editing/InputMethodController.h"
+#include "third_party/WebKit/Source/core/page/FrameTree.h"
 #include "third_party/WebKit/Source/core/loader/FrameLoadRequest.h"
 #include "third_party/WebKit/Source/core/fetch/MemoryCache.h"
 #include "third_party/WebKit/Source/core/editing/FrameSelection.h"
@@ -57,6 +59,7 @@
 #include "content/devtools/DevToolsClient.h"
 #include "content/devtools/DevToolsAgent.h"
 #include "cc/trees/LayerTreeHost.h"
+#include "cc/trees/FrameDeadlinePolicy.h"
 #include "cc/base/BdColor.h"
 #include "ui/gfx/win/dpi.h"
 #include <algorithm>
@@ -253,6 +256,7 @@ WebPageImpl::WebPageImpl(COLORREF bdColor)
     m_executeMainFrameCount = 0;
     m_lastFrameTimeMonotonic = 0;
     m_mainFrameInterval = 0;
+    m_renderFrameId = 0;
     m_nextMainFrameTime = 0;
     m_popupHandle = nullptr;
     m_postCloseWidgetSoonMessage = false;
@@ -494,15 +498,8 @@ public:
                 if (m_page->m_mainFrameInterval > 0) {
                     double& deadline = m_page->m_nextMainFrameTime;
                     const double interval = m_page->m_mainFrameInterval;
-                    if (deadline <= 0) deadline = m_lastFrameTimeMonotonic + interval;
-                    else {
-                        // Preserve fractional phase, skipping missed frames instead of bursting.
-                        while (deadline <= m_lastFrameTimeMonotonic) {
-                            const double behind = m_lastFrameTimeMonotonic - deadline;
-                            const long long missed = static_cast<long long>(behind / interval);
-                            deadline += (missed + 1) * interval;
-                        }
-                    }
+                    deadline = cc::nextFrameDeadline(deadline,
+                        m_lastFrameTimeMonotonic, interval);
                 }
                 if (m_page->m_mainFrameInterval > 0)
                     m_page->m_lastFrameTimeMonotonic = m_lastFrameTimeMonotonic;
@@ -521,6 +518,11 @@ public:
             m_page->setNeedsCommitAndNotLayout();
 
         m_host->endRecordActions();
+        if (m_isComefromMainFrame) {
+            ++m_page->m_renderFrameId;
+            m_host->setMainFrameDeadline(m_page->m_renderFrameId,
+                m_lastFrameTimeMonotonic, m_page->m_mainFrameInterval);
+        }
 
         if (m_page->m_mainFrameInterval <= 0)
             m_page->m_lastFrameTimeMonotonic = m_lastFrameTimeMonotonic;
@@ -867,6 +869,7 @@ void WebPageImpl::beginMainFrame()
         return;
 
     if (/*needsCommit*/true) {
+        m_layerTreeHost->retryPendingOwnerWork();
         executeMainFrame();
         m_layerTreeHost->requestDrawFrameToRunIntoCompositeThread();
     }
@@ -884,9 +887,13 @@ void WebPageImpl::executeMainFrame()
     //double lastFrameTimeMonotonic = WTF::monotonicallyIncreasingTime();
 
     if (!m_layerTreeHost->canRecordActions()) {
-        // Resource/fence pressure cannot make progress by executing the same
-        // commit repeatedly in one ready-task drain. Keep one deferred retry.
-        scheduleCommit(1);
+        // Register before rechecking: completion before registration is seen
+        // by the recheck, and completion afterwards owns one merged wake.
+        m_layerTreeHost->registerResourceWait();
+        if (m_layerTreeHost->canRecordActions()) {
+            m_layerTreeHost->clearResourceWait();
+            scheduleCommit(0);
+        }
         atomicDecrement(&m_executeMainFrameCount);
         return;
     }
@@ -981,6 +988,7 @@ void WebPageImpl::setViewportSize(const IntSize& size)
     if (m_viewportSize == size)
         return;
     m_viewportSize = size;
+    m_nextMainFrameTime = 0;
 
     ASSERT(pageInited == m_state);
     if (pageDestroying == m_state)
@@ -1349,6 +1357,8 @@ void WebPageImpl::setMainFrameRate(int rate)
     const double interval = rate ? 1.0 / rate : 0;
     if (interval == m_mainFrameInterval) return;
     m_mainFrameInterval = interval;
+    if (m_layerTreeHost && interval > 0)
+        m_layerTreeHost->setDrawMinInterval(interval);
     m_nextMainFrameTime = 0;
     if (pageInited == m_state) setNeedsCommit();
 }
@@ -1593,6 +1603,44 @@ bool WebPageImpl::fireKeyDownEvent(HWND hWnd, UINT message, WPARAM wParam, LPARA
 bool WebPageImpl::handleCurrentKeyboardEvent()
 {
     return false;
+}
+
+bool WebPageImpl::cancelInputState()
+{
+    if (!WTF::isMainThread() || !m_webViewImpl || !m_platformEventHandler)
+        return false;
+    CHECK_FOR_REENTER(this, false);
+    blink::WebViewImpl* view = m_webViewImpl;
+    RefPtrWillBeRawPtr<blink::LocalFrame> localFrames[128];
+    size_t localCount = 0;
+    size_t frameCount = 0;
+    blink::Frame* root = view->mainFrameImpl() ? view->mainFrameImpl()->frame() : nullptr;
+    for (blink::Frame* frame = root; frame; frame = frame->tree().traverseNext(root)) {
+        if (++frameCount > 128 || !frame->isLocalFrame())
+            return false; // Explicit unsupported recovery, before clearing state.
+        localFrames[localCount++] = blink::toLocalFrame(frame);
+    }
+    AutoRecordActions record(this, m_layerTreeHost, false);
+    // Clear the Blink click/drag/pointer/touch tokens first. No synthetic mouse
+    // or key release and no DefinitelyProcessingUserGesture is introduced.
+    for (size_t index = 0; index < localCount; ++index)
+        localFrames[index]->eventHandler().clear();
+    m_platformEventHandler->cancelInputState(m_hWnd);
+    m_isDragging = false;
+    m_postMouseLeave = false;
+    m_mouseInWindow = false;
+    m_popupHandle = nullptr;
+    for (size_t index = 0; index < localCount; ++index) {
+        if (localFrames[index]->inputMethodController().hasComposition())
+            localFrames[index]->inputMethodController().cancelComposition();
+        if (m_state != pageInited || m_webViewImpl != view)
+            return false; // Composition callbacks may navigate or request close.
+    }
+    view->setFocus(false); // Composition was cancelled, so blur cannot commit it.
+    if (m_state != pageInited || m_webViewImpl != view)
+        return false;
+    view->setIsActive(false);
+    return m_state == pageInited && m_webViewImpl == view;
 }
 
 void WebPageImpl::fireCaptureChangedEvent(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)

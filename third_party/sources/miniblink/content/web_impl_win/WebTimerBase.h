@@ -31,6 +31,7 @@
 #include <wtf/FastAllocBase.h>
 #include <wtf/Vector.h>
 #include <vector>
+#include "content/web_impl_win/TaskSchedulingIndex.h"
 #include "third_party/WebKit/public/platform/WebTraceLocation.h"
 #include "third_party/WebKit/public/platform/WebThread.h"
 
@@ -128,6 +129,7 @@ private:
 
     int m_ref;
     int m_priority;
+    task_scheduling::DeadlinePriorityIndex::Entry m_scheduling;
 };
 
 inline bool WebTimerBase::isActive() const

@@ -1,4 +1,4 @@
-﻿#if (defined ENABLE_WKE) && (ENABLE_WKE == 1)
+#if (defined ENABLE_WKE) && (ENABLE_WKE == 1)
 
 //////////////////////////////////////////////////////////////////////////
 #define BUILDING_wke 1
@@ -726,8 +726,18 @@ bool WKE_CALL_TYPE wkeIsInitialize()
 }
 
 namespace {
+bool workerFinalizationPrepared = false;
 bool workerFinalizationCompleted = false;
 }
+namespace wke {
+bool inputUiOwnerAvailable()
+{
+    // Read mutable lifecycle flags only on their actual owner.
+    return ::GetCurrentThreadId() == wkeThreadId && wkeIsInit
+        && !workerFinalizationPrepared && !workerFinalizationCompleted;
+}
+}
+
 
 unsigned WKE_CALL_TYPE wkeWorkerRetirementWitnessCount()
 {
@@ -831,7 +841,10 @@ unsigned WKE_CALL_TYPE wkePrepareWorkerShutdown()
     if (workerFinalizationCompleted) return 0;
     const unsigned retired = static_cast<unsigned>(blink::WorkerMessagingProxy::prepareAllWorkerRetirements());
     if (retired != 0) return retired;
-    return wke::brokerMayFinalize() ? 0 : 1; // Pending broker callbacks must not stop the SDK owner loop.
+    if (!wke::brokerMayFinalize())
+        return 1; // Pending broker callbacks must not stop the SDK owner loop.
+    workerFinalizationPrepared = true;
+    return 0;
 }
 
 unsigned WKE_CALL_TYPE wkeFinalizePrepared()

@@ -14,11 +14,11 @@ W00 已提交 [Draft PR111](https://github.com/chenziyang110/soui-web-sdk/pull/1
 | --- | --- | --- | --- |
 | W00 | 同线程无效计时收益更正；continuation 生命周期/重建；legacy 单 deadline 重试；默认独立路径与 scheduler oracle | 生产代码与回归源码已集成并完成静态复核；[来源增量](../../third_party/manifests/kernel-input-ui-w00-source.json)；入口 scheduler_continuation、worker_lifetime、render_deadline_policy；未编译/未运行 | 代码完成待编译 |
 | W01 | 统一 QPC/身份/关联；默认关闭有界 ring；scalar 指标；替换逐事件实验文件日志；同产品与 burst 新协议 | 公共数值契约冻结中；严格旧协议保留；无执行结果 | 实现中 |
-| W02 | 类型化接纳；关键边沿保障/明确取消恢复；多 Host 公平；有界内部通知；输入语义守恒 | 容量/OOM/关闭/IME/状态恢复回归源码待交付 | 待 W00/W01 接口 |
-| W03 | ready/future/idle；最早 deadline/票号/取消；有界压力恢复；单调时钟/Win7 fallback | 固定时钟/失败/重建/睡眠恢复回归源码待交付 | 待 W00/W01 接口 |
-| W04 | future/ready 索引；50ms 老化与 tie-break；摘要；有界接纳/promotion/取消 | 随机 oracle 对照与关闭/自删除/引用回归源码待交付 | 待 W03 |
-| W05 | 复用 pacer 和分数相位；窄版本能力/代际契约；资源与 pacing 分离；首次 dirty/窗口状态 | 可控时钟与刷新率/恢复/跨屏回归源码待交付 | 待 W01 接口 |
-| W06 | 原因分类；资源完成合并通知；注册后重查；移除正常 1ms/8ms 轮询，完整 fence | 完成竞态/多 producer/迟到/取消/资源释放回归源码待交付 | 待 W05 |
+| W02 | 64普通+16边沿 mailbox、32 Host轮转、与FIFO共享接纳序号；接纳后resize代际发布、序号不回绕；取消不制造gesture | input_admission生产源码fixture、ordinal_cases及真实DOM/resize失败场景已交付；未编译/未运行；native cancel能力等W07 callback guard才开放 | 源码已集成，能力激活依赖W07 |
+| W03 | ready/future/idle 单次 deadline、Win7 fallback、owner机会、wait退役/失败意图；已运行Task有界退休 | scheduler_continuation真实提取源码及worker_lifetime最后Task/96项退休回归源码；字节映射14/13/22核对；未执行 | 代码完成待编译 |
+| W04 | priority AVL+deadline heap摘要；50ms老化；3 eligible/1 oldest接纳；显式entry-order tie | scheduler_index 100000次seeded oracle/OOM源码、原拥有heap及shutdown fixture；未执行 | 代码完成待编译 |
+| W05 | QPC商/余数及vendor分数phase；main frame deadline去重复门；Host按cap0x10采用 | fractional_frame_phase源码；native visibility接线静态查出缺口，另包补齐；未编译/未运行 | 算术/截止代码完成，可见性组合待集成 |
+| W06 | typed阻塞原因；生产者完成合并通知、注册后重查；移除正常1ms/8ms资源轮询 | resource_notification_policy与实际action/scene/raster链已集成；投递拒绝保留intent；未执行 | 代码完成待编译 |
 | W07 | copy/锁/回调计量；mirror 消费者；有界 generation buffer lease；锁外绘制 | 像素/alpha/resize/DC/截图/重入/关闭回归源码待交付 | 待 W05/W06 |
 | W08 | raster 成本诊断；可见优先/有界并发候选；项数/字节/scene/cache/预取预算 | 未 profile；不得把缺数据记为不采用证据 | 待设计/诊断/候选与数据 |
 | W09 | layout/record/scene/snapshot/JSON/Bridge/分配诊断；按证据合并、切片、失效缓存及预算协调 | 未 profile；不无依据大改 layout | 待设计/诊断与数据 |
@@ -51,3 +51,35 @@ A 独占 SDK 输入/引擎与 vendor 任务调度，B 独占渲染/资源/帧和
 静态补齐默认 vendor 注册：原64项加 provider registry-live-fence 和 input-frame-trace，共66个精确名称；preflight 原27项加两个实际 trace 源文件为29项，继续逐名/逐文件核对。SDK backend-validator 单独注册。工具尚未查询真实 CTest registry，以上只是源码注册契约，不是测试通过数。主 producer 在 wkeInitialize 真实 owner 初始化前注册，完整 platform shutdown/renderer_finalized 后才 detach；provider close fence 失败不能从 DebugBreak 继续走成功卸载。
 
 专人先运行 trace/backend validator、精确 registry 和新协议的 reader fixture，再做一次 trace scalar/detailed 扰动预检。关联 reader 必须检查实际阶段交集与样本数；SDK/vendor/API 版本失配、其他 consumer 取走记录、trace 超限均不得生成合格的 complete capture。随后才进行同产品配对；未冻结的生产调用点不提交正式性能结果。
+
+## W02 输入接纳与代际屏障
+
+`sdk/src/host/{input_mailbox,engine_input_service,engine_admission,input_sequence}.h` 与实际 `engine_thread.cpp` 共同保证：payload 复制成功后，分配顺序号与首 head/pending 发布在同一次 Engine mutex 事务完成；Engine 锁内只读原子 head，不进入 mailbox。普通 FIFO 不越过更早已接纳输入，输入 batch 每次 pop 重新核对更早的 FIFO，32 个 actor 轮转且单次至多8项/1ms协作预算。新输入不能无限延长某个已排队任务的前驱集合；任意单个 JS/原生回调仍不可抢占。
+
+resize 排队失败不推进 UI 代际、序号或窗口尺寸；成功入队后才发布代际并 MoveWindow，引擎只在实际 wkeResize 返回后推进 applied geometry。序号跨 geometry 单调，view/document 更换才可重新开始；耗尽/有界争用失败明确进入取消/有限恢复，不回绕复用。旧 geometry 的 key/char/IME 保留投递，空间输入按实际几何校验；W01 对跨几何非空间输入的 native frame 因果保持明确缺失，不改写历史身份。
+
+静态审查修正了独立队列跨resize/nav、首head发布窗口、全部IMM错误被当空提交、UI意图误判旧已接纳输入及resize接纳失败后永久stale等问题。`WebPageImpl::cancelInputState` 先有界预检最多128个本地frame，再清原生click/drag/touch、取消未提交composition并blur；不合成 keyup/mouseup。中间 Draft 在 callback lifetime 依赖闭合前不公布新取消能力，缺能力时明确有限恢复至新文档。不得把编写了取消方法等同已经具备关闭/重入资格。
+
+执行入口：构建最终匹配 SDK 后一次运行 `sdk.native.input-mailbox`；实际 DOM/held key/drag/真实IME及满ordinary resize失败见 `tests/native/input_frame_trace/INPUT-CANCEL-SCENARIOS.md` 与 `tests/native/input_admission/RESIZE-FAILURE-SCENARIOS.md`。后两者是待执行场景，不能算成已运行的原生案例。当前所有运行证据为空。
+
+## W03/W04 deadline、索引与退休
+
+两个工作包按独立实现提交，在同一 Draft 中交接，因为等待票号、最早deadline摘要和最后任务析构共同决定 idle 是否可安全停止。`SharedTimerWin.h` 不再用固定16ms驱动空闲owner；一份绝对单调deadline、一份注册wait及同票号WM_TIMER故障兜底。owner重新检查到期条件；注销wait在publication锁外等待callback退役，句柄失败不能清空后误报成功。消息投递失败保留deferred intent，全部计时原语失败保留独立deadlineRetry，由实际owner机会重试；所有OS唤醒均失败时仍需要外部pump机会，不能承诺硬实时。
+
+删除idle tick还必须处理原先靠下一tick释放的已运行Task：回调/observer返回、重入计数归零后每次最多退休32个，先移除拥有记录再锁外deref，剩余显式续调度。worker无heap、只有退休积压的wake也会实际处理，关闭仍保留完整排空；不能让最后close Task的析构收据永久挂起。
+
+`TaskSchedulingIndex.h` 非拥有索引保留原heap/refcount；priority AVL节点缓存子树最早deadline，查询最高可运行priority或50ms老化的最早deadline，不扫描全部future或先做无界promotion。exact equal key从旧encounter顺序明确改为queue-entry顺序；原不透明Task/global producer容量协议仍是既有限制，本包未用新增无界队列换取性能。所有新索引分配先于timer状态变更，结构容量计量包含保留bucket高水。
+
+独立静态复核修正组合唤醒失败、unchecked CloseHandle、reentry消耗wake、worker退休空heap及future-only重试问题；未执行任何fixture。当前worker原字节来源为14个完整输入、13段复制、22个payload，全部逐字节/extent/散列核对；observer绑定实际writer规范LF散列，未放宽断言。源码注册入口 `scheduler.continuation.contract`、`scheduler.deadline.{close,unregister}-failure`、`scheduler.index.contract` 在vendor选项ON下纳入根构建；66个kernel.native登记仍精确不变，preflight增加实际TaskSchedulingIndex为30文件。
+
+## W05/W06 帧截止与资源完成
+
+SDK phase以整数QPC商/余数得到绝对截止，vendor保持其单调秒域；迟帧直接跳至未来phase，不循环补帧。mainFrameRate把同一个目标间隔传到record/composite；已按目标接纳的frame不再叠加独立last-record/composite/legacy绘制等待。Host只在匹配的cap0x10上采用fractional策略，显式legacy实验/整数override保留原语义；旧毫秒诊断字段仍是兼容取整值，实际调度/收益以QPC记录和真实呈现为准。
+
+资源阻塞分为destroying/inflight-scene/missing-action/raster，pacing另行处理。owner先登记等待再重查，action发布/完整frame应用、scene激活和raster完成触发合并通知；任务持有撤销状态与代际，关闭后的迟到任务只回收自身。正常1ms commit和8ms draw资源轮询移除；一次100ms异常拒投兜底仍失败时保留dirty/等待intent，后续真实owner机会重试，不把取消当resources ready。
+
+本批静态发现native hide/minimize/restore没有调用原 `setVisible`，因此可见性抑制/恢复全量dirty不能仅凭已有方法宣称接入。后续组合包通过可选原生能力和实际窗口状态补齐，再冻结完整W05；DPI已有实际scale/resize链，与此缺口分开记录。W07的镜像/lease和W01调用点尚未在本批激活。
+
+默认vendor登记本批为69个kernel.native＋4个scheduler辅助名称，preflight33个确切源文件；既有legacy deadline leaf纳入根登记，另增fractional-frame-phase与resource-notification-policy。命令交专人执行，当前只交生产代码、必要fixture源码与静态来源检查。
+
+静态集成复查同时修正 owner API 门禁引用未声明 prepared 标志的问题：只有 worker retirement 与 broker fence 均实际就绪时才发布 prepared，未就绪继续保留 owner 关闭进展。该更正纳入本批原字节增量，仍未编译。
