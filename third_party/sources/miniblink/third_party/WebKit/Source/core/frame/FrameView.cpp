@@ -1485,8 +1485,10 @@ void FrameView::setScrollPosition(const DoublePoint& scrollPoint, ScrollType scr
     m_maintainScrollPositionAnchor = nullptr;
 
     DoublePoint newScrollPosition = clampScrollPosition(scrollPoint);
-    if (newScrollPosition == scrollPositionDouble())
+    if (newScrollPosition == scrollPositionDouble()) {
+        invalidateCompositorScroll(scrollType);
         return;
+    }
 
     if (scrollBehavior == ScrollBehaviorAuto)
         scrollBehavior = scrollBehaviorStyle();

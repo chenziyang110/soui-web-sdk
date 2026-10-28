@@ -164,6 +164,9 @@ public:
     // Scrolling
     virtual void setScrollPositionDouble(WebDoublePoint) = 0;
     virtual WebDoublePoint scrollPositionDouble() const = 0;
+    // Explicit main-thread scroll intent, including an unchanged position.
+    // Default keeps existing clients source-compatible; C++ clients must rebuild.
+    virtual void invalidateCompositorScroll() { }
     // Blink tells cc the scroll offset through setScrollPositionDouble() using
     // floating precision but it currently can only position cc layers at integer
     // boundary. So Blink needs to also call setScrollCompensationAdjustment()

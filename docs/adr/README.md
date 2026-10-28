@@ -70,6 +70,7 @@
 - [ADR-0112：有界的进程地址空间观察](0112-bounded-process-address-census.md)（双架构真实扫描及独立读取回归通过；实际负载预算待校准）
 
 - [ADR-0119：在临时光栅覆盖边界保留已接收的滚动目标](0119-preserve-scroll-target-beyond-raster-coverage.md)（proposed；源码候选与端到端验证分开）
+- [ADR-0120：区分合成滚动确认与外部滚动意图](0120-preserve-compositor-scroll-acknowledgements.md)（proposed；默认整数元素滚动源码候选；完整 x86 构建、限定 GUI 位移与同值 CSS 取消已验证，性能及完整配置资格未完成）
 - [ADR-0118：MiniBlink 关闭的分阶段继续状态](0118-miniblink-nonblocking-unmount.md)
 - [ADR-0119：显式离线 Web 源码诊断构建档](0119-offline-web-build-profiles.md)
 - [ADR-0124：Web 构建目标、资源清单与体积分析](0124-web-targets-and-size-analysis.md)

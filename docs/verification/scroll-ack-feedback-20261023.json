@@ -1,0 +1,763 @@
+{
+  "schema": "soui.scroll-ack-feedback-verification/v1",
+  "recordedDate": "2026-10-23",
+  "status": "proposed; current native fixtures and full x86 build passed; scoped GUI conservation and same-value CSS cancellation observed; overall performance/release pending",
+  "overallPassed": false,
+  "nativeExecutionPassed": true,
+  "fullKernelBuildPassed": true,
+  "guiConservationPassed": true,
+  "externalIntentGuiPassed": true,
+  "releaseReady": false,
+  "scope": {
+    "fractionalScrollOffsetsEnabled": false,
+    "elementScrolling": true,
+    "viewportQualified": false,
+    "nondefaultFractionalWithNonlayerFixedObjectsQualified": false,
+    "cppClientsMustRebuild": true,
+    "wkeExportAbiChanged": false
+  },
+  "sourceIdentity": {
+    "parentCommit": "4b4ee0de66eb1ba99b81720b48cd733199394c37",
+    "freezeReceiptSha256": "E5814493F42302590735B7E4C98CCD76BD1B60BF06DBC77F6A0EEFBD16A0F934",
+    "kernelSourceFileCount": 23546,
+    "freezeFileCount": 17,
+    "files": [
+      {
+        "relative": "cc/input/ScrollController.cpp",
+        "bytes": 25016,
+        "sha256": "63548EDC58DD8EF1B92C42EF82FEF17041A7C709D199EC3F100AE774B88DCFE6"
+      },
+      {
+        "relative": "cc/input/ScrollController.h",
+        "bytes": 7026,
+        "sha256": "A065A7436DBC2D5DFE10FDCA636539E2C7FC1F6AF3740BEDCBADE38553D406D4"
+      },
+      {
+        "relative": "cc/trees/LayerTreeHost.cpp",
+        "bytes": 115248,
+        "sha256": "EB863AD891AB1F6503206813F005E079FFF5E6EBC3FEB6DDD7BDD3EF09314912"
+      },
+      {
+        "relative": "cc/trees/LayerTreeHost.h",
+        "bytes": 13395,
+        "sha256": "858084193D3D6BC65FF77B3E3BC717ECDE8D3DDB9AE61AD59F8F257D9A17DCEC"
+      },
+      {
+        "relative": "cc/trees/ScrollTreeSnapshot.cpp",
+        "bytes": 6359,
+        "sha256": "FCF1CBD6B32480D411D4F38ECD5BD13C72E95E41E3B8AE45E51E6ECE17E90D88"
+      },
+      {
+        "relative": "cc/trees/ScrollTreeSnapshot.h",
+        "bytes": 2980,
+        "sha256": "EFFD2453DCB4D7004F91F891A2C16EEB346716B9A82FF9B3FAFD57CD056C837D"
+      },
+      {
+        "relative": "cc/input/CompositorScrollAcknowledgement.h",
+        "bytes": 3843,
+        "sha256": "5CEE1DF5EECD75754614E06DB19DBAB7C88DE0754D645697A27A8605339460C7"
+      },
+      {
+        "relative": "cc/blink/WebLayerImpl.cpp",
+        "bytes": 44683,
+        "sha256": "03825A65F2E1473716866CA0F9086E7E132ED024D196002249CE7AAB97BC6F92"
+      },
+      {
+        "relative": "cc/blink/WebLayerImpl.h",
+        "bytes": 13492,
+        "sha256": "63A73A91608A9A57CAAFEF3E929CF717985BFD0F74833C95F8EC53658C64D5BD"
+      },
+      {
+        "relative": "third_party/WebKit/Source/core/frame/FrameView.cpp",
+        "bytes": 143670,
+        "sha256": "C292520ACAA985D909B57A11E581BDE783184DDF4537F9F85C922343A2480C02"
+      },
+      {
+        "relative": "third_party/WebKit/Source/core/paint/DeprecatedPaintLayerScrollableArea.cpp",
+        "bytes": 58870,
+        "sha256": "45BD1AF8F87FE1E7BF68276458AF69B8FFB0929AE9650B0828809E846B5D1C9F"
+      },
+      {
+        "relative": "third_party/WebKit/Source/platform/graphics/GraphicsLayer.cpp",
+        "bytes": 39938,
+        "sha256": "675F64759C560701415F4D3303BED006CB8CEE8C1181049E176D9EA432B4ED6F"
+      },
+      {
+        "relative": "third_party/WebKit/Source/platform/graphics/GraphicsLayer.h",
+        "bytes": 14792,
+        "sha256": "4C16531CC82EC8AEB2743F013BCF091A752F70F054B84822C95C66FE69A16ECF"
+      },
+      {
+        "relative": "third_party/WebKit/Source/platform/scroll/ScrollableArea.cpp",
+        "bytes": 21970,
+        "sha256": "2F23CF6554092941D55A11A158CC9A899353D46AD07F4639A1C7150C61AFB9FD"
+      },
+      {
+        "relative": "third_party/WebKit/Source/platform/scroll/ScrollableArea.h",
+        "bytes": 17480,
+        "sha256": "6567D038562BD4D49E4EE654EA5D6F2A0086A30B7F5372D70C806DC9B897C4EF"
+      },
+      {
+        "relative": "third_party/WebKit/public/platform/WebLayer.h",
+        "bytes": 10466,
+        "sha256": "FD64DCCF07662DF46D1437A90875123692C02177CD5F5C3CF62DAE336915FC09"
+      },
+      {
+        "relative": "third_party/WebKit/public/platform/WebLayerScrollClient.h",
+        "bytes": 2013,
+        "sha256": "C725EB249A9ECE0F3888C41065F1F980743364C962CDBBF822F973427DAF151C"
+      }
+    ],
+    "allFrozenFilesIndependentlyRehashed": true,
+    "sourceScopeReceiptSha256": "065BFA1C74487862B83B08EDFC8513E8813164B37D89D699B402980F0D053874"
+  },
+  "nativeCompilation01": {
+    "status": "compiled-not-run; two invalid-snapshot assertions subsequently strengthened for a separate rebuild",
+    "buildReceiptSha256": "E71AEC119BEEC1244DF04A6D79614016ADD1B838F059C26B86490F1B0C12B99E",
+    "inputReceiptSha256": "2A6694A9AC60AB36080554EC0B79EA97978827038C63DBAA431D63B008FFF81E",
+    "sourceStable": true,
+    "configureBuildSteps": 8,
+    "allConfigureBuildExitCodesZero": true,
+    "toolset": "v143",
+    "windowsSdk": "10.0.19041.0",
+    "configuration": "Release",
+    "runtime": "MultiThreaded",
+    "programs": [
+      {
+        "id": "baseline-x86",
+        "variant": "baseline",
+        "architecture": "x86",
+        "testCount": 10,
+        "exeBytes": 212480,
+        "exeSha256": "51BAF619D982064E89F774CDD383DEC904266E5EBA64915E81A93B7AC4F9CF84",
+        "peMachine": 332,
+        "staticCrt": true,
+        "extractedProductionReceiptSha256": "72824EEADFB51758FF8F4A6B567A47C026CDAF58AF66C299A1BD3C8F01F26EDC",
+        "executionStatus": "not-run",
+        "exitCode": null
+      },
+      {
+        "id": "baseline-x64",
+        "variant": "baseline",
+        "architecture": "x64",
+        "testCount": 10,
+        "exeBytes": 266752,
+        "exeSha256": "0FB47314BCAE2CA2315AA1DB1C3A7363AFF085EE40895702A95F63A6C267FEBF",
+        "peMachine": 34404,
+        "staticCrt": true,
+        "extractedProductionReceiptSha256": "72824EEADFB51758FF8F4A6B567A47C026CDAF58AF66C299A1BD3C8F01F26EDC",
+        "executionStatus": "not-run",
+        "exitCode": null
+      },
+      {
+        "id": "fixed-x86",
+        "variant": "fixed",
+        "architecture": "x86",
+        "testCount": 25,
+        "exeBytes": 237056,
+        "exeSha256": "015F24748BE53D0EFC1CF5D2A8FE1C77F2DDA4FA03E67F73FD3CDBEBD4AEC896",
+        "peMachine": 332,
+        "staticCrt": true,
+        "extractedProductionReceiptSha256": null,
+        "executionStatus": "not-run",
+        "exitCode": null
+      },
+      {
+        "id": "fixed-x64",
+        "variant": "fixed",
+        "architecture": "x64",
+        "testCount": 25,
+        "exeBytes": 297984,
+        "exeSha256": "B874FC72EE69B853AAED541C6E91659D09779D9020FB8AFF14DAF82759A7E288",
+        "peMachine": 34404,
+        "staticCrt": true,
+        "extractedProductionReceiptSha256": null,
+        "executionStatus": "not-run",
+        "exitCode": null
+      }
+    ],
+    "programAndLogHashesIndependentlyRechecked": true,
+    "hostExecutedTests": false,
+    "vmExecutedTests": false,
+    "fixtureCorrection": "Two invalid-snapshot checks must use a newer scene and assert isValid()==false directly, rather than allowing the old-scene fence to reject them. Compilation01 remains a preserved build-only stage; replacement runs must bind the stronger fixture."
+  },
+  "pending": [
+    "Measure repeatable input-active and settling cadence separately; no presentation FPS or overall fluidity pass yet.",
+    "Expand source/configuration coverage separately, including viewport and nondefault fractional policy; current low-frequency probe does not sample setter-instant target/velocity.",
+    "Keep full x64 kernel, toolchain qualification and release acceptance separate; this x86 build and scoped GUI runs do not establish them."
+  ],
+  "limits": [
+    "Native helper/controller fixtures do not execute GraphicsLayer, DOM or real raster/producer scheduling.",
+    "The baseline extracts old production methods mechanically with a controlled callback; it is not a full old kernel.",
+    "Historical actual16/17 failure evidence remains separate and does not validate this candidate.",
+    "Pixel sample hashes and compositor visual are not presentation FPS.",
+    "No changes to fixed binaries, default timer settings or release acceptance."
+  ],
+  "nativeCompilation02": {
+    "status": "compiled; subsequently executed in nativeExecution02",
+    "buildReceiptSha256": "F6EA35DC708922DA1A2B09B975B479051B96F054ABF07069566BF5BEF67AD971",
+    "inputReceiptSha256": "D7A310A88EC2D8C13184A895FF42387EBB21ED53F247561E8E662C2C5026EE34",
+    "sourceStable": true,
+    "fixtureFiles": [
+      {
+        "name": "ack_feedback_tests.cpp",
+        "bytes": 18797,
+        "sha256": "601DFF344A747EF3FCEE556D94577ECED87EA8753440A314E7950A4B0D94AA98"
+      },
+      {
+        "name": "baseline_ack_shim.h",
+        "bytes": 2059,
+        "sha256": "321D79AF784797074986618F780A02B7D2934134BBB8589C47593C2D62F57BD9"
+      },
+      {
+        "name": "CMakeLists.txt",
+        "bytes": 1895,
+        "sha256": "F07C27DE18BE067BF732CB266E6C34E24FCC398B3C75B5A7C15BC44DEDD2E813"
+      },
+      {
+        "name": "extract_baseline_ack.py",
+        "bytes": 1916,
+        "sha256": "F98B15192C8FAA0DA234A56FC0249C750DF757CF11DA6D439E8626025B89303A"
+      },
+      {
+        "name": "README.md",
+        "bytes": 4220,
+        "sha256": "7787923FBA6E5AB4819873DCCEA36F0DF442B68F74F05F9E05A9CBCDB253A1C0"
+      }
+    ],
+    "configureBuildSteps": 8,
+    "allConfigureBuildExitCodesZero": true,
+    "programs": [
+      {
+        "id": "baseline-x86",
+        "architecture": "x86",
+        "variant": "baseline",
+        "testCount": 10,
+        "exeBytes": 212480,
+        "exeSha256": "3A549060A92CC0CEE825507A4E01BD20830EF10AD9F6B33E166D3C0DAB9C97AF",
+        "peMachine": 332,
+        "staticCrt": true,
+        "extractedProductionReceiptSha256": "72824EEADFB51758FF8F4A6B567A47C026CDAF58AF66C299A1BD3C8F01F26EDC",
+        "executionStatus": "failed-in-isolated-guest; baseline failure not inverted",
+        "exitCode": 1
+      },
+      {
+        "id": "baseline-x64",
+        "architecture": "x64",
+        "variant": "baseline",
+        "testCount": 10,
+        "exeBytes": 266752,
+        "exeSha256": "33DC85DCBB114EA7E5AD13C348E27C994E15FF2872B280141DB23F862742DCEE",
+        "peMachine": 34404,
+        "staticCrt": true,
+        "extractedProductionReceiptSha256": "72824EEADFB51758FF8F4A6B567A47C026CDAF58AF66C299A1BD3C8F01F26EDC",
+        "executionStatus": "failed-in-isolated-guest; baseline failure not inverted",
+        "exitCode": 1
+      },
+      {
+        "id": "fixed-x86",
+        "architecture": "x86",
+        "variant": "fixed",
+        "testCount": 25,
+        "exeBytes": 237568,
+        "exeSha256": "BC798AC8C88A8F9F6B32E7CACB70DC7C86CD18986EFE9742A5E4873AC8E9D804",
+        "peMachine": 332,
+        "staticCrt": true,
+        "extractedProductionReceiptSha256": null,
+        "executionStatus": "passed-in-isolated-guest",
+        "exitCode": 0
+      },
+      {
+        "id": "fixed-x64",
+        "architecture": "x64",
+        "variant": "fixed",
+        "testCount": 25,
+        "exeBytes": 299008,
+        "exeSha256": "4A1E5BA721C96FA383A3E1825FDD29602D2A2263C6EA541CB9964B6F00C56582",
+        "peMachine": 34404,
+        "staticCrt": true,
+        "extractedProductionReceiptSha256": null,
+        "executionStatus": "passed-in-isolated-guest",
+        "exitCode": 0
+      }
+    ],
+    "sourceProgramAndLogHashesIndependentlyRechecked": true,
+    "supersedesExecutionSelectionFromCompilation01": true,
+    "hostExecutedTests": false,
+    "vmExecutedTests": false
+  },
+  "existingRegressionCompilation": {
+    "status": "compiled; subsequently executed in nativeExecution02",
+    "buildReceiptSha256": "E2CF6DF44062B3896AADD13F6BDEE88ED7EEAF93B55B9A0241FF3CB94DB946BD",
+    "sourceUnchanged": true,
+    "artifacts": [
+      {
+        "target": "soui_scroll_target_retention_tests",
+        "architecture": "x86",
+        "exeBytes": 222720,
+        "exeSha256": "B87A10C93CBA1FCEF55E281EC93845144A8B9CF640C83C34AC602BCE97E1698A",
+        "peMachine": "0x014C",
+        "staticCrtVerified": true,
+        "executionStatus": "passed-in-isolated-guest",
+        "exitCode": 0
+      },
+      {
+        "target": "soui_scroll_target_boundary_tests",
+        "architecture": "x86",
+        "exeBytes": 236544,
+        "exeSha256": "7ECF540FB3D02F791884CCF9E10134301C10327634D035010F96CC3EF1180703",
+        "peMachine": "0x014C",
+        "staticCrtVerified": true,
+        "executionStatus": "passed-in-isolated-guest",
+        "exitCode": 0
+      },
+      {
+        "target": "soui_scroll_target_retention_tests",
+        "architecture": "x64",
+        "exeBytes": 277504,
+        "exeSha256": "21D1284F2EECDFAE12C43BB78A3AE6F56FBE8597AE9775427AFB0F7FEBAA4B50",
+        "peMachine": "0x8664",
+        "staticCrtVerified": true,
+        "executionStatus": "passed-in-isolated-guest",
+        "exitCode": 0
+      },
+      {
+        "target": "soui_scroll_target_boundary_tests",
+        "architecture": "x64",
+        "exeBytes": 295936,
+        "exeSha256": "7F73E5F8ECA2BBF502CC1D54FD58321EF6069E0D6F58BE14C6B8D6328080F1BF",
+        "peMachine": "0x8664",
+        "staticCrtVerified": true,
+        "executionStatus": "passed-in-isolated-guest",
+        "exitCode": 0
+      },
+      {
+        "target": "soui_scroll_coverage_tests",
+        "architecture": "x86",
+        "exeBytes": 233984,
+        "exeSha256": "7B5BC51D12FF587724AE8A41DF76A7489E6B3E1E25FC292FA95EA78D3905DDF9",
+        "peMachine": "0x014C",
+        "staticCrtVerified": true,
+        "executionStatus": "passed-in-isolated-guest",
+        "exitCode": 0
+      },
+      {
+        "target": "soui_scroll_coverage_tests",
+        "architecture": "x64",
+        "exeBytes": 292352,
+        "exeSha256": "BC36BF37C5CE6B973514C9ACC5BF23051B93B4A942BBA5CEAADFCF2CD74A86B2",
+        "peMachine": "0x8664",
+        "staticCrtVerified": true,
+        "executionStatus": "passed-in-isolated-guest",
+        "exitCode": 0
+      }
+    ],
+    "fixtureFiles": [
+      {
+        "name": "tests/native/scroll_target_retention/accepted_target_retention_tests.cpp",
+        "bytes": 11298,
+        "sha256": "4407D57B583B40DBDB6B90E1D06AEC9E4AD88C1CA0945B7CB9FB807472D5A4EE"
+      },
+      {
+        "name": "tests/native/scroll_target_retention/CMakeLists.txt",
+        "bytes": 2316,
+        "sha256": "1EC095756B66CABD937ECD96BFA25A9D7851670528A2A0F52517C7418EEE569F"
+      },
+      {
+        "name": "tests/native/scroll_target_retention/README.md",
+        "bytes": 5207,
+        "sha256": "E79E21B17AFDEA3E8CE573B56F15F4BC15B25D0B5E01C6C7366EB24B87D3C573"
+      },
+      {
+        "name": "tests/native/scroll_target_retention/target_retention_boundary_tests.cpp",
+        "bytes": 21040,
+        "sha256": "DBEB5391C0F506645FFFB142F864A9B4D469D397510BEF16A7A9570FC07E338A"
+      },
+      {
+        "name": "tests/native/scroll_coverage/CMakeLists.txt",
+        "bytes": 1312,
+        "sha256": "FC965ED8C26290E5FAD7716891073778AB6A6E151A3DF1B608F46CCFDB951CAF"
+      },
+      {
+        "name": "tests/native/scroll_coverage/README.md",
+        "bytes": 7914,
+        "sha256": "FF7BEE1F61B638192BD256AA73EE39C63CEA456FE992757D005E3CD8C55F8D6B"
+      },
+      {
+        "name": "tests/native/scroll_coverage/scroll_coverage_tests.cpp",
+        "bytes": 21728,
+        "sha256": "A87A78A3841D8869FB2A3B01B888E0CAD5A32A5009CA8041C6D72837B5F7FBA3"
+      }
+    ],
+    "allConfigureBuildExitCodesZero": true,
+    "sourceProgramAndProjectHashesIndependentlyRechecked": true
+  },
+  "nativeMedia": {
+    "status": "prepared artifact subsequently used for nativeExecution02; preparation receipt remains unchanged",
+    "receiptSha256": "8A749021B7E742B6443C098C5AB598523614BF402F5DB1E21DCDA11001C49B33",
+    "isoSha256": "C2A67A066B650180DE2B74511C5372F4D8F3532BB302EBB44F9F41D1DA152C36",
+    "isoBytes": 3866624,
+    "programCount": 10,
+    "allIsoMembersMatchedAsRecorded": true,
+    "hostExecutedTests": false,
+    "vmExecutedTests": true
+  },
+  "nativeExecutionScope": "Current candidate programs only; old baseline and overall suite retain real nonzero results.",
+  "nativeExecution02": {
+    "status": "current-passed-baseline-failures-preserved",
+    "reportSha256": "5664B5494E2C6DC55F1F6E82B52A379F621B964B75286B1A9ACB4299BBAF8D1E",
+    "sourceBindingSha256": "065B06EFCDEF849C9D63A26F699B831B7473C7F84AFA18242CDE7C601D0D3AEA",
+    "serialSha256": "5D1400697E1E85E6D628930AF34B2760E66925F463779BF766DADCAF42308D32",
+    "manifestSha256": "BC2ED3C8A59B3B75BE0574977C2DBB5252956EBC0E905A50AD7F5B404932AC4B",
+    "osVersion": "10.0.19045.0",
+    "hostExecutedTests": false,
+    "isolatedGuestExecutedTests": true,
+    "suiteExitCode": 1,
+    "allProgramsPassed": false,
+    "currentProgramsPassed": true,
+    "baselineNonzeroIsPassing": false,
+    "currentPrograms": 8,
+    "baselinePrograms": 2,
+    "currentPassedCasesPerArchitecture": 59,
+    "recoveredStdoutStderrCount": 20,
+    "recoveredByteHashesIndependentlyRechecked": true,
+    "frozen17CurrentHashesIndependentlyRechecked": true,
+    "build01UsedForThisRun": false,
+    "programs": [
+      {
+        "id": "ack-baseline-x86",
+        "architecture": "x86",
+        "group": "baseline",
+        "testCount": 10,
+        "passedCases": 3,
+        "failedCases": 7,
+        "exitCode": 1,
+        "exeSha256": "3A549060A92CC0CEE825507A4E01BD20830EF10AD9F6B33E166D3C0DAB9C97AF",
+        "stdoutSha256": "B57C326A93F4CFEE82A432B15E4C0A96188C68A40E59366C8093205FBAC251D3",
+        "stderrSha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      },
+      {
+        "id": "ack-baseline-x64",
+        "architecture": "x64",
+        "group": "baseline",
+        "testCount": 10,
+        "passedCases": 3,
+        "failedCases": 7,
+        "exitCode": 1,
+        "exeSha256": "33DC85DCBB114EA7E5AD13C348E27C994E15FF2872B280141DB23F862742DCEE",
+        "stdoutSha256": "B57C326A93F4CFEE82A432B15E4C0A96188C68A40E59366C8093205FBAC251D3",
+        "stderrSha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      },
+      {
+        "id": "ack-fixed-x86",
+        "architecture": "x86",
+        "group": "current",
+        "testCount": 25,
+        "passedCases": 25,
+        "failedCases": 0,
+        "exitCode": 0,
+        "exeSha256": "BC798AC8C88A8F9F6B32E7CACB70DC7C86CD18986EFE9742A5E4873AC8E9D804",
+        "stdoutSha256": "0291FB4D55C704F2B04BAEB00AB329159F58A31C88553774B4E251C8F4FA9E1C",
+        "stderrSha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      },
+      {
+        "id": "ack-fixed-x64",
+        "architecture": "x64",
+        "group": "current",
+        "testCount": 25,
+        "passedCases": 25,
+        "failedCases": 0,
+        "exitCode": 0,
+        "exeSha256": "4A1E5BA721C96FA383A3E1825FDD29602D2A2263C6EA541CB9964B6F00C56582",
+        "stdoutSha256": "0291FB4D55C704F2B04BAEB00AB329159F58A31C88553774B4E251C8F4FA9E1C",
+        "stderrSha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      },
+      {
+        "id": "original-x86",
+        "architecture": "x86",
+        "group": "current",
+        "testCount": 2,
+        "passedCases": 2,
+        "failedCases": 0,
+        "exitCode": 0,
+        "exeSha256": "B87A10C93CBA1FCEF55E281EC93845144A8B9CF640C83C34AC602BCE97E1698A",
+        "stdoutSha256": "EDDAB343225719811D3C6CE67BBAF338B723BF9A09085FDE5136E7554E7B7AE2",
+        "stderrSha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      },
+      {
+        "id": "boundaries-x86",
+        "architecture": "x86",
+        "group": "current",
+        "testCount": 19,
+        "passedCases": 19,
+        "failedCases": 0,
+        "exitCode": 0,
+        "exeSha256": "7ECF540FB3D02F791884CCF9E10134301C10327634D035010F96CC3EF1180703",
+        "stdoutSha256": "B6306B4F3C1F3C0B9D3DE753C0F485A135CA3FA7DCB012C27DA0126BA7934D5D",
+        "stderrSha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      },
+      {
+        "id": "original-x64",
+        "architecture": "x64",
+        "group": "current",
+        "testCount": 2,
+        "passedCases": 2,
+        "failedCases": 0,
+        "exitCode": 0,
+        "exeSha256": "21D1284F2EECDFAE12C43BB78A3AE6F56FBE8597AE9775427AFB0F7FEBAA4B50",
+        "stdoutSha256": "3FD57EF3375EA5E81B6C844C3D096466B64414C227F1B3D4E60878237665049E",
+        "stderrSha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      },
+      {
+        "id": "boundaries-x64",
+        "architecture": "x64",
+        "group": "current",
+        "testCount": 19,
+        "passedCases": 19,
+        "failedCases": 0,
+        "exitCode": 0,
+        "exeSha256": "7F73E5F8ECA2BBF502CC1D54FD58321EF6069E0D6F58BE14C6B8D6328080F1BF",
+        "stdoutSha256": "408B7FE3CA914B332CA866A23154EFD982AD6E7B9E3FF015C9D0C95E1CA36C05",
+        "stderrSha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      },
+      {
+        "id": "coverage-x86",
+        "architecture": "x86",
+        "group": "current",
+        "testCount": 13,
+        "passedCases": 13,
+        "failedCases": 0,
+        "exitCode": 0,
+        "exeSha256": "7B5BC51D12FF587724AE8A41DF76A7489E6B3E1E25FC292FA95EA78D3905DDF9",
+        "stdoutSha256": "A07B14F2A79F25D461AEAD846F1B8CF47E1A5AC7E5BFC1F586751348ADE52782",
+        "stderrSha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      },
+      {
+        "id": "coverage-x64",
+        "architecture": "x64",
+        "group": "current",
+        "testCount": 13,
+        "passedCases": 13,
+        "failedCases": 0,
+        "exitCode": 0,
+        "exeSha256": "BC36BF37C5CE6B973514C9ACC5BF23051B93B4A942BBA5CEAADFCF2CD74A86B2",
+        "stdoutSha256": "A07B14F2A79F25D461AEAD846F1B8CF47E1A5AC7E5BFC1F586751348ADE52782",
+        "stderrSha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      }
+    ],
+    "scope": "Production ACK helper, Controller/Snapshot and default client query; controlled mechanically extracted old methods. No actual GraphicsLayer/DOM sources, producer scheduling, GUI fluidity or installer workflow proof."
+  },
+  "fullKernelBuild01": {
+    "status": "full-x86-source-build-completed; independent build-only acceptance",
+    "acceptanceSha256": "3249F487EBF068FE479897ECBCF8E7FCD9E8AFE9ABAADB8D658D4417B7E1E841",
+    "acceptedUtc": "2026-10-23T20:54:04.152593+08:00",
+    "buildReceiptSha256": "4ACDF2F2E23CF081AF3CCA9BDC95608C07ACABDD2D3E7085CEFF2700EF0DB9D0",
+    "architecture": "x86",
+    "peMachine": "0x014c",
+    "dllCharacteristic": true,
+    "kernel": {
+      "bytes": 28119552,
+      "sha256": "F919E3BF6FAC50B8FBA03F0C184F737E4539A90B6936B73DAEFC68F054657BD7"
+    },
+    "map": {
+      "bytes": 48823374,
+      "sha256": "06519EFF2C034C9F343DD7120488C73332C701BD61EB94172D9A8FBE4006D688"
+    },
+    "inputReceiptSha256": "00F812A4776DDC182AD971B70116B0ED5763018BE2C159AAB0C7EB4D88F4713C",
+    "sourceBeforeSha256": "76E177778350C19478299BAF0E65026A77C0E31CAC3FC44104C24E7D60A11986",
+    "sourceAfterSha256": "76E177778350C19478299BAF0E65026A77C0E31CAC3FC44104C24E7D60A11986",
+    "sourceSnapshotIdentity": "A71FA24E311CF791E7C201C9C9120F37382008308DB4AA7A9483B2373A706498",
+    "sourceFileCount": 23546,
+    "sourceDirectoryCount": 1330,
+    "sourceTotalBytes": 321031012,
+    "sourceBeforeAfterByteIdentical": true,
+    "currentLiveSourceMatches": true,
+    "frozenFileCount": 17,
+    "compilerInputPinCount": 40,
+    "libraries": [
+      {
+        "name": "zlib.lib",
+        "bytes": 400172,
+        "sha256": "8FC85047F7A907536DF5C4236A1941CF4AF5B29F7FFE9C35A3D6E29D3C59CF07"
+      },
+      {
+        "name": "libjpeg.lib",
+        "bytes": 1708342,
+        "sha256": "56B7C630D100BD40058F7A26118C79079161EDF612406AA562B919C8ECF5E687"
+      },
+      {
+        "name": "libpng.lib",
+        "bytes": 1171746,
+        "sha256": "364A695F65C368D158FA65D1A1AD4E1D9EAF897787F5BEE098447121B2FA25B0"
+      },
+      {
+        "name": "harfbuzz.lib",
+        "bytes": 3815030,
+        "sha256": "8101FD68D380F9B3C449725E611F494DEE508CF2C1810D1C2BD95258D3ECD333"
+      },
+      {
+        "name": "libxml.lib",
+        "bytes": 4819682,
+        "sha256": "27C3A14D4E35FB9456D90304EA2FCB65E2DCDA6B3D5942166326526E24C7847F"
+      },
+      {
+        "name": "ots.lib",
+        "bytes": 11376218,
+        "sha256": "755B47F815B6D0E0724D324BA66A4A306B91B2BD74F05396D2043310161A62B3"
+      },
+      {
+        "name": "openssl.lib",
+        "bytes": 18211776,
+        "sha256": "70FB8AFA00BEA988600E8024A726A91701AC8C00F604686A21359B85EA4ED582"
+      },
+      {
+        "name": "libcurl.lib",
+        "bytes": 5505186,
+        "sha256": "4D0B9F409B9BA3749F81A39E1733FCA68584ECA2010FDAF7242AA2F8273D2EED"
+      },
+      {
+        "name": "v8_5_7.lib",
+        "bytes": 656875822,
+        "sha256": "8290108350D4A0CF08914C13D6D4B6D6C35ACB661D7192D4EEFC9E1FFB5575C7"
+      },
+      {
+        "name": "v8_5_7_1.lib",
+        "bytes": 528864990,
+        "sha256": "4180CF670124C4B7FDD9C4CB6A13AD645C3217A3158595BE133674810B07AD84"
+      },
+      {
+        "name": "skia.lib",
+        "bytes": 27330810,
+        "sha256": "A11F4C152D6B53CBFE81EEE921ACC0729F5ACD0186F42DFEF6F0C0686C1FC1AC"
+      }
+    ],
+    "processResultSha256": "28C232DFD4E16085E092E8E496DFEECDA732ABEA4B63F55E0E6CE2ABC0CDE4B5",
+    "ownedTerminal": {
+      "event": "terminal",
+      "reason": "completed",
+      "elapsedMs": 1134601,
+      "rootExited": true,
+      "rootExitCode": 0,
+      "activeBeforeCleanup": 0,
+      "terminatedOwnedJob": false,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "totalProcesses": 15434,
+      "limitTerminatedProcesses": 0,
+      "passed": true
+    },
+    "supervisorExitCode": 0,
+    "buildReleaseReady": false,
+    "wholeJobAttestation": null,
+    "compilerExecutionAttestation": null,
+    "toolchainQualified": false,
+    "hostProductExecuted": false,
+    "kernelRuntimeValidated": false,
+    "guiValidated": false,
+    "scope": "File/hash/PE and recorded natural process closure acceptance; not translation-unit/toolchain qualification or actual kernel/GUI execution."
+  },
+  "externalIntentGuiScope": "GUI22 real same-value CSS assignment, new epoch and observed no replay; no instantaneous setter target/velocity sample or all-source qualification",
+  "gui21": {
+    "status": "scoped-protocol-element-conservation-passed",
+    "kernelSha256": "F919E3BF6FAC50B8FBA03F0C184F737E4539A90B6936B73DAEFC68F054657BD7",
+    "diagnosticPluginSha256": "5E27AF26DEA9B98D3F17AD143DF716794C393166D62BE487168C8E33BD429E6E",
+    "hostLogSha256": "0E35CE2A06EF2D57EDB74E431AB8B2FC3939E9EC2224F0E649967C1BE5084CB3",
+    "pluginLogSha256": "0572EADAD17F02023F708FF45590FF586F42F09CA2E91611F951ED4E6B3DA6BE",
+    "analysisFile": "analysis-actual-21.json",
+    "analysisSha256": "DD2B15D6950F123669ED7CA8FD6FDAC6ABDECBC9BDC9779570642BE8F95CD487",
+    "reachableSupplementFile": "analysis-actual-21-reachable.json",
+    "reachableSupplementSha256": "B91ADA309F84BE6078A6EF5C4B5F0A2B9FA6E437A83CE6DD698DE728A5594D96",
+    "logsComplete": true,
+    "independentlyRecomputed": true,
+    "setupObservedReachableVisualY": 4130,
+    "setupValueIsTrueMaximum": false,
+    "setupSameTargetExceptEpoch": true,
+    "startVisualY": 0,
+    "nativeWheelCount": 8,
+    "acceptedWheelCount": 8,
+    "fallbackCount": 0,
+    "rawNativeDeltaY": -960,
+    "acceptedRequestedDeltaY": 800,
+    "nativeSpanMs": 646.6866,
+    "sameIdentityGenerationEpoch": true,
+    "scrollEpoch": 78,
+    "validObservationCount": 26,
+    "invalidObservationCount": 0,
+    "endpointVisualY": 799.9999990293004,
+    "absoluteError": 9.706996024760883e-07,
+    "tolerance": 1e-05,
+    "endpointStationarySamples": 15,
+    "endpointStationarySpanMs": 1749.3108,
+    "externalInputDuringPrimary": false,
+    "consumedScope": "Same-chain consumed change agrees in this run; do not compare consumed across epochs or canonical-coordinate origins.",
+    "separateHomeObservation": "Second 8-wheel segment is cancelled by Home; adjacent old-epoch visual 682.0869667452799 is followed by new epochs and zero. Not an uninterrupted conservation sample.",
+    "separateThumbObservation": {
+      "pressedMoves": 5,
+      "nativeTravelPixels": 13,
+      "nativeSpanMs": 80.6578,
+      "queueMaxMs": 0.8073,
+      "dispatchMaxMs": 0.1856,
+      "scope": "Input and coarse actual changes only, not frame cadence."
+    },
+    "returnAndCloseObserved": true,
+    "naturalProcessExitCode": 1,
+    "processExitMeaning": "Cancel/close diagnostic run, not a successful installation.",
+    "presentationFpsMeasured": false
+  },
+  "gui22": {
+    "status": "scoped-real-same-value-css-cancel-and-no-replay-observed",
+    "fixture": "Separate external DOM fixture; same element in Normal and Armed modes; not product source.",
+    "hostLogSha256": "49303E326E143C6F33368D4A85B29369C75B78AA675A0F15B1B63B8A7596D5AA",
+    "pluginLogSha256": "12C49D1075459816C01EB1D8542668145279A0F64E28251037E865FF0A5A6779",
+    "analysisFile": "analysis-actual-css-22.json",
+    "analysisSha256": "0A1F5D51E3B26823A1D796D7C4314848B82FDA6245E817E8A5C6D1B3790EBB6C",
+    "cancellationSupplementFile": "analysis-css22-cancellation-01.json",
+    "cancellationSupplementSha256": "F63CE137DA72BED152894169E33A8A6ABB45C3E110630E834579AA03934F2BC3",
+    "screenshotSha256": "72618D818BCBA63CDA999FF58DC87357D02C52C65269E89BE873440331132E0A",
+    "fixtureSourceSha256": "E0AFC44D8B202689BCB946F8AC257F793455EED35C04B809694BB90F9C8F4DDA",
+    "logsComplete": true,
+    "independentlyRecomputed": true,
+    "normal": {
+      "nativeWheelCount": 8,
+      "acceptedWheelCount": 8,
+      "requestedDeltaY": 800,
+      "epoch": 3,
+      "startVisualY": 0,
+      "endpointVisualY": 799.9999994464031
+    },
+    "armed": {
+      "nativeWheelCount": 8,
+      "acceptedWheelCount": 8,
+      "requestedDeltaY": 800,
+      "nativeSpanMs": 628.0206,
+      "beforeEpoch": 6,
+      "afterEpoch": 7,
+      "lastOldVisualY": 799.9540818365107,
+      "lastOldConsumedY": 799.9540818365109,
+      "newVisualY": 799,
+      "newConsumedY": 0,
+      "stationaryValidSamples": 110,
+      "stationaryStartToStartMs": 13626.626,
+      "lastWheelToNextNativeInputMs": 14146.3581
+    },
+    "domObservation": {
+      "firstScrollUtc": "2026-10-23T12:59:03.283Z",
+      "resetUtc": "2026-10-23T12:59:04.190Z",
+      "delayMs": 907,
+      "before": 799,
+      "assigned": 799,
+      "after": 799,
+      "integer": true,
+      "resetCount": 1
+    },
+    "clockMapping": "No synchronized UTC-to-QPC transform was recorded. DOM timestamps and QPC observations are reported separately. The one-shot setter is scheduled at least 900ms after the first positive scroll; that scroll cannot precede the measured first wheel, while this wheel segment spans 628.0206ms. This supports setter-after-last-wheel without inventing an exact QPC setter timestamp.",
+    "instantaneousPendingMeasured": false,
+    "limits": [
+      "100ms sampling does not directly measure target or velocity at the setter instant.",
+      "The adjacent old-epoch sample is 0.0459181634893px below 800; the source and input history support in-flight cancellation, but instantaneous pending state was not captured.",
+      "No performance, presentation FPS, arbitrary DOM sources or product release verdict."
+    ],
+    "crossEpochConsumedSubtracted": false,
+    "presentationFpsMeasured": false
+  }
+}

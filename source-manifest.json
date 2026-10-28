@@ -67,8 +67,8 @@
     {
       "path": "CHANGELOG.md",
       "normalization": "lf",
-      "bytes": 38433,
-      "sha256": "7ec641be5aba0e05dfc72020e058e1e4ca006fcc7b4cb3eb59b3bfe402f7f96c"
+      "bytes": 38977,
+      "sha256": "d34fd64935b80c8d0122c3f69b72b1587ad2011c7ce0797cc51e7a9798f2fd77"
     },
     {
       "path": "CMakeLists.txt",
@@ -2735,6 +2735,12 @@
       "sha256": "54c43c2e550507a999b9e2daf96b5cff4159b959c9ca890e03155c601d594a9b"
     },
     {
+      "path": "docs/adr/0120-preserve-compositor-scroll-acknowledgements.md",
+      "normalization": "lf",
+      "bytes": 7553,
+      "sha256": "9e60c7295e7caab203cdc78ca4f1e4e53018b99b473eca60fdd9361052df2141"
+    },
+    {
       "path": "docs/adr/0124-web-targets-and-size-analysis.md",
       "normalization": "lf",
       "bytes": 3949,
@@ -2761,8 +2767,8 @@
     {
       "path": "docs/adr/README.md",
       "normalization": "lf",
-      "bytes": 8469,
-      "sha256": "9b6c41f7e5e564cd9419946c6fe12ab1739a84cf00c8fe5df9565d512b7c9a2a"
+      "bytes": 8744,
+      "sha256": "125741d6c0bfbf93b400f3258d4134bbe79b1825bfe675d785c66a0f8b4427b7"
     },
     {
       "path": "docs/adr/llvm-validation-profile.draft.md",
@@ -2833,8 +2839,8 @@
     {
       "path": "docs/known-issues.md",
       "normalization": "lf",
-      "bytes": 26697,
-      "sha256": "663194d07bace9ac77bc3ed4d28817301bca84d96fa88c5b9151acf19ec8c7d7"
+      "bytes": 27474,
+      "sha256": "fb263672513f0695b02aed47c9ff652b882d611dec209b27a320d6e5d1df15f9"
     },
     {
       "path": "docs/llvm-toolchain-entry.md",
@@ -2853,6 +2859,12 @@
       "normalization": "lf",
       "bytes": 13964,
       "sha256": "8faf805abc497806ebb49f19f275d03cb3ff9afec0aabb4af12008a178126b6d"
+    },
+    {
+      "path": "docs/maintenance/scroll-ack-feedback-20261023.md",
+      "normalization": "lf",
+      "bytes": 13030,
+      "sha256": "4a69f1e60945ac95a0c28b84fe070bda0ee97447aeb0d0fb29f06bcfb9eba99d"
     },
     {
       "path": "docs/maintenance/scroll-coverage-20261023.md",
@@ -2965,14 +2977,20 @@
     {
       "path": "docs/testing.md",
       "normalization": "lf",
-      "bytes": 29440,
-      "sha256": "3d28ed26e6d49216748fd80fe8397835f890aecd95ca8ff930fef367b29f7650"
+      "bytes": 30356,
+      "sha256": "de055913cd7d4f658cf5efdf8a95db94d52fe2cd36e9fabf5def74db0f5e9f53"
     },
     {
       "path": "docs/troubleshooting.md",
       "normalization": "lf",
       "bytes": 1158,
       "sha256": "26e361d5da7b1b484d2f2a61674db5898b30ea82a706769dda5a9d19ec3f65e5"
+    },
+    {
+      "path": "docs/verification/scroll-ack-feedback-20261023.json",
+      "normalization": "lf",
+      "bytes": 31281,
+      "sha256": "a3aa16d7ee83549fce8595dd09eaf0ad61034458f11756cc725f96a5501917bb"
     },
     {
       "path": "docs/verification/scroll-coverage-20261023.json",
@@ -5637,6 +5655,36 @@
       "normalization": "lf",
       "bytes": 25702,
       "sha256": "8032dede0a34e06382a3b340deb51e73db782d9c86f9bc2589f70fa3b119bceb"
+    },
+    {
+      "path": "tests/native/scroll_ack_feedback/CMakeLists.txt",
+      "normalization": "lf",
+      "bytes": 1895,
+      "sha256": "f07c27de18be067bf732cb266e6c34e24fcc398b3c75b5a7c15bc44dedd2e813"
+    },
+    {
+      "path": "tests/native/scroll_ack_feedback/README.md",
+      "normalization": "lf",
+      "bytes": 4220,
+      "sha256": "7787923fba6e5ab4819873dccea36f0df442b68f74f05f9e05a9cbcdb253a1c0"
+    },
+    {
+      "path": "tests/native/scroll_ack_feedback/ack_feedback_tests.cpp",
+      "normalization": "lf",
+      "bytes": 18797,
+      "sha256": "601dff344a747ef3fcee556d94577eced87ea8753440a314e7950a4b0d94aa98"
+    },
+    {
+      "path": "tests/native/scroll_ack_feedback/baseline_ack_shim.h",
+      "normalization": "lf",
+      "bytes": 2059,
+      "sha256": "321d79af784797074986618f780a02b7d2934134bbb8589c47593c2d62f57bd9"
+    },
+    {
+      "path": "tests/native/scroll_ack_feedback/extract_baseline_ack.py",
+      "normalization": "lf",
+      "bytes": 1916,
+      "sha256": "f98b15192c8faa0da234a56fc0249c750df757cf11da6d439e8626025b89303a"
     },
     {
       "path": "tests/native/scroll_coverage/CMakeLists.txt",
@@ -10891,14 +10939,14 @@
     {
       "path": "third_party/sources/miniblink/cc/blink/WebLayerImpl.cpp",
       "normalization": "lf",
-      "bytes": 44025,
-      "sha256": "2c208e770acb769eac7952926f148d7b1e714a44ab32d707f42df811ac1af9b4"
+      "bytes": 44683,
+      "sha256": "03825a65f2e1473716866ca0f9086e7e132ed024d196002249ce7aab97bc6f92"
     },
     {
       "path": "third_party/sources/miniblink/cc/blink/WebLayerImpl.h",
       "normalization": "lf",
-      "bytes": 12753,
-      "sha256": "62f019beacdc35472fdd78a2f876a7d5c327f3ba1f58d722c1859f9c0f7a42e8"
+      "bytes": 13492,
+      "sha256": "63a73a91608a9a57caafef3e929cf717985bfd0f74833c95f8ec53658c64d5bd"
     },
     {
       "path": "third_party/sources/miniblink/cc/blink/WebLayerImplClient.h",
@@ -10937,16 +10985,22 @@
       "sha256": "5a0ebf2dc4779ac18e114f0b870781fed1ac4979b2c907a132fba0f0265db495"
     },
     {
+      "path": "third_party/sources/miniblink/cc/input/CompositorScrollAcknowledgement.h",
+      "normalization": "lf",
+      "bytes": 3843,
+      "sha256": "5cee1df5eecd75754614e06db19dbab7c88de0754d645697a27a8605339460c7"
+    },
+    {
       "path": "third_party/sources/miniblink/cc/input/ScrollController.cpp",
       "normalization": "lf",
-      "bytes": 24670,
-      "sha256": "3c0d023013007d3c8269f436c098552001c216d2ac7103f218e4ac8cb60bdef8"
+      "bytes": 25016,
+      "sha256": "63548edc58dd8ef1b92c42ef82fef17041a7c709d199ec3f100ae774b88dcfe6"
     },
     {
       "path": "third_party/sources/miniblink/cc/input/ScrollController.h",
       "normalization": "lf",
-      "bytes": 6827,
-      "sha256": "f526fdc590b77fec6241296f29c4d1396d672d2e9c75eaa072d36ee73a86cd77"
+      "bytes": 7026,
+      "sha256": "a065a7436dbc2d5dfe10fdca636539e2c7fc1f6af3740bedcbade38553d406d4"
     },
     {
       "path": "third_party/sources/miniblink/cc/layers/CompositingLayer.cpp",
@@ -11173,8 +11227,8 @@
     {
       "path": "third_party/sources/miniblink/cc/trees/LayerTreeHost.cpp",
       "normalization": "lf",
-      "bytes": 115580,
-      "sha256": "266e5da6e3bf5530168f3be090ddbbb80674859f4894be15329670f3c83c2006"
+      "bytes": 115248,
+      "sha256": "eb863ad891ab1f6503206813f005e079fff5e6ebc3feb6ddd7bdd3ef09314912"
     },
     {
       "path": "third_party/sources/miniblink/cc/trees/LayerTreeHost.h",
@@ -55135,8 +55189,8 @@
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/core/frame/FrameView.cpp",
       "normalization": "lf",
-      "bytes": 143614,
-      "sha256": "dc9fc85d8b37d8549d233f8b7c0fa9d24b2b8a262d4435f402e2159b188d1b10"
+      "bytes": 143670,
+      "sha256": "c292520acaa985d909b57a11e581bde783184ddf4537f9f85c922343a2480c02"
     },
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/core/frame/FrameView.h",
@@ -64087,8 +64141,8 @@
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/core/paint/DeprecatedPaintLayerScrollableArea.cpp",
       "normalization": "lf",
-      "bytes": 58644,
-      "sha256": "9eea316a269de4948289cd5fe7d513e24269bceb54e11e2b738f9880bb95b815"
+      "bytes": 58870,
+      "sha256": "45bd1af8f87fe1e7bf68276458af69b8ffb0929ae9650b0828809e846b5d1c9f"
     },
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/core/paint/DeprecatedPaintLayerScrollableArea.h",
@@ -89545,14 +89599,14 @@
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/platform/graphics/GraphicsLayer.cpp",
       "normalization": "lf",
-      "bytes": 38871,
-      "sha256": "71fd9c37c5ebbb05d1e2a7c15b9962e13a08b9f4c3c1b648433c37360966326c"
+      "bytes": 39938,
+      "sha256": "675f64759c560701415f4d3303bed006cb8cee8c1181049e176d9ea432b4ed6f"
     },
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/platform/graphics/GraphicsLayer.h",
       "normalization": "lf",
-      "bytes": 14682,
-      "sha256": "e05f6d5bacdacbacfc2d619dc1e7dc19d0ccc3c2332de82632669f5114cfa0c1"
+      "bytes": 14792,
+      "sha256": "4c16531cc82ec8aeb2743f013bcf091a752f70f054b84822c95c66fe69a16ecf"
     },
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/platform/graphics/GraphicsLayerClient.h",
@@ -91765,14 +91819,14 @@
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/platform/scroll/ScrollableArea.cpp",
       "normalization": "lf",
-      "bytes": 21422,
-      "sha256": "7d5a64cb4f2e1a6d8cf9b565de1adaf913e23edccfd74b5b90afaed02ff68c56"
+      "bytes": 21970,
+      "sha256": "2f23cf6554092941d55a11a158cc9a899353d46ad07f4639a1c7150c61afb9fd"
     },
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/platform/scroll/ScrollableArea.h",
       "normalization": "lf",
-      "bytes": 17431,
-      "sha256": "d7c12a04ea1954d94889184ab7947a6a65b7bef1e1452930403f143af0efdefd"
+      "bytes": 17480,
+      "sha256": "6567d038562bd4d49e4ee654ea5d6f2a0086a30b7f5372d70c806dc9b897c4ef"
     },
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/platform/scroll/ScrollableAreaTest.cpp",
@@ -103657,8 +103711,8 @@
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/public/platform/WebLayer.h",
       "normalization": "lf",
-      "bytes": 10257,
-      "sha256": "4e1eb7fdc4250fc52c0efa14bdfafe7fc0b7ed0f8a259edf662f80589b2228c1"
+      "bytes": 10466,
+      "sha256": "fd64dccf07662df46d1437a90875123692c02177cd5f5c3cf62dae336915fc09"
     },
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/public/platform/WebLayerClient.h",
@@ -103675,8 +103729,8 @@
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/public/platform/WebLayerScrollClient.h",
       "normalization": "lf",
-      "bytes": 1725,
-      "sha256": "968c4a7e73778d00ddaa75b967f5c5852563cdcf8f5ca796bb8788eaafccec08"
+      "bytes": 2013,
+      "sha256": "c725eb249a9ece0f3888c41065f1f980743364c962cdbbf822f973427daf151c"
     },
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/public/platform/WebLayerTreeView.h",
