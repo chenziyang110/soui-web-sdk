@@ -33,6 +33,8 @@ node tools/Collect-Verification.cjs --record-unverified --evidence-reference ver
 
 源码维护者先将审查过的源码加入 Git 暂存区，再执行 `node tools/internal/source-archive.cjs create` 和 `node tools/internal/source-archive.cjs verify`。除清单自身外存在未暂存修改时生成器会失败。v2 清单从 Git index blob 的原始字节生成；验证先比较原字节，再允许文本 checkout 的 CRLF 转换，保留 Git 中原有的特殊混合换行。二进制不转换；上游导入清单中的历史缓存不决定发布内容。
 
+历史验收目录 `verification/**/raw/old-generator/` 中的 `package.json` 和 `package-lock.json` 是当次输入原件，由同批 `raw-manifest.json` 固定字节数与 SHA-256。它们仅用于取证和复现历史记录，不在这些目录启动 devserver，也不升级其历史依赖或改写 raw manifest。活动模板的依赖升级在 `templates/` 中独立维护。执行 `node --test tests/sdk/archived-generator-inputs.test.cjs` 可核对已归档生成器的两份依赖输入与原始固定身份。
+
 使用 `powershell.exe -File tools/Package.ps1` 生成源码归档及 SHA-256。它先校验当前清单，将固定内容复制到新的 `out/package/source-*`，再次校验再压缩；不会隐式刷新已失效清单。解压后无须 Git 也可执行 `node tools/internal/source-archive.cjs verify`。源码改变后回到维护者 checkout 更新清单，不能在解压目录中无依据重建发布集合。编译工具和 npm 包需要另行准备。
 
 通过 Release 启动测试后，运行 `powershell.exe -File tools/Package-Applications.ps1 -Architecture x64` 分别生成 `SouiStarter-<版本>-windows-x64.zip` 和 `SouiWorkbench-<版本>-windows-x64.zip`；x86 同理。它检查源码、构建 ID、完整运行载荷与所有启动场景，再从校验后的独立暂存目录打包。每个包伴随 SHA-256 和 `.zip.json` 大小报告，包含逐文件散列、原生程序/内核/其他运行库/Web 分类大小和压缩参数。不执行代码签名。
