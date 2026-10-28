@@ -76,3 +76,9 @@
 - [ADR-0122：输入到可见反馈的实施契约](0122-input-to-visible-feedback.md)（代码交付与性能资格分开）
 - [ADR-0123：有界输入恢复与 owner 调度](0123-input-admission-and-scheduler.md)（输入源码候选，调度包持续集成）
 - [ADR-0125：有界输入、任务与可见帧关联](0125-input-frame-trace.md)（源码候选；编译与执行未运行）
+- [ADR-0118：MiniBlink 关闭的分阶段继续状态](0118-miniblink-nonblocking-unmount.md)
+- [ADR-0119：显式离线 Web 源码诊断构建档](0119-offline-web-build-profiles.md)
+- [ADR-0124：Web 构建目标、资源清单与体积分析](0124-web-targets-and-size-analysis.md)
+- [ADR-0125：显式运行时依赖与包内内容去重](0125-runtime-manifests-and-bundles.md)
+- [ADR-0126：可选压缩档位与实测开销](0126-optional-compression-profiles.md)
+- [ADR-0127：可选自动后端宿主](0127-automatic-renderer-host.md)

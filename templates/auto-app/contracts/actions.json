@@ -1,0 +1,18 @@
+{
+  "schema": "soui.action-source/1",
+  "cppNamespace": "app_actions",
+  "actions": [{
+    "method": "app.greet", "capability": "app.greet", "cppName": "Greet",
+    "action": {
+      "protocol": "soui.action/1", "title": "问候", "description": "由 C++ 生成问候消息。",
+      "inputSchema": {
+        "type": "object", "properties": {"name": {"type": "string", "minLength": 1, "maxLength": 32}},
+        "required": ["name"], "additionalProperties": false
+      },
+      "outputSchema": {
+        "type": "object", "properties": {"message": {"type": "string", "maxLength": 200}},
+        "required": ["message"], "additionalProperties": false
+      }
+    }
+  }]
+}
