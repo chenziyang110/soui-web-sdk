@@ -1,5 +1,7 @@
 # 交付与发布
 
+当前开发版本 `0.5.1-preview.1` 尚未发布。维护者于 2026-10-16 在 0.5.0 交付后选择首方 MIT 许可，并要求恢复剩余 Issue 的全部关闭条件验证，包括真实 8 小时长测。下文 0.5.0 限定范围记录保留其历史含义，不能用作后续开发版本跳过验收的依据。许可证交付决定见 [ADR-0118](adr/0118-first-party-mit-delivery.md)。
+
 0.5.0 按下面限定范围进行预发布交付，实际结果见[发布说明](releases/0.5.0.md)。完整生产验收未关闭，机器可读结果保持 `releaseReady: false`。
 
 ## 0.5.0 本次发布范围
@@ -30,6 +32,8 @@ node tools/Collect-Verification.cjs --record-unverified --evidence-reference ver
 `verification/sbom-native.cdx.json` 独立列出实际复算散列的 136 个原生交付文件及两架构共 22 个内核静态链接输入。链接输入仅表示该 archive 参与真实链接，不表示每个成员都进入最终 DLL；这些构建输入也不全是运行时分发文件。来源分别绑定 `third_party/manifests/dependencies.json`、`kernel-build-050.json` 和当前实际构建报告。清单不含首方编译产物和完整传递源码组成，composition 明确为 `incomplete`，未知叶依赖没有伪装成空集合。`sbom-native.validation.json` 保存实际官方 1.5 schema 校验结果及 schema 散列。版本或载荷变动后须重新生成、复算文件散列并校验。所有清单都不等同于漏洞已清零或授权审核完成；完整源码另由 `source-manifest.json` 及各来源记录约束。
 
 源码维护者先将审查过的源码加入 Git 暂存区，再执行 `node tools/internal/source-archive.cjs create` 和 `node tools/internal/source-archive.cjs verify`。除清单自身外存在未暂存修改时生成器会失败。v2 清单从 Git index blob 的原始字节生成；验证先比较原字节，再允许文本 checkout 的 CRLF 转换，保留 Git 中原有的特殊混合换行。二进制不转换；上游导入清单中的历史缓存不决定发布内容。
+
+历史验收目录 `verification/**/raw/old-generator/` 中的 `package.json` 和 `package-lock.json` 是当次输入原件，由同批 `raw-manifest.json` 固定字节数与 SHA-256。它们仅用于取证和复现历史记录，不在这些目录启动 devserver，也不升级其历史依赖或改写 raw manifest。活动模板的依赖升级在 `templates/` 中独立维护。执行 `node --test tests/sdk/archived-generator-inputs.test.cjs` 可核对已归档生成器的两份依赖输入与原始固定身份。
 
 使用 `powershell.exe -File tools/Package.ps1` 生成源码归档及 SHA-256。它先校验当前清单，将固定内容复制到新的 `out/package/source-*`，再次校验再压缩；不会隐式刷新已失效清单。解压后无须 Git 也可执行 `node tools/internal/source-archive.cjs verify`。源码改变后回到维护者 checkout 更新清单，不能在解压目录中无依据重建发布集合。编译工具和 npm 包需要另行准备。
 
