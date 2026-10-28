@@ -126,12 +126,16 @@ const maxJsonBytes = 64 * 1024 * 1024;
 function readJson(file) {
   const fd = fs.openSync(file, 'r');
   try {
-    const stat = fs.fstatSync(fd);
+    const stat = fs.fstatSync(fd, {bigint: true});
     if (!stat.isFile() || stat.size > maxJsonBytes) throw new Error('Size report JSON exceeds the input parsing limit or is not a file');
-    const data = Buffer.alloc(stat.size + 1);
+    const unchanged = value => value.isFile() &&
+      ['dev', 'ino', 'mode', 'nlink', 'size', 'mtimeNs', 'ctimeNs'].every(key => value[key] === stat[key]);
+    if (!unchanged(fs.statSync(file, {bigint: true}))) throw new Error('Size report JSON changed during read');
+    const size = Number(stat.size), data = Buffer.alloc(size + 1);
     let count = 0, read;
     while (count < data.length && (read = fs.readSync(fd, data, count, data.length - count, null)) > 0) count += read;
-    if (count > stat.size) throw new Error('Size report JSON changed during read');
+    if (count !== size || !unchanged(fs.fstatSync(fd, {bigint: true})) ||
+        !unchanged(fs.statSync(file, {bigint: true}))) throw new Error('Size report JSON changed during read');
     return JSON.parse(data.subarray(0, count).toString('utf8').replace(/^\uFEFF/, ''));
   } finally { fs.closeSync(fd); }
 }

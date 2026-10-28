@@ -122,6 +122,57 @@ test('CLI emits a reviewable analysis and returns nonzero for budget failure and
   for (const args of [[], ['--report'], ['--unknown', input], ['--report', input, '--report', input]]) assert.equal(run(args).status, 1);
 });
 
+for (const mutation of ['truncate', 'rewrite', 'replace']) test(`CLI rejects valid JSON changed during ${mutation}`, t => {
+  const temporary = fs.realpathSync(os.tmpdir());
+  const directory = fs.mkdtempSync(path.join(temporary, 'soui-size-report-race-'));
+  t.after(() => {
+    assert.equal(path.dirname(fs.realpathSync(directory)), temporary);
+    fs.rmSync(directory, {recursive: true, force: true});
+  });
+  const input = path.join(directory, 'report.json'), marker = path.join(directory, 'mutation.txt');
+  const content = JSON.stringify(report([file('app.exe', 1)]));
+  fs.writeFileSync(input, content + (mutation === 'truncate' ? ' '.repeat(128) : ''));
+  const hook = path.join(directory, 'race.cjs');
+  // Intercept only this child's report read. Every mutation changes a real file
+  // after its initial fstat; all resulting JSON remains valid and bounded.
+  fs.writeFileSync(hook, `
+    const fs = require('node:fs'), path = require('node:path');
+    const input = ${JSON.stringify(input)}, marker = ${JSON.stringify(marker)};
+    const mutation = ${JSON.stringify(mutation)}, original = fs.readFileSync(input, 'utf8');
+    const changed = original.replaceAll('"bytes":1', '"bytes":2');
+    if (changed.length !== original.length) throw Error('Race fixture length changed');
+    const open = fs.openSync, read = fs.readSync;
+    let inputFd, applied = false;
+    fs.openSync = function (file, ...args) {
+      const fd = open.call(this, file, ...args);
+      if (typeof file === 'string' && path.resolve(file) === input) inputFd = fd;
+      return fd;
+    };
+    fs.readSync = function (fd, ...args) {
+      if (fd === inputFd && !applied) {
+        applied = true;
+        if (mutation === 'truncate') fs.truncateSync(input, original.trimEnd().length);
+        else if (mutation === 'replace') {
+          fs.renameSync(input, input + '.old');
+          fs.writeFileSync(input, changed);
+        } else {
+          const before = fs.statSync(input);
+          fs.writeFileSync(input, changed);
+          fs.utimesSync(input, before.atime, new Date(before.mtimeMs + 2000));
+        }
+        fs.writeFileSync(marker, 'applied');
+      }
+      return read.call(this, fd, ...args);
+    };
+  `);
+  const result = spawnSync(process.execPath, ['--require', hook, tool, '--report', input],
+    {encoding: 'utf8', windowsHide: true});
+  assert.equal(fs.readFileSync(marker, 'utf8'), 'applied');
+  assert.equal(result.status, 1, result.stdout + result.stderr);
+  assert.equal(result.stdout, '');
+  assert.match(result.stderr, /JSON changed during read/);
+});
+
 test('PowerShell packaging preserves archive identity and rejects a failed budget before archiving', {
   skip: process.platform !== 'win32' || !fs.existsSync(path.join(process.env.ProgramFiles || '', '7-Zip/7z.exe'))
 }, t => {
