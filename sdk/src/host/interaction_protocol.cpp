@@ -39,10 +39,12 @@ route_result interaction_router::route(const input_packet& packet,
   // behind it in the engine FIFO, so taking a second barrier would let a newer
   // scene split one physical click into two different hit-test states.
   if (packet.kind == input_kind::pointer_down) {
-    scroll_sample captured = visual_sample_;
-    if (independent.capture_scroll_barrier(packet, captured))
+    engine_packet.barrier = {};
+    scroll_sample captured{};
+    if (independent.capture_scroll_barrier(packet, captured)) {
       visual_sample_ = captured;
-    engine_packet.barrier = captured;
+      engine_packet.barrier = captured;
+    }
   }
   if (!engine.post_input(engine_packet))
     return {route_disposition::rejected_sink, packet.sequence, visual_sample_};

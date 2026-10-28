@@ -1,5 +1,9 @@
 # 测试与验收
 
+2026-10-23 的 x86 Release 实际来宾运行结果见 [输入路由器回归记录](../verification/production-validation/interaction-router-2026-10-23/README.md)。
+
+`sdk.native.interaction-router` 链接生产 `Soui::Sdk`，使用可控输入接收端覆盖十二项滚动屏障回归：滚动后捕获失败（输出未改写或部分改写）、前次屏障残留、成功捕获的完整字段、缓存不被失败污染、抬起提交顺序且不再次捕获屏障、调用方旧屏障和过期代际。构建目标为 `cmake --build out/x86 --config Release --target soui_interaction_router_tests`；在允许执行测试的环境中运行 `ctest --test-dir out/x86 -C Release -R '^sdk\.native\.interaction-router$' --output-on-failure`，x64 使用对应目录。测试不启动窗口或内核，不替代真实滚轮、滚动条、标题拖动、输入延迟或发布验收。
+
 [当前发布修复记录](../verification/production-validation/0.5-release-fixes-2026-10-16/README.md)保存两架构 UIA 专项、实际读屏文本与表单操作、有限资源校准及依赖审计；最终公开构建和交付物另行验证。
 
 可选 UIA 的 `owner-sync`、`owner-focus`、`uia-mutations` 和 `uia-focus` 覆盖窗口线程及真实 Windows UIAutomationCore 同步操作。各用例按 CTest 注册在独立进程运行；前序 UIA 客户端可能建立进程 MTA，不能把同进程 `all` 的 COM 初始化状态当作独立用例。填写与选择分别计数，Windows 可能另外请求焦点；每次业务仍须经过授权。
