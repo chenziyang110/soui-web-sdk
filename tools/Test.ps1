@@ -143,8 +143,14 @@ if(-not $NativeOnly){
     & node --test (Join-Path $root 'tests/native/miniblink_header_abi.test.cjs')
     if($LASTEXITCODE -ne 0){throw 'Private Miniblink source ABI comparison failed'}
   }
-  & node --test (Join-Path $root 'tests/sdk/modern-evidence.test.cjs') (Join-Path $root 'tests/sdk/application-package.test.cjs') (Join-Path $root 'tests/sdk/console-json.test.cjs')
+  & node --test (Join-Path $root 'tests/sdk/modern-evidence.test.cjs') (Join-Path $root 'tests/sdk/application-package.test.cjs') (Join-Path $root 'tests/sdk/console-json.test.cjs') (Join-Path $root 'tests/sdk/auto-smoke.test.cjs') (Join-Path $root 'tests/sdk/auto-packaging.test.cjs')
   if($LASTEXITCODE -ne 0){throw 'Modern delivery evidence tests failed'}
+  & node --test (Join-Path $root 'tests/sdk/web-targets.test.cjs') (Join-Path $root 'tests/sdk/web-targets-integration.test.cjs') (Join-Path $root 'tests/sdk/size-report.test.cjs')
+  if($LASTEXITCODE -ne 0){throw 'Web target isolation, resource manifests or size reporting tests failed'}
+  & node --test (Join-Path $root 'tests/sdk/runtime-deployment.test.cjs') (Join-Path $root 'tests/sdk/runtime-bundle.test.cjs') (Join-Path $root 'tests/sdk/runtime-packaging-integration.test.cjs') (Join-Path $root 'tests/sdk/runtime-build-evidence.test.cjs')
+  if($LASTEXITCODE -ne 0){throw 'Runtime dependency manifests, bundle restoration or packaging integration failed'}
+  & node --test (Join-Path $root 'tests/sdk/compression-profiles.test.cjs') (Join-Path $root 'tests/sdk/compression-command.test.cjs') (Join-Path $root 'tests/sdk/compression-measurement.test.cjs')
+  if($LASTEXITCODE -ne 0){throw 'Compression profiles, compatible package commands or measurement contracts failed'}
   $acceptanceInstall=Join-Path $output ('acceptance-toolchain-'+[Guid]::NewGuid().ToString('N'))
   [IO.Directory]::CreateDirectory($acceptanceInstall) | Out-Null
   & npm.cmd --prefix (Join-Path $root 'tests/acceptance') ci --no-audit --no-fund *> (Join-Path $acceptanceInstall 'install.log')

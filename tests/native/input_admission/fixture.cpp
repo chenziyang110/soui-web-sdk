@@ -109,13 +109,19 @@ int main() {
     input_ordinal_cases::run(engine);
     input_wake_cases::run(engine);
     applied_identity_cases::run(engine);
-    trace::event context; context.input_first = context.input_last = 123; context.view_generation = 1;
+    trace::event context; context.input_first = context.input_last = 123;
+    context.view_id = context.view_generation = context.document_generation = context.geometry_generation = 1;
     std::atomic<bool> inherited{false};
     {
       trace::context_scope scope(context);
+      trace::event installed;
+      require(trace::current_context(installed) && installed.view_id == 1 && installed.document_generation == 1,
+              "valid input fixture context was not installed");
       require(engine.post([&] {
         trace::event observed;
-        inherited = trace::current_context(observed) && observed.task_id != 0 && observed.input_first == 123;
+        inherited = trace::current_context(observed) && observed.task_id != 0
+            && observed.input_first == 123 && observed.input_last == 123 && observed.view_id == 1
+            && observed.view_generation == 1 && observed.document_generation == 1 && observed.geometry_generation == 1;
       }), "causal task post");
       require(engine.drain_for(std::chrono::seconds(5)) && inherited, "input context did not survive actual FIFO");
     }

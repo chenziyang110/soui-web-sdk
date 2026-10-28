@@ -109,10 +109,11 @@ void shutdown_deadline_propagates() {
   unsigned attempts = 0; bool deadline_failed = false;
   // Controlled Until models the unchanged caller deadline; no sleep/Native.
   constexpr unsigned original_capture_timeout_ms = 20000;
+  static_assert(original_capture_timeout_ms == 20000);
   try {
     (void)soui::acceptance::poll_runtime_shutdown(
         [](auto ready) { require(!ready(), "permanent pending completed");
-          static_assert(original_capture_timeout_ms == 20000); throw std::runtime_error("original deadline"); },
+          throw std::runtime_error("original deadline"); },
         [&] { ++attempts; return soui::sdk::host_result{false, "E_RUNTIME_SHUTDOWN_PENDING", "pending"}; });
   } catch (const std::runtime_error& error) { deadline_failed = std::string(error.what()) == "original deadline"; }
   require(deadline_failed && attempts == 1, "deadline was replaced with success or a wider retry");

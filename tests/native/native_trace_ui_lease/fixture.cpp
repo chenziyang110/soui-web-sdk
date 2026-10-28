@@ -11,7 +11,11 @@
 namespace fixture {
 std::atomic<unsigned> pins_a{0}, pins_b{0}, retains_a{0}, releases_a{0}, retains_b{0}, releases_b{0};
 bool fail_pin = false, fail_retain = false;
-void __cdecl getter_a() {} void __cdecl getter_alias_a() {} void __cdecl getter_b() {}
+// Distinct observable bodies keep these fake addresses distinct under Release ICF.
+volatile unsigned getter_identity = 0;
+void __cdecl getter_a() { getter_identity = 1; }
+void __cdecl getter_alias_a() { getter_identity = 2; }
+void __cdecl getter_b() { getter_identity = 3; }
 int __cdecl retain_a() { if (fail_retain) return 2; ++retains_a; return 0; }
 int __cdecl retain_b() { ++retains_b; return 0; }
 void __cdecl release_a() { ++releases_a; }
