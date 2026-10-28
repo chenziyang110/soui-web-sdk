@@ -408,3 +408,8 @@ third_party/sources/miniblink/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-
 
 # Preserve the externally pinned Chromium override's inherited end spaces.
 sdk/resources/devtools/miniblink/overrides/front_end/sdk/InspectorBackend.js whitespace=-blank-at-eol
+sdk/resources/devtools/miniblink/baseline/** -text -eol
+sdk/resources/devtools/miniblink/baseline-manifest.json -text -eol
+
+# PLY's pinned upstream README uses a seven-equals heading underline.
+third_party/sources/miniblink/third_party/ply/README conflict-marker-size=32
