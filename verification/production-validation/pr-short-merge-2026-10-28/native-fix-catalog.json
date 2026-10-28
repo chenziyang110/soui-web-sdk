@@ -1,0 +1,166 @@
+{
+  "schema": "soui.pr-native-short-source-repairs/1",
+  "originalHead": "aa30a365f65435e67d9d00b86a9c02221fd437c7",
+  "root": "C:/pmnat",
+  "createdUtc": "2026-10-28T12:00:59.494Z",
+  "groups": [
+    {
+      "id": "mailbox-capture",
+      "originPr": 117,
+      "patch": "native-mailbox-capture-fix.patch",
+      "files": [
+        "tests/native/input_admission/ordinal_cases.h"
+      ],
+      "reason": "Explicitly value-capture maximum for the MSVC C3493 fixture compile failure.",
+      "patchPin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-mailbox-capture-fix.patch",
+        "bytes": 846,
+        "sha256": "6a127d8caa65dcf4133a5e329e78a9bd0ce889b9087a45a35b8211add6d6ab29"
+      },
+      "filePins": [
+        {
+          "path": "tests/native/input_admission/ordinal_cases.h",
+          "original": {
+            "bytes": 9985,
+            "sha256": "231a83cef8e8257bd413391616003a4b89e4bc860be3f9a58fa44d3ce5f4fe37"
+          },
+          "repaired": {
+            "bytes": 9992,
+            "sha256": "fd3c15a0024196a718700a8d14545de9335fd3130d2c80b2b6fd22d4b286fed3"
+          }
+        }
+      ]
+    },
+    {
+      "id": "mailbox-context",
+      "originPr": 117,
+      "patch": "native-mailbox-context-fix.patch",
+      "files": [
+        "tests/native/input_admission/fixture.cpp"
+      ],
+      "reason": "Supply the required fixed view/document identity; verify installation and complete FIFO propagation without changing trace validation.",
+      "patchPin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-mailbox-context-fix.patch",
+        "bytes": 1599,
+        "sha256": "d4b725683bc624d49df24231a19b730199ec0702a637e324f5bacd84c42468b7"
+      },
+      "filePins": [
+        {
+          "path": "tests/native/input_admission/fixture.cpp",
+          "original": {
+            "bytes": 8790,
+            "sha256": "e765268c397e9415ce19d9e1502914ae5702368b451398a2d9a7c9f3bb670008"
+          },
+          "repaired": {
+            "bytes": 9265,
+            "sha256": "fb45ceab2109a733586786808e39d78c83199fceabbd500fe5f8d16064f78ebd"
+          }
+        }
+      ]
+    },
+    {
+      "id": "lease-getter-icf",
+      "originPr": 121,
+      "patch": "native-lease-getter-icf-fix.patch",
+      "files": [
+        "tests/native/native_trace_ui_lease/fixture.cpp"
+      ],
+      "reason": "Distinct observable fake getter bodies prevent Release identical-COMDAT folding without changing lease assertions or SDK cache.",
+      "patchPin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-lease-getter-icf-fix.patch",
+        "bytes": 977,
+        "sha256": "e5d3ab452177b309d1a67cb2c3e113b34cd1a9570195d58c3646f4b6efc18dc7"
+      },
+      "filePins": [
+        {
+          "path": "tests/native/native_trace_ui_lease/fixture.cpp",
+          "original": {
+            "bytes": 5836,
+            "sha256": "cb674893d82256f3cc6539d6f4c129974932ea633028668a6d913e49c29cdcc8"
+          },
+          "repaired": {
+            "bytes": 6025,
+            "sha256": "b36d1e15131e098c7b39127ae1c4add8c03110e36bc93ffff6bcebeb3a2df752"
+          }
+        }
+      ]
+    },
+    {
+      "id": "llvm-recipe-case",
+      "originPr": 121,
+      "patch": "native-llvm-recipe-casefix.patch",
+      "files": [
+        "tests/sdk/llvm-generated-test-dependencies.Tests.ps1"
+      ],
+      "reason": "Normalize both path suffix operands before the same Ordinal equality; all source-byte and writer admission assertions remain.",
+      "patchPin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-llvm-recipe-casefix.patch",
+        "bytes": 1201,
+        "sha256": "d9f2ec38351e318b6b08fd957af5956c25bc2e36e76254d3a846ea4389bfd998"
+      },
+      "filePins": [
+        {
+          "path": "tests/sdk/llvm-generated-test-dependencies.Tests.ps1",
+          "original": {
+            "bytes": 27684,
+            "sha256": "19775949b856e8c8eb9b9dbbd2cb991c577b79aaabc20f91525975cb7b4f62c5"
+          },
+          "repaired": {
+            "bytes": 27865,
+            "sha256": "40fd237b1d75643bc798033a3ec8af2d8d20e607a39b49eff90ebe4a9e7b4de7"
+          }
+        }
+      ]
+    },
+    {
+      "id": "runner-drain",
+      "originPr": 116,
+      "patch": "native-runner-drain-fix.patch",
+      "files": [
+        "benchmarks/protocol/owned-process-runner.cpp",
+        "tests/benchmark/owned-process-runner.test.cjs"
+      ],
+      "reason": "Allow nonzero roots the existing bounded descendant drain; retain root-failed, original exit code, passed=false, STOP/whole deadlines and forced cleanup after the same drain. Add two focused regressions.",
+      "patchPin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-runner-drain-fix.patch",
+        "bytes": 3467,
+        "sha256": "17b6d486caa70d22774a444c9a87000014b48f2bf591bf65ca555b0235e16542"
+      },
+      "filePins": [
+        {
+          "path": "benchmarks/protocol/owned-process-runner.cpp",
+          "original": {
+            "bytes": 24220,
+            "sha256": "5a0607f791d26c887a7d67502baae520f8b8caa12b9440feb1bf16cdba398ff0"
+          },
+          "repaired": {
+            "bytes": 24349,
+            "sha256": "5515724420e6a52b48948a19345177e2c7eb7a13d8d045b9dd32d8476999d3cc"
+          }
+        },
+        {
+          "path": "tests/benchmark/owned-process-runner.test.cjs",
+          "original": {
+            "bytes": 13783,
+            "sha256": "5190a0ac18e933a9d4822138618bf4b3848f84c38a0c8cfcdda6862f076a9813"
+          },
+          "repaired": {
+            "bytes": 15852,
+            "sha256": "525ac02389d377ae899cb7357f85b397feab8915223b60e1a68c40ac22d5bc78"
+          }
+        }
+      ]
+    }
+  ],
+  "trackedChangedFileCount": 6,
+  "productionSdkOrKernelSourceChanges": [],
+  "changedSourceByteGates": [],
+  "changedGeneratedWriterRecipes": [],
+  "changedPrebuilt": [],
+  "sourceManifest": "Not refreshed here; Root must regenerate the final integrated source manifest after applying these patches.",
+  "buildsRetained": [
+    "C:/pm-build/x64-19041",
+    "C:/pm-build/protocol-x64-19041",
+    "C:/pm-build/scroll-x64-19041"
+  ]
+}

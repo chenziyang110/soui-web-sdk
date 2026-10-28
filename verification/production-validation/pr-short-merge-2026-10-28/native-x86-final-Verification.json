@@ -1,0 +1,1781 @@
+{
+  "schema": "soui.x86-necessary-short-actual-result/1",
+  "createdUtc": "2026-10-28T13:03:50.875Z",
+  "head": "7922a67de9faec3de64503afe7143e4c606f2be5",
+  "tree": "36c162e11006f19a08111a28ebfe9a65eb0c4e1e",
+  "sourceRoot": "C:/pmnat",
+  "buildRoot": "C:/pm-build/x86-final",
+  "architecture": "x86",
+  "configuration": "Release",
+  "windowsSdk": "10.0.19041.0",
+  "inputs": {
+    "schema": "soui.x86-final-short-inputs/1",
+    "head": "7922a67de9faec3de64503afe7143e4c606f2be5",
+    "tree": "36c162e11006f19a08111a28ebfe9a65eb0c4e1e",
+    "sourceRoot": "C:/pmnat",
+    "buildRoot": "C:/pm-build/x86-final",
+    "workingFixPins": [
+      {
+        "path": "C:\\pmnat\\tests\\native\\input_admission\\ordinal_cases.h",
+        "bytes": 9992,
+        "sha256": "fd3c15a0024196a718700a8d14545de9335fd3130d2c80b2b6fd22d4b286fed3"
+      },
+      {
+        "path": "C:\\pmnat\\tests\\native\\input_admission\\fixture.cpp",
+        "bytes": 9265,
+        "sha256": "fb45ceab2109a733586786808e39d78c83199fceabbd500fe5f8d16064f78ebd"
+      },
+      {
+        "path": "C:\\pmnat\\tests\\native\\native_trace_ui_lease\\fixture.cpp",
+        "bytes": 6025,
+        "sha256": "b36d1e15131e098c7b39127ae1c4add8c03110e36bc93ffff6bcebeb3a2df752"
+      },
+      {
+        "path": "C:\\pmnat\\tests\\sdk\\llvm-generated-test-dependencies.Tests.ps1",
+        "bytes": 27865,
+        "sha256": "40fd237b1d75643bc798033a3ec8af2d8d20e607a39b49eff90ebe4a9e7b4de7"
+      },
+      {
+        "path": "C:\\pmnat\\benchmarks\\protocol\\owned-process-runner.cpp",
+        "bytes": 24349,
+        "sha256": "5515724420e6a52b48948a19345177e2c7eb7a13d8d045b9dd32d8476999d3cc"
+      },
+      {
+        "path": "C:\\pmnat\\tests\\benchmark\\owned-process-runner.test.cjs",
+        "bytes": 15852,
+        "sha256": "525ac02389d377ae899cb7357f85b397feab8915223b60e1a68c40ac22d5bc78"
+      }
+    ],
+    "activeSourceManifest": {
+      "path": "C:\\pmnat\\source-manifest.json",
+      "bytes": 16330288,
+      "sha256": "a4974496346fad9b64831bc253ae4b553d3bc641d6e855577a21bb4a958e0aab"
+    },
+    "package": {
+      "path": "F:\\work\\SOUI_WEB\\soui-sdk\\out\\webview2-deps\\1.0.4258.31\\microsoft.web.webview2.1.0.4258.31.nupkg",
+      "bytes": 9801922,
+      "sha256": "56f7f4b8bf9aee4b8efefbbdd4f67d5f74ebd1b100ed0806da71bf76af481aa9"
+    },
+    "dependencyPins": [
+      {
+        "actual": {
+          "path": "F:\\work\\SOUI_WEB\\soui-sdk\\out\\webview2-deps\\1.0.4258.31\\package\\build\\native\\include\\WebView2.h",
+          "bytes": 2939599,
+          "sha256": "dff1e3181ec7ec203a34ef6efa966590e0ef0ba1a5c3fe3b69da6508c2f8a02e"
+        },
+        "packageEntry": "build/native/include/WebView2.h",
+        "entryBytes": 2939599,
+        "entrySha256": "dff1e3181ec7ec203a34ef6efa966590e0ef0ba1a5c3fe3b69da6508c2f8a02e",
+        "exactMatch": true
+      },
+      {
+        "actual": {
+          "path": "F:\\work\\SOUI_WEB\\soui-sdk\\out\\webview2-deps\\1.0.4258.31\\package\\build\\native\\x86\\WebView2LoaderStatic.lib",
+          "bytes": 11428262,
+          "sha256": "bd66d0b41302e6d56938e61ded16e32bc66318fd54324b0dae419aeeccfb9b96"
+        },
+        "packageEntry": "build/native/x86/WebView2LoaderStatic.lib",
+        "entryBytes": 11428262,
+        "entrySha256": "bd66d0b41302e6d56938e61ded16e32bc66318fd54324b0dae419aeeccfb9b96",
+        "exactMatch": true
+      },
+      {
+        "actual": {
+          "path": "F:\\work\\SOUI_WEB\\soui-sdk\\out\\webview2-deps\\1.0.4258.31\\package\\LICENSE.txt",
+          "bytes": 1487,
+          "sha256": "0af8f1b807512aae39c2ac1aa4d0cae65cabecb6fd554b8439a5162a0d6eca55"
+        },
+        "packageEntry": "LICENSE.txt",
+        "entryBytes": 1487,
+        "entrySha256": "0af8f1b807512aae39c2ac1aa4d0cae65cabecb6fd554b8439a5162a0d6eca55",
+        "exactMatch": true
+      },
+      {
+        "actual": {
+          "path": "F:\\work\\SOUI_WEB\\soui-sdk\\out\\webview2-deps\\1.0.4258.31\\package\\NOTICE.txt",
+          "bytes": 3894,
+          "sha256": "106423785c5b7eba0a8e61d1837f2132e9c828e20ad530f565d981c1df60dd90"
+        },
+        "packageEntry": "NOTICE.txt",
+        "entryBytes": 3894,
+        "entrySha256": "106423785c5b7eba0a8e61d1837f2132e9c828e20ad530f565d981c1df60dd90",
+        "exactMatch": true
+      }
+    ],
+    "toolPins": [
+      {
+        "path": "C:\\Program Files\\CMake\\bin\\cmake.exe",
+        "bytes": 12905544,
+        "sha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379"
+      },
+      {
+        "path": "C:\\Program Files\\CMake\\bin\\ctest.exe",
+        "bytes": 13829192,
+        "sha256": "0befb42121d9baf862ae21165788c08d45ca06c6ce12b9e68101a31542dd572c"
+      },
+      {
+        "path": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x86\\cl.exe",
+        "bytes": 678000,
+        "sha256": "8de3c1e7af40f4a6c83188ef7cca6270223a00652e8c703022694f64add54a14"
+      }
+    ],
+    "architecture": "x86",
+    "configuration": "Release",
+    "windowsSdk": "10.0.19041.0",
+    "sourceModified": false,
+    "prebuiltModified": false,
+    "capturedUtc": "2026-10-28T12:59:16.0075297Z"
+  },
+  "phases": {
+    "configure": {
+      "head": "7922a67de9faec3de64503afe7143e4c606f2be5",
+      "phase": "fresh-x86-final-configure",
+      "exitCode": 0,
+      "elapsedMs": 17417,
+      "arguments": [
+        "-S",
+        "C:/pmnat",
+        "-B",
+        "C:/pm-build/x86-final",
+        "-G",
+        "Visual Studio 17 2022",
+        "-A",
+        "Win32,version=10.0.19041.0",
+        "-DCMAKE_SYSTEM_VERSION=10.0.19041.0",
+        "-DSOUI_BUILD_TEMPLATE=OFF",
+        "-DSOUI_BUILD_DEMOS=OFF",
+        "-DSOUI_BUILD_TESTS=ON",
+        "-DSOUI_BUILD_VENDOR_TESTS=ON",
+        "-DSOUI_BUILD_WEBVIEW2=ON",
+        "-DSOUI_BUILD_AUTO_HOST=ON",
+        "-DSOUI_WEBVIEW2_SDK_ROOT=F:/work/SOUI_WEB/soui-sdk/out/webview2-deps/1.0.4258.31/package"
+      ],
+      "completedUtc": "2026-10-28T12:59:33.4419442Z"
+    },
+    "build": {
+      "head": "7922a67de9faec3de64503afe7143e4c606f2be5",
+      "phase": "fresh-eight-x86-final-targets",
+      "exitCode": 0,
+      "elapsedMs": 59304,
+      "arguments": [
+        "--build",
+        "C:/pm-build/x86-final",
+        "--config",
+        "Release",
+        "--parallel",
+        "4",
+        "--target",
+        "soui_sdk",
+        "soui_webview2",
+        "soui_auto_host",
+        "soui_miniblink_unmount_tests",
+        "soui_input_mailbox_tests",
+        "soui_native_trace_ui_lease_tests",
+        "soui_frame_buffer_lease_policy_tests",
+        "soui_window_close_lifetime_source_tests",
+        "--",
+        "/nr:false"
+      ],
+      "startedUtc": "2026-10-28T13:00:19.2362434Z",
+      "completedUtc": "2026-10-28T13:01:18.6287045Z"
+    },
+    "ctest": {
+      "head": "7922a67de9faec3de64503afe7143e4c606f2be5",
+      "phase": "only-six-x86-necessary-short-logic-cases",
+      "exitCode": 0,
+      "elapsedMs": 722,
+      "arguments": [
+        "--test-dir",
+        "C:/pm-build/x86-final",
+        "-C",
+        "Release",
+        "--tests-from-file",
+        "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-x86-final-selection.txt",
+        "--no-tests=error",
+        "--parallel",
+        "3",
+        "--timeout",
+        "20",
+        "-V",
+        "--output-junit",
+        "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-x86-final-ctest.junit.xml"
+      ],
+      "completedUtc": "2026-10-28T13:01:56.6580327Z",
+      "selectedTests": 6,
+      "previousX64ChecksRerun": false,
+      "nodePsRunnerRerun": false,
+      "productGui": false,
+      "businessDllLoaded": false,
+      "longTests": false
+    }
+  },
+  "artifacts": [
+    {
+      "target": "soui_sdk",
+      "actual": {
+        "path": "C:\\pm-build\\x86-final\\sdk\\Release\\soui_sdk.lib",
+        "bytes": 33495408,
+        "sha256": "a44964847ab2bf79efa7fc3bbd6425f9c8285d554b54188c870822b04de905dc"
+      },
+      "preserved": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-x86-final-artifacts\\soui_sdk.lib",
+        "bytes": 33495408,
+        "sha256": "a44964847ab2bf79efa7fc3bbd6425f9c8285d554b54188c870822b04de905dc"
+      },
+      "identity": {
+        "format": "COFF archive",
+        "ordinaryMembers": 27,
+        "allMemberMachines": "0x014c"
+      }
+    },
+    {
+      "target": "soui_webview2",
+      "actual": {
+        "path": "C:\\pm-build\\x86-final\\sdk\\renderers\\webview2\\Release\\soui_webview2.lib",
+        "bytes": 5729646,
+        "sha256": "8217a58977520000579da64c72ee9e19f404d5e6c50809693b8a0b8362aec0ce"
+      },
+      "preserved": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-x86-final-artifacts\\soui_webview2.lib",
+        "bytes": 5729646,
+        "sha256": "8217a58977520000579da64c72ee9e19f404d5e6c50809693b8a0b8362aec0ce"
+      },
+      "identity": {
+        "format": "COFF archive",
+        "ordinaryMembers": 1,
+        "allMemberMachines": "0x014c"
+      }
+    },
+    {
+      "target": "soui_auto_host",
+      "actual": {
+        "path": "C:\\pm-build\\x86-final\\sdk\\renderers\\webview2\\Release\\soui_auto_host.lib",
+        "bytes": 631918,
+        "sha256": "fc7b2e42aa376e8a106f80a701e021bb8901da86bbea173297663c3a24526414"
+      },
+      "preserved": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-x86-final-artifacts\\soui_auto_host.lib",
+        "bytes": 631918,
+        "sha256": "fc7b2e42aa376e8a106f80a701e021bb8901da86bbea173297663c3a24526414"
+      },
+      "identity": {
+        "format": "COFF archive",
+        "ordinaryMembers": 1,
+        "allMemberMachines": "0x014c"
+      }
+    },
+    {
+      "target": "soui_miniblink_unmount_tests",
+      "actual": {
+        "path": "C:\\pm-build\\x86-final\\tests\\native\\Release\\soui_miniblink_unmount_tests.exe",
+        "bytes": 467968,
+        "sha256": "cb2ad518a007af11684311ec6cf1d41a128968ed567cb6afc7a380133323b4dd"
+      },
+      "preserved": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-x86-final-artifacts\\soui_miniblink_unmount_tests.exe",
+        "bytes": 467968,
+        "sha256": "cb2ad518a007af11684311ec6cf1d41a128968ed567cb6afc7a380133323b4dd"
+      },
+      "identity": {
+        "machine": "0x014c",
+        "optionalHeaderMagic": "0x010b",
+        "format": "PE32"
+      }
+    },
+    {
+      "target": "soui_input_mailbox_tests",
+      "actual": {
+        "path": "C:\\pm-build\\x86-final\\tests\\native\\input_admission\\Release\\soui_input_mailbox_tests.exe",
+        "bytes": 131584,
+        "sha256": "3c629e081f1644bb9d08fa48769bd2842063c09542858202f6d204ac5cdbcbbb"
+      },
+      "preserved": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-x86-final-artifacts\\soui_input_mailbox_tests.exe",
+        "bytes": 131584,
+        "sha256": "3c629e081f1644bb9d08fa48769bd2842063c09542858202f6d204ac5cdbcbbb"
+      },
+      "identity": {
+        "machine": "0x014c",
+        "optionalHeaderMagic": "0x010b",
+        "format": "PE32"
+      }
+    },
+    {
+      "target": "soui_native_trace_ui_lease_tests",
+      "actual": {
+        "path": "C:\\pm-build\\x86-final\\tests\\native\\native_trace_ui_lease\\Release\\soui_native_trace_ui_lease_tests.exe",
+        "bytes": 29696,
+        "sha256": "143bf011b5b2afc2b0d8f8dffa2fe9374850c36ae584bd0d0568c1906c7c623f"
+      },
+      "preserved": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-x86-final-artifacts\\soui_native_trace_ui_lease_tests.exe",
+        "bytes": 29696,
+        "sha256": "143bf011b5b2afc2b0d8f8dffa2fe9374850c36ae584bd0d0568c1906c7c623f"
+      },
+      "identity": {
+        "machine": "0x014c",
+        "optionalHeaderMagic": "0x010b",
+        "format": "PE32"
+      }
+    },
+    {
+      "target": "soui_frame_buffer_lease_policy_tests",
+      "actual": {
+        "path": "C:\\pm-build\\x86-final\\tests\\native\\Release\\soui_frame_buffer_lease_policy_tests.exe",
+        "bytes": 22528,
+        "sha256": "aa9aefd9695623d4a28e512cc8b9af5aca7f328e8e71ae534390829aae6278ac"
+      },
+      "preserved": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-x86-final-artifacts\\soui_frame_buffer_lease_policy_tests.exe",
+        "bytes": 22528,
+        "sha256": "aa9aefd9695623d4a28e512cc8b9af5aca7f328e8e71ae534390829aae6278ac"
+      },
+      "identity": {
+        "machine": "0x014c",
+        "optionalHeaderMagic": "0x010b",
+        "format": "PE32"
+      }
+    },
+    {
+      "target": "soui_window_close_lifetime_source_tests",
+      "actual": {
+        "path": "C:\\pm-build\\x86-final\\tests\\native\\window_close_lifetime\\Release\\soui_window_close_lifetime_source_tests.exe",
+        "bytes": 27136,
+        "sha256": "3d9dd6bbef30839b4859aaa50f08791a5a40d56c145410a3cc681fbe56c45125"
+      },
+      "preserved": {
+        "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-x86-final-artifacts\\soui_window_close_lifetime_source_tests.exe",
+        "bytes": 27136,
+        "sha256": "3d9dd6bbef30839b4859aaa50f08791a5a40d56c145410a3cc681fbe56c45125"
+      },
+      "identity": {
+        "machine": "0x014c",
+        "optionalHeaderMagic": "0x010b",
+        "format": "PE32"
+      }
+    }
+  ],
+  "sourceInputPins": [
+    {
+      "path": "C:\\pmnat\\CMakeLists.txt",
+      "bytes": 1218,
+      "sha256": "0cabe11b29121728922404a56fc2da40ae59f81dbd31553019ed48cfd150402f"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\CMakeLists.txt",
+      "bytes": 5077,
+      "sha256": "13698b0e7d1047241529a26379655326ecb1365a3dd0c89fea84d2d10c875e11"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\include\\soui\\bridge_adapter.h",
+      "bytes": 1374,
+      "sha256": "e172cdf617b5fc0b95dac51c43e2126d98607f41a23c77f00bb3f11d39142079"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\include\\soui\\diagnostics\\cache_observation.h",
+      "bytes": 3697,
+      "sha256": "6cf9c6d5e36255ac9e2354ca6745782d59434481b0ce160e1c2fe4ef19589ef9"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\include\\soui\\diagnostics\\cache_observation_abi.h",
+      "bytes": 1757,
+      "sha256": "2bf5e6ba0a1b10b71b35d80d29354b476fd96965f511fe7387323ab1b8f8f39c"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\include\\soui\\diagnostics\\input_frame_trace.h",
+      "bytes": 11443,
+      "sha256": "0a5ab42a5459221402174cdb787e82ec84dc9e38bed64f6c6f81911dc21d38a7"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\include\\soui\\diagnostics\\miniblink_trace_source.h",
+      "bytes": 1401,
+      "sha256": "bcd0af02834047cde07838e43a34c3163c7e4b5a307262a27d533cdc5093b9ba"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\include\\soui\\diagnostics\\renderer_model_abi.h",
+      "bytes": 2262,
+      "sha256": "ad973b1eae3ae56aaa695580c8cb849c90da02d6b1d7c86be7691b1b6dea268a"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\include\\soui\\diagnostics\\renderer_model_binding.h",
+      "bytes": 3049,
+      "sha256": "185e0169e447de001d90618b0485679251e8f2bf264419ac56db34fe2f757ae7"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\include\\soui\\diagnostics\\renderer_observation_abi.h",
+      "bytes": 3031,
+      "sha256": "18fb3a800a32bbc964e5278c80bdc0f64ce85e347d90c7ee0e992c95db88b90d"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\include\\soui\\diagnostics\\renderer_observation_binding.h",
+      "bytes": 4389,
+      "sha256": "c6279c4b207901dfcc51534fcb6d8b967c8bf2a2c9d543c2fc01d4af725a11fd"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\include\\soui\\diagnostics\\runtime_metrics.h",
+      "bytes": 6876,
+      "sha256": "61f27473cdbbfa08699592d5dabdef803a5986019e83162fee7596919ac5c4c5"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\include\\soui\\diagnostics\\storage_observation.h",
+      "bytes": 1760,
+      "sha256": "00625b26f0c774b8116b512360af51f903e89d408dd4d5cedb7233aad168b005"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\include\\soui\\diagnostics\\task_store_private_storage.h",
+      "bytes": 1353,
+      "sha256": "de9dbace491c62d8470db28a66d5ed2df8cbaf3703e591dff4274df021f99266"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\include\\soui\\host\\async_result_slot.h",
+      "bytes": 2015,
+      "sha256": "54fb76d1b8faae67cf2baf7b4c5fef1599a337b0bd60fb3cfb45c2f81ced6840"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\include\\soui\\host\\auto_webview_host.h",
+      "bytes": 3291,
+      "sha256": "d3d5755ea1ac283c5e2cc0983deaa356ad4912199b7ee693e10fb1857df1e365"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\include\\soui\\host\\engine_thread.h",
+      "bytes": 5039,
+      "sha256": "21a98e7df492398db25151bc6cf0106623664bbe1b92fc4268576fbb63d1fca6"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\include\\soui\\host\\interaction_protocol.h",
+      "bytes": 4806,
+      "sha256": "6f814cc74d5fa5fc8e674c70ff3e563db86790c504d79e07d2058600304d5f78"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\include\\soui\\host\\runtime_profile.h",
+      "bytes": 1433,
+      "sha256": "5d79c715900b24f7de3c44cba2e13ea415d2e2f96a929ad86667d633f6f4d051"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\include\\soui\\host\\soui_miniblink_host.h",
+      "bytes": 14937,
+      "sha256": "a90c3650e121e89a334362d008f1e2977c463cafcf7aa47d3ab44b5b00701cff"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\include\\soui\\host\\webview2_host.h",
+      "bytes": 4640,
+      "sha256": "54a38dbe47cab5ea48b42b16ee04849cc3a809de4194336696fbb6f0a6817289"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\include\\soui\\host\\webview_host.h",
+      "bytes": 5239,
+      "sha256": "f1bfc4af1fa30f90a7507bb5f61afe6d47a139caa49cf6be97c76d989413ec32"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\include\\soui\\host\\window_chrome.h",
+      "bytes": 2359,
+      "sha256": "e33c8dc8bdd7a586d2e5c77151e81ddfc68e03edef1e25a5216b92a428a31a30"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\include\\soui\\host\\window_chrome_script.h",
+      "bytes": 1612,
+      "sha256": "662123135b3a3b9705898674b014ba52a1a0a1cf3913a5d40c320004e925b286"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\include\\soui\\json_bridge.h",
+      "bytes": 6002,
+      "sha256": "e379813b1c3d0493d5a81eccb5e97642869324c71fbc8e3b2bff7f8968148b3e"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\include\\soui\\runtime\\agent\\windows_local_endpoint.h",
+      "bytes": 3836,
+      "sha256": "e7e1dace8c710ee1f119d77b3c09e0480e6d8f732bf5f8450e30a7c9d4d8e35a"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\include\\soui\\runtime\\agent\\windows_peer_identity.h",
+      "bytes": 3668,
+      "sha256": "c5578d685b3e40f3f65ab9ca483b9c89aac4c3bb4d359d227b0d5ee72fe51de1"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\include\\soui\\runtime\\bridge\\action_contract.h",
+      "bytes": 1167,
+      "sha256": "11a77c9a9aa90bd8d1839f6d08eae8a892c78b7df11bdc37455f623f92c97936"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\include\\soui\\runtime\\bridge\\bridge_transport.h",
+      "bytes": 6516,
+      "sha256": "4515de6093671fdfb23201d4b4a417f5ff558ac8982fb51e56f3da3cb950718e"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\include\\soui\\runtime\\core\\events\\event_bus.h",
+      "bytes": 1639,
+      "sha256": "1a4b250c614404faa146c9f3f9076b8c72feca46b88f5805f93b98aeea90de62"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\include\\soui\\runtime\\core\\result\\result.h",
+      "bytes": 626,
+      "sha256": "6517bbb345eba2c02df8267fc5467217ddd3107f57bda8541c622522b1f2c5ec"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\include\\soui\\runtime\\core\\task\\detail\\storage_allocator.h",
+      "bytes": 10475,
+      "sha256": "097bfba9b9ca9de3b7fa21fcfb470608657af33c6a398dd723f0cff1dda45cba"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\include\\soui\\runtime\\core\\task\\task_store.h",
+      "bytes": 13816,
+      "sha256": "3ac7b4d5920c7896aaf3a329fe510fb1bd590290d855127e6e87bbd07c879f23"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\include\\soui\\runtime\\core\\task\\task_store_quota.h",
+      "bytes": 2024,
+      "sha256": "3ebc4d375999aa27fd988917fab9921bef119eb14ca26740271eae0514169b5d"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\include\\soui\\runtime\\host\\session\\webview_session.h",
+      "bytes": 1892,
+      "sha256": "bb11c4e2f554f8336f9783dfdc76c552fc95c62fcc12b37b371d6e05db382f9a"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\include\\soui\\runtime\\host\\trusted_document.h",
+      "bytes": 2696,
+      "sha256": "f3bc081ba57d35153627c913b5b3c753b7fc02b745366396953fe2ef40a7964e"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\include\\soui\\runtime\\services\\desktop\\desktop_services.h",
+      "bytes": 2210,
+      "sha256": "669aad7eb79d7d8c39bc2263bae2b60b0e75014263e8f191fbc1e77d490560b2"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\include\\soui\\runtime\\services\\desktop\\global_shortcut.h",
+      "bytes": 3012,
+      "sha256": "800d40c2029697ca23f9148c75acbcc683b7893665c735f4ea0a9ce0810b1ae5"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\include\\soui\\runtime\\services\\desktop\\menu_service.h",
+      "bytes": 2461,
+      "sha256": "2e304780c55cbc92c49d14532ae04ad934b835f7ff3d3f43004c3faae1244605"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\include\\soui\\runtime\\services\\desktop\\tray_service.h",
+      "bytes": 2765,
+      "sha256": "00686e87bd122d6b89ddf9b1627b3d94ad05efbfc3e8e461c8365bce6ebbb02e"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\include\\soui\\runtime\\services\\desktop\\window_commands.h",
+      "bytes": 2377,
+      "sha256": "560151b5f9531b7929d8cdb38629d5d4b990a1ce60781e3c3b80041f35b37089"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\include\\soui\\runtime\\services\\fileinsight-service\\fileinsight-service.h",
+      "bytes": 668,
+      "sha256": "77fdc539ccb1f1158f3112ababff3c2e117f4fad9fc5127709fdfc03f2d8eeab"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\include\\soui\\runtime\\services\\filesystem-readonly\\directory_scanner.h",
+      "bytes": 5545,
+      "sha256": "ab303cb608d400e36655136ac1ef491dfdf5fd0acaeb2aed1615243ad93d0e55"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\include\\soui\\runtime\\services\\gui\\gui_commands.h",
+      "bytes": 1166,
+      "sha256": "f9ed1f922daa2521f1c6cc0093be77ed36cefbda5713243c7f8cc0febe453bb2"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\include\\soui\\runtime\\services\\permissions\\permission_store.h",
+      "bytes": 9308,
+      "sha256": "d4e8014eac9394d2e09ee7eb40b6f5f57319eb89e13ce95cc3ec4a9bbfa3e4df"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\include\\soui\\runtime\\services\\task\\task_service.h",
+      "bytes": 6859,
+      "sha256": "90875a496e4740ecdf72e081e4331e291a7991f3a758b86ede7c6158d7379045"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\include\\soui\\version.h",
+      "bytes": 250,
+      "sha256": "ad50d780fb2be42a68fcd7c8e5753a01d32cb0be05fc8beec30a634b9ad16711"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\renderers\\auto\\auto_host_policy.h",
+      "bytes": 1780,
+      "sha256": "00f5dd0ee5c4921e569435a6976cc344056c5d0f471ac2448ca91cc57b0f8dcd"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\renderers\\auto\\auto_webview_host.cpp",
+      "bytes": 16566,
+      "sha256": "af362cd166d851badee4791e2d7716f882fd35a26386f1c0cebdd17017d90899"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\renderers\\webview2\\CMakeLists.txt",
+      "bytes": 2692,
+      "sha256": "cd28680b1469a622c7cddc82bee1b0184ed1b20b814c2cbb0260ea86c0f6c62a"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\renderers\\webview2\\loader_policy.h",
+      "bytes": 8988,
+      "sha256": "cb80c48b48ab965b3a5e9505e4a828d4ca9ee650360de6aa790db9173a269ed0"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\renderers\\webview2\\owner_callout_policy.h",
+      "bytes": 764,
+      "sha256": "f6bdb4ee064696acdfc4ac9fa4b1c0c6349f2bb76e6a6f2f66a2a6681f44f845"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\renderers\\webview2\\owner_output_policy.h",
+      "bytes": 1363,
+      "sha256": "ddb8b79acdfadb97be3625d028a74dbb7c6f3fd1cd2468a767355200a7cbc67d"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\renderers\\webview2\\preparation_lifetime.h",
+      "bytes": 2085,
+      "sha256": "f5308dd4617cd3c5c795b17bf250ef47ac4705910b4516980d15c7b2ebb969d9"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\renderers\\webview2\\request_capacity.h",
+      "bytes": 5802,
+      "sha256": "69d9e8bd5f9957c16671989a7679363b1472eae95ead0ff3029d6b10559d9a42"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\renderers\\webview2\\webview2_host.cpp",
+      "bytes": 71630,
+      "sha256": "662bf31c809bac216e7f233bae6e83defa9e1146da63c4ba074fe025ffc882b4"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\host\\applied_input_identity.h",
+      "bytes": 808,
+      "sha256": "d00530ea8fa9939ab0004d288d1a1e6286da87a7814b4d949d0100221626fbc2"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\host\\bridge_pending_script.h",
+      "bytes": 2166,
+      "sha256": "9672b98ffc6de2e4a0287b4c414ad43764c89fa00fed5f5721ee0e98aec02213"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\host\\bridge_request_budget.h",
+      "bytes": 6673,
+      "sha256": "aa2d8de3e8ffb3a015d0cbd17b9bfbcf7a0f1d36281a92dfa10882ba9c7382be"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\host\\cooperative_turn_budget.h",
+      "bytes": 639,
+      "sha256": "fe94d4f018b09bcc33f0c3687fcaad3c3406923b792ff07325660b09c2811ce9"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\host\\cursor_broker.cpp",
+      "bytes": 24300,
+      "sha256": "b3ca6db7e3c395985970af8655e308f9e92164996e30537b6624fae8edcb6a45"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\host\\cursor_broker.h",
+      "bytes": 4435,
+      "sha256": "90c0ab20fc5e1606fd67b54e5a94be6c8834ef4b0f4f85fd9ee3587b08d637c8"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\host\\cursor_queue.cpp",
+      "bytes": 6737,
+      "sha256": "569970cf0e75cd2e52e6ad6736688532bf1918b808acff9c01f70717c038ad4b"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\host\\cursor_queue.h",
+      "bytes": 3212,
+      "sha256": "e25c1824de719908c09fac8af0b8f51049d5b90692f6728c8aca1ac11c03d95a"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\host\\cursor_resources.cpp",
+      "bytes": 1544,
+      "sha256": "f4a8a986db82a522218cdd42526929a9edf61b38406abff3086e28499b428a33"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\host\\cursor_resources.h",
+      "bytes": 1517,
+      "sha256": "3748809de72958d466ec01b99980b59b7ebc02d655eb001e455bb60fc52a78b8"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\host\\engine_admission.h",
+      "bytes": 3819,
+      "sha256": "28bf1f3e75a2073a47bb54ef75feeafec9e7293e8c7aedf6b457d4cf83bc4509"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\host\\engine_input_service.h",
+      "bytes": 1161,
+      "sha256": "281d224e69c7b95d114c0e6d37be8ceec2ed01a23b10ab0fc63856023cae7533"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\host\\engine_thread.cpp",
+      "bytes": 30394,
+      "sha256": "233ac85d7ed4bdeb1e2ce6ab5e1e1a6e974cfdaf7a963e116ee5f2310e50b45d"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\host\\host_frame_policy.h",
+      "bytes": 752,
+      "sha256": "74a3c48f2c54c524708c8953e891177b9a641052e6db3b6673de8ea82f68e798"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\host\\host_visibility_policy.h",
+      "bytes": 1719,
+      "sha256": "db7b4e9e5d8fdc0d0da315b4c9789811f7236c2f4947fba3c87cdc6837d8cd42"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\host\\input_mailbox.h",
+      "bytes": 12609,
+      "sha256": "d7474d35fadf162bffbd92daf541af0c397ffc50b5a52d9080765214c9c4476d"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\host\\input_sequence.h",
+      "bytes": 683,
+      "sha256": "dd33be44ada549bf6bf73bf66cfcc76b39f57a5bdb7af1e36b2a0d0854c89d10"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\host\\input_trace_hooks.h",
+      "bytes": 3084,
+      "sha256": "a1a6026d8e1ed56c1902ddcd71adca769b22c19dd222a73e7e14009e37694b6c"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\host\\input_ui_trace_bootstrap.h",
+      "bytes": 1548,
+      "sha256": "210bf88c8d671d375b8ac7e00123d3b1be5fc48f7a7af28fd4cdff577cdba1f2"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\host\\interaction_protocol.cpp",
+      "bytes": 3121,
+      "sha256": "03f246f92acd84741a90c00ce6d04bace077d5e8e514b91289b0f21cb9628d1e"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\host\\main_context_gate.h",
+      "bytes": 4348,
+      "sha256": "d19008ab7e414132f24c62982bb9907c81ece7734cef3cac70ffc761b8de3d2f"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\host\\native_trace_ui_lease.h",
+      "bytes": 4928,
+      "sha256": "d58f608cde95fb37aeb421b319fe2f616642d68b303b746ecbab1d0b73dee44b"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\host\\runtime_profile.cpp",
+      "bytes": 6222,
+      "sha256": "f9a9f49b6c68463bd1a0cdd615d0c53865b3c8e8c9121c7e80933cf0ca0dbcd6"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\host\\runtime_shutdown_api.h",
+      "bytes": 360,
+      "sha256": "aeaac3b5b09fe6a527c1fe10014494a8d22be963534c86c18a2c0270c434e90a"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\host\\runtime_shutdown_poll.h",
+      "bytes": 1570,
+      "sha256": "0d39822f42a05aaa4485da08f81dc5367a56bcbc16fd8b49080ec16edf40e080"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\host\\soui_miniblink_host.cpp",
+      "bytes": 231573,
+      "sha256": "3af8c7db8d237d48d58124ac1ac69c8bcd5e3d33735358d0e18148dfc88a89d4"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\host\\source_kernel_api.h",
+      "bytes": 3188,
+      "sha256": "808f5ac1fce40062609e482cf10cea7820b4fc17a80c0361de3b577238871662"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\json_bridge.cpp",
+      "bytes": 19020,
+      "sha256": "59e0c6e3bde1c9130e7f21f92ea1733a9e6b562085689032e597c3c3c96229e2"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\runtime\\agent\\windows_local_endpoint.cpp",
+      "bytes": 31326,
+      "sha256": "ebbc9d4c33e13164b79fb6f576e1002a69dc1247be20663ac7cfb2fb66231cc5"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\runtime\\agent\\windows_peer_identity.cpp",
+      "bytes": 13019,
+      "sha256": "b1c1a101617f8a36e1efd4111fbe8b906678b557559c8db3aff508231b774602"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\runtime\\bridge\\action_contract.cpp",
+      "bytes": 10283,
+      "sha256": "6dfa4ceb6a2bf92b5c464619063873896a2c4357c8730205c56f5c04ad3dae7c"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\runtime\\bridge\\bridge_transport.cpp",
+      "bytes": 27844,
+      "sha256": "9075c78405e67d918239066d90fd831b3e0a9797e285f75c21b9b39aa355331d"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\runtime\\core\\events\\event_bus.cpp",
+      "bytes": 2559,
+      "sha256": "e0e1c24c98720e20eb19a71a881b9a1625adb2f1092b67478a7873ad84bc1805"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\runtime\\core\\result\\result.cpp",
+      "bytes": 409,
+      "sha256": "238c8e90a28173d2ac5ea994fcc2f669d9b46d336dd23d4d865e5b481457a9f0"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\runtime\\core\\task\\task_store.cpp",
+      "bytes": 20662,
+      "sha256": "105666529bce28c6aaa30a2c9c7e17347bf8cc95933736d57e08035cc40c449b"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\runtime\\diagnostics\\input_frame_trace.cpp",
+      "bytes": 27912,
+      "sha256": "3689dc207d8c68b857dc63ac455d15956ef6e172762c5cbde0a6ab6801ef5d2a"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\runtime\\diagnostics\\input_frame_trace_backend_validation.h",
+      "bytes": 5127,
+      "sha256": "143585ae67b828ac46c1abd90db3e7fbcfec0f893564d302d57696fb25a1072d"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\runtime\\diagnostics\\miniblink_trace_source.cpp",
+      "bytes": 11447,
+      "sha256": "38a73fd3e4ac85f3674401a875113317705a1a01344c72aa3b84d0da910a520a"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\runtime\\diagnostics\\runtime_metrics_internal.h",
+      "bytes": 3113,
+      "sha256": "b3607754a5b325c6f24a61701ffe7e6314839105a12a02e6b5b33ae881ad02e8"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\runtime\\host\\session\\webview_session.cpp",
+      "bytes": 3532,
+      "sha256": "976f755f6f06b16c337a7c941de56e1ef5e3fe66adc1758f188e280ff541a9ee"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\runtime\\services\\desktop\\desktop_services.cpp",
+      "bytes": 14078,
+      "sha256": "824b61b8c8fc3b16e69b62e499d01ef64bea2b07cbd3907aa11327ce3e9e21eb"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\runtime\\services\\desktop\\global_shortcut.cpp",
+      "bytes": 8129,
+      "sha256": "bbfc1b6980b666374a807fec39170d06e9aa84b87b661856bb41c02a091876ab"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\runtime\\services\\desktop\\menu_platform.h",
+      "bytes": 1958,
+      "sha256": "294743b92d08d0c478f728ffa74400ab601e9df360896bd329fbfc67f93f6f26"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\runtime\\services\\desktop\\menu_service.cpp",
+      "bytes": 16248,
+      "sha256": "19171cec0dbae9689a7c0afb5f19fca8d664aea4e66d4d1db794a13451e42407"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\runtime\\services\\desktop\\shortcut_platform.h",
+      "bytes": 1570,
+      "sha256": "848466afe3a048c798f654d8cbf3ceb672b46dd112af5e2226977676b74458ae"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\runtime\\services\\desktop\\tray_platform.h",
+      "bytes": 1627,
+      "sha256": "91bb14277f550cb75bdd7b382c79127de4eba48ffffbd3a7025bb47f4ea42012"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\runtime\\services\\desktop\\tray_service.cpp",
+      "bytes": 13336,
+      "sha256": "f96238fcfa7abbbc08ef4ba242c210450657ed69841df6e777c3174a7ce280a3"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\runtime\\services\\desktop\\unicode_conversion.h",
+      "bytes": 1709,
+      "sha256": "a404b90539344d479faee04ad58606f8af3669546e9f93824b5d590695ce6908"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\runtime\\services\\fileinsight-service\\fileinsight-service.cpp",
+      "bytes": 4790,
+      "sha256": "1f3303c2426759d3e4513e3bbf2dc0263cfe56c5d76c545624c7a8b39986df4a"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\runtime\\services\\filesystem-readonly\\directory_scanner.cpp",
+      "bytes": 30071,
+      "sha256": "713bc211743282e4b8793d244fc8cd5dca0cbb28dd7e8d27e53564ac8f107914"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\runtime\\services\\gui\\gui_commands.cpp",
+      "bytes": 32672,
+      "sha256": "c4086b56dfb21288db9ce92f9df28cc66a0106c62ff4e79aee8c0cb920316481"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\runtime\\services\\gui\\gui_commands_internal.h",
+      "bytes": 5024,
+      "sha256": "2f967f15010fe7abd1a549efcf31ceda2b55eb0e0d688ae267fbfe59a5dab56c"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\runtime\\services\\permissions\\permission_store.cpp",
+      "bytes": 24201,
+      "sha256": "3cc763d1f428239af4ee052bd0ee159ccf9741177cbc68b2b587ec719c8aff8c"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\runtime\\services\\permissions\\scope_budget_ledger.h",
+      "bytes": 2046,
+      "sha256": "36fda308d604890bb9d4d762fbd479779236703e3889554b2eb2a19a13b226b6"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\runtime\\services\\permissions\\scope_id_sequence.h",
+      "bytes": 892,
+      "sha256": "da8ddba81e066354401b09b317c94ca1aa07701162c44ca31afe33908ac0599e"
+    },
+    {
+      "path": "C:\\pmnat\\sdk\\src\\runtime\\services\\task\\task_service.cpp",
+      "bytes": 56348,
+      "sha256": "d97a4ce2bc21c6fe1ee97954a19dc259ae3f9bcafbc90de6074775dc0a7f9769"
+    },
+    {
+      "path": "C:\\pmnat\\tests\\native\\CMakeLists.txt",
+      "bytes": 38842,
+      "sha256": "a55afa59d8925e7b0ba522320719516631912a2887757725617c82672dd23bf4"
+    },
+    {
+      "path": "C:\\pmnat\\tests\\native\\frame_buffer_lease_policy_tests.cpp",
+      "bytes": 10740,
+      "sha256": "1feb30e590722a25fa50f2a72d21199871548b73294672e11b1ef092eed2ef62"
+    },
+    {
+      "path": "C:\\pmnat\\tests\\native\\input_admission\\CMakeLists.txt",
+      "bytes": 437,
+      "sha256": "ad5186f80e088430c8715b357d92f9ff2c019970fb954f9ab64f4a27c77dde7f"
+    },
+    {
+      "path": "C:\\pmnat\\tests\\native\\input_admission\\applied_identity_cases.h",
+      "bytes": 5310,
+      "sha256": "c4de8071e658a1197024630375b487eb3fed9b17dffc91539c662b4a093afe5f"
+    },
+    {
+      "path": "C:\\pmnat\\tests\\native\\input_admission\\fixture.cpp",
+      "bytes": 9265,
+      "sha256": "fb45ceab2109a733586786808e39d78c83199fceabbd500fe5f8d16064f78ebd"
+    },
+    {
+      "path": "C:\\pmnat\\tests\\native\\input_admission\\ordinal_cases.h",
+      "bytes": 9992,
+      "sha256": "fd3c15a0024196a718700a8d14545de9335fd3130d2c80b2b6fd22d4b286fed3"
+    },
+    {
+      "path": "C:\\pmnat\\tests\\native\\input_admission\\terminal_cases.h",
+      "bytes": 4859,
+      "sha256": "7ff8c2e7c85863577bd1234ded32b611c5e9af387d86f80559f53ff058a0fc1b"
+    },
+    {
+      "path": "C:\\pmnat\\tests\\native\\input_admission\\visibility_cases.h",
+      "bytes": 2316,
+      "sha256": "b0d370b7d1ba7f12326d728a9da750a7fdf6d7f682d8d83dcbe49a513de88e32"
+    },
+    {
+      "path": "C:\\pmnat\\tests\\native\\input_admission\\wake_cases.h",
+      "bytes": 3574,
+      "sha256": "19fec62f472f5a19c5e6de725feba46831e37b5060878577acf12f6d0861869f"
+    },
+    {
+      "path": "C:\\pmnat\\tests\\native\\miniblink_unmount_tests.cpp",
+      "bytes": 11034,
+      "sha256": "a2c388cf745d9831ff17d209c25c7c1e7011abfca6f77da30e0dadc0d7637865"
+    },
+    {
+      "path": "C:\\pmnat\\tests\\native\\native_trace_ui_lease\\CMakeLists.txt",
+      "bytes": 692,
+      "sha256": "20553ee7c62cdb2555afe58bf03da85606f625578f73738386f70fe0904bbf69"
+    },
+    {
+      "path": "C:\\pmnat\\tests\\native\\native_trace_ui_lease\\fixture.cpp",
+      "bytes": 6025,
+      "sha256": "b36d1e15131e098c7b39127ae1c4add8c03110e36bc93ffff6bcebeb3a2df752"
+    },
+    {
+      "path": "C:\\pmnat\\tests\\native\\window_close_lifetime\\CMakeLists.txt",
+      "bytes": 1539,
+      "sha256": "76dffa9bd1fee25d0e3abaaf13168e2bcb2d8d1acf118b68beb17c587a5379a2"
+    },
+    {
+      "path": "C:\\pmnat\\tests\\native\\window_close_lifetime\\fixture.cpp",
+      "bytes": 15604,
+      "sha256": "4af83a5dd1c9a5b4101c4e891975f2de70f36907591b8601fc6ab455cb42aa6a"
+    },
+    {
+      "path": "C:\\pmnat\\tests\\native\\window_close_lifetime\\generate.cjs",
+      "bytes": 2603,
+      "sha256": "fda11eda8a53a34d7eb12abf7fcb597a50ac2a557dd36cd8095ab6030227c16c"
+    },
+    {
+      "path": "C:\\pmnat\\third_party\\include\\json\\json.hpp",
+      "bytes": 926077,
+      "sha256": "78496a32103398f5936cec4df6cf42fa52f2cb2495caf4270fa42c8ed8c4e851"
+    },
+    {
+      "path": "C:\\pmnat\\third_party\\include\\miniblink\\input_ui_api.h",
+      "bytes": 5596,
+      "sha256": "7a3452976cb96e523f4c46475394498e0555387f0da324c3a31e1e6e53c8fec3"
+    },
+    {
+      "path": "C:\\pmnat\\third_party\\include\\miniblink\\wke.h",
+      "bytes": 71046,
+      "sha256": "d406cee09dc7f2c1dfa4d5690d831a82470dd5d8140df5f4f9bc902c07008cc7"
+    },
+    {
+      "path": "C:\\pmnat\\third_party\\include\\miniblink\\wke_cursor_broker.h",
+      "bytes": 6597,
+      "sha256": "0029c8967c92c43a1bf0499af40dc8c2f16e1790fd0ab01d924c7b319ef0243a"
+    },
+    {
+      "path": "C:\\pmnat\\third_party\\sources\\miniblink\\cc\\trees\\FrameBufferLeasePolicy.h",
+      "bytes": 1870,
+      "sha256": "95f828c55a5eecbe6308f9b38830a7a74a0925aceff5691b902e5550d3cf2a8c"
+    },
+    {
+      "path": "C:\\pmnat\\third_party\\sources\\miniblink\\content\\common\\PaintLifetime.h",
+      "bytes": 7468,
+      "sha256": "52d7f3da7239c59d7c4d2cd9e59186b71ef65047c0d233b5898eaddc0c8eed6e"
+    }
+  ],
+  "generatedInputPins": [
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\window_close_lifetime\\generated\\PaintLifetime.h",
+      "bytes": 7468,
+      "sha256": "52d7f3da7239c59d7c4d2cd9e59186b71ef65047c0d233b5898eaddc0c8eed6e"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\window_close_lifetime\\generated\\callback_once.inc",
+      "bytes": 271,
+      "sha256": "e28b22755a654a44aedb890422c4b732c5524a094c2290dd95a80e20fb4ea3d6"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\window_close_lifetime\\generated\\native_close.inc",
+      "bytes": 2887,
+      "sha256": "7f961eb8562120f1070bd1a6b09ea3d3ade44637d85ada15e4834754aa512884"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\window_close_lifetime\\generated\\native_receipt.inc",
+      "bytes": 1352,
+      "sha256": "e47d817e1cc7a2d4ab21a379d64f71ee65cdbd872e5eed85fe5c8a693f21502a"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\window_close_lifetime\\generated\\resize_visibility.inc",
+      "bytes": 908,
+      "sha256": "2fde1818f169fd1e2478e51d0a04df8d63713ab191fa6db9d4a67b72bd424a29"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\window_close_lifetime\\generated\\visibility_messages.inc",
+      "bytes": 503,
+      "sha256": "ebf8cfc67e10808267be63189aead37752293c9acd4c966b8f2ff7702b63eaed"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\window_close_lifetime\\generated\\window_helpers.inc",
+      "bytes": 867,
+      "sha256": "51a5a96680160dbd31acc1fd7f9decc9d70bc7ecb016b555acf89a5429ecd130"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\window_close_lifetime\\generated\\window_visibility.inc",
+      "bytes": 1389,
+      "sha256": "a441cfad8056ff02d08b3ea07cadb70d6394b35105abecbfe6a73e12be2fb70d"
+    }
+  ],
+  "compilerObjectPins": [
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\renderers\\webview2\\soui_auto_host.dir\\Release\\auto_webview_host.obj",
+      "bytes": 442883,
+      "sha256": "a03babd0df234014076b0e2002aba3ac2e3e5d908c481f754195cf77d8d8eff2",
+      "machine": "0x014c"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\renderers\\webview2\\soui_webview2.dir\\Release\\webview2_host.obj",
+      "bytes": 3714876,
+      "sha256": "27668beb4c2e17316e6a6619d40f9ee94becc0badf3935381e0a2f0e6a9e5aef",
+      "machine": "0x014c"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\soui_sdk.dir\\Release\\action_contract.obj",
+      "bytes": 1678838,
+      "sha256": "b133c2b4ce84159301e4267a465b98adafba0e12580edef2d330056e61ba67e7",
+      "machine": "0x014c"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\soui_sdk.dir\\Release\\bridge_transport.obj",
+      "bytes": 2811101,
+      "sha256": "ec552839cc065d3585f687dfa49583714d805fd866f6558d976d1c2c38d45014",
+      "machine": "0x014c"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\soui_sdk.dir\\Release\\cursor_broker.obj",
+      "bytes": 194218,
+      "sha256": "d5b749b5203d407b2d65d18998dfd56e553a1783eecf91076f7c7cd427397c07",
+      "machine": "0x014c"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\soui_sdk.dir\\Release\\cursor_queue.obj",
+      "bytes": 8251,
+      "sha256": "1212534eff9d24b88c02d6fc563ff953a7d84523f9277d23448c19da25e9e178",
+      "machine": "0x014c"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\soui_sdk.dir\\Release\\cursor_resources.obj",
+      "bytes": 3239,
+      "sha256": "74d19b49863e429be5ce28522abe6ac92494ef7fdc0b29b1765b335b0e8b402a",
+      "machine": "0x014c"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\soui_sdk.dir\\Release\\desktop_services.obj",
+      "bytes": 264311,
+      "sha256": "65c43422adf87916836845357d8cfbde49dcca13958412f87736e2a42d24adcb",
+      "machine": "0x014c"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\soui_sdk.dir\\Release\\directory_scanner.obj",
+      "bytes": 1969071,
+      "sha256": "16b387cdd2a4572db9e846c47356476244acf4f2f6042894e6076dad9558494c",
+      "machine": "0x014c"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\soui_sdk.dir\\Release\\engine_thread.obj",
+      "bytes": 277009,
+      "sha256": "1e762926bb37e44ef32d76a0da5b9ee644cefb9a7d0b7f0539b53a218eb00472",
+      "machine": "0x014c"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\soui_sdk.dir\\Release\\event_bus.obj",
+      "bytes": 169778,
+      "sha256": "b12f545a45b260733a1a7a506d8a9615a1f6ba4d68491c212606728a8dc13bcd",
+      "machine": "0x014c"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\soui_sdk.dir\\Release\\fileinsight-service.obj",
+      "bytes": 1968980,
+      "sha256": "49e89669597aac1dc690def613701a9a2c31c28bbe3dad2caf16a2dd871152cb",
+      "machine": "0x014c"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\soui_sdk.dir\\Release\\global_shortcut.obj",
+      "bytes": 59647,
+      "sha256": "1eb40e433ba911d69cbb0b356f9d40203de20555b23604bfd38fc91c6fd5d760",
+      "machine": "0x014c"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\soui_sdk.dir\\Release\\gui_commands.obj",
+      "bytes": 2716869,
+      "sha256": "7028e54aacc730508dcfa632cf7d7ad7b04d14f9b59a7ed8275a6379eb264b5c",
+      "machine": "0x014c"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\soui_sdk.dir\\Release\\input_frame_trace.obj",
+      "bytes": 177982,
+      "sha256": "612b5bfd31a6467519b6053abed1ccbffdb54129c985e3557a5a85c10828d0db",
+      "machine": "0x014c"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\soui_sdk.dir\\Release\\interaction_protocol.obj",
+      "bytes": 36224,
+      "sha256": "7d543857943acf4231b5ec0a800e92216b4109c9b88be3654aad6c7bd293df30",
+      "machine": "0x014c"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\soui_sdk.dir\\Release\\json_bridge.obj",
+      "bytes": 2536991,
+      "sha256": "f0a3f6df7aca5438f5d038b9bc78f317fcde33630a38acb27de250abdc409bbf",
+      "machine": "0x014c"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\soui_sdk.dir\\Release\\menu_service.obj",
+      "bytes": 288275,
+      "sha256": "cdb48052a45923f82eb83970776f5fe25b629f760f4d012bfbf99ee9fdd09669",
+      "machine": "0x014c"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\soui_sdk.dir\\Release\\miniblink_trace_source.obj",
+      "bytes": 83604,
+      "sha256": "8f3b8e0a7ff138bbec0d8e84049ddcf6e262666ca34b2597d24220143a8d4af9",
+      "machine": "0x014c"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\soui_sdk.dir\\Release\\permission_store.obj",
+      "bytes": 495888,
+      "sha256": "b74ad8ba6485a4c29925564dfc716aaa84e15ff52c644b9d0a38c1165ab43c29",
+      "machine": "0x014c"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\soui_sdk.dir\\Release\\result.obj",
+      "bytes": 10035,
+      "sha256": "0f540b51166a567460cb9b74c6644cd97effa29c2a9590214bbe3bc56d4c0c89",
+      "machine": "0x014c"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\soui_sdk.dir\\Release\\runtime_profile.obj",
+      "bytes": 47089,
+      "sha256": "05eeff8e4207666440b30b14aa3245ea1d41b7f876009349231886946ca48d04",
+      "machine": "0x014c"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\soui_sdk.dir\\Release\\soui_miniblink_host.obj",
+      "bytes": 4668377,
+      "sha256": "4b881ac2881d503438935fce3c66927318345e7e2721fd034522831b563ff5f2",
+      "machine": "0x014c"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\soui_sdk.dir\\Release\\task_service.obj",
+      "bytes": 4032107,
+      "sha256": "e0478e530deec31c59ba39823f2ee7ffedce3354f506f8541e0a5a51a9cc65c9",
+      "machine": "0x014c"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\soui_sdk.dir\\Release\\task_store.obj",
+      "bytes": 634723,
+      "sha256": "75b99d6e1ebf591531f6697f727f193e8bc13085db395331b139efe7b35a141e",
+      "machine": "0x014c"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\soui_sdk.dir\\Release\\tray_service.obj",
+      "bytes": 109911,
+      "sha256": "c891ba385b4e824f0cb4e21537912b13003d1b279f1a908a679958684ba8c42a",
+      "machine": "0x014c"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\soui_sdk.dir\\Release\\webview_session.obj",
+      "bytes": 121384,
+      "sha256": "88774a14858fa8ab3cc346a1703494adac897a26f6a744131d4cbe0680e9d2bf",
+      "machine": "0x014c"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\soui_sdk.dir\\Release\\windows_local_endpoint.obj",
+      "bytes": 2074493,
+      "sha256": "86f5075063ed01e8e2f0c6ff01748d7ca498539310be361138e21b6622cef727",
+      "machine": "0x014c"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\soui_sdk.dir\\Release\\windows_peer_identity.obj",
+      "bytes": 56457,
+      "sha256": "2698664737a3e89a4cbb8cb035b63b3d7f87ee63394b7d8d9cf832ff6a14a899",
+      "machine": "0x014c"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\input_admission\\soui_input_mailbox_tests.dir\\Release\\fixture.obj",
+      "bytes": 743553,
+      "sha256": "c7c078666bba60e369d326f598b0860fa6603f3d956cbd563095c2047716ed73",
+      "machine": "0x014c"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\native_trace_ui_lease\\soui_native_trace_ui_lease_tests.dir\\Release\\fixture.obj",
+      "bytes": 85098,
+      "sha256": "cb2d2b090ffc347889c72f1eb0dabd0b8b380f5712b7a06bf379879185804bef",
+      "machine": "0x014c"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\soui_frame_buffer_lease_policy_tests.dir\\Release\\frame_buffer_lease_policy_tests.obj",
+      "bytes": 133512,
+      "sha256": "1fac5f69dbf5b4290f1bdb88a1d5ed5b823aba92b3b3699457c402389396d48f",
+      "machine": "0x014c"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\soui_miniblink_unmount_tests.dir\\Release\\miniblink_unmount_tests.obj",
+      "bytes": 723091,
+      "sha256": "ca36f70cb38c755b0246056fba87a9851aec3e62b5c60c4f128c22ac4d114a33",
+      "machine": "0x014c"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\soui_miniblink_unmount_tests.dir\\Release\\soui_miniblink_host.obj",
+      "bytes": 4673089,
+      "sha256": "d02ff52b71e31846aab8936a6a34cc63de2dabf98f2d2d2010dad5fbc1fcad5e",
+      "machine": "0x014c"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\window_close_lifetime\\soui_window_close_lifetime_source_tests.dir\\Release\\fixture.obj",
+      "bytes": 130892,
+      "sha256": "e6be55c45d101fe5d188f9ec461876791c5a224081a93e313dedca17703e09a2",
+      "machine": "0x014c"
+    }
+  ],
+  "compilerRecordPins": [
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\renderers\\webview2\\soui_auto_host.dir\\Release\\soui_auto_host.tlog\\CL.command.1.tlog",
+      "bytes": 1310,
+      "sha256": "1941e3b05caa699eeb3a94d2efac185ac359b6316fbde2f405122d8a791e5d30"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\renderers\\webview2\\soui_auto_host.dir\\Release\\soui_auto_host.tlog\\Cl.items.tlog",
+      "bytes": 145,
+      "sha256": "66ae2c4620ab21527808257f442c39fbea2168958d8ea22f8555e79dcd8e81fb"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\renderers\\webview2\\soui_auto_host.dir\\Release\\soui_auto_host.tlog\\CL.read.1.tlog",
+      "bytes": 55032,
+      "sha256": "5575f677ea73ab2c2db79ac4a81fadead0733e3f3a9301a926b169aa93d5fb9f"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\renderers\\webview2\\soui_auto_host.dir\\Release\\soui_auto_host.tlog\\CL.write.1.tlog",
+      "bytes": 296,
+      "sha256": "e83a8f55b37cc329d84ec3c7979aaba22c1659c7cba0ac02a108394f68852553"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\renderers\\webview2\\soui_auto_host.dir\\Release\\soui_auto_host.tlog\\CustomBuild.command.1.tlog",
+      "bytes": 397,
+      "sha256": "2d42f88a23d5de718510fd33269e8ebd0d22c7904bc260472133a6f4fd0962d2"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\renderers\\webview2\\soui_auto_host.dir\\Release\\soui_auto_host.tlog\\CustomBuild.read.1.tlog",
+      "bytes": 157,
+      "sha256": "875daad0134fe0def8f58aed4f1eb0a734e5428fb2e8ca7439a9ac2d59ef2f19"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\renderers\\webview2\\soui_auto_host.dir\\Release\\soui_auto_host.tlog\\CustomBuild.write.1.tlog",
+      "bytes": 121,
+      "sha256": "55a807ff30b86cff9539868642308142871d591bdc55f24849c3d3a9a6c2c638"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\renderers\\webview2\\soui_auto_host.dir\\Release\\soui_auto_host.tlog\\Lib-link.read.1.tlog",
+      "bytes": 446,
+      "sha256": "f85d0714209f3ba1077965dccc669d7150a387ca90e325ed478906313a53b654"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\renderers\\webview2\\soui_auto_host.dir\\Release\\soui_auto_host.tlog\\Lib-link.write.1.tlog",
+      "bytes": 340,
+      "sha256": "6d2fcaa92628f3734f72f383fd4c3e62139f05dca17cc770a31d75a0c0aa5ce2"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\renderers\\webview2\\soui_auto_host.dir\\Release\\soui_auto_host.tlog\\Lib.command.1.tlog",
+      "bytes": 758,
+      "sha256": "7b6ba36cd0e5ec995c9c37818da1e74638e79f0f34b5ea7296f85d5ed11d0cdb"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\renderers\\webview2\\soui_webview2.dir\\Release\\soui_webview2.tlog\\CL.command.1.tlog",
+      "bytes": 1476,
+      "sha256": "e704d9f4f007180d0dc1c9c092d86a7e51f92131ceb2595ee3a65a37b9ce509b"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\renderers\\webview2\\soui_webview2.dir\\Release\\soui_webview2.tlog\\Cl.items.tlog",
+      "bytes": 140,
+      "sha256": "8211887b0aad9095a41ae40753e62993c6658c0d7b2a9925a30434cdfc141cdc"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\renderers\\webview2\\soui_webview2.dir\\Release\\soui_webview2.tlog\\CL.read.1.tlog",
+      "bytes": 62818,
+      "sha256": "25ba5fd1aa7a4b8c20b77fdccc8399d14339a5e1389196435a6ccd254b59e62f"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\renderers\\webview2\\soui_webview2.dir\\Release\\soui_webview2.tlog\\CL.write.1.tlog",
+      "bytes": 286,
+      "sha256": "b77f56e89c6754a7cab77bb894974f79ae2fef0bc77dad6c2e67d1fa0f0686d1"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\renderers\\webview2\\soui_webview2.dir\\Release\\soui_webview2.tlog\\CustomBuild.command.1.tlog",
+      "bytes": 397,
+      "sha256": "2d42f88a23d5de718510fd33269e8ebd0d22c7904bc260472133a6f4fd0962d2"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\renderers\\webview2\\soui_webview2.dir\\Release\\soui_webview2.tlog\\CustomBuild.read.1.tlog",
+      "bytes": 157,
+      "sha256": "875daad0134fe0def8f58aed4f1eb0a734e5428fb2e8ca7439a9ac2d59ef2f19"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\renderers\\webview2\\soui_webview2.dir\\Release\\soui_webview2.tlog\\CustomBuild.write.1.tlog",
+      "bytes": 121,
+      "sha256": "55a807ff30b86cff9539868642308142871d591bdc55f24849c3d3a9a6c2c638"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\renderers\\webview2\\soui_webview2.dir\\Release\\soui_webview2.tlog\\Lib-link.read.1.tlog",
+      "bytes": 426,
+      "sha256": "ce480c95e05f9a834b363e20b442223fc13e41353ed39197c373b93f5c4f5bb4"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\renderers\\webview2\\soui_webview2.dir\\Release\\soui_webview2.tlog\\Lib-link.write.1.tlog",
+      "bytes": 328,
+      "sha256": "d68c0511e0fab7c6055fc79f79821dd361d5929d4c6d3e3fb75a37ba741aa739"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\renderers\\webview2\\soui_webview2.dir\\Release\\soui_webview2.tlog\\Lib.command.1.tlog",
+      "bytes": 736,
+      "sha256": "229feef58091be2a9399e5998e331d5e480087e88d97f35a1e911879e8bb0986"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\soui_sdk.dir\\Release\\soui_sdk.tlog\\CL.command.1.tlog",
+      "bytes": 34982,
+      "sha256": "fecc45d0d8e97bfbbc01c805c30130f6e5d3d933fb1e50d6316f6b9b9b7be4dc"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\soui_sdk.dir\\Release\\soui_sdk.tlog\\Cl.items.tlog",
+      "bytes": 3289,
+      "sha256": "2cf2def6af0da51fb0de6e66ea6f8a606c68a1a4e2d04bce4cb07d592f363fbb"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\soui_sdk.dir\\Release\\soui_sdk.tlog\\CL.read.1.tlog",
+      "bytes": 997594,
+      "sha256": "1b316c7b0077149dbcd51a1732f2ac3a4d159f21569ef9b4966d30ac96cc2fa0"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\soui_sdk.dir\\Release\\soui_sdk.tlog\\CL.write.1.tlog",
+      "bytes": 6584,
+      "sha256": "a7acd848a02f014505ebfa8b6cbbe1328ff0ad00dd8aa9e882902a35443952a4"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\soui_sdk.dir\\Release\\soui_sdk.tlog\\CustomBuild.command.1.tlog",
+      "bytes": 359,
+      "sha256": "af0fffd8a8138e683397db2256d2f0f2d3d36d20519a7b4e695c8f2c77a5eb19"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\soui_sdk.dir\\Release\\soui_sdk.tlog\\CustomBuild.read.1.tlog",
+      "bytes": 410,
+      "sha256": "fa2a7c64b4d67cda83e017d8160a873d0b55a9465b80205e6bc99c9b2646c1f4"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\soui_sdk.dir\\Release\\soui_sdk.tlog\\CustomBuild.write.1.tlog",
+      "bytes": 83,
+      "sha256": "e01d8e055d6ef61db5552c0fcf2ad66373f93bfb14a061b30cfaf682693bb39b"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\soui_sdk.dir\\Release\\soui_sdk.tlog\\Lib-link.read.1.tlog",
+      "bytes": 7450,
+      "sha256": "1286d5302e5c0bc3160519113ca2c251b953c95e5b5375512443edd6bc94a105"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\soui_sdk.dir\\Release\\soui_sdk.tlog\\Lib-link.write.1.tlog",
+      "bytes": 3716,
+      "sha256": "28766550c451d4086e192ebf61d5a2448f0d9061bdbc08bdbb22a61dfc97656a"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\sdk\\soui_sdk.dir\\Release\\soui_sdk.tlog\\Lib.command.1.tlog",
+      "bytes": 6302,
+      "sha256": "dea72755ea9d5cce827c25223cc769d2dc6c8e2bab0511e18d956d7c469bc9be"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\input_admission\\soui_input_mailbox_tests.dir\\Release\\soui_inp.E89B24DF.tlog\\CL.command.1.tlog",
+      "bytes": 1102,
+      "sha256": "37d65d0bf794ee5629ec5afa9e6de40f51bd1432571af53c97fa5237edf8e64f"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\input_admission\\soui_input_mailbox_tests.dir\\Release\\soui_inp.E89B24DF.tlog\\Cl.items.tlog",
+      "bytes": 151,
+      "sha256": "847e40603f51c449a45f43fba835334d0375727b91aba5ca9b8b7f630cb5d7e4"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\input_admission\\soui_input_mailbox_tests.dir\\Release\\soui_inp.E89B24DF.tlog\\CL.read.1.tlog",
+      "bytes": 27470,
+      "sha256": "64471e33f2f90f41b6cb222f810af6ec56860f64f426a65b2733b53111156872"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\input_admission\\soui_input_mailbox_tests.dir\\Release\\soui_inp.E89B24DF.tlog\\CL.write.1.tlog",
+      "bytes": 308,
+      "sha256": "2aaae69ff0c8cfdf6a0e8278ec8a8daaca385959e60498ca61258b2b8a923462"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\input_admission\\soui_input_mailbox_tests.dir\\Release\\soui_inp.E89B24DF.tlog\\CustomBuild.command.1.tlog",
+      "bytes": 409,
+      "sha256": "c7e5e68b82946cd00dfff21fe36d92f0129c3fc8cf15aa666877123a457ff8bf"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\input_admission\\soui_input_mailbox_tests.dir\\Release\\soui_inp.E89B24DF.tlog\\CustomBuild.read.1.tlog",
+      "bytes": 108,
+      "sha256": "880f21f670417594617112684988bfead1735f41088483c83da21986d0396dcb"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\input_admission\\soui_input_mailbox_tests.dir\\Release\\soui_inp.E89B24DF.tlog\\CustomBuild.write.1.tlog",
+      "bytes": 133,
+      "sha256": "d4c3c2dd7c54779e6d54b382885036bb9d63a9ddf67ad35dceae14fbbcd2720d"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\input_admission\\soui_input_mailbox_tests.dir\\Release\\soui_inp.E89B24DF.tlog\\link.command.1.tlog",
+      "bytes": 2074,
+      "sha256": "2fd2d0482a6b4cc8d5290575e6b9041467dc496dea173a88271342fa74d8f859"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\input_admission\\soui_input_mailbox_tests.dir\\Release\\soui_inp.E89B24DF.tlog\\link.read.1.tlog",
+      "bytes": 5386,
+      "sha256": "a8edb97006717151a6aa340fabe2ba42a8b84e00045344df4497abf0318b9295"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\input_admission\\soui_input_mailbox_tests.dir\\Release\\soui_inp.E89B24DF.tlog\\link.secondary.1.tlog",
+      "bytes": 102,
+      "sha256": "56fd8da3518ec69e642324ae9eb9752bd837295e84c98b706769b830883bd20f"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\input_admission\\soui_input_mailbox_tests.dir\\Release\\soui_inp.E89B24DF.tlog\\link.write.1.tlog",
+      "bytes": 384,
+      "sha256": "23849b5114babf5a4ae34466bb9d5dd519fbd1fbf5ebd0395541f877ec1730df"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\native_trace_ui_lease\\soui_native_trace_ui_lease_tests.dir\\Release\\soui_nat.CC8B84E0.tlog\\CL.command.1.tlog",
+      "bytes": 1158,
+      "sha256": "e62ecae6e06ef5ccaf1792931b3c1c052abd94ebd3258224ae47e6b6a3475647"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\native_trace_ui_lease\\soui_native_trace_ui_lease_tests.dir\\Release\\soui_nat.CC8B84E0.tlog\\Cl.items.tlog",
+      "bytes": 171,
+      "sha256": "7f65c69226e1493daf118e84bbd2c2fdbc59fd399ed4788a0bbe274e186cd442"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\native_trace_ui_lease\\soui_native_trace_ui_lease_tests.dir\\Release\\soui_nat.CC8B84E0.tlog\\CL.read.1.tlog",
+      "bytes": 43982,
+      "sha256": "562fd68b97c744ae0358e6ef917f5b5b559e49e62fe2469154815822e0f20f97"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\native_trace_ui_lease\\soui_native_trace_ui_lease_tests.dir\\Release\\soui_nat.CC8B84E0.tlog\\CL.write.1.tlog",
+      "bytes": 348,
+      "sha256": "a4fcbac6d0887d86ffac1fe0108ae9b0c550447765483455cc836ccf211e5306"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\native_trace_ui_lease\\soui_native_trace_ui_lease_tests.dir\\Release\\soui_nat.CC8B84E0.tlog\\CustomBuild.command.1.tlog",
+      "bytes": 421,
+      "sha256": "c556c340e1f165c308f59b8ca766f790f4f4749ad3889c996982bce71d5c436f"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\native_trace_ui_lease\\soui_native_trace_ui_lease_tests.dir\\Release\\soui_nat.CC8B84E0.tlog\\CustomBuild.read.1.tlog",
+      "bytes": 114,
+      "sha256": "f6fae3a591c4c46d06817b15b312195f632867f12bf8d82473135614ee67d63e"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\native_trace_ui_lease\\soui_native_trace_ui_lease_tests.dir\\Release\\soui_nat.CC8B84E0.tlog\\CustomBuild.write.1.tlog",
+      "bytes": 145,
+      "sha256": "464c8d87eed416f28670cfe62f2d40920f2d8db0320b3da0b76e5fd1340b9f2c"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\native_trace_ui_lease\\soui_native_trace_ui_lease_tests.dir\\Release\\soui_nat.CC8B84E0.tlog\\link.command.1.tlog",
+      "bytes": 2202,
+      "sha256": "ca6df7e4d8164b5475347a71055fb4d852d687482f9011378500cbe3a0b8b29f"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\native_trace_ui_lease\\soui_native_trace_ui_lease_tests.dir\\Release\\soui_nat.CC8B84E0.tlog\\link.read.1.tlog",
+      "bytes": 5442,
+      "sha256": "90367eb2c17059ac4bf2854068b11121285ff928392606bf15c9c91f9b09b18f"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\native_trace_ui_lease\\soui_native_trace_ui_lease_tests.dir\\Release\\soui_nat.CC8B84E0.tlog\\link.secondary.1.tlog",
+      "bytes": 116,
+      "sha256": "be6efce9b05795f9e55312d3e0e4ca69a6af07b75a8f22f2ebee505f9e60042d"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\native_trace_ui_lease\\soui_native_trace_ui_lease_tests.dir\\Release\\soui_nat.CC8B84E0.tlog\\link.write.1.tlog",
+      "bytes": 440,
+      "sha256": "7b6ad975cd4caa933ce95432209b2f867257e35928ba4420cd06d428ffeac88d"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\soui_frame_buffer_lease_policy_tests.dir\\Release\\soui_fra.2CE9EC76.tlog\\CL.command.1.tlog",
+      "bytes": 1110,
+      "sha256": "f8df6d4bc98769b003e6f1f532de86cc08d96f0df9aef7d4f057385c213089fa"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\soui_frame_buffer_lease_policy_tests.dir\\Release\\soui_fra.2CE9EC76.tlog\\Cl.items.tlog",
+      "bytes": 179,
+      "sha256": "d7d991f759bcc64e21e0c5334629478a14091a05134edf1bbe0a38617fab2fec"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\soui_frame_buffer_lease_policy_tests.dir\\Release\\soui_fra.2CE9EC76.tlog\\CL.read.1.tlog",
+      "bytes": 19418,
+      "sha256": "4e9ca2d89629ef0beb849f2514c2a5d83d4353db274402aaab84b3d0b6d2067b"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\soui_frame_buffer_lease_policy_tests.dir\\Release\\soui_fra.2CE9EC76.tlog\\CL.write.1.tlog",
+      "bytes": 364,
+      "sha256": "709d03268495ca5fa3dfd027052dca04ad9f769186b3624f5fcf68440ad69920"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\soui_frame_buffer_lease_policy_tests.dir\\Release\\soui_fra.2CE9EC76.tlog\\CustomBuild.command.1.tlog",
+      "bytes": 377,
+      "sha256": "3c5b24020cf0c434a0f8e741a708efd9d4a98de61f594255ff2d4c696d2a85d1"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\soui_frame_buffer_lease_policy_tests.dir\\Release\\soui_fra.2CE9EC76.tlog\\CustomBuild.read.1.tlog",
+      "bytes": 291,
+      "sha256": "f57cc1daad11bba8b793e6d7702a583887e6507a662e6bf26b75247d7d758d3b"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\soui_frame_buffer_lease_policy_tests.dir\\Release\\soui_fra.2CE9EC76.tlog\\CustomBuild.write.1.tlog",
+      "bytes": 101,
+      "sha256": "915916218ea55eeb3c76691a0e74efec05083df102ea9a45da5f8f0139482b69"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\soui_frame_buffer_lease_policy_tests.dir\\Release\\soui_fra.2CE9EC76.tlog\\link.command.1.tlog",
+      "bytes": 1850,
+      "sha256": "298112073f9d244713fa6d8bbe0948bf8d521026a04fe0346126fe1a1fc2428c"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\soui_frame_buffer_lease_policy_tests.dir\\Release\\soui_fra.2CE9EC76.tlog\\link.read.1.tlog",
+      "bytes": 4770,
+      "sha256": "98ae5bed2f64517a02159ab0299770ee8ee02a779fa0ff30294a61f242f88d3b"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\soui_frame_buffer_lease_policy_tests.dir\\Release\\soui_fra.2CE9EC76.tlog\\link.secondary.1.tlog",
+      "bytes": 122,
+      "sha256": "20cb22b7363090a746eda67ef937ba067801154f6fef9d4f6f75f221d1dfe224"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\soui_frame_buffer_lease_policy_tests.dir\\Release\\soui_fra.2CE9EC76.tlog\\link.write.1.tlog",
+      "bytes": 416,
+      "sha256": "dd314f79195fc85935900535937174ef386ce65009c9502abec3daa9e42e716e"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\soui_miniblink_unmount_tests.dir\\Release\\soui_min.287F6EA0.tlog\\CL.command.1.tlog",
+      "bytes": 2766,
+      "sha256": "9458d8c6f2b2f5594bf41bfe437fc47d99d13e944d3377bd0cb7a1b94f2f705d"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\soui_miniblink_unmount_tests.dir\\Release\\soui_min.287F6EA0.tlog\\Cl.items.tlog",
+      "bytes": 302,
+      "sha256": "4c4662464e9045ad60bf71528dd1ec6d4dd6110c4fdbfe07c089d2d823d47cf1"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\soui_miniblink_unmount_tests.dir\\Release\\soui_min.287F6EA0.tlog\\CL.read.1.tlog",
+      "bytes": 117212,
+      "sha256": "b8d5c874b7a73753759d3eb7b39c825d577a1fc31fec817caad816f8cd1db3a9"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\soui_miniblink_unmount_tests.dir\\Release\\soui_min.287F6EA0.tlog\\CL.write.1.tlog",
+      "bytes": 610,
+      "sha256": "75161d4d1595ae3fe14ebeb7ab1920329a7a83fecaf168f031a8493b55b9d2ba"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\soui_miniblink_unmount_tests.dir\\Release\\soui_min.287F6EA0.tlog\\CustomBuild.command.1.tlog",
+      "bytes": 377,
+      "sha256": "3c5b24020cf0c434a0f8e741a708efd9d4a98de61f594255ff2d4c696d2a85d1"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\soui_miniblink_unmount_tests.dir\\Release\\soui_min.287F6EA0.tlog\\CustomBuild.read.1.tlog",
+      "bytes": 291,
+      "sha256": "f57cc1daad11bba8b793e6d7702a583887e6507a662e6bf26b75247d7d758d3b"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\soui_miniblink_unmount_tests.dir\\Release\\soui_min.287F6EA0.tlog\\CustomBuild.write.1.tlog",
+      "bytes": 101,
+      "sha256": "915916218ea55eeb3c76691a0e74efec05083df102ea9a45da5f8f0139482b69"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\soui_miniblink_unmount_tests.dir\\Release\\soui_min.287F6EA0.tlog\\link.command.1.tlog",
+      "bytes": 2376,
+      "sha256": "57b74f6d6ccae1af91922c0ec892db52de511eb3acf7d934b412d41a7a56f6d8"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\soui_miniblink_unmount_tests.dir\\Release\\soui_min.287F6EA0.tlog\\link.read.1.tlog",
+      "bytes": 5804,
+      "sha256": "bf526b85b594e796d492eaf4448672d78737123833adaefdb0bbee942111af45"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\soui_miniblink_unmount_tests.dir\\Release\\soui_min.287F6EA0.tlog\\link.secondary.1.tlog",
+      "bytes": 206,
+      "sha256": "07c47e8117d3a4b5aa9f1135f99f6f17fef505106be5eccc6c486e25e5f70931"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\soui_miniblink_unmount_tests.dir\\Release\\soui_min.287F6EA0.tlog\\link.write.1.tlog",
+      "bytes": 568,
+      "sha256": "218e4fd1928d16f3e39f1a86ab37eeb2f019966f0acf6ca87a77cf93217b812d"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\window_close_lifetime\\soui_window_close_lifetime_source_tests.dir\\Release\\soui_win.AA1F26E0.tlog\\CL.command.1.tlog",
+      "bytes": 1286,
+      "sha256": "6ac04ada3577fb514a008e393df92e7ad813e417f2bd26e6a904c7ab44e9f36b"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\window_close_lifetime\\soui_window_close_lifetime_source_tests.dir\\Release\\soui_win.AA1F26E0.tlog\\Cl.items.tlog",
+      "bytes": 178,
+      "sha256": "a37b6b734805e3facd48fd2cffdbbfedc6c0794cc8634a47877f05791fd9c79f"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\window_close_lifetime\\soui_window_close_lifetime_source_tests.dir\\Release\\soui_win.AA1F26E0.tlog\\CL.read.1.tlog",
+      "bytes": 22144,
+      "sha256": "7308f1bdf2d530603a6640aede057a4c4a347a9ac7e5529e8ea943c4fb1415e6"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\window_close_lifetime\\soui_window_close_lifetime_source_tests.dir\\Release\\soui_win.AA1F26E0.tlog\\CL.write.1.tlog",
+      "bytes": 362,
+      "sha256": "b83ae3bffccf1a2aabe9ab365f13bc3e059bd9e9a9dd0b8e3c5268b61ac75e6e"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\window_close_lifetime\\soui_window_close_lifetime_source_tests.dir\\Release\\soui_win.AA1F26E0.tlog\\CustomBuild.command.1.tlog",
+      "bytes": 421,
+      "sha256": "cdde5f8c8a63e773bc906d682447157fe5ee10c975316965370975fea29abbd0"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\window_close_lifetime\\soui_window_close_lifetime_source_tests.dir\\Release\\soui_win.AA1F26E0.tlog\\CustomBuild.read.1.tlog",
+      "bytes": 363,
+      "sha256": "140f16e7cd6cb1fdee81424d1323289a9183abb532c6ffa4461dfb75bf0eddcf"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\window_close_lifetime\\soui_window_close_lifetime_source_tests.dir\\Release\\soui_win.AA1F26E0.tlog\\CustomBuild.write.1.tlog",
+      "bytes": 145,
+      "sha256": "e9ca48073cdcc47f9a0939c015086d8ef30a6cd845512b346025946a525ae4e0"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\window_close_lifetime\\soui_window_close_lifetime_source_tests.dir\\Release\\soui_win.AA1F26E0.tlog\\link.command.1.tlog",
+      "bytes": 1960,
+      "sha256": "130de6d12a7bafca56c6366f664ae80d2df86c273f219721092e9fefe00ef525"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\window_close_lifetime\\soui_window_close_lifetime_source_tests.dir\\Release\\soui_win.AA1F26E0.tlog\\link.read.1.tlog",
+      "bytes": 4774,
+      "sha256": "9e6c790ea53c25557fca0da48a7bb0ac35a42d333bd36f8dd2d9024f8ba29f79"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\window_close_lifetime\\soui_window_close_lifetime_source_tests.dir\\Release\\soui_win.AA1F26E0.tlog\\link.secondary.1.tlog",
+      "bytes": 123,
+      "sha256": "26f05f7dc6d5096aca1e5ac9e1c93bcc9e3c92711087b32fa77932dd2aec69c7"
+    },
+    {
+      "path": "C:\\pm-build\\x86-final\\tests\\native\\window_close_lifetime\\soui_window_close_lifetime_source_tests.dir\\Release\\soui_win.AA1F26E0.tlog\\link.write.1.tlog",
+      "bytes": 468,
+      "sha256": "9d90bc7dde1fc1449d00059d7b942c08a46e1705ae8b951c4d1a671ca4e367d2"
+    }
+  ],
+  "evidencePins": [
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-x86-final-inputs.json",
+      "bytes": 4638,
+      "sha256": "88a3019d3ad678295abe51ddd362376fb4196f94d24ca87ab561fc3f9a23e372"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-x86-final-configure.log",
+      "bytes": 2945,
+      "sha256": "064edb9d6b5bc434c6bc70911eb8374ffa6b537f730f43992f59d8b2f9b6a108"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-x86-final-configure.result.json",
+      "bytes": 712,
+      "sha256": "61a289249c02475078f1022e5293918935056075234d7e05302c74db9f9b0dca"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-x86-final-build.log",
+      "bytes": 10158,
+      "sha256": "51adf7dc2c039f452affb3c0b908e79f7667f33812fa0d663a7e230bcd3392b5"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-x86-final-build.result.json",
+      "bytes": 689,
+      "sha256": "579406941e7bbe6489ddd9791ba882fc76729d979b9a23611638375e075b1c59"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-x86-final-registry.json",
+      "bytes": 125621,
+      "sha256": "1ccf1c23b4cb54b0a1b3edf60202ac170c0cd7895db4b646abd6f9c2e70266f0"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-x86-final-selection.json",
+      "bytes": 2085,
+      "sha256": "16fd8d09b78fd5aaa98f68d8603a1457ddef9605527c6e566bbec8b5528dda44"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-x86-final-ctest.log",
+      "bytes": 2944,
+      "sha256": "fdcc7bdf349795955be7b69f860356c46a5685ad392bae4455cd27bdca70f5a9"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-x86-final-ctest.result.json",
+      "bytes": 796,
+      "sha256": "091cd27b63133096375178c3222adda7346d879cb505f11015dcafebcf3a194a"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\pr-short-merge-20261028\\native-x86-final-ctest.junit.xml",
+      "bytes": 1685,
+      "sha256": "341b48583816a0a157cc3bf9fd3d93f3b6171d1c01eeea2a2af539fbc4355f1e"
+    }
+  ],
+  "result": {
+    "exactRegisteredCases": 6,
+    "executed": 6,
+    "passed": 6,
+    "failed": 0,
+    "configureNaturalExitCode": 0,
+    "buildNaturalExitCode": 0,
+    "ctestNaturalExitCode": 0,
+    "forcedCleanupUsed": false,
+    "sourceOrManifestModified": false,
+    "previousX64ChecksRerun": false,
+    "nodePsRunnerRerun": false
+  },
+  "boundaries": {
+    "scope": "Windows x86 necessary short logic slice only",
+    "productGuiExecuted": false,
+    "businessDllLoaded": false,
+    "validInputInjected": false,
+    "longTestsExecuted": false,
+    "fullMatrixPassed": false,
+    "performanceGate": false,
+    "releaseReady": false
+  }
+}

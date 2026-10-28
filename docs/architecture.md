@@ -1,5 +1,9 @@
 # 架构与所有权
 
+可选 `Soui::AutoHost` 在 `sdk/renderers/auto/` 统一持有启动选择与后端生命周期。
+`auto` 模板使用该组件，启动前优先 WebView2，明确不可用时使用随包 MiniBlink；
+两份页面资源分开构建。已有模板和基础 SDK 的依赖不变。详见 [ADR-0127](adr/0127-automatic-renderer-host.md)。
+
 0.4 的可选现代适配器由 `sdk/renderers/webview2/` 持有，链接为 `Soui::WebView2`，通过公共 Host 和 Bridge 服务业务。基础 `Soui::Sdk` 默认不引入 Loader；现代模板由 `templates/modern-app/` 持有。环境策略与兼容应用共用 SDK，现代/兼容前端分别构建；具体边界见 [ADR-0016](adr/0016-runtime-profiles-and-modern-backend.md)。
 
 ## 三层交付

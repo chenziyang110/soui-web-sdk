@@ -42,7 +42,7 @@ if($RecipeRoot){
   $script:derived=RecipeRows;Need ($recipes.Count-eq6-and$derived.Count-eq46-and$records.Count-eq8) 'Frozen new-role dimensions'
   foreach($family in $expectedCounts.Keys){Need (@($derived|Where-Object{$_.writerFamily-ceq$family}).Count-eq$expectedCounts[$family]) ('Recipe output extent: '+$family)}
   foreach($suffix in @('/generated/cc/input/ScrollController.cpp','/generated/cc/trees/ScrollTreeSnapshot.cpp')){
-   $row=@($derived|Where-Object{(Norm $_.pin.path).EndsWith($suffix,[StringComparison]::Ordinal)})
+   $row=@($derived|Where-Object{(Norm $_.pin.path).EndsWith((Norm $suffix),[StringComparison]::Ordinal)})
    Need ($row.Count-eq1-and$row[0].exactWholeFile-and$row[0].selectedObjects.Count-eq1-and(Norm $row[0].selectedObject).EndsWith(($suffix.Substring('/generated'.Length)+'.obj'),[StringComparison]::OrdinalIgnoreCase)) 'Real generated compiler source admission'
   }
  }

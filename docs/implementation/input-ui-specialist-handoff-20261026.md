@@ -1,10 +1,10 @@
 # 输入到可见反馈：专人一次性交接
 
-日期：2026-10-26。本阶段已交付生产源码、必要回归SOURCE、独立静态审查、ADR、严格来源和分批Draft PR。未配置/编译、未执行C++ SOURCE/CTest、应用、真实COM/GL、benchmark/profile或VM；下列执行命令均未运行。只做源码/差异/语法/字节与来源清单元数据核对；只读内存提取未落地测试产物。
+更新：2026-10-28。源码依赖链按维护者要求合入 main，必要短测与实际构建、失败修复和输入等价核对见[合并短测报告](../../verification/production-validation/pr-short-merge-2026-10-28/README.md)。已经通过且输入未变的短例不重复执行，长测后置。完整内核、真实Host/COM/GL、GPU采用、物理性能及生产资格仍未关闭。2026-10-26原冻结阶段仅做源码/元数据检查，下面保留其交付矩阵与后续专人执行方法；不能据原阶段“未运行”字样覆盖本轮限定短测，也不能把短测当成全部执行命令已运行。
 
-最终集成候选为本独立GPU/交接Draft的分支 `codex/input-ui-gpu-handoff-20261026`，以该PR实际head及执行前`git rev-parse HEAD`一致为准。正文不以worker提交或前序快照替代最终head。基线是PR110的`44eff565bf9ab7778a8b9fdaa5403cc3b6f568ed`；PR109、尚未实测的PR110和最终候选必须分别冻结，不能把异条件数字拼为收益曲线。
+后续执行以 main 中实际冻结的完整提交和载荷为准，先记录执行前 `git rev-parse HEAD`，不以原Draft分支、worker提交或前序快照替代。下表是原源码交付的历史依赖和head，保留溯源用途。PR110原基线为`44eff565bf9ab7778a8b9fdaa5403cc3b6f568ed`；各基线和最终候选仍须分别冻结，不能把异条件数字拼为收益曲线。
 
-| Draft依赖 | 范围 | 已发布源码head |
+| 原Draft依赖 | 范围 | 原冻结源码head |
 |---|---|---|
 | [110](https://github.com/chenziyang110/soui-web-sdk/pull/110) | 基线/ready continuation | `44eff565bf9ab7778a8b9fdaa5403cc3b6f568ed` |
 | [111](https://github.com/chenziyang110/soui-web-sdk/pull/111) | W00 | `ca58a1b0f5e2e97e6df84051bdc1cb9954a956f4` |
@@ -22,7 +22,7 @@
 
 ## 需求、源码、fixture、证据与状态
 
-下表的“源码交付”只描述当前实现/设计差异。所有行的构建、fixture 执行、真实 Host 正确性和性能证据均为**未运行**。全局注册、来源及 WKE glue 以 Root 冻结树为准；缺少任何必需项先修复交接，不用旧用例/旧二进制补位。
+下表保留2026-10-26源码交付矩阵，最新的局部SOURCE/helper与SDK编译、fixture结果以上述合并短测报告为准。真实Host正确性和性能资格仍待验证。全局注册、来源及WKE glue以实际冻结树为准；缺少必需项先修复交接，不用旧用例或旧二进制补位。
 
 | 工作包 | 已交付源码/行为入口（相对仓库根） | 实际 fixture 或场景入口 | 需要返回的证据 / 当前状态 |
 |---|---|---|---|
