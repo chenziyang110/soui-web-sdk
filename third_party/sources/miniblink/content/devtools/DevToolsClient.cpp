@@ -8,6 +8,9 @@
 #include "content/devtools/DevToolsMgr.h"
 #include "content/devtools/DevToolsProtocolDispatcher.h"
 #include "content/browser/WebPage.h"
+#include "third_party/WebKit/Source/web/WebViewImpl.h"
+#include "third_party/WebKit/Source/core/loader/InspectorResourcePolicy.h"
+#include "third_party/WebKit/Source/core/page/Page.h"
 #include "third_party/WebKit/public/web/WebDevToolsFrontend.h"
 #include "third_party/WebKit/public/web/WebScriptSource.h"
 #include "third_party/WebKit/public/web/WebLocalFrame.h"
@@ -28,6 +31,7 @@ DevToolsClient::DevToolsClient(WebPage* page, blink::WebLocalFrame* frame)
     m_id = DevToolsMgr::getInst()->getNewestId();
     DevToolsMgr::getInst()->addLivedId(m_id);
 
+    m_devToolsAgent = nullptr;
     m_page = page;
     m_frame = frame;
     m_webToolsFrontend = blink::WebDevToolsFrontend::create(frame, this, blink::WebString::fromLatin1("zh-cn"));
@@ -110,6 +114,8 @@ private:
 
 void DevToolsClient::onDocumentReady()
 {
+    if (m_controlledSession) { m_controlledSession->enqueueAttach(getId()); return; }
+    if (!m_devToolsAgent) return;
     blink::Platform::current()->currentThread()->postTask(FROM_HERE, 
         new DocumentReadyToAgentTask(getId(), m_devToolsAgent));
 }
@@ -119,6 +125,7 @@ void DevToolsClient::sendMessageToBackend(const blink::WebString& message)
     String messageStr = message;
     String output = messageStr;
 
+    if (m_controlledSession) { m_controlledSession->enqueueToAgent(messageStr.utf8().data()); return; }
     if (!m_devToolsProtocolDispatcher->dispatcher(messageStr.utf8().data()) && m_devToolsAgent != nullptr)
         blink::Platform::current()->currentThread()->postTask(FROM_HERE, new MessageToAgentTask(m_devToolsAgent, messageStr.utf8().data()));
 
@@ -150,30 +157,52 @@ void DevToolsClient::sendMessageToEmbedder(const blink::WebString& message)
         if (!params->GetString(0, &protocolMessage))
             return;
 
-        if (!m_devToolsProtocolDispatcher->dispatcher(protocolMessage))
+        if (m_controlledSession) {
+            m_controlledSession->enqueueToAgent(protocolMessage);
+        } else if (m_devToolsAgent && !m_devToolsProtocolDispatcher->dispatcher(protocolMessage)) {
             blink::Platform::current()->currentThread()->postTask(FROM_HERE, new MessageToAgentTask(m_devToolsAgent, protocolMessage));
+        }
         
-        output = "dispatchProtocolMessage:";
-        output.append(protocolMessage.c_str());
-        output.append("\n");
-        OutputDebugStringA(output.utf8().data());
     } else if (method == "loadCompleted") {
         blink::WebScriptSource source(blink::WebString::fromUTF8("DevToolsAPI.setUseSoftMenu(true);"));
         m_frame->executeScript(source);
-    } else if (method == "loadNetworkResource" && params->GetSize() == 3) {
+    } else if (method == "loadNetworkResource") {
+        if (!m_controlledSession) return; // Preserve the legacy non-controlled path.
+        auto retainedSession = m_controlledSession;
+        auto* view = m_page ? m_page->webViewImpl() : nullptr;
+        auto* policy = view ? blink::InspectorResourcePolicy::from(view->page()) : nullptr;
+        auto resources = policy ? policy->state() : nullptr;
+        blink::InspectorResourceCallbackBorrow nativeCallout(resources);
+        const bool borrowed = resources && resources->beginOperation();
+        struct Borrow { std::shared_ptr<blink::InspectorResourceState> state; bool held;
+            ~Borrow() { if (held) state->endOperation(false); } } borrow{ resources, borrowed };
         std::string url;
-        std::string headers;
-        int streamId;
-        if (!params->GetString(0, &url) || !params->GetString(1, &headers) || !params->GetInteger(2, &streamId)) {
-            return;
+        int streamId = 0;
+        blink::InspectorResourceBytes bytes;
+        bool allowed = borrowed && params && params->GetSize() == 3
+            && params->GetString(0, &url) && url.size() <= 512
+            && params->GetInteger(2, &streamId) && streamId > 0
+            && resources->lookup(url, bytes) && (bytes.mime == 1 || bytes.mime == 2
+                || bytes.mime == 3 || bytes.mime == 4 || bytes.mime == 11);
+        // Native-approved text only. Headers are neither read nor forwarded.
+        if (allowed && bytes.size && String::fromUTF8(reinterpret_cast<const char*>(bytes.data), bytes.size).isNull())
+            allowed = false;
+        if (allowed) {
+            base::FundamentalValue stream(streamId);
+            for (unsigned int offset = 0; offset < bytes.size && !resources->closed();) {
+                unsigned int end = offset + ((bytes.size - offset) < 32768 ? bytes.size - offset : 32768);
+                while (end < bytes.size && (bytes.data[end] & 0xc0) == 0x80) --end;
+                if (end == offset) { allowed = false; break; }
+                base::StringValue chunk(std::string(reinterpret_cast<const char*>(bytes.data + offset), end - offset));
+                callClientFunction("DevToolsAPI.streamWrite", &stream, &chunk, nullptr);
+                offset = end;
+            }
+            if (resources->closed()) allowed = false;
         }
-        OutputDebugStringA("DevToolsClient.loadNetworkResource:");
-        OutputDebugStringA(url.c_str());
-        OutputDebugStringA("\n");
-
-        OutputDebugStringA(headers.c_str());
-        OutputDebugStringA("\n");
-
+        base::DictionaryValue response;
+        response.SetInteger("statusCode", allowed ? 200 : 403);
+        response.Set("headers", new base::DictionaryValue());
+        sendMessageAck(requestId, &response);
         return;
     } else if (method == "getPreferences") {
         sendMessageAck(requestId, m_preferences);
@@ -199,9 +228,7 @@ void DevToolsClient::sendMessageToEmbedder(const blink::WebString& message)
     if (requestId)
         sendMessageAck(requestId, nullptr);
 
-    messageStr.insert("DevToolsClient::sendMessageToEmbedder:", 0);
-    messageStr.append("\n");
-    OutputDebugStringA(messageStr.utf8().data());
+    // Protocol bodies may contain page data; default logging is metadata-only.
 }
 
 bool DevToolsClient::isUnderTest()
@@ -244,20 +271,52 @@ void DevToolsClient::sendMessageAck(int requestId, const base::Value* arg)
 
 void DevToolsClient::closeDefersLoading()
 {
+    const auto session = m_controlledSession;
+    auto* view = m_page ? m_page->webViewImpl() : nullptr;
+    auto* page = view ? view->page() : nullptr;
+    auto* policy = page ? blink::InspectorResourcePolicy::from(page) : nullptr;
+    // Only the native-bound current frontend may restore both existing and new loads.
+    // FrameLoader alone leaves Page::defersLoading() set for subsequently created XHRs.
+    if (session) {
+        LoadingDeferralState state;
+        state.controlled = true;
+        state.retainedSession = session;
+        if (session->acceptsInterrupt() && policy && policy->state() && !policy->state()->closed()) {
+            state.controlledPage = page;
+            state.pageWasDeferred = page->defersLoading();
+        }
+        auto* capturedPage = state.controlledPage;
+        m_defersLoadingFrameStack.push_back(std::move(state)); // Complete the borrow before setter callouts.
+        if (capturedPage) capturedPage->setDefersLoading(false);
+        // A denied controlled borrow still has a paired no-op exit; it never falls through to legacy.
+        return;
+    }
+    m_defersLoadingFrameStack.emplace_back();
+    auto& frames = m_defersLoadingFrameStack.back().frames;
     for (blink::Frame* frame = blink::toCoreFrame(m_page->mainFrame()); frame; frame = frame->tree().traverseNext()) {
         if (!frame->isLocalFrame())
             continue;
 
         blink::LocalFrame* localFrame = blink::toLocalFrame(frame);
-        m_defersLoadingframes.append(localFrame);
+        frames.append(localFrame);
         localFrame->loader().setDefersLoading(false);
     }
 }
 
 void DevToolsClient::openDefersLoading()
 {
-    for (size_t i = 0; i < m_defersLoadingframes.size(); ++i) {
-        blink::LocalFrame* localFrame = m_defersLoadingframes[i];
+    if (m_defersLoadingFrameStack.empty()) return;
+    auto state = std::move(m_defersLoadingFrameStack.back());
+    m_defersLoadingFrameStack.pop_back();
+    if (state.controlled) {
+        // Restore the captured Page/value even if the session was revoked in the nested loop.
+        // The local retained session and existing pause/dispatch pins outlive this callout.
+        if (state.controlledPage) state.controlledPage->setDefersLoading(state.pageWasDeferred);
+        return;
+    }
+    auto& frames = state.frames;
+    for (size_t i = 0; i < frames.size(); ++i) {
+        blink::LocalFrame* localFrame = frames[i];
         localFrame->loader().setDefersLoading(true);
     }
 }

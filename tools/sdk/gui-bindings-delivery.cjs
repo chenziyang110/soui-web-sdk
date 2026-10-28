@@ -12,7 +12,18 @@ const packages = [
   ...['react', 'vue'].map(framework => ({name: `@soui/gui-${framework}`, root: `sdk/bindings/${framework}`,
     import: `dist/${framework}/src/index.js`, types: `dist/${framework}/src/index.d.ts`, framework}))
 ];
-const peerRange = '>=0.4.0-0 <0.5.0 || >=0.5.0-0 <0.6.0';
+const previousPeerRange = '>=0.4.0-0 <0.5.0 || >=0.5.0-0 <0.6.0';
+const previewPeerRanges = new Map([
+  ['0.6.0-preview.1', previousPeerRange + ' || 0.6.0-preview.1'],
+  ['0.6.0-preview.2', previousPeerRange + ' || 0.6.0-preview.2'],
+  ['0.6.0-preview.3', previousPeerRange + ' || 0.6.0-preview.3'],
+  ['0.6.0-preview.4', previousPeerRange + ' || 0.6.0-preview.4'],
+  ['0.6.0-preview.5', previousPeerRange + ' || 0.6.0-preview.5'],
+  ['0.6.0-preview.6', previousPeerRange + ' || 0.6.0-preview.6'],
+  ['0.6.0-preview.7', previousPeerRange + ' || 0.6.0-preview.7'],
+  ['0.6.0-preview.8', previousPeerRange + ' || 0.6.0-preview.8'],
+  ['0.6.0-preview.9', previousPeerRange + ' || 0.6.0-preview.9'],
+]);
 const reportName = 'out/gui-bindings/build.json';
 function regular(root, name) {
   const file = identity.safePath(root, name), stat = fs.lstatSync(file);
@@ -26,6 +37,11 @@ function versionOf(root) {
 }
 function metadata(root, version = versionOf(root)) {
   if (!versioning.isVersion(version)) throw new Error('GUI delivery requires an exact SDK version');
+  // Old installed packages keep their original peer declaration. Only the
+  // stable lines and prerelease tuples covered by that declaration may use it.
+  const acceptsPreviousPeer = /^0\.[45]\.(0|[1-9][0-9]*)$/.test(version) ||
+    /^0\.[45]\.0-(preview|rc)\.(0|[1-9][0-9]*)$/.test(version);
+  const previewPeer = previewPeerRanges.get(version);
   for (const entry of packages) {
     const meta = read(root, `${entry.root}/package.json`), lock = read(root, `${entry.root}/package-lock.json`);
     if (meta.name !== entry.name || meta.version !== version || lock.version !== version ||
@@ -34,8 +50,20 @@ function metadata(root, version = versionOf(root)) {
         meta.exports?.['.']?.import !== meta.main || meta.exports?.['.']?.types !== meta.types ||
         (meta.dependencies && Object.keys(meta.dependencies).length)) throw new Error(`GUI package identity/imports differ: ${entry.name}`);
     if (entry.framework) {
+      const nativePeer = meta.peerDependencies?.['@soui/native-sdk'];
+      const acceptsNativePeer = (previewPeer !== undefined && nativePeer === previewPeer) ||
+        (acceptsPreviousPeer && (nativePeer === previousPeerRange || nativePeer === previewPeerRanges.get('0.6.0-preview.1')));
+      const lockPeers = lock.packages[''].peerDependencies;
+      // Preserve the previous producers' minimal lock shape. The new preview
+      // requires the root peer declaration, and any supplied declaration must
+      // agree exactly with package.json rather than hiding a different peer.
+      const matchingLockPeers = lockPeers === undefined ? !['0.6.0-preview.3', '0.6.0-preview.4', '0.6.0-preview.5', '0.6.0-preview.6', '0.6.0-preview.7', '0.6.0-preview.8', '0.6.0-preview.9'].includes(version) :
+        lockPeers && typeof lockPeers === 'object' && !Array.isArray(lockPeers) &&
+        Object.keys(lockPeers).sort().join(',') === ['@soui/native-sdk', entry.framework].sort().join(',') &&
+        Object.entries(lockPeers).every(([name, value]) => value === meta.peerDependencies?.[name]);
       if (Object.keys(meta.peerDependencies || {}).sort().join(',') !== ['@soui/native-sdk', entry.framework].sort().join(',') ||
-          meta.peerDependencies['@soui/native-sdk'] !== peerRange || !meta.peerDependencies[entry.framework] ||
+          !acceptsNativePeer || !matchingLockPeers ||
+          !meta.peerDependencies[entry.framework] ||
           meta.devDependencies?.['@soui/native-sdk'] !== 'file:../../web' ||
           lock.packages?.['node_modules/@soui/native-sdk']?.version !== version) {
         throw new Error(`GUI package must borrow the exact local SDK and framework peers: ${entry.name}`);

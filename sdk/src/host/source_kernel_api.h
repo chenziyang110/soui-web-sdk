@@ -28,6 +28,8 @@ inline bool initialize_source_kernel(HMODULE module) {
   BIND_SOURCE_API(wkeSetZoomFactor); BIND_SOURCE_API(wkeShowWindow); BIND_SOURCE_API(wkeShutdown);
   BIND_SOURCE_API(wkeUpdate); BIND_SOURCE_API(wkeWake);
 #undef BIND_SOURCE_API
+  wkeLoadURL = reinterpret_cast<FN_wkeLoadURL>(
+      GetProcAddress(module, "wkeLoadURL")); // optional, required by owned local HTTPS navigation
   wkeOnDocumentReady2 = reinterpret_cast<FN_wkeOnDocumentReady2>(
       GetProcAddress(module, "wkeOnDocumentReady2")); // required when the controlled broker is enabled
   wkeGetCursorBrokerApi = reinterpret_cast<FN_wkeGetCursorBrokerApi>(

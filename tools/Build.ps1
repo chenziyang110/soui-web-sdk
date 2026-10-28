@@ -5,7 +5,16 @@ param(
   [switch]$SdkOnly,
   [switch]$WithVendorTests,
   [switch]$SkipWeb,
+  [ValidateSet('distribution','source-diagnostic')][string]$WebProfile='distribution',
   [switch]$WithWebView2,
+  [switch]$WithAutoHost,
+  [switch]$WithDevToolsPackage,
+  [string]$DevToolsPackageRoot,
+  [string]$DevToolsKernelRelative,
+  [string]$DevToolsKernelSha256,
+  [string]$DevToolsManifestSha256,
+  [string]$DevToolsApprovalRelative,
+  [string]$DevToolsApprovalSha256,
   [switch]$WithUia,
   [switch]$WithGuiBindings,
   [switch]$Install,
@@ -20,6 +29,17 @@ param(
 )
 $ErrorActionPreference='Stop'
 $root=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
+if($SdkOnly -and $WebProfile -ne 'distribution'){throw 'Source diagnostics require an application Web build; omit SdkOnly.'}
+$devtoolsInputs=@($DevToolsPackageRoot,$DevToolsKernelRelative,$DevToolsKernelSha256,
+  $DevToolsManifestSha256,$DevToolsApprovalRelative,$DevToolsApprovalSha256)
+if($WithDevToolsPackage){
+  if($SdkOnly){throw 'DevTools package deployment requires an application build; omit SdkOnly.'}
+  if(@($devtoolsInputs|Where-Object{[string]::IsNullOrWhiteSpace($_)}).Count){
+    throw 'WithDevToolsPackage requires all six explicit package path and approval pin inputs.'
+  }
+}elseif(@($devtoolsInputs|Where-Object{-not [string]::IsNullOrWhiteSpace($_)}).Count){
+  throw 'DevTools package inputs require explicit WithDevToolsPackage.'
+}
 if($WithVendorTests -and ($SdkOnly -or (Test-Path -LiteralPath (Join-Path $root 'project.json')))){
   throw 'WithVendorTests requires the source devkit root; omit SdkOnly and do not use a generated application.'
 }
@@ -40,6 +60,8 @@ if($NativeToolchain -eq 'MSVC143'){
 }
 # The LLVM branch owns process-local provider cleanup; it never changes host registry or global environment.
 $llvmEnvironment=@{}
+$webProfilePrevious=Get-Item -LiteralPath 'Env:SOUI_WEB_BUILD_PROFILE' -ErrorAction SilentlyContinue
+$webProfileEnvironment=@{present=($null-ne$webProfilePrevious);value=if($null-ne$webProfilePrevious){[string]$webProfilePrevious.Value}else{$null}}
 $llvmRemove=@('NODE_OPTIONS','NODE_PATH','NODE_REPL_EXTERNAL_MODULE','GIT_DIR','GIT_WORK_TREE','GIT_INDEX_FILE',
   'CL','_CL_','LINK','_LINK_','INCLUDE','LIB','LIBPATH','CPATH','C_INCLUDE_PATH','CPLUS_INCLUDE_PATH','OBJC_INCLUDE_PATH',
   'LIBRARY_PATH','CCC_OVERRIDE_OPTIONS','CLANG_CONFIG_FILE_USER_DIR','CLANG_CONFIG_FILE_SYSTEM_DIR',
@@ -52,6 +74,7 @@ if($llvm){
   }
 }
 try {
+$env:SOUI_WEB_BUILD_PROFILE=$WebProfile
 if($llvm){
   foreach($name in $llvmRemove){Remove-Item -LiteralPath ('Env:'+$name) -ErrorAction SilentlyContinue;if(Test-Path -LiteralPath ('Env:'+$name)){throw "Could not clear LLVM provider: $name"}}
   $env:ComSpec=$llvm.NativeProcessPaths.CMD
@@ -70,6 +93,14 @@ $generated=Test-Path -LiteralPath (Join-Path $root 'project.json')
 if($generated){
   $projectMetadata=Get-Content -Raw -LiteralPath (Join-Path $root 'project.json') | ConvertFrom-Json
   if($projectMetadata.runtimeProfile -eq 'modern'){$WithWebView2=$true}
+  if($projectMetadata.runtimeProfile -eq 'auto'){$WithAutoHost=$true}
+  if($WithDevToolsPackage -and $projectMetadata.runtimeProfile -eq 'modern'){
+    throw 'The offline DevTools package belongs to MiniBlink; WebView2 uses its Runtime frontend.'
+  }
+}
+if($WithAutoHost){
+  $WithWebView2=$true
+  if($WithDevToolsPackage){throw 'Auto host does not admit an offline DevTools kernel override.'}
 }
 if(Test-Path -LiteralPath (Join-Path $root 'sdk-lock.json')) {
   & $node.Source (Join-Path $root 'tools/sdk/soui-sdk.cjs') verify-project --project $root
@@ -77,6 +108,7 @@ if(Test-Path -LiteralPath (Join-Path $root 'sdk-lock.json')) {
 }
 if(-not $SdkOnly){
   $actionRoots=if($generated){@($root)}else{@((Join-Path $root 'templates/desktop-app'),(Join-Path $root 'templates/modern-app'))}
+  if($WithAutoHost -and -not $generated){$actionRoots+=Join-Path $root 'templates/auto-app'}
   $actionManagedPaths=@('contracts/generated/actiongen-manifest.json','app/generated/actions.hpp',
     'web/src/generated/actions.ts','contracts/generated/tools.json','docs/generated/actions.md')
   foreach($actionRoot in $actionRoots){
@@ -102,6 +134,8 @@ New-Item -ItemType Directory -Force -Path $output | Out-Null
 $evidence=Join-Path $root 'tools/internal/build-evidence.cjs'
 $evidenceArgs=@($Architecture,$Configuration)
 if($SdkOnly){$evidenceArgs+='sdk-only'}
+$evidenceArgs+=@('--web-profile',$WebProfile)
+if($WithAutoHost){$evidenceArgs+=@('--auto-host','enabled')}
 $webEvidenceArgs=@($evidenceArgs)
 if($llvm){
   $requestPath=Join-Path $output "llvm-profile-request-$Configuration.json"
@@ -122,6 +156,7 @@ if(-not $SkipWeb) {
     $webRoots=@()
   }
   if(-not $SdkOnly){$webRoots+=if($generated){@('web')}else{@('templates/desktop-app/web','templates/modern-app/web','demos/workbench/web')}}
+  if($WithAutoHost -and -not $SdkOnly -and -not $generated){$webRoots+='templates/auto-app/web'}
   foreach($relative in $webRoots){
     $web=Join-Path $root $relative
     Write-Output "Building Web package: $relative"
@@ -130,7 +165,12 @@ if(-not $SkipWeb) {
     $ErrorActionPreference='Stop'
     if($LASTEXITCODE -ne 0){throw "npm ci failed for $relative; inspect $output"}
     $ErrorActionPreference='Continue'
-    & $npm.Source --prefix $web run build *> (Join-Path $output ($relative.Replace('/','-')+'-build.log'))
+    if(($generated -and $relative -eq 'web') -or $relative -eq 'templates/auto-app/web'){
+      $webProject=if($generated){$root}else{Join-Path $root 'templates/auto-app'}
+      & $node.Source (Join-Path $root 'tools/internal/web-targets.cjs') build $webProject *> (Join-Path $output ($relative.Replace('/','-')+'-build.log'))
+    }else{
+      & $npm.Source --prefix $web run build *> (Join-Path $output ($relative.Replace('/','-')+'-build.log'))
+    }
     $ErrorActionPreference='Stop'
     if($LASTEXITCODE -ne 0){throw "Web build failed for $relative; inspect $output"}
   }
@@ -146,7 +186,22 @@ if($WithWebView2){
   $webview2Package=& (Join-Path $PSScriptRoot 'internal/Restore-WebView2.ps1')
   $optional=@('-DSOUI_BUILD_WEBVIEW2=ON',"-DSOUI_WEBVIEW2_SDK_ROOT=$webview2Package")
 }
+$optional+=('-DSOUI_BUILD_AUTO_HOST='+$(if($WithAutoHost){'ON'}else{'OFF'}))
 $optional+=('-DSOUI_BUILD_UIA='+$(if($WithUia){'ON'}else{'OFF'}))
+if(-not $SdkOnly){
+  # A previous explicit package build cannot silently enable a later ordinary
+  # build. This selects delivery only; native application policy stays disabled.
+  $optional+=('-DSOUI_DEVTOOLS_PACKAGE_ENABLED='+$(if($WithDevToolsPackage){'ON'}else{'OFF'}))
+}
+if($WithDevToolsPackage){
+  $packageRoot=[IO.Path]::GetFullPath($DevToolsPackageRoot)
+  $optional+=@("-DSOUI_DEVTOOLS_FRONTEND_ROOT=$packageRoot",
+    "-DSOUI_DEVTOOLS_KERNEL_RELATIVE=$DevToolsKernelRelative",
+    "-DSOUI_DEVTOOLS_KERNEL_SHA256=$DevToolsKernelSha256",
+    "-DSOUI_DEVTOOLS_MANIFEST_SHA256=$DevToolsManifestSha256",
+    "-DSOUI_DEVTOOLS_APPROVAL_RELATIVE=$DevToolsApprovalRelative",
+    "-DSOUI_DEVTOOLS_APPROVAL_SHA256=$DevToolsApprovalSha256")
+}
 if($WithVendorTests){$optional+=@('-DSOUI_BUILD_TESTS=ON','-DSOUI_BUILD_VENDOR_TESTS=ON')}
 & $cmake.Source @configure @optional
 if($LASTEXITCODE -ne 0){throw 'CMake configure failed'}
@@ -163,11 +218,24 @@ if($WithGuiBindings){
   & $node.Source (Join-Path $root 'tools/sdk/gui-bindings-delivery.cjs') verify --root $root
   if($LASTEXITCODE -ne 0){throw 'Optional GUI bindings changed during native build'}
 }
+if(-not $SdkOnly){
+  # POST_BUILD does not run when native objects are unchanged. A Web profile
+  # switch must still replace the resources before recording the payload.
+  & $node.Source $evidence deploy-web @webEvidenceArgs
+  if($LASTEXITCODE -ne 0){throw 'Web resource profile deployment failed'}
+}
 & $node.Source $evidence finish @evidenceArgs
 if($LASTEXITCODE -ne 0){throw 'Build payload recording failed'}
 Write-Output "Build passed: $output / $Configuration"
 } finally {
   $restoreErrors=[Collections.Generic.List[string]]::new()
+  try {
+    if($webProfileEnvironment.present){Set-Item -LiteralPath 'Env:SOUI_WEB_BUILD_PROFILE' -Value $webProfileEnvironment.value -ErrorAction Stop}
+    else {Remove-Item -LiteralPath 'Env:SOUI_WEB_BUILD_PROFILE' -ErrorAction SilentlyContinue}
+    $actualWebProfile=Get-Item -LiteralPath 'Env:SOUI_WEB_BUILD_PROFILE' -ErrorAction SilentlyContinue
+    if(($null-ne$actualWebProfile)-ne$webProfileEnvironment.present-or
+       ($webProfileEnvironment.present-and([string]$actualWebProfile.Value-cne$webProfileEnvironment.value))){throw 'Presence/value differs'}
+  }catch{$restoreErrors.Add('SOUI_WEB_BUILD_PROFILE: '+$_.Exception.Message)}
   foreach($name in $llvmEnvironment.Keys){
     try {
       $state=$llvmEnvironment[$name]

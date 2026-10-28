@@ -1,6 +1,97 @@
 # 变更记录
 
+## 0.6.0-preview.9（本地候选，未发布）
+
+- 为 source-kernel loader 补齐可选 `wkeLoadURL` 绑定；缺失导出时清空旧指针，显式本地 HTTPS 模式继续按原契约拒绝，旧无 URL 导出的 file-only vendor 继续支持。
+- 同步 SDK、Web 包及 React/Vue 绑定的 preview.9 源码身份；导航绑定回归及受影响项目已有对应构建/短测证据，旧候选与历史失败继续绑定原产物。
+- 修复 Windows 字体最后候选没有有效 typeface 时的空指针路径：沿用 FontDataCache/retain 所有权，采用有真实 glyph 的系统默认字体；没有有效默认字体仍保留失败边界。x86 原 DOM 选择崩溃记录保留，修复后两架构模板的相同选择、HTML/业务42→43及原生结束已通过一次短测。
+- Workbench 将9个原生 FileInsight 夹具与 HTTP 发布树分开，保留原字节、Unicode名称和媒体URL；普通应用目标显式依赖夹具部署。正式 Build/Test/Package 通过可选、精确且有界的 `applicationFiles` 身份记录夹具和owner文件，未传入时仍严格拒绝未知文件，原runtime/DevTools校验及资源fence保持有效。
+- Workbench React/Vue 三处ready探针共享严格的受控本地URL分类，保留file行为，仅识别原生拥有的精确HTTPS主机、文档段和实际入口。URL分类不授予许可；原13项探针、trusted-entry/current receipt及原生授权不变。两架构最终Workbench均完成Inspector、Console42及原生结束，修复前资源错误和 `E_NOT_READY` 保留。
+- 本轮纯数据回归、两架构模板/Workbench功能短测及既有双后端面板证据按各自产物记录；真实Sources通过范围见 `docs/devtools.md`。这些结果不代表完整D01–D12、性能或生产认证；D13千次和D14八小时后置未执行，`releaseReady=false`。已生成源码包及旧清单保持原散列，后续文档修订不改挂到旧811文件包。
+
+## 0.6.0-preview.8（本地候选，未发布）
+
+- 为本次 Network 完成时间修复及显式本地 HTTPS 资源原点分配新源码候选身份；preview.7 的源码包、构建和实际 GUI 证据保留原身份，不改挂到新代码。
+- MiniBlink 本地文件、内存响应、Hook 与 data URL 的完成时间统一使用调用合同要求的单调秒；保留独立 wallTime、原请求、队列和资源 fence。四处源码修复已独审，尚未统一编译实测。
+- 按 ADR 0135 接线独立原生 opt-in、本地业务资源 snapshot、文档身份及关闭排空；旧构造和默认 file URL 保留，资源模式不授予 DevTools 权限。回归源码一并维护，须非作者静审全部完成后统一测试。
+- SDK、Web 包及绑定锁文件使用同一 preview.8 身份。当前无新候选运行通过或生产发布结论，完整 D01–D14 和原许可门槛继续保留。
+
+## 0.6.0-preview.7（本地候选，未发布）
+
+- 为本地源码材料分配新的候选身份，统一 VERSION、C++ 版本头和 Web 包/锁文件版本；保留 preview.6 源码包、安装 prefix、构建和原运行证据的原始身份，不升级其验收结论。
+- 补齐源码候选材料清单中的第一方 LICENSE、SOUI 原始 license 和 @babel/parser 7.29.9 源码工具许可/来源材料；68 项历史运行时 npm 库存范围不变。已有本地源码包核验及仓库外项目生成证据；后续文档修订仍需随最终候选打包，不代表法律审查通过。
+- 修复受控 MiniBlink inspector 跨线程键盘转发，保留原消息、lParam 和修饰键快照，使用生产共享 mapper；受控接口 ABI 升为 3，资源快照 ABI 仍为 2，旧内核明确拒绝。保留有界队列、饱和错误和 owner/drain 屏障，见 ADR 0134。原 0.5.0 x64/x86 内核复用记录保留历史身份，本轮新配对内核另有构建记录。
+- 同步 React/Vue 包和锁文件的 preview.7 身份，补充真实仓库版本回归；保留对未知版本的拒绝及已有依赖身份。修复 request-close 测试的真实资源实现接线，保留原关闭期限并加强资源 fence 断言。
+- 补齐 MiniBlink inspector cleanup 的资源退休 `BUSY` 接收语义：保留 owner 并等待后续推进，不读取未发布的 drain receipt。真实失败在物理清理完成后继续保留，不扩大队列、期限或资源释放权限；生产共享 cleanup 回归源码随修复维护，等待统一编译实测。
+- 将 DevTools 文档引用的 ADR 0128/0130/0131/0134 纳入源码 SDK 显式交付名单，补充清单、包内字节和安装副本断言；原包保持原身份，新包待统一生成与核验。
+- 当前 x64 Release 内核、SDK、五应用构建及九载荷文件部署已有局部证据，5 项 SDK、54 项 vendor、2 项 Node ABI 及 36 项 GUI 元数据回归已通过；这些结果不覆盖后续源码变化或实际窗口。验收消费者新编译、双后端真实运行、支持矩阵、1000 周期、8 小时负载及许可审查仍未完成，生产门槛保持开放。
+
+
+## 0.6.0-preview.6（本地候选，未发布）
+
+- 为 WebView2 增加显式可选的原生资源观察接口，记录 SDK 实际持有的 Controller 引用、准备和异步完成、策略事件及退出观察回调。成功 Close 后尚未释放的引用仍计为持有；忙碌、缺失或计数故障保持未知。该有限范围不包括 Chromium 内部对象和 Inspector 窗口，见 ADR 0133。
+- 保留现有四参数构造和原授权、生命周期 owner 及退出屏障。新接口与版本身份仍待本轮编译和集中验收；旧 preview.5 候选及其历史证据继续保留，八小时长测尚未完成。
+
+## 0.6.0-preview.5（本地候选，未发布）
+
+- 为兼容构建的真实 inline source map 增加有限映射段、来源和绑定槽位容量，保持原 1MiB 单项、16MiB 目标总账目以及路径、VLQ、身份和退休检查。边界检查与真实 map 数据重放通过；浏览器原始 TypeScript 断点仍待当前配对候选验收，见 ADR 0130。
+- 增加可选、只读的 MiniBlink DLL `CWebView` 生命周期计数，独立于合成器计数。样本绑定实际进程实例和初始化 epoch，缺失或忙碌保持未知；保留原生命周期 owner 和关闭屏障，见 ADR 0131。
+- 细分 MiniBlink DevTools session 的 interrupt、protocol、resource 和 paint 回调观察，并修复 pending 汇总遗漏两类队列及无检查加法；该观察有明确覆盖域，不表示全部进程回调。四组纯原生契约检查通过，真实循环与长测尚未完成。
+
+## 0.6.0-preview.4（本地候选，未发布）
+
+- 区分受控 MiniBlink 业务 HWND 的引擎自动呈现与 Inspector 的回调像素呈现，修复业务路径关闭 CPU 自动绘制却未自行呈现的源码缺口。沿用原窗口身份、许可和退休保护；真实运行验证待完成，见 ADR 0128。旧 preview.3 及其运行证据保持原身份。
+- 兼容模板与 Workbench 为已附加的原生诊断菜单接通系统非客户区布局、绘制和命中测试，保留默认关闭、同一原生授权入口及原 Host 退休顺序；启用时使用系统标题栏和菜单区，见 ADR 0129。真实菜单和窗口行为待验。
+
+## 0.6.0-preview.3（本地候选，未发布）
+
+- 为本轮DevTools启动修复分配新的源码候选身份，保留preview.2及其失败/通过原件。Fixed Runtime路径规范化、Chrome 49兼容polyfill适配与版本一致性修复的当前验证范围见docs/devtools.md和主任务进度；生产验收未完成。
+
+## 0.6.0-preview.2（本地候选，未发布）
+
+- 新增可选自动后端宿主与 `auto` 模板：启动前优先探测 WebView2，明确不可用时采用应用随附 MiniBlink；已有 compatibility/modern 项目行为保留。现代和兼容页面分别构建、部署并校验；自动应用包保留离线兼容运行时。实现及验证范围见 ADR 0127 和 docs/auto-backend.md，不代表高刷、全系统或生产准入通过。
+
+## 0.6.0-preview.1（本地候选，未发布）
+
+- 为生产级DevTools实现分配独立候选身份，不覆盖0.5.0发行内容。公共SDK、两后端原生许可/退休、模板和Workbench已接入候选契约；正式MiniBlink源与离线前端、资源配对工具及交付说明进入源码SDK。代码整合中的编译/数据检查与后续真实窗口、安装、循环和长测分别记录，当前不代表生产通过；见docs/devtools.md及ADR0123。
+
 ## 未发布维护
+
+- Fixed WebView2 Runtime 路径在 adapter 创建与自动后端探测边界转为 Windows 原生分隔符，避免有效的正斜杠绝对路径导致 Loader 报文件缺失或误判 Runtime 不可用；空路径的 Evergreen 行为保留。
+
+- Chrome 49 兼容构建通过源控 helper 对锁定 core-js 的 `Object.create` 模块作可追溯适配，使用目标内核的原生能力并移除旧 IE iframe 回退；保留其他自动 polyfill、本地资源扫描与源码映射来源检查。
+
+- 修复受控Host尚未打开inspector时，关闭返回pending后被`pump()`提前标记完成的问题；显式Host关闭继续原目标退休，即使诊断策略为detach。新增两种终止策略下的未打开目标关闭回归，保留原操作身份及清理屏障。
+
+- 应用和去重 Bundle 增加显式可选 7z 压缩档位，默认 ZIP、原参数和文件名保持兼容。新增独立测量入口，记录实际归档大小、压缩与解压耗时及进程私有提交量峰值；使用方式和实测范围见 docs/compression-profiles.md、ADR 0126。未替换已发布的固定 SDK 包。
+
+- 用按架构和组件声明的运行时清单替代 DLL 通配部署，默认保留旧集合，新增自有文件记录、校验与失败回滚。可选应用 Bundle 按内容身份去重并恢复独立完整目录，原单应用 ZIP 保持默认；详见 docs/runtime-packaging.md 与 ADR 0125。尚未覆盖已发布 SDK 包。
+
+- 增加可选 Web 构建目标、显式公共资源清单和完整产物身份验证，默认目标用于原生部署；未配置项目保持单目标构建方式。应用体积报告追加分类、大文件、重复内容、可比基线差异和可选预算，详见 docs/web-targets.md 与 ADR 0124。未覆盖已发布 SDK 内容，验证范围另行记录。
+
+- 开始将DevTools原型整合为普通SDK候选：公共原生策略、不透明目标许可、能力/状态、操作编号和有界历史，接入Host关闭与后端退休；两个模板增加默认关闭的原生菜单和窗口内快捷键接线。MiniBlink离线前端读取与受控会话进入SDK内部，WebView2保留accepted/unknown和独占退出屏障。当前为已实现待编译/集中运行验证，不代表完整交付或生产就绪；见ADR0123和docs/devtools.md。
+
+- WebView2 在创建 Environment 前拒绝外部 loader 环境变量和适用注册表 override，避免显式 Runtime/profile 或调试策略被替换；读取失败、存在策略而应用身份无法完整核实也明确拒绝，不清空环境、不修改进程 AppID。此兼容性变化实现中、待虚拟机验证，限制见 ADR 0122。
+
+- 实验性 DevTools 接入真实 WebView2 adapter 的原生 grant、持续目标退休门禁和异步关闭账目；普通 SDK 不提供实验入口。worker shutdown 的失败/未知不再当作撤销成功；关闭 callout 重入返回 E_BUSY。源码有限审查及首个 x64 Release 构建完成，不代表 Stage0 B、公共 API 或生产验收通过，见 ADR 0122。
+
+- 修复 MiniBlink 在 bootstrap 尚未返回时关闭 Host 后遗留新业务 session 的问题：拒绝旧文档响应前识别本次建立的 session，未交接给 Host 的 session 在锁外精确撤销。真实基线复现后，修复版在同一后台虚拟机完成一次受影响验证：精确清理新会话、同 Bridge 再次 bootstrap 成功并严格退出；首次环境中断结果保留。独立源码、载荷及原始运行审查通过，完整阶段0仍未完成，见 ADR 0118。
+
+- 私有 MiniBlink 消费者补充关闭后目标重建的隔离证据：保留原 B/Runtime，完整关闭旧 A 后等待新 Host 实际 ready，再拒绝旧目标和旧会话请求。首轮 owner 超期失败保留，相同源码仅作一次有记录的输入流程补测，原 30/40 秒内自然退出；暂停栈内重建及完整验收仍未证明，见 ADR 0118。
+
+- 私有 MiniBlink 公共 reload 消费者取得真实新文档隔离证据：请求完成后继续等待实际 ready/ACK，新文档拒绝旧 receipt、目标及 session 请求；沿用原 30/40 秒且只运行一次。暂停栈内 reload 及完整验收仍待验证，见 ADR 0120；关闭后重建另有独立候选，见上条。
+
+- 私有 MiniBlink Stage0 消费者补充同一 A 的 inspector 关闭、原生重开及旧会话隔离证据；新暂停拒绝旧请求，并在原 30/40 秒内按明确诊断策略严格收尾。首次超期失败保留；此项不代表 reload/重建隔离或公共 DevTools 已交付，见 ADR 0118。
+
+- WebView2 内部传输增加单次调用关联，避免超时后复用请求 ID 时迟到回复串到新 Promise；公开 Bridge JSON 不变，原生组件与内嵌 preload 须配套重编译。局部回归及真实 Runtime 验证边界见 ADR 0121。
+
+- MiniBlink reload 改为保留原任务和结果的非阻塞继续状态，返回 `E_RELOAD_PENDING` 时由原 UI owner 轮询；关闭撤销旧操作并等待原回调排空，Workbench 沿用原期限继续处理。局部 FIFO 回归与真实暂停验证边界见 ADR 0120。
+
+- 增加显式 Web `distribution` / `source-diagnostic` 构建档，接入两模板和 Workbench、inline map/源码身份、跨档复用与部署检查；真实双后端源码断点及安装消费者仍待验收，见 ADR 0119。
+
+- WebView2 exclusive 初始化取消后，保留迟到的无 Controller 原生失败及 HRESULT；全部回调退休后按原严格检查释放失败初始化引用，取消回调仍只完成一次。局部 fake COM 回归通过，真实 Runtime 范围仍待验证，见 ADR 0057。
+
+- MiniBlink 公共适配器关闭改为持有原任务与 worker 的分阶段继续状态，排队未完成时返回既有 `E_CURSOR_CLOSE_PENDING`，关闭期间拒绝新的普通操作；当前 x64 Release 下，静态 B、inspector、A 和应用的真暂停关闭限定场景已通过，私有 inspector 的明确关闭策略及完整验收边界见 ADR 0118。未替换已发布 0.5.0 安装内容。
 
 - 重排仓库 README 为 SDK 展示首页，加入原创品牌封面、架构图、双后端比较和模板调用示例；同步当前 0.5.0 预发布身份、可选 Agent / UIA 能力及授权与验收边界。
 - 发布收集入口增加显式的未验收状态记录：同步当前版本，按原字节归档旧报告，并仅引用限定范围记录的散列。完整交付和生产通过标志始终为 false，不重跑构建或桌面验收，不改变固定 0.5.0 SDK 包。

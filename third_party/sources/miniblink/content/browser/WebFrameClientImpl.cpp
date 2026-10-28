@@ -23,6 +23,9 @@
 #include "third_party/WebKit/Source/wtf/text/WTFStringUtil.h"
 
 #include "net/RequestExtraData.h"
+#include "content/web_impl_win/LocalResourceState.h"
+#include "content/web_impl_win/LocalResourceAdmission.h"
+#include "third_party/WebKit/Source/core/loader/InspectorResourcePolicy.h"
 //#include "net/cookies/WebCookieJarCurlImpl.h"
 #include "net/DataURL.h"
 
@@ -33,6 +36,59 @@ class CWebView;
 #endif
 
 namespace content {
+
+static bool attachInspectorMetadata(WebPage* page, WebLocalFrame* frame, WebURLRequest& request)
+{
+    auto* view = page ? page->webViewImpl() : nullptr;
+    auto* policy = view ? blink::InspectorResourcePolicy::from(view->page()) : nullptr;
+    if (!policy) return false;
+    auto* previous = net::RequestExtraData::from(request.extraData());
+    auto* extra = new net::RequestExtraData(net::RequestExtraData::InspectorTag{});
+    extra->page = page;
+    if (frame) extra->setFrame(frame);
+    extra->inspectorState = previous && previous->inspectorState ? previous->inspectorState : policy->state();
+    extra->inspectorRejected = !frame || (request.extraData() && !previous)
+        || (previous && (previous->inspectorRejected || previous->page != page
+            || (previous->inspectorState && previous->inspectorState != policy->state())));
+    // Never upgrade an old request identity or adopt shared raw ExtraData twice.
+    request.setExtraData(extra);
+    return true;
+}
+
+static std::string localResourceURL(const blink::WebURL& url)
+{
+    const auto text = blink::KURL(url).string().utf8();
+    return std::string(text.data(), text.length());
+}
+static bool attachLocalResourceMetadata(WebPage* page, WebLocalFrame* frame, WebURLRequest& request)
+{
+    auto* view = page ? page->webViewImpl() : nullptr;
+    auto state = view ? LocalResourceState::forPage(view->page()) : nullptr;
+    auto* previous = net::RequestExtraData::from(request.extraData());
+    const bool previousLocal = previous && (previous->localResourceState || previous->localResourceRejected);
+    if (!LocalResourceState::reservedURL(localResourceURL(request.url())) && !previousLocal) return false;
+    auto* extra = new net::RequestExtraData(net::RequestExtraData::LocalResourceTag{});
+    extra->page = page;
+    if (page && frame) extra->setFrame(frame);
+    extra->localResourceState = previousLocal && previous->localResourceState ? previous->localResourceState : state;
+    const auto admission = request.toResourceRequest().localResourceAdmission();
+    const auto encodedMethod = request.httpMethod().utf8();
+    const std::string localMethod(encodedMethod.data(), encodedMethod.length());
+    const bool sourceAllowed = admission && !request.toResourceRequest().localResourceAdmissionBlocked()
+        && admission->matches(state, localResourceURL(request.url()), localMethod)
+        && page && frame && frame == page->mainFrame() && state
+        && (request.frameType() == blink::WebURLRequest::FrameTypeTopLevel
+            ? state->permitsDocument(localResourceURL(request.url()), true)
+            : state->permitsDocument(localResourceURL(frame->document().url()), false));
+    extra->localResourceRejected = !state || !sourceAllowed || !state->permitsURL(localResourceURL(request.url()))
+        || (request.extraData() && !previous)
+        || (previous && (previous->page != page || previous->inspectorState || previous->inspectorRejected))
+        || (previousLocal && (previous->localResourceRejected || previous->localResourceState != state));
+    // A copied old receipt never acquires the current Page binding. Main
+    // context ACK may advance the broker identity without changing this owner.
+    request.setExtraData(extra);
+    return true;
+}
 
 WebFrameClientImpl::WebFrameClientImpl()
 {
@@ -529,6 +585,10 @@ WebNavigationPolicy WebFrameClientImpl::decidePolicyForNavigation(const Navigati
 {
     if (!m_webPage)
         return info.defaultPolicy;
+    auto* localView = m_webPage->webViewImpl();
+    const void* localPage = localView ? localView->page() : nullptr;
+    auto localOwner = LocalResourceState::forPage(localPage);
+    const bool localMain = info.frame == m_webPage->mainFrame();
 
 #if (defined ENABLE_WKE) && (ENABLE_WKE == 1)
     wke::AutoDisableFreeV8TempObejct autoDisableFreeV8TempObejct;
@@ -555,7 +615,7 @@ WebNavigationPolicy WebFrameClientImpl::decidePolicyForNavigation(const Navigati
             break;
         }
 
-        // WebString::utf8ÔÚº¬ÓÐutfµÄÖÐÎÄÊ±£¬»áµ±³ÉlatinÀ´×ª»»
+        // WebString::utf8åœ¨å«æœ‰utfçš„ä¸­æ–‡æ—¶ï¼Œä¼šå½“æˆlatinæ¥è½¬æ¢
         WebString url16 = info.urlRequest.url().string();
         wke::CString url(url16);
 
@@ -570,6 +630,13 @@ WebNavigationPolicy WebFrameClientImpl::decidePolicyForNavigation(const Navigati
 		info.urlRequest.setURL(WebURL(KURL(blink::ParsedURLString, url.string())));
     }
 #endif
+    const auto localUrl = localResourceURL(info.urlRequest.url());
+    if (localOwner && localMain) {
+        // The application callback above may close or replace the owner. Use
+        // only the captured identity after that callout, never a new binding.
+        if (LocalResourceState::forPage(localPage) != localOwner
+            || !localOwner->allowMainNavigation(localUrl, info.isRedirect)) return WebNavigationPolicyIgnore;
+    } else if (LocalResourceState::reservedURL(localUrl)) return WebNavigationPolicyIgnore;
     return info.defaultPolicy;
 }
 
@@ -585,7 +652,9 @@ void WebFrameClientImpl::didDispatchPingLoader(WebLocalFrame* webFrame, const We
 
 void WebFrameClientImpl::willSendRequest(WebLocalFrame* webFrame, unsigned identifier, WebURLRequest& request, const WebURLResponse& redirectResponse)
 {
-    if (request.extraData()) // ResourceLoader::willSendRequest»á×ßµ½Õâ
+    if (attachInspectorMetadata(m_webPage, webFrame, request)) return;
+    if (attachLocalResourceMetadata(m_webPage, webFrame, request)) return;
+    if (request.extraData()) // ResourceLoader::willSendRequestä¼šèµ°åˆ°è¿™
         return;
 
     net::RequestExtraData* requestExtraData = new net::RequestExtraData();
@@ -594,7 +663,7 @@ void WebFrameClientImpl::willSendRequest(WebLocalFrame* webFrame, unsigned ident
     requestExtraData->page = m_webPage;
 #endif
 
-    requestExtraData->setFrame(webFrame); // Á½ÖÖÄ£Ê½¶¼ÐèÒª´Ë¶ÔÏó
+    requestExtraData->setFrame(webFrame); // ä¸¤ç§æ¨¡å¼éƒ½éœ€è¦æ­¤å¯¹è±¡
     request.setExtraData(requestExtraData);
 
     request.addHTTPHeaderField("Accept-Language", m_webPage->webPageImpl()->acceptLanguages());
@@ -819,7 +888,9 @@ public:
 
     void willSendRequest(WebURLLoader* webFrame, WebURLRequest& request, const WebURLResponse& redirectResponse) override
     {
-        if (request.extraData()) // ResourceLoader::willSendRequest»á×ßµ½Õâ
+        if (attachInspectorMetadata(m_webPage, m_frame, request)) return;
+        if (attachLocalResourceMetadata(m_webPage, m_frame, request)) return;
+        if (request.extraData()) // ResourceLoader::willSendRequestä¼šèµ°åˆ°è¿™
             return;
 
         net::RequestExtraData* requestExtraData = new net::RequestExtraData();
@@ -828,7 +899,7 @@ public:
 #if (defined ENABLE_WKE) && (ENABLE_WKE == 1)
         requestExtraData->page = m_webPage;
 #endif
-        requestExtraData->setFrame(m_frame); // Á½ÖÖÄ£Ê½¶¼ÐèÒª´Ë¶ÔÏó
+        requestExtraData->setFrame(m_frame); // ä¸¤ç§æ¨¡å¼éƒ½éœ€è¦æ­¤å¯¹è±¡
         request.setExtraData(requestExtraData);
         request.addHTTPHeaderField("Accept-Language", m_webPage->webPageImpl()->acceptLanguages());
 
@@ -915,6 +986,9 @@ static void dataUrlHandle(WebPage* webPage, const blink::KURL& kurl, const Strin
 
 void WebFrameClientImpl::loadURLExternally(blink::WebLocalFrame* frame, const blink::WebURLRequest& request, blink::WebNavigationPolicy policy, const WebString& downloadName)
 {
+    if (m_webPage && m_webPage->webViewImpl()
+        && blink::InspectorResourcePolicy::from(m_webPage->webViewImpl()->page())) return;
+    if (LocalResourceState::reservedURL(localResourceURL(request.url()))) return;
     blink::KURL kurl = request.url();
     if (kurl.protocolIsData()) {
         dataUrlHandle(m_webPage, kurl, downloadName);

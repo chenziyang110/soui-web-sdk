@@ -119,8 +119,10 @@ if(NOT generated_hex STREQUAL expected_hex)
 endif()
 ]==])
 add_custom_target(soui_request_close_source_bytes ${close_byte_commands} VERBATIM)
-add_executable(soui_request_close_regressions request_close_tests.cpp)
-target_include_directories(soui_request_close_regressions PRIVATE "${close_generated_directory}" "${close_vendor_root}/wke")
+add_executable(soui_request_close_regressions request_close_tests.cpp
+  "${close_vendor_root}/content/web_impl_win/LocalResourceState.cpp")
+target_include_directories(soui_request_close_regressions PRIVATE "${close_generated_directory}"
+  "${close_vendor_root}/wke" "${close_vendor_root}")
 target_compile_features(soui_request_close_regressions PRIVATE cxx_std_17)
 target_compile_options(soui_request_close_regressions PRIVATE /EHsc /utf-8 /W4)
 set_property(TARGET soui_request_close_regressions PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
@@ -133,3 +135,6 @@ foreach(case IN ITEMS ordinary-first-menu queued-no-readmission running-no-readm
   add_test(NAME kernel.native.request-close.${case} COMMAND soui_request_close_regressions ${case})
   set_tests_properties(kernel.native.request-close.${case} PROPERTIES TIMEOUT 10)
 endforeach()
+add_test(NAME kernel.native.request-close.native-local-owner-fence
+  COMMAND soui_request_close_regressions native-local-owner-fence)
+set_tests_properties(kernel.native.request-close.native-local-owner-fence PROPERTIES TIMEOUT 10)

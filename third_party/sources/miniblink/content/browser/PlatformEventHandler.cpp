@@ -2,6 +2,7 @@
 #define content_browser_PlatformEventHandler_h
 
 #include "content/browser/PlatformEventHandler.h"
+#include "content/browser/InspectorKeyboardSnapshot.h"
 
 #include "third_party/WebKit/public/web/WebInputEvent.h"
 #include "third_party/WebKit/Source/web/WebViewImpl.h"
@@ -120,13 +121,19 @@ static void buildModifiers(WebInputEvent* evt)
 
 WebKeyboardEvent PlatformEventHandler::buildKeyboardEvent(WebInputEvent::Type type, UINT message, WPARAM wParam, LPARAM lParam)
 {
+    return buildKeyboardEvent(type, message, wParam, lParam, nullptr);
+}
+
+WebKeyboardEvent PlatformEventHandler::buildKeyboardEvent(WebInputEvent::Type type, UINT message, WPARAM wParam, LPARAM lParam,
+    const InspectorKeyboardSnapshot* keyboardSnapshot)
+{
 //     unsigned int flags = 0;
 //     if (HIWORD(lParam) & KF_REPEAT)
 //         flags |= KF_REPEAT;
 //     if (HIWORD(lParam) & KF_EXTENDED)
 //         flags |= KF_REPEAT;
 
-    LPARAM keyData = lParam; // MAKELPARAM(0, (WORD)flags);
+    LPARAM keyData = keyboardSnapshot ? static_cast<LPARAM>(static_cast<LONG>(keyboardSnapshot->keyData)) : lParam;
     WebKeyboardEvent keyEvent;
     keyEvent.windowsKeyCode = (type == WebInputEvent::RawKeyDown || type == WebInputEvent::KeyUp) ? wParam : 0;
     keyEvent.nativeKeyCode = wParam;
@@ -136,7 +143,10 @@ WebKeyboardEvent PlatformEventHandler::buildKeyboardEvent(WebInputEvent::Type ty
     keyEvent.size = sizeof(WebMouseEvent);
     keyEvent.type = type;
 
-    buildModifiers(&keyEvent);
+    if (keyboardSnapshot)
+        applyInspectorKeyboardSnapshot(keyEvent, message, *keyboardSnapshot);
+    else
+        buildModifiers(&keyEvent);
     if (isKeypadEvent(wParam, keyData, type))
         keyEvent.modifiers |= WebInputEvent::IsKeyPad;
 

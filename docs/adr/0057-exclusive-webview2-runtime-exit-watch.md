@@ -86,6 +86,33 @@ Win7/所有 OS、WebView2 全部 API 故障、no-core 恢复、完整工具链/S
 
 ## 无 Core Controller 失败的独立清理终态
 
+### 取消后迟到失败的补充（2026-10-22，局部验证通过）
+
+此前取消分支在 Controller 为 null 时直接返回，丢失真实 accepted completion
+的 FAILED HRESULT；已持有 Environment 的未 arm monitor 随后无法完成释放。
+本次仅补充“原 UI STA、取消已生效、真实 Controller completion 已接收、
+FAILED HRESULT 且 Controller=null”的独立事实。保持原 closing 阶段及一次
+E_CANCELLED 应用回调，保存原 HRESULT；全部初始化借用退休后复用下述严格
+no-Core 检查释放失败初始化引用。status 保留该原生失败，已有 E_CALLBACK
+首因仍优先。该清理不声称浏览器退出，也不生成 watch、PID、event 或 finished。
+
+普通取消、S_OK/null、同步提交失败、重复 completion、错误线程和已有
+Core/Controller/armed/acquired/held process 等情况不因此获得新清理资格。
+不更改公共头、DevTools 授权或正常 exclusive owning watch 的退出门槛。
+局部回归编译实际 callback/清理源码并使用 fake COM Environment 观察引用
+退休及重入；不启动浏览器，不代替真实 Runtime 取消与退出验证。
+
+本机 x64 Release、MSVC v143/Windows SDK 10.0.26100.0 已执行：原分支在
+“未保存 accepted cancelled failure 的 HRESULT”断言处失败（CTest 退出8）；
+补充后实际可选组件和局部目标编译退出0，单项 CTest 退出0。覆盖重复/未接收
+completion、非取消/错误 owner、callback 借用、monitor armed/acquired/PID/
+event/错误/finishing，以及真实 fake COM 引用退休、锁外 Release 和释放重入。
+取消回调保持一次，未伪造 browser event/unregister/finished。
+原始结果及 RED/GREEN 字节身份见
+`out/devtools-stage0/webview2-cancelled-controller/`。
+该回归直接调用实际内部 helper，未执行公共 status/unmount 整体、真实
+WebView2 Runtime、其它架构/配置或正式 DevTools；这些范围仍待验证。
+
 真实 Controller completion 先由既有 preparation_lifetime.receive(controller) 接收；只有 accepted completion、FAILED(controller_result)、controller=null 且仍处于原非取消准备路径才记 controller_creation_failed。应用回调重入 unmount 时，preparation.settled() 仍为 false，返回 E_BUSY，不能从回调中释放环境。取消但异步创建尚未返回、同步 submission failure、实际取得任一 Core/Controller/held process、arm/acquired watch 或监视器首因失败，均不适用此窄终态。
 
 unmount 不更改普通共享和正常 exclusive controller/watch 顺序。在准备已 settle、worker 已 quiet/join、原 Bridge 借用已撤下后，窄失败路径检查 monitor 无 armed/acquired/finished、无 process/PID/creation/image、无 event、无 active callback。失败清理中的 owner 重入返回 E_BUSY。若 registered 确实为 true，先实际 remove_BrowserProcessExited 并保留 HRESULT/borrow 失败；token 数值为零不等于无注册。真实 no-Core 路径通常从未执行 arm，因此没有注册，不能打印“已移除 token”冒充调用。所有 COM Release 在 scalar lock 外；释放后再次确认 active callback/首因，才释放 monitor 与 adapter Environment。

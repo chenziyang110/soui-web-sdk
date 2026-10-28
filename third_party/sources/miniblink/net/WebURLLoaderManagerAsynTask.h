@@ -115,7 +115,7 @@ public:
             dispatchUrlEndHook(job, data, size);
 
             m_manager->didReceiveDataOrDownload(job, data, size, 0);
-            m_manager->handleDidFinishLoading(job, WTF::currentTime(), 0); // 这里会走到WebURLLoaderManager::doCancel，然后导致job被占用
+            m_manager->handleDidFinishLoading(job, WTF::monotonicallyIncreasingTime(), 0); // 这里会走到WebURLLoaderManager::doCancel，然后导致job被占用
         }
 
         if (kHookRedirectCancelled != job->m_cancelledReason)

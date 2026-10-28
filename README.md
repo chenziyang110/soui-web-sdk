@@ -31,7 +31,7 @@
 
 适合已有 C++ 业务需要 Web 界面的团队，也适合需要本地任务、文件处理或原生桌面集成的前端开发者。
 
-> **当前版本：`0.5.0`（预发布交付）**，以 [VERSION](VERSION) 为准。下载与本轮实际验证范围见 [0.5.0 发布说明](docs/releases/0.5.0.md)。完整生产验收尚未完成，`releaseReady=false`；详情见[已知限制](docs/known-issues.md)，使用与再分发条件见[许可说明](LICENSE.md)。
+> **当前源码候选：`0.6.0-preview.9`（本地，未发布）**，以 [VERSION](VERSION) 为准；现有下载仍为 `0.5.0`，其实际验证范围见 [0.5.0 发布说明](docs/releases/0.5.0.md)。[原生受控 DevTools](docs/devtools.md)已有按后端、架构和载荷身份记录的运行证据；本轮 MiniBlink 两架构模板与 Workbench 功能短测已完成。完整 D01–D12、性能与生产验收尚未完成，D13/D14 长测后置，`releaseReady=false`；详情见[已知限制](docs/known-issues.md)，使用与再分发条件见[许可说明](LICENSE.md)。
 
 <a id="capabilities"></a>
 

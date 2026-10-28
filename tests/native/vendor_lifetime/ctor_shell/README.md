@@ -1,5 +1,26 @@
 # 构造外壳有限故障回归
 
+## Current source binding refresh (2026-10-26)
+
+The current CWebView source adds the ViewDiagnosticsState include and one
+view_created/view_destroyed call in its constructor/destructor. The extracted
+constructor and destructor now contain those exact source calls. The other six
+extracted bodies are unchanged; all eight intervals and full source/payload
+pins remain strictly checked against current bytes.
+
+The finite fixture supplies explicit noexcept observation hooks and counters.
+The view-success case checks one creation call after live publication, then one
+destruction call after close/unregister. Shell and recoverable-failure cases
+require no completed-view observations; both terminate children must also show
+zero calls before the existing strict witness/exit-86 check can succeed.
+These support counters do not exercise DLL diagnostics or prove native resource
+coverage. The production ownership bodies are not replaced or reimplemented.
+
+Unified validation uses target soui_vendor_ctor_shell_tests and the
+kernel.native.lifetime.ctor_shell- CTest prefix. The same seven names and their
+10-second limits remain; the assertions above are new and await unified compile
+and execution. Historical results below retain their original identities.
+
 一个测试 EXE，七项 CTest，每项 TIMEOUT 10。构建前强制检查四个 live 源文件的完整 bytes/SHA256、fixture/切片 hash 和八个 source/fixture 精确字节区间。activation registry 直接编译匹配固定 bytes 的实际 ActivatingObjCheck.cpp/header；constructor、destructor、owned factory 与 init helpers 原字节复用，不重写生产所有权算法。
 
 覆盖未 init 外壳成功/析构、handler 在 registry publication 前真实分配失败、完整构造成功注册/撤销、activation std::set 分配失败后的真实 Win32 lock 复用、外壳失败后的 activation remove、engine seam 与最终 live std::set 分配失败时实际 std::terminate。

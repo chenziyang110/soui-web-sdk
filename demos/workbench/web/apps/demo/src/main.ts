@@ -1,4 +1,5 @@
 import './legacy-component-runtime';
+import { hasWorkbenchLocalResources } from '../../../packages/sdk/owned-local-resource-probe';
 import { createApp, nextTick, ref, watchEffect } from 'vue';
 import App from './App.vue';
 import './styles.scss';
@@ -197,7 +198,7 @@ async function reportRuntimeProbe(): Promise<void> {
     json: JSON.parse('{"ok":true}').ok === true,
     event: typeof document.addEventListener === 'function',
     errorHandling: errorObserved,
-    localResource: location.protocol === 'file:',
+    localResource: hasWorkbenchLocalResources(location),
     proxy: typeof Proxy === 'function',
     promise: typeof Promise === 'function',
     symbol: typeof Symbol === 'function',

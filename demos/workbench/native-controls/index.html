@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="zh-CN"><meta charset="utf-8"><title>SOUI 原生控件 × WebView</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#101d30;color:#edf3ff;font:16px 'Microsoft YaHei',sans-serif;padding:30px}h1{font-size:28px;margin:0 0 12px}p{color:#acc0db;line-height:1.8}.web{margin:65px 0 0 410px;padding:28px;background:#1d304b;border:1px solid #3a5273;border-radius:14px;min-height:350px}button,input{font:inherit;padding:12px;border-radius:6px;border:1px solid #6782a7;margin:8px 0;max-width:100%}button{background:#9adad0;color:#102936;cursor:pointer}input{display:block;width:100%}.scroll{margin-top:90px;padding:24px;border:1px dashed #56718e;height:190px;overflow:auto}.content{height:500px;background:linear-gradient(#1d304b,#345d68)}small{color:#9eb3cc}
+</style>
+<h1>原生 SOUI 控件，叠在 WebView 上</h1>
+<p>左侧浅色面板由 C++ / SOUI 绘制；右侧与背景由 WebView 绘制。分别输入、点击，感受焦点切换。</p>
+<section class="web"><small>WEBVIEW / HTML</small><h2>网页交互区</h2><input placeholder="在网页输入框输入文字"><button id="count">网页点击次数：0</button><p>左侧原生面板独立于 DOM，保持固定位置，不随网页滚动。</p></section>
+<section class="scroll"><div class="content">在这里滚动网页内容。左侧原生控件仍然可用。<p>这是不透明原生浮层演示，不是将 SOUI 控件转成 HTML。</p></div></section>
+<script>var count=0;document.getElementById('count').onclick=function(){this.innerText='网页点击次数：'+(++count);};</script>
+</html>

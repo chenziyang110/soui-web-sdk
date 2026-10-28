@@ -46,6 +46,12 @@ class preparation_lifetime final {
   [[nodiscard]] completion receive(operation value) noexcept { return completion{*this, value}; }
   void cancel() noexcept { cancelled_ = true; }
   [[nodiscard]] bool cancelled() const noexcept { return cancelled_; }
+  struct snapshot final { std::size_t pending{}, active{}; };
+  [[nodiscard]] snapshot observe() const noexcept {
+    snapshot result{0, callbacks_};
+    for (const bool pending : pending_) if (pending) ++result.pending;
+    return result;
+  }
   [[nodiscard]] bool settled() const noexcept {
     if (callbacks_ != 0U) return false;
     for (const bool pending : pending_) if (pending) return false;

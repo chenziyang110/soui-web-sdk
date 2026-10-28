@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 #include "content/web_impl_win/WebMediaplayerImpl.h"
+#include "platform/network/LocalResourceAdmission.h"
 
 #include "content/browser/WebPageImpl.h"
 #include "content/web_impl_win/npapi/PluginPackage.h"
@@ -215,6 +216,7 @@ private:
 
 WebMediaPlayerImpl::WebMediaPlayerImpl(blink::WebLocalFrame* frame, const blink::WebURL& url, blink::WebMediaPlayerClient* client)
 {
+    m_localResourceRejected = false;
     m_width = 50;
     m_height = 50;
     m_duration = 1.0;
@@ -276,6 +278,15 @@ void WebMediaPlayerImpl::load(blink::WebMediaPlayer::LoadType type, const blink:
 {
     ASSERT(isMainThread());
     blink::KURL kurl(url);
+    m_localResourceRejected = blink::isLocalResourceNamespace(kurl);
+    if (m_localResourceRejected) {
+        m_readyState = blink::WebMediaPlayer::ReadyStateHaveNothing;
+        // This static resource mode has no native media-provider contract.
+        // The existing client notification exposes a real error; no URL is
+        // sent to either optional external hook. It may delete this player.
+        m_client->networkStateChanged();
+        return;
+    }
     CString urlString = kurl.getUTF8String().utf8();
 
     if (wke::g_wkeWillMediaLoadCallback) {
@@ -474,6 +485,7 @@ double WebMediaPlayerImpl::currentTime() const
 
 blink::WebMediaPlayer::NetworkState WebMediaPlayerImpl::networkState() const
 {
+    if (m_localResourceRejected) return blink::WebMediaPlayer::NetworkStateFormatError;
     if (m_wkePlayer)
         return (blink::WebMediaPlayer::NetworkState)m_wkePlayer->networkState();
     return blink::WebMediaPlayer::NetworkStateIdle;
@@ -481,6 +493,7 @@ blink::WebMediaPlayer::NetworkState WebMediaPlayerImpl::networkState() const
 
 blink::WebMediaPlayer::ReadyState WebMediaPlayerImpl::readyState() const
 {
+    if (m_localResourceRejected) return blink::WebMediaPlayer::ReadyStateHaveNothing;
     if (m_wkePlayer)
         return (blink::WebMediaPlayer::ReadyState)m_wkePlayer->readyState();
     return m_readyState;

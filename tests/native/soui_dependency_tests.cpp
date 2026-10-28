@@ -1,3 +1,15 @@
+#if defined(_MSC_VER) && !defined(__clang__)
+#include <core/SSingleton.h>
+namespace SOUI {
+class SApplication;
+class SNotifyCenter;
+// Import the base-template data before the exported derived classes instantiate
+// it. Clang receives these import declarations from SSingleton.h instead.
+extern template class __declspec(dllimport) SSingleton<SApplication>;
+extern template class __declspec(dllimport) SSingleton<SNotifyCenter>;
+}
+#endif
+
 #include <souistd.h>
 #include <core/SObjectFactory.h>
 #include <event/NotifyCenter.h>

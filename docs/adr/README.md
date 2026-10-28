@@ -67,3 +67,11 @@
 - [ADR-0111：保存每次构建的独立 CMake 配置日志](0111-immutable-cmake-configure-log.md)（真实重配置探针通过；四配置完整复验待执行）
 
 - [ADR-0112：有界的进程地址空间观察](0112-bounded-process-address-census.md)（双架构真实扫描及独立读取回归通过；实际负载预算待校准）
+
+- [ADR-0127：可选自动后端宿主](0127-automatic-renderer-host.md)（启动前选择、双资源部署和验证边界）
+- [ADR-0128：受控业务窗口的 CPU 呈现](0128-controlled-cpu-presentation.md)（业务 HWND 与 Inspector 回调路径分开；真实运行待验）
+- [ADR-0129：SHostWnd 上的原生诊断菜单](0129-native-host-window-menus.md)（仅附加菜单的可信 opt-in 窗口采用系统非客户区；真实动作待验）
+* [0130: Bounded legacy source maps](0130-bounded-legacy-source-maps.md)
+* [0131: Native view lifetime observation](0131-native-view-lifetime-observation.md)
+* [0134：受控 Inspector 的键盘事件快照](0134-controlled-inspector-keyboard-snapshot.md)
+* [0135：MiniBlink 显式本地 HTTPS 资源原点](0135-owned-local-resource-origin.md)

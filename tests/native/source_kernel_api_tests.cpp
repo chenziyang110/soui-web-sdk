@@ -19,6 +19,10 @@ struct export_state {
   unsigned broker_queries{0};
   bool wrong_module{false};
   bool nonnull_settings{false};
+  unsigned url_calls{0};
+  unsigned url_handler{0};
+  wkeWebView url_view{nullptr};
+  std::string url;
 } exports;
 
 void WKE_CALL_TYPE initialize(const wkeSettings* settings) {
@@ -29,6 +33,18 @@ bool WKE_CALL_TYPE is_initialized() { return exports.initialized; }
 void WKE_CALL_TYPE ready_first(wkeWebView, wkeDocumentReady2Callback, void*) {}
 void WKE_CALL_TYPE ready_second(wkeWebView, wkeDocumentReady2Callback, void*) {}
 const wkeCursorBrokerApi* WKE_CALL_TYPE broker_api(unsigned int) { return nullptr; }
+void WKE_CALL_TYPE load_url_first(wkeWebView view, const utf8* url) {
+  ++exports.url_calls;
+  exports.url_handler = 1;
+  exports.url_view = view;
+  exports.url = url ? url : "";
+}
+void WKE_CALL_TYPE load_url_second(wkeWebView view, const utf8* url) {
+  ++exports.url_calls;
+  exports.url_handler = 2;
+  exports.url_view = view;
+  exports.url = url ? url : "";
+}
 void WINAPI unused_export() {}
 
 FARPROC WINAPI lookup_export(HMODULE module, LPCSTR name) {
@@ -38,6 +54,8 @@ FARPROC WINAPI lookup_export(HMODULE module, LPCSTR name) {
     return reinterpret_cast<FARPROC>(&initialize);
   if (std::strcmp(name, "wkeIsInitialize") == 0)
     return reinterpret_cast<FARPROC>(&is_initialized);
+  if (std::strcmp(name, "wkeLoadURL") == 0)
+    return reinterpret_cast<FARPROC>(exports.second_ready ? &load_url_second : &load_url_first);
   if (std::strcmp(name, "wkeOnDocumentReady2") == 0) {
     ++exports.readiness_queries;
     return exports.ready ? reinterpret_cast<FARPROC>(
@@ -127,6 +145,38 @@ void missing_prepared_finalizer_prevents_initialization() {
   require(!initialize_source_kernel(exports.module), "kernel missing prepared finalization was accepted");
   require(exports.initialize_calls == 0, "missing prepared finalization was discovered after initialization");
 }
+void cold_loader_binds_and_calls_local_url() {
+  exports = {};
+  wkeLoadURL = nullptr;
+  require(initialize_source_kernel(exports.module), "cold URL loader initialization");
+  require(wkeLoadURL == &load_url_first, "cold loader must bind local HTTPS navigation");
+  const auto view = reinterpret_cast<wkeWebView>(3);
+  wkeLoadURL(view, "https://local-fixture.invalid/index.html");
+  require(exports.url_calls == 1 && exports.url_handler == 1 && exports.url_view == view &&
+              exports.url == "https://local-fixture.invalid/index.html" && !exports.wrong_module,
+          "bound URL function must receive the target and exact URL once");
+}
+void legacy_loader_clears_absent_url() {
+  exports = {};
+  exports.missing = "wkeLoadURL";
+  wkeLoadURL = &load_url_first;
+  require(initialize_source_kernel(exports.module), "file-only legacy initialization remains supported");
+  require(wkeLoadURL == nullptr && exports.url_calls == 0 && exports.initialize_calls == 1,
+          "absent optional URL export must clear a previous module pointer");
+}
+void new_module_replaces_url_pointer() {
+  exports = {};
+  exports.module = reinterpret_cast<HMODULE>(2);
+  exports.second_ready = true;
+  wkeLoadURL = &load_url_first;
+  require(initialize_source_kernel(exports.module), "replacement URL loader initialization");
+  require(wkeLoadURL == &load_url_second, "URL function must belong to the current module");
+  const auto view = reinterpret_cast<wkeWebView>(4);
+  wkeLoadURL(view, "https://local-fixture.invalid/reloaded.html");
+  require(exports.url_calls == 1 && exports.url_handler == 2 && exports.url_view == view &&
+              exports.url == "https://local-fixture.invalid/reloaded.html" && !exports.wrong_module,
+          "replacement module must receive the subsequent URL navigation");
+}
 }  // namespace
 
 int main() {
@@ -139,13 +189,16 @@ int main() {
       {"initialization-status-failure", unsuccessful_initialization_is_reported},
       {"shutdown-prepare-export-failure", missing_shutdown_prepare_prevents_initialization},
       {"prepared-finalizer-export-failure", missing_prepared_finalizer_prevents_initialization},
+      {"cold-url-navigation", cold_loader_binds_and_calls_local_url},
+      {"legacy-url-absence", legacy_loader_clears_absent_url},
+      {"module-url-pointer-replacement", new_module_replaces_url_pointer},
   };
   try {
     for (const auto& test : cases) {
       test.run();
       std::cout << "PASS " << test.name << '\n';
     }
-    std::cout << "source-kernel loader: 8 passed; actual DLL and GUI not exercised\n";
+    std::cout << "source-kernel loader: 11 passed; actual DLL and GUI not exercised\n";
     return 0;
   } catch (const std::exception& error) {
     std::cerr << "FAIL " << error.what() << '\n';

@@ -97,6 +97,10 @@ test('actual Build evidence calls separate Web arguments from both native profil
   const driver = writeWebFixture(root, 'capture-build-evidence.ps1', String.raw`
 param([string]$BuildFile,[string]$FixtureRoot)
 $ErrorActionPreference='Stop'
+# The extracted AST still invokes the real hash command. Establish its module
+# in this driver rather than relying on autoload inside a transient stub scope.
+Import-Module Microsoft.PowerShell.Utility -Global -Force -ErrorAction Stop
+Get-Command Get-FileHash -ErrorAction Stop | Out-Null
 $tokens=$null;$errors=$null
 $ast=[Management.Automation.Language.Parser]::ParseFile($BuildFile,[ref]$tokens,[ref]$errors)
 if($errors.Count){throw 'Build parser failed'}
@@ -134,6 +138,7 @@ foreach($profile in @('MSVC143','LLVM22MSVC142')){
     foreach($SkipWeb in @($false,$true)){
      if(Test-Path -LiteralPath $capture){Remove-Item -LiteralPath $capture}
      $NativeToolchain=$profile
+     $WebProfile=if(-not $SdkOnly -and $Architecture -eq 'x64'){'source-diagnostic'}else{'distribution'}
      # This discovery is a request fixture, not observed compiler evidence.
      $llvm=if($profile -eq 'LLVM22MSVC142'){@{FixtureDiscoveryOnly=$true}}else{$null}
      $output=Join-Path $root ('out/'+$(if($SdkOnly){'sdk-'}else{''})+$Architecture)
@@ -143,7 +148,7 @@ foreach($profile in @('MSVC143','LLVM22MSVC142')){
      . ([ScriptBlock]::Create($finish.Extent.Text)) | Out-Null
      $calls=@(Get-Content -LiteralPath $capture | ForEach-Object {$_|ConvertFrom-Json})
      if($calls.Count -ne 3){throw 'Expected start/Web/finish calls'}
-     $results+=@{profile=$profile;architecture=$Architecture;configuration=$Configuration;sdkOnly=$SdkOnly;skipWeb=$SkipWeb;calls=$calls}
+     $results+=@{profile=$profile;webProfile=$WebProfile;architecture=$Architecture;configuration=$Configuration;sdkOnly=$SdkOnly;skipWeb=$SkipWeb;calls=$calls}
     }
    }
   }
@@ -159,7 +164,7 @@ ConvertTo-Json -InputObject $results -Depth 12 -Compress
   const rows = JSON.parse(result.stdout);
   assert.equal(rows.length, 32);
   for (const row of rows) {
-    const base = [row.architecture, row.configuration, ...(row.sdkOnly ? ['sdk-only'] : [])];
+    const base = [row.architecture, row.configuration, ...(row.sdkOnly ? ['sdk-only'] : []), '--web-profile', row.webProfile];
     const native = row.profile === 'LLVM22MSVC142' ? [...base, '--native-toolchain', row.profile, '--profile-request',
       path.join(root, 'out', `${row.sdkOnly ? 'sdk-' : ''}${row.architecture}`, `llvm-profile-request-${row.configuration}.json`)] : base;
     assert.deepEqual(row.calls[0].argv, [path.join(root, 'tools/internal/build-evidence.cjs'), 'start', ...native]);
@@ -170,7 +175,7 @@ ConvertTo-Json -InputObject $results -Depth 12 -Compress
 
 for (const sdkOnly of [true, false]) test(`real Web CLI ${sdkOnly ? 'SDK' : 'applications'} keeps profile rejection and source/output gates`, t => {
   const root = webEvidenceFixture(t);
-  for (const name of ['build-evidence.cjs', 'delivery-identity.cjs', 'sdk-version.cjs']) {
+  for (const name of ['build-evidence.cjs', 'delivery-identity.cjs', 'sdk-version.cjs', 'web-build-profile.cjs']) {
     writeWebFixture(root, `tools/internal/${name}`, fs.readFileSync(path.join(repository, 'tools/internal', name)));
   }
   writeWebFixture(root, 'VERSION', '0.5.0-preview.1\n');

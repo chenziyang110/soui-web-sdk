@@ -60,6 +60,7 @@
 #include "net/WebURLLoaderInternal.h"
 #include "net/DataURL.h"
 #include "net/RequestExtraData.h"
+#include "content/web_impl_win/LocalResourceState.h"
 #include "net/BlobResourceLoader.h"
 #include "net/SharedMemoryDataConsumerHandle.h"
 #include "net/FixedReceivedData.h"
@@ -95,6 +96,65 @@ using namespace blink;
 namespace net {
 
 MainTaskRunner* MainTaskRunner::m_inst = nullptr;
+
+static WebURLError inspectorManagerError()
+{
+    WebURLError error;
+    error.reason = -7402;
+    error.domain = WebString::fromUTF8("SOUIInspectorResource");
+    error.localizedDescription = WebString::fromUTF8("Controlled resource reached network manager");
+    return error;
+}
+static void rejectUnregisteredInspectorJob(WebURLLoaderInternal* job)
+{
+    auto resources = job->m_inspectorResourceState;
+    blink::InspectorResourceCallbackBorrow nativeCallout(resources);
+    const bool borrowed = job->m_inspectorResourceBorrowed;
+    job->m_inspectorResourceBorrowed = false;
+    if (resources) resources->recordManagerEscape();
+    auto* client = job->m_client; auto* loader = job->m_loader;
+    delete job;
+    try { if (client) client->didFail(loader, inspectorManagerError()); }
+    catch (...) { if (resources) resources->close(); }
+    if (borrowed) resources->endOperation(false);
+}
+void WebURLLoaderManager::scheduleInspectorFailure(WebURLLoaderInternal* job)
+{
+    if (job->m_inspectorFailureQueued.exchange(true)) return;
+    auto resources = job->m_inspectorResourceState;
+    if (resources) resources->recordManagerEscape();
+    const int id = job->m_id;
+    // A controlled job can only arrive here with its immutable native identity
+    // and constructor borrow. Reserved terminal storage cannot be consumed by
+    // ordinary resource continuations. A violated invariant is a hard failure.
+    RELEASE_ASSERT(resources && job->m_inspectorResourceBorrowed);
+    const bool posted = resources->post([this, id] { rejectInspectorJobOnOwner(id); }, true);
+    RELEASE_ASSERT(posted);
+}
+void WebURLLoaderManager::rejectInspectorJobOnOwner(int id)
+{
+    RELEASE_ASSERT(WTF::isMainThread());
+    AutoLockJob lock(this, id);
+    auto* job = lock.lock();
+    if (!job || !job->m_isInspectorResourceRequest) return;
+    auto resources = job->m_inspectorResourceState;
+    if (job->getRefCount() != 1) {
+        const bool posted = resources->post([this, id] { rejectInspectorJobOnOwner(id); }, true);
+        RELEASE_ASSERT(posted); return;
+    }
+    blink::InspectorResourceCallbackBorrow nativeCallout(resources);
+    // All IO entry points check this immutable marker before creating/adding
+    // a handle. Never invoke the legacy failure hooks, cache or ShellExecute.
+    RELEASE_ASSERT(!job->m_handle);
+    auto* client = job->m_client; auto* loader = job->m_loader;
+    const bool borrowed = job->m_inspectorResourceBorrowed;
+    job->m_inspectorResourceBorrowed = false; job->m_client = nullptr;
+    delete job->m_initializeHandleInfo; job->m_initializeHandleInfo = nullptr;
+    removeLiveJobs(id); lock.setNotDerefForDelete(); delete job;
+    try { if (client) client->didFail(loader, inspectorManagerError()); }
+    catch (...) { resources->close(); }
+    if (borrowed) resources->endOperation(false);
+}
 
 String WebURLLoaderManager::createBlobTempFileInfoByUrlIfNeeded(const String& url) {
     return DownloadFileBlobCache::inst()->createBlobTempFileInfoByUrlIfNeeded(url);
@@ -504,6 +564,13 @@ static void handleExternalProtocol(const KURL& url)
 
 void WebURLLoaderManager::handleDidFail(WebURLLoaderInternal* job, const blink::WebURLError& error)
 {
+    if (job->m_isInspectorResourceRequest) {
+        blink::InspectorResourceCallbackBorrow nativeCallout(job->m_inspectorResourceState);
+        auto* client = job->m_client; auto* loader = job->m_loader; job->m_client = nullptr;
+        if (job->m_inspectorResourceState) job->m_inspectorResourceState->recordManagerEscape();
+        if (client) client->didFail(loader, inspectorManagerError());
+        return;
+    }
     if (job->m_bodyStreamWriter) {
         job->m_bodyStreamWriter->fail();
         delete job->m_bodyStreamWriter;
@@ -659,6 +726,35 @@ static bool checkIsProxyHead(WebURLLoaderInternal* job, char* ptr, size_t size)
     return job->m_isProxyHeadRequest;
 }
 
+// libcurl follows Location internally before the Engine receives its queued
+// redirect notification. Reject the reserved namespace in this IO header
+// callback, before libcurl can resolve/connect the next hop. No Page grant is
+// inferred here; every request is forbidden from taking this network path.
+static bool localResourceRedirect(const char* ptr, size_t length, WebURLLoaderInternal* job)
+{
+    const char name[] = "location:";
+    if (length < sizeof(name) - 1) return false;
+    for (size_t i = 0; i < sizeof(name) - 1; ++i) {
+        unsigned char c = static_cast<unsigned char>(ptr[i]);
+        if (c >= 'A' && c <= 'Z') c = static_cast<unsigned char>(c - 'A' + 'a');
+        if (c != static_cast<unsigned char>(name[i])) return false;
+    }
+    try {
+        size_t begin = sizeof(name) - 1, end = length;
+        while (begin < end && (ptr[begin] == ' ' || ptr[begin] == '\t')) ++begin;
+        while (end > begin && (ptr[end - 1] == '\r' || ptr[end - 1] == '\n' || ptr[end - 1] == ' ' || ptr[end - 1] == '\t')) --end;
+        for (size_t i = begin; i < end; ++i) if (static_cast<unsigned char>(ptr[i]) < 0x20) return true;
+        const std::string value(ptr + begin, end - begin);
+        if (content::LocalResourceState::reservedURL(value)) return true;
+        char* effective = nullptr; curl_easy_getinfo(job->m_handle, CURLINFO_EFFECTIVE_URL, &effective);
+        if (!effective && !job->m_url) return true;
+        const KURL base(ParsedURLString, effective ? effective : job->m_url);
+        const KURL target(base, String::fromUTF8(value.data(), value.size()));
+        const auto encoded = target.string().utf8();
+        return content::LocalResourceState::reservedURL(std::string(encoded.data(), encoded.length()));
+    } catch (...) { return true; } // No exception may leave a curl callback.
+}
+
 static size_t headerCallbackOnIoThread(char* ptr, size_t size, size_t nmemb, void* data)
 {
     int jobId = (int)data;
@@ -671,6 +767,7 @@ static size_t headerCallbackOnIoThread(char* ptr, size_t size, size_t nmemb, voi
     ASSERT(!job->m_defersLoading);
 
     size_t totalSize = size * nmemb;
+    if (localResourceRedirect(ptr, totalSize, job)) return 0;
     if (checkIsProxyHead(job, ptr, totalSize))
         return totalSize;
 
@@ -1272,6 +1369,7 @@ static bool isLocalFileNotExist(const char* urlTrim, WebURLLoaderInternal* job)
 
 int WebURLLoaderManager::addAsynchronousJob(WebURLLoaderInternal* job)
 {
+    if (job->m_isInspectorResourceRequest) { rejectUnregisteredInspectorJob(job); return 0; }
     ASSERT(WTF::isMainThread());
 
     KURL kurl = job->firstRequest()->url();
@@ -1350,6 +1448,7 @@ blink::WebThread* WebURLLoaderManager::getIoThread(IoThreadType type)
 
 void WebURLLoaderManager::continueJob(WebURLLoaderInternal* job)
 {
+    if (job->m_isInspectorResourceRequest) { scheduleInspectorFailure(job); return; }
     if (job->m_isWkeNetSetDataBeSetted) {
         Platform::current()->currentThread()->scheduler()->postLoadingTask(FROM_HERE, new HookAsynTask(this, job->m_id));
         return;
@@ -1445,6 +1544,7 @@ void WebURLLoaderManager::cancelAll()
 
 void WebURLLoaderManager::dispatchSynchronousJob(WebURLLoaderInternal* job)
 {
+    if (job->m_isInspectorResourceRequest) { rejectUnregisteredInspectorJob(job); return; }
     ASSERT(WTF::isMainThread());
     job->m_manager = this;
     job->m_isSynchronous = true;
@@ -1539,6 +1639,7 @@ void WebURLLoaderManager::dispatchSynchronousJob(WebURLLoaderInternal* job)
 
 void WebURLLoaderManager::dispatchSynchronousJobOnIoThread(WebURLLoaderInternal* job, InitializeHandleInfo* info, CURLcode* ret, int* isCallFinish)
 {
+    if (job->m_isInspectorResourceRequest) { *ret = CURLE_ABORTED_BY_CALLBACK; *isCallFinish = true; return; }
     // curl_easy_perform blocks until the transfert is finished.
     *ret = curl_easy_perform(job->m_handle);
     curl_easy_cleanup(job->m_handle);
@@ -1592,8 +1693,7 @@ void WebURLLoaderManager::applyAuthenticationToRequest(WebURLLoaderInternal* han
 
     // curl CURLOPT_USERPWD expects username:password
     String userpass = user + ":" + password;
-    //curl_easy_setopt(job->m_handle, CURLOPT_USERPWD, userpass.utf8().data());
-    curl_easy_setopt(job->m_handle, CURLOPT_USERPWD, "customer-GM_AOGub0oW-zone-pig666-area-CA-session-w2H0CHW6xo-life-30:HGFoyZeVt");
+    curl_easy_setopt(job->m_handle, CURLOPT_USERPWD, userpass.utf8().data());
 }
 
 InitializeHandleInfo* WebURLLoaderManager::preInitializeHandleOnMainThread(WebURLLoaderInternal* job)
@@ -1741,6 +1841,7 @@ void WebURLLoaderManager::initializeHandleOnIoThread(int jobId, InitializeHandle
     WebURLLoaderInternal* job = autoLockJob.lock();
     if (!job)
         return;
+    if (job->m_isInspectorResourceRequest) { scheduleInspectorFailure(job); return; }
     job->m_handle = curl_easy_init();
 
     if (job->m_defersLoading) {
@@ -1884,6 +1985,7 @@ void WebURLLoaderManager::timeoutOnMainThread(int jobId)
 
 int WebURLLoaderManager::initializeHandleOnMainThread(WebURLLoaderInternal* job)
 {
+    if (job->m_isInspectorResourceRequest) { rejectUnregisteredInspectorJob(job); return 0; }
     int jobId = addLiveJobs(job);
 
     KURL kurl = job->firstRequest()->url();
@@ -1932,6 +2034,7 @@ void WebURLLoaderManager::startOnIoThread(int jobId)
 
     //Platform::current()->mainThread()->postDelayedTask(FROM_HERE, WTF::bind(&WebURLLoaderManager::timeoutOnMainThread, this, jobId), 5000);
 
+    if (job->m_isInspectorResourceRequest) { scheduleInspectorFailure(job); return; }
     m_runningJobs++;
     CURLMcode ret = curl_multi_add_handle(getCurrentThreadCurlMultiHandle(), job->m_handle);
     // don't call perform, because events must be async
@@ -1999,6 +2102,15 @@ WebURLLoaderInternal::WebURLLoaderInternal(
     m_id = 0;
     m_webviewId = 0;
     m_type = kLoaderInternal;
+    auto* inspectorExtra = RequestExtraData::from(request.extraData());
+    m_inspectorResourceState = inspectorExtra ? inspectorExtra->inspectorState : nullptr;
+    const auto inspectorURL = KURL(request.url()).string().utf8();
+    m_isInspectorResourceRequest = RequestExtraData::isInspector(request)
+        || blink::InspectorResourceState::reservedURL(std::string(inspectorURL.data(), inspectorURL.length()))
+        // The existing fail-closed memory-only guard also protects a business
+        // namespace escape. This marker grants no Inspector state or budget.
+        || RequestExtraData::isLocalResource(request)
+        || content::LocalResourceState::reservedURL(std::string(inspectorURL.data(), inspectorURL.length()));
     m_firstRequest = new blink::WebURLRequest(request);
     KURL url = (KURL)m_firstRequest->url();
     m_user = url.user();
@@ -2026,6 +2138,9 @@ WebURLLoaderInternal::WebURLLoaderInternal(
     m_dataBind = nullptr;
 
     m_ioThread = ioThread;
+    // Acquire only after all potentially allocating constructor work. A
+    // constructor exception must not strand a native operation count.
+    m_inspectorResourceBorrowed = m_inspectorResourceState && m_inspectorResourceState->beginOperation();
 
 #ifndef NDEBUG
     webURLLoaderInternalCounter.increment();
@@ -2034,6 +2149,7 @@ WebURLLoaderInternal::WebURLLoaderInternal(
 
 WebURLLoaderInternal::~WebURLLoaderInternal()
 {
+    if (m_inspectorResourceBorrowed) m_inspectorResourceState->endOperation(true);
     m_state = kDestroyed;
 
 #if (defined ENABLE_WKE) && (ENABLE_WKE == 1)

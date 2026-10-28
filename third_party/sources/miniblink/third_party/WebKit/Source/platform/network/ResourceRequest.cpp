@@ -70,6 +70,8 @@ PassOwnPtr<ResourceRequest> ResourceRequest::adopt(PassOwnPtr<CrossThreadResourc
     request->m_originatesFromReservedIPRange = data->m_originatesFromReservedIPRange;
     request->m_inputPerfMetricReportPolicy = data->m_inputPerfMetricReportPolicy;
     request->m_followedRedirect = data->m_followedRedirect;
+    if (data->m_localResourceAdmissionBlocked || isLocalResourceNamespace(data->m_url))
+        request->setLocalResourceAdmissionBlocked();
     return request.release();
 }
 
@@ -109,6 +111,9 @@ PassOwnPtr<CrossThreadResourceRequestData> ResourceRequest::copyData() const
     data->m_originatesFromReservedIPRange = m_originatesFromReservedIPRange;
     data->m_inputPerfMetricReportPolicy = m_inputPerfMetricReportPolicy;
     data->m_followedRedirect = m_followedRedirect;
+    // Never transfer a native Page reservation into a worker/cross-thread copy.
+    data->m_localResourceAdmissionBlocked = m_localResourceAdmissionBlocked
+        || !!m_localResourceAdmission || isLocalResourceNamespace(m_url);
     return data.release();
 }
 

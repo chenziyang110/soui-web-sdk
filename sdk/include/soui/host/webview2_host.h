@@ -1,6 +1,7 @@
 #pragma once
 
 #include <soui/host/webview_host.h>
+#include <soui/diagnostics/runtime_metrics.h>
 #include <filesystem>
 #include <cstdint>
 #include <functional>
@@ -8,6 +9,8 @@
 #include <string>
 
 namespace soui::sdk {
+
+namespace detail { class stage0_webview2_access; }
 
 // Forward this payload-free notification to webview_host::pump() on the owner
 // thread. No periodic polling is needed for Bridge delivery.
@@ -51,6 +54,9 @@ class webview2_runtime_exit_watch final {
   [[nodiscard]] host_result finish();
  private:
   explicit webview2_runtime_exit_watch(std::shared_ptr<state>);
+  // Releases only a verified terminated process after an unsuccessful watch.
+  // The observation remains failed; this is never a normal-exit receipt.
+  [[nodiscard]] host_result dispose_failed();
   std::shared_ptr<state> state_;
   friend class webview2_adapter;
 };
@@ -63,12 +69,15 @@ class webview2_adapter final : public sdk::webview_host_adapter {
   struct state;
   webview2_adapter(void* owner, std::filesystem::path profile, std::string preload = {},
                    std::filesystem::path fixed_runtime = {});
+  webview2_adapter(void* owner, std::filesystem::path profile, std::string preload,
+                   std::filesystem::path fixed_runtime, diagnostics::mode observation);
   ~webview2_adapter() override;
   webview2_adapter(const webview2_adapter&) = delete;
   webview2_adapter& operator=(const webview2_adapter&) = delete;
 
-  // Exclusive mode is opt-in before prepare. It requires a separate successful
-  // runtime watch finish before destroying the adapter; shared mode is unchanged.
+  // Exclusive mode is opt-in before prepare. It requires a successful owning
+  // runtime watch finish before destruction. Controlled DevTools selects this
+  // mode and retains its own watch through the native Host lifecycle hooks.
   [[nodiscard]] host_result configure_profile_access(webview2_profile_access);
   [[nodiscard]] host_result acquire_runtime_exit_watch(std::unique_ptr<webview2_runtime_exit_watch>& empty_output);
   // True only after a real failure before Environment ownership or a failed
@@ -79,6 +88,8 @@ class webview2_adapter final : public sdk::webview_host_adapter {
   [[nodiscard]] sdk::host_result status() const;
   [[nodiscard]] std::string runtime_version() const;
   [[nodiscard]] std::string session_digest() const;
+  // Owner-STA scalar copy only; no COM calls, waits, permissions or lifecycle.
+  [[nodiscard]] diagnostics::webview2_resources observe_native_resources() const noexcept;
   [[nodiscard]] sdk::host_result mount(const sdk::host_config& config) override;
   [[nodiscard]] sdk::host_result unmount() override;
   [[nodiscard]] sdk::host_result show(bool visible) override;
@@ -91,8 +102,21 @@ class webview2_adapter final : public sdk::webview_host_adapter {
   [[nodiscard]] std::string application_diagnostics() override;
   void set_session_id(std::string) override {} // actual Bridge bootstrap owns the document session
 
+ protected:
+  [[nodiscard]] host_result configure_devtools_native(const devtools::configuration&) override;
+  [[nodiscard]] devtools::capabilities devtools_capabilities_native() const override;
+  [[nodiscard]] host_result prepare_devtools_grant(devtools::target_identity&) override;
+  [[nodiscard]] devtools::target_identity devtools_target_native() const override;
+  [[nodiscard]] host_result open_devtools_native() override;
+  [[nodiscard]] host_result revoke_devtools_native(devtools::revoke_reason) override;
+  [[nodiscard]] devtools::observation observe_devtools_native() const override;
+  [[nodiscard]] host_result finish_devtools_retirement() override;
+
  private:
+  [[nodiscard]] host_result acquire_runtime_exit_watch_owned(
+      std::unique_ptr<webview2_runtime_exit_watch>& empty_output);
   std::shared_ptr<state> state_;
+  friend class detail::stage0_webview2_access;
 };
 
 }  // namespace soui::sdk

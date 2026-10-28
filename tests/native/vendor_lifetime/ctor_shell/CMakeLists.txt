@@ -5,25 +5,25 @@ if(NOT DEFINED SOUI_DISTRIBUTION_ROOT OR SOUI_DISTRIBUTION_ROOT STREQUAL "")
 endif()
 get_filename_component(public_ctor_shell_vendor_root "${SOUI_DISTRIBUTION_ROOT}/third_party/sources/miniblink" ABSOLUTE)
 set(public_ctor_shell_fixture_pins
-  "constructor_tests.cpp|14410|158329c75739764909b1e363f9fa1986fda5e383fcecf6741b40b7af30ad61e2"
+  "constructor_tests.cpp|16175|40ad93d67ff3c2ddea9dc50eded1c1e62fc602998f3251175968f9658ba36f22"
   ".gitattributes|125|b32a221be14133b9f872795c50f40e031220f2e26259ce366251ef849af46e29"
-  "extracted/web_view.h|4408|ddb34c07330d9532550349bf52600f6859906638120005349823396ec33a1bc2"
+  "extracted/web_view.h|4480|4aba247d7e7ee6574d6d2a8c057cda8bf019940250aea7d0b5cae21c01f8e3a1"
   "extracted/web_page.h|1049|08ddcb8678821b8426b6cb1126c4c121d7debf9d4b0a186fa7607847a77c3c57"
 )
 set(public_ctor_shell_source_pins
-  "third_party/sources/miniblink/wke/wkeWebView.cpp|44094|612312f09b14d3a5c9566b28b1793ecf5f9a5d1bb13de11f95151a5e2128739a"
+  "third_party/sources/miniblink/wke/wkeWebView.cpp|44204|56baf71e8e9cb9ffe49b77f6bd58fda95d46d1433f238b9eb1e5b4afa54d5206"
   "third_party/sources/miniblink/content/browser/WebPage.cpp|14334|5ba34fba9a2f44a033d08f7843efb6ca7a508d8529aa084d9ac505e576d2a45d"
   "third_party/sources/miniblink/net/ActivatingObjCheck.cpp|3100|e2f04bfb9fb0e8ddcf9a7a8bbd9ca5598ce21dccd5f035863f8630702a64842b"
   "third_party/sources/miniblink/net/ActivatingObjCheck.h|660|6e85aca76332bc4fc2e5465501c97d76a240b9bee3021b0d24a88a8cedbe28f6"
 )
 # source|source-byte-offset|fixture|fixture-byte-offset|exact-byte-length
 set(public_ctor_shell_ranges
-  "third_party/sources/miniblink/wke/wkeWebView.cpp|1121|extracted/web_view.h|76|1157"
-  "third_party/sources/miniblink/wke/wkeWebView.cpp|2279|extracted/web_view.h|1310|133"
-  "third_party/sources/miniblink/wke/wkeWebView.cpp|2413|extracted/web_view.h|1520|159"
-  "third_party/sources/miniblink/wke/wkeWebView.cpp|31200|extracted/web_view.h|1756|2173"
-  "third_party/sources/miniblink/wke/wkeWebView.cpp|30958|extracted/web_view.h|4006|241"
-  "third_party/sources/miniblink/wke/wkeWebView.cpp|33374|extracted/web_view.h|4324|84"
+  "third_party/sources/miniblink/wke/wkeWebView.cpp|1159|extracted/web_view.h|76|1194"
+  "third_party/sources/miniblink/wke/wkeWebView.cpp|2354|extracted/web_view.h|1347|168"
+  "third_party/sources/miniblink/wke/wkeWebView.cpp|2523|extracted/web_view.h|1592|159"
+  "third_party/sources/miniblink/wke/wkeWebView.cpp|31310|extracted/web_view.h|1828|2173"
+  "third_party/sources/miniblink/wke/wkeWebView.cpp|31068|extracted/web_view.h|4078|241"
+  "third_party/sources/miniblink/wke/wkeWebView.cpp|33484|extracted/web_view.h|4396|84"
   "third_party/sources/miniblink/content/browser/WebPage.cpp|1179|extracted/web_page.h|85|632"
   "third_party/sources/miniblink/content/browser/WebPage.cpp|1812|extracted/web_page.h|803|246"
 )

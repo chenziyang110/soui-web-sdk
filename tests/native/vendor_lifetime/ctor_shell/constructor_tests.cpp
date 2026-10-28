@@ -22,6 +22,8 @@ static int injected = 0, shellAllocations = 0, shellFrees = 0;
 static int handlerAllocations = 0, handlerFrees = 0, handlerLive = 0;
 static int registryAdds = 0, registryRemoves = 0, engineEntries = 0;
 static int closeCalls = 0, pageDataLive = 0, brokerEntries = 0;
+static int viewCreatedObservations = 0, viewDestroyedObservations = 0;
+static bool viewObservationOrderInvalid = false;
 static bool engineReturned = false;
 static intptr_t expectedId = 0;
 static const char* childSite = nullptr;
@@ -156,6 +158,22 @@ WTF::HashSet<WebPage*>* WebPage::m_webPageSet = nullptr;
 #include "extracted/web_page.h"
 }
 namespace wke {
+// Observation support only. The exact source bodies below call these hooks;
+// these counters do not query DLL metrics or qualify native resource coverage.
+namespace diagnostics {
+void view_created() noexcept {
+    ++viewCreatedObservations;
+    if (g_liveWebViews.size() != 1 || !net::ActivatingObjCheck::inst()->isActivating(expectedId) ||
+        !engineReturned || engineEntries != 1 || closeCalls != 0)
+        viewObservationOrderInvalid = true;
+}
+void view_destroyed() noexcept {
+    ++viewDestroyedObservations;
+    if (!g_liveWebViews.empty() || net::ActivatingObjCheck::inst()->isActivating(expectedId) ||
+        closeCalls != 1 || viewCreatedObservations != 1 || viewDestroyedObservations != 1)
+        viewObservationOrderInvalid = true;
+}
+}
 #include "extracted/web_view.h"
 }
 
@@ -182,6 +200,7 @@ static void prepare(Fault desired) {
 }
 static void terminated() noexcept {
     const bool valid = childSite && injected == 1 && closeCalls == 0
+        && viewCreatedObservations == 0 && viewDestroyedObservations == 0 && !viewObservationOrderInvalid
         && engineEntries == 1 && shellAllocations == 1 && registryAdds == 1
         && handlerLive == 1 && wke::g_liveWebViews.empty()
         && net::ActivatingObjCheck::inst()->isActivating(expectedId);
@@ -244,6 +263,7 @@ int main(int argc, char** argv) {
     const char* name = argv[1]; bool ok = true;
     if (std::strcmp(name, "engine-terminate") == 0 || std::strcmp(name, "live-insert-terminate") == 0) {
         ok = runChild(std::strcmp(name, "engine-terminate") == 0 ? "engine" : "live");
+        ok &= require(viewCreatedObservations == 0 && viewDestroyedObservations == 0 && !viewObservationOrderInvalid, "terminate parent has no completed view observations");
         if (ok) std::printf("{\"case\":\"%s\",\"actualTerminateCallObserved\":true,\"childExit\":86,\"partialCloseCalled\":false,\"fullEngineQualified\":false}\n", name);
         return ok ? 0 : 1;
     }
@@ -260,8 +280,10 @@ int main(int argc, char** argv) {
     } else if (std::strcmp(name, "view-success") == 0) {
         auto* view = wke::CWebView::createForCursorBroker(0); auto* page = view->m_webPage;
         ok &= require(net::ActivatingObjCheck::inst()->isActivating(view->m_id) && view->m_id == expectedId && wke::g_liveWebViews.count(view) == 1 && engineEntries == 1 && handlerLive == 1, "successful real constructor registrations");
+        ok &= require(viewCreatedObservations == 1 && viewDestroyedObservations == 0 && !viewObservationOrderInvalid, "view creation observation follows live publication before close");
         delete view;
         ok &= require(!net::ActivatingObjCheck::inst()->isActivating(expectedId) && wke::g_liveWebViews.empty() && closeCalls == 1, "successful source destructor unregisters");
+        ok &= require(viewCreatedObservations == 1 && viewDestroyedObservations == 1 && !viewObservationOrderInvalid, "view destruction observation follows close and unregister");
         delete page;
         ok &= require(emptyPageRegistry() && handlerLive == 0 && handlerFrees == 1, "fixture shell ownership cleanup");
     } else if (std::strcmp(name, "activation-failure") == 0 || std::strcmp(name, "view-handler-rollback") == 0) {
@@ -275,6 +297,8 @@ int main(int argc, char** argv) {
         activating->add(probe); ok &= require(activating->isActivating(probe), "actual critical section usable after throw");
         activating->remove(probe); ok &= require(!activating->isActivating(probe), "actual remove and lock reusable");
     } else return 2;
+    if (std::strcmp(name, "view-success") != 0)
+        ok &= require(viewCreatedObservations == 0 && viewDestroyedObservations == 0 && !viewObservationOrderInvalid, "shell and recoverable construction failures publish no view observations");
     ok &= require(shellAllocations == shellFrees, "complete/failed shell allocation pairing");
     cleanup();
     if (ok) std::printf("{\"case\":\"%s\",\"sourceBodyPassed\":true,\"injected\":%d,\"partialCloseCalled\":false,\"fullEngineQualified\":false}\n", name, injected);

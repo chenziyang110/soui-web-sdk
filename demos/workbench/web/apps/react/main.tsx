@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { hasWorkbenchLocalResources } from '../../packages/sdk/owned-local-resource-probe';
 // Share the pinned Miniblink compatibility layer with the React surface. It
 // installs AbortController/CSS/DOM helpers before React Query or PrimeReact
 // render, instead of relying on a browser API that Chrome49 does not expose.
@@ -476,7 +477,7 @@ async function reportReactRuntime(client: SouiNativeClientImpl | null): Promise<
       json: JSON.parse('{"ok":true}').ok === true,
       event: typeof document.addEventListener === 'function',
       errorHandling,
-      localResource: location.protocol === 'file:',
+      localResource: hasWorkbenchLocalResources(location),
       proxy: typeof Proxy === 'function',
       promise: typeof Promise === 'function',
       symbol: typeof Symbol === 'function',
@@ -507,7 +508,7 @@ async function reportReactPerformance(client: SouiNativeClientImpl | null): Prom
         json: true,
         event: typeof document.addEventListener === 'function',
         errorHandling: true,
-        localResource: location.protocol === 'file:',
+        localResource: hasWorkbenchLocalResources(location),
         proxy: typeof Proxy === 'function',
         promise: typeof Promise === 'function',
         symbol: typeof Symbol === 'function',
