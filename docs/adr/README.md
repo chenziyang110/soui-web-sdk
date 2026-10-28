@@ -68,3 +68,10 @@
 - [ADR-0111：保存每次构建的独立 CMake 配置日志](0111-immutable-cmake-configure-log.md)（真实重配置探针通过；四配置完整复验待执行）
 
 - [ADR-0112：有界的进程地址空间观察](0112-bounded-process-address-census.md)（双架构真实扫描及独立读取回归通过；实际负载预算待校准）
+
+- [ADR-0118：MiniBlink 关闭的分阶段继续状态](0118-miniblink-nonblocking-unmount.md)
+- [ADR-0119：显式离线 Web 源码诊断构建档](0119-offline-web-build-profiles.md)
+- [ADR-0124：Web 构建目标、资源清单与体积分析](0124-web-targets-and-size-analysis.md)
+- [ADR-0125：显式运行时依赖与包内内容去重](0125-runtime-manifests-and-bundles.md)
+- [ADR-0126：可选压缩档位与实测开销](0126-optional-compression-profiles.md)
+- [ADR-0127：可选自动后端宿主](0127-automatic-renderer-host.md)
