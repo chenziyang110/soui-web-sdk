@@ -34,7 +34,8 @@ namespace content {
 
 const LPCWSTR kTimerWindowClassName = L"MiniBlinkTimerWindowClass";
  
-static UINT timerID;
+static UINT_PTR timerID;
+static UINT_PTR nativeTimerSerial = 1001; // Above both reserved legacy timer IDs.
 static void sharedTimerFiredFunction();
 
 static HANDLE timer;
@@ -112,13 +113,21 @@ static LRESULT CALLBACK TimerWindowWndProc(HWND hWnd, UINT message, WPARAM wPara
         CheckReEnter::decrementEnterCount();
         return 0;
     }
+    if (message == WM_TIMER || message == timerFiredMessage) {
+        SharedTimerContinuationLock lock;
+        // KillTimer does not remove a message already fetched by the owner.
+        // Reject deliveries from a closed or replaced window before callbacks.
+        if (continuationClosed || hWnd != continuationWindow
+            || (message == WM_TIMER && wParam != timerID && wParam != endHighResTimerID))
+            return 0;
+    }
     if (0 != CheckReEnter::getEnterCount())
         return 0;
     CheckReEnter::incrementEnterCount();
 
     LRESULT result = 0;
     if (message == WM_TIMER) {
-        if (wParam == sharedTimerID) {
+        if (timerID && wParam == timerID) {
             //KillTimer(timerWindowHandle, sharedTimerID);
             sharedTimerFiredFunction();
         } else if (wParam == endHighResTimerID) {
@@ -127,7 +136,10 @@ static LRESULT CALLBACK TimerWindowWndProc(HWND hWnd, UINT message, WPARAM wPara
             timeEndPeriod(timerResolution);
         }
     } else if (message == timerFiredMessage) {
-        InterlockedExchange(&pendingTimers, 0);
+        if (!InterlockedExchange(&pendingTimers, 0)) {
+            CheckReEnter::decrementEnterCount();
+            return 0;
+        }
         processingCustomTimerMessage = true;
         sharedTimerFiredFunction();
         processingCustomTimerMessage = false;
@@ -169,9 +181,9 @@ void setSharedTimerFireInterval(double interval)
 
     if (lastIntervalInMS == intervalInMS)
         return;
-    lastIntervalInMS = intervalInMS;
-
     initializeOffScreenTimerWindow();
+    if (!timerWindowHandle)
+        return; // Never create an unrelated thread timer on window failure.
     bool timerSet = false;
 
     // shouldUseHighResolutionTimers begin
@@ -213,7 +225,17 @@ void setSharedTimerFireInterval(double interval)
             timerID = 0;
         }
     } else {
-        timerID = SetTimer(timerWindowHandle, sharedTimerID, intervalInMS, 0);
+        // Native timer IDs also never alias a previous owner incarnation.
+        if (!timerID && nativeTimerSerial != (std::numeric_limits<UINT_PTR>::max)())
+            timerID = ++nativeTimerSerial;
+        if (timerID && SetTimer(timerWindowHandle, timerID, intervalInMS, 0))
+            lastIntervalInMS = intervalInMS;
+        else {
+            if (timerID)
+                ::KillTimer(timerWindowHandle, timerID);
+            timerID = 0;
+            lastIntervalInMS = -1; // Failed replacement must not suppress a retry.
+        }
         timer = 0;
     }
 }
@@ -225,6 +247,7 @@ void stopSharedTimer()
         continuationClosed = true;
         continuationWindow = nullptr;
         pendingContinuation = 0;
+        continuationDeferred = false;
     }
     if (timerQueue && timer) {
         ::pDeleteTimerQueueTimer(timerQueue, timer, 0);
@@ -236,7 +259,13 @@ void stopSharedTimer()
         timerID = 0;
     }
 
-    ::DestroyWindow(timerWindowHandle);
+    const HWND closedWindow = timerWindowHandle;
+    timerWindowHandle = nullptr;
+    lastIntervalInMS = -1; // The same interval must initialize a new owner window.
+    InterlockedExchange(&pendingTimers, 0);
+    processingCustomTimerMessage = false;
+    if (closedWindow)
+        ::DestroyWindow(closedWindow);
     ::UnregisterClassW(kTimerWindowClassName, NULL);
 }
 

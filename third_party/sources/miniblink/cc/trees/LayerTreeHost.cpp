@@ -4,6 +4,9 @@
 #include <cstdio>
 #include <cstdlib>
 #include <limits>
+#include <memory>
+#include <mutex>
+#include <new>
 
 #include <algorithm>
 #include "cc/trees/LayerTreeHost.h"
@@ -48,6 +51,42 @@ extern DWORD g_nowTime;
 using namespace blink;
 
 namespace cc {
+
+struct UiPaintRetryState {
+    explicit UiPaintRetryState(LayerTreeHost* target) : host(target) { }
+    std::mutex mutex;
+    LayerTreeHost* host;
+    LegacyPaintRetryPolicy policy;
+};
+
+// The queue owns this object. Rejection/cancellation disposes only its ticket;
+// dirty rectangles remain owned by LayerTreeHost until a successful dispatch.
+class UiPaintRetryTask : public blink::WebThread::Task {
+public:
+    UiPaintRetryTask(const std::shared_ptr<UiPaintRetryState>& state,
+        const LegacyPaintRetryPolicy::Ticket& ticket)
+        : m_state(state), m_ticket(ticket) { }
+    ~UiPaintRetryTask() override
+    {
+        std::lock_guard<std::mutex> lock(m_state->mutex);
+        m_state->policy.dispose(m_ticket);
+    }
+    void run() override
+    {
+        LayerTreeHost* host;
+        {
+            std::lock_guard<std::mutex> lock(m_state->mutex);
+            host = m_state->host;
+        }
+        // Host creation, destruction, resize and this callback share the
+        // Blink owner. The retained state remains valid after host teardown.
+        if (host)
+            host->runLegacyPaintRetry(m_ticket);
+    }
+private:
+    std::shared_ptr<UiPaintRetryState> m_state;
+    LegacyPaintRetryPolicy::Ticket m_ticket;
+};
 
 struct CompositorAnimationState {
     CompositorAnimationState(int targetLayerId,
@@ -430,7 +469,7 @@ LayerTreeHost::LayerTreeHost(LayerTreeHostClent* hostClient, LayerTreeHostUiThre
     m_isDestroying = false;
     
     m_memoryCanvas = nullptr;
-    m_paintToMemoryCanvasInUiThreadTaskCount = 0;
+    m_uiPaintRetry = std::make_shared<UiPaintRetryState>(this);
 #if defined(SOUI_GPU_COMPOSITOR)
     m_gpuSurface = nullptr;
     m_gpuInitAttempted = false;
@@ -490,10 +529,11 @@ LayerTreeHost::~LayerTreeHost()
     requestApplyActionsToRunIntoCompositeThread(true);
 
     m_compositeMutex.lock();
-    for (auto it : m_wrapSelfForUiThreads) {
-        it->m_host = nullptr;
+    {
+        std::lock_guard<std::mutex> retryLock(m_uiPaintRetry->mutex);
+        m_uiPaintRetry->host = nullptr;
+        m_uiPaintRetry->policy.close();
     }
-    m_wrapSelfForUiThreads.clear();
     for (auto it : m_animationFinishedTasks)
         it->host = nullptr;
     m_animationFinishedTasks.clear();
@@ -504,7 +544,6 @@ LayerTreeHost::~LayerTreeHost()
     m_scrollUpdateTasks.clear();
     m_compositeMutex.unlock();
 
-    //while (0 != m_paintToMemoryCanvasInUiThreadTaskCount) { ::Sleep(20); }
     waitForApplyActions();
 
     ASSERT(0 == m_actionsFrameGroup->getFramesSize());
@@ -1639,6 +1678,13 @@ void LayerTreeHost::setViewportSize(const blink::WebSize& deviceViewportSize)
     m_deviceViewportSize = deviceViewportSize;
     m_clientRect = blink::IntRect(blink::IntPoint(), m_deviceViewportSize);
     m_hasResize = true;
+    {
+        std::lock_guard<std::mutex> retryLock(m_uiPaintRetry->mutex);
+        m_uiPaintRetry->policy.invalidate();
+    }
+    // Old-size damage cannot be painted into the replacement canvas. Its
+    // first compositor draw publishes full current-size damage instead.
+    m_dirtyRectsForUi.clear();
 #if defined(SOUI_GPU_COMPOSITOR)
     // A size change is a safe point to retry a GPU context that was
     // unavailable during startup (for example after a display driver reset).
@@ -2773,105 +2819,82 @@ void LayerTreeHost::paintToMemoryCanvasInUiThread(const SkRect& paintRect)
     m_uiThreadClient->paintToMemoryCanvasInUiThread(m_memoryCanvas, intPaintRect);
 }
 
-void LayerTreeHost::WrapSelfForUiThread::endPaint() {
-    LayerTreeHost* host = m_host;
-    WrapSelfForUiThread* next = nullptr;
-    int* taskCount = nullptr;
-    if (host) {
-        WTF::Locker<WTF::Mutex> locker(host->m_compositeMutex);
-        host->m_wrapSelfForUiThreads.remove(this);
-        taskCount = &host->m_paintToMemoryCanvasInUiThreadTaskCount;
-        // Keep one coalesced follow-up for dirty regions that arrived while
-        // this task was painting. Do not build an unbounded UI task queue.
-        if (!host->m_isDestroying && !host->m_dirtyRectsForUi.isEmpty()) {
-            next = new WrapSelfForUiThread(host);
-            host->m_wrapSelfForUiThreads.add(next);
-            atomicIncrement(taskCount);
+void LayerTreeHost::queueLegacyPaintLocked()
+{
+    if (m_isDestroying || m_dirtyRectsForUi.isEmpty() || m_hasResize || !m_memoryCanvas
+        || !Platform::current() || !Platform::current()->mainThread())
+        return;
+    const double now = WTF::monotonicallyIncreasingTime();
+    LegacyPaintRetryPolicy::Ticket ticket;
+    {
+        std::lock_guard<std::mutex> retryLock(m_uiPaintRetry->mutex);
+        ticket = m_uiPaintRetry->policy.arm(now, m_lastPaintTime,
+            m_drawMinInterval);
+    }
+    if (!ticket.sequence)
+        return;
+    UiPaintRetryTask* task = new (std::nothrow) UiPaintRetryTask(m_uiPaintRetry, ticket);
+    if (!task) {
+        std::lock_guard<std::mutex> retryLock(m_uiPaintRetry->mutex);
+        m_uiPaintRetry->policy.dispose(ticket);
+        return;
+    }
+    const long long delay = LegacyPaintRetryPolicy::delayMilliseconds(now, ticket.deadline);
+    if (delay > 0)
+        Platform::current()->mainThread()->postDelayedTask(FROM_HERE, task, delay);
+    else
+        Platform::current()->mainThread()->postTask(FROM_HERE, task);
+}
+
+void LayerTreeHost::runLegacyPaintRetry(const LegacyPaintRetryPolicy::Ticket& ticket)
+{
+    Vector<SkRect> dirtyRects;
+    const std::shared_ptr<UiPaintRetryState> state = m_uiPaintRetry;
+    {
+        WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
+        bool accepted;
+        {
+            std::lock_guard<std::mutex> retryLock(state->mutex);
+            accepted = state->policy.accepts(ticket);
+            state->policy.dispose(ticket);
         }
+        if (!accepted || m_isDestroying || m_hasResize || !m_memoryCanvas) {
+            queueLegacyPaintLocked();
+            return;
+        }
+        const double now = WTF::monotonicallyIncreasingTime();
+        if (now < ticket.deadline) {
+            // A premature wake retains damage and schedules actual remaining
+            // time. It never creates a ready-task throttle loop.
+            queueLegacyPaintLocked();
+            return;
+        }
+        m_lastPaintTime = now;
+        dirtyRects.swap(m_dirtyRectsForUi);
     }
-
-    delete this;
-
-    if (taskCount)
-        atomicDecrement(taskCount);
-    if (next)
-        Platform::current()->mainThread()->postTask(FROM_HERE,
-            WTF::bind(&LayerTreeHost::WrapSelfForUiThread::paintInUiThread, next));
-}
-
-void LayerTreeHost::WrapSelfForUiThread::paintInUiThread()
-{
-    if (!m_host) {
-        delete this;
-        return;
+    for (size_t i = 0; i < dirtyRects.size(); ++i) {
+        LayerTreeHost* host;
+        {
+            std::lock_guard<std::mutex> retryLock(state->mutex);
+            host = state->host;
+            if (state->policy.generation() != ticket.generation)
+                return;
+        }
+        if (!host)
+            return;
+        host->paintToMemoryCanvasInUiThread(dirtyRects[i]);
     }
-
-    double lastPaintTime = WTF::monotonicallyIncreasingTime();
-    double detTime = lastPaintTime - m_host->m_lastPaintTime;
-    if (detTime < m_host->m_drawMinInterval) {
-        m_host->requestPaintToMemoryCanvasToUiThread(IntRect());
-        endPaint();
-        return;
-    }
-    m_host->m_lastPaintTime = lastPaintTime;
-
-    m_host->m_compositeMutex.lock();
-    Vector<SkRect> dirtyRectsForUi = m_host->m_dirtyRectsForUi;
-    m_host->m_dirtyRectsForUi.clear();
-    m_host->m_compositeMutex.unlock();
-
-    for (size_t i = 0; i < dirtyRectsForUi.size(); ++i) {
-        m_host->paintToMemoryCanvasInUiThread(dirtyRectsForUi[i]);
-    }
-
-    endPaint();
-}
-
-LayerTreeHost::WrapSelfForUiThread::~WrapSelfForUiThread()
-{
-    
-}
-
-void LayerTreeHost::WrapSelfForUiThread::willProcessTask()
-{
-    Platform::current()->mainThread()->removeTaskObserver(this);
-    paintInUiThread();
-}
-
-void LayerTreeHost::WrapSelfForUiThread::didProcessTask()
-{
-    Platform::current()->mainThread()->removeTaskObserver(this);
-    paintInUiThread();
 }
 
 void LayerTreeHost::requestPaintToMemoryCanvasToUiThread(const SkRect& r)
 {
-//     char* output = (char*)malloc(0x100);
-//     sprintf(output, "LayerTreeHost::requestPaintToMemoryCanvasToUiThread: %f %f\n", r.x(), r.y());
-//     OutputDebugStringA(output);
-//     free(output);
-
     WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
-
-    if (r.isEmpty() && m_paintToMemoryCanvasInUiThreadTaskCount > 1)
-        return;
-
     SkRect dirtyRect(r);
-    SkRect clientRect = SkRect::MakeXYWH(m_clientRect.x(), m_clientRect.y(), m_clientRect.width(), m_clientRect.height());
-    if (!dirtyRect.intersect(clientRect))
-        return;
-
-    addAndMergeDirty(&m_dirtyRectsForUi, dirtyRect);
-
-    // A single task drains the merged dirty list. Additional requests while
-    // it is queued or painting are merged and scheduled by endPaint().
-    if (m_paintToMemoryCanvasInUiThreadTaskCount != 0)
-        return;
-
-    WrapSelfForUiThread* wrap = new WrapSelfForUiThread(this);
-    m_wrapSelfForUiThreads.add(wrap);
-    atomicIncrement(&m_paintToMemoryCanvasInUiThreadTaskCount);
-    Platform::current()->mainThread()->postTask(FROM_HERE, WTF::bind(&LayerTreeHost::WrapSelfForUiThread::paintInUiThread, wrap)); //addTaskObserver(wrap);
+    const SkRect clientRect = SkRect::MakeXYWH(m_clientRect.x(), m_clientRect.y(),
+        m_clientRect.width(), m_clientRect.height());
+    if (!r.isEmpty() && dirtyRect.intersect(clientRect))
+        addAndMergeDirty(&m_dirtyRectsForUi, dirtyRect);
+    queueLegacyPaintLocked();
 }
 
 void LayerTreeHost::paintToMemoryCanvasInCompositeThread(const SkRect& r)
