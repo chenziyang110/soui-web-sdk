@@ -17,6 +17,7 @@
 #include <fstream>
 #include <functional>
 #include <iostream>
+#include <memory>
 #include <mutex>
 #include <set>
 #include <stdexcept>
@@ -165,9 +166,13 @@ void test_request_quota() {
   task_store unconfigured{"free-", dm::mode::disabled, std::nullopt};
   require(unconfigured.read_request_quota(after) == task_store_request_quota_status::available &&
               !after.max_live_requested_bytes, "Explicit unconfigured quota became a finite default");
-  task_store zero{"", dm::mode::disabled, task_store_request_quota_policy{0}};
   refused = false;
-  try { (void)zero.start("zero"); }
+  try {
+    // Some standard libraries allocate even for an empty container. The zero
+    // policy must reject those constructor requests as well as later admission.
+    task_store zero{"", dm::mode::disabled, task_store_request_quota_policy{0}};
+    (void)zero.start("zero");
+  }
   catch (const task_store_request_quota_exceeded&) { refused = true; }
   require(refused, "Zero quota admitted private allocations");
 }
@@ -484,10 +489,17 @@ void test_async_tasks() {
   require_error(service.query(request_for(permissions, fresh, "task.query", {{"taskId", id}})),
                 "E_TASK_NOT_FOUND", "Replacement scope adopted old work");
   std::atomic<unsigned> zero_calls{0};
-  task_service zero{dm::mode::disabled, task_store_request_quota_policy{0}};
-  require(zero.register_handler("zero", [&](const auto&, const auto&) { ++zero_calls; return task_outcome{}; }),
+  std::unique_ptr<task_service> zero;
+  try {
+    zero = std::make_unique<task_service>(dm::mode::disabled, task_store_request_quota_policy{0});
+  } catch (const task_store_request_quota_exceeded&) {
+    // A refused constructor has no service on which admission can be invoked.
+    require(zero_calls.load() == 0, "Zero-quota construction reached a handler");
+    return;
+  }
+  require(zero->register_handler("zero", [&](const auto&, const auto&) { ++zero_calls; return task_outcome{}; }),
           "Zero-quota handler registration failed");
-  require_error(zero.start(request_for(permissions, fresh, "task.start",
+  require_error(zero->start(request_for(permissions, fresh, "task.start",
       {{"kind", "zero"}, {"operationId", "zero"}, {"input", json::object()}})),
                 "E_TASK_STORE_QUOTA", "TaskService hid a real admission quota refusal");
   require(zero_calls.load() == 0, "Quota-rejected work reached a handler");
