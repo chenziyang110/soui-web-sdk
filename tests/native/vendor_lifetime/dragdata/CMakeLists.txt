@@ -9,7 +9,7 @@ set(public_dragdata_fixture_pins
   ".gitattributes|74|c4398f74862eaba5f7f1576ffb716b48a9aa6a1b56cda767a02e5a3b5e311f14"
 )
 set(public_dragdata_source_pins
-  "third_party/sources/miniblink/content/browser/WebPageImpl.cpp|85865|2606c9511e3bb6846f2fe0b58708bde97260547d91576bba5d270d65bfb41207"
+  "third_party/sources/miniblink/content/browser/WebPageImpl.cpp|86036|5a13eb80c348d1c9b1d4bebc2be928b0723154ff54045f3e760bcc9714696093"
   "third_party/sources/miniblink/wke/wkedefine.h|70548|dba9ae269be9123a5ccb6912c8254f10ae7f090e7b3e8fe7d11f4e1ac43788f0"
   "third_party/sources/miniblink/wke/wkeNetHook.cpp|23158|111005a29a3a05754d470fb0e749554e59d3f083a7bdda85bcd3a55f0b684027"
   "third_party/sources/miniblink/third_party/WebKit/public/platform/WebVector.h|5493|4330d9616d7401189b746fc4d26582aec87b588b1a6aff523964d69b791474a7"
@@ -27,8 +27,8 @@ set(public_dragdata_ranges
   "third_party/sources/miniblink/content/ui/DragHandle.cpp|9398|fixture.cpp|12009|2470"
   "third_party/sources/miniblink/content/ui/DragHandle.cpp|30464|fixture.cpp|15416|344"
   "third_party/sources/miniblink/content/browser/CheckReEnter.cpp|550|fixture.cpp|16289|199"
-  "third_party/sources/miniblink/content/browser/WebPageImpl.cpp|59423|fixture.cpp|17426|173"
-  "third_party/sources/miniblink/content/browser/WebPageImpl.cpp|59836|fixture.cpp|17738|5656"
+  "third_party/sources/miniblink/content/browser/WebPageImpl.cpp|59594|fixture.cpp|17426|173"
+  "third_party/sources/miniblink/content/browser/WebPageImpl.cpp|60007|fixture.cpp|17738|5656"
 )
 foreach(kind IN ITEMS fixture source)
   foreach(record IN LISTS public_dragdata_${kind}_pins)

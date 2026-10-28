@@ -27,9 +27,8 @@ class frame_pacer final {
     LARGE_INTEGER frequency{}, now{};
     if (!QueryPerformanceFrequency(&frequency) || !QueryPerformanceCounter(&now)) return false;
     window_ = window;
-    step_ = frequency.QuadPart / target;
-    if (step_ <= 0) return false;
-    next_ = now.QuadPart + step_;
+    if (!phase_.reset(now.QuadPart, frequency.QuadPart, target)) return false;
+    next_ = phase_.deadline();
     frequency_ = frequency.QuadPart;
     // Our precise wake does not improve the engine's own legacy worker timers.
     // Keep this scoped hint balanced for both backends; OS policy may ignore it.
@@ -136,12 +135,13 @@ class frame_pacer final {
     LARGE_INTEGER now{};
     if (!QueryPerformanceCounter(&now)) { self.clock_failed_.store(true); return; }
     if (now.QuadPart < self.next_) return;
-    const auto elapsed_steps = (now.QuadPart - self.next_) / self.step_ + 1;
+    const auto missed = self.phase_.advance_past(now.QuadPart);
 #ifdef SOUI_BRIDGE_BENCHMARK
     self.due_.fetch_add(1, std::memory_order_relaxed);
-    self.missed_.fetch_add(elapsed_steps - 1, std::memory_order_relaxed);
+    self.missed_.fetch_add(missed, std::memory_order_relaxed);
 #endif
-    self.next_ += elapsed_steps * self.step_;
+    (void)missed;
+    self.next_ = self.phase_.deadline();
     const bool pending = self.pending_.exchange(true, std::memory_order_relaxed);
 #ifdef SOUI_BRIDGE_BENCHMARK
     if (pending) self.coalesced_.fetch_add(1, std::memory_order_relaxed);
@@ -156,7 +156,8 @@ class frame_pacer final {
   std::thread worker_;
   std::atomic<bool> clock_failed_{false};
   std::atomic<bool> pending_{false};
-  std::int64_t step_{1}, next_{0}, frequency_{1};
+  fractional_frame_phase phase_;
+  std::int64_t next_{0}, frequency_{1};
   unsigned target_{0}, backend_{0};
   bool precision_{false};
 #ifdef SOUI_BRIDGE_BENCHMARK

@@ -1,0 +1,754 @@
+diff --git a/third_party/sources/miniblink/cc/raster/RasterTask.cpp b/third_party/sources/miniblink/cc/raster/RasterTask.cpp
+index 315c227c..a69e009d 100644
+--- a/third_party/sources/miniblink/cc/raster/RasterTask.cpp
++++ b/third_party/sources/miniblink/cc/raster/RasterTask.cpp
+@@ -208,6 +208,7 @@ public:
+         SkColor backgroudColor
+         )
+         : m_pool(pool)
++        , m_completionState(group->resourceNotificationState())
+         , m_picture(picture)
+         , m_dirtyRect(dirtyRect)
+         , m_threadIndex(threadIndex)
+@@ -238,6 +239,7 @@ public:
+ 
+         m_pool->decreasePendingRasterTaskNum();
+         m_pool->decreaseBusyCountByIndex(m_threadIndex);
++        LayerTreeHost::notifyRasterCompletion(m_completionState);
+     }
+ 
+     class RasterResouceLocker {
+@@ -411,6 +413,7 @@ public:
+ 
+ private:
+     RasterTaskWorkerThreadPool* m_pool;
++    std::shared_ptr<UiPaintRetryState> m_completionState;
+     SkPicture* m_picture;
+     SkRect m_dirtyRect;
+     int m_threadIndex;
+@@ -524,6 +527,11 @@ void RasterTaskGroup::appendUnnecessaryTileToEvictAfterDrawFrame(Tile* tile)
+     DebugBreak();
+ }
+ 
++std::shared_ptr<UiPaintRetryState> RasterTaskGroup::resourceNotificationState() const
++{
++    return m_host->resourceNotificationState();
++}
++
+ void RasterTaskGroup::waitHostRasteringIndexOld()
+ {
+ }
+diff --git a/third_party/sources/miniblink/cc/raster/RasterTask.h b/third_party/sources/miniblink/cc/raster/RasterTask.h
+index b69dd49f..98b41b34 100644
+--- a/third_party/sources/miniblink/cc/raster/RasterTask.h
++++ b/third_party/sources/miniblink/cc/raster/RasterTask.h
+@@ -32,6 +32,7 @@
+ #define cc_raster_RasterTask_h
+ 
+ #include "wtf/Vector.h"
++#include <memory>
+ #include "skia/ext/refptr.h"
+ #include "third_party/skia/include/core/SkPicture.h"
+ #include "third_party/WebKit/Source/platform/geometry/IntRect.h"
+@@ -58,6 +59,7 @@ class TileGrid;
+ class Tile;
+ class RasterTaskWorkerThreadPool;
+ class LayerTreeHost;
++struct UiPaintRetryState;
+ class SkBitmapRefWrap;
+ class TileActionInfoVector;
+ class LayerChangeActionBlend;
+@@ -119,6 +121,7 @@ public:
+     void appendUnnecessaryTileToEvictAfterDrawFrame(Tile* tile);
+ 
+     void waitHostRasteringIndexOld();
++    std::shared_ptr<UiPaintRetryState> resourceNotificationState() const;
+ 
+     int getPendingRasterTaskNum() const;
+ 
+diff --git a/third_party/sources/miniblink/cc/trees/ActionsFrameGroup.cpp b/third_party/sources/miniblink/cc/trees/ActionsFrameGroup.cpp
+index 019ae60a..7754189d 100644
+--- a/third_party/sources/miniblink/cc/trees/ActionsFrameGroup.cpp
++++ b/third_party/sources/miniblink/cc/trees/ActionsFrameGroup.cpp
+@@ -178,6 +178,7 @@ ActionsFrameGroup::~ActionsFrameGroup()
+ 
+ size_t ActionsFrameGroup::getFramesSize() const
+ {
++    WTF::MutexLocker locker(*m_actionsMutex);
+     return m_frames.size();
+ }
+ 
+diff --git a/third_party/sources/miniblink/cc/trees/FrameDeadlinePolicy.h b/third_party/sources/miniblink/cc/trees/FrameDeadlinePolicy.h
+new file mode 100644
+index 00000000..d39f15e2
+--- /dev/null
++++ b/third_party/sources/miniblink/cc/trees/FrameDeadlinePolicy.h
+@@ -0,0 +1,23 @@
++#ifndef CC_TREES_FRAME_DEADLINE_POLICY_H_
++#define CC_TREES_FRAME_DEADLINE_POLICY_H_
++
++#include <cmath>
++
++namespace cc {
++
++// Absolute fractional seconds stay in the vendor's monotonic clock domain.
++// A delayed frame advances directly to the first future phase.
++inline double nextFrameDeadline(double previous, double now, double interval)
++{
++    if (!(interval > 0) || !std::isfinite(interval))
++        return now;
++    if (!(previous > 0))
++        return now + interval;
++    if (previous > now)
++        return previous;
++    const double next = previous + (std::floor((now - previous) / interval) + 1) * interval;
++    return next > now ? next : now + interval;
++}
++
++} // namespace cc
++#endif // CC_TREES_FRAME_DEADLINE_POLICY_H_
+diff --git a/third_party/sources/miniblink/cc/trees/LayerTreeHost.cpp b/third_party/sources/miniblink/cc/trees/LayerTreeHost.cpp
+index 5cd40dcf..cf0ae429 100644
+--- a/third_party/sources/miniblink/cc/trees/LayerTreeHost.cpp
++++ b/third_party/sources/miniblink/cc/trees/LayerTreeHost.cpp
+@@ -10,6 +10,8 @@
+ 
+ #include <algorithm>
+ #include "cc/trees/LayerTreeHost.h"
++#include "cc/trees/FrameDeadlinePolicy.h"
++#include "cc/trees/ResourceNotificationPolicy.h"
+ #if defined(SOUI_GPU_COMPOSITOR)
+ #include "cc/trees/GpuSkiaSurface.h"
+ #endif
+@@ -57,6 +59,7 @@ struct UiPaintRetryState {
+     std::mutex mutex;
+     LayerTreeHost* host;
+     LegacyPaintRetryPolicy policy;
++    ResourceNotificationPolicy resource;
+ };
+ 
+ // The queue owns this object. Rejection/cancellation disposes only its ticket;
+@@ -88,6 +91,79 @@ private:
+     LegacyPaintRetryPolicy::Ticket m_ticket;
+ };
+ 
++static void queueResourceProgress(const std::shared_ptr<UiPaintRetryState>& state,
++    bool failureRetry = false);
++
++class ResourceProgressTask : public blink::WebThread::Task {
++public:
++    ResourceProgressTask(const std::shared_ptr<UiPaintRetryState>& state,
++        uint64_t ticket, uint64_t generation, bool failureRetry)
++        : m_state(state), m_ticket(ticket), m_generation(generation)
++        , m_failureRetry(failureRetry) { }
++    ~ResourceProgressTask() override
++    {
++        bool retry = false;
++        {
++            std::lock_guard<std::mutex> lock(m_state->mutex);
++            if (m_state->resource.dispose(m_ticket))
++                retry = !m_ran && !m_failureRetry && m_state->host;
++        }
++        // One exceptional 100ms fallback after a rejected/cancelled post.
++        // A second rejection retains intent for the next owner service call.
++        if (retry)
++            queueResourceProgress(m_state, true);
++    }
++    void run() override
++    {
++        m_ran = true;
++        LayerTreeHost* host;
++        {
++            std::lock_guard<std::mutex> lock(m_state->mutex);
++            host = m_state->host;
++        }
++        if (host)
++            host->runResourceProgress(m_ticket, m_generation);
++    }
++private:
++    std::shared_ptr<UiPaintRetryState> m_state;
++    uint64_t m_ticket;
++    uint64_t m_generation;
++    bool m_failureRetry;
++    bool m_ran = false;
++};
++
++static void queueResourceProgress(const std::shared_ptr<UiPaintRetryState>& state,
++    bool failureRetry)
++{
++    uint64_t ticket = 0;
++    uint64_t generation = 0;
++    {
++        std::lock_guard<std::mutex> lock(state->mutex);
++        if (!state->host)
++            return;
++        const auto armed = state->resource.arm(state->policy.generation());
++        ticket = armed.sequence;
++        generation = armed.generation;
++        if (!ticket)
++            return;
++    }
++    ResourceProgressTask* task = new (std::nothrow) ResourceProgressTask(
++        state, ticket, generation, failureRetry);
++    if (!task) {
++        std::lock_guard<std::mutex> lock(state->mutex);
++        state->resource.dispose(ticket);
++        return;
++    }
++    if (!Platform::current() || !Platform::current()->mainThread()) {
++        delete task;
++        return;
++    }
++    if (failureRetry)
++        Platform::current()->mainThread()->postDelayedTask(FROM_HERE, task, 100);
++    else
++        Platform::current()->mainThread()->postTask(FROM_HERE, task);
++}
++
+ struct CompositorAnimationState {
+     CompositorAnimationState(int targetLayerId,
+         cc_blink::WebCompositorAnimationImpl* compositorAnimation)
+@@ -481,7 +557,11 @@ LayerTreeHost::LayerTreeHost(LayerTreeHostClent* hostClient, LayerTreeHostUiThre
+     m_isDrawDirty = true;
+     m_lastCompositeTime = 0.0;
+     m_lastPaintTime = 0.0;
+-    m_lastRecordTime = 0.0;
++    m_nextCompositeFrameTime = 0.0;
++    m_pendingMainFrameId = 0;
++    m_presentedMainFrameId = 0;
++    m_pendingMainFrameDeadline = 0;
++    m_unifiedFrameDeadline = false;
+     m_drawFrameCount = 0;
+     m_drawFrameFinishCount = 0;
+     m_requestApplyActionsCount = 0;
+@@ -818,26 +898,91 @@ static bool compareAction(LayerChangeAction*& left, LayerChangeAction*& right)
+     return left->actionId() < right->actionId();
+ }
+ 
+-bool LayerTreeHost::canRecordActions() const
++LayerTreeHost::RecordBlockReason LayerTreeHost::recordBlockReason() const
+ {
++    if (m_isDestroying)
++        return RecordBlockReason::Destroying;
+     if (hasInFlightScene())
+-        return false;
++        return RecordBlockReason::InFlightScene;
++    if (!m_actionsFrameGroup)
++        return RecordBlockReason::MissingAction;
+     if (!m_actionsFrameGroup->containComefromMainframeLocked())
+-        return true;
+-
++        return RecordBlockReason::None;
+     if (RasterTaskWorkerThreadPool::shared()->getPendingRasterTaskNum() > 10)
+-        return false;
++        return RecordBlockReason::Raster;
++    if (m_actionsFrameGroup->getFramesSize() > 30)
++        return RecordBlockReason::MissingAction;
++    return RecordBlockReason::None;
++}
+ 
+-    if (!m_actionsFrameGroup || m_actionsFrameGroup->getFramesSize() > 30)
+-        return false;
+-    
+-    double lastRecordTime = WTF::monotonicallyIncreasingTime();
+-    double detTime = lastRecordTime - m_lastRecordTime;
+-    if (detTime < m_drawMinInterval)
+-        return false;
+-    m_lastRecordTime = lastRecordTime;
++bool LayerTreeHost::canRecordActions() const
++{
++    return recordBlockReason() == RecordBlockReason::None;
++}
+ 
+-    return true;
++void LayerTreeHost::registerResourceWait()
++{
++    std::lock_guard<std::mutex> lock(m_uiPaintRetry->mutex);
++    m_uiPaintRetry->resource.wait();
++}
++
++void LayerTreeHost::clearResourceWait()
++{
++    std::lock_guard<std::mutex> lock(m_uiPaintRetry->mutex);
++    m_uiPaintRetry->resource.clearWait();
++}
++
++void LayerTreeHost::notifyResourceProgress(bool actionDirty)
++{
++    {
++        std::lock_guard<std::mutex> lock(m_uiPaintRetry->mutex);
++        if (!m_uiPaintRetry->host)
++            return;
++        m_uiPaintRetry->resource.notify(actionDirty);
++    }
++    queueResourceProgress(m_uiPaintRetry);
++}
++
++void LayerTreeHost::notifyRasterCompletion(const std::shared_ptr<UiPaintRetryState>& state)
++{
++    // Safe after the pending-task count reaches zero: this handle pins only
++    // cancellation state, and never dereferences a potentially destroyed host.
++    queueResourceProgress(state);
++}
++
++void LayerTreeHost::runResourceProgress(uint64_t ticket, uint64_t generation)
++{
++    bool dirty = false;
++    bool waiting = false;
++    bool stale = false;
++    {
++        std::lock_guard<std::mutex> lock(m_uiPaintRetry->mutex);
++        const auto intent = m_uiPaintRetry->resource.consume(
++            ResourceNotificationPolicy::Ticket{ticket, generation},
++            m_uiPaintRetry->policy.generation());
++        stale = intent.stale;
++        dirty = intent.dirty;
++        waiting = intent.waiting;
++    }
++    if (stale) {
++        queueResourceProgress(m_uiPaintRetry);
++        return;
++    }
++    if (m_isDestroying)
++        return;
++    retryPendingOwnerWork();
++    if (dirty)
++        setLayerTreeDirty();
++    else if (waiting)
++        m_hostClient->onLayerTreeSetNeedsCommit();
++}
++
++void LayerTreeHost::retryPendingOwnerWork()
++{
++    // Cheap owner service entry: retained dirty after an exceptional rejection
++    // is retried here, without a permanent timer or an engine drain loop.
++    WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
++    queueLegacyPaintLocked();
+ }
+ 
+ void LayerTreeHost::beginRecordActions(bool isComefromMainframe)
+@@ -852,13 +997,16 @@ void LayerTreeHost::endRecordActions()
+     if (m_isDestroying)
+         return;
+     m_actionsFrameGroup->endRecordActions();
++    requestApplyActionsToRunIntoCompositeThread(false);
+ }
+ 
+ void LayerTreeHost::appendLayerChangeAction(LayerChangeAction* action)
+ {
+     m_actionsFrameGroup->saveLayerChangeAction(action);
+-
+-    setLayerTreeDirty();
++    // Producer completion wakes the compositor and owner once each. Never
++    // call WebPageImpl/JS directly from a raster worker.
++    requestApplyActionsToRunIntoCompositeThread(false);
++    notifyResourceProgress(true);
+ }
+ 
+ int64 LayerTreeHost::genActionId()
+@@ -1493,6 +1641,7 @@ void LayerTreeHost::onActionFrameApplied(int64 throughActionId)
+     }
+     if (ready)
+         requestDrawFrameToRunIntoCompositeThread();
++    notifyResourceProgress();
+ }
+ 
+ inline SkRect unionRect(const SkRect& a, const SkRect& b)
+@@ -1678,6 +1827,7 @@ void LayerTreeHost::setViewportSize(const blink::WebSize& deviceViewportSize)
+     m_deviceViewportSize = deviceViewportSize;
+     m_clientRect = blink::IntRect(blink::IntPoint(), m_deviceViewportSize);
+     m_hasResize = true;
++    m_nextCompositeFrameTime = 0;
+     {
+         std::lock_guard<std::mutex> retryLock(m_uiPaintRetry->mutex);
+         m_uiPaintRetry->policy.invalidate();
+@@ -1751,7 +1901,20 @@ void LayerTreeHost::registerForAnimations(blink::WebLayer* layer)
+ // composite or trigger updateAnimations() or layout() calls until it becomes visible.
+ void LayerTreeHost::setVisible(bool visible)
+ {
+-    m_visible = visible;
++    bool restored = false;
++    {
++        WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
++        restored = !m_visible && visible;
++        m_visible = visible;
++        m_nextCompositeFrameTime = 0;
++        if (restored && !m_clientRect.isEmpty())
++            addAndMergeDirty(&m_dirtyRectsForComposite, SkRect::MakeWH(
++                m_clientRect.width(), m_clientRect.height()));
++    }
++    if (restored) {
++        m_hostClient->onLayerTreeSetNeedsCommit();
++        requestDrawFrameToRunIntoCompositeThread();
++    }
+ }
+ 
+ // Sets the current page scale factor and minimum / maximum limits. Both limits are initially 1 (no page scale allowed).
+@@ -2379,6 +2542,8 @@ bool LayerTreeHost::tickCompositorScroll(double monotonicTime,
+         }
+     }
+ 
++    if (activatedSceneTree)
++        notifyResourceProgress();
+     ScrollTreeSnapshot* pendingTree = nullptr;
+     WTF::Vector<CompositorScrollInput*> inputs;
+     {
+@@ -2666,7 +2831,22 @@ void LayerTreeHost::clearCanvas(SkCanvas* canvas, const SkRect& rect, bool useLa
+ 
+ void LayerTreeHost::setDrawMinInterval(double drawMinInterval)
+ {
++    if (!(drawMinInterval > 0) || !std::isfinite(drawMinInterval)
++        || drawMinInterval > 1.0)
++        return;
++    WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
+     m_drawMinInterval = drawMinInterval;
++    m_nextCompositeFrameTime = 0;
++}
++
++void LayerTreeHost::setMainFrameDeadline(uint64_t frameId, double target, double interval)
++{
++    WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
++    m_unifiedFrameDeadline = interval > 0;
++    if (!m_unifiedFrameDeadline || !frameId || frameId <= m_pendingMainFrameId)
++        return;
++    m_pendingMainFrameId = frameId;
++    m_pendingMainFrameDeadline = target;
+ }
+ 
+ void LayerTreeHost::setIndependentPresentationEnabled(bool enabled)
+@@ -2733,16 +2913,33 @@ void LayerTreeHost::drawFrameInCompositeThread()
+     atomicDecrement(&m_drawFrameCount);
+     m_compositeMutex.unlock();
+ 
+-    double lastCompositeTime = WTF::monotonicallyIncreasingTime();
+-    double detTime = lastCompositeTime - m_lastCompositeTime;
+-    if (detTime < m_drawMinInterval && !m_isDestroying) { // 如果刷新频率太快，缓缓再画
+-        const long long remainingDelayMs = static_cast<long long>(
+-            std::ceil((m_drawMinInterval - detTime) * 1000.0));
+-        requestDrawFrameAfterDelay(remainingDelayMs);
++    const double lastCompositeTime = WTF::monotonicallyIncreasingTime();
++    uint64_t committedFrame = 0;
++    long long pacingDelay = 0;
++    {
++        WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
++        if (!m_visible && !m_isDestroying) {
++            atomicDecrement(&m_drawFrameFinishCount);
++            return;
++        }
++        committedFrame = m_pendingMainFrameId;
++        const bool alreadyPaced = m_unifiedFrameDeadline
++            && committedFrame > m_presentedMainFrameId
++            && lastCompositeTime >= m_pendingMainFrameDeadline;
++        if (!alreadyPaced && !m_isDestroying)
++            pacingDelay = LegacyPaintRetryPolicy::delayMilliseconds(
++                lastCompositeTime, m_nextCompositeFrameTime);
++        if (!pacingDelay) {
++            m_nextCompositeFrameTime = nextFrameDeadline(
++                m_nextCompositeFrameTime, lastCompositeTime, m_drawMinInterval);
++            m_lastCompositeTime = lastCompositeTime;
++        }
++    }
++    if (pacingDelay > 0) {
++        requestDrawFrameAfterDelay(pacingDelay);
+         atomicDecrement(&m_drawFrameFinishCount);
+         return;
+     }
+-    m_lastCompositeTime = lastCompositeTime;
+ 
+ #if 0
+     LARGE_INTEGER performanceCount = { 0 };
+@@ -2790,15 +2987,18 @@ void LayerTreeHost::drawFrameInCompositeThread()
+     }
+ #endif
+ 
++    if (!dirtyRects.isEmpty()) {
++        WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
++        m_presentedMainFrameId = committedFrame;
++    }
+     postDrawFrame();
+     if ((animationNeedsAnotherFrame || scrollNeedsAnotherFrame)
+         && !m_isDestroying) {
+         requestDrawFrameToRunIntoCompositeThread();
+-    } else if (!frameReady && !m_isDestroying) {
+-        // An incomplete transaction is waiting for producer work; do not turn
+-        // that wait into a zero-delay compositor spin loop.
+-        requestDrawFrameAfterDelay(8);
+     }
++    // Incomplete action/resource transactions are resumed by producer
++    // publication, not a periodic draw task. No resource fence is bypassed.
++    (void)frameReady;
+     atomicDecrement(&m_drawFrameFinishCount);
+ }
+ 
+@@ -2828,7 +3028,7 @@ void LayerTreeHost::queueLegacyPaintLocked()
+     LegacyPaintRetryPolicy::Ticket ticket;
+     {
+         std::lock_guard<std::mutex> retryLock(m_uiPaintRetry->mutex);
+-        ticket = m_uiPaintRetry->policy.arm(now, m_lastPaintTime,
++        ticket = m_uiPaintRetry->policy.arm(now, m_unifiedFrameDeadline ? 0 : m_lastPaintTime,
+             m_drawMinInterval);
+     }
+     if (!ticket.sequence)
+diff --git a/third_party/sources/miniblink/cc/trees/LayerTreeHost.h b/third_party/sources/miniblink/cc/trees/LayerTreeHost.h
+index aff30036..74040237 100644
+--- a/third_party/sources/miniblink/cc/trees/LayerTreeHost.h
++++ b/third_party/sources/miniblink/cc/trees/LayerTreeHost.h
+@@ -48,6 +48,7 @@ class CompositingLayer;
+ class ActionsFrameGroup;
+ struct UiPaintRetryState;
+ class UiPaintRetryTask;
++class ResourceProgressTask;
+ struct CompositorAnimationState;
+ struct CompositorAnimationFinishedTask;
+ struct CompositorScrollState;
+@@ -179,7 +180,15 @@ public:
+     int64 frontRasteringIndex();
+     void popRasteringIndex();
+ 
++    enum class RecordBlockReason { None, Destroying, InFlightScene, Raster, MissingAction };
++    RecordBlockReason recordBlockReason() const;
+     bool canRecordActions() const;
++    void registerResourceWait();
++    void clearResourceWait();
++    void notifyResourceProgress(bool actionDirty = false);
++    std::shared_ptr<UiPaintRetryState> resourceNotificationState() const { return m_uiPaintRetry; }
++    static void notifyRasterCompletion(const std::shared_ptr<UiPaintRetryState>& state);
++    void retryPendingOwnerWork();
+     void beginRecordActions(bool isComefromMainframe);
+     void endRecordActions();
+ 
+@@ -212,6 +221,7 @@ public:
+     static void clearCanvas(SkCanvas* canvas, const SkRect& rect, bool useLayeredBuffer);
+ 
+     void setDrawMinInterval(double drawMinInterval);
++    void setMainFrameDeadline(uint64_t frameId, double target, double interval);
+     void setIndependentPresentationEnabled(bool enabled);
+     
+     void postPaintMessage(const SkRect& paintRect);
+@@ -247,6 +257,8 @@ private:
+     void queueLegacyPaintLocked();
+     void runLegacyPaintRetry(const LegacyPaintRetryPolicy::Ticket& ticket);
+     friend class UiPaintRetryTask;
++    friend class ResourceProgressTask;
++    void runResourceProgress(uint64_t ticket, uint64_t generation);
+     std::shared_ptr<UiPaintRetryState> m_uiPaintRetry;
+     void onApplyActionsInCompositeThread(bool needCheck);
+     void waitForApplyActions();
+@@ -328,7 +340,11 @@ private:
+ 
+     double m_lastCompositeTime;
+     double m_lastPaintTime;
+-    mutable double m_lastRecordTime;
++    double m_nextCompositeFrameTime;
++    uint64_t m_pendingMainFrameId;
++    uint64_t m_presentedMainFrameId;
++    double m_pendingMainFrameDeadline;
++    bool m_unifiedFrameDeadline;
+     double m_drawMinInterval;
+ 
+     static const int m_paintMessageQueueSize = 200;
+diff --git a/third_party/sources/miniblink/cc/trees/ResourceNotificationPolicy.h b/third_party/sources/miniblink/cc/trees/ResourceNotificationPolicy.h
+new file mode 100644
+index 00000000..53b236ac
+--- /dev/null
++++ b/third_party/sources/miniblink/cc/trees/ResourceNotificationPolicy.h
+@@ -0,0 +1,51 @@
++#ifndef CC_TREES_RESOURCE_NOTIFICATION_POLICY_H_
++#define CC_TREES_RESOURCE_NOTIFICATION_POLICY_H_
++
++#include <cstdint>
++#include <limits>
++
++namespace cc {
++
++// Synchronized by the containing lifetime state. Intent survives queue
++// cancellation; only a successful current-generation owner dispatch clears it.
++class ResourceNotificationPolicy {
++public:
++    struct Ticket { uint64_t sequence = 0; uint64_t generation = 0; };
++    struct Intent { bool dirty = false; bool waiting = false; bool stale = false; };
++    void wait() { m_waiting = true; }
++    void clearWait() { m_waiting = false; }
++    void notify(bool dirty) { m_dirty |= dirty; }
++    Ticket arm(uint64_t generation)
++    {
++        if (m_queued || (!m_waiting && !m_dirty)
++            || m_sequence == (std::numeric_limits<uint64_t>::max)())
++            return Ticket();
++        m_queued = true;
++        return Ticket{++m_sequence, generation};
++    }
++    bool dispose(uint64_t sequence)
++    {
++        if (m_sequence != sequence || !m_queued)
++            return false;
++        m_queued = false;
++        return true;
++    }
++    Intent consume(const Ticket& ticket, uint64_t generation)
++    {
++        if (!dispose(ticket.sequence))
++            return Intent();
++        if (ticket.generation != generation)
++            return Intent{false, false, true};
++        const Intent intent{m_dirty, m_waiting, false};
++        m_dirty = false;
++        m_waiting = false;
++        return intent;
++    }
++private:
++    uint64_t m_sequence = 0;
++    bool m_queued = false;
++    bool m_waiting = false;
++    bool m_dirty = false;
++};
++} // namespace cc
++#endif
+diff --git a/third_party/sources/miniblink/content/browser/WebPageImpl.cpp b/third_party/sources/miniblink/content/browser/WebPageImpl.cpp
+index 81cc6ec3..f1b38af3 100644
+--- a/third_party/sources/miniblink/content/browser/WebPageImpl.cpp
++++ b/third_party/sources/miniblink/content/browser/WebPageImpl.cpp
+@@ -59,6 +59,7 @@
+ #include "content/devtools/DevToolsClient.h"
+ #include "content/devtools/DevToolsAgent.h"
+ #include "cc/trees/LayerTreeHost.h"
++#include "cc/trees/FrameDeadlinePolicy.h"
+ #include "cc/base/BdColor.h"
+ #include "ui/gfx/win/dpi.h"
+ #include <algorithm>
+@@ -255,6 +256,7 @@ WebPageImpl::WebPageImpl(COLORREF bdColor)
+     m_executeMainFrameCount = 0;
+     m_lastFrameTimeMonotonic = 0;
+     m_mainFrameInterval = 0;
++    m_renderFrameId = 0;
+     m_nextMainFrameTime = 0;
+     m_popupHandle = nullptr;
+     m_postCloseWidgetSoonMessage = false;
+@@ -496,15 +498,8 @@ public:
+                 if (m_page->m_mainFrameInterval > 0) {
+                     double& deadline = m_page->m_nextMainFrameTime;
+                     const double interval = m_page->m_mainFrameInterval;
+-                    if (deadline <= 0) deadline = m_lastFrameTimeMonotonic + interval;
+-                    else {
+-                        // Preserve fractional phase, skipping missed frames instead of bursting.
+-                        while (deadline <= m_lastFrameTimeMonotonic) {
+-                            const double behind = m_lastFrameTimeMonotonic - deadline;
+-                            const long long missed = static_cast<long long>(behind / interval);
+-                            deadline += (missed + 1) * interval;
+-                        }
+-                    }
++                    deadline = cc::nextFrameDeadline(deadline,
++                        m_lastFrameTimeMonotonic, interval);
+                 }
+                 if (m_page->m_mainFrameInterval > 0)
+                     m_page->m_lastFrameTimeMonotonic = m_lastFrameTimeMonotonic;
+@@ -523,6 +518,11 @@ public:
+             m_page->setNeedsCommitAndNotLayout();
+ 
+         m_host->endRecordActions();
++        if (m_isComefromMainFrame) {
++            ++m_page->m_renderFrameId;
++            m_host->setMainFrameDeadline(m_page->m_renderFrameId,
++                m_lastFrameTimeMonotonic, m_page->m_mainFrameInterval);
++        }
+ 
+         if (m_page->m_mainFrameInterval <= 0)
+             m_page->m_lastFrameTimeMonotonic = m_lastFrameTimeMonotonic;
+@@ -869,6 +869,7 @@ void WebPageImpl::beginMainFrame()
+         return;
+ 
+     if (/*needsCommit*/true) {
++        m_layerTreeHost->retryPendingOwnerWork();
+         executeMainFrame();
+         m_layerTreeHost->requestDrawFrameToRunIntoCompositeThread();
+     }
+@@ -886,9 +887,13 @@ void WebPageImpl::executeMainFrame()
+     //double lastFrameTimeMonotonic = WTF::monotonicallyIncreasingTime();
+ 
+     if (!m_layerTreeHost->canRecordActions()) {
+-        // Resource/fence pressure cannot make progress by executing the same
+-        // commit repeatedly in one ready-task drain. Keep one deferred retry.
+-        scheduleCommit(1);
++        // Register before rechecking: completion before registration is seen
++        // by the recheck, and completion afterwards owns one merged wake.
++        m_layerTreeHost->registerResourceWait();
++        if (m_layerTreeHost->canRecordActions()) {
++            m_layerTreeHost->clearResourceWait();
++            scheduleCommit(0);
++        }
+         atomicDecrement(&m_executeMainFrameCount);
+         return;
+     }
+@@ -983,6 +988,7 @@ void WebPageImpl::setViewportSize(const IntSize& size)
+     if (m_viewportSize == size)
+         return;
+     m_viewportSize = size;
++    m_nextMainFrameTime = 0;
+ 
+     ASSERT(pageInited == m_state);
+     if (pageDestroying == m_state)
+@@ -1351,6 +1357,8 @@ void WebPageImpl::setMainFrameRate(int rate)
+     const double interval = rate ? 1.0 / rate : 0;
+     if (interval == m_mainFrameInterval) return;
+     m_mainFrameInterval = interval;
++    if (m_layerTreeHost && interval > 0)
++        m_layerTreeHost->setDrawMinInterval(interval);
+     m_nextMainFrameTime = 0;
+     if (pageInited == m_state) setNeedsCommit();
+ }
+diff --git a/third_party/sources/miniblink/content/browser/WebPageImpl.h b/third_party/sources/miniblink/content/browser/WebPageImpl.h
+index c4e7aa6f..d96d3a70 100644
+--- a/third_party/sources/miniblink/content/browser/WebPageImpl.h
++++ b/third_party/sources/miniblink/content/browser/WebPageImpl.h
+@@ -307,6 +307,7 @@ public:
+     int m_executeMainFrameCount;
+     double m_lastFrameTimeMonotonic;
+     double m_mainFrameInterval;
++    uint64_t m_renderFrameId;
+     double m_nextMainFrameTime;
+ 
+     SkCanvas* m_memoryCanvasForUi;
+diff --git a/third_party/sources/miniblink/wke/InputUiApi.cpp b/third_party/sources/miniblink/wke/InputUiApi.cpp
+index dfde78ff..0127518a 100644
+--- a/third_party/sources/miniblink/wke/InputUiApi.cpp
++++ b/third_party/sources/miniblink/wke/InputUiApi.cpp
+@@ -186,7 +186,8 @@ const wkeInputUiApi* WKE_CALL_TYPE wkeGetInputUiApi(unsigned requestedVersion)
+ {
+     // Fields become available only with their actual owner/view implementation.
+     static const wkeInputUiApi api = { sizeof(wkeInputUiApi), WKE_INPUT_UI_ABI_VERSION,
+-        WKE_INPUT_UI_CAP_TRACE | WKE_INPUT_UI_CAP_OWNER_OPPORTUNITY,
++        WKE_INPUT_UI_CAP_TRACE | WKE_INPUT_UI_CAP_OWNER_OPPORTUNITY
++            | WKE_INPUT_UI_CAP_FRACTIONAL_FRAME_POLICY,
+         &configureTrace, &stopTrace, &snapshotTrace, &drainTrace,
+         &serviceOwner, nullptr, nullptr, nullptr, nullptr, nullptr };
+     return requestedVersion == WKE_INPUT_UI_ABI_VERSION ? &api : nullptr;
+diff --git a/third_party/sources/miniblink/wke/wke.cpp b/third_party/sources/miniblink/wke/wke.cpp
+index 392801a5..fcb4aba8 100644
+--- a/third_party/sources/miniblink/wke/wke.cpp
++++ b/third_party/sources/miniblink/wke/wke.cpp
+@@ -1,4 +1,4 @@
+-﻿#if (defined ENABLE_WKE) && (ENABLE_WKE == 1)
++#if (defined ENABLE_WKE) && (ENABLE_WKE == 1)
+ 
+ //////////////////////////////////////////////////////////////////////////
+ #define BUILDING_wke 1
+@@ -726,6 +726,7 @@ bool WKE_CALL_TYPE wkeIsInitialize()
+ }
+ 
+ namespace {
++bool workerFinalizationPrepared = false;
+ bool workerFinalizationCompleted = false;
+ }
+ namespace wke {
+@@ -840,7 +841,10 @@ unsigned WKE_CALL_TYPE wkePrepareWorkerShutdown()
+     if (workerFinalizationCompleted) return 0;
+     const unsigned retired = static_cast<unsigned>(blink::WorkerMessagingProxy::prepareAllWorkerRetirements());
+     if (retired != 0) return retired;
+-    return wke::brokerMayFinalize() ? 0 : 1; // Pending broker callbacks must not stop the SDK owner loop.
++    if (!wke::brokerMayFinalize())
++        return 1; // Pending broker callbacks must not stop the SDK owner loop.
++    workerFinalizationPrepared = true;
++    return 0;
+ }
+ 
+ unsigned WKE_CALL_TYPE wkeFinalizePrepared()

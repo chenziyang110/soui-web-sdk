@@ -96,6 +96,7 @@ endforeach()
 add_subdirectory(input_frame_trace_backend)
 add_subdirectory(input_admission)
 if(SOUI_BUILD_VENDOR_TESTS)
+  include(input_ui_policies.cmake)
   add_subdirectory(scheduler_continuation)
   add_subdirectory(scheduler_index)
   add_executable(soui_input_frame_trace_tests input_frame_trace/recorder_tests.cpp
@@ -500,3 +501,5 @@ foreach(json_diagnostics IN ITEMS 0 1)
   add_test(NAME sdk.native.json-destruction-${json_diagnostics} COMMAND ${json_destruction_target})
   set_tests_properties(sdk.native.json-destruction-${json_diagnostics} PROPERTIES TIMEOUT 60)
 endforeach()
+
+add_subdirectory(host_frame_policy)

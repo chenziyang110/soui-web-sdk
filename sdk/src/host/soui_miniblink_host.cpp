@@ -7,6 +7,7 @@
 #include "engine_admission.h"
 #include "input_mailbox.h"
 #include "input_sequence.h"
+#include "host_frame_policy.h"
 #include "cursor_broker.h"
 #include "main_context_gate.h"
 #include "runtime_shutdown_poll.h"
@@ -1502,6 +1503,19 @@ host_result dynamic_miniblink_adapter::mount_on_engine(const host_config& config
     return failure("E_INDEPENDENT_PRESENTATION",
                    "Miniblink could not enable compositor-owned window presentation.");
   }
+#if defined(WKE_INPUT_UI_CAP_MIRROR_CONSUMER) && !defined(SOUI_BRIDGE_BENCHMARK)
+  // This Host owns DIRECT_HWND and its ordinary paint callback does not read
+  // a DC. Benchmark/DC consumers retain the generic mirror requirement.
+  if (wkeGetInputUiApi) {
+    const auto* api = wkeGetInputUiApi(WKE_INPUT_UI_ABI_VERSION);
+    if (api && api->abiVersion == WKE_INPUT_UI_ABI_VERSION
+        && api->structSize >= offsetof(wkeInputUiApi, setUiMirrorConsumerRequired) + sizeof(api->setUiMirrorConsumerRequired)
+        && (api->capabilities & WKE_INPUT_UI_CAP_MIRROR_CONSUMER) && api->setUiMirrorConsumerRequired) {
+      if (api->setUiMirrorConsumerRequired(view, 0) != WKE_INPUT_UI_OK)
+        (void)api->setUiMirrorConsumerRequired(view, 1); // Preserve mirror fallback if adoption fails.
+    }
+  }
+#endif
 
   if (cursor_broker_)
     return success("Controlled endpoint primed without the initial navigation.");
@@ -2332,16 +2346,32 @@ void dynamic_miniblink_adapter::pump_on_engine() {
       }
       static_cast<bridge_adapter*>(bridge_adapter_)->set_present_count(present_count);
     }
-    const bool high_rate = bridge_adapter_ &&
-        static_cast<bridge_adapter*>(bridge_adapter_)->active_frame_rate() > 60;
+    const int rate = bridge_adapter_ ? static_cast<bridge_adapter*>(bridge_adapter_)->active_frame_rate() : 60;
+    const bool high_rate = rate > 60;
+    char cpu_interval_override[16] = {};
+    const DWORD cpu_interval_length = GetEnvironmentVariableA("SOUI_CPU_DRAW_INTERVAL_MS",
+        cpu_interval_override, sizeof(cpu_interval_override));
+    const bool has_cpu_interval_override = cpu_interval_length > 0 && cpu_interval_length < sizeof(cpu_interval_override);
+    bool fractional_frame_policy = false;
+#ifdef WKE_INPUT_UI_CAP_FRACTIONAL_FRAME_POLICY
+    if (wkeGetInputUiApi) {
+      const auto* api = wkeGetInputUiApi(WKE_INPUT_UI_ABI_VERSION);
+      fractional_frame_policy = api && api->abiVersion == WKE_INPUT_UI_ABI_VERSION
+          && api->structSize >= offsetof(wkeInputUiApi, capabilities) + sizeof(api->capabilities)
+          && (api->capabilities & WKE_INPUT_UI_CAP_FRACTIONAL_FRAME_POLICY);
+    }
+#endif
 #ifdef SOUI_SOURCE_KERNEL_HOST
+    const int main_rate = detail::host_frame_policy::main_rate(rate, fractional_frame_policy, experimental_main_frame_scheduler_,
+        gpu_active, has_cpu_interval_override, experimental_compositor_rate_);
     if (managed_frame_timing_ && wkeSetDebugConfig) {
-      const int rate = experimental_main_frame_scheduler_ ?
-          (bridge_adapter_ ? static_cast<bridge_adapter*>(bridge_adapter_)->active_frame_rate() : 60) : 0;
-      if (configured_main_frame_rate_ != rate) {
-        const auto value = std::to_string(rate);
+      if (configured_main_frame_rate_ != main_rate) {
+        const auto value = std::to_string(main_rate);
         wkeSetDebugConfig(static_cast<wkeWebView>(webview_), "mainFrameRate", value.c_str());
-        configured_main_frame_rate_ = rate;
+        configured_main_frame_rate_ = main_rate;
+        // Fractional mode may have cached this number without sending it.
+        // Reapply the actual legacy gate after a controller transition.
+        configured_draw_min_interval_ = -1;
       }
     }
 #endif
@@ -2353,7 +2383,6 @@ void dynamic_miniblink_adapter::pump_on_engine() {
       }
     }
     if (wkeSetDebugConfig) {
-      const int rate = bridge_adapter_ ? static_cast<bridge_adapter*>(bridge_adapter_)->active_frame_rate() : 60;
       // The GPU path is paced by the display clock and can draw as soon as a
       // dirty frame is ready. CPU-safe fallback follows the same selected
       // integer display-limited target so the reported draw budget matches the actual
@@ -2361,19 +2390,23 @@ void dynamic_miniblink_adapter::pump_on_engine() {
       char cpu_high_option[2] = {};
       const bool cpu_high_refresh = GetEnvironmentVariableA("SOUI_CPU_HIGH_REFRESH", cpu_high_option,
                                                             sizeof(cpu_high_option)) == 1 && cpu_high_option[0] == '1';
-      char cpu_interval_override[16] = {};
-      const DWORD cpu_interval_length = GetEnvironmentVariableA("SOUI_CPU_DRAW_INTERVAL_MS",
-                                                                 cpu_interval_override, sizeof(cpu_interval_override));
-      const int interval = experimental_compositor_rate_
-          ? (rate > 0 ? (1000 + rate - 1) / rate : 17)
-          : (gpu_active ? 0 : (cpu_interval_length > 0 && cpu_interval_length < sizeof(cpu_interval_override)
+      bool fractional_cpu_cadence = false;
+#ifdef SOUI_SOURCE_KERNEL_HOST
+      // Matching source kernels use mainFrameRate's fractional phase for both
+      // record and compositor. An integer override would add a second gate.
+      fractional_cpu_cadence = detail::host_frame_policy::fractional_cpu(fractional_frame_policy, managed_frame_timing_, gpu_active, main_rate);
+#endif
+      const int interval = fractional_cpu_cadence ? detail::host_frame_policy::rounded_interval(rate) : experimental_compositor_rate_
+          ? detail::host_frame_policy::rounded_interval(rate)
+          : (gpu_active ? 0 : (has_cpu_interval_override
                                 ? std::clamp(std::atoi(cpu_interval_override), 0, 1000)
                                 : ((cpu_high_refresh || rate > 60) && rate > 60
-                                    ? (1000 + rate - 1) / rate
+                                    ? detail::host_frame_policy::rounded_interval(rate)
                                     : 17)));
       if (configured_draw_min_interval_ != interval) {
         const auto value = std::to_string(interval);
-        wkeSetDebugConfig(static_cast<wkeWebView>(webview_), "drawMinInterval", value.c_str());
+        if (!fractional_cpu_cadence)
+          wkeSetDebugConfig(static_cast<wkeWebView>(webview_), "drawMinInterval", value.c_str());
         configured_draw_min_interval_ = interval;
       }
       if (bridge_adapter_ != nullptr)

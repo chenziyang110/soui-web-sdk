@@ -307,6 +307,7 @@ public:
     int m_executeMainFrameCount;
     double m_lastFrameTimeMonotonic;
     double m_mainFrameInterval;
+    uint64_t m_renderFrameId;
     double m_nextMainFrameTime;
 
     SkCanvas* m_memoryCanvasForUi;

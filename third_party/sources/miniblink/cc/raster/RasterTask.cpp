@@ -208,6 +208,7 @@ public:
         SkColor backgroudColor
         )
         : m_pool(pool)
+        , m_completionState(group->resourceNotificationState())
         , m_picture(picture)
         , m_dirtyRect(dirtyRect)
         , m_threadIndex(threadIndex)
@@ -238,6 +239,7 @@ public:
 
         m_pool->decreasePendingRasterTaskNum();
         m_pool->decreaseBusyCountByIndex(m_threadIndex);
+        LayerTreeHost::notifyRasterCompletion(m_completionState);
     }
 
     class RasterResouceLocker {
@@ -411,6 +413,7 @@ public:
 
 private:
     RasterTaskWorkerThreadPool* m_pool;
+    std::shared_ptr<UiPaintRetryState> m_completionState;
     SkPicture* m_picture;
     SkRect m_dirtyRect;
     int m_threadIndex;
@@ -522,6 +525,11 @@ void RasterTaskGroup::appendTileToUIThreadRelease(Tile* tile)
 void RasterTaskGroup::appendUnnecessaryTileToEvictAfterDrawFrame(Tile* tile)
 {
     DebugBreak();
+}
+
+std::shared_ptr<UiPaintRetryState> RasterTaskGroup::resourceNotificationState() const
+{
+    return m_host->resourceNotificationState();
 }
 
 void RasterTaskGroup::waitHostRasteringIndexOld()
