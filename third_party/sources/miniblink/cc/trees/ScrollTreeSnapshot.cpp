@@ -63,6 +63,34 @@ ScrollNodeSnapshot* ScrollTreeSnapshot::findMutableNode(
     return nullptr;
 }
 
+bool ScrollTreeSnapshot::refreshCoverage(const ScrollNodeKey& key,
+    uint64_t scrollEpoch, const ScrollCoverageWindow& coverage,
+    bool coveragePrepared, bool hasResourceFence)
+{
+    ScrollNodeSnapshot* node = findMutableNode(key);
+    if (!node || node->scrollEpoch != scrollEpoch)
+        return false;
+
+    // TileGrid marks a tile prepared before its raster action is applied.
+    // Do not promote newly prepared coverage in a scene that can activate
+    // immediately without waiting for that action.
+    if (coveragePrepared && !node->coverageComplete && !hasResourceFence)
+        return false;
+
+    node->coverageComplete = coveragePrepared;
+    if (coveragePrepared) {
+        node->coverageMinimum = coverage.minimumOffset;
+        node->coverageMaximum = coverage.maximumOffset;
+        node->mainThreadReasons &= ~ScrollMainThreadReasonIncompleteCoverage;
+    } else {
+        node->coverageMinimum = node->baseOffset;
+        node->coverageMaximum = node->baseOffset;
+        node->mainThreadReasons |= ScrollMainThreadReasonIncompleteCoverage;
+    }
+    node->setInputPrediction(node->inputPrediction);
+    return true;
+}
+
 const ScrollNodeSnapshot* ScrollTreeSnapshot::scrollTargetAt(
     double x, double y) const
 {

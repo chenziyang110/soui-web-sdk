@@ -546,9 +546,12 @@ ScrollSample ScrollController::sample(double monotonicTime)
     m_consumedTotal.y += realized.y;
     m_visualOffset = nextVisual;
 
-    if (m_consumedTotal.x != desired.x)
+    // Reconciliation adds/subtracts the nonzero base and acknowledged offsets.
+    // Its rounding error is not a real clamp and must not discard the smooth
+    // target or velocity. Keep resetting when bounds materially limit motion.
+    if (std::fabs(m_consumedTotal.x - desired.x) >= kMovementEpsilon)
         m_motionX.reset(m_consumedTotal.x, monotonicTime);
-    if (m_consumedTotal.y != desired.y)
+    if (std::fabs(m_consumedTotal.y - desired.y) >= kMovementEpsilon)
         m_motionY.reset(m_consumedTotal.y, monotonicTime);
 
     result.valid = true;

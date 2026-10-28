@@ -49,6 +49,7 @@ struct CompositorAnimationFinishedTask;
 struct CompositorScrollState;
 struct CompositorScrollInput;
 struct RetiredCompositorScrollState;
+struct ScrollRasterCoverageRequest;
 
 struct CompositorScrollReceipt {
     CompositorScrollReceipt()
@@ -94,7 +95,8 @@ public:
     bool drawToCanvas(SkCanvas* canvas, const SkRect& clip);
     bool drawCompositorScrollbarLayer(int layerId, SkCanvas* canvas,
         const SkRect& localDirtyRect);
-    void updateLayersDrawProperties(ScrollTreeSnapshot* scrollTree);
+    void updateLayersDrawProperties(ScrollTreeSnapshot* scrollTree,
+        std::vector<ScrollRasterCoverageRequest>* coverageRequests);
 
     //void setNeedsCommit();
     //void setNeedsFullTreeSync();
