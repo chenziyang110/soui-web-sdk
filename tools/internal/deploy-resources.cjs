@@ -28,10 +28,13 @@ function replace(source, application, distribution) {
   const names = id.walk(source);
   if (!names.includes('index.html')) throw new Error('Web build missing index.html');
   if (names.some(name => name.startsWith('legal/'))) throw new Error('Web build owns reserved legal path');
-  const notice = id.safePath(distribution, 'THIRD_PARTY_NOTICES.md');
+  const requiredNotices = ['LICENSE.md', 'THIRD_PARTY_NOTICES.md'];
+  for (const name of requiredNotices) {
+    if (!fs.statSync(id.safePath(distribution, name)).isFile()) throw new Error('SDK legal materials missing: ' + name);
+  }
   const licenses = id.walk(distribution, 'third_party/licenses');
-  if (!fs.statSync(notice).isFile() || !licenses.length) throw new Error('SDK legal materials missing');
-  const legal = ['THIRD_PARTY_NOTICES.md', ...licenses];
+  if (!licenses.length) throw new Error('SDK legal materials missing');
+  const legal = [...requiredNotices, ...licenses];
   const suffix = crypto.randomUUID();
   const stage = id.safePath(application, `.resources-new-${suffix}`);
   const backup = id.safePath(application, `.resources-old-${suffix}`);
