@@ -506,3 +506,5 @@ endforeach()
 add_subdirectory(host_frame_policy)
 
 add_subdirectory(native_trace_ui_lease)
+
+add_subdirectory(webview2_owner_policy)
