@@ -181,6 +181,8 @@ public:
     virtual ~LayerChangeActionBlend() override;
 
     void setContentScale(float contentScale) { m_contentScale = contentScale; }
+    void cancelBeforeRaster() { m_cancelledBeforeRaster = true; }
+    bool cancelledBeforeRaster() const { return m_cancelledBeforeRaster; }
     float getContentScale() const { return m_contentScale; }
 
     void run(LayerTreeHost* host);
@@ -198,6 +200,7 @@ private:
     SkRect m_dirtyRect;
     SkBitmap* m_dirtyRectBitmap;
     float m_contentScale;
+    bool m_cancelledBeforeRaster;
 
     WTF::Vector<SkRect> m_pendingInvalidateRects;
 };

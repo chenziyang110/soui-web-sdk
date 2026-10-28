@@ -1,214 +1,225 @@
-
 #ifndef content_browser_SharedTimerWin_h
 #define content_browser_SharedTimerWin_h
-
 #include "content/web_impl_win/WebThreadImpl.h"
 #include "content/browser/CheckReEnter.h"
-
-#include <mmsystem.h>
-
-// These aren't in winuser.h with the MSVS 2003 Platform SDK, 
-// so use default values in that case.
-#ifndef USER_TIMER_MINIMUM
-#define USER_TIMER_MINIMUM 0x0000000A
-#endif
-
-#ifndef USER_TIMER_MAXIMUM
-#define USER_TIMER_MAXIMUM 0x7FFFFFFF
-#endif
-
-#ifndef QS_RAWINPUT
-#define QS_RAWINPUT         0x0400
-#endif
-
-typedef HANDLE (WINAPI* PfnCreateTimerQueue)();
-typedef BOOL (WINAPI* PfnDeleteTimerQueueTimer)(HANDLE TimerQueue, HANDLE Timer, HANDLE CompletionEvent);
-typedef BOOL (WINAPI* PfnCreateTimerQueueTimer)(PHANDLE phNewTimer, HANDLE TimerQueue, void* Callback, PVOID Parameter, DWORD DueTime, DWORD Period, ULONG Flags);
-
-PfnCreateTimerQueue pCreateTimerQueue = nullptr;
-PfnDeleteTimerQueueTimer pDeleteTimerQueueTimer = nullptr;
-PfnCreateTimerQueueTimer pCreateTimerQueueTimer = nullptr;
-
+#include <limits>
+#include <exception>
+#include <math.h>
 namespace content {
-
 const LPCWSTR kTimerWindowClassName = L"MiniBlinkTimerWindowClass";
- 
-static UINT timerID;
+static HWND timerWindowHandle = nullptr, continuationWindow = nullptr;
+static UINT continuationMessage = 0, timerFiredMessage = 0;
+static SRWLOCK continuationLock = SRWLOCK_INIT;
+static UINT_PTR continuationSerial = 0, pendingContinuation = 0;
+static UINT_PTR nativeTimerSerial = 1001, timerID = 0, deadlineTicket = 0;
+static bool continuationClosed = true, continuationDeferred = false, deadlineRetry = false;
+static HANDLE deadlineTimer = nullptr, deadlineWait = nullptr;
+static double armedDeadline = 0;
+class SharedTimerContinuationLock {
+public:
+    SharedTimerContinuationLock() { ::AcquireSRWLockExclusive(&continuationLock); }
+    ~SharedTimerContinuationLock() { ::ReleaseSRWLockExclusive(&continuationLock); }
+private:
+    SharedTimerContinuationLock(const SharedTimerContinuationLock&) = delete;
+    SharedTimerContinuationLock& operator=(const SharedTimerContinuationLock&) = delete;
+};
+static void initializeOffScreenTimerWindow();
+static void setSharedTimerFireDeadline(double);
 static void sharedTimerFiredFunction();
 
-static HANDLE timer;
-static HWND timerWindowHandle = 0;
-
-static UINT timerFiredMessage = 0;
-static HANDLE timerQueue;
-static bool highResTimerActive;
-static bool processingCustomTimerMessage = false;
-static LONG pendingTimers;
-static double lastIntervalInMS = 0;
-
-const int timerResolution = 1; // To improve timer resolution, we call timeBeginPeriod/timeEndPeriod with this value to increase timer resolution to 1ms.
-const int highResolutionThresholdMsec = 16; // Only activate high-res timer for sub-16ms timers (Windows can fire timers at 16ms intervals without changing the system resolution).
-const int stopHighResTimerInMsec = 300; // Stop high-res timer after 0.3 seconds to lessen power consumption (we don't use a smaller time since oscillating between high and low resolution breaks timer accuracy on XP).
-
-enum {
-    sharedTimerID = 1000,
-    endHighResTimerID = 1001,
-};
-
+// Static DLL state plus a ticket: no task/owner pointer crosses this boundary.
+static VOID CALLBACK sharedDeadlineSignaled(PVOID parameter, BOOLEAN)
+{
+    const UINT_PTR ticket = reinterpret_cast<UINT_PTR>(parameter);
+    HWND window = nullptr;
+    UINT message = 0;
+    {
+        SharedTimerContinuationLock lock;
+        if (continuationClosed || !ticket || ticket != deadlineTicket) return;
+        window = continuationWindow; message = timerFiredMessage;
+        if (::PostMessage(window, message, ticket, 0)) return;
+        // Native SetTimer can also have failed. Retain explicit owner work
+        // rather than claiming that an unverified fallback owns the deadline.
+        continuationDeferred = true;
+    }
+    // No publication lock across a native call that may enter the owner. This
+    // callback never unregisters its own wait or closes/rearms its timer.
+    if (::GetWindowThreadProcessId(window, nullptr) != ::GetCurrentThreadId())
+        ::SendNotifyMessageW(window, message, ticket, 0);
+}
+static void cancelSharedTimerDeadline()
+{
+    HANDLE wait = nullptr;
+    {
+        SharedTimerContinuationLock lock;
+        deadlineTicket = 0; armedDeadline = 0;
+        deadlineRetry = false;
+        wait = deadlineWait; deadlineWait = nullptr;
+    }
+    // Callback takes publication lock. Wait outside it before HANDLE reuse.
+    if (wait && !::UnregisterWaitEx(wait, INVALID_HANDLE_VALUE)) std::terminate();
+    if (deadlineTimer) ::CancelWaitableTimer(deadlineTimer);
+    if (timerID) { ::KillTimer(timerWindowHandle, timerID); timerID = 0; }
+}
+static bool requestSharedTimerContinuation()
+{
+    HWND window = nullptr;
+    UINT_PTR ticket = 0;
+    {
+        SharedTimerContinuationLock lock;
+        if (continuationClosed || continuationDeferred || !continuationWindow) return false;
+        if (pendingContinuation) return true;
+        if (continuationSerial == (std::numeric_limits<UINT_PTR>::max)()) return false;
+        ticket = pendingContinuation = ++continuationSerial;
+        window = continuationWindow;
+        if (::PostMessage(window, continuationMessage, ticket, 0)) return true;
+    }
+    // Cross-thread SendNotifyMessage returns without waiting for the owner and
+    // does not depend on a free posted-message slot. Same-thread fallback stays
+    // deferred, preserving postTask's asynchronous execution contract.
+    if (::GetWindowThreadProcessId(window, nullptr) != ::GetCurrentThreadId()
+        && ::SendNotifyMessageW(window, continuationMessage, ticket, 0)) return true;
+    SharedTimerContinuationLock lock;
+    if (pendingContinuation == ticket) pendingContinuation = 0;
+    return false;
+}
+static void armSharedTimerRecovery()
+{
+    // Only unresolved work owns this low-priority compatibility opportunity.
+    setSharedTimerFireDeadline(monotonicallyIncreasingTime() + 0.010);
+}
 static LRESULT CALLBACK TimerWindowWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    if (0 != CheckReEnter::getEnterCount())
-        return 0;
-    CheckReEnter::incrementEnterCount();
-
-    LRESULT result = 0;
-    if (message == WM_TIMER) {
-        if (wParam == sharedTimerID) {
-            //KillTimer(timerWindowHandle, sharedTimerID);
-            sharedTimerFiredFunction();
-        } else if (wParam == endHighResTimerID) {
-            //KillTimer(timerWindowHandle, endHighResTimerID);
-            highResTimerActive = false;
-            timeEndPeriod(timerResolution);
+    if (continuationMessage && message == continuationMessage) {
+        {
+            SharedTimerContinuationLock lock;
+            if (continuationClosed || hWnd != continuationWindow || !pendingContinuation || wParam != pendingContinuation) return 0;
+            pendingContinuation = 0; continuationDeferred = true;
         }
-    } else if (message == timerFiredMessage) {
-        InterlockedExchange(&pendingTimers, 0);
-        processingCustomTimerMessage = true;
-        sharedTimerFiredFunction();
-        processingCustomTimerMessage = false;
-    } else
-        result = DefWindowProc(hWnd, message, wParam, lParam);
-
+        const UINT nativeWork = QS_INPUT | QS_PAINT | QS_TIMER | QS_HOTKEY;
+        if (CheckReEnter::getEnterCount() || (HIWORD(::GetQueueStatus(nativeWork)) & nativeWork)) {
+            armSharedTimerRecovery(); return 0;
+        }
+    } else if (message == timerFiredMessage || message == WM_TIMER) {
+        {
+            SharedTimerContinuationLock lock;
+            if (continuationClosed || hWnd != continuationWindow || !deadlineTicket || wParam != deadlineTicket) return 0;
+        }
+        if (CheckReEnter::getEnterCount()) { armSharedTimerRecovery(); return 0; }
+        if (armedDeadline > monotonicallyIncreasingTime()) {
+            const double deadline = armedDeadline;
+            cancelSharedTimerDeadline(); setSharedTimerFireDeadline(deadline); return 0;
+        }
+    } else return DefWindowProc(hWnd, message, wParam, lParam);
+    cancelSharedTimerDeadline();
+    CheckReEnter::incrementEnterCount();
+    sharedTimerFiredFunction();
     CheckReEnter::decrementEnterCount();
-    return result;
+    return 0;
 }
-
 static void sharedTimerFiredFunction()
 {
-    content::WebThreadImpl* threadImpl = nullptr;
-    threadImpl = (content::WebThreadImpl*)(blink::Platform::current()->currentThread());
-    threadImpl->fire();
+    {
+        SharedTimerContinuationLock lock;
+        if (continuationClosed) return;
+        continuationDeferred = false;
+    }
+    auto* thread = static_cast<WebThreadImpl*>(blink::Platform::current()->currentThread());
+    if (thread) thread->fire();
 }
-
-static void NTAPI queueTimerProc(PVOID, BOOLEAN)
+static void serviceSharedTimerOwnerOpportunity()
 {
-    if (InterlockedIncrement(&pendingTimers) == 1)
-        ::PostMessage(timerWindowHandle, timerFiredMessage, 0, 0);
+    bool deferred = false;
+    {
+        SharedTimerContinuationLock lock;
+        deferred = !continuationClosed && (continuationDeferred || deadlineRetry);
+    }
+    if (deferred && !CheckReEnter::getEnterCount()) {
+        cancelSharedTimerDeadline();
+        CheckReEnter::incrementEnterCount();
+        sharedTimerFiredFunction();
+        CheckReEnter::decrementEnterCount();
+    }
 }
-
-static void initializeOffScreenTimerWindow();
-
+static void createSharedDeadlineTimer()
+{
+    if (deadlineTimer) return;
+    typedef HANDLE (WINAPI* CreateTimerEx)(LPSECURITY_ATTRIBUTES, LPCWSTR, DWORD, DWORD);
+    const auto createTimerEx = reinterpret_cast<CreateTimerEx>(::GetProcAddress(::GetModuleHandleW(L"kernel32.dll"), "CreateWaitableTimerExW"));
+    // Unsupported flag on Win7 fails, then uses its compatible waitable timer.
+    if (createTimerEx) deadlineTimer = createTimerEx(nullptr, nullptr, 0x00000002, TIMER_ALL_ACCESS);
+    if (!deadlineTimer) deadlineTimer = ::CreateWaitableTimerW(nullptr, FALSE, nullptr);
+}
+static void setSharedTimerFireDeadline(double deadline)
+{
+    initializeOffScreenTimerWindow();
+    if (continuationClosed || !timerWindowHandle) return;
+    if (deadline > 0 && deadline == armedDeadline && deadlineTicket) return;
+    cancelSharedTimerDeadline();
+    if (!(deadline > 0) || nativeTimerSerial == (std::numeric_limits<UINT_PTR>::max)()) return;
+    const UINT_PTR ticket = ++nativeTimerSerial;
+    createSharedDeadlineTimer();
+    const double remaining = deadline - monotonicallyIncreasingTime();
+    const double milliseconds = remaining > 0 ? ceil(remaining * 1000.0) : 1.0;
+    const UINT fallback = milliseconds >= 0x7fffffff ? 0x7fffffff : static_cast<UINT>(milliseconds);
+    {
+        SharedTimerContinuationLock lock;
+        deadlineTicket = ticket; armedDeadline = deadline;
+        // Immediate signal is serialized until the registered wait is retained.
+        if (deadlineTimer) {
+            LARGE_INTEGER due;
+            const double ticks = remaining > 0 ? ceil(remaining * 10000000.0) : 1.0;
+            due.QuadPart = -static_cast<LONGLONG>(ticks < 9.0e18 ? ticks : 9.0e18);
+            if (::SetWaitableTimer(deadlineTimer, &due, 0, nullptr, nullptr, FALSE))
+                ::RegisterWaitForSingleObject(&deadlineWait, deadlineTimer, sharedDeadlineSignaled,
+                    reinterpret_cast<PVOID>(ticket), INFINITE, WT_EXECUTEONLYONCE);
+        }
+    }
+    // Ticketed native timer covers wait creation/registration/post failure.
+    if (::SetTimer(timerWindowHandle, ticket, fallback, nullptr)) timerID = ticket;
+    else if (!deadlineWait) {
+        SharedTimerContinuationLock lock;
+        armedDeadline = 0; deadlineTicket = 0;
+        deadlineRetry = true; // Owner opportunity must retry future-only work too.
+    }
+}
 void setSharedTimerFireInterval(double interval)
 {
-    unsigned intervalInMS;
-    interval *= 1000;
-    if (interval > USER_TIMER_MAXIMUM)
-        intervalInMS = USER_TIMER_MAXIMUM;
-    else
-        intervalInMS = static_cast<unsigned>(interval);
-
-    if (lastIntervalInMS == intervalInMS)
-        return;
-    lastIntervalInMS = intervalInMS;
-
-    initializeOffScreenTimerWindow();
-    bool timerSet = false;
-
-    // shouldUseHighResolutionTimers begin
-#if 0
-    if (interval < highResolutionThresholdMsec) {
-        if (!highResTimerActive) {
-            highResTimerActive = true;
-            timeBeginPeriod(timerResolution);
-        }
-        SetTimer(timerWindowHandle, endHighResTimerID, stopHighResTimerInMsec, 0);
-    }
-
-    DWORD queueStatus = LOWORD(GetQueueStatus(QS_PAINT | QS_MOUSEBUTTON | QS_KEY | QS_RAWINPUT));
-
-    // Win32 has a tri-level queue with application messages > user input > WM_PAINT/WM_TIMER.
-
-    // If the queue doesn't contains input events, we use a higher priorty timer event posting mechanism.
-    if (!(queueStatus & (QS_MOUSEBUTTON | QS_KEY | QS_RAWINPUT))) {
-        if (intervalInMS < USER_TIMER_MINIMUM && !processingCustomTimerMessage && !(queueStatus & QS_PAINT)) {
-            // Call PostMessage immediately if the timer is already expired, unless a paint is pending.
-            // (we prioritize paints over timers)
-            if (InterlockedIncrement(&pendingTimers) == 1)
-                PostMessage(timerWindowHandle, timerFiredMessage, 0, 0);
-            timerSet = true;
-        } else {
-            // Otherwise, delay the PostMessage via a CreateTimerQueueTimer
-            if (!timerQueue)
-                timerQueue = ::pCreateTimerQueue();
-            if (timer)
-                ::pDeleteTimerQueueTimer(timerQueue, timer, 0);
-            timerSet = ::pCreateTimerQueueTimer(&timer, timerQueue, queueTimerProc, 0, intervalInMS, 0, WT_EXECUTEINTIMERTHREAD | WT_EXECUTEONLYONCE);
-        }
-    }
-    // shouldUseHighResolutionTimers end
-#endif
-    if (timerSet) {
-        if (timerID) {
-            ::KillTimer(timerWindowHandle, timerID);
-            timerID = 0;
-        }
-    } else {
-        timerID = SetTimer(timerWindowHandle, sharedTimerID, intervalInMS, 0);
-        timer = 0;
-    }
+    setSharedTimerFireDeadline(interval >= 0 ? monotonicallyIncreasingTime() + interval : 0);
 }
-
 void stopSharedTimer()
 {
-    if (timerQueue && timer) {
-        ::pDeleteTimerQueueTimer(timerQueue, timer, 0);
-        timer = 0;
+    {
+        SharedTimerContinuationLock lock;
+        continuationClosed = true; continuationWindow = nullptr;
+        pendingContinuation = 0; continuationDeferred = false;
     }
-
-    if (timerID) {
-        ::KillTimer(timerWindowHandle, timerID);
-        timerID = 0;
+    cancelSharedTimerDeadline();
+    if (deadlineTimer) {
+        if (!::CloseHandle(deadlineTimer)) std::terminate();
+        deadlineTimer = nullptr; // Failed close retains the only reference.
     }
-
-    ::DestroyWindow(timerWindowHandle);
-    ::UnregisterClassW(kTimerWindowClassName, NULL);
+    const HWND closed = timerWindowHandle; timerWindowHandle = nullptr;
+    if (closed) ::DestroyWindow(closed);
+    ::UnregisterClassW(kTimerWindowClassName, nullptr);
 }
-
 static void initializeOffScreenTimerWindow()
 {
-    if (timerWindowHandle)
-        return;
-
-    HMODULE hMod = GetModuleHandle(L"Kernel32.dll");
-    pCreateTimerQueue = (PfnCreateTimerQueue)::GetProcAddress(hMod, "CreateTimerQueue");
-    pDeleteTimerQueueTimer = (PfnDeleteTimerQueueTimer)::GetProcAddress(hMod, "DeleteTimerQueueTimer");
-    pCreateTimerQueueTimer = (PfnCreateTimerQueueTimer)::GetProcAddress(hMod, "CreateTimerQueueTimer");
-
-    WNDCLASSEX wcex = { 0 };
-    wcex.cbSize = sizeof(WNDCLASSEX);
-    wcex.lpfnWndProc = TimerWindowWndProc;
-    wcex.hInstance = ::GetModuleHandle(NULL);
-    wcex.lpszClassName = kTimerWindowClassName;
-    ::RegisterClassEx(&wcex);
-
-    timerWindowHandle = CreateWindowExW(
-        0,        // window ex-style
-        kTimerWindowClassName,    // window class name
-        L"OffScreenTimer", // window caption
-        WS_POPUP,         // window style
-        1,              // initial x position
-        1,              // initial y position
-        1,          // initial x size
-        1,         // initial y size
-        NULL,         // parent window handle
-        NULL,           // window menu handle
-        GetModuleHandleW(NULL),           // program instance handle
-        NULL);         // creation parameters
-                       //::SetTimer(timerWindowHandle, (UINT_PTR)timerWindowHandle, 50, 0);
-
-    timerFiredMessage = RegisterWindowMessage(L"com.weolar.Miniblink.TimerFired");
+    if (timerWindowHandle) return;
+    WNDCLASSEX windowClass = { 0 };
+    windowClass.cbSize = sizeof(windowClass);
+    windowClass.lpfnWndProc = TimerWindowWndProc;
+    windowClass.hInstance = ::GetModuleHandleW(nullptr);
+    windowClass.lpszClassName = kTimerWindowClassName;
+    ::RegisterClassExW(&windowClass);
+    timerWindowHandle = ::CreateWindowExW(0, kTimerWindowClassName, L"OffScreenTimer", WS_POPUP,
+        1, 1, 1, 1, nullptr, nullptr, windowClass.hInstance, nullptr);
+    timerFiredMessage = ::RegisterWindowMessageW(L"com.weolar.Miniblink.DeadlineReady.v1");
+    continuationMessage = ::RegisterWindowMessageW(L"com.weolar.Miniblink.ReadyTaskContinuation");
+    SharedTimerContinuationLock lock;
+    continuationWindow = timerWindowHandle;
+    continuationClosed = !continuationWindow || !continuationMessage || !timerFiredMessage;
+    continuationDeferred = false;
 }
-
-}
-
-#endif // SharedTimerWin_h
+} // namespace content
+#endif // content_browser_SharedTimerWin_h

@@ -33,6 +33,7 @@
 #include "platform/scroll/ScrollableArea.h"
 
 #include "platform/HostWindow.h"
+#include "public/platform/WebLayer.h"
 #include "platform/Logging.h"
 #include "platform/geometry/DoubleRect.h"
 #include "platform/geometry/FloatPoint.h"
@@ -129,6 +130,15 @@ GraphicsLayer* ScrollableArea::layerForContainer() const
     return layerForScrolling() ? layerForScrolling()->parent() : 0;
 }
 
+void ScrollableArea::invalidateCompositorScroll(ScrollType type)
+{
+    if (type == CompositorScroll)
+        return;
+    GraphicsLayer* layer = layerForScrolling();
+    if (layer && layer->platformLayer())
+        layer->platformLayer()->invalidateCompositorScroll();
+}
+
 ScrollResultOneDimensional ScrollableArea::userScroll(ScrollDirectionPhysical direction, ScrollGranularity granularity, float delta)
 {
     ScrollbarOrientation orientation;
@@ -140,6 +150,8 @@ ScrollResultOneDimensional ScrollableArea::userScroll(ScrollDirectionPhysical di
     if (!userInputScrollable(orientation))
         return ScrollResultOneDimensional(false, delta);
 
+    if (delta != 0.0f)
+        invalidateCompositorScroll(UserScroll);
     cancelProgrammaticScrollAnimation();
 
     float step = 0;
@@ -167,6 +179,7 @@ ScrollResultOneDimensional ScrollableArea::userScroll(ScrollDirectionPhysical di
 
 void ScrollableArea::setScrollPosition(const DoublePoint& position, ScrollType scrollType, ScrollBehavior behavior)
 {
+    invalidateCompositorScroll(scrollType);
     if (behavior == ScrollBehaviorAuto)
         behavior = scrollBehaviorStyle();
 
@@ -253,6 +266,8 @@ void ScrollableArea::scrollPositionChanged(const DoublePoint& position, ScrollTy
 {
     TRACE_EVENT0("blink", "ScrollableArea::scrollPositionChanged");
 
+    // Animators and Internals can arrive without setScrollPosition/userScroll.
+    invalidateCompositorScroll(scrollType);
     DoublePoint oldPosition = scrollPositionDouble();
     DoublePoint truncatedPosition = shouldUseIntegerScrollOffset() ? flooredIntPoint(position) : position;
 

@@ -3,6 +3,16 @@
 
 #include "third_party/WebKit/public/platform/WebLayerTreeView.h"
 #include "cc/trees/ScrollTreeSnapshot.h"
+#include "cc/trees/LegacyPaintRetryPolicy.h"
+#include "cc/trees/FrameBufferLeasePolicy.h"
+#include "cc/trees/InputFrameCoverage.h"
+#include "cc/trees/ViewTraceIdentity.h"
+#include "cc/trees/DrawFrameWakePolicy.h"
+#include "content/common/PaintLifetime.h"
+#include "cc/raster/RasterCandidateBudget.h"
+#include <memory>
+#include <atomic>
+#include <vector>
 #include "third_party/WebKit/public/platform/WebThread.h"
 #include "third_party/WebKit/Source/platform/geometry/IntRect.h"
 #include "third_party/WebKit/Source/platform/geometry/IntSize.h"
@@ -44,11 +54,16 @@ class TileGrid;
 class LayerChangeAction;
 class CompositingLayer;
 class ActionsFrameGroup;
+struct UiPaintRetryState;
+class UiPaintRetryTask;
+class ResourceProgressTask;
+class DrawFrameTask;
 struct CompositorAnimationState;
 struct CompositorAnimationFinishedTask;
 struct CompositorScrollState;
 struct CompositorScrollInput;
 struct RetiredCompositorScrollState;
+struct ScrollRasterCoverageRequest;
 
 struct CompositorScrollReceipt {
     CompositorScrollReceipt()
@@ -94,7 +109,8 @@ public:
     bool drawToCanvas(SkCanvas* canvas, const SkRect& clip);
     bool drawCompositorScrollbarLayer(int layerId, SkCanvas* canvas,
         const SkRect& localDirtyRect);
-    void updateLayersDrawProperties(ScrollTreeSnapshot* scrollTree);
+    void updateLayersDrawProperties(ScrollTreeSnapshot* scrollTree,
+        std::vector<ScrollRasterCoverageRequest>* coverageRequests);
 
     //void setNeedsCommit();
     //void setNeedsFullTreeSync();
@@ -140,6 +156,7 @@ public:
     // Sets whether this view is visible. In threaded mode, a view that is not visible will not
     // composite or trigger updateAnimations() or layout() calls until it becomes visible.
     virtual void setVisible(bool) override;
+    bool hostVisible() const { return m_visible.load(); }
 
     // Sets the current page scale factor and minimum / maximum limits. Both limits are initially 1 (no page scale allowed).
     virtual void setPageScaleFactorAndLimits(float pageScaleFactor, float minimum, float maximum) override;
@@ -173,7 +190,18 @@ public:
     int64 frontRasteringIndex();
     void popRasteringIndex();
 
+    enum class RecordBlockReason { None, Destroying, InFlightScene, Raster, MissingAction };
+    RecordBlockReason recordBlockReason() const;
     bool canRecordActions() const;
+    void registerResourceWait();
+    void clearResourceWait();
+    void notifyResourceProgress(bool actionDirty = false);
+    RasterCandidateBudget inspectRasterCandidateScene(uint64_t* generation);
+    bool matchesRasterCandidateGeneration(uint64_t generation);
+    std::shared_ptr<UiPaintRetryState> resourceNotificationState() const { return m_uiPaintRetry; }
+    static void notifyRasterCompletion(const std::shared_ptr<UiPaintRetryState>& state);
+    void retryPendingOwnerWork();
+    bool hasRejectedDrawWake() const { return m_hasRejectedDrawWake.load(); }
     void beginRecordActions(bool isComefromMainframe);
     void endRecordActions();
 
@@ -184,6 +212,36 @@ public:
     CompositingLayer* getCCLayerById(int id);
     bool isRootCCLayerEmpty() const { return !m_rootCCLayer; }
 
+    struct FrameBuffer {
+        FrameBuffer(std::unique_ptr<SkCanvas> value, uint64_t sizeGeneration, int w, int h,
+            bool alphaValue);
+        ~FrameBuffer();
+        std::unique_ptr<SkCanvas> canvas;
+        uint64_t generation;
+        uint64_t bytes;
+        int width;
+        int height;
+        bool alpha;
+        content::input_frame_trace::event traceContext;
+    };
+    struct FrameBufferLease {
+        FrameBufferLease();
+        FrameBufferLease(std::shared_ptr<FrameBuffer> value,
+            std::shared_ptr<UiPaintRetryState> state,
+            const std::shared_ptr<content::PaintLifetimeState>& lifetime);
+        ~FrameBufferLease();
+        FrameBufferLease(FrameBufferLease&& other) noexcept;
+        FrameBufferLease& operator=(FrameBufferLease&& other) noexcept;
+        FrameBufferLease(const FrameBufferLease&) = delete;
+        FrameBufferLease& operator=(const FrameBufferLease&) = delete;
+        explicit operator bool() const { return !!buffer; }
+        SkCanvas* canvas() const;
+        content::PaintActivityScope activity; // Declared first: release after buffer/notification.
+        std::shared_ptr<FrameBuffer> buffer;
+        std::shared_ptr<UiPaintRetryState> completionState;
+    };
+    FrameBufferLease acquireFrameBufferLease();
+    bool independentPresentationEnabled();
     SkCanvas* getMemoryCanvasLocked();
     void releaseMemoryCanvasLocked();
 
@@ -192,12 +250,12 @@ public:
 
     struct BitInfo {
         uint32_t* pixels;
-        SkCanvas* tempCanvas;
+        FrameBufferLease lease;
         int width;
         int height;
     };
     BitInfo* getBitBegin();
-    void getBitEnd(const BitInfo* bitInfo);
+    static void getBitEnd(const BitInfo* bitInfo);
 
     void requestDrawFrameToRunIntoCompositeThread();
     void requestApplyActionsToRunIntoCompositeThread(bool needCheck);
@@ -205,7 +263,12 @@ public:
     //bool getIsUseLayeredBuffer() const { return m_useLayeredBuffer; }
     static void clearCanvas(SkCanvas* canvas, const SkRect& rect, bool useLayeredBuffer);
 
+    const std::shared_ptr<content::PaintLifetimeState>& paintLifetimeState() const { return m_paintLifetime; }
     void setDrawMinInterval(double drawMinInterval);
+    void setMainFrameDeadline(uint64_t frameId, double target, double interval);
+    bool setViewTraceIdentity(const content::input_frame_trace::event& value);
+    content::input_frame_trace::event traceContextForFrame();
+    void noteProcessedInputTrace(const content::input_frame_trace::event& value);
     void setIndependentPresentationEnabled(bool enabled);
     
     void postPaintMessage(const SkRect& paintRect);
@@ -229,20 +292,32 @@ public:
     bool hasCompositorAnimation(int layerId);
     bool submitCompositorScrollTree(const ScrollTreeSnapshot& scrollTree);
     void onActionFrameApplied(int64 throughActionId);
+    void onRasterActionCancelled(int64 actionId);
     bool handleCompositorWheelInput(int x, int y, double deltaX,
         double deltaY, double monotonicTime, bool smooth,
-        CompositorScrollReceipt* receipt = nullptr);
+        CompositorScrollReceipt* receipt = nullptr,
+        const content::input_frame_trace::event* inputIdentity = nullptr);
     bool captureCompositorScrollBarrier(int x, int y,
-        ScrollBarrier* barrier);
+        ScrollBarrier* barrier,
+        const content::input_frame_trace::event* inputIdentity = nullptr);
     bool synchronizeCompositorScrollBarrier(const ScrollBarrier& barrier);
 
 private:
     void requestPaintToMemoryCanvasToUiThread(const SkRect& r);
+    void queueLegacyPaintLocked();
+    void runLegacyPaintRetry(const LegacyPaintRetryPolicy::Ticket& ticket);
+    friend class UiPaintRetryTask;
+    friend class ResourceProgressTask;
+    void runResourceProgress(uint64_t ticket, uint64_t generation);
+    std::shared_ptr<UiPaintRetryState> m_uiPaintRetry;
     void onApplyActionsInCompositeThread(bool needCheck);
     void waitForApplyActions();
     void waitForDrawFrame();
     void drawFrameInCompositeThread();
     void requestDrawFrameAfterDelay(long long delayMs);
+    void queueDrawFrameWake(long long delayMs);
+    void publishIndependentCoverageForPaint(const content::input_frame_trace::event& actualFrame);
+    friend class DrawFrameTask;
     bool tickCompositorAnimations(double monotonicTime, Vector<SkRect>* dirtyRects);
     bool tickCompositorScroll(double monotonicTime, Vector<SkRect>* dirtyRects);
     void postCompositorScrollUpdateToMainThread(int layerId,
@@ -252,12 +327,12 @@ private:
     void postAnimationFinishedToUiThread(int layerId, int group, double monotonicTime);
     void dispatchAnimationFinishedOnMainThread(int layerId, int group, double monotonicTime);
     void paintToMemoryCanvasInUiThread(const SkRect& paintRect);
-    void paintToMemoryCanvasInCompositeThread(const SkRect& r);
-    bool submitSceneTransaction(const ScrollTreeSnapshot& scrollTree,
+    uint64_t paintToMemoryCanvasInCompositeThread(const SkRect& r);
+    bool submitSceneTransaction(ScrollTreeSnapshot&& scrollTree,
         int64 firstActionId, int64 lastActionId, bool resourcesReady);
     bool hasInFlightScene() const;
     
-    bool m_isDestroying;
+    std::atomic<bool> m_isDestroying;
 
     LayerTreeHostClent* m_hostClient;
     LayerTreeHostUiThreadClient* m_uiThreadClient;
@@ -270,9 +345,9 @@ private:
     blink::IntRect m_clientRect;
     float m_deviceScaleFactor;
     blink::WebColor m_backgroundColor;
-    bool m_hasTransparentBackground;
+    std::atomic<bool> m_hasTransparentBackground;
     bool m_independentPresentationEnabled;
-    bool m_visible;
+    std::atomic<bool> m_visible;
     float m_pageScaleFactor;
     float m_minimum;
     float m_maximum;
@@ -299,12 +374,17 @@ private:
     WTF::Vector<CompositorAnimationState*> m_compositorAnimations;
     WTF::Vector<CompositorScrollState*> m_compositorScrollStates;
     WTF::Vector<RetiredCompositorScrollState*> m_retiredCompositorScrollStates;
-    WTF::Vector<CompositorScrollInput*> m_pendingCompositorScrollInputs;
+    std::vector<CompositorScrollInput*> m_pendingCompositorScrollInputs;
     WTF::Mutex m_compositorScrollInputMutex;
     ScrollTreeSnapshot* m_pendingCompositorScrollTree;
     ScrollTreeSnapshot* m_activeInputScrollTree;
     mutable WTF::Mutex m_sceneTransactionMutex;
     SceneCoordinator m_sceneCoordinator;
+    content::input_frame_trace::event m_pendingSceneTraceContext;
+    content::input_frame_trace::event m_activeSceneTraceContext;
+    bool m_rasterRecoveryPending = false;
+    bool m_rasterRecoveryNeedsInvalidation = false;
+    uint64_t m_rasterRecoveryAfterScene = 0;
     uint64_t m_activeCompositorScrollVersion;
     uint64_t m_nextScrollSceneVersion;
     uint64_t m_nextCompositorInputSequence;
@@ -314,35 +394,40 @@ private:
     WTF::OwnPtr<blink::WebThreadSupportingGC> m_compositeThread;
     WTF::Mutex m_compositeMutex;
     WTF::Mutex m_rootCCLayerMutex;
-    SkCanvas* m_memoryCanvas;
+    SkCanvas* m_memoryCanvas; // Borrowed only while m_compositeMutex is held.
+    std::shared_ptr<FrameBuffer> m_frameBuffers[FrameBufferLeasePolicy::maximumSlots];
+    size_t m_currentFrameBufferSlot;
+    uint64_t m_frameBufferGeneration;
+    bool m_canvasPaintBlocked;
+    bool prepareWritableFrameBufferLocked();
+    FrameBufferLease acquireFrameBufferLeaseLocked();
 
     double m_lastCompositeTime;
     double m_lastPaintTime;
-    mutable double m_lastRecordTime;
+    double m_nextCompositeFrameTime;
+    uint64_t m_pendingMainFrameId;
+    uint64_t m_presentedMainFrameId;
+    double m_pendingMainFrameDeadline;
+    bool m_unifiedFrameDeadline;
+    std::shared_ptr<content::PaintLifetimeState> m_paintLifetime;
+    ViewTraceIdentity m_viewTraceIdentity;
+    IndependentInputTrace m_independentInputTrace;
+    InputFrameCoverage m_pendingInputTrace;
+    InputFrameCoverage m_unpresentedInputTrace;
+    uint64_t m_unpresentedInputFrameId = 0;
+    content::input_frame_trace::event m_frameTraceContext;
+    int64 m_recordedTraceActionFirst = 0;
+    int64 m_recordedTraceActionLast = 0;
     double m_drawMinInterval;
 
     static const int m_paintMessageQueueSize = 200;
     Vector<SkRect> m_dirtyRectsForComposite;
     Vector<SkRect> m_dirtyRectsForUi;
     int m_postpaintMessageCount;
-    int m_drawFrameCount;
-    int m_drawFrameFinishCount;
+    std::atomic<bool> m_hasRejectedDrawWake{false};
     int m_requestApplyActionsCount;
     int m_requestApplyActionsFinishCount;
 
-    struct WrapSelfForUiThread : public blink::WebThread::TaskObserver {
-        WrapSelfForUiThread(LayerTreeHost* host)
-            : m_host(host) { }
-        LayerTreeHost* m_host;
-        void paintInUiThread();
-        void endPaint();
-
-        virtual ~WrapSelfForUiThread() override;
-        virtual void willProcessTask() override;
-        virtual void didProcessTask() override;
-    };
-    friend WrapSelfForUiThread;
-    WTF::HashSet<WrapSelfForUiThread*> m_wrapSelfForUiThreads;
     friend CompositorAnimationFinishedTask;
     WTF::HashSet<CompositorAnimationFinishedTask*> m_animationFinishedTasks;
     friend CompositorScrollUpdateTask;

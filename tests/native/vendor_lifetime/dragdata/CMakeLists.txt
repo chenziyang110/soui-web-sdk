@@ -9,8 +9,8 @@ set(public_dragdata_fixture_pins
   ".gitattributes|74|c4398f74862eaba5f7f1576ffb716b48a9aa6a1b56cda767a02e5a3b5e311f14"
 )
 set(public_dragdata_source_pins
-  "third_party/sources/miniblink/content/browser/WebPageImpl.cpp|83505|7db9e14e53ef76bf1c28f867ab61220b7012a6003f0c38824a1cc276feec22fa"
-  "third_party/sources/miniblink/wke/wkedefine.h|70251|674827ef4572feb31d417b9ce14e007f95a30dd4b26ed284c9c04a96e1bf9369"
+  "third_party/sources/miniblink/content/browser/WebPageImpl.cpp|93138|79c748bc0d5eb995163190b3318c2d039a0c471a52910df1d7aad88e570385ca"
+  "third_party/sources/miniblink/wke/wkedefine.h|70548|dba9ae269be9123a5ccb6912c8254f10ae7f090e7b3e8fe7d11f4e1ac43788f0"
   "third_party/sources/miniblink/wke/wkeNetHook.cpp|23158|111005a29a3a05754d470fb0e749554e59d3f083a7bdda85bcd3a55f0b684027"
   "third_party/sources/miniblink/third_party/WebKit/public/platform/WebVector.h|5493|4330d9616d7401189b746fc4d26582aec87b588b1a6aff523964d69b791474a7"
   "third_party/sources/miniblink/third_party/WebKit/public/platform/WebDragData.h|4979|11ac2e2b6d12c05df50b896ca11cebc46afb89b19cbf7f4f091e6f1e490365ad"
@@ -19,7 +19,7 @@ set(public_dragdata_source_pins
 )
 # source|source-byte-offset|fixture|fixture-byte-offset|exact-byte-length
 set(public_dragdata_ranges
-  "third_party/sources/miniblink/wke/wkedefine.h|10351|fixture.cpp|2135|2137"
+  "third_party/sources/miniblink/wke/wkedefine.h|10375|fixture.cpp|2135|2137"
   "third_party/sources/miniblink/wke/wkeNetHook.cpp|10219|fixture.cpp|4446|511"
   "third_party/sources/miniblink/third_party/WebKit/public/platform/WebVector.h|2168|fixture.cpp|5172|3296"
   "third_party/sources/miniblink/third_party/WebKit/public/platform/WebDragData.h|1927|fixture.cpp|9535|1448"
@@ -27,8 +27,8 @@ set(public_dragdata_ranges
   "third_party/sources/miniblink/content/ui/DragHandle.cpp|9398|fixture.cpp|12009|2470"
   "third_party/sources/miniblink/content/ui/DragHandle.cpp|30464|fixture.cpp|15416|344"
   "third_party/sources/miniblink/content/browser/CheckReEnter.cpp|550|fixture.cpp|16289|199"
-  "third_party/sources/miniblink/content/browser/WebPageImpl.cpp|57063|fixture.cpp|17426|173"
-  "third_party/sources/miniblink/content/browser/WebPageImpl.cpp|57476|fixture.cpp|17738|5656"
+  "third_party/sources/miniblink/content/browser/WebPageImpl.cpp|66732|fixture.cpp|17426|173"
+  "third_party/sources/miniblink/content/browser/WebPageImpl.cpp|67109|fixture.cpp|17738|5656"
 )
 foreach(kind IN ITEMS fixture source)
   foreach(record IN LISTS public_dragdata_${kind}_pins)

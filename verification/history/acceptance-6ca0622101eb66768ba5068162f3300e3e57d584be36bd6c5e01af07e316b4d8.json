@@ -1,0 +1,28 @@
+{
+  "schema": "soui.source-delivery-acceptance/v2",
+  "version": "0.5.0",
+  "scope": "full",
+  "status": "unverified",
+  "sourceDeliveryVerified": false,
+  "releaseReady": false,
+  "collectionExecuted": false,
+  "recordedAt": "2026-10-16T08:39:39.019Z",
+  "generator": "Collect-Verification.cjs --record-unverified",
+  "evidenceReference": {
+    "path": "verification/production-validation/0.5-source30-release-2026-10-16/scoped-results/RELEASE-FACTS.json",
+    "bytes": 8258,
+    "sha256": "5774b9ba870054437cbde98c73952ba980f73385ba4a59cec406ff4824747146",
+    "referenceOnly": true
+  },
+  "previousAcceptance": {
+    "path": "verification/history/acceptance-15b429ce9b3f83930393cf95d7dcdb62eb0366b0c1beab83d436b405fe16e4af.json",
+    "bytes": 625,
+    "sha256": "15b429ce9b3f83930393cf95d7dcdb62eb0366b0c1beab83d436b405fe16e4af"
+  },
+  "limitations": [
+    "Full acceptance has not been collected for this version; this command records status only.",
+    "The referenced report is checked only for version and non-qualification flags; its external evidence is not revalidated.",
+    "Limited-scope results and historical passes do not establish current full source delivery or production qualification.",
+    "Long-run, target-platform, performance, upgrade/rollback and licensing gates remain open; see docs/known-issues.md."
+  ]
+}

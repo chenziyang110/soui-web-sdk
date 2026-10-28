@@ -1,0 +1,149 @@
+{
+  "schema": "soui.scroll-coverage-regression/v1",
+  "executedDate": "2026-10-23",
+  "environment": "isolated Windows guest",
+  "build": {
+    "configuration": "Release",
+    "compiler": "MSVC 19.44",
+    "windowsSdk": "10.0.19041.0",
+    "runtime": "MultiThreaded",
+    "architectures": [
+      "x86",
+      "x64"
+    ]
+  },
+  "comparison": {
+    "sameTestSource": true,
+    "sameCoverageHelper": true,
+    "changedProductionSource": "third_party/sources/miniblink/cc/input/ScrollController.cpp",
+    "baselineSourceSha256": "BDFDC84CA98826F8D14AF224000E77F9B3A20764A308DD801E7484336986E526",
+    "correctedSourceSha256": "196A0E1A7D45DD9D930436712A6740A62348D7F1CEECCAA99A5D1958C5F08DD6"
+  },
+  "tests": [
+    {
+      "id": "patched-x86",
+      "sha256": "CB4761691F3E706F9EFB9C0066BCC78213855C4959C53F190CCE8A042FB41770",
+      "passed": 13,
+      "failed": 0,
+      "exitCode": 0,
+      "firstSampleValid": true,
+      "firstSampleVisualY": 309.8022474356264,
+      "firstSampleConsumedY": 9.802247435626384,
+      "animationActiveAfterFirstSample": true
+    },
+    {
+      "id": "patched-x64",
+      "sha256": "5A460146F25743873E5F8DF3043FF7B48D89F6FCD85195BCF0EB11ABFC6937DB",
+      "passed": 13,
+      "failed": 0,
+      "exitCode": 0,
+      "firstSampleValid": true,
+      "firstSampleVisualY": 309.8022474356264,
+      "firstSampleConsumedY": 9.802247435626384,
+      "animationActiveAfterFirstSample": true
+    },
+    {
+      "id": "baseline-x86",
+      "sha256": "7C853951C729702D188B84CDAB9962F0884B4D7161AD872CAF85DD7A7F5A5727",
+      "passed": 7,
+      "failed": 6,
+      "exitCode": 1,
+      "firstSampleValid": true,
+      "firstSampleVisualY": 309.8022474356264,
+      "firstSampleConsumedY": 9.802247435626384,
+      "animationActiveAfterFirstSample": false
+    },
+    {
+      "id": "baseline-x64",
+      "sha256": "705E05D880B463A4B4A2D787F22BA982657AC9887F75C90603701E30D1B604E7",
+      "passed": 7,
+      "failed": 6,
+      "exitCode": 1,
+      "firstSampleValid": true,
+      "firstSampleVisualY": 309.8022474356264,
+      "firstSampleConsumedY": 9.802247435626384,
+      "animationActiveAfterFirstSample": false
+    }
+  ],
+  "evidenceReview": {
+    "eventCount": 70,
+    "allExtractedEventsFoundInRetainedRawLog": true,
+    "allLaunchHashesMatchManifest": true,
+    "allFourExitsCaptured": true,
+    "serialWriteFailed": false
+  },
+  "limits": [
+    "Controlled readiness input; TileGrid and raster workers are not executed",
+    "LayerTreeHost recordDraw integration and real GUI behavior are not covered",
+    "Failing baseline is retained; aggregate suite exit is 1 while both corrected tests exit 0",
+    "Full x86 CPU kernel built; full x64 browser kernel and system matrix remain unverified",
+    "Instrumented and ordinary final-package interaction scopes observed; smoothness and install/uninstall acceptance remain separate",
+    "Continuous sample gaps shortened in this run but actual input cadences differ; no FPS or universal smoothness claim"
+  ],
+  "fullKernelBuild": {
+    "architecture": "x86",
+    "configuration": "Release",
+    "compositor": "CPU",
+    "exitCode": 0,
+    "kernelBytes": 28116992,
+    "kernelSha256": "6E293A3C8BF6F4F4CF32162B8BD01B165017C4BF7F34AF18A9B481A3E6B81185",
+    "modifiedSourceFilesMatchFreeze": 5,
+    "kernelSourceFiles": 23545,
+    "sourceBeforeAfterByteIdentical": true,
+    "fixedPrebuiltReplaced": false,
+    "fullX64KernelBuilt": false
+  },
+  "htmlIntegration": {
+    "environment": "Windows 10 10.0.19045 isolated guest",
+    "sameUiPayloadAndDiagnosticPlugin": true,
+    "onlyRuntimeKernelDiffers": true,
+    "baselineKernelSha256": "E9E34583FF13A59111F7E55AE76593C892603BC099A4E50357E26ED72F394E8B",
+    "correctedKernelSha256": "6E293A3C8BF6F4F4CF32162B8BD01B165017C4BF7F34AF18A9B481A3E6B81185",
+    "baselinePid": 6660,
+    "correctedPid": 7860,
+    "operationsObserved": [
+      "isolated wheel",
+      "continuous wheel down and up",
+      "short thumb drag: 14px requested, 8px native displacement",
+      "return to start page",
+      "confirm cancellation and exit"
+    ],
+    "exitCodes": [
+      1,
+      1
+    ],
+    "nativeWheelMessagesPerRun": [
+      16,
+      16
+    ],
+    "nativeWheelSegmentsPerRun": [
+      4,
+      4
+    ],
+    "allPixelSamplesValid": true,
+    "droppedRecords": [
+      0,
+      0
+    ],
+    "pixelScope": "4096 sampled BGR points in a fixed body ROI; not complete image or screen presentation",
+    "performanceConclusion": "Limited observation only; different actual native input spans and one run per kernel do not establish overall smoothness or universal latency improvement",
+    "unInstrumentedFinalPackageValidated": true,
+    "unInstrumentedFinalPackageScope": {
+      "pid": 3760,
+      "exitCode": 1,
+      "diagnosticEnvironmentDisabled": true,
+      "observed": [
+        "body scroll displacement",
+        "short thumb displacement",
+        "caption drag after scrolling",
+        "return",
+        "modal background caption drag blocked",
+        "cancel close",
+        "protocol reopen",
+        "confirm cancellation and exit"
+      ],
+      "smoothnessAccepted": false,
+      "installationOrUninstallationExecuted": false
+    }
+  }
+}

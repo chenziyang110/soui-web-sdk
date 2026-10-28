@@ -58,8 +58,32 @@ GLib/GObject 2.72.4、WebKitGTK/JSC 2.50.4；官方开发包使用 WebKitGTK 4.1
 `-Wall -Wextra -Wpedantic`、`sdk/include` 与 pkg-config 的 WebKitGTK/GTK 编译和链接参数，
 未链接重复的 Soui::Desktop、未使用 stubs、未伪造生成头或启用 X11 快捷键宏。
 本机 CMake 3.22.1 低于工程要求 3.24，因此直接调用 G++；这不是完整 CMake 配置或
-CTest 通过证据。没有执行 Linux 原生关闭/否决、WebKit 信号注册或 GUI 验收，
+CTest 通过证据。该阶段没有执行 Linux 原生关闭/否决、WebKit 信号注册或 GUI 验收，
 没有运行此前被拒的 Windows 程序；不继承其他平台的通过证据。
+
+### 2026-10-28 Linux 隐藏窗口的限定原生验证
+
+后续在提交 `63165bf6e31922a46c20bd52f250958c11fd5dfc` 上，以同一 WSL2 Ubuntu
+依赖和 UID 1000 直接编译链接生产公共层及 Linux 后端，使用单次 `dbus-run-session`
+会话和真实 WebKit 隐藏窗口（`visible=false`）。本地页面完成 Bridge 握手后实际
+调用 `window.close()`，未合成 close 信号，未禁用 WebKit sandbox，未显示或聚焦
+窗口，未使用剪贴板、对话框、快捷键或外网资源。
+
+12:13:57–12:13:58 UTC 的否决例：handshake、armed、approval 各 1；返回 false
+后的 native 派发确认 closed=0、窗口仍被持有且 set_title 成功，随后显式 cleanup
+得到一次 closed。`errors=0/failures=0/watchdog=0`，919 ms，自然退出 0。
+12:14:37 UTC 的批准例：handshake、armed、approval、closed 各 1，无显式 cleanup，
+`errors=0/failures=0/watchdog=0`，848 ms，事件循环及进程自然退出 0。
+两例均受 12 秒失败 watchdog 与外部 20 秒上限约束，未触发强制清理。
+保留非致命 `Dropped Escape call with ulEscapeCode : 0x03007703` stderr。
+
+临时 harness 源 SHA-256：
+`093792a33d387ebc69d26ba50873c105c23951f9155d08cdd8bf16dcd1937160`；
+页面 SHA-256：`46c6ab95a63b0182edfe66ab257df9590b1eb3521e9c958617a5afa7e0d7c5d2`；
+ELF SHA-256：`ea3cdf6b598bffe2e7dfef0e0933b1c55d1b324b8b511ff8cb0c13054db40cb5`。
+源码、构建日志及两例输出保留在该任务的 `pr103-linux-native-close-scratch/`。
+这是上述旧提交的两条原生通知/宿主审批链证据，不是后续 main 集成树的运行通过。
+不证明否决后 DOM 可恢复、重复关闭、故障注入、视觉交互、完整 CMake 或全平台验收。
 
 ## Windows DOM 关闭通知也须进入公共审批
 

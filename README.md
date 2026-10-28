@@ -31,7 +31,7 @@
 
 适合已有 C++ 业务需要 Web 界面的团队，也适合需要本地任务、文件处理或原生桌面集成的前端开发者。
 
-> **当前版本：`0.5.0`（预发布交付）**，以 [VERSION](VERSION) 为准。下载与本轮实际验证范围见 [0.5.0 发布说明](docs/releases/0.5.0.md)。完整生产验收尚未完成，`releaseReady=false`；详情见[已知限制](docs/known-issues.md)，使用与再分发条件见[许可说明](LICENSE.md)。
+> **开发版本：`0.6.0-preview.3`（尚未发布）**，以 [VERSION](VERSION) 为准。已发布的 0.5.0 下载与验证范围见 [0.5.0 发布说明](docs/releases/0.5.0.md)。完整生产验收尚未完成，`releaseReady=false`；详情见[已知限制](docs/known-issues.md)，首方代码采用 [MIT 许可](LICENSE.md)。
 
 开发分支新增显式 [跨平台 Runtime](docs/cross-platform.md)：无窗口的任务、权限、
 Bridge 协议和文件扫描可独立构建为 `Soui::Runtime`，覆盖 Windows/Linux
@@ -282,9 +282,9 @@ pending; the earlier isolated SDKOnly experiment is not their acceptance.
 
 ### 当前边界
 
-当前 `0.5.0` 为预发布交付，完整生产验收尚未完成。长期资源收敛、完整目标系统与 PE 矩阵、真实输入交互、性能对标及发布条件尚未全部验收。兼容模板与 Workbench 默认软件呈现，GPU 路径仍为实验。完整状态见[已知限制](docs/known-issues.md)和[验收记录](verification/acceptance.json)；历史版本的成功记录不覆盖当前版本。
+当前开发版本为 `0.6.0-preview.3`，完整生产验收尚未完成。长期资源收敛、完整目标系统与 PE 矩阵、真实输入交互、性能对标及发布条件尚未全部验收。兼容模板与 Workbench 默认软件呈现，GPU 路径仍为实验。完整状态见[已知限制](docs/known-issues.md)和[验收记录](verification/acceptance.json)；历史版本的成功记录不覆盖当前版本。
 
-首方 SDK、模板与 Demo **尚未授予通用开源许可**；使用、修改与再分发须遵循项目所有者授权及 [LICENSE.md](LICENSE.md)。第三方组件保留各自许可，见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
+首方 SDK、模板与 Demo 采用 [MIT 许可](LICENSE.md)。第三方组件保留各自许可，见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
 
 ---
 

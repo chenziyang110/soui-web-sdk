@@ -1,5 +1,6 @@
 #pragma once
 #include "runtime_shutdown_api.h"
+#include "input_ui_trace_bootstrap.h"
 // Experimental host only. Bind the APIs actually used by this adapter, not
 // every optional entry in a newer vendor header. Missing required APIs fail
 // before initialization; no stub exports or weakened origin checks.
@@ -28,12 +29,15 @@ inline bool initialize_source_kernel(HMODULE module) {
   BIND_SOURCE_API(wkeSetZoomFactor); BIND_SOURCE_API(wkeShowWindow); BIND_SOURCE_API(wkeShutdown);
   BIND_SOURCE_API(wkeUpdate); BIND_SOURCE_API(wkeWake);
 #undef BIND_SOURCE_API
+  wkeGetWebviewId = reinterpret_cast<decltype(wkeGetWebviewId)>(
+      GetProcAddress(module, "wkeGetWebviewId")); // optional diagnostic identity; never invent an ID
   wkeOnDocumentReady2 = reinterpret_cast<FN_wkeOnDocumentReady2>(
       GetProcAddress(module, "wkeOnDocumentReady2")); // required when the controlled broker is enabled
   wkeGetCursorBrokerApi = reinterpret_cast<FN_wkeGetCursorBrokerApi>(
       GetProcAddress(module, "wkeGetCursorBrokerApi")); // optional, versioned capability
   const auto initialize = reinterpret_cast<FN_wkeInitializeEx>(GetProcAddress(module, "wkeInitializeEx"));
   if (!initialize || !has_runtime_shutdown_api(module)) return false;
+  (void)prepare_input_ui_trace(module);
   initialize(nullptr);
   return wkeIsInitialize() != 0;
 }

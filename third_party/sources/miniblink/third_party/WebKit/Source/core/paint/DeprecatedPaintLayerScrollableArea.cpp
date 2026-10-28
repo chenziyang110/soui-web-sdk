@@ -641,6 +641,10 @@ void DeprecatedPaintLayerScrollableArea::scrollToOffset(const DoubleSize& scroll
     if (newScrollOffset != adjustedScrollOffset()) {
         DoublePoint origin(scrollOrigin());
         ScrollableArea::setScrollPosition(-origin + newScrollOffset, ProgrammaticScroll, scrollBehavior);
+    } else {
+        // CSS scrollTop/scrollLeft can explicitly replace an in-flight target
+        // with the current canonical value without reaching the base helper.
+        invalidateCompositorScroll(ProgrammaticScroll);
     }
 }
 

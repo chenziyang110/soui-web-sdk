@@ -1,0 +1,419 @@
+{
+  "schema": "soui.kernel-source-delta/v1",
+  "sdkVersion": "0.5.0",
+  "status": "source-only-unreleased-candidate",
+  "scope": "W07 buffer leases and owner/native close fences, active-scene input identity, W08 guarded qualification, fenced scene moves and render diagnostics; uncompiled/unrun; native-window visibility bridge follows as a separate delta",
+  "baseCommit": "b0690ea9f13d7b8f86eb25d126269ef6f3c7e696",
+  "sourceIdentityScope": "Only listed staged source delta; historical import and prebuilt identities unchanged",
+  "patch": {
+    "path": "third_party/patches/miniblink/0020-input-ui-render-lifetime.patch",
+    "bytes": 231039,
+    "sha256": "c4e4976d41fa76528685f3f88847fdb3abed4f7b385c816ce638cdf0f30cccc9"
+  },
+  "files": [
+    {
+      "path": "third_party/include/miniblink/input_ui_api.h",
+      "before": {
+        "bytes": 4857,
+        "sha256": "21d80d3aeb00851dba15b970c785bb2d0e67a8eb4ec5825c404dd809d2d93df8"
+      },
+      "after": {
+        "bytes": 5596,
+        "sha256": "7a3452976cb96e523f4c46475394498e0555387f0da324c3a31e1e6e53c8fec3"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/cc/layers/CompositingLayer.cpp",
+      "before": {
+        "bytes": 33041,
+        "sha256": "cbe78651f5020c82f6f7a0a2e58b344f550a5d5c958d2678f57de759820f4b62"
+      },
+      "after": {
+        "bytes": 34099,
+        "sha256": "5c3231369af0ab8dde40c8fef5b698d5890bb563b1eda5b6f32c3808fd50e02d"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/cc/layers/CompositingLayer.h",
+      "before": {
+        "bytes": 4397,
+        "sha256": "e3e3c5ec0b6fdbb8cefe902ad9bda1f61de2e9820af58b920bfa5221e6358529"
+      },
+      "after": {
+        "bytes": 4526,
+        "sha256": "5f79095252bb6d9f63033568986a55eb382ffc6625a7ab1e14ba2bedfaa4314b"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/cc/playback/LayerChangeAction.cpp",
+      "before": {
+        "bytes": 13794,
+        "sha256": "c0fd23fbbeaf9728327482b4a095abb281f845e50412f79ccd89cc9ff919d046"
+      },
+      "after": {
+        "bytes": 14001,
+        "sha256": "02d74e1debc77bdbe0a2f3d3a06a9c62521e7d1fe0d1cece2016cbaac4f12efe"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/cc/playback/LayerChangeAction.h",
+      "before": {
+        "bytes": 6883,
+        "sha256": "d95e56fced7a8eae8859d8a485199f24f97e1089586785d082df5d1357efbe55"
+      },
+      "after": {
+        "bytes": 7058,
+        "sha256": "929f3d0e1a10f85e2101ba8eb1e9ff5794c8da193f633d4360ad55b2c7cca525"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/cc/raster/RasterCandidateBudget.h",
+      "before": {
+        "absent": true
+      },
+      "after": {
+        "bytes": 1596,
+        "sha256": "29b2fb11471ac33220d9da10734a0a7ee61f584047ac25b6c24348bf9280a64e"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/cc/raster/RasterSchedulingPolicy.h",
+      "before": {
+        "absent": true
+      },
+      "after": {
+        "bytes": 2023,
+        "sha256": "4bbf8660d7cf9f6a0bc15d944201c81a350ca65ad4962d61200749791906cebf"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/cc/raster/RasterTask.cpp",
+      "before": {
+        "bytes": 21030,
+        "sha256": "edefcc66eab531ba9ab88095edaefee0ebb67b05d933489707465db0de75af27"
+      },
+      "after": {
+        "bytes": 28133,
+        "sha256": "ec76712596feb912fdb5df7f091f73f2d7ba3c12ce484df59f4cd226ff8be933"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/cc/raster/RasterTask.h",
+      "before": {
+        "bytes": 5635,
+        "sha256": "860b3ce3cab95535a0d9de58c04b5e7beba0553976d498be7de7f4c598d5ac9d"
+      },
+      "after": {
+        "bytes": 6754,
+        "sha256": "b8362f5a3314eb587f32c075ad7762d6d0904b20ce73aa93108840764a94dc87"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/cc/trees/DrawFrameWakePolicy.h",
+      "before": {
+        "absent": true
+      },
+      "after": {
+        "bytes": 1130,
+        "sha256": "1920e339f2b7b3357f3a1c75caa96be45c6d491dee9174dc5e380cd462b998b9"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/cc/trees/FrameBufferLeasePolicy.h",
+      "before": {
+        "absent": true
+      },
+      "after": {
+        "bytes": 1870,
+        "sha256": "95f828c55a5eecbe6308f9b38830a7a74a0925aceff5691b902e5550d3cf2a8c"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/cc/trees/GpuSkiaSurface.cpp",
+      "before": {
+        "bytes": 22160,
+        "sha256": "c31fb132d8e838f7151024cbb6dffe1fd6f97c85a00cd9b6422033ab2a63ab93"
+      },
+      "after": {
+        "bytes": 21630,
+        "sha256": "14130e58792f501e426af87b5ee9aefd77fe56cdca8d63eafcc3d5c1233bcbf7"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/cc/trees/IndependentInputTrace.h",
+      "before": {
+        "absent": true
+      },
+      "after": {
+        "bytes": 4613,
+        "sha256": "25a3d8138871eaad7c4c2a19747551af5928e0c861dee470eadab0f1ec1f8cb3"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/cc/trees/InputFrameCoverage.h",
+      "before": {
+        "absent": true
+      },
+      "after": {
+        "bytes": 4566,
+        "sha256": "19d385c8b60f6a7b820da7dfaccf33b942cfea45f7b5fea6b5634ca20ff744d1"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/cc/trees/LayerTreeHost.cpp",
+      "before": {
+        "bytes": 123274,
+        "sha256": "5cdd7cf1ec67cee1f70471f4f222ec11c8e3e6b2223a0c798149f0bbe18ddaeb"
+      },
+      "after": {
+        "bytes": 142902,
+        "sha256": "8c0871bdf043ce9476acf7d3e3fc624b80ade05d04fce9a648d9fa3b7b56b50a"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/cc/trees/LayerTreeHost.h",
+      "before": {
+        "bytes": 14066,
+        "sha256": "f36f8662f20765f0b86e6f1cda9cd144731f30e8ba989d2d01f8bb2df3816b18"
+      },
+      "after": {
+        "bytes": 17782,
+        "sha256": "19f09f415564f5c47096482a1a2760297091c984537a3af37a487e7bffddccf7"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/cc/trees/RenderDiagnosticTrace.h",
+      "before": {
+        "absent": true
+      },
+      "after": {
+        "bytes": 815,
+        "sha256": "d0e6fe556db90e47604670ee0894aa4580cdf323153bb9c5b16d8666b2f3c254"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/cc/trees/RenderTrace.h",
+      "before": {
+        "absent": true
+      },
+      "after": {
+        "bytes": 2315,
+        "sha256": "80ccba5bd89dea48c9d4a475fda424570acbb001641544624cecc403b403f05b"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/cc/trees/ScrollTreeSnapshot.cpp",
+      "before": {
+        "bytes": 6359,
+        "sha256": "fcf1cbd6b32480d411d4f38ecd5bd13c72e95e41e3b8ae45e51e6ece17e90d88"
+      },
+      "after": {
+        "bytes": 8392,
+        "sha256": "20841b365f07c1d837ac1ce4779afefa9a1723aaede5997d3d52b07095126cbb"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/cc/trees/ScrollTreeSnapshot.h",
+      "before": {
+        "bytes": 2980,
+        "sha256": "effd2453dcb4d7004f91f891a2c16eeb346716b9a82ff9b3fafd57cd056c837d"
+      },
+      "after": {
+        "bytes": 3809,
+        "sha256": "96a1893476873f5d7f99480f5f954a693ef261091ac362aa604b982486b0521a"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/cc/trees/ViewTraceIdentity.h",
+      "before": {
+        "absent": true
+      },
+      "after": {
+        "bytes": 2968,
+        "sha256": "0451b900ea91e7320fcf637d832a8a193ceeaa360f0444bb336a7417e6c07f39"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/content/browser/HostVisibilityPolicy.h",
+      "before": {
+        "absent": true
+      },
+      "after": {
+        "bytes": 1144,
+        "sha256": "4ca0ae05c7a5515f6f505ece5d2870ecc91e36d36ca904f6944b736ca5ecffa8"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/content/browser/WebPage.cpp",
+      "before": {
+        "bytes": 14429,
+        "sha256": "015e7f9613d003c731f1f95d15b701c3a679eb72570b9bbfcffbc02e3ea0eb08"
+      },
+      "after": {
+        "bytes": 15670,
+        "sha256": "76ba0665b50fd423c71cd81edee73942971b2c01358efb64709c8e94ef41c5f6"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/content/browser/WebPage.h",
+      "before": {
+        "bytes": 6316,
+        "sha256": "a21083f062e98d50bacd998ead03050918cd899b54efdce0bdc915d45fb43bcf"
+      },
+      "after": {
+        "bytes": 6806,
+        "sha256": "5d42084beb2f2d18479bf19ec49221391404928c59e2db16d25220d075a5759e"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/content/browser/WebPageImpl.cpp",
+      "before": {
+        "bytes": 86036,
+        "sha256": "5a13eb80c348d1c9b1d4bebc2be928b0723154ff54045f3e760bcc9714696093"
+      },
+      "after": {
+        "bytes": 93138,
+        "sha256": "79c748bc0d5eb995163190b3318c2d039a0c471a52910df1d7aad88e570385ca"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/content/browser/WebPageImpl.h",
+      "before": {
+        "bytes": 12009,
+        "sha256": "23801752bdd109f7c66d6e64078d55dc1f57b17159ebbc6302b8e32054a762a7"
+      },
+      "after": {
+        "bytes": 12780,
+        "sha256": "285a17f70ada8e216d234bb963ed0a767745efb2997f6e84b8da622802ca8dce"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/content/common/InputFrameTrace.cpp",
+      "before": {
+        "bytes": 27076,
+        "sha256": "39ace8d73e4efc278102e730d4d2fe9180fc6953ccbe85a10776b0d2d5c2636a"
+      },
+      "after": {
+        "bytes": 27911,
+        "sha256": "b49639dd384a3ebe987c870744ded360c48d4b2bc9c04f9a77e4c3da6e049cd2"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/content/common/InputFrameTrace.h",
+      "before": {
+        "bytes": 9753,
+        "sha256": "726489fe182c849213da57be3b4b43de539ffff23399a1efe2daead1a90b641b"
+      },
+      "after": {
+        "bytes": 11118,
+        "sha256": "ac2ed9b913e4fb28e3b9cec1ef7446780b601f3ac84d08fd02b85ab60720c854"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/content/common/PaintLifetime.h",
+      "before": {
+        "absent": true
+      },
+      "after": {
+        "bytes": 7468,
+        "sha256": "52d7f3da7239c59d7c4d2cd9e59186b71ef65047c0d233b5898eaddc0c8eed6e"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/wke/CursorDescriptorBroker.cpp",
+      "before": {
+        "bytes": 44020,
+        "sha256": "9bc5cee92eeb5e3b560bd31c4d367aae10b6d4c51f4187e2c257abb1c5733863"
+      },
+      "after": {
+        "bytes": 44151,
+        "sha256": "9f0f9e640d32c084fabcbd31be5e279cb3931199190d7e97ac1ace8619631a7f"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/wke/InputUiApi.cpp",
+      "before": {
+        "bytes": 8745,
+        "sha256": "624e911472e262f4a3ddd9907845a7f1fdb8b0fff8e5e919f6463f121e61ce4b"
+      },
+      "after": {
+        "bytes": 13593,
+        "sha256": "bd309b1b9ef601da2d94b1ba164d0a06aeb27331cbbf90af65d9be2d2d38e1b9"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/wke/InputUiApi.h",
+      "before": {
+        "bytes": 4857,
+        "sha256": "21d80d3aeb00851dba15b970c785bb2d0e67a8eb4ec5825c404dd809d2d93df8"
+      },
+      "after": {
+        "bytes": 5596,
+        "sha256": "7a3452976cb96e523f4c46475394498e0555387f0da324c3a31e1e6e53c8fec3"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/wke/wke.cpp",
+      "before": {
+        "bytes": 98885,
+        "sha256": "82737fd90be98118d27b8c98a20a610ecc0080b54286ff2d5291fc3adcdae729"
+      },
+      "after": {
+        "bytes": 101399,
+        "sha256": "01dd9a3cac533eee70bda82d9a148d1e3318cd34d3eae15eb8aafeaaab98fe86"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/wke/wkeWebView.cpp",
+      "before": {
+        "bytes": 44094,
+        "sha256": "612312f09b14d3a5c9566b28b1793ecf5f9a5d1bb13de11f95151a5e2128739a"
+      },
+      "after": {
+        "bytes": 50737,
+        "sha256": "97c38881c4de0967124fe2b745f73970bc2b4321af1e7527cbc92eef47ddf48d"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/wke/wkeWebView.h",
+      "before": {
+        "bytes": 13910,
+        "sha256": "cbb8fc97fb116722df86616cd2a416409cbd4a08b2cf422700426a708a6d8074"
+      },
+      "after": {
+        "bytes": 14384,
+        "sha256": "120586be7f967c453c7f8e8261937d64b03c28429c79da659a9efcb03c5e24eb"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/wke/wkeWebWindow.cpp",
+      "before": {
+        "bytes": 24568,
+        "sha256": "0772128907e8ba9fe419364ac4629f124f1fce847d962e5e7c7eb8007a302bf6"
+      },
+      "after": {
+        "bytes": 29773,
+        "sha256": "ad488867b952a3707f10b4689168b5f03248cba9e6da833994654142c67c3a85"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/wke/wkeWebWindow.h",
+      "before": {
+        "bytes": 3013,
+        "sha256": "5ebb284e1889623124ddc93a3f64f9708c28f10a19cbf510e16801e95a283174"
+      },
+      "after": {
+        "bytes": 3059,
+        "sha256": "f1cb9ecf7a4c45603196b98d731987a128e77b0c695e5db3cd6f421fc6750796"
+      }
+    }
+  ],
+  "validation": {
+    "finalSourceCompiled": false,
+    "finalTestsExecuted": false,
+    "reversePatchCheckPerformed": true,
+    "forwardReplayExecuted": false
+  },
+  "candidateBinaryIdentity": null,
+  "releaseReady": false
+}

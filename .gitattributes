@@ -1,4 +1,6 @@
 * text=auto
+verification/production-validation/remaining-issues-2026-10-16/raw/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/current-link-members-2026-10-16/*.gz binary
 verification/production-validation/win7-v11-command-interrupted-2026-09-29/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
 verification/production-validation/win7-v11-native-resize-2026-09-29/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
 *.c text eol=lf
@@ -326,6 +328,9 @@ third_party/patches/soui/0001-llvm-conformance.patch -text -eol whitespace=cr-at
 tests/fixtures/source-regressions/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
 
 third_party/patches/miniblink/0012-retained-resource-byte-budget.patch -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
+third_party/patches/miniblink/0013-bound-main-thread-scheduler-batches.patch -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
+third_party/patches/miniblink/0014-ready-task-wake-and-admission.patch -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
+third_party/patches/miniblink/0015-input-ui-lifecycle-and-legacy-deadline.patch -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
 verification/production-validation/0.5-kernel-cache-rebuild-2026-10-15/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
 verification/production-validation/0.5-focused-fixes-2026-10-15/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
 
@@ -375,3 +380,22 @@ verification/production-validation/0.5-release-fixes-2026-10-16/** -text -eol wh
 # Preserve post-upgrade build records and scoped release originals byte-for-byte.
 verification/production-validation/0.5-post-upgrade-rebuild-2026-10-16/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
 verification/production-validation/0.5-source30-release-2026-10-16/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+# Captured scheduler evidence binds raw bytes, including its build JSON and analyzer.
+verification/production-validation/input-latency-scheduling-2026-10-21/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/input-latency-scheduling-2026-10-21/README.md text eol=lf diff
+
+third_party/patches/miniblink/0016-input-ui-trace-foundation.patch -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+
+third_party/patches/miniblink/0017-input-ui-admission-cancel.patch -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+
+third_party/patches/miniblink/0018-input-ui-deadline-index.patch -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+
+third_party/patches/miniblink/0019-input-ui-frame-resource.patch -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+
+third_party/patches/miniblink/0020-input-ui-render-lifetime.patch -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+
+third_party/patches/miniblink/0021-input-ui-native-window-visibility.patch -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+
+third_party/patches/miniblink/0022-input-ui-window-message-identity.patch -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+
+third_party/patches/miniblink/0023-input-ui-native-causal-hooks.patch -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol

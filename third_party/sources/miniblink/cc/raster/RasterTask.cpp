@@ -18,7 +18,10 @@
 
 #include "config.h"
 #include <atomic>
+#include <cstdlib>
+#include <new>
 #include "cc/raster/RasterTask.h"
+#include "cc/trees/RenderTrace.h"
 
 #include "cc/raster/RasterResouce.h"
 #include "cc/raster/RasterFilters.h"
@@ -80,14 +83,14 @@ static void initializeRasterTaskThread(blink::WebThreadSupportingGC* webThreadSu
 
 void RasterTaskWorkerThreadPool::init(int threadNum)
 {
-    if (threadNum <= 0)
-        threadNum = 1;
+    threadNum = static_cast<int>(RasterSchedulingPolicy::workers(
+        threadNum > 0 ? static_cast<unsigned>(threadNum) : 1));
 
     for (int i = 0; i < threadNum; ++i) {
         blink::WebThreadSupportingGC* webThread = blink::WebThreadSupportingGC::create("RasterTaskWorkerThreadPool").leakPtr();
         webThread->platformThread().postTask(FROM_HERE, WTF::bind(&initializeRasterTaskThread, webThread));
         m_threads.append(webThread);
-        m_threadBusyCount.append(0);
+        m_threadBusyCount[i].store(0, std::memory_order_relaxed);
     }
 }
 
@@ -122,47 +125,91 @@ void RasterTaskWorkerThreadPool::shutdown()
 RasterTaskWorkerThreadPool* RasterTaskWorkerThreadPool::shared()
 {
     ASSERT(isMainThread());
-    if (nullptr == s_sharedThreadPool)
-        s_sharedThreadPool = new RasterTaskWorkerThreadPool(1);
+    if (nullptr == s_sharedThreadPool) {
+        char requested[3] = {};
+        const DWORD length = GetEnvironmentVariableA("SOUI_RASTER_WORKERS", requested,
+            sizeof(requested));
+        const unsigned count = length == 1 && requested[0] >= '2' && requested[0] <= '4'
+            ? static_cast<unsigned>(requested[0] - '0') : 1;
+        s_sharedThreadPool = new RasterTaskWorkerThreadPool(count);
+    }
     return s_sharedThreadPool;
 }
 
-int RasterTaskWorkerThreadPool::selectOneIdleThread()
+int RasterTaskWorkerThreadPool::selectOneIdleThread(bool visible)
 {
-    int minBusy = m_threadBusyCount[0];
-    int minBusyIndex = 0;
-    for (size_t i = 0; i < m_threadBusyCount.size(); ++i) {
-        if (minBusy > m_threadBusyCount[i]) {
-            minBusy = m_threadBusyCount[i];
-            minBusyIndex = i;
+    // The opt-in candidate reserves the final worker for prefetch. Visible
+    // work cannot sit behind that worker's speculative coverage backlog, and
+    // prefetch retains a progress slot even under sustained visible work.
+    if (concurrentCandidateEnabled() && !visible)
+        return static_cast<int>(m_threads.size() - 1);
+    const size_t count = concurrentCandidateEnabled() ? m_threads.size() - 1 : 1;
+    int selected = 0;
+    int busy = m_threadBusyCount[0].load(std::memory_order_relaxed);
+    for (size_t index = 1; index < count; ++index) {
+        const int candidate = m_threadBusyCount[index].load(std::memory_order_relaxed);
+        if (candidate < busy) {
+            busy = candidate;
+            selected = static_cast<int>(index);
         }
     }
-    return minBusyIndex;
+    return selected;
+}
+
+bool RasterTaskWorkerThreadPool::reserveCandidateBytes(uint64_t bytes)
+{
+    std::lock_guard<std::mutex> lock(m_candidateBudgetMutex);
+    return m_candidateBudget.reserve(bytes);
+}
+void RasterTaskWorkerThreadPool::releaseCandidateBytes(uint64_t bytes)
+{
+    std::lock_guard<std::mutex> lock(m_candidateBudgetMutex);
+    m_candidateBudget.release(bytes);
+}
+
+void RasterTaskWorkerThreadPool::noteCandidateQualification(RasterCandidateBudget::Failure reason)
+{
+    m_lastCandidateReason.store(static_cast<unsigned>(reason), std::memory_order_relaxed);
+    if (reason == RasterCandidateBudget::Failure::None)
+        m_qualifiedFrames.fetch_add(1, std::memory_order_relaxed);
+    else
+        m_fallbackFrames.fetch_add(1, std::memory_order_relaxed);
+    auto event = renderTraceContext();
+    event.why = trace::reason::invalid;
+    event.value = static_cast<unsigned>(reason);
+    event.related_id = RasterCandidateBudget::maximumBytes;
+    recordRenderStage(trace::stage::resource_wait, event);
+}
+RasterTaskWorkerThreadPool::CandidateDiagnostics RasterTaskWorkerThreadPool::candidateDiagnostics() const
+{
+    return {m_qualifiedFrames.load(std::memory_order_relaxed),
+        m_fallbackFrames.load(std::memory_order_relaxed),
+        m_lastCandidateReason.load(std::memory_order_relaxed)};
 }
 
 void RasterTaskWorkerThreadPool::increasePendingRasterTaskNum()
 {
-    atomicIncrement(&m_pendingRasterTaskNum);
+    m_pendingRasterTaskNum.fetch_add(1, std::memory_order_relaxed);
 }
 
 void RasterTaskWorkerThreadPool::decreasePendingRasterTaskNum() 
 {
-    atomicDecrement(&m_pendingRasterTaskNum);
+    m_pendingRasterTaskNum.fetch_sub(1, std::memory_order_release);
 }
 
 int RasterTaskWorkerThreadPool::getPendingRasterTaskNum() const
 {
-    return m_pendingRasterTaskNum;
+    return m_pendingRasterTaskNum.load(std::memory_order_acquire);
 }
 
 void RasterTaskWorkerThreadPool::increaseBusyCountByIndex(int index)
 {
-    atomicIncrement(&m_threadBusyCount[index]);
+    m_threadBusyCount[index].fetch_add(1, std::memory_order_relaxed);
 }
 
 void RasterTaskWorkerThreadPool::decreaseBusyCountByIndex(int index)
 {
-    atomicDecrement(&m_threadBusyCount[index]);
+    m_threadBusyCount[index].fetch_sub(1, std::memory_order_relaxed);
 }
 
 class RasteredTileBitmap {
@@ -208,6 +255,7 @@ public:
         SkColor backgroudColor
         )
         : m_pool(pool)
+        , m_completionState(group->resourceNotificationState())
         , m_picture(picture)
         , m_dirtyRect(dirtyRect)
         , m_threadIndex(threadIndex)
@@ -217,6 +265,8 @@ public:
         , m_group(group)
         , m_filterOperations(filterOperations ? new cc_blink::WebFilterOperationsImpl(*filterOperations) : nullptr)
         , m_contentScale(wke::g_contentScale)
+        , m_smoothText(wke::g_smootTextEnable)
+        , m_forceBitmap(blink::RuntimeEnabledFeatures::alwaysIsNotSolideColorEnabled())
         , m_backgroudColor(backgroudColor)
     {
 #ifndef NDEBUG
@@ -226,6 +276,11 @@ public:
 
     ~RasterTask()
     {
+        if (m_receipt.cancelUnstarted() || m_receipt.failRunning()) {
+            m_blendAction->cancelBeforeRaster();
+            releaseRource();
+        }
+        delete m_filterOperations;
 #ifndef NDEBUG
         rasterTaskCounter.decrement();
 #endif
@@ -238,6 +293,9 @@ public:
 
         m_pool->decreasePendingRasterTaskNum();
         m_pool->decreaseBusyCountByIndex(m_threadIndex);
+        if (m_candidateReserved)
+            m_pool->releaseCandidateBytes(m_estimatedBytes);
+        LayerTreeHost::notifyRasterCompletion(m_completionState);
     }
 
     class RasterResouceLocker {
@@ -264,9 +322,12 @@ public:
 //         OutputDebugStringA(output.utf8().data());
 
         //DWORD nowTime = (DWORD)(WTF::currentTimeMS() * 100);
+        if (!m_receipt.start())
+            return;
         raster();
-        releaseRource();
-        g_rasterTaskCount++;
+        if (m_receipt.finish())
+            releaseRource();
+        InterlockedIncrement(reinterpret_cast<volatile LONG*>(&g_rasterTaskCount));
         //DWORD nowTime2 = (DWORD)(WTF::currentTimeMS() * 100);
     }
 
@@ -317,7 +378,7 @@ public:
                 SkColor solidColor;
                 bool isSolidColor = performSolidColorAnalysis(dirtyRectInTile, &solidColor);
 
-                if (blink::RuntimeEnabledFeatures::alwaysIsNotSolideColorEnabled())
+                if (m_forceBitmap)
                     isSolidColor = false;
 
                 if (isSolidColor) {
@@ -348,11 +409,13 @@ public:
     {
         SkBitmap* bitmap = new SkBitmap;
         bitmap->allocN32Pixels(dirtyRect.width(), dirtyRect.height());
+        trace::add(trace::counter::raster_bytes,
+            static_cast<uint64_t>(bitmap->width()) * bitmap->height() * 4);
 
         // Uses kPremul_SkAlphaType since the result is not known to be opaque.
         SkImageInfo info = SkImageInfo::MakeN32(dirtyRect.width(), dirtyRect.height(), m_isOpaque ? kOpaque_SkAlphaType : kPremul_SkAlphaType);
 
-        bool canUseLcdText = m_canUseLcdText && wke::g_smootTextEnable;
+        bool canUseLcdText = m_canUseLcdText && m_smoothText;
         SkSurfaceProps surfaceProps(0, canUseLcdText ? kRGB_H_SkPixelGeometry : kUnknown_SkPixelGeometry);
         
         size_t stride = info.minRowBytes();
@@ -401,6 +464,13 @@ public:
     }
 
     int threadIndex() const { return m_threadIndex; }
+    void setCandidateReservation(uint64_t bytes) { m_estimatedBytes = bytes; m_candidateReserved = true; }
+    void setThreadIndexForDispatch(int index) {
+        if (index == m_threadIndex) return;
+        m_pool->decreaseBusyCountByIndex(m_threadIndex);
+        m_threadIndex = index;
+        m_pool->increaseBusyCountByIndex(m_threadIndex);
+    }
 
     int64 getActionId() const
     {
@@ -411,6 +481,7 @@ public:
 
 private:
     RasterTaskWorkerThreadPool* m_pool;
+    std::shared_ptr<UiPaintRetryState> m_completionState;
     SkPicture* m_picture;
     SkRect m_dirtyRect;
     int m_threadIndex;
@@ -422,6 +493,11 @@ private:
     SkColor m_backgroudColor;
 
     float m_contentScale; // 绘制低分辨率的时候用
+    bool m_smoothText;
+    bool m_forceBitmap;
+    RasterTaskReceipt m_receipt;
+    bool m_candidateReserved = false;
+    uint64_t m_estimatedBytes = 0;
 };
 
 RasterTaskGroup* RasterTaskWorkerThreadPool::beginPostRasterTask(LayerTreeHost* host)
@@ -441,6 +517,12 @@ RasterTaskGroup::RasterTaskGroup(RasterTaskWorkerThreadPool* pool, LayerTreeHost
     m_mutex = new WTF::Mutex();
     m_pool = pool;
     m_host = host;
+    if (pool->concurrentCandidateEnabled()) {
+        m_frameBudget = host->inspectRasterCandidateScene(&m_candidateGeneration);
+        m_collectCandidate = m_frameBudget.eligible();
+        if (!m_collectCandidate)
+            pool->noteCandidateQualification(m_frameBudget.failure());
+    }
     m_drawPropUpdataAction = new LayerChangeActionDrawPropUpdata();
     m_lastBlendActionForPendingInvalidateRect = nullptr;
 //     String outString = String::format("RasterTaskGroup::RasterTaskGroup: %p\n", this);
@@ -460,6 +542,8 @@ RasterTaskGroup::~RasterTaskGroup()
 
 void RasterTaskGroup::postImageLayerAction(int imageLayerId, SkBitmapRefWrap* bitmap)
 {
+    if (m_collectCandidate)
+        fallbackCandidateBeforeDispatch(RasterCandidateBudget::Failure::UnknownResidentOwner);
     m_blendAndImageActions.append(new LayerChangeActionUpdataImageLayer(m_host->genActionId(), imageLayerId, bitmap));
 }
 
@@ -480,21 +564,88 @@ int64 RasterTaskGroup::postRasterTask(cc_blink::WebLayerImpl* layer, SkPicture* 
     m_blendAndImageActions.append(blendAction);
     m_lastBlendActionForPendingInvalidateRect = blendAction;
 
-    int threadIndex = m_pool->selectOneIdleThread();
+    SkRect updateRect = layer->mapRectFromCurrentLayerCoordinateToRootLayer(dirtyRect);
+    const blink::IntRect viewport = m_host->getClientRect();
+    SkRect visibleRect = SkRect::MakeXYWH(viewport.x(), viewport.y(), viewport.width(), viewport.height());
+    const bool visible = visibleRect.intersect(updateRect);
+    int threadIndex = m_collectCandidate ? m_pool->selectOneIdleThread(visible) : 0;
 
-    RasterTask* task = new RasterTask(m_pool, picture, dirtyRect, threadIndex, layer->opaque(), layer->drawProperties()->layerCanUseLcdText, layer->getFilters(), blendAction, this, m_host->getBackgroundColor());
+    RasterTask* task = nullptr;
+    try {
+        task = new RasterTask(m_pool, picture, dirtyRect, threadIndex, layer->opaque(),
+            layer->drawProperties()->layerCanUseLcdText, layer->getFilters(), blendAction,
+            this, m_host->getBackgroundColor());
+    } catch (const std::bad_alloc&) {
+        blendAction->cancelBeforeRaster();
+        picture->unref();
+        unref(); // Return this task's obligation; the posting group still owns one.
+        appendPendingInvalidateRect(updateRect);
+        return blendAction->actionId();
+    }
     m_pool->increasePendingRasterTaskNum();
     m_pool->increaseBusyCountByIndex(task->threadIndex());
-    m_pool->m_threads[task->threadIndex()]->postTask(FROM_HERE, task);
+    if (m_collectCandidate) {
+        if (!m_frameBudget.task()) {
+            fallbackCandidateBeforeDispatch(m_frameBudget.failure());
+        } else {
+            const uint64_t bitmap = RasterSchedulingPolicy::estimatedBytes(
+                dirtyRect.width(), dirtyRect.height());
+            if (willRasteredTiles->size() > RasterCandidateBudget::maximumTiles) {
+                fallbackCandidateBeforeDispatch(RasterCandidateBudget::Failure::TileLimit);
+            } else {
+                const uint64_t tileBytes = static_cast<uint64_t>(willRasteredTiles->size())
+                    * kDefaultTileWidth * kDefaultTileHeight * 4;
+                if (!m_frameBudget.addBytes(bitmap) || !m_frameBudget.addBytes(tileBytes))
+                    fallbackCandidateBeforeDispatch(m_frameBudget.failure());
+            }
+        }
+    }
+    if (m_collectCandidate) {
+        // SkPicture::approximateBytesUsed explicitly excludes large referenced
+        // owners. Current generic recordings have no exact ownership manifest.
+        // Reject this shape before ANY candidate task starts; do not invent a
+        // resident upper bound from dimensions or approximate picture size.
+        fallbackCandidateBeforeDispatch(RasterCandidateBudget::Failure::UnknownPictureOwner);
+    }
+    task->setThreadIndexForDispatch(0);
+    m_pool->m_threads[0]->postTask(FROM_HERE, task);
 
-    SkRect updateRect = layer->mapRectFromCurrentLayerCoordinateToRootLayer(dirtyRect);
     appendPendingInvalidateRect(updateRect);
 
     return blendAction->actionId();
 }
 
+void RasterTaskGroup::fallbackCandidateBeforeDispatch(RasterCandidateBudget::Failure reason)
+{
+    m_frameBudget.reject(reason);
+    m_collectCandidate = false;
+    m_pool->noteCandidateQualification(reason);
+    dispatchCollectedTasks(false);
+}
+void RasterTaskGroup::dispatchCollectedTasks(bool qualified)
+{
+    // This staging list is bounded by maximumTasks. It remains empty for
+    // unproved generic SkPicture owners; future exact ownership manifests may
+    // admit controlled shapes without changing the cancellation/fence protocol.
+    if (qualified && !m_tasks.isEmpty())
+        m_pool->noteCandidateQualification(RasterCandidateBudget::Failure::None);
+    for (size_t index = 0; index < m_tasks.size(); ++index) {
+        RasterTask* task = m_tasks[index];
+        if (!qualified)
+            task->setThreadIndexForDispatch(0);
+        m_pool->m_threads[task->threadIndex()]->postTask(FROM_HERE, task);
+    }
+    m_tasks.clear();
+}
+
 bool RasterTaskGroup::endPostRasterTask()
 {
+    if (m_collectCandidate) {
+        if (!m_host->matchesRasterCandidateGeneration(m_candidateGeneration))
+            fallbackCandidateBeforeDispatch(RasterCandidateBudget::Failure::GenerationChanged);
+        else
+            dispatchCollectedTasks(true);
+    }
     bool noneNeedCommit = (m_drawPropUpdataAction->dirtyRects().isEmpty() && 0 == m_blendAndImageActions.size());
     unref();
     return noneNeedCommit;
@@ -522,6 +673,11 @@ void RasterTaskGroup::appendTileToUIThreadRelease(Tile* tile)
 void RasterTaskGroup::appendUnnecessaryTileToEvictAfterDrawFrame(Tile* tile)
 {
     DebugBreak();
+}
+
+std::shared_ptr<UiPaintRetryState> RasterTaskGroup::resourceNotificationState() const
+{
+    return m_host->resourceNotificationState();
 }
 
 void RasterTaskGroup::waitHostRasteringIndexOld()

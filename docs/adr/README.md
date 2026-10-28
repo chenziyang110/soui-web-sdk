@@ -1,5 +1,7 @@
 # 架构决策记录（ADR）
 
+2026-10-26：[ADR-0122 输入到可见反馈](0122-input-to-visible-feedback.md)定义分阶段实现、接口、兼容和专人验证边界，当前不代表编译、运行或性能验收。
+
 当公共 API、Bridge 协议、权限、线程与生命周期、兼容目标、SDK 包格式或核心依赖发生变化时，在本目录新增 ADR。
 
 文件命名：`NNNN-short-title.md`，编号递增。状态使用 `proposed`、`accepted`、`superseded` 或 `deprecated`。已接受 ADR 不回写历史结论；后续变化新增 ADR，并在旧记录中标明替代关系。
@@ -12,6 +14,7 @@
 
 ## 0.5 新增提案
 
+- [ADR-0118：主线程定时任务批次让出输入处理](0118-main-thread-timer-batches.md)
 - [ADR-0117：限定范围交付后的当前未验收状态](0117-current-unverified-acceptance-status.md)
 - [ADR-0095：发布汇总的编译档位与冻结输入](0095-release-collection-inputs.md)
 - [ADR-0096：SOUI 依赖构建的 LLVM 档位](0096-soui-llvm-dependency-build.md)（实施与真实回归进行中）
@@ -67,3 +70,16 @@
 - [ADR-0111：保存每次构建的独立 CMake 配置日志](0111-immutable-cmake-configure-log.md)（真实重配置探针通过；四配置完整复验待执行）
 
 - [ADR-0112：有界的进程地址空间观察](0112-bounded-process-address-census.md)（双架构真实扫描及独立读取回归通过；实际负载预算待校准）
+
+- [ADR-0119：在临时光栅覆盖边界保留已接收的滚动目标](0119-preserve-scroll-target-beyond-raster-coverage.md)（proposed；源码候选与端到端验证分开）
+- [ADR-0120：区分合成滚动确认与外部滚动意图](0120-preserve-compositor-scroll-acknowledgements.md)（proposed；默认整数元素滚动源码候选；完整 x86 构建、限定 GUI 位移与同值 CSS 取消已验证，性能及完整配置资格未完成）
+- [ADR-0122：输入到可见反馈的实施契约](0122-input-to-visible-feedback.md)（代码交付与性能资格分开）
+- [ADR-0123：有界输入恢复与 owner 调度](0123-input-admission-and-scheduler.md)（输入源码候选，调度包持续集成）
+- [ADR-0124：帧截止、资源通知与有界画布所有权](0124-frame-resource-presentation.md)（按工作包集成，运行资格未关闭）
+- [ADR-0125：有界输入、任务与可见帧关联](0125-input-frame-trace.md)（源码候选；编译与执行未运行）
+- [ADR-0118：MiniBlink 关闭的分阶段继续状态](0118-miniblink-nonblocking-unmount.md)
+- [ADR-0119：显式离线 Web 源码诊断构建档](0119-offline-web-build-profiles.md)
+- [ADR-0124：Web 构建目标、资源清单与体积分析](0124-web-targets-and-size-analysis.md)
+- [ADR-0125：显式运行时依赖与包内内容去重](0125-runtime-manifests-and-bundles.md)
+- [ADR-0126：可选压缩档位与实测开销](0126-optional-compression-profiles.md)
+- [ADR-0127：可选自动后端宿主](0127-automatic-renderer-host.md)

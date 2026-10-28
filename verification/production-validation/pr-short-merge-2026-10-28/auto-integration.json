@@ -1,0 +1,18 @@
+{
+  "schema": "soui.merge-short-check-status/v1",
+  "version": "0.6.0-preview.3",
+  "releaseReady": false,
+  "productionQualificationComplete": false,
+  "scope": "PR106 integration with PR101; limited source/tool contracts",
+  "originalCandidate": "71bf89d526dc9cdc936fe96bab7c0e7604ceea11",
+  "integratedMain": "3cb057eb2a750e362708fe7a2b35cc720167ad09",
+  "shortTests": {"passed":201,"skipped":1,"failed":0,"skipReason":"file symlink privilege unavailable"},
+  "typescriptPackageBuilds": 3,
+  "sdkWebAuditVulnerabilities": 0,
+  "originalFailureRetained": "Three bounded JSON read races reproduced before the repair; immutable identity checks now reject them.",
+  "limitations": [
+    "This is a limited status reference, not a full raw evidence archive or full source-delivery verification.",
+    "Current GUI, kernel, compatibility, performance, lifecycle soak and long-running qualification were not repeated.",
+    "Original PR106 native and GUI evidence retains its original source and payload identity."
+  ]
+}

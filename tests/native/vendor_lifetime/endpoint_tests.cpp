@@ -5,6 +5,8 @@
 #include <mutex>
 #include <memory>
 #include <vector>
+#include <cstdint>
+#include <set>
 #include "allocation_fault.h"
 
 namespace cc { struct LayerTreeHost { int identity; }; }
@@ -20,10 +22,18 @@ struct TestView {
     int identity;
     TestPage* page;
     TestPage* webPage() { return page; }
+    int getId() const { return identity; }
 };
 using wkeWebView = TestView*;
 using wkeInteractionEndpoint = void*;
 #define WKE_CALL_TYPE __cdecl
+
+// Explicit owner/live-registry dependency fakes; not native thread evidence.
+namespace wke {
+static bool fixture_owner = true;
+bool inputUiOwnerAvailable() { return fixture_owner; }
+std::set<wkeWebView> g_liveWebViews;
+}
 
 // The ownership algorithm below is an exact mapped production-source fragment.
 #include "interaction_endpoint_source.inc"
@@ -42,7 +52,11 @@ int main(int argc, char** argv)
     cc::LayerTreeHost compositor{1};
     TestPageImpl implementation{&compositor};
     TestPage page{&implementation};
-    TestView target{1, &page}, other{2, &page};
+    TestView target{41, &page}, other{2, &page};
+    wke::g_liveWebViews.insert(&target); wke::g_liveWebViews.insert(&other);
+    wke::fixture_owner = false;
+    if (createInteractionEndpoint(&target, 1)) return 1;
+    wke::fixture_owner = true;
     if (newFailure || growthFailure || createSuccess || invalidCreation) {
         allocation_fault::capture_size = sizeof(InteractionEndpointImpl);
         allocation_fault::arm(createSuccess ? -1 : (growthFailure ? 1 : 0));
@@ -75,7 +89,7 @@ int main(int argc, char** argv)
             if (threw || result || attempts || failures || captured || !s_interactionEndpoints.empty()) return 1;
         } else {
             if (threw || !result || s_interactionEndpoints.size() != 1
-                || result->references.load() != 2 || !result->active) return 1;
+                || result->references.load() != 2 || !result->active || result->actualViewId != 41) return 1;
             allocation_fault::track(result, 0);
             invalidateInteractionEndpoint(result);
             if (result->references.load() != 1 || result->active || !s_interactionEndpoints.empty()) return 1;

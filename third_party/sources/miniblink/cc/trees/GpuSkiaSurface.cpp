@@ -1,5 +1,6 @@
 #include "config.h"
 #include "cc/trees/GpuSkiaSurface.h"
+#include "cc/trees/RenderDiagnosticTrace.h"
 
 #include "skia/ext/platform_device.h"
 #include "skia/ext/platform_canvas.h"
@@ -355,8 +356,10 @@ void GpuSkiaSurface::flush()
 
 bool GpuSkiaSurface::present()
 {
-    if (!m_canvas || !m_context || !m_glContext)
+    if (!m_canvas || !m_context || !m_glContext) {
+        recordGpuPresentDiagnostic(content::input_frame_trace::gpu_present_diagnostic_code::surface_unavailable);
         return false;
+    }
     if (!m_directPresent)
         return false;
     if (!m_frameDirty)
@@ -367,9 +370,12 @@ bool GpuSkiaSurface::present()
     // dirty-region batch; the next beginFrame() repairs Skia's state once.
     m_externalGlStateDirty = true;
     const GLenum flushError = collectErrors ? glGetError() : GL_NO_ERROR;
+    (void)flushError;
     FramebufferFunctions functions{};
-    if (!loadFramebufferFunctions(functions))
+    if (!loadFramebufferFunctions(functions)) {
+        recordGpuPresentDiagnostic(content::input_frame_trace::gpu_present_diagnostic_code::context_unavailable);
         return false;
+    }
     const BlitFramebufferProc blit = functions.blit;
     if (blit) {
         functions.bind(0x8CA8 /* GL_READ_FRAMEBUFFER */, m_framebuffer);
@@ -377,21 +383,12 @@ bool GpuSkiaSurface::present()
         blit(0, 0, m_width, m_height, 0, 0, m_width, m_height,
              0x00004000 /* GL_COLOR_BUFFER_BIT */, 0x2600 /* GL_NEAREST */);
         const GLenum blitError = collectErrors ? glGetError() : GL_NO_ERROR;
-        const bool firstPresent = m_presentCount == 0;
+        (void)blitError; // Preserve the existing diagnostic error read.
         const BOOL swapped = SwapBuffers(m_dc);
         if (swapped)
             recordPresented();
-        if (firstPresent) {
-            char tracePath[MAX_PATH] = {};
-            const DWORD length = GetEnvironmentVariableA("SOUI_GPU_PRESENT_TRACE", tracePath, MAX_PATH);
-            if (length && length < MAX_PATH) {
-                std::ofstream trace(tracePath, std::ios::trunc);
-                trace << "mode=blit blitError=" << blitError << " swapped=" << (swapped ? 1 : 0)
-                      << " vsync=" << (m_vsyncEnabled ? 1 : 0)
-                      << " texture=" << m_texture << " framebuffer=" << m_framebuffer
-                      << " width=" << m_width << " height=" << m_height << "\n";
-            }
-        }
+        recordGpuPresentDiagnostic(swapped ? content::input_frame_trace::gpu_present_diagnostic_code::swap_succeeded
+            : content::input_frame_trace::gpu_present_diagnostic_code::swap_failed);
         m_frameDirty = swapped == FALSE;
         return swapped == TRUE;
     }
@@ -424,22 +421,14 @@ bool GpuSkiaSurface::present()
     glMatrixMode(GL_MODELVIEW);
     glDisable(GL_TEXTURE_2D);
     const GLenum drawError = collectErrors ? glGetError() : GL_NO_ERROR;
-    const bool firstPresent = m_presentCount == 0;
     const BOOL swapped = SwapBuffers(m_dc);
     if (swapped)
         recordPresented();
     const GLenum swapError = collectErrors ? glGetError() : GL_NO_ERROR;
-    if (firstPresent) {
-        char tracePath[MAX_PATH] = {};
-        const DWORD length = GetEnvironmentVariableA("SOUI_GPU_PRESENT_TRACE", tracePath, MAX_PATH);
-        if (length && length < MAX_PATH) {
-            std::ofstream trace(tracePath, std::ios::trunc);
-            trace << "flushError=" << flushError << " drawError=" << drawError
-                  << " swapError=" << swapError << " swapped=" << (swapped ? 1 : 0)
-                  << " texture=" << m_texture << " framebuffer=" << m_framebuffer
-                  << " width=" << m_width << " height=" << m_height << "\n";
-        }
-    }
+    (void)drawError;
+    (void)swapError;
+    recordGpuPresentDiagnostic(swapped ? content::input_frame_trace::gpu_present_diagnostic_code::swap_succeeded
+        : content::input_frame_trace::gpu_present_diagnostic_code::swap_failed);
     m_frameDirty = swapped == FALSE;
     return swapped == TRUE;
 }

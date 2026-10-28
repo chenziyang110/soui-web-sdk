@@ -195,7 +195,7 @@ const std::vector<WebTimerBase*>& WebTimerBase::timerHeap() const
 extern ActivatingTimerCheck* gActivatingTimerCheck;
 #endif
 
-WebTimerBase::WebTimerBase(WebThreadImpl* threadTimers, const blink::WebTraceLocation& location, blink::WebThread::Task* task, int priority)
+WebTimerBase::WebTimerBase(WebThreadImpl* threadTimers, const blink::WebTraceLocation& location, blink::WebThread::Task* task, int priority, const input_frame_trace::event* trace)
     : m_nextFireTime(0)
     , m_threadTimers(threadTimers)
     , m_repeatInterval(0)
@@ -208,6 +208,15 @@ WebTimerBase::WebTimerBase(WebThreadImpl* threadTimers, const blink::WebTraceLoc
     , m_thread(currentThread())
 #endif
 {
+    if (trace) m_trace = *trace;
+    else {
+        (void)input_frame_trace::current_context(m_trace);
+        m_trace.thread_id = m_trace.producer_slot = 0;
+        m_trace.flags = 0; m_trace.outcome = input_frame_trace::terminal::none;
+        m_trace.frame_id = m_trace.action_first = m_trace.action_last = m_trace.value = 0;
+        m_trace.related_id = m_trace.task_id;
+        m_trace.task_id = input_frame_trace::next_task_id();
+    }
 //     String out = String::format(" WebTimerBase::WebTimerBase: %p %x\n", this, ::GetCurrentThreadId());
 //     OutputDebugStringW(out.charactersWithNullTermination().data());
 #ifndef NDEBUG
@@ -217,6 +226,11 @@ WebTimerBase::WebTimerBase(WebThreadImpl* threadTimers, const blink::WebTraceLoc
 
 WebTimerBase::~WebTimerBase()
 {
+    if (!m_taskRan) {
+        auto trace = m_trace; trace.point = input_frame_trace::stage::task_cancelled;
+        trace.why = input_frame_trace::reason::cancelled; trace.qpc = 0;
+        (void)input_frame_trace::record(trace);
+    }
     stop();
     ASSERT(!inHeap());
 
@@ -264,7 +278,7 @@ void WebTimerBase::start(double nextFireInterval, double repeatInterval)
     ASSERT(m_thread == currentThread());
 
     m_repeatInterval = repeatInterval;
-    setNextFireTime(currentTime() + nextFireInterval, nullptr);
+    setNextFireTime(monotonicallyIncreasingTime() + nextFireInterval, nullptr);
 }
 
 void WebTimerBase::stop()
@@ -282,7 +296,7 @@ void WebTimerBase::stop()
 double WebTimerBase::nextFireInterval() const
 {
     ASSERT(isActive());
-    double current = currentTime();
+    double current = monotonicallyIncreasingTime();
     if (m_nextFireTime < current)
         return 0;
     return m_nextFireTime - current;
@@ -323,6 +337,7 @@ void WebTimerBase::deleteLastOne()
 
 void WebTimerBase::heapDelete()
 {
+    m_threadTimers->m_timerIndex.erase(m_scheduling);
     ASSERT(m_nextFireTime == 0);
     heapPop();
     deleteLastOne();
@@ -331,6 +346,7 @@ void WebTimerBase::heapDelete()
 
 void WebTimerBase::heapDeleteMin()
 {
+    m_threadTimers->m_timerIndex.erase(m_scheduling);
     ASSERT(m_nextFireTime == 0);
     heapPopMin();
     deleteLastOne();
@@ -379,6 +395,17 @@ void WebTimerBase::setNextFireTime(double newTime, unsigned* heapInsertionOrder)
     // Keep heap valid while changing the next-fire time.
     double oldTime = m_nextFireTime;
     if (oldTime != newTime) {
+        // Every allocation precedes mutation; existing active timers survive OOM.
+        if (newTime != 0) {
+            if (oldTime == 0 && timerHeap().size() == timerHeap().capacity()) {
+                const size_t size = timerHeap().size();
+                const size_t maximum = timerHeap().max_size();
+                if (size == maximum) throw std::bad_alloc();
+                timerHeap().reserve(size > maximum / 2 ? maximum : (size ? size * 2 : 16));
+            }
+            m_threadTimers->m_timerIndex.prepare(m_priority, oldTime != 0);
+            m_threadTimers->m_timerIndex.erase(m_scheduling, true);
+        }
         m_nextFireTime = newTime;
 
 //         static unsigned currentHeapInsertionOrder = 0;
@@ -399,6 +426,12 @@ void WebTimerBase::setNextFireTime(double newTime, unsigned* heapInsertionOrder)
         else
             heapIncreaseKey();
 
+        if (newTime != 0) {
+            m_scheduling.value = this;
+            m_scheduling.deadline = newTime;
+            m_scheduling.priority = m_priority;
+            m_threadTimers->m_timerIndex.insert(m_scheduling);
+        }
         bool isFirstTimerInHeap = m_heapIndex == 0;
 
         if (wasFirstTimerInHeap || isFirstTimerInHeap)
@@ -416,7 +449,25 @@ void WebTimerBase::fireTimersInNestedEventLoop()
 
 void WebTimerBase::fired()
 {
+    auto trace = m_trace; // Callback may delete this timer: use local data after run.
+    trace.point = input_frame_trace::stage::task_begin;
+    const auto posted = trace.qpc; trace.qpc = input_frame_trace::now_qpc();
+    if (posted && trace.qpc >= posted)
+        input_frame_trace::observe_duration(input_frame_trace::duration_metric::task_queue, trace.qpc - posted);
+    (void)input_frame_trace::record(trace);
+    input_frame_trace::context_scope taskContext(trace);
+    struct TraceEnd {
+        input_frame_trace::event value;
+        bool returned = false;
+        ~TraceEnd() {
+            value.point = input_frame_trace::stage::task_end; value.qpc = 0;
+            if (!returned) value.why = input_frame_trace::reason::cancelled;
+            (void)input_frame_trace::record(value);
+        }
+    } finished{trace};
+    m_taskRan = true;
     m_task->run();
+    finished.returned = true; // Only local state after the potentially self-deleting run.
 }
 
 } // namespace content

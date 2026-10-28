@@ -1,0 +1,200 @@
+diff --git a/third_party/sources/miniblink/content/browser/PlatformEventHandler.cpp b/third_party/sources/miniblink/content/browser/PlatformEventHandler.cpp
+index 5ab0733e..2e39bfe8 100644
+--- a/third_party/sources/miniblink/content/browser/PlatformEventHandler.cpp
++++ b/third_party/sources/miniblink/content/browser/PlatformEventHandler.cpp
+@@ -206,6 +206,24 @@ PlatformEventHandler::PlatformEventHandler(WebWidget* webWidget, WebViewImpl* we
+     m_webViewImpl = webViewImpl;
+ }
+ 
++void PlatformEventHandler::cancelInputState(HWND ownerWindow)
++{
++    // Clear before ReleaseCapture: its synchronous WM_CAPTURECHANGED must not
++    // manufacture a matching mouse-up (and therefore a DOM click).
++    m_isLeftMousedown = false;
++    m_isDraggableNodeMousedown = false;
++    m_isDraggableRegionNcHitTest = false;
++    m_postMouseLeave = false;
++    m_mouseInWindow = false;
++    m_lastTimeMouseDown = 0;
++    m_lastPosMouseDown = blink::IntPoint();
++    m_lastPosMouseMove = blink::IntPoint();
++    m_lastPosForDrag = blink::IntRect();
++    m_checkMouseLeaveTimer.stop();
++    if (ownerWindow && ::GetCapture() == ownerWindow)
++        ::ReleaseCapture();
++}
++
+ void PlatformEventHandler::fireCaptureChangedEvent(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+ {
+     if (m_isDraggableRegionNcHitTest) {
+diff --git a/third_party/sources/miniblink/content/browser/PlatformEventHandler.h b/third_party/sources/miniblink/content/browser/PlatformEventHandler.h
+index 2b9345d0..b89d475c 100644
+--- a/third_party/sources/miniblink/content/browser/PlatformEventHandler.h
++++ b/third_party/sources/miniblink/content/browser/PlatformEventHandler.h
+@@ -33,6 +33,7 @@ public:
+     void buildMousePosInfo(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam, bool* handle, blink::IntPoint* pos, blink::IntPoint* globalPos);
+ 
+     void setIsDraggableNodeMousedown();
++    void cancelInputState(HWND ownerWindow);
+ 
+     void setHwndRenderOffset(const blink::IntPoint& offset)
+     {
+diff --git a/third_party/sources/miniblink/content/browser/WebPage.cpp b/third_party/sources/miniblink/content/browser/WebPage.cpp
+index a88e77dc..57932fa0 100644
+--- a/third_party/sources/miniblink/content/browser/WebPage.cpp
++++ b/third_party/sources/miniblink/content/browser/WebPage.cpp
+@@ -121,6 +121,11 @@ void WebPage::setDrawMinInterval(double drawMinInterval)
+         m_pageImpl->setDrawMinInterval(drawMinInterval);
+ }
+ 
++bool WebPage::cancelInputState()
++{
++    return m_pageImpl && m_pageImpl->cancelInputState();
++}
++
+ void WebPage::setMainFrameRate(int rate)
+ {
+     if (m_pageImpl) m_pageImpl->setMainFrameRate(rate);
+diff --git a/third_party/sources/miniblink/content/browser/WebPage.h b/third_party/sources/miniblink/content/browser/WebPage.h
+index da41e051..a791b3cd 100644
+--- a/third_party/sources/miniblink/content/browser/WebPage.h
++++ b/third_party/sources/miniblink/content/browser/WebPage.h
+@@ -111,6 +111,7 @@ public:
+ 
+     void setDrawMinInterval(double drawMinInterval);
+     void setMainFrameRate(int rate);
++    bool cancelInputState();
+ 
+     void setNeedsCommit();
+     bool needsCommit() const;
+diff --git a/third_party/sources/miniblink/content/browser/WebPageImpl.cpp b/third_party/sources/miniblink/content/browser/WebPageImpl.cpp
+index 17c97255..81cc6ec3 100644
+--- a/third_party/sources/miniblink/content/browser/WebPageImpl.cpp
++++ b/third_party/sources/miniblink/content/browser/WebPageImpl.cpp
+@@ -12,6 +12,8 @@
+ #include "third_party/WebKit/Source/core/page/Page.h"
+ #include "third_party/WebKit/Source/core/page/FocusController.h"
+ #include "third_party/WebKit/Source/core/input/EventHandler.h"
++#include "third_party/WebKit/Source/core/editing/InputMethodController.h"
++#include "third_party/WebKit/Source/core/page/FrameTree.h"
+ #include "third_party/WebKit/Source/core/loader/FrameLoadRequest.h"
+ #include "third_party/WebKit/Source/core/fetch/MemoryCache.h"
+ #include "third_party/WebKit/Source/core/editing/FrameSelection.h"
+@@ -1595,6 +1597,44 @@ bool WebPageImpl::handleCurrentKeyboardEvent()
+     return false;
+ }
+ 
++bool WebPageImpl::cancelInputState()
++{
++    if (!WTF::isMainThread() || !m_webViewImpl || !m_platformEventHandler)
++        return false;
++    CHECK_FOR_REENTER(this, false);
++    blink::WebViewImpl* view = m_webViewImpl;
++    RefPtrWillBeRawPtr<blink::LocalFrame> localFrames[128];
++    size_t localCount = 0;
++    size_t frameCount = 0;
++    blink::Frame* root = view->mainFrameImpl() ? view->mainFrameImpl()->frame() : nullptr;
++    for (blink::Frame* frame = root; frame; frame = frame->tree().traverseNext(root)) {
++        if (++frameCount > 128 || !frame->isLocalFrame())
++            return false; // Explicit unsupported recovery, before clearing state.
++        localFrames[localCount++] = blink::toLocalFrame(frame);
++    }
++    AutoRecordActions record(this, m_layerTreeHost, false);
++    // Clear the Blink click/drag/pointer/touch tokens first. No synthetic mouse
++    // or key release and no DefinitelyProcessingUserGesture is introduced.
++    for (size_t index = 0; index < localCount; ++index)
++        localFrames[index]->eventHandler().clear();
++    m_platformEventHandler->cancelInputState(m_hWnd);
++    m_isDragging = false;
++    m_postMouseLeave = false;
++    m_mouseInWindow = false;
++    m_popupHandle = nullptr;
++    for (size_t index = 0; index < localCount; ++index) {
++        if (localFrames[index]->inputMethodController().hasComposition())
++            localFrames[index]->inputMethodController().cancelComposition();
++        if (m_state != pageInited || m_webViewImpl != view)
++            return false; // Composition callbacks may navigate or request close.
++    }
++    view->setFocus(false); // Composition was cancelled, so blur cannot commit it.
++    if (m_state != pageInited || m_webViewImpl != view)
++        return false;
++    view->setIsActive(false);
++    return m_state == pageInited && m_webViewImpl == view;
++}
++
+ void WebPageImpl::fireCaptureChangedEvent(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+ {
+     CHECK_FOR_REENTER(this, (void)0);
+diff --git a/third_party/sources/miniblink/content/browser/WebPageImpl.h b/third_party/sources/miniblink/content/browser/WebPageImpl.h
+index cdccb4d9..c4e7aa6f 100644
+--- a/third_party/sources/miniblink/content/browser/WebPageImpl.h
++++ b/third_party/sources/miniblink/content/browser/WebPageImpl.h
+@@ -143,6 +143,7 @@ public:
+     bool fireTimerEvent();
+     void fireResizeEvent(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+     void fireCaptureChangedEvent(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
++    bool cancelInputState();
+     void firePaintEvent(HDC hdc, const RECT* paintRect);
+     void fireSetFocusEvent(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+     void fireKillFocusEvent(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+diff --git a/third_party/sources/miniblink/wke/InputUiApi.cpp b/third_party/sources/miniblink/wke/InputUiApi.cpp
+index 479a5601..ccbc189a 100644
+--- a/third_party/sources/miniblink/wke/InputUiApi.cpp
++++ b/third_party/sources/miniblink/wke/InputUiApi.cpp
+@@ -1,4 +1,7 @@
+ #include "wke/wke.h"
++#include "wke/wkeWebView.h"
++#include "wke/wkeGlobalVar.h"
++#include "content/browser/WebPage.h"
+ #include "content/common/InputFrameTrace.h"
+ 
+ #include <algorithm>
+@@ -7,6 +10,8 @@
+ #include <cstring>
+ #include <mutex>
+ 
++namespace wke { extern DWORD wkeThreadId; }
++
+ namespace {
+ namespace trace = content::input_frame_trace;
+ static_assert(sizeof(trace::event) == WKE_INPUT_UI_EVENT_BYTES, "Trace event ABI mismatch");
+@@ -20,6 +25,29 @@ std::mutex configurationMutex; // Cold bootstrap only; never a producer/consumer
+ std::atomic<unsigned long long> drainedEvents{0};
+ std::atomic<bool> exportLimitReached{false};
+ 
++wke::CWebView* liveOwnerView(void* opaque)
++{
++    if (!wke::wkeIsInit || ::GetCurrentThreadId() != wke::wkeThreadId || !opaque)
++        return nullptr;
++    const auto view = static_cast<wkeWebView>(opaque);
++    if (wke::g_liveWebViews.find(view) == wke::g_liveWebViews.end())
++        return nullptr;
++    return static_cast<wke::CWebView*>(view);
++}
++
++int WKE_INPUT_UI_CALL cancelInput(void* opaque)
++{
++    auto* view = liveOwnerView(opaque);
++    if (!view || !view->webPage())
++        return WKE_INPUT_UI_UNAVAILABLE;
++    try {
++        return view->webPage()->cancelInputState() ? WKE_INPUT_UI_OK : WKE_INPUT_UI_REJECTED;
++    } catch (...) {
++        // The caller must enter limited recovery; partial cancellation is not success.
++        return WKE_INPUT_UI_REJECTED;
++    }
++}
++
+ int WKE_INPUT_UI_CALL configureTrace(const wkeInputUiTraceConfig* config)
+ {
+     if (!config || config->structSize != sizeof(*config)
+@@ -146,7 +174,8 @@ const wkeInputUiApi* WKE_CALL_TYPE wkeGetInputUiApi(unsigned requestedVersion)
+ {
+     // Fields become available only with their actual owner/view implementation.
+     static const wkeInputUiApi api = { sizeof(wkeInputUiApi), WKE_INPUT_UI_ABI_VERSION,
+-        WKE_INPUT_UI_CAP_TRACE, &configureTrace, &stopTrace, &snapshotTrace, &drainTrace,
++        WKE_INPUT_UI_CAP_TRACE,
++        &configureTrace, &stopTrace, &snapshotTrace, &drainTrace,
+         nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
+     return requestedVersion == WKE_INPUT_UI_ABI_VERSION ? &api : nullptr;
+ }

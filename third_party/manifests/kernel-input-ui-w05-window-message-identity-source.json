@@ -1,0 +1,34 @@
+{
+  "schema": "soui.kernel-source-delta/v1",
+  "sdkVersion": "0.5.0",
+  "status": "source-only-unreleased-candidate",
+  "scope": "W05 actual WM_SIZE owner/attached HWND/property gates around reentry; minimized viewport retention; static correction only, no compilation or execution",
+  "baseCommit": "9660f9b0ff703358d3c64b7e2f1682358ad85779",
+  "sourceIdentityScope": "Only listed staged source delta; historical import and prebuilt identities unchanged",
+  "patch": {
+    "path": "third_party/patches/miniblink/0022-input-ui-window-message-identity.patch",
+    "bytes": 1166,
+    "sha256": "c14e2aa317bd521482e736ec5e4123ee18c4df1138add5e94ed3a32c67faa076"
+  },
+  "files": [
+    {
+      "path": "third_party/sources/miniblink/wke/wkeWebWindow.cpp",
+      "before": {
+        "bytes": 31852,
+        "sha256": "e05f49b28e30da0604b3f72269cdb725df4b8172991602af7dd0f808735b9e43"
+      },
+      "after": {
+        "bytes": 32328,
+        "sha256": "be7c3f4426ce430bc09ffec6a5895bb5642ddde024aa87f076d95dc75edefcbf"
+      }
+    }
+  ],
+  "validation": {
+    "finalSourceCompiled": false,
+    "finalTestsExecuted": false,
+    "reversePatchCheckPerformed": true,
+    "forwardReplayExecuted": false
+  },
+  "candidateBinaryIdentity": null,
+  "releaseReady": false
+}

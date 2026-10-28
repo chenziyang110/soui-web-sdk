@@ -37,8 +37,13 @@ target_link_libraries(soui_worker_lifetime_regressions PRIVATE user32 winmm)
 add_dependencies(soui_worker_lifetime_regressions soui_worker_lifetime_source_bytes)
 foreach(case IN ITEMS scheduler-new-bad-alloc event-null native-launch-zero registry-reserve-bad-alloc
     startup-tls-failure ready-acquire-visibility native-exit-delayed native-wait-fails
-    worker-self-delete normal-worker-close concurrent-registry-close main-thread-compatibility)
-  if(case STREQUAL "native-wait-fails" OR case STREQUAL "worker-self-delete")
+    worker-self-delete normal-worker-close concurrent-registry-close registry-live-fence main-thread-compatibility
+    main-scheduler-task-budget main-scheduler-clock-budget main-scheduler-continuation
+    main-scheduler-first-task-wake main-scheduler-admission-budget main-scheduler-admission-shutdown
+    worker-scheduler-no-count-cap
+    worker-scheduler-clock-budget main-scheduler-shutdown-drain main-scheduler-pre-shutdown-drain)
+  if(case STREQUAL "native-wait-fails" OR case STREQUAL "worker-self-delete"
+      OR case STREQUAL "concurrent-registry-close" OR case STREQUAL "registry-live-fence")
     add_test(NAME kernel.native.worker-lifetime.${case} COMMAND "${CMAKE_COMMAND}"
       "-DSUBJECT=$<TARGET_FILE:soui_worker_lifetime_regressions>"
       "-DCASE_ID=${case}" "-DSUBMODE=wait"

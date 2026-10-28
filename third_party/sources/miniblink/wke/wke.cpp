@@ -1,9 +1,10 @@
-﻿#if (defined ENABLE_WKE) && (ENABLE_WKE == 1)
+#if (defined ENABLE_WKE) && (ENABLE_WKE == 1)
 
 //////////////////////////////////////////////////////////////////////////
 #define BUILDING_wke 1
 
 #include "wke/wkeString.h"
+#include "content/common/InputFrameTrace.h"
 #include "wke/wkeWebView.h"
 #include "wke/wkeWebWindow.h"
 #include "wke/wkeGlobalVar.h"
@@ -21,6 +22,7 @@
 #include "wke/CursorDescriptorBroker.h"
 #include "content/browser/WebPage.h"
 #include "content/browser/WebPageImpl.h"
+#include "content/browser/CheckReEnter.h"
 #include "cc/trees/LayerTreeHost.h"
 #include "content/web_impl_win/BlinkPlatformImpl.h"
 #include "content/web_impl_win/WebThreadImpl.h"
@@ -75,6 +77,7 @@ extern char* g_navigatorPlatform;
 
 namespace wke {
 DWORD wkeThreadId = 0;
+bool inputUiOwnerAvailable();
 }
 
 namespace wke {
@@ -327,6 +330,7 @@ struct InteractionEndpointImpl {
         , webView(owner)
         , layerTreeHost(compositor)
         , viewGeneration(generation)
+        , actualViewId(owner->getId() > 0 ? static_cast<uint64_t>(owner->getId()) : 0)
         , active(true)
         , nextForInvalidation(nullptr)
     {
@@ -337,6 +341,7 @@ struct InteractionEndpointImpl {
     wkeWebView webView;
     cc::LayerTreeHost* layerTreeHost;
     unsigned __int64 viewGeneration;
+    const uint64_t actualViewId; // WKE identity, distinct from the scroll node key.
     bool active;
     // A withdrawn registry reference owns this private, allocation-free chain.
     InteractionEndpointImpl* nextForInvalidation;
@@ -414,7 +419,9 @@ wkeInteractionEndpoint WKE_CALL_TYPE createInteractionEndpoint(
     wkeWebView webView, unsigned __int64 viewGeneration)
 {
     try {
-        if (!webView || !viewGeneration || !webView->webPage()
+        if (!wke::inputUiOwnerAvailable() || !webView || !viewGeneration
+            || wke::g_liveWebViews.find(webView) == wke::g_liveWebViews.end()
+            || !webView->webPage()
             || !webView->webPage()->webPageImpl()) {
             return nullptr;
         }
@@ -496,13 +503,21 @@ int WKE_CALL_TYPE submitInteractionWheel(wkeInteractionEndpoint opaque,
         return 0;
     }
 
+    content::input_frame_trace::event identity;
+    identity.view_id = endpoint->actualViewId;
+    identity.view_generation = input->viewGeneration;
+    identity.document_generation = input->documentGeneration;
+    identity.geometry_generation = input->geometryVersion;
+    identity.input_first = identity.input_last = input->inputSequence;
+    identity.qpc = content::input_frame_trace::now_qpc();
+    identity.thread_id = ::GetCurrentThreadId();
     cc::CompositorScrollReceipt receipt;
     // The endpoint can be called from a host thread whose monotonic clock has
     // a different epoch. Animation and latching must use Blink's clock.
     const double compositorTime = WTF::monotonicallyIncreasingTime();
     const bool accepted = endpoint->layerTreeHost->handleCompositorWheelInput(
         input->x, input->y, input->deltaX, input->deltaY,
-        compositorTime, input->smooth != 0, &receipt);
+        compositorTime, input->smooth != 0, &receipt, &identity);
     if (!accepted)
         return 0;
     output->accepted = 1;
@@ -546,9 +561,14 @@ int WKE_CALL_TYPE captureInteractionScrollBarrier(
         return 0;
     }
 
+    content::input_frame_trace::event identity;
+    identity.view_id = endpoint->actualViewId;
+    identity.view_generation = request->viewGeneration;
+    identity.document_generation = request->documentGeneration;
+    identity.geometry_generation = request->geometryVersion;
     cc::ScrollBarrier barrier;
     if (!endpoint->layerTreeHost->captureCompositorScrollBarrier(
-            request->x, request->y, &barrier)) {
+            request->x, request->y, &barrier, &identity)) {
         return 0;
     }
 
@@ -632,6 +652,8 @@ void WKE_CALL_TYPE wkeInitialize()
     if (wke::wkeIsInit)
         return;
 
+    if (!wke::CWebView::resumePaintRuntime())
+        return; // Never reuse a runtime whose paint/close receipts are live.
     wke::wkeThreadId = ::GetCurrentThreadId();
 
     //double-precision float
@@ -639,6 +661,7 @@ void WKE_CALL_TYPE wkeInitialize()
 
     CoInitialize(NULL);
 
+    (void)content::input_frame_trace::register_current_thread();
     content::WebPage::initBlink();
     wke::wkeIsInit = true;
     wke::diagnostics::renderer_initialized();
@@ -724,8 +747,18 @@ bool WKE_CALL_TYPE wkeIsInitialize()
 }
 
 namespace {
+bool workerFinalizationPrepared = false;
 bool workerFinalizationCompleted = false;
 }
+namespace wke {
+bool inputUiOwnerAvailable()
+{
+    // Read mutable lifecycle flags only on their actual owner.
+    return ::GetCurrentThreadId() == wkeThreadId && wkeIsInit
+        && !workerFinalizationPrepared && !workerFinalizationCompleted;
+}
+}
+
 
 unsigned WKE_CALL_TYPE wkeWorkerRetirementWitnessCount()
 {
@@ -825,15 +858,21 @@ bool WKE_CALL_TYPE wkeReleaseWorkerMessageBacklog(void* token, unsigned generati
 // Internal opt-in SDK handshake. No blocking wait or general JS/Windows pump.
 unsigned WKE_CALL_TYPE wkePrepareWorkerShutdown()
 {
+    if (::GetCurrentThreadId() != wke::wkeThreadId || !wke::wkeIsInit) return 1;
     wke::checkThreadCallIsValid(__FUNCTION__);
     if (workerFinalizationCompleted) return 0;
+    if (!wke::CWebView::preparePaintShutdown()) return 1;
     const unsigned retired = static_cast<unsigned>(blink::WorkerMessagingProxy::prepareAllWorkerRetirements());
     if (retired != 0) return retired;
-    return wke::brokerMayFinalize() ? 0 : 1; // Pending broker callbacks must not stop the SDK owner loop.
+    if (!wke::brokerMayFinalize())
+        return 1; // Pending broker callbacks must not stop the SDK owner loop.
+    workerFinalizationPrepared = true;
+    return 0;
 }
 
 unsigned WKE_CALL_TYPE wkeFinalizePrepared()
 {
+    if (::GetCurrentThreadId() != wke::wkeThreadId || !wke::wkeIsInit) return 1;
     wke::checkThreadCallIsValid(__FUNCTION__);
     if (workerFinalizationCompleted) return 0;
     if (!wke::brokerMayFinalize()) return 1;
@@ -845,7 +884,10 @@ unsigned WKE_CALL_TYPE wkeFinalizePrepared()
 
 void WKE_CALL_TYPE wkeFinalize()
 {
+    if (::GetCurrentThreadId() != wke::wkeThreadId || !wke::wkeIsInit) return;
     wke::checkThreadCallIsValid(__FUNCTION__);
+    if (workerFinalizationCompleted)
+        return;
     if (!wke::brokerMayFinalize())
         return;
     if (wkePrepareWorkerShutdown() != 0) return; // Before the first destructive loader/main/IO step.
@@ -859,6 +901,7 @@ void WKE_CALL_TYPE wkeFinalize()
     wke::s_versionString = nullptr;
     workerFinalizationCompleted = true;
     wke::diagnostics::renderer_finalized();
+    content::input_frame_trace::detach_current_thread();
 }
 
 void WKE_CALL_TYPE wkeSetMemoryCacheEnable(wkeWebView webView, bool b)
@@ -1081,6 +1124,8 @@ void WKE_CALL_TYPE wkeSetLanguage(wkeWebView webview, const char* language)
 
 void WKE_CALL_TYPE wkeUpdate()
 {
+    if (wke::inputUiOwnerAvailable() && !content::CheckReEnter::getEnterCount())
+        wke::CWebView::serviceDeferredPaintCloses();
 //     static HWND hTimer = NULL;
 //     if (!hTimer)
 //         hTimer = FindWindow(L"TimerWindowClass", NULL);
@@ -2193,34 +2238,38 @@ wkeWebView WKE_CALL_TYPE wkeCreateWebView()
 
 void WKE_CALL_TYPE wkeDestroyWebView(wkeWebView webView)
 {
+    if (::GetCurrentThreadId() != wke::wkeThreadId || !wke::wkeIsInit
+        || workerFinalizationCompleted || !webView)
+        return;
     wke::checkThreadCallIsValid(__FUNCTION__);
-    if (!wke::brokerMayDestroyRawView(webView))
+    if (wke::g_liveWebViews.find(webView) == wke::g_liveWebViews.end()
+        || !wke::brokerMayDestroyRawView(webView))
         return;
-    if (!webView)
+    auto permit = webView->acquirePaintClosePermit(content::PaintCloseKind::view);
+    if (!permit)
         return;
-
     invalidateInteractionEndpointsForWebView(webView);
-
-    if (webView->getWkeHandler()->windowDestroyCallback)
-        webView->getWkeHandler()->windowDestroyCallback(webView, webView->getWkeHandler()->windowDestroyCallbackParam);
-
+    const auto callback = webView->getWkeHandler()->windowDestroyCallback;
+    const auto parameter = webView->getWkeHandler()->windowDestroyCallbackParam;
+    if (callback && webView->takeWindowDestroyCallback())
+        callback(webView, parameter);
+    // The callback may request native close. Do not remove activation/live
+    // identity until the actual native window ownership receipt is retired.
+    if (!webView->prepareNativeWindowClose())
+        return;
     net::ActivatingObjCheck::inst()->remove(webView->getId());
-    std::set<wkeWebView>::iterator pos = wke::g_liveWebViews.find(webView);
-
-    if (pos != wke::g_liveWebViews.end()) {
-        delete webView;
-    }
+    delete webView; // permit retains its independent tombstone through disposal.
 }
 
 void WKE_CALL_TYPE wkeDestroyWebWindow(wkeWebView webWindow)
 {
-    wke::checkThreadCallIsValid(__FUNCTION__);
-    if (!wke::brokerMayDestroyRawView(webWindow))
+    if (::GetCurrentThreadId() != wke::wkeThreadId || !wke::wkeIsInit
+        || workerFinalizationCompleted || !webWindow)
         return;
-    std::set<wkeWebView>::iterator pos = wke::g_liveWebViews.find(webWindow);
-    if (pos != wke::g_liveWebViews.end()) {
-        webWindow->destroy();
-    }
+    wke::checkThreadCallIsValid(__FUNCTION__);
+    if (wke::g_liveWebViews.find(webWindow) != wke::g_liveWebViews.end()
+        && wke::brokerMayDestroyRawView(webWindow))
+        webWindow->destroy(); // CWebWindow holds the window close permit.
 }
 
 HWND WKE_CALL_TYPE wkeGetWindowHandle(wkeWebView webWindow)
@@ -2255,6 +2304,10 @@ void WKE_CALL_TYPE wkeOnDraggableRegionsChanged(wkeWebView webWindow, wkeDraggab
 
 void WKE_CALL_TYPE wkeShowWindow(wkeWebView webWindow, bool showFlag)
 {
+    if (::GetCurrentThreadId() != wke::wkeThreadId || !wke::wkeIsInit
+        || workerFinalizationCompleted || !webWindow
+        || wke::g_liveWebViews.find(webWindow) == wke::g_liveWebViews.end())
+        return;
     wke::checkThreadCallIsValid(__FUNCTION__);
     if (wke::CWebWindow* window = static_cast<wke::CWebWindow*>(webWindow))
         return window->show(showFlag);

@@ -13,6 +13,9 @@ struct ReadyTask {
 };
 
 // The caller's heap-front check guarantees at least one eligible task.
+// Normal oracle: aged (>= 50 ms) precedes fresh; aged deadline then priority;
+// fresh priority then deadline. Drain ignores aging/eligibility, priority first.
+// Exact keys retain current vector encounter order, which is not a FIFO promise.
 template<class Timer, class Describe>
 size_t selectReadyTimer(const std::vector<Timer*>& timers, double fireTime, bool draining, Describe describe)
 {

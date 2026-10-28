@@ -1,20 +1,32 @@
 # Worker 生命周期真实源码回归
 
+## 就绪任务续调度候选（2026-10-26）
+
+本轮在原 18 项上新增 4 项：`main-scheduler-continuation`、`main-scheduler-first-task-wake`、`main-scheduler-admission-budget` 和 `main-scheduler-admission-shutdown`。只在夹具中停用周期 timer，以真实窗口消息分发验证首任务唤醒、积压链完成、跨线程接纳预算及保留批次关闭；核对未来任务不提前和恰好一次清理。首任务案例还覆盖长回调后提交的正延时从实际 post 计时。源码映射更新三个完整 vendor 文件及夹具输入，原有关闭片段和其他输入保持原字节。最终候选按用户要求未继续编译或执行，交由后续人员验证；这些案例也不证明真实硬件输入公平性。
+
 ## 当前源码绑定修复（2026-10-13）
 
 0.5 Native 源码采用后，本目录的 current 输入仍绑定采用前 5 个文件及 3 个旧字节偏移，导致正常配置被 byte gate 拒绝。更新时逐项验证完整文件，并以原片段 SHA 定位相同方法；registry/TLS 的三个片段原字节不变，仅位置移动。完整 WebThreadImpl 则包含已经采用的 retirement/witness 方法，测试依赖投影从真实 WebThread.h 额外提取该接口声明，不能手写另一套关闭实现。新增第 12 个 exact fragment，严格 copies 数同步为 12；13 个 current 源输入与所有 payload/HEX 前后校验仍保留。
 
 此次只修测试侧 current 来源和必要声明，原 12 个行为断言、故障包装、时间预算及下文历史实测原件保持。其他 vendor 子目录分别核对 current 与派生片段，不能把全文件 hash 更新替代 fragment 对齐。当前只有文件/Node 数据检查，未执行 CMake、编译或 Native 回归，也不继承旧 2026-10-09 结果。
 
-本目录提供一个 Windows/MSVC C++17 测试程序和 12 个 CTest。它从当前 Miniblink 源码生成输入，覆盖 worker 构造、启动交接、真实线程退出、注册撤销及主线程计时器行为。测试目录不保存历史 before 快照，也不包含开发机绝对路径。
+## 调度让步与关闭范围（2026-10-21）
+
+当前共 18 个 CTest，包含原 12 项生命周期回归和新增 6 项调度回归：主线程任务数量预算、主线程时钟预算、worker 无数量上限、worker 原时钟预算、最终关闭清空，以及退出标志尚未设置时的平台关闭清空。新增案例不继承下文历史实测结果。
+
+主线程预算案例保留真实隐藏窗口与 `WM_TIMER` 分发，由任务投递独立原生消息，验证任务积压时消息泵得到执行机会。依赖时钟只在新增案例中受控，原 12 项仍使用真实时钟。案例同时验证已保留任务最终逐一执行和未来任务不提前执行；worker 案例观察真实批次之间的 event wait。最终关闭案例保留未来任务的原有清空契约。
+
+`shutdownProof` 额外固定并生成实际 `BlinkPlatformImpl::shutdown` 函数的完整字节区间。证明门要求其三个 `currentThread` fire 调用均在 `m_mainThread->shutdown()` 前、且使用同一真实方法，再从这些调用派生测试入口标识。关闭范围案例调用该真实入口执行超过 32 项就绪工作，并在返回后继续接收新任务，防止以提前设置退出标志来绕开测试。它不编译或手写另一套平台清理算法。
+
+本目录提供一个 Windows/MSVC C++17 测试程序和 18 个 CTest。它从当前 Miniblink 源码生成输入，覆盖 worker 构造、启动交接、真实线程退出、注册撤销及主线程计时器行为。测试目录不保存历史 before 快照，也不包含开发机绝对路径。
 
 `source-map.json` 固定 13 个当前源码输入的完整 SHA-256/字节数，以及 12 个生成输入的精确字节区间。完整文件按原字节复制；片段通过 HEX 解码写入，不做变量、美元符号、生成表达式或换行替换。片段必须为 NUL-free、LF-only 且保留末尾 LF。配置时和编译前都验证完整源码，随后逐个比较生成内容与真实源码区间；改变源码必须重新审查和更新映射，不能改成手写生命周期算法。
 
 程序编译真实 `WebThreadImpl`、`WebTimerBase`、`SharedTimerWin` 和平台注册/TLS、scheduler 构造析构及重入计数方法。`fixture_support.h` 与 `stubs/` 只提供声明、平台时间/线程查询及测试所需的依赖接口。Win32 包装在未注入故障时调用真实 event、CRT thread、TLS、wait、exit-code、handle、critical section、隐藏窗口和 timer API。测试平台设置是隔离依赖，不是完整 Blink/Oilpan 环境。
 
-12 个注册测试保持源测试的案例 ID。`native-wait-fails` 和 `worker-self-delete` 由严格包装检查真实 `std::terminate` 的观察回执、资源尚未释放及退出码 86；没有使用 `WILL_FAIL`。MSVC worker 线程单独安装 terminate 观察器。预计终止是进程级故障边界，保留资源不是自然清理或成功关闭。包装仅能核对程序输出中的 PID；外部 Owned Job 仍需把 PID/创建时间绑定到实际子进程并收束进程树。
+原 12 个注册测试保持源测试的案例 ID，新增 6 项使用独立调度案例 ID。`native-wait-fails` 和 `worker-self-delete` 由严格包装检查真实 `std::terminate` 的观察回执、资源尚未释放及退出码 86；没有使用 `WILL_FAIL`。MSVC worker 线程单独安装 terminate 观察器。预计终止是进程级故障边界，保留资源不是自然清理或成功关闭。包装仅能核对程序输出中的 PID；外部 Owned Job 仍需把 PID/创建时间绑定到实际子进程并收束进程树。
 
-`native-wait-fails` 还保留第 13 次直接执行接口，可用同一严格包装检查 `GetExitCodeThread` 故障：
+`native-wait-fails` 还保留一个未另行注册的直接执行接口，可用同一严格包装检查 `GetExitCodeThread` 故障：
 
 ```powershell
 cmake -DSUBJECT=<测试程序完整路径> -DCASE_ID=native-wait-fails -DSUBMODE=exit-code -P tests/native/vendor_lifetime/worker_lifetime/expect-fail-fast.cmake
