@@ -1,0 +1,58 @@
+{
+  "sdkVersion": "0.6.0",
+  "rows": [
+    {
+      "name": "web-sdk",
+      "directory": "sdk/web",
+      "program": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "C:/nvm4w/nodejs/node_modules/npm/bin/npm-cli.js",
+        "sbom",
+        "--package-lock-only",
+        "--sbom-format=cyclonedx",
+        "--offline",
+        "--ignore-scripts",
+        "--install-links"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "lock": {
+        "bytes": 739,
+        "sha256": "93cb42bd9f11a9bcb9059f6ec505de87c520dac76cb2ac0c769779add37e5195"
+      },
+      "lockUnchanged": true,
+      "format": "CycloneDX",
+      "specVersion": "1.5",
+      "component": {
+        "bom-ref": "@soui/native-sdk@0.6.0",
+        "type": "library",
+        "name": "web",
+        "version": "0.6.0",
+        "scope": "required",
+        "purl": "pkg:npm/%40soui/native-sdk@0.6.0",
+        "properties": [
+          {
+            "name": "cdx:npm:package:private",
+            "value": "true"
+          }
+        ],
+        "externalReferences": [],
+        "licenses": [
+          {
+            "license": {
+              "id": "MIT"
+            }
+          }
+        ]
+      },
+      "components": 1,
+      "localDistributionRewrites": [],
+      "output": {
+        "path": "sbom-web-sdk.cdx.json",
+        "bytes": 1992,
+        "sha256": "11cbcaa3233ae150d6a47635017898496c0a118fd8c06c5c0faf335a2eb2d4f3"
+      }
+    }
+  ],
+  "releaseReady": false
+}

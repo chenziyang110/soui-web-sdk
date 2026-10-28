@@ -1,0 +1,63 @@
+{
+  "schema": "soui.release.source2-reuse-independent-review/v1",
+  "createdUtc": "2026-10-28T15:53:02.154Z",
+  "reviewer": "remaining_resource_gaps",
+  "proof": {
+    "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/kernel-prep/revision-3/Run2ReuseProof.json",
+    "bytes": 7197888,
+    "sha256": "e252be2579d770c05c392a0859b37910126deff8ed542fa130d784467ff367cb"
+  },
+  "parser": {
+    "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/kernel-prep/revision-3/Preserve-Run2.cjs",
+    "bytes": 9974,
+    "sha256": "0ffb062d25776a6b1839fc163cbd5e0de42ba8900064833092cf5bf5e63ced9b"
+  },
+  "reviewScript": {
+    "path": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\legal-prep\\source2-resume-review\\Verify-Reuse.cjs",
+    "bytes": 9395,
+    "sha256": "ea8c7186b19113b470162ba43a87771825f3bf64ee99b28df3024817fde9190c"
+  },
+  "originalFailure": {
+    "record": {
+      "path": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\kernel-prep\\revision-2\\execution-x64\\root-result.json",
+      "bytes": 999,
+      "sha256": "736eea2bdd62094f7a8d76aad97c0d59d0b069154ac09220435af1c5f2f587b1"
+    },
+    "exitCode": 1,
+    "supervisorExitCode": 1,
+    "elapsedMs": 2801599,
+    "activeProcesses": 0,
+    "forced": false
+  },
+  "sourceDelta": [
+    {
+      "path": "third_party/WebKit/Source/platform/image-decoders/GDIPlus/GDIPlusReader.cpp",
+      "bytes": 3669,
+      "sha256": "078b09e620818f5a2230579c895cdbe7dfa6fbc9fa0845270345071293277e73"
+    }
+  ],
+  "source2Snapshot": {
+    "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/kernel-prep/revision-3/Source2.source-after.json",
+    "bytes": 4505919,
+    "sha256": "c698985f7d46d02984a7eec46d96c1ebeac5164b816b61b560d96b657c136809"
+  },
+  "preservedFilesChecked": 1919,
+  "originalAndCopyBytesChecked": 3442902922,
+  "objects": 1903,
+  "codeViewOwnersIndependentlyParsed": 1902,
+  "assemblyOwners": 1,
+  "pchVerified": true,
+  "sourceReadPinsChecked": 5862,
+  "currentExternalPinsChecked": 480,
+  "limitations": [
+    "Compound actual compiler write-batch ownership is joined with actual COFF LF_BUILDINFO; not invented granular per-TU read closures.",
+    "External read pins are current-only, not historical whole-provider byte proof.",
+    "Producer/Driver continuation binding not yet reviewed in this data report; needs final frozen helper delta.",
+    "No compiler/product execution by reviewer."
+  ],
+  "errors": [
+    "Missing actual object read/write owner: miniblink/obj/SaveRegisters_x86.obj",
+    "Assembly owner"
+  ],
+  "result": "BLOCKED"
+}

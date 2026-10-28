@@ -1,0 +1,23 @@
+{
+  "schema": "soui.release.gdiplus-pointer-caller-fix/v1",
+  "path": "C:/sr06/third_party/sources/miniblink/third_party/WebKit/Source/platform/image-decoders/GDIPlus/GDIPlusReader.cpp",
+  "relativePath": "third_party/WebKit/Source/platform/image-decoders/GDIPlus/GDIPlusReader.cpp",
+  "before": {
+    "bytes": 3738,
+    "sha256": "32a4624beee83641f27a809f663d1c21c7ea458e4d98bdb49998cfa7266a244f"
+  },
+  "after": {
+    "bytes": 3669,
+    "sha256": "078b09e620818f5a2230579c895cdbe7dfa6fbc9fa0845270345071293277e73"
+  },
+  "oldApi": "LockBits(const Rect&)",
+  "installed19041Api": "LockBits(const Rect*)",
+  "onlyCodeDelta": "Remove old DEBUG/NDEBUG signature branch; pass the same Rect address in every configuration.",
+  "licenseHeaderAtStart": false,
+  "originalLicenseTextUnmodified": true,
+  "datedNoticeAdded": false,
+  "datedNoticeStatus": "No license notice present in this file; legal owner consulted. Do not invent or replace an original license.",
+  "sourceBodyBefore": "    gdipBitmap->LockBits(\n#if _DEBUG\n       &\n#elif NDEBUG\n\n#else USING_VC6RT\n\t\n#endif\n        rect, Gdiplus::ImageLockModeRead, PixelFormat32bppARGB, &lockedBitmapData);",
+  "sourceBodyAfter": "    gdipBitmap->LockBits(&rect, Gdiplus::ImageLockModeRead, PixelFormat32bppARGB, &lockedBitmapData);",
+  "productOrKernelExecuted": false
+}

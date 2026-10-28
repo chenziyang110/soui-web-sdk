@@ -34,6 +34,8 @@ function walk(root, relative = '', exclude = () => false) {
   });
 }
 function normalization(name, data) {
+  if (name === 'sdk/resources/devtools/miniblink/baseline-manifest.json' ||
+      name.startsWith('sdk/resources/devtools/miniblink/baseline/')) return 'none';
   if (name === 'LICENSE.md' || name.startsWith('third_party/licenses/')) return 'none';
   if (/\.(dll|lib|exe|pdb|png|jpe?g|gif|ico|zip|7z|pdf|woff2?|ttf|mp[34]|wav|bin)$/i.test(name)) return 'none';
   const legacyText = /\.(c|cc|cpp|cxx|h|hpp|hxx|inl|inc|tlh|idl|def|rc|cmake|txt|props|targets|vcxproj|filters|xml|sln|cmd|bat|ps1)$/i.test(name);

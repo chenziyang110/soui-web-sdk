@@ -1,0 +1,150 @@
+{
+  "root": "C:/sr06",
+  "cases": [
+    {
+      "architecture": "x64",
+      "root": "C:/sr06/out/release-consumer-x64-release",
+      "source": "C:\\sr06\\out\\release-consumer-x64-release\\source",
+      "build": "C:\\sr06\\out\\release-consumer-x64-release\\build",
+      "prefix": "C:/sr06/out/release-install-x64-release",
+      "sdkBuild": "C:/sr06/out/release-build/x64",
+      "publicFiles": [
+        {
+          "source": {
+            "path": "C:/sr06/tests/package-consumer/CMakeLists.txt",
+            "bytes": 766,
+            "sha256": "d236cac30e7aa0c99a0f351685a178e780fc6b2ad7f19543759292f1c2bb11f7"
+          },
+          "copy": {
+            "path": "C:/sr06/out/release-consumer-x64-release/source/public/CMakeLists.txt",
+            "bytes": 766,
+            "sha256": "d236cac30e7aa0c99a0f351685a178e780fc6b2ad7f19543759292f1c2bb11f7"
+          }
+        },
+        {
+          "source": {
+            "path": "C:/sr06/tests/package-consumer/main.cpp",
+            "bytes": 300,
+            "sha256": "ebaf7a7d2aa6367bc1fc37438b36f63a54b6959403516bfc92edd9c00f64d831"
+          },
+          "copy": {
+            "path": "C:/sr06/out/release-consumer-x64-release/source/public/main.cpp",
+            "bytes": 300,
+            "sha256": "ebaf7a7d2aa6367bc1fc37438b36f63a54b6959403516bfc92edd9c00f64d831"
+          }
+        },
+        {
+          "source": {
+            "path": "C:/sr06/tests/package-consumer/devtools.cpp",
+            "bytes": 1914,
+            "sha256": "7a67eeaf77c2ea65fa6579e0262417d50058dcd216c14ce7073c0f7eb2e7118a"
+          },
+          "copy": {
+            "path": "C:/sr06/out/release-consumer-x64-release/source/public/devtools.cpp",
+            "bytes": 1914,
+            "sha256": "7a67eeaf77c2ea65fa6579e0262417d50058dcd216c14ce7073c0f7eb2e7118a"
+          }
+        }
+      ],
+      "wrapper": {
+        "path": "C:/sr06/out/release-consumer-x64-release/source/CMakeLists.txt",
+        "bytes": 916,
+        "sha256": "a064c4744e33afbd7b8122c26ebf919a1c6b65c6141083cf95b9b620756ce4a1"
+      },
+      "optional": {
+        "path": "C:/sr06/out/release-consumer-x64-release/source/optional.cpp",
+        "bytes": 1074,
+        "sha256": "0dc68c3d21a56d5c6c4768a2d822352486e32e399266ad65f9d78c6d819ff378"
+      }
+    },
+    {
+      "architecture": "x86",
+      "root": "C:/sr06/out/release-consumer-x86-release",
+      "source": "C:\\sr06\\out\\release-consumer-x86-release\\source",
+      "build": "C:\\sr06\\out\\release-consumer-x86-release\\build",
+      "prefix": "C:/sr06/out/release-install-x86-release",
+      "sdkBuild": "C:/sr06/out/release-sdk-x86-release",
+      "publicFiles": [
+        {
+          "source": {
+            "path": "C:/sr06/tests/package-consumer/CMakeLists.txt",
+            "bytes": 766,
+            "sha256": "d236cac30e7aa0c99a0f351685a178e780fc6b2ad7f19543759292f1c2bb11f7"
+          },
+          "copy": {
+            "path": "C:/sr06/out/release-consumer-x86-release/source/public/CMakeLists.txt",
+            "bytes": 766,
+            "sha256": "d236cac30e7aa0c99a0f351685a178e780fc6b2ad7f19543759292f1c2bb11f7"
+          }
+        },
+        {
+          "source": {
+            "path": "C:/sr06/tests/package-consumer/main.cpp",
+            "bytes": 300,
+            "sha256": "ebaf7a7d2aa6367bc1fc37438b36f63a54b6959403516bfc92edd9c00f64d831"
+          },
+          "copy": {
+            "path": "C:/sr06/out/release-consumer-x86-release/source/public/main.cpp",
+            "bytes": 300,
+            "sha256": "ebaf7a7d2aa6367bc1fc37438b36f63a54b6959403516bfc92edd9c00f64d831"
+          }
+        },
+        {
+          "source": {
+            "path": "C:/sr06/tests/package-consumer/devtools.cpp",
+            "bytes": 1914,
+            "sha256": "7a67eeaf77c2ea65fa6579e0262417d50058dcd216c14ce7073c0f7eb2e7118a"
+          },
+          "copy": {
+            "path": "C:/sr06/out/release-consumer-x86-release/source/public/devtools.cpp",
+            "bytes": 1914,
+            "sha256": "7a67eeaf77c2ea65fa6579e0262417d50058dcd216c14ce7073c0f7eb2e7118a"
+          }
+        }
+      ],
+      "wrapper": {
+        "path": "C:/sr06/out/release-consumer-x86-release/source/CMakeLists.txt",
+        "bytes": 916,
+        "sha256": "a064c4744e33afbd7b8122c26ebf919a1c6b65c6141083cf95b9b620756ce4a1"
+      },
+      "optional": {
+        "path": "C:/sr06/out/release-consumer-x86-release/source/optional.cpp",
+        "bytes": 1074,
+        "sha256": "0dc68c3d21a56d5c6c4768a2d822352486e32e399266ad65f9d78c6d819ff378"
+      }
+    }
+  ],
+  "hostRunReview": {
+    "publicMain": "Registration and invalid JSON only. Desktop operations are deferred lambdas. Task service construction allocates an impl; business workers are lazy in start, never called here.",
+    "publicDevtools": "Never-mounted dynamic adapter constructor/destructor plus fake original adapter, default denial and unsupported-operation contracts; no renderer startup/permission/mount.",
+    "optional": "Pure JSON/version/default policy with volatile function-address linking only; no optional function is called.",
+    "runtimeDoctor": "Build/install only; never execute.",
+    "sourceRead": [
+      {
+        "path": "C:/sr06/tests/package-consumer/main.cpp",
+        "bytes": 300,
+        "sha256": "ebaf7a7d2aa6367bc1fc37438b36f63a54b6959403516bfc92edd9c00f64d831"
+      },
+      {
+        "path": "C:/sr06/tests/package-consumer/devtools.cpp",
+        "bytes": 1914,
+        "sha256": "7a67eeaf77c2ea65fa6579e0262417d50058dcd216c14ce7073c0f7eb2e7118a"
+      },
+      {
+        "path": "C:/sr06/sdk/src/json_bridge.cpp",
+        "bytes": 19020,
+        "sha256": "59e0c6e3bde1c9130e7f21f92ea1733a9e6b562085689032e597c3c3c96229e2"
+      },
+      {
+        "path": "C:/sr06/sdk/src/runtime/services/task/task_service.cpp",
+        "bytes": 56348,
+        "sha256": "d97a4ce2bc21c6fe1ee97954a19dc259ae3f9bcafbc90de6074775dc0a7f9769"
+      },
+      {
+        "path": "C:/sr06/sdk/src/host/soui_miniblink_host.cpp",
+        "bytes": 269957,
+        "sha256": "0f4de698a8d78dfb1864c7e58a8903a18f1f090577abd8786080fbf9742217e2"
+      }
+    ]
+  }
+}

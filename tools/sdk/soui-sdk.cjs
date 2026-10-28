@@ -18,7 +18,8 @@ const managedRoots = ['sdk', 'cmake', 'third_party/include', 'third_party/prebui
   'third_party/sources/zlib', 'third_party/licenses', 'third_party/manifests', 'tools/sdk', 'tools/internal'];
 const managedFiles = ['LICENSE.md', 'THIRD_PARTY_NOTICES.md', 'tools/Build.ps1', 'tools/Test-Modern.ps1', 'tools/Test-Auto.ps1',
   'tools/Soui.ps1', 'tools/Doctor.ps1', 'docs/developer-workflow.md',
-  'docs/devtools.md', 'docs/licenses/v0.6.0-redistribution.md', 'docs/adr/0123-public-devtools-candidate.md',
+  'docs/devtools.md', 'docs/licenses/v0.6.0-redistribution.md', 'docs/testing/v0.6.0-long-run-handoff.md',
+  'docs/adr/0123-public-devtools-candidate.md',
   'docs/adr/0128-controlled-cpu-presentation.md',
   'docs/adr/0130-bounded-legacy-source-maps.md',
   'docs/adr/0131-native-view-lifetime-observation.md',

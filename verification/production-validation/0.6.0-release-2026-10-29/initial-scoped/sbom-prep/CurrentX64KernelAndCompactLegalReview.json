@@ -1,0 +1,449 @@
+{
+  "schema": "soui.release.kernel-import-and-compact-legal-readonly-review/v1",
+  "createdUtc": "2026-10-28T16:32:30.501Z",
+  "x64": {
+    "summary": {
+      "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/kernel-prep/revision-3/execution-x64/summary.json",
+      "bytes": 8876,
+      "sha256": "cda6745f15ad20b021f0757d76b2634d52f5f5304830d53569791c6c3493efd0"
+    },
+    "dll": {
+      "path": "C:\\sr06\\out\\release-kernel-x64-2\\miniblink\\bin\\miniblink.dll",
+      "bytes": 39204352,
+      "sha256": "d888637d5dd1476dde16b8c5bb28172d7b8ec3495b69c725fa3572013748139a"
+    },
+    "map": {
+      "path": "C:\\sr06\\out\\release-kernel-x64-2\\miniblink\\bin\\miniblink.map",
+      "bytes": 55750825,
+      "sha256": "8371457a88c231c98df0b8caeacef2cb29e4aa0351ec5334646973b8c5407d18"
+    },
+    "importLibrary": {
+      "path": "C:\\sr06\\out\\release-kernel-x64-2\\miniblink\\bin\\miniblink.lib",
+      "bytes": 4837106,
+      "sha256": "9c0a08762aba7e751866aede65b7ffacd5b9a20f0274c7aad3cae07ab1225381",
+      "dllNames": [
+        "miniblink.dll"
+      ],
+      "shortImportObjects": 9663
+    },
+    "ownedRawVerifyStreamPassed": true,
+    "natural": {
+      "pid": 22812,
+      "creationFileTime": "134376765777739152",
+      "exitCode": 0,
+      "supervisorExitCode": 0,
+      "signal": null,
+      "spawnError": null,
+      "reportError": null,
+      "stopRequested": false,
+      "fallbackUsed": false,
+      "closureConfirmed": true,
+      "passed": true,
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 1427036,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 1152,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      },
+      "report": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\kernel-prep\\revision-3\\execution-x64\\kernel.ndjson",
+      "reportSha256": "e8493910a2b6119a5737c8716ae5fbe12b17e3cca494f34bd583ed1e25c22f56",
+      "runnerSha256": "24794a81659b621a9e488beda2c983be6f4939de59c781bc8062e8fc8ea13478",
+      "executableSha256": "362a356ce7f0940ec74f73a8fc2c990a2cc24a38a11c90bbd8eca947110ad139"
+    },
+    "sourceIdentity": "26c5b73e4915bb4539e87b987cd8e952005f0fe41d987138d8d8e3b13eb25c95",
+    "actualExportCount": 9663,
+    "oldPublicExportCount": 370,
+    "missingOldPublicExports": [],
+    "missingOtherOldExports": [],
+    "libraries": [
+      {
+        "library": "zlib",
+        "origin": {
+          "path": "C:/soui-k64-p8-20261027-2/libraries/lib/zlib.lib",
+          "bytes": 301320,
+          "sha256": "1b2430f6d7bbbc772c3d5ad1c4f6fafda561e69a1a285f7be8dec379a4f777ac"
+        },
+        "recompiled": false,
+        "copied": {
+          "path": "C:/sr06/out/release-kernel-x64-3/libraries/lib/zlib.lib",
+          "bytes": 301320,
+          "sha256": "1b2430f6d7bbbc772c3d5ad1c4f6fafda561e69a1a285f7be8dec379a4f777ac"
+        }
+      },
+      {
+        "library": "libjpeg",
+        "origin": {
+          "path": "C:/soui-k64-p8-20261027-2/libraries/lib/libjpeg.lib",
+          "bytes": 1398786,
+          "sha256": "925485ba2c8aa275323ad1ffa128f5190bd27726c6e3d88ab3c6bbc20aab01b9"
+        },
+        "recompiled": false,
+        "copied": {
+          "path": "C:/sr06/out/release-kernel-x64-3/libraries/lib/libjpeg.lib",
+          "bytes": 1398786,
+          "sha256": "925485ba2c8aa275323ad1ffa128f5190bd27726c6e3d88ab3c6bbc20aab01b9"
+        }
+      },
+      {
+        "library": "libpng",
+        "origin": {
+          "path": "C:/soui-k64-p8-20261027-2/libraries/lib/libpng.lib",
+          "bytes": 983326,
+          "sha256": "19e747186b3b4dff5f33d5d171a57beb792444da53160342994ccedc2269494e"
+        },
+        "recompiled": false,
+        "copied": {
+          "path": "C:/sr06/out/release-kernel-x64-3/libraries/lib/libpng.lib",
+          "bytes": 983326,
+          "sha256": "19e747186b3b4dff5f33d5d171a57beb792444da53160342994ccedc2269494e"
+        }
+      },
+      {
+        "library": "harfbuzz",
+        "origin": {
+          "path": "C:/soui-k64-p8-20261027-2/libraries/lib/harfbuzz.lib",
+          "bytes": 3510236,
+          "sha256": "cdcaac26281577c18271d97e1216fce819d83124c32836e1e571c51cf0e802f0"
+        },
+        "recompiled": false,
+        "copied": {
+          "path": "C:/sr06/out/release-kernel-x64-3/libraries/lib/harfbuzz.lib",
+          "bytes": 3510236,
+          "sha256": "cdcaac26281577c18271d97e1216fce819d83124c32836e1e571c51cf0e802f0"
+        }
+      },
+      {
+        "library": "libxml",
+        "origin": {
+          "path": "C:/soui-k64-p8-20261027-2/libraries/lib/libxml.lib",
+          "bytes": 4737592,
+          "sha256": "62aa44ee9906b63a60dfa271c5c9c5ef057cc33b1b6d84c690c22d1b0669a69b"
+        },
+        "recompiled": false,
+        "copied": {
+          "path": "C:/sr06/out/release-kernel-x64-3/libraries/lib/libxml.lib",
+          "bytes": 4737592,
+          "sha256": "62aa44ee9906b63a60dfa271c5c9c5ef057cc33b1b6d84c690c22d1b0669a69b"
+        }
+      },
+      {
+        "library": "ots",
+        "origin": {
+          "path": "C:/soui-k64-p8-20261027-2/libraries/lib/ots.lib",
+          "bytes": 11131254,
+          "sha256": "503416da30110259890841d69e06c070200755f9b308d658a1f329136c9ec5ab"
+        },
+        "recompiled": false,
+        "copied": {
+          "path": "C:/sr06/out/release-kernel-x64-3/libraries/lib/ots.lib",
+          "bytes": 11131254,
+          "sha256": "503416da30110259890841d69e06c070200755f9b308d658a1f329136c9ec5ab"
+        }
+      },
+      {
+        "library": "openssl",
+        "origin": {
+          "path": "C:/soui-k64-p8-20261027-2/libraries/lib/openssl.lib",
+          "bytes": 18236040,
+          "sha256": "a9a8786ec2e828dda350f0765cde1c5cfa72143555ca87dfc23bef6ec100130d"
+        },
+        "recompiled": false,
+        "copied": {
+          "path": "C:/sr06/out/release-kernel-x64-3/libraries/lib/openssl.lib",
+          "bytes": 18236040,
+          "sha256": "a9a8786ec2e828dda350f0765cde1c5cfa72143555ca87dfc23bef6ec100130d"
+        }
+      },
+      {
+        "library": "libcurl",
+        "origin": {
+          "path": "C:/soui-k64-p8-20261027-2/libraries/lib/libcurl.lib",
+          "bytes": 5088044,
+          "sha256": "62e442ae073b13a13eb4eb06f049675f1884c095f725eb35239e4ae97013897c"
+        },
+        "recompiled": false,
+        "copied": {
+          "path": "C:/sr06/out/release-kernel-x64-3/libraries/lib/libcurl.lib",
+          "bytes": 5088044,
+          "sha256": "62e442ae073b13a13eb4eb06f049675f1884c095f725eb35239e4ae97013897c"
+        }
+      },
+      {
+        "library": "v8_5_7",
+        "origin": {
+          "path": "C:/soui-k64-p8-20261027-2/libraries/lib/v8_5_7.lib",
+          "bytes": 655273272,
+          "sha256": "641354fceb5f5537b1cdbfa7085a6052d7a485cfc0511974483510bd161babe1"
+        },
+        "recompiled": false,
+        "copied": {
+          "path": "C:/sr06/out/release-kernel-x64-3/libraries/lib/v8_5_7.lib",
+          "bytes": 655273272,
+          "sha256": "641354fceb5f5537b1cdbfa7085a6052d7a485cfc0511974483510bd161babe1"
+        }
+      },
+      {
+        "library": "v8_5_7_1",
+        "origin": {
+          "path": "C:/soui-k64-p8-20261027-2/libraries/lib/v8_5_7_1.lib",
+          "bytes": 572055438,
+          "sha256": "fb933ddfbf678dc1865f7c67523cca222f1fc6bab5be409361c5e8827e0a137e"
+        },
+        "recompiled": false,
+        "copied": {
+          "path": "C:/sr06/out/release-kernel-x64-3/libraries/lib/v8_5_7_1.lib",
+          "bytes": 572055438,
+          "sha256": "fb933ddfbf678dc1865f7c67523cca222f1fc6bab5be409361c5e8827e0a137e"
+        }
+      },
+      {
+        "library": "skia",
+        "origin": {
+          "path": "C:/soui-k64-p8-20261027-2/libraries/lib/skia.lib",
+          "bytes": 26517460,
+          "sha256": "a3284b278d2560f6c40a0b8642678712e9ecdc31371f2f3ad586ebe786067907"
+        },
+        "recompiled": false,
+        "copied": {
+          "path": "C:/sr06/out/release-kernel-x64-3/libraries/lib/skia.lib",
+          "bytes": 26517460,
+          "sha256": "a3284b278d2560f6c40a0b8642678712e9ecdc31371f2f3ad586ebe786067907"
+        }
+      }
+    ],
+    "librariesRecompiled": false,
+    "historicalP9MainReused": false,
+    "admittedCurrentRun2Objects": 1903,
+    "admittedObjectChanges": []
+  },
+  "compactLegal": {
+    "assemblyRecord": {
+      "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/frontend-prep/CurrentMaterials-x64-3.json",
+      "bytes": 6620,
+      "sha256": "7231cf0c2ad337c98115a4c11612698ca2f6e9ab976fd29713f1058095423b4f"
+    },
+    "approval": {
+      "path": "C:/sr06/out/devtools-delivery/x64-3/materials/approval.json",
+      "bytes": 41284,
+      "sha256": "ab2b476d3a592c8ad51a04b7591002cc7a0c8169cf5eb3b08c8c7aed2a47d3e6"
+    },
+    "sourceMaterialsComparedRaw": 206,
+    "legalFilesVerified": 208,
+    "mapping": {
+      "path": "C:/sr06/out/devtools-delivery/x64-3/materials/third_party/licenses/compact-paths.json",
+      "bytes": 4075,
+      "sha256": "10048246dba8a787fee13853dcda4a38cc1951a4d48f013e09161e6fbb0b0911"
+    },
+    "relocatedCount": 11,
+    "primaryRelativeLinks": [
+      {
+        "document": "THIRD_PARTY_NOTICES.md",
+        "target": "third_party/licenses/soui/license.txt",
+        "exists": true
+      },
+      {
+        "document": "THIRD_PARTY_NOTICES.md",
+        "target": "third_party/licenses/KERNEL-NOTICES.md",
+        "exists": true
+      },
+      {
+        "document": "THIRD_PARTY_NOTICES.md",
+        "target": "third_party/licenses/npm/README.md",
+        "exists": true
+      },
+      {
+        "document": "THIRD_PARTY_NOTICES.md",
+        "target": "third_party/licenses/npm/babel__parser-7.29.9/",
+        "exists": true
+      },
+      {
+        "document": "THIRD_PARTY_NOTICES.md",
+        "target": "third_party/licenses/kernel-source/README.md",
+        "exists": true
+      },
+      {
+        "document": "THIRD_PARTY_NOTICES.md",
+        "target": "docs/licenses/v0.6.0-redistribution.md",
+        "exists": true
+      },
+      {
+        "document": "third_party/licenses/KERNEL-NOTICES.md",
+        "target": "d52/zlib/LICENSE.txt",
+        "exists": true
+      },
+      {
+        "document": "third_party/licenses/KERNEL-NOTICES.md",
+        "target": "ijg-jpeg-9a-README.txt",
+        "exists": true
+      },
+      {
+        "document": "third_party/licenses/KERNEL-NOTICES.md",
+        "target": "d52/libpng/png.h",
+        "exists": true
+      },
+      {
+        "document": "third_party/licenses/KERNEL-NOTICES.md",
+        "target": "d52/harfbuzz/COPYING.txt",
+        "exists": true
+      },
+      {
+        "document": "third_party/licenses/KERNEL-NOTICES.md",
+        "target": "d52/libxml/Copyright.txt",
+        "exists": true
+      },
+      {
+        "document": "third_party/licenses/KERNEL-NOTICES.md",
+        "target": "ots-5.0.0-LICENSE.txt",
+        "exists": true
+      },
+      {
+        "document": "third_party/licenses/KERNEL-NOTICES.md",
+        "target": "d52/openssl/LICENSE.txt",
+        "exists": true
+      },
+      {
+        "document": "third_party/licenses/KERNEL-NOTICES.md",
+        "target": "libcurl-7.61.1-COPYING.txt",
+        "exists": true
+      },
+      {
+        "document": "third_party/licenses/KERNEL-NOTICES.md",
+        "target": "d52/v8_5_7/LICENSE",
+        "exists": true
+      },
+      {
+        "document": "third_party/licenses/KERNEL-NOTICES.md",
+        "target": "d52/v8_5_7/LICENSE",
+        "exists": true
+      },
+      {
+        "document": "third_party/licenses/KERNEL-NOTICES.md",
+        "target": "d52/skia/LICENSE.txt",
+        "exists": true
+      },
+      {
+        "document": "third_party/licenses/KERNEL-NOTICES.md",
+        "target": "d52/miniblink/LICENSE.txt",
+        "exists": true
+      },
+      {
+        "document": "third_party/licenses/KERNEL-NOTICES.md",
+        "target": "d52/miniblink/wke-license-declaration.h",
+        "exists": true
+      },
+      {
+        "document": "third_party/licenses/KERNEL-NOTICES.md",
+        "target": "d52/v8_5_7/LICENSE.v8",
+        "exists": true
+      },
+      {
+        "document": "third_party/licenses/KERNEL-NOTICES.md",
+        "target": "d52/v8_5_7/LICENSE.fdlibm",
+        "exists": true
+      },
+      {
+        "document": "third_party/licenses/KERNEL-NOTICES.md",
+        "target": "d52/v8_5_7/LICENSE.strongtalk",
+        "exists": true
+      },
+      {
+        "document": "third_party/licenses/KERNEL-NOTICES.md",
+        "target": "d52/v8_5_7/LICENSE.valgrind",
+        "exists": true
+      },
+      {
+        "document": "third_party/licenses/KERNEL-NOTICES.md",
+        "target": "d52/brotli/LICENSE.txt",
+        "exists": true
+      },
+      {
+        "document": "third_party/licenses/KERNEL-NOTICES.md",
+        "target": "d52/node/LICENSE-nodejs.txt",
+        "exists": true
+      },
+      {
+        "document": "third_party/licenses/KERNEL-NOTICES.md",
+        "target": "d52/webkit/LICENSE",
+        "exists": true
+      },
+      {
+        "document": "third_party/licenses/KERNEL-NOTICES.md",
+        "target": "d52/webkit/LICENSE_FOR_ABOUT_CREDITS",
+        "exists": true
+      },
+      {
+        "document": "third_party/licenses/KERNEL-NOTICES.md",
+        "target": "d52/webkit/core/LICENSE-APPLE",
+        "exists": true
+      },
+      {
+        "document": "third_party/licenses/KERNEL-NOTICES.md",
+        "target": "d52/webkit/core/LICENSE-LGPL-2",
+        "exists": true
+      },
+      {
+        "document": "third_party/licenses/KERNEL-NOTICES.md",
+        "target": "d52/webkit/core/LICENSE-LGPL-2.1",
+        "exists": true
+      },
+      {
+        "document": "third_party/licenses/KERNEL-NOTICES.md",
+        "target": "kernel-source/README.md",
+        "exists": true
+      },
+      {
+        "document": "third_party/licenses/kernel-source/README.md",
+        "target": "index.json.txt",
+        "exists": true
+      },
+      {
+        "document": "docs/licenses/v0.6.0-redistribution.md",
+        "target": "../../THIRD_PARTY_NOTICES.md",
+        "exists": true
+      },
+      {
+        "document": "docs/licenses/v0.6.0-redistribution.md",
+        "target": "../../third_party/licenses/KERNEL-NOTICES.md",
+        "exists": true
+      },
+      {
+        "document": "docs/licenses/v0.6.0-redistribution.md",
+        "target": "../../third_party/licenses/d52/webkit/core/LICENSE-LGPL-2",
+        "exists": true
+      },
+      {
+        "document": "docs/licenses/v0.6.0-redistribution.md",
+        "target": "../../third_party/licenses/d52/webkit/core/LICENSE-LGPL-2.1",
+        "exists": true
+      },
+      {
+        "document": "docs/licenses/v0.6.0-redistribution.md",
+        "target": "../../third_party/licenses/d52/openssl/LICENSE.txt",
+        "exists": true
+      }
+    ],
+    "frontendFilesVerified": 650,
+    "frontendManifestSha256": "0ad753089316c0c0b910afbe95f8706e21d2f5a9436c42d6649c8b387d4bd8ed",
+    "historicalIndexRawPreserved": true,
+    "technicalPairApprovalOnly": true,
+    "nativeGrantCreated": false,
+    "externalLegalOpinionCreated": false,
+    "publicComposeOrPrepareRepeated": false
+  },
+  "x86": "PENDING_FRESH_SOURCE2_BUILD",
+  "errors": [],
+  "result": "PASS_READONLY_X64_AND_COMPACT_LEGAL_SCOPE",
+  "sourceEdited": false,
+  "indexEdited": false,
+  "dllLoaded": false,
+  "productExecuted": false,
+  "releaseReady": false
+}

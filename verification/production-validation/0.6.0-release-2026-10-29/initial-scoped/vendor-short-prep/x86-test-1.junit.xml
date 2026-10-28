@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="(empty)"
+	tests="5"
+	failures="0"
+	disabled="0"
+	skipped="0"
+	hostname=""
+	time="0"
+	timestamp="2026-10-28T23:32:19"
+	>
+	<testcase name="sdk.native.local-resource-state" classname="sdk.native.local-resource-state" time="0.226937" status="run">
+		<properties/>
+		<system-out>native local resource state behavior passed (not browser/runtime qualification)
+</system-out>
+	</testcase>
+	<testcase name="sdk.native.devtools-keyboard-snapshot" classname="sdk.native.devtools-keyboard-snapshot" time="0.0960285" status="run">
+		<properties/>
+		<system-out>Controlled Inspector keyboard record checks passed.
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.lifetime.ctor_shell-view-success" classname="kernel.native.lifetime.ctor_shell-view-success" time="0.0937189" status="run">
+		<properties/>
+		<system-out>{"case":"view-success","sourceBodyPassed":true,"injected":0,"partialCloseCalled":false,"fullEngineQualified":false}
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.lifetime.ctor_shell-view-handler-rollback" classname="kernel.native.lifetime.ctor_shell-view-handler-rollback" time="0.0167508" status="run">
+		<properties/>
+		<system-out>{"case":"view-handler-rollback","sourceBodyPassed":true,"injected":1,"partialCloseCalled":false,"fullEngineQualified":false}
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.request-close.native-local-owner-fence" classname="kernel.native.request-close.native-local-owner-fence" time="0.110593" status="run">
+		<properties/>
+		<system-out>{"case":"native-local-owner-fence","localOwnerRetains":1,"localOwnerReleases":1,"localOwnerDestroys":1,"reentrantDrainFenced":true,"stickyFailurePreserved":true,"realStateImplementation":true,"realHmenuUsed":false,"rendererExecuted":false,"fullQualification":false}
+</system-out>
+	</testcase>
+</testsuite>

@@ -1,0 +1,723 @@
+{
+  "root": "C:/sr06",
+  "startedAt": "2026-10-28T14:57:40.297Z",
+  "node": {
+    "path": "C:/nvm4w/nodejs/node.exe",
+    "bytes": 91380224,
+    "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+  },
+  "cmake": {
+    "path": "C:/Program Files/CMake/bin/cmake.exe",
+    "bytes": 12905544,
+    "sha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379"
+  },
+  "ctest": {
+    "path": "C:/Program Files/CMake/bin/ctest.exe",
+    "bytes": 13829192,
+    "sha256": "0befb42121d9baf862ae21165788c08d45ca06c6ce12b9e68101a31542dd572c"
+  },
+  "webview2": {
+    "package": {
+      "path": "C:/sr06/out/webview2-deps/1.0.4258.31/microsoft.web.webview2.1.0.4258.31.nupkg",
+      "bytes": 9801922,
+      "sha256": "56f7f4b8bf9aee4b8efefbbdd4f67d5f74ebd1b100ed0806da71bf76af481aa9"
+    },
+    "files": [
+      {
+        "path": "C:/sr06/out/webview2-deps/1.0.4258.31/package/LICENSE.txt",
+        "bytes": 1487,
+        "sha256": "0af8f1b807512aae39c2ac1aa4d0cae65cabecb6fd554b8439a5162a0d6eca55"
+      },
+      {
+        "path": "C:/sr06/out/webview2-deps/1.0.4258.31/package/NOTICE.txt",
+        "bytes": 3894,
+        "sha256": "106423785c5b7eba0a8e61d1837f2132e9c828e20ad530f565d981c1df60dd90"
+      },
+      {
+        "path": "C:/sr06/out/webview2-deps/1.0.4258.31/package/build/native/include/WebView2.h",
+        "bytes": 2939599,
+        "sha256": "dff1e3181ec7ec203a34ef6efa966590e0ef0ba1a5c3fe3b69da6508c2f8a02e"
+      },
+      {
+        "path": "C:/sr06/out/webview2-deps/1.0.4258.31/package/build/native/include/WebView2EnvironmentOptions.h",
+        "bytes": 19500,
+        "sha256": "73566559e49911301b9c34db59b547343c81ab06ac6428a39ec0204956b37118"
+      },
+      {
+        "path": "C:/sr06/out/webview2-deps/1.0.4258.31/package/build/native/x86/WebView2LoaderStatic.lib",
+        "bytes": 11428262,
+        "sha256": "bd66d0b41302e6d56938e61ded16e32bc66318fd54324b0dae419aeeccfb9b96"
+      },
+      {
+        "path": "C:/sr06/out/webview2-deps/1.0.4258.31/package/build/native/x64/WebView2LoaderStatic.lib",
+        "bytes": 11463528,
+        "sha256": "e66284970876a616c82e7dcda75a17fd46d04827f9de81d4299b8862d34d25d6"
+      }
+    ]
+  },
+  "allowedConcurrentKernel": "Root explicitly authorizes one disjoint SDK /m1 job alongside the existing x64 kernel. No global empty-compiler claim.",
+  "sourceInputs": {
+    "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/sdk-build-prep/SourceInputs.before.json",
+    "bytes": 59722,
+    "sha256": "6f2395645cdb0654d4c1b60bc3cec2079b75a8fdfb045198047ecf53727676ba"
+  },
+  "cases": [
+    {
+      "id": "x86-debug",
+      "platform": "Win32",
+      "config": "Debug",
+      "tests": true,
+      "build": "C:/sr06/out/release-sdk-x86-debug",
+      "targets": [
+        "soui_sdk",
+        "soui_webview2",
+        "soui_auto_host",
+        "soui_devtools_host_tests",
+        "soui_local_resource_snapshot_tests",
+        "soui_local_resource_host_tests",
+        "soui_miniblink_unmount_tests",
+        "soui_webview2_native_observation_tests",
+        "soui_devtools_frontend_cleanup_tests",
+        "soui_source_kernel_api_tests",
+        "soui_view_observation_tests"
+      ],
+      "compiler": {
+        "path": "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x86/cl.exe",
+        "bytes": 678000,
+        "sha256": "8de3c1e7af40f4a6c83188ef7cca6270223a00652e8c703022694f64add54a14"
+      },
+      "compilerDeclaration": {
+        "path": "C:/sr06/out/release-sdk-x86-debug/CMakeFiles/4.2.3/CMakeCXXCompiler.cmake",
+        "bytes": 6508,
+        "sha256": "95f10a437e276655abad1f3627373bfec2ab7c70169b0c7b9e1d57bfce28fe1d"
+      },
+      "cache": {
+        "path": "C:/sr06/out/release-sdk-x86-debug/CMakeCache.txt",
+        "bytes": 16977,
+        "sha256": "49503c3ca3bdb60dc972877e86b13e93a28b3593e53862a640962d1d11475021"
+      },
+      "generatedPreload": {
+        "path": "C:/sr06/out/release-sdk-x86-debug/sdk/renderers/webview2/webview2_preload.h",
+        "bytes": 4612,
+        "sha256": "3ef70f5f2ad8afb1b81ff90c52268adca08e46975bacde9e8883cc446e9e8e38"
+      },
+      "libraries": [
+        {
+          "path": "C:/sr06/out/release-sdk-x86-debug/sdk/Debug/soui_sdk.lib",
+          "bytes": 69040188,
+          "sha256": "537611013311e9a1f7a5a12de0e07283e1f571e30c80eddb308d6cad437ba5e7"
+        },
+        {
+          "path": "C:/sr06/out/release-sdk-x86-debug/sdk/renderers/webview2/Debug/soui_webview2.lib",
+          "bytes": 9523202,
+          "sha256": "7cded7679a19d5fa5425bfdbf67590376088a657c2970a3e9c965b14880ea9f2"
+        },
+        {
+          "path": "C:/sr06/out/release-sdk-x86-debug/sdk/renderers/webview2/Debug/soui_auto_host.lib",
+          "bytes": 1288664,
+          "sha256": "7e1c9cfadb0ad379067b7f906ce3d24ad98bb1a3161843d36a97d5b8d93d9c80"
+        }
+      ],
+      "testExecutables": [
+        {
+          "path": "C:/sr06/out/release-sdk-x86-debug/tests/native/Debug/soui_devtools_host_tests.exe",
+          "bytes": 2329088,
+          "sha256": "9a43dffc89016eb2affe1cfde48fcdada9c0a9eebad75a72df24a6f3b6be0023"
+        },
+        {
+          "path": "C:/sr06/out/release-sdk-x86-debug/tests/native/Debug/soui_local_resource_snapshot_tests.exe",
+          "bytes": 541184,
+          "sha256": "e8620eff1c3e98acfc70e243f2a8c7539fe00d87b61a59178b972c8509a487ef"
+        },
+        {
+          "path": "C:/sr06/out/release-sdk-x86-debug/tests/native/Debug/soui_local_resource_host_tests.exe",
+          "bytes": 561152,
+          "sha256": "49ccf39464c498c5228ccfb31fc81808b1533032a2febb435c93c99c5df091e2"
+        },
+        {
+          "path": "C:/sr06/out/release-sdk-x86-debug/tests/native/Debug/soui_miniblink_unmount_tests.exe",
+          "bytes": 2422784,
+          "sha256": "5200cba882e978d34e6c2af2ec8891d5d6f9bfad1f1f8f9e0b610b3545222601"
+        },
+        {
+          "path": "C:/sr06/out/release-sdk-x86-debug/tests/native/Debug/soui_webview2_native_observation_tests.exe",
+          "bytes": 65536,
+          "sha256": "4e12e0efea5f18df0fe22825d7e44c12235892701baf96dd95bb6de94754704e"
+        },
+        {
+          "path": "C:/sr06/out/release-sdk-x86-debug/tests/native/Debug/soui_devtools_frontend_cleanup_tests.exe",
+          "bytes": 64512,
+          "sha256": "51f9d6bdf724d22cc005fc31eecbd48b3ed306f8e48c5c7e7589ef55fa939b48"
+        },
+        {
+          "path": "C:/sr06/out/release-sdk-x86-debug/tests/native/Debug/soui_source_kernel_api_tests.exe",
+          "bytes": 144384,
+          "sha256": "874d731f3304f23d01d2d99fd66fc5b35b94f2b5a7c0e58150c835e8440730e2"
+        },
+        {
+          "path": "C:/sr06/out/release-sdk-x86-debug/tests/native/Debug/soui_view_observation_tests.exe",
+          "bytes": 67072,
+          "sha256": "401513bc174f878a34963285f6cc497efb0322547e90cec231360bff4bded162"
+        }
+      ],
+      "lastTest": {
+        "path": "C:/sr06/out/release-sdk-x86-debug/Testing/Temporary/LastTest.log",
+        "bytes": 9373,
+        "sha256": "fc12e99f4338a97e56baa9718f8bf12a4dddc1efa89568244a965c2c0c52716c"
+      },
+      "finishedAt": "2026-10-28T14:59:10.491Z",
+      "compilerInventoryAfter": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/sdk-build-prep/x86-debug-Compilers.after.json",
+        "bytes": 11058,
+        "sha256": "6cb42f4dd8f52fe12539779bd76d0877dcd26b55687a36f17ab742eb78eda040"
+      }
+    },
+    {
+      "id": "x86-release",
+      "platform": "Win32",
+      "config": "Release",
+      "tests": true,
+      "build": "C:/sr06/out/release-sdk-x86-release",
+      "targets": [
+        "soui_sdk",
+        "soui_webview2",
+        "soui_auto_host",
+        "soui_devtools_host_tests",
+        "soui_local_resource_snapshot_tests",
+        "soui_local_resource_host_tests",
+        "soui_miniblink_unmount_tests",
+        "soui_webview2_native_observation_tests",
+        "soui_devtools_frontend_cleanup_tests",
+        "soui_source_kernel_api_tests",
+        "soui_view_observation_tests"
+      ],
+      "compiler": {
+        "path": "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x86/cl.exe",
+        "bytes": 678000,
+        "sha256": "8de3c1e7af40f4a6c83188ef7cca6270223a00652e8c703022694f64add54a14"
+      },
+      "compilerDeclaration": {
+        "path": "C:/sr06/out/release-sdk-x86-release/CMakeFiles/4.2.3/CMakeCXXCompiler.cmake",
+        "bytes": 6508,
+        "sha256": "95f10a437e276655abad1f3627373bfec2ab7c70169b0c7b9e1d57bfce28fe1d"
+      },
+      "cache": {
+        "path": "C:/sr06/out/release-sdk-x86-release/CMakeCache.txt",
+        "bytes": 16987,
+        "sha256": "670b43e2c5535be420d59d43ebb8f94693627bd3b3ab130945a7f1f9a15217aa"
+      },
+      "generatedPreload": {
+        "path": "C:/sr06/out/release-sdk-x86-release/sdk/renderers/webview2/webview2_preload.h",
+        "bytes": 4612,
+        "sha256": "3ef70f5f2ad8afb1b81ff90c52268adca08e46975bacde9e8883cc446e9e8e38"
+      },
+      "libraries": [
+        {
+          "path": "C:/sr06/out/release-sdk-x86-release/sdk/Release/soui_sdk.lib",
+          "bytes": 37409002,
+          "sha256": "d4ec7df4957d4110f0ffbd339ff840770e81860faceda18be09e19fc099afafd"
+        },
+        {
+          "path": "C:/sr06/out/release-sdk-x86-release/sdk/renderers/webview2/Release/soui_webview2.lib",
+          "bytes": 5981952,
+          "sha256": "a141bd6f1ed089e039622b0795c43e1af06f7598383c1605a8211f618cf0e5e4"
+        },
+        {
+          "path": "C:/sr06/out/release-sdk-x86-release/sdk/renderers/webview2/Release/soui_auto_host.lib",
+          "bytes": 638128,
+          "sha256": "297a8de92ed44ee0be47f8481c2634ffd02304fd0b33a9872a26c9f98f20d13f"
+        }
+      ],
+      "testExecutables": [
+        {
+          "path": "C:/sr06/out/release-sdk-x86-release/tests/native/Release/soui_devtools_host_tests.exe",
+          "bytes": 198144,
+          "sha256": "222de73bbe81d40be33265313f0eaa029a2b8670bd8e485ba38dcd1beefe4693"
+        },
+        {
+          "path": "C:/sr06/out/release-sdk-x86-release/tests/native/Release/soui_local_resource_snapshot_tests.exe",
+          "bytes": 126464,
+          "sha256": "7777ff099e85fbcce7298a6d25bfd9c15138e432733aca56b1da52963d4b8c66"
+        },
+        {
+          "path": "C:/sr06/out/release-sdk-x86-release/tests/native/Release/soui_local_resource_host_tests.exe",
+          "bytes": 142336,
+          "sha256": "d0debe04572b610fd4bbdf358e04b46fd6e364853a378e00ab836f1edc55e189"
+        },
+        {
+          "path": "C:/sr06/out/release-sdk-x86-release/tests/native/Release/soui_miniblink_unmount_tests.exe",
+          "bytes": 691712,
+          "sha256": "83cb4dc002455405818f48641960bc640c35d0e9c85de920262ce39e9e68319f"
+        },
+        {
+          "path": "C:/sr06/out/release-sdk-x86-release/tests/native/Release/soui_webview2_native_observation_tests.exe",
+          "bytes": 22528,
+          "sha256": "188b4cf67ef090a087bd8ad16f93fbe96380a75a7626ce81093c7d60ecf0a11f"
+        },
+        {
+          "path": "C:/sr06/out/release-sdk-x86-release/tests/native/Release/soui_devtools_frontend_cleanup_tests.exe",
+          "bytes": 25600,
+          "sha256": "c09903e04cead8c5e7e5dc1ec2bda6387ebad36e14e4e0eca30a27fcad1a08fe"
+        },
+        {
+          "path": "C:/sr06/out/release-sdk-x86-release/tests/native/Release/soui_source_kernel_api_tests.exe",
+          "bytes": 33280,
+          "sha256": "6f472a6be0dd375d71677b5c4cfb84e3f247d2082b51a538f0308c823a1237e5"
+        },
+        {
+          "path": "C:/sr06/out/release-sdk-x86-release/tests/native/Release/soui_view_observation_tests.exe",
+          "bytes": 22016,
+          "sha256": "cde896474e32dabbec8f57c99ac4a0182a4d00dc340fcbcf7c7ef3df1d939fc2"
+        }
+      ],
+      "lastTest": {
+        "path": "C:/sr06/out/release-sdk-x86-release/Testing/Temporary/LastTest.log",
+        "bytes": 9439,
+        "sha256": "cffedf5e4c9fe467c681a0fdaa956dcdf1ebf68ab00aebd1928e065cbb33b597"
+      },
+      "finishedAt": "2026-10-28T15:00:47.055Z",
+      "compilerInventoryAfter": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/sdk-build-prep/x86-release-Compilers.after.json",
+        "bytes": 12852,
+        "sha256": "aeebde889ae16d290e564f45f7969989a78588418e2bf512ab8bc619ff7f3d08"
+      }
+    },
+    {
+      "id": "x64-debug",
+      "platform": "x64",
+      "config": "Debug",
+      "tests": false,
+      "build": "C:/sr06/out/release-sdk-x64-debug",
+      "targets": [
+        "soui_sdk",
+        "soui_webview2",
+        "soui_auto_host"
+      ],
+      "compiler": {
+        "path": "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe",
+        "bytes": 677968,
+        "sha256": "a80f5e7a24049a8f9a8931f83fc3d13ca417ad901e074c50cca71fcb12ba10be"
+      },
+      "compilerDeclaration": {
+        "path": "C:/sr06/out/release-sdk-x64-debug/CMakeFiles/4.2.3/CMakeCXXCompiler.cmake",
+        "bytes": 6508,
+        "sha256": "1b080885144120f43636716a60139852ad7dd840aad639de4664d4253f8a63f8"
+      },
+      "cache": {
+        "path": "C:/sr06/out/release-sdk-x64-debug/CMakeCache.txt",
+        "bytes": 16969,
+        "sha256": "be71122470ed71d330ab405513e1a7b861acd6ea14b4f8d1352d4de9f58ef8b8"
+      },
+      "generatedPreload": {
+        "path": "C:/sr06/out/release-sdk-x64-debug/sdk/renderers/webview2/webview2_preload.h",
+        "bytes": 4612,
+        "sha256": "3ef70f5f2ad8afb1b81ff90c52268adca08e46975bacde9e8883cc446e9e8e38"
+      },
+      "libraries": [
+        {
+          "path": "C:/sr06/out/release-sdk-x64-debug/sdk/Debug/soui_sdk.lib",
+          "bytes": 108552408,
+          "sha256": "22ba9d43e054325c7ceec21400d06fb3bae4d181c2df02bbb028c7f182c58f71"
+        },
+        {
+          "path": "C:/sr06/out/release-sdk-x64-debug/sdk/renderers/webview2/Debug/soui_webview2.lib",
+          "bytes": 13930998,
+          "sha256": "44abe2ae026d44d9710ecb712e4c44b953ed8f4c90c4f1a7bd580f8f8fe78e25"
+        },
+        {
+          "path": "C:/sr06/out/release-sdk-x64-debug/sdk/renderers/webview2/Debug/soui_auto_host.lib",
+          "bytes": 1721638,
+          "sha256": "578474498f2ca42bcad677937ab74b7b795ee5fc6a142e1a71c7fe7adc0e66ea"
+        }
+      ],
+      "finishedAt": "2026-10-28T15:01:36.100Z",
+      "compilerInventoryAfter": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/sdk-build-prep/x64-debug-Compilers.after.json",
+        "bytes": 9762,
+        "sha256": "b0a5138a223b354ac895ad3c9fcfba407936679b33e25ac8e055fea666268c57"
+      }
+    }
+  ],
+  "phases": [
+    {
+      "name": "x86-debug-configure",
+      "executable": "C:/Program Files/CMake/bin/cmake.exe",
+      "args": [
+        "-S",
+        "C:/sr06",
+        "-B",
+        "C:/sr06/out/release-sdk-x86-debug",
+        "-G",
+        "Visual Studio 17 2022",
+        "-A",
+        "Win32,version=10.0.19041.0",
+        "-T",
+        "v143,host=x64,version=14.44.35207",
+        "-DSOUI_BUILD_TEMPLATE=OFF",
+        "-DSOUI_BUILD_DEMOS=OFF",
+        "-DSOUI_BUILD_TESTS=ON",
+        "-DSOUI_BUILD_VENDOR_TESTS=OFF",
+        "-DSOUI_BUILD_WEBVIEW2=ON",
+        "-DSOUI_BUILD_AUTO_HOST=ON",
+        "-DSOUI_BUILD_UIA=OFF",
+        "-DSOUI_DEVTOOLS_PACKAGE_ENABLED=OFF",
+        "-DSOUI_WEBVIEW2_SDK_ROOT=C:/sr06/out/webview2-deps/1.0.4258.31/package"
+      ],
+      "cwd": "C:/sr06",
+      "startedAt": "2026-10-28T14:57:42.307Z",
+      "environment": {
+        "MSBUILDDISABLENODEREUSE": "1"
+      },
+      "stdout": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\sdk-build-prep\\x86-debug-configure.stdout.log",
+      "stderr": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\sdk-build-prep\\x86-debug-configure.stderr.log",
+      "pid": 88328,
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "finishedAt": "2026-10-28T14:57:57.450Z",
+      "elapsedMs": 15143,
+      "stdoutPin": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/sdk-build-prep/x86-debug-configure.stdout.log",
+        "bytes": 1027,
+        "sha256": "138cf20f2387b1ffb3827af65344ae247ffa42b89f5225551e06cdbbae6f2736"
+      },
+      "stderrPin": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/sdk-build-prep/x86-debug-configure.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "x86-debug-build",
+      "executable": "C:/Program Files/CMake/bin/cmake.exe",
+      "args": [
+        "--build",
+        "C:/sr06/out/release-sdk-x86-debug",
+        "--config",
+        "Debug",
+        "--target",
+        "soui_sdk",
+        "soui_webview2",
+        "soui_auto_host",
+        "soui_devtools_host_tests",
+        "soui_local_resource_snapshot_tests",
+        "soui_local_resource_host_tests",
+        "soui_miniblink_unmount_tests",
+        "soui_webview2_native_observation_tests",
+        "soui_devtools_frontend_cleanup_tests",
+        "soui_source_kernel_api_tests",
+        "soui_view_observation_tests",
+        "--parallel",
+        "1",
+        "--",
+        "/m:1",
+        "/nr:false"
+      ],
+      "cwd": "C:/sr06",
+      "startedAt": "2026-10-28T14:57:57.453Z",
+      "environment": {
+        "MSBUILDDISABLENODEREUSE": "1"
+      },
+      "stdout": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\sdk-build-prep\\x86-debug-build.stdout.log",
+      "stderr": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\sdk-build-prep\\x86-debug-build.stderr.log",
+      "pid": 99312,
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "finishedAt": "2026-10-28T14:59:03.241Z",
+      "elapsedMs": 65788,
+      "stdoutPin": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/sdk-build-prep/x86-debug-build.stdout.log",
+        "bytes": 11659,
+        "sha256": "a22c762767fddc9ba511599534b615d6e33d28aaafaae77e08594a6676adfbe0"
+      },
+      "stderrPin": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/sdk-build-prep/x86-debug-build.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "x86-debug-ctest",
+      "executable": "C:/Program Files/CMake/bin/ctest.exe",
+      "args": [
+        "--test-dir",
+        "C:/sr06/out/release-sdk-x86-debug",
+        "-C",
+        "Debug",
+        "-R",
+        "^(sdk\\.native\\.devtools-facade-contract|sdk\\.native\\.local-resource-snapshot|sdk\\.native\\.local-resource-host|sdk\\.native\\.miniblink-unmount-continuation|sdk\\.native\\.miniblink-unmount-unused-transfer|sdk\\.native\\.miniblink-reload-continuation|sdk\\.native\\.webview2-native-observation|sdk\\.native\\.devtools-early-retirement|sdk\\.native\\.devtools-frontend-cleanup|sdk\\.native\\.source-kernel-api|sdk\\.native\\.view-observation-contract)$",
+        "--output-on-failure",
+        "--no-tests=error",
+        "-j",
+        "1"
+      ],
+      "cwd": "C:/sr06",
+      "startedAt": "2026-10-28T14:59:03.296Z",
+      "environment": {
+        "MSBUILDDISABLENODEREUSE": "1"
+      },
+      "stdout": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\sdk-build-prep\\x86-debug-ctest.stdout.log",
+      "stderr": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\sdk-build-prep\\x86-debug-ctest.stderr.log",
+      "pid": 94768,
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "finishedAt": "2026-10-28T14:59:10.383Z",
+      "elapsedMs": 7087,
+      "stdoutPin": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/sdk-build-prep/x86-debug-ctest.stdout.log",
+        "bytes": 1660,
+        "sha256": "169799cda5210180b88fc3da7f07cf06b6874b3d69234fb72f1c1b85bba84b78"
+      },
+      "stderrPin": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/sdk-build-prep/x86-debug-ctest.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "x86-release-configure",
+      "executable": "C:/Program Files/CMake/bin/cmake.exe",
+      "args": [
+        "-S",
+        "C:/sr06",
+        "-B",
+        "C:/sr06/out/release-sdk-x86-release",
+        "-G",
+        "Visual Studio 17 2022",
+        "-A",
+        "Win32,version=10.0.19041.0",
+        "-T",
+        "v143,host=x64,version=14.44.35207",
+        "-DSOUI_BUILD_TEMPLATE=OFF",
+        "-DSOUI_BUILD_DEMOS=OFF",
+        "-DSOUI_BUILD_TESTS=ON",
+        "-DSOUI_BUILD_VENDOR_TESTS=OFF",
+        "-DSOUI_BUILD_WEBVIEW2=ON",
+        "-DSOUI_BUILD_AUTO_HOST=ON",
+        "-DSOUI_BUILD_UIA=OFF",
+        "-DSOUI_DEVTOOLS_PACKAGE_ENABLED=OFF",
+        "-DSOUI_WEBVIEW2_SDK_ROOT=C:/sr06/out/webview2-deps/1.0.4258.31/package"
+      ],
+      "cwd": "C:/sr06",
+      "startedAt": "2026-10-28T14:59:12.693Z",
+      "environment": {
+        "MSBUILDDISABLENODEREUSE": "1"
+      },
+      "stdout": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\sdk-build-prep\\x86-release-configure.stdout.log",
+      "stderr": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\sdk-build-prep\\x86-release-configure.stderr.log",
+      "pid": 97980,
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "finishedAt": "2026-10-28T14:59:25.774Z",
+      "elapsedMs": 13081,
+      "stdoutPin": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/sdk-build-prep/x86-release-configure.stdout.log",
+        "bytes": 1029,
+        "sha256": "7159186f26844bc970083306d70478f52d883a0c3319371d19ae0eb65ed57787"
+      },
+      "stderrPin": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/sdk-build-prep/x86-release-configure.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "x86-release-build",
+      "executable": "C:/Program Files/CMake/bin/cmake.exe",
+      "args": [
+        "--build",
+        "C:/sr06/out/release-sdk-x86-release",
+        "--config",
+        "Release",
+        "--target",
+        "soui_sdk",
+        "soui_webview2",
+        "soui_auto_host",
+        "soui_devtools_host_tests",
+        "soui_local_resource_snapshot_tests",
+        "soui_local_resource_host_tests",
+        "soui_miniblink_unmount_tests",
+        "soui_webview2_native_observation_tests",
+        "soui_devtools_frontend_cleanup_tests",
+        "soui_source_kernel_api_tests",
+        "soui_view_observation_tests",
+        "--parallel",
+        "1",
+        "--",
+        "/m:1",
+        "/nr:false"
+      ],
+      "cwd": "C:/sr06",
+      "startedAt": "2026-10-28T14:59:25.777Z",
+      "environment": {
+        "MSBUILDDISABLENODEREUSE": "1"
+      },
+      "stdout": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\sdk-build-prep\\x86-release-build.stdout.log",
+      "stderr": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\sdk-build-prep\\x86-release-build.stderr.log",
+      "pid": 91240,
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "finishedAt": "2026-10-28T15:00:40.093Z",
+      "elapsedMs": 74316,
+      "stdoutPin": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/sdk-build-prep/x86-release-build.stdout.log",
+        "bytes": 11789,
+        "sha256": "3f2a9f7e7f80e49e419c5ca9eebf9aaf2bc4458e9a4a653902038e893dc9a20a"
+      },
+      "stderrPin": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/sdk-build-prep/x86-release-build.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "x86-release-ctest",
+      "executable": "C:/Program Files/CMake/bin/ctest.exe",
+      "args": [
+        "--test-dir",
+        "C:/sr06/out/release-sdk-x86-release",
+        "-C",
+        "Release",
+        "-R",
+        "^(sdk\\.native\\.devtools-facade-contract|sdk\\.native\\.local-resource-snapshot|sdk\\.native\\.local-resource-host|sdk\\.native\\.miniblink-unmount-continuation|sdk\\.native\\.miniblink-unmount-unused-transfer|sdk\\.native\\.miniblink-reload-continuation|sdk\\.native\\.webview2-native-observation|sdk\\.native\\.devtools-early-retirement|sdk\\.native\\.devtools-frontend-cleanup|sdk\\.native\\.source-kernel-api|sdk\\.native\\.view-observation-contract)$",
+        "--output-on-failure",
+        "--no-tests=error",
+        "-j",
+        "1"
+      ],
+      "cwd": "C:/sr06",
+      "startedAt": "2026-10-28T15:00:40.125Z",
+      "environment": {
+        "MSBUILDDISABLENODEREUSE": "1"
+      },
+      "stdout": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\sdk-build-prep\\x86-release-ctest.stdout.log",
+      "stderr": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\sdk-build-prep\\x86-release-ctest.stderr.log",
+      "pid": 95996,
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "finishedAt": "2026-10-28T15:00:46.940Z",
+      "elapsedMs": 6815,
+      "stdoutPin": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/sdk-build-prep/x86-release-ctest.stdout.log",
+        "bytes": 1662,
+        "sha256": "1f29f275a31aab51812639a6a1b2ee1fa5b460014fdb5a556d005786c4c81d3a"
+      },
+      "stderrPin": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/sdk-build-prep/x86-release-ctest.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "x64-debug-configure",
+      "executable": "C:/Program Files/CMake/bin/cmake.exe",
+      "args": [
+        "-S",
+        "C:/sr06",
+        "-B",
+        "C:/sr06/out/release-sdk-x64-debug",
+        "-G",
+        "Visual Studio 17 2022",
+        "-A",
+        "x64,version=10.0.19041.0",
+        "-T",
+        "v143,host=x64,version=14.44.35207",
+        "-DSOUI_BUILD_TEMPLATE=OFF",
+        "-DSOUI_BUILD_DEMOS=OFF",
+        "-DSOUI_BUILD_TESTS=ON",
+        "-DSOUI_BUILD_VENDOR_TESTS=OFF",
+        "-DSOUI_BUILD_WEBVIEW2=ON",
+        "-DSOUI_BUILD_AUTO_HOST=ON",
+        "-DSOUI_BUILD_UIA=OFF",
+        "-DSOUI_DEVTOOLS_PACKAGE_ENABLED=OFF",
+        "-DSOUI_WEBVIEW2_SDK_ROOT=C:/sr06/out/webview2-deps/1.0.4258.31/package"
+      ],
+      "cwd": "C:/sr06",
+      "startedAt": "2026-10-28T15:00:49.192Z",
+      "environment": {
+        "MSBUILDDISABLENODEREUSE": "1"
+      },
+      "stdout": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\sdk-build-prep\\x64-debug-configure.stdout.log",
+      "stderr": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\sdk-build-prep\\x64-debug-configure.stderr.log",
+      "pid": 63040,
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "finishedAt": "2026-10-28T15:01:02.421Z",
+      "elapsedMs": 13229,
+      "stdoutPin": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/sdk-build-prep/x64-debug-configure.stdout.log",
+        "bytes": 1027,
+        "sha256": "4bb47ecf93536e7ba5c9933067beb3fc8af479b34afc8a309907777c5c0066d4"
+      },
+      "stderrPin": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/sdk-build-prep/x64-debug-configure.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "x64-debug-build",
+      "executable": "C:/Program Files/CMake/bin/cmake.exe",
+      "args": [
+        "--build",
+        "C:/sr06/out/release-sdk-x64-debug",
+        "--config",
+        "Debug",
+        "--target",
+        "soui_sdk",
+        "soui_webview2",
+        "soui_auto_host",
+        "--parallel",
+        "1",
+        "--",
+        "/m:1",
+        "/nr:false"
+      ],
+      "cwd": "C:/sr06",
+      "startedAt": "2026-10-28T15:01:02.425Z",
+      "environment": {
+        "MSBUILDDISABLENODEREUSE": "1"
+      },
+      "stdout": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\sdk-build-prep\\x64-debug-build.stdout.log",
+      "stderr": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\sdk-build-prep\\x64-debug-build.stderr.log",
+      "pid": 49192,
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "finishedAt": "2026-10-28T15:01:35.926Z",
+      "elapsedMs": 33501,
+      "stdoutPin": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/sdk-build-prep/x64-debug-build.stdout.log",
+        "bytes": 8229,
+        "sha256": "4ff0db41e5d6056702b8b56e08d8f81b9ecf35967d1d70d5820be7d56a9e89bb"
+      },
+      "stderrPin": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/sdk-build-prep/x64-debug-build.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "result": "PASS_SCOPED_SDK_BUILDS_AND_X86_PURE_TESTS",
+  "productExecuted": false,
+  "sourceOrToolsEdited": false,
+  "nativeFinalPayloadClaimed": false,
+  "officialBuildEvidenceClaimed": false,
+  "compilerInventoryBefore": {
+    "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/sdk-build-prep/Compilers.before.json",
+    "bytes": 8459,
+    "sha256": "ac71aaf245bb36d7b59f0b0c88799346fcfd7963549aefb68d244e8638bab46d"
+  },
+  "compilerInventoryFinal": {
+    "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/sdk-build-prep/Compilers.final.json",
+    "bytes": 13446,
+    "sha256": "e39405cdec735664288c9059d7c7fbdd53c60fdf0d76d7efecf6f34e27ffffc9"
+  },
+  "finishedAt": "2026-10-28T15:01:39.681Z"
+}

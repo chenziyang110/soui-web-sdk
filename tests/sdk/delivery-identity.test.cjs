@@ -335,6 +335,35 @@ test('deployment replaces stale Web assets and preserves app data outside resour
   assert.notEqual(identity.source(root).sha256, before);
 });
 
+test('deployment preserves referenced redistribution documentation and rejects missing input before staging', t => {
+  const root = fixture(t), source = path.join(root, 'source'), app = path.join(root, 'app');
+  const document = 'docs/licenses/v0.6.0-redistribution.md';
+  const notice = Buffer.from(`SDK notices\r\n[Corresponding source](${document})\r\n`);
+  const original = Buffer.from('\uFEFF# Redistribution\r\n保留原始字节\r\n');
+  write(root, 'LICENSE.md', 'SDK license');
+  write(root, 'THIRD_PARTY_NOTICES.md', notice);
+  write(root, 'third_party/licenses/example-LICENSE.txt', 'Dependency license');
+  write(source, 'index.html', 'new');
+  write(app, 'resources/index.html', 'old');
+  const mkdir = fs.mkdirSync;
+  let stageAttempts = 0;
+  fs.mkdirSync = function(directory, ...args) {
+    if (path.basename(String(directory)).startsWith('.resources-new-')) ++stageAttempts;
+    return mkdir.call(this, directory, ...args);
+  };
+  try {
+    assert.throws(() => deploy.replace(source, app, root), /SDK legal materials missing.*redistribution/);
+    assert.equal(stageAttempts, 0, 'missing referenced documentation began a transaction');
+  } finally { fs.mkdirSync = mkdir; }
+  assert.equal(fs.readFileSync(path.join(app, 'resources/index.html'), 'utf8'), 'old');
+  assert.deepEqual(fs.readdirSync(app), ['resources']);
+  write(root, document, original);
+  deploy.replace(source, app, root);
+  assert.deepEqual(fs.readFileSync(path.join(app, 'resources/legal', document)), original);
+  assert.deepEqual(fs.readFileSync(path.join(app, 'resources/legal/THIRD_PARTY_NOTICES.md')), notice);
+  assert.equal(fs.readFileSync(path.join(app, 'resources/index.html'), 'utf8'), 'new');
+});
+
 test('deployment survives a temporary Windows denial while publishing staged resources', {skip: process.platform !== 'win32'}, t => {
   const root = fixture(t), source = path.join(root, 'web'), app = path.join(root, 'app');
   write(source, 'index.html', 'new');
