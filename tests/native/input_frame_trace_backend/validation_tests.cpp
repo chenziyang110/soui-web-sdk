@@ -56,5 +56,18 @@ int main() {
   event.point = trace::stage::frame_coverage; event.flags = trace::coverage_valid;
   check(!events.accept(event), "missing coverage frame"); event.frame_id = 1;
   check(events.accept(event), "explicit frame coverage");
+  trace::event diagnostic;
+  diagnostic.qpc = 102; diagnostic.thread_id = 8; diagnostic.producer_slot = 3;
+  diagnostic.point = trace::stage::interaction_diagnostic; diagnostic.value = 20;
+  check(events.accept(diagnostic), "fixed interaction diagnostic");
+  diagnostic.value = 21; check(!events.accept(diagnostic), "unknown interaction code");
+  diagnostic.value = 0; check(!events.accept(diagnostic), "empty diagnostic code"); diagnostic.value = 1;
+  diagnostic.view_id = 1; check(!events.accept(diagnostic), "diagnostic cannot claim view"); diagnostic.view_id = 0;
+  diagnostic.frame_id = 1; check(!events.accept(diagnostic), "diagnostic cannot claim frame"); diagnostic.frame_id = 0;
+  diagnostic.flags = trace::microtask_causality_established;
+  check(!events.accept(diagnostic), "diagnostic cannot claim causality"); diagnostic.flags = 0;
+  diagnostic.point = trace::stage::gpu_present_diagnostic; diagnostic.value = 4;
+  check(events.accept(diagnostic), "fixed GPU diagnostic");
+  diagnostic.value = 5; check(!events.accept(diagnostic), "unknown GPU code");
   return failures ? 1 : 0;
 }

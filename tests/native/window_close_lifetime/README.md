@@ -1,0 +1,13 @@
+Production-bound regression SOURCE, not executed in this work package.
+
+`generate.cjs <distribution-root> <generated-directory>` copies the exact lifetime header and method/helper/NCDESTROY byte ranges and records their hashes. Compile `fixture.cpp` as C++17 with the generated directory on the include path. Generated vendor fragments preserve their original bytes; MSVC should use `/source-charset:.936 /execution-charset:utf-8`, matching other vendor fixtures. The fixture creates no native window and injects native failure, exact NCDESTROY reentrant deletion, repeat-close callback suppression and lost/reused HWND identity.
+
+The same generator now binds native show/visibility/default-message/size bodies: 3 actual sources, 8 copies. Explicit HWND/style/root-owner/page fakes cover hidden/show ordering, minimized root versus restored size, acknowledgement rejection/retry, duplicate publication, foreign owner and attached-window identity, plus close from a synchronous ShowWindow callback while the whole activity is held. Existing native failure and exact-deletion oracles remain; their destruction counts include the separately completed visibility view. No new timer/queue or JS visibility is modeled or introduced. Actual native window behavior remains an execution gate.
+
+WM_SIZE additionally requires the actual owner and exact attached HWND/property before either publication or viewport mutation. A rejected visibility post does not suppress a valid resize; SIZE_MINIMIZED publishes hidden and returns without consuming fake/minimized dimensions. SOURCE requires unchanged resize/repaint counts for minimized, foreign-owner, wrong-property and old-HWND-after-reattachment messages; restore consumes the real geometry path.
+
+The default-window-procedure dependency returns a fixed value; this fixture does not execute a close from inside DefWindowProc. That actual native reentry boundary remains in the specialist execution handoff; the explicit callback-close SOURCE case is the synchronous ShowWindow callback.
+
+Root owns CMake/CTest registration. Proposed target `soui_window_close_lifetime_source_tests`, proposed test `window.close.lifetime.source`; these names are suggestions until registered. Source policy cases also remain in `frame_buffer_lease_policy_tests.cpp`. Neither those cases nor this fixture have been compiled or run here.
+
+Root's integration currently registers target `soui_window_close_lifetime_source_tests` as CTest `kernel.native.window-close-lifetime-source` (TIMEOUT 15); keep that existing registration when porting this source follow-up. The native source charset requirement above still applies.

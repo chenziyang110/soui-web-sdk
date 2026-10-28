@@ -18,6 +18,7 @@ public:
     bool createWindow(HWND parent, wkeWindowType type, int x, int y, int width, int height);
     
     virtual void destroy() override;
+    bool prepareNativeWindowClose() override;
 
     void show(bool b);
     void enable(bool b);
@@ -40,8 +41,9 @@ protected:
     virtual void onDocumentReady(wkeDocumentReadyCallback callback, void* callbackParam) override;
 
     bool _createWindow(const wkeWindowCreateInfo* info);
-    void _destroyWindow();
+    bool _destroyWindow();
     void _initCallbacks();
+    bool _syncHostVisibility(HWND window, bool forceHidden = false);
 
     static LRESULT CALLBACK _staticWindowProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
     LRESULT _windowProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
@@ -80,6 +82,8 @@ protected:
     };
     State m_state;
     bool m_gpuPresent;
+    bool m_hostVisibilityKnown;
+    bool m_hostVisible;
 };
 
 };//namespace wke

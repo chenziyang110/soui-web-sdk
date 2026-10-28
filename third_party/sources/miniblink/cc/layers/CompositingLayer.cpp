@@ -2,6 +2,7 @@
 #include "cc/layers/CompositingLayer.h"
 
 #include <algorithm>
+#include <limits>
 
 #include "third_party/skia/include/core/SkPaint.h"
 #include "third_party/skia/include/core/SkCanvas.h"
@@ -26,6 +27,31 @@
 #include "cc/tiles/TilesAddr.h"
 #include "cc/playback/TileActionInfo.h"
 #include "wke/wkeGlobalVar.h"
+
+bool cc::CompositingLayer::inspectRasterCandidateResidentBudget(RasterCandidateBudget* budget) const
+{
+    if (!budget || !budget->layer())
+        return false;
+    if (ccType() != NormalCCLayer)
+        return budget->reject(RasterCandidateBudget::Failure::UnknownResidentOwner);
+    if (!m_tilesAddr)
+        return true;
+    for (TilesAddr::iterator it = m_tilesAddr->begin(); it != m_tilesAddr->end(); ++it) {
+        if (!budget->tile())
+            return false;
+        CompositingTile* tile = static_cast<CompositingTile*>(it->value);
+        const SkBitmap* bitmap = tile ? tile->bitmap() : nullptr;
+        if (!bitmap)
+            continue;
+        const uint64_t stride = bitmap->rowBytes();
+        const uint64_t height = bitmap->height() > 0 ? bitmap->height() : 0;
+        if (height && stride > (std::numeric_limits<uint64_t>::max)() / height)
+            return budget->reject(RasterCandidateBudget::Failure::ByteLimit);
+        if (!budget->addBytes(stride * height))
+            return false;
+    }
+    return true;
+}
 
 static void transformToFlattenedSkMatrix(const SkMatrix44& transform, SkMatrix* flattened)
 {

@@ -1,0 +1,45 @@
+{
+  "schema": "soui.kernel-source-delta/v1",
+  "sdkVersion": "0.5.0",
+  "status": "source-only-unreleased-candidate",
+  "scope": "W05 actual native-window show/minimize visibility bridge with whole owner activity, exact HWND identity and existing SOURCE extension; no configure, compile or execution",
+  "baseCommit": "3ceb7b82bbda0ebba580af71c0eb36ab1065f21e",
+  "sourceIdentityScope": "Only listed staged source delta; historical import and prebuilt identities unchanged",
+  "patch": {
+    "path": "third_party/patches/miniblink/0021-input-ui-native-window-visibility.patch",
+    "bytes": 4467,
+    "sha256": "0a6e470327be9575121bcc33664c56b947fe42ade31e097d432fd04672d8813f"
+  },
+  "files": [
+    {
+      "path": "third_party/sources/miniblink/wke/wkeWebWindow.cpp",
+      "before": {
+        "bytes": 29773,
+        "sha256": "ad488867b952a3707f10b4689168b5f03248cba9e6da833994654142c67c3a85"
+      },
+      "after": {
+        "bytes": 31852,
+        "sha256": "e05f49b28e30da0604b3f72269cdb725df4b8172991602af7dd0f808735b9e43"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/wke/wkeWebWindow.h",
+      "before": {
+        "bytes": 3059,
+        "sha256": "f1cb9ecf7a4c45603196b98d731987a128e77b0c695e5db3cd6f421fc6750796"
+      },
+      "after": {
+        "bytes": 3184,
+        "sha256": "42bd84682f3f73f1702f7a5f24a0a778c33d358a560de5d9ef3c58e8c92392de"
+      }
+    }
+  ],
+  "validation": {
+    "finalSourceCompiled": false,
+    "finalTestsExecuted": false,
+    "reversePatchCheckPerformed": true,
+    "forwardReplayExecuted": false
+  },
+  "candidateBinaryIdentity": null,
+  "releaseReady": false
+}

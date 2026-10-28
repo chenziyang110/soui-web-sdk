@@ -32,8 +32,28 @@ enum class stage : std::uint32_t {
   record_begin = 21, record_end = 22, composite_begin = 23,
   composite_end = 24, frame_coverage = 25, resource_wait = 26,
   scene_pending = 27, scene_activated = 28,
+  interaction_diagnostic = 29, gpu_present_diagnostic = 30,
 };
-constexpr std::size_t stage_count = 29; // zero is deliberately unused.
+constexpr std::size_t stage_count = 31; // zero is deliberately unused.
+
+// Noncausal diagnostics. Use a fresh event: why/outcome/flags and every relation
+// ID/range are zero. Only value carries the matching fixed code below. These
+// points never prove input admission, frame coverage, submission or visibility.
+enum class interaction_diagnostic_code : std::uint64_t {
+  disabled_or_invalid = 1, scene_unavailable = 2, no_eligible_hit = 3,
+  delta_not_consumed = 4, accepted = 5, barrier_capture_invalid = 6,
+  barrier_capture_no_tree = 7, barrier_capture_no_target = 8,
+  barrier_capture_no_state = 9, barrier_capture_accepted = 10,
+  barrier_capture_rejected = 11, barrier_sync_invalid = 12,
+  barrier_sync_invalid_layer_id = 13, barrier_sync_future_scene = 14,
+  barrier_sync_tree_mismatch = 15, barrier_sync_owner_mismatch = 16,
+  barrier_sync_owner_rejected = 17, barrier_sync_retired_accepted = 18,
+  barrier_sync_accepted = 19, barrier_sync_forward_accepted = 20,
+};
+enum class gpu_present_diagnostic_code : std::uint64_t {
+  surface_unavailable = 1, context_unavailable = 2,
+  swap_failed = 3, swap_succeeded = 4,
+};
 
 enum class terminal : std::uint32_t {
   none = 0, visible = 1, coalesced = 2, cancelled = 3, stale = 4,
@@ -132,6 +152,7 @@ class writer final {
  private:
   friend class recorder;
   friend bool register_current_thread();
+  friend bool current_thread_registered() noexcept;
   friend void detach_current_thread() noexcept;
   writer(std::shared_ptr<detail::state> storage, std::size_t slot) noexcept;
   void release() noexcept;
@@ -179,6 +200,9 @@ class recorder final : public trace_source {
 [[nodiscard]] std::uint64_t now_qpc() noexcept;
 recorder& process_recorder() noexcept;
 [[nodiscard]] bool register_current_thread(); // Cold; never called by record.
+// O(1) TLS handle/active query only; no attach/allocation/counter side effects.
+// stop() rejects writes but does not detach an existing active producer.
+[[nodiscard]] bool current_thread_registered() noexcept;
 void detach_current_thread() noexcept;
 [[nodiscard]] record_result record(event value) noexcept;
 void add(counter metric, std::uint64_t amount = 1) noexcept;

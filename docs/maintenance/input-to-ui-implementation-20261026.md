@@ -19,9 +19,9 @@ W00 已提交 [Draft PR111](https://github.com/chenziyang110/soui-web-sdk/pull/1
 | W04 | priority AVL+deadline heap摘要；50ms老化；3 eligible/1 oldest接纳；显式entry-order tie | scheduler_index 100000次seeded oracle/OOM源码、原拥有heap及shutdown fixture；未执行 | 代码完成待编译 |
 | W05 | QPC商/余数及vendor分数phase；main frame deadline去重复门；Host按cap0x10采用 | fractional_frame_phase源码；native visibility接线静态查出缺口，另包补齐；未编译/未运行 | 算术/截止代码完成，可见性组合待集成 |
 | W06 | typed阻塞原因；生产者完成合并通知、注册后重查；移除正常1ms/8ms资源轮询 | resource_notification_policy与实际action/scene/raster链已集成；投递拒绝保留intent；未执行 | 代码完成待编译 |
-| W07 | copy/锁/回调计量；mirror 消费者；有界 generation buffer lease；锁外绘制 | 像素/alpha/resize/DC/截图/重入/关闭回归源码待交付 | 待 W05/W06 |
-| W08 | raster 成本诊断；可见优先/有界并发候选；项数/字节/scene/cache/预取预算 | 未 profile；不得把缺数据记为不采用证据 | 待设计/诊断/候选与数据 |
-| W09 | layout/record/scene/snapshot/JSON/Bridge/分配诊断；按证据合并、切片、失效缓存及预算协调 | 未 profile；不无依据大改 layout | 待设计/诊断与数据 |
+| W07 | 两槽/256MiB pool、generation lease；有效mirror需求与DC sticky；锁外client/GDI；paint活动与native close receipt | frame-buffer-lease-policy、window-close-lifetime-source与实际broker/endpoint fixture源码；未执行 | 代码集成与来源闭合中，待编译 |
+| W08 | raster诊断、可见/预取预算、开始前取消receipt、fenced scene恢复；默认1 worker | raster-scheduling-policy/render-scene-transaction源码；未知非空SkPicture owner在dispatch前回退worker0；未执行 | 资格基础设施完成，可用资格域与采用待数据 |
+| W09 | render scene所有权移动与诊断已集成；SDK日志/packet/共享预算另包；mutable tree仍保留锁 | scene transaction源码与明确immutable命令候选设计；无profile | 部分源码完成，其余集成/采用待数据 |
 | W10 | WebView2 输出批次实耗时、转换/JSON/deque/广播诊断；COM/授权/撤销保持 | 未 profile；Runtime 外部内部调度另列边界 | 待设计/诊断与数据 |
 | W11 | GPU 独立设计/诊断候选；device loss/生命周期/深度/软件回退 | 软件主线和 profile 尚缺，未启用 | 待数据，未关闭 |
 | W12 | 精确需求→源码→回归源码→命令→证据→状态；原编码补丁/来源/注册；暂存区清单；分批 Draft PR | 由集成负责人随各包刷新；所有未执行保持未执行 | 持续集成中 |
@@ -83,3 +83,21 @@ SDK phase以整数QPC商/余数得到绝对截止，vendor保持其单调秒域�
 默认vendor登记本批为69个kernel.native＋4个scheduler辅助名称，preflight33个确切源文件；既有legacy deadline leaf纳入根登记，另增fractional-frame-phase与resource-notification-policy。命令交专人执行，当前只交生产代码、必要fixture源码与静态来源检查。
 
 静态集成复查同时修正 owner API 门禁引用未声明 prepared 标志的问题：只有 worker retirement 与 broker fence 均实际就绪时才发布 prepared，未就绪继续保留 owner 关闭进展。该更正纳入本批原字节增量，仍未编译。
+
+## 呈现、输入场景与关闭组合
+
+W07的真实buffer lease在CPU/GDI/client调用期间保持像素和paint lifetime；release通知/post结束后才放弃activity。镜像只在已验证DIRECT_HWND且无DC/透明/legacy需求时关闭；DC sticky和有效需求查询不能由后来false覆盖。可变CC树walk仍有锁，未宣称全部长锁消除。
+
+Root WKE胶水先按实际OS owner检查，再执行view/window permit、endpoint失效、once destroy callback、native window preflight及activation移除/delete。native DestroyWindow失败、HWND身份丢失或复用保留失败收据；不强删。preparePaintShutdown位于worker/broker prepared发布之前；有活动/排队析构/native故障时继续pending，重复prepare仍走真实owner和实际收据。cancelInput能力仅在外层activity guard接上后开放。
+
+独立wheel/barrier在发布预测之前传入actual WKE view ID和原始view/document/geometry tuple；active scene本身绑定confirmed base identity，unknown/mismatch回退原输入mailbox。compositor receipt序号与router input序号独立。事务预分配失败无预测副作用，发布成功后唤醒失败仍是accepted；queued draw的计数由自身实际run/dispose退休，close不清零伪装排空。SDK applied tuple门禁随后续W01接入包闭合。
+
+Native visibility setter只在owner调用；hide保留dirty/action/资源/scene/scroll fence并抑制新渲染，restore重建phase和全量composite damage，以一个立即、可取消owner wake恢复；拒投保留intent。Host真实child/root最小化采样随后续SDK包接入，不把setter返回成功当桌面已显示。
+
+原逐事件interaction文件写和GPU present失败时重复文件格式化已改为stage29/30固定数值诊断。why/outcome/flags/关联字段全0，value限固定20/4枚举域；recorder、backend、reader均拒绝伪造关联。frame_id仍是main/scene record身份，同一ID可有多次真实T6；原始stream/producer/wire记录保留，不能按ID去重或推导跨线程同tick顺序。
+
+可选API逐字段按version/structSize/cap/null/OK0检查：mirror0x4、input context0x8、cancel0x20、confirmed view0x40、active-scene gate0x80、visibility0x100、external producer0x200。外部producer只冷租用，调用线程配对释放；借用已有内部writer要求内部loop存活覆盖借用期，SDK UI持有实际DLL引用至最后hot borrow退出后释放。没有热路径自动注册。
+
+本批新增根登记为78个kernel.native精确名称＋4个scheduler辅助名称、50个preflight源文件；native window/visibility/wheel/diagnostic fixture按当前生产字节提取并明确依赖fake，不等于真实Win32/GL/COM通过。旧constructor/drag来源门槛也必须随实际变更闭合，不能只刷新SHA掩盖旧片段。
+
+原生窗口wrapper也已接到真实状态：CWebWindow show、WM_SHOWWINDOW、WM_WINDOWPOSCHANGED(default先行)、WM_SIZE均在whole activity期间采样实际attached HWND/root iconic，并核对LTH状态后才合并同ack。最小化不覆盖有效viewport，外部CAPI改变visibility会使旧ack失效。沿用window-close-lifetime-source同一入口，来源现为3个文件/8段复制；未运行。

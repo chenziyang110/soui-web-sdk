@@ -17,6 +17,9 @@
 #define WKE_INPUT_UI_CAP_FRACTIONAL_FRAME_POLICY 0x10ULL
 #define WKE_INPUT_UI_CAP_CANCEL_INPUT 0x20ULL
 #define WKE_INPUT_UI_CAP_VIEW_CONTEXT 0x40ULL
+#define WKE_INPUT_UI_CAP_SCENE_INPUT_IDENTITY 0x80ULL
+#define WKE_INPUT_UI_CAP_VISIBILITY 0x100ULL
+#define WKE_INPUT_UI_CAP_EXTERNAL_TRACE_PRODUCER 0x200ULL
 
 #define WKE_INPUT_UI_OK 0
 #define WKE_INPUT_UI_INVALID 1
@@ -94,8 +97,9 @@ typedef struct _wkeInputUiApi {
     int (WKE_INPUT_UI_CALL* traceSnapshot)(wkeInputUiTraceSnapshot* snapshot);
     int (WKE_INPUT_UI_CALL* traceDrain)(void* output, unsigned int eventBytes,
         unsigned int capacity, unsigned int* count);
-    /* Remaining operations are owner-thread only, capability and pointer gated.
-       Opaque view values are actual wkeWebView handles, never remote pointers. */
+    /* View/owner operations require the native owner, capability and pointer gates.
+       Opaque view values are actual wkeWebView handles, never remote pointers.
+       External producer leases at the tail use their separate calling-thread rule. */
     void (WKE_INPUT_UI_CALL* serviceOwnerOpportunity)(void);
     int (WKE_INPUT_UI_CALL* setUiMirrorConsumerRequired)(void* view, unsigned int required);
     int (WKE_INPUT_UI_CALL* uiMirrorConsumerRequired)(void* view, unsigned int* required);
@@ -105,6 +109,13 @@ typedef struct _wkeInputUiApi {
     int (WKE_INPUT_UI_CALL* cancelInputState)(void* view);
     /* Confirmed document/geometry identity, input range zero. Does not push TLS. */
     int (WKE_INPUT_UI_CALL* setViewTraceIdentity)(void* view, const void* event, unsigned int eventBytes);
+    int (WKE_INPUT_UI_CALL* setHostVisible)(void* view, unsigned int visible);
+    /* Cold, calling-thread-affine producer leases; no implicit hot attach.
+       Retain the initialized module through producer-thread TLS teardown;
+       final lease release alone never qualifies a generic FreeLibrary.
+       Borrowed internal writers require their loop to outlive the borrow. */
+    int (WKE_INPUT_UI_CALL* retainTraceProducer)(void);
+    void (WKE_INPUT_UI_CALL* releaseTraceProducer)(void);
 } wkeInputUiApi;
 #pragma pack(pop)
 

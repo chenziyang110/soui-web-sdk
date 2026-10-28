@@ -31,6 +31,17 @@ static_assert(sizeof(sdk_trace::identity) == sizeof(vendor_trace::identity), "Mi
 static_assert(offsetof(sdk_trace::event, input_first) == offsetof(vendor_trace::event, input_first), "Mirrored event offsets differ");
 static_assert(static_cast<unsigned>(sdk_trace::stage::scene_activated) ==
               static_cast<unsigned>(vendor_trace::stage::scene_activated), "Mirrored stage codes differ");
+static_assert(sdk_trace::stage_count == 31 && vendor_trace::stage_count == 31 &&
+              static_cast<unsigned>(sdk_trace::stage::interaction_diagnostic) == 29 &&
+              static_cast<unsigned>(vendor_trace::stage::interaction_diagnostic) == 29 &&
+              static_cast<unsigned>(sdk_trace::stage::gpu_present_diagnostic) == 30 &&
+              static_cast<unsigned>(vendor_trace::stage::gpu_present_diagnostic) == 30,
+              "Diagnostic stage contract differs");
+static_assert(static_cast<std::uint64_t>(sdk_trace::interaction_diagnostic_code::barrier_sync_forward_accepted) ==
+              static_cast<std::uint64_t>(vendor_trace::interaction_diagnostic_code::barrier_sync_forward_accepted) &&
+              static_cast<std::uint64_t>(sdk_trace::gpu_present_diagnostic_code::swap_succeeded) ==
+              static_cast<std::uint64_t>(vendor_trace::gpu_present_diagnostic_code::swap_succeeded),
+              "Mirrored diagnostic code domains differ");
 static_assert(sdk_trace::decode_injection_tag(0x53400001ULL) == 1 &&
               sdk_trace::decode_injection_tag(0x153400001ULL) == 0 &&
               sdk_trace::decode_injection_tag(0x53400000ULL) == 0,
@@ -114,6 +125,42 @@ void owner_and_invalid_fields() {
 }
 
 template<class Recorder, class Event>
+void noncausal_diagnostic_fields() {
+  Recorder source;
+  auto producer = source.attach_current_thread();
+  Event value;
+  using Stage = decltype(value.point);
+  for (const Stage point : {Stage::interaction_diagnostic, Stage::gpu_present_diagnostic}) {
+    value = Event{}; value.point = point;
+    const std::uint64_t maximum = point == Stage::interaction_diagnostic ? 20 : 4;
+    for (std::uint64_t code = 1; code <= maximum; ++code) {
+      value.value = code;
+      require(static_cast<unsigned>(producer.record(value)) == 1, "fixed diagnostic code rejected");
+    }
+    value.value = maximum + 1;
+    require(static_cast<unsigned>(producer.record(value)) == 4, "unknown diagnostic code accepted");
+    value.value = 0;
+    require(static_cast<unsigned>(producer.record(value)) == 4, "zero diagnostic code accepted");
+    value.value = 1;
+    std::uint64_t Event::* relations[] = {&Event::view_id, &Event::view_generation,
+      &Event::document_generation, &Event::geometry_generation, &Event::input_first,
+      &Event::input_last, &Event::task_id, &Event::frame_id, &Event::action_first,
+      &Event::action_last, &Event::related_id};
+    for (auto relation : relations) {
+      value.*relation = 1;
+      require(static_cast<unsigned>(producer.record(value)) == 4, "diagnostic fabricated relation accepted");
+      value.*relation = 0;
+    }
+    value.flags = 4;
+    require(static_cast<unsigned>(producer.record(value)) == 4, "diagnostic causal flag accepted");
+    value.flags = 0; value.why = static_cast<decltype(value.why)>(1);
+    require(static_cast<unsigned>(producer.record(value)) == 4, "diagnostic reason namespace mixed");
+    value.why = static_cast<decltype(value.why)>(0); value.outcome = static_cast<decltype(value.outcome)>(1);
+    require(static_cast<unsigned>(producer.record(value)) == 4, "diagnostic terminal accepted");
+  }
+}
+
+template<class Recorder, class Event>
 void scalar_has_no_event_queue() {
   Recorder source;
   auto producer = source.attach_current_thread();
@@ -141,8 +188,20 @@ void cold_allocation_failure(Identity identity, Mode detailed) {
   require(!exporter.begin() && !exporter.finish(), "unavailable diagnostics fabricated complete trace");
 }
 void context_has_no_hot_allocation() {
+  const auto sdk_before=sdk_trace::process_recorder().snapshot();
+  const auto vendor_before=vendor_trace::process_recorder().snapshot();
+  fail_next_trace_allocation.store(true);
+  const bool unregistered=!sdk_trace::current_thread_registered()&&!vendor_trace::current_thread_registered();
+  const bool query_did_not_allocate=fail_next_trace_allocation.exchange(false);
+  require(unregistered&&query_did_not_allocate,"registration query lazily attached or allocated");
+  require(sdk_trace::process_recorder().snapshot().registered_threads==sdk_before.registered_threads&&
+    sdk_trace::process_recorder().snapshot().unregistered_writes==sdk_before.unregistered_writes&&
+    vendor_trace::process_recorder().snapshot().registered_threads==vendor_before.registered_threads&&
+    vendor_trace::process_recorder().snapshot().unregistered_writes==vendor_before.unregistered_writes,
+    "registration query changed recorder counters");
   require(sdk_trace::register_current_thread(),"context owner registration failed");
   require(vendor_trace::register_current_thread(),"vendor context owner registration failed");
+  require(sdk_trace::current_thread_registered()&&vendor_trace::current_thread_registered(),"active TLS registration query failed");
   sdk_trace::event outer; outer.task_id=sdk_trace::next_task_id();
   const auto vendor_id=vendor_trace::next_task_id();
   require(outer.task_id>0 && outer.task_id<0x8000000000000000ULL && vendor_id>0x8000000000000000ULL,
@@ -151,13 +210,14 @@ void context_has_no_hot_allocation() {
   sdk_trace::event child=outer; child.related_id=outer.task_id; child.task_id=sdk_trace::next_task_id();
   fail_next_trace_allocation.store(true);
   {
+    const bool registered=sdk_trace::current_thread_registered()&&vendor_trace::current_thread_registered();
     sdk_trace::context_scope scope(child);
     sdk_trace::event inherited;
     const bool found=sdk_trace::current_context(inherited);
     (void)sdk_trace::record(child);
     sdk_trace::add(sdk_trace::counter::copy_bytes,4);
     sdk_trace::observe_duration(sdk_trace::duration_metric::engine_fifo,3);
-    if(!found || inherited.task_id!=child.task_id)fail_next_trace_allocation.store(false);
+    if(!registered || !found || inherited.task_id!=child.task_id)fail_next_trace_allocation.store(false);
   }
   const bool no_allocation=fail_next_trace_allocation.exchange(false);
   sdk_trace::event restored;
@@ -168,14 +228,40 @@ void context_has_no_hot_allocation() {
   sdk_trace::note_causal_loss();
   require(sdk_trace::process_recorder().snapshot().causal_lost==1,"explicit causal loss was hidden");
   sdk_trace::detach_current_thread();vendor_trace::detach_current_thread();
+  require(!sdk_trace::current_thread_registered()&&!vendor_trace::current_thread_registered(),"paused TLS registration remained active");
   for(unsigned mount=0;mount<100;++mount) {
     require(sdk_trace::register_current_thread()&&vendor_trace::register_current_thread(),"same TLS owner could not resume");
+    require(sdk_trace::current_thread_registered()&&vendor_trace::current_thread_registered(),"resumed TLS registration query failed");
     sdk_trace::detach_current_thread();vendor_trace::detach_current_thread();
+    require(!sdk_trace::current_thread_registered()&&!vendor_trace::current_thread_registered(),"resumed TLS registration did not pause");
   }
   require(sdk_trace::process_recorder().snapshot().registered_threads==1 &&
     vendor_trace::process_recorder().snapshot().registered_threads==1 &&
     sdk_trace::process_recorder().snapshot().active_producers==0,
     "same-thread mount cycles consumed slots or retained an active producer");
+}
+struct registration_exit_probe final {
+  std::atomic<bool>* observed;
+  ~registration_exit_probe() {
+    observed->store(!sdk_trace::current_thread_registered()&&!vendor_trace::current_thread_registered());
+  }
+};
+void registration_query_tracks_thread_exit() {
+  std::atomic<bool> initially_unregistered{false}, attached{false}, query_after_tls_release{false};
+  std::thread owner([&] {
+    // Construct first: this probe is destroyed after both cold registrations.
+    thread_local registration_exit_probe probe{&query_after_tls_release};
+    (void)probe;
+    initially_unregistered.store(!sdk_trace::current_thread_registered()&&!vendor_trace::current_thread_registered());
+    const bool registered=sdk_trace::register_current_thread()&&vendor_trace::register_current_thread();
+    attached.store(registered&&sdk_trace::current_thread_registered()&&vendor_trace::current_thread_registered());
+  });
+  owner.join();
+  require(initially_unregistered.load()&&attached.load()&&query_after_tls_release.load(),"registration query did not track actual TLS exit");
+  require(!sdk_trace::current_thread_registered()&&!vendor_trace::current_thread_registered()&&
+    sdk_trace::process_recorder().snapshot().active_producers==0&&
+    vendor_trace::process_recorder().snapshot().active_producers==0,
+    "exited producer stayed active or attached its observer");
 }
 class counting_buffer final : public std::streambuf {
  public:
@@ -252,6 +338,8 @@ int main() {
     storage_is_pinned<vendor_trace::recorder, vendor_trace::event>();
     owner_and_invalid_fields<sdk_trace::recorder, sdk_trace::event>();
     owner_and_invalid_fields<vendor_trace::recorder, vendor_trace::event>();
+    noncausal_diagnostic_fields<sdk_trace::recorder, sdk_trace::event>();
+    noncausal_diagnostic_fields<vendor_trace::recorder, vendor_trace::event>();
     scalar_has_no_event_queue<sdk_trace::recorder, sdk_trace::event>();
     scalar_has_no_event_queue<vendor_trace::recorder, vendor_trace::event>();
     cold_allocation_failure<sdk_trace::recorder,sdk_trace::event,sdk_trace::identity,sdk_trace::mode,sdk_trace::exporter>(sdk_trace::current_identity(1,2),sdk_trace::mode::detailed);
@@ -261,6 +349,7 @@ int main() {
     require(sdk_trace::process_recorder().snapshot().unregistered_writes == 1, "SDK unregistered write hidden");
     require(vendor_trace::process_recorder().snapshot().unregistered_writes == 1, "vendor unregistered write hidden");
     context_has_no_hot_allocation();
+    registration_query_tracks_thread_exit();
     export_limit_cannot_claim_complete();
     source_failure_after_begin_refuses_end();
     split_consumer_cannot_complete();

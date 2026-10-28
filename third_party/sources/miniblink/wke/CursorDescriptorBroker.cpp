@@ -218,7 +218,8 @@ bool drained(const CursorBrokerControl& control)
     return !control.queued && !control.running
         && !control.scopes && !control.engineCallbacks && !control.oleRegistered
         && !control.comReferences && !control.nativeResources
-        && !control.nativeResourceAdmissionFault;
+        && !control.nativeResourceAdmissionFault
+        && (!control.view || control.view->paintCallbacksDrained());
 }
 void receipt(const CursorBrokerControl& control, wkeCursorBrokerDrainReceipt* out)
 {
@@ -431,6 +432,7 @@ unsigned int WKE_CALL_TYPE requestClose(wkeCursorBrokerEndpoint endpoint)
     auto control = findToken(endpoint);
     if (!control) return WKE_CURSOR_BROKER_STALE;
     if (control->destroying) return WKE_CURSOR_BROKER_CLOSING;
+    if (control->view) control->view->quiescePaintCallbacks();
     const bool alreadyClosing = control->closing.exchange(true);
     if (!alreadyClosing) {
         if (control->publishSequence == (std::numeric_limits<unsigned __int64>::max)())

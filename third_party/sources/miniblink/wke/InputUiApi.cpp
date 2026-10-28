@@ -2,6 +2,7 @@
 #include "wke/wkeWebView.h"
 #include "wke/wkeGlobalVar.h"
 #include "content/browser/WebPage.h"
+#include "content/browser/CheckReEnter.h"
 #include "content/common/InputFrameTrace.h"
 #include "content/web_impl_win/WebThreadImpl.h"
 #include "third_party/WebKit/public/platform/Platform.h"
@@ -11,6 +12,7 @@
 #include <atomic>
 #include <cstring>
 #include <mutex>
+#include <limits>
 
 namespace wke { bool inputUiOwnerAvailable(); }
 
@@ -45,6 +47,8 @@ void WKE_INPUT_UI_CALL serviceOwner()
     if (!platform || !platform->mainThread())
         return;
     static_cast<content::WebThreadImpl*>(platform->mainThread())->serviceOwnerOpportunity();
+    if (wke::inputUiOwnerAvailable() && !content::CheckReEnter::getEnterCount())
+        wke::CWebView::serviceDeferredPaintCloses();
 }
 
 int WKE_INPUT_UI_CALL cancelInput(void* opaque)
@@ -52,11 +56,105 @@ int WKE_INPUT_UI_CALL cancelInput(void* opaque)
     auto* view = liveOwnerView(opaque);
     if (!view || !view->webPage())
         return WKE_INPUT_UI_UNAVAILABLE;
+    content::PaintActivityScope activity(view->webPage()->paintLifetimeState());
+    if (!activity)
+        return WKE_INPUT_UI_REJECTED;
     try {
         return view->webPage()->cancelInputState() ? WKE_INPUT_UI_OK : WKE_INPUT_UI_REJECTED;
     } catch (...) {
         // The caller must enter limited recovery; partial cancellation is not success.
         return WKE_INPUT_UI_REJECTED;
+    }
+}
+
+bool readViewEvent(wke::CWebView* view, const void* input, unsigned bytes, trace::event& value)
+{
+    if (!view || !input || bytes != sizeof(value))
+        return false;
+    std::memcpy(&value, input, sizeof(value));
+    return value.struct_size == sizeof(value) && value.version == trace::abi_version
+        && value.producer_slot == 0 && view->getId() > 0
+        && value.view_id == static_cast<uint64_t>(view->getId())
+        && value.view_generation && value.document_generation && value.geometry_generation
+        && static_cast<unsigned>(value.point) > 0
+        && static_cast<unsigned>(value.point) <= static_cast<unsigned>(trace::stage::scene_activated)
+        && static_cast<unsigned>(value.why) <= static_cast<unsigned>(trace::reason::cancelled)
+        && static_cast<unsigned>(value.outcome) <= static_cast<unsigned>(trace::terminal::rejected)
+        && !(value.flags & ~7U)
+        && ((!value.input_first && !value.input_last)
+            || (value.input_first && value.input_last >= value.input_first));
+}
+int WKE_INPUT_UI_CALL setVisibility(void* opaque, unsigned visible)
+{
+    auto* view = liveOwnerView(opaque);
+    if (!view || !view->webPage()) return WKE_INPUT_UI_UNAVAILABLE;
+    if (visible > 1) return WKE_INPUT_UI_INVALID;
+    return view->webPage()->setHostVisible(visible != 0) ? WKE_INPUT_UI_OK : WKE_INPUT_UI_REJECTED;
+}
+int WKE_INPUT_UI_CALL setMirror(void* opaque, unsigned required)
+{
+    auto* view = liveOwnerView(opaque);
+    if (!view || !view->webPage()) return WKE_INPUT_UI_UNAVAILABLE;
+    if (required > 1) return WKE_INPUT_UI_INVALID;
+    view->webPage()->setUiMirrorConsumerRequired(required != 0);
+    return WKE_INPUT_UI_OK;
+}
+int WKE_INPUT_UI_CALL queryMirror(void* opaque, unsigned* required)
+{
+    auto* view = liveOwnerView(opaque);
+    if (!view || !view->webPage()) return WKE_INPUT_UI_UNAVAILABLE;
+    if (!required) return WKE_INPUT_UI_INVALID;
+    *required = view->webPage()->uiMirrorConsumerRequired() ? 1U : 0U;
+    return WKE_INPUT_UI_OK;
+}
+int WKE_INPUT_UI_CALL setInputContext(void* opaque, const void* input, unsigned bytes)
+{
+    auto* view = liveOwnerView(opaque);
+    if (!view || !view->webPage()) return WKE_INPUT_UI_UNAVAILABLE;
+    trace::event value;
+    if (!readViewEvent(view, input, bytes, value)) return WKE_INPUT_UI_INVALID;
+    view->webPage()->setInputTraceContext(value);
+    return WKE_INPUT_UI_OK;
+}
+int WKE_INPUT_UI_CALL setViewContext(void* opaque, const void* input, unsigned bytes)
+{
+    auto* view = liveOwnerView(opaque);
+    if (!view || !view->webPage()) return WKE_INPUT_UI_UNAVAILABLE;
+    trace::event value;
+    if (!readViewEvent(view, input, bytes, value) || value.input_first || value.input_last)
+        return WKE_INPUT_UI_INVALID;
+    return view->webPage()->setViewTraceIdentity(value) ? WKE_INPUT_UI_OK : WKE_INPUT_UI_REJECTED;
+}
+
+struct ExternalTraceLease { unsigned users; bool ownsWriter; };
+thread_local ExternalTraceLease externalTraceLease = {0, false}; // Constant TLS, cold entry only.
+int WKE_INPUT_UI_CALL retainTraceProducer()
+{
+    if (externalTraceLease.users == (std::numeric_limits<unsigned>::max)())
+        return WKE_INPUT_UI_REJECTED;
+    if (!externalTraceLease.users) {
+        const auto state = trace::process_recorder().snapshot();
+        if (!state.available) return WKE_INPUT_UI_UNAVAILABLE;
+        if (state.stopped) return WKE_INPUT_UI_REJECTED;
+        const bool registered = trace::current_thread_registered();
+        if (!registered) {
+            try { if (!trace::register_current_thread()) return WKE_INPUT_UI_REJECTED; }
+            catch (...) { return WKE_INPUT_UI_REJECTED; }
+        }
+        externalTraceLease.ownsWriter = !registered;
+    }
+    ++externalTraceLease.users;
+    return WKE_INPUT_UI_OK;
+}
+void WKE_INPUT_UI_CALL releaseTraceProducer()
+{
+    if (!externalTraceLease.users) {
+        trace::note_causal_loss(); // Wrong-thread/unmatched release never detaches another TLS writer.
+        return;
+    }
+    if (!--externalTraceLease.users && externalTraceLease.ownsWriter) {
+        externalTraceLease.ownsWriter = false;
+        trace::detach_current_thread();
     }
 }
 
@@ -187,8 +285,12 @@ const wkeInputUiApi* WKE_CALL_TYPE wkeGetInputUiApi(unsigned requestedVersion)
     // Fields become available only with their actual owner/view implementation.
     static const wkeInputUiApi api = { sizeof(wkeInputUiApi), WKE_INPUT_UI_ABI_VERSION,
         WKE_INPUT_UI_CAP_TRACE | WKE_INPUT_UI_CAP_OWNER_OPPORTUNITY
-            | WKE_INPUT_UI_CAP_FRACTIONAL_FRAME_POLICY,
+            | WKE_INPUT_UI_CAP_FRACTIONAL_FRAME_POLICY | WKE_INPUT_UI_CAP_MIRROR_CONSUMER
+            | WKE_INPUT_UI_CAP_INPUT_CONTEXT | WKE_INPUT_UI_CAP_CANCEL_INPUT
+            | WKE_INPUT_UI_CAP_VIEW_CONTEXT | WKE_INPUT_UI_CAP_SCENE_INPUT_IDENTITY
+            | WKE_INPUT_UI_CAP_VISIBILITY | WKE_INPUT_UI_CAP_EXTERNAL_TRACE_PRODUCER,
         &configureTrace, &stopTrace, &snapshotTrace, &drainTrace,
-        &serviceOwner, nullptr, nullptr, nullptr, nullptr, nullptr };
+        &serviceOwner, &setMirror, &queryMirror, &setInputContext, &cancelInput, &setViewContext,
+        &setVisibility, &retainTraceProducer, &releaseTraceProducer };
     return requestedVersion == WKE_INPUT_UI_ABI_VERSION ? &api : nullptr;
 }

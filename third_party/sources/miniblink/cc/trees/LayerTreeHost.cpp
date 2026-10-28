@@ -10,8 +10,10 @@
 
 #include <algorithm>
 #include "cc/trees/LayerTreeHost.h"
+#include "cc/trees/RenderDiagnosticTrace.h"
 #include "cc/trees/FrameDeadlinePolicy.h"
 #include "cc/trees/ResourceNotificationPolicy.h"
+#include "cc/trees/RenderTrace.h"
 #if defined(SOUI_GPU_COMPOSITOR)
 #include "cc/trees/GpuSkiaSurface.h"
 #endif
@@ -60,6 +62,12 @@ struct UiPaintRetryState {
     LayerTreeHost* host;
     LegacyPaintRetryPolicy policy;
     ResourceNotificationPolicy resource;
+    DrawFrameWakePolicy drawWake;
+    std::atomic<int> drawQueuedCount{0};
+    std::atomic<int> drawFinishCount{0};
+    bool recordWaiting = false;
+    bool rerasterRequired = false;
+    bool drawWaiting = false;
 };
 
 // The queue owns this object. Rejection/cancellation disposes only its ticket;
@@ -89,6 +97,45 @@ public:
 private:
     std::shared_ptr<UiPaintRetryState> m_state;
     LegacyPaintRetryPolicy::Ticket m_ticket;
+};
+
+class DrawFrameTask final : public blink::WebThread::Task {
+public:
+    DrawFrameTask(const std::shared_ptr<UiPaintRetryState>& state, uint64_t ticket)
+        : m_state(state), m_ticket(ticket) { }
+    ~DrawFrameTask() override
+    {
+        if (m_ran)
+            return;
+        std::lock_guard<std::mutex> lock(m_state->mutex);
+        const bool rejected = m_state->drawWake.reject(m_ticket);
+        // Every constructed/posted task owns one actual counter obligation.
+        // Retire it even after close clears the raw host and invalidates tickets.
+        m_state->drawQueuedCount.fetch_sub(1);
+        m_state->drawFinishCount.fetch_sub(1);
+        if (rejected && m_state->host)
+            m_state->host->m_hasRejectedDrawWake.store(true);
+    }
+    void run() override
+    {
+        LayerTreeHost* host = nullptr;
+        {
+            std::lock_guard<std::mutex> lock(m_state->mutex);
+            if (m_state->drawWake.claim(m_ticket)) {
+                host = m_state->host;
+                m_ran = host != nullptr;
+                if (host)
+                    host->m_hasRejectedDrawWake.store(false);
+            }
+        }
+        // Only the composite owner executes this task; host teardown joins it.
+        if (host)
+            host->drawFrameInCompositeThread();
+    }
+private:
+    std::shared_ptr<UiPaintRetryState> m_state;
+    uint64_t m_ticket;
+    bool m_ran = false;
 };
 
 static void queueResourceProgress(const std::shared_ptr<UiPaintRetryState>& state,
@@ -267,13 +314,18 @@ static void rememberRetiredCompositorScrollState(
 struct CompositorScrollInput {
     CompositorScrollInput(const ScrollNodeKey& targetNode,
         uint64_t sequence, const ScrollVector& inputDelta,
-        double inputTime, bool useSmoothMotion)
+        double inputTime, bool useSmoothMotion, uint64_t targetEpoch,
+        const content::input_frame_trace::event* identity)
         : node(targetNode)
         , inputSequence(sequence)
         , delta(inputDelta)
         , monotonicTime(inputTime)
         , smooth(useSmoothMotion)
+        , epoch(targetEpoch)
+        , hasTrace(identity != nullptr)
     {
+        if (identity)
+            traceIdentity = *identity;
     }
 
     ScrollNodeKey node;
@@ -281,6 +333,9 @@ struct CompositorScrollInput {
     ScrollVector delta;
     double monotonicTime;
     bool smooth;
+    uint64_t epoch;
+    bool hasTrace;
+    content::input_frame_trace::event traceIdentity;
 };
 
 static CompositorScrollState* findCompositorScrollState(
@@ -392,95 +447,6 @@ static bool featureEnabledByDefault(const char* environmentName)
     return !(length == 1 && option[0] == '0');
 }
 
-static void appendCompositorScrollTrace(const char* reason,
-    const ScrollTreeSnapshot* tree, int x, int y, double deltaX,
-    double deltaY, bool hasPendingTree, size_t pendingInputCount)
-{
-    char path[MAX_PATH] = {};
-    const DWORD pathLength = GetEnvironmentVariableA(
-        "SOUI_INTERACTION_TRACE", path, sizeof(path));
-    if (!pathLength || pathLength >= sizeof(path))
-        return;
-
-    const ScrollNodeSnapshot* hitNode = nullptr;
-    bool hitRegion = false;
-    if (tree) {
-        const std::vector<ScrollHitTestRegion>& regions =
-            tree->hitTestRegions();
-        for (size_t index = regions.size(); index > 0; --index) {
-            const ScrollHitTestRegion& region = regions[index - 1];
-            if (!region.bounds.contains(x, y))
-                continue;
-            hitRegion = true;
-            hitNode = tree->findNode(region.target);
-            break;
-        }
-    }
-
-    char line[1024] = {};
-    const int length = std::snprintf(line, sizeof(line),
-        "reason=%s x=%d y=%d dx=%.3f dy=%.3f tree=%u pending_tree=%u pending_inputs=%u hit_region=%u hit_node=%u eligible=%u coverage=%u reasons=%u axes=%u scene=%llu min=(%.1f,%.1f) max=(%.1f,%.1f) coverage_min=(%.1f,%.1f) coverage_max=(%.1f,%.1f) prediction=(%.1f,%.1f)\r\n",
-        reason, x, y, deltaX, deltaY, tree ? 1U : 0U,
-        hasPendingTree ? 1U : 0U,
-        static_cast<unsigned>(pendingInputCount), hitRegion ? 1U : 0U,
-        hitNode ? 1U : 0U,
-        hitNode && hitNode->compositorEligible() ? 1U : 0U,
-        hitNode && hitNode->coverageComplete ? 1U : 0U,
-        hitNode ? hitNode->mainThreadReasons : 0U,
-        hitNode ? hitNode->inputAxes : 0U,
-        hitNode ? static_cast<unsigned long long>(hitNode->sceneVersion) : 0ULL,
-        hitNode ? hitNode->minimumOffset.x : 0.0,
-        hitNode ? hitNode->minimumOffset.y : 0.0,
-        hitNode ? hitNode->maximumOffset.x : 0.0,
-        hitNode ? hitNode->maximumOffset.y : 0.0,
-        hitNode ? hitNode->coverageMinimum.x : 0.0,
-        hitNode ? hitNode->coverageMinimum.y : 0.0,
-        hitNode ? hitNode->coverageMaximum.x : 0.0,
-        hitNode ? hitNode->coverageMaximum.y : 0.0,
-        hitNode ? hitNode->inputPrediction.x : 0.0,
-        hitNode ? hitNode->inputPrediction.y : 0.0);
-    if (length <= 0)
-        return;
-
-    HANDLE file = CreateFileA(path, FILE_APPEND_DATA,
-        FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_ALWAYS,
-        FILE_ATTRIBUTE_NORMAL, nullptr);
-    if (file == INVALID_HANDLE_VALUE)
-        return;
-    DWORD written = 0;
-    WriteFile(file, line,
-        static_cast<DWORD>(std::min(length,
-            static_cast<int>(sizeof(line) - 1))), &written, nullptr);
-    if (tree) {
-        const std::vector<ScrollNodeSnapshot>& nodes = tree->nodes();
-        for (size_t index = 0; index < nodes.size(); ++index) {
-            const ScrollNodeSnapshot& node = nodes[index];
-            if (!node.viewportClip.contains(x, y))
-                continue;
-            const int nodeLength = std::snprintf(line, sizeof(line),
-                "  node[%u] id=%llu parent=%llu eligible=%u coverage=%u reasons=%u axes=%u scene=%llu clip=(%.1f,%.1f,%.1f,%.1f) min=(%.1f,%.1f) max=(%.1f,%.1f)\r\n",
-                static_cast<unsigned>(index),
-                static_cast<unsigned long long>(node.key.nodeId),
-                static_cast<unsigned long long>(node.parent.nodeId),
-                node.compositorEligible() ? 1U : 0U,
-                node.coverageComplete ? 1U : 0U,
-                node.mainThreadReasons, node.inputAxes,
-                static_cast<unsigned long long>(node.sceneVersion),
-                node.viewportClip.x, node.viewportClip.y,
-                node.viewportClip.width, node.viewportClip.height,
-                node.minimumOffset.x, node.minimumOffset.y,
-                node.maximumOffset.x, node.maximumOffset.y);
-            if (nodeLength > 0) {
-                WriteFile(file, line,
-                    static_cast<DWORD>(std::min(nodeLength,
-                        static_cast<int>(sizeof(line) - 1))), &written,
-                    nullptr);
-            }
-        }
-    }
-    CloseHandle(file);
-}
-
 #if defined(SOUI_GPU_COMPOSITOR)
 // The direct presenter does not need a CPU copy. Keep the scanline readback
 // only for diagnostics because glReadPixels plus a temporary buffer adds work
@@ -521,6 +487,7 @@ static double configuredDrawMinInterval()
 
 LayerTreeHost::LayerTreeHost(LayerTreeHostClent* hostClient, LayerTreeHostUiThreadClient* uiThreadClient)
 {
+    m_paintLifetime = std::make_shared<content::PaintLifetimeState>();
     m_rootLayer = nullptr;
     m_rootCCLayer = nullptr;
     m_deviceScaleFactor = 1.0f;
@@ -545,6 +512,9 @@ LayerTreeHost::LayerTreeHost(LayerTreeHostClent* hostClient, LayerTreeHostUiThre
     m_isDestroying = false;
     
     m_memoryCanvas = nullptr;
+    m_currentFrameBufferSlot = 0;
+    m_frameBufferGeneration = 1;
+    m_canvasPaintBlocked = false;
     m_uiPaintRetry = std::make_shared<UiPaintRetryState>(this);
 #if defined(SOUI_GPU_COMPOSITOR)
     m_gpuSurface = nullptr;
@@ -562,8 +532,6 @@ LayerTreeHost::LayerTreeHost(LayerTreeHostClent* hostClient, LayerTreeHostUiThre
     m_presentedMainFrameId = 0;
     m_pendingMainFrameDeadline = 0;
     m_unifiedFrameDeadline = false;
-    m_drawFrameCount = 0;
-    m_drawFrameFinishCount = 0;
     m_requestApplyActionsCount = 0;
     m_requestApplyActionsFinishCount = 0;
     m_postpaintMessageCount = 0;
@@ -609,10 +577,17 @@ LayerTreeHost::~LayerTreeHost()
     requestApplyActionsToRunIntoCompositeThread(true);
 
     m_compositeMutex.lock();
+    trace::event destroyedInput;
+    while (m_independentInputTrace.takeAny(&destroyedInput)) {
+        destroyedInput.flags = 0; destroyedInput.outcome = trace::terminal::cancelled;
+        destroyedInput.why = trace::reason::destroyed;
+        recordRenderStage(trace::stage::input_terminal, destroyedInput);
+    }
     {
         std::lock_guard<std::mutex> retryLock(m_uiPaintRetry->mutex);
         m_uiPaintRetry->host = nullptr;
         m_uiPaintRetry->policy.close();
+        m_uiPaintRetry->drawWake.close();
     }
     for (auto it : m_animationFinishedTasks)
         it->host = nullptr;
@@ -644,9 +619,9 @@ LayerTreeHost::~LayerTreeHost()
         delete webThread;
     }
 
-    if (m_memoryCanvas)
-        delete m_memoryCanvas;
     m_memoryCanvas = nullptr;
+    for (size_t index = 0; index < FrameBufferLeasePolicy::maximumSlots; ++index)
+        m_frameBuffers[index].reset();
 #if defined(SOUI_GPU_COMPOSITOR)
     // A surface is normally owned and released by the compositor thread.
     // Keep this fallback for hosts that never created that thread.
@@ -666,8 +641,16 @@ LayerTreeHost::~LayerTreeHost()
 
     {
         WTF::Locker<WTF::Mutex> locker(m_compositorScrollInputMutex);
-        for (size_t i = 0; i < m_pendingCompositorScrollInputs.size(); ++i)
-            delete m_pendingCompositorScrollInputs[i];
+        for (size_t i = 0; i < m_pendingCompositorScrollInputs.size(); ++i) {
+            auto* input = m_pendingCompositorScrollInputs[i];
+            if (input->hasTrace) {
+                auto value = input->traceIdentity;
+                value.flags = 0; value.outcome = trace::terminal::cancelled;
+                value.why = trace::reason::destroyed;
+                recordRenderStage(trace::stage::input_terminal, value);
+            }
+            delete input;
+        }
         m_pendingCompositorScrollInputs.clear();
         delete m_pendingCompositorScrollTree;
         m_pendingCompositorScrollTree = nullptr;
@@ -723,7 +706,7 @@ void LayerTreeHost::waitForDrawFrame()
     int finishCount = 0;
     do {
         m_compositeMutex.lock();
-        finishCount = m_drawFrameFinishCount;
+        finishCount = m_uiPaintRetry->drawFinishCount;
         m_compositeMutex.unlock();
         Sleep(20);
     } while (0 != finishCount);
@@ -880,7 +863,16 @@ bool LayerTreeHost::isLayerTreeDirty() const
 
 void LayerTreeHost::requestRepaint(const blink::IntRect& repaintRect)
 {
-    m_hostClient->onLayerTreeInvalidateRect(blink::WebRect(repaintRect));
+    if (WTF::isMainThread()) {
+        m_hostClient->onLayerTreeInvalidateRect(blink::WebRect(repaintRect));
+        return;
+    }
+    // Action application is compositor-owned. Publish damage directly and
+    // wake the owner only through the merged completion path.
+    postPaintMessage(SkRect::MakeXYWH(repaintRect.x(), repaintRect.y(),
+        repaintRect.width(), repaintRect.height()));
+    requestDrawFrameToRunIntoCompositeThread();
+    notifyResourceProgress();
 }
 
 void LayerTreeHost::requestDrawFrameLocked(DirtyLayers* dirtyLayers, Vector<Tile*>* tilesToUIThreadRelease)
@@ -923,13 +915,17 @@ bool LayerTreeHost::canRecordActions() const
 void LayerTreeHost::registerResourceWait()
 {
     std::lock_guard<std::mutex> lock(m_uiPaintRetry->mutex);
+    m_uiPaintRetry->recordWaiting = true;
     m_uiPaintRetry->resource.wait();
 }
 
 void LayerTreeHost::clearResourceWait()
 {
     std::lock_guard<std::mutex> lock(m_uiPaintRetry->mutex);
+    m_uiPaintRetry->recordWaiting = false;
     m_uiPaintRetry->resource.clearWait();
+    if (m_uiPaintRetry->drawWaiting)
+        m_uiPaintRetry->resource.wait();
 }
 
 void LayerTreeHost::notifyResourceProgress(bool actionDirty)
@@ -943,6 +939,33 @@ void LayerTreeHost::notifyResourceProgress(bool actionDirty)
     queueResourceProgress(m_uiPaintRetry);
 }
 
+RasterCandidateBudget LayerTreeHost::inspectRasterCandidateScene(uint64_t* generation)
+{
+    RasterCandidateBudget budget;
+    WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
+    if (generation)
+        *generation = m_frameBufferGeneration;
+    if (m_isDestroying || hasInFlightScene()
+        || RasterTaskWorkerThreadPool::shared()->getPendingRasterTaskNum() != 0) {
+        budget.reject(RasterCandidateBudget::Failure::ExistingWork);
+        return budget;
+    }
+    if (m_liveCCLayers.size() > RasterCandidateBudget::maximumLayers) {
+        budget.reject(RasterCandidateBudget::Failure::LayerLimit);
+        return budget;
+    }
+    for (auto it = m_liveCCLayers.begin(); it != m_liveCCLayers.end(); ++it) {
+        if (!it->value->inspectRasterCandidateResidentBudget(&budget))
+            break;
+    }
+    return budget;
+}
+bool LayerTreeHost::matchesRasterCandidateGeneration(uint64_t generation)
+{
+    WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
+    return !m_isDestroying && generation == m_frameBufferGeneration;
+}
+
 void LayerTreeHost::notifyRasterCompletion(const std::shared_ptr<UiPaintRetryState>& state)
 {
     // Safe after the pending-task count reaches zero: this handle pins only
@@ -954,7 +977,9 @@ void LayerTreeHost::runResourceProgress(uint64_t ticket, uint64_t generation)
 {
     bool dirty = false;
     bool waiting = false;
+    bool rerasterRequired = false;
     bool stale = false;
+    bool drawWaiting = false;
     {
         std::lock_guard<std::mutex> lock(m_uiPaintRetry->mutex);
         const auto intent = m_uiPaintRetry->resource.consume(
@@ -962,8 +987,16 @@ void LayerTreeHost::runResourceProgress(uint64_t ticket, uint64_t generation)
             m_uiPaintRetry->policy.generation());
         stale = intent.stale;
         dirty = intent.dirty;
-        waiting = intent.waiting;
+        waiting = intent.waiting && m_uiPaintRetry->recordWaiting;
+        drawWaiting = intent.waiting && m_uiPaintRetry->drawWaiting;
+        if (!stale) {
+            m_uiPaintRetry->recordWaiting = false;
+            m_uiPaintRetry->drawWaiting = false;
+            rerasterRequired = m_uiPaintRetry->rerasterRequired;
+            m_uiPaintRetry->rerasterRequired = false;
+        }
     }
+    trace::add(trace::counter::resource_notifications);
     if (stale) {
         queueResourceProgress(m_uiPaintRetry);
         return;
@@ -971,7 +1004,20 @@ void LayerTreeHost::runResourceProgress(uint64_t ticket, uint64_t generation)
     if (m_isDestroying)
         return;
     retryPendingOwnerWork();
-    if (dirty)
+    if (drawWaiting)
+        requestDrawFrameToRunIntoCompositeThread();
+    if (rerasterRequired) {
+        // Owner-side full invalidation reinstates every content tile whose
+        // dirty state was consumed by the rejected raster group.
+        for (auto it = m_liveLayers.begin(); it != m_liveLayers.end(); ++it)
+            it->value->invalidate();
+        {
+            WTF::Locker<WTF::Mutex> sceneLock(m_sceneTransactionMutex);
+            m_rasterRecoveryNeedsInvalidation = false;
+        }
+        postPaintMessage(SkRect::MakeWH(m_clientRect.width(), m_clientRect.height()));
+    }
+    if (dirty || rerasterRequired)
         setLayerTreeDirty();
     else if (waiting)
         m_hostClient->onLayerTreeSetNeedsCommit();
@@ -981,8 +1027,16 @@ void LayerTreeHost::retryPendingOwnerWork()
 {
     // Cheap owner service entry: retained dirty after an exceptional rejection
     // is retried here, without a permanent timer or an engine drain loop.
-    WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
-    queueLegacyPaintLocked();
+    bool retryDraw = false;
+    {
+        WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
+        if (!m_visible.load()) return;
+        queueLegacyPaintLocked();
+        std::lock_guard<std::mutex> lock(m_uiPaintRetry->mutex);
+        retryDraw = m_uiPaintRetry->drawWake.needsRetry();
+    }
+    if (retryDraw)
+        requestDrawFrameToRunIntoCompositeThread();
 }
 
 void LayerTreeHost::beginRecordActions(bool isComefromMainframe)
@@ -1022,6 +1076,7 @@ bool LayerTreeHost::preDrawFrame()
 bool LayerTreeHost::applyActions(bool needCheck)
 {
     ASSERT(!m_compositeThread || !isMainThread());
+    WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
     return m_actionsFrameGroup->applyActions(needCheck);
 }
 
@@ -1155,7 +1210,8 @@ static void refreshScrollRasterCoverage(LayerTreeHost* host,
 
 void LayerTreeHost::recordDraw()
 {
-    if (blink::RuntimeEnabledFeatures::headlessEnabled())
+    m_recordedTraceActionFirst = m_recordedTraceActionLast = 0;
+    if (!m_visible.load() || blink::RuntimeEnabledFeatures::headlessEnabled())
         return;
     if (!m_rootLayer)
         return;
@@ -1163,6 +1219,10 @@ void LayerTreeHost::recordDraw()
     ScrollTreeSnapshot scrollTree;
     std::vector<ScrollRasterCoverageRequest> coverageRequests;
     updateLayersDrawProperties(&scrollTree, &coverageRequests);
+    {
+        WTF::Locker<WTF::Mutex> identityLock(m_compositeMutex);
+        scrollTree.setInputIdentity(m_viewTraceIdentity.value());
+    }
     const int64 actionBefore = m_actionsFrameGroup->newestActionId();
 
     cc::RasterTaskGroup* taskGroup = RasterTaskWorkerThreadPool::shared()->beginPostRasterTask(this);
@@ -1179,10 +1239,12 @@ void LayerTreeHost::recordDraw()
     const bool noRasterCommit = taskGroup->endPostRasterTask();
     const int64 actionAfter = m_actionsFrameGroup->newestActionId();
     const bool hasActions = actionAfter > actionBefore;
+    m_recordedTraceActionFirst = hasActions ? actionBefore + 1 : 0;
+    m_recordedTraceActionLast = hasActions ? actionAfter : 0;
     const bool resourcesReady = noRasterCommit || !hasActions;
     refreshScrollRasterCoverage(this, &scrollTree, coverageRequests,
         !resourcesReady);
-    submitSceneTransaction(scrollTree,
+    submitSceneTransaction(std::move(scrollTree),
         hasActions ? actionBefore + 1 : 0,
         hasActions ? actionAfter : 0,
         resourcesReady);
@@ -1602,7 +1664,7 @@ void LayerTreeHost::updateLayersDrawProperties(ScrollTreeSnapshot* output,
         m_nextScrollSceneVersion, ScrollNodeKey(), &scrollTree, coverageRequests);
     attachCompositorScrollbarSnapshots(m_rootLayer, this, &scrollTree);
     if (output)
-        *output = scrollTree;
+        *output = std::move(scrollTree);
 }
 
 bool LayerTreeHost::hasInFlightScene() const
@@ -1611,24 +1673,72 @@ bool LayerTreeHost::hasInFlightScene() const
     return m_sceneCoordinator.hasPending() || m_sceneCoordinator.hasReady();
 }
 
-bool LayerTreeHost::submitSceneTransaction(const ScrollTreeSnapshot& scrollTree,
+bool LayerTreeHost::submitSceneTransaction(ScrollTreeSnapshot&& scrollTree,
     int64 firstActionId, int64 lastActionId, bool resourcesReady)
 {
+    const uint64_t sceneVersion = scrollTree.sceneVersion();
     bool accepted = false;
     {
         WTF::Locker<WTF::Mutex> locker(m_sceneTransactionMutex);
+        if (m_rasterRecoveryPending && m_rasterRecoveryNeedsInvalidation)
+            return false;
         SceneTransaction transaction;
         transaction.baseVersion = m_sceneCoordinator.activeVersion();
         transaction.newVersion = scrollTree.sceneVersion();
         transaction.firstActionId = firstActionId;
         transaction.lastActionId = lastActionId;
         transaction.resourcesReady = resourcesReady;
-        transaction.scrollTree = scrollTree;
-        accepted = m_sceneCoordinator.submit(transaction);
+        transaction.scrollTree = std::move(scrollTree);
+        accepted = m_sceneCoordinator.submit(std::move(transaction));
+        if (accepted) {
+            m_pendingSceneTraceContext = renderTraceContext();
+            m_pendingSceneTraceContext.input_first = m_pendingSceneTraceContext.input_last = 0;
+            m_pendingSceneTraceContext.action_first = firstActionId > 0 ? firstActionId : 0;
+            m_pendingSceneTraceContext.action_last = lastActionId > 0 ? lastActionId : 0;
+            m_pendingSceneTraceContext.related_id = sceneVersion;
+        }
+    }
+    if (accepted) {
+        trace::add(trace::counter::scene_pending);
+        auto value = renderTraceContext();
+        value.action_first = firstActionId > 0 ? firstActionId : 0;
+        value.action_last = lastActionId > 0 ? lastActionId : 0;
+        value.related_id = sceneVersion;
+        recordRenderStage(trace::stage::scene_pending, value);
     }
     if (accepted && resourcesReady)
         requestDrawFrameToRunIntoCompositeThread();
     return accepted;
+}
+
+void LayerTreeHost::onRasterActionCancelled(int64 actionId)
+{
+    {
+        WTF::Locker<WTF::Mutex> locker(m_sceneTransactionMutex);
+        const uint64_t failedScene = m_sceneCoordinator.hasPending()
+            ? m_sceneCoordinator.pendingScene().newVersion : m_sceneCoordinator.activeVersion();
+        m_sceneCoordinator.cancelPendingForAction(actionId);
+        m_rasterRecoveryPending = true;
+        m_rasterRecoveryNeedsInvalidation = true;
+        if (failedScene > m_rasterRecoveryAfterScene)
+            m_rasterRecoveryAfterScene = failedScene;
+    }
+    {
+        WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
+        for (size_t index = 0; index < m_unpresentedInputTrace.size(); ++index) {
+            if (!m_pendingInputTrace.append(m_unpresentedInputTrace.at(index))) {
+                trace::add(trace::counter::causal_ranges_dropped);
+                trace::note_causal_loss();
+            }
+        }
+        m_unpresentedInputTrace.clear();
+    }
+    {
+        std::lock_guard<std::mutex> lock(m_uiPaintRetry->mutex);
+        m_uiPaintRetry->rerasterRequired = true;
+        m_uiPaintRetry->resource.notify(true);
+    }
+    queueResourceProgress(m_uiPaintRetry);
 }
 
 void LayerTreeHost::onActionFrameApplied(int64 throughActionId)
@@ -1639,8 +1749,16 @@ void LayerTreeHost::onActionFrameApplied(int64 throughActionId)
         ready = m_sceneCoordinator.markResourcesReadyThroughAction(
             throughActionId);
     }
-    if (ready)
+    if (ready) {
+        trace::event value;
+        {
+            WTF::Locker<WTF::Mutex> locker(m_sceneTransactionMutex);
+            value = m_pendingSceneTraceContext;
+        }
+        value.action_last = throughActionId > 0 ? throughActionId : 0;
+        recordRenderStage(trace::stage::resources_ready, value);
         requestDrawFrameToRunIntoCompositeThread();
+    }
     notifyResourceProgress();
 }
 
@@ -1827,6 +1945,8 @@ void LayerTreeHost::setViewportSize(const blink::WebSize& deviceViewportSize)
     m_deviceViewportSize = deviceViewportSize;
     m_clientRect = blink::IntRect(blink::IntPoint(), m_deviceViewportSize);
     m_hasResize = true;
+    if (m_frameBufferGeneration != (std::numeric_limits<uint64_t>::max)())
+        ++m_frameBufferGeneration;
     m_nextCompositeFrameTime = 0;
     {
         std::lock_guard<std::mutex> retryLock(m_uiPaintRetry->mutex);
@@ -1850,7 +1970,14 @@ blink::WebSize LayerTreeHost::deviceViewportSize() const
 
 void LayerTreeHost::setDeviceScaleFactor(float scale)
 {
+    WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
+    if (m_deviceScaleFactor == scale)
+        return;
     m_deviceScaleFactor = scale;
+    m_nextCompositeFrameTime = 0;
+    m_hasResize = true;
+    if (m_frameBufferGeneration != (std::numeric_limits<uint64_t>::max)())
+        ++m_frameBufferGeneration;
 }
 
 float LayerTreeHost::deviceScaleFactor() const
@@ -1882,6 +2009,12 @@ void LayerTreeHost::setHasTransparentBackground(bool b)
     if (m_hasTransparentBackground == b)
         return;
     m_hasTransparentBackground = b;
+    {
+        WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
+        m_hasResize = true;
+        if (m_frameBufferGeneration != (std::numeric_limits<uint64_t>::max)())
+            ++m_frameBufferGeneration;
+    }
     recursiveSetColor(&m_liveLayers, m_hasTransparentBackground, m_backgroundColor);
 }
 
@@ -1901,17 +2034,22 @@ void LayerTreeHost::registerForAnimations(blink::WebLayer* layer)
 // composite or trigger updateAnimations() or layout() calls until it becomes visible.
 void LayerTreeHost::setVisible(bool visible)
 {
-    bool restored = false;
     {
         WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
-        restored = !m_visible && visible;
-        m_visible = visible;
+        m_visible.store(visible);
         m_nextCompositeFrameTime = 0;
-        if (restored && !m_clientRect.isEmpty())
-            addAndMergeDirty(&m_dirtyRectsForComposite, SkRect::MakeWH(
-                m_clientRect.width(), m_clientRect.height()));
+        m_lastPaintTime = 0;
+        {
+            std::lock_guard<std::mutex> retryLock(m_uiPaintRetry->mutex);
+            m_uiPaintRetry->policy.invalidate();
+        }
+        // Repeated true is a real restore intent after UI transition coalescing.
+        if (visible && !m_clientRect.isEmpty()) {
+            const SkRect full = SkRect::MakeWH(m_clientRect.width(), m_clientRect.height());
+            addAndMergeDirty(&m_dirtyRectsForComposite, full);
+        }
     }
-    if (restored) {
+    if (visible) {
         m_hostClient->onLayerTreeSetNeedsCommit();
         requestDrawFrameToRunIntoCompositeThread();
     }
@@ -1955,32 +2093,47 @@ blink::IntRect LayerTreeHost::getClientRect()
 
 void LayerTreeHost::requestDrawFrameToRunIntoCompositeThread()
 {
-    WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
-    if (!m_compositeThread) {
-        RELEASE_ASSERT(!m_uiThreadClient);
-        return;
-    }
-    if (0 != m_drawFrameCount)
-        return;
-
-    atomicIncrement(&m_drawFrameCount);
-    atomicIncrement(&m_drawFrameFinishCount);
-    m_compositeThread->platformThread().postTask(FROM_HERE, WTF::bind(&LayerTreeHost::drawFrameInCompositeThread, this));
+    queueDrawFrameWake(0);
 }
 
 void LayerTreeHost::requestDrawFrameAfterDelay(long long delayMs)
 {
-    WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
-    if (!m_compositeThread || m_isDestroying)
-        return;
-    if (0 != m_drawFrameCount)
-        return;
+    queueDrawFrameWake(std::max<long long>(1, delayMs));
+}
 
-    atomicIncrement(&m_drawFrameCount);
-    atomicIncrement(&m_drawFrameFinishCount);
-    m_compositeThread->platformThread().postDelayedTask(FROM_HERE,
-        WTF::bind(&LayerTreeHost::drawFrameInCompositeThread, this),
-        std::max<long long>(1, delayMs));
+void LayerTreeHost::queueDrawFrameWake(long long delayMs)
+{
+    WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
+    if (!m_compositeThread || m_isDestroying || !m_visible.load())
+        return;
+    if (m_uiPaintRetry->drawQueuedCount)
+        return;
+    uint64_t ticket;
+    {
+        std::lock_guard<std::mutex> lock(m_uiPaintRetry->mutex);
+        m_uiPaintRetry->drawWake.request();
+        ticket = m_uiPaintRetry->drawWake.arm();
+    }
+    if (!ticket) {
+        m_hasRejectedDrawWake.store(true);
+        return;
+    }
+    auto* task = new (std::nothrow) DrawFrameTask(m_uiPaintRetry, ticket);
+    if (!task) {
+        std::lock_guard<std::mutex> lock(m_uiPaintRetry->mutex);
+        m_uiPaintRetry->drawWake.reject(ticket);
+        m_hasRejectedDrawWake.store(true);
+        return;
+    }
+    m_uiPaintRetry->drawQueuedCount.fetch_add(1);
+    m_uiPaintRetry->drawFinishCount.fetch_add(1);
+    m_hasRejectedDrawWake.store(false);
+    // WebThread owns/disposes the task on every admission/timer failure.
+    // Its receipt clears only this wake, preserving published input and damage.
+    if (delayMs > 0)
+        m_compositeThread->platformThread().postDelayedTask(FROM_HERE, task, delayMs);
+    else
+        m_compositeThread->platformThread().postTask(FROM_HERE, task);
 }
 
 bool LayerTreeHost::addCompositorAnimation(int layerId,
@@ -2079,13 +2232,18 @@ bool LayerTreeHost::submitCompositorScrollTree(
 
 bool LayerTreeHost::handleCompositorWheelInput(int x, int y,
     double deltaX, double deltaY, double monotonicTime, bool smooth,
-    CompositorScrollReceipt* receipt)
+    CompositorScrollReceipt* receipt,
+    const content::input_frame_trace::event* inputIdentity)
 {
+    if (receipt)
+        *receipt = CompositorScrollReceipt();
+    content::PaintActivityScope inputActivity(m_paintLifetime);
+    if (!inputActivity)
+        return false;
     if (!featureEnabledByDefault("SOUI_COMPOSITOR_SCROLL")
         || m_isDestroying || !std::isfinite(deltaX) || !std::isfinite(deltaY)
         || !std::isfinite(monotonicTime)) {
-        appendCompositorScrollTrace("disabled-or-invalid", nullptr, x, y,
-            deltaX, deltaY, false, 0);
+        recordInteractionDiagnostic(trace::interaction_diagnostic_code::disabled_or_invalid);
         return false;
     }
 
@@ -2093,11 +2251,9 @@ bool LayerTreeHost::handleCompositorWheelInput(int x, int y,
     {
         WTF::Locker<WTF::Mutex> locker(m_compositorScrollInputMutex);
         if (!m_activeInputScrollTree || m_pendingCompositorScrollTree
+            || (inputIdentity && !m_activeInputScrollTree->matchesInputIdentity(*inputIdentity))
             || m_pendingCompositorScrollInputs.size() >= 512) {
-            appendCompositorScrollTrace("scene-unavailable",
-                m_activeInputScrollTree, x, y, deltaX, deltaY,
-                m_pendingCompositorScrollTree != nullptr,
-                m_pendingCompositorScrollInputs.size());
+            recordInteractionDiagnostic(trace::interaction_diagnostic_code::scene_unavailable);
             return false;
         }
 
@@ -2120,24 +2276,32 @@ bool LayerTreeHost::handleCompositorWheelInput(int x, int y,
         }
 
         if (!target) {
-            appendCompositorScrollTrace("no-eligible-hit",
-                m_activeInputScrollTree, x, y, deltaX, deltaY, false,
-                m_pendingCompositorScrollInputs.size());
+            recordInteractionDiagnostic(trace::interaction_diagnostic_code::no_eligible_hit);
             return false;
         }
+        if (m_nextCompositorInputSequence == (std::numeric_limits<uint64_t>::max)())
+            return false;
+        const uint64_t sequence = m_nextCompositorInputSequence + 1;
+        std::unique_ptr<CompositorScrollInput> payload(new (std::nothrow) CompositorScrollInput(
+            target->key, sequence, ScrollVector(deltaX, deltaY), monotonicTime,
+            smooth, target->scrollEpoch, inputIdentity));
+        if (!payload)
+            return false;
+        try {
+            if (m_pendingCompositorScrollInputs.size() == m_pendingCompositorScrollInputs.capacity()) {
+                const size_t capacity = m_pendingCompositorScrollInputs.capacity();
+                m_pendingCompositorScrollInputs.reserve(std::min<size_t>(512, capacity ? capacity * 2 : 16));
+            }
+        } catch (...) {
+            return false; // No prediction/receipt mutation; original Engine fallback remains exact.
+        }
         if (!target->advanceInputPrediction(ScrollVector(deltaX, deltaY))) {
-            appendCompositorScrollTrace("delta-not-consumed",
-                m_activeInputScrollTree, x, y, deltaX, deltaY, false,
-                m_pendingCompositorScrollInputs.size());
+            recordInteractionDiagnostic(trace::interaction_diagnostic_code::delta_not_consumed);
             return false;
         }
 
-        ++m_nextCompositorInputSequence;
-        if (!m_nextCompositorInputSequence)
-            ++m_nextCompositorInputSequence;
-        m_pendingCompositorScrollInputs.append(new CompositorScrollInput(
-            target->key, m_nextCompositorInputSequence,
-            ScrollVector(deltaX, deltaY), monotonicTime, smooth));
+        m_pendingCompositorScrollInputs.push_back(payload.release()); // Reserved, pointer-only, nonthrowing.
+        m_nextCompositorInputSequence = sequence;
         if (receipt) {
             receipt->sceneVersion = target->sceneVersion;
             receipt->inputSequence = m_nextCompositorInputSequence;
@@ -2147,22 +2311,28 @@ bool LayerTreeHost::handleCompositorWheelInput(int x, int y,
         m_latchedScrollNode = target->key;
         m_lastCompositorWheelTime = monotonicTime;
         accepted = true;
-        appendCompositorScrollTrace("accepted", m_activeInputScrollTree,
-            x, y, deltaX, deltaY, false,
-            m_pendingCompositorScrollInputs.size());
+        recordInteractionDiagnostic(trace::interaction_diagnostic_code::accepted);
     }
 
-    if (accepted)
-        requestDrawFrameToRunIntoCompositeThread();
+    if (accepted) {
+        if (inputIdentity && InputFrameCoverage::validRange(*inputIdentity)) {
+            trace::context_scope acceptedInput(*inputIdentity); // TLS only; the actual post hook records its own event.
+            requestDrawFrameToRunIntoCompositeThread();
+        } else {
+            requestDrawFrameToRunIntoCompositeThread();
+        }
+    }
     return accepted;
 }
 
 bool LayerTreeHost::captureCompositorScrollBarrier(int x, int y,
-    ScrollBarrier* barrier)
+    ScrollBarrier* barrier, const content::input_frame_trace::event* inputIdentity)
 {
+    content::PaintActivityScope inputActivity(m_paintLifetime);
+    if (!inputActivity)
+        return false;
     if (!barrier || m_isDestroying) {
-        appendCompositorScrollTrace("barrier-capture-invalid", nullptr,
-            x, y, 0.0, 0.0, false, 0);
+        recordInteractionDiagnostic(trace::interaction_diagnostic_code::barrier_capture_invalid);
         return false;
     }
 
@@ -2171,16 +2341,15 @@ bool LayerTreeHost::captureCompositorScrollBarrier(int x, int y,
     uint64_t targetScrollEpoch = 0;
     {
         WTF::Locker<WTF::Mutex> locker(m_compositorScrollInputMutex);
-        if (!m_activeInputScrollTree) {
-            appendCompositorScrollTrace("barrier-capture-no-tree", nullptr,
-                x, y, 0.0, 0.0, false, 0);
+        if (!m_activeInputScrollTree
+            || (inputIdentity && !m_activeInputScrollTree->matchesInputIdentity(*inputIdentity))) {
+            recordInteractionDiagnostic(trace::interaction_diagnostic_code::barrier_capture_no_tree);
             return false;
         }
         const ScrollNodeSnapshot* target =
             m_activeInputScrollTree->scrollTargetAt(x, y);
         if (!target || !target->compositorEligible()) {
-            appendCompositorScrollTrace("barrier-capture-no-target",
-                m_activeInputScrollTree, x, y, 0.0, 0.0, false, 0);
+            recordInteractionDiagnostic(trace::interaction_diagnostic_code::barrier_capture_no_target);
             return false;
         }
         targetKey = target->key;
@@ -2192,8 +2361,7 @@ bool LayerTreeHost::captureCompositorScrollBarrier(int x, int y,
     CompositorScrollState* state = findCompositorScrollState(
         m_compositorScrollStates, targetKey);
     if (!state) {
-        appendCompositorScrollTrace("barrier-capture-no-state", nullptr,
-            x, y, 0.0, 0.0, false, 0);
+        recordInteractionDiagnostic(trace::interaction_diagnostic_code::barrier_capture_no_state);
         return false;
     }
     *barrier = state->controller.captureBarrier();
@@ -2208,11 +2376,8 @@ bool LayerTreeHost::captureCompositorScrollBarrier(int x, int y,
     } else {
         barrier->sceneVersion = targetSceneVersion;
     }
-    appendCompositorScrollTrace(barrier->valid
-            ? "barrier-capture-accepted" : "barrier-capture-rejected",
-        nullptr, x, y, barrier->visualOffset.x,
-        barrier->visualOffset.y, false,
-        static_cast<size_t>(barrier->sampleSequence));
+    recordInteractionDiagnostic(barrier->valid
+            ? trace::interaction_diagnostic_code::barrier_capture_accepted : trace::interaction_diagnostic_code::barrier_capture_rejected);
     return barrier->valid;
 }
 
@@ -2220,16 +2385,12 @@ bool LayerTreeHost::synchronizeCompositorScrollBarrier(
     const ScrollBarrier& barrier)
 {
     if (m_isDestroying || !barrier.valid) {
-        appendCompositorScrollTrace("barrier-sync-invalid", nullptr,
-            0, 0, barrier.visualOffset.x, barrier.visualOffset.y,
-            false, static_cast<size_t>(barrier.sampleSequence));
+        recordInteractionDiagnostic(trace::interaction_diagnostic_code::barrier_sync_invalid);
         return false;
     }
 
     if (barrier.key.nodeId > static_cast<uint64_t>(INT_MAX)) {
-        appendCompositorScrollTrace("barrier-sync-invalid-layer-id", nullptr,
-            0, 0, barrier.visualOffset.x, barrier.visualOffset.y,
-            false, static_cast<size_t>(barrier.sampleSequence));
+        recordInteractionDiagnostic(trace::interaction_diagnostic_code::barrier_sync_invalid_layer_id);
         return false;
     }
 
@@ -2246,30 +2407,21 @@ bool LayerTreeHost::synchronizeCompositorScrollBarrier(
         if (!m_activeInputScrollTree
             || m_activeInputScrollTree->sceneVersion()
                 < barrier.sceneVersion) {
-            appendCompositorScrollTrace("barrier-sync-future-scene",
-                m_activeInputScrollTree, 0, 0, barrier.visualOffset.x,
-                barrier.visualOffset.y, false,
-                static_cast<size_t>(barrier.sampleSequence));
+            recordInteractionDiagnostic(trace::interaction_diagnostic_code::barrier_sync_future_scene);
             return false;
         }
         activeInputScene = m_activeInputScrollTree->sceneVersion();
         ScrollNodeSnapshot* active =
             m_activeInputScrollTree->findMutableNode(barrier.key);
         if (active && active->sceneVersion < barrier.sceneVersion) {
-            appendCompositorScrollTrace("barrier-sync-tree-mismatch",
-                m_activeInputScrollTree, 0, 0, barrier.visualOffset.x,
-                barrier.visualOffset.y, false,
-                static_cast<size_t>(barrier.sampleSequence));
+            recordInteractionDiagnostic(trace::interaction_diagnostic_code::barrier_sync_tree_mismatch);
             return false;
         }
         requiresRetiredStateProof = (!active
                 && activeInputScene >= barrier.sceneVersion)
             || (active && active->scrollEpoch != barrier.scrollEpoch);
         if (!ownerMatches && !requiresRetiredStateProof) {
-            appendCompositorScrollTrace("barrier-sync-owner-mismatch",
-                m_activeInputScrollTree, layerId, 0,
-                barrier.visualOffset.x, barrier.visualOffset.y, false,
-                static_cast<size_t>(barrier.sampleSequence));
+            recordInteractionDiagnostic(trace::interaction_diagnostic_code::barrier_sync_owner_mismatch);
             return false;
         }
         // An owner reconciliation may replace the tree at this or a newer
@@ -2282,8 +2434,14 @@ bool LayerTreeHost::synchronizeCompositorScrollBarrier(
                 m_pendingCompositorScrollInputs[i];
             if (input->node == barrier.key
                 && input->inputSequence <= barrier.throughInputSequence) {
+                if (input->hasTrace) {
+                    auto value = input->traceIdentity;
+                    value.flags = 0; value.outcome = trace::terminal::cancelled;
+                    value.why = trace::reason::superseded;
+                    recordRenderStage(trace::stage::input_terminal, value);
+                }
                 delete input;
-                m_pendingCompositorScrollInputs.remove(i);
+                m_pendingCompositorScrollInputs.erase(m_pendingCompositorScrollInputs.begin() + i);
             } else {
                 ++i;
             }
@@ -2354,24 +2512,17 @@ bool LayerTreeHost::synchronizeCompositorScrollBarrier(
     if (ownerMatches) {
         if (!dispatchCompositorScrollOnMainThread(layerId, synchronized,
                 barrier.visualOffset)) {
-            appendCompositorScrollTrace("barrier-sync-owner-rejected", nullptr,
-                layerId, 0, barrier.visualOffset.x, barrier.visualOffset.y,
-                false, static_cast<size_t>(barrier.sampleSequence));
+            recordInteractionDiagnostic(trace::interaction_diagnostic_code::barrier_sync_owner_rejected);
             return false;
         }
     } else if (!retiredStateProvesReconciliation) {
-        appendCompositorScrollTrace("barrier-sync-owner-rejected", nullptr,
-            layerId, 0, barrier.visualOffset.x, barrier.visualOffset.y,
-            false, static_cast<size_t>(barrier.sampleSequence));
+        recordInteractionDiagnostic(trace::interaction_diagnostic_code::barrier_sync_owner_rejected);
         return false;
     }
-    appendCompositorScrollTrace(retiredStateProvesReconciliation
-            ? "barrier-sync-retired-accepted"
-            : (synchronizedController ? "barrier-sync-accepted"
-                                      : "barrier-sync-forward-accepted"),
-        nullptr,
-        layerId, 0, barrier.visualOffset.x, barrier.visualOffset.y,
-        false, static_cast<size_t>(barrier.sampleSequence));
+    recordInteractionDiagnostic(retiredStateProvesReconciliation
+            ? trace::interaction_diagnostic_code::barrier_sync_retired_accepted
+            : (synchronizedController ? trace::interaction_diagnostic_code::barrier_sync_accepted
+                                      : trace::interaction_diagnostic_code::barrier_sync_forward_accepted));
     if (synchronizedController)
         requestDrawFrameToRunIntoCompositeThread();
     return true;
@@ -2537,6 +2688,12 @@ bool LayerTreeHost::tickCompositorScroll(double monotonicTime,
     {
         WTF::Locker<WTF::Mutex> sceneLocker(m_sceneTransactionMutex);
         if (m_sceneCoordinator.activateReady()) {
+            if (m_rasterRecoveryPending && !m_rasterRecoveryNeedsInvalidation
+                && m_sceneCoordinator.activeVersion() > m_rasterRecoveryAfterScene)
+                m_rasterRecoveryPending = false;
+            m_activeSceneTraceContext = m_pendingSceneTraceContext;
+            trace::add(trace::counter::scene_activated);
+            recordRenderStage(trace::stage::scene_activated, m_activeSceneTraceContext);
             activatedSceneTree = new ScrollTreeSnapshot(
                 m_sceneCoordinator.activeScene().scrollTree);
         }
@@ -2545,7 +2702,7 @@ bool LayerTreeHost::tickCompositorScroll(double monotonicTime,
     if (activatedSceneTree)
         notifyResourceProgress();
     ScrollTreeSnapshot* pendingTree = nullptr;
-    WTF::Vector<CompositorScrollInput*> inputs;
+    std::vector<CompositorScrollInput*> inputs;
     {
         WTF::Locker<WTF::Mutex> locker(m_compositorScrollInputMutex);
         pendingTree = m_pendingCompositorScrollTree;
@@ -2572,9 +2729,20 @@ bool LayerTreeHost::tickCompositorScroll(double monotonicTime,
         CompositorScrollInput* input = inputs[i];
         CompositorScrollState* state = findCompositorScrollState(
             m_compositorScrollStates, input->node);
-        if (state) {
-            state->controller.enqueueDelta(input->inputSequence,
-                input->delta, input->monotonicTime, input->smooth);
+        const bool enqueued = state && state->controller.enqueueDelta(input->inputSequence,
+            input->delta, input->monotonicTime, input->smooth);
+        if (input->hasTrace) {
+            if (!enqueued || !m_viewTraceIdentity.accepts(input->traceIdentity)
+                || state->controller.activeNode().scrollEpoch != input->epoch) {
+                auto value = input->traceIdentity;
+                value.flags = 0; value.outcome = trace::terminal::stale;
+                value.why = trace::reason::stale_generation;
+                recordRenderStage(trace::stage::input_terminal, value);
+            } else if (!m_independentInputTrace.append(input->traceIdentity, input->node,
+                input->epoch, input->inputSequence, input->monotonicTime, input->smooth)) {
+                trace::add(trace::counter::causal_ranges_dropped);
+                trace::note_causal_loss();
+            }
         }
         delete input;
     }
@@ -2597,6 +2765,8 @@ bool LayerTreeHost::tickCompositorScroll(double monotonicTime,
                 layer->setCompositorScrollDelta(
                     visual.x - node.baseOffset.x,
                     visual.y - node.baseOffset.y);
+                m_independentInputTrace.adopt(sample.key, sample.scrollEpoch,
+                    sample.throughInputSequence, monotonicTime, sample.valid);
                 postCompositorScrollUpdateToMainThread(state->layerId,
                     sample, visual);
             }
@@ -2626,6 +2796,13 @@ bool LayerTreeHost::tickCompositorScroll(double monotonicTime,
                     oldNode.viewportClip.width, oldNode.viewportClip.height));
                 addCompositorScrollbarDamage(dirtyRects, oldNode);
                 layerIt->value->clearCompositorScrollDelta();
+            }
+            trace::event discarded;
+            while (m_independentInputTrace.takeNode(state->controller.activeNode().key,
+                state->controller.activeNode().scrollEpoch, &discarded)) {
+                discarded.flags = 0; discarded.outcome = trace::terminal::stale;
+                discarded.why = trace::reason::stale_generation;
+                recordRenderStage(trace::stage::input_terminal, discarded);
             }
             delete state;
             m_compositorScrollStates.remove(i);
@@ -2657,6 +2834,13 @@ bool LayerTreeHost::tickCompositorScroll(double monotonicTime,
                     m_retiredCompositorScrollStates,
                     state->controller.captureBarrier(),
                     pendingTree->sceneVersion());
+                trace::event discarded;
+                while (m_independentInputTrace.takeNode(state->controller.activeNode().key,
+                    state->controller.activeNode().scrollEpoch, &discarded)) {
+                    discarded.flags = 0; discarded.outcome = trace::terminal::stale;
+                    discarded.why = trace::reason::stale_generation;
+                    recordRenderStage(trace::stage::input_terminal, discarded);
+                }
             }
             if (!state) {
                 state = new CompositorScrollState(
@@ -2831,8 +3015,7 @@ void LayerTreeHost::clearCanvas(SkCanvas* canvas, const SkRect& rect, bool useLa
 
 void LayerTreeHost::setDrawMinInterval(double drawMinInterval)
 {
-    if (!(drawMinInterval > 0) || !std::isfinite(drawMinInterval)
-        || drawMinInterval > 1.0)
+    if (drawMinInterval < 0 || !std::isfinite(drawMinInterval))
         return;
     WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
     m_drawMinInterval = drawMinInterval;
@@ -2843,10 +3026,99 @@ void LayerTreeHost::setMainFrameDeadline(uint64_t frameId, double target, double
 {
     WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
     m_unifiedFrameDeadline = interval > 0;
-    if (!m_unifiedFrameDeadline || !frameId || frameId <= m_pendingMainFrameId)
+    if (!frameId || frameId <= m_pendingMainFrameId)
         return;
     m_pendingMainFrameId = frameId;
     m_pendingMainFrameDeadline = target;
+    m_unpresentedInputTrace = m_pendingInputTrace;
+    m_unpresentedInputFrameId = frameId;
+    m_frameTraceContext = m_viewTraceIdentity.frameContext(renderTraceContext());
+    m_frameTraceContext.input_first = m_frameTraceContext.input_last = 0;
+    m_frameTraceContext.frame_id = frameId;
+    m_frameTraceContext.action_first = m_recordedTraceActionFirst;
+    m_frameTraceContext.action_last = m_recordedTraceActionLast;
+    if (m_pendingInputTrace.size()) {
+        m_frameTraceContext = m_pendingInputTrace.at(0);
+        m_frameTraceContext.input_first = m_frameTraceContext.input_last = 0;
+        m_frameTraceContext.frame_id = frameId;
+        m_frameTraceContext.action_first = m_recordedTraceActionFirst;
+        m_frameTraceContext.action_last = m_recordedTraceActionLast;
+        for (size_t index = 0; index < m_pendingInputTrace.size(); ++index) {
+            auto value = m_pendingInputTrace.at(index);
+            value.frame_id = frameId;
+            value.action_first = m_recordedTraceActionFirst;
+            value.action_last = m_recordedTraceActionLast;
+            value.flags = trace::coverage_valid; // Processed, not proven visible content.
+            recordRenderStage(trace::stage::frame_coverage, value);
+            recordRenderStage(trace::stage::commit_complete, value);
+        }
+        bool keepForRecovery = false;
+        {
+            WTF::Locker<WTF::Mutex> sceneLock(m_sceneTransactionMutex);
+            keepForRecovery = m_rasterRecoveryPending;
+        }
+        if (!keepForRecovery)
+            m_pendingInputTrace.clear();
+    } else {
+        m_frameTraceContext.frame_id = frameId;
+        recordRenderStage(trace::stage::commit_complete, m_frameTraceContext);
+    }
+}
+
+static void recordStaleInputTrace(content::input_frame_trace::event value)
+{
+    value.flags = 0;
+    value.why = trace::reason::stale_generation;
+    value.outcome = trace::terminal::stale;
+    value.frame_id = value.action_first = value.action_last = value.related_id = 0;
+    recordRenderStage(trace::stage::input_terminal, value);
+}
+
+bool LayerTreeHost::setViewTraceIdentity(const content::input_frame_trace::event& value)
+{
+    WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
+    const auto previous = m_viewTraceIdentity.value();
+    if (!m_viewTraceIdentity.set(value))
+        return false;
+    if (InputFrameCoverage::sameGeneration(previous, value))
+        return true;
+    InputFrameCoverage retired;
+    size_t lost = 0;
+    m_viewTraceIdentity.retainCurrent(m_pendingInputTrace, retired, lost);
+    m_viewTraceIdentity.retainCurrent(m_unpresentedInputTrace, retired, lost);
+    if (lost) {
+        trace::add(trace::counter::causal_ranges_dropped, lost);
+        trace::note_causal_loss(lost);
+    }
+    if (!m_unpresentedInputTrace.size())
+        m_unpresentedInputFrameId = 0;
+    for (size_t index = 0; index < retired.size(); ++index)
+        recordStaleInputTrace(retired.at(index));
+    trace::event independentStale;
+    while (m_independentInputTrace.takeStale(m_viewTraceIdentity.value(), &independentStale))
+        recordStaleInputTrace(independentStale);
+    // Scene and owning framebuffer descriptors remain immutable snapshots.
+    m_frameTraceContext = m_viewTraceIdentity.value();
+    return true;
+}
+
+content::input_frame_trace::event LayerTreeHost::traceContextForFrame()
+{
+    WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
+    return m_viewTraceIdentity.frameContext(renderTraceContext());
+}
+
+void LayerTreeHost::noteProcessedInputTrace(const content::input_frame_trace::event& value)
+{
+    WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
+    if (!m_viewTraceIdentity.accepts(value)) {
+        recordStaleInputTrace(value);
+        return;
+    }
+    if (!m_pendingInputTrace.append(value)) {
+        trace::add(trace::counter::causal_ranges_dropped);
+        trace::note_causal_loss();
+    }
 }
 
 void LayerTreeHost::setIndependentPresentationEnabled(bool enabled)
@@ -2875,54 +3147,48 @@ void LayerTreeHost::postPaintMessage(const SkRect& paintRect)
 
 void LayerTreeHost::firePaintEvent(HDC hdc, const RECT* paintRect)
 {
-    m_compositeMutex.lock();
-    if (!m_memoryCanvas || m_clientRect.isEmpty()) {
-        m_compositeMutex.unlock();
+    content::PaintActivityScope paintActivity(m_paintLifetime);
+    if (!paintActivity)
         return;
-    }
-    m_compositeMutex.unlock();
-
-#if 0
-    HPEN hpen = CreatePen(PS_SOLID, 10, RGB(11, 22, 33));
-    HBRUSH hbrush = CreateSolidBrush(RGB(0xf3, 22, 33));
-
-    SelectObject(hdc, hpen);
-    SelectObject(hdc, hbrush);
-
-    Rectangle(hdc, paintRect->left, paintRect->top, paintRect->right, paintRect->bottom);
-
-    DeleteObject(hpen);
-    DeleteObject(hbrush);
-#endif
-
-    WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
-
-    if (!m_hasTransparentBackground)
-        skia::DrawToNativeContext(m_memoryCanvas, hdc, paintRect->left, paintRect->top, paintRect);
+    FrameBufferLease lease = acquireFrameBufferLease();
+    if (!lease || !paintRect)
+        return;
+    RenderTraceContextScope frameScope(lease.buffer->traceContext);
+    if (!lease.buffer->alpha)
+        skia::DrawToNativeContext(lease.canvas(), hdc, paintRect->left,
+            paintRect->top, paintRect);
     else {
-        RECT rc = blink::intRectToWinRect(m_clientRect);
-        skia::DrawToNativeLayeredContext(m_memoryCanvas, hdc, paintRect, &rc);
+        RECT client = {0, 0, lease.buffer->width, lease.buffer->height};
+        skia::DrawToNativeLayeredContext(lease.canvas(), hdc, paintRect, &client);
     }
 }
 
 void LayerTreeHost::drawFrameInCompositeThread()
 {
+    content::PaintActivityScope paintActivity(m_paintLifetime);
+    if (!paintActivity) {
+        m_uiPaintRetry->drawQueuedCount.fetch_sub(1);
+        m_uiPaintRetry->drawFinishCount.fetch_sub(1);
+        return;
+    }
     m_compositeMutex.lock();
-    if (1 != m_drawFrameCount)
+    if (1 != m_uiPaintRetry->drawQueuedCount)
         DebugBreak();
-    atomicDecrement(&m_drawFrameCount);
+    m_uiPaintRetry->drawQueuedCount.fetch_sub(1);
     m_compositeMutex.unlock();
 
     const double lastCompositeTime = WTF::monotonicallyIncreasingTime();
     uint64_t committedFrame = 0;
+    trace::event frameContext;
     long long pacingDelay = 0;
     {
         WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
         if (!m_visible && !m_isDestroying) {
-            atomicDecrement(&m_drawFrameFinishCount);
+            m_uiPaintRetry->drawFinishCount.fetch_sub(1);
             return;
         }
         committedFrame = m_pendingMainFrameId;
+        frameContext = m_frameTraceContext;
         const bool alreadyPaced = m_unifiedFrameDeadline
             && committedFrame > m_presentedMainFrameId
             && lastCompositeTime >= m_pendingMainFrameDeadline;
@@ -2936,8 +3202,9 @@ void LayerTreeHost::drawFrameInCompositeThread()
         }
     }
     if (pacingDelay > 0) {
+        trace::add(trace::counter::pacing_wakes);
         requestDrawFrameAfterDelay(pacingDelay);
-        atomicDecrement(&m_drawFrameFinishCount);
+        m_uiPaintRetry->drawFinishCount.fetch_sub(1);
         return;
     }
 
@@ -2950,13 +3217,32 @@ void LayerTreeHost::drawFrameInCompositeThread()
     gLastCount = performanceCount.LowPart;
 #endif
 
+    RenderTraceContextScope frameTraceScope(frameContext);
+    RenderDurationScope compositeDuration(trace::duration_metric::composite);
+    recordRenderStage(trace::stage::composite_begin);
     bool frameReady = preDrawFrame(); // 这里也会发起Commit
+    {
+        WTF::Locker<WTF::Mutex> sceneLock(m_sceneTransactionMutex);
+        if (m_rasterRecoveryPending && (m_rasterRecoveryNeedsInvalidation
+            || !m_sceneCoordinator.hasReady())) {
+            // The previous canvas remains the only visible scene while a
+            // replacement reraster is outstanding. Do not consume its dirty.
+            recordRenderStage(trace::stage::composite_end);
+            m_uiPaintRetry->drawFinishCount.fetch_sub(1);
+            return;
+        }
+    }
 
     Vector<SkRect> animationDirtyRects;
     const bool animationNeedsAnotherFrame = tickCompositorAnimations(
         lastCompositeTime, &animationDirtyRects);
     const bool scrollNeedsAnotherFrame = tickCompositorScroll(
         lastCompositeTime, &animationDirtyRects);
+    {
+        WTF::Locker<WTF::Mutex> sceneLocker(m_sceneTransactionMutex);
+        // Unknown active identity must not inherit a newer pending frame.
+        currentRenderTraceContext() = m_activeSceneTraceContext;
+    }
 
     m_compositeMutex.lock();
     Vector<SkRect> dirtyRects = m_dirtyRectsForComposite;
@@ -2966,9 +3252,13 @@ void LayerTreeHost::drawFrameInCompositeThread()
     for (size_t i = 0; i < animationDirtyRects.size(); ++i)
         addAndMergeDirty(&dirtyRects, animationDirtyRects[i]);
 
+    m_canvasPaintBlocked = false;
+    uint64_t paintedFrame = 0;
     for (size_t i = 0; i < dirtyRects.size() && !m_isDestroying; ++i) {
         const SkRect& r = dirtyRects[i];
-        paintToMemoryCanvasInCompositeThread(r);
+        const uint64_t actualFrame = paintToMemoryCanvasInCompositeThread(r);
+        if (actualFrame)
+            paintedFrame = actualFrame;
     }
 
 #if defined(SOUI_GPU_COMPOSITOR)
@@ -2987,9 +3277,16 @@ void LayerTreeHost::drawFrameInCompositeThread()
     }
 #endif
 
-    if (!dirtyRects.isEmpty()) {
+    const bool paintCompleted = !m_canvasPaintBlocked && !m_isDestroying;
+    {
         WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
-        m_presentedMainFrameId = committedFrame;
+        m_presentedMainFrameId = FrameBufferLeasePolicy::completedPaintFrame(
+            m_presentedMainFrameId, paintedFrame, paintCompleted);
+        if (FrameBufferLeasePolicy::retiresInputCoverage(
+            m_unpresentedInputFrameId, paintedFrame, paintCompleted)) {
+            m_unpresentedInputTrace.clear();
+            m_unpresentedInputFrameId = 0;
+        }
     }
     postDrawFrame();
     if ((animationNeedsAnotherFrame || scrollNeedsAnotherFrame)
@@ -2999,29 +3296,36 @@ void LayerTreeHost::drawFrameInCompositeThread()
     // Incomplete action/resource transactions are resumed by producer
     // publication, not a periodic draw task. No resource fence is bypassed.
     (void)frameReady;
-    atomicDecrement(&m_drawFrameFinishCount);
+    recordRenderStage(trace::stage::composite_end);
+    m_uiPaintRetry->drawFinishCount.fetch_sub(1);
 }
 
 void LayerTreeHost::paintToMemoryCanvasInUiThread(const SkRect& paintRect)
 {
-    if (!m_uiThreadClient)
+    content::PaintActivityScope paintActivity(m_paintLifetime);
+    if (!paintActivity)
         return;
-
-//     DWORD nowTime = (DWORD)(WTF::currentTimeMS() * 100);
-//     DWORD detTime = nowTime - g_nowTime;
-//     InterlockedExchange((LONG*)&g_nowTime, nowTime);
-
-//     String out = String::format("LayerTreeHost.paintToMemoryCanvasInUiThread: %d\n", detTime);
-//     OutputDebugStringA(out.utf8().data());
-
-    WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
-    blink::IntRect intPaintRect(paintRect.x(), paintRect.y(), paintRect.width(), paintRect.height());
-    m_uiThreadClient->paintToMemoryCanvasInUiThread(m_memoryCanvas, intPaintRect);
+    FrameBufferLease lease;
+    LayerTreeHostUiThreadClient* client = nullptr;
+    {
+        WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
+        if (!m_visible.load()) return;
+        lease = acquireFrameBufferLeaseLocked();
+        client = m_uiThreadClient;
+    }
+    if (lease && client) {
+        RenderTraceContextScope frameScope(lease.buffer->traceContext);
+        const blink::IntRect rect(paintRect.x(), paintRect.y(),
+            paintRect.width(), paintRect.height());
+        trace::add(trace::counter::client_callbacks);
+        RenderDurationScope callbackDuration(trace::duration_metric::client_callback);
+        client->paintToMemoryCanvasInUiThread(lease.canvas(), rect);
+    }
 }
 
 void LayerTreeHost::queueLegacyPaintLocked()
 {
-    if (m_isDestroying || m_dirtyRectsForUi.isEmpty() || m_hasResize || !m_memoryCanvas
+    if (m_isDestroying || !m_visible.load() || m_dirtyRectsForUi.isEmpty() || m_hasResize || !m_memoryCanvas
         || !Platform::current() || !Platform::current()->mainThread())
         return;
     const double now = WTF::monotonicallyIncreasingTime();
@@ -3048,6 +3352,9 @@ void LayerTreeHost::queueLegacyPaintLocked()
 
 void LayerTreeHost::runLegacyPaintRetry(const LegacyPaintRetryPolicy::Ticket& ticket)
 {
+    content::PaintActivityScope paintActivity(m_paintLifetime);
+    if (!paintActivity)
+        return;
     Vector<SkRect> dirtyRects;
     const std::shared_ptr<UiPaintRetryState> state = m_uiPaintRetry;
     {
@@ -3058,7 +3365,7 @@ void LayerTreeHost::runLegacyPaintRetry(const LegacyPaintRetryPolicy::Ticket& ti
             accepted = state->policy.accepts(ticket);
             state->policy.dispose(ticket);
         }
-        if (!accepted || m_isDestroying || m_hasResize || !m_memoryCanvas) {
+        if (!accepted || m_isDestroying || !m_visible.load() || m_hasResize || !m_memoryCanvas) {
             queueLegacyPaintLocked();
             return;
         }
@@ -3097,31 +3404,48 @@ void LayerTreeHost::requestPaintToMemoryCanvasToUiThread(const SkRect& r)
     queueLegacyPaintLocked();
 }
 
-void LayerTreeHost::paintToMemoryCanvasInCompositeThread(const SkRect& r)
+void LayerTreeHost::publishIndependentCoverageForPaint(const content::input_frame_trace::event& actualFrame)
 {
-    WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
+    trace::event executor;
+    const bool hasExecutor = trace::current_context(executor);
+    trace::event value;
+    while (m_independentInputTrace.takeForPaint(actualFrame, &value)) {
+        value.task_id = hasExecutor ? executor.task_id : 0;
+        recordRenderStage(trace::stage::frame_coverage, value);
+    }
+}
+
+uint64_t LayerTreeHost::paintToMemoryCanvasInCompositeThread(const SkRect& r)
+{
+    RenderMutexLock<WTF::Mutex> locker(m_compositeMutex);
     SkRect paintRect = r;
+    if (!m_visible.load()) {
+        addAndMergeDirty(&m_dirtyRectsForComposite, paintRect);
+        m_canvasPaintBlocked = true;
+        return 0;
+    }
 #if defined(SOUI_GPU_COMPOSITOR)
     bool resized = m_hasResize;
 #endif
 
-    if ((!m_memoryCanvas || m_hasResize) && !m_clientRect.isEmpty()) {
-        m_hasResize = false;
+    if (m_hasResize || !m_memoryCanvas)
         paintRect = m_clientRect;
-
-        if (m_memoryCanvas)
-            delete m_memoryCanvas;
-        m_memoryCanvas = skia::CreatePlatformCanvas(m_clientRect.width(), m_clientRect.height(), !m_hasTransparentBackground);
-        clearCanvas(m_memoryCanvas, m_clientRect, m_hasTransparentBackground);
+    if (!prepareWritableFrameBufferLocked()) {
+        addAndMergeDirty(&m_dirtyRectsForComposite, paintRect);
+        m_canvasPaintBlocked = true;
+        std::lock_guard<std::mutex> stateLock(m_uiPaintRetry->mutex);
+        m_uiPaintRetry->drawWaiting = true;
+        m_uiPaintRetry->resource.wait();
+        return 0;
     }
 
     SkRect clientRect = SkRect::MakeXYWH(m_clientRect.x(), m_clientRect.y(), m_clientRect.width(), m_clientRect.height());
     if (!paintRect.intersect(clientRect))
-        return;
+        return 0;
 
     if (!m_memoryCanvas) {
         ASSERT(false);
-        return;
+        return 0;
     }
 
     m_isDrawDirty = true;
@@ -3153,7 +3477,7 @@ void LayerTreeHost::paintToMemoryCanvasInCompositeThread(const SkRect& r)
             // submits one window buffer at the end of the frame.
             if (m_gpuSurface->directPresent()) {
                 (void)needNotifUi;
-                return;
+                return renderTraceContext().frame_id;
             }
             gpuCanvas->flush();
             if (m_gpuSurface->present()) {
@@ -3166,7 +3490,7 @@ void LayerTreeHost::paintToMemoryCanvasInCompositeThread(const SkRect& r)
                         m_uiThreadClient->paintToMemoryCanvasInUiThread(
                             m_memoryCanvas, blink::IntRect(0, diagnosticY, m_clientRect.width(), 1));
                 }
-                return;
+                return renderTraceContext().frame_id;
             }
             SkIRect readRect = SkIRect::MakeXYWH(static_cast<int>(paintRect.x()),
                                                  static_cast<int>(paintRect.y()),
@@ -3175,9 +3499,9 @@ void LayerTreeHost::paintToMemoryCanvasInCompositeThread(const SkRect& r)
             if (m_gpuSurface->readback(m_memoryCanvas, readRect)) {
                 m_gpuSurface->recordPresented();
                 if (!needNotifUi)
-                    return;
+                    return renderTraceContext().frame_id;
                 requestPaintToMemoryCanvasToUiThread(paintRect);
-                return;
+                return renderTraceContext().frame_id;
             }
         }
     }
@@ -3186,30 +3510,169 @@ void LayerTreeHost::paintToMemoryCanvasInCompositeThread(const SkRect& r)
         clearCanvas(m_memoryCanvas, paintRect, m_hasTransparentBackground);
 
     bool needNotifUi = drawToCanvas(m_memoryCanvas, paintRect); // 绘制脏矩形
+    m_frameBuffers[m_currentFrameBufferSlot]->traceContext = renderTraceContext();
+    const uint64_t paintedFrame = m_frameBuffers[m_currentFrameBufferSlot]->traceContext.frame_id;
+    publishIndependentCoverageForPaint(m_frameBuffers[m_currentFrameBufferSlot]->traceContext);
 #if defined(ENABLE_WKE) && ENABLE_WKE == 1
     wke::diagnostics::renderer_draw_completed(WKE_RENDER_DIAGNOSTICS_DRAW_BITMAP_RASTER);
 #endif
 
     if (!needNotifUi)
-        return;
+        return paintedFrame;
 
-    if (m_independentPresentationEnabled) {
-        blink::IntRect intPaintRect(paintRect.x(), paintRect.y(),
-            paintRect.width(), paintRect.height());
-        m_uiThreadClient->paintToMemoryCanvasInUiThread(
-            m_memoryCanvas, intPaintRect);
-        return;
-    }
-
+    bool direct = m_independentPresentationEnabled;
 #if ENABLE_WKE == 1
-    if (blink::RuntimeEnabledFeatures::updataInOtherThreadEnabled()) {
-        blink::IntRect intPaintRect(paintRect.x(), paintRect.y(), paintRect.width(), paintRect.height());
-        m_uiThreadClient->paintToMemoryCanvasInUiThread(m_memoryCanvas, intPaintRect);
-        return;
-    }
+    direct |= blink::RuntimeEnabledFeatures::updataInOtherThreadEnabled();
 #endif
+    if (direct) {
+        FrameBufferLease lease = acquireFrameBufferLeaseLocked();
+        LayerTreeHostUiThreadClient* client = m_uiThreadClient;
+        const blink::IntRect rect(paintRect.x(), paintRect.y(),
+            paintRect.width(), paintRect.height());
+        locker.unlock();
+        if (lease && client) {
+            trace::add(trace::counter::client_callbacks);
+            RenderTraceContextScope frameScope(lease.buffer->traceContext);
+            RenderDurationScope callbackDuration(trace::duration_metric::client_callback);
+            client->paintToMemoryCanvasInUiThread(lease.canvas(), rect);
+        }
+        return paintedFrame;
+    }
 
     requestPaintToMemoryCanvasToUiThread(paintRect);
+    return paintedFrame;
+}
+
+LayerTreeHost::FrameBuffer::FrameBuffer(std::unique_ptr<SkCanvas> value, uint64_t sizeGeneration,
+    int w, int h, bool alphaValue)
+    : canvas(std::move(value)), generation(sizeGeneration), bytes(static_cast<uint64_t>(w) * h * 4)
+    , width(w), height(h), alpha(alphaValue) { }
+LayerTreeHost::FrameBuffer::~FrameBuffer() = default;
+LayerTreeHost::FrameBufferLease::FrameBufferLease() = default;
+LayerTreeHost::FrameBufferLease::FrameBufferLease(std::shared_ptr<FrameBuffer> value,
+    std::shared_ptr<UiPaintRetryState> state,
+    const std::shared_ptr<content::PaintLifetimeState>& lifetime)
+    : activity(lifetime), buffer(std::move(value)), completionState(std::move(state))
+{
+    if (!activity) {
+        buffer.reset();
+        completionState.reset();
+    }
+}
+LayerTreeHost::FrameBufferLease::~FrameBufferLease()
+{
+    buffer.reset();
+    if (completionState)
+        LayerTreeHost::notifyRasterCompletion(completionState);
+}
+LayerTreeHost::FrameBufferLease::FrameBufferLease(FrameBufferLease&& other) noexcept
+    : activity(std::move(other.activity)), buffer(std::move(other.buffer))
+    , completionState(std::move(other.completionState)) { }
+LayerTreeHost::FrameBufferLease& LayerTreeHost::FrameBufferLease::operator=(FrameBufferLease&& other) noexcept
+{
+    if (this == &other)
+        return *this;
+    content::PaintActivityScope retiredActivity(std::move(activity));
+    buffer.reset();
+    if (completionState)
+        LayerTreeHost::notifyRasterCompletion(completionState);
+    buffer = std::move(other.buffer);
+    completionState = std::move(other.completionState);
+    activity = std::move(other.activity);
+    return *this; // retiredActivity releases last, with no later host/platform access.
+}
+SkCanvas* LayerTreeHost::FrameBufferLease::canvas() const
+{
+    return buffer ? buffer->canvas.get() : nullptr;
+}
+LayerTreeHost::FrameBufferLease LayerTreeHost::acquireFrameBufferLeaseLocked()
+{
+    if (m_isDestroying || m_hasResize || !m_memoryCanvas)
+        return FrameBufferLease();
+    FrameBufferLease lease(m_frameBuffers[m_currentFrameBufferSlot], m_uiPaintRetry, m_paintLifetime);
+    if (lease)
+        trace::add(trace::counter::buffer_leases);
+    return lease;
+}
+LayerTreeHost::FrameBufferLease LayerTreeHost::acquireFrameBufferLease()
+{
+    WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
+    return acquireFrameBufferLeaseLocked();
+}
+bool LayerTreeHost::independentPresentationEnabled()
+{
+    WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
+    return m_independentPresentationEnabled;
+}
+bool LayerTreeHost::prepareWritableFrameBufferLocked()
+{
+    uint64_t required = 0;
+    if (m_hasResize && m_frameBufferGeneration == (std::numeric_limits<uint64_t>::max)())
+        return false;
+    if (!FrameBufferLeasePolicy::bytesForSize(m_clientRect.width(),
+            m_clientRect.height(), &required))
+        return false;
+    const int writable = FrameBufferLeasePolicy::writableSlot(m_currentFrameBufferSlot,
+        m_frameBuffers[0].use_count(), m_frameBuffers[1].use_count());
+    if (writable < 0)
+        return false;
+    std::shared_ptr<FrameBuffer>& next = m_frameBuffers[writable];
+    const bool valid = next && next->generation == m_frameBufferGeneration
+        && next->width == m_clientRect.width() && next->height == m_clientRect.height()
+        && next->alpha == m_hasTransparentBackground;
+    if (!valid) {
+        // Free only an unleased slot. A retained reader always pins its own
+        // old generation; at most two slots and 256MiB are retained by the pool.
+        next.reset();
+        if (static_cast<size_t>(writable) == m_currentFrameBufferSlot)
+            m_memoryCanvas = nullptr;
+        uint64_t retained = 0;
+        for (size_t index = 0; index < FrameBufferLeasePolicy::maximumSlots; ++index) {
+            if (m_frameBuffers[index])
+                retained += m_frameBuffers[index]->bytes;
+        }
+        if (required > FrameBufferLeasePolicy::maximumBytes - retained) {
+            for (size_t index = 0; index < FrameBufferLeasePolicy::maximumSlots; ++index) {
+                if (index != static_cast<size_t>(writable) && m_frameBuffers[index]
+                    && m_frameBuffers[index].use_count() == 1) {
+                    retained -= m_frameBuffers[index]->bytes;
+                    m_frameBuffers[index].reset();
+                }
+            }
+            if (required > FrameBufferLeasePolicy::maximumBytes - retained)
+                return false;
+        }
+        try {
+            std::unique_ptr<SkCanvas> canvas(skia::CreatePlatformCanvas(
+                m_clientRect.width(), m_clientRect.height(), !m_hasTransparentBackground));
+            if (!canvas)
+                return false;
+            clearCanvas(canvas.get(), m_clientRect, m_hasTransparentBackground);
+            next = std::make_shared<FrameBuffer>(std::move(canvas), m_frameBufferGeneration,
+                m_clientRect.width(), m_clientRect.height(), m_hasTransparentBackground);
+        } catch (const std::bad_alloc&) {
+            return false;
+        }
+    }
+    if (static_cast<size_t>(writable) != m_currentFrameBufferSlot) {
+        const std::shared_ptr<FrameBuffer>& previous = m_frameBuffers[m_currentFrameBufferSlot];
+        if (previous && previous->generation == m_frameBufferGeneration
+            && previous->alpha == m_hasTransparentBackground) {
+            SkBaseDevice* device = skia::GetTopDevice(*previous->canvas);
+            if (device) {
+                const SkBitmap& bitmap = device->accessBitmap(false);
+                if (m_hasTransparentBackground)
+                    clearCanvas(next->canvas.get(), m_clientRect, true);
+                next->canvas->drawBitmap(bitmap, 0, 0, nullptr);
+                trace::add(trace::counter::copy_operations);
+                trace::add(trace::counter::copy_bytes, next->bytes);
+            }
+        }
+    }
+    m_currentFrameBufferSlot = static_cast<size_t>(writable);
+    m_memoryCanvas = next->canvas.get();
+    m_hasResize = false;
+    return true;
 }
 
 SkCanvas* LayerTreeHost::getMemoryCanvasLocked()
@@ -3243,130 +3706,54 @@ void LayerTreeHost::enablePaint()
 
 LayerTreeHost::BitInfo* LayerTreeHost::getBitBegin()
 {
-    WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
-    if (!m_memoryCanvas)
+    FrameBufferLease lease = acquireFrameBufferLease();
+    if (!lease)
         return nullptr;
-
-    int width = m_clientRect.width();
-    int height = m_clientRect.height();
-
-    DWORD cBytes = width * height * 4;
-    SkBaseDevice* device = (SkBaseDevice*)m_memoryCanvas->getTopDevice();
+    SkBaseDevice* device = skia::GetTopDevice(*lease.canvas());
     if (!device)
         return nullptr;
-
     const SkBitmap& bitmap = device->accessBitmap(false);
-    SkCanvas* tempCanvas = nullptr;
-    uint32_t* pixels = nullptr;
-
-    if (bitmap.info().width() != width || bitmap.info().height() != height) {
-        tempCanvas = skia::CreatePlatformCanvas(width, height, !m_hasTransparentBackground);
-        clearCanvas(tempCanvas, m_clientRect, m_hasTransparentBackground);
-        tempCanvas->drawBitmap(bitmap, 0, 0, nullptr);
-        device = (SkBaseDevice*)tempCanvas->getTopDevice();
-        if (!device) {
-            delete tempCanvas;
-            return nullptr;
-        }
-        const SkBitmap& tempBitmap = device->accessBitmap(false);
-        pixels = tempBitmap.getAddr32(0, 0);
-    } else
-        pixels = bitmap.getAddr32(0, 0);
-
-    m_compositeMutex.lock();
-
-    BitInfo* bitInfo = new BitInfo();
-    bitInfo->pixels = pixels;
-    bitInfo->tempCanvas = tempCanvas;
-    bitInfo->width = width;
-    bitInfo->height = height;
-    return bitInfo;
+    BitInfo* info = new (std::nothrow) BitInfo();
+    if (!info)
+        return nullptr;
+    info->pixels = bitmap.getAddr32(0, 0);
+    info->width = lease.buffer->width;
+    info->height = lease.buffer->height;
+    info->lease = std::move(lease);
+    {
+        WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
+        if (m_frameBuffers[m_currentFrameBufferSlot] == info->lease.buffer)
+            m_isDrawDirty = false;
+    }
+    return info;
 }
 
 void LayerTreeHost::getBitEnd(const BitInfo* bitInfo)
 {
-    m_isDrawDirty = false;
-
-    if (bitInfo->tempCanvas) {
-        delete m_memoryCanvas;
-        m_memoryCanvas = bitInfo->tempCanvas;
-    }
-    m_compositeMutex.unlock();
-
+    // No host dereference: a client may close/resize while retaining pixels.
     delete bitInfo;
 }
 
 void LayerTreeHost::paintToBit(void* bits, int pitch)
 {
-#if 1
-    BitInfo* bitInfo = getBitBegin();
-    if (!bitInfo)
+    if (!bits)
         return;
-    uint32_t* pixels = bitInfo->pixels;;
-    int width = bitInfo->width;
-    int height = bitInfo->height;
-
-    if (pitch == 0 || pitch == width * 4) {
-        memcpy(bits, pixels, width * height * 4);
+    BitInfo* info = getBitBegin();
+    if (!info)
+        return;
+    const int rowBytes = info->width * 4;
+    if (pitch == 0 || pitch == rowBytes) {
+        memcpy(bits, info->pixels, static_cast<size_t>(rowBytes) * info->height);
     } else {
-        unsigned char* src = (unsigned char*)pixels;
-        unsigned char* dst = (unsigned char*)bits;
-        for (int i = 0; i < height; ++i) {
-            memcpy(dst, src, width * 4);
-            src += width * 4;
-            dst += pitch;
+        const unsigned char* source = reinterpret_cast<const unsigned char*>(info->pixels);
+        unsigned char* destination = static_cast<unsigned char*>(bits);
+        for (int row = 0; row < info->height; ++row) {
+            memcpy(destination, source, rowBytes);
+            source += rowBytes;
+            destination += pitch;
         }
     }
-    getBitEnd(bitInfo);
-#else
-    WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
-    if (!m_memoryCanvas)
-        return;
-
-    int width = m_clientRect.width();
-    int height = m_clientRect.height();
-
-    DWORD cBytes = width * height * 4;
-    SkBaseDevice* device = (SkBaseDevice*)m_memoryCanvas->getTopDevice();
-    if (!device)
-        return;
-
-    const SkBitmap& bitmap = device->accessBitmap(false);
-    SkCanvas* tempCanvas = nullptr;
-    uint32_t* pixels = nullptr;
-
-    if (bitmap.info().width() != width || bitmap.info().height() != height) {
-        tempCanvas = skia::CreatePlatformCanvas(width, height, !m_hasTransparentBackground);
-        clearCanvas(tempCanvas, m_clientRect, m_hasTransparentBackground);
-        tempCanvas->drawBitmap(bitmap, 0, 0, nullptr);
-        device = (SkBaseDevice*)tempCanvas->getTopDevice();
-        if (!device)
-            return;
-        const SkBitmap& tempBitmap = device->accessBitmap(false);
-        pixels = tempBitmap.getAddr32(0, 0);
-    } else
-        pixels = bitmap.getAddr32(0, 0);
-
-    if (pitch == 0 || pitch == width * 4) {
-        memcpy(bits, pixels, width * height * 4);
-    } else {
-        unsigned char* src = (unsigned char*)pixels;
-        unsigned char* dst = (unsigned char*)bits;
-        for (int i = 0; i < height; ++i) {
-            memcpy(dst, src, width * 4);
-            src += width * 4;
-            dst += pitch;
-        }
-    }
-
-    m_isDrawDirty = false;
-
-    if (tempCanvas) {
-        delete m_memoryCanvas;
-        m_memoryCanvas = tempCanvas;
-    }
-
-#endif
+    getBitEnd(info);
 }
 
 } // cc

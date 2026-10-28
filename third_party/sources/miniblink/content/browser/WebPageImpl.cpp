@@ -1,4 +1,6 @@
 ﻿#include "content/browser/WebPageImpl.h"
+#include "content/browser/HostVisibilityPolicy.h"
+#include <new>
 #include "wke/RendererModelState.h"
 
 #include "base/basictypes.h"
@@ -60,6 +62,7 @@
 #include "content/devtools/DevToolsAgent.h"
 #include "cc/trees/LayerTreeHost.h"
 #include "cc/trees/FrameDeadlinePolicy.h"
+#include "cc/trees/RenderTrace.h"
 #include "cc/base/BdColor.h"
 #include "ui/gfx/win/dpi.h"
 #include <algorithm>
@@ -147,43 +150,6 @@ void refreshDeviceScaleFactor(blink::WebScreenInfo* info, HWND window)
 
 }  // namespace
 
-// Opt-in source experiment. Bounded main-thread trace; no per-frame disk I/O.
-struct SourceFrameTrace {
-    struct Entry { const char* kind; const void* page; LONGLONG tick; };
-    wchar_t path[MAX_PATH] = {};
-    std::vector<Entry> entries;
-    unsigned count = 0, dropped = 0;
-    SourceFrameTrace() {
-        DWORD length = GetEnvironmentVariableW(L"SOUI_KERNEL_FRAME_TRACE", path, MAX_PATH);
-        if (!length || length >= MAX_PATH) path[0] = 0;
-        else entries.reserve(65536);
-    }
-    void record(const char* kind, const void* page) {
-        if (!path[0] || !WTF::isMainThread()) return;
-        if (count == 65536) { ++dropped; return; }
-        LARGE_INTEGER tick; QueryPerformanceCounter(&tick);
-        entries.push_back(Entry{ kind, page, tick.QuadPart });
-        ++count;
-    }
-    ~SourceFrameTrace() {
-        if (!path[0]) return;
-        HANDLE file = CreateFileW(path, GENERIC_WRITE, 0, nullptr, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, nullptr);
-        if (file == INVALID_HANDLE_VALUE) return;
-        char line[160]; DWORD written; LARGE_INTEGER frequency; QueryPerformanceFrequency(&frequency);
-        int length = sprintf_s(line, "frequency,%lld,dropped,%u\nkind,page,tick\n", frequency.QuadPart, dropped);
-        WriteFile(file, line, length, &written, nullptr);
-        for (unsigned i = 0; i < count; ++i) {
-            length = sprintf_s(line, "%s,%p,%lld\n", entries[i].kind, entries[i].page, entries[i].tick);
-            WriteFile(file, line, length, &written, nullptr);
-        }
-        CloseHandle(file);
-    }
-};
-static void traceSourceFrame(const char* kind, const void* page) {
-    static SourceFrameTrace trace;
-    trace.record(kind, page);
-}
-
 // This is a diagnostic-only switch. Cache it once per process so the normal
 // CPU fallback paint path does not query the process environment on every
 // frame. A new Demo process is used when toggling the A/B baseline.
@@ -234,6 +200,12 @@ void WebPageImpl::unregisterDestroyNotif(DestroyNotif* destroyNotif)
         m_destroyNotifs.remove(pos);
 }
 
+struct HostVisibilityWakeState {
+    explicit HostVisibilityWakeState(WebPageImpl* value) : page(value) { }
+    WebPageImpl* page;
+    HostVisibilityPolicy policy;
+};
+
 int64_t WebPageImpl::m_firstFrameId = 0;
 
 WebPageImpl::WebPageImpl(COLORREF bdColor)
@@ -250,6 +222,7 @@ WebPageImpl::WebPageImpl(COLORREF bdColor)
     m_platformEventHandler = nullptr;
     m_postMouseLeave = false;
     //m_needsCommit = 0;
+    m_hostVisibility = std::make_shared<HostVisibilityWakeState>(this);
     m_commitCount = 0;
     m_needsLayout = 1;
     m_layerDirty = 1;
@@ -263,6 +236,8 @@ WebPageImpl::WebPageImpl(COLORREF bdColor)
     m_navigationController = new NavigationController(this);
     m_layerTreeHost = new cc::LayerTreeHost(this, this);
     m_memoryCanvasForUi = nullptr;
+    m_uiMirrorConsumers.setExplicitRequired(true);
+    m_paintCallbackAlive = std::make_shared<std::atomic<bool>>(true);
     m_disablePaint = false;
     m_firstDrawCount = 0;
     m_webFrameClient = new content::WebFrameClientImpl();
@@ -306,6 +281,9 @@ WebPageImpl::WebPageImpl(COLORREF bdColor)
 
 WebPageImpl::~WebPageImpl()
 {
+    m_hostVisibility->page = nullptr;
+    m_hostVisibility->policy.close();
+    m_paintCallbackAlive->store(false);
     ASSERT(pageDestroyed == m_state);
     m_platformCursor.dispose();
     m_state = pageDestroyed;
@@ -323,14 +301,15 @@ WebPageImpl::~WebPageImpl()
     if (m_draggableRegion)
         ::DeleteObject(m_draggableRegion);
 
-    if (m_memoryCanvasForUi)
-        delete m_memoryCanvasForUi;
-    m_memoryCanvasForUi = nullptr;
     
     m_navigationController = nullptr;
 
     delete m_layerTreeHost;
     m_layerTreeHost = nullptr;
+    if (m_memoryCanvasForUi)
+        delete m_memoryCanvasForUi;
+    m_memoryCanvasForUi = nullptr;
+
 
     // 鍦≒age::~Page()涓攢姣?
     if (m_webFrameClient)
@@ -480,6 +459,12 @@ public:
 
     void leave()
     {
+        auto frameContext = m_host ? m_host->traceContextForFrame() : cc::renderTraceContext();
+        if (m_isComefromMainFrame) {
+            frameContext.frame_id = m_page->m_renderFrameId;
+            frameContext.input_first = frameContext.input_last = 0;
+        }
+        cc::RenderTraceContextScope frameScope(frameContext);
         m_page->m_autoRecordActionsCount--;
         if (!m_host)
             return;
@@ -492,7 +477,8 @@ public:
         }
         bool isLayout = 0 != layerDirty || 0 != needsLayout;
 
-        if ((isLayout || m_isLayout) && m_isComefromMainFrame) {
+        if ((isLayout || m_isLayout) && m_isComefromMainFrame
+            && m_page->m_hostVisibility->policy.visible()) {
             if (m_page->m_mainFrameInterval <= 0 || m_lastFrameTimeMonotonic >= m_page->m_nextMainFrameTime) {
                 WebBeginFrameArgs frameArgs(m_lastFrameTimeMonotonic, 0, m_lastFrameTimeMonotonic - m_page->m_lastFrameTimeMonotonic);
                 if (m_page->m_mainFrameInterval > 0) {
@@ -503,23 +489,38 @@ public:
                 }
                 if (m_page->m_mainFrameInterval > 0)
                     m_page->m_lastFrameTimeMonotonic = m_lastFrameTimeMonotonic;
-                traceSourceFrame("frame", m_page);
                 m_page->m_webViewImpl->beginFrame(frameArgs);
             } else {
                 // Keep animation pending while allowing layout/paint actions to flush.
                 m_page->setNeedsCommit();
             }
-            m_page->m_webViewImpl->layout();
+            if (m_page->m_hostVisibility->policy.visible()) {
+                cc::recordRenderStage(cc::trace::stage::layout_begin);
+                {
+                    cc::RenderDurationScope layoutDuration(cc::trace::duration_metric::layout);
+                    m_page->m_webViewImpl->layout();
+                }
+                cc::recordRenderStage(cc::trace::stage::layout_end);
+            }
         }
 
-        if (m_isComefromMainFrame)
-            m_host->recordDraw();
-        else if (isLayout || m_isLayout)
+        const bool recorded = m_isComefromMainFrame && m_page->m_hostVisibility->policy.visible();
+        if (recorded) {
+            cc::recordRenderStage(cc::trace::stage::record_begin);
+            {
+                cc::RenderDurationScope recordDuration(cc::trace::duration_metric::record);
+                m_host->recordDraw();
+            }
+            cc::recordRenderStage(cc::trace::stage::record_end);
+        }
+        else if (isLayout || m_isLayout || m_isComefromMainFrame) {
+            InterlockedExchange(reinterpret_cast<long volatile*>(&m_page->m_layerDirty), 1);
+            InterlockedExchange(reinterpret_cast<long volatile*>(&m_page->m_needsLayout), 1);
             m_page->setNeedsCommitAndNotLayout();
+        }
 
         m_host->endRecordActions();
-        if (m_isComefromMainFrame) {
-            ++m_page->m_renderFrameId;
+        if (recorded) {
             m_host->setMainFrameDeadline(m_page->m_renderFrameId,
                 m_lastFrameTimeMonotonic, m_page->m_mainFrameInterval);
         }
@@ -709,6 +710,8 @@ void WebPageImpl::doClose()
     // Reentry destructors also reach here: actual owned task drain is mandatory.
     if (!wke::brokerDrained(m_pagePtr->wkeWebView()))
         return;
+    m_hostVisibility->page = nullptr;
+    m_hostVisibility->policy.close();
     m_platformCursor.dispose();
     m_layerTreeHost->requestApplyActionsToRunIntoCompositeThread(false);
 #if (defined ENABLE_WKE) && (ENABLE_WKE == 1)
@@ -790,7 +793,7 @@ DEFINE_DEBUG_ONLY_GLOBAL(WTF::RefCountedLeakCounter, commitTaskCounter, ("conten
 class CommitTask : public blink::WebThread::Task, public WebPageImpl::DestroyNotif {
 public:
     CommitTask(WebPageImpl* client)
-        : m_client(client)
+        : m_client(client), m_ran(false)
     {
         m_client->registerDestroyNotif(this);
 #ifndef NDEBUG
@@ -801,6 +804,7 @@ public:
     virtual ~CommitTask() override
     {
         if (m_client) {
+            if (!m_ran) atomicDecrement(&m_client->m_commitCount);
             m_client->unregisterDestroyNotif(this);
         }
 #ifndef NDEBUG
@@ -818,14 +822,73 @@ public:
         if (!m_client)
             return;
         
+        m_ran = true;
         atomicDecrement(&m_client->m_commitCount);
-        traceSourceFrame("commit", m_client);
         m_client->beginMainFrame();
     }
 
 private:
     WebPageImpl* m_client;
+    bool m_ran;
 };
+
+class VisibilityRestoreTask final : public blink::WebThread::Task {
+public:
+    VisibilityRestoreTask(const std::shared_ptr<HostVisibilityWakeState>& state, uint64_t ticket)
+        : m_state(state), m_ticket(ticket) { }
+    ~VisibilityRestoreTask() override
+    {
+        if (!m_ran) m_state->policy.reject(m_ticket);
+    }
+    void run() override
+    {
+        if (!m_state->policy.claim(m_ticket)) return;
+        m_ran = true;
+        WebPageImpl* page = m_state->page;
+        if (page) page->beginMainFrame();
+    }
+private:
+    std::shared_ptr<HostVisibilityWakeState> m_state;
+    uint64_t m_ticket;
+    bool m_ran = false;
+};
+
+bool WebPageImpl::scheduleVisibilityRestore()
+{
+    const uint64_t ticket = m_hostVisibility->policy.arm();
+    if (!ticket) return !m_hostVisibility->policy.retry();
+    auto* task = new (std::nothrow) VisibilityRestoreTask(m_hostVisibility, ticket);
+    if (!task) { m_hostVisibility->policy.reject(ticket); return false; }
+    // The owner scheduler consumes/disposes this receipt on every rejection.
+    blink::Platform::current()->mainThread()->postTask(FROM_HERE, task);
+    return !m_hostVisibility->policy.retry();
+}
+
+bool WebPageImpl::hasVisibilityOwnerRetry() const
+{
+    return m_hostVisibility->policy.retry();
+}
+void WebPageImpl::retryVisibilityOwnerWork()
+{
+    if (m_hostVisibility->policy.retry()) scheduleVisibilityRestore();
+}
+
+bool WebPageImpl::setHostVisible(bool visible)
+{
+    if (!blink::Platform::current() || !blink::Platform::current()->mainThread()
+        || !blink::Platform::current()->mainThread()->isCurrentThread() || m_state != pageInited)
+        return false;
+    PaintActivityScope activity(m_layerTreeHost->paintLifetimeState());
+    if (!activity || !m_hostVisibility->policy.set(visible)) return false;
+    if (visible) {
+        m_nextMainFrameTime = 0;
+        m_lastFrameTimeMonotonic = WTF::monotonicallyIncreasingTime();
+        InterlockedExchange(reinterpret_cast<long volatile*>(&m_layerDirty), 1);
+        InterlockedExchange(reinterpret_cast<long volatile*>(&m_needsLayout), 1);
+    }
+    m_layerTreeHost->setVisible(visible);
+    return !visible || scheduleVisibilityRestore();
+}
 
 void WebPageImpl::setNeedsCommitAndNotLayout()
 {
@@ -834,6 +897,12 @@ void WebPageImpl::setNeedsCommitAndNotLayout()
 
 void WebPageImpl::scheduleCommit(long long minimumDelayMs)
 {
+    if (!m_hostVisibility->policy.visible()) return;
+    if (m_hostVisibility->policy.fresh()) {
+        m_hostVisibility->policy.request();
+        scheduleVisibilityRestore();
+        return;
+    }
 //     if (0 != m_needsCommit)
 //         return;
 //     atomicIncrement(&m_needsCommit);
@@ -864,6 +933,8 @@ void WebPageImpl::setNeedsCommit()
 
 void WebPageImpl::beginMainFrame()
 {
+    PaintActivityScope activity(m_layerTreeHost->paintLifetimeState());
+    if (!activity || !m_hostVisibility->policy.visible()) return;
     //bool needsCommit = m_needsCommit;
     if (pageInited != m_state)
         return;
@@ -880,8 +951,11 @@ void WebPageImpl::executeMainFrame()
     freeV8TempObejctOnOneFrameBefore();
     //atomicDecrement(&m_needsCommit);
 
-    if (0 != m_executeMainFrameCount || m_isEnterDebugLoop)
+    if (!m_hostVisibility->policy.visible()) return;
+    if (0 != m_executeMainFrameCount || m_isEnterDebugLoop) {
+        m_hostVisibility->policy.request();
         return;
+    }
     atomicIncrement(&m_executeMainFrameCount);
 
     //double lastFrameTimeMonotonic = WTF::monotonicallyIncreasingTime();
@@ -889,6 +963,16 @@ void WebPageImpl::executeMainFrame()
     if (!m_layerTreeHost->canRecordActions()) {
         // Register before rechecking: completion before registration is seen
         // by the recheck, and completion afterwards owns one merged wake.
+        auto waiting = cc::currentRenderTraceContext();
+        const auto blocked = m_layerTreeHost->recordBlockReason();
+        waiting.why = blocked == cc::LayerTreeHost::RecordBlockReason::InFlightScene
+            ? cc::trace::reason::inflight_scene
+            : blocked == cc::LayerTreeHost::RecordBlockReason::Destroying
+                ? cc::trace::reason::destroyed
+                : blocked == cc::LayerTreeHost::RecordBlockReason::MissingAction
+                    ? cc::trace::reason::missing_action : cc::trace::reason::raster;
+        waiting.value = static_cast<uint64_t>(blocked);
+        cc::recordRenderStage(cc::trace::stage::resource_wait, waiting);
         m_layerTreeHost->registerResourceWait();
         if (m_layerTreeHost->canRecordActions()) {
             m_layerTreeHost->clearResourceWait();
@@ -899,6 +983,11 @@ void WebPageImpl::executeMainFrame()
     }
     
     {
+        if (m_renderFrameId == (std::numeric_limits<uint64_t>::max)())
+            content::input_frame_trace::note_causal_loss();
+        else
+            ++m_renderFrameId;
+        m_hostVisibility->policy.recording();
         AutoRecordActions autoRecordActions(this, m_layerTreeHost, true);
     }
     
@@ -930,7 +1019,6 @@ bool WebPageImpl::fireTimerEvent()
 {
     CHECK_FOR_REENTER(this, false);
         
-    traceSourceFrame("timer", this);
     beginMainFrame();
     return false;
 }
@@ -1010,10 +1098,12 @@ void WebPageImpl::setViewportSize(const IntSize& size)
 
 void WebPageImpl::firePaintEvent(HDC hdc, const RECT* paintRect)
 {
+    content::PaintActivityScope paintActivity(m_layerTreeHost->paintLifetimeState());
+    if (!paintActivity)
+        return;
     CHECK_FOR_REENTER(this, (void)0);
     freeV8TempObejctOnOneFrameBefore();
 
-    traceSourceFrame("paint", this);
     beginMainFrame();
 
     if (m_layerTreeHost)
@@ -1022,6 +1112,14 @@ void WebPageImpl::firePaintEvent(HDC hdc, const RECT* paintRect)
 
 HDC WebPageImpl::viewDC()
 {
+    content::PaintActivityScope paintActivity(m_layerTreeHost->paintLifetimeState());
+    if (!paintActivity)
+        return nullptr;
+    // A borrowed DC is current at acquisition and may change at the next
+    // owner paint/resize. Requesting it permanently restores mirror updates.
+    m_uiMirrorConsumers.noteDcConsumer();
+    copyToMemoryCanvasForUi(IntRect());
+    WTF::Locker<WTF::Mutex> mirrorLock(m_uiMirrorMutex);
     bool useLayeredBuffer = m_layerTreeHost->getHasTransparentBackground();
     if (!m_memoryCanvasForUi && !m_viewportSize.isEmpty()) {
         m_memoryCanvasForUi = skia::CreatePlatformCanvas(m_viewportSize.width(), m_viewportSize.height(), !useLayeredBuffer);
@@ -1037,11 +1135,70 @@ HDC WebPageImpl::viewDC()
     return hDC;
 }
 
-void WebPageImpl::copyToMemoryCanvasForUi(const IntRect& paintRect)
+bool WebPageImpl::setViewTraceIdentity(const content::input_frame_trace::event& value)
 {
-    if (cpuUiMirrorDisabled())
-        return;
+    if (!WTF::isMainThread() || m_state != pageInited || !m_layerTreeHost)
+        return false;
+    return m_layerTreeHost->setViewTraceIdentity(value);
+}
 
+void WebPageImpl::setInputTraceContext(const content::input_frame_trace::event& value)
+{
+    if (value.input_first || value.input_last) {
+        content::input_frame_trace::event previous;
+        const bool hasPrevious = cc::trace::current_context(previous);
+        if (!m_inputTraceStack.enter(value, hasPrevious ? &previous : nullptr)) {
+            cc::trace::add(cc::trace::counter::causal_context_dropped);
+            cc::trace::note_causal_loss();
+            cc::trace::clear_current_context();
+        } else {
+            cc::trace::set_current_context(value);
+        }
+    } else {
+        content::input_frame_trace::event processed;
+        content::input_frame_trace::event previous;
+        bool hasPrevious = false;
+        if (m_inputTraceStack.leave(value, &processed, &previous, &hasPrevious))
+            m_layerTreeHost->noteProcessedInputTrace(processed);
+        else {
+            cc::trace::add(cc::trace::counter::causal_context_dropped);
+            cc::trace::note_causal_loss();
+        }
+        if (hasPrevious || m_inputTraceStack.current(&previous))
+            cc::trace::set_current_context(previous);
+        else
+            cc::trace::clear_current_context();
+    }
+}
+
+void WebPageImpl::setUiMirrorConsumerRequired(bool required)
+{
+    m_uiMirrorConsumers.setExplicitRequired(required);
+}
+
+bool WebPageImpl::uiMirrorConsumerRequired() const
+{
+    const bool layered = m_hWnd && (::GetWindowLongPtr(m_hWnd, GWL_EXSTYLE) & WS_EX_LAYERED);
+    return m_uiMirrorConsumers.required(
+        m_layerTreeHost->independentPresentationEnabled(),
+        layered || m_layerTreeHost->getHasTransparentBackground());
+}
+
+void WebPageImpl::copyToMemoryCanvasForUi(const IntRect& paintRect, SkCanvas* sourceCanvas)
+{
+    if (!uiMirrorConsumerRequired())
+        return;
+    // The old environment experiment may only confirm an explicit consumer
+    // contract. It can no longer make a requested DC silently stale.
+    (void)cpuUiMirrorDisabled();
+    cc::LayerTreeHost::FrameBufferLease lease;
+    if (!sourceCanvas) {
+        lease = m_layerTreeHost->acquireFrameBufferLease();
+        sourceCanvas = lease.canvas();
+    }
+    if (!sourceCanvas)
+        return;
+    WTF::Locker<WTF::Mutex> mirrorLock(m_uiMirrorMutex);
     bool useLayeredBuffer = m_layerTreeHost->getHasTransparentBackground();
     if (m_hWnd && !useLayeredBuffer) {
         LONG windowStyle = GetWindowLongPtr(m_hWnd, GWL_EXSTYLE);
@@ -1049,11 +1206,7 @@ void WebPageImpl::copyToMemoryCanvasForUi(const IntRect& paintRect)
         m_layerTreeHost->setHasTransparentBackground(useLayeredBuffer);
     }
 
-    SkCanvas* memoryCanvas = m_layerTreeHost->getMemoryCanvasLocked();
-    if (!memoryCanvas) {
-        m_layerTreeHost->releaseMemoryCanvasLocked();
-        return;
-    }
+    SkCanvas* memoryCanvas = sourceCanvas;
     
     bool isCreatedThisTime = false;
     int width = memoryCanvas->imageInfo().width();
@@ -1072,10 +1225,8 @@ void WebPageImpl::copyToMemoryCanvasForUi(const IntRect& paintRect)
         m_memoryCanvasForUi = nullptr;
     }
 
-    if (!m_memoryCanvasForUi) {
-        m_layerTreeHost->releaseMemoryCanvasLocked();
+    if (!m_memoryCanvasForUi)
         return;
-    }
 
     if (useLayeredBuffer && !isCreatedThisTime)
         cc::LayerTreeHost::clearCanvas(m_memoryCanvasForUi, IntRect(0, 0, width, height), useLayeredBuffer);
@@ -1090,6 +1241,8 @@ void WebPageImpl::copyToMemoryCanvasForUi(const IntRect& paintRect)
         // O(viewport) work for a small animated control.
         if (isCreatedThisTime || paintRect.isEmpty() || useLayeredBuffer || forceFullCopy) {
             m_memoryCanvasForUi->drawBitmap(memoryCanvasBitmap, 0, 0, nullptr);
+            cc::trace::add(cc::trace::counter::copy_operations);
+            cc::trace::add(cc::trace::counter::copy_bytes, static_cast<uint64_t>(width) * height * 4);
         } else {
             // Submit only the changed source pixels. A canvas clip prevents
             // writes outside the dirty rectangle, but drawBitmap() can still
@@ -1106,11 +1259,14 @@ void WebPageImpl::copyToMemoryCanvasForUi(const IntRect& paintRect)
                     dirtyRect.x(), dirtyRect.y(), dirtyRect.width(), dirtyRect.height());
                 m_memoryCanvasForUi->drawBitmapRect(memoryCanvasBitmap, &source,
                                                     destination, nullptr);
+                cc::trace::add(cc::trace::counter::copy_operations);
+                cc::trace::add(cc::trace::counter::copy_bytes,
+                    static_cast<uint64_t>(dirtyRect.width()) * dirtyRect.height() * 4);
             }
         }
 
     }
-    m_layerTreeHost->releaseMemoryCanvasLocked();
+
 }
 
 bool WebPageImpl::isDrawDirty()
@@ -1265,8 +1421,10 @@ bool HDCToFile(HDC Context)
 // 鏈嚱鏁板彲鑳借璋冪敤鍦╱i绾跨▼锛屼篃鍙互鏄悎鎴愮嚎绋嬨€傚紑鍚绾跨▼缁樺埗锛屽垯鍦ㄥ悎鎴愮嚎绋?
 void WebPageImpl::paintToMemoryCanvasInUiThread(SkCanvas* canvas, const IntRect& paintRect)
 {
+    if (!m_layerTreeHost->hostVisible()) return;
     if (m_disablePaint)
         return;
+    const auto callbackAlive = m_paintCallbackAlive;
 
     //if (0 == m_firstDrawCount && !canPaintToScreen(m_webViewImpl)) { }
     ++m_firstDrawCount;
@@ -1291,9 +1449,11 @@ void WebPageImpl::paintToMemoryCanvasInUiThread(SkCanvas* canvas, const IntRect&
 
         if (m_layerTreeHost->getHasTransparentBackground()) {
             drawLayeredWindow(hWnd, canvas, hdc, paintRect, hMemoryDC);
+            cc::recordRenderStage(cc::trace::stage::submit);
         } else {
             RECT rc = blink::intRectToWinRect(paintRect);
             skia::DrawToNativeContext(canvas, hdc, paintRect.x(), paintRect.y(), &rc);
+            cc::recordRenderStage(cc::trace::stage::submit);
         }
 
 #if 0
@@ -1309,7 +1469,7 @@ void WebPageImpl::paintToMemoryCanvasInUiThread(SkCanvas* canvas, const IntRect&
         ::ReleaseDC(hWnd, hdc);
     }
 
-    copyToMemoryCanvasForUi(paintRect);
+    copyToMemoryCanvasForUi(paintRect, canvas);
 
 #if (defined ENABLE_WKE) && (ENABLE_WKE == 1)
     if (m_pagePtr->wkeHandler().paintUpdatedCallback) {
@@ -1321,6 +1481,8 @@ void WebPageImpl::paintToMemoryCanvasInUiThread(SkCanvas* canvas, const IntRect&
 #endif
 
     skia::EndPlatformPaint(canvas);
+    if (!callbackAlive->load())
+        return;
 
     cc::LayerTreeHost::BitInfo* bitInfo = nullptr;
 #if (defined ENABLE_WKE) && (ENABLE_WKE == 1)
@@ -1333,7 +1495,7 @@ void WebPageImpl::paintToMemoryCanvasInUiThread(SkCanvas* canvas, const IntRect&
 
             m_pagePtr->wkeHandler().paintBitUpdatedCallback(webview, paintBitUpdatedCallbackParam,
                 bitInfo->pixels, &r, bitInfo->width, bitInfo->height);
-            m_layerTreeHost->getBitEnd(bitInfo);
+            cc::LayerTreeHost::getBitEnd(bitInfo);
         }
     }
 #endif
@@ -1341,9 +1503,11 @@ void WebPageImpl::paintToMemoryCanvasInUiThread(SkCanvas* canvas, const IntRect&
 
 void WebPageImpl::paintToBit(void* bits, int pitch)
 {
+    content::PaintActivityScope paintActivity(m_layerTreeHost->paintLifetimeState());
+    if (!paintActivity)
+        return;
     CHECK_FOR_REENTER(this, (void)0);
 
-    traceSourceFrame("bits", this);
     beginMainFrame();
 
     if (m_layerTreeHost)
@@ -1755,7 +1919,6 @@ void WebPageImpl::onLeaveDragSimulate()
 
 void WebPageImpl::onDraggingSimulate()
 {
-    traceSourceFrame("drag", this);
     beginMainFrame();
 
     content::WebThreadImpl* threadImpl = (content::WebThreadImpl*)(blink::Platform::current()->currentThread());
