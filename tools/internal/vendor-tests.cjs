@@ -75,11 +75,11 @@ function registry(raw, mode) {
   const vendor = value.tests.filter(test => test.name.startsWith('kernel.native'));
   const actual = vendor.map(test => test.name).sort();
   const expected = manifest.names;
-  need(manifest.schema === 'soui.vendor-test-names/v1' && Array.isArray(expected) && expected.length === 54 &&
-    new Set(expected).size === 54 && expected.every(name => name.startsWith('kernel.native.')) &&
+  need(manifest.schema === 'soui.vendor-test-names/v1' && Array.isArray(expected) && expected.length === 64 &&
+    new Set(expected).size === 64 && expected.every(name => name.startsWith('kernel.native.')) &&
     JSON.stringify(expected) === JSON.stringify([...expected].sort()), 'Invalid exact vendor names manifest');
   if (mode === 'ON') {
-    need(JSON.stringify(actual) === JSON.stringify(expected), 'Vendor ON registry must contain all 54 exact names with no extra kernel.native tests');
+    need(JSON.stringify(actual) === JSON.stringify(expected), 'Vendor ON registry must contain all 64 exact names with no extra kernel.native tests');
     need(vendor.every(test => !(test.properties || []).some(property => property.name === 'DISABLED' && property.value)), 'A registered vendor test is disabled');
   }
   else need(actual.length === 0, 'Vendor OFF cache conflicts with registered kernel.native tests');

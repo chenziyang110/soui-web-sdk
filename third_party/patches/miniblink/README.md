@@ -54,3 +54,9 @@
 补丁已在隔离副本进行正反向原始字节重放，并在当前源码执行反向非写入检查。重放显式使用 `git -c core.autocrlf=false -c core.eol=lf apply`，避免全局换行配置转换验证副本。补丁及三个修改文件的前后散列见 `third_party/manifests/kernel-input-latency-source.json`；该记录不声明完整源码树与历史内核相同。
 
 本次为未发布的源码候选。随仓库提供的 DLL、`kernel-build-050.json`、二进制许可记录及原生 SBOM 继续描述原有导入，不包含本补丁。完整内核重编、实际输入响应、积压吞吐和关闭验收分别记录；补丁重放不代表这些验证通过。
+
+## 任务唤醒与有界接纳：0014
+
+`0014-ready-task-wake-and-admission.patch` 以 PR109 的 `3293bebe27ba8508bbd9dfe8b6e0d445e7879f3f` 为前件，包含五个原始 vendor 文件的改动：SharedTimerWin、WebThreadImpl 头/实现、WebPageImpl 头/实现。新任务和就绪积压通过合并窗口消息唤醒，跨线程接纳纳入正常主线程预算；正延时按 post 时间计时，资源受阻的 commit 延后重试。原 timer、worker 吞吐预算、显式关闭排空和资源 fence 保留。
+
+前后字节数、散列及补丁身份见 `third_party/manifests/kernel-ready-task-source.json`。此为源码候选；最终编译、补丁重放和运行交由 PR 验证人员完成，不引用早期实验作为最终通过结果。历史导入身份、固定二进制来源及生产门槛保持原义。设计和兼容边界见 ADR-0121。

@@ -1,5 +1,7 @@
 # 已知限制与生产门槛
 
+2026-10-26 新增[任务唤醒与有界接纳候选](maintenance/input-latency-20261026.md)，处理首次任务等待、就绪积压及资源受阻重试。最终源码尚未编译和运行，由 PR 验证人员接手；16 ms 兜底 timer、CPU draw interval、单回调超预算和真实输入尾延迟仍需分别评估，不能宣称已达到极致流畅度。固定二进制及生产门槛不变。
+
 2026-10-23 新增 [ACK 反馈修复候选](maintenance/scroll-ack-feedback-20261023.md)：普通合成滚动的整数回传可能误增 epoch，撤销已接纳目标。候选明确区分 ACK 与外部意图，保留真实边界；默认 fractional=false 的源码静态复核及隔离原生回归已完成：当前两架构各 25+2+19+13 项通过，旧对照各 3/10 并退出 1。完整 x86 内核已构建并获独立 build-only 验收；GUI21 的 800 请求位移误差小于 1e-6，GUI22 同值 CSS 赋值后新 epoch 保持停止。结论限定默认整数元素滚动样本，整体流畅度、完整 x64 内核与发布资格另验。[ADR 0120](adr/0120-preserve-compositor-scroll-acknowledgements.md)保持 proposed，不修改下列历史结果或固定二进制。
 
 2026-10-23 生产 Controller/Snapshot 回归确认：相同且均已接收的 `+250`、`+100` 输入，因临时光栅覆盖到达时序不同而分别停在 350、300。新的源码候选分离逻辑目标与可绘制边界，暂停时不空转，ready 场景激活后再汇总下一帧需求；两架构的两场景原始回归、十九项边界和既有十三项覆盖回归均已通过。完整内核、真实 producer 唤醒和 GUI 流畅度仍待单独验证，见 [ADR-0119](adr/0119-preserve-scroll-target-beyond-raster-coverage.md)及[维护记录](maintenance/scroll-target-retention-20261023.md)。另一个原有的同 epoch 覆盖收缩/再扩展反例在旧版和首修复版、两架构均真实失败：显示位置从 200 回放到 250；该问题保持未解决，不被上述局部通过覆盖。固定 0.5.0 二进制和发布资格不变。

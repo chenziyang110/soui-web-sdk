@@ -7,8 +7,8 @@
     {
       "path": ".gitattributes",
       "normalization": "lf",
-      "bytes": 37404,
-      "sha256": "fa60fdf7df54abe39eff9fb778d89c2a8ec16c9835bb5efcea9994cb67392198"
+      "bytes": 37553,
+      "sha256": "39535513c7ec2d853e1ee1f959049fdf56e9f09c702376940170966028401a87"
     },
     {
       "path": ".github/CODEOWNERS",
@@ -67,8 +67,8 @@
     {
       "path": "CHANGELOG.md",
       "normalization": "lf",
-      "bytes": 38977,
-      "sha256": "d34fd64935b80c8d0122c3f69b72b1587ad2011c7ce0797cc51e7a9798f2fd77"
+      "bytes": 39439,
+      "sha256": "55c3c8d47efb5554c6d85b2cf3f361beb8fdc506e3af4f8a98f3aa80eab8c1de"
     },
     {
       "path": "CMakeLists.txt",
@@ -2741,6 +2741,12 @@
       "sha256": "9e60c7295e7caab203cdc78ca4f1e4e53018b99b473eca60fdd9361052df2141"
     },
     {
+      "path": "docs/adr/0121-ready-task-continuation.md",
+      "normalization": "lf",
+      "bytes": 4457,
+      "sha256": "14df28371b608ae3a5c56ddbc0395c6d37a289ee711ccb6ac5b1eac222a65846"
+    },
+    {
       "path": "docs/adr/0124-web-targets-and-size-analysis.md",
       "normalization": "lf",
       "bytes": 3949,
@@ -2839,8 +2845,8 @@
     {
       "path": "docs/known-issues.md",
       "normalization": "lf",
-      "bytes": 27474,
-      "sha256": "fb263672513f0695b02aed47c9ff652b882d611dec209b27a320d6e5d1df15f9"
+      "bytes": 27879,
+      "sha256": "5b7a64bdfd8704c83a8dfc9a257da3b37dbf8e6bcf011d60b21ad5b35469b51c"
     },
     {
       "path": "docs/llvm-toolchain-entry.md",
@@ -2859,6 +2865,12 @@
       "normalization": "lf",
       "bytes": 13964,
       "sha256": "8faf805abc497806ebb49f19f275d03cb3ff9afec0aabb4af12008a178126b6d"
+    },
+    {
+      "path": "docs/maintenance/input-latency-20261026.md",
+      "normalization": "lf",
+      "bytes": 3862,
+      "sha256": "e50e4df354e3b37d1ca6e48945cbb3a773608bc6f0d9565b080f004c84a4fec0"
     },
     {
       "path": "docs/maintenance/scroll-ack-feedback-20261023.md",
@@ -2977,8 +2989,8 @@
     {
       "path": "docs/testing.md",
       "normalization": "lf",
-      "bytes": 30356,
-      "sha256": "de055913cd7d4f658cf5efdf8a95db94d52fe2cd36e9fabf5def74db0f5e9f53"
+      "bytes": 30802,
+      "sha256": "e293512a4f13436c2b4e793055645b838ea78761edc56d021ff57d72075f195c"
     },
     {
       "path": "docs/troubleshooting.md",
@@ -5627,6 +5639,48 @@
       "sha256": "b7fad064a5f8c7a4c7e68c803e732cc1f39f03b35b0ad3d79c08b9a8085c1d93"
     },
     {
+      "path": "tests/native/scheduler_continuation/.gitattributes",
+      "normalization": "lf",
+      "bytes": 54,
+      "sha256": "c4603531e4fab4b3d05821c12d123e60e90f59116eef631198e1515ce2d43f45"
+    },
+    {
+      "path": "tests/native/scheduler_continuation/CMakeLists.txt",
+      "normalization": "lf",
+      "bytes": 1829,
+      "sha256": "332b488140cda7c56c0ad9a4db43b09c7743e87de6de6cf59265aab6be4a0926"
+    },
+    {
+      "path": "tests/native/scheduler_continuation/README.md",
+      "normalization": "lf",
+      "bytes": 1438,
+      "sha256": "9a2543b1756ad64c101531714485fed7bf18090f1d8cda42893a3550f017e942"
+    },
+    {
+      "path": "tests/native/scheduler_continuation/fixture.cpp",
+      "normalization": "lf",
+      "bytes": 12942,
+      "sha256": "f2a5187e5eae71544f8c139548fc26c61255749acc83277c260ad780ad1618ce"
+    },
+    {
+      "path": "tests/native/scheduler_continuation/generate.cjs",
+      "normalization": "lf",
+      "bytes": 1810,
+      "sha256": "e8e8757726b31cc5b9d2f648271b8b04ade744ba1a70e860fb89dccaac48a38c"
+    },
+    {
+      "path": "tests/native/scheduler_continuation/stubs/content/browser/CheckReEnter.h",
+      "normalization": "lf",
+      "bytes": 87,
+      "sha256": "ba40e959f5cdf76cccc0a4c535511833ebd96341a64aa006df8ae139e09c5aec"
+    },
+    {
+      "path": "tests/native/scheduler_continuation/stubs/content/web_impl_win/WebThreadImpl.h",
+      "normalization": "lf",
+      "bytes": 97,
+      "sha256": "5cd576c7cb9789c3f53e829cd48bf8e8541668e59dcb6fff0fd57da45c1abe44"
+    },
+    {
       "path": "tests/native/scheduler_fairness_tests.cpp",
       "normalization": "lf",
       "bytes": 3230,
@@ -5924,7 +5978,7 @@
       "path": "tests/native/vendor_lifetime/dragdata/CMakeLists.txt",
       "normalization": "lf",
       "bytes": 6154,
-      "sha256": "293d74b5af845614db62a130e0e8e1aba3907d9200d07bb40d3c37954dc9d177"
+      "sha256": "1b7079653b6455faa60542ea76ca2f10a8e19a025771789402f0f6a943449814"
     },
     {
       "path": "tests/native/vendor_lifetime/dragdata/README.md",
@@ -5989,14 +6043,14 @@
     {
       "path": "tests/native/vendor_lifetime/worker_lifetime/CMakeLists.txt",
       "normalization": "lf",
-      "bytes": 3299,
-      "sha256": "ddb22edb83497137119512b14a709de9fc507f244910ea4feee16e23e3d3f071"
+      "bytes": 3432,
+      "sha256": "86a7755602646a531a7d0eeb7f526bf07fd38794e71231a042af792bf5a00ce9"
     },
     {
       "path": "tests/native/vendor_lifetime/worker_lifetime/README.md",
       "normalization": "lf",
-      "bytes": 5616,
-      "sha256": "f8f0161128a2ca6ff87a13e7045a432ce33c8ed7becd000500bfa7d01b23fc15"
+      "bytes": 6373,
+      "sha256": "56fefb32b1bd610fbfe94dc6b7abfcc9177f42b4953ee445add12f520f363ac7"
     },
     {
       "path": "tests/native/vendor_lifetime/worker_lifetime/expect-fail-fast.cmake",
@@ -6007,8 +6061,8 @@
     {
       "path": "tests/native/vendor_lifetime/worker_lifetime/fixture.cpp",
       "normalization": "lf",
-      "bytes": 39921,
-      "sha256": "41d09dfd527d0e24fd95b039820f7a0ed88891cbbcbe6f4d1d45f14bce899e8a"
+      "bytes": 46680,
+      "sha256": "f7d57073fba436121ed297560b6027cf56b5124bb207b5e1cbb2e54bf5fa3a6b"
     },
     {
       "path": "tests/native/vendor_lifetime/worker_lifetime/fixture_support.h",
@@ -6025,8 +6079,8 @@
     {
       "path": "tests/native/vendor_lifetime/worker_lifetime/source-map.json",
       "normalization": "lf",
-      "bytes": 11251,
-      "sha256": "4c46335307ba1bbbba0f81e7cb00f86a829ce83dbc8e45e0fcd4f0a3b023a726"
+      "bytes": 11254,
+      "sha256": "2e867442022c16343cf8078d754768198cced82f5bf17301ec8d750acd1275e3"
     },
     {
       "path": "tests/native/vendor_lifetime/worker_lifetime/stubs/base/compiler_specific.h",
@@ -6578,7 +6632,7 @@
       "path": "tests/sdk/vendor-tests.test.cjs",
       "normalization": "lf",
       "bytes": 16147,
-      "sha256": "d6d0835223d31f75c6ccf68e886c5e05f8339340b8076fbc5df8b96433b6206e"
+      "sha256": "5a345c974f88aa32952480516eec56cf74376daacd0027bc96af5c7ed2767220"
     },
     {
       "path": "tests/sdk/verification-profile.test.cjs",
@@ -9041,6 +9095,12 @@
       "sha256": "bb8dbd28c9d2079205fc3c1f8d7fbe451dcf52dddca106f86e89ee8a3ef756be"
     },
     {
+      "path": "third_party/manifests/kernel-ready-task-source.json",
+      "normalization": "lf",
+      "bytes": 3579,
+      "sha256": "cd261f20c45f9de33b79079140c247590af5ca72b09270d0beaba91953e0d6ac"
+    },
+    {
       "path": "third_party/manifests/license-review.json",
       "normalization": "lf",
       "bytes": 2417,
@@ -9197,10 +9257,16 @@
       "sha256": "8a4acaee8575e38104b8aaf5d6d908587cdbb5479e3e8aa4d77de7d019ee4534"
     },
     {
+      "path": "third_party/patches/miniblink/0014-ready-task-wake-and-admission.patch",
+      "normalization": "none",
+      "bytes": 18195,
+      "sha256": "32c3108d617afd5efe2f95d83bc270a98165aa380bb7ea76f9d18205b01ad576"
+    },
+    {
       "path": "third_party/patches/miniblink/README.md",
       "normalization": "lf",
-      "bytes": 12201,
-      "sha256": "669bc895e23d811a0ea97015dfb22742b939fd3cba03d36a4e4e2268bbf787c6"
+      "bytes": 13062,
+      "sha256": "d377ba3ef34d1759378cd23eb76c204240d16aff1739aa5bb8b1cd34a4c1df66"
     },
     {
       "path": "third_party/patches/soui/0001-llvm-conformance.patch",
@@ -11305,8 +11371,8 @@
     {
       "path": "third_party/sources/miniblink/content/browser/SharedTimerWin.h",
       "normalization": "lf",
-      "bytes": 7482,
-      "sha256": "5a0bc9c26aa07db331e1d7d93adc5ea48765839871a08533701c3c22b4fd8497"
+      "bytes": 10720,
+      "sha256": "8dfa867922aee1dd86ee0e6c9a037cafac661528d8c7c3c357720bdf1f9f0d93"
     },
     {
       "path": "third_party/sources/miniblink/content/browser/WebFrameClientImpl.cpp",
@@ -11335,14 +11401,14 @@
     {
       "path": "third_party/sources/miniblink/content/browser/WebPageImpl.cpp",
       "normalization": "lf",
-      "bytes": 83505,
-      "sha256": "7db9e14e53ef76bf1c28f867ab61220b7012a6003f0c38824a1cc276feec22fa"
+      "bytes": 83907,
+      "sha256": "d58cbfa8ff8f373ab69cd9acfbbeff3a40f6f3c2a39eb48a607dc33925e0a9c1"
     },
     {
       "path": "third_party/sources/miniblink/content/browser/WebPageImpl.h",
       "normalization": "lf",
-      "bytes": 11899,
-      "sha256": "04062955168e5f9af945ec60fa21ff2d398f70a17c23624be53560078587ac49"
+      "bytes": 11950,
+      "sha256": "0ac9ba1fa2e4a3254bd252c9b293675294852a2e38207ca892e5140a8547682a"
     },
     {
       "path": "third_party/sources/miniblink/content/browser/WebPageState.h",
@@ -11857,14 +11923,14 @@
     {
       "path": "third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp",
       "normalization": "lf",
-      "bytes": 24846,
-      "sha256": "fa7295aee946697c6a9b122daea593b7c435f39ae1585c2774e8d13476e953cc"
+      "bytes": 27256,
+      "sha256": "3acf67853524eeffd70568740922b6fe380eb3a94fe5ba9fa19d2c76ede8e173"
     },
     {
       "path": "third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.h",
       "normalization": "lf",
-      "bytes": 4325,
-      "sha256": "673e9acc5bb267a5afb733a7eb4c84de2ac845699e49fa44e27f1fbcafd2ea7d"
+      "bytes": 4642,
+      "sha256": "36a343506a8b879510aeb1245b22a9f907de4d02279227ad1c526e6a2e5236f2"
     },
     {
       "path": "third_party/sources/miniblink/content/web_impl_win/WebTimerBase.cpp",
@@ -179461,14 +179527,14 @@
     {
       "path": "tools/internal/vendor-test-names.json",
       "normalization": "lf",
-      "bytes": 3359,
-      "sha256": "86f61aeec7c1d587332909a982c5553d754f2427dbe63be96a91eb58f22e4eb7"
+      "bytes": 4033,
+      "sha256": "4d76e6744e85d2b3775762c59f5aa2de3da28530a9b572074746a6b5af40bca2"
     },
     {
       "path": "tools/internal/vendor-tests.cjs",
       "normalization": "lf",
       "bytes": 8526,
-      "sha256": "008beb553a6240df86580569b2bae0282419b8c1be12d54fadcb4a2e148a13be"
+      "sha256": "95fa629ef7998eb266d9adb6ba254542dab1eef73cd6144e8c6d686e556074e2"
     },
     {
       "path": "tools/internal/verification-profile.cjs",

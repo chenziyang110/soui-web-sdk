@@ -38,7 +38,9 @@ add_dependencies(soui_worker_lifetime_regressions soui_worker_lifetime_source_by
 foreach(case IN ITEMS scheduler-new-bad-alloc event-null native-launch-zero registry-reserve-bad-alloc
     startup-tls-failure ready-acquire-visibility native-exit-delayed native-wait-fails
     worker-self-delete normal-worker-close concurrent-registry-close main-thread-compatibility
-    main-scheduler-task-budget main-scheduler-clock-budget worker-scheduler-no-count-cap
+    main-scheduler-task-budget main-scheduler-clock-budget main-scheduler-continuation
+    main-scheduler-first-task-wake main-scheduler-admission-budget main-scheduler-admission-shutdown
+    worker-scheduler-no-count-cap
     worker-scheduler-clock-budget main-scheduler-shutdown-drain main-scheduler-pre-shutdown-drain)
   if(case STREQUAL "native-wait-fails" OR case STREQUAL "worker-self-delete")
     add_test(NAME kernel.native.worker-lifetime.${case} COMMAND "${CMAKE_COMMAND}"

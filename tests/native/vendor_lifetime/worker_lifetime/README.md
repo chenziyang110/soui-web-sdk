@@ -1,5 +1,9 @@
 # Worker 生命周期真实源码回归
 
+## 就绪任务续调度候选（2026-10-26）
+
+本轮在原 18 项上新增 4 项：`main-scheduler-continuation`、`main-scheduler-first-task-wake`、`main-scheduler-admission-budget` 和 `main-scheduler-admission-shutdown`。只在夹具中停用周期 timer，以真实窗口消息分发验证首任务唤醒、积压链完成、跨线程接纳预算及保留批次关闭；核对未来任务不提前和恰好一次清理。首任务案例还覆盖长回调后提交的正延时从实际 post 计时。源码映射更新三个完整 vendor 文件及夹具输入，原有关闭片段和其他输入保持原字节。最终候选按用户要求未继续编译或执行，交由后续人员验证；这些案例也不证明真实硬件输入公平性。
+
 ## 当前源码绑定修复（2026-10-13）
 
 0.5 Native 源码采用后，本目录的 current 输入仍绑定采用前 5 个文件及 3 个旧字节偏移，导致正常配置被 byte gate 拒绝。更新时逐项验证完整文件，并以原片段 SHA 定位相同方法；registry/TLS 的三个片段原字节不变，仅位置移动。完整 WebThreadImpl 则包含已经采用的 retirement/witness 方法，测试依赖投影从真实 WebThread.h 额外提取该接口声明，不能手写另一套关闭实现。新增第 12 个 exact fragment，严格 copies 数同步为 12；13 个 current 源输入与所有 payload/HEX 前后校验仍保留。

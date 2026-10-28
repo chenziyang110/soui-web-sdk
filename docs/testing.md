@@ -1,5 +1,7 @@
 # 测试与验收
 
+2026-10-26 的任务唤醒与有界接纳候选提供[确定性契约](../tests/native/scheduler_continuation/README.md)和扩展至 22 项的真实 worker fixture；首任务、跨线程积压、延时起点及关闭验证入口见[交接说明](maintenance/input-latency-20261026.md)。最终源码按维护者要求未继续编译或运行，早期实验不作为当前通过证据。默认 vendor 精确注册清单同步为实际 64 项。
+
 `kernel.native.scroll-ack-feedback` 的[独立入口](../tests/native/scroll_ack_feedback/README.md)直接使用生产 ACK helper、Controller、Snapshot 和默认 client 查询；旧方法对照通过机械提取保持真实生产逻辑。加强快照拒绝断言后的两架构当前 ACK 各 25/25，既有目标、边界、覆盖各 2/2、19/19、13/13，八个当前程序在隔离来宾全部退出 0；旧对照各 3/10 并真实退出 1，整个 suite 仍退出 1。当前记录见[维护说明](maintenance/scroll-ack-feedback-20261023.md)和[验证摘要](verification/scroll-ack-feedback-20261023.json)。完整 x86 内核已自然构建退出 0 并获独立 build-only 验收；另有 GUI21 协议页 800 请求位移及 GUI22 真实同值 CSS 取消的限定观察。helper 状态测试和构建不替代实际来源验证，100 ms 采样也不证明 setter 瞬时 target/velocity 或整体流畅度。
 
 `tests/native/scroll_target_retention/` 是显式的生产 Controller/Snapshot 回归入口，覆盖相同已接纳输入在早/晚覆盖就绪下的终点、暂停恢复、双轴、真实边界及明确取消。独立构建命令、源码 override 和运行范围见其 [README](../tests/native/scroll_target_retention/README.md)。两架构当前的原始两场景、十九项边界及旧十三项覆盖回归已在隔离来宾通过；这不执行 LayerTreeHost 的真实调度或证明 GUI 性能。默认关闭的收缩诊断保留正确性断言及实际非零失败，不以 `WILL_FAIL` 倒置；开启后需单独报告，不能计入主回归通过数。

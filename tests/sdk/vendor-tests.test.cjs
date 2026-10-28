@@ -76,13 +76,13 @@ test('generated application and relative-root inputs cannot stand in for root na
   fs.writeFileSync(path.join(f.root, 'project.json'), '{}');
   assert.throws(() => configuration(f.root, 'x64', 'Release'), /generated app/);
 });
-test('ON accepts all 54 registered names and OFF preserves SDK registration only', () => {
-  assert.deepEqual(registry(jsonRegistry(allNames), 'ON'), {registeredVendorTests: 54, registeredNativeTests: 55});
+test('ON accepts all 64 registered names and OFF preserves SDK registration only', () => {
+  assert.deepEqual(registry(jsonRegistry(allNames), 'ON'), {registeredVendorTests: 64, registeredNativeTests: 65});
   assert.deepEqual(registry(jsonRegistry([sdkName]), 'OFF'), {registeredVendorTests: 0, registeredNativeTests: 1});
 });
 test('one missing, extra, duplicate or disabled vendor case rejects the whole registry', () => {
-  assert.throws(() => registry(jsonRegistry(allNames.slice(0, -1)), 'ON'), /all 54 exact names/);
-  assert.throws(() => registry(jsonRegistry([...allNames, 'kernel.native.unexpected']), 'ON'), /all 54 exact names/);
+  assert.throws(() => registry(jsonRegistry(allNames.slice(0, -1)), 'ON'), /all 64 exact names/);
+  assert.throws(() => registry(jsonRegistry([...allNames, 'kernel.native.unexpected']), 'ON'), /all 64 exact names/);
   assert.throws(() => registry(jsonRegistry([...allNames, manifest.names[0]]), 'ON'), /Duplicate/);
   const disabled = JSON.parse(jsonRegistry(allNames));
   disabled.tests[1].properties.push({name: 'DISABLED', value: true});
@@ -117,7 +117,7 @@ test('manifest follows every actual vendor CMake case registration', () => {
       }
     }
   }
-  assert.equal(names.size, 54);
+  assert.equal(names.size, 64);
   assert.deepEqual([...names].sort(), manifest.names);
 });
 test('central vendor preflight covers the union of actual leaf source inputs', () => {
