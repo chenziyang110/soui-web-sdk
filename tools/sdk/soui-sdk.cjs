@@ -16,7 +16,7 @@ const LOCK = 'soui.sdk-lock/v1';
 const sdkId = 'soui-desktop-sdk';
 const managedRoots = ['sdk', 'cmake', 'third_party/include', 'third_party/prebuilt',
   'third_party/sources/zlib', 'third_party/licenses', 'third_party/manifests', 'tools/sdk', 'tools/internal'];
-const managedFiles = ['THIRD_PARTY_NOTICES.md', 'tools/Build.ps1', 'tools/Test-Modern.ps1',
+const managedFiles = ['LICENSE.md', 'THIRD_PARTY_NOTICES.md', 'tools/Build.ps1', 'tools/Test-Modern.ps1',
   'tools/Soui.ps1', 'tools/Doctor.ps1', 'docs/developer-workflow.md',
   'benchmarks/protocol/host64-build-debug-observer.cpp',
   'benchmarks/protocol/host64-build-debug-observer/CMakeLists.txt'];

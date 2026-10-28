@@ -1,0 +1,105 @@
+{
+  "schema": "soui.remaining-issues-preparation/v1",
+  "version": "0.5.1-preview.1",
+  "sourceSha256": "652a66973f09c5a90a5e06465944dd7ea8d3a3d9463411db5b07d045cb843973",
+  "firstPartyLicense": "MIT",
+  "licenseSha256": "e66ea76381329e7ac8907b5022c1c4b3e0fb3f5a1a089653f86f3d0312059ac6",
+  "regression": {
+    "tests": 46,
+    "passed": 46,
+    "failed": 0
+  },
+  "gui": {
+    "tests": 39,
+    "passed": 39,
+    "typechecks": 2,
+    "audits": 4,
+    "sourceSha256": "1ca02cef5eba9c96b02e8f2b6242ae0a2ee4e75a142d0604d90737a502be5d2f",
+    "desktopValidated": false
+  },
+  "upgradeRollback": {
+    "sequence": [
+      "0.5.0",
+      "0.5.1-preview.1",
+      "0.5.0",
+      "0.5.1-preview.1"
+    ],
+    "businessUnchanged": true,
+    "previousPackageUnchanged": true
+  },
+  "builds": [
+    {
+      "architecture": "x64",
+      "configuration": "Release",
+      "fixture": "message-port",
+      "suite": "F:/work/soui-issue96/out/acceptance/bd7afa33-ea0d-4e55-b482-d2b01f64ee19",
+      "version": "0.5.1-preview.1",
+      "sourceSha256": "652a66973f09c5a90a5e06465944dd7ea8d3a3d9463411db5b07d045cb843973",
+      "buildId": "1ba7e790-c8b8-420b-b335-0cba01def325",
+      "consumerBuildId": "ae0f03cf-5c2e-4451-91f8-66e92af682fe",
+      "payloadSha256": "3feff673d257dd7dcf070ae62fb98b8fe77c2ff9923210d790db1f978159f603",
+      "installedLicenseSha256": "e66ea76381329e7ac8907b5022c1c4b3e0fb3f5a1a089653f86f3d0312059ac6",
+      "natural": true,
+      "desktopScenariosExecuted": false
+    },
+    {
+      "architecture": "x64",
+      "configuration": "Release",
+      "fixture": "ordinary",
+      "suite": "F:/work/soui-issue96/out/acceptance/2566629a-7a06-4302-8fbf-04809a50da86",
+      "version": "0.5.1-preview.1",
+      "sourceSha256": "652a66973f09c5a90a5e06465944dd7ea8d3a3d9463411db5b07d045cb843973",
+      "buildId": "1ba7e790-c8b8-420b-b335-0cba01def325",
+      "consumerBuildId": "d8cc5d6d-5112-4aca-8570-197e2c8863b6",
+      "payloadSha256": "10470f0288be6658b44593c1a92c967cd78d670f360631f79e56bde2b3084d5c",
+      "installedLicenseSha256": "e66ea76381329e7ac8907b5022c1c4b3e0fb3f5a1a089653f86f3d0312059ac6",
+      "natural": true,
+      "desktopScenariosExecuted": false
+    },
+    {
+      "architecture": "x86",
+      "configuration": "Release",
+      "fixture": "message-port",
+      "suite": "F:/work/soui-issue96/out/acceptance/5c02d217-f04f-4f32-9794-110e7fb3f734",
+      "version": "0.5.1-preview.1",
+      "sourceSha256": "652a66973f09c5a90a5e06465944dd7ea8d3a3d9463411db5b07d045cb843973",
+      "buildId": "ccffb2cd-465f-4323-915b-883c4a07a1f6",
+      "consumerBuildId": "e7da1244-f31f-4fb1-a971-78c252fbe176",
+      "payloadSha256": "38b79552c767f0b2e7776993bed3970b3e990d62b198b7e7da7e9231ce091edf",
+      "installedLicenseSha256": "e66ea76381329e7ac8907b5022c1c4b3e0fb3f5a1a089653f86f3d0312059ac6",
+      "natural": true,
+      "desktopScenariosExecuted": false
+    },
+    {
+      "architecture": "x86",
+      "configuration": "Release",
+      "fixture": "ordinary",
+      "suite": "F:/work/soui-issue96/out/acceptance/443a17b1-03ef-463b-9908-9dc24ca98746",
+      "version": "0.5.1-preview.1",
+      "sourceSha256": "652a66973f09c5a90a5e06465944dd7ea8d3a3d9463411db5b07d045cb843973",
+      "buildId": "ccffb2cd-465f-4323-915b-883c4a07a1f6",
+      "consumerBuildId": "a6cde311-0aae-487e-8bc2-2d7fe9d087c5",
+      "payloadSha256": "4374b69bc87ae9701d357a0ff81e9009bf8abb941bad73b3f1a592f36a1b622e",
+      "installedLicenseSha256": "e66ea76381329e7ac8907b5022c1c4b3e0fb3f5a1a089653f86f3d0312059ac6",
+      "natural": true,
+      "desktopScenariosExecuted": false
+    }
+  ],
+  "openIssues": [
+    23,
+    27,
+    29,
+    31,
+    39,
+    42,
+    77,
+    96
+  ],
+  "desktopScenariosExecuted": false,
+  "eightHourSessionExecuted": false,
+  "eightHourMixedExecuted": false,
+  "binaryLicenseReviewComplete": false,
+  "published": false,
+  "productionQualificationComplete": false,
+  "releaseReady": false
+}

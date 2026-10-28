@@ -30,7 +30,10 @@ function fixture(t, targetVersion = version) {
       exports: {'.': {import: `./${entry.import}`, types: `./${entry.types}`}}};
     const lock = {version, packages: {'': {version}}};
     if (entry.framework) {
-      meta.peerDependencies = {'@soui/native-sdk': '>=0.4.0-0 <0.5.0 || >=0.5.0-0 <0.6.0', [entry.framework]: '*'};
+      const range = /^0\.5\.1(?:-|$)/.test(version) ?
+        '>=0.4.0-0 <0.5.0 || >=0.5.0-0 <0.5.1 || >=0.5.1-0 <0.6.0' :
+        '>=0.4.0-0 <0.5.0 || >=0.5.0-0 <0.6.0';
+      meta.peerDependencies = {'@soui/native-sdk': range, [entry.framework]: '*'};
       meta.devDependencies = {'@soui/native-sdk': 'file:../../web'};
       lock.packages['node_modules/@soui/native-sdk'] = {version};
     }
@@ -187,12 +190,12 @@ test('an installed historical declaration cannot bypass new GUI packaging input 
   assert.throws(() => sdk.pack(project, output, version, {withGuiBindings: true}), /Historical GUI source identity/);
   assert.equal(fs.existsSync(output), false);
 });
-for (const targetVersion of ['0.5.0-rc.1', '0.5.0']) test('optional GUI delivery preserves exact ' + targetVersion + ' identity', t => {
+for (const targetVersion of ['0.5.0-rc.1', '0.5.0', '0.5.1-preview.1']) test('optional GUI delivery preserves exact ' + targetVersion + ' identity', t => {
   const f = fixture(t, targetVersion), packed = path.join(f.root, 'packed'), installed = path.join(f.root, 'installed');
   sdk.pack(f.source, packed, targetVersion, {withGuiBindings: true});
   const manifest = sdk.readPackage(packed);
   assert.equal(manifest.version, targetVersion);
-  assert.equal(manifest.channel, targetVersion.includes('-rc.') ? 'rc' : 'stable');
+  assert.equal(manifest.channel, targetVersion.includes('-rc.') ? 'rc' : targetVersion.includes('-preview.') ? 'preview' : 'stable');
   assert.equal(manifest.releaseReady, false);
   assert.equal(manifest.optionalGuiBindings.sdkVersion, targetVersion);
   sdk.install(packed, installed);

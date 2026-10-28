@@ -12,7 +12,8 @@ const packages = [
   ...['react', 'vue'].map(framework => ({name: `@soui/gui-${framework}`, root: `sdk/bindings/${framework}`,
     import: `dist/${framework}/src/index.js`, types: `dist/${framework}/src/index.d.ts`, framework}))
 ];
-const peerRange = '>=0.4.0-0 <0.5.0 || >=0.5.0-0 <0.6.0';
+const peerRange = '>=0.4.0-0 <0.5.0 || >=0.5.0-0 <0.5.1 || >=0.5.1-0 <0.6.0';
+const legacyPeerRange = '>=0.4.0-0 <0.5.0 || >=0.5.0-0 <0.6.0';
 const reportName = 'out/gui-bindings/build.json';
 function regular(root, name) {
   const file = identity.safePath(root, name), stat = fs.lstatSync(file);
@@ -26,6 +27,8 @@ function versionOf(root) {
 }
 function metadata(root, version = versionOf(root)) {
   if (!versioning.isVersion(version)) throw new Error('GUI delivery requires an exact SDK version');
+  // Frozen older packages retain their original peer contract during rollback.
+  const expectedPeerRange = /^0\.5\.1(?:-|$)/.test(version) ? peerRange : legacyPeerRange;
   for (const entry of packages) {
     const meta = read(root, `${entry.root}/package.json`), lock = read(root, `${entry.root}/package-lock.json`);
     if (meta.name !== entry.name || meta.version !== version || lock.version !== version ||
@@ -35,7 +38,7 @@ function metadata(root, version = versionOf(root)) {
         (meta.dependencies && Object.keys(meta.dependencies).length)) throw new Error(`GUI package identity/imports differ: ${entry.name}`);
     if (entry.framework) {
       if (Object.keys(meta.peerDependencies || {}).sort().join(',') !== ['@soui/native-sdk', entry.framework].sort().join(',') ||
-          meta.peerDependencies['@soui/native-sdk'] !== peerRange || !meta.peerDependencies[entry.framework] ||
+          meta.peerDependencies['@soui/native-sdk'] !== expectedPeerRange || !meta.peerDependencies[entry.framework] ||
           meta.devDependencies?.['@soui/native-sdk'] !== 'file:../../web' ||
           lock.packages?.['node_modules/@soui/native-sdk']?.version !== version) {
         throw new Error(`GUI package must borrow the exact local SDK and framework peers: ${entry.name}`);
