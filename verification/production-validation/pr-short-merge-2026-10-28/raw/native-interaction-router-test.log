@@ -1,0 +1,35 @@
+UpdateCTestConfiguration  from :C:/pm-build/x64-19041/DartConfiguration.tcl
+Test project C:/pm-build/x64-19041
+Constructing a list of tests
+Done constructing a list of tests
+Updating test list for fixtures
+Added 0 tests to meet fixture requirements
+Checking test dependency graph...
+Checking test dependency graph end
+test 23
+    Start 23: sdk.native.interaction-router
+
+23: Test command: C:\pm-build\x64-19041\tests\native\Release\soui_interaction_router_tests.exe
+23: Working Directory: C:/pm-build/x64-19041/tests/native
+23: Test timeout computed to be: 10
+23: PASS wheel_then_false_untouched
+23: PASS wheel_then_false_partial
+23: PASS prior_success_then_no_target
+23: PASS prior_success_then_partial_failure
+23: PASS no_history_partial_failure
+23: PASS fresh_success_all_fields_preserved
+23: PASS fresh_success_replaces_all_old_fields
+23: PASS failure_does_not_poison_cached_sample
+23: PASS up_submission_order_without_recapture
+23: PASS caller_barrier_cleared_on_failed_down
+23: PASS stale_generation_has_no_side_effect
+23: PASS later_success_survives_failed_partial_capture
+23: interaction_router_tests summary count=12 passed=12 failed=0
+1/1 Test #23: sdk.native.interaction-router ....   Passed    0.11 sec
+
+The following tests passed:
+	sdk.native.interaction-router
+
+100% tests passed, 0 tests failed out of 1
+
+Total Test time (real) =   0.16 sec

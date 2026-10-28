@@ -1,0 +1,214 @@
+{
+  "schema": "soui.pr124-short-test-record/v1",
+  "commit": "304cc8c83b68c065ad33e50f1c0873849bbdbb4e",
+  "branch": "codex/pr124-short-merge-20261028",
+  "fixedMain": "b7f9641cde9d8e37a647992c88e8901f684017b3",
+  "prHead": "c942c44337c4553dd64356a5fcb8983f325c9992",
+  "tree": "b3fac38a67dcebe08299544b57cd3bfee5e9f8ad",
+  "changedAgainstFixedMain": [
+    "benchmarks/hosts/electron/package-lock.json",
+    "benchmarks/hosts/electron/package.json",
+    "source-manifest.json"
+  ],
+  "ci": {
+    "stage": "ci",
+    "argv": [
+      "C:\\nvm4w\\nodejs\\node.exe",
+      "C:\\nvm4w\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+      "--prefix",
+      "benchmarks/hosts/electron",
+      "ci",
+      "--ignore-scripts",
+      "--no-audit",
+      "--no-fund"
+    ],
+    "startedAt": "2026-10-28T12:38:58.981Z",
+    "finishedAt": "2026-10-28T12:39:03.562Z",
+    "elapsedMs": 4579,
+    "exitCode": 0,
+    "signal": null,
+    "error": null
+  },
+  "audit": {
+    "stage": "audit",
+    "argv": [
+      "C:\\nvm4w\\nodejs\\node.exe",
+      "C:\\nvm4w\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+      "--prefix",
+      "benchmarks/hosts/electron",
+      "audit",
+      "--json"
+    ],
+    "startedAt": "2026-10-28T12:39:03.563Z",
+    "finishedAt": "2026-10-28T12:39:07.647Z",
+    "elapsedMs": 4084,
+    "exitCode": 1,
+    "signal": null,
+    "error": null,
+    "passed": false,
+    "vulnerabilities": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 1,
+      "critical": 0,
+      "total": 1
+    },
+    "affected": [
+      "electron"
+    ],
+    "unchangedElectron": "44.4.4",
+    "advisories": [
+      {
+        "url": "https://github.com/advisories/GHSA-x562-297c-g43g",
+        "title": "Electron: Pointer lock permission requests can be attributed to the wrong frame",
+        "severity": "moderate"
+      },
+      {
+        "url": "https://github.com/advisories/GHSA-jr5w-w6x2-84p9",
+        "title": "Electron: Mitigation for compromised eMudhra intermediate certificates",
+        "severity": "high"
+      }
+    ],
+    "noRemediationApplied": true
+  },
+  "loopback": {
+    "startedAt": "2026-10-28T12:40:44.905Z",
+    "finishedAt": "2026-10-28T12:40:45.818Z",
+    "elapsedMs": 911,
+    "exitCode": 0,
+    "signal": null,
+    "error": null,
+    "observed": {
+      "passed": true,
+      "undici": "7.30.1",
+      "node": "v24.14.0",
+      "undiciNode": ">=20.18.1",
+      "hostNode": ">=22.12.0",
+      "lockIntegrity": "sha512-03KrMbjIFDWQR5RNPrSw3bd1r12JpyFQl9/yxjUbJtqkjmllqC5lFjZh6ujeuJCKr8EOQvRW872Oy/az+nLYxg==",
+      "tarballBytes": 405247,
+      "tarballIntegrity": "sha512-03KrMbjIFDWQR5RNPrSw3bd1r12JpyFQl9/yxjUbJtqkjmllqC5lFjZh6ujeuJCKr8EOQvRW872Oy/az+nLYxg==",
+      "requests": 1,
+      "statusCode": 200,
+      "bodyMatched": true,
+      "clientClosed": true,
+      "serverClosed": true,
+      "electronDistExists": false,
+      "electronPathTxtExists": false,
+      "scope": "One finite loopback request; no Electron or benchmark execution"
+    }
+  },
+  "manifest": {
+    "base": "b7f9641cde9d8e37a647992c88e8901f684017b3",
+    "manifest": {
+      "bytes": 16353207,
+      "sha256": "bf861fcd28cbfd16590d6c601ea322c87dbb65eaba92519ea23c8913b6dbd4d9",
+      "rows": 61154
+    },
+    "changedRows": [
+      {
+        "path": "benchmarks/hosts/electron/package-lock.json",
+        "normalization": "lf",
+        "bytes": 5842,
+        "sha256": "2434774969c1d5fce41fda2d7ef07d48089717d4ebda8ea19ea34b17925d10e5"
+      },
+      {
+        "path": "benchmarks/hosts/electron/package.json",
+        "normalization": "lf",
+        "bytes": 398,
+        "sha256": "9759797681ef178784e36045b3dfe902fc31228b7bae3afa07b5aad66830986e"
+      }
+    ],
+    "unchangedRowsReused": 61152,
+    "version": "0.6.0-preview.3",
+    "releaseReady": false,
+    "cleanStagedIndex": true,
+    "scopeDiffWhitespaceCheckPassed": true,
+    "fullSourceVerification": false
+  },
+  "worktreeClean": true,
+  "scopeWhitespaceCheckPassed": true,
+  "inheritedMergeWhitespaceWarnings": [
+    "tests/native/scroll_target_retention/accepted_target_retention_tests.cpp:251: new blank line at EOF (already fixed-main content)",
+    "tests/native/scroll_target_retention/target_retention_boundary_tests.cpp:512: new blank line at EOF (already fixed-main content)"
+  ],
+  "skippedIntentionally": [
+    "Electron lifecycle install scripts and binary download",
+    "Electron GUI and benchmark execution",
+    "Full source manifest verification",
+    "Native SDK compilation and tests",
+    "Remote push or GitHub mutations"
+  ],
+  "artifacts": [
+    {
+      "path": "ci.stdout.log",
+      "bytes": 25,
+      "sha256": "10a3b21efb70f84d46dae9fd0fc25ede9abef4b84b10aa0eed78fe9f0c6a96fa"
+    },
+    {
+      "path": "ci.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "ci.result.json",
+      "bytes": 410,
+      "sha256": "6dc90de693803b2ab61feb5435a3c73c86f4657627ad1acd52e494cced579836"
+    },
+    {
+      "path": "audit.stdout.log",
+      "bytes": 1827,
+      "sha256": "1f55bf31561f25fa24588ab5409a75b476cf9a63936266cf8313cdb1f2ec5387"
+    },
+    {
+      "path": "audit.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "audit.result.json",
+      "bytes": 371,
+      "sha256": "8d7a48d391ab258eebf27a38d994bede041bbbe683077f7816882103890e03a5"
+    },
+    {
+      "path": "Loopback.cjs",
+      "bytes": 3702,
+      "sha256": "014ceb2d0716a0b064e6a4c2a5811f9d764838816d80f600b06dcccbefa143e5"
+    },
+    {
+      "path": "loopback.stdout.log",
+      "bytes": 573,
+      "sha256": "68fc460782a416f778585758b11b7bbf75b3c49607a041532dd7c7c0e6ad0842"
+    },
+    {
+      "path": "loopback.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "loopback.result.json",
+      "bytes": 162,
+      "sha256": "91ee25a07ae84059686919458fc86b586edd877d94cd156dc38ba49d98031e57"
+    },
+    {
+      "path": "ManifestBefore.json",
+      "bytes": 753,
+      "sha256": "2a0f2e47d184ddca6a31c095db056b03163f534089ff8ddd42ccf4c605a152ba"
+    },
+    {
+      "path": "manifest-refresh.stdout.json",
+      "bytes": 196,
+      "sha256": "ca6ba9dc13792ac99173504098b3f006ee7ca6eef74aad39a92e32f1a14e0a37"
+    },
+    {
+      "path": "ManifestAfter.json",
+      "bytes": 826,
+      "sha256": "bd17bfdf6efc3b96072863af674e6c1afa949c1cbafd6dbb7968682cf08c6cb9"
+    },
+    {
+      "path": "Final.diff",
+      "bytes": 2341,
+      "sha256": "fda25f203d7a633bba402d35a2d6e061596aed15ed1626a3188a953e7eee2b28"
+    }
+  ]
+}

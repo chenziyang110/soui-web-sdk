@@ -3,6 +3,10 @@
 #include "webview2_preload.h"
 #include "request_capacity.h"
 #include "preparation_lifetime.h"
+#include "owner_output_policy.h"
+#include "owner_callout_policy.h"
+#include "../../src/host/input_trace_hooks.h"
+#include <soui/diagnostics/input_frame_trace.h>
 #include "loader_policy.h"
 
 #include <windows.h>
@@ -32,6 +36,7 @@ using json = nlohmann::json;
 using clock_type = std::chrono::steady_clock;
 using sdk::host_result;
 namespace capacity = detail::webview2_capacity;
+namespace input_trace = diagnostics::input_frame_trace;
 
 namespace {
 constexpr wchar_t entry_url[] = L"https://soui-webview2.invalid/index.html";
@@ -396,6 +401,9 @@ struct webview2_adapter::state {
     bool event{false};
     bool ready{false};
     std::shared_ptr<capacity::request_budget::lease> slot;
+    std::wstring prepared_json;
+    std::size_t charged_bytes{0};
+    std::uint64_t trace_task{0}, queued_qpc{0};
   };
   HWND owner{};
   DWORD ui_thread{GetCurrentThreadId()};
@@ -421,6 +429,10 @@ struct webview2_adapter::state {
   bool allow_navigation{false}, document_ready{false}, application_ready{false};
   bool reload_preparing{false};
   bool diagnostic_query_pending{false};
+  bool pump_running{false}; // Actual UI owner; COM reentry cannot start a second drain batch.
+  unsigned owner_budget_us{0}; // Candidate: zero preserves the existing16-item policy.
+  bool prepare_output{false}; // Candidate: disabled until paired profile selects it.
+  std::unique_ptr<detail::trace_thread_registration> trace_owner;
   clock_type::time_point diagnostic_query_at{};
   std::string page_diagnostics;
   UINT64 navigation_id{};
@@ -527,9 +539,19 @@ HRESULT boundary(const std::weak_ptr<state>& weak, Function function) noexcept {
   catch (...) { fail(value, "Unexpected WebView2 callback failure"); return E_FAIL; }
 }
 bool current_source(const std::shared_ptr<state>& value) {
-  if (!value->core) return false;
+  const auto core = value->core; // Pin the actual owner COM object across reentry.
+  const auto generation = value->generation;
+  if (!core) return false;
   task_string source;
-  return SUCCEEDED(value->core->get_Source(&source.value)) && source.value && trusted_entry(source.value);
+  return detail::owner_callout_current([&] {
+    return live(value) && value->core.Get() == core.Get() && value->generation == generation;
+  }, [&] { return SUCCEEDED(core->get_Source(&source.value)) && source.value && trusted_entry(source.value); });
+}
+std::string serialize_output(const state::output& output) {
+  const auto packet = output.event
+      ? json{{"kind", "event"}, {"documentId", output.document_id}, {"data", parse_bounded(output.raw)}}
+      : json{{"kind", "response"}, {"documentId", output.document_id}, {"requestId", output.id}, {"raw", output.raw}};
+  return packet.dump();
 }
 void wake_owner(const std::shared_ptr<state>& value) {
   if (!value->wake_pending.exchange(true, std::memory_order_acq_rel) &&
@@ -537,23 +559,46 @@ void wake_owner(const std::shared_ptr<state>& value) {
     value->wake_pending.store(false, std::memory_order_release);
 }
 void push_output(const std::shared_ptr<state>& value, state::output output) {
-  std::lock_guard<std::mutex> lock(value->mutex);
-  if (value->stop_requested || output.generation != value->generation) return;
+  {
+    std::lock_guard<std::mutex> lock(value->mutex);
+    if (value->stop_requested || output.generation != value->generation) return;
+  }
   if (output.raw.size() > message_limit) {
-    output.raw = response_error(output.id, "E_LIMIT_MESSAGE_SIZE", "Native response exceeds limit.");
+    auto bounded_error = response_error(output.id, "E_LIMIT_MESSAGE_SIZE", "Native response exceeds limit.");
+    output.raw.swap(bounded_error); // Do not retain an oversized string capacity in the bounded queue.
     output.event = false;
     output.ready = false;
   }
+  output.trace_task = input_trace::next_task_id();
+  output.charged_bytes = output.raw.size();
+  if (value->prepare_output) {
+    const detail::trace_duration serialization_cost(input_trace::duration_metric::serialization);
+    try {
+      const auto encoded = serialize_output(output);
+      if (encoded.size() <= message_limit / sizeof(wchar_t)) {
+        auto prepared = wide(encoded);
+        if (detail::owner_output_budget::may_cache(output.raw.size(), prepared.size(), message_limit)) {
+          output.charged_bytes += prepared.size() * sizeof(wchar_t);
+          output.prepared_json = std::move(prepared);
+        }
+      }
+    } catch (...) { output.prepared_json.clear(); } // Exact legacy owner path remains available.
+  }
+  std::lock_guard<std::mutex> lock(value->mutex);
+  if (value->stop_requested || output.generation != value->generation) return;
   const auto category = output.slot ? output.slot->category : capacity::lane::ordinary;
-  const auto bytes = output.raw.size();
+  const auto bytes = output.charged_bytes;
   if (!value->output_slots.reserve(category, bytes)) {
     return; // the page's bounded request timer observes missing delivery
   }
+  output.queued_qpc = input_trace::now_qpc(); // Actual queue admission follows preparation.
   try { value->outputs.push_back(std::move(output)); }
   catch (...) { value->output_slots.release(category, bytes); throw; }
   wake_owner(value);
 }
 void bridge_worker(const std::shared_ptr<state>& value) noexcept {
+  const bool trace_attached = input_trace::register_current_thread();
+  struct trace_detach { bool attached; ~trace_detach() { if (attached) input_trace::detach_current_thread(); } } trace_owner{trace_attached};
   std::string session;
   const HRESULT apartment = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
   try {
@@ -874,6 +919,13 @@ webview2_adapter::webview2_adapter(void* owner, std::filesystem::path profile, s
   state_->preload = preload.empty() ? detail::webview2_preload : std::move(preload);
   state_->fixed_runtime = std::move(fixed_runtime);
   state_->document_id = document_identity();
+  wchar_t owner_budget[16]{};
+  const auto owner_budget_length = GetEnvironmentVariableW(L"SOUI_WEBVIEW2_OWNER_BUDGET_US", owner_budget, 16);
+  state_->owner_budget_us = detail::owner_output_budget::parse_microseconds(owner_budget, owner_budget_length);
+  wchar_t prepare[2]{};
+  state_->prepare_output = GetEnvironmentVariableW(L"SOUI_WEBVIEW2_PREPARE_OUTPUT", prepare, 2) == 1 && prepare[0] == L'1';
+  try { state_->trace_owner = std::make_unique<detail::trace_thread_registration>(); }
+  catch (...) { input_trace::note_causal_loss(); }
 }
 
 webview2_adapter::~webview2_adapter() {
@@ -902,6 +954,7 @@ webview2_adapter::~webview2_adapter() {
   }
   if (value->controller) (void)value->controller->Close();
   value->current = state::phase::closed;
+  value->trace_owner.reset();
 }
 
 host_result webview2_adapter::configure_profile_access(webview2_profile_access access) {
@@ -1143,6 +1196,7 @@ host_result webview2_adapter::unmount() {
   value->core22.Reset(); value->core4.Reset(); value->core3.Reset(); value->core.Reset();
   value->controller.Reset(); value->environment.Reset();
   value->current = state::phase::closed;
+  value->trace_owner.reset(); // Last UI Host releases the shared producer before export.
   return ok();
 }
 
@@ -1189,33 +1243,48 @@ void webview2_adapter::pump() {
   auto value = state_;
   value->wake_pending.store(false, std::memory_order_release);
   if (!require_mounted(value).ok) return;
+  const detail::owner_pump_guard pumping(value->pump_running);
+  if (!pumping) return;
+  const detail::trace_thread_borrow trace_operation;
+  const detail::trace_duration owner_cost(input_trace::duration_metric::webview2_owner);
   try {
     if (value->worker_done.load(std::memory_order_acquire)) throw std::runtime_error("Bridge worker exited unexpectedly");
-    if (!value->application_ready && !value->diagnostic_query_pending && current_source(value) &&
+    if (!value->application_ready && !value->diagnostic_query_pending &&
         clock_type::now() - value->diagnostic_query_at >= std::chrono::seconds(1)) {
-      value->diagnostic_query_pending = true;
-      value->diagnostic_query_at = clock_type::now();
-      const std::weak_ptr<state> weak(value);
+      const auto diagnostic_target = value->core;
       const auto queried_generation = value->generation;
-      const auto queried = value->core->ExecuteScript(
-          LR"((function(){return {document:document.readyState,visibility:document.visibilityState,binding:typeof window.__souiNativePostMessage};})())",
-          Callback<ICoreWebView2ExecuteScriptCompletedHandler>(
-              [weak, queried_generation](HRESULT result, LPCWSTR raw) -> HRESULT {
-                const auto current = weak.lock();
-                if (!live(current) || current->generation != queried_generation || !current_source(current)) return S_OK;
-                current->diagnostic_query_pending = false;
-                try {
-                  if (SUCCEEDED(result) && raw) {
-                    current->page_diagnostics = utf8(raw);
+      const auto diagnostic_current = [&] {
+        return value->current == state::phase::mounted && value->generation == queried_generation
+            && value->core.Get() == diagnostic_target.Get();
+      };
+      if (diagnostic_target && current_source(value) && diagnostic_current()) {
+        value->diagnostic_query_pending = true;
+        value->diagnostic_query_at = clock_type::now();
+        const std::weak_ptr<state> weak(value);
+        const auto queried = diagnostic_target->ExecuteScript(
+            LR"((function(){return {document:document.readyState,visibility:document.visibilityState,binding:typeof window.__souiNativePostMessage};})())",
+            Callback<ICoreWebView2ExecuteScriptCompletedHandler>(
+                [weak, queried_generation](HRESULT result, LPCWSTR raw) -> HRESULT {
+                  const auto current = weak.lock();
+                  if (!current || current->current != state::phase::mounted || current->generation != queried_generation) return S_OK;
+                  const auto target = current->core;
+                  if (!target || !current_source(current) || current->current != state::phase::mounted
+                      || current->generation != queried_generation || current->core.Get() != target.Get()) return S_OK;
+                  current->diagnostic_query_pending = false;
+                  try {
+                    if (SUCCEEDED(result) && raw) {
+                      current->page_diagnostics = utf8(raw);
+                    }
                   }
-                }
-                catch (...) {}
-                return S_OK;
-              }).Get());
-      if (FAILED(queried)) value->diagnostic_query_pending = false;
+                  catch (...) {}
+                  return S_OK;
+                }).Get());
+        if (FAILED(queried) && diagnostic_current()) value->diagnostic_query_pending = false;
+      }
     }
     // Owner notification drains a bounded batch; workers never invoke WebView2 COM.
-    for (unsigned batch = 0; batch < 16; ++batch) {
+    const detail::owner_output_budget output_budget(value->owner_budget_us);
+    for (unsigned batch = 0; output_budget.allows_next(batch); ++batch) {
       state::output output;
       {
         std::lock_guard<std::mutex> lock(value->mutex);
@@ -1224,17 +1293,40 @@ void webview2_adapter::pump() {
             [](const state::output& item) { return item.slot ? item.slot->category : capacity::lane::ordinary; });
         output = std::move(*selected);
         value->outputs.erase(selected);
-        value->output_slots.release(output.slot ? output.slot->category : capacity::lane::ordinary, output.raw.size());
+        value->output_slots.release(output.slot ? output.slot->category : capacity::lane::ordinary, output.charged_bytes);
         // Release before notifying the page; its completion may send new work.
         if (output.slot) output.slot->release();
         if (output.generation != value->generation || output.document_id != value->document_id) continue;
       }
       if (!current_source(value)) continue;
-      const auto packet = output.event
-          ? json{{"kind", "event"}, {"documentId", output.document_id}, {"data", parse_bounded(output.raw)}}
-          : json{{"kind", "response"}, {"documentId", output.document_id}, {"requestId", output.id}, {"raw", output.raw}};
-      check(value->core->PostWebMessageAsJson(wide(packet.dump()).c_str()), "Deliver native response");
-      if (output.ready) value->application_ready = true;
+      {
+        std::lock_guard<std::mutex> lock(value->mutex);
+        if (value->stop_requested || value->current != state::phase::mounted
+            || output.generation != value->generation || output.document_id != value->document_id) continue;
+      }
+      const auto target = value->core; // Keep the actual STA target alive until Post returns.
+      if (!target) continue;
+      input_trace::event delivered;
+      delivered.point = input_trace::stage::bridge_response;
+      delivered.task_id = output.trace_task;
+      delivered.document_generation = output.generation;
+      delivered.value = output.raw.size();
+      (void)input_trace::record(delivered);
+      const auto dispatch_qpc = input_trace::now_qpc();
+      if (output.queued_qpc && dispatch_qpc >= output.queued_qpc)
+        input_trace::observe_duration(input_trace::duration_metric::task_queue, dispatch_qpc - output.queued_qpc);
+      std::wstring wire = std::move(output.prepared_json);
+      if (wire.empty()) {
+        const detail::trace_duration serialization_cost(input_trace::duration_metric::serialization);
+        wire = wide(serialize_output(output));
+      }
+      check(target->PostWebMessageAsJson(wire.c_str()), "Deliver native response");
+      {
+        std::lock_guard<std::mutex> lock(value->mutex);
+        if (output.ready && !value->stop_requested && value->current == state::phase::mounted
+            && output.generation == value->generation && output.document_id == value->document_id)
+          value->application_ready = true;
+      }
     }
     {
       std::lock_guard<std::mutex> lock(value->mutex);

@@ -1,0 +1,15 @@
+✔ native nonzero exit is retained as failure even when the Job closes normally (216.1543ms)
+✔ nonzero root keeps failure while owned descendants drain naturally (352.7565ms)
+✔ nonzero root still forces owned descendants after the explicit drain (276.8541ms)
+✔ dedicated supervisor control cleans the held Job and cannot convert a stop into success (161.2748ms)
+✔ timeout closes all three owned generations and leaves an unrelated process alive (1612.4559ms)
+✔ a root that exits zero cannot hide a still-running detached descendant (275.1985ms)
+✔ owned descendants may finish naturally within the explicit drain budget (366.2574ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3360.3912

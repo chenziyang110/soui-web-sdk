@@ -1,0 +1,49 @@
+✖ nonzero root keeps failure while owned descendants drain naturally (213.2373ms)
+✖ nonzero root still forces owned descendants after the explicit drain (169.762ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 472.8645
+
+✖ failing tests:
+
+test at tests\benchmark\owned-process-runner.test.cjs:82:1
+✖ nonzero root keeps failure while owned descendants drain naturally (213.2373ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  2 !== 0
+  
+      at TestContext.<anonymous> (C:\pmnat\tests\benchmark\owned-process-runner.test.cjs:94:12)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.start (node:internal/test_runner/test:1015:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 2,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests\benchmark\owned-process-runner.test.cjs:98:1
+✖ nonzero root still forces owned descendants after the explicit drain (169.762ms)
+  AssertionError [ERR_ASSERTION]: nonzero root bypassed explicit drain
+      at TestContext.<anonymous> (C:\pmnat\tests\benchmark\owned-process-runner.test.cjs:114:12)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
