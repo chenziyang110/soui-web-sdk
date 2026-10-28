@@ -1,6 +1,6 @@
 # 已知限制与生产门槛
 
-2026-10-16 [Issue 专项核验](../verification/production-validation/issue-maintenance-2026-10-16/README.md)补齐 #76 的便携默认 ALL 与私有测试注册边界证据。另对发布散列匹配的六个 0.5.0 应用 ZIP 核对每包 198 份声明材料，均与保留源码原字节一致，包含 OpenSSL/SSLeay 原文；下文 preview.15 的缺件记录保留历史含义。当前链接成员清单、适用条款审批及首方许可决定仍未完成，#39 和生产门槛继续开放。
+2026-10-16 [Issue 专项核验](../verification/production-validation/issue-maintenance-2026-10-16/README.md)补齐 #76 的便携默认 ALL 与私有测试注册边界证据。另对发布散列匹配的六个 0.5.0 应用 ZIP 核对每包 198 份声明材料，均与保留源码原字节一致，包含 OpenSSL/SSLeay 原文；下文 preview.15 的缺件记录保留历史含义。维护者随后明确选择首方 MIT，已在 0.5.1-preview.1 中落实许可证交付，见 [ADR-0118](adr/0118-first-party-mit-delivery.md)。当前两架构链接映射已确认 OpenSSL 实际成员，见[链接复核](../verification/production-validation/current-link-members-2026-10-16/README.md)；完整嵌套组件条款审批和适用验收仍未完成，#39 和生产门槛继续开放。
 
 2026-10-16 一次原生 UIA `mutations` 复测在焦点请求处失败，旧日志未保留 HRESULT；随后 120 次定向诊断未复现，不能据此判定已修复。当前测试已补充失败时的错误码、实际焦点和阶段时间，断言与等待上限不变。系统随后重启并升级，受影响工具与最终候选验证重新执行；旧失败保持原始环境归属。
 

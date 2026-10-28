@@ -65,6 +65,7 @@ write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/SouiSdkConfigVersi
 install(TARGETS soui_sdk soui_action_json EXPORT SouiSdkTargets ARCHIVE DESTINATION lib/$<CONFIG>)
 install(FILES "${SOUI_DISTRIBUTION_ROOT}/third_party/include/json/json.hpp" DESTINATION include/soui/action-json)
 install(DIRECTORY include/ DESTINATION include)
+install(FILES "${SOUI_DISTRIBUTION_ROOT}/LICENSE.md" DESTINATION share/SouiSdk)
 set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${SOUI_DISTRIBUTION_ROOT}/THIRD_PARTY_NOTICES.md")
 file(READ "${SOUI_DISTRIBUTION_ROOT}/THIRD_PARTY_NOTICES.md" _soui_install_notices)
 string(REPLACE "](third_party/licenses/" "](licenses/"

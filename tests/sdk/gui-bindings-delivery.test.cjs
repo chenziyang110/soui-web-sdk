@@ -10,7 +10,8 @@ const sdk = require('../../tools/sdk/soui-sdk.cjs');
 const identity = require('../../tools/internal/delivery-identity.cjs');
 const version = '0.5.0-preview.1';
 const previousPeerRange = '>=0.4.0-0 <0.5.0 || >=0.5.0-0 <0.6.0';
-const currentPeerRange = previousPeerRange + ' || 0.6.0-preview.3';
+const mitPeerRange = '>=0.4.0-0 <0.5.0 || >=0.5.0-0 <0.5.1 || >=0.5.1-0 <0.6.0';
+const currentPeerRange = mitPeerRange + ' || 0.6.0-preview.3';
 const repository = path.resolve(__dirname, '../..');
 test('repository GUI metadata accepts the actual VERSION and lock files', () => {
   const current = fs.readFileSync(path.join(repository, 'VERSION'), 'utf8').trim();
@@ -142,21 +143,46 @@ test('current candidate delivers the exact new peer and rejects the previous dec
   f.write(name, identity.encoded(metadata));
   assert.throws(() => gui.metadata(f.source), /borrow the exact local SDK/);
 });
+test('MIT preview GUI upgrades to the current candidate and downgrades without rewriting its peer', t => {
+  const old = fixture(t, '0.5.1-preview.1', mitPeerRange);
+  const oldPackage = path.join(old.root, 'mit-preview'), project = path.join(old.root, 'project');
+  sdk.pack(old.source, oldPackage, '0.5.1-preview.1', {withGuiBindings: true});
+  sdk.install(oldPackage, project);
+  const original = gui.verify(project);
+  const next = fixture(t, '0.6.0-preview.3'), nextPackage = path.join(next.root, 'candidate');
+  sdk.pack(next.source, nextPackage, '0.6.0-preview.3', {withGuiBindings: true});
+  sdk.install(nextPackage, project);
+  assert.equal(gui.verify(project).sdkVersion, '0.6.0-preview.3');
+  sdk.install(oldPackage, project);
+  assert.deepEqual(gui.verify(project), original);
+  for (const framework of ['react', 'vue']) {
+    const name = `sdk/bindings/${framework}/package.json`;
+    assert.equal(JSON.parse(fs.readFileSync(path.join(project, name))).peerDependencies['@soui/native-sdk'], mitPeerRange);
+    assert.deepEqual(fs.readFileSync(path.join(project, name)), fs.readFileSync(path.join(old.source, name)));
+  }
+});
 test('GUI peer declarations admit only identities covered by their range', t => {
-  for (const peer of [previousPeerRange, currentPeerRange]) {
+  for (const peer of [previousPeerRange, mitPeerRange, currentPeerRange]) {
     for (const target of ['0.4.0-preview.1', '0.4.0-rc.1', '0.4.2', '0.5.0-preview.1', '0.5.0-rc.1', '0.5.3']) {
       const f = fixture(t, target, peer);
       assert.equal(gui.metadata(f.source), target);
     }
-    for (const target of ['0.4.1-preview.1', '0.5.1-preview.1', '0.6.0-preview.2', '0.6.0']) {
+    for (const target of ['0.4.1-preview.1', '0.5.2-preview.1', '0.6.0-preview.2', '0.6.0']) {
       const f = fixture(t, target, peer);
       assert.throws(() => gui.metadata(f.source), /borrow the exact local SDK/);
+    }
+    for (const target of ['0.5.1-preview.1', '0.5.1-rc.1']) {
+      const f = fixture(t, target, peer);
+      if (peer === previousPeerRange) assert.throws(() => gui.metadata(f.source), /borrow the exact local SDK/);
+      else assert.equal(gui.metadata(f.source), target);
     }
   }
   const current = fixture(t, '0.6.0-preview.3', currentPeerRange);
   assert.equal(gui.metadata(current.source), '0.6.0-preview.3');
   const prior = fixture(t, '0.6.0-preview.3', previousPeerRange);
   assert.throws(() => gui.metadata(prior.source), /borrow the exact local SDK/);
+  const mit = fixture(t, '0.6.0-preview.3', mitPeerRange);
+  assert.throws(() => gui.metadata(mit.source), /borrow the exact local SDK/);
 });
 test('historical optional GUI verifies the complete source and output sets', t => {
   for (const mutate of [
@@ -229,12 +255,12 @@ test('an installed historical declaration cannot bypass new GUI packaging input 
   assert.throws(() => sdk.pack(project, output, version, {withGuiBindings: true}), /Historical GUI source identity/);
   assert.equal(fs.existsSync(output), false);
 });
-for (const targetVersion of ['0.5.0-rc.1', '0.5.0']) test('optional GUI delivery preserves exact ' + targetVersion + ' identity', t => {
+for (const targetVersion of ['0.5.0-rc.1', '0.5.0', '0.5.1-preview.1']) test('optional GUI delivery preserves exact ' + targetVersion + ' identity', t => {
   const f = fixture(t, targetVersion), packed = path.join(f.root, 'packed'), installed = path.join(f.root, 'installed');
   sdk.pack(f.source, packed, targetVersion, {withGuiBindings: true});
   const manifest = sdk.readPackage(packed);
   assert.equal(manifest.version, targetVersion);
-  assert.equal(manifest.channel, targetVersion.includes('-rc.') ? 'rc' : 'stable');
+  assert.equal(manifest.channel, targetVersion.includes('-rc.') ? 'rc' : targetVersion.includes('-preview.') ? 'preview' : 'stable');
   assert.equal(manifest.releaseReady, false);
   assert.equal(manifest.optionalGuiBindings.sdkVersion, targetVersion);
   sdk.install(packed, installed);

@@ -13,7 +13,8 @@ const packages = [
     import: `dist/${framework}/src/index.js`, types: `dist/${framework}/src/index.d.ts`, framework}))
 ];
 const previousPeerRange = '>=0.4.0-0 <0.5.0 || >=0.5.0-0 <0.6.0';
-const peerRange = previousPeerRange + ' || 0.6.0-preview.3';
+const mitPeerRange = '>=0.4.0-0 <0.5.0 || >=0.5.0-0 <0.5.1 || >=0.5.1-0 <0.6.0';
+const peerRange = mitPeerRange + ' || 0.6.0-preview.3';
 const reportName = 'out/gui-bindings/build.json';
 function regular(root, name) {
   const file = identity.safePath(root, name), stat = fs.lstatSync(file);
@@ -31,7 +32,8 @@ function metadata(root, version = versionOf(root)) {
   // stable lines and prerelease tuples covered by that declaration may use it.
   const acceptsPreviousPeer = /^0\.[45]\.(0|[1-9][0-9]*)$/.test(version) ||
     /^0\.[45]\.0-(preview|rc)\.(0|[1-9][0-9]*)$/.test(version);
-  const acceptsCurrentPeer = acceptsPreviousPeer || version === '0.6.0-preview.3';
+  const acceptsMitPeer = acceptsPreviousPeer || /^0\.5\.1-(preview|rc)\.(0|[1-9][0-9]*)$/.test(version);
+  const acceptsCurrentPeer = acceptsMitPeer || version === '0.6.0-preview.3';
   for (const entry of packages) {
     const meta = read(root, `${entry.root}/package.json`), lock = read(root, `${entry.root}/package-lock.json`);
     if (meta.name !== entry.name || meta.version !== version || lock.version !== version ||
@@ -42,6 +44,7 @@ function metadata(root, version = versionOf(root)) {
     if (entry.framework) {
       if (Object.keys(meta.peerDependencies || {}).sort().join(',') !== ['@soui/native-sdk', entry.framework].sort().join(',') ||
           (!(acceptsCurrentPeer && meta.peerDependencies['@soui/native-sdk'] === peerRange) &&
+            !(acceptsMitPeer && meta.peerDependencies['@soui/native-sdk'] === mitPeerRange) &&
             !(acceptsPreviousPeer && meta.peerDependencies['@soui/native-sdk'] === previousPeerRange)) ||
           !meta.peerDependencies[entry.framework] ||
           meta.devDependencies?.['@soui/native-sdk'] !== 'file:../../web' ||

@@ -37,10 +37,13 @@ function replaceGroups(groups, application, distribution, expectedProfile) {
   });
   if (new Set(checkedGroups.map(group => group.checkedProfile.profile)).size !== 1)
     throw new Error('Auto Web build profiles must match');
-  const notice = id.safePath(distribution, 'THIRD_PARTY_NOTICES.md');
+  const requiredNotices = ['LICENSE.md', 'THIRD_PARTY_NOTICES.md'];
+  for (const name of requiredNotices) {
+    if (!fs.statSync(id.safePath(distribution, name)).isFile()) throw new Error('SDK legal materials missing: ' + name);
+  }
   const licenses = id.walk(distribution, 'third_party/licenses');
-  if (!fs.statSync(notice).isFile() || !licenses.length) throw new Error('SDK legal materials missing');
-  const legal = ['THIRD_PARTY_NOTICES.md', ...licenses];
+  if (!licenses.length) throw new Error('SDK legal materials missing');
+  const legal = [...requiredNotices, ...licenses];
   const suffix = crypto.randomUUID();
   const stage = id.safePath(application, `.resources-new-${suffix}`);
   const backup = id.safePath(application, `.resources-old-${suffix}`);

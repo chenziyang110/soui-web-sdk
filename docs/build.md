@@ -138,4 +138,4 @@ OwnedProcessRunner 捕获完整进程组的自然退出。`standard-build.cjs` �
 
 `tools/Build.ps1 -Architecture x64 -Configuration Release -WithUia` 或 `tools/Soui.ps1 build --architecture x64 --configuration Release --with-uia` 显式构建 `Soui::Uia`；可组合既有 `-SdkOnly`、`-Install` 和现代后端选项。未选择时明确配置 OFF。应用仍需按公共 API 注册可信原生投影和派发策略，构建选项不会自动投影业务页面。
 
-CMake 消费者使用 `find_package(SouiSdk 0.5.0 EXACT CONFIG REQUIRED COMPONENTS Uia)` 与 `Soui::Uia`。未安装该组件会拒绝 REQUIRED 请求。历史 MSVC 编译器尾进程例外未覆盖 UIA，不能与该例外组合；正常 MSVC/LLVM 构建保持各自既有验证规则。
+CMake 消费者使用 `find_package(SouiSdk 0.5.1 EXACT CONFIG REQUIRED COMPONENTS Uia)` 与 `Soui::Uia`。未安装该组件会拒绝 REQUIRED 请求。历史 MSVC 编译器尾进程例外未覆盖 UIA，不能与该例外组合；正常 MSVC/LLVM 构建保持各自既有验证规则。
