@@ -32,6 +32,11 @@ public:
     void addHitTestRegion(const ScrollHitTestRegion& region);
     ScrollNodeSnapshot* findMutableNode(const ScrollNodeKey& key);
     const ScrollNodeSnapshot* findNode(const ScrollNodeKey& key) const;
+    // Refresh only the raster coverage of an already-built scene. Newly
+    // prepared tiles are usable only after this scene's resource fence.
+    bool refreshCoverage(const ScrollNodeKey& key, uint64_t scrollEpoch,
+        const ScrollCoverageWindow& coverage, bool coveragePrepared,
+        bool hasResourceFence);
     const ScrollNodeSnapshot* scrollTargetAt(double x, double y) const;
     const std::vector<ScrollNodeSnapshot>& nodes() const { return m_nodes; }
     const std::vector<ScrollHitTestRegion>& hitTestRegions() const

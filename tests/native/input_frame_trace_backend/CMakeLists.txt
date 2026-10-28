@@ -1,0 +1,6 @@
+add_executable(soui_input_frame_trace_backend_tests validation_tests.cpp)
+target_include_directories(soui_input_frame_trace_backend_tests PRIVATE
+  "${SOUI_DISTRIBUTION_ROOT}/sdk/include")
+target_compile_features(soui_input_frame_trace_backend_tests PRIVATE cxx_std_17)
+target_compile_options(soui_input_frame_trace_backend_tests PRIVATE /utf-8 /W4)
+add_test(NAME sdk.native.input-frame-backend-validation COMMAND soui_input_frame_trace_backend_tests)

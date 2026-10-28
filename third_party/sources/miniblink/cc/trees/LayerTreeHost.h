@@ -3,6 +3,8 @@
 
 #include "third_party/WebKit/public/platform/WebLayerTreeView.h"
 #include "cc/trees/ScrollTreeSnapshot.h"
+#include "cc/trees/LegacyPaintRetryPolicy.h"
+#include <memory>
 #include "third_party/WebKit/public/platform/WebThread.h"
 #include "third_party/WebKit/Source/platform/geometry/IntRect.h"
 #include "third_party/WebKit/Source/platform/geometry/IntSize.h"
@@ -44,11 +46,14 @@ class TileGrid;
 class LayerChangeAction;
 class CompositingLayer;
 class ActionsFrameGroup;
+struct UiPaintRetryState;
+class UiPaintRetryTask;
 struct CompositorAnimationState;
 struct CompositorAnimationFinishedTask;
 struct CompositorScrollState;
 struct CompositorScrollInput;
 struct RetiredCompositorScrollState;
+struct ScrollRasterCoverageRequest;
 
 struct CompositorScrollReceipt {
     CompositorScrollReceipt()
@@ -94,7 +99,8 @@ public:
     bool drawToCanvas(SkCanvas* canvas, const SkRect& clip);
     bool drawCompositorScrollbarLayer(int layerId, SkCanvas* canvas,
         const SkRect& localDirtyRect);
-    void updateLayersDrawProperties(ScrollTreeSnapshot* scrollTree);
+    void updateLayersDrawProperties(ScrollTreeSnapshot* scrollTree,
+        std::vector<ScrollRasterCoverageRequest>* coverageRequests);
 
     //void setNeedsCommit();
     //void setNeedsFullTreeSync();
@@ -238,6 +244,10 @@ public:
 
 private:
     void requestPaintToMemoryCanvasToUiThread(const SkRect& r);
+    void queueLegacyPaintLocked();
+    void runLegacyPaintRetry(const LegacyPaintRetryPolicy::Ticket& ticket);
+    friend class UiPaintRetryTask;
+    std::shared_ptr<UiPaintRetryState> m_uiPaintRetry;
     void onApplyActionsInCompositeThread(bool needCheck);
     void waitForApplyActions();
     void waitForDrawFrame();
@@ -330,19 +340,6 @@ private:
     int m_requestApplyActionsCount;
     int m_requestApplyActionsFinishCount;
 
-    struct WrapSelfForUiThread : public blink::WebThread::TaskObserver {
-        WrapSelfForUiThread(LayerTreeHost* host)
-            : m_host(host) { }
-        LayerTreeHost* m_host;
-        void paintInUiThread();
-        void endPaint();
-
-        virtual ~WrapSelfForUiThread() override;
-        virtual void willProcessTask() override;
-        virtual void didProcessTask() override;
-    };
-    friend WrapSelfForUiThread;
-    WTF::HashSet<WrapSelfForUiThread*> m_wrapSelfForUiThreads;
     friend CompositorAnimationFinishedTask;
     WTF::HashSet<CompositorAnimationFinishedTask*> m_animationFinishedTasks;
     friend CompositorScrollUpdateTask;

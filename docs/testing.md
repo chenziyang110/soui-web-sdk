@@ -1,5 +1,17 @@
 # 测试与验收
 
+2026-10-26 的任务唤醒与有界接纳候选提供[确定性契约](../tests/native/scheduler_continuation/README.md)和扩展至 22 项的真实 worker fixture；首任务、跨线程积压、延时起点及关闭验证入口见[交接说明](maintenance/input-latency-20261026.md)。最终源码按维护者要求未继续编译或运行，早期实验不作为当前通过证据。默认 vendor 精确注册清单同步为实际 64 项。
+
+`kernel.native.scroll-ack-feedback` 的[独立入口](../tests/native/scroll_ack_feedback/README.md)直接使用生产 ACK helper、Controller、Snapshot 和默认 client 查询；旧方法对照通过机械提取保持真实生产逻辑。加强快照拒绝断言后的两架构当前 ACK 各 25/25，既有目标、边界、覆盖各 2/2、19/19、13/13，八个当前程序在隔离来宾全部退出 0；旧对照各 3/10 并真实退出 1，整个 suite 仍退出 1。当前记录见[维护说明](maintenance/scroll-ack-feedback-20261023.md)和[验证摘要](verification/scroll-ack-feedback-20261023.json)。完整 x86 内核已自然构建退出 0 并获独立 build-only 验收；另有 GUI21 协议页 800 请求位移及 GUI22 真实同值 CSS 取消的限定观察。helper 状态测试和构建不替代实际来源验证，100 ms 采样也不证明 setter 瞬时 target/velocity 或整体流畅度。
+
+`tests/native/scroll_target_retention/` 是显式的生产 Controller/Snapshot 回归入口，覆盖相同已接纳输入在早/晚覆盖就绪下的终点、暂停恢复、双轴、真实边界及明确取消。独立构建命令、源码 override 和运行范围见其 [README](../tests/native/scroll_target_retention/README.md)。两架构当前的原始两场景、十九项边界及旧十三项覆盖回归已在隔离来宾通过；这不执行 LayerTreeHost 的真实调度或证明 GUI 性能。默认关闭的收缩诊断保留正确性断言及实际非零失败，不以 `WILL_FAIL` 倒置；开启后需单独报告，不能计入主回归通过数。
+
+2026-10-23 的 x86 Release 实际来宾运行结果见 [输入路由器回归记录](../verification/production-validation/interaction-router-2026-10-23/README.md)。
+
+`sdk.native.interaction-router` 链接生产 `Soui::Sdk`，使用可控输入接收端覆盖十二项滚动屏障回归：滚动后捕获失败（输出未改写或部分改写）、前次屏障残留、成功捕获的完整字段、缓存不被失败污染、抬起提交顺序且不再次捕获屏障、调用方旧屏障和过期代际。构建目标为 `cmake --build out/x86 --config Release --target soui_interaction_router_tests`；在允许执行测试的环境中运行 `ctest --test-dir out/x86 -C Release -R '^sdk\.native\.interaction-router$' --output-on-failure`，x64 使用对应目录。测试不启动窗口或内核，不替代真实滚轮、滚动条、标题拖动、输入延迟或发布验收。
+
+`kernel.native.scroll-coverage` 使用[独立 CMake 入口](../tests/native/scroll_coverage/README.md)，直接编译生产 `ScrollTreeSnapshot.cpp` 与 `ScrollController.cpp`，覆盖资源 fence、覆盖状态/身份保留、浮点采样连续性及真实边界停止。修复版 x86/x64 的十三项实际来宾运行均通过，并保留同测试旧 controller 的失败对照。该入口需要 MiniBlink 源码，不改变默认 vendor-test 清单；tile readiness 是受控输入，实际 raster workers、完整内核与 GUI 性能仍单独验收。背景和脱敏结果见[维护说明](maintenance/scroll-coverage-20261023.md)。
+
 [当前发布修复记录](../verification/production-validation/0.5-release-fixes-2026-10-16/README.md)保存两架构 UIA 专项、实际读屏文本与表单操作、有限资源校准及依赖审计；最终公开构建和交付物另行验证。
 
 可选 UIA 的 `owner-sync`、`owner-focus`、`uia-mutations` 和 `uia-focus` 覆盖窗口线程及真实 Windows UIAutomationCore 同步操作。各用例按 CTest 注册在独立进程运行；前序 UIA 客户端可能建立进程 MTA，不能把同进程 `all` 的 COM 初始化状态当作独立用例。填写与选择分别计数，Windows 可能另外请求焦点；每次业务仍须经过授权。
@@ -156,3 +168,20 @@ UIA 原生断言失败会保留 HRESULT。`mutations` 焦点失败还记录客�
 UIA 成功按钮调用的真实事件订阅与拒绝/失败/关闭回归、时钟整数边界回归的原始记录见 [补充记录](../verification/production-validation/0.5-uia-invoke-and-clock-2026-10-16/README.md)。Invoked 通知不重放已执行业务，发送失败由 pump 返回；仅状态变化通知可在后续 pump 重试。
 
 LLVM 增量构建会单独认证生成命令中的工具路径（含 Windows 8.3 路径），即使本轮没有再次运行该工具。此认证只证明工具文件身份；复用产物仍须匹配历史自然构建、当前对象及依赖，不能据此添加实际进程记录。
+
+## 主线程定时任务批次回归
+
+`tests/native/vendor_lifetime/worker_lifetime` 直接构建字节绑定的生产 `WebThreadImpl` / `WebTimerBase`，不复制调度算法。新增 `main-scheduler-task-budget`、`main-scheduler-clock-budget`、`worker-scheduler-no-count-cap`、`worker-scheduler-clock-budget`、`main-scheduler-shutdown-drain` 和 `main-scheduler-pre-shutdown-drain`。主线程病例通过真实隐藏窗口与 `WM_TIMER` 检查原生 sentinel 能在任务链结束前执行、剩余任务最终各执行一次、未来任务不提前；可控时间仅用于确定预算边界，不是性能计时。关闭前病例另核对真实平台关闭函数的三处字节绑定路由，检查退出标志设置前的排空及继续接纳任务，不替代完整 Blink 销毁回归。
+
+从 SDK 根目录分别配置 `Win32,version=10.0.19041.0` 和 `x64,version=10.0.19041.0` 的 Release 构建。示例：
+
+```powershell
+cmake -S tests/native/vendor_lifetime/worker_lifetime -B ../scheduler-x86 -G "Visual Studio 17 2022" -A "Win32,version=10.0.19041.0"
+cmake --build ../scheduler-x86 --config Release
+```
+
+在授权的隔离 Windows 来宾中运行产物，并按病例记录真实退出码。旧源码的两个主线程预算病例应失败；修复源码须通过，并继续验证原工作线程和关闭病例。RED/GREEN 夹具载荷必须逐字节相同，只有绑定的生产源版本不同；源文件或夹具变化后重建当前产物，不能复用旧通过标记。
+
+该夹具不包含完整 Blink 页面、GPU 或实际物理鼠标计时。实际 DLL 重编及消费者对照需另绑定两架构编译来源、相同资源和输入，并检查加载/动画吞吐与关闭；详见 [ADR-0118](adr/0118-main-thread-timer-batches.md)。不据夹具或编译通过扩大固定 SDK 的验收状态。
+
+2026-10-21 的[限定验证记录](../verification/production-validation/input-latency-scheduling-2026-10-21/README.md)包含两架构重编、实际消费者输入与中性刷新/关闭短测。输入队列改善与有限消息突发变慢均有记录；该短测不批准长期性能、物理输入到显示或完整产品资格。

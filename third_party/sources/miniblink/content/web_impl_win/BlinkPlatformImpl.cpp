@@ -1,6 +1,7 @@
 #include <atomic>
 #include "wke/RendererModelState.h"
 #include <memory>
+#include <exception>
 
 #include "config.h"
 #include "content/web_impl_win/BlinkPlatformImpl.h"
@@ -414,12 +415,12 @@ void BlinkPlatformImpl::preShutdown()
 void BlinkPlatformImpl::shutdown()
 {
     wke::freeV8TempObejctOnOneFrameBefore();
-    ((WebThreadImpl*)currentThread())->fire();
+    ((WebThreadImpl*)currentThread())->fireForShutdown();
 
     net::WebURLLoaderManager::sharedInstance()->shutdown();
     WebPage::shutdown();
 
-    ((WebThreadImpl*)currentThread())->fire();
+    ((WebThreadImpl*)currentThread())->fireForShutdown();
 
     blink::memoryCache()->evictResources();
     v8::Isolate::GetCurrent()->LowMemoryNotification();
@@ -436,7 +437,7 @@ void BlinkPlatformImpl::shutdown()
     MemoryCache* memoryCache = MemoryCache::create();
     replaceMemoryCacheForTesting(memoryCache);
 
-    ((WebThreadImpl*)currentThread())->fire();
+    ((WebThreadImpl*)currentThread())->fireForShutdown();
 
     blink::Heap::collectAllGarbage();
 
@@ -560,11 +561,15 @@ void BlinkPlatformImpl::setResGcTimer(double intervalSec)
 void BlinkPlatformImpl::closeThread()
 {
     WebThreadRegistryLock lock(m_lock);
-    if (0 != m_threadNum)
+    if (0 != m_threadNum) {
         DebugBreak();
+        std::terminate(); // Continuing a debugger cannot certify provider drain.
+    }
     for (size_t i = 0; i < m_threads.size(); ++i) {
-        if (nullptr != m_threads[i])
+        if (nullptr != m_threads[i]) {
             DebugBreak();
+            std::terminate(); // Never fall through to delete this with a live owner.
+        }
     }
 }
 

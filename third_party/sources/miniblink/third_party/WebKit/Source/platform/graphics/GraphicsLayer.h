@@ -257,6 +257,8 @@ public:
 
     // WebLayerScrollClient implementation.
     void didScroll() override;
+    bool canonicalizeCompositorScrollPosition(const WebDoublePoint&,
+        WebDoublePoint&) const override;
 
     DisplayItemList* displayItemList() override;
 

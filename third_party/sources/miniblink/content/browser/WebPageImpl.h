@@ -226,6 +226,7 @@ public:
     void drawLayeredWindow(HWND hWnd, SkCanvas* canvas, HDC hdc, const blink::IntRect& paintRect, HDC hMemoryDC) const;
 
     void executeMainFrame();
+    void scheduleCommit(long long minimumDelayMs);
     friend class AutoRecordActions;
     int m_autoRecordActionsCount;
     bool m_runningInMouseMessage;

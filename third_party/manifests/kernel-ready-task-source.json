@@ -1,0 +1,100 @@
+{
+  "schema": "soui.kernel-source-delta/v1",
+  "sdkVersion": "0.5.0",
+  "status": "source-only-unreleased-candidate",
+  "scope": "Ready-task wake, bounded owner admission and deferred blocked commit; no binary import",
+  "baseCommit": "3293bebe27ba8508bbd9dfe8b6e0d445e7879f3f",
+  "sourceIdentityScope": "Five changed vendor files only; not a complete physical source snapshot",
+  "patch": {
+    "path": "third_party/patches/miniblink/0014-ready-task-wake-and-admission.patch",
+    "bytes": 18195,
+    "sha256": "32c3108d617afd5efe2f95d83bc270a98165aa380bb7ea76f9d18205b01ad576"
+  },
+  "files": [
+    {
+      "path": "third_party/sources/miniblink/content/browser/SharedTimerWin.h",
+      "before": {
+        "bytes": 7482,
+        "sha256": "5a0bc9c26aa07db331e1d7d93adc5ea48765839871a08533701c3c22b4fd8497"
+      },
+      "after": {
+        "bytes": 10720,
+        "sha256": "8dfa867922aee1dd86ee0e6c9a037cafac661528d8c7c3c357720bdf1f9f0d93"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/content/browser/WebPageImpl.cpp",
+      "before": {
+        "bytes": 83505,
+        "sha256": "7db9e14e53ef76bf1c28f867ab61220b7012a6003f0c38824a1cc276feec22fa"
+      },
+      "after": {
+        "bytes": 83907,
+        "sha256": "d58cbfa8ff8f373ab69cd9acfbbeff3a40f6f3c2a39eb48a607dc33925e0a9c1"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/content/browser/WebPageImpl.h",
+      "before": {
+        "bytes": 11899,
+        "sha256": "04062955168e5f9af945ec60fa21ff2d398f70a17c23624be53560078587ac49"
+      },
+      "after": {
+        "bytes": 11950,
+        "sha256": "0ac9ba1fa2e4a3254bd252c9b293675294852a2e38207ca892e5140a8547682a"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp",
+      "before": {
+        "bytes": 24846,
+        "sha256": "fa7295aee946697c6a9b122daea593b7c435f39ae1585c2774e8d13476e953cc"
+      },
+      "after": {
+        "bytes": 27256,
+        "sha256": "3acf67853524eeffd70568740922b6fe380eb3a94fe5ba9fa19d2c76ede8e173"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.h",
+      "before": {
+        "bytes": 4325,
+        "sha256": "673e9acc5bb267a5afb733a7eb4c84de2ac845699e49fa44e27f1fbcafd2ea7d"
+      },
+      "after": {
+        "bytes": 4642,
+        "sha256": "36a343506a8b879510aeb1245b22a9f907de4d02279227ad1c526e6a2e5236f2"
+      }
+    }
+  ],
+  "validation": {
+    "finalSourceCompiled": false,
+    "finalTestsExecuted": false,
+    "patchReplayExecuted": false,
+    "reason": "Maintainer requested source implementation and PR handoff before specialist compilation/testing"
+  },
+  "historicalImportManifest": "third_party/sources/miniblink/SOURCE-MANIFEST.json",
+  "binaryProvenance": {
+    "path": "third_party/manifests/kernel-build-050.json",
+    "unchanged": true,
+    "newBinaryImported": false
+  },
+  "policy": {
+    "normalMainThreadAdmissionBudget": 32,
+    "normalMainThreadCompletedTaskBudget": 32,
+    "sharedCooperativeBudgetSeconds": 0.002,
+    "workerBudgetSeconds": 0.05,
+    "fallbackTimerMilliseconds": 16,
+    "blockedCommitMinimumDelayMilliseconds": 1,
+    "positiveDelayOrigin": "actual post time",
+    "nativePendingMask": [
+      "QS_INPUT",
+      "QS_PAINT",
+      "QS_TIMER",
+      "QS_HOTKEY"
+    ],
+    "wakeBackpressure": "Producer wake posts stay suppressed after native/reentry yield until an owner timer enters the scheduler",
+    "priorityScope": "Existing ready-timer selection after admission; retained earlier batches are admitted first"
+  },
+  "releaseReady": false
+}

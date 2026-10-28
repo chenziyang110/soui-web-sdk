@@ -73,8 +73,6 @@ WebLayerImpl::WebLayerImpl(WebLayerImplClient* client)
     , m_useParentBackfaceVisibility(false)
     , m_isDoubleSided(false)
     , m_backgroundColor(0xff00ffff)
-    , m_compositorScrollEpoch(1)
-    , m_acknowledgedCompositorSample(0)
     , m_scrollClipLayerId(-1)
     , m_userScrollableHorizontal(true)
     , m_userScrollableVertical(true)
@@ -1034,34 +1032,51 @@ void WebLayerImpl::setScrollPositionDouble(blink::WebDoublePoint position)
         return;
 
     m_scrollPositionDouble = position;
-    ++m_compositorScrollEpoch;
-    if (!m_compositorScrollEpoch)
-        m_compositorScrollEpoch = 1;
-    m_acknowledgedCompositorSample = 0;
-    m_acknowledgedCompositorTotal = blink::WebDoublePoint();
+    m_scrollAcknowledgement.invalidate();
     setNeedsCommit(true);
+}
+
+void WebLayerImpl::invalidateCompositorScroll()
+{
+    m_scrollAcknowledgement.invalidate();
+    setNeedsCommit(false);
 }
 
 bool WebLayerImpl::setScrollPositionFromCompositor(uint64_t scrollEpoch,
     uint64_t sampleSequence, double consumedTotalX, double consumedTotalY,
     const blink::WebDoublePoint& position)
 {
-    if (scrollEpoch != m_compositorScrollEpoch
-        || sampleSequence <= m_acknowledgedCompositorSample
+    if (scrollEpoch != m_scrollAcknowledgement.epoch()
+        || sampleSequence <= m_scrollAcknowledgement.sample()
         || !std::isfinite(consumedTotalX) || !std::isfinite(consumedTotalY)
         || !std::isfinite(position.x) || !std::isfinite(position.y)) {
         return false;
     }
 
-    const bool positionChanged = m_scrollPositionDouble != position;
-    m_scrollPositionDouble = position;
-    m_acknowledgedCompositorSample = sampleSequence;
-    m_acknowledgedCompositorTotal =
-        blink::WebDoublePoint(consumedTotalX, consumedTotalY);
+    blink::WebLayerScrollClient* client = m_webLayerScrollClient;
+    const uint64_t previousSample = m_scrollAcknowledgement.sample();
+    blink::WebDoublePoint canonical = position;
+    if (client && !client->canonicalizeCompositorScrollPosition(position, canonical))
+        return false;
+    if (m_webLayerScrollClient != client
+        || m_scrollAcknowledgement.epoch() != scrollEpoch
+        || m_scrollAcknowledgement.sample() != previousSample) {
+        return false;
+    }
+    if (!m_scrollAcknowledgement.accept(scrollEpoch, sampleSequence,
+        cc::ScrollVector(consumedTotalX, consumedTotalY),
+        cc::ScrollVector(position.x, position.y),
+        cc::ScrollVector(canonical.x, canonical.y))) {
+        return false;
+    }
+    const bool positionChanged = m_scrollPositionDouble != canonical;
+    m_scrollPositionDouble = canonical;
+    // A new raw sample must be published even within the same canonical pixel.
     setNeedsCommit(positionChanged);
 
-    if (positionChanged && m_webLayerScrollClient)
-        m_webLayerScrollClient->didScroll();
+    // didScroll may reenter or destroy the client/layer. Do not access them after.
+    if (positionChanged && client)
+        client->didScroll();
     return true;
 }
 
@@ -1267,6 +1282,7 @@ void WebLayerImpl::setScrollClient(blink::WebLayerScrollClient* scroll_client)
     if (m_webLayerScrollClient == scroll_client)
         return;
     m_webLayerScrollClient = scroll_client;
+    invalidateCompositorScroll();
 }
 
 bool WebLayerImpl::isOrphan() const 

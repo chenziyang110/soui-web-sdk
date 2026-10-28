@@ -1,6 +1,7 @@
 {
   "schema": "soui.vendor-test-names/v1",
   "names": [
+    "kernel.native.input-frame-trace",
     "kernel.native.lifetime.activation-insert-failure-lock-release",
     "kernel.native.lifetime.activation-snapshot-failure-lock-release",
     "kernel.native.lifetime.ctor_shell-activation-failure",
@@ -45,15 +46,26 @@
     "kernel.native.scheduler-fairness",
     "kernel.native.worker-lifetime.concurrent-registry-close",
     "kernel.native.worker-lifetime.event-null",
+    "kernel.native.worker-lifetime.main-scheduler-admission-budget",
+    "kernel.native.worker-lifetime.main-scheduler-admission-shutdown",
+    "kernel.native.worker-lifetime.main-scheduler-clock-budget",
+    "kernel.native.worker-lifetime.main-scheduler-continuation",
+    "kernel.native.worker-lifetime.main-scheduler-first-task-wake",
+    "kernel.native.worker-lifetime.main-scheduler-pre-shutdown-drain",
+    "kernel.native.worker-lifetime.main-scheduler-shutdown-drain",
+    "kernel.native.worker-lifetime.main-scheduler-task-budget",
     "kernel.native.worker-lifetime.main-thread-compatibility",
     "kernel.native.worker-lifetime.native-exit-delayed",
     "kernel.native.worker-lifetime.native-launch-zero",
     "kernel.native.worker-lifetime.native-wait-fails",
     "kernel.native.worker-lifetime.normal-worker-close",
     "kernel.native.worker-lifetime.ready-acquire-visibility",
+    "kernel.native.worker-lifetime.registry-live-fence",
     "kernel.native.worker-lifetime.registry-reserve-bad-alloc",
     "kernel.native.worker-lifetime.scheduler-new-bad-alloc",
     "kernel.native.worker-lifetime.startup-tls-failure",
+    "kernel.native.worker-lifetime.worker-scheduler-clock-budget",
+    "kernel.native.worker-lifetime.worker-scheduler-no-count-cap",
     "kernel.native.worker-lifetime.worker-self-delete"
   ]
 }

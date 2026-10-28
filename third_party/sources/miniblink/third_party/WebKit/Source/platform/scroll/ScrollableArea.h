@@ -308,6 +308,7 @@ protected:
     ScrollableArea();
 
     void setScrollOrigin(const IntPoint&);
+    void invalidateCompositorScroll(ScrollType);
     void resetScrollOriginChanged() { m_scrollOriginChanged = false; }
 
     // Needed to let the animators call scrollPositionChanged.

@@ -290,9 +290,9 @@ function GeneratedTestDependencies([string]$root,[string]$build,[string]$configu
    $sourcePath=Join-Path $root 'third_party/sources/miniblink/wke/wke.cpp';$sourceBytes=GeneratedTestFrozen $sourcePath $allowed $readBytes;$range=GeneratedTestMarker $sourceBytes 'struct InteractionEndpointImpl {' 'void WKE_CALL_TYPE retainInteractionEndpoint('
    $candidates[(Norm (Join-Path $base 'interaction_endpoint_source.inc'))]=[ordered]@{source=$allowed[(Norm $sourcePath)];range=$range;output='interaction_endpoint_source.inc'}
   }elseif($role.kind-ceq'worker'){
-   [void](GeneratedTestWriter $root ($role.directory+'/CMakeLists.txt') '120cec610c085ddd4fc3f269c71a289a5d03678c2baf837795d393fd273d023e' $allowed $readBytes)
-   [void](GeneratedTestWriter $root ($role.directory+'/source-bytes.cmake') 'b86288c3d3abe01bceeb99513499872c5d5e6be8e32355ac60c363848f3cac62' $allowed $readBytes)
-   $mapText=GeneratedTestWriter $root ($role.directory+'/source-map.json') '3c60c2dc31efd40c1a8c714e6837c77da43451c73aaba5840e77faa2edb41bd3' $allowed $readBytes;$map=$mapText|ConvertFrom-Json
+   [void](GeneratedTestWriter $root ($role.directory+'/CMakeLists.txt') '11383ab178986c14403e83d3c5222de5ca9166614750092b6e0de339de72f9ae' $allowed $readBytes)
+   [void](GeneratedTestWriter $root ($role.directory+'/source-bytes.cmake') '2171f85404ec51b3c6cf8c0b680c9d18939489ebf493daf0cf414b8236cc043f' $allowed $readBytes)
+   $mapText=GeneratedTestWriter $root ($role.directory+'/source-map.json') '1f2790552d2de87f8ed7f0b6c53d93ee80d156b69415c30f9c98b808f4d69b56' $allowed $readBytes;$map=$mapText|ConvertFrom-Json
    Need ($map.schema-ceq'worker-lifetime-source-map/1'-and$map.sources.Count-eq13-and$map.copies.Count-eq12-and$map.payloads.Count-eq22) 'Exact frozen worker source map'
    foreach($relative in @('CMakeLists.txt','source-bytes.cmake','source-map.json')){$support.Add($allowed[(Norm (Join-Path $root ($role.directory+'/'+$relative)))])}
    $sources=@{};foreach($p in $map.sources){$relative=GeneratedTestRelative $p.path;$value=Join-Path $root $relative;Need (-not$sources.ContainsKey((Norm $value))) 'Unique frozen worker source';$raw=GeneratedTestFrozen $value $allowed $readBytes;Need ($raw.Length-eq$p.bytes-and(GeneratedTestHash $raw)-ceq$p.sha256) 'Worker map whole-source pin differs';$sources[(Norm $value)]=$raw;$support.Add($allowed[(Norm $value)])}

@@ -1,6 +1,7 @@
 #ifndef WebThreadImpl_h
 #define WebThreadImpl_h
 
+#include <cstddef>
 #include <vector>
 #include <atomic>
 
@@ -58,6 +59,7 @@ public:
     void schedulerTasks();
 
     void fire();
+    void fireForShutdown();
     
     void suspendTimerQueue();
     void resumeTimerQueue();
@@ -80,6 +82,9 @@ public:
 private:
     friend class BlinkPlatformImpl;
 
+    void schedulerTasks(bool allowMainThreadBudget);
+    void startTriggerTasks(unsigned* remainingAdmissions, double admissionDeadline);
+    bool hasPendingTaskAdmission();
     void fireOnExit();
     void waitForExit();
     void fireTimeOnExit();
@@ -121,6 +126,9 @@ private:
     std::vector<WebTimerBase*> m_timerHeap;
     std::vector<WebTimerBase*> m_unusedTimersToDelete;
     std::vector<TaskPair*> m_taskPairsToPost;
+    // Owner-thread batch. Entries before the cursor have transferred ownership.
+    std::vector<TaskPair*> m_taskPairsBeingAdmitted;
+    std::size_t m_taskPairAdmissionCursor;
     std::vector<TaskObserver*> m_observers;
     bool m_isObserversDirty;
     const char* m_name;
