@@ -2,6 +2,8 @@
 
 Retain upstream license and copyright files under third_party/licenses/ and the source trees. The current inventory is third_party/manifests/dependencies.json.
 
+First-party SDK, template, Demo and maintenance code is licensed under MIT; see LICENSE.md. This grant does not replace any third-party license. Source SDK packages, CMake installations and application resources include the first-party license alongside these notices from 0.5.1-preview.1 onward.
+
 | Component | Materials | License / provenance |
 |---|---|---|
 | SOUI 2.9.0.3 lineage | Sources, headers, x86/x64 DLLs and import libraries | SOUI upstream license and retained notices |
