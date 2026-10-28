@@ -8,7 +8,7 @@ if(NOT IS_ABSOLUTE "${SOUI_CONSUMER_PREFIX}" OR NOT EXISTS "${SOUI_CONSUMER_PREF
   message(FATAL_ERROR "Select the actual installed or relocated SDK prefix")
 endif()
 set(SouiSdk_DIR "${SOUI_CONSUMER_PREFIX}/lib/cmake/SouiSdk" CACHE PATH "Explicit installed config" FORCE)
-find_package(SouiSdk 0.5.0 EXACT CONFIG REQUIRED COMPONENTS Uia PATHS "${SouiSdk_DIR}" NO_DEFAULT_PATH)
+find_package(SouiSdk 0.6.0 EXACT CONFIG REQUIRED COMPONENTS Uia PATHS "${SouiSdk_DIR}" NO_DEFAULT_PATH)
 if(NOT SouiSdk_Uia_FOUND OR NOT TARGET Soui::Uia)
   message(FATAL_ERROR "The installed SDK must explicitly provide its Uia component")
 endif()

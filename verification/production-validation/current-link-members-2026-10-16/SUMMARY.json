@@ -1,0 +1,102 @@
+{
+  "schema": "soui.current-link-members/v1",
+  "kernelVersion": "0.5.0",
+  "records": [
+    {
+      "architecture": "x64",
+      "report": {
+        "path": "C:\\work\\soui-remaining-20261016\\link-audit-2/x64.json",
+        "bytes": 155078,
+        "sha256": "948a1bd6e34ae39c97ae1feee0784476cd8af3d3644d0474e046aa34012ddce1"
+      },
+      "map": {
+        "path": "C:\\work\\soui-remaining-20261016\\link-audit-2/x64.map.gz",
+        "bytes": 5869902,
+        "sha256": "e2201c71df73f9f7c8dc9e3953586653abd6a87a095f5a8e75e32470c544dfe0"
+      },
+      "symbolRows": 339754,
+      "openssl": {
+        "symbolRows": 9468,
+        "memberCount": 486,
+        "examples": [
+          {
+            "line": 105950,
+            "symbol": "SSL_new",
+            "member": "ssl_lib.obj",
+            "section": 1,
+            "offset": 24018096,
+            "address": 6466473136,
+            "machineCodeFirst16Hex": "41565657534883ec284885c90f849000"
+          },
+          {
+            "line": 105963,
+            "symbol": "SSL_connect",
+            "member": "ssl_lib.obj",
+            "section": 1,
+            "offset": 24021568,
+            "address": 6466476608,
+            "machineCodeFirst16Hex": "564883ec204889ce48837930007561c7"
+          }
+        ],
+        "mappedIntoExactDll": true
+      }
+    },
+    {
+      "architecture": "x86",
+      "report": {
+        "path": "C:\\work\\soui-remaining-20261016\\link-audit-2/x86.json",
+        "bytes": 152827,
+        "sha256": "b6108449d4f86fe594a411e6a998d6c70f1e44d1670733e38a3feade89247cbb"
+      },
+      "map": {
+        "path": "C:\\work\\soui-remaining-20261016\\link-audit-2/x86.map.gz",
+        "bytes": 5372502,
+        "sha256": "2a0eb612da132008106e84ea7d56f933bb91e418e754558b1d583909e5315d32"
+      },
+      "symbolRows": 302305,
+      "openssl": {
+        "symbolRows": 9488,
+        "memberCount": 489,
+        "examples": [
+          {
+            "line": 99626,
+            "symbol": "_SSL_new",
+            "member": "ssl_lib.obj",
+            "section": 1,
+            "offset": 18444183,
+            "address": 286883735,
+            "machineCodeFirst16Hex": "555357568b7c241485ff0f848a000000"
+          },
+          {
+            "line": 99643,
+            "symbol": "_SSL_connect",
+            "member": "ssl_lib.obj",
+            "section": 1,
+            "offset": 18447008,
+            "address": 286886560,
+            "machineCodeFirst16Hex": "568b742408837e2000750956e80a0000"
+          }
+        ],
+        "mappedIntoExactDll": true
+      }
+    }
+  ],
+  "opensslVersionHeader": {
+    "path": "F:/work/soui-issue96/third_party/sources/miniblink/node/openssl/openssl/crypto/opensslv.h",
+    "bytes": 3939,
+    "sha256": "e35e3fa5d86cb7c6dc7c5cd079c6c18255fe467e5d294169f6d218d03b56e894"
+  },
+  "sourceLicense": {
+    "path": "F:/work/soui-issue96/third_party/sources/miniblink/node/openssl/openssl/LICENSE",
+    "bytes": 6406,
+    "sha256": "d0047be11f613ca5afebb508c19242fdecd55b740d70ea031c00c11784f37ee7"
+  },
+  "retainedLicense": {
+    "path": "F:/work/soui-issue96/third_party/licenses/d52/openssl/LICENSE.txt",
+    "bytes": 6406,
+    "sha256": "d0047be11f613ca5afebb508c19242fdecd55b740d70ea031c00c11784f37ee7"
+  },
+  "firstPartyDecision": "Owner selected MIT on 2026-10-16; implemented in 0.5.1-preview.1",
+  "binaryLicenseReviewComplete": false,
+  "releaseReady": false
+}

@@ -1,0 +1,24 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
+const root='F:/work/soui-issue96',standard=require(root+'/tools/internal/standard-build.cjs');
+const architecture=process.argv[2];assert(['x64','x86'].includes(architecture));
+const attempt=process.argv[3]||'original';assert(/^[a-z0-9-]+$/.test(attempt));
+const fixture=process.argv[4]||'message-port';assert(['ordinary','message-port'].includes(fixture));
+const folder=path.join(__dirname,'prepare-'+architecture+'-'+attempt);fs.mkdirSync(folder);
+const ps='C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/pwsh.exe';
+const runner='F:/work/sm05/out/benchmark-protocol/Release/OwnedProcessRunner.exe';
+const env={...process.env};
+const policy=JSON.parse(fs.readFileSync('D:/work/sm05-short-tool-debug-feasibility-source-v2/COMMANDS.json','utf8')).environment;
+for(const key of Object.keys(env))if([...policy.remove,'PATH','COMSPEC'].some(n=>n.toUpperCase()===key.toUpperCase()))delete env[key];
+Object.assign(env,policy.set);env.ComSpec='C:\\Windows\\System32\\cmd.exe';
+env.Path=path.dirname(process.execPath)+';C:\\Program Files\\CMake\\bin;C:\\Program Files\\Git\\cmd;C:\\Windows\\System32;C:\\Windows';
+const args=['-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',root+'/tools/Test-Acceptance.ps1','-Architecture',architecture,'-Configuration','Release','-Fixture',fixture,'-PrepareOnly','-FreshConfigure'];
+if(process.argv[5]==='reuse-sdk')args.push('-SkipSdkBuild');
+(async()=>{
+ fs.writeFileSync(folder+'/INPUTS.json',JSON.stringify({root,architecture,executable:ps,args,runner},null,2));
+ const c=await standard.capture(folder,'prepare',ps,args,{runner,cwd:root,env,timeoutMs:1200000,drainMs:2000});
+ const v=standard.verifyStream(c.rawReport,JSON.parse(c.contextBytes.toString('utf8')),c.ready,c.result);
+ const natural=c.result.passed&&c.result.exitCode===0&&c.result.supervisorExitCode===0&&c.result.closureConfirmed&&!c.result.stopRequested&&!c.result.fallbackUsed&&!v.terminal.terminatedOwnedJob&&v.terminal.activeProcesses===0;
+ fs.writeFileSync(folder+'/RESULT.json',JSON.stringify({architecture,natural,result:c.result,terminal:v.terminal},null,2));
+ console.log(JSON.stringify({architecture,natural,exitCode:c.result.exitCode,folder}));assert(natural,'Preparation failed; raw evidence retained');
+})().catch(e=>{console.error(e);process.exitCode=1;});
