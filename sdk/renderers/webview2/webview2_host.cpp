@@ -7,6 +7,7 @@
 #include "owner_callout_policy.h"
 #include "../../src/host/input_trace_hooks.h"
 #include <soui/diagnostics/input_frame_trace.h>
+#include "loader_policy.h"
 
 #include <windows.h>
 #include <bcrypt.h>
@@ -411,6 +412,7 @@ struct webview2_adapter::state {
   std::shared_ptr<webview2_runtime_exit_watch::state> exit_monitor;
   bool preparation_failed_without_environment{false};
   bool controller_creation_failed{false};
+  HRESULT cancelled_controller_failure{S_OK};
   bool failed_preparation_cleanup_in_progress{false};
   bool failed_preparation_cleanup_done{false};
   std::function<void(host_result)> prepared;
@@ -843,6 +845,70 @@ host_result require_mounted(const std::shared_ptr<state>& value) {
   if (value->reload_preparing) return error("E_BUSY", "Reload preparation is in progress.");
   return ok();
 }
+HRESULT complete_controller_preparation(const std::shared_ptr<state>& current,
+                                       HRESULT controller_result, ICoreWebView2Controller* controller) {
+  auto completion = current->preparation.receive(detail::preparation_lifetime::operation::controller);
+  if (!completion) return S_OK;
+  const std::weak_ptr<state> weak(current);
+  if (!live(current) || current->preparation.cancelled()) {
+    if (!controller) {
+      // Only this accepted native failure proves creation returned no object.
+      // Cancellation alone (or S_OK/null) cannot release Environment ownership.
+      if (current->preparation.cancelled() && GetCurrentThreadId() == current->ui_thread && FAILED(controller_result))
+        current->cancelled_controller_failure = controller_result;
+      return S_OK;
+    }
+    // A returned completion is not proof that its actual Controller closed.
+    current->controller = controller;
+    if (current->exit_monitor) {
+      ComPtr<ICoreWebView2> cancelled_core;
+      const auto core_result = controller->get_CoreWebView2(&cancelled_core);
+      const auto armed = SUCCEEDED(core_result) ? arm_exit_monitor(current->exit_monitor, cancelled_core.Get()) : core_result;
+      if (FAILED(armed)) {
+        exit_failure(current->exit_monitor, webview2_runtime_exit_error::process_query, armed);
+        current->failure = error("E_RUNTIME_WATCH_FAILED", "Cancelled controller exit identity could not be armed.");
+        return armed;
+      }
+    }
+    const auto closed = controller->Close();
+    if (FAILED(closed)) {
+      current->failure = error("E_WEBVIEW2_CLOSE", hresult_text(closed));
+      return closed;
+    }
+    current->controller.Reset();
+    return S_OK;
+  }
+  if (GetCurrentThreadId() == current->ui_thread && FAILED(controller_result) && !controller)
+    current->controller_creation_failed = true;
+  return boundary(weak, [weak, controller_result, controller](const auto& prepared) {
+    check(controller_result, "Create WebView2 controller");
+    if (!controller) throw std::runtime_error("WebView2 controller missing");
+    prepared->controller = controller;
+    check(controller->get_CoreWebView2(&prepared->core), "Get WebView2 core");
+    if (prepared->exit_monitor)
+      check(arm_exit_monitor(prepared->exit_monitor, prepared->core.Get()), "Arm exclusive runtime exit watch");
+    install_policy(prepared);
+    register_preload(prepared, [weak] {
+      const auto ready = weak.lock();
+      if (!live(ready)) return;
+      ready->current = state::phase::prepared;
+      finish_preparation(ready, ok());
+    });
+  });
+}
+
+host_result retire_failed_controller_preparation(const std::shared_ptr<state>& value) {
+  if (value->failed_preparation_cleanup_in_progress || !value->preparation.settled() ||
+      !value->worker_done.load(std::memory_order_acquire) || value->worker.joinable() || value->bridge)
+    return error("E_BUSY", "Failed Controller preparation is still borrowed.");
+  const bool failed_completion = (value->controller_creation_failed && value->failure.code == "E_WEBVIEW2") ||
+      FAILED(value->cancelled_controller_failure);
+  if (value->profile_access == webview2_profile_access::exclusive && failed_completion &&
+      !value->controller && !value->core && !value->core3 &&
+      !value->core4 && !value->core22)
+    return release_failed_controller_monitor(value);
+  return ok();
+}
 }  // namespace
 
 webview2_adapter::webview2_adapter(void* owner, std::filesystem::path profile, std::string preload,
@@ -942,6 +1008,13 @@ void webview2_adapter::prepare_async(std::function<void(host_result)> completed)
     value->current = state::phase::failed;
     completed(value->failure);
   };
+  host_result loader_policy;
+  try { loader_policy = detail::check_webview2_loader_policy(); }
+  catch (...) {
+    reject_before_environment(error("E_WEBVIEW2_LOADER_POLICY", "External loader policy could not be verified."));
+    return;
+  }
+  if (!loader_policy.ok) { reject_before_environment(std::move(loader_policy)); return; }
   const auto selected = select_runtime_profile(inspect_runtime_environment(), {false, true}, runtime_profile::modern);
   if (!selected.ok) { reject_before_environment(error(selected.code.c_str(), selected.reason)); return; }
   if (value->profile.empty() || !value->profile.is_absolute() ||
@@ -984,51 +1057,8 @@ void webview2_adapter::prepare_async(std::function<void(host_result)> completed)
               check(environment->get_BrowserVersionString(&runtime.value), "Runtime identity");
               current->runtime_version = utf8(runtime.value ? runtime.value : L"");
               auto controller_callback = Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-                      [current, weak](HRESULT controller_result, ICoreWebView2Controller* controller) -> HRESULT {
-                        auto controller_completion = current->preparation.receive(detail::preparation_lifetime::operation::controller);
-                        if (!controller_completion) return S_OK;
-                        const auto held = weak.lock();
-                        if (!live(held) || current->preparation.cancelled()) {
-                          if (!controller) return S_OK;
-                          // Retain a failed Close for the caller's next unmount;
-                          // a returned initialization callback is not proof of
-                          // successful controller teardown.
-                          current->controller = controller;
-                          if (current->exit_monitor) {
-                            ComPtr<ICoreWebView2> cancelled_core;
-                            const auto core_result = controller->get_CoreWebView2(&cancelled_core);
-                            const auto armed = SUCCEEDED(core_result) ? arm_exit_monitor(current->exit_monitor, cancelled_core.Get()) : core_result;
-                            if (FAILED(armed)) {
-                              exit_failure(current->exit_monitor, webview2_runtime_exit_error::process_query, armed);
-                              current->failure = error("E_RUNTIME_WATCH_FAILED", "Cancelled controller exit identity could not be armed.");
-                              return armed; // Actual controller remains retained for original unmount.
-                            }
-                          }
-                          const auto closed = controller->Close();
-                          if (FAILED(closed)) {
-                            current->failure = error("E_WEBVIEW2_CLOSE", hresult_text(closed));
-                            return closed;
-                          }
-                          current->controller.Reset();
-                          return S_OK;
-                        }
-                        if (GetCurrentThreadId() == current->ui_thread && FAILED(controller_result) && !controller)
-                          current->controller_creation_failed = true;
-                        return boundary(weak, [weak, controller_result, controller](const auto& prepared) {
-                          check(controller_result, "Create WebView2 controller");
-                          if (!controller) throw std::runtime_error("WebView2 controller missing");
-                          prepared->controller = controller;
-                          check(controller->get_CoreWebView2(&prepared->core), "Get WebView2 core");
-                          if (prepared->exit_monitor)
-                            check(arm_exit_monitor(prepared->exit_monitor, prepared->core.Get()), "Arm exclusive runtime exit watch");
-                          install_policy(prepared);
-                          register_preload(prepared, [weak] {
-                            const auto ready = weak.lock();
-                            if (!live(ready)) return;
-                            ready->current = state::phase::prepared;
-                            finish_preparation(ready, ok());
-                          });
-                        });
+                      [current](HRESULT controller_result, ICoreWebView2Controller* controller) -> HRESULT {
+                        return complete_controller_preparation(current, controller_result, controller);
                       });
               if (!current->preparation.begin(detail::preparation_lifetime::operation::controller))
                 throw std::runtime_error("Controller creation is cancelled or already pending");
@@ -1153,12 +1183,8 @@ host_result webview2_adapter::unmount() {
       !value->exit_monitor && !value->environment && !value->controller && !value->core &&
       !value->core3 && !value->core4 && !value->core22)
     value->failed_preparation_cleanup_done = true; // Local failure cleanup, never a browser exit receipt.
-  if (value->profile_access == webview2_profile_access::exclusive && value->controller_creation_failed &&
-      value->failure.code == "E_WEBVIEW2" && !value->controller && !value->core && !value->core3 &&
-      !value->core4 && !value->core22) {
-    const auto cleaned = release_failed_controller_monitor(value);
-    if (!cleaned.ok) return cleaned;
-  }
+  const auto failed_cleanup = retire_failed_controller_preparation(value);
+  if (!failed_cleanup.ok) return failed_cleanup;
   if (value->exit_monitor && value->core) {
     UINT32 current_pid{};
     const auto identified = value->core->get_BrowserProcessId(&current_pid);

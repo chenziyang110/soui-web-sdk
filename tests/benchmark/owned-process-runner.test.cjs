@@ -79,6 +79,43 @@ test('native nonzero exit is retained as failure even when the Job closes normal
     assert.equal(terminal.passed, false);
   });
 
+test('nonzero root keeps failure while owned descendants drain naturally',
+  {skip: !supported}, t => {
+    const directory = fixture(t);
+    const script = path.join(directory, 'failed-root-drain.cjs');
+    fs.writeFileSync(script, `const child=require('node:child_process').spawn(process.execPath,
+      ['-e','setTimeout(()=>{},150)'],{detached:true,windowsHide:true,stdio:'ignore'});child.unref();process.exit(9);`);
+    const {result, records, terminal} = run(directory, [script], {drain: 2000});
+    assert.equal(result.status, 9, result.stderr);
+    assertOwnedClosure(records, 2);
+    assert.equal(terminal.reason, 'root-failed');
+    assert.equal(terminal.rootExitCode, 9);
+    assert.equal(terminal.passed, false);
+    assert.equal(terminal.activeBeforeCleanup, 0);
+    assert.equal(terminal.terminatedOwnedJob, false);
+  });
+
+test('nonzero root still forces owned descendants after the explicit drain',
+  {skip: !supported}, t => {
+    const directory = fixture(t);
+    const script = path.join(directory, 'failed-root-live-tail.cjs');
+    fs.writeFileSync(script, `const child=require('node:child_process').spawn(process.execPath,
+      ['-e','setTimeout(()=>{},30000)'],{detached:true,windowsHide:true,stdio:'ignore'});
+      require('node:fs').writeFileSync('failed-child.pid',String(child.pid));child.unref();process.exit(7);`);
+    const {result, records, terminal} = run(directory, [script], {drain: 100});
+    assert.equal(result.status, 7, result.stderr);
+    assertOwnedClosure(records, 2);
+    assert.equal(terminal.reason, 'root-failed');
+    assert.equal(terminal.rootExitCode, 7);
+    assert.equal(terminal.passed, false);
+    assert.ok(terminal.activeBeforeCleanup >= 1);
+    assert.equal(terminal.terminatedOwnedJob, true);
+    const rootExit = records.find(row => row.event === 'root-exit');
+    assert.ok(terminal.elapsedMs - rootExit.elapsedMs >= 100, 'nonzero root bypassed explicit drain');
+    assert.throws(() => process.kill(Number(fs.readFileSync(path.join(directory, 'failed-child.pid'), 'utf8')), 0),
+      {code: 'ESRCH'});
+  });
+
 test('only child output and null input are inherited, preserving native diagnostics',
   {skip: !supported}, t => {
     const directory = fixture(t);
