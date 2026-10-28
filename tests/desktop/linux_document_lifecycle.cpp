@@ -3,6 +3,7 @@
 #include "../../sdk/src/desktop/backends/linux_webkitgtk.cpp"
 
 #include <iostream>
+#include <stdexcept>
 
 namespace {
 using namespace soui::desktop;
@@ -144,6 +145,129 @@ void fresh_generation() {
   CHECK(test.errors == 1 && test.state->generation == generation);
 }
 
+// Identity-only sentinels: the production close callback must never call a
+// WebKit API on these pointers. Clear the slot before ordinary fixture teardown.
+struct close_fixture : fixture {
+  int current_identity{0};
+  int stale_identity{0};
+  WebKitWebView* sender() { return reinterpret_cast<WebKitWebView*>(&current_identity); }
+  WebKitWebView* stale_sender() { return reinterpret_cast<WebKitWebView*>(&stale_identity); }
+  close_fixture() { state->view = sender(); }
+  ~close_fixture() { state->view = nullptr; }
+  void stop() {
+    state->view = nullptr;
+    shutdown(*state, false);
+  }
+};
+
+void dom_close_dispatch() {
+  close_fixture test;
+  int requests = 0;
+  test.state->events.close_requested = [&] { ++requests; };
+  view_close(test.sender(), test.state.get());
+  CHECK(requests == 0 && test.state->dispatch_sources.size() == 1);
+  // Approval uses the current host callback at dispatch, not a document snapshot.
+  test.state->events.close_requested = [&] { requests += 10; };
+  test.pump();
+  CHECK(requests == 10 && test.state->active.load() && test.errors == 0);
+}
+
+void dom_close_stale_or_inactive() {
+  close_fixture test;
+  int requests = 0;
+  test.state->events.close_requested = [&] { ++requests; };
+  view_close(nullptr, test.state.get());
+  view_close(test.stale_sender(), test.state.get());
+  test.state->active.store(false);
+  view_close(test.sender(), test.state.get());
+  CHECK(test.state->dispatch_sources.empty() && requests == 0);
+  test.state->active.store(true);
+  view_close(test.sender(), test.state.get());
+  CHECK(test.state->dispatch_sources.size() == 1);
+  test.state->view = test.stale_sender();
+  test.pump();
+  CHECK(requests == 0 && test.errors == 0);
+}
+
+void dom_close_missing_or_throwing_callback() {
+  close_fixture test;
+  view_close(test.sender(), test.state.get());
+  test.pump();
+  CHECK(test.state->active.load() && test.errors == 0);
+  test.state->events.close_requested = [] { throw std::runtime_error("close callback failed"); };
+  view_close(test.sender(), test.state.get());
+  CHECK(test.errors == 0);
+  test.pump();
+  CHECK(test.errors == 1 && test.code == "E_CALLBACK");
+  CHECK(test.state->active.load() && test.state->view == test.sender());
+}
+
+void dom_close_shutdown_before_dispatch() {
+  close_fixture test;
+  int requests = 0;
+  test.state->events.close_requested = [&] { ++requests; };
+  view_close(test.sender(), test.state.get());
+  CHECK(test.state->dispatch_sources.size() == 1);
+  test.stop();
+  test.pump();
+  CHECK(requests == 0 && !test.state->active.load());
+}
+
+void dom_close_survives_navigation() {
+  close_fixture test;
+  int requests = 0;
+  test.state->events.close_requested = [&] { ++requests; };
+  view_close(test.sender(), test.state.get());
+  ++test.state->generation;  // Model load()'s generation boundary, not WebKit navigation.
+  test.state->renderer_reload_pending = false;
+  test.pump();
+  CHECK(requests == 1 && test.state->active.load() && test.errors == 0);
+}
+
+void dom_close_full_queue() {
+  close_fixture test;
+  int requests = 0;
+  test.state->events.close_requested = [&] { ++requests; };
+  for (std::size_t i = 0; i < max_pending_dispatches; ++i)
+    CHECK(enqueue(*test.state, [] {}).ok);
+  view_close(test.sender(), test.state.get());
+  CHECK(test.state->dispatch_sources.size() == max_pending_dispatches);
+  CHECK(requests == 0 && test.errors == 0 && test.state->active.load());
+  test.stop();
+  CHECK(test.state->dispatch_sources.empty());
+}
+
+void dom_close_releases_owner() {
+  auto owner = std::make_shared<linux_state>();
+  owner->active.store(true);
+  int identity = 0;
+  auto* sender = reinterpret_cast<WebKitWebView*>(&identity);
+  owner->view = sender;
+  GMainContext* context = g_main_context_ref(owner->context);
+  std::weak_ptr<linux_state> weak = owner;
+  auto callback_lifetime = std::make_shared<int>(0);
+  std::weak_ptr<int> callback_weak = callback_lifetime;
+  int requests = 0;
+  owner->events.close_requested = [&, held = callback_lifetime] {
+    ++requests;
+    owner->view = nullptr;
+    shutdown(*owner, false);
+    owner.reset();
+    CHECK(!weak.expired() && !callback_weak.expired() && *held == 0);
+  };
+  callback_lifetime.reset();
+  view_close(sender, owner.get());
+  CHECK(requests == 0);
+  for (int i = 0; i < 16 && g_main_context_pending(context); ++i)
+    g_main_context_iteration(context, FALSE);
+  CHECK(requests == 1 && weak.expired() && callback_weak.expired());
+  if (owner) {  // Keep fixture teardown safe even if a regression dropped the work.
+    owner->view = nullptr;
+    shutdown(*owner, false);
+  }
+  g_main_context_unref(context);
+}
+
 void evaluation_admission() {
   fixture test;
   auto& state = *test.state;
@@ -240,6 +364,13 @@ int main() {
                         WEBKIT_POLICY_ERROR_FRAME_LOAD_INTERRUPTED_BY_POLICY_CHANGE);
   unrelated_failure();
   fresh_generation();
+  dom_close_dispatch();
+  dom_close_stale_or_inactive();
+  dom_close_missing_or_throwing_callback();
+  dom_close_shutdown_before_dispatch();
+  dom_close_survives_navigation();
+  dom_close_full_queue();
+  dom_close_releases_owner();
   evaluation_admission();
   evaluation_completion();
   std::cout << "Linux document lifecycle: " << checks << " checks, " << failures << " failures\n";

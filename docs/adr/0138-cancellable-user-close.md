@@ -21,6 +21,46 @@
 本轮不拦截OS强制进程终止，不保证系统关机可撤销，也不新增自动持久化、保存对话框
 或异步JS权限协议。聚焦共用层审批/重入/窗口变化回归，真实系统关闭行为另记证据。
 
+## Linux WebKit 关闭通知转交宿主审批
+
+Linux 后端原先只连接 GTK `delete-event`，没有接收 WebKitWebView 的 `close`
+信号。现在对非空、当前 sender 且仍活动的窗口，将通知放入既有有界 native 派发
+队列；离开 WebKit 信号栈后，再检查活动状态及 sender，复制并调用
+`events.close_requested`，进入公共层 `request_close()` 审批。队列中的请求属于
+窗口，不使用 document generation，导航不会撤销已接纳的请求。
+
+派发持有 state，回调副本允许审批期间 shutdown、清空 events 或释放外部 owner。
+shutdown 沿用既有 source 撤销与信号断开；缺失回调不关闭窗口，回调异常由既有
+dispatch 边界捕获并报告 `E_CALLBACK`。队列满或入队分配失败时丢弃本次通知，
+不在 WebKit 信号栈同步调用宿主，也不隐式强制关闭；该失败路径没有额外错误回调。
+程序显式 close/quit 的既有语义不变。
+
+这是 void 通知，不是 WebKit 的取消返回值。只有引擎允许的 `window.close()` 或
+`webkit_web_view_try_close()` 路径才可能发出该信号，不能保证每次 JavaScript 调用
+都会通知。后端不新增 `try_close()` 调用，也不直接销毁 view。引擎可能已进入 page
+closing 状态，宿主否决只阻止宿主主动销毁，不能承诺恢复 DOM 状态或后续通知。
+参见 [WebKitGTK WebView::close](https://webkitgtk.org/reference/webkit2gtk/stable/signal.WebView.close.html)。
+
+2026-10-28：在现有 `linux_document_lifecycle.cpp` production callback 测试中补充
+延迟交付、旧 sender/inactive、空或抛异常回调、派发前 shutdown、导航代际变化、
+队列满及回调释放最后 owner 的检查。sender 仅用作身份哨兵，不创建 GTK/WebView，
+不构成真实 DOM 关闭测试。初次静态审阅后，在 ROBIN11 的 WSL2 Ubuntu 22.04.5
+x86_64、普通用户 UID 1000 下完成真实依赖编译及运行：G++ 11.4.0、GTK 3.24.33、
+GLib/GObject 2.72.4、WebKitGTK/JSC 2.50.4；官方开发包使用 WebKitGTK 4.1 API。
+首次编译因已有菜单连接使用 `G_CONNECT_DEFAULT` 失败；该名称从 GLib 2.74 才提供。
+将其改为语义相同的 `static_cast<GConnectFlags>(0)`，与旧头文件 `g_signal_connect`
+宏采用的零标志一致，不改变菜单回调顺序或参数。
+参见 [GObject ConnectFlags](https://docs.gtk.org/gobject/flags.ConnectFlags.html)。
+
+2026-10-28 11:57 UTC：修复后单单元编译退出 0，按原测试 10 秒上限运行，
+输出 `Linux document lifecycle: 1160 checks, 0 failures`，退出 0，未超时。
+使用仓库 `tests/desktop/CMakeLists.txt` 中该目标的真实源文件、C++17、
+`-Wall -Wextra -Wpedantic`、`sdk/include` 与 pkg-config 的 WebKitGTK/GTK 编译和链接参数，
+未链接重复的 Soui::Desktop、未使用 stubs、未伪造生成头或启用 X11 快捷键宏。
+本机 CMake 3.22.1 低于工程要求 3.24，因此直接调用 G++；这不是完整 CMake 配置或
+CTest 通过证据。没有执行 Linux 原生关闭/否决、WebKit 信号注册或 GUI 验收，
+没有运行此前被拒的 Windows 程序；不继承其他平台的通过证据。
+
 ## Windows DOM 关闭通知也须进入公共审批
 
 WebView2 的 `WindowCloseRequested` 是网页 `window.close()` 通知宿主的入口，

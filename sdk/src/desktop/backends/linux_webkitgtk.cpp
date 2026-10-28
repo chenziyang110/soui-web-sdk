@@ -560,6 +560,25 @@ gboolean window_delete(GtkWidget* window, GdkEvent*, gpointer data) noexcept {
   return TRUE;
 }
 
+void view_close(WebKitWebView* view, gpointer data) noexcept {
+  auto& state = *static_cast<linux_state*>(data);
+  if (!view || !state.active.load() || state.view != view) return;
+  try {
+    // Leave WebKit's signal stack before host approval can destroy the view.
+    // This is window work: navigation must not revoke an accepted proposal.
+    (void)enqueue(state, [weak = state.weak_from_this(), view] {
+      auto current = weak.lock();
+      if (!current || !current->active.load() || current->view != view) return;
+      // The callback may shut down the backend and release its last owner.
+      auto handler = current->events.close_requested;
+      if (handler) handler();
+    });
+  } catch (...) {
+    // Allocation failure is not permission to close or call the host inline.
+  }
+  // A full queue also drops the proposal; never bypass the host's approval.
+}
+
 void window_destroy(GtkWidget*, gpointer data) noexcept {
   // Covers destruction by an embedding GTK application as well as the WM path.
   shutdown(*static_cast<linux_state*>(data), true, true);
@@ -1071,7 +1090,7 @@ GtkWidget* make_menu(linux_state& state, const std::vector<menu_item>& items,
             menu_command{state.weak_from_this(), item.id, generation, tray, enabled});
         g_signal_connect_data(row, "activate", G_CALLBACK(menu_activated), command.release(),
             [](gpointer value, GClosure*) { delete static_cast<menu_command*>(value); },
-            G_CONNECT_DEFAULT);
+            static_cast<GConnectFlags>(0));  // G_CONNECT_DEFAULT was added in GLib 2.74.
       }
     }
     if (root) {
@@ -1247,6 +1266,7 @@ class linux_backend final : public backend {
     g_signal_connect(state.window, "delete-event", G_CALLBACK(window_delete), &state);
     g_signal_connect(state.window, "destroy", G_CALLBACK(window_destroy), &state);
     g_signal_connect(state.window, "window-state-event", G_CALLBACK(window_state_changed), &state);
+    g_signal_connect(state.view, "close", G_CALLBACK(view_close), &state);
     g_signal_connect(state.view, "decide-policy", G_CALLBACK(decide_policy), &state);
     g_signal_connect(state.view, "load-changed", G_CALLBACK(load_changed), &state);
     g_signal_connect(state.view, "load-failed", G_CALLBACK(load_failed), &state);
