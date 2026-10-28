@@ -1,4 +1,5 @@
 #include "fixture_support.h"
+#include "content/common/InputFrameTrace.cpp"
 #include "content/web_impl_win/WebThreadImpl.h"
 #include "content/web_impl_win/WebTimerBase.h"
 #include "fragments/shutdown_fire_entrypoint.inc"
@@ -840,6 +841,10 @@ bool dispatch() {
 }
 int main(int argc, char** argv) {
     if (argc < 2 || argc > 3) return 96;
+    namespace trace = content::input_frame_trace;
+    if (!trace::process_recorder().configure(trace::current_identity(0x20261026, 1), trace::mode::scalar)
+        || !trace::register_current_thread()) return 95;
+    struct TraceDetach { ~TraceDetach() { trace::detach_current_thread(); } } traceDetach;
     fixture::caseId = argv[1];
     if (argc == 3) {
         if (std::strcmp(argv[2], "wait") && std::strcmp(argv[2], "exit-code")) return 97;

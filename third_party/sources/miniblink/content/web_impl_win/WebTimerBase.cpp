@@ -195,7 +195,7 @@ const std::vector<WebTimerBase*>& WebTimerBase::timerHeap() const
 extern ActivatingTimerCheck* gActivatingTimerCheck;
 #endif
 
-WebTimerBase::WebTimerBase(WebThreadImpl* threadTimers, const blink::WebTraceLocation& location, blink::WebThread::Task* task, int priority)
+WebTimerBase::WebTimerBase(WebThreadImpl* threadTimers, const blink::WebTraceLocation& location, blink::WebThread::Task* task, int priority, const input_frame_trace::event* trace)
     : m_nextFireTime(0)
     , m_threadTimers(threadTimers)
     , m_repeatInterval(0)
@@ -208,6 +208,15 @@ WebTimerBase::WebTimerBase(WebThreadImpl* threadTimers, const blink::WebTraceLoc
     , m_thread(currentThread())
 #endif
 {
+    if (trace) m_trace = *trace;
+    else {
+        (void)input_frame_trace::current_context(m_trace);
+        m_trace.thread_id = m_trace.producer_slot = 0;
+        m_trace.flags = 0; m_trace.outcome = input_frame_trace::terminal::none;
+        m_trace.frame_id = m_trace.action_first = m_trace.action_last = m_trace.value = 0;
+        m_trace.related_id = m_trace.task_id;
+        m_trace.task_id = input_frame_trace::next_task_id();
+    }
 //     String out = String::format(" WebTimerBase::WebTimerBase: %p %x\n", this, ::GetCurrentThreadId());
 //     OutputDebugStringW(out.charactersWithNullTermination().data());
 #ifndef NDEBUG
@@ -217,6 +226,11 @@ WebTimerBase::WebTimerBase(WebThreadImpl* threadTimers, const blink::WebTraceLoc
 
 WebTimerBase::~WebTimerBase()
 {
+    if (!m_taskRan) {
+        auto trace = m_trace; trace.point = input_frame_trace::stage::task_cancelled;
+        trace.why = input_frame_trace::reason::cancelled; trace.qpc = 0;
+        (void)input_frame_trace::record(trace);
+    }
     stop();
     ASSERT(!inHeap());
 
@@ -435,7 +449,25 @@ void WebTimerBase::fireTimersInNestedEventLoop()
 
 void WebTimerBase::fired()
 {
+    auto trace = m_trace; // Callback may delete this timer: use local data after run.
+    trace.point = input_frame_trace::stage::task_begin;
+    const auto posted = trace.qpc; trace.qpc = input_frame_trace::now_qpc();
+    if (posted && trace.qpc >= posted)
+        input_frame_trace::observe_duration(input_frame_trace::duration_metric::task_queue, trace.qpc - posted);
+    (void)input_frame_trace::record(trace);
+    input_frame_trace::context_scope taskContext(trace);
+    struct TraceEnd {
+        input_frame_trace::event value;
+        bool returned = false;
+        ~TraceEnd() {
+            value.point = input_frame_trace::stage::task_end; value.qpc = 0;
+            if (!returned) value.why = input_frame_trace::reason::cancelled;
+            (void)input_frame_trace::record(value);
+        }
+    } finished{trace};
+    m_taskRan = true;
     m_task->run();
+    finished.returned = true; // Only local state after the potentially self-deleting run.
 }
 
 } // namespace content

@@ -37,6 +37,9 @@ Dispatch validates owner-applied context/geometry, never the UI's newer resize i
 Resize preflights its next nonwrapping geometry but publishes UI geometry only after FIFO admission succeeds. Failed admission leaves UI generation/sequence/window untouched and can be retried after capacity returns. Input sequence is monotonic across geometry changes; only document/view transitions reset it. Its allocator makes at most eight CAS attempts, never wraps, and reports zero on failure; the Host requests ordered cancellation and seals that document with limited recovery until a new document/view. Received trace identity is immutable. Cross-geometry nonspatial dispatch remains functional but has explicit native-causality loss until a schema can carry both geometries.
 
 Regression SOURCE covers paused first-head publication, FIFO appended during a no-cutoff batch, more-than-one-batch resize/close ordering, MAX recovery/cleanup ties, rejected ordinal publication, and negative/zero/odd/oversize IMM byte lengths. These cases have not been compiled or executed.
+
+UI independent wheel/barrier additionally requires actual native view ID, checked VIEW_CONTEXT0x40 setter and SCENE_INPUT_IDENTITY0x80. A short mutex stores owner-applied tuple; UI only try_lock, declines unknown/contended/mismatched tuple and lets the router send the unchanged packet to the ordinal mailbox. Resize/navigation/close invalidates publication until actual documentready and returned resize establish it. This tuple is not a compositor scene-current claim: matched source kernels must also compare exact active-scene view/document/geometry under B's input mutex before hit/prediction. Older DLLs fall back to Engine. Product gates do not depend on recorder/detail/QPC availability. SOURCE covers contended publication and pending resize/document→wheel FIFO fallback; active compositor scene proof belongs to B's exact source gate.
+
 ### W03 deadline 实现
 
 主线程不再安装固定 16 ms 周期 tick。ready 合并窗口续调度；future 只保留最早绝对单调 deadline；idle 取消 native timer 和注册 wait。waitable timer 动态探测高精度创建标志，失败回到 Win7 auto-reset timer；不调用永久 `timeBeginPeriod`。相对截止采用向上取整，owner 收到消息重查单调时间，提前消息重新安排而不执行 future。
@@ -66,3 +69,27 @@ producer 待接纳任务有相同索引，mutex 内一次只选择/移除一个�
 ### W05/W07 optional Host policy adoption
 
 Normal fractional CPU pacing requires matched cap0x10; older kernels retain their legacy integer/experimental policy. The normal Host sets mirrorRequired=false once after DIRECT_HWND presentation succeeds, only through version/field-boundary/cap0x4/non-null/OK0 checks. Failed adoption restores explicit mirrorRequired=true. Benchmark/DC consumers retain the mirror; B's sticky DC/transparent/layered/nonindependent rules override false. No per-frame mirror toggle or new old-DLL requirement is introduced.
+
+Native visibility uses optional cap0x100/setHostVisible with version/field-boundary/pointer/OK0 checks. UI show/hide and each existing UI pump sample IsWindowVisible(child) plus !IsIconic(root owner). A fixed latest bool/dirty bit feeds the existing one-pending Engine pump; no new queue/timer is created, failed publication stays unknown/pending for the next opportunity, and unmount cannot queue more pump captures. Stable state avoids repeated calls; observed hide/show retains dirty even when final bool matches, so B true publication always resets phases and requests full fresh work. No DOM input or JS visibility event is synthesized/coalesced. SDK acknowledgement means actual setter OK only, never desktop present or runtime-exit completion; old DLL keeps native-window fallback.
+
+### W01 接入与 W09 宿主成本
+
+SDK 与 vendor 各自保留 POD 当前因果上下文：TaskPair/Timer 和固定 Engine FIFO 保存同一 input range/generation、非零 task ID、parent ID 和真实 QPC；post/begin/end/cancel 明确分开。实际引擎 dispatch 完成 generation 检查后设置 vendor view context，返回时 RAII 清除；T3b/visible 标志不伪造。T1 的 SendInput 标记仅写 related_id，不作身份/授权依据。已接纳输入关闭/异常终态显式记录；UI 使用共享 thread scope，最后 Host 退役才 detach，worker 在真实 loop 退出后 detach。
+
+Vendor UI producer 通过 cap0x200/完整字段边界/函数地址同模块验证，在成功 acquire_runtime 之后、输入激活之前冷 retain。同一实际 UI 线程的最多八个弱缓存项按 getter/module/function 精确共享；native handler 只复制既有 shared token，重入 last-unmount 不会提前 detach。实际线程 cookie 由 token 保持，异线程最终析构只报 causal loss 并保留模块引用，不能调用另一线程 TLS release 或卸载其 writer。native release 仅暂停 TLS，不能赋予通用 DLL 卸载资格：此专用 Host 路径依赖初始化成功 runtime 的原始 LoadLibrary 引用始终保留到进程结束（实际 finalize 也不 FreeLibrary）；初始化/start 失败在 cold retain 前返回。helper 明确要求该 process-pinned module 并校验所属一致。SOURCE 覆盖缺少/不匹配 process pin、共享/失败/重入最后调用/异线程保留边界，实际 DLL 注册与最终 drain 尚待专人验证。
+
+实际 wkeGetWebviewId 的正 ID 在冷 owner 创建后、UI 输入可用前发布；不可用则 unknown/causal loss，不用指针充当 view ID。非输入 base identity 仅在实际 documentready 与已返回的同 view wkeResize 两个条件成立后经 cap0x40 setter 发布；导航意图不发布。输入上下文经 cap0x8/field boundary/OK0 验证，返回时清除；跨 geometry 的非空间输入保留收到时的身份与功能投递，但不伪造 native frame range，明确 causal loss。
+
+内部恢复标记 sequence=0，不为原 physical input 再签第二个 terminal；原 rejection/stale/exception/close 各有唯一终态所有者。IME 查询/拷贝失败为已经创建的 T1 签一次 rejection，再请求匿名恢复，不生成虚假的第二次 T1。回归 SOURCE 通过实际 recorder/mailbox/router 对原 copy rejection、handler exception、queued close 和显式 cancel 统计恰好一个 terminal。worker 严格 closure 追加实际 vendor InputFrameTrace.h/cpp（16 live sources、15 source copies），未用 trace stub 替代。
+
+Handler 在构造时冷分配共享拥有对象，服务在 mutex 内取得 shared pin、锁外调用；重入 close 只释放 mailbox 自身引用，不能析构仍在调用的 capture。取出 recovery marker 时把 terminal 身份转交局部 owner，close 不再签第二份终态；callback 返回后若已关闭，不重写 quarantine/pending。SOURCE 增加 explicit cancel→handler 重入 close 的唯一终态/捕获对象寿命，以及延迟 P1 wake→空机会确认→P2 实际 Engine 输入进展。
+
+Bridge 逐事件开文件的实验 logger 改为数值阶段事件，去掉调用处日志专用字符串格式化；旧 `SOUI_BRIDGE_TRACE` 不再创建文件。细节通过统一 recorder/exporter 开关导出。每次 pending 接纳仍通知原 Engine auto-reset event，由系统 event 合并；自定义 wake_pending 合并未采用，延迟 producer 不能毒化后续 wake。拥有 packet 在 owner 借用 const reference，避免 dispatch 的第二次文本复制；不改变 DOM 事件数量。
+
+Host pump 不再扫描 SOUI_GPU_PRESENT_TRACE 文件或依赖 swapped 文本判断 GPU活跃；也不把其他view的进程环境flag/count当作当前surface状态。只消费该实际child HWND已发布的 GPU_ACTIVE/PRESENT_COUNT标量；无状态时保守使用CPU策略/无present证据。legacy benchmark/vendor实验日志格式不变。
+
+新增 native/provider/input/FIFO/serialization 成本直方图。`SOUI_ENGINE_SHARED_TURN_BUDGET_US=100..5000` 是默认关闭的协作总预算候选：native/FIFO 截止取组件与总剩余的较早值；provider/input/FIFO 每轮至少保留一次有界服务以保证进展。单次 provider/输入批次或用户回调仍可超时，候选不能冒充抢占。没有 profile 时不默认采用、不凭常数推算收益；跨 MiniBlink provider 批次的更细剩余预算协议仍待数据决定。
+
+### 最终关闭 fence
+
+`BlinkPlatformImpl::closeThread()` 保留原 registry 数量/指针检查和真实 join 流程，失败诊断后 `std::terminate()`，调试器继续也不能到达 `delete this` 或成功 finalize。worker fixture 保留实际生产 fence，`concurrent-registry-close` 改为预期非继续失败，新增 `registry-live-fence`；严格验证尚未释放的原 worker/scheduler/event/registry。最终 wkeFinalize 的完成 guard 由集成包配套，不能在 fence 失败后签发完成收据。

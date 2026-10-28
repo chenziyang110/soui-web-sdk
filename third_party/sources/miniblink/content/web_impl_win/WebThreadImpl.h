@@ -5,6 +5,7 @@
 #include <vector>
 #include <atomic>
 #include "content/web_impl_win/TaskSchedulingIndex.h"
+#include "content/common/InputFrameTrace.h"
 
 #include "base/compiler_specific.h"
 #include "third_party/WebKit/public/platform/Platform.h"
@@ -98,6 +99,7 @@ private:
         ~TaskPair();
         task_scheduling::DeadlinePriorityIndex::Entry scheduling;
         std::size_t pendingPosition;
+        input_frame_trace::event trace;
 
         blink::WebTraceLocation location;
         blink::WebThread::Task* task;
@@ -107,7 +109,7 @@ private:
         unsigned heapInsertionOrder;
     };
     void postDelayedTaskImpl(
-        const blink::WebTraceLocation& location, blink::WebThread::Task* task, long long delayMs, double* createTimeOnOtherThread, int priority, unsigned* heapInsertionOrder);
+        const blink::WebTraceLocation& location, blink::WebThread::Task* task, long long delayMs, double* createTimeOnOtherThread, int priority, unsigned* heapInsertionOrder, const input_frame_trace::event* trace = nullptr);
     
     static unsigned __stdcall WebThreadImplThreadEntryPoint(void* param);
     void threadEntryPoint();
