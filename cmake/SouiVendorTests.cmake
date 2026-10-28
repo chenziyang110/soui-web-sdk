@@ -14,6 +14,8 @@ endif()
 # Update this preflight when a vendor source regression adds an input.
 # Existing leaf source maps, raw hashes and generated-fragment gates remain authoritative.
 set(_soui_vendor_required
+  "third_party/sources/miniblink/content/common/InputFrameTrace.cpp"
+  "third_party/sources/miniblink/content/common/InputFrameTrace.h"
   "third_party/sources/miniblink/content/browser/CheckReEnter.cpp"
   "third_party/sources/miniblink/content/browser/SharedTimerWin.h"
   "third_party/sources/miniblink/content/browser/WebPage.cpp"

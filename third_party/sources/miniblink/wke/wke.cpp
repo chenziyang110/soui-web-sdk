@@ -4,6 +4,7 @@
 #define BUILDING_wke 1
 
 #include "wke/wkeString.h"
+#include "content/common/InputFrameTrace.h"
 #include "wke/wkeWebView.h"
 #include "wke/wkeWebWindow.h"
 #include "wke/wkeGlobalVar.h"
@@ -639,6 +640,7 @@ void WKE_CALL_TYPE wkeInitialize()
 
     CoInitialize(NULL);
 
+    (void)content::input_frame_trace::register_current_thread();
     content::WebPage::initBlink();
     wke::wkeIsInit = true;
     wke::diagnostics::renderer_initialized();
@@ -846,6 +848,8 @@ unsigned WKE_CALL_TYPE wkeFinalizePrepared()
 void WKE_CALL_TYPE wkeFinalize()
 {
     wke::checkThreadCallIsValid(__FUNCTION__);
+    if (workerFinalizationCompleted)
+        return;
     if (!wke::brokerMayFinalize())
         return;
     if (wkePrepareWorkerShutdown() != 0) return; // Before the first destructive loader/main/IO step.
@@ -859,6 +863,7 @@ void WKE_CALL_TYPE wkeFinalize()
     wke::s_versionString = nullptr;
     workerFinalizationCompleted = true;
     wke::diagnostics::renderer_finalized();
+    content::input_frame_trace::detach_current_thread();
 }
 
 void WKE_CALL_TYPE wkeSetMemoryCacheEnable(wkeWebView webView, bool b)
