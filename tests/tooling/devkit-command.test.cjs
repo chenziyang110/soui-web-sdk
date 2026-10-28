@@ -44,16 +44,16 @@ function previewDataCheck(version,declared=version,nodeVersion='24.14.0') {
 }
 
 test('preview accepts exactly the supported frozen Vite patch profiles before import',async()=>{
-  for(const version of ['6.4.3','6.4.4','8.3.3'])
+  for(const version of ['6.4.3','6.4.4','6.4.5','8.3.3'])
     await assert.rejects(previewDataCheck(version),error=>error.code==='TEST_VITE_ENTRY_BOUNDARY',version);
 });
 test('preview refuses unselected Vite versions and package/installed version drift',async()=>{
-  for(const version of ['6.4.2','6.4.5','7.0.0','8.3.4','^6.4.4'])
+  for(const version of ['6.4.2','6.4.6','7.0.0','8.3.4','^6.4.4'])
     await assert.rejects(previewDataCheck(version),error=>error.code==='E_WEB_DEPENDENCIES',version);
   await assert.rejects(previewDataCheck('6.4.4','6.4.3'),error=>error.code==='E_WEB_DEPENDENCIES');
 });
 test('preview retains the selected Vite profiles Node version floors',async()=>{
-  for(const version of ['6.4.3','6.4.4']) {
+  for(const version of ['6.4.3','6.4.4','6.4.5']) {
     await assert.rejects(previewDataCheck(version,version,'20.19.0'),error=>error.code==='TEST_VITE_ENTRY_BOUNDARY');
     for(const node of ['20.18.0','22.11.0'])
       await assert.rejects(previewDataCheck(version,version,node),error=>error.code==='E_NODE_VERSION');

@@ -21,20 +21,21 @@ const definitions={
   create:{'--name':'name','--output-root':'outputRoot','--sdk-package':'sdkPackage','--profile':'profile'},
   doctor:{'--native-toolchain':'nativeToolchain','--llvm-root':'llvmRoot','--msvc-root':'msvcRoot','--windows-sdk-root':'windowsSdkRoot',
     '--ninja-exe':'ninjaExe','--windows-cmd-exe':'windowsCmdExe','--powershell-exe':'powerShellExe'},
-  build:{'--sdk-only':'sdkOnly','--skip-web':'skipWeb','--with-webview2':'withWebView2','--with-uia':'withUia',
+  build:{'--sdk-only':'sdkOnly','--skip-web':'skipWeb','--with-webview2':'withWebView2','--with-auto-host':'withAutoHost','--with-uia':'withUia',
     '--with-gui-bindings':'withGuiBindings','--with-vendor-tests':'withVendorTests','--install':'install','--fresh-configure':'freshConfigure',
     '--compiler-tail':'compilerTail','--tail-image':'tailImage','--tail-sha256':'tailSha256',
     '--native-toolchain':'nativeToolchain','--llvm-root':'llvmRoot','--msvc-root':'msvcRoot','--windows-sdk-root':'windowsSdkRoot',
     '--ninja-exe':'ninjaExe','--windows-cmd-exe':'windowsCmdExe','--powershell-exe':'powerShellExe'},
   test:{'--scope':'scope','--native-toolchain':'nativeToolchain','--llvm-root':'llvmRoot','--msvc-root':'msvcRoot',
     '--windows-sdk-root':'windowsSdkRoot','--ninja-exe':'ninjaExe','--windows-cmd-exe':'windowsCmdExe','--powershell-exe':'powerShellExe'},
-  package:{'--kind':'kind','--output':'output','--with-gui-bindings':'withGuiBindings','--profile':'profile'},
+  package:{'--kind':'kind','--output':'output','--with-gui-bindings':'withGuiBindings','--profile':'profile',
+    '--compression-profile':'compressionProfile','--bundle':'bundle'},
   upgrade:{'--sdk-package':'sdkPackage','--project':'project'},
   dev:{'--web-root':'webRoot','--port':'port','--duration-ms':'durationMs',
     '--native-toolchain':'nativeToolchain','--llvm-root':'llvmRoot','--msvc-root':'msvcRoot','--windows-sdk-root':'windowsSdkRoot',
     '--ninja-exe':'ninjaExe','--windows-cmd-exe':'windowsCmdExe','--powershell-exe':'powerShellExe'}
 };
-const booleans=new Set(['sdkOnly','skipWeb','withWebView2','withUia','withGuiBindings','withVendorTests','install','freshConfigure','compilerTail']);
+const booleans=new Set(['sdkOnly','skipWeb','withWebView2','withAutoHost','withUia','withGuiBindings','withVendorTests','install','freshConfigure','compilerTail','bundle']);
 const pathKeys=new Set(['runner','devkitRoot','outputRoot','sdkPackage','tailImage','output','project','webRoot']);
 const defaults={architecture:'x64',configuration:'Release',format:'human',drainMs:2000,
   profile:'compatibility',scope:'unit',kind:'source',port:5173,durationMs:900000};
@@ -66,13 +67,15 @@ function parseArgs(args) {
     need(typeof value[key]==='string'&&/^[A-Za-z]:[\\/]/.test(value[key])&&!/[<>"|?*]/.test(value[key])&&!value[key].slice(2).includes(':'),
       'E_PATH','Supply an absolute local Windows path; UNC, device paths and wildcards are not accepted.');
   if(command==='create')need(/^[A-Za-z][A-Za-z0-9_]{1,63}$/.test(value.name||'')&&
-    !/^(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])$/i.test(value.name)&&value.outputRoot&&['compatibility','modern'].includes(value.profile),
-    'E_ARGUMENT','Create requires a safe 2–64 character name, new output-root and compatibility/modern profile.');
+    !/^(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])$/i.test(value.name)&&value.outputRoot&&['compatibility','modern','auto'].includes(value.profile),
+    'E_ARGUMENT','Create requires a safe 2–64 character name, new output-root and compatibility/modern/auto profile.');
   if(command==='upgrade')need(value.sdkPackage&&value.project,'E_ARGUMENT','Upgrade requires sdk-package and project.');
   if(command==='package')need(['source','sdk','applications'].includes(value.kind)&&
     (value.kind!=='sdk'||value.output)&&(!value.withGuiBindings||value.kind==='sdk')&&
-    (!seen.has('profile')||value.kind==='applications')&&['compatibility','modern'].includes(value.profile)&&
-    (value.kind!=='applications'||value.output===undefined),'E_ARGUMENT','Select source/sdk/applications; sdk requires output, and applications uses its existing fixed archive names.');
+    (!seen.has('profile')||value.kind==='applications')&&['compatibility','modern','auto'].includes(value.profile)&&
+    (!seen.has('compressionProfile')||(value.kind==='applications'&&['zip','7z-balanced','7z-small'].includes(value.compressionProfile)))&&
+    (!seen.has('bundle')||value.kind==='applications')&&
+    (value.kind!=='applications'||value.output===undefined),'E_ARGUMENT','Select source/sdk/applications; sdk requires output, and applications uses its existing fixed archive names. Compression profiles zip/7z-balanced/7z-small and bundle require applications.');
   if(command==='test')need(['contract','unit','native','desktop'].includes(value.scope),'E_ARGUMENT','Select contract, unit, native or desktop test scope.');
   value.scopeExplicit=seen.has('scope');
   if(command==='dev'&&value.nativeToolchain!==undefined)need(value.nativeToolchain==='LLVM22MSVC142',
@@ -112,7 +115,8 @@ function planCommand(v,root,powershell,ctest) {
       {executable:ctest,args:['--test-dir',path.join(root,'out',v.architecture),'-C',v.configuration,'--output-on-failure']};
   }
   if(v.command==='package'&&v.kind!=='sdk')return ps(v.kind==='source'?'Package.ps1':'Package-Applications.ps1',
-    v.kind==='source'?(v.output?['-OutputFile',v.output]:[]):['-Architecture',v.architecture,...(v.profile==='modern'?['-Profile','modern']:[])]);
+    v.kind==='source'?(v.output?['-OutputFile',v.output]:[]):['-Architecture',v.architecture,...(v.profile!=='compatibility'?['-Profile',v.profile]:[]),
+      ...(v.compressionProfile?['-CompressionProfile',v.compressionProfile]:[]),...(v.bundle?['-Bundle']:[])]);
   const sdk=path.join(root,'tools/sdk/soui-sdk.cjs');
   if(v.command==='upgrade')return {executable:process.execPath,args:[sdk,'install','--package',v.sdkPackage,'--project',v.project]};
   if(v.command==='package')return {executable:process.execPath,args:[sdk,'pack','--source',root,'--output',v.output,'--version',
@@ -186,7 +190,7 @@ function workspace(root,v) {
   const projectFile=identity.safePath(root,'project.json');
   if(fs.existsSync(projectFile)) {
     const project=parseStrictJson(fs.readFileSync(projectFile,'utf8'));
-    need(project.schema==='soui.application/v1'&&['compatibility','modern'].includes(project.runtimeProfile),
+    need(project.schema==='soui.application/v1'&&['compatibility','modern','auto'].includes(project.runtimeProfile),
       'E_WORKSPACE','Use a generated project with the existing project.json contract.');
     need(!(v.command==='build'&&v.withVendorTests),'E_WORKSPACE_CAPABILITY','Vendor tests require the complete source devkit; generated applications do not deliver the private dependency tests.');
     require('../sdk/soui-sdk.cjs').readLock(root);
@@ -422,7 +426,7 @@ async function previewWorker(args) {
     'E_WEB_DEPENDENCIES','Install the existing package-lock dependencies in this web root before dev.');
   const packageText=fs.readFileSync(pkgFile),lockText=fs.readFileSync(lockFile),pkg=parseStrictJson(packageText.toString('utf8'));
   const vitePackage=identity.safePath(web,'node_modules/vite/package.json'),vitePkg=parseStrictJson(fs.readFileSync(vitePackage,'utf8'));
-  need(['6.4.3','6.4.4','8.3.3'].includes(vitePkg.version)&&pkg.devDependencies?.vite===vitePkg.version,
+  need(['6.4.3','6.4.4','6.4.5','8.3.3'].includes(vitePkg.version)&&pkg.devDependencies?.vite===vitePkg.version,
     'E_WEB_DEPENDENCIES','Install the existing frozen package-lock dependencies in this web root; dependencies are never installed or upgraded by dev.');
   const [major,minor]=process.versions.node.split('.').map(Number);
   need((vitePkg.version==='8.3.3'?major>22||(major===22&&minor>=12):major>22||(major===22&&minor>=12)||(major===20&&minor>=19)),
