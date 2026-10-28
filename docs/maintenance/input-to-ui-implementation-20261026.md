@@ -15,8 +15,8 @@ W00 已提交 [Draft PR111](https://github.com/chenziyang110/soui-web-sdk/pull/1
 | W00 | 同线程无效计时收益更正；continuation 生命周期/重建；legacy 单 deadline 重试；默认独立路径与 scheduler oracle | 生产代码与回归源码已集成并完成静态复核；[来源增量](../../third_party/manifests/kernel-input-ui-w00-source.json)；入口 scheduler_continuation、worker_lifetime、render_deadline_policy；未编译/未运行 | 代码完成待编译 |
 | W01 | 统一 QPC/身份/关联；默认关闭有界 ring；scalar 指标；替换逐事件实验文件日志；同产品与 burst 新协议 | 公共数值契约冻结中；严格旧协议保留；无执行结果 | 实现中 |
 | W02 | 64普通+16边沿 mailbox、32 Host轮转、与FIFO共享接纳序号；接纳后resize代际发布、序号不回绕；取消不制造gesture | input_admission生产源码fixture、ordinal_cases及真实DOM/resize失败场景已交付；未编译/未运行；native cancel能力等W07 callback guard才开放 | 源码已集成，能力激活依赖W07 |
-| W03 | ready/future/idle；最早 deadline/票号/取消；有界压力恢复；单调时钟/Win7 fallback | 固定时钟/失败/重建/睡眠恢复回归源码待交付 | 待 W00/W01 接口 |
-| W04 | future/ready 索引；50ms 老化与 tie-break；摘要；有界接纳/promotion/取消 | 随机 oracle 对照与关闭/自删除/引用回归源码待交付 | 待 W03 |
+| W03 | ready/future/idle 单次 deadline、Win7 fallback、owner机会、wait退役/失败意图；已运行Task有界退休 | scheduler_continuation真实提取源码及worker_lifetime最后Task/96项退休回归源码；字节映射14/13/22核对；未执行 | 代码完成待编译 |
+| W04 | priority AVL+deadline heap摘要；50ms老化；3 eligible/1 oldest接纳；显式entry-order tie | scheduler_index 100000次seeded oracle/OOM源码、原拥有heap及shutdown fixture；未执行 | 代码完成待编译 |
 | W05 | 复用 pacer 和分数相位；窄版本能力/代际契约；资源与 pacing 分离；首次 dirty/窗口状态 | 可控时钟与刷新率/恢复/跨屏回归源码待交付 | 待 W01 接口 |
 | W06 | 原因分类；资源完成合并通知；注册后重查；移除正常 1ms/8ms 轮询，完整 fence | 完成竞态/多 producer/迟到/取消/资源释放回归源码待交付 | 待 W05 |
 | W07 | copy/锁/回调计量；mirror 消费者；有界 generation buffer lease；锁外绘制 | 像素/alpha/resize/DC/截图/重入/关闭回归源码待交付 | 待 W05/W06 |
@@ -61,3 +61,13 @@ resize 排队失败不推进 UI 代际、序号或窗口尺寸；成功入队后
 静态审查修正了独立队列跨resize/nav、首head发布窗口、全部IMM错误被当空提交、UI意图误判旧已接纳输入及resize接纳失败后永久stale等问题。`WebPageImpl::cancelInputState` 先有界预检最多128个本地frame，再清原生click/drag/touch、取消未提交composition并blur；不合成 keyup/mouseup。中间 Draft 在 callback lifetime 依赖闭合前不公布新取消能力，缺能力时明确有限恢复至新文档。不得把编写了取消方法等同已经具备关闭/重入资格。
 
 执行入口：构建最终匹配 SDK 后一次运行 `sdk.native.input-mailbox`；实际 DOM/held key/drag/真实IME及满ordinary resize失败见 `tests/native/input_frame_trace/INPUT-CANCEL-SCENARIOS.md` 与 `tests/native/input_admission/RESIZE-FAILURE-SCENARIOS.md`。后两者是待执行场景，不能算成已运行的原生案例。当前所有运行证据为空。
+
+## W03/W04 deadline、索引与退休
+
+两个工作包按独立实现提交，在同一 Draft 中交接，因为等待票号、最早deadline摘要和最后任务析构共同决定 idle 是否可安全停止。`SharedTimerWin.h` 不再用固定16ms驱动空闲owner；一份绝对单调deadline、一份注册wait及同票号WM_TIMER故障兜底。owner重新检查到期条件；注销wait在publication锁外等待callback退役，句柄失败不能清空后误报成功。消息投递失败保留deferred intent，全部计时原语失败保留独立deadlineRetry，由实际owner机会重试；所有OS唤醒均失败时仍需要外部pump机会，不能承诺硬实时。
+
+删除idle tick还必须处理原先靠下一tick释放的已运行Task：回调/observer返回、重入计数归零后每次最多退休32个，先移除拥有记录再锁外deref，剩余显式续调度。worker无heap、只有退休积压的wake也会实际处理，关闭仍保留完整排空；不能让最后close Task的析构收据永久挂起。
+
+`TaskSchedulingIndex.h` 非拥有索引保留原heap/refcount；priority AVL节点缓存子树最早deadline，查询最高可运行priority或50ms老化的最早deadline，不扫描全部future或先做无界promotion。exact equal key从旧encounter顺序明确改为queue-entry顺序；原不透明Task/global producer容量协议仍是既有限制，本包未用新增无界队列换取性能。所有新索引分配先于timer状态变更，结构容量计量包含保留bucket高水。
+
+独立静态复核修正组合唤醒失败、unchecked CloseHandle、reentry消耗wake、worker退休空heap及future-only重试问题；未执行任何fixture。当前worker原字节来源为14个完整输入、13段复制、22个payload，全部逐字节/extent/散列核对；observer绑定实际writer规范LF散列，未放宽断言。源码注册入口 `scheduler.continuation.contract`、`scheduler.deadline.{close,unregister}-failure`、`scheduler.index.contract` 在vendor选项ON下纳入根构建；66个kernel.native登记仍精确不变，preflight增加实际TaskSchedulingIndex为30文件。

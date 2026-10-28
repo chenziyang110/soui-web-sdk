@@ -11,6 +11,7 @@ set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
   "${CMAKE_CURRENT_SOURCE_DIR}/generate.cjs"
   "${SOUI_DISTRIBUTION_ROOT}/third_party/sources/miniblink/content/browser/SharedTimerWin.h"
   "${SOUI_DISTRIBUTION_ROOT}/third_party/sources/miniblink/content/web_impl_win/TaskSchedulingPolicy.h"
+  "${SOUI_DISTRIBUTION_ROOT}/third_party/sources/miniblink/content/web_impl_win/TaskSchedulingIndex.h"
   "${SOUI_DISTRIBUTION_ROOT}/third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp")
 execute_process(COMMAND "${NODE_EXECUTABLE}" "${CMAKE_CURRENT_SOURCE_DIR}/generate.cjs"
   "${SOUI_DISTRIBUTION_ROOT}" "${CMAKE_CURRENT_BINARY_DIR}/generated"
@@ -27,3 +28,9 @@ set_property(TARGET scheduler_continuation_contract PROPERTY MSVC_RUNTIME_LIBRAR
 enable_testing()
 add_test(NAME scheduler.continuation.contract COMMAND scheduler_continuation_contract)
 set_tests_properties(scheduler.continuation.contract PROPERTIES TIMEOUT 10)
+foreach(failure IN ITEMS close unregister)
+  add_test(NAME scheduler.deadline.${failure}-failure COMMAND "${CMAKE_COMMAND}"
+    "-DEXECUTABLE=$<TARGET_FILE:scheduler_continuation_contract>" "-DFAILURE=${failure}"
+    -P "${CMAKE_CURRENT_SOURCE_DIR}/expect-deadline-failure.cmake")
+  set_tests_properties(scheduler.deadline.${failure}-failure PROPERTIES TIMEOUT 10)
+endforeach()

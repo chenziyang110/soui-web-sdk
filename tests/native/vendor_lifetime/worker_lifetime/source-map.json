@@ -3,13 +3,13 @@
   "sources": [
     {
       "path": "third_party/sources/miniblink/content/web_impl_win/WebTimerBase.h",
-      "bytes": 4454,
-      "sha256": "b249c04ad503c8c84d87ff04895edf4d97ef9381c751a5216467f66cf4eb096f"
+      "bytes": 4572,
+      "sha256": "dd9b7ef01e3059858262fcac1bca94222b64340072bb8f0e2f723139eed74c19"
     },
     {
       "path": "third_party/sources/miniblink/content/web_impl_win/WebTimerBase.cpp",
-      "bytes": 12967,
-      "sha256": "22eb8dca0f7d663c327346c2fd18f9d05cd302e9186bbcc572fce5b2ea6aa535"
+      "bytes": 13971,
+      "sha256": "96986df526a75bc6fd077840e910ca75aaedf19f0d54920f2b16ce7ec965c458"
     },
     {
       "path": "third_party/sources/miniblink/content/web_impl_win/TaskSchedulingPolicy.h",
@@ -28,8 +28,8 @@
     },
     {
       "path": "third_party/sources/miniblink/content/browser/SharedTimerWin.h",
-      "bytes": 12182,
-      "sha256": "1c417d30523c298eae4b67574f0ed34edee6197c7836b32b73ac910f7898e17c"
+      "bytes": 10444,
+      "sha256": "76722a0901aed7f6ee16a9f31bb5d1cebf1d86c92003fe30b42d8e9fbbb42190"
     },
     {
       "path": "third_party/sources/miniblink/content/web_impl_win/BlinkPlatformImpl.h",
@@ -53,18 +53,23 @@
     },
     {
       "path": "third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.h",
-      "bytes": 4642,
-      "sha256": "36a343506a8b879510aeb1245b22a9f907de4d02279227ad1c526e6a2e5236f2"
+      "bytes": 4853,
+      "sha256": "fd62e06705986a96f0d6263fab2d1de3ba71493b7aadcd1e2205ec45f51a5184"
     },
     {
       "path": "third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp",
-      "bytes": 27163,
-      "sha256": "ee229659c7efc8b8c98e5345255280f13065a24afcb6007eb575463afd695a83"
+      "bytes": 28738,
+      "sha256": "37bda207774c23f2c2e53a651e417237a62198be45cfb7d4dc4633c600a9657f"
     },
     {
       "path": "third_party/sources/miniblink/content/web_impl_win/BlinkPlatformImpl.cpp",
       "bytes": 40472,
       "sha256": "f5af0c7dff32118f22a9f3ffca177938648b02c4bafd567a353004ce5cd0edae"
+    },
+    {
+      "path": "third_party/sources/miniblink/content/web_impl_win/TaskSchedulingIndex.h",
+      "bytes": 9926,
+      "sha256": "807f7970b8031032b476ff28d88491fc7d4535b9338502c9e26cd6df41ff0e7a"
     }
   ],
   "copies": [
@@ -72,19 +77,19 @@
       "source": "third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.h",
       "output": "content/web_impl_win/WebThreadImpl.h",
       "startByte": 0,
-      "endByteExclusive": 4642,
+      "endByteExclusive": 4853,
       "exactWholeFile": true,
-      "bytes": 4642,
-      "sha256": "36a343506a8b879510aeb1245b22a9f907de4d02279227ad1c526e6a2e5236f2"
+      "bytes": 4853,
+      "sha256": "fd62e06705986a96f0d6263fab2d1de3ba71493b7aadcd1e2205ec45f51a5184"
     },
     {
       "source": "third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp",
       "output": "content/web_impl_win/WebThreadImpl.cpp",
       "startByte": 0,
-      "endByteExclusive": 27163,
+      "endByteExclusive": 28738,
       "exactWholeFile": true,
-      "bytes": 27163,
-      "sha256": "ee229659c7efc8b8c98e5345255280f13065a24afcb6007eb575463afd695a83"
+      "bytes": 28738,
+      "sha256": "37bda207774c23f2c2e53a651e417237a62198be45cfb7d4dc4633c600a9657f"
     },
     {
       "source": "third_party/sources/miniblink/content/web_impl_win/BlinkPlatformImpl.cpp",
@@ -123,19 +128,19 @@
       "source": "third_party/sources/miniblink/content/web_impl_win/WebTimerBase.h",
       "output": "content/web_impl_win/WebTimerBase.h",
       "startByte": 0,
-      "endByteExclusive": 4454,
+      "endByteExclusive": 4572,
       "exactWholeFile": true,
-      "bytes": 4454,
-      "sha256": "b249c04ad503c8c84d87ff04895edf4d97ef9381c751a5216467f66cf4eb096f"
+      "bytes": 4572,
+      "sha256": "dd9b7ef01e3059858262fcac1bca94222b64340072bb8f0e2f723139eed74c19"
     },
     {
       "source": "third_party/sources/miniblink/content/web_impl_win/WebTimerBase.cpp",
       "output": "content/web_impl_win/WebTimerBase.cpp",
       "startByte": 0,
-      "endByteExclusive": 12967,
+      "endByteExclusive": 13971,
       "exactWholeFile": true,
-      "bytes": 12967,
-      "sha256": "22eb8dca0f7d663c327346c2fd18f9d05cd302e9186bbcc572fce5b2ea6aa535"
+      "bytes": 13971,
+      "sha256": "96986df526a75bc6fd077840e910ca75aaedf19f0d54920f2b16ce7ec965c458"
     },
     {
       "source": "third_party/sources/miniblink/content/web_impl_win/TaskSchedulingPolicy.h",
@@ -150,10 +155,10 @@
       "source": "third_party/sources/miniblink/content/browser/SharedTimerWin.h",
       "output": "content/browser/SharedTimerWin.h",
       "startByte": 0,
-      "endByteExclusive": 12182,
+      "endByteExclusive": 10444,
       "exactWholeFile": true,
-      "bytes": 12182,
-      "sha256": "1c417d30523c298eae4b67574f0ed34edee6197c7836b32b73ac910f7898e17c"
+      "bytes": 10444,
+      "sha256": "76722a0901aed7f6ee16a9f31bb5d1cebf1d86c92003fe30b42d8e9fbbb42190"
     },
     {
       "source": "third_party/sources/miniblink/content/web_impl_win/WebSchedulerImpl.cpp",
@@ -187,6 +192,15 @@
       "sha256": "bc2ac917530dfb6dcdbf1a7dbce05cfdc1c1314b0752712c18dfe612c9a36fe1",
       "sourceStartLine": 89,
       "sourceEndLineExclusive": 96
+    },
+    {
+      "source": "third_party/sources/miniblink/content/web_impl_win/TaskSchedulingIndex.h",
+      "output": "content/web_impl_win/TaskSchedulingIndex.h",
+      "startByte": 0,
+      "endByteExclusive": 9926,
+      "exactWholeFile": true,
+      "bytes": 9926,
+      "sha256": "807f7970b8031032b476ff28d88491fc7d4535b9338502c9e26cd6df41ff0e7a"
     }
   ],
   "shutdownProof": {
@@ -215,8 +229,8 @@
     },
     {
       "path": "fixture.cpp",
-      "bytes": 47253,
-      "sha256": "b31c798dad4fef8b2044d77a2793e9e4894f406ef270f85c657194d38d0c0f77"
+      "bytes": 47184,
+      "sha256": "f65f964fe6a3406176209896f96e1a90361ee8a381c401de0442af5c07ea0962"
     },
     {
       "path": "fixture_support.h",
@@ -225,8 +239,8 @@
     },
     {
       "path": "source-bytes.cmake",
-      "bytes": 10511,
-      "sha256": "2171f85404ec51b3c6cf8c0b680c9d18939489ebf493daf0cf414b8236cc043f"
+      "bytes": 10513,
+      "sha256": "73f4a5ce9cf44d321deb7523b4ea4100a596f8806c9777fe077afa9803ee3d45"
     },
     {
       "path": "stubs/base/compiler_specific.h",

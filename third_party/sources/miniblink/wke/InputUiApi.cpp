@@ -3,6 +3,8 @@
 #include "wke/wkeGlobalVar.h"
 #include "content/browser/WebPage.h"
 #include "content/common/InputFrameTrace.h"
+#include "content/web_impl_win/WebThreadImpl.h"
+#include "third_party/WebKit/public/platform/Platform.h"
 
 #include <algorithm>
 #include <array>
@@ -10,7 +12,7 @@
 #include <cstring>
 #include <mutex>
 
-namespace wke { extern DWORD wkeThreadId; }
+namespace wke { bool inputUiOwnerAvailable(); }
 
 namespace {
 namespace trace = content::input_frame_trace;
@@ -27,12 +29,22 @@ std::atomic<bool> exportLimitReached{false};
 
 wke::CWebView* liveOwnerView(void* opaque)
 {
-    if (!wke::wkeIsInit || ::GetCurrentThreadId() != wke::wkeThreadId || !opaque)
+    if (!wke::inputUiOwnerAvailable() || !opaque)
         return nullptr;
     const auto view = static_cast<wkeWebView>(opaque);
     if (wke::g_liveWebViews.find(view) == wke::g_liveWebViews.end())
         return nullptr;
     return static_cast<wke::CWebView*>(view);
+}
+
+void WKE_INPUT_UI_CALL serviceOwner()
+{
+    if (!wke::inputUiOwnerAvailable())
+        return;
+    auto* platform = blink::Platform::current();
+    if (!platform || !platform->mainThread())
+        return;
+    static_cast<content::WebThreadImpl*>(platform->mainThread())->serviceOwnerOpportunity();
 }
 
 int WKE_INPUT_UI_CALL cancelInput(void* opaque)
@@ -174,8 +186,8 @@ const wkeInputUiApi* WKE_CALL_TYPE wkeGetInputUiApi(unsigned requestedVersion)
 {
     // Fields become available only with their actual owner/view implementation.
     static const wkeInputUiApi api = { sizeof(wkeInputUiApi), WKE_INPUT_UI_ABI_VERSION,
-        WKE_INPUT_UI_CAP_TRACE,
+        WKE_INPUT_UI_CAP_TRACE | WKE_INPUT_UI_CAP_OWNER_OPPORTUNITY,
         &configureTrace, &stopTrace, &snapshotTrace, &drainTrace,
-        nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
+        &serviceOwner, nullptr, nullptr, nullptr, nullptr, nullptr };
     return requestedVersion == WKE_INPUT_UI_ABI_VERSION ? &api : nullptr;
 }

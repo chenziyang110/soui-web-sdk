@@ -728,6 +728,15 @@ bool WKE_CALL_TYPE wkeIsInitialize()
 namespace {
 bool workerFinalizationCompleted = false;
 }
+namespace wke {
+bool inputUiOwnerAvailable()
+{
+    // Read mutable lifecycle flags only on their actual owner.
+    return ::GetCurrentThreadId() == wkeThreadId && wkeIsInit
+        && !workerFinalizationPrepared && !workerFinalizationCompleted;
+}
+}
+
 
 unsigned WKE_CALL_TYPE wkeWorkerRetirementWitnessCount()
 {

@@ -668,7 +668,7 @@ host_result acquire_runtime(const host_config& config, engine_thread*& thread, v
     lock.unlock(); // Startup/failure finalizers cannot acquire a mutex held by their waiter.
     bool started = false;
     try {
-      started = candidate->start([&runtime, binary, config, metrics, &result] {
+      started = candidate->start([&runtime, binary, config, metrics, &result, engine_owner = candidate.get()] {
       runtime.module = LoadLibraryW(binary.c_str());
       if (!runtime.module) { result = failure("E_DEPENDENCY_LOAD", "Miniblink binary could not be loaded."); return false; }
       prepare_renderer_observer(runtime, binary, metrics);
@@ -696,6 +696,17 @@ host_result acquire_runtime(const host_config& config, engine_thread*& thread, v
       runtime.initialized = wkeInitialize() != 0;
 #endif
       if (!runtime.initialized) return false;
+#ifdef WKE_INPUT_UI_ABI_VERSION
+      if (wkeGetInputUiApi) {
+        const auto* scheduling = wkeGetInputUiApi(WKE_INPUT_UI_ABI_VERSION);
+        if (scheduling && scheduling->abiVersion == WKE_INPUT_UI_ABI_VERSION
+            && scheduling->structSize >= offsetof(wkeInputUiApi, serviceOwnerOpportunity) + sizeof(scheduling->serviceOwnerOpportunity)
+            && (scheduling->capabilities & WKE_INPUT_UI_CAP_OWNER_OPPORTUNITY) && scheduling->serviceOwnerOpportunity) {
+          const auto opportunity = scheduling->serviceOwnerOpportunity;
+          if (!engine_owner->set_owner_opportunity([opportunity] { opportunity(); })) return false;
+        }
+      }
+#endif
       if (wkeGetCursorBrokerApi) {
         const auto* api = wkeGetCursorBrokerApi(WKE_CURSOR_BROKER_ABI_VERSION);
         if (!valid_cursor_api(api)) {
@@ -716,7 +727,8 @@ host_result acquire_runtime(const host_config& config, engine_thread*& thread, v
         runtime.cursor_realm = receipt.realm;
       }
       return true;
-    }, [&runtime] {
+    }, [&runtime, engine_owner = candidate.get()] {
+      (void)engine_owner->set_owner_opportunity({}); // Before any provider finalization/unload.
       if (runtime.initialized) {
         using finalize_prepared = unsigned (__cdecl*)();
         finalize_prepared finalize = nullptr;

@@ -24,6 +24,7 @@ set(_soui_vendor_required
   "third_party/sources/miniblink/content/web_impl_win/BlinkPlatformImpl.cpp"
   "third_party/sources/miniblink/content/web_impl_win/BlinkPlatformImpl.h"
   "third_party/sources/miniblink/content/web_impl_win/TaskSchedulingPolicy.h"
+  "third_party/sources/miniblink/content/web_impl_win/TaskSchedulingIndex.h"
   "third_party/sources/miniblink/content/web_impl_win/WebSchedulerImpl.cpp"
   "third_party/sources/miniblink/content/web_impl_win/WebSchedulerImpl.h"
   "third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp"

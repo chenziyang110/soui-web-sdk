@@ -223,6 +223,15 @@ bool engine_thread::post(task work) {
   return post_internal(std::move(work),detail::engine_lane::ordinary,nullptr) == detail::engine_admission_result::accepted;
 }
 
+bool engine_thread::set_owner_opportunity(task callback) {
+  {
+    std::lock_guard<std::mutex> lock(mutex_);
+    if (state_ != engine_thread_state::stopped && owner_thread_ != std::this_thread::get_id()) return false;
+    owner_opportunity_.swap(callback);
+  }
+  return true; // Previous callback/captures retire outside mutex_.
+}
+
 bool engine_thread::register_input_service(const std::shared_ptr<detail::engine_input_service>& service) {
   if (!service) return false;
   std::lock_guard<std::mutex> lock(mutex_);
@@ -586,6 +595,9 @@ void engine_thread::run(initializer initialize, task shutdown) noexcept {
       }
     }
 #endif
+    if (owner_opportunity_) {
+      try { owner_opportunity_(); } catch (...) { /* Cooperative provider boundary. */ }
+    }
     service_one_input();
     // Service a bounded FIFO batch too. One task per native batch makes an
     // input burst accumulate behind expensive paint messages, even though
