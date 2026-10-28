@@ -1,6 +1,6 @@
 # 原生受控 DevTools
 
-0.6.0 纳入本功能源码。本轮新内核、frontend、SDK、安装消费者和发布资产的实际证明正在收口；旧 preview 结果只属于其原身份。当前资格见 [0.6.0 发布说明](releases/0.6.0.md)，对应源码与材料见[再分发说明](licenses/v0.6.0-redistribution.md)。
+0.6.0 纳入本功能源码。各构建、运行和交付的实际范围与未完成项见 [0.6.0 发布说明](https://github.com/chenziyang110/soui-web-sdk/blob/v0.6.0/docs/releases/0.6.0.md)；旧 preview 结果只属于其原身份。对应源码与材料见[再分发说明](licenses/v0.6.0-redistribution.md)。
 
 本候选已接入公共Host、两个内置后端、两种模板和Workbench，编译通过与真实运行验收分别记录。默认关闭，Debug和Release使用同一许可逻辑。当前两个内置后端采用应用明确接受的`destroy_target`结束策略：结束诊断关闭当前业务Host，调用方先处理未保存状态。无损`detach`不是本候选已声明的内置能力。
 

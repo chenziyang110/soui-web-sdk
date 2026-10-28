@@ -1,16 +1,15 @@
 {
   "bomFormat": "CycloneDX",
   "specVersion": "1.5",
-  "serialNumber": "urn:uuid:eeb2f36d-5671-40e9-9b0c-0214ce2f2ad2",
-  "version": 2,
+  "serialNumber": "urn:uuid:0335e552-756f-459a-bd18-91176dbb300e",
+  "version": 1,
   "metadata": {
-    "timestamp": "2026-10-16T05:16:22.906Z",
+    "timestamp": "2026-10-28T17:43:46.524Z",
     "component": {
       "type": "framework",
-      "bom-ref": "urn:soui:sdk:native:0.5.0",
+      "bom-ref": "urn:soui:sdk:native:0.6.0",
       "name": "SOUI Web SDK native delivery",
-      "version": "0.5.0",
-      "description": "Native delivered files and actual kernel archive link inputs. This inventory excludes first-party compilation products, complete transitive source membership and Web/npm components, which are inventoried separately.",
+      "version": "0.6.0",
       "properties": [
         {
           "name": "soui:releaseReady",
@@ -19,25 +18,21 @@
         {
           "name": "soui:licenseReviewComplete",
           "value": "false"
-        },
-        {
-          "name": "soui:sourceManifest",
-          "value": "source-manifest.json"
         }
       ]
     },
     "properties": [
       {
         "name": "soui:inventoryScope",
-        "value": "delivered-native-files-and-observed-kernel-static-link-inputs"
+        "value": "actual-delivered-native-files-and-observed-kernel-static-link-inputs"
       },
       {
         "name": "soui:dependencyCompleteness",
         "value": "incomplete"
       },
       {
-        "name": "soui:unresolvedLicenseApplicability",
-        "value": "true"
+        "name": "soui:historicalWholeExternalProviderBytesProven",
+        "value": "false"
       }
     ]
   },
@@ -49,7 +44,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "f552226e00c16c9df1ef6cb94081c69b37185c44741197d5a337a4ed70d1fdef"
+          "content": "d888637d5dd1476dde16b8c5bb28172d7b8ec3495b69c725fa3572013748139a"
         }
       ],
       "properties": [
@@ -59,7 +54,7 @@
         },
         {
           "name": "soui:fileBytes",
-          "value": "38959616"
+          "value": "39204352"
         },
         {
           "name": "soui:distribution",
@@ -71,11 +66,11 @@
         },
         {
           "name": "soui:sourceInputSha256",
-          "value": "0bbed0bfd1b81a0c924ca3927cd4c53dfa2e916ac3aa5da43c51c2b70bba091f"
+          "value": "26c5b73e4915bb4539e87b987cd8e952005f0fe41d987138d8d8e3b13eb25c95"
         },
         {
           "name": "soui:buildEvidence",
-          "value": "verification/production-validation/0.5-post-upgrade-rebuild-2026-10-16/kernel/x64/build-Miniblink.json"
+          "value": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x64/summary.json"
         }
       ]
     },
@@ -105,6 +100,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -134,6 +133,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -163,6 +166,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -192,6 +199,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -221,6 +232,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -250,6 +265,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -279,6 +298,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -308,6 +331,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -337,6 +364,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -366,6 +397,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -395,6 +430,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -424,6 +463,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -453,6 +496,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -482,6 +529,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -511,6 +562,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -540,6 +595,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -569,6 +628,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -598,6 +661,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -627,6 +694,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -656,6 +727,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -685,6 +760,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -714,6 +793,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -743,6 +826,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -772,6 +859,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -801,6 +892,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -830,6 +925,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -859,6 +958,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -888,6 +991,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -917,6 +1024,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -946,6 +1057,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -975,6 +1090,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -1004,6 +1123,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -1033,6 +1156,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -1062,6 +1189,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -1091,6 +1222,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -1120,6 +1255,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -1149,6 +1288,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -1178,6 +1321,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -1207,6 +1354,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -1236,6 +1387,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -1265,6 +1420,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -1294,6 +1453,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -1323,6 +1486,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -1352,6 +1519,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -1381,6 +1552,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -1410,6 +1585,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -1439,6 +1618,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -1468,6 +1651,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -1497,6 +1684,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -1526,6 +1717,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -1555,6 +1750,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -1584,6 +1783,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -1613,6 +1816,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -1642,6 +1849,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -1671,6 +1882,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -1700,6 +1915,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -1729,6 +1948,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -1758,6 +1981,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -1787,6 +2014,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -1816,6 +2047,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -1845,6 +2080,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -1874,6 +2113,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -1903,6 +2146,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -1932,6 +2179,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -1961,6 +2212,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -1990,6 +2245,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -2019,6 +2278,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -2029,7 +2292,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "90a214ca2d416eda8e980cab7aacb80fffef777ace20c06179f41e584dae093b"
+          "content": "dc8c37178f4bbd9260edc973d61af876cf8460178eaf89fa2994fdffc94abc9a"
         }
       ],
       "properties": [
@@ -2039,7 +2302,7 @@
         },
         {
           "name": "soui:fileBytes",
-          "value": "28115968"
+          "value": "28318208"
         },
         {
           "name": "soui:distribution",
@@ -2051,11 +2314,11 @@
         },
         {
           "name": "soui:sourceInputSha256",
-          "value": "0bbed0bfd1b81a0c924ca3927cd4c53dfa2e916ac3aa5da43c51c2b70bba091f"
+          "value": "26c5b73e4915bb4539e87b987cd8e952005f0fe41d987138d8d8e3b13eb25c95"
         },
         {
           "name": "soui:buildEvidence",
-          "value": "verification/production-validation/0.5-post-upgrade-rebuild-2026-10-16/kernel/x86/build-Miniblink.json"
+          "value": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x86/summary.json"
         }
       ]
     },
@@ -2085,6 +2348,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -2114,6 +2381,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -2143,6 +2414,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -2172,6 +2447,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -2201,6 +2480,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -2230,6 +2513,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -2259,6 +2546,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -2288,6 +2579,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -2317,6 +2612,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -2346,6 +2645,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -2375,6 +2678,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -2404,6 +2711,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -2433,6 +2744,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -2462,6 +2777,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -2491,6 +2810,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -2520,6 +2843,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -2549,6 +2876,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -2578,6 +2909,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -2607,6 +2942,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -2636,6 +2975,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -2665,6 +3008,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -2694,6 +3041,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -2723,6 +3074,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -2752,6 +3107,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -2781,6 +3140,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -2810,6 +3173,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -2839,6 +3206,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -2868,6 +3239,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -2897,6 +3272,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -2926,6 +3305,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -2955,6 +3338,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -2984,6 +3371,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -3013,6 +3404,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -3042,6 +3437,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -3071,6 +3470,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -3100,6 +3503,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -3129,6 +3536,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -3158,6 +3569,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -3187,6 +3602,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -3216,6 +3635,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -3245,6 +3668,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -3274,6 +3701,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -3303,6 +3734,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -3332,6 +3767,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -3361,6 +3800,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -3390,6 +3833,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -3419,6 +3866,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -3448,6 +3899,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -3477,6 +3932,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -3506,6 +3965,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -3535,6 +3998,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -3564,6 +4031,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -3593,6 +4064,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -3622,6 +4097,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -3651,6 +4130,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -3680,6 +4163,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -3709,6 +4196,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -3738,6 +4229,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -3767,6 +4262,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -3796,6 +4295,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -3825,6 +4328,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -3854,6 +4361,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -3883,6 +4394,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -3912,6 +4427,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -3941,6 +4460,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -3970,6 +4493,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -3999,6 +4526,10 @@
         {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:provenance",
+          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
         }
       ]
     },
@@ -4006,11 +4537,11 @@
       "type": "file",
       "bom-ref": "urn:soui:kernel-link-input:x64:zlib.lib",
       "name": "x64/zlib.lib",
-      "description": "Physically verified static archive passed to the actual kernel link. This does not assert that every archive member was retained in node.dll.",
+      "description": "Actually observed link archive; reused, not recompiled; does not assert all archive members enter the DLL.",
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "df14435e4799736a35d2b6eea4637bb927b88f6195fc3954d6600c08a98cbbe6"
+          "content": "1b2430f6d7bbbc772c3d5ad1c4f6fafda561e69a1a285f7be8dec379a4f777ac"
         }
       ],
       "properties": [
@@ -4020,7 +4551,7 @@
         },
         {
           "name": "soui:fileBytes",
-          "value": "301644"
+          "value": "301320"
         },
         {
           "name": "soui:distribution",
@@ -4031,8 +4562,16 @@
           "value": "actual-link-input"
         },
         {
+          "name": "soui:recompiled",
+          "value": "false"
+        },
+        {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:buildEvidence",
+          "value": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x64/build-result.json"
         }
       ]
     },
@@ -4040,11 +4579,11 @@
       "type": "file",
       "bom-ref": "urn:soui:kernel-link-input:x64:libjpeg.lib",
       "name": "x64/libjpeg.lib",
-      "description": "Physically verified static archive passed to the actual kernel link. This does not assert that every archive member was retained in node.dll.",
+      "description": "Actually observed link archive; reused, not recompiled; does not assert all archive members enter the DLL.",
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "210c9b879e793c34292d21a47e22c372f5734a52bcc341346164d3c250134560"
+          "content": "925485ba2c8aa275323ad1ffa128f5190bd27726c6e3d88ab3c6bbc20aab01b9"
         }
       ],
       "properties": [
@@ -4054,7 +4593,7 @@
         },
         {
           "name": "soui:fileBytes",
-          "value": "1399800"
+          "value": "1398786"
         },
         {
           "name": "soui:distribution",
@@ -4065,8 +4604,16 @@
           "value": "actual-link-input"
         },
         {
+          "name": "soui:recompiled",
+          "value": "false"
+        },
+        {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:buildEvidence",
+          "value": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x64/build-result.json"
         }
       ]
     },
@@ -4074,11 +4621,11 @@
       "type": "file",
       "bom-ref": "urn:soui:kernel-link-input:x64:libpng.lib",
       "name": "x64/libpng.lib",
-      "description": "Physically verified static archive passed to the actual kernel link. This does not assert that every archive member was retained in node.dll.",
+      "description": "Actually observed link archive; reused, not recompiled; does not assert all archive members enter the DLL.",
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "68a94a662da0e16e3d362eb319d02fe975304e52f6ba0df709b414f8b1e2e12e"
+          "content": "19e747186b3b4dff5f33d5d171a57beb792444da53160342994ccedc2269494e"
         }
       ],
       "properties": [
@@ -4088,7 +4635,7 @@
         },
         {
           "name": "soui:fileBytes",
-          "value": "983448"
+          "value": "983326"
         },
         {
           "name": "soui:distribution",
@@ -4099,8 +4646,16 @@
           "value": "actual-link-input"
         },
         {
+          "name": "soui:recompiled",
+          "value": "false"
+        },
+        {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:buildEvidence",
+          "value": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x64/build-result.json"
         }
       ]
     },
@@ -4108,11 +4663,11 @@
       "type": "file",
       "bom-ref": "urn:soui:kernel-link-input:x64:harfbuzz.lib",
       "name": "x64/harfbuzz.lib",
-      "description": "Physically verified static archive passed to the actual kernel link. This does not assert that every archive member was retained in node.dll.",
+      "description": "Actually observed link archive; reused, not recompiled; does not assert all archive members enter the DLL.",
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "8f4a808fda53536d8905af38ea7169202f8e2126f0abed05b58606587f514059"
+          "content": "cdcaac26281577c18271d97e1216fce819d83124c32836e1e571c51cf0e802f0"
         }
       ],
       "properties": [
@@ -4122,7 +4677,7 @@
         },
         {
           "name": "soui:fileBytes",
-          "value": "3510172"
+          "value": "3510236"
         },
         {
           "name": "soui:distribution",
@@ -4133,8 +4688,16 @@
           "value": "actual-link-input"
         },
         {
+          "name": "soui:recompiled",
+          "value": "false"
+        },
+        {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:buildEvidence",
+          "value": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x64/build-result.json"
         }
       ]
     },
@@ -4142,11 +4705,11 @@
       "type": "file",
       "bom-ref": "urn:soui:kernel-link-input:x64:libxml.lib",
       "name": "x64/libxml.lib",
-      "description": "Physically verified static archive passed to the actual kernel link. This does not assert that every archive member was retained in node.dll.",
+      "description": "Actually observed link archive; reused, not recompiled; does not assert all archive members enter the DLL.",
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "1857d5dd294d45a2dc010a6cdde3a75c8db95c0c78348b90a76389a2c737dc21"
+          "content": "62aa44ee9906b63a60dfa271c5c9c5ef057cc33b1b6d84c690c22d1b0669a69b"
         }
       ],
       "properties": [
@@ -4156,7 +4719,7 @@
         },
         {
           "name": "soui:fileBytes",
-          "value": "4738214"
+          "value": "4737592"
         },
         {
           "name": "soui:distribution",
@@ -4167,8 +4730,16 @@
           "value": "actual-link-input"
         },
         {
+          "name": "soui:recompiled",
+          "value": "false"
+        },
+        {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:buildEvidence",
+          "value": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x64/build-result.json"
         }
       ]
     },
@@ -4176,11 +4747,11 @@
       "type": "file",
       "bom-ref": "urn:soui:kernel-link-input:x64:ots.lib",
       "name": "x64/ots.lib",
-      "description": "Physically verified static archive passed to the actual kernel link. This does not assert that every archive member was retained in node.dll.",
+      "description": "Actually observed link archive; reused, not recompiled; does not assert all archive members enter the DLL.",
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "7db79dc2752b3718020b38c33df1c8e30632e17d3d724bd3dbdedc761a366d24"
+          "content": "503416da30110259890841d69e06c070200755f9b308d658a1f329136c9ec5ab"
         }
       ],
       "properties": [
@@ -4190,7 +4761,7 @@
         },
         {
           "name": "soui:fileBytes",
-          "value": "11132690"
+          "value": "11131254"
         },
         {
           "name": "soui:distribution",
@@ -4201,8 +4772,16 @@
           "value": "actual-link-input"
         },
         {
+          "name": "soui:recompiled",
+          "value": "false"
+        },
+        {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:buildEvidence",
+          "value": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x64/build-result.json"
         }
       ]
     },
@@ -4210,11 +4789,11 @@
       "type": "file",
       "bom-ref": "urn:soui:kernel-link-input:x64:openssl.lib",
       "name": "x64/openssl.lib",
-      "description": "Physically verified static archive passed to the actual kernel link. This does not assert that every archive member was retained in node.dll.",
+      "description": "Actually observed link archive; reused, not recompiled; does not assert all archive members enter the DLL.",
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "0379ca05e53c9f416942c28c6c453df68f68389beb3c4949664210705b9763da"
+          "content": "a9a8786ec2e828dda350f0765cde1c5cfa72143555ca87dfc23bef6ec100130d"
         }
       ],
       "properties": [
@@ -4224,7 +4803,7 @@
         },
         {
           "name": "soui:fileBytes",
-          "value": "18244758"
+          "value": "18236040"
         },
         {
           "name": "soui:distribution",
@@ -4235,8 +4814,16 @@
           "value": "actual-link-input"
         },
         {
+          "name": "soui:recompiled",
+          "value": "false"
+        },
+        {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:buildEvidence",
+          "value": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x64/build-result.json"
         }
       ]
     },
@@ -4244,11 +4831,11 @@
       "type": "file",
       "bom-ref": "urn:soui:kernel-link-input:x64:libcurl.lib",
       "name": "x64/libcurl.lib",
-      "description": "Physically verified static archive passed to the actual kernel link. This does not assert that every archive member was retained in node.dll.",
+      "description": "Actually observed link archive; reused, not recompiled; does not assert all archive members enter the DLL.",
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "e190ee766206f86a10f7dd867e9adcbead1d3571b66a01dbb74f741b3d1c6d9e"
+          "content": "62e442ae073b13a13eb4eb06f049675f1884c095f725eb35239e4ae97013897c"
         }
       ],
       "properties": [
@@ -4258,7 +4845,7 @@
         },
         {
           "name": "soui:fileBytes",
-          "value": "5091270"
+          "value": "5088044"
         },
         {
           "name": "soui:distribution",
@@ -4269,8 +4856,16 @@
           "value": "actual-link-input"
         },
         {
+          "name": "soui:recompiled",
+          "value": "false"
+        },
+        {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:buildEvidence",
+          "value": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x64/build-result.json"
         }
       ]
     },
@@ -4278,11 +4873,11 @@
       "type": "file",
       "bom-ref": "urn:soui:kernel-link-input:x64:v8_5_7.lib",
       "name": "x64/v8_5_7.lib",
-      "description": "Physically verified static archive passed to the actual kernel link. This does not assert that every archive member was retained in node.dll.",
+      "description": "Actually observed link archive; reused, not recompiled; does not assert all archive members enter the DLL.",
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "629d0dfc1dfd730e0a805dc5d378325a29bedab75ceb194aa6f33f8f39e83c06"
+          "content": "641354fceb5f5537b1cdbfa7085a6052d7a485cfc0511974483510bd161babe1"
         }
       ],
       "properties": [
@@ -4292,7 +4887,7 @@
         },
         {
           "name": "soui:fileBytes",
-          "value": "655255626"
+          "value": "655273272"
         },
         {
           "name": "soui:distribution",
@@ -4303,8 +4898,16 @@
           "value": "actual-link-input"
         },
         {
+          "name": "soui:recompiled",
+          "value": "false"
+        },
+        {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:buildEvidence",
+          "value": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x64/build-result.json"
         }
       ]
     },
@@ -4312,11 +4915,11 @@
       "type": "file",
       "bom-ref": "urn:soui:kernel-link-input:x64:v8_5_7_1.lib",
       "name": "x64/v8_5_7_1.lib",
-      "description": "Physically verified static archive passed to the actual kernel link. This does not assert that every archive member was retained in node.dll.",
+      "description": "Actually observed link archive; reused, not recompiled; does not assert all archive members enter the DLL.",
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "a96474b48672db197da25c259f3d34571fbaebce3fa6eff17118b9ede3d143bd"
+          "content": "fb933ddfbf678dc1865f7c67523cca222f1fc6bab5be409361c5e8827e0a137e"
         }
       ],
       "properties": [
@@ -4326,7 +4929,7 @@
         },
         {
           "name": "soui:fileBytes",
-          "value": "572041370"
+          "value": "572055438"
         },
         {
           "name": "soui:distribution",
@@ -4337,8 +4940,16 @@
           "value": "actual-link-input"
         },
         {
+          "name": "soui:recompiled",
+          "value": "false"
+        },
+        {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:buildEvidence",
+          "value": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x64/build-result.json"
         }
       ]
     },
@@ -4346,11 +4957,11 @@
       "type": "file",
       "bom-ref": "urn:soui:kernel-link-input:x64:skia.lib",
       "name": "x64/skia.lib",
-      "description": "Physically verified static archive passed to the actual kernel link. This does not assert that every archive member was retained in node.dll.",
+      "description": "Actually observed link archive; reused, not recompiled; does not assert all archive members enter the DLL.",
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "410839444d8985691b9c600f0d99a70cfad977c9794fd4b916626f155de886b9"
+          "content": "a3284b278d2560f6c40a0b8642678712e9ecdc31371f2f3ad586ebe786067907"
         }
       ],
       "properties": [
@@ -4360,7 +4971,7 @@
         },
         {
           "name": "soui:fileBytes",
-          "value": "26519654"
+          "value": "26517460"
         },
         {
           "name": "soui:distribution",
@@ -4371,8 +4982,16 @@
           "value": "actual-link-input"
         },
         {
+          "name": "soui:recompiled",
+          "value": "false"
+        },
+        {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:buildEvidence",
+          "value": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x64/build-result.json"
         }
       ]
     },
@@ -4380,11 +4999,11 @@
       "type": "file",
       "bom-ref": "urn:soui:kernel-link-input:x86:zlib.lib",
       "name": "x86/zlib.lib",
-      "description": "Physically verified static archive passed to the actual kernel link. This does not assert that every archive member was retained in node.dll.",
+      "description": "Actually observed link archive; reused, not recompiled; does not assert all archive members enter the DLL.",
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "4481f727e596c9c728f59b0f13347bb0248c11c63e1c564677ad893995e3e39d"
+          "content": "4eb47b0ab344378f5ed9e766e64acf85e8b3488c1b775e0cf68e3b4dd30590e2"
         }
       ],
       "properties": [
@@ -4394,7 +5013,7 @@
         },
         {
           "name": "soui:fileBytes",
-          "value": "397152"
+          "value": "396820"
         },
         {
           "name": "soui:distribution",
@@ -4405,8 +5024,16 @@
           "value": "actual-link-input"
         },
         {
+          "name": "soui:recompiled",
+          "value": "false"
+        },
+        {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:buildEvidence",
+          "value": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x86/build-result.json"
         }
       ]
     },
@@ -4414,11 +5041,11 @@
       "type": "file",
       "bom-ref": "urn:soui:kernel-link-input:x86:libjpeg.lib",
       "name": "x86/libjpeg.lib",
-      "description": "Physically verified static archive passed to the actual kernel link. This does not assert that every archive member was retained in node.dll.",
+      "description": "Actually observed link archive; reused, not recompiled; does not assert all archive members enter the DLL.",
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "da7a85ae8cdd40be0efcbb3ca9b769c7affe4a85cea13f094cc0135300016aea"
+          "content": "45cfcfca0055422a23d06870b7e1c8516bd5b5cc379260e64d08471c37401e6a"
         }
       ],
       "properties": [
@@ -4428,7 +5055,7 @@
         },
         {
           "name": "soui:fileBytes",
-          "value": "1699550"
+          "value": "1698572"
         },
         {
           "name": "soui:distribution",
@@ -4439,8 +5066,16 @@
           "value": "actual-link-input"
         },
         {
+          "name": "soui:recompiled",
+          "value": "false"
+        },
+        {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:buildEvidence",
+          "value": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x86/build-result.json"
         }
       ]
     },
@@ -4448,11 +5083,11 @@
       "type": "file",
       "bom-ref": "urn:soui:kernel-link-input:x86:libpng.lib",
       "name": "x86/libpng.lib",
-      "description": "Physically verified static archive passed to the actual kernel link. This does not assert that every archive member was retained in node.dll.",
+      "description": "Actually observed link archive; reused, not recompiled; does not assert all archive members enter the DLL.",
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "115c8b22896d424df91574f69ac4d166500d2d0d992fec89c7e81c21a898dd61"
+          "content": "abd35d7195de7e2d7f9ba2b7cf0ae95d2cdcb2b90a3f05cc54bd4969c5c62d29"
         }
       ],
       "properties": [
@@ -4462,7 +5097,7 @@
         },
         {
           "name": "soui:fileBytes",
-          "value": "1168182"
+          "value": "1168072"
         },
         {
           "name": "soui:distribution",
@@ -4473,8 +5108,16 @@
           "value": "actual-link-input"
         },
         {
+          "name": "soui:recompiled",
+          "value": "false"
+        },
+        {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:buildEvidence",
+          "value": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x86/build-result.json"
         }
       ]
     },
@@ -4482,11 +5125,11 @@
       "type": "file",
       "bom-ref": "urn:soui:kernel-link-input:x86:harfbuzz.lib",
       "name": "x86/harfbuzz.lib",
-      "description": "Physically verified static archive passed to the actual kernel link. This does not assert that every archive member was retained in node.dll.",
+      "description": "Actually observed link archive; reused, not recompiled; does not assert all archive members enter the DLL.",
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "7f11e02e5e2a2e685fd118c5f5db0f426d14b03e137e9e8ba72dbb3d81b01120"
+          "content": "03c8aa08cf5fe4cc69cc86d0c2c0e3ce98feb50405e68ccf01047f9ea2a25cda"
         }
       ],
       "properties": [
@@ -4496,7 +5139,7 @@
         },
         {
           "name": "soui:fileBytes",
-          "value": "3801718"
+          "value": "3801770"
         },
         {
           "name": "soui:distribution",
@@ -4507,8 +5150,16 @@
           "value": "actual-link-input"
         },
         {
+          "name": "soui:recompiled",
+          "value": "false"
+        },
+        {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:buildEvidence",
+          "value": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x86/build-result.json"
         }
       ]
     },
@@ -4516,11 +5167,11 @@
       "type": "file",
       "bom-ref": "urn:soui:kernel-link-input:x86:libxml.lib",
       "name": "x86/libxml.lib",
-      "description": "Physically verified static archive passed to the actual kernel link. This does not assert that every archive member was retained in node.dll.",
+      "description": "Actually observed link archive; reused, not recompiled; does not assert all archive members enter the DLL.",
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "bc8da2d7b74613d85a2c2cc77d136fa6fc628a465ced6de18811049e3f5b31d8"
+          "content": "95f6eeebf043ddd76e27e22b78d353313107b8c0d6c7315c6afd6639c268221f"
         }
       ],
       "properties": [
@@ -4530,7 +5181,7 @@
         },
         {
           "name": "soui:fileBytes",
-          "value": "4805942"
+          "value": "4805328"
         },
         {
           "name": "soui:distribution",
@@ -4541,8 +5192,16 @@
           "value": "actual-link-input"
         },
         {
+          "name": "soui:recompiled",
+          "value": "false"
+        },
+        {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:buildEvidence",
+          "value": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x86/build-result.json"
         }
       ]
     },
@@ -4550,11 +5209,11 @@
       "type": "file",
       "bom-ref": "urn:soui:kernel-link-input:x86:ots.lib",
       "name": "x86/ots.lib",
-      "description": "Physically verified static archive passed to the actual kernel link. This does not assert that every archive member was retained in node.dll.",
+      "description": "Actually observed link archive; reused, not recompiled; does not assert all archive members enter the DLL.",
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "68ec17557019daf7980acb5dea4e5828b43f3989f562fe621794a94cd62ea75f"
+          "content": "d431ea82e56f44ba6b16de8a22b10429e4988af762e1321a34775477950a701b"
         }
       ],
       "properties": [
@@ -4564,7 +5223,7 @@
         },
         {
           "name": "soui:fileBytes",
-          "value": "11354802"
+          "value": "11353358"
         },
         {
           "name": "soui:distribution",
@@ -4575,8 +5234,16 @@
           "value": "actual-link-input"
         },
         {
+          "name": "soui:recompiled",
+          "value": "false"
+        },
+        {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:buildEvidence",
+          "value": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x86/build-result.json"
         }
       ]
     },
@@ -4584,11 +5251,11 @@
       "type": "file",
       "bom-ref": "urn:soui:kernel-link-input:x86:openssl.lib",
       "name": "x86/openssl.lib",
-      "description": "Physically verified static archive passed to the actual kernel link. This does not assert that every archive member was retained in node.dll.",
+      "description": "Actually observed link archive; reused, not recompiled; does not assert all archive members enter the DLL.",
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "106823aee8960db0106909b913677938bcae8bc84343f04b12744596c9f3b268"
+          "content": "de5166e59b808ec6ffaabf1e2c5fdc5d043dcff2116a2a5b4cd2b0268297956e"
         }
       ],
       "properties": [
@@ -4598,7 +5265,7 @@
         },
         {
           "name": "soui:fileBytes",
-          "value": "18048676"
+          "value": "18039530"
         },
         {
           "name": "soui:distribution",
@@ -4609,8 +5276,16 @@
           "value": "actual-link-input"
         },
         {
+          "name": "soui:recompiled",
+          "value": "false"
+        },
+        {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:buildEvidence",
+          "value": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x86/build-result.json"
         }
       ]
     },
@@ -4618,11 +5293,11 @@
       "type": "file",
       "bom-ref": "urn:soui:kernel-link-input:x86:libcurl.lib",
       "name": "x86/libcurl.lib",
-      "description": "Physically verified static archive passed to the actual kernel link. This does not assert that every archive member was retained in node.dll.",
+      "description": "Actually observed link archive; reused, not recompiled; does not assert all archive members enter the DLL.",
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "9b17702f651d022f0d2fe4da024c560e5b3b3cc166c25b9e3161e3eed4502ef7"
+          "content": "755061a1e06dc07891e144c9fb63d9b30d08652b2f12acb5f8726c36aea98e9d"
         }
       ],
       "properties": [
@@ -4632,7 +5307,7 @@
         },
         {
           "name": "soui:fileBytes",
-          "value": "5457846"
+          "value": "5454612"
         },
         {
           "name": "soui:distribution",
@@ -4643,8 +5318,16 @@
           "value": "actual-link-input"
         },
         {
+          "name": "soui:recompiled",
+          "value": "false"
+        },
+        {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:buildEvidence",
+          "value": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x86/build-result.json"
         }
       ]
     },
@@ -4652,11 +5335,11 @@
       "type": "file",
       "bom-ref": "urn:soui:kernel-link-input:x86:v8_5_7.lib",
       "name": "x86/v8_5_7.lib",
-      "description": "Physically verified static archive passed to the actual kernel link. This does not assert that every archive member was retained in node.dll.",
+      "description": "Actually observed link archive; reused, not recompiled; does not assert all archive members enter the DLL.",
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "524f5e8315fb5753ddca89d452eefcc110ec149405e5b4dab405c7e98f53485a"
+          "content": "5d10c98df56222687783380b52bc0a1fc224167d026566c7eae2e0114fe2246a"
         }
       ],
       "properties": [
@@ -4666,7 +5349,7 @@
         },
         {
           "name": "soui:fileBytes",
-          "value": "656525478"
+          "value": "656543974"
         },
         {
           "name": "soui:distribution",
@@ -4677,8 +5360,16 @@
           "value": "actual-link-input"
         },
         {
+          "name": "soui:recompiled",
+          "value": "false"
+        },
+        {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:buildEvidence",
+          "value": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x86/build-result.json"
         }
       ]
     },
@@ -4686,11 +5377,11 @@
       "type": "file",
       "bom-ref": "urn:soui:kernel-link-input:x86:v8_5_7_1.lib",
       "name": "x86/v8_5_7_1.lib",
-      "description": "Physically verified static archive passed to the actual kernel link. This does not assert that every archive member was retained in node.dll.",
+      "description": "Actually observed link archive; reused, not recompiled; does not assert all archive members enter the DLL.",
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "1fe9a6284a43837487a2d4e4caf92b0bf691e96c6b479df6cccb1899597b23d9"
+          "content": "c512727493cb8de647370cac6a35df837f2a995f0ed04c2ecbdd0f78c8a76d4c"
         }
       ],
       "properties": [
@@ -4700,7 +5391,7 @@
         },
         {
           "name": "soui:fileBytes",
-          "value": "528600018"
+          "value": "528613504"
         },
         {
           "name": "soui:distribution",
@@ -4711,8 +5402,16 @@
           "value": "actual-link-input"
         },
         {
+          "name": "soui:recompiled",
+          "value": "false"
+        },
+        {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:buildEvidence",
+          "value": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x86/build-result.json"
         }
       ]
     },
@@ -4720,11 +5419,11 @@
       "type": "file",
       "bom-ref": "urn:soui:kernel-link-input:x86:skia.lib",
       "name": "x86/skia.lib",
-      "description": "Physically verified static archive passed to the actual kernel link. This does not assert that every archive member was retained in node.dll.",
+      "description": "Actually observed link archive; reused, not recompiled; does not assert all archive members enter the DLL.",
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "6aeb531bae9cce5e8903e024402c7b196671cea43c1902448c9edc0e9c5b6bcf"
+          "content": "d7ee0b334ec00fc95a287eff4436cef3cf6856e4c8ce456a2efb8a5f637c0fdd"
         }
       ],
       "properties": [
@@ -4734,7 +5433,7 @@
         },
         {
           "name": "soui:fileBytes",
-          "value": "27195426"
+          "value": "27193168"
         },
         {
           "name": "soui:distribution",
@@ -4745,192 +5444,24 @@
           "value": "actual-link-input"
         },
         {
+          "name": "soui:recompiled",
+          "value": "false"
+        },
+        {
           "name": "soui:licenseReview",
           "value": "not-complete"
+        },
+        {
+          "name": "soui:buildEvidence",
+          "value": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x86/build-result.json"
         }
       ]
     }
   ],
   "dependencies": [
     {
-      "ref": "urn:soui:sdk:native:0.5.0",
+      "ref": "urn:soui:sdk:native:0.6.0",
       "dependsOn": [
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fminiblink%2Fnode.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fucrt%2Fx64%2Fapi-ms-win-core-console-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fucrt%2Fx64%2Fapi-ms-win-core-console-l1-2-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fucrt%2Fx64%2Fapi-ms-win-core-datetime-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fucrt%2Fx64%2Fapi-ms-win-core-debug-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fucrt%2Fx64%2Fapi-ms-win-core-errorhandling-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fucrt%2Fx64%2Fapi-ms-win-core-file-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fucrt%2Fx64%2Fapi-ms-win-core-file-l1-2-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fucrt%2Fx64%2Fapi-ms-win-core-file-l2-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fucrt%2Fx64%2Fapi-ms-win-core-handle-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fucrt%2Fx64%2Fapi-ms-win-core-heap-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fucrt%2Fx64%2Fapi-ms-win-core-interlocked-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fucrt%2Fx64%2Fapi-ms-win-core-libraryloader-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fucrt%2Fx64%2Fapi-ms-win-core-localization-l1-2-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fucrt%2Fx64%2Fapi-ms-win-core-memory-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fucrt%2Fx64%2Fapi-ms-win-core-namedpipe-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fucrt%2Fx64%2Fapi-ms-win-core-processenvironment-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fucrt%2Fx64%2Fapi-ms-win-core-processthreads-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fucrt%2Fx64%2Fapi-ms-win-core-processthreads-l1-1-1.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fucrt%2Fx64%2Fapi-ms-win-core-profile-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fucrt%2Fx64%2Fapi-ms-win-core-rtlsupport-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fucrt%2Fx64%2Fapi-ms-win-core-string-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fucrt%2Fx64%2Fapi-ms-win-core-synch-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fucrt%2Fx64%2Fapi-ms-win-core-synch-l1-2-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fucrt%2Fx64%2Fapi-ms-win-core-sysinfo-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fucrt%2Fx64%2Fapi-ms-win-core-timezone-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fucrt%2Fx64%2Fapi-ms-win-core-util-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fucrt%2Fx64%2Fapi-ms-win-crt-conio-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fucrt%2Fx64%2Fapi-ms-win-crt-convert-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fucrt%2Fx64%2Fapi-ms-win-crt-environment-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fucrt%2Fx64%2Fapi-ms-win-crt-filesystem-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fucrt%2Fx64%2Fapi-ms-win-crt-heap-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fucrt%2Fx64%2Fapi-ms-win-crt-locale-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fucrt%2Fx64%2Fapi-ms-win-crt-math-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fucrt%2Fx64%2Fapi-ms-win-crt-multibyte-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fucrt%2Fx64%2Fapi-ms-win-crt-private-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fucrt%2Fx64%2Fapi-ms-win-crt-process-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fucrt%2Fx64%2Fapi-ms-win-crt-runtime-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fucrt%2Fx64%2Fapi-ms-win-crt-stdio-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fucrt%2Fx64%2Fapi-ms-win-crt-string-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fucrt%2Fx64%2Fapi-ms-win-crt-time-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fucrt%2Fx64%2Fapi-ms-win-crt-utility-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fucrt%2Fx64%2Fucrtbase.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fvc%2FMicrosoft.VC143.CRT%2Fconcrt140.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fvc%2FMicrosoft.VC143.CRT%2Fmsvcp140_1.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fvc%2FMicrosoft.VC143.CRT%2Fmsvcp140_2.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fvc%2FMicrosoft.VC143.CRT%2Fmsvcp140_atomic_wait.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fvc%2FMicrosoft.VC143.CRT%2Fmsvcp140_codecvt_ids.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fvc%2FMicrosoft.VC143.CRT%2Fmsvcp140.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fvc%2FMicrosoft.VC143.CRT%2Fvccorlib140.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fvc%2FMicrosoft.VC143.CRT%2Fvcruntime140_1.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fvc%2FMicrosoft.VC143.CRT%2Fvcruntime140_threads.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fvc%2FMicrosoft.VC143.CRT%2Fvcruntime140.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fvc%2Fzlib1.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fsoui%2Fbin%2Fimgdecoder-gdip.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fsoui%2Fbin%2Fimgdecoder-gdipd.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fsoui%2Fbin%2Frender-gdi.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fsoui%2Fbin%2Frender-gdid.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fsoui%2Fbin%2Fsoui-sys-resource.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fsoui%2Fbin%2Fsoui-sys-resourced.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fsoui%2Fbin%2Fsoui.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fsoui%2Fbin%2Fsouid.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fsoui%2Fbin%2Futilities.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fsoui%2Fbin%2Futilitiesd.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fsoui%2Flib%2Fsoui.lib",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fsoui%2Flib%2Fsouid.lib",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fsoui%2Flib%2Futilities.lib",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fsoui%2Flib%2Futilitiesd.lib",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fminiblink%2Fnode.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fucrt%2Fx86%2Fapi-ms-win-core-console-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fucrt%2Fx86%2Fapi-ms-win-core-console-l1-2-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fucrt%2Fx86%2Fapi-ms-win-core-datetime-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fucrt%2Fx86%2Fapi-ms-win-core-debug-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fucrt%2Fx86%2Fapi-ms-win-core-errorhandling-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fucrt%2Fx86%2Fapi-ms-win-core-file-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fucrt%2Fx86%2Fapi-ms-win-core-file-l1-2-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fucrt%2Fx86%2Fapi-ms-win-core-file-l2-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fucrt%2Fx86%2Fapi-ms-win-core-handle-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fucrt%2Fx86%2Fapi-ms-win-core-heap-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fucrt%2Fx86%2Fapi-ms-win-core-interlocked-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fucrt%2Fx86%2Fapi-ms-win-core-libraryloader-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fucrt%2Fx86%2Fapi-ms-win-core-localization-l1-2-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fucrt%2Fx86%2Fapi-ms-win-core-memory-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fucrt%2Fx86%2Fapi-ms-win-core-namedpipe-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fucrt%2Fx86%2Fapi-ms-win-core-processenvironment-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fucrt%2Fx86%2Fapi-ms-win-core-processthreads-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fucrt%2Fx86%2Fapi-ms-win-core-processthreads-l1-1-1.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fucrt%2Fx86%2Fapi-ms-win-core-profile-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fucrt%2Fx86%2Fapi-ms-win-core-rtlsupport-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fucrt%2Fx86%2Fapi-ms-win-core-string-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fucrt%2Fx86%2Fapi-ms-win-core-synch-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fucrt%2Fx86%2Fapi-ms-win-core-synch-l1-2-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fucrt%2Fx86%2Fapi-ms-win-core-sysinfo-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fucrt%2Fx86%2Fapi-ms-win-core-timezone-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fucrt%2Fx86%2Fapi-ms-win-core-util-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fucrt%2Fx86%2FAPI-MS-Win-core-xstate-l2-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fucrt%2Fx86%2Fapi-ms-win-crt-conio-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fucrt%2Fx86%2Fapi-ms-win-crt-convert-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fucrt%2Fx86%2Fapi-ms-win-crt-environment-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fucrt%2Fx86%2Fapi-ms-win-crt-filesystem-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fucrt%2Fx86%2Fapi-ms-win-crt-heap-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fucrt%2Fx86%2Fapi-ms-win-crt-locale-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fucrt%2Fx86%2Fapi-ms-win-crt-math-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fucrt%2Fx86%2Fapi-ms-win-crt-multibyte-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fucrt%2Fx86%2Fapi-ms-win-crt-private-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fucrt%2Fx86%2Fapi-ms-win-crt-process-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fucrt%2Fx86%2Fapi-ms-win-crt-runtime-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fucrt%2Fx86%2Fapi-ms-win-crt-stdio-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fucrt%2Fx86%2Fapi-ms-win-crt-string-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fucrt%2Fx86%2Fapi-ms-win-crt-time-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fucrt%2Fx86%2Fapi-ms-win-crt-utility-l1-1-0.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fucrt%2Fx86%2Fucrtbase.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fvc%2FMicrosoft.VC143.CRT%2Fconcrt140.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fvc%2FMicrosoft.VC143.CRT%2Fmsvcp140_1.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fvc%2FMicrosoft.VC143.CRT%2Fmsvcp140_2.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fvc%2FMicrosoft.VC143.CRT%2Fmsvcp140_atomic_wait.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fvc%2FMicrosoft.VC143.CRT%2Fmsvcp140_codecvt_ids.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fvc%2FMicrosoft.VC143.CRT%2Fmsvcp140.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fvc%2FMicrosoft.VC143.CRT%2Fvccorlib140.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fvc%2FMicrosoft.VC143.CRT%2Fvcruntime140_threads.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fvc%2FMicrosoft.VC143.CRT%2Fvcruntime140.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fruntime%2Fvc%2Fzlib1.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fsoui%2Fbin%2Fimgdecoder-gdip.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fsoui%2Fbin%2Fimgdecoder-gdipd.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fsoui%2Fbin%2Frender-gdi.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fsoui%2Fbin%2Frender-gdid.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fsoui%2Fbin%2Fsoui-sys-resource.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fsoui%2Fbin%2Fsoui-sys-resourced.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fsoui%2Fbin%2Fsoui.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fsoui%2Fbin%2Fsouid.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fsoui%2Fbin%2Futilities.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fsoui%2Fbin%2Futilitiesd.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fsoui%2Flib%2Fsoui.lib",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fsoui%2Flib%2Fsouid.lib",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fsoui%2Flib%2Futilities.lib",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fsoui%2Flib%2Futilitiesd.lib"
-      ]
-    },
-    {
-      "ref": "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fminiblink%2Fnode.dll",
-      "dependsOn": [
-        "urn:soui:kernel-link-input:x64:zlib.lib",
-        "urn:soui:kernel-link-input:x64:libjpeg.lib",
-        "urn:soui:kernel-link-input:x64:libpng.lib",
-        "urn:soui:kernel-link-input:x64:harfbuzz.lib",
-        "urn:soui:kernel-link-input:x64:libxml.lib",
-        "urn:soui:kernel-link-input:x64:ots.lib",
-        "urn:soui:kernel-link-input:x64:openssl.lib",
-        "urn:soui:kernel-link-input:x64:libcurl.lib",
-        "urn:soui:kernel-link-input:x64:v8_5_7.lib",
-        "urn:soui:kernel-link-input:x64:v8_5_7_1.lib",
-        "urn:soui:kernel-link-input:x64:skia.lib"
-      ]
-    },
-    {
-      "ref": "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fminiblink%2Fnode.dll",
-      "dependsOn": [
-        "urn:soui:kernel-link-input:x86:zlib.lib",
-        "urn:soui:kernel-link-input:x86:libjpeg.lib",
-        "urn:soui:kernel-link-input:x86:libpng.lib",
-        "urn:soui:kernel-link-input:x86:harfbuzz.lib",
-        "urn:soui:kernel-link-input:x86:libxml.lib",
-        "urn:soui:kernel-link-input:x86:ots.lib",
-        "urn:soui:kernel-link-input:x86:openssl.lib",
-        "urn:soui:kernel-link-input:x86:libcurl.lib",
-        "urn:soui:kernel-link-input:x86:v8_5_7.lib",
-        "urn:soui:kernel-link-input:x86:v8_5_7_1.lib",
-        "urn:soui:kernel-link-input:x86:skia.lib"
-      ]
-    }
-  ],
-  "compositions": [
-    {
-      "aggregate": "incomplete",
-      "assemblies": [
-        "urn:soui:sdk:native:0.5.0",
         "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fminiblink%2Fnode.dll",
         "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fucrt%2Fx64%2Fapi-ms-win-core-console-l1-1-0.dll",
         "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fucrt%2Fx64%2Fapi-ms-win-core-console-l1-2-0.dll",
@@ -5089,11 +5620,46 @@
         "urn:soui:kernel-link-input:x86:v8_5_7.lib",
         "urn:soui:kernel-link-input:x86:v8_5_7_1.lib",
         "urn:soui:kernel-link-input:x86:skia.lib"
-      ],
-      "dependencies": [
-        "urn:soui:sdk:native:0.5.0",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fminiblink%2Fnode.dll",
-        "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fminiblink%2Fnode.dll"
+      ]
+    },
+    {
+      "ref": "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fminiblink%2Fnode.dll",
+      "dependsOn": [
+        "urn:soui:kernel-link-input:x64:zlib.lib",
+        "urn:soui:kernel-link-input:x64:libjpeg.lib",
+        "urn:soui:kernel-link-input:x64:libpng.lib",
+        "urn:soui:kernel-link-input:x64:harfbuzz.lib",
+        "urn:soui:kernel-link-input:x64:libxml.lib",
+        "urn:soui:kernel-link-input:x64:ots.lib",
+        "urn:soui:kernel-link-input:x64:openssl.lib",
+        "urn:soui:kernel-link-input:x64:libcurl.lib",
+        "urn:soui:kernel-link-input:x64:v8_5_7.lib",
+        "urn:soui:kernel-link-input:x64:v8_5_7_1.lib",
+        "urn:soui:kernel-link-input:x64:skia.lib"
+      ]
+    },
+    {
+      "ref": "urn:soui:delivered:third_party%2Fprebuilt%2Fx86%2Fminiblink%2Fnode.dll",
+      "dependsOn": [
+        "urn:soui:kernel-link-input:x86:zlib.lib",
+        "urn:soui:kernel-link-input:x86:libjpeg.lib",
+        "urn:soui:kernel-link-input:x86:libpng.lib",
+        "urn:soui:kernel-link-input:x86:harfbuzz.lib",
+        "urn:soui:kernel-link-input:x86:libxml.lib",
+        "urn:soui:kernel-link-input:x86:ots.lib",
+        "urn:soui:kernel-link-input:x86:openssl.lib",
+        "urn:soui:kernel-link-input:x86:libcurl.lib",
+        "urn:soui:kernel-link-input:x86:v8_5_7.lib",
+        "urn:soui:kernel-link-input:x86:v8_5_7_1.lib",
+        "urn:soui:kernel-link-input:x86:skia.lib"
+      ]
+    }
+  ],
+  "compositions": [
+    {
+      "aggregate": "incomplete",
+      "assemblies": [
+        "urn:soui:sdk:native:0.6.0"
       ]
     }
   ]
