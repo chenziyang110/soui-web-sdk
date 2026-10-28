@@ -6,6 +6,13 @@ const os = require('node:os');
 const path = require('node:path');
 const cp = require('node:child_process');
 const repository = path.resolve(__dirname, '../..');
+function shellEnvironment() {
+  const env = {...process.env};
+  // Windows PowerShell must discover its own compatible built-in modules when
+  // this Node test was launched by PowerShell 7. No parent environment changes.
+  for (const key of Object.keys(env)) if (key.toLowerCase() === 'psmodulepath') delete env[key];
+  return env;
+}
 test('actual PowerShell optional web blocks preserve default, SDK-only, generated, and SkipWeb branches', t => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'soui-gui-hooks-'));
   t.after(() => {
@@ -35,7 +42,7 @@ $cases=@(
  @{name='default-apps';sdk=$false;skip=$false;gui=$false;generated=$false;npm=8;build=0;verify=0},
  @{name='optional-sdk';sdk=$true;skip=$false;gui=$true;generated=$false;npm=0;build=1;verify=2},
  @{name='optional-apps';sdk=$false;skip=$false;gui=$true;generated=$false;npm=6;build=1;verify=2},
- @{name='optional-generated';sdk=$false;skip=$false;gui=$true;generated=$true;npm=2;build=1;verify=2},
+ @{name='optional-generated';sdk=$false;skip=$false;gui=$true;generated=$true;npm=1;build=1;verify=2},
  @{name='skip-default';sdk=$false;skip=$true;gui=$false;generated=$false;npm=0;build=0;verify=0},
  @{name='skip-optional';sdk=$true;skip=$true;gui=$true;generated=$false;npm=0;build=0;verify=2}
 )
@@ -49,6 +56,10 @@ foreach($case in $cases){
  $npmCalls=@($calls | Where-Object {$_.argv[0] -eq '--prefix'}).Count
  $buildCalls=@($calls | Where-Object {$_.argv[0] -like '*gui-bindings-delivery.cjs' -and $_.argv[1] -eq 'build'}).Count
  $verifyCalls=@($calls | Where-Object {$_.argv[0] -like '*gui-bindings-delivery.cjs' -and $_.argv[1] -eq 'verify'}).Count
+ $targetCalls=@($calls | Where-Object {$_.argv[0] -like '*web-targets.cjs' -and $_.argv[1] -eq 'build'})
+ $expectedTargets=if($case.generated -and -not $case.sdk -and -not $case.skip){1}else{0}
+ if($targetCalls.Count -ne $expectedTargets){throw 'Generated project must build through its exact target selector'}
+ if($targetCalls.Count -and ($targetCalls[0].argv.Count -ne 3 -or $targetCalls[0].argv[2] -cne $root)){throw 'Target build root differs'}
  if($npmCalls -ne $case.npm -or $buildCalls -ne $case.build -or $verifyCalls -ne $case.verify){throw ('Hook branch mismatch: '+$case.name+' '+$npmCalls+'/'+$buildCalls+'/'+$verifyCalls+' '+(ConvertTo-Json -InputObject $calls -Compress -Depth 10))}
  if(-not $case.gui -and @($calls | Where-Object {($_.argv -join ' ') -match 'bindings|react|vue'}).Count){throw 'Default branch acquired framework work'}
  $results+=@{name=$case.name;calls=$calls;passed=$true}
@@ -58,7 +69,7 @@ $results|ConvertTo-Json -Depth 10
   fs.writeFileSync(driver, script);
   const shell = process.env.SOUI_GUI_TEST_POWERSHELL || (process.platform === 'win32' ? 'powershell.exe' : 'pwsh');
   const result = cp.spawnSync(shell, ['-NoProfile', '-File', driver, '-BuildFile', path.join(repository, 'tools/Build.ps1'), '-FixtureRoot', root],
-    {encoding: 'utf8', windowsHide: true, timeout: 30000});
+    {encoding: 'utf8', windowsHide: true, timeout: 30000, env: shellEnvironment()});
   assert.equal(result.status, 0, `${result.error || ''}\n${result.stderr}\n${result.stdout}`);
   const cases = JSON.parse(result.stdout);
   assert.equal(cases.length, 7);
@@ -97,6 +108,10 @@ test('actual Build evidence calls separate Web arguments from both native profil
   const driver = writeWebFixture(root, 'capture-build-evidence.ps1', String.raw`
 param([string]$BuildFile,[string]$FixtureRoot)
 $ErrorActionPreference='Stop'
+# The extracted AST still invokes the real hash command. Establish its module
+# in this driver rather than relying on autoload inside a transient stub scope.
+Import-Module Microsoft.PowerShell.Utility -Global -Force -ErrorAction Stop
+Get-Command Get-FileHash -ErrorAction Stop | Out-Null
 $tokens=$null;$errors=$null
 $ast=[Management.Automation.Language.Parser]::ParseFile($BuildFile,[ref]$tokens,[ref]$errors)
 if($errors.Count){throw 'Build parser failed'}
@@ -134,6 +149,7 @@ foreach($profile in @('MSVC143','LLVM22MSVC142')){
     foreach($SkipWeb in @($false,$true)){
      if(Test-Path -LiteralPath $capture){Remove-Item -LiteralPath $capture}
      $NativeToolchain=$profile
+     $WebProfile=if(-not $SdkOnly -and $Architecture -eq 'x64'){'source-diagnostic'}else{'distribution'}
      # This discovery is a request fixture, not observed compiler evidence.
      $llvm=if($profile -eq 'LLVM22MSVC142'){@{FixtureDiscoveryOnly=$true}}else{$null}
      $output=Join-Path $root ('out/'+$(if($SdkOnly){'sdk-'}else{''})+$Architecture)
@@ -143,7 +159,7 @@ foreach($profile in @('MSVC143','LLVM22MSVC142')){
      . ([ScriptBlock]::Create($finish.Extent.Text)) | Out-Null
      $calls=@(Get-Content -LiteralPath $capture | ForEach-Object {$_|ConvertFrom-Json})
      if($calls.Count -ne 3){throw 'Expected start/Web/finish calls'}
-     $results+=@{profile=$profile;architecture=$Architecture;configuration=$Configuration;sdkOnly=$SdkOnly;skipWeb=$SkipWeb;calls=$calls}
+     $results+=@{profile=$profile;webProfile=$WebProfile;architecture=$Architecture;configuration=$Configuration;sdkOnly=$SdkOnly;skipWeb=$SkipWeb;calls=$calls}
     }
    }
   }
@@ -154,12 +170,12 @@ ConvertTo-Json -InputObject $results -Depth 12 -Compress
   const shell = process.env.SOUI_GUI_TEST_POWERSHELL || (process.platform === 'win32' ? 'powershell.exe' : 'pwsh');
   const result = cp.spawnSync(shell, ['-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass', '-File', driver,
     '-BuildFile', path.join(repository, 'tools/Build.ps1'), '-FixtureRoot', root],
-  {encoding: 'utf8', windowsHide: true, timeout: 40000});
+  {encoding: 'utf8', windowsHide: true, timeout: 40000, env: shellEnvironment()});
   assert.equal(result.status, 0, `${result.error || ''}\n${result.stderr}\n${result.stdout}`);
   const rows = JSON.parse(result.stdout);
   assert.equal(rows.length, 32);
   for (const row of rows) {
-    const base = [row.architecture, row.configuration, ...(row.sdkOnly ? ['sdk-only'] : [])];
+    const base = [row.architecture, row.configuration, ...(row.sdkOnly ? ['sdk-only'] : []), '--web-profile', row.webProfile];
     const native = row.profile === 'LLVM22MSVC142' ? [...base, '--native-toolchain', row.profile, '--profile-request',
       path.join(root, 'out', `${row.sdkOnly ? 'sdk-' : ''}${row.architecture}`, `llvm-profile-request-${row.configuration}.json`)] : base;
     assert.deepEqual(row.calls[0].argv, [path.join(root, 'tools/internal/build-evidence.cjs'), 'start', ...native]);
@@ -170,7 +186,7 @@ ConvertTo-Json -InputObject $results -Depth 12 -Compress
 
 for (const sdkOnly of [true, false]) test(`real Web CLI ${sdkOnly ? 'SDK' : 'applications'} keeps profile rejection and source/output gates`, t => {
   const root = webEvidenceFixture(t);
-  for (const name of ['build-evidence.cjs', 'delivery-identity.cjs', 'sdk-version.cjs']) {
+  for (const name of ['build-evidence.cjs', 'delivery-identity.cjs', 'sdk-version.cjs', 'web-build-profile.cjs', 'web-targets.cjs']) {
     writeWebFixture(root, `tools/internal/${name}`, fs.readFileSync(path.join(repository, 'tools/internal', name)));
   }
   writeWebFixture(root, 'VERSION', '0.5.0-preview.1\n');
