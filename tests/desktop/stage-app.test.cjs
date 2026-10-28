@@ -22,7 +22,10 @@ function fixture(fn) {
     fs.writeFileSync(binary, bytes);
     const assets = path.join(dir, 'assets'); fs.mkdirSync(assets);
     fs.writeFileSync(path.join(assets, 'index.html'), '<!doctype html>test');
-    fn({ binary, assets, output: path.join(dir, 'output'), name: 'Example', platform: 'linux', arch: 'x64', version: '1.0.0' });
+    const license = path.join(dir, 'LICENSE.md'), notices = path.join(dir, 'THIRD_PARTY_NOTICES.md');
+    fs.writeFileSync(license, Buffer.from('License\r\n原文\n', 'utf8')); fs.writeFileSync(notices, 'Runtime notices\n');
+    fn({ binary, assets, output: path.join(dir, 'output'), name: 'Example', platform: 'linux', arch: 'x64', version: '1.0.0',
+      'sdk-license': license, 'runtime-notices': notices });
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 }
 test('stages synthetic ELF metadata without pretending runtime acceptance', () => fixture(options => {
@@ -31,7 +34,10 @@ test('stages synthetic ELF metadata without pretending runtime acceptance', () =
   assert.equal(manifest.architecture, 'x64');
   assert.equal(fs.readFileSync(path.join(options.output, 'web/index.html'), 'utf8'), '<!doctype html>test');
   assert.match(fs.readFileSync(path.join(options.output, 'launch.sh'), 'utf8'), /exec "\$HERE\/Example" "\$@"/);
-  assert.equal(manifest.files.length, 5);
+  assert.equal(manifest.files.length, 7);
+  assert.equal(manifest.schema, 'soui.desktop.application-stage/2');
+  assert.deepEqual(manifest.notices.files, ['legal/LICENSE.md', 'legal/THIRD_PARTY_NOTICES.md']);
+  assert.deepEqual(fs.readFileSync(path.join(options.output, 'legal/LICENSE.md')), fs.readFileSync(options['sdk-license']));
   assert.equal(manifest.diagnostics.entry, 'doctor.sh');
   assert.throws(() => stage(options), /already exists/);
 }));
@@ -39,7 +45,7 @@ test('rejects metadata mismatch before creating output', () => fixture(options =
   assert.throws(() => stage({ ...options, arch: 'arm64' }), /does not match/);
   assert.equal(fs.existsSync(options.output), false);
 }));
-test('rejects symlink and case-colliding assets', () => fixture(options => {
+test('rejects symlink and case-colliding assets', { skip: process.platform === 'win32' ? 'requires POSIX symlink/case-sensitive fixture' : false }, () => fixture(options => {
   fs.symlinkSync('index.html', path.join(options.assets, 'link'));
   assert.throws(() => stage(options), /symlinks/);
   fs.unlinkSync(path.join(options.assets, 'link'));
@@ -173,12 +179,92 @@ test('universal2 accepts both fat widths, rejects swapped byte order and deliver
   const { verifyStage } = require('../../tools/verify-desktop-app.cjs');
   assert.equal(verifyStage(options.output, { platform: 'macos', arch: 'universal2' }).ok, true);
   assert.deepEqual(fs.readFileSync(path.join(options.output, 'Example.app/Contents/MacOS/Example')), fs.readFileSync(options.binary));
+  assert.deepEqual(fs.readFileSync(path.join(options.output, 'Example.app/Contents/Resources/legal/LICENSE.md')), fs.readFileSync(options['sdk-license']));
+  assert.equal(fs.existsSync(path.join(options.output, 'legal')), false);
+  assert.equal(fs.existsSync(path.join(options.output, 'Example.app/Contents/Resources/web/legal')), false);
   const doctor = fs.readFileSync(path.join(options.output, 'doctor.sh'), 'utf8');
   assert.match(doctor, /if \[ "\$host_arch" = x64 \] \|\| \[ "\$host_arch" = arm64 \]; then/);
   if (process.platform !== 'win32') {
     const { archiveStage } = require('../../tools/archive-desktop-app.cjs');
     assert.equal(archiveStage(options.output, path.join(path.dirname(options.output), 'delivery'), { arch: 'universal2' }).architecture, 'universal2');
   }
+}));
+
+test('requires exact nonempty notice sources before creating any output', () => fixture(options => {
+  for (const change of [
+    { 'sdk-license': undefined }, { 'sdk-license': options.assets },
+    { 'runtime-notices': options['sdk-license'] }, { 'sdk-license': options.binary },
+    { 'sdk-license': path.join(options.assets, 'index.html') },
+    { 'webview2-license': options['sdk-license'] }, { name: 'legal' },
+  ]) {
+    assert.throws(() => stage({ ...options, ...change }));
+    assert.equal(fs.existsSync(options.output), false);
+  }
+  fs.writeFileSync(options['sdk-license'], '');
+  assert.throws(() => stage(options), /nonempty/);
+  assert.equal(fs.existsSync(options.output), false);
+}));
+
+test('notice mutation during copy never publishes a manifest', () => fixture(options => {
+  const original = fs.copyFileSync;
+  fs.copyFileSync = (...args) => {
+    const result = original(...args);
+    if (args[0] === options.binary) {
+      const bytes = fs.readFileSync(options['sdk-license']); bytes[0] ^= 1;
+      fs.writeFileSync(options['sdk-license'], bytes);
+    }
+    return result;
+  };
+  try { assert.throws(() => stage(options), /Notice input changed/); }
+  finally { fs.copyFileSync = original; }
+  assert.equal(fs.existsSync(path.join(options.output, 'application-manifest.json')), false);
+}));
+
+test('Windows requires both WebView2 notices and preserves all four source byte streams', () => fixture(options => {
+  const pe = Buffer.alloc(512); pe.writeUInt16LE(0x5a4d); pe.writeUInt32LE(64, 60);
+  pe.writeUInt32LE(0x4550, 64); pe.writeUInt16LE(0x8664, 68); pe.writeUInt16LE(240, 84);
+  pe.writeUInt16LE(2, 86); pe.writeUInt16LE(0x20b, 88); pe.writeUInt16LE(3, 156);
+  fs.writeFileSync(options.binary, pe);
+  const windows = { ...options, platform: 'windows' };
+  assert.throws(() => stage(windows), /Missing --webview2-license/);
+  windows['webview2-license'] = path.join(path.dirname(options.output), 'WebView2-LICENSE.txt');
+  windows['webview2-notices'] = path.join(path.dirname(options.output), 'WebView2-NOTICE.txt');
+  fs.writeFileSync(windows['webview2-license'], 'WebView2 license\r\n');
+  assert.throws(() => stage({ ...windows, 'webview2-notices': undefined }), /Missing --webview2-notices/);
+  fs.writeFileSync(windows['webview2-notices'], '');
+  assert.throws(() => stage(windows), /nonempty/); assert.equal(fs.existsSync(options.output), false);
+  fs.writeFileSync(windows['webview2-notices'], 'WebView2 notice\n');
+  const manifest = stage(windows);
+  const crypto = require('node:crypto');
+  for (const [option, file] of [['sdk-license', 'LICENSE.md'], ['runtime-notices', 'THIRD_PARTY_NOTICES.md'],
+    ['webview2-license', 'WebView2-LICENSE.txt'], ['webview2-notices', 'WebView2-NOTICE.txt']]) {
+    const expected = fs.readFileSync(windows[option]);
+    assert.deepEqual(fs.readFileSync(path.join(options.output, 'legal', file)), expected);
+    assert.equal(manifest.files.find(entry => entry.path === `legal/${file}`).sha256, crypto.createHash('sha256').update(expected).digest('hex'));
+  }
+}));
+
+test('notice symlink file and ancestor are rejected before output', { skip: process.platform === 'win32' ? 'requires POSIX symlink fixture' : false }, () => fixture(options => {
+  const root = path.dirname(options.output), alias = path.join(root, 'notice-alias');
+  fs.symlinkSync(options['sdk-license'], alias);
+  assert.throws(() => stage({ ...options, 'sdk-license': alias }), /Symlink/);
+  fs.unlinkSync(alias); fs.symlinkSync(root, alias, 'dir');
+  assert.throws(() => stage({ ...options, 'sdk-license': path.join(alias, 'LICENSE.md') }), /Symlink/);
+  assert.equal(fs.existsSync(options.output), false);
+}));
+
+test('FIFO notice is rejected without waiting for a writer', { skip: process.platform === 'win32' ? 'requires POSIX FIFO fixture' : false }, t => fixture(options => {
+  const { spawnSync } = require('node:child_process');
+  const fifo = path.join(path.dirname(options.output), 'notice.fifo');
+  const created = spawnSync('mkfifo', [fifo], { encoding: 'utf8' });
+  if (created.error?.code === 'ENOENT') return t.skip('mkfifo unavailable');
+  assert.equal(created.status, 0, created.stderr);
+  const check = spawnSync(process.execPath, ['-e',
+    'const assert=require("node:assert/strict");const {stage}=require(process.argv[1]);assert.throws(()=>stage(JSON.parse(process.argv[2])),/nonempty regular file/);',
+    path.resolve(__dirname, '../../tools/stage-desktop-app.cjs'), JSON.stringify({ ...options, 'sdk-license': fifo })],
+  { encoding: 'utf8', timeout: 2000 });
+  assert.equal(check.status, 0, `${check.error || ''}\n${check.stderr}`);
+  assert.equal(fs.existsSync(options.output), false);
 }));
 test('universal2 rejects malformed fat tables and slices without borrowing adjacent bytes', () => fixture(options => {
   const changes = [

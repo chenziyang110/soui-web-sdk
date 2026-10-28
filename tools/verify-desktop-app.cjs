@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
 const { TextDecoder } = require('node:util');
-const { inspectBinary, parseArgs: parseStageArgs } = require('./stage-desktop-app.cjs');
+const { inspectBinary, noticeLayout, parseArgs: parseStageArgs } = require('./stage-desktop-app.cjs');
 const schema = 'soui.desktop.application-verification/1';
 const maximumFileBytes = 256 * 1024 * 1024;
 const maximumTotalBytes = 1536 * 1024 * 1024;
@@ -85,10 +85,12 @@ function verifyStage(input, expectations = {}) {
     if (!stat.isFile() || stat.isSymbolicLink()) fail('invalid_manifest_file');
     const manifest = readManifest(manifestPath);
     const diagnosticsPresent = !!manifest && Object.hasOwn(manifest, 'diagnostics');
+    const noticesPresent = manifest?.schema === 'soui.desktop.application-stage/2';
     object(manifest, ['schema', 'name', 'applicationVersion', 'identifier', 'platform', 'architecture', 'executableFormat',
       'executable', 'assets', 'minimumOSVersion', 'developmentOnly', 'signed', 'dependenciesBundled', 'nativeRuntimeVerified',
-      ...(diagnosticsPresent ? ['diagnostics'] : []), 'requiredRuntime', 'files']);
-    if (manifest.schema !== 'soui.desktop.application-stage/1' || manifest.developmentOnly !== true ||
+      ...(diagnosticsPresent ? ['diagnostics'] : []), ...(noticesPresent ? ['notices'] : []), 'requiredRuntime', 'files']);
+    if (!['soui.desktop.application-stage/1', 'soui.desktop.application-stage/2'].includes(manifest.schema) ||
+        (noticesPresent && !diagnosticsPresent) || manifest.developmentOnly !== true ||
         manifest.signed !== false || manifest.dependenciesBundled !== false || manifest.nativeRuntimeVerified !== false) fail('invalid_manifest');
     for (const key of ['name', 'applicationVersion', 'platform', 'architecture'])
       if (typeof manifest[key] !== 'string' || manifest[key].length > 240) fail('invalid_manifest');
@@ -118,6 +120,14 @@ function verifyStage(input, expectations = {}) {
         manifest.requiredRuntime.some(value => typeof value !== 'string' || value.length > 4096 || /[\x00-\x1f\x7f]/.test(value))) fail('invalid_runtime_metadata');
     if (!Array.isArray(manifest.files) || !manifest.files.length || manifest.files.length > maximumFiles) fail('file_count_limit');
     const mandatory = new Set([executable, `${assets}/index.html`, 'DEPENDENCIES.txt']);
+    const noticePaths = noticesPresent ? noticeLayout(manifest.platform, manifest.name).map(item => item.path) : [];
+    if (noticesPresent) {
+      object(manifest.notices, ['schema', 'files']);
+      if (manifest.notices.schema !== 'soui.desktop.notices/1' || !Array.isArray(manifest.notices.files) ||
+          manifest.notices.files.length !== noticePaths.length ||
+          noticePaths.some((value, index) => manifest.notices.files[index] !== value)) fail('invalid_notices');
+      for (const relative of noticePaths) mandatory.add(relative);
+    }
     if (diagnosticsPresent) mandatory.add(doctor);
     if (linux) mandatory.add('launch.sh');
     if (mac) mandatory.add(`${manifest.name}.app/Contents/Info.plist`);
@@ -128,6 +138,7 @@ function verifyStage(input, expectations = {}) {
       if (!validRelative(file.path) || (!mandatory.has(file.path) && !file.path.startsWith(`${assets}/`))) fail('unsafe_manifest_path');
       if (!Number.isSafeInteger(file.size) || file.size < 0 || file.size > maximumFileBytes ||
           typeof file.sha256 !== 'string' || !/^[a-f0-9]{64}$/.test(file.sha256)) fail('invalid_file_record');
+      if (noticePaths.includes(file.path) && (file.size < 1 || file.size > 16 * 1024 * 1024)) fail('invalid_notice_file');
       if (expected.has(file.path)) fail('duplicate_path');
       bytes += file.size; if (bytes > maximumTotalBytes) fail('total_size_limit');
       expected.set(file.path, file);
@@ -174,7 +185,8 @@ function verifyStage(input, expectations = {}) {
     if (identity.platform !== manifest.platform || identity.arch !== manifest.architecture || identity.format !== manifest.executableFormat ||
         (identity.minimumOSVersion || null) !== manifest.minimumOSVersion) fail('binary_identity_mismatch');
     return { schema, ok: true, code: 'integrity_consistent', platform: manifest.platform, architecture: manifest.architecture,
-      checkedFiles: expected.size, checkedBytes: bytes, diagnosticsPresent, executablePermissionsChecked: permissionsChecked,
+      checkedFiles: expected.size, checkedBytes: bytes, diagnosticsPresent, noticeSetVerified: noticesPresent,
+      stageSchema: manifest.schema, executablePermissionsChecked: permissionsChecked,
       authenticityVerified: false, nativeRuntimeVerified: false };
   } catch (error) {
     if (typeof error.code === 'string' && /^[a-z][a-z_]+$/.test(error.code)) throw error;

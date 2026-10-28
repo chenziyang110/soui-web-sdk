@@ -7,7 +7,7 @@ const path = require('node:path');
 const crypto = require('node:crypto');
 const { stage } = require('../../tools/stage-desktop-app.cjs');
 const { archiveStage, parseArgs } = require('../../tools/archive-desktop-app.cjs');
-function fixture(run) {
+function fixture(run, platform = 'linux') {
   const root = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'soui-archive-')));
   try {
     const binary = path.join(root, 'input');
@@ -22,10 +22,20 @@ function fixture(run) {
     const interpreter = Buffer.from('/lib/ld-test.so\0');
     bytes.writeBigUInt64LE(BigInt(interpreter.length), 152); interpreter.copy(bytes, 200);
     fs.writeFileSync(binary, bytes);
+    if (platform === 'windows') {
+      const pe = Buffer.alloc(512); pe.writeUInt16LE(0x5a4d); pe.writeUInt32LE(64, 60);
+      pe.writeUInt32LE(0x4550, 64); pe.writeUInt16LE(0x8664, 68); pe.writeUInt16LE(240, 84);
+      pe.writeUInt16LE(2, 86); pe.writeUInt16LE(0x20b, 88); pe.writeUInt16LE(3, 156);
+      fs.writeFileSync(binary, pe);
+    }
     const assets = path.join(root, 'assets'); fs.mkdirSync(assets);
     fs.writeFileSync(path.join(assets, 'index.html'), '<!doctype html>test');
     const output = path.join(root, 'output');
-    stage({ binary, assets, output, name: 'Example', platform: 'linux', arch: 'x64', version: '1.0.0' });
+    const notices = {};
+    for (const option of ['sdk-license', 'runtime-notices', ...(platform === 'windows' ? ['webview2-license', 'webview2-notices'] : [])]) {
+      notices[option] = path.join(root, option); fs.writeFileSync(notices[option], `${option}\r\n原文\n`);
+    }
+    stage({ binary, assets, output, name: 'Example', platform, arch: 'x64', version: '1.0.0', ...notices });
     run(output, root);
   } finally { fs.rmSync(root, { recursive: true, force: true }); }
 }
@@ -63,10 +73,35 @@ test('refuses modified stage and wrong expected identity before creating output'
   assert.throws(() => archiveStage(input, output), error => error.code === 'size_mismatch');
   assert.equal(fs.existsSync(output), false);
 }));
-test('rejects overlapping output, symlink parents and invalid CLI options', () => fixture((input, root) => {
+test('rejects overlapping output and invalid CLI options', () => fixture((input, root) => {
   assert.throws(() => archiveStage(input, path.join(input, 'delivery')), error => error.code === 'overlapping_paths');
-  const link = path.join(root, 'alias'); fs.symlinkSync(input, link, process.platform === 'win32' ? 'junction' : 'dir');
-  assert.throws(() => archiveStage(input, path.join(link, 'delivery')), error => error.code === 'symlink_not_allowed');
   assert.throws(() => parseArgs(['--input', input, '--output', 'out', '--output', 'other']));
   assert.throws(() => parseArgs(['--input', input, '--output', 'out', '--install', 'yes']));
 }));
+test('rejects symlink output parents', { skip: process.platform === 'win32' ? 'requires POSIX symlink fixture' : false }, () => fixture((input, root) => {
+  const link = path.join(root, 'alias'); fs.symlinkSync(input, link, 'dir');
+  assert.throws(() => archiveStage(input, path.join(link, 'delivery')), error => error.code === 'symlink_not_allowed');
+}));
+
+test('Windows ZIP contains the exact four notice payloads and manifest hashes', () => fixture((input, root) => {
+  const output = path.join(root, 'delivery');
+  const result = archiveStage(input, output, { platform: 'windows', arch: 'x64' });
+  const bytes = fs.readFileSync(path.join(output, result.archive));
+  const manifest = JSON.parse(fs.readFileSync(path.join(input, 'application-manifest.json')));
+  assert.deepEqual(manifest.notices.files, ['legal/LICENSE.md', 'legal/THIRD_PARTY_NOTICES.md', 'legal/WebView2-LICENSE.txt', 'legal/WebView2-NOTICE.txt']);
+  let at = bytes.readUInt32LE(bytes.length - 6), notices = 0;
+  for (let index = 0; index < result.archiveEntries; ++index) {
+    assert.equal(bytes.readUInt32LE(at), 0x02014b50);
+    const length = bytes.readUInt16LE(at + 28), name = bytes.subarray(at + 46, at + 46 + length).toString('utf8');
+    const relative = name.slice(result.archiveRoot.length + 1);
+    if (manifest.notices.files.includes(relative)) {
+      const local = bytes.readUInt32LE(at + 42), size = bytes.readUInt32LE(at + 24);
+      const start = local + 30 + bytes.readUInt16LE(local + 26) + bytes.readUInt16LE(local + 28);
+      const data = bytes.subarray(start, start + size), record = manifest.files.find(file => file.path === relative);
+      assert.deepEqual(data, fs.readFileSync(path.join(input, relative)));
+      assert.equal(crypto.createHash('sha256').update(data).digest('hex'), record.sha256); ++notices;
+    }
+    at += 46 + length + bytes.readUInt16LE(at + 30) + bytes.readUInt16LE(at + 32);
+  }
+  assert.equal(notices, 4);
+}, 'windows'));

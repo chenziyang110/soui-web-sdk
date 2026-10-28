@@ -10,7 +10,8 @@ ZIP、安装器、签名发布或运行兼容性认证。无需重新构建 SDK�
 node tools/stage-desktop-app.cjs \
   --binary path/to/soui_desktop_example --assets examples/unified-desktop/web \
   --output path/to/new-output --name soui-example \
-  --platform linux --arch x64 --version 0.1.0
+  --platform linux --arch x64 --version 0.1.0 \
+  --sdk-license LICENSE.md --runtime-notices sdk/portable/THIRD_PARTY_NOTICES.md
 ```
 
 Windows 使用 `--platform windows` 和 PE 程序；macOS 使用 `--platform macos`
@@ -38,6 +39,32 @@ PE 只接受 Windows GUI/console 子系统，不接收 DLL、驱动或 EFI 映�
 
 附带依赖说明是部署要求，不是动态依赖扫描或“目标机依赖已满足”证明；工具不会
 执行 ldd、自动下载安装运行库、增加权限、改变系统安全设置或给应用签名。
+
+## 固定 notice 集与 stage v2
+
+stage v2 必须交付 SDK 根 `LICENSE.md` 与 Portable `THIRD_PARTY_NOTICES.md`。
+安装 SDK 使用 `share/SouiRuntime/` 下对应文件。Windows CLI 还必须显式传入
+`--webview2-license <实际链接包>/LICENSE.txt` 和
+`--webview2-notices <实际链接包>/NOTICE.txt`。不能借用另一个版本；CLI 调用者
+负责提供与二进制构建一致的来源，工具不反推二进制的依赖来源。
+
+CMake helper 自动传入目标保存的来源：源树 WebView2 loader/header 缓存须与
+`SOUI_WEBVIEW2_SDK_ROOT` 一致；安装包 loader 与 `share/SouiDesktop/webview2`
+notice 必须属于同一可搬迁 SDK。缺失来源直接失败，没有目录扫描或旧版本回退。
+
+Windows/Linux 包内为 `legal/LICENSE.md`、`legal/THIRD_PARTY_NOTICES.md`；Windows
+另有 `legal/WebView2-LICENSE.txt`、`legal/WebView2-NOTICE.txt`。macOS 两项 SDK
+文件放在 `.app/Contents/Resources/legal/`，不进入可服务的 `web/` 目录。
+各来源必须为非空普通文件（每项最多 16 MiB）、无 symlink 祖先且不与输入/输出
+树重叠；原始字节和 SHA-256 保留。来源变化时不写最终 manifest，部分输出不会
+被自动删除；输入仍须可信且不可变。
+
+`soui.desktop.application-stage/2` 的固定 `notices` 集与 `files` 哈希共同校验。
+verifier 拒绝缺项、空文件、错平台、额外 legal 路径及篡改。旧 v1 仅保留旧完整性
+读取，返回 `noticeSetVerified: false`，不能据此宣称 notice 已交付。ZIP 沿清单
+包含固定 notice 集。此机制不是任意应用第三方依赖审计，也不等于法律放行；
+应用自有许可与额外依赖仍须单独核查。参见
+[ADR 0146](adr/0146-desktop-application-notices.md)。
 
 ## CMake 接入
 

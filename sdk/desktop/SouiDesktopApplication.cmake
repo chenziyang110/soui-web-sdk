@@ -151,11 +151,26 @@ function(soui_stage_application)
   if(DEFINED APP_IDENTIFIER)
     list(APPEND identifier --identifier "${APP_IDENTIFIER}")
   endif()
+  set(notice_keys SDK_LICENSE RUNTIME_NOTICES)
+  set(notice_options sdk-license runtime-notices)
+  if(platform STREQUAL "windows")
+    list(APPEND notice_keys WEBVIEW2_LICENSE WEBVIEW2_NOTICES)
+    list(APPEND notice_options webview2-license webview2-notices)
+  endif()
+  set(notices)
+  foreach(key option IN ZIP_LISTS notice_keys notice_options)
+    get_target_property(source Soui::Desktop "SOUI_APPLICATION_${key}")
+    if(NOT source OR NOT IS_ABSOLUTE "${source}" OR NOT EXISTS "${source}" OR IS_DIRECTORY "${source}" OR
+        source MATCHES "[;\n\r]" OR source MATCHES "\\$<")
+      message(FATAL_ERROR "SouiDesktop requires an explicit SDK notice source: ${key}")
+    endif()
+    list(APPEND notices "--${option}" "${source}")
+  endforeach()
   add_custom_target("${APP_TARGET}_stage"
     COMMAND "${SOUI_DESKTOP_NODE_EXECUTABLE}" "${tool}"
       --binary "$<TARGET_FILE:${APP_TARGET}>" --assets "${assets}" --output "${output}"
       --name "${APP_NAME}" --platform "${platform}" --arch "${architecture}"
-      --version "${APP_VERSION}" ${identifier}
+      --version "${APP_VERSION}" ${identifier} ${notices}
     COMMAND "${SOUI_DESKTOP_NODE_EXECUTABLE}" "${verifier}"
       --input "${output}" --platform "${platform}" --arch "${architecture}"
     # A bare target dependency selects command-config in Ninja cross-config

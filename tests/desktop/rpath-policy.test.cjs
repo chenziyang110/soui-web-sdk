@@ -24,7 +24,9 @@ cmake_minimum_required(VERSION 3.24)
 project(RpathPolicy LANGUAGES CXX)
 include("${root}/sdk/desktop/SouiDesktopApplication.cmake")
 add_library(Soui::Desktop INTERFACE IMPORTED)
-set_target_properties(Soui::Desktop PROPERTIES SOUI_APPLICATION_PLATFORM linux SOUI_APPLICATION_ARCH x64)
+set_target_properties(Soui::Desktop PROPERTIES SOUI_APPLICATION_PLATFORM linux SOUI_APPLICATION_ARCH x64
+  SOUI_APPLICATION_SDK_LICENSE "${root}/LICENSE.md"
+  SOUI_APPLICATION_RUNTIME_NOTICES "${root}/sdk/portable/THIRD_PARTY_NOTICES.md")
 add_library(probe SHARED probe.cpp)
 set_target_properties(probe PROPERTIES LIBRARY_OUTPUT_DIRECTORY "\${CMAKE_BINARY_DIR}/development-only")
 foreach(name baseline deployed explicit)

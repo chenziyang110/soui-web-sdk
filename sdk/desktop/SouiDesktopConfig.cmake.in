@@ -1,4 +1,6 @@
 @PACKAGE_INIT@
+# Dependency configs may change PACKAGE_PREFIX_DIR (CMake < 3.30).
+get_filename_component(_soui_desktop_prefix "${CMAKE_CURRENT_LIST_DIR}/../../.." ABSOLUTE)
 include(CMakeFindDependencyMacro)
 find_dependency(SouiRuntime @PROJECT_VERSION@ EXACT CONFIG)
 set(SouiDesktop_BACKEND "@SOUI_DESKTOP_BACKEND@")
@@ -15,9 +17,41 @@ elseif(SouiDesktop_BACKEND STREQUAL "wkwebview")
 elseif(SouiDesktop_BACKEND STREQUAL "webview2" AND NOT TARGET Soui::DesktopWebView2Loader)
   add_library(Soui::DesktopWebView2Loader STATIC IMPORTED)
   set_target_properties(Soui::DesktopWebView2Loader PROPERTIES
-    IMPORTED_LOCATION "${PACKAGE_PREFIX_DIR}/lib/SouiDesktop/webview2/WebView2LoaderStatic.lib")
+    IMPORTED_LOCATION "${_soui_desktop_prefix}/lib/SouiDesktop/webview2/WebView2LoaderStatic.lib")
 endif()
 include("${CMAKE_CURRENT_LIST_DIR}/SouiDesktopTargets.cmake")
+set_target_properties(Soui::Desktop PROPERTIES
+  SOUI_APPLICATION_SDK_LICENSE "${_soui_desktop_prefix}/share/SouiRuntime/LICENSE.md"
+  SOUI_APPLICATION_RUNTIME_NOTICES "${_soui_desktop_prefix}/share/SouiRuntime/THIRD_PARTY_NOTICES.md")
+if(SouiDesktop_BACKEND STREQUAL "webview2")
+  get_target_property(_soui_desktop_loader Soui::DesktopWebView2Loader IMPORTED_LOCATION)
+  if(NOT _soui_desktop_loader STREQUAL "${_soui_desktop_prefix}/lib/SouiDesktop/webview2/WebView2LoaderStatic.lib")
+    message(FATAL_ERROR "SouiDesktop WebView2 loader belongs to a different SDK package")
+  endif()
+  get_target_property(_soui_desktop_loader_configs Soui::DesktopWebView2Loader IMPORTED_CONFIGURATIONS)
+  # CMake selects a matching per-config location even when it is absent from
+  # IMPORTED_CONFIGURATIONS. Include consumer configs and their explicit maps.
+  list(APPEND _soui_desktop_loader_configs ${CMAKE_CONFIGURATION_TYPES} "${CMAKE_BUILD_TYPE}"
+    DEBUG RELEASE RELWITHDEBINFO MINSIZEREL)
+  foreach(_soui_desktop_config IN LISTS _soui_desktop_loader_configs)
+    string(TOUPPER "${_soui_desktop_config}" _soui_desktop_config)
+    get_target_property(_soui_desktop_mapped_configs Soui::DesktopWebView2Loader "MAP_IMPORTED_CONFIG_${_soui_desktop_config}")
+    if(_soui_desktop_mapped_configs)
+      list(APPEND _soui_desktop_loader_configs ${_soui_desktop_mapped_configs})
+    endif()
+  endforeach()
+  list(REMOVE_DUPLICATES _soui_desktop_loader_configs)
+  foreach(_soui_desktop_config IN LISTS _soui_desktop_loader_configs)
+    string(TOUPPER "${_soui_desktop_config}" _soui_desktop_config)
+    get_target_property(_soui_desktop_config_loader Soui::DesktopWebView2Loader "IMPORTED_LOCATION_${_soui_desktop_config}")
+    if(_soui_desktop_config_loader AND NOT _soui_desktop_config_loader STREQUAL _soui_desktop_loader)
+      message(FATAL_ERROR "SouiDesktop WebView2 configuration loader belongs to a different SDK package")
+    endif()
+  endforeach()
+  set_target_properties(Soui::Desktop PROPERTIES
+    SOUI_APPLICATION_WEBVIEW2_LICENSE "${_soui_desktop_prefix}/share/SouiDesktop/webview2/LICENSE.txt"
+    SOUI_APPLICATION_WEBVIEW2_NOTICES "${_soui_desktop_prefix}/share/SouiDesktop/webview2/NOTICE.txt")
+endif()
 # Preserve validated consumer identity beyond find_package function scope.
 if(DEFINED SOUI_TARGET_ARCH AND SOUI_TARGET_ARCH MATCHES "^(x86|x64|arm32|arm64|universal2)$")
   set_property(TARGET Soui::Desktop PROPERTY SOUI_APPLICATION_CONSUMER_ARCH "${SOUI_TARGET_ARCH}")

@@ -66,6 +66,14 @@ WebView2/VC runtime，macOS 使用系统 WebKit。诊断的 unknown 或退出0�
 
 ## 校验已有交付目录
 
+当前 stage v2 会保留 SDK 的 `LICENSE.md`、Portable `THIRD_PARTY_NOTICES.md`
+原始字节；Windows 另带构建所用 WebView2 包的 `LICENSE.txt` 和 `NOTICE.txt`。
+它们放在包内 `legal/`（macOS 为 `.app/Contents/Resources/legal/`），不由 web
+资源服务暴露。来源由 SDK 的 CMake 目标显式传入；安装包搬迁后仍从该 SDK 取用，
+缺文件时拒绝暂存。ZIP 包含同一清单内的 notice。固定集合不涵盖应用额外依赖的
+全部许可审计，也不改变开发级、未签名、未完成目标系统验收的状态。
+旧 v1 校验成功仅代表旧完整性契约，不证明 notice 交付。
+
 `cmake --build build --target @APP_NAME@_verify_stage --config Release` 只读校验现有
 staging 目录，不重新构建或覆盖它。stage目标创建产物后也会自动执行此校验。
 输出是结构化结果；文件与自附SHA-256清单一致不等于签名或来源可信，也不表示

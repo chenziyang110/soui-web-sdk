@@ -9,7 +9,8 @@ const { generatePreflight } = require('./desktop-preflight.cjs');
 const maximumFiles = 10000;
 const maximumFileBytes = 256 * 1024 * 1024;
 const maximumTotalBytes = 1024 * 1024 * 1024;
-const optionNames = ['binary', 'assets', 'output', 'name', 'platform', 'arch', 'version', 'identifier'];
+const noticeOptions = ['sdk-license', 'runtime-notices', 'webview2-license', 'webview2-notices'];
+const optionNames = ['binary', 'assets', 'output', 'name', 'platform', 'arch', 'version', 'identifier', ...noticeOptions];
 
 function parseArgs(args) {
   const options = {};
@@ -26,7 +27,7 @@ function validateOptions(options) {
   if (!options || typeof options !== 'object' || Array.isArray(options) ||
       Object.keys(options).some(name => !optionNames.includes(name))) throw new Error('Invalid staging options.');
   for (const name of optionNames) {
-    if (name === 'identifier' && options[name] === undefined) continue;
+    if ((name === 'identifier' || noticeOptions.includes(name)) && options[name] === undefined) continue;
     if (typeof options[name] !== 'string' || !options[name] || options[name].includes('\0'))
       throw new Error(`Missing or invalid --${name}.`);
   }
@@ -48,6 +49,38 @@ function validateOptions(options) {
   return options;
 }
 
+// This is a versioned, fixed SDK notice set, not an application dependency audit.
+function noticeLayout(platform, name) {
+  const directory = platform === 'macos' ? `${name}.app/Contents/Resources/legal` : 'legal';
+  return [['sdk-license', 'LICENSE.md'], ['runtime-notices', 'THIRD_PARTY_NOTICES.md'],
+    ...(platform === 'windows' ? [['webview2-license', 'WebView2-LICENSE.txt'], ['webview2-notices', 'WebView2-NOTICE.txt']] : [])]
+    .map(([option, filename]) => ({ option, path: `${directory}/${filename}` }));
+}
+function noticeSnapshot(source) {
+  noSymlinkAncestors(source);
+  const initial = fs.lstatSync(source);
+  if (!initial.isFile() || initial.isSymbolicLink())
+    throw new Error('Notice must be a nonempty regular file of at most 16 MiB.');
+  // A FIFO must not wait for a writer, even if it replaces a regular file
+  // between lstat and open. This does not make mutable input a safe sandbox.
+  const descriptor = fs.openSync(source, fs.constants.O_RDONLY | (fs.constants.O_NOFOLLOW || 0) | (fs.constants.O_NONBLOCK || 0));
+  try {
+    const before = fs.fstatSync(descriptor);
+    if (!before.isFile() || before.size < 1 || before.size > 16 * 1024 * 1024)
+      throw new Error('Notice must be a nonempty regular file of at most 16 MiB.');
+    if (initial.dev !== before.dev || initial.ino !== before.ino || initial.size !== before.size ||
+        initial.mtimeMs !== before.mtimeMs || initial.ctimeMs !== before.ctimeMs)
+      throw new Error('Notice input changed during staging.');
+    const data = Buffer.alloc(before.size + 1);
+    let count = 0, read;
+    while (count < data.length && (read = fs.readSync(descriptor, data, count, data.length - count, null)) > 0) count += read;
+    const after = fs.fstatSync(descriptor);
+    if (count !== before.size || before.size !== after.size || before.mtimeMs !== after.mtimeMs || before.ctimeMs !== after.ctimeMs)
+      throw new Error('Notice input changed during staging.');
+    const bytes = data.subarray(0, count);
+    return { bytes, stat: before, sha256: crypto.createHash('sha256').update(bytes).digest('hex') };
+  } finally { fs.closeSync(descriptor); }
+}
 function portableName(name) {
   return name.length > 0 && Buffer.byteLength(name, 'utf8') <= 240 &&
     !/[<>:"/\\|?*\x00-\x1f\x7f-\x9f]/.test(name) && !/[. ]$/.test(name) &&
@@ -273,12 +306,29 @@ function stage(options) {
   if (within(assets, output) || within(output, assets) || within(output, binary)) throw new Error('Input and output trees must not overlap.');
   const identity = inspectBinary(binary);
   if (identity.platform !== options.platform || identity.arch !== options.arch) throw new Error('Executable platform/architecture does not match requested metadata.');
-  if (options.platform === 'linux' && options.name.toLowerCase() === 'web')
+  if (options.platform === 'linux' && ['web', 'legal'].includes(options.name.toLowerCase()))
     throw new Error('Application name conflicts with the resource directory.');
   const assetsList = scanAssets(assets);
   const mac = options.platform === 'macos';
   const binaryRelative = mac ? `${options.name}.app/Contents/MacOS/${options.name}` : `${options.name}${options.platform === 'windows' ? '.exe' : ''}`;
   const assetsRelative = mac ? `${options.name}.app/Contents/Resources/web` : 'web';
+  const layout = noticeLayout(options.platform, options.name);
+  if (noticeOptions.some(option => options[option] !== undefined && !layout.some(item => item.option === option)))
+    throw new Error('Notice sources do not match the requested platform.');
+  const notices = layout.map(item => {
+    if (typeof options[item.option] !== 'string' || !options[item.option]) throw new Error(`Missing --${item.option}.`);
+    const source = noSymlinkAncestors(options[item.option]);
+    if (within(assets, source) || within(output, source) || within(source, output) || source === binary)
+      throw new Error('Notice sources and application input/output trees must not overlap.');
+    return { ...item, source, ...noticeSnapshot(source) };
+  });
+  const binaryStat = fs.statSync(binary);
+  for (let index = 0; index < notices.length; ++index) {
+    const current = notices[index];
+    const sameFile = stat => stat.dev === current.stat.dev && stat.ino === current.stat.ino;
+    if (sameFile(binaryStat) || notices.slice(0, index).some(other => sameFile(other.stat)))
+      throw new Error('Notice source collision.');
+  }
   const entries = [];
   fs.mkdirSync(output); // Atomic no-overwrite boundary. Never recursively remove on failure.
   function generated(relative, content, mode = 0o644) {
@@ -300,6 +350,7 @@ function stage(options) {
   }
   copy(binary, binaryRelative, stat.size, 0o755);
   for (const file of assetsList) copy(file.source, `${assetsRelative}/${file.relative}`, file.size, 0o644);
+  for (const notice of notices) generated(notice.path, notice.bytes);
   const doctor = generatePreflight({ platform: options.platform, arch: identity.arch,
     minimumOSVersion: identity.minimumOSVersion || null });
   generated(doctor.filename, doctor.content, doctor.mode);
@@ -311,11 +362,20 @@ function stage(options) {
     macos: [`macOS >= ${identity.minimumOSVersion || '12.0'}`, 'System AppKit/Foundation/WebKit frameworks', 'Any additional libraries required by the supplied binary'],
   }[options.platform];
   generated('DEPENDENCIES.txt', `Development application directory, not a self-contained installer.\nRequired target runtime (not bundled or installed):\n${dependencies.map(item => `- ${item}`).join('\n')}\n\nRuntime diagnostics: ${doctor.filename} (no Node required). Linux: launch.sh --doctor; macOS: /bin/sh doctor.sh; Windows: PowerShell -NoProfile -File doctor.ps1 under existing execution policy.\nDiagnostic output uses fixed status codes and no user paths; redirect it explicitly if a report is needed. Exit 0 is not runtime acceptance. No persistent application log is captured.\nNo signing, notarization, runtime installation or GUI acceptance performed.\nBinary headers establish format/architecture only, not ABI/dependency compatibility.\nConservative format support excludes static PIE without PT_INTERP; macOS accepts thin or bounded x86_64/arm64 universal2 Mach-O.\nInput assets must be trusted and immutable during staging; this is not a filesystem sandbox.\nThe optional HTTP resource service supports files up to 8 MiB even though staging permits larger assets.\nInclude all applicable application/SDK/third-party license notices before distribution.\n`);
-  const manifest = { schema: 'soui.desktop.application-stage/1', name: options.name,
+  // Recheck the original sources and copied bytes before publishing the final manifest.
+  for (const notice of notices) {
+    const current = noticeSnapshot(notice.source);
+    if (current.sha256 !== notice.sha256 || current.stat.dev !== notice.stat.dev || current.stat.ino !== notice.stat.ino ||
+        current.stat.mtimeMs !== notice.stat.mtimeMs || current.stat.ctimeMs !== notice.stat.ctimeMs ||
+        hashFile(path.join(output, notice.path)) !== notice.sha256)
+      throw new Error('Notice input changed during staging.');
+  }
+  const manifest = { schema: 'soui.desktop.application-stage/2', name: options.name,
     applicationVersion: options.version, identifier: options.identifier || null,
     platform: identity.platform, architecture: identity.arch, executableFormat: identity.format,
     executable: binaryRelative, assets: assetsRelative, minimumOSVersion: identity.minimumOSVersion || null, developmentOnly: true,
     signed: false, dependenciesBundled: false, nativeRuntimeVerified: false,
+    notices: { schema: 'soui.desktop.notices/1', files: notices.map(item => item.path) },
     diagnostics: { entry: doctor.filename, requiresNode: false, executesApplication: false, successMeans: 'no-known-blocker-not-runtime-acceptance' },
     requiredRuntime: dependencies, files: entries.sort((a, b) => a.path.localeCompare(b.path)) };
   // Written last: its absence identifies an incomplete staging directory.
@@ -331,4 +391,4 @@ if (require.main === module) {
     process.exitCode = 1;
   }
 }
-module.exports = { parseArgs, inspectBinary, scanAssets, stage };
+module.exports = { parseArgs, inspectBinary, scanAssets, noticeLayout, stage };

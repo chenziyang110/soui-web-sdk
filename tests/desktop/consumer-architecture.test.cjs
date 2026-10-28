@@ -25,7 +25,9 @@ cmake_minimum_required(VERSION 3.24)
 project(ConsumerArchitecture LANGUAGES CXX)
 include("${moduleDir.replaceAll('\\', '/')}/SouiDesktopApplication.cmake")
 add_library(Soui::Desktop INTERFACE IMPORTED)
-set_target_properties(Soui::Desktop PROPERTIES SOUI_APPLICATION_PLATFORM macos SOUI_APPLICATION_ARCH universal2)
+set_target_properties(Soui::Desktop PROPERTIES SOUI_APPLICATION_PLATFORM macos SOUI_APPLICATION_ARCH universal2
+  SOUI_APPLICATION_SDK_LICENSE "${root.replaceAll('\\', '/')}/LICENSE.md"
+  SOUI_APPLICATION_RUNTIME_NOTICES "${root.replaceAll('\\', '/')}/sdk/portable/THIRD_PARTY_NOTICES.md")
 function(package_scope)
   set(SOUI_TARGET_ARCH x64)
   set_property(TARGET Soui::Desktop PROPERTY SOUI_APPLICATION_CONSUMER_ARCH "\${SOUI_TARGET_ARCH}")

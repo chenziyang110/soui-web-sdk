@@ -21,6 +21,10 @@
 
 ## 未发布维护
 
+- 统一 Desktop 应用 stage v2 显式交付固定 SDK notice，Windows 绑定实际 WebView2
+  包；支持源树与可搬迁安装包。verifier 严格检查平台集合和文件哈希，ZIP 随清单
+  归档；旧 v1 只保留完整性读取，不宣称 notice 交付或法律/运行验收完成。
+
 - 根目录及独立 SDK 配置均拒绝将 `SOUI_BUILD_AUTO_HOST=ON` 与 portable/统一 Desktop
   档位混用；根入口也明确拒绝同时启用 `SOUI_BUILD_INPUT_UI_BENCHMARKS`，避免提前返回
   而静默忽略请求。原 Windows 自动宿主与默认关闭的输入测量宿主入口保持不变。

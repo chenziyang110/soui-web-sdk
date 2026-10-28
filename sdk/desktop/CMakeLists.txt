@@ -5,6 +5,10 @@ add_library(Soui::Desktop ALIAS soui_desktop)
 set_target_properties(soui_desktop PROPERTIES EXPORT_NAME Desktop
   SOUI_APPLICATION_PLATFORM "${SOUI_TARGET_OS}" SOUI_APPLICATION_ARCH "${SOUI_TARGET_ARCH}"
   EXPORT_PROPERTIES "SOUI_APPLICATION_PLATFORM;SOUI_APPLICATION_ARCH")
+# Build-tree provenance only; installed targets get relocatable paths in Config.
+set_target_properties(soui_desktop PROPERTIES
+  SOUI_APPLICATION_SDK_LICENSE "${SOUI_DISTRIBUTION_ROOT}/LICENSE.md"
+  SOUI_APPLICATION_RUNTIME_NOTICES "${CMAKE_CURRENT_SOURCE_DIR}/../portable/THIRD_PARTY_NOTICES.md")
 target_compile_features(soui_desktop PUBLIC cxx_std_17)
 target_link_libraries(soui_desktop PUBLIC Soui::Runtime)
 target_include_directories(soui_desktop PUBLIC
@@ -90,6 +94,18 @@ elseif(SOUI_TARGET_OS STREQUAL "windows")
     PATHS "${SOUI_WEBVIEW2_SDK_ROOT}/build/native/include" NO_DEFAULT_PATH REQUIRED)
   find_library(SOUI_DESKTOP_WEBVIEW2_LOADER WebView2LoaderStatic
     PATHS "${SOUI_WEBVIEW2_SDK_ROOT}/build/native/${SOUI_TARGET_ARCH}" NO_DEFAULT_PATH REQUIRED)
+  # find_* cache entries can survive a package-root change. Never pair a loader
+  # from one package with notices or headers from another.
+  file(REAL_PATH "${SOUI_WEBVIEW2_SDK_ROOT}/build/native/${SOUI_TARGET_ARCH}/WebView2LoaderStatic.lib" expected_loader)
+  file(REAL_PATH "${SOUI_DESKTOP_WEBVIEW2_LOADER}" actual_loader)
+  file(REAL_PATH "${SOUI_WEBVIEW2_SDK_ROOT}/build/native/include" expected_include)
+  file(REAL_PATH "${SOUI_DESKTOP_WEBVIEW2_INCLUDE}" actual_include)
+  if(NOT actual_loader STREQUAL expected_loader OR NOT actual_include STREQUAL expected_include)
+    message(FATAL_ERROR "WebView2 cached loader/headers do not match SOUI_WEBVIEW2_SDK_ROOT; use a fresh build directory")
+  endif()
+  set_target_properties(soui_desktop PROPERTIES
+    SOUI_APPLICATION_WEBVIEW2_LICENSE "${SOUI_WEBVIEW2_SDK_ROOT}/LICENSE.txt"
+    SOUI_APPLICATION_WEBVIEW2_NOTICES "${SOUI_WEBVIEW2_SDK_ROOT}/NOTICE.txt")
   foreach(notice LICENSE.txt NOTICE.txt)
     if(NOT EXISTS "${SOUI_WEBVIEW2_SDK_ROOT}/${notice}")
       message(FATAL_ERROR "Official WebView2 package is missing ${notice}; provide the complete SDK.")

@@ -21,7 +21,9 @@ cmake_minimum_required(VERSION 3.24)
 project(CrossConfig LANGUAGES CXX)
 include("${root}/sdk/desktop/SouiDesktopApplication.cmake")
 add_library(Soui::Desktop INTERFACE IMPORTED)
-set_target_properties(Soui::Desktop PROPERTIES SOUI_APPLICATION_PLATFORM linux SOUI_APPLICATION_ARCH x64)
+set_target_properties(Soui::Desktop PROPERTIES SOUI_APPLICATION_PLATFORM linux SOUI_APPLICATION_ARCH x64
+  SOUI_APPLICATION_SDK_LICENSE "${root}/LICENSE.md"
+  SOUI_APPLICATION_RUNTIME_NOTICES "${root}/sdk/portable/THIRD_PARTY_NOTICES.md")
 add_executable(app main.cpp)
 soui_sync_application_assets(TARGET app ASSETS "\${CMAKE_SOURCE_DIR}/web")
 soui_stage_application(TARGET app NAME app ASSETS "\${CMAKE_SOURCE_DIR}/web"
@@ -37,6 +39,7 @@ soui_stage_application(TARGET app NAME app ASSETS "\${CMAKE_SOURCE_DIR}/web"
   assert.deepEqual(fs.readFileSync(path.join(build, 'staged-Release/app')), fs.readFileSync(path.join(build, 'Release/app')));
   assert.deepEqual(fs.readFileSync(path.join(build, 'Release/web/index.html')), fs.readFileSync(path.join(dir, 'web/index.html')));
   assert.equal(fs.existsSync(path.join(build, 'staged-Debug')), false);
+  assert.deepEqual(fs.readFileSync(path.join(build, 'staged-Release/legal/LICENSE.md')), fs.readFileSync(path.join(root, 'LICENSE.md')));
   // Archive is deliberately independent and must select the same handoff directory.
   run(['--build', build, '--config', 'Debug', '--target', 'app_archive_stage:Release']);
   assert.ok(fs.existsSync(path.join(build, 'staged-Release-delivery/app-1.0.0-linux-x64.zip')));
