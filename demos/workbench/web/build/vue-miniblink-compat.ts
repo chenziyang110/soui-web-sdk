@@ -1,9 +1,9 @@
 import { createHash } from 'node:crypto';
 import type { Plugin } from 'vite';
 
-// Vue 3.5.43 retains the same CSSStyleDeclaration cache read/write pair;
+// Vue 3.5.44 retains the same CSSStyleDeclaration cache read/write pair;
 // its declaration now has a PURE annotation. Keep all three sites checked.
-const expectedSha256 = 'cf2baff9153828bc18222ea7a9df9fd550bffdc2c7c00bf5aa5bcdfb639b3791';
+const expectedSha256 = '2cd761b7e130074022fd91fb8bd052bd1c97b074c6514faaa7cafb4266385059';
 const edits = [
   ['const CSS_VAR_TEXT = /* @__PURE__ */ Symbol(!!(process.env.NODE_ENV !== "production") ? "CSS_VAR_TEXT" : "");', 'const CSS_VAR_TEXT = new WeakMap();'],
   ['style[CSS_VAR_TEXT] = cssText;', 'CSS_VAR_TEXT.set(style, cssText);'],

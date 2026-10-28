@@ -1,0 +1,807 @@
+{
+  "schema": "soui.pr-verification-identity-summary/v1",
+  "version": "0.6.0-preview.3",
+  "date": "2026-10-23",
+  "releaseReady": false,
+  "derivedSummary": true,
+  "rawEvidenceIncluded": false,
+  "currentCandidate": {
+    "status": "limited-verification-passed",
+    "historicalEvidenceApplicable": false,
+    "testCountOverlap": true,
+    "sourceBinding": "Executed in the isolated PR worktree. Raw test logs do not embed a source digest; native build identity is recorded separately when available.",
+    "tests": [
+      {
+        "name": "delivery-packaging",
+        "total": 338,
+        "passed": 335,
+        "failed": 0,
+        "skipped": 3,
+        "log": {
+          "name": "out/pr-packaging/tests-final.log",
+          "bytes": 35599,
+          "sha256": "f83be6a6179064fbc1794f50b8ec2b3ce7be2ce32d8913d86a51e6bd3698c23d",
+          "includedInCommit": false
+        }
+      },
+      {
+        "name": "gui-delivery",
+        "total": 20,
+        "passed": 20,
+        "failed": 0,
+        "skipped": 0,
+        "log": {
+          "name": "out/pr-checks/gui-delivery.log",
+          "bytes": 2010,
+          "sha256": "e7e975be2c57073f8041dac1be8db7137d86821994ed8113e8bb9515f8618cd9",
+          "includedInCommit": false
+        }
+      },
+      {
+        "name": "auto-sdk-delivery",
+        "total": 30,
+        "passed": 30,
+        "failed": 0,
+        "skipped": 0,
+        "log": {
+          "name": "out/pr-checks/delivery.log",
+          "bytes": 3018,
+          "sha256": "d35e966e865f93f778bce10fccc9aa56dbb1c72b4e47e9936ea0b32712736e05",
+          "includedInCommit": false
+        }
+      },
+      {
+        "name": "web-sdk",
+        "total": 31,
+        "passed": 31,
+        "failed": 0,
+        "skipped": 0,
+        "log": {
+          "name": "out/pr-checks/web-sdk.log",
+          "bytes": 2844,
+          "sha256": "d5a9619cb918612e2285ba325cddb167be32a0dbf7cbe46bd6d295088e2543fa",
+          "includedInCommit": false
+        }
+      }
+    ],
+    "npmAudits": [
+      {
+        "directory": "sdk/web",
+        "vulnerabilities": {
+          "info": 0,
+          "low": 0,
+          "moderate": 0,
+          "high": 0,
+          "critical": 0,
+          "total": 0
+        },
+        "log": {
+          "name": "out/pr-checks/audit-sdk-web.json",
+          "bytes": 358,
+          "sha256": "06c18d6ae5bb95560b3aaf924119c2ecbd29a69e9f4f8a67dc2bb1d7bc726c5e",
+          "includedInCommit": false
+        }
+      },
+      {
+        "directory": "sdk/bindings/react",
+        "vulnerabilities": {
+          "info": 0,
+          "low": 0,
+          "moderate": 0,
+          "high": 0,
+          "critical": 0,
+          "total": 0
+        },
+        "log": {
+          "name": "out/pr-checks/audit-sdk-bindings-react.json",
+          "bytes": 358,
+          "sha256": "e8bbc82d0d656ca6c5d561fcb794dae7591893e0a9812ba4d5dcc40258af1ad3",
+          "includedInCommit": false
+        }
+      },
+      {
+        "directory": "sdk/bindings/vue",
+        "vulnerabilities": {
+          "info": 0,
+          "low": 0,
+          "moderate": 0,
+          "high": 0,
+          "critical": 0,
+          "total": 0
+        },
+        "log": {
+          "name": "out/pr-checks/audit-sdk-bindings-vue.json",
+          "bytes": 360,
+          "sha256": "d779408e46397a81b73737e06ea904cb9b8bb82ad1efff44f3e59f363fe8c5f3",
+          "includedInCommit": false
+        }
+      },
+      {
+        "directory": "templates/auto-app/web",
+        "vulnerabilities": {
+          "info": 0,
+          "low": 0,
+          "moderate": 0,
+          "high": 0,
+          "critical": 0,
+          "total": 0
+        },
+        "log": {
+          "name": "out/pr-checks/audit-auto-template.json",
+          "bytes": 363,
+          "sha256": "cc74a6611cd3da7ba4f2a0670d2ef1ca70502ef3130a97f33fccb090995254b7",
+          "includedInCommit": false
+        }
+      },
+      {
+        "directory": "tests/gui-bindings",
+        "vulnerabilities": {
+          "info": 0,
+          "low": 0,
+          "moderate": 0,
+          "high": 0,
+          "critical": 0,
+          "total": 0
+        },
+        "log": {
+          "name": "out/pr-checks/audit-tests-gui-bindings-retry.json",
+          "bytes": 361,
+          "sha256": "69e36da0ad034c92fa26e81cf9caa7aa6d6aec1f5b79bd1bf38e1cf7dbb53c31",
+          "includedInCommit": false
+        }
+      },
+      {
+        "directory": "tests/gui-bindings/react18",
+        "vulnerabilities": {
+          "info": 0,
+          "low": 0,
+          "moderate": 0,
+          "high": 0,
+          "critical": 0,
+          "total": 0
+        },
+        "log": {
+          "name": "out/pr-checks/audit-tests-gui-bindings-react18.json",
+          "bytes": 359,
+          "sha256": "9929b6a673ba369e5a69314aa2bb8d5a0c1040d1b9948cb402f34a7a3c8fbe85",
+          "includedInCommit": false
+        }
+      }
+    ],
+    "retainedFailures": [
+      {
+        "name": "out/pr-packaging/tests-initial.log",
+        "bytes": 50097,
+        "sha256": "463629e07437e200f705681db824c863c702f399147e0791855bde0dd80d8c65",
+        "includedInCommit": false
+      },
+      {
+        "name": "out/pr-checks/audit-tests-gui-bindings.json",
+        "bytes": 241,
+        "sha256": "d2cfe4991a5ac2f2565e92eaf1960d955c9592c7d8c359dc62cb1d99815c4ac8",
+        "includedInCommit": false
+      },
+      {
+        "name": "out/pr-checks/build-x64.log",
+        "bytes": 1114,
+        "sha256": "0fa41bfb5d9cc21bb9c32e006978ccee72f3c4c8b116c8e13283ef6240f4841c",
+        "includedInCommit": false
+      },
+      {
+        "name": "out/pr-checks/build-x64-final.log",
+        "bytes": 946,
+        "sha256": "d799e3842ef41b1b01195210e2ef3dc61898d4a3dbc0e528340ccc1565643ec5",
+        "includedInCommit": false
+      },
+      {
+        "name": "out/pr-checks/build-x86.log",
+        "bytes": 945,
+        "sha256": "dfdd4d20717aacbdbd90cf6fc04227ac77060b1895f2a0b03ec62bc4d377bb18",
+        "includedInCommit": false
+      },
+      {
+        "name": "out/pr-checks/build-x86-final.log",
+        "bytes": 946,
+        "sha256": "22a3fdf70021de3a62bec4a3f4df7e0b793cb0ab112c77c5ec6faac90c450462",
+        "includedInCommit": false
+      },
+      {
+        "name": "out/pr-checks/build-x64-complete.log",
+        "bytes": 1330,
+        "sha256": "e3dbc94188ef306b8494c6e11c2b3669f7b5c512310c73420ea357295d020250",
+        "includedInCommit": false
+      }
+    ],
+    "focusedRechecks": [
+      {
+        "name": "out/pr-packaging/gui-entrypoints-fixed.log",
+        "bytes": 607,
+        "sha256": "22c906d50565f55368eeccb6ef3f1fb7bd4389894d1ed62668159cd449c932ed",
+        "includedInCommit": false
+      },
+      {
+        "name": "out/pr-packaging/web-targets-installed.log",
+        "bytes": 7156,
+        "sha256": "086e74faf949e320a43664ecf76c6bc1e2ea6243e5114b67a1f3c2a234140866",
+        "includedInCommit": false
+      }
+    ],
+    "skipReason": "Three file-symlink cases skipped because the host did not permit file symlink creation.",
+    "dependencyRestore": {
+      "method": "Pinned existing nupkg verified against dependencies.json, then revalidated by the normal Restore entry point.",
+      "record": {
+        "name": "out/pr-checks/webview2-cache-restore.log",
+        "bytes": 52,
+        "sha256": "ec90c83f3231bc89c3f7a6336733781d3067eeca554c7c8d6023069fb48602fa",
+        "includedInCommit": false
+      }
+    },
+    "sourceSha256": "9a401414e18016e26159d6829d5f4c7b7548fb7ff555d4ac2c691c8060e91d29",
+    "builds": [
+      {
+        "architecture": "x64",
+        "configuration": "Release",
+        "buildId": "41ed553e-8f2f-4a1b-81d9-07753eff5828",
+        "sourceSha256": "9a401414e18016e26159d6829d5f4c7b7548fb7ff555d4ac2c691c8060e91d29",
+        "nativeBuild": "passed",
+        "buildRecord": {
+          "name": "out/x64/build-Release.json",
+          "bytes": 659161,
+          "sha256": "f2a1a25efd7b84dc70daafa984c35b2d2253e3056bd6471dfff2be702e362812",
+          "includedInCommit": false
+        },
+        "buildLog": {
+          "name": "out/pr-checks/build-x64-verified.log",
+          "bytes": 45639,
+          "sha256": "a53d83454cbd623abfcb292bca6193f3134e6b13b40583e21f92b8c514facd25",
+          "includedInCommit": false
+        },
+        "ctest": {
+          "passed": 10,
+          "failed": 0,
+          "log": {
+            "name": "out/pr-checks/ctest-x64.log",
+            "bytes": 1513,
+            "sha256": "1f80a7f61c17b3a70c731e910e05d4f7e37bfbf9bf053c0473453e1a290c44b3",
+            "includedInCommit": false
+          }
+        },
+        "installedCmakeConsumer": {
+          "configureExitCode": 0,
+          "buildExitCode": 0,
+          "runExitCode": 0,
+          "browserStarted": false,
+          "record": {
+            "name": "external-cmake-consumer/x64-result.json",
+            "bytes": 3310,
+            "sha256": "28c6311baa46e217cf53a3b4404031ecc0156867740382f83e6f74d8b826f0b8",
+            "includedInCommit": false
+          }
+        },
+        "autoSmoke": {
+          "passed": true,
+          "record": {
+            "name": "out/x64/auto-smoke-Release.json",
+            "bytes": 62805,
+            "sha256": "e57a9dc385553e1f429b26c47747fe3250f6511602372dd795afc26d2e672ece",
+            "includedInCommit": false
+          },
+          "runs": [
+            {
+              "backend": "webview2",
+              "passed": true,
+              "pid": 81952,
+              "creationFileTime": "134372201894599759",
+              "exitCode": 0,
+              "supervisorExitCode": 0,
+              "jobClosureConfirmed": true,
+              "terminatedOwnedJob": false,
+              "raw": {
+                "name": "out/x64/auto-owned-70dd7b60-777f-4180-9ee0-6442f5644923/webview2/owned.ndjson",
+                "bytes": 8911,
+                "sha256": "16c64f3ab6df13b87dfdc28f363f6d0a6c008fa1554215cbb793333580414efd",
+                "includedInCommit": false
+              },
+              "finished": {
+                "name": "out/x64/auto-owned-70dd7b60-777f-4180-9ee0-6442f5644923/webview2/finished.json",
+                "bytes": 983,
+                "sha256": "e807f6b1d4a40c1dec793b76eab85c80bbece41dfcefccbe6b6a82f9a25147f4",
+                "includedInCommit": false
+              }
+            },
+            {
+              "backend": "miniblink",
+              "passed": true,
+              "pid": 62384,
+              "creationFileTime": "134372201967383459",
+              "exitCode": 0,
+              "supervisorExitCode": 0,
+              "jobClosureConfirmed": true,
+              "terminatedOwnedJob": false,
+              "raw": {
+                "name": "out/x64/auto-owned-70dd7b60-777f-4180-9ee0-6442f5644923/miniblink/owned.ndjson",
+                "bytes": 772,
+                "sha256": "eda2dacb161b98314d601fcb5850afa35b46ba473b204a23019a203c0283e7c6",
+                "includedInCommit": false
+              },
+              "finished": {
+                "name": "out/x64/auto-owned-70dd7b60-777f-4180-9ee0-6442f5644923/miniblink/finished.json",
+                "bytes": 984,
+                "sha256": "3e882f5e22c339f0f2e93d5368c4acb0707f02ac61bd99417c8bc94565bcaf9b",
+                "includedInCommit": false
+              }
+            }
+          ]
+        },
+        "compatibility": {
+          "entryPointExitCode": 0,
+          "controllerNaturalClosure": "external-caller-evidence-required",
+          "log": {
+            "name": "out/pr-checks/compatibility-x64.log",
+            "bytes": 329,
+            "sha256": "2be8fb73054859060f7cf51416426cd3f7040cf5575b2c6606aacadade650f58",
+            "includedInCommit": false
+          }
+        },
+        "modern": {
+          "entryPointExitCode": 0,
+          "controllerNaturalClosure": "external-caller-evidence-required",
+          "log": {
+            "name": "out/pr-checks/modern-x64.log",
+            "bytes": 363,
+            "sha256": "91f423ff326255418e80e8b94e091788c4bbfc2dd522d97b3f09aa76fbe2d166",
+            "includedInCommit": false
+          }
+        }
+      },
+      {
+        "architecture": "x86",
+        "configuration": "Release",
+        "buildId": "3da951e4-8999-40eb-af99-89f6c7c3e382",
+        "sourceSha256": "9a401414e18016e26159d6829d5f4c7b7548fb7ff555d4ac2c691c8060e91d29",
+        "nativeBuild": "passed",
+        "buildRecord": {
+          "name": "out/x86/build-Release.json",
+          "bytes": 659213,
+          "sha256": "e0cd99c06e5abbbe44deedb2f5668756e5090a071659b3e1cc65a3236d36eae3",
+          "includedInCommit": false
+        },
+        "buildLog": {
+          "name": "out/pr-checks/build-x86-verified.log",
+          "bytes": 45639,
+          "sha256": "2e07bd68c3f7ddea3b054b1b5ec1c420b5aaad34cb36a57c557755c5084bae3e",
+          "includedInCommit": false
+        },
+        "ctest": {
+          "passed": 10,
+          "failed": 0,
+          "log": {
+            "name": "out/pr-checks/ctest-x86.log",
+            "bytes": 1513,
+            "sha256": "6ea5a18c71ee9ebd65b0675dcb6bfe77ace69ee1b556a444dab9708775ead4b5",
+            "includedInCommit": false
+          }
+        },
+        "installedCmakeConsumer": {
+          "configureExitCode": 0,
+          "buildExitCode": 0,
+          "runExitCode": 0,
+          "browserStarted": false,
+          "record": {
+            "name": "external-cmake-consumer/x86-result.json",
+            "bytes": 3310,
+            "sha256": "050b5e5641d9cb58a9cda649102dbeb4a220aa35ca4e391c2eb7e541783f74e2",
+            "includedInCommit": false
+          }
+        },
+        "autoSmoke": {
+          "passed": true,
+          "record": {
+            "name": "out/x86/auto-smoke-Release.json",
+            "bytes": 62817,
+            "sha256": "8b0884baf79982fe80fb6f2096d44f884c3ecc8c105da40a6f6b03895ac0da2a",
+            "includedInCommit": false
+          },
+          "runs": [
+            {
+              "backend": "webview2",
+              "passed": true,
+              "pid": 84824,
+              "creationFileTime": "134372202462543308",
+              "exitCode": 0,
+              "supervisorExitCode": 0,
+              "jobClosureConfirmed": true,
+              "terminatedOwnedJob": false,
+              "raw": {
+                "name": "out/x86/auto-owned-3ea04a80-ba22-4786-bea0-70d9be02d847/webview2/owned.ndjson",
+                "bytes": 8090,
+                "sha256": "592e0b8be3f34edc8e0dd1a51657e87b650c6bcb7a4714ad2ae70f871607596f",
+                "includedInCommit": false
+              },
+              "finished": {
+                "name": "out/x86/auto-owned-3ea04a80-ba22-4786-bea0-70d9be02d847/webview2/finished.json",
+                "bytes": 983,
+                "sha256": "b6f329058cbf2689eb821d579d3ef314b164ccea89fd86ad6bfb6ccbd283b6d6",
+                "includedInCommit": false
+              }
+            },
+            {
+              "backend": "miniblink",
+              "passed": true,
+              "pid": 77988,
+              "creationFileTime": "134372202537880990",
+              "exitCode": 0,
+              "supervisorExitCode": 0,
+              "jobClosureConfirmed": true,
+              "terminatedOwnedJob": false,
+              "raw": {
+                "name": "out/x86/auto-owned-3ea04a80-ba22-4786-bea0-70d9be02d847/miniblink/owned.ndjson",
+                "bytes": 772,
+                "sha256": "4d9431d875e5b79347c482901c6864213d8c075b84ba01f85becf73381047865",
+                "includedInCommit": false
+              },
+              "finished": {
+                "name": "out/x86/auto-owned-3ea04a80-ba22-4786-bea0-70d9be02d847/miniblink/finished.json",
+                "bytes": 984,
+                "sha256": "6dd8600b04757135a82fc415fc1ba141ac502a59a6ec420f447a4b20cbe73421",
+                "includedInCommit": false
+              }
+            }
+          ]
+        },
+        "compatibility": {
+          "entryPointExitCode": 0,
+          "controllerNaturalClosure": "external-caller-evidence-required",
+          "log": {
+            "name": "out/pr-checks/compatibility-x86.log",
+            "bytes": 329,
+            "sha256": "6a9c4a7b4abd905c456c01df47043038d566a79a96b75ac5a1eb58b63e177eca",
+            "includedInCommit": false
+          }
+        },
+        "modern": {
+          "entryPointExitCode": 0,
+          "controllerNaturalClosure": "external-caller-evidence-required",
+          "log": {
+            "name": "out/pr-checks/modern-x86.log",
+            "bytes": 363,
+            "sha256": "f2eb0aee55c150231217c4004c5c0d1861de10e5a46bb7b4f1a353ec37377aa7",
+            "includedInCommit": false
+          }
+        }
+      }
+    ],
+    "archives": [
+      {
+        "architecture": "x64",
+        "archive": {
+          "name": "dist/SouiAutoStarter-0.6.0-preview.3-windows-x64.zip",
+          "bytes": 16906361,
+          "sha256": "8fded35a49becf98d274b302a8e25242687c7a666a9a76c688447e504e3f14e7",
+          "includedInCommit": false
+        },
+        "buildId": "41ed553e-8f2f-4a1b-81d9-07753eff5828",
+        "sourceSha256": "9a401414e18016e26159d6829d5f4c7b7548fb7ff555d4ac2c691c8060e91d29",
+        "payloadBytes": 46718501,
+        "payloadFileCount": 273,
+        "compression": "7-Zip ZIP -mx=5 -mmt=2",
+        "profile": "zip",
+        "report": {
+          "name": "dist/SouiAutoStarter-0.6.0-preview.3-windows-x64.zip.json",
+          "bytes": 128441,
+          "sha256": "bab8c28ba4e35751bc0759548feb3ddf25b5f5c0d84db5bd0cd41de6b6c029c7",
+          "includedInCommit": false
+        },
+        "checksum": {
+          "name": "dist/SouiAutoStarter-0.6.0-preview.3-windows-x64.zip.sha256",
+          "bytes": 115,
+          "sha256": "305205b03393ab950b515b4f2232019f946451ac74c223d3eaae69028dae9242",
+          "includedInCommit": false
+        },
+        "extractedLaunchPerformed": false
+      },
+      {
+        "architecture": "x86",
+        "archive": {
+          "name": "dist/SouiAutoStarter-0.6.0-preview.3-windows-x86.zip",
+          "bytes": 14291421,
+          "sha256": "4b3dfcf69b2aeb16d2148c925f009117b7f14dfb7e8fab5d92a22ec81702402c",
+          "includedInCommit": false
+        },
+        "buildId": "3da951e4-8999-40eb-af99-89f6c7c3e382",
+        "sourceSha256": "9a401414e18016e26159d6829d5f4c7b7548fb7ff555d4ac2c691c8060e91d29",
+        "payloadBytes": 35318531,
+        "payloadFileCount": 273,
+        "compression": "7-Zip ZIP -mx=5 -mmt=2",
+        "profile": "zip",
+        "report": {
+          "name": "dist/SouiAutoStarter-0.6.0-preview.3-windows-x86.zip.json",
+          "bytes": 128449,
+          "sha256": "8e0e39a2decacb0b4984fea9b32ca6f1f319bada803a7c8fbf44784bb9f69777",
+          "includedInCommit": false
+        },
+        "checksum": {
+          "name": "dist/SouiAutoStarter-0.6.0-preview.3-windows-x86.zip.sha256",
+          "bytes": 115,
+          "sha256": "0c27ec1709ade1c4308dae4594dfd52a2e70e8e86765dab06ce588f7d0f0f066",
+          "includedInCommit": false
+        },
+        "extractedLaunchPerformed": false
+      }
+    ],
+    "rootAutoRuns": 4,
+    "extractedZipLaunchPerformed": false,
+    "compressionRemeasured": false,
+    "generatedConsumer": {
+      "architecture": "x64",
+      "configuration": "Release",
+      "passed": true,
+      "originalSourceSha256": "9a401414e18016e26159d6829d5f4c7b7548fb7ff555d4ac2c691c8060e91d29",
+      "generatedSourceSha256": "bfd46e11c178050049de6975074d907975fe15ceb3789f06a551bb8e90fea5bb",
+      "buildId": "fa5bc7dd-0b34-4ce5-9f7d-93189247c85a",
+      "sdkManifestSha256": "c0be9a1c526507d656f7fbfb388ab47bfbb5835d6a2f9768c4c781a38392ca1e",
+      "sdkFileCount": 760,
+      "generation": {
+        "name": "external-generated-consumer/generation-result.json",
+        "bytes": 522518,
+        "sha256": "19cb1aa1aeba0d001ae8339abd4187e51103fa2806549f70b3c898885e5f5426",
+        "includedInCommit": false
+      },
+      "result": {
+        "name": "external-generated-consumer/result.json",
+        "bytes": 60476,
+        "sha256": "62a36917f4f9beb0789b9563d4c840af4e6c4052748b48f6564f92765d625c3e",
+        "includedInCommit": false
+      },
+      "sourceAfterDocs": {
+        "name": "external-generated-consumer/verify-source-docs-final.log",
+        "bytes": 77,
+        "sha256": "21e0e26eca31246007893d8ac53aa6e7208fdba941cc44af78088a8bdc89f3ff",
+        "includedInCommit": false
+      },
+      "smoke": {
+        "name": "external-generated-consumer/auto-smoke-Release.json",
+        "bytes": 63214,
+        "sha256": "744e8321d9f5f50fa8d2a953d5f55c64b6fbe4a22e77e46b1651249ed2004be2",
+        "includedInCommit": false
+      },
+      "runs": [
+        {
+          "backend": "webview2",
+          "passed": true,
+          "pid": 46112,
+          "creationFileTime": "134372203983725560",
+          "exitCode": 0,
+          "supervisorExitCode": 0,
+          "jobClosureConfirmed": true,
+          "raw": {
+            "name": "external-generated-consumer/out/x64/auto-owned-c8a2c96e-1c90-4e0a-a4c3-5d523faf873a/webview2/owned.ndjson",
+            "bytes": 8631,
+            "sha256": "15cde631de1f093162a3685f9ab71b389c21ee0eba8328346607f0096639d434",
+            "includedInCommit": false
+          },
+          "finished": {
+            "name": "external-generated-consumer/out/x64/auto-owned-c8a2c96e-1c90-4e0a-a4c3-5d523faf873a/webview2/finished.json",
+            "bytes": 1029,
+            "sha256": "e406853c7727dd2c99db1108b37086570088d950ccdb55463a8a13d5b2d5c4e7",
+            "includedInCommit": false
+          }
+        },
+        {
+          "backend": "miniblink",
+          "passed": true,
+          "pid": 63288,
+          "creationFileTime": "134372204067736855",
+          "exitCode": 0,
+          "supervisorExitCode": 0,
+          "jobClosureConfirmed": true,
+          "raw": {
+            "name": "external-generated-consumer/out/x64/auto-owned-c8a2c96e-1c90-4e0a-a4c3-5d523faf873a/miniblink/owned.ndjson",
+            "bytes": 816,
+            "sha256": "c9b2c22c1ba85a7ba681d3940f31ae7747f64a113a186f533aa6c48f85a245e1",
+            "includedInCommit": false
+          },
+          "finished": {
+            "name": "external-generated-consumer/out/x64/auto-owned-c8a2c96e-1c90-4e0a-a4c3-5d523faf873a/miniblink/finished.json",
+            "bytes": 1030,
+            "sha256": "5905738ea23ebcea6e662337e6c90cae0f42cce5d79ee8ce213386aeb3474dcb",
+            "includedInCommit": false
+          }
+        }
+      ],
+      "x86Performed": false
+    },
+    "generatedConsumerAutoRuns": 2,
+    "totalAutoRuns": 6,
+    "nativeTestsPassed": 20,
+    "limitations": [
+      "No generated-consumer x86 rerun in this isolated candidate.",
+      "No extracted-ZIP launch rerun in this isolated candidate.",
+      "No compression time or memory remeasurement for preview.3.",
+      "External caller closure remains separately required where the original tool receipt says so.",
+      "Three symlink tests skipped due to host permissions.",
+      "No Win7/PE, high-refresh-rate, long-duration stability, memory budget or production certification."
+    ]
+  },
+  "historicalAuto": {
+    "version": "0.6.0-preview.2",
+    "sourceSha256": "add361cae615eff855260ddc1b6addf971c3b97e10e6668b0decb39d09121401",
+    "sourceSnapshot": {
+      "bytes": 704169,
+      "sha256": "fad690563070f613de5d6dbd9252a903ca93c48261e20137ae4fdb1216c91cfe"
+    },
+    "rawSummary": {
+      "name": "summary.json",
+      "bytes": 36699,
+      "sha256": "2b47014a03138e4ad00f7dd390dd715158033ea4a9c4f117eb452723c78fa9e6"
+    },
+    "rawIndex": {
+      "name": "metadata-index.json",
+      "bytes": 240194,
+      "sha256": "e4c1a4090eae496d7ea2129016ffdc8530613df6994bb05de8c2b54e9cd32494"
+    },
+    "rawEvidenceCount": 682,
+    "environment": {
+      "os": "Windows NT 10.0.26200.0",
+      "runtime": "WebView2 155.0.4283.62",
+      "nativeToolchain": "MSVC143",
+      "windowsSdk": "10.0.19041.0",
+      "configuration": "Release"
+    },
+    "builds": [
+      {
+        "architecture": "x64",
+        "buildId": "768ea38e-b6cd-4a36-b46c-31281c6e9694",
+        "sourceSha256": "add361cae615eff855260ddc1b6addf971c3b97e10e6668b0decb39d09121401",
+        "buildRecord": {
+          "bytes": 665853,
+          "sha256": "9a5df086b87777940d14e32415d47b4233f569487c4eec63c94454c205c50b04"
+        },
+        "autoSmokeRecord": {
+          "bytes": 63156,
+          "sha256": "7d4c71915a001f35e44f752a1c4efebc406d9aa48f23411c8fa57db3616474e8"
+        },
+        "cmakeConsumerRecord": {
+          "bytes": 1562,
+          "sha256": "9230c907b17658f2e04e33467970f4a53549990bf62ec3871b52c418eb54310d"
+        }
+      },
+      {
+        "architecture": "x86",
+        "buildId": "da05ce90-def0-43db-bea7-ca2838117d81",
+        "sourceSha256": "add361cae615eff855260ddc1b6addf971c3b97e10e6668b0decb39d09121401",
+        "buildRecord": {
+          "bytes": 665905,
+          "sha256": "c5d14ea7d27b93bf0761824b47cc88f7771838e5516090709d080258c841241a"
+        },
+        "autoSmokeRecord": {
+          "bytes": 63171,
+          "sha256": "7ad40dc1719f8c6d44d8c29b00a403dfc96182afb4bfc2973948c466e17b7491"
+        },
+        "cmakeConsumerRecord": {
+          "bytes": 1562,
+          "sha256": "6b05a5624e48963958aa3b02d4b75536e18822632bcfc774ab3fdb0238194581"
+        }
+      }
+    ],
+    "archives": [
+      {
+        "architecture": "x64",
+        "name": "SouiAutoStarter-0.6.0-preview.2-windows-x64.zip",
+        "bytes": 16978177,
+        "sha256": "a8a7f3f07fa2fc7152056362915beadd0812d96b38aa976bd181fef0af1196d9",
+        "payloadBytes": 46881317,
+        "fileCount": 273,
+        "compression": "7-Zip ZIP -mx=5 -mmt=2",
+        "report": {
+          "bytes": 128476,
+          "sha256": "254fcb017a694106e6f6226e6ab57c91398cfffc7b2d16d2bd187dc451eb0ba4"
+        },
+        "extractedResult": {
+          "bytes": 69389,
+          "sha256": "2fd2b9266a826aef73cbc18b33a00f921ca373aa5da663eb7ed9778369c5f3bf"
+        }
+      },
+      {
+        "architecture": "x86",
+        "name": "SouiAutoStarter-0.6.0-preview.2-windows-x86.zip",
+        "bytes": 14356671,
+        "sha256": "e4a94e37fd9727455b73c860ab977b61144b11ad824963122d3dc437c18bd78c",
+        "payloadBytes": 35463939,
+        "fileCount": 273,
+        "compression": "7-Zip ZIP -mx=5 -mmt=2",
+        "report": {
+          "bytes": 128487,
+          "sha256": "8ae0a9b41fbfbc9650ab68e71c3c9e1c90589071d0670c6b2e74aba00aa530bf"
+        },
+        "extractedResult": {
+          "bytes": 69402,
+          "sha256": "ea3a7ac0b7d603fbfb8cfd4a5056cb601e9f99efc91472e19c5487a86f157770"
+        }
+      }
+    ],
+    "generatedConsumer": {
+      "sourceSha256": "6fdf805e94df2e79b23c3514c837b9e55e7d9854c11a6ad367acad9949e6fe75",
+      "sdkManifestSha256": "f4e7ddfca8f9f44679a18dba9d46d044ddcbb6ce1302558a71bac3fc91f31445",
+      "summary": {
+        "bytes": 10916,
+        "sha256": "d49b0c70c802cac1c85a8df8bfc8a6c7ce3d56789bd8ec4f192f8cc31237d122"
+      }
+    },
+    "counts": {
+      "realAutoLaunches": 12,
+      "rootAutoLaunches": 4,
+      "generatedConsumerAutoLaunches": 4,
+      "extractedZipAutoLaunches": 4,
+      "nativePassed": 16,
+      "deliveryPassed": 30,
+      "modernRequiredRejections": 2,
+      "cmakeConsumers": 2
+    },
+    "deliveryLog": {
+      "name": "evidence/complete-delivery-tests.log",
+      "bytes": 3014,
+      "sha256": "b3a5da33cfdf76ead2723540da49e37a74b11a755a23828697692c75990b1f44"
+    },
+    "nativeLogs": [
+      {
+        "architecture": "x64",
+        "passed": 8,
+        "failed": 0,
+        "log": {
+          "bytes": 2376,
+          "sha256": "117731db103e4680a56dc597eb4824619e6f65b7e9f3fff0cc99242119b8e5ee"
+        }
+      },
+      {
+        "architecture": "x86",
+        "passed": 8,
+        "failed": 0,
+        "log": {
+          "bytes": 2376,
+          "sha256": "0eb4919cd9b7f9039218cf1ba0352a1885fbf0e7c613c634d823c0e8cb0c14e6"
+        }
+      }
+    ],
+    "retainedFailures": {
+      "failedAutoAttempts": 1,
+      "stageFailureLogs": 6,
+      "details": "README.md"
+    },
+    "limits": [
+      "Historical frozen snapshot is different from the PR candidate.",
+      "Fallback used real empty Fixed Runtime discovery, not whole-machine Runtime uninstallation.",
+      "x86 impossible profile paths previously timed out; read-only preflight now rejects these paths. This is not exhaustive asynchronous failure coverage.",
+      "No Win7/PE, high-refresh-rate, long-duration memory or production certification."
+    ]
+  },
+  "historicalCompression": {
+    "version": "0.6.0-preview.1",
+    "sourceSha256": "2592ea2ba5d2d5f857d33632ea2181f312b97301f3da1208f81aaf44214fa7f5",
+    "rawSummary": {
+      "name": "verification.json",
+      "bytes": 117409,
+      "sha256": "3cbeaff51fa263d0ed3a9690917a80f90f8eb332f04d288f61b9ed356a7b9136"
+    },
+    "measurementSummary": {
+      "name": "measurement-summary.json",
+      "bytes": 903875,
+      "sha256": "443b4354f9c9d6d487b7658cd7dd55d42a29e8faa254de5e44bd00f7a42b586f"
+    },
+    "resultsTable": {
+      "name": "results-table.md",
+      "bytes": 1882,
+      "sha256": "4c71ea371ccca441c784e4cd30ef2b5b2432c5fa978240b603e54c83fc107a83"
+    },
+    "appArchitectures": [
+      "x64",
+      "x86"
+    ],
+    "configuration": "Release",
+    "formalArchives": 18,
+    "measurementGroups": 18,
+    "extractionRuns": 54,
+    "details": "historical-compression.md",
+    "appliesToCurrentCandidate": false
+  }
+}

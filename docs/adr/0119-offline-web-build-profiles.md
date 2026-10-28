@@ -1,0 +1,63 @@
+# ADR 0119：显式离线 Web 源码诊断构建档
+
+日期：2026-10-22。状态：已实现；当前候选复验见
+[PR 验证范围](../../verification/production-validation/auto-host-pr-2026-10-23/README.md)。
+此构建能力不提供运行时调试权限，也不表示真实断点已通过。
+
+## 背景与决定
+
+默认发行档不应携带业务源码；需要源码诊断时必须显式声明并绑定产物身份。
+仅改变 Vite 的 sourcemap 选项，无法阻止 SkipWeb 跨档复用。
+
+Build.ps1 增加显式 WebProfile：distribution 为默认，source-diagnostic 为应用
+主动选择。它与原生 Debug/Release、后端、原生工具链相互独立。Build 只在本次
+进程范围传递 SOUI_WEB_BUILD_PROFILE，并恢复原环境；该值不授予运行时调试权限。
+模板及 Workbench 共用受管理的 Web profile helper，保留现有插件和目标。
+默认不生成 map；诊断档生成 inline map 并关闭 JS minify，便于离线源码调试。
+
+## 资源与身份
+
+Vite 完成实际输出后写入 .soui-web-profile.json，绑定档位、真实脚本/map 散列
+及当前应用/SDK 源码投影。诊断 map 必须自包含，不支持外置或在线 map；不增设
+HTTP 服务，也不在客户机器改写资源。构建期核对业务 sourcesContent 与实际输入。
+自有工具仅检查当前构建目录和获准的应用/SDK 源码根，不按 map URL 获取网络或
+任意文件。第三方/虚拟源的观察与业务源码匹配分开，不宣称控制 Runtime 的读取。
+
+模板默认只允许 app/src 和 SDK/web/src 业务来源。Workbench 在配置中显式
+列出五个实际源码目录，投影保留目录前缀以区分同名文件。普通第三方来源仅可
+归入应用或 SDK 的真实 node_modules 根；不因路径含 node_modules 就信任它。
+legacy 插件的嵌套 polyfill 构建会产生偏移后的 core-js/systemjs 来源标识；
+仅这两个固定包的规范子路径可回查应用当前安装文件，并要求源码文本完全一致。
+Vite 对 MP4/WebM/GIF/PNG 的整段资产代理按生成的虚拟模块记录，原始媒体仍经
+路径与字节预算检查；不能用该例外跳过 TS/TSX/Vue 原文检查。
+
+单文件/map 16 MiB、累计 128 MiB、4096 文件和每 map 16384 sources 为预先设置
+的工具预算。拒绝链接路径、未知 profile、外置 map、独立 TS/TSX/JSX/Vue 等源码
+及不一致的 map/脚本身份。默认档额外拒绝 sourceMappingURL 和嵌入 map 内容。
+这些检查不是任意内容的自动脱敏或秘密检测。
+
+Web evidence 升级档位身份，Build start/finish 保持同一选择；SkipWeb 明确核对
+选择与全部输出。部署复制前后核对 profile 和原始资源，保留现有原子替换、
+合法材料和回滚。旧自定义应用的无 marker 纯 distribution 输出仍可经严格扫描；
+无 marker 不得冒充 source-diagnostic，旧 Web evidence 必须重新记录。
+record-web 和成功的 verify-web 都把 Web 身份绑定到当前 pending build；
+SDK-only SkipWeb 也必须在原生阶段结束时复核。对已完成构建的单独读取保持只读。
+
+标准 Build 在原生编译之后显式复用部署函数，即使 CMake POST_BUILD 因无需
+重链接而没有执行，也刷新当前档位资源。finish 再核对已记录的 Web 输出及
+实际应用资源，不能把旧档位载荷记到新构建。旧直接 API 的 distribution
+调用仍作资源扫描；正常 Build 和所有诊断构建必须核对 Web evidence。
+
+## 所有权、兼容与验证
+
+helper 位于 tools/internal，随现有受管理工具安装；模板仍由 New-Project 的
+相对路径规则重定位，不依赖开发目录。SDK 不依赖 Demo。旧 0.5.0 包和安装不改。
+这项工作提供构建基础，不开放调试会话。
+
+验证只运行受影响的 profile、身份、部署边界及各改变的 Web 配置，不重跑原生
+构建或 VM。两个后端的 Release TS/TSX 真实断点、懒加载与异常栈、安装消费者
+和最终生产矩阵仍必须另行执行；静态 map 通过不能代替这些证据。
+
+共享工作区历史曾对各实际 Vite 配置完成两档构建与文件身份检查，并修复
+SDK-only SkipWeb 在原生阶段后漏检输出的问题。该历史结果不绑定拆分后的
+候选，也不能代替真实 Runtime 断点、安装消费者或生产矩阵验证。
