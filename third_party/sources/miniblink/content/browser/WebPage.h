@@ -111,6 +111,7 @@ public:
 
     void setDrawMinInterval(double drawMinInterval);
     void setMainFrameRate(int rate);
+    bool cancelInputState();
 
     void setNeedsCommit();
     bool needsCommit() const;

@@ -1,4 +1,7 @@
 #include "wke/wke.h"
+#include "wke/wkeWebView.h"
+#include "wke/wkeGlobalVar.h"
+#include "content/browser/WebPage.h"
 #include "content/common/InputFrameTrace.h"
 
 #include <algorithm>
@@ -6,6 +9,8 @@
 #include <atomic>
 #include <cstring>
 #include <mutex>
+
+namespace wke { extern DWORD wkeThreadId; }
 
 namespace {
 namespace trace = content::input_frame_trace;
@@ -19,6 +24,29 @@ std::mutex drainMutex;
 std::mutex configurationMutex; // Cold bootstrap only; never a producer/consumer lock.
 std::atomic<unsigned long long> drainedEvents{0};
 std::atomic<bool> exportLimitReached{false};
+
+wke::CWebView* liveOwnerView(void* opaque)
+{
+    if (!wke::wkeIsInit || ::GetCurrentThreadId() != wke::wkeThreadId || !opaque)
+        return nullptr;
+    const auto view = static_cast<wkeWebView>(opaque);
+    if (wke::g_liveWebViews.find(view) == wke::g_liveWebViews.end())
+        return nullptr;
+    return static_cast<wke::CWebView*>(view);
+}
+
+int WKE_INPUT_UI_CALL cancelInput(void* opaque)
+{
+    auto* view = liveOwnerView(opaque);
+    if (!view || !view->webPage())
+        return WKE_INPUT_UI_UNAVAILABLE;
+    try {
+        return view->webPage()->cancelInputState() ? WKE_INPUT_UI_OK : WKE_INPUT_UI_REJECTED;
+    } catch (...) {
+        // The caller must enter limited recovery; partial cancellation is not success.
+        return WKE_INPUT_UI_REJECTED;
+    }
+}
 
 int WKE_INPUT_UI_CALL configureTrace(const wkeInputUiTraceConfig* config)
 {
@@ -146,7 +174,8 @@ const wkeInputUiApi* WKE_CALL_TYPE wkeGetInputUiApi(unsigned requestedVersion)
 {
     // Fields become available only with their actual owner/view implementation.
     static const wkeInputUiApi api = { sizeof(wkeInputUiApi), WKE_INPUT_UI_ABI_VERSION,
-        WKE_INPUT_UI_CAP_TRACE, &configureTrace, &stopTrace, &snapshotTrace, &drainTrace,
+        WKE_INPUT_UI_CAP_TRACE,
+        &configureTrace, &stopTrace, &snapshotTrace, &drainTrace,
         nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
     return requestedVersion == WKE_INPUT_UI_ABI_VERSION ? &api : nullptr;
 }

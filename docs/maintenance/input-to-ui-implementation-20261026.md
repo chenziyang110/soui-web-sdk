@@ -14,7 +14,7 @@ W00 已提交 [Draft PR111](https://github.com/chenziyang110/soui-web-sdk/pull/1
 | --- | --- | --- | --- |
 | W00 | 同线程无效计时收益更正；continuation 生命周期/重建；legacy 单 deadline 重试；默认独立路径与 scheduler oracle | 生产代码与回归源码已集成并完成静态复核；[来源增量](../../third_party/manifests/kernel-input-ui-w00-source.json)；入口 scheduler_continuation、worker_lifetime、render_deadline_policy；未编译/未运行 | 代码完成待编译 |
 | W01 | 统一 QPC/身份/关联；默认关闭有界 ring；scalar 指标；替换逐事件实验文件日志；同产品与 burst 新协议 | 公共数值契约冻结中；严格旧协议保留；无执行结果 | 实现中 |
-| W02 | 类型化接纳；关键边沿保障/明确取消恢复；多 Host 公平；有界内部通知；输入语义守恒 | 容量/OOM/关闭/IME/状态恢复回归源码待交付 | 待 W00/W01 接口 |
+| W02 | 64普通+16边沿 mailbox、32 Host轮转、与FIFO共享接纳序号；接纳后resize代际发布、序号不回绕；取消不制造gesture | input_admission生产源码fixture、ordinal_cases及真实DOM/resize失败场景已交付；未编译/未运行；native cancel能力等W07 callback guard才开放 | 源码已集成，能力激活依赖W07 |
 | W03 | ready/future/idle；最早 deadline/票号/取消；有界压力恢复；单调时钟/Win7 fallback | 固定时钟/失败/重建/睡眠恢复回归源码待交付 | 待 W00/W01 接口 |
 | W04 | future/ready 索引；50ms 老化与 tie-break；摘要；有界接纳/promotion/取消 | 随机 oracle 对照与关闭/自删除/引用回归源码待交付 | 待 W03 |
 | W05 | 复用 pacer 和分数相位；窄版本能力/代际契约；资源与 pacing 分离；首次 dirty/窗口状态 | 可控时钟与刷新率/恢复/跨屏回归源码待交付 | 待 W01 接口 |
@@ -51,3 +51,13 @@ A 独占 SDK 输入/引擎与 vendor 任务调度，B 独占渲染/资源/帧和
 静态补齐默认 vendor 注册：原64项加 provider registry-live-fence 和 input-frame-trace，共66个精确名称；preflight 原27项加两个实际 trace 源文件为29项，继续逐名/逐文件核对。SDK backend-validator 单独注册。工具尚未查询真实 CTest registry，以上只是源码注册契约，不是测试通过数。主 producer 在 wkeInitialize 真实 owner 初始化前注册，完整 platform shutdown/renderer_finalized 后才 detach；provider close fence 失败不能从 DebugBreak 继续走成功卸载。
 
 专人先运行 trace/backend validator、精确 registry 和新协议的 reader fixture，再做一次 trace scalar/detailed 扰动预检。关联 reader 必须检查实际阶段交集与样本数；SDK/vendor/API 版本失配、其他 consumer 取走记录、trace 超限均不得生成合格的 complete capture。随后才进行同产品配对；未冻结的生产调用点不提交正式性能结果。
+
+## W02 输入接纳与代际屏障
+
+`sdk/src/host/{input_mailbox,engine_input_service,engine_admission,input_sequence}.h` 与实际 `engine_thread.cpp` 共同保证：payload 复制成功后，分配顺序号与首 head/pending 发布在同一次 Engine mutex 事务完成；Engine 锁内只读原子 head，不进入 mailbox。普通 FIFO 不越过更早已接纳输入，输入 batch 每次 pop 重新核对更早的 FIFO，32 个 actor 轮转且单次至多8项/1ms协作预算。新输入不能无限延长某个已排队任务的前驱集合；任意单个 JS/原生回调仍不可抢占。
+
+resize 排队失败不推进 UI 代际、序号或窗口尺寸；成功入队后才发布代际并 MoveWindow，引擎只在实际 wkeResize 返回后推进 applied geometry。序号跨 geometry 单调，view/document 更换才可重新开始；耗尽/有界争用失败明确进入取消/有限恢复，不回绕复用。旧 geometry 的 key/char/IME 保留投递，空间输入按实际几何校验；W01 对跨几何非空间输入的 native frame 因果保持明确缺失，不改写历史身份。
+
+静态审查修正了独立队列跨resize/nav、首head发布窗口、全部IMM错误被当空提交、UI意图误判旧已接纳输入及resize接纳失败后永久stale等问题。`WebPageImpl::cancelInputState` 先有界预检最多128个本地frame，再清原生click/drag/touch、取消未提交composition并blur；不合成 keyup/mouseup。中间 Draft 在 callback lifetime 依赖闭合前不公布新取消能力，缺能力时明确有限恢复至新文档。不得把编写了取消方法等同已经具备关闭/重入资格。
+
+执行入口：构建最终匹配 SDK 后一次运行 `sdk.native.input-mailbox`；实际 DOM/held key/drag/真实IME及满ordinary resize失败见 `tests/native/input_frame_trace/INPUT-CANCEL-SCENARIOS.md` 与 `tests/native/input_admission/RESIZE-FAILURE-SCENARIOS.md`。后两者是待执行场景，不能算成已运行的原生案例。当前所有运行证据为空。

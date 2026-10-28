@@ -12,6 +12,8 @@
 #include "third_party/WebKit/Source/core/page/Page.h"
 #include "third_party/WebKit/Source/core/page/FocusController.h"
 #include "third_party/WebKit/Source/core/input/EventHandler.h"
+#include "third_party/WebKit/Source/core/editing/InputMethodController.h"
+#include "third_party/WebKit/Source/core/page/FrameTree.h"
 #include "third_party/WebKit/Source/core/loader/FrameLoadRequest.h"
 #include "third_party/WebKit/Source/core/fetch/MemoryCache.h"
 #include "third_party/WebKit/Source/core/editing/FrameSelection.h"
@@ -1593,6 +1595,44 @@ bool WebPageImpl::fireKeyDownEvent(HWND hWnd, UINT message, WPARAM wParam, LPARA
 bool WebPageImpl::handleCurrentKeyboardEvent()
 {
     return false;
+}
+
+bool WebPageImpl::cancelInputState()
+{
+    if (!WTF::isMainThread() || !m_webViewImpl || !m_platformEventHandler)
+        return false;
+    CHECK_FOR_REENTER(this, false);
+    blink::WebViewImpl* view = m_webViewImpl;
+    RefPtrWillBeRawPtr<blink::LocalFrame> localFrames[128];
+    size_t localCount = 0;
+    size_t frameCount = 0;
+    blink::Frame* root = view->mainFrameImpl() ? view->mainFrameImpl()->frame() : nullptr;
+    for (blink::Frame* frame = root; frame; frame = frame->tree().traverseNext(root)) {
+        if (++frameCount > 128 || !frame->isLocalFrame())
+            return false; // Explicit unsupported recovery, before clearing state.
+        localFrames[localCount++] = blink::toLocalFrame(frame);
+    }
+    AutoRecordActions record(this, m_layerTreeHost, false);
+    // Clear the Blink click/drag/pointer/touch tokens first. No synthetic mouse
+    // or key release and no DefinitelyProcessingUserGesture is introduced.
+    for (size_t index = 0; index < localCount; ++index)
+        localFrames[index]->eventHandler().clear();
+    m_platformEventHandler->cancelInputState(m_hWnd);
+    m_isDragging = false;
+    m_postMouseLeave = false;
+    m_mouseInWindow = false;
+    m_popupHandle = nullptr;
+    for (size_t index = 0; index < localCount; ++index) {
+        if (localFrames[index]->inputMethodController().hasComposition())
+            localFrames[index]->inputMethodController().cancelComposition();
+        if (m_state != pageInited || m_webViewImpl != view)
+            return false; // Composition callbacks may navigate or request close.
+    }
+    view->setFocus(false); // Composition was cancelled, so blur cannot commit it.
+    if (m_state != pageInited || m_webViewImpl != view)
+        return false;
+    view->setIsActive(false);
+    return m_state == pageInited && m_webViewImpl == view;
 }
 
 void WebPageImpl::fireCaptureChangedEvent(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
