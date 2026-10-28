@@ -42,7 +42,7 @@ SouiGui 注册 12 个明确业务节点；按钮与程序化自检进入相同�
 
 Vue SFC 的实际编译由已锁 Vue/Vite 插件执行；TS 命令不宣称完整 SFC 模板类型资格。单份 common/fixture.json 同时被页面导入并按原字节输出为每个 dist/reference-fixture.json。构建后须逐字节验证该文件与原 fixture，检查 actual Vite manifest/classic graph，无网络 fallback。
 
-3. 用当前完整 source SDK 构建安装产物或 Root 当前正常 SDK target，再独立配置。示例支持 exact installed find_package(SouiSdk 0.5.0)；安装 SDK 不带 renderer runtime、Web 依赖或原 Workbench 源，不能把包发现成功误记为完整示例分发资格。Modern 开启前 SDK 必须包含 WebView2，可用 Runtime 仍需实际探测。公共示例要求 Windows/MSVC、x86/x64、C++17 与对应 `/MD` 运行库，不强制安装位置或工具小版本。下面展示 Root 固定验证工具链；其他版本的运行资格需单独验证。两架构各用 fresh 短输出目录：
+3. 用当前完整 source SDK 构建安装产物或 Root 当前正常 SDK target，再独立配置。示例支持 exact installed find_package(SouiSdk 0.5.1)；安装 SDK 不带 renderer runtime、Web 依赖或原 Workbench 源，不能把包发现成功误记为完整示例分发资格。Modern 开启前 SDK 必须包含 WebView2，可用 Runtime 仍需实际探测。公共示例要求 Windows/MSVC、x86/x64、C++17 与对应 `/MD` 运行库，不强制安装位置或工具小版本。下面展示 Root 固定验证工具链；其他版本的运行资格需单独验证。两架构各用 fresh 短输出目录：
 
     cmake -S demos/reference-workbench -B out/w6/x64 -G "Visual Studio 17 2022" -A "x64,version=10.0.19041.0" -T "v143,host=x64,version=14.44.35207" -DCMAKE_PREFIX_PATH=<current-installed-sdk> -DSOUI_REFERENCE_DISTRIBUTION_ROOT=<current-complete-delivery> -DSOUI_REFERENCE_MINIBLINK=<current-full-source-x64-dll> -DSOUI_REFERENCE_MODERN=ON
     cmake --build out/w6/x64 --config Release --parallel 2
