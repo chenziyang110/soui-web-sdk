@@ -13,10 +13,10 @@ const {acceptCompilerTail} = require('./compiler-tail-policy.cjs');
 const encode = value => Buffer.from(JSON.stringify(value,null,2)+'\n');
 const sha = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
 const need = (condition,message) => {if(!condition)throw new Error(message);};
-const switches = {sdkOnly:'-SdkOnly',skipWeb:'-SkipWeb',withWebView2:'-WithWebView2',withUia:'-WithUia',withGuiBindings:'-WithGuiBindings',withVendorTests:'-WithVendorTests',install:'-Install',freshConfigure:'-FreshConfigure'};
+const switches = {sdkOnly:'-SdkOnly',skipWeb:'-SkipWeb',withWebView2:'-WithWebView2',withAutoHost:'-WithAutoHost',withUia:'-WithUia',withGuiBindings:'-WithGuiBindings',withVendorTests:'-WithVendorTests',install:'-Install',freshConfigure:'-FreshConfigure'};
 const cli = {'--root':'root','--architecture':'architecture','--configuration':'configuration','--runner':'runner','--powershell':'powershell',
   '--timeout-ms':'timeoutMs','--drain-ms':'drainMs','--tail-image':'tailImage','--tail-sha256':'tailSha256',
-  '--sdk-only':'sdkOnly','--skip-web':'skipWeb','--with-webview2':'withWebView2','--with-uia':'withUia','--with-gui-bindings':'withGuiBindings','--with-vendor-tests':'withVendorTests',
+  '--sdk-only':'sdkOnly','--skip-web':'skipWeb','--with-webview2':'withWebView2','--with-auto-host':'withAutoHost','--with-uia':'withUia','--with-gui-bindings':'withGuiBindings','--with-vendor-tests':'withVendorTests',
   '--install':'install','--fresh-configure':'freshConfigure','--compiler-tail':'compilerTail',
   '--native-toolchain':'nativeToolchain','--llvm-root':'llvmRoot','--msvc-root':'msvcRoot','--windows-sdk-root':'windowsSdkRoot',
   '--ninja-exe':'ninjaExe','--windows-cmd-exe':'windowsCmdExe','--powershell-exe':'powerShellExe','--devkit-root':'devkitRoot',
@@ -56,6 +56,7 @@ function options(value) {
       !/[\x00-\x1f]/.test(result.host64ObserverPrepared)&&/^[a-f0-9]{64}$/.test(result.host64ObserverSha256||''),'Explicit actual prepared observer receipt and SHA required');
   }else need(result.host64ObserverPrepared===undefined&&result.host64ObserverSha256===undefined,'Prepared observer inputs require explicit host64-build-observer');
   if(result.compilerTail) {
+    need(!result.withAutoHost,'Compiler-tail policy does not include AutoHost');
     need(!result.withGuiBindings,'Compiler-tail policy does not include WithGuiBindings');
     need(!result.withUia,'Compiler-tail policy does not include UIA');
     validateTailImagePin({image:result.tailImage,sha256:result.tailSha256,nonce:'0'.repeat(32)});
@@ -143,6 +144,7 @@ function validateInvocation(context,frozen) {
     values.has('-SdkOnly')===frozen.sdkOnly,'Build argv configuration differs');
   need(!frozen.compilerTail||!values.has('-WithGuiBindings'),'Compiler-tail policy excludes GUI bindings');
   need(!frozen.compilerTail||!values.has('-WithUia'),'Compiler-tail policy excludes UIA');
+  need(!frozen.compilerTail||!values.has('-WithAutoHost'),'Compiler-tail policy excludes AutoHost');
   need((values.get('-NativeToolchain')||'MSVC143')===(frozen.nativeToolchain||'MSVC143'),'Build argv profile differs');
   for(const [key,flag] of Object.entries(llvmPaths))need(values.get(flag)===frozen[key],'Build argv LLVM path differs: '+key);
 }
@@ -241,6 +243,14 @@ function evaluateBuild({frozen,ready,result,contextBytes,rawReport,buildReportBy
     if(uia)need(Array.isArray(uia.files)&&uia.files.length===1&&
       uia.files[0].path===(build.sdkOnly?'':'sdk/')+'accessibility/uia/'+build.configuration+'/soui_uia.lib',
       'Current UIA archive path differs from the selected SDK layout');
+    const autoSelected=debugMode?frozen.invocationOptions.withAutoHost===true:context.args.includes('-WithAutoHost');
+    const autoHost=build.optionalLibraries?.autoHost;
+    need(!frozen.compilerTail||!autoHost,'Compiler-tail policy excludes AutoHost, including generated auto projects');
+    need(!autoSelected||!!autoHost,'Requested AutoHost archive is missing');
+    need(!!autoHost===!!build.autoHost,'AutoHost selection differs from current optional archive');
+    if(autoHost)need(!!build.optionalLibraries.webview2&&Array.isArray(autoHost.files)&&autoHost.files.length===1&&
+      autoHost.files[0].path===(build.sdkOnly?'':'sdk/')+'renderers/webview2/'+build.configuration+'/soui_auto_host.lib',
+      'Current AutoHost archive path or WebView2 prerequisite differs');
     need(terminal.rootExited===true&&terminal.rootExitCode===0&&result.exitCode===0,'Compiler root did not finish successfully');
     answer.compilationCompleted=true;
     answer.genericSupervisionPassed=result.passed===true&&result.supervisorExitCode===0&&terminal.passed===true&&

@@ -135,7 +135,7 @@ inline void run(engine_thread& engine) {
   observed.clear();
   {
     detail::input_mailbox mailbox([&](const input_packet* value) { observed.push_back(value ? value->sequence : 0); },
-      [](std::atomic<std::uint64_t>& head, std::atomic<bool>& pending, bool first, bool recovery) {
+      [maximum](std::atomic<std::uint64_t>& head, std::atomic<bool>& pending, bool first, bool recovery) {
         const auto order = recovery ? maximum : 1;
         if (first) head.store(order, std::memory_order_release); pending.store(true, std::memory_order_release); return order;
       });

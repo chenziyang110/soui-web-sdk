@@ -1,4 +1,16 @@
 add_executable(soui_sdk_contract_tests sdk_contract_tests.cpp)
+if(TARGET Soui::AutoHost)
+  add_executable(soui_auto_host_tests auto_host_tests.cpp)
+  target_link_libraries(soui_auto_host_tests PRIVATE Soui::AutoHost)
+  target_compile_options(soui_auto_host_tests PRIVATE /utf-8 /W4 /U_DEBUG /EHsc)
+  set_property(TARGET soui_auto_host_tests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+  add_test(NAME sdk.native.auto-host-contract COMMAND soui_auto_host_tests)
+  set_tests_properties(sdk.native.auto-host-contract PROPERTIES TIMEOUT 20)
+  add_test(NAME sdk.native.auto-host-profile-path COMMAND soui_auto_host_tests --profile-path)
+  set_tests_properties(sdk.native.auto-host-profile-path PROPERTIES TIMEOUT 20 RUN_SERIAL TRUE)
+  add_test(NAME sdk.native.auto-host-callback-exception COMMAND soui_auto_host_tests --callback-exception)
+  set_tests_properties(sdk.native.auto-host-callback-exception PROPERTIES TIMEOUT 45 RUN_SERIAL TRUE)
+endif()
 add_executable(soui_dependency_tests soui_dependency_tests.cpp)
 target_compile_features(soui_dependency_tests PRIVATE cxx_std_17)
 target_compile_options(soui_dependency_tests PRIVATE /utf-8 /W4 /U_DEBUG)
@@ -142,6 +154,19 @@ target_compile_options(soui_interaction_router_tests PRIVATE /utf-8 /W4 /U_DEBUG
 set_property(TARGET soui_interaction_router_tests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
 add_test(NAME sdk.native.interaction-router COMMAND soui_interaction_router_tests)
 set_tests_properties(sdk.native.interaction-router PROPERTIES TIMEOUT 10)
+add_executable(soui_miniblink_unmount_tests miniblink_unmount_tests.cpp
+  "${SOUI_DISTRIBUTION_ROOT}/sdk/src/host/soui_miniblink_host.cpp")
+# Compile the actual adapter once with a private no-view binding seam. The
+# separately built installed SDK has neither this definition nor that seam.
+target_link_libraries(soui_miniblink_unmount_tests PRIVATE Soui::Sdk Soui::ActionJson)
+target_compile_features(soui_miniblink_unmount_tests PRIVATE cxx_std_17)
+target_compile_definitions(soui_miniblink_unmount_tests PRIVATE
+  SOUI_HOST_UNMOUNT_TEST_ONLY ENABLE_WKE=0 SOUI_SOURCE_KERNEL_HOST NDEBUG _CRT_SECURE_NO_WARNINGS)
+target_compile_options(soui_miniblink_unmount_tests PRIVATE /utf-8 /W4 /U_DEBUG /EHsc)
+set_property(TARGET soui_miniblink_unmount_tests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+add_test(NAME sdk.native.miniblink-unmount-continuation COMMAND soui_miniblink_unmount_tests)
+add_test(NAME sdk.native.miniblink-unmount-unused-transfer COMMAND soui_miniblink_unmount_tests unused-transfer)
+set_tests_properties(sdk.native.miniblink-unmount-continuation sdk.native.miniblink-unmount-unused-transfer PROPERTIES TIMEOUT 15)
 add_executable(soui_engine_thread_timeout_tests engine_thread_timeout_tests.cpp)
 target_link_libraries(soui_engine_thread_timeout_tests PRIVATE Soui::Sdk)
 target_compile_features(soui_engine_thread_timeout_tests PRIVATE cxx_std_17)
@@ -181,6 +206,19 @@ set_property(TARGET soui_webview2_request_capacity_tests PROPERTY MSVC_RUNTIME_L
 add_test(NAME sdk.native.webview2-capacity COMMAND soui_webview2_request_capacity_tests)
 set_tests_properties(sdk.native.webview2-capacity PROPERTIES TIMEOUT 10)
 if(TARGET Soui::WebView2)
+  # Compile the actual private callback/retirement implementation with fake COM;
+  # do not link the WebView2 archive a second time or start a browser runtime.
+  add_executable(soui_webview2_cancelled_controller_tests webview2_cancelled_controller_tests.cpp)
+  get_target_property(webview2_generated_dir soui_webview2 BINARY_DIR)
+  target_include_directories(soui_webview2_cancelled_controller_tests PRIVATE
+    "${SOUI_WEBVIEW2_INCLUDE}" "${webview2_generated_dir}"
+    "${SOUI_DISTRIBUTION_ROOT}/third_party/include/json")
+  target_link_libraries(soui_webview2_cancelled_controller_tests PRIVATE Soui::Sdk
+    "${SOUI_WEBVIEW2_LOADER}" shlwapi version bcrypt)
+  target_compile_options(soui_webview2_cancelled_controller_tests PRIVATE /utf-8 /W4 /U_DEBUG /EHsc)
+  set_property(TARGET soui_webview2_cancelled_controller_tests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+  add_test(NAME sdk.native.webview2-cancelled-controller COMMAND soui_webview2_cancelled_controller_tests)
+  set_tests_properties(sdk.native.webview2-cancelled-controller PROPERTIES TIMEOUT 10)
   add_executable(soui_webview2_prepare_tests webview2_prepare_tests.cpp)
   target_link_libraries(soui_webview2_prepare_tests PRIVATE Soui::WebView2)
   target_compile_options(soui_webview2_prepare_tests PRIVATE /utf-8 /W4 /U_DEBUG)

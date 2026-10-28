@@ -15,6 +15,17 @@
 
 ## 日常构建
 
+生成项目可以选择[独立 Web 构建目标与资源清单](web-targets.md)，并使用扩展的
+体积报告；未配置项目沿用原有单目标构建和部署方式。
+
+原生 DLL 使用[显式运行时清单](runtime-packaging.md)部署；未声明组件选择时
+保留原完整运行集合。该文档同时说明可选 Bundle 格式及独立目录恢复方式。
+
+应用打包保留默认 ZIP，也可显式选择[压缩档位](compression-profiles.md)；该文档
+提供同一载荷下的空间、解压时间和内存实测方法。
+
+自动宿主与双资源模板使用 `-WithAutoHost` 显式启用，详见[自动后端](auto-backend.md)。
+
 ```powershell
 powershell.exe -File tools/Build.ps1 -Architecture x64 -Configuration Release -Install
 powershell.exe -File tools/Build.ps1 -Architecture x86 -Configuration Debug
@@ -26,6 +37,34 @@ powershell.exe -File tools/Build.ps1 -SdkOnly -Architecture x64 -Install
 应用和 SDK 的 Debug 配置保留调试信息，但为匹配固定 SOUI 运行库仍使用 `/MD` 和相同的发布版运行库边界，且定义 `NDEBUG`。它不代表底层依赖也以 Debug CRT 编译；不要混入其他配置的 SOUI DLL/LIB。
 
 安装后的 SDK 位于 `out/install/<架构>/`，第三方声明在 `share/SouiSdk/`；外部项目通过 `find_package(SouiSdk CONFIG REQUIRED)` 和 `Soui::Sdk` 引用。此导出包支持 SDK 核心链接；完整应用的资源与运行库部署使用源码包里的 `cmake/SouiApplication.cmake`。
+
+## 离线 Web 源码诊断档
+
+`Build.ps1` 默认使用 `-WebProfile distribution`，不生成业务 source map。
+应用可以显式选择下列源码诊断构建；它可以配合原生 Release：
+
+```powershell
+powershell.exe -File tools/Build.ps1 -Architecture x64 -Configuration Release -WebProfile source-diagnostic
+```
+
+诊断档在 JS 资产中携带 inline map 和源码，并关闭 JS minify。它可能暴露业务
+实现和数据，不提供自动脱敏，也不授予运行时调试权限。模板及 Workbench
+沿用原 React/Vue/legacy 插件和目标；`-SdkOnly` 不接受应用诊断档。
+
+直接调用模板的 `npm run build` 时，显式设置进程内
+`SOUI_WEB_BUILD_PROFILE=source-diagnostic` 选择该档；不设置时为 distribution。
+标准 Build 以显式参数覆盖这个环境值，并在结束或失败后恢复原环境。
+
+`.soui-web-profile.json` 绑定真实 JS/map 和业务源码投影；部署后它仍属于资源
+身份。`-SkipWeb` 需要同档、同源码和同输出的新 Web evidence；旧 v1 记录或
+跨档输出会被拒绝。切换档位后即使原生无需重链接，Build 也重新部署 Web
+资源。成功的 `-SkipWeb` 验证也绑定本次构建，SDK-only 会在原生阶段结束时
+再次检查 Web 输出。不要手改 marker、map 或已校验资源来补调试。
+
+无 marker 的旧自定义 Web 构建仅可作为 distribution，经相同源码/map 禁止
+检查后使用。新源码诊断档必须有 marker；不支持外置/在线 map 或临时 HTTP
+服务。诊断信息、预算与验证边界见 [ADR 0119](adr/0119-offline-web-build-profiles.md)。
+真实 TS/TSX 断点验证仍单独记录，不能由静态 map 校验推定通过。
 
 ## 底层源码重编译
 
@@ -99,4 +138,4 @@ OwnedProcessRunner 捕获完整进程组的自然退出。`standard-build.cjs` �
 
 `tools/Build.ps1 -Architecture x64 -Configuration Release -WithUia` 或 `tools/Soui.ps1 build --architecture x64 --configuration Release --with-uia` 显式构建 `Soui::Uia`；可组合既有 `-SdkOnly`、`-Install` 和现代后端选项。未选择时明确配置 OFF。应用仍需按公共 API 注册可信原生投影和派发策略，构建选项不会自动投影业务页面。
 
-CMake 消费者使用 `find_package(SouiSdk 0.5.0 EXACT CONFIG REQUIRED COMPONENTS Uia)` 与 `Soui::Uia`。未安装该组件会拒绝 REQUIRED 请求。历史 MSVC 编译器尾进程例外未覆盖 UIA，不能与该例外组合；正常 MSVC/LLVM 构建保持各自既有验证规则。
+CMake 消费者使用 `find_package(SouiSdk 0.6.0 EXACT CONFIG REQUIRED COMPONENTS Uia)` 与 `Soui::Uia`。未安装该组件会拒绝 REQUIRED 请求。历史 MSVC 编译器尾进程例外未覆盖 UIA，不能与该例外组合；正常 MSVC/LLVM 构建保持各自既有验证规则。
