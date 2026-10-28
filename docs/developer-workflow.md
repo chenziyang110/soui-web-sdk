@@ -26,11 +26,11 @@
 
 | 命令 | 参数与实际行为 |
 |---|---|
-| `create` | 必须 `--name` 和新的 `--output-root`；可选 `--sdk-package`、`--profile compatibility|modern`。调用真实 `New-Project.ps1`。仅完整源码根拥有模板。 |
+| `create` | 必须 `--name` 和新的 `--output-root`；可选 `--sdk-package`、`--profile compatibility|modern|auto`。调用真实 `New-Project.ps1`。仅完整源码根拥有模板。 |
 | `doctor` | 调用真实 `Doctor.ps1`；环境/工具查询也由 owned Job 监督。Doctor 的 source presence 字段不代表目标系统兼容通过。 |
-| `build` | 开关：`--sdk-only`、`--skip-web`、`--with-webview2`、`--with-gui-bindings`、`--install`、`--fresh-configure`。完整源码根复用真实 `standard-build.cjs`。安装项目调用其实际 Build.ps1 并复核现有 build-evidence，要求自然闭合。 |
+| `build` | 开关：`--sdk-only`、`--skip-web`、`--with-webview2`、`--with-auto-host`、`--with-gui-bindings`、`--install`、`--fresh-configure`。完整源码根复用真实 `standard-build.cjs`。安装项目调用其实际 Build.ps1 并复核现有 build-evidence，要求自然闭合。 |
 | `test` | `--scope unit|native|contract|desktop`。源码根默认 unit，实际调用 Test.ps1 的 UnitOnly；安装项目默认 contract，实际 verify-project。native 复核当前 build、真实非空 CTest registry、自然 CTest 和无失败/错误/skip 的对应 JUnit。desktop 在源码根先监督 UnitOnly，再直接运行共用 Owned smoke helper；安装项目只运行本项目实际 smoke，不借用源码单元套件。 |
-| `package` | `--kind source|sdk|applications`，默认 source。source 可给 `--output`；sdk 必须给新的 `--output`，可加 `--with-gui-bindings`；applications 保留固定归档路径，可选 `--profile compatibility|modern`，省略时生成兼容模板与 Workbench，modern 生成现代模板。其他 kind 拒绝 profile。仅完整源码根，复用实际 Package/Package-Applications/SDK pack。 |
+| `package` | `--kind source|sdk|applications`，默认 source。source 可给 `--output`；sdk 必须给新的 `--output`，可加 `--with-gui-bindings`；applications 保留固定归档路径，可选 `--profile compatibility|modern|auto`，省略时生成兼容模板与 Workbench，modern/auto 生成对应模板。applications 另支持 `--compression-profile zip|7z-balanced|7z-small`（默认 ZIP）及 `--bundle`；其他 kind 拒绝这些档位参数。仅完整源码根，复用实际 Package/Package-Applications/SDK pack，见[完整源码中的压缩档位说明](https://github.com/chenziyang110/soui-web-sdk/blob/main/docs/compression-profiles.md)。 |
 | `upgrade` | 必须 `--sdk-package` 和 `--project`。实际 SDK install 持久事务后 verify-project；不重放业务请求，不接受 force，同版本不同内容继续拒绝。不能原地替换正在运行的入口；从完整 devkit 对目标安装项目执行。 |
 | `dev` | 可选 `--web-root`、`--port`（默认 5173，1024–65535）、`--duration-ms`（默认 900000，1000–3600000）。源码根默认实际 desktop template web，安装项目默认 web。 |
 

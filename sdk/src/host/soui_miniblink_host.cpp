@@ -1188,6 +1188,40 @@ diagnostics::status dynamic_miniblink_adapter::read_runtime_metrics(diagnostics:
     return diagnostics::status::unavailable;
   }
 }
+struct dynamic_miniblink_adapter::unmount_state final {
+  const std::thread::id owner{std::this_thread::get_id()};
+  enum class phase { barrier, input, bridge, webview, endpoint, ui };
+  phase current{phase::barrier}; // Lifecycle owner only; results below read only after completion.get().
+  std::shared_future<void> completion;
+  host_result failure{true, {}, {}};
+  bool bridge_revoked{false};
+  bool endpoint_requested{false};
+  unsigned requested{WKE_CURSOR_BROKER_FAILED};
+  unsigned drain_status{WKE_CURSOR_BROKER_FAILED};
+  bool drain_valid{false};
+  bool endpoint_destroyed{false};
+};
+
+#ifdef SOUI_HOST_UNMOUNT_TEST_ONLY
+void detail::engine_admission::bind_unmount_fixture(dynamic_miniblink_adapter& adapter,
+    engine_thread& engine, std::unique_ptr<engine_thread> bridge,
+    std::shared_ptr<engine_input_service> input) {
+  if (adapter.engine_thread_ || adapter.webview_ || adapter.webview_window_)
+    throw std::logic_error("unmount fixture requires an unused adapter");
+  if (input && !register_input(engine, input))
+    throw std::logic_error("unmount fixture input registration failed");
+  auto& runtime = process_runtime();
+  std::lock_guard<std::mutex> lock(runtime.mutex);
+  ++runtime.hosts; // The real release_runtime path must retire this owner.
+  adapter.engine_thread_ = &engine;
+  adapter.bridge_thread_ = std::move(bridge);
+  adapter.input_mailbox_ = std::move(input);
+}
+engine_thread* detail::engine_admission::unmount_fixture_engine(dynamic_miniblink_adapter& adapter) noexcept {
+  return adapter.engine_thread_;
+}
+#endif
+
 dynamic_miniblink_adapter::~dynamic_miniblink_adapter() {
   // Public lifecycle calls must finish before destroying an adapter. In
   // particular, destruction from its own active native modal frame is invalid.
@@ -1200,6 +1234,8 @@ host_result dynamic_miniblink_adapter::mount(const host_config& config) {
     return failure("E_HOST_WINDOW_MISSING", "A SOUI host window is required for the child WebView.");
   if (engine_thread_ != nullptr || webview_window_ != nullptr)
     return failure("E_ALREADY_STARTED", "The Miniblink engine thread is already running.");
+  if (unmount_state_) return failure("E_CURSOR_CLOSE_PENDING", "The previous teardown still owns this adapter.");
+  unmount_requested_.store(false, std::memory_order_release);
   input_recovery_limited_.store(false, std::memory_order_release);
 #ifdef SOUI_BRIDGE_BENCHMARK
   benchmark_result_slot_.reset();
@@ -1719,42 +1755,70 @@ host_result dynamic_miniblink_adapter::wait_for_cursor_registration() {
 #endif
 }
 
+host_result dynamic_miniblink_adapter::unmount_pending(const char* message) {
+#ifdef _WIN32
+  cursor_close_pending_ = true;
+  if (webview_window_)
+    (void)SetTimer(static_cast<HWND>(webview_window_),
+        reinterpret_cast<UINT_PTR>(&cursor_vendor_destroyed_), 50, nullptr);
+#endif
+  return failure("E_CURSOR_CLOSE_PENDING", message);
+}
+
+host_result dynamic_miniblink_adapter::unmount_step(engine_thread::task work, const char* message) {
+  const auto state = unmount_state_; // Both adapter and accepted callback retain the actual result owner.
+  if (!state->completion.valid()) {
+    auto completed = std::make_shared<std::promise<void>>();
+    state->completion = completed->get_future().share();
+    // Even engine-owner reentry queues behind the current stack. Cleanup is
+    // never executed inline inside an active JS/native callback.
+    const auto admitted = detail::engine_admission::post(*engine_thread_, detail::engine_lane::cleanup,
+        [work=std::move(work),completed,state] {
+          try { work(); completed->set_value(); }
+          catch (...) { completed->set_exception(std::current_exception()); }
+        });
+    if (admitted != detail::engine_admission_result::accepted) {
+      state->completion = {};
+      if (admitted == detail::engine_admission_result::full) return unmount_pending(message);
+      state->failure = engine_admission_failure(admitted, message, true);
+      return state->failure;
+    }
+  }
+  if (state->completion.wait_for(std::chrono::milliseconds(0)) != std::future_status::ready)
+    return unmount_pending(message);
+  try { state->completion.get(); }
+  catch (...) {
+    state->failure = failure("E_CURSOR_CLOSE_FAILED", message);
+    return state->failure;
+  }
+  return success();
+}
+
 host_result dynamic_miniblink_adapter::unmount() {
 #ifdef _WIN32
+  if ((unmount_state_ && unmount_state_->owner != std::this_thread::get_id()) ||
+      (webview_window_ && GetWindowThreadProcessId(static_cast<HWND>(webview_window_), nullptr) != GetCurrentThreadId()))
+    return failure("E_THREAD_AFFINITY", "WebView teardown requires its actual window/continuation owner.");
   if (unmount_running_) return failure("E_BUSY", "WebView teardown is already in progress.");
   lifecycle_operation_guard unmount_guard(unmount_running_);
-  input_focus_requested_.store(false, std::memory_order_release);
-  bridge_accepting_.store(false, std::memory_order_release);
-  if (execution_context_receipt()) (void)invalidate_main_context();
-  else (void)detail::context_lookup_revision<>::advance(native_context_lookup_revision);
-  // Finish native callbacks that could already be inside admission before
-  // another thread stops and destroys the worker they access.
-  if (engine_thread_ != nullptr) {
-    const auto barrier=invoke_lifecycle(engine_thread_, [] {},detail::engine_lane::cleanup);
-    if (!barrier) return engine_admission_failure(barrier.admission,"The engine could not stop admitting bridge requests.",true);
+  if (!unmount_state_) {
+    if (cursor_broker_ && !cursor_broker_->begin_close())
+      return failure("E_THREAD_AFFINITY", "Cursor teardown requires the window owner thread.");
+    unmount_state_ = std::make_shared<unmount_state>();
+    unmount_requested_.store(true, std::memory_order_release);
+    input_focus_requested_.store(false, std::memory_order_release);
+    if (input_mailbox_) input_mailbox_->quiesce();
+    cursor_close_pending_ = true;
+    bridge_accepting_.store(false, std::memory_order_release);
+    if (execution_context_receipt()) (void)invalidate_main_context();
+    else (void)detail::context_lookup_revision<>::advance(native_context_lookup_revision);
+    document_ready_ = false;
+    application_ready_ = false;
+    interaction_router_.deactivate();
+    wheel_smoothing_.reset();
   }
-#ifdef SOUI_TEST_KIT
-  // Join the controller worker before invalidating its engine/adapter lifetime.
-  test_agent_.reset();
-#endif
-  interaction_router_.deactivate();
-  if (input_mailbox_ && engine_thread_) {
-    const auto mailbox = input_mailbox_;
-    mailbox->quiesce();
-    const auto closed = invoke_lifecycle(engine_thread_, [this, mailbox] {
-      cancel_input_on_engine();
-      detail::engine_admission::unregister_input(*engine_thread_, mailbox);
-    }, detail::engine_lane::cleanup);
-    if (!closed) return engine_admission_failure(closed.admission, "Input owner retirement is pending.", true);
-    input_mailbox_.reset();
-  }
-  wheel_smoothing_.reset();
-  bridge_generation_.fetch_add(1, std::memory_order_acq_rel);
-  if (event_lifetime_) {
-    std::lock_guard<std::mutex> lock(event_lifetime_->mutex);
-    event_lifetime_->adapter = nullptr;
-  }
-  if (bridge_adapter_) bridge_adapter_->set_event_sink({});
+  const auto state = unmount_state_;
+  if (!state->failure.ok) return state->failure;
   auto drain_events = [this] {
     if (owner_window_ == nullptr) return;
     MSG message{};
@@ -1763,18 +1827,74 @@ host_result dynamic_miniblink_adapter::unmount() {
       delete static_cast<pending_event*>(reinterpret_cast<void*>(message.lParam));
     }
   };
-  drain_events();
-  if (bridge_thread_ != nullptr) {
-    bridge_thread_->stop(false);
-    bridge_thread_.reset();
+  using phase = unmount_state::phase;
+  if (state->current == phase::barrier) {
+    // Finish callbacks that could already be inside admission before stopping
+    // their worker. A paused shared engine keeps all owners alive, not UI parked.
+    if (engine_thread_) {
+      const auto barrier = unmount_step([] {}, "The engine admission barrier is pending.");
+      if (!barrier.ok) return barrier;
+      state->completion = {};
+    }
+    state->current = phase::input;
   }
-  if (engine_thread_ != nullptr) {
-    const auto teardown=invoke_lifecycle(engine_thread_, [this] { unmount_on_engine(); },detail::engine_lane::cleanup);
-    if (!teardown) return engine_admission_failure(teardown.admission,"The engine could not complete WebView teardown.",true);
+  if (state->current == phase::input) {
+#ifdef SOUI_TEST_KIT
+    // Join the controller worker before retiring its input/adapter borrower.
+    test_agent_.reset();
+#endif
+    if (input_mailbox_ && engine_thread_) {
+      const auto mailbox = input_mailbox_;
+      // The retained cleanup result owns this mailbox until its real Engine
+      // cancellation and unregister return. Repeated polls never enqueue twice.
+      const auto closed = unmount_step([this, mailbox] {
+        cancel_input_on_engine();
+        detail::engine_admission::unregister_input(*engine_thread_, mailbox);
+      }, "Input owner retirement is pending.");
+      if (!closed.ok) return closed;
+      state->completion = {};
+      input_mailbox_.reset();
+    }
+    state->current = phase::bridge;
+  }
+  if (state->current == phase::bridge) {
+    if (!state->bridge_revoked) {
+      bridge_generation_.fetch_add(1, std::memory_order_acq_rel);
+      if (event_lifetime_) {
+        std::lock_guard<std::mutex> lock(event_lifetime_->mutex);
+        event_lifetime_->adapter = nullptr;
+      }
+      if (bridge_adapter_) bridge_adapter_->set_event_sink({});
+      drain_events();
+      state->bridge_revoked = true;
+    }
+    if (bridge_thread_) {
+      // Old queued requests reject their revoked generation; retire their
+      // closures on the original worker and only reset after its real exit.
+      const auto stopped = bridge_thread_->try_stop();
+      if (stopped == engine_thread::stop_result::pending)
+        return unmount_pending("The original Bridge worker is still retiring.");
+      if (stopped != engine_thread::stop_result::stopped) {
+        state->failure = failure("E_ENGINE_THREAD", "The original Bridge worker did not retire safely.");
+        return state->failure;
+      }
+      bridge_thread_.reset();
+    }
+    state->current = phase::webview;
+  }
+  if (state->current == phase::webview) {
+    if (engine_thread_) {
+      const auto teardown = unmount_step([this] { unmount_on_engine(); }, "WebView engine teardown is pending.");
+      if (!teardown.ok) return teardown;
+      state->completion = {};
+    }
+    state->current = phase::endpoint;
+  }
+  if (state->current == phase::endpoint) {
     const auto cursor_closed = close_cursor_endpoint();
     if (!cursor_closed.ok) return cursor_closed;
-    release_runtime();
-    engine_thread_ = nullptr;
+    if (engine_thread_) { release_runtime(); engine_thread_ = nullptr; }
+    state->current = phase::ui;
   }
 #ifdef SOUI_BRIDGE_BENCHMARK
   benchmark_result_slot_.reset();
@@ -1787,6 +1907,8 @@ host_result dynamic_miniblink_adapter::unmount() {
   owner_window_ = nullptr;
   bridge_adapter_ = nullptr;
   startup_window_protected_ = false; // Only after actual owned endpoint and child cleanup.
+  cursor_close_pending_ = false;
+  unmount_state_.reset();
 #endif
   document_ready_ = false;
   application_ready_ = false;
@@ -1809,76 +1931,70 @@ host_result dynamic_miniblink_adapter::close_cursor_endpoint() {
   if (!valid_cursor_api(api) || !engine_thread_)
     return failure("E_CURSOR_BROKER_ABI", "The controlled cursor owner is unavailable.");
   if (!cursor_vendor_destroyed_) {
-    unsigned requested = WKE_CURSOR_BROKER_FAILED;
-    const auto request=invoke_lifecycle(engine_thread_, [this, api, token, &requested] {
-      if (webview_) process_runtime().views.erase(static_cast<wkeWebView>(webview_));
-      requested = api->requestClose(token);
-    },detail::engine_lane::cleanup);
-    if (!request) return failure(request.admission == detail::engine_admission_result::full ? "E_CURSOR_CLOSE_PENDING" : "E_CURSOR_CLOSE_FAILED",
-        "The controlled endpoint did not accept teardown.");
-    if (requested != WKE_CURSOR_BROKER_OK && requested != WKE_CURSOR_BROKER_FAILED)
-      return failure("E_CURSOR_CLOSE_FAILED", "The controlled endpoint did not accept teardown.");
-    cursor_close_pending_ = true;
+    const auto state = unmount_state_;
+    if (!state->endpoint_requested) {
+      const auto request = unmount_step([this, api, token, state] {
+        if (webview_) process_runtime().views.erase(static_cast<wkeWebView>(webview_));
+        state->requested = api->requestClose(token);
+      }, "The controlled endpoint close request is pending.");
+      if (!request.ok) return request;
+      state->completion = {};
+      if (state->requested != WKE_CURSOR_BROKER_OK && state->requested != WKE_CURSOR_BROKER_FAILED) {
+        state->failure = failure("E_CURSOR_CLOSE_FAILED", "The controlled endpoint did not accept teardown.");
+        return state->failure;
+      }
+      state->endpoint_requested = true;
+    }
     if (startup_dispatch_refused_)
-      return failure("E_CURSOR_CLOSE_PENDING", "A startup timer was refused; retain the Host, module and borrowed owners.");
+      return unmount_pending("A startup timer was refused; retain the Host, module and borrowed owners.");
     if (cursor_broker_->native_scopes())
-      return failure("E_CURSOR_CLOSE_PENDING", "Keep the host alive until its native modal call returns.");
+      return unmount_pending("Keep the host alive until its native modal call returns.");
 
     // Outer teardown preserves callback storage and the HWND while dispatching
     // only this owned child's UI tasks. A reentrant modal close returns above;
     // it cannot wait for its own stack frame to leave. There is no timeout that
     // invents completion, and no detach or FreeLibrary after an unfinished call.
-    {
-      struct close_result { unsigned status{WKE_CURSOR_BROKER_FAILED}; bool destroyed{false}; bool valid{false}; };
-      auto result = std::make_shared<close_result>();
-      auto completion = std::make_shared<std::promise<void>>();
-      auto future = completion->get_future();
-      const auto drain_admission=detail::engine_admission::post(*engine_thread_,detail::engine_lane::cleanup,[this, api, token, result, completion] {
-            try {
-              wkeCursorBrokerDrainReceipt receipt{}; receipt.structSize = sizeof(receipt);
-              result->status = api->inspectDrain(token, &receipt);
-              result->valid = receipt.structSize == sizeof(receipt) && receipt.endpoint.low == token.low &&
-                  receipt.endpoint.high == token.high && receipt.closing == 1 && receipt.closeSequence &&
-                  receipt.drained <= 1 && receipt.oleRegistered <= 1;
-              const bool drained = result->valid && receipt.drained == 1 && !receipt.queuedUiTasks &&
-                  !receipt.runningUiTasks && !receipt.nativeScopes && !receipt.engineCallbacks && !receipt.oleRegistered;
-              if (drained && (result->status == WKE_CURSOR_BROKER_OK || result->status == WKE_CURSOR_BROKER_FAILED)) {
-                const auto close_sequence = receipt.closeSequence;
-                result->status = api->destroyEndpoint(token, &receipt);
-                result->destroyed = result->status == WKE_CURSOR_BROKER_OK && receipt.structSize == sizeof(receipt) &&
-                    receipt.endpoint.low == token.low && receipt.endpoint.high == token.high &&
-                    receipt.closing == 1 && receipt.closeSequence == close_sequence && receipt.drained == 1 &&
-                    !receipt.queuedUiTasks && !receipt.runningUiTasks && !receipt.nativeScopes &&
-                    !receipt.engineCallbacks && !receipt.oleRegistered;
-                if (result->destroyed) webview_ = nullptr;
-              }
-              completion->set_value();
-            } catch (...) { completion->set_exception(std::current_exception()); }
-          });
-      if (drain_admission != detail::engine_admission_result::accepted)
-        return engine_admission_failure(drain_admission,"The controlled owner did not accept the drain query.",true);
-      auto dispatch_child = [this] {
-        MSG message{};
-        for (unsigned n = 0; n < 64 && PeekMessageW(&message, static_cast<HWND>(webview_window_),
-                                                    0, 0, PM_REMOVE); ++n) {
-          TranslateMessage(&message); DispatchMessageW(&message);
-        }
-      };
-      while (future.wait_for(std::chrono::milliseconds(0)) != std::future_status::ready) {
-        dispatch_child();
-        (void)MsgWaitForMultipleObjects(0, nullptr, FALSE, 10, QS_ALLINPUT);
+    auto dispatch_child = [this] {
+      MSG message{};
+      for (unsigned n = 0; n < 64 && PeekMessageW(&message, static_cast<HWND>(webview_window_),
+                                                  0, 0, PM_REMOVE); ++n) {
+        TranslateMessage(&message); DispatchMessageW(&message);
       }
-      try { future.get(); } catch (...) { return failure("E_CURSOR_CLOSE_FAILED", "The controlled drain query failed."); }
-      if (!result->valid || (result->status != WKE_CURSOR_BROKER_OK &&
-          result->status != WKE_CURSOR_BROKER_FAILED && result->status != WKE_CURSOR_BROKER_BUSY))
-        return failure("E_CURSOR_CLOSE_FAILED", "The controlled drain receipt is incomplete.");
-      if (result->destroyed) cursor_vendor_destroyed_ = true;
-      else {
-        dispatch_child();
-        (void)SetTimer(static_cast<HWND>(webview_window_),
-            reinterpret_cast<UINT_PTR>(&cursor_vendor_destroyed_), 50, nullptr);
-        return failure("E_CURSOR_CLOSE_PENDING", "The controlled native resources and callbacks have not drained.");
+    };
+    const auto drain = unmount_step([this, api, token, state] {
+      wkeCursorBrokerDrainReceipt receipt{}; receipt.structSize = sizeof(receipt);
+      state->drain_status = api->inspectDrain(token, &receipt);
+      state->drain_valid = receipt.structSize == sizeof(receipt) && receipt.endpoint.low == token.low &&
+          receipt.endpoint.high == token.high && receipt.closing == 1 && receipt.closeSequence &&
+          receipt.drained <= 1 && receipt.oleRegistered <= 1;
+      const bool drained = state->drain_valid && receipt.drained == 1 && !receipt.queuedUiTasks &&
+          !receipt.runningUiTasks && !receipt.nativeScopes && !receipt.engineCallbacks && !receipt.oleRegistered;
+      if (drained && (state->drain_status == WKE_CURSOR_BROKER_OK || state->drain_status == WKE_CURSOR_BROKER_FAILED)) {
+        const auto close_sequence = receipt.closeSequence;
+        state->drain_status = api->destroyEndpoint(token, &receipt);
+        state->endpoint_destroyed = state->drain_status == WKE_CURSOR_BROKER_OK && receipt.structSize == sizeof(receipt) &&
+            receipt.endpoint.low == token.low && receipt.endpoint.high == token.high &&
+            receipt.closing == 1 && receipt.closeSequence == close_sequence && receipt.drained == 1 &&
+            !receipt.queuedUiTasks && !receipt.runningUiTasks && !receipt.nativeScopes &&
+            !receipt.engineCallbacks && !receipt.oleRegistered;
+        if (state->endpoint_destroyed) webview_ = nullptr;
       }
+    }, "The controlled drain query is pending.");
+    if (!drain.ok) {
+      if (drain.code != "E_CURSOR_CLOSE_PENDING") return drain;
+      dispatch_child();
+      return unmount_pending("The controlled drain query is still pending.");
+    }
+    state->completion = {};
+    if (!state->drain_valid || (state->drain_status != WKE_CURSOR_BROKER_OK &&
+        state->drain_status != WKE_CURSOR_BROKER_FAILED && state->drain_status != WKE_CURSOR_BROKER_BUSY)) {
+      state->failure = failure("E_CURSOR_CLOSE_FAILED", "The controlled drain receipt is incomplete.");
+      return state->failure;
+    }
+    if (state->endpoint_destroyed) cursor_vendor_destroyed_ = true;
+    else {
+      dispatch_child();
+      return unmount_pending("The controlled native resources and callbacks have not drained.");
     }
   }
   if (!cursor_broker_->finish_close()) {
@@ -1890,7 +2006,7 @@ host_result dynamic_miniblink_adapter::close_cursor_endpoint() {
   }
   (void)KillTimer(static_cast<HWND>(webview_window_), reinterpret_cast<UINT_PTR>(&cursor_vendor_destroyed_));
   cursor_broker_.reset(); cursor_api_ = nullptr;
-  cursor_close_pending_ = false; cursor_transition_pending_ = false;
+  cursor_transition_pending_ = false;
 #endif
   return success();
 }
@@ -1933,6 +2049,7 @@ void dynamic_miniblink_adapter::unmount_on_engine() {
 }
 
 host_result dynamic_miniblink_adapter::show(bool visible) {
+  if (unmount_state_) return failure("E_CURSOR_CLOSE_PENDING", "WebView teardown owns this adapter.");
 #ifdef _WIN32
   if (webview_window_ == nullptr || !IsWindow(static_cast<HWND>(webview_window_))) {
     return failure("E_NOT_STARTED", "The child WebView has not been created.");
@@ -1946,6 +2063,7 @@ host_result dynamic_miniblink_adapter::show(bool visible) {
 }
 
 host_result dynamic_miniblink_adapter::reload() {
+  if (unmount_state_) return failure("E_CURSOR_CLOSE_PENDING", "WebView teardown owns this adapter.");
   window_chrome_.clear();
 #ifdef _WIN32
   if (engine_thread_ == nullptr) {
@@ -2023,6 +2141,7 @@ host_result dynamic_miniblink_adapter::reload() {
 
 #ifdef SOUI_PERFORMANCE_DIAGNOSTICS
 host_result dynamic_miniblink_adapter::request_memory_recovery() {
+  if (unmount_state_) return failure("E_CURSOR_CLOSE_PENDING", "WebView teardown owns this adapter.");
 #ifdef _WIN32
   if (engine_thread_ == nullptr)
     return failure("E_NOT_STARTED", "The Miniblink engine thread is not running.");
@@ -2045,6 +2164,7 @@ host_result dynamic_miniblink_adapter::request_memory_recovery() {
 #endif
 
 host_result dynamic_miniblink_adapter::resize(int width, int height) {
+  if (unmount_state_) return failure("E_CURSOR_CLOSE_PENDING", "WebView teardown owns this adapter.");
 #ifdef _WIN32
   if (engine_thread_ == nullptr || webview_window_ == nullptr || width <= 0 || height <= 0) {
     return failure("E_INVALID_ARGUMENT", "A live WebView and positive dimensions are required.");
@@ -2089,13 +2209,24 @@ host_result dynamic_miniblink_adapter::resize(int width, int height) {
 }
 
 host_result dynamic_miniblink_adapter::focus() {
+  if (unmount_state_) return failure("E_CURSOR_CLOSE_PENDING", "WebView teardown owns this adapter.");
 #ifdef _WIN32
   if (engine_thread_ == nullptr || webview_window_ == nullptr) {
     return failure("E_NOT_STARTED", "The child WebView has not been created.");
   }
-  SetFocus(static_cast<HWND>(webview_window_));
-  const auto admitted=detail::engine_admission::post(*engine_thread_,detail::engine_lane::ordinary,[this] {
-        if (webview_ != nullptr && wkeSetFocus != nullptr)
+  const auto engine = engine_thread_;
+  const auto child = webview_window_;
+  const auto generation = interaction_generation_;
+  SetFocus(static_cast<HWND>(child)); // May synchronously reenter teardown/navigation.
+  if (unmount_requested_.load(std::memory_order_acquire))
+    return failure("E_CURSOR_CLOSE_PENDING", "WebView teardown owns this focus request.");
+  if (engine_thread_ != engine || webview_window_ != child ||
+      !input_generation_applies(input_kind::focus, generation, interaction_generation_))
+    return failure("E_CONTEXT_GENERATION", "The focus owner changed during the native call.");
+  const auto admitted=detail::engine_admission::post(*engine,detail::engine_lane::ordinary,[this, generation] {
+        if (!unmount_requested_.load(std::memory_order_acquire) &&
+            input_generation_applies(input_kind::focus, generation, engine_input_generation_) &&
+            webview_ != nullptr && wkeSetFocus != nullptr)
           wkeSetFocus(static_cast<wkeWebView>(webview_));
       });
   if (admitted != detail::engine_admission_result::accepted)
@@ -2108,6 +2239,11 @@ host_result dynamic_miniblink_adapter::focus() {
 
 void dynamic_miniblink_adapter::pump() {
 #ifdef _WIN32
+  if (unmount_state_) {
+    if (!unmount_running_) (void)unmount();
+    return;
+  }
+  if (unmount_requested_.load(std::memory_order_acquire) || unmount_running_) return;
   if (engine_thread_ == nullptr || pump_pending_.exchange(true)) return;
   if (!engine_thread_->post([this] {
         pump_on_engine();
@@ -2180,6 +2316,7 @@ void dynamic_miniblink_adapter::sync_cursor_input_generation() noexcept {
 
 void dynamic_miniblink_adapter::pump_on_engine() {
 #ifdef _WIN32
+  if (unmount_requested_.load(std::memory_order_acquire)) return;
   if (cursor_broker_) (void)update_cursor_identity_on_engine();
   if (webview_ != nullptr && wkeUpdate != nullptr) {
     bool gpu_active = false;
@@ -2307,6 +2444,7 @@ input_packet dynamic_miniblink_adapter::make_input_packet(input_kind kind) noexc
 bool dynamic_miniblink_adapter::submit_wheel(const input_packet& packet,
                                              scroll_sample& sample) {
 #ifdef _WIN32
+  if (unmount_requested_.load(std::memory_order_acquire)) return false;
   const auto* api = static_cast<const wkeInteractionApi*>(interaction_api_);
   if (api == nullptr || interaction_endpoint_ == nullptr || api->submitWheel == nullptr)
     return false;
@@ -2367,6 +2505,7 @@ bool dynamic_miniblink_adapter::submit_wheel(const input_packet& packet,
 bool dynamic_miniblink_adapter::capture_scroll_barrier(
     const input_packet& packet, scroll_sample& sample) {
 #ifdef _WIN32
+  if (unmount_requested_.load(std::memory_order_acquire)) return false;
   const auto* api = static_cast<const wkeInteractionApi*>(interaction_api_);
   if (api == nullptr || interaction_endpoint_ == nullptr
       || api->captureScrollBarrier == nullptr)
@@ -2410,7 +2549,8 @@ bool dynamic_miniblink_adapter::post_input(const input_packet& packet) {
 }
 
 input_admission_result dynamic_miniblink_adapter::post_input_typed(const input_packet& packet) {
-  if (!engine_thread_ || !input_mailbox_) return input_admission_result::stopped;
+  if (unmount_requested_.load(std::memory_order_acquire) || !engine_thread_ || !input_mailbox_)
+    return input_admission_result::stopped;
   const auto mailbox = std::static_pointer_cast<detail::input_mailbox>(input_mailbox_);
   const auto result = mailbox->post(packet);
   if (mailbox->pending()) detail::engine_admission::notify_input(*engine_thread_);
@@ -2601,6 +2741,9 @@ bool dynamic_miniblink_adapter::handle_native_window_message(
   const WPARAM wparam = static_cast<WPARAM>(wparam_value);
   const LPARAM lparam = static_cast<LPARAM>(lparam_value);
   const HWND child = static_cast<HWND>(webview_window_);
+  // Keep owned cleanup messages flowing without admitting new input borrowers.
+  if (unmount_state_ && message != detail::cursor_descriptor_message &&
+      message != WM_TIMER && message != WM_CLOSE) return false;
   auto route = [this](input_packet packet) {
     const auto routed = interaction_router_.route(packet, *this, *this);
     if (routed.disposition == route_disposition::rejected_stale
@@ -3023,6 +3166,7 @@ bool dynamic_miniblink_adapter::application_ready() {
 }
 
 std::string dynamic_miniblink_adapter::application_diagnostics() {
+  if (unmount_requested_.load(std::memory_order_acquire)) return "document=waiting,bridge=waiting";
   const auto receipt = execution_context_receipt();
   const bool bridge_ready = accepts_execution_context_receipt(receipt) && application_ready_ &&
       application_ready_receipt_.load(std::memory_order_acquire) == receipt;
@@ -3284,7 +3428,8 @@ std::uint64_t dynamic_miniblink_adapter::execution_context_receipt() const noexc
 }
 
 bool dynamic_miniblink_adapter::accepts_execution_context_receipt(std::uint64_t receipt) const noexcept {
-  return detail::main_context_gate<>::accepts(cursor_context_receipt_, receipt);
+  return !unmount_requested_.load(std::memory_order_acquire) &&
+      detail::main_context_gate<>::accepts(cursor_context_receipt_, receipt);
 }
 
 std::uint64_t dynamic_miniblink_adapter::invalidate_main_context() noexcept {
@@ -3399,37 +3544,57 @@ std::string dynamic_miniblink_adapter::handle_message(std::string_view request,
   const std::string method = bridge_request_method(request);
   if (!bridge_accepting_.load(std::memory_order_acquire) || !accepts_execution_context_receipt(context_receipt))
     return bridge_error({}, "E_CONTEXT_PENDING", "The native context is no longer current.");
-  auto response = static_cast<bridge_adapter*>(bridge_adapter_)->handle_json(request, native_user_gesture);
-  // Already-started native effects are not rolled back. Obsolete replies and
-  // their Host readiness/session side effects are discarded instead.
-  if (!bridge_accepting_.load(std::memory_order_acquire) || !accepts_execution_context_receipt(context_receipt))
-    return bridge_error({}, "E_CONTEXT_PENDING", "The native context changed during execution.");
-  if (method == "bridge.bootstrap" &&
-      response.find("\"ok\":true") != std::string::npos) {
-    const std::regex session_pattern(R"session("sessionId"\s*:\s*"([^"]+)")session");
-    std::smatch match;
-    if (std::regex_search(response, match, session_pattern) && match.size() > 1U) {
-      {
-        std::lock_guard<std::mutex> lock(state_mutex_);
-        if (!accepts_execution_context_receipt(context_receipt))
-          return bridge_error({}, "E_CONTEXT_PENDING", "The native context changed during execution.");
-        session_id_ = match[1].str();
-        session_context_receipt_ = context_receipt;
-      }
-#ifdef SOUI_BRIDGE_BENCHMARK
-      if (!benchmark_dataset_.empty()) {
-        auto packet = nlohmann::json::parse(response);
-        const auto& result = packet.at("result");
-        const soui::runtime::scan_request_context context{result.at("sessionId").get<std::string>(),
-          result.at("origin").get<std::string>(), result.at("token").get<std::string>()};
-        const auto benchmark_root_token = static_cast<bridge_adapter*>(bridge_adapter_)->register_root(context, benchmark_dataset_);
-        if (!accepts_execution_context_receipt(context_receipt))
-          return bridge_error({}, "E_CONTEXT_PENDING", "The native context changed during execution.");
-        packet["result"]["benchmarkRootToken"] = benchmark_root_token;
-        response = packet.dump();
-      }
-#endif
+  auto* const bridge = static_cast<bridge_adapter*>(bridge_adapter_);
+  auto response = bridge->handle_json(request, native_user_gesture);
+  // A successful bootstrap has already issued a new authorization session.
+  // Until the Host accepts that exact session, this call owns its cleanup even
+  // if a concurrent close invalidates the reply. Other native effects are not
+  // rolled back, and no response body or token is retained for diagnostics.
+  std::string pending_bootstrap_session;
+  if (method == "bridge.bootstrap") {
+    const auto packet = bounded_bridge_packet(response);
+    if (packet.is_object()) {
+      const auto ok = packet.find("ok"), result = packet.find("result");
+      if (ok != packet.end() && ok->is_boolean() && ok->get<bool>()
+          && result != packet.end() && result->is_object())
+        pending_bootstrap_session = packet_string(*result, "sessionId");
     }
+  }
+  if (!bridge_accepting_.load(std::memory_order_acquire) || !accepts_execution_context_receipt(context_receipt)) {
+    if (!pending_bootstrap_session.empty()) bridge_shutdown_session(*bridge, pending_bootstrap_session, 0);
+    return bridge_error({}, "E_CONTEXT_PENDING", "The native context changed during execution.");
+  }
+  if (!pending_bootstrap_session.empty()) {
+    bool committed = false;
+    try {
+      std::lock_guard<std::mutex> lock(state_mutex_);
+      if (bridge_accepting_.load(std::memory_order_acquire) && accepts_execution_context_receipt(context_receipt)) {
+        session_id_.swap(pending_bootstrap_session);
+        session_context_receipt_ = context_receipt;
+        committed = true; // Original unmount/context-change cleanup now owns the new session.
+      }
+    } catch (...) {
+      // Never call application Bridge code while holding the Host state lock.
+      bridge_shutdown_session(*bridge, pending_bootstrap_session, 0);
+      throw;
+    }
+    if (!committed) {
+      bridge_shutdown_session(*bridge, pending_bootstrap_session, 0);
+      return bridge_error({}, "E_CONTEXT_PENDING", "The native context changed during execution.");
+    }
+#ifdef SOUI_BRIDGE_BENCHMARK
+    if (!benchmark_dataset_.empty()) {
+      auto packet = nlohmann::json::parse(response);
+      const auto& result = packet.at("result");
+      const soui::runtime::scan_request_context context{result.at("sessionId").get<std::string>(),
+        result.at("origin").get<std::string>(), result.at("token").get<std::string>()};
+      const auto benchmark_root_token = bridge->register_root(context, benchmark_dataset_);
+      if (!accepts_execution_context_receipt(context_receipt))
+        return bridge_error({}, "E_CONTEXT_PENDING", "The native context changed during execution.");
+      packet["result"]["benchmarkRootToken"] = benchmark_root_token;
+      response = packet.dump();
+    }
+#endif
   }
   if (method == "bridge.probe.report" &&
       response.find("\"ok\":true") != std::string::npos) {

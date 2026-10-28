@@ -66,8 +66,8 @@ class dynamic_miniblink_adapter final : public webview_host_adapter,
                                         private independent_input_sink,
                                         private engine_input_sink {
  public:
-  // Lifecycle runs on the HWND owner. A close requested from an active native
-  // modal callback can return E_CURSOR_CLOSE_PENDING; keep this adapter and
+  // Lifecycle runs on the HWND owner. Queued engine/worker/native cleanup can
+  // return E_CURSOR_CLOSE_PENDING; keep this adapter, the borrowed Bridge and
   // both HWNDs alive until the callback returns and unmount completes. Do not
   // destroy an adapter from its own active member/native callback stack.
   dynamic_miniblink_adapter();
@@ -135,6 +135,8 @@ class dynamic_miniblink_adapter final : public webview_host_adapter,
   [[nodiscard]] host_result wait_for_cursor_registration();
   [[nodiscard]] bool startup_window_matches() const noexcept;
   void unmount_on_engine();
+  [[nodiscard]] host_result unmount_step(engine_thread::task work, const char* message);
+  [[nodiscard]] host_result unmount_pending(const char* message);
   [[nodiscard]] host_result close_cursor_endpoint();
   [[nodiscard]] bool advance_cursor_document_on_engine();
   [[nodiscard]] bool update_cursor_identity_on_engine();
@@ -210,6 +212,9 @@ class dynamic_miniblink_adapter final : public webview_host_adapter,
     bool retained{false};
   } startup_refused_message_; // One actual removed MSG, never dispatched or reposted.
   bool unmount_running_{false}; // UI owner only
+  std::atomic<bool> unmount_requested_{false}; // Engine/Bridge callbacks reject the closing generation.
+  struct unmount_state;
+  std::shared_ptr<unmount_state> unmount_state_; // Retained until actual cleanup, never a timeout cancellation.
   bool cursor_close_pending_{false};
   bool cursor_vendor_destroyed_{false};
   interaction_generation interaction_generation_;

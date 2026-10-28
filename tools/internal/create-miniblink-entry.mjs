@@ -1,8 +1,22 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { createRequire } from 'node:module';
+
+const targets = createRequire(import.meta.url)('./web-targets.cjs');
+let targetSelection;
+const projectRoot = process.env.SOUI_WEB_PROJECT_ROOT ?? path.resolve(process.cwd(), '..');
+const targetPlan = targets.resolve(projectRoot);
+if (targetPlan.configured || process.env.SOUI_WEB_TARGET || process.env.SOUI_WEB_PROJECT_ROOT) {
+  const plan = targetPlan;
+  const target = plan.targets.find(target => target.name === (process.env.SOUI_WEB_TARGET ?? plan.default));
+  if (!plan.configured || !target) throw new Error('Unknown Web target for classic entry.');
+  targetSelection = {...target, configurationSha256: plan.configurationSha256};
+}
 
 const distArgument = process.argv[2] ?? 'dist';
-const distRoot = path.resolve(process.cwd(), distArgument);
+const distRoot = targetSelection ? path.resolve(projectRoot, targetSelection.outDir) :
+  path.resolve(process.cwd(), distArgument);
+if (targetSelection) targets.verifyTargetDirectory(distRoot, targetSelection, {requireManifest: true});
 const manifestPath = path.join(distRoot, '.vite', 'manifest.json');
 if (!fs.existsSync(manifestPath)) {
   throw new Error(`Vite manifest is missing: ${manifestPath}`);
@@ -11,7 +25,11 @@ if (!fs.existsSync(manifestPath)) {
 const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
 const application = manifest['index-legacy.html'];
 const reactApplication = manifest['react-legacy.html'];
-const polyfills = manifest['vite/legacy-polyfills-legacy'];
+const polyfillEntries = targetSelection ? Object.entries(manifest)
+  .filter(([key]) => /(?:^|\/)vite\/legacy-polyfills-legacy$/.test(key)).map(([, entry]) => entry) :
+  [manifest['vite/legacy-polyfills-legacy']];
+if (polyfillEntries.length !== 1) throw new Error('A unique Vite legacy polyfill entry is required.');
+const polyfills = polyfillEntries[0];
 const styles = manifest['index.html']?.css ?? [];
 if (!application?.file || !polyfills?.file) {
   throw new Error('The Vite legacy application and polyfill entries are required for Miniblink.');
@@ -76,4 +94,5 @@ if (reactApplication?.file) {
   const reactRuntimeEntry = resolveLegacyRuntimeEntry(reactApplication) ?? reactApplication.file;
   fs.writeFileSync(path.join(distRoot, 'react.html'), classicHtml(localAsset(reactRuntimeEntry), reactStyles, 'SOUI + Miniblink React Surface'), 'utf8');
 }
+if (targetSelection) targets.createManifest(distRoot, targetSelection);
 console.log(`Miniblink classic entry generated: ${path.join(distRoot, 'index.html')}`);

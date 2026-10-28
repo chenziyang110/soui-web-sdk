@@ -1,0 +1,13 @@
+{
+  "schema": "soui.application/v1",
+  "name": "SouiAutoStarter",
+  "nativeTarget": "SouiAutoStarter",
+  "runtimeProfile": "auto",
+  "webTargets": {
+    "default": "modern",
+    "targets": [
+      {"name": "modern", "entry": "web/modern/index.html", "publicAssets": []},
+      {"name": "compatibility", "entry": "web/compatibility/index.html", "publicAssets": []}
+    ]
+  }
+}
