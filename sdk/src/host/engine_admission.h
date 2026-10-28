@@ -59,6 +59,13 @@ class engine_admission final {
   // Owner-only borrow of the actual mounted Host Engine; invalidated by teardown.
   // No callback, state setter, permission or wire endpoint is introduced.
   [[nodiscard]] static engine_thread* host_engine(dynamic_miniblink_adapter&) noexcept;
+#ifdef SOUI_HOST_UNMOUNT_TEST_ONLY
+  // Only the dedicated real-source unit target defines this. No view, DLL,
+  // window, permission or installed SDK entry is created by this fixture.
+  static void bind_unmount_fixture(dynamic_miniblink_adapter&, engine_thread&,
+                                   std::unique_ptr<engine_thread> bridge = {});
+  [[nodiscard]] static engine_thread* unmount_fixture_engine(dynamic_miniblink_adapter&) noexcept;
+#endif
 };
 
 } // namespace soui::sdk::detail

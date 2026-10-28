@@ -102,7 +102,7 @@ test('optional SDK source package imports and types survive installation outside
   run(path.join(consumer, 'imports.mjs'), [], consumer);
 });
 
-test('npm peers accept the promised 0.5 tuple and reject unpromised prerelease tuples', t => {
+test('npm peers accept the promised historical and current tuples and reject unpromised prerelease tuples', t => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'soui-gui-peer-'));
   t.after(() => {
     const resolved = fs.realpathSync(root);
@@ -115,18 +115,28 @@ test('npm peers accept the promised 0.5 tuple and reject unpromised prerelease t
       '--pack-destination', root, '--json', '--ignore-scripts'], directory))[0];
     bindings[`@soui/gui-${framework}`] = `file:${path.join(root, packed.filename).replaceAll('\\', '/')}`;
   }
-  // Only temporary metadata changes: the dist remains the checked-out SDK's bytes.
-  // This validates npm resolution, never certifies 0.5 SDK behavior or identity.
+  // This is a metadata resolution test. Local framework fixtures keep unrelated
+  // registry-cache misses from masking the native SDK peer decision.
+  const frameworks = {};
+  for (const [name, version] of [['react', '19.3.0'], ['vue', '3.5.43']]) {
+    const staging = path.join(root, name); fs.mkdirSync(staging);
+    fs.writeFileSync(path.join(staging, 'package.json'), JSON.stringify({name, version}));
+    const packed = JSON.parse(run(npmCli, ['pack', staging, '--pack-destination', root, '--json', '--ignore-scripts'], directory))[0];
+    frameworks[name] = `file:${path.join(root, packed.filename).replaceAll('\\', '/')}`;
+  }
+  // Only temporary native metadata changes: dist remains the checked-out SDK's
+  // bytes. This never certifies historical SDK or framework behavior/identity.
   for (const [version, accepts] of [['0.5.0-preview.1', true], ['0.5.0', true],
-    ['0.4.1-preview.1', false], ['0.5.1-preview.1', true], ['0.5.2-preview.1', false], ['0.6.0', false]]) {
+    ['0.4.1-preview.1', false], ['0.5.1-preview.1', true], ['0.5.2-preview.1', false],
+    ['0.6.0-preview.3', true], ['0.6.0-preview.2', false], ['0.6.0', false]]) {
     const staging = path.join(root, `sdk-${version}`), consumer = path.join(root, `consumer-${version}`);
     fs.mkdirSync(staging); fs.mkdirSync(consumer);
     const metadata = { ...read(path.join(repository, 'sdk/web/package.json')), version };
     fs.writeFileSync(path.join(staging, 'package.json'), JSON.stringify(metadata));
     fs.cpSync(path.join(repository, 'sdk/web/dist'), path.join(staging, 'dist'), { recursive: true });
     const packed = JSON.parse(run(npmCli, ['pack', staging, '--pack-destination', root, '--json', '--ignore-scripts'], directory))[0];
-    const dependencies = { ...bindings, '@soui/native-sdk': `file:${path.join(root, packed.filename).replaceAll('\\', '/')}`,
-      react: '19.3.0', 'react-dom': '19.3.0', vue: '3.5.43' };
+    const dependencies = { ...bindings, ...frameworks,
+      '@soui/native-sdk': `file:${path.join(root, packed.filename).replaceAll('\\', '/')}` };
     fs.writeFileSync(path.join(consumer, 'package.json'), JSON.stringify({ name: 'peer-resolution-fixture',
       version: '0.1.0', private: true, type: 'module', dependencies }));
     const result = spawnSync(process.execPath, [npmCli, 'install', '--offline', '--ignore-scripts', '--no-audit', '--no-fund'],
@@ -139,6 +149,7 @@ test('npm peers accept the promised 0.5 tuple and reject unpromised prerelease t
     } else {
       assert.notEqual(result.status, 0, `Unpromised SDK version ${version} was accepted`);
       assert.match(result.stderr, /ERESOLVE/);
+      assert.match(result.stderr, /peer @soui\/native-sdk@/);
     }
   }
 });

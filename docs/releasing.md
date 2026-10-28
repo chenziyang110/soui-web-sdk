@@ -1,6 +1,6 @@
 # 交付与发布
 
-当前开发版本 `0.5.1-preview.1` 尚未发布。维护者于 2026-10-16 在 0.5.0 交付后选择首方 MIT 许可，并要求恢复剩余 Issue 的全部关闭条件验证，包括真实 8 小时长测。下文 0.5.0 限定范围记录保留其历史含义，不能用作后续开发版本跳过验收的依据。许可证交付决定见 [ADR-0118](adr/0118-first-party-mit-delivery.md)。
+当前开发版本 `0.6.0-preview.3` 尚未发布。维护者于 2026-10-16 在 0.5.0 交付后选择首方 MIT 许可，并要求恢复剩余 Issue 的全部关闭条件验证，包括真实 8 小时长测。下文 0.5.0 限定范围记录保留其历史含义，不能用作后续开发版本跳过验收的依据。许可证交付决定见 [ADR-0118](adr/0118-first-party-mit-delivery.md)。
 
 0.5.0 按下面限定范围进行预发布交付，实际结果见[发布说明](releases/0.5.0.md)。完整生产验收未关闭，机器可读结果保持 `releaseReady: false`。
 
@@ -21,6 +21,15 @@ node tools/Collect-Verification.cjs --record-unverified --evidence-reference ver
 该命令不运行构建或测试，退出 0 只表示状态记录成功。它核对引用的版本及非生产资格标志，保存相对路径、字节数和 SHA-256；不复验外部原件或继承通过结果。根文件保持 `scope=full`、`status=unverified`、`collectionExecuted=false`、`sourceDeliveryVerified=false`、`releaseReady=false`。旧根文件按原字节存入 `verification/history/` 并由新记录引用。与其他 Collector 串行执行，随后按下文刷新源码清单；已发布的固定包保持原样。设计与失败边界见 [ADR-0117](adr/0117-current-unverified-acceptance-status.md)。
 
 ## 交付组成
+
+未发布候选新增[可选运行时去重 Bundle](runtime-packaging.md)：原单应用 ZIP
+保持默认，新格式需要先恢复为完整独立应用目录，不能直接当作既有安装器使用。
+
+应用及 Bundle 可显式选择[压缩档位](compression-profiles.md)。省略参数时 ZIP
+格式、原参数和文件名不变；7z 档位的接收方需要相应解压工具。
+
+显式 `-Profile auto` 包含现代与兼容页面和本地 MiniBlink；WebView2 Runtime
+仍是外部依赖。打包要求同一构建的两条真实启动路径通过，详见[自动后端](auto-backend.md)。
 
 - 完整源码包：SDK、模板、Demo、工具、文档、测试、第三方源码与固定运行依赖。
 - SDK 安装包：通过 `tools/sdk/soui-sdk.cjs pack` 生成，包含逐文件身份清单。

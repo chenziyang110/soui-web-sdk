@@ -6,7 +6,7 @@
 
 本仓库维护 Windows 平台的 SOUI + Miniblink 桌面 SDK、最小应用模板、完整 Workbench Demo、第三方源码及可重复的构建和验收工具。
 
-- 当前开发版本为 `0.5.1-preview.1`，尚未发布；`0.5.0` 已按限定范围预发布，生产验收未完成。不得把编译成功、短启动成功或删除 preview 标签描述为“生产就绪”。
+- 当前开发版本为 `0.6.0-preview.3`，尚未发布；`0.5.0` 已按限定范围预发布，生产验收未完成。不得把编译成功、短启动成功或删除 preview 标签描述为“生产就绪”。
 - 生产门槛和未关闭风险以 `docs/known-issues.md` 为准，机器可读结论以 `verification/acceptance.json` 为准。
 - 根目录 `VERSION` 是版本唯一来源。C++、Web SDK、锁文件、变更记录和交付清单必须与其一致。
 - 支持 Windows、MSVC v143、C++17、Windows SDK 10.0.19041.0。不要静默提高最低系统或工具链要求。
