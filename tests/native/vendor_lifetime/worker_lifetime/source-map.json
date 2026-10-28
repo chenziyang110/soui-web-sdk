@@ -53,18 +53,18 @@
     },
     {
       "path": "third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.h",
-      "bytes": 4244,
-      "sha256": "253c1b74696c717c9145e5b5b598986354a06182f4bcb9ccfc71674d76a1e358"
+      "bytes": 4325,
+      "sha256": "673e9acc5bb267a5afb733a7eb4c84de2ac845699e49fa44e27f1fbcafd2ea7d"
     },
     {
       "path": "third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp",
-      "bytes": 24157,
-      "sha256": "95fe2fdd2d109cf3bfed4a155222d4a13642c3980b372e5ca952c4f09a9bdad2"
+      "bytes": 24846,
+      "sha256": "fa7295aee946697c6a9b122daea593b7c435f39ae1585c2774e8d13476e953cc"
     },
     {
       "path": "third_party/sources/miniblink/content/web_impl_win/BlinkPlatformImpl.cpp",
-      "bytes": 40230,
-      "sha256": "6f2da672656096a926f0710d10ef94ca84b2c57b1dc2f290fabf1f302a793bce"
+      "bytes": 40263,
+      "sha256": "b03dc07c12abfa1a43a53390d665067f6a35272e3dd11dfde15f3b70cf68cadc"
     }
   ],
   "copies": [
@@ -72,19 +72,19 @@
       "source": "third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.h",
       "output": "content/web_impl_win/WebThreadImpl.h",
       "startByte": 0,
-      "endByteExclusive": 4244,
+      "endByteExclusive": 4325,
       "exactWholeFile": true,
-      "bytes": 4244,
-      "sha256": "253c1b74696c717c9145e5b5b598986354a06182f4bcb9ccfc71674d76a1e358"
+      "bytes": 4325,
+      "sha256": "673e9acc5bb267a5afb733a7eb4c84de2ac845699e49fa44e27f1fbcafd2ea7d"
     },
     {
       "source": "third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp",
       "output": "content/web_impl_win/WebThreadImpl.cpp",
       "startByte": 0,
-      "endByteExclusive": 24157,
+      "endByteExclusive": 24846,
       "exactWholeFile": true,
-      "bytes": 24157,
-      "sha256": "95fe2fdd2d109cf3bfed4a155222d4a13642c3980b372e5ca952c4f09a9bdad2"
+      "bytes": 24846,
+      "sha256": "fa7295aee946697c6a9b122daea593b7c435f39ae1585c2774e8d13476e953cc"
     },
     {
       "source": "third_party/sources/miniblink/content/web_impl_win/BlinkPlatformImpl.cpp",
@@ -111,8 +111,8 @@
     {
       "source": "third_party/sources/miniblink/content/web_impl_win/BlinkPlatformImpl.cpp",
       "output": "fragments/registry_and_tls_methods.inc",
-      "startByte": 18557,
-      "endByteExclusive": 20818,
+      "startByte": 18590,
+      "endByteExclusive": 20851,
       "exactWholeFile": false,
       "bytes": 2261,
       "sha256": "d4d49c82a2c2a335b5641bbbce4cdf676fbb66aa678a586c26c48ee5c1e2649c",
@@ -189,16 +189,24 @@
       "sourceEndLineExclusive": 96
     }
   ],
+  "shutdownProof": {
+    "source": "third_party/sources/miniblink/content/web_impl_win/BlinkPlatformImpl.cpp",
+    "output": "fragments/platform_shutdown.proof.cpp",
+    "startByte": 14267,
+    "endByteExclusive": 16472,
+    "bytes": 2205,
+    "sha256": "f103afc1ef7519332ab7868c1d4a6c384357308a0531ab9c6718b88cb86608f1"
+  },
   "payloads": [
     {
       "path": "CMakeLists.txt",
-      "bytes": 3112,
-      "sha256": "120cec610c085ddd4fc3f269c71a289a5d03678c2baf837795d393fd273d023e"
+      "bytes": 3299,
+      "sha256": "ddb22edb83497137119512b14a709de9fc507f244910ea4feee16e23e3d3f071"
     },
     {
       "path": "README.md",
-      "bytes": 4268,
-      "sha256": "c6dcd1587db82860f30e8eba0d26ca75c809cc82afada71c17b862e95ec8135e"
+      "bytes": 5616,
+      "sha256": "f8f0161128a2ca6ff87a13e7045a432ce33c8ed7becd000500bfa7d01b23fc15"
     },
     {
       "path": "expect-fail-fast.cmake",
@@ -207,8 +215,8 @@
     },
     {
       "path": "fixture.cpp",
-      "bytes": 31095,
-      "sha256": "cd87cad4c7668d43ad49c1c34f12e47adc569242b045c751b87c4d261cfd93b2"
+      "bytes": 39921,
+      "sha256": "41d09dfd527d0e24fd95b039820f7a0ed88891cbbcbe6f4d1d45f14bce899e8a"
     },
     {
       "path": "fixture_support.h",
@@ -217,8 +225,8 @@
     },
     {
       "path": "source-bytes.cmake",
-      "bytes": 6388,
-      "sha256": "b86288c3d3abe01bceeb99513499872c5d5e6be8e32355ac60c363848f3cac62"
+      "bytes": 10511,
+      "sha256": "2171f85404ec51b3c6cf8c0b680c9d18939489ebf493daf0cf414b8236cc043f"
     },
     {
       "path": "stubs/base/compiler_specific.h",

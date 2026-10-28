@@ -328,6 +328,7 @@ third_party/patches/soui/0001-llvm-conformance.patch -text -eol whitespace=cr-at
 tests/fixtures/source-regressions/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
 
 third_party/patches/miniblink/0012-retained-resource-byte-budget.patch -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
+third_party/patches/miniblink/0013-bound-main-thread-scheduler-batches.patch -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
 verification/production-validation/0.5-kernel-cache-rebuild-2026-10-15/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
 verification/production-validation/0.5-focused-fixes-2026-10-15/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
 
@@ -377,3 +378,6 @@ verification/production-validation/0.5-release-fixes-2026-10-16/** -text -eol wh
 # Preserve post-upgrade build records and scoped release originals byte-for-byte.
 verification/production-validation/0.5-post-upgrade-rebuild-2026-10-16/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
 verification/production-validation/0.5-source30-release-2026-10-16/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+# Captured scheduler evidence binds raw bytes, including its build JSON and analyzer.
+verification/production-validation/input-latency-scheduling-2026-10-21/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/input-latency-scheduling-2026-10-21/README.md text eol=lf diff

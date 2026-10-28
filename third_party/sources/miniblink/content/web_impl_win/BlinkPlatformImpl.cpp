@@ -414,12 +414,12 @@ void BlinkPlatformImpl::preShutdown()
 void BlinkPlatformImpl::shutdown()
 {
     wke::freeV8TempObejctOnOneFrameBefore();
-    ((WebThreadImpl*)currentThread())->fire();
+    ((WebThreadImpl*)currentThread())->fireForShutdown();
 
     net::WebURLLoaderManager::sharedInstance()->shutdown();
     WebPage::shutdown();
 
-    ((WebThreadImpl*)currentThread())->fire();
+    ((WebThreadImpl*)currentThread())->fireForShutdown();
 
     blink::memoryCache()->evictResources();
     v8::Isolate::GetCurrent()->LowMemoryNotification();
@@ -436,7 +436,7 @@ void BlinkPlatformImpl::shutdown()
     MemoryCache* memoryCache = MemoryCache::create();
     replaceMemoryCacheForTesting(memoryCache);
 
-    ((WebThreadImpl*)currentThread())->fire();
+    ((WebThreadImpl*)currentThread())->fireForShutdown();
 
     blink::Heap::collectAllGarbage();
 

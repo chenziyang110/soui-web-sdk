@@ -1,0 +1,87 @@
+{
+  "schema": "soui-input-latency-interrupted-builds/v1",
+  "outcomes": [
+    {
+      "attempt": 1,
+      "architecture": "x86",
+      "reason": "Interrupted after review found that pre-shutdown dispatch also requires the original budget.",
+      "passed": false,
+      "normalClosureProven": false,
+      "nativeTerminalRecorded": false,
+      "currentInventoryMatchedLiveMembers": 0,
+      "auditScope": "Current process inventory matched by PID and creation time; no normal completion claimed",
+      "ownedRawReport": {
+        "label": "kernel-x86-capture-1/kernel.ndjson",
+        "bytes": 1969283,
+        "sha256": "f2cf204731f07361ac94773f8d7b52a5d9ae1016c1f2fc66f613f5017afa69dc"
+      },
+      "currentInventoryAudit": {
+        "label": "review-stop-process-audit-1.json",
+        "bytes": 549,
+        "sha256": "dd53d96b894453248a96595c8784a49ca31525e87da09b11698f3a5a5f3ef217"
+      }
+    },
+    {
+      "attempt": 1,
+      "architecture": "x64",
+      "reason": "Interrupted after review found that pre-shutdown dispatch also requires the original budget.",
+      "passed": false,
+      "normalClosureProven": false,
+      "nativeTerminalRecorded": false,
+      "currentInventoryMatchedLiveMembers": 0,
+      "auditScope": "Current process inventory matched by PID and creation time; no normal completion claimed",
+      "ownedRawReport": {
+        "label": "kernel-x64-capture-1/kernel.ndjson",
+        "bytes": 1951050,
+        "sha256": "a59e25a26370c7f7a397da18b5f75186b1cbbcec7ae1932f9dab3f73ce8fe192"
+      },
+      "currentInventoryAudit": {
+        "label": "review-stop-process-audit-1.json",
+        "bytes": 549,
+        "sha256": "dd53d96b894453248a96595c8784a49ca31525e87da09b11698f3a5a5f3ef217"
+      }
+    },
+    {
+      "attempt": 2,
+      "architecture": "x86",
+      "reason": "Interrupted after non-TTY stdin prevented the requested STOP command; restarted with supported parallel scheduling and independent stop-file control.",
+      "passed": false,
+      "normalClosureProven": false,
+      "nativeTerminalRecorded": false,
+      "currentInventoryMatchedLiveMembers": 0,
+      "auditScope": "Current process inventory matched by PID and microsecond birth precision; no historical normal closure claimed",
+      "ownedRawReport": {
+        "label": "kernel-x86-capture-2/kernel.owned.ndjson",
+        "bytes": 2605218,
+        "sha256": "ed94e3f2457392753dc58ed282819053c0384e4d2a352275f5abe7a07ff69ad7"
+      },
+      "currentInventoryAudit": {
+        "label": "attempt2-process-audit.json",
+        "bytes": 595,
+        "sha256": "f37b99e89acf49e3e225ca71cabde040dbc5a06b0a89e7adbd162d34e79ac046"
+      }
+    },
+    {
+      "attempt": 2,
+      "architecture": "x64",
+      "reason": "Interrupted after non-TTY stdin prevented the requested STOP command; restarted with supported parallel scheduling and independent stop-file control.",
+      "passed": false,
+      "normalClosureProven": false,
+      "nativeTerminalRecorded": false,
+      "currentInventoryMatchedLiveMembers": 0,
+      "auditScope": "Current process inventory matched by PID and microsecond birth precision; no historical normal closure claimed",
+      "ownedRawReport": {
+        "label": "kernel-x64-capture-2/kernel.owned.ndjson",
+        "bytes": 2508696,
+        "sha256": "2bcd21a0cfb19c6d930ffea9de8993f3568cc8c5837bb94af9e367cfbb44a7d6"
+      },
+      "currentInventoryAudit": {
+        "label": "attempt2-process-audit.json",
+        "bytes": 595,
+        "sha256": "f37b99e89acf49e3e225ca71cabde040dbc5a06b0a89e7adbd162d34e79ac046"
+      }
+    }
+  ],
+  "evidenceScope": "Interrupted attempts are not successful build or historical closure proof; untouched raw records are retained externally.",
+  "releaseReady": false
+}

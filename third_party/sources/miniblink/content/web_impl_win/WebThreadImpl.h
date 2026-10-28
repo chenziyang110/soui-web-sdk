@@ -58,6 +58,7 @@ public:
     void schedulerTasks();
 
     void fire();
+    void fireForShutdown();
     
     void suspendTimerQueue();
     void resumeTimerQueue();
@@ -80,6 +81,7 @@ public:
 private:
     friend class BlinkPlatformImpl;
 
+    void schedulerTasks(bool allowMainThreadBudget);
     void fireOnExit();
     void waitForExit();
     void fireTimeOnExit();
