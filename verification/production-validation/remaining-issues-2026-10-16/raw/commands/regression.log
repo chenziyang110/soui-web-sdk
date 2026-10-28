@@ -1,0 +1,65 @@
+warning: in the working copy of '.gitattributes', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'VERSION', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.gitattributes', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'VERSION', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'source-manifest.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tools/test.ps1', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'VERSION', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'a.txt', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'VERSION', LF will be replaced by CRLF the next time Git touches it
+✔ source snapshot excludes ignored cache, works with CRLF checkout and without Git (35089.2073ms)
+✔ source export preserves tracked historical output paths and excludes unrelated build caches (9258.7254ms)
+✔ compatibility view builds preserve source identity without Git (59.8295ms)
+✔ unpacked source rejects missing or equal-length modified historical binaries (53.0993ms)
+✔ unpacked source rejects undeclared files including nested caches inside frozen output trees (94.6717ms)
+✔ unpacked source rejects duplicate, escaping and malformed manifest paths (44.3666ms)
+✔ unpacked source rejects linked historical output directories without changing the target (27.817ms)
+✔ unpacked source cannot hide a linked directory under an excluded cache name (27.5479ms)
+✔ source validation rejects missing, extra, ambiguous and escaping files (10697.1445ms)
+✔ license bytes survive Git checkout and full-source export under repository attributes (7792.2419ms)
+✔ payload evidence detects equal-length page edits, new files and missing DLLs (31.5495ms)
+✔ modern payload does not require Miniblink but preserves full asset identity checks (19.9797ms)
+✔ deployment replaces stale Web assets and preserves app data outside resources (110.6848ms)
+✔ deployment survives a temporary Windows denial while publishing staged resources (157.6962ms)
+✔ deployment bounds persistent Windows publication denials and restores old resources (523.4828ms)
+✔ deployment immediately propagates other publication errors and restores old resources (67.0084ms)
+✔ linked resource directories are rejected before deployment changes (21.8784ms)
+✔ SDK packages are identical across source EOLs but installed bytes remain pinned (784.5629ms)
+✔ build and smoke receipts fail closed after changes, empty runs or legacy successes (305.7306ms)
+✔ previous preview optional GUI reads, installs and downgrades with its fixed declaration (5354.9262ms)
+✔ historical optional GUI verifies the complete source and output sets (1895.4225ms)
+✔ an installed historical lock does not hide a failed or changed GUI build record (1893.3339ms)
+✔ historical producer cannot authorize RC or stable declarations (1026.3455ms)
+✔ current GUI producer cannot omit the helper in packages or installed locks (2602.586ms)
+✔ historical compatibility requires exact previous producer bytes and absent helper (1191.7467ms)
+✔ an installed historical declaration cannot bypass new GUI packaging input requirements (2116.9332ms)
+✔ optional GUI delivery preserves exact 0.5.0-rc.1 identity (2140.228ms)
+✔ optional GUI delivery preserves exact 0.5.0 identity (1853.1516ms)
+✔ optional GUI delivery preserves exact 0.5.1-preview.1 identity (1987.5559ms)
+✔ default source delivery remains framework-free and does not require compiled GUI output (362.2947ms)
+✔ opt-in source package carries compiled imports through installation and relocation (3902.4843ms)
+✔ stale source, missing output, mismatched SDK version, and output mutation fail before publication (860.9379ms)
+✔ delivered missing, changed and undeclared compiled files are rejected (1979.5104ms)
+✔ links and hard-linked output cannot be consumed as GUI delivery (219.7429ms)
+✔ a failed compile command or modified raw compile log cannot become a verified build (309.027ms)
+✔ a refreshed build record cannot replace the installed optional SDK lock (2000.6532ms)
+✔ a source-only fixed SDK allows unmanaged dist but still checks every managed file (1388.6886ms)
+✔ upstream package declarations are inert text with their original bytes and identity (27.8028ms)
+✔ runtime deployment preserves every notice and provenance byte without creating JSON aliases (1301.8575ms)
+✔ missing first-party license refuses deployment and preserves the existing application (16.6349ms)
+✔ the first-party license is included in SDK packages and build input identity (96.7745ms)
+✔ new SDK packages omit historical kernels and still upgrade and roll back old packages (5999.6899ms)
+✔ versions have one canonical preview, RC or stable channel (0.8852ms)
+✔ channel mismatch and claimed production acceptance cannot enter an SDK lock (58.161ms)
+✔ preview to RC to stable installs and rolls back without altering business files (1420.2821ms)
+✔ build identity requires matching header and JavaScript metadata for RC and stable (15.6091ms)
+ℹ tests 46
+ℹ suites 0
+ℹ pass 46
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 65441.507

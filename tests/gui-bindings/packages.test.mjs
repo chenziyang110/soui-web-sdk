@@ -118,7 +118,7 @@ test('npm peers accept the promised 0.5 tuple and reject unpromised prerelease t
   // Only temporary metadata changes: the dist remains the checked-out SDK's bytes.
   // This validates npm resolution, never certifies 0.5 SDK behavior or identity.
   for (const [version, accepts] of [['0.5.0-preview.1', true], ['0.5.0', true],
-    ['0.4.1-preview.1', false], ['0.5.1-preview.1', false], ['0.6.0', false]]) {
+    ['0.4.1-preview.1', false], ['0.5.1-preview.1', true], ['0.5.2-preview.1', false], ['0.6.0', false]]) {
     const staging = path.join(root, `sdk-${version}`), consumer = path.join(root, `consumer-${version}`);
     fs.mkdirSync(staging); fs.mkdirSync(consumer);
     const metadata = { ...read(path.join(repository, 'sdk/web/package.json')), version };

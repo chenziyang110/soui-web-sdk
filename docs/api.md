@@ -210,7 +210,7 @@ Host 独立限制 256 个普通请求和 128 个取消/释放请求，涵盖排�
 安装后在外部工程使用：
 
 ```cmake
-find_package(SouiSdk 0.5.0 EXACT CONFIG REQUIRED)
+find_package(SouiSdk 0.5.1 EXACT CONFIG REQUIRED)
 target_link_libraries(MyTarget PRIVATE Soui::Sdk)
 ```
 
