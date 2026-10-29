@@ -1,0 +1,5339 @@
+{
+  "schema": "soui.current-native-license-crosswalk/v1",
+  "sdkVersion": "0.6.0",
+  "issue": "https://github.com/chenziyang110/soui-web-sdk/issues/39",
+  "sourceIdentity": "26c5b73e4915bb4539e87b987cd8e952005f0fe41d987138d8d8e3b13eb25c95",
+  "sourceInventory": {
+    "path": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/common-provenance/source/Source2.source-after.json",
+    "bytes": 4505919,
+    "sha256": "c698985f7d46d02984a7eec46d96c1ebeac5164b816b61b560d96b657c136809"
+  },
+  "basis": "Local engineering/source declarations, not legal analysis.",
+  "firstPartyLicense": {
+    "decision": "MIT",
+    "pending": false,
+    "file": {
+      "path": "LICENSE.md",
+      "bytes": 1377,
+      "sha256": "e66ea76381329e7ac8907b5022c1c4b3e0fb3f5a1a089653f86f3d0312059ac6"
+    },
+    "scope": "First-party SDK code only; does not replace third-party terms or close Issue #39."
+  },
+  "currentBinaries": {
+    "x64": {
+      "record": {
+        "path": "verification/production-validation/current-link-members-0.6.0-2026-10-29/x64.json",
+        "bytes": 156040,
+        "sha256": "b23f784b59d3cdc957700d7719402db3c9498c07a812ad1a1e2c92c79b58b024"
+      },
+      "delivered": {
+        "path": "third_party/prebuilt/x64/miniblink/node.dll",
+        "bytes": 39204352,
+        "sha256": "d888637d5dd1476dde16b8c5bb28172d7b8ec3495b69c725fa3572013748139a"
+      }
+    },
+    "x86": {
+      "record": {
+        "path": "verification/production-validation/current-link-members-0.6.0-2026-10-29/x86.json",
+        "bytes": 153790,
+        "sha256": "831ad561f957842f7e3ed30ca3b92d8cc29e2f75743ffd43541de9852c9ffaa2"
+      },
+      "delivered": {
+        "path": "third_party/prebuilt/x86/miniblink/node.dll",
+        "bytes": 28318208,
+        "sha256": "dc8c37178f4bbd9260edc973d61af876cf8460178eaf89fa2994fdffc94abc9a"
+      }
+    }
+  },
+  "staticLibraryContextCount": 11,
+  "directMainContextCount": 1,
+  "collectionRevision": 2,
+  "priorCollection": {
+    "directory": "initial-incomplete-collection",
+    "status": "incomplete-parser-superseded",
+    "reason": "The initial block regex consumed self-closing ClCompile items through a later closing tag. Basename candidates and component counts were incomplete. All original files are preserved; no test or legal approval was inferred.",
+    "files": [
+      {
+        "path": "initial-incomplete-collection/Collection.actual.json",
+        "bytes": 7002,
+        "sha256": "664fe79ce60f18ceef780682a6a152d1fef092e0ccfe0850a11ae8006758587b"
+      },
+      {
+        "path": "initial-incomplete-collection/Crosswalk.json",
+        "bytes": 165729,
+        "sha256": "efa9b09196da7e6fb7324c2df1cdba650d255d4fcd6d8fb755f03aecf851404e"
+      },
+      {
+        "path": "initial-incomplete-collection/Files.index.json",
+        "bytes": 1173,
+        "sha256": "dcd9a9b668af5e55c865c497be2bff5879ef15e995c6de71ce3ea5a13678ecdf"
+      },
+      {
+        "path": "initial-incomplete-collection/MemberSourceCandidates.json",
+        "bytes": 1560318,
+        "sha256": "078b3c4da6fb07fc6135054a8079a908d310548b99dbe3abdcb9c95b6423a5a2"
+      },
+      {
+        "path": "initial-incomplete-collection/README.md",
+        "bytes": 3841,
+        "sha256": "31425b7a55d4b2accf27c69160dca0a72a61b4dbf12e53e9f471252a927b1e05"
+      },
+      {
+        "path": "initial-incomplete-collection/SUMMARY.json",
+        "bytes": 251896,
+        "sha256": "39004e1be099e2b8eea71e72e6adb14d3fbda41ed8c5e0d60c43e70f91a72815"
+      },
+      {
+        "path": "initial-incomplete-collection/collect.cjs",
+        "bytes": 33445,
+        "sha256": "3315dbd3bb97329159d2c8cd2e72edc133a4c6c2fa5d69a0a31c3947f4de3ae5"
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "zlib",
+      "name": "zlib",
+      "contexts": [
+        "zlib"
+      ],
+      "prefixes": [
+        "third_party/zlib/"
+      ],
+      "version": {
+        "value": null,
+        "status": "conflicting-local-declarations",
+        "basis": [
+          {
+            "file": {
+              "path": "third_party/sources/miniblink/third_party/zlib/zlib.h",
+              "bytes": 98151,
+              "sha256": "86c26fd89560f7c2d9ee7852cacdbc7c8334c3090a6e18e366e7618351a0dbf9",
+              "source2EntryPresent": true,
+              "currentBytesChecked": true,
+              "currentBytesEqualSource2": true
+            },
+            "statements": [
+              {
+                "line": 40,
+                "text": "#define ZLIB_VERSION \"1.2.11\""
+              }
+            ]
+          },
+          {
+            "file": {
+              "path": "third_party/sources/miniblink/third_party/zlib/README.chromium",
+              "bytes": 1729,
+              "sha256": "774dc803dd4554ea322fbe47025624706df6c703f3cc5bd63fc29960981e3edc",
+              "source2EntryPresent": true,
+              "currentBytesChecked": true,
+              "currentBytesEqualSource2": true
+            },
+            "statements": [
+              {
+                "line": 3,
+                "text": "Version: 1.2.5"
+              }
+            ]
+          },
+          {
+            "file": {
+              "path": "third_party/sources/miniblink/third_party/zlib/LICENSE",
+              "bytes": 1151,
+              "sha256": "e757be93a060abe3681dd89c5a7a19cd49cdaf76e96772fea65b6f6fb06634e4",
+              "source2EntryPresent": true,
+              "currentBytesChecked": true,
+              "currentBytesEqualSource2": true
+            },
+            "statements": [
+              {
+                "line": 2,
+                "text": "  version 1.2.4, March 14th, 2010"
+              }
+            ]
+          }
+        ],
+        "upstreamSourceArchiveIdentityProven": false,
+        "note": "Header says 1.2.11; README says 1.2.5; retained LICENSE prelude says 1.2.4. Full upstream version is unknown."
+      },
+      "declaredTerms": "zlib text; declaration conflict remains",
+      "materials": [
+        {
+          "currentSource": {
+            "path": "third_party/sources/miniblink/third_party/zlib/LICENSE",
+            "bytes": 1151,
+            "sha256": "e757be93a060abe3681dd89c5a7a19cd49cdaf76e96772fea65b6f6fb06634e4",
+            "source2EntryPresent": true,
+            "currentBytesChecked": true,
+            "currentBytesEqualSource2": true
+          },
+          "retainedNotices": [
+            {
+              "path": "third_party/licenses/d52/zlib/LICENSE.txt",
+              "bytes": 1151,
+              "sha256": "e757be93a060abe3681dd89c5a7a19cd49cdaf76e96772fea65b6f6fb06634e4"
+            }
+          ],
+          "retainedBytesEqualCurrentSource": [
+            true
+          ]
+        }
+      ],
+      "evidenceMeaning": "MAP membership + literal project basename candidate + current Source2 bytes; not a complete per-object compiler provenance or license decision.",
+      "matchedMembers": {
+        "x64": {
+          "candidateMemberCount": 10,
+          "uniqueProjectCandidateMemberCount": 10,
+          "examples": [
+            {
+              "library": "zlib",
+              "member": "adler32.obj",
+              "candidateSourceIds": [
+                0
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "zlib",
+              "member": "crc32.obj",
+              "candidateSourceIds": [
+                1
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "zlib",
+              "member": "deflate.obj",
+              "candidateSourceIds": [
+                2
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "zlib",
+              "member": "inffast.obj",
+              "candidateSourceIds": [
+                3
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "zlib",
+              "member": "inflate.obj",
+              "candidateSourceIds": [
+                4
+              ],
+              "allProjectCandidateCount": 1
+            }
+          ]
+        },
+        "x86": {
+          "candidateMemberCount": 10,
+          "uniqueProjectCandidateMemberCount": 10,
+          "examples": [
+            {
+              "library": "zlib",
+              "member": "adler32.obj",
+              "candidateSourceIds": [
+                0
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "zlib",
+              "member": "crc32.obj",
+              "candidateSourceIds": [
+                1
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "zlib",
+              "member": "deflate.obj",
+              "candidateSourceIds": [
+                2
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "zlib",
+              "member": "inffast.obj",
+              "candidateSourceIds": [
+                3
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "zlib",
+              "member": "inflate.obj",
+              "candidateSourceIds": [
+                4
+              ],
+              "allProjectCandidateCount": 1
+            }
+          ]
+        }
+      },
+      "applicableTermsReviewed": false,
+      "redistributionTermsApproved": false
+    },
+    {
+      "id": "ijg",
+      "name": "IJG JPEG",
+      "contexts": [
+        "libjpeg"
+      ],
+      "prefixes": [
+        "third_party/libjpeg/"
+      ],
+      "version": {
+        "value": "9a (19-Jan-2014)",
+        "status": "source-header-declaration",
+        "basis": [
+          {
+            "file": {
+              "path": "third_party/sources/miniblink/third_party/libjpeg/jversion.h",
+              "bytes": 410,
+              "sha256": "64ac726f1127c014fff97b82e52ded09c5d49cb588fc514cc0b953c9aea408d6",
+              "source2EntryPresent": true,
+              "currentBytesChecked": true,
+              "currentBytesEqualSource2": true
+            },
+            "statements": [
+              {
+                "line": 12,
+                "text": "#define JVERSION\t\"9a  19-Jan-2014\""
+              }
+            ]
+          }
+        ],
+        "upstreamSourceArchiveIdentityProven": false
+      },
+      "declaredTerms": "IJG accompanying README required by source header",
+      "materials": [
+        {
+          "currentSource": {
+            "path": "third_party/sources/miniblink/third_party/libjpeg/jversion.h",
+            "bytes": 410,
+            "sha256": "64ac726f1127c014fff97b82e52ded09c5d49cb588fc514cc0b953c9aea408d6",
+            "source2EntryPresent": true,
+            "currentBytesChecked": true,
+            "currentBytesEqualSource2": true
+          },
+          "retainedNotices": [
+            {
+              "path": "third_party/licenses/ijg-jpeg-9a-README.txt",
+              "bytes": 19110,
+              "sha256": "c791da525733040e622ed257c7b096b8f5191b332604ead0c6bc2b54cbd8e0d1"
+            }
+          ],
+          "retainedBytesEqualCurrentSource": [
+            false
+          ],
+          "note": "Recovered README is retained material, not a byte copy of this header. Original source README is absent from this snapshot."
+        }
+      ],
+      "evidenceMeaning": "MAP membership + literal project basename candidate + current Source2 bytes; not a complete per-object compiler provenance or license decision.",
+      "matchedMembers": {
+        "x64": {
+          "candidateMemberCount": 42,
+          "uniqueProjectCandidateMemberCount": 42,
+          "examples": [
+            {
+              "library": "libjpeg",
+              "member": "jaricom.obj",
+              "candidateSourceIds": [
+                10
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "libjpeg",
+              "member": "jcapimin.obj",
+              "candidateSourceIds": [
+                11
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "libjpeg",
+              "member": "jcapistd.obj",
+              "candidateSourceIds": [
+                12
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "libjpeg",
+              "member": "jcarith.obj",
+              "candidateSourceIds": [
+                13
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "libjpeg",
+              "member": "jccoefct.obj",
+              "candidateSourceIds": [
+                14
+              ],
+              "allProjectCandidateCount": 1
+            }
+          ]
+        },
+        "x86": {
+          "candidateMemberCount": 42,
+          "uniqueProjectCandidateMemberCount": 42,
+          "examples": [
+            {
+              "library": "libjpeg",
+              "member": "jaricom.obj",
+              "candidateSourceIds": [
+                10
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "libjpeg",
+              "member": "jcapimin.obj",
+              "candidateSourceIds": [
+                11
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "libjpeg",
+              "member": "jcapistd.obj",
+              "candidateSourceIds": [
+                12
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "libjpeg",
+              "member": "jcarith.obj",
+              "candidateSourceIds": [
+                13
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "libjpeg",
+              "member": "jccoefct.obj",
+              "candidateSourceIds": [
+                14
+              ],
+              "allProjectCandidateCount": 1
+            }
+          ]
+        }
+      },
+      "applicableTermsReviewed": false,
+      "redistributionTermsApproved": false
+    },
+    {
+      "id": "libpng",
+      "name": "libpng",
+      "contexts": [
+        "libpng"
+      ],
+      "prefixes": [
+        "third_party/libpng/"
+      ],
+      "version": {
+        "value": "1.6.28",
+        "status": "source-header-declaration",
+        "basis": [
+          {
+            "file": {
+              "path": "third_party/sources/miniblink/third_party/libpng/png.h",
+              "bytes": 146511,
+              "sha256": "5571a7fd258f1557227b7beae46910d9cdcc9750ad99873ebe185e2e09777b67",
+              "source2EntryPresent": true,
+              "currentBytesChecked": true,
+              "currentBytesEqualSource2": true
+            },
+            "statements": [
+              {
+                "line": 310,
+                "text": "#define PNG_LIBPNG_VER_STRING \"1.6.28\""
+              }
+            ]
+          }
+        ],
+        "upstreamSourceArchiveIdentityProven": false
+      },
+      "declaredTerms": "libpng notice embedded in png.h",
+      "materials": [
+        {
+          "currentSource": {
+            "path": "third_party/sources/miniblink/third_party/libpng/png.h",
+            "bytes": 146511,
+            "sha256": "5571a7fd258f1557227b7beae46910d9cdcc9750ad99873ebe185e2e09777b67",
+            "source2EntryPresent": true,
+            "currentBytesChecked": true,
+            "currentBytesEqualSource2": true
+          },
+          "retainedNotices": [
+            {
+              "path": "third_party/licenses/d52/libpng/png.h",
+              "bytes": 143251,
+              "sha256": "4574c38e2688e9d7b49f1dd865e4130bee4bae55906fde3a02bbf120b8cc9a92"
+            }
+          ],
+          "retainedBytesEqualCurrentSource": [
+            false
+          ]
+        }
+      ],
+      "evidenceMeaning": "MAP membership + literal project basename candidate + current Source2 bytes; not a complete per-object compiler provenance or license decision.",
+      "matchedMembers": {
+        "x64": {
+          "candidateMemberCount": 15,
+          "uniqueProjectCandidateMemberCount": 15,
+          "examples": [
+            {
+              "library": "libpng",
+              "member": "libpng.obj",
+              "candidateSourceIds": [
+                52
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "libpng",
+              "member": "pngerror.obj",
+              "candidateSourceIds": [
+                53
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "libpng",
+              "member": "pngget.obj",
+              "candidateSourceIds": [
+                54
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "libpng",
+              "member": "pngmem.obj",
+              "candidateSourceIds": [
+                55
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "libpng",
+              "member": "pngpread.obj",
+              "candidateSourceIds": [
+                56
+              ],
+              "allProjectCandidateCount": 1
+            }
+          ]
+        },
+        "x86": {
+          "candidateMemberCount": 15,
+          "uniqueProjectCandidateMemberCount": 15,
+          "examples": [
+            {
+              "library": "libpng",
+              "member": "libpng.obj",
+              "candidateSourceIds": [
+                52
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "libpng",
+              "member": "pngerror.obj",
+              "candidateSourceIds": [
+                53
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "libpng",
+              "member": "pngget.obj",
+              "candidateSourceIds": [
+                54
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "libpng",
+              "member": "pngmem.obj",
+              "candidateSourceIds": [
+                55
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "libpng",
+              "member": "pngpread.obj",
+              "candidateSourceIds": [
+                56
+              ],
+              "allProjectCandidateCount": 1
+            }
+          ]
+        }
+      },
+      "applicableTermsReviewed": false,
+      "redistributionTermsApproved": false
+    },
+    {
+      "id": "harfbuzz",
+      "name": "HarfBuzz",
+      "contexts": [
+        "harfbuzz"
+      ],
+      "prefixes": [
+        "third_party/harfbuzz-ng/"
+      ],
+      "version": {
+        "value": "1.1.1",
+        "status": "matching-source-header-and-readme-declarations",
+        "basis": [
+          {
+            "file": {
+              "path": "third_party/sources/miniblink/third_party/harfbuzz-ng/src/hb-version.h",
+              "bytes": 1865,
+              "sha256": "5113d519e6049c7f4baf723fa7b453c89e514f29c2b84bbd76a223aab4cd5201",
+              "source2EntryPresent": true,
+              "currentBytesChecked": true,
+              "currentBytesEqualSource2": true
+            },
+            "statements": [
+              {
+                "line": 43,
+                "text": "#define HB_VERSION_STRING \"1.1.1\""
+              }
+            ]
+          },
+          {
+            "file": {
+              "path": "third_party/sources/miniblink/third_party/harfbuzz-ng/README.chromium",
+              "bytes": 747,
+              "sha256": "9dff73beaad0d784a6cc172d109d00a40cd4c242a3fe256a39c4ab61df57cd03",
+              "source2EntryPresent": true,
+              "currentBytesChecked": true,
+              "currentBytesEqualSource2": true
+            },
+            "statements": [
+              {
+                "line": 3,
+                "text": "URL: http://harfbuzz.org"
+              },
+              {
+                "line": 4,
+                "text": "Version: 1.1.1"
+              }
+            ]
+          }
+        ],
+        "upstreamSourceArchiveIdentityProven": false
+      },
+      "declaredTerms": "Old MIT; COPYING explicitly retains subsidiary file exceptions",
+      "materials": [
+        {
+          "currentSource": {
+            "path": "third_party/sources/miniblink/third_party/harfbuzz-ng/COPYING",
+            "bytes": 1726,
+            "sha256": "2c631526dad2d97beacfe20c3957b323a8bc98e425d5e8059bf1c7c603392814",
+            "source2EntryPresent": true,
+            "currentBytesChecked": true,
+            "currentBytesEqualSource2": true
+          },
+          "retainedNotices": [
+            {
+              "path": "third_party/licenses/d52/harfbuzz/COPYING.txt",
+              "bytes": 1726,
+              "sha256": "2c631526dad2d97beacfe20c3957b323a8bc98e425d5e8059bf1c7c603392814"
+            }
+          ],
+          "retainedBytesEqualCurrentSource": [
+            true
+          ]
+        }
+      ],
+      "evidenceMeaning": "MAP membership + literal project basename candidate + current Source2 bytes; not a complete per-object compiler provenance or license decision.",
+      "matchedMembers": {
+        "x64": {
+          "candidateMemberCount": 28,
+          "uniqueProjectCandidateMemberCount": 28,
+          "examples": [
+            {
+              "library": "harfbuzz",
+              "member": "hb-blob.obj",
+              "candidateSourceIds": [
+                67
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "harfbuzz",
+              "member": "hb-buffer.obj",
+              "candidateSourceIds": [
+                68
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "harfbuzz",
+              "member": "hb-common.obj",
+              "candidateSourceIds": [
+                69
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "harfbuzz",
+              "member": "hb-face.obj",
+              "candidateSourceIds": [
+                70
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "harfbuzz",
+              "member": "hb-font.obj",
+              "candidateSourceIds": [
+                71
+              ],
+              "allProjectCandidateCount": 1
+            }
+          ]
+        },
+        "x86": {
+          "candidateMemberCount": 28,
+          "uniqueProjectCandidateMemberCount": 28,
+          "examples": [
+            {
+              "library": "harfbuzz",
+              "member": "hb-blob.obj",
+              "candidateSourceIds": [
+                67
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "harfbuzz",
+              "member": "hb-buffer.obj",
+              "candidateSourceIds": [
+                68
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "harfbuzz",
+              "member": "hb-common.obj",
+              "candidateSourceIds": [
+                69
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "harfbuzz",
+              "member": "hb-face.obj",
+              "candidateSourceIds": [
+                70
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "harfbuzz",
+              "member": "hb-font.obj",
+              "candidateSourceIds": [
+                71
+              ],
+              "allProjectCandidateCount": 1
+            }
+          ]
+        }
+      },
+      "applicableTermsReviewed": false,
+      "redistributionTermsApproved": false
+    },
+    {
+      "id": "libxml",
+      "name": "libxml2 partial patched snapshot",
+      "contexts": [
+        "libxml"
+      ],
+      "prefixes": [
+        "third_party/libxml/"
+      ],
+      "version": {
+        "value": "2.7.7",
+        "status": "matching-source-header-and-readme-declarations",
+        "basis": [
+          {
+            "file": {
+              "path": "third_party/sources/miniblink/third_party/libxml/win32/include/libxml/xmlversion.h",
+              "bytes": 8215,
+              "sha256": "dadebc5ccca9f94756c5bb2b322e23b771e9c2c957c9ea640b15df560a866e33",
+              "source2EntryPresent": true,
+              "currentBytesChecked": true,
+              "currentBytesEqualSource2": true
+            },
+            "statements": [
+              {
+                "line": 32,
+                "text": "#define LIBXML_DOTTED_VERSION \"2.7.7\""
+              }
+            ]
+          },
+          {
+            "file": {
+              "path": "third_party/sources/miniblink/third_party/libxml/README.chromium",
+              "bytes": 3939,
+              "sha256": "e1c126499cc79ea626ccb3931d70938b0abd41bcdb1cb3599e417649a3d75a50",
+              "source2EntryPresent": true,
+              "currentBytesChecked": true,
+              "currentBytesEqualSource2": true
+            },
+            "statements": [
+              {
+                "line": 2,
+                "text": "URL: http://xmlsoft.org"
+              },
+              {
+                "line": 3,
+                "text": "Version: 2.7.7"
+              },
+              {
+                "line": 9,
+                "text": "The src/ directory contains a partial snapshot of the libxml library"
+              }
+            ]
+          }
+        ],
+        "upstreamSourceArchiveIdentityProven": false
+      },
+      "declaredTerms": "MIT declaration in source Copyright",
+      "materials": [
+        {
+          "currentSource": {
+            "path": "third_party/sources/miniblink/third_party/libxml/src/Copyright",
+            "bytes": 1525,
+            "sha256": "82517a90bd5aa2263e9013ed3186b6a6dbd43740d26e30e65e508787b2defc03",
+            "source2EntryPresent": true,
+            "currentBytesChecked": true,
+            "currentBytesEqualSource2": true
+          },
+          "retainedNotices": [
+            {
+              "path": "third_party/licenses/d52/libxml/Copyright.txt",
+              "bytes": 1525,
+              "sha256": "82517a90bd5aa2263e9013ed3186b6a6dbd43740d26e30e65e508787b2defc03"
+            }
+          ],
+          "retainedBytesEqualCurrentSource": [
+            true
+          ]
+        }
+      ],
+      "evidenceMeaning": "MAP membership + literal project basename candidate + current Source2 bytes; not a complete per-object compiler provenance or license decision.",
+      "matchedMembers": {
+        "x64": {
+          "candidateMemberCount": 24,
+          "uniqueProjectCandidateMemberCount": 24,
+          "examples": [
+            {
+              "library": "libxml",
+              "member": "HTMLparser.obj",
+              "candidateSourceIds": [
+                95
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "libxml",
+              "member": "HTMLtree.obj",
+              "candidateSourceIds": [
+                96
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "libxml",
+              "member": "SAX2.obj",
+              "candidateSourceIds": [
+                97
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "libxml",
+              "member": "chvalid.obj",
+              "candidateSourceIds": [
+                100
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "libxml",
+              "member": "dict.obj",
+              "candidateSourceIds": [
+                101
+              ],
+              "allProjectCandidateCount": 1
+            }
+          ]
+        },
+        "x86": {
+          "candidateMemberCount": 24,
+          "uniqueProjectCandidateMemberCount": 24,
+          "examples": [
+            {
+              "library": "libxml",
+              "member": "HTMLparser.obj",
+              "candidateSourceIds": [
+                95
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "libxml",
+              "member": "HTMLtree.obj",
+              "candidateSourceIds": [
+                96
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "libxml",
+              "member": "SAX2.obj",
+              "candidateSourceIds": [
+                97
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "libxml",
+              "member": "chvalid.obj",
+              "candidateSourceIds": [
+                100
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "libxml",
+              "member": "dict.obj",
+              "candidateSourceIds": [
+                101
+              ],
+              "allProjectCandidateCount": 1
+            }
+          ]
+        }
+      },
+      "applicableTermsReviewed": false,
+      "redistributionTermsApproved": false
+    },
+    {
+      "id": "libxslt",
+      "name": "libxslt nested in libxml archive",
+      "contexts": [
+        "libxml"
+      ],
+      "prefixes": [
+        "third_party/libxslt/"
+      ],
+      "version": {
+        "value": "1.1.28",
+        "status": "matching-source-header-and-readme-declarations",
+        "basis": [
+          {
+            "file": {
+              "path": "third_party/sources/miniblink/third_party/libxslt/libxslt/xsltconfig.h",
+              "bytes": 3595,
+              "sha256": "52812626558d0b397811acfc36c0274b2306ca038707c9700cfe915ffe9f0a1a",
+              "source2EntryPresent": true,
+              "currentBytesChecked": true,
+              "currentBytesEqualSource2": true
+            },
+            "statements": [
+              {
+                "line": 23,
+                "text": "#define LIBXSLT_DOTTED_VERSION \"1.1.28\""
+              }
+            ]
+          },
+          {
+            "file": {
+              "path": "third_party/sources/miniblink/third_party/libxslt/README.chromium",
+              "bytes": 1018,
+              "sha256": "cafea6760749a366e34b131f5d8c6ad6074f6c4909d774924f30bbe0fbca0d8c",
+              "source2EntryPresent": true,
+              "currentBytesChecked": true,
+              "currentBytesEqualSource2": true
+            },
+            "statements": [
+              {
+                "line": 2,
+                "text": "URL: http://xmlsoft.org/XSLT"
+              },
+              {
+                "line": 3,
+                "text": "Version: 1.1.28"
+              }
+            ]
+          }
+        ],
+        "upstreamSourceArchiveIdentityProven": false
+      },
+      "declaredTerms": "MIT declaration; separate copyright exceptions remain in source text",
+      "materials": [
+        {
+          "currentSource": {
+            "path": "third_party/sources/miniblink/third_party/libxslt/Copyright",
+            "bytes": 3021,
+            "sha256": "a8de51c4709e774bf528d324a2df8b8adeaff5cf933c2909994561f77215ec93",
+            "source2EntryPresent": true,
+            "currentBytesChecked": true,
+            "currentBytesEqualSource2": true
+          },
+          "retainedNotices": [
+            {
+              "path": "third_party/licenses/kernel-source/third_party/libxslt/Copyright.txt",
+              "bytes": 3021,
+              "sha256": "a8de51c4709e774bf528d324a2df8b8adeaff5cf933c2909994561f77215ec93"
+            }
+          ],
+          "retainedBytesEqualCurrentSource": [
+            true
+          ]
+        }
+      ],
+      "evidenceMeaning": "MAP membership + literal project basename candidate + current Source2 bytes; not a complete per-object compiler provenance or license decision.",
+      "matchedMembers": {
+        "x64": {
+          "candidateMemberCount": 19,
+          "uniqueProjectCandidateMemberCount": 19,
+          "examples": [
+            {
+              "library": "libxml",
+              "member": "attributes.obj",
+              "candidateSourceIds": [
+                98
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "libxml",
+              "member": "attrvt.obj",
+              "candidateSourceIds": [
+                99
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "libxml",
+              "member": "documents.obj",
+              "candidateSourceIds": [
+                102
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "libxml",
+              "member": "extensions.obj",
+              "candidateSourceIds": [
+                106
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "libxml",
+              "member": "extra.obj",
+              "candidateSourceIds": [
+                107
+              ],
+              "allProjectCandidateCount": 1
+            }
+          ]
+        },
+        "x86": {
+          "candidateMemberCount": 19,
+          "uniqueProjectCandidateMemberCount": 19,
+          "examples": [
+            {
+              "library": "libxml",
+              "member": "attributes.obj",
+              "candidateSourceIds": [
+                98
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "libxml",
+              "member": "attrvt.obj",
+              "candidateSourceIds": [
+                99
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "libxml",
+              "member": "documents.obj",
+              "candidateSourceIds": [
+                102
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "libxml",
+              "member": "extensions.obj",
+              "candidateSourceIds": [
+                106
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "libxml",
+              "member": "extra.obj",
+              "candidateSourceIds": [
+                107
+              ],
+              "allProjectCandidateCount": 1
+            }
+          ]
+        }
+      },
+      "applicableTermsReviewed": false,
+      "redistributionTermsApproved": false
+    },
+    {
+      "id": "ots",
+      "name": "OpenType Sanitizer",
+      "contexts": [
+        "ots"
+      ],
+      "prefixes": [
+        "third_party/ots/"
+      ],
+      "version": {
+        "value": null,
+        "status": "unknown",
+        "basis": [],
+        "upstreamSourceArchiveIdentityProven": false,
+        "note": "No source version metadata established. A recovered notice filename containing 5.0.0 does not establish this source version."
+      },
+      "declaredTerms": "Source header points to a BSD-style LICENSE missing from current source tree",
+      "materials": [
+        {
+          "currentSource": {
+            "path": "third_party/sources/miniblink/third_party/ots/include/opentype-sanitiser.h",
+            "bytes": 5722,
+            "sha256": "3a03f483e94752757b8a197a0debee5324d9b916eff6b82d841e683523877bc9",
+            "source2EntryPresent": true,
+            "currentBytesChecked": true,
+            "currentBytesEqualSource2": true
+          },
+          "retainedNotices": [
+            {
+              "path": "third_party/licenses/ots-5.0.0-LICENSE.txt",
+              "bytes": 1563,
+              "sha256": "984523ee987f4e8b72d61df37d8f1189a7077cd4b77e41a397e35593b297a29d"
+            }
+          ],
+          "retainedBytesEqualCurrentSource": [
+            false
+          ],
+          "note": "Recovered notice is not proved to be the missing accompanying source LICENSE."
+        }
+      ],
+      "evidenceMeaning": "MAP membership + literal project basename candidate + current Source2 bytes; not a complete per-object compiler provenance or license decision.",
+      "matchedMembers": {
+        "x64": {
+          "candidateMemberCount": 31,
+          "uniqueProjectCandidateMemberCount": 31,
+          "examples": [
+            {
+              "library": "ots",
+              "member": "cff.obj",
+              "candidateSourceIds": [
+                139
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "ots",
+              "member": "cff_type2_charstring.obj",
+              "candidateSourceIds": [
+                140
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "ots",
+              "member": "cmap.obj",
+              "candidateSourceIds": [
+                141
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "ots",
+              "member": "cvt.obj",
+              "candidateSourceIds": [
+                142
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "ots",
+              "member": "fpgm.obj",
+              "candidateSourceIds": [
+                145
+              ],
+              "allProjectCandidateCount": 1
+            }
+          ]
+        },
+        "x86": {
+          "candidateMemberCount": 31,
+          "uniqueProjectCandidateMemberCount": 31,
+          "examples": [
+            {
+              "library": "ots",
+              "member": "cff.obj",
+              "candidateSourceIds": [
+                139
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "ots",
+              "member": "cff_type2_charstring.obj",
+              "candidateSourceIds": [
+                140
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "ots",
+              "member": "cmap.obj",
+              "candidateSourceIds": [
+                141
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "ots",
+              "member": "cvt.obj",
+              "candidateSourceIds": [
+                142
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "ots",
+              "member": "fpgm.obj",
+              "candidateSourceIds": [
+                145
+              ],
+              "allProjectCandidateCount": 1
+            }
+          ]
+        }
+      },
+      "applicableTermsReviewed": false,
+      "redistributionTermsApproved": false
+    },
+    {
+      "id": "brotli",
+      "name": "Brotli decoder nested in OTS archive",
+      "contexts": [
+        "ots"
+      ],
+      "prefixes": [
+        "third_party/brotli/"
+      ],
+      "version": {
+        "value": "c90ec29f54e9165df815b0f1311cfddb1be4afad",
+        "status": "local-readme-upstream-revision-declaration",
+        "basis": [
+          {
+            "file": {
+              "path": "third_party/sources/miniblink/third_party/brotli/README.chromium",
+              "bytes": 654,
+              "sha256": "819991654d3e94035fc7f758b71a9dd638277f7d31afd33cd77cdf8551e3210a",
+              "source2EntryPresent": true,
+              "currentBytesChecked": true,
+              "currentBytesEqualSource2": true
+            },
+            "statements": [
+              {
+                "line": 2,
+                "text": "URL: https://github.com/google/brotli"
+              },
+              {
+                "line": 3,
+                "text": "Version: c90ec29f54e9165df815b0f1311cfddb1be4afad"
+              },
+              {
+                "line": 19,
+                "text": "- Cherry-picked 37a320dd81db8d546cd24a45b4c61d87b45dcade (04 Feb 2016)"
+              }
+            ]
+          }
+        ],
+        "upstreamSourceArchiveIdentityProven": false,
+        "note": "Decoder subset with local modifications/cherry-pick; not proof of an unmodified upstream checkout."
+      },
+      "declaredTerms": "Apache 2.0 declaration",
+      "materials": [
+        {
+          "currentSource": {
+            "path": "third_party/sources/miniblink/third_party/brotli/LICENSE",
+            "bytes": 11560,
+            "sha256": "3ddf9be5c28fe27dad143a5dc76eea25222ad1dd68934a047064e56ed2fa40c5",
+            "source2EntryPresent": true,
+            "currentBytesChecked": true,
+            "currentBytesEqualSource2": true
+          },
+          "retainedNotices": [
+            {
+              "path": "third_party/licenses/d52/brotli/LICENSE.txt",
+              "bytes": 11560,
+              "sha256": "3ddf9be5c28fe27dad143a5dc76eea25222ad1dd68934a047064e56ed2fa40c5"
+            }
+          ],
+          "retainedBytesEqualCurrentSource": [
+            true
+          ]
+        }
+      ],
+      "evidenceMeaning": "MAP membership + literal project basename candidate + current Source2 bytes; not a complete per-object compiler provenance or license decision.",
+      "matchedMembers": {
+        "x64": {
+          "candidateMemberCount": 5,
+          "uniqueProjectCandidateMemberCount": 5,
+          "examples": [
+            {
+              "library": "ots",
+              "member": "bit_reader.obj",
+              "candidateSourceIds": [
+                138
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "ots",
+              "member": "decode.obj",
+              "candidateSourceIds": [
+                143
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "ots",
+              "member": "dictionary.obj",
+              "candidateSourceIds": [
+                144
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "ots",
+              "member": "huffman.obj",
+              "candidateSourceIds": [
+                155
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "ots",
+              "member": "state.obj",
+              "candidateSourceIds": [
+                168
+              ],
+              "allProjectCandidateCount": 1
+            }
+          ]
+        },
+        "x86": {
+          "candidateMemberCount": 5,
+          "uniqueProjectCandidateMemberCount": 5,
+          "examples": [
+            {
+              "library": "ots",
+              "member": "bit_reader.obj",
+              "candidateSourceIds": [
+                138
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "ots",
+              "member": "decode.obj",
+              "candidateSourceIds": [
+                143
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "ots",
+              "member": "dictionary.obj",
+              "candidateSourceIds": [
+                144
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "ots",
+              "member": "huffman.obj",
+              "candidateSourceIds": [
+                155
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "ots",
+              "member": "state.obj",
+              "candidateSourceIds": [
+                168
+              ],
+              "allProjectCandidateCount": 1
+            }
+          ]
+        }
+      },
+      "applicableTermsReviewed": false,
+      "redistributionTermsApproved": false
+    },
+    {
+      "id": "sfntly",
+      "name": "sfntly source-only declarations in OTS project",
+      "contexts": [
+        "ots"
+      ],
+      "prefixes": [
+        "third_party/sfntly/"
+      ],
+      "version": {
+        "value": "130f832eddf98467e6578b548cb74ce17d04a26d",
+        "status": "local-readme-upstream-revision-declaration",
+        "basis": [
+          {
+            "file": {
+              "path": "third_party/sources/miniblink/third_party/sfntly/README.chromium",
+              "bytes": 523,
+              "sha256": "6bf18fe51b3cca2b66ffe0c4278c2c2110a741d851d6e372b5bcf1055ecf5196",
+              "source2EntryPresent": true,
+              "currentBytesChecked": true,
+              "currentBytesEqualSource2": true
+            },
+            "statements": [
+              {
+                "line": 2,
+                "text": "URL: https://github.com/googlei18n/sfntly"
+              },
+              {
+                "line": 3,
+                "text": "Version: 130f832eddf98467e6578b548cb74ce17d04a26d"
+              }
+            ]
+          }
+        ],
+        "upstreamSourceArchiveIdentityProven": false
+      },
+      "declaredTerms": "Apache 2.0 declaration; project presence alone does not establish linkage",
+      "materials": [
+        {
+          "currentSource": {
+            "path": "third_party/sources/miniblink/third_party/sfntly/COPYING.txt",
+            "bytes": 11567,
+            "sha256": "e30ee8ec0e6271e44020bc9160ba21ffaf597e0836c35705b46dac1ed5695c47",
+            "source2EntryPresent": true,
+            "currentBytesChecked": true,
+            "currentBytesEqualSource2": true
+          },
+          "retainedNotices": [
+            {
+              "path": "third_party/licenses/kernel-source/third_party/sfntly/COPYING.txt.txt",
+              "bytes": 11567,
+              "sha256": "e30ee8ec0e6271e44020bc9160ba21ffaf597e0836c35705b46dac1ed5695c47"
+            }
+          ],
+          "retainedBytesEqualCurrentSource": [
+            true
+          ]
+        }
+      ],
+      "evidenceMeaning": "MAP membership + literal project basename candidate + current Source2 bytes; not a complete per-object compiler provenance or license decision.",
+      "matchedMembers": {
+        "x64": {
+          "candidateMemberCount": 0,
+          "uniqueProjectCandidateMemberCount": 0,
+          "examples": []
+        },
+        "x86": {
+          "candidateMemberCount": 0,
+          "uniqueProjectCandidateMemberCount": 0,
+          "examples": []
+        }
+      },
+      "applicableTermsReviewed": false,
+      "redistributionTermsApproved": false
+    },
+    {
+      "id": "openssl",
+      "name": "OpenSSL",
+      "contexts": [
+        "openssl"
+      ],
+      "prefixes": [
+        "node/openssl/openssl/"
+      ],
+      "version": {
+        "value": "1.0.2h",
+        "status": "source-header-declaration",
+        "basis": [
+          {
+            "file": {
+              "path": "third_party/sources/miniblink/node/openssl/openssl/include/openssl/opensslv.h",
+              "bytes": 4036,
+              "sha256": "ffccb27609821ab15f4338c7cb5fef27acaec6b3cde1f50db507e74319acd0bc",
+              "source2EntryPresent": true,
+              "currentBytesChecked": true,
+              "currentBytesEqualSource2": true
+            },
+            "statements": [
+              {
+                "line": 35,
+                "text": "#  define OPENSSL_VERSION_TEXT    \"OpenSSL 1.0.2h-fips  3 May 2016\""
+              },
+              {
+                "line": 37,
+                "text": "#  define OPENSSL_VERSION_TEXT    \"OpenSSL 1.0.2h  3 May 2016\""
+              }
+            ]
+          }
+        ],
+        "upstreamSourceArchiveIdentityProven": false
+      },
+      "declaredTerms": "Complete dual OpenSSL/SSLeay text plus subsidiary declarations; no approval inferred",
+      "materials": [
+        {
+          "currentSource": {
+            "path": "third_party/sources/miniblink/node/openssl/openssl/LICENSE",
+            "bytes": 6406,
+            "sha256": "d0047be11f613ca5afebb508c19242fdecd55b740d70ea031c00c11784f37ee7",
+            "source2EntryPresent": true,
+            "currentBytesChecked": true,
+            "currentBytesEqualSource2": true
+          },
+          "retainedNotices": [
+            {
+              "path": "third_party/licenses/d52/openssl/LICENSE.txt",
+              "bytes": 6406,
+              "sha256": "d0047be11f613ca5afebb508c19242fdecd55b740d70ea031c00c11784f37ee7"
+            }
+          ],
+          "retainedBytesEqualCurrentSource": [
+            true
+          ]
+        }
+      ],
+      "evidenceMeaning": "MAP membership + literal project basename candidate + current Source2 bytes; not a complete per-object compiler provenance or license decision.",
+      "matchedMembers": {
+        "x64": {
+          "candidateMemberCount": 486,
+          "uniqueProjectCandidateMemberCount": 486,
+          "examples": [
+            {
+              "library": "openssl",
+              "member": "a_bitstr.obj",
+              "candidateSourceIds": [
+                174
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "openssl",
+              "member": "a_bool.obj",
+              "candidateSourceIds": [
+                175
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "openssl",
+              "member": "a_bytes.obj",
+              "candidateSourceIds": [
+                176
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "openssl",
+              "member": "a_d2i_fp.obj",
+              "candidateSourceIds": [
+                177
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "openssl",
+              "member": "a_digest.obj",
+              "candidateSourceIds": [
+                178
+              ],
+              "allProjectCandidateCount": 1
+            }
+          ]
+        },
+        "x86": {
+          "candidateMemberCount": 472,
+          "uniqueProjectCandidateMemberCount": 472,
+          "examples": [
+            {
+              "library": "openssl",
+              "member": "a_bitstr.obj",
+              "candidateSourceIds": [
+                174
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "openssl",
+              "member": "a_bool.obj",
+              "candidateSourceIds": [
+                175
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "openssl",
+              "member": "a_bytes.obj",
+              "candidateSourceIds": [
+                176
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "openssl",
+              "member": "a_d2i_fp.obj",
+              "candidateSourceIds": [
+                177
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "openssl",
+              "member": "a_digest.obj",
+              "candidateSourceIds": [
+                178
+              ],
+              "allProjectCandidateCount": 1
+            }
+          ]
+        }
+      },
+      "applicableTermsReviewed": false,
+      "redistributionTermsApproved": false
+    },
+    {
+      "id": "curl",
+      "name": "libcurl",
+      "contexts": [
+        "libcurl"
+      ],
+      "prefixes": [
+        "third_party/libcurl/"
+      ],
+      "version": {
+        "value": "7.61.1",
+        "status": "source-header-declaration",
+        "basis": [
+          {
+            "file": {
+              "path": "third_party/sources/miniblink/third_party/libcurl/include/curl/curlver.h",
+              "bytes": 3034,
+              "sha256": "d8e4a67089a02399c0989e4791dee991df0d64090c37be896c38d639d0a2e216",
+              "source2EntryPresent": true,
+              "currentBytesChecked": true,
+              "currentBytesEqualSource2": true
+            },
+            "statements": [
+              {
+                "line": 33,
+                "text": "#define LIBCURL_VERSION \"7.61.1\""
+              }
+            ]
+          }
+        ],
+        "upstreamSourceArchiveIdentityProven": false
+      },
+      "declaredTerms": "curl source declaration and recovered COPYING",
+      "materials": [
+        {
+          "currentSource": {
+            "path": "third_party/sources/miniblink/third_party/libcurl/include/curl/curl.h",
+            "bytes": 104193,
+            "sha256": "7ef280780f9b89ee7b70d389a70a75ac4ddd33387fbee8647a1f3ed836533b40",
+            "source2EntryPresent": true,
+            "currentBytesChecked": true,
+            "currentBytesEqualSource2": true
+          },
+          "retainedNotices": [
+            {
+              "path": "third_party/licenses/libcurl-7.61.1-COPYING.txt",
+              "bytes": 1088,
+              "sha256": "5f3849ec38ddb927e79f514bf948890c41b8d1407286a49609b8fb1585931095"
+            }
+          ],
+          "retainedBytesEqualCurrentSource": [
+            false
+          ],
+          "note": "Original accompanying COPYING is absent. Retained recovered text is not a byte copy of this API header."
+        }
+      ],
+      "evidenceMeaning": "MAP membership + literal project basename candidate + current Source2 bytes; not a complete per-object compiler provenance or license decision.",
+      "matchedMembers": {
+        "x64": {
+          "candidateMemberCount": 74,
+          "uniqueProjectCandidateMemberCount": 74,
+          "examples": [
+            {
+              "library": "libcurl",
+              "member": "asyn-ares.obj",
+              "candidateSourceIds": [
+                699
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "libcurl",
+              "member": "base64.obj",
+              "candidateSourceIds": [
+                700
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "libcurl",
+              "member": "conncache.obj",
+              "candidateSourceIds": [
+                702
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "libcurl",
+              "member": "connect.obj",
+              "candidateSourceIds": [
+                703
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "libcurl",
+              "member": "content_encoding.obj",
+              "candidateSourceIds": [
+                704
+              ],
+              "allProjectCandidateCount": 1
+            }
+          ]
+        },
+        "x86": {
+          "candidateMemberCount": 73,
+          "uniqueProjectCandidateMemberCount": 73,
+          "examples": [
+            {
+              "library": "libcurl",
+              "member": "asyn-ares.obj",
+              "candidateSourceIds": [
+                699
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "libcurl",
+              "member": "base64.obj",
+              "candidateSourceIds": [
+                700
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "libcurl",
+              "member": "conncache.obj",
+              "candidateSourceIds": [
+                702
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "libcurl",
+              "member": "connect.obj",
+              "candidateSourceIds": [
+                703
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "libcurl",
+              "member": "content_encoding.obj",
+              "candidateSourceIds": [
+                704
+              ],
+              "allProjectCandidateCount": 1
+            }
+          ]
+        }
+      },
+      "applicableTermsReviewed": false,
+      "redistributionTermsApproved": false
+    },
+    {
+      "id": "cares",
+      "name": "c-ares nested in libcurl; Main also declares sources",
+      "contexts": [
+        "libcurl",
+        "<direct>"
+      ],
+      "prefixes": [
+        "node/cares/"
+      ],
+      "version": {
+        "value": "1.10.1-DEV",
+        "status": "source-header-declaration",
+        "basis": [
+          {
+            "file": {
+              "path": "third_party/sources/miniblink/node/cares/include/ares_version.h",
+              "bytes": 676,
+              "sha256": "a765ac24eba7e69adfc48b4899e1941efbfb1d5ab4d26ba3102c9383a9fb8a82",
+              "source2EntryPresent": true,
+              "currentBytesChecked": true,
+              "currentBytesEqualSource2": true
+            },
+            "statements": [
+              {
+                "line": 14,
+                "text": "#define ARES_VERSION_STR \"1.10.1-DEV\""
+              }
+            ]
+          }
+        ],
+        "upstreamSourceArchiveIdentityProven": false
+      },
+      "declaredTerms": "c-ares source file terms and Node aggregate section; header review not complete",
+      "materials": [
+        {
+          "currentSource": {
+            "path": "third_party/sources/miniblink/node/LICENSE-nodejs",
+            "bytes": 61645,
+            "sha256": "aa89b6fe87f907791f69a13d807068e23d29c513ce18aa3e1d75b05b55c1ff07",
+            "source2EntryPresent": true,
+            "currentBytesChecked": true,
+            "currentBytesEqualSource2": true
+          },
+          "retainedNotices": [
+            {
+              "path": "third_party/licenses/d52/node/LICENSE-nodejs.txt",
+              "bytes": 61645,
+              "sha256": "aa89b6fe87f907791f69a13d807068e23d29c513ce18aa3e1d75b05b55c1ff07"
+            }
+          ],
+          "retainedBytesEqualCurrentSource": [
+            true
+          ]
+        },
+        {
+          "currentSource": {
+            "path": "third_party/sources/miniblink/node/cares/src/ares_init.c",
+            "bytes": 62133,
+            "sha256": "555fbabc357f4e37b4deb43a8f5ef95203c3eeebf842b0abca5653318b904f24",
+            "source2EntryPresent": true,
+            "currentBytesChecked": true,
+            "currentBytesEqualSource2": true
+          },
+          "retainedNotices": [],
+          "retainedBytesEqualCurrentSource": []
+        }
+      ],
+      "evidenceMeaning": "MAP membership + literal project basename candidate + current Source2 bytes; not a complete per-object compiler provenance or license decision.",
+      "matchedMembers": {
+        "x64": {
+          "candidateMemberCount": 42,
+          "uniqueProjectCandidateMemberCount": 42,
+          "examples": [
+            {
+              "library": "libcurl",
+              "member": "ares__close_sockets.obj",
+              "candidateSourceIds": [
+                660
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "libcurl",
+              "member": "ares__get_hostent.obj",
+              "candidateSourceIds": [
+                661
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "libcurl",
+              "member": "ares__read_line.obj",
+              "candidateSourceIds": [
+                662
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "libcurl",
+              "member": "ares__timeval.obj",
+              "candidateSourceIds": [
+                663
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "libcurl",
+              "member": "ares_cancel.obj",
+              "candidateSourceIds": [
+                664
+              ],
+              "allProjectCandidateCount": 1
+            }
+          ]
+        },
+        "x86": {
+          "candidateMemberCount": 42,
+          "uniqueProjectCandidateMemberCount": 42,
+          "examples": [
+            {
+              "library": "libcurl",
+              "member": "ares__close_sockets.obj",
+              "candidateSourceIds": [
+                660
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "libcurl",
+              "member": "ares__get_hostent.obj",
+              "candidateSourceIds": [
+                661
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "libcurl",
+              "member": "ares__read_line.obj",
+              "candidateSourceIds": [
+                662
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "libcurl",
+              "member": "ares__timeval.obj",
+              "candidateSourceIds": [
+                663
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "libcurl",
+              "member": "ares_cancel.obj",
+              "candidateSourceIds": [
+                664
+              ],
+              "allProjectCandidateCount": 1
+            }
+          ]
+        }
+      },
+      "applicableTermsReviewed": false,
+      "redistributionTermsApproved": false
+    },
+    {
+      "id": "v8",
+      "name": "V8 shared source family for two static projects",
+      "contexts": [
+        "v8_5_7",
+        "v8_5_7_1"
+      ],
+      "prefixes": [
+        "v8_5_7/",
+        "gen/v8_5_7/"
+      ],
+      "version": {
+        "value": "5.7.246.0",
+        "status": "source-header-declaration-shared-by-both-projects",
+        "basis": [
+          {
+            "file": {
+              "path": "third_party/sources/miniblink/v8_5_7/include/v8-version.h",
+              "bytes": 791,
+              "sha256": "248bd685a174a5eefcfba3409b75c111859620360501eac5b6f5beb0011a5799",
+              "source2EntryPresent": true,
+              "currentBytesChecked": true,
+              "currentBytesEqualSource2": true
+            },
+            "statements": [
+              {
+                "line": 11,
+                "text": "#define V8_MAJOR_VERSION 5"
+              },
+              {
+                "line": 12,
+                "text": "#define V8_MINOR_VERSION 7"
+              },
+              {
+                "line": 13,
+                "text": "#define V8_BUILD_NUMBER 246"
+              },
+              {
+                "line": 14,
+                "text": "#define V8_PATCH_LEVEL 0"
+              },
+              {
+                "line": 18,
+                "text": "#define V8_IS_CANDIDATE_VERSION 0"
+              }
+            ]
+          }
+        ],
+        "upstreamSourceArchiveIdentityProven": false,
+        "note": "The project name v8_5_7_1 is not a second source version."
+      },
+      "declaredTerms": "V8 aggregate + LICENSE.v8 + fdlibm/Strongtalk/Valgrind/VTune subsidiary materials; applicable subset not approved",
+      "materials": [
+        {
+          "currentSource": {
+            "path": "third_party/sources/miniblink/v8_5_7/LICENSE",
+            "bytes": 2970,
+            "sha256": "5e10421a5b98a1358464c43cdd17e12a8ab9f67353303bb9d44908027210fc2e",
+            "source2EntryPresent": true,
+            "currentBytesChecked": true,
+            "currentBytesEqualSource2": true
+          },
+          "retainedNotices": [
+            {
+              "path": "third_party/licenses/d52/v8_5_7/LICENSE",
+              "bytes": 2970,
+              "sha256": "5e10421a5b98a1358464c43cdd17e12a8ab9f67353303bb9d44908027210fc2e"
+            }
+          ],
+          "retainedBytesEqualCurrentSource": [
+            true
+          ]
+        },
+        {
+          "currentSource": {
+            "path": "third_party/sources/miniblink/v8_5_7/LICENSE.v8",
+            "bytes": 1553,
+            "sha256": "befd10530f302b2108022be94d74eed4943880fc0626ab762ca7b53521813eeb",
+            "source2EntryPresent": true,
+            "currentBytesChecked": true,
+            "currentBytesEqualSource2": true
+          },
+          "retainedNotices": [
+            {
+              "path": "third_party/licenses/d52/v8_5_7/LICENSE.v8",
+              "bytes": 1553,
+              "sha256": "befd10530f302b2108022be94d74eed4943880fc0626ab762ca7b53521813eeb"
+            }
+          ],
+          "retainedBytesEqualCurrentSource": [
+            true
+          ]
+        },
+        {
+          "currentSource": {
+            "path": "third_party/sources/miniblink/v8_5_7/LICENSE.fdlibm",
+            "bytes": 256,
+            "sha256": "9117ecd79d00160524d0c923aa41c10cd3cab3753bc985e3069eaa9f1481cc17",
+            "source2EntryPresent": true,
+            "currentBytesChecked": true,
+            "currentBytesEqualSource2": true
+          },
+          "retainedNotices": [
+            {
+              "path": "third_party/licenses/d52/v8_5_7/LICENSE.fdlibm",
+              "bytes": 256,
+              "sha256": "9117ecd79d00160524d0c923aa41c10cd3cab3753bc985e3069eaa9f1481cc17"
+            }
+          ],
+          "retainedBytesEqualCurrentSource": [
+            true
+          ]
+        },
+        {
+          "currentSource": {
+            "path": "third_party/sources/miniblink/v8_5_7/LICENSE.strongtalk",
+            "bytes": 1511,
+            "sha256": "45d1dff3ad3ed6aec8947f7ce6a4781c535f1d73450b703c594d8bc6285c7736",
+            "source2EntryPresent": true,
+            "currentBytesChecked": true,
+            "currentBytesEqualSource2": true
+          },
+          "retainedNotices": [
+            {
+              "path": "third_party/licenses/d52/v8_5_7/LICENSE.strongtalk",
+              "bytes": 1511,
+              "sha256": "45d1dff3ad3ed6aec8947f7ce6a4781c535f1d73450b703c594d8bc6285c7736"
+            }
+          ],
+          "retainedBytesEqualCurrentSource": [
+            true
+          ]
+        },
+        {
+          "currentSource": {
+            "path": "third_party/sources/miniblink/v8_5_7/LICENSE.valgrind",
+            "bytes": 2107,
+            "sha256": "23365f7ef7771a5446e48eb9ae626b81d75a20ddf8631f7c3fe89d9f814f9b99",
+            "source2EntryPresent": true,
+            "currentBytesChecked": true,
+            "currentBytesEqualSource2": true
+          },
+          "retainedNotices": [
+            {
+              "path": "third_party/licenses/d52/v8_5_7/LICENSE.valgrind",
+              "bytes": 2107,
+              "sha256": "23365f7ef7771a5446e48eb9ae626b81d75a20ddf8631f7c3fe89d9f814f9b99"
+            }
+          ],
+          "retainedBytesEqualCurrentSource": [
+            true
+          ]
+        }
+      ],
+      "evidenceMeaning": "MAP membership + literal project basename candidate + current Source2 bytes; not a complete per-object compiler provenance or license decision.",
+      "matchedMembers": {
+        "x64": {
+          "candidateMemberCount": 472,
+          "uniqueProjectCandidateMemberCount": 472,
+          "examples": [
+            {
+              "library": "v8_5_7",
+              "member": "access-builder.obj",
+              "candidateSourceIds": [
+                776
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "v8_5_7",
+              "member": "access-compiler-x64.obj",
+              "candidateSourceIds": [
+                777
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "v8_5_7",
+              "member": "access-compiler.obj",
+              "candidateSourceIds": [
+                778
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "v8_5_7",
+              "member": "access-info.obj",
+              "candidateSourceIds": [
+                779
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "v8_5_7",
+              "member": "accessor-assembler.obj",
+              "candidateSourceIds": [
+                780
+              ],
+              "allProjectCandidateCount": 1
+            }
+          ]
+        },
+        "x86": {
+          "candidateMemberCount": 471,
+          "uniqueProjectCandidateMemberCount": 471,
+          "examples": [
+            {
+              "library": "v8_5_7",
+              "member": "access-builder.obj",
+              "candidateSourceIds": [
+                776
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "v8_5_7",
+              "member": "access-compiler-ia32.obj",
+              "candidateSourceIds": [
+                1027
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "v8_5_7",
+              "member": "access-compiler.obj",
+              "candidateSourceIds": [
+                778
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "v8_5_7",
+              "member": "access-info.obj",
+              "candidateSourceIds": [
+                779
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "v8_5_7",
+              "member": "accessor-assembler.obj",
+              "candidateSourceIds": [
+                780
+              ],
+              "allProjectCandidateCount": 1
+            }
+          ]
+        }
+      },
+      "applicableTermsReviewed": false,
+      "redistributionTermsApproved": false
+    },
+    {
+      "id": "fdlibm",
+      "name": "fdlibm-derived IEEE754 implementation in V8",
+      "contexts": [
+        "v8_5_7"
+      ],
+      "prefixes": [
+        "v8_5_7/src/base/ieee754.cc"
+      ],
+      "version": {
+        "value": null,
+        "status": "unknown-adapted-source-version",
+        "basis": [
+          {
+            "file": {
+              "path": "third_party/sources/miniblink/v8_5_7/src/base/ieee754.cc",
+              "bytes": 94925,
+              "sha256": "cbbdac021ef038dab515e8cdd89dc0e290f2c417cfb998ee53c7efa57e88a152",
+              "source2EntryPresent": true,
+              "currentBytesChecked": true,
+              "currentBytesEqualSource2": true
+            },
+            "statements": [
+              {
+                "line": 1,
+                "text": "// The following is adapted from fdlibm (http://www.netlib.org/fdlibm)."
+              },
+              {
+                "line": 13,
+                "text": "// modified significantly by Google Inc."
+              }
+            ]
+          }
+        ],
+        "upstreamSourceArchiveIdentityProven": false
+      },
+      "declaredTerms": "Sun permission notice retained in source header and LICENSE.fdlibm",
+      "materials": [
+        {
+          "currentSource": {
+            "path": "third_party/sources/miniblink/v8_5_7/LICENSE.fdlibm",
+            "bytes": 256,
+            "sha256": "9117ecd79d00160524d0c923aa41c10cd3cab3753bc985e3069eaa9f1481cc17",
+            "source2EntryPresent": true,
+            "currentBytesChecked": true,
+            "currentBytesEqualSource2": true
+          },
+          "retainedNotices": [
+            {
+              "path": "third_party/licenses/d52/v8_5_7/LICENSE.fdlibm",
+              "bytes": 256,
+              "sha256": "9117ecd79d00160524d0c923aa41c10cd3cab3753bc985e3069eaa9f1481cc17"
+            }
+          ],
+          "retainedBytesEqualCurrentSource": [
+            true
+          ]
+        }
+      ],
+      "evidenceMeaning": "MAP membership + literal project basename candidate + current Source2 bytes; not a complete per-object compiler provenance or license decision.",
+      "matchedMembers": {
+        "x64": {
+          "candidateMemberCount": 1,
+          "uniqueProjectCandidateMemberCount": 1,
+          "examples": [
+            {
+              "library": "v8_5_7",
+              "member": "ieee754.obj",
+              "candidateSourceIds": [
+                917
+              ],
+              "allProjectCandidateCount": 1
+            }
+          ]
+        },
+        "x86": {
+          "candidateMemberCount": 1,
+          "uniqueProjectCandidateMemberCount": 1,
+          "examples": [
+            {
+              "library": "v8_5_7",
+              "member": "ieee754.obj",
+              "candidateSourceIds": [
+                917
+              ],
+              "allProjectCandidateCount": 1
+            }
+          ]
+        }
+      },
+      "applicableTermsReviewed": false,
+      "redistributionTermsApproved": false
+    },
+    {
+      "id": "vtune",
+      "name": "Intel VTune source declarations in second V8 project",
+      "contexts": [
+        "v8_5_7_1"
+      ],
+      "prefixes": [
+        "v8_5_7/src/third_party/vtune/"
+      ],
+      "version": {
+        "value": null,
+        "status": "unknown",
+        "basis": [],
+        "upstreamSourceArchiveIdentityProven": false
+      },
+      "declaredTerms": "Local files declare dual BSD/GPLv2; applicable choice and completeness require human review",
+      "materials": [
+        {
+          "currentSource": {
+            "path": "third_party/sources/miniblink/v8_5_7/src/third_party/vtune/LICENSE",
+            "bytes": 2790,
+            "sha256": "0f8d39edfb7c8776a65ba174b6fddc5c95698142b1492c440d0b8e097d876d7c",
+            "source2EntryPresent": true,
+            "currentBytesChecked": true,
+            "currentBytesEqualSource2": true
+          },
+          "retainedNotices": [
+            {
+              "path": "third_party/licenses/kernel-source/v8_5_7/src/third_party/vtune/LICENSE.txt",
+              "bytes": 2790,
+              "sha256": "0f8d39edfb7c8776a65ba174b6fddc5c95698142b1492c440d0b8e097d876d7c"
+            }
+          ],
+          "retainedBytesEqualCurrentSource": [
+            true
+          ]
+        }
+      ],
+      "evidenceMeaning": "MAP membership + literal project basename candidate + current Source2 bytes; not a complete per-object compiler provenance or license decision.",
+      "matchedMembers": {
+        "x64": {
+          "candidateMemberCount": 0,
+          "uniqueProjectCandidateMemberCount": 0,
+          "examples": []
+        },
+        "x86": {
+          "candidateMemberCount": 0,
+          "uniqueProjectCandidateMemberCount": 0,
+          "examples": []
+        }
+      },
+      "applicableTermsReviewed": false,
+      "redistributionTermsApproved": false
+    },
+    {
+      "id": "skia",
+      "name": "Skia source snapshot",
+      "contexts": [
+        "skia",
+        "<direct>"
+      ],
+      "prefixes": [
+        "third_party/skia/",
+        "skia/"
+      ],
+      "version": {
+        "value": null,
+        "status": "explicit-local-unknown",
+        "basis": [
+          {
+            "file": {
+              "path": "third_party/sources/miniblink/third_party/skia/README.chromium",
+              "bytes": 92,
+              "sha256": "9f1f7f8d62e1b6526c136f45f4fd6f6025b9e4fd37559f9a7b86e2fb2e44bca6",
+              "source2EntryPresent": true,
+              "currentBytesChecked": true,
+              "currentBytesEqualSource2": true
+            },
+            "statements": [
+              {
+                "line": 2,
+                "text": "URL: https://skia.org/"
+              },
+              {
+                "line": 3,
+                "text": "Version: unknown"
+              }
+            ]
+          }
+        ],
+        "upstreamSourceArchiveIdentityProven": false,
+        "note": "Local README says Version: unknown. The Source2 hash identifies local bytes, not an upstream Skia release."
+      },
+      "declaredTerms": "BSD root text with nested/file-specific terms unresolved",
+      "materials": [
+        {
+          "currentSource": {
+            "path": "third_party/sources/miniblink/third_party/skia/LICENSE",
+            "bytes": 1580,
+            "sha256": "819e2d4f7c7162eebd28d7ce97fec174a821baa0d3a5f1cca864dd285b577422",
+            "source2EntryPresent": true,
+            "currentBytesChecked": true,
+            "currentBytesEqualSource2": true
+          },
+          "retainedNotices": [
+            {
+              "path": "third_party/licenses/d52/skia/LICENSE.txt",
+              "bytes": 1580,
+              "sha256": "819e2d4f7c7162eebd28d7ce97fec174a821baa0d3a5f1cca864dd285b577422"
+            }
+          ],
+          "retainedBytesEqualCurrentSource": [
+            true
+          ]
+        }
+      ],
+      "evidenceMeaning": "MAP membership + literal project basename candidate + current Source2 bytes; not a complete per-object compiler provenance or license decision.",
+      "matchedMembers": {
+        "x64": {
+          "candidateMemberCount": 260,
+          "uniqueProjectCandidateMemberCount": 260,
+          "examples": [
+            {
+              "library": "skia",
+              "member": "Sk1DPathEffect.obj",
+              "candidateSourceIds": [
+                1271
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "skia",
+              "member": "Sk2DPathEffect.obj",
+              "candidateSourceIds": [
+                1272
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "skia",
+              "member": "SkAAClip.obj",
+              "candidateSourceIds": [
+                1273
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "skia",
+              "member": "SkAddIntersections.obj",
+              "candidateSourceIds": [
+                1274
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "skia",
+              "member": "SkAdvancedTypefaceMetrics.obj",
+              "candidateSourceIds": [
+                1275
+              ],
+              "allProjectCandidateCount": 1
+            }
+          ]
+        },
+        "x86": {
+          "candidateMemberCount": 259,
+          "uniqueProjectCandidateMemberCount": 259,
+          "examples": [
+            {
+              "library": "skia",
+              "member": "Sk1DPathEffect.obj",
+              "candidateSourceIds": [
+                1271
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "skia",
+              "member": "Sk2DPathEffect.obj",
+              "candidateSourceIds": [
+                1272
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "skia",
+              "member": "SkAAClip.obj",
+              "candidateSourceIds": [
+                1273
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "skia",
+              "member": "SkAddIntersections.obj",
+              "candidateSourceIds": [
+                1274
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "skia",
+              "member": "SkAdvancedTypefaceMetrics.obj",
+              "candidateSourceIds": [
+                1275
+              ],
+              "allProjectCandidateCount": 1
+            }
+          ]
+        }
+      },
+      "applicableTermsReviewed": false,
+      "redistributionTermsApproved": false
+    },
+    {
+      "id": "miniblink-main",
+      "name": "Miniblink local Main integration",
+      "contexts": [
+        "<direct>"
+      ],
+      "prefixes": [
+        "content/",
+        "wke/",
+        "node/nodeblink.cpp"
+      ],
+      "version": {
+        "value": null,
+        "status": "unknown-upstream-version-local-source2-identity",
+        "basis": [],
+        "upstreamSourceArchiveIdentityProven": false
+      },
+      "declaredTerms": "Root Apache 2.0 and separate WKE LGPL declaration; file-level applicability remains open",
+      "materials": [
+        {
+          "currentSource": {
+            "path": "third_party/sources/miniblink/LICENSE",
+            "bytes": 11537,
+            "sha256": "de2955977b885b81e1d0e1cdb0fc4619e5456c2928bb120cb39d44c4b792f25c",
+            "source2EntryPresent": true,
+            "currentBytesChecked": true,
+            "currentBytesEqualSource2": true
+          },
+          "retainedNotices": [
+            {
+              "path": "third_party/licenses/d52/miniblink/LICENSE.txt",
+              "bytes": 11537,
+              "sha256": "de2955977b885b81e1d0e1cdb0fc4619e5456c2928bb120cb39d44c4b792f25c"
+            }
+          ],
+          "retainedBytesEqualCurrentSource": [
+            true
+          ]
+        },
+        {
+          "currentSource": {
+            "path": "third_party/sources/miniblink/wke/wke.h",
+            "bytes": 131,
+            "sha256": "a941bc0ff8be677a1c9251b922d480e3a0cdc39e0443161e274810f17b564044",
+            "source2EntryPresent": true,
+            "currentBytesChecked": true,
+            "currentBytesEqualSource2": true
+          },
+          "retainedNotices": [
+            {
+              "path": "third_party/licenses/d52/miniblink/wke-license-declaration.h",
+              "bytes": 131,
+              "sha256": "a941bc0ff8be677a1c9251b922d480e3a0cdc39e0443161e274810f17b564044"
+            }
+          ],
+          "retainedBytesEqualCurrentSource": [
+            true
+          ],
+          "note": "Retained WKE declaration is an extract; no complete file-byte equality asserted."
+        }
+      ],
+      "evidenceMeaning": "MAP membership + literal project basename candidate + current Source2 bytes; not a complete per-object compiler provenance or license decision.",
+      "matchedMembers": {
+        "x64": {
+          "candidateMemberCount": 79,
+          "uniqueProjectCandidateMemberCount": 79,
+          "examples": [
+            {
+              "library": "<direct>",
+              "member": "BlinkPlatformImpl.obj",
+              "candidateSourceIds": [
+                1624
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "<direct>",
+              "member": "CheckReEnter.obj",
+              "candidateSourceIds": [
+                1757
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "<direct>",
+              "member": "ClipboardUtil.obj",
+              "candidateSourceIds": [
+                1779
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "<direct>",
+              "member": "CurrentTimeImpl.obj",
+              "candidateSourceIds": [
+                1869
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "<direct>",
+              "member": "CursorDescriptorBroker.obj",
+              "candidateSourceIds": [
+                1871
+              ],
+              "allProjectCandidateCount": 1
+            }
+          ]
+        },
+        "x86": {
+          "candidateMemberCount": 79,
+          "uniqueProjectCandidateMemberCount": 79,
+          "examples": [
+            {
+              "library": "<direct>",
+              "member": "BlinkPlatformImpl.obj",
+              "candidateSourceIds": [
+                1624
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "<direct>",
+              "member": "CheckReEnter.obj",
+              "candidateSourceIds": [
+                1757
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "<direct>",
+              "member": "ClipboardUtil.obj",
+              "candidateSourceIds": [
+                1779
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "<direct>",
+              "member": "CurrentTimeImpl.obj",
+              "candidateSourceIds": [
+                1869
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "<direct>",
+              "member": "CursorDescriptorBroker.obj",
+              "candidateSourceIds": [
+                1871
+              ],
+              "allProjectCandidateCount": 1
+            }
+          ]
+        }
+      },
+      "applicableTermsReviewed": false,
+      "redistributionTermsApproved": false
+    },
+    {
+      "id": "blink",
+      "name": "Blink/WebKit partial local source tree",
+      "contexts": [
+        "<direct>"
+      ],
+      "prefixes": [
+        "third_party/WebKit/",
+        "gen/blink/"
+      ],
+      "version": {
+        "value": null,
+        "status": "unknown-exact-upstream-version",
+        "basis": [],
+        "upstreamSourceArchiveIdentityProven": false
+      },
+      "declaredTerms": "Separate Chromium/WebKit/Apple/LGPL and file-level declarations; no single root text covers all files",
+      "materials": [
+        {
+          "currentSource": {
+            "path": "third_party/sources/miniblink/third_party/WebKit/LICENSE",
+            "bytes": 1681,
+            "sha256": "7a5dcff5e74eb93f51a0a2dbbce4def6956c94c1a00a9e1a5eea0fb2b58aafc0",
+            "source2EntryPresent": true,
+            "currentBytesChecked": true,
+            "currentBytesEqualSource2": true
+          },
+          "retainedNotices": [
+            {
+              "path": "third_party/licenses/d52/webkit/LICENSE",
+              "bytes": 1681,
+              "sha256": "7a5dcff5e74eb93f51a0a2dbbce4def6956c94c1a00a9e1a5eea0fb2b58aafc0"
+            }
+          ],
+          "retainedBytesEqualCurrentSource": [
+            true
+          ]
+        },
+        {
+          "currentSource": {
+            "path": "third_party/sources/miniblink/third_party/WebKit/LICENSE_FOR_ABOUT_CREDITS",
+            "bytes": 52450,
+            "sha256": "d25f8c11292987f54ab918fa43a755d75dfb6113f618bdf03680545d87abbca8",
+            "source2EntryPresent": true,
+            "currentBytesChecked": true,
+            "currentBytesEqualSource2": true
+          },
+          "retainedNotices": [
+            {
+              "path": "third_party/licenses/d52/webkit/LICENSE_FOR_ABOUT_CREDITS",
+              "bytes": 52450,
+              "sha256": "d25f8c11292987f54ab918fa43a755d75dfb6113f618bdf03680545d87abbca8"
+            }
+          ],
+          "retainedBytesEqualCurrentSource": [
+            true
+          ]
+        },
+        {
+          "currentSource": {
+            "path": "third_party/sources/miniblink/third_party/WebKit/Source/core/LICENSE-APPLE",
+            "bytes": 1334,
+            "sha256": "308c5b0ccfb2fee0db58b92da093348a0a074e1d3ef86d17d9d526e77bd271e0",
+            "source2EntryPresent": true,
+            "currentBytesChecked": true,
+            "currentBytesEqualSource2": true
+          },
+          "retainedNotices": [
+            {
+              "path": "third_party/licenses/d52/webkit/core/LICENSE-APPLE",
+              "bytes": 1334,
+              "sha256": "308c5b0ccfb2fee0db58b92da093348a0a074e1d3ef86d17d9d526e77bd271e0"
+            }
+          ],
+          "retainedBytesEqualCurrentSource": [
+            true
+          ]
+        },
+        {
+          "currentSource": {
+            "path": "third_party/sources/miniblink/third_party/WebKit/Source/core/LICENSE-LGPL-2",
+            "bytes": 25859,
+            "sha256": "c8b0be4bf525058bee87a75614cf05a5314f8f969e1b18cdd429ebc78e1149f6",
+            "source2EntryPresent": true,
+            "currentBytesChecked": true,
+            "currentBytesEqualSource2": true
+          },
+          "retainedNotices": [
+            {
+              "path": "third_party/licenses/d52/webkit/core/LICENSE-LGPL-2",
+              "bytes": 25859,
+              "sha256": "c8b0be4bf525058bee87a75614cf05a5314f8f969e1b18cdd429ebc78e1149f6"
+            }
+          ],
+          "retainedBytesEqualCurrentSource": [
+            true
+          ]
+        },
+        {
+          "currentSource": {
+            "path": "third_party/sources/miniblink/third_party/WebKit/Source/core/LICENSE-LGPL-2.1",
+            "bytes": 27038,
+            "sha256": "3cd5e100bd88dc1cffb85b1560a3473f4647ebd03d7f945f254f09399da70f0d",
+            "source2EntryPresent": true,
+            "currentBytesChecked": true,
+            "currentBytesEqualSource2": true
+          },
+          "retainedNotices": [
+            {
+              "path": "third_party/licenses/d52/webkit/core/LICENSE-LGPL-2.1",
+              "bytes": 27038,
+              "sha256": "3cd5e100bd88dc1cffb85b1560a3473f4647ebd03d7f945f254f09399da70f0d"
+            }
+          ],
+          "retainedBytesEqualCurrentSource": [
+            true
+          ]
+        }
+      ],
+      "evidenceMeaning": "MAP membership + literal project basename candidate + current Source2 bytes; not a complete per-object compiler provenance or license decision.",
+      "matchedMembers": {
+        "x64": {
+          "candidateMemberCount": 2705,
+          "uniqueProjectCandidateMemberCount": 2705,
+          "examples": [
+            {
+              "library": "<direct>",
+              "member": "AXObjectCache.obj",
+              "candidateSourceIds": [
+                1521
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "<direct>",
+              "member": "AbstractInlineTextBox.obj",
+              "candidateSourceIds": [
+                1522
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "<direct>",
+              "member": "AbstractWorker.obj",
+              "candidateSourceIds": [
+                1523
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "<direct>",
+              "member": "ActiveDOMCallback.obj",
+              "candidateSourceIds": [
+                1526
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "<direct>",
+              "member": "ActiveDOMObject.obj",
+              "candidateSourceIds": [
+                1527
+              ],
+              "allProjectCandidateCount": 1
+            }
+          ]
+        },
+        "x86": {
+          "candidateMemberCount": 2658,
+          "uniqueProjectCandidateMemberCount": 2658,
+          "examples": [
+            {
+              "library": "<direct>",
+              "member": "AXObjectCache.obj",
+              "candidateSourceIds": [
+                1521
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "<direct>",
+              "member": "AbstractInlineTextBox.obj",
+              "candidateSourceIds": [
+                1522
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "<direct>",
+              "member": "AbstractWorker.obj",
+              "candidateSourceIds": [
+                1523
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "<direct>",
+              "member": "ActiveDOMCallback.obj",
+              "candidateSourceIds": [
+                1526
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "<direct>",
+              "member": "ActiveDOMObject.obj",
+              "candidateSourceIds": [
+                1527
+              ],
+              "allProjectCandidateCount": 1
+            }
+          ]
+        }
+      },
+      "applicableTermsReviewed": false,
+      "redistributionTermsApproved": false
+    },
+    {
+      "id": "blink-dtoa",
+      "name": "V8 double-conversion material in WebKit wtf/dtoa",
+      "contexts": [
+        "<direct>"
+      ],
+      "prefixes": [
+        "third_party/WebKit/Source/wtf/dtoa/"
+      ],
+      "version": {
+        "value": null,
+        "status": "unknown",
+        "basis": [],
+        "upstreamSourceArchiveIdentityProven": false
+      },
+      "declaredTerms": "Local V8 BSD notice, byte-equal to retained LICENSE.v8; exact upstream component version unknown",
+      "materials": [
+        {
+          "currentSource": {
+            "path": "third_party/sources/miniblink/third_party/WebKit/Source/wtf/dtoa/LICENSE",
+            "bytes": 1553,
+            "sha256": "befd10530f302b2108022be94d74eed4943880fc0626ab762ca7b53521813eeb",
+            "source2EntryPresent": true,
+            "currentBytesChecked": true,
+            "currentBytesEqualSource2": true
+          },
+          "retainedNotices": [
+            {
+              "path": "third_party/licenses/d52/v8_5_7/LICENSE.v8",
+              "bytes": 1553,
+              "sha256": "befd10530f302b2108022be94d74eed4943880fc0626ab762ca7b53521813eeb"
+            }
+          ],
+          "retainedBytesEqualCurrentSource": [
+            true
+          ]
+        }
+      ],
+      "evidenceMeaning": "MAP membership + literal project basename candidate + current Source2 bytes; not a complete per-object compiler provenance or license decision.",
+      "matchedMembers": {
+        "x64": {
+          "candidateMemberCount": 8,
+          "uniqueProjectCandidateMemberCount": 8,
+          "examples": [
+            {
+              "library": "<direct>",
+              "member": "bignum-dtoa.obj",
+              "candidateSourceIds": [
+                4328
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "<direct>",
+              "member": "bignum.obj",
+              "candidateSourceIds": [
+                4329
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "<direct>",
+              "member": "cached-powers.obj",
+              "candidateSourceIds": [
+                4331
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "<direct>",
+              "member": "diy-fp.obj",
+              "candidateSourceIds": [
+                4343
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "<direct>",
+              "member": "double-conversion.obj",
+              "candidateSourceIds": [
+                4345
+              ],
+              "allProjectCandidateCount": 1
+            }
+          ]
+        },
+        "x86": {
+          "candidateMemberCount": 8,
+          "uniqueProjectCandidateMemberCount": 8,
+          "examples": [
+            {
+              "library": "<direct>",
+              "member": "bignum-dtoa.obj",
+              "candidateSourceIds": [
+                4328
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "<direct>",
+              "member": "bignum.obj",
+              "candidateSourceIds": [
+                4329
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "<direct>",
+              "member": "cached-powers.obj",
+              "candidateSourceIds": [
+                4331
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "<direct>",
+              "member": "diy-fp.obj",
+              "candidateSourceIds": [
+                4343
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "<direct>",
+              "member": "double-conversion.obj",
+              "candidateSourceIds": [
+                4345
+              ],
+              "allProjectCandidateCount": 1
+            }
+          ]
+        }
+      },
+      "applicableTermsReviewed": false,
+      "redistributionTermsApproved": false
+    },
+    {
+      "id": "chromium-support",
+      "name": "Chromium-derived support directories in Main",
+      "contexts": [
+        "<direct>"
+      ],
+      "prefixes": [
+        "base/",
+        "cc/",
+        "net/",
+        "gin/",
+        "ui/"
+      ],
+      "version": {
+        "value": null,
+        "status": "unknown-exact-upstream-version",
+        "basis": [],
+        "upstreamSourceArchiveIdentityProven": false
+      },
+      "declaredTerms": "File-level Chromium/BSD and other declarations need review; global attribution not inferred from directory names",
+      "materials": [],
+      "evidenceMeaning": "MAP membership + literal project basename candidate + current Source2 bytes; not a complete per-object compiler provenance or license decision.",
+      "matchedMembers": {
+        "x64": {
+          "candidateMemberCount": 75,
+          "uniqueProjectCandidateMemberCount": 75,
+          "examples": [
+            {
+              "library": "<direct>",
+              "member": "ActionsFrameGroup.obj",
+              "candidateSourceIds": [
+                1524
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "<direct>",
+              "member": "ActivatingObjCheck.obj",
+              "candidateSourceIds": [
+                1525
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "<direct>",
+              "member": "AsyncFileStream.obj",
+              "candidateSourceIds": [
+                1585
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "<direct>",
+              "member": "BlobResourceLoader.obj",
+              "candidateSourceIds": [
+                1629
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "<direct>",
+              "member": "CanonicalCookie.obj",
+              "candidateSourceIds": [
+                1742
+              ],
+              "allProjectCandidateCount": 1
+            }
+          ]
+        },
+        "x86": {
+          "candidateMemberCount": 71,
+          "uniqueProjectCandidateMemberCount": 71,
+          "examples": [
+            {
+              "library": "<direct>",
+              "member": "ActionsFrameGroup.obj",
+              "candidateSourceIds": [
+                1524
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "<direct>",
+              "member": "ActivatingObjCheck.obj",
+              "candidateSourceIds": [
+                1525
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "<direct>",
+              "member": "AsyncFileStream.obj",
+              "candidateSourceIds": [
+                1585
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "<direct>",
+              "member": "BlobResourceLoader.obj",
+              "candidateSourceIds": [
+                1629
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "<direct>",
+              "member": "CanonicalCookie.obj",
+              "candidateSourceIds": [
+                1742
+              ],
+              "allProjectCandidateCount": 1
+            }
+          ]
+        }
+      },
+      "applicableTermsReviewed": false,
+      "redistributionTermsApproved": false
+    },
+    {
+      "id": "node",
+      "name": "Node source subset integrated in Main",
+      "contexts": [
+        "<direct>"
+      ],
+      "prefixes": [
+        "node/src/"
+      ],
+      "version": {
+        "value": "6.9.2",
+        "status": "source-header-declaration-subset",
+        "basis": [
+          {
+            "file": {
+              "path": "third_party/sources/miniblink/node/src/node_version.h",
+              "bytes": 1754,
+              "sha256": "bcc7ad227f41ace94d003a30ef6044b6b5a45ecb62164c8bb21850e6aa6ea9ed",
+              "source2EntryPresent": true,
+              "currentBytesChecked": true,
+              "currentBytesEqualSource2": true
+            },
+            "statements": [
+              {
+                "line": 4,
+                "text": "#define NODE_MAJOR_VERSION 6"
+              },
+              {
+                "line": 5,
+                "text": "#define NODE_MINOR_VERSION 9"
+              },
+              {
+                "line": 6,
+                "text": "#define NODE_PATCH_VERSION 2"
+              }
+            ]
+          }
+        ],
+        "upstreamSourceArchiveIdentityProven": false
+      },
+      "declaredTerms": "Node MIT plus aggregate third-party exceptions; this is not an unmodified Node distribution",
+      "materials": [
+        {
+          "currentSource": {
+            "path": "third_party/sources/miniblink/node/LICENSE-nodejs",
+            "bytes": 61645,
+            "sha256": "aa89b6fe87f907791f69a13d807068e23d29c513ce18aa3e1d75b05b55c1ff07",
+            "source2EntryPresent": true,
+            "currentBytesChecked": true,
+            "currentBytesEqualSource2": true
+          },
+          "retainedNotices": [
+            {
+              "path": "third_party/licenses/d52/node/LICENSE-nodejs.txt",
+              "bytes": 61645,
+              "sha256": "aa89b6fe87f907791f69a13d807068e23d29c513ce18aa3e1d75b05b55c1ff07"
+            }
+          ],
+          "retainedBytesEqualCurrentSource": [
+            true
+          ]
+        }
+      ],
+      "evidenceMeaning": "MAP membership + literal project basename candidate + current Source2 bytes; not a complete per-object compiler provenance or license decision.",
+      "matchedMembers": {
+        "x64": {
+          "candidateMemberCount": 47,
+          "uniqueProjectCandidateMemberCount": 47,
+          "examples": [
+            {
+              "library": "<direct>",
+              "member": "async-wrap.obj",
+              "candidateSourceIds": [
+                4325
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "<direct>",
+              "member": "backtrace_win32.obj",
+              "candidateSourceIds": [
+                4327
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "<direct>",
+              "member": "cares_wrap.obj",
+              "candidateSourceIds": [
+                4334
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "<direct>",
+              "member": "connect_wrap.obj",
+              "candidateSourceIds": [
+                4338
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "<direct>",
+              "member": "connection_wrap.obj",
+              "candidateSourceIds": [
+                4339
+              ],
+              "allProjectCandidateCount": 1
+            }
+          ]
+        },
+        "x86": {
+          "candidateMemberCount": 46,
+          "uniqueProjectCandidateMemberCount": 46,
+          "examples": [
+            {
+              "library": "<direct>",
+              "member": "async-wrap.obj",
+              "candidateSourceIds": [
+                4325
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "<direct>",
+              "member": "backtrace_win32.obj",
+              "candidateSourceIds": [
+                4327
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "<direct>",
+              "member": "cares_wrap.obj",
+              "candidateSourceIds": [
+                4334
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "<direct>",
+              "member": "connect_wrap.obj",
+              "candidateSourceIds": [
+                4338
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "<direct>",
+              "member": "connection_wrap.obj",
+              "candidateSourceIds": [
+                4339
+              ],
+              "allProjectCandidateCount": 1
+            }
+          ]
+        }
+      },
+      "applicableTermsReviewed": false,
+      "redistributionTermsApproved": false
+    },
+    {
+      "id": "http-parser",
+      "name": "HTTP Parser compiled directly in Main",
+      "contexts": [
+        "<direct>"
+      ],
+      "prefixes": [
+        "node/src/http_parser.c"
+      ],
+      "version": {
+        "value": "2.7.0",
+        "status": "source-header-declaration",
+        "basis": [
+          {
+            "file": {
+              "path": "third_party/sources/miniblink/node/src/http_parser.h",
+              "bytes": 13933,
+              "sha256": "c1086c86df20f0a5df01e92f7fa55ecdb4a1abdbf4adb4e35bbcc8c8f6b89eca",
+              "source2EntryPresent": true,
+              "currentBytesChecked": true,
+              "currentBytesEqualSource2": true
+            },
+            "statements": [
+              {
+                "line": 28,
+                "text": "#define HTTP_PARSER_VERSION_MAJOR 2"
+              },
+              {
+                "line": 29,
+                "text": "#define HTTP_PARSER_VERSION_MINOR 7"
+              },
+              {
+                "line": 30,
+                "text": "#define HTTP_PARSER_VERSION_PATCH 0"
+              }
+            ]
+          }
+        ],
+        "upstreamSourceArchiveIdentityProven": false
+      },
+      "declaredTerms": "MIT/NGINX-derived terms retained in source and dedicated text",
+      "materials": [
+        {
+          "currentSource": {
+            "path": "third_party/sources/miniblink/node/LICENSE-http_parser",
+            "bytes": 1274,
+            "sha256": "601db1017102482d1dafd638936111f8cf267aa722c87308d0d1dd0ce74f923d",
+            "source2EntryPresent": true,
+            "currentBytesChecked": true,
+            "currentBytesEqualSource2": true
+          },
+          "retainedNotices": [
+            {
+              "path": "third_party/licenses/kernel-source/node/LICENSE-http_parser.txt",
+              "bytes": 1274,
+              "sha256": "601db1017102482d1dafd638936111f8cf267aa722c87308d0d1dd0ce74f923d"
+            }
+          ],
+          "retainedBytesEqualCurrentSource": [
+            true
+          ]
+        }
+      ],
+      "evidenceMeaning": "MAP membership + literal project basename candidate + current Source2 bytes; not a complete per-object compiler provenance or license decision.",
+      "matchedMembers": {
+        "x64": {
+          "candidateMemberCount": 1,
+          "uniqueProjectCandidateMemberCount": 1,
+          "examples": [
+            {
+              "library": "<direct>",
+              "member": "http_parser.obj",
+              "candidateSourceIds": [
+                4363
+              ],
+              "allProjectCandidateCount": 1
+            }
+          ]
+        },
+        "x86": {
+          "candidateMemberCount": 1,
+          "uniqueProjectCandidateMemberCount": 1,
+          "examples": [
+            {
+              "library": "<direct>",
+              "member": "http_parser.obj",
+              "candidateSourceIds": [
+                4363
+              ],
+              "allProjectCandidateCount": 1
+            }
+          ]
+        }
+      },
+      "applicableTermsReviewed": false,
+      "redistributionTermsApproved": false
+    },
+    {
+      "id": "libuv",
+      "name": "libuv source subset compiled directly in Main",
+      "contexts": [
+        "<direct>"
+      ],
+      "prefixes": [
+        "node/uv/"
+      ],
+      "version": {
+        "value": "1.9.1",
+        "status": "source-header-declaration-subset",
+        "basis": [
+          {
+            "file": {
+              "path": "third_party/sources/miniblink/node/uv/include/uv-version.h",
+              "bytes": 1841,
+              "sha256": "b89ccdcd7ab8444914ac73ac6cb4752b91a2101298978347687cbaf3ff175572",
+              "source2EntryPresent": true,
+              "currentBytesChecked": true,
+              "currentBytesEqualSource2": true
+            },
+            "statements": [
+              {
+                "line": 33,
+                "text": "#define UV_VERSION_MAJOR 1"
+              },
+              {
+                "line": 34,
+                "text": "#define UV_VERSION_MINOR 9"
+              },
+              {
+                "line": 35,
+                "text": "#define UV_VERSION_PATCH 1"
+              }
+            ]
+          }
+        ],
+        "upstreamSourceArchiveIdentityProven": false
+      },
+      "declaredTerms": "Node/libuv MIT aggregate with externally maintained exceptions",
+      "materials": [
+        {
+          "currentSource": {
+            "path": "third_party/sources/miniblink/node/LICENSE-libuv",
+            "bytes": 2080,
+            "sha256": "dc80ef4333eb736c12fdac725aca4ffb60b3f766664652e84c2f2183ae1342fb",
+            "source2EntryPresent": true,
+            "currentBytesChecked": true,
+            "currentBytesEqualSource2": true
+          },
+          "retainedNotices": [
+            {
+              "path": "third_party/licenses/kernel-source/node/LICENSE-libuv.txt",
+              "bytes": 2080,
+              "sha256": "dc80ef4333eb736c12fdac725aca4ffb60b3f766664652e84c2f2183ae1342fb"
+            }
+          ],
+          "retainedBytesEqualCurrentSource": [
+            true
+          ]
+        }
+      ],
+      "evidenceMeaning": "MAP membership + literal project basename candidate + current Source2 bytes; not a complete per-object compiler provenance or license decision.",
+      "matchedMembers": {
+        "x64": {
+          "candidateMemberCount": 28,
+          "uniqueProjectCandidateMemberCount": 28,
+          "examples": [
+            {
+              "library": "<direct>",
+              "member": "async.obj",
+              "candidateSourceIds": [
+                4326
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "<direct>",
+              "member": "core.obj",
+              "candidateSourceIds": [
+                4340
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "<direct>",
+              "member": "dl.obj",
+              "candidateSourceIds": [
+                4344
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "<direct>",
+              "member": "error.obj",
+              "candidateSourceIds": [
+                4349
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "<direct>",
+              "member": "fs-event.obj",
+              "candidateSourceIds": [
+                4353
+              ],
+              "allProjectCandidateCount": 1
+            }
+          ]
+        },
+        "x86": {
+          "candidateMemberCount": 28,
+          "uniqueProjectCandidateMemberCount": 28,
+          "examples": [
+            {
+              "library": "<direct>",
+              "member": "async.obj",
+              "candidateSourceIds": [
+                4326
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "<direct>",
+              "member": "core.obj",
+              "candidateSourceIds": [
+                4340
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "<direct>",
+              "member": "dl.obj",
+              "candidateSourceIds": [
+                4344
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "<direct>",
+              "member": "error.obj",
+              "candidateSourceIds": [
+                4349
+              ],
+              "allProjectCandidateCount": 1
+            },
+            {
+              "library": "<direct>",
+              "member": "fs-event.obj",
+              "candidateSourceIds": [
+                4353
+              ],
+              "allProjectCandidateCount": 1
+            }
+          ]
+        }
+      },
+      "applicableTermsReviewed": false,
+      "redistributionTermsApproved": false
+    },
+    {
+      "id": "icu-adaptation",
+      "name": "Local ICU adaptation in Main",
+      "contexts": [
+        "<direct>"
+      ],
+      "prefixes": [
+        "third_party/icu/"
+      ],
+      "version": {
+        "value": null,
+        "status": "unknown-implementation-version-header-declares-54.1",
+        "basis": [
+          {
+            "file": {
+              "path": "third_party/sources/miniblink/third_party/icu/source/common/_unicode/uvernum.h",
+              "bytes": 5756,
+              "sha256": "1f9593caf40d54c386e82ea239548cf724144a47141a9a880b5c0b96ba860613",
+              "source2EntryPresent": true,
+              "currentBytesChecked": true,
+              "currentBytesEqualSource2": true
+            },
+            "statements": [
+              {
+                "line": 121,
+                "text": "#define U_ICU_VERSION \"54.1\""
+              }
+            ]
+          }
+        ],
+        "upstreamSourceArchiveIdentityProven": false,
+        "note": "Main declares only local source/uchar.cpp. Retained _unicode header 54.1 does not establish a complete or unmodified ICU 54.1 implementation."
+      },
+      "declaredTerms": "Node aggregate contains ICU and subsidiary texts; applicability to this adapted source remains unresolved",
+      "materials": [
+        {
+          "currentSource": {
+            "path": "third_party/sources/miniblink/node/LICENSE-nodejs",
+            "bytes": 61645,
+            "sha256": "aa89b6fe87f907791f69a13d807068e23d29c513ce18aa3e1d75b05b55c1ff07",
+            "source2EntryPresent": true,
+            "currentBytesChecked": true,
+            "currentBytesEqualSource2": true
+          },
+          "retainedNotices": [
+            {
+              "path": "third_party/licenses/d52/node/LICENSE-nodejs.txt",
+              "bytes": 61645,
+              "sha256": "aa89b6fe87f907791f69a13d807068e23d29c513ce18aa3e1d75b05b55c1ff07"
+            }
+          ],
+          "retainedBytesEqualCurrentSource": [
+            true
+          ]
+        },
+        {
+          "currentSource": {
+            "path": "third_party/sources/miniblink/third_party/icu/source/uchar.cpp",
+            "bytes": 481,
+            "sha256": "dab10b0ca5ce973456a67453c50519f8e526831f2efbb22222ba87a1f1515d9c",
+            "source2EntryPresent": true,
+            "currentBytesChecked": true,
+            "currentBytesEqualSource2": true
+          },
+          "retainedNotices": [],
+          "retainedBytesEqualCurrentSource": []
+        }
+      ],
+      "evidenceMeaning": "MAP membership + literal project basename candidate + current Source2 bytes; not a complete per-object compiler provenance or license decision.",
+      "matchedMembers": {
+        "x64": {
+          "candidateMemberCount": 1,
+          "uniqueProjectCandidateMemberCount": 1,
+          "examples": [
+            {
+              "library": "<direct>",
+              "member": "uchar.obj",
+              "candidateSourceIds": [
+                4444
+              ],
+              "allProjectCandidateCount": 1
+            }
+          ]
+        },
+        "x86": {
+          "candidateMemberCount": 1,
+          "uniqueProjectCandidateMemberCount": 1,
+          "examples": [
+            {
+              "library": "<direct>",
+              "member": "uchar.obj",
+              "candidateSourceIds": [
+                4444
+              ],
+              "allProjectCandidateCount": 1
+            }
+          ]
+        }
+      },
+      "applicableTermsReviewed": false,
+      "redistributionTermsApproved": false
+    }
+  ],
+  "noticeMaterials": [
+    {
+      "originalHistoricalMaterial": {
+        "source": "third_party/sources/miniblink/LICENSE",
+        "bytes": 11537,
+        "sha256": "de2955977b885b81e1d0e1cdb0fc4619e5456c2928bb120cb39d44c4b792f25c",
+        "retainedAt": [
+          "third_party/licenses/d52/miniblink/LICENSE.txt"
+        ]
+      },
+      "currentSource": {
+        "path": "third_party/sources/miniblink/LICENSE",
+        "bytes": 11537,
+        "sha256": "de2955977b885b81e1d0e1cdb0fc4619e5456c2928bb120cb39d44c4b792f25c",
+        "source2EntryPresent": true,
+        "currentBytesChecked": true,
+        "currentBytesEqualSource2": true
+      },
+      "currentSourceEqualHistoricalMaterial": true,
+      "retainedNotices": [
+        {
+          "path": "third_party/licenses/d52/miniblink/LICENSE.txt",
+          "bytes": 11537,
+          "sha256": "de2955977b885b81e1d0e1cdb0fc4619e5456c2928bb120cb39d44c4b792f25c",
+          "bytesEqualCurrentSource": true
+        }
+      ],
+      "linkedSelectionEstablishedByThisMaterialIndex": false
+    },
+    {
+      "originalHistoricalMaterial": {
+        "source": "third_party/sources/miniblink/node/LICENSE-http_parser",
+        "bytes": 1274,
+        "sha256": "601db1017102482d1dafd638936111f8cf267aa722c87308d0d1dd0ce74f923d",
+        "retainedAt": [
+          "third_party/licenses/kernel-source/node/LICENSE-http_parser.txt"
+        ]
+      },
+      "currentSource": {
+        "path": "third_party/sources/miniblink/node/LICENSE-http_parser",
+        "bytes": 1274,
+        "sha256": "601db1017102482d1dafd638936111f8cf267aa722c87308d0d1dd0ce74f923d",
+        "source2EntryPresent": true,
+        "currentBytesChecked": true,
+        "currentBytesEqualSource2": true
+      },
+      "currentSourceEqualHistoricalMaterial": true,
+      "retainedNotices": [
+        {
+          "path": "third_party/licenses/kernel-source/node/LICENSE-http_parser.txt",
+          "bytes": 1274,
+          "sha256": "601db1017102482d1dafd638936111f8cf267aa722c87308d0d1dd0ce74f923d",
+          "bytesEqualCurrentSource": true
+        }
+      ],
+      "linkedSelectionEstablishedByThisMaterialIndex": false
+    },
+    {
+      "originalHistoricalMaterial": {
+        "source": "third_party/sources/miniblink/node/LICENSE-libuv",
+        "bytes": 2080,
+        "sha256": "dc80ef4333eb736c12fdac725aca4ffb60b3f766664652e84c2f2183ae1342fb",
+        "retainedAt": [
+          "third_party/licenses/kernel-source/node/LICENSE-libuv.txt"
+        ]
+      },
+      "currentSource": {
+        "path": "third_party/sources/miniblink/node/LICENSE-libuv",
+        "bytes": 2080,
+        "sha256": "dc80ef4333eb736c12fdac725aca4ffb60b3f766664652e84c2f2183ae1342fb",
+        "source2EntryPresent": true,
+        "currentBytesChecked": true,
+        "currentBytesEqualSource2": true
+      },
+      "currentSourceEqualHistoricalMaterial": true,
+      "retainedNotices": [
+        {
+          "path": "third_party/licenses/kernel-source/node/LICENSE-libuv.txt",
+          "bytes": 2080,
+          "sha256": "dc80ef4333eb736c12fdac725aca4ffb60b3f766664652e84c2f2183ae1342fb",
+          "bytesEqualCurrentSource": true
+        }
+      ],
+      "linkedSelectionEstablishedByThisMaterialIndex": false
+    },
+    {
+      "originalHistoricalMaterial": {
+        "source": "third_party/sources/miniblink/node/LICENSE-nodejs",
+        "bytes": 61645,
+        "sha256": "aa89b6fe87f907791f69a13d807068e23d29c513ce18aa3e1d75b05b55c1ff07",
+        "retainedAt": [
+          "third_party/licenses/d52/node/LICENSE-nodejs.txt"
+        ]
+      },
+      "currentSource": {
+        "path": "third_party/sources/miniblink/node/LICENSE-nodejs",
+        "bytes": 61645,
+        "sha256": "aa89b6fe87f907791f69a13d807068e23d29c513ce18aa3e1d75b05b55c1ff07",
+        "source2EntryPresent": true,
+        "currentBytesChecked": true,
+        "currentBytesEqualSource2": true
+      },
+      "currentSourceEqualHistoricalMaterial": true,
+      "retainedNotices": [
+        {
+          "path": "third_party/licenses/d52/node/LICENSE-nodejs.txt",
+          "bytes": 61645,
+          "sha256": "aa89b6fe87f907791f69a13d807068e23d29c513ce18aa3e1d75b05b55c1ff07",
+          "bytesEqualCurrentSource": true
+        }
+      ],
+      "linkedSelectionEstablishedByThisMaterialIndex": false
+    },
+    {
+      "originalHistoricalMaterial": {
+        "source": "third_party/sources/miniblink/node/openssl/openssl/LICENSE",
+        "bytes": 6406,
+        "sha256": "d0047be11f613ca5afebb508c19242fdecd55b740d70ea031c00c11784f37ee7",
+        "retainedAt": [
+          "third_party/licenses/d52/openssl/LICENSE.txt"
+        ]
+      },
+      "currentSource": {
+        "path": "third_party/sources/miniblink/node/openssl/openssl/LICENSE",
+        "bytes": 6406,
+        "sha256": "d0047be11f613ca5afebb508c19242fdecd55b740d70ea031c00c11784f37ee7",
+        "source2EntryPresent": true,
+        "currentBytesChecked": true,
+        "currentBytesEqualSource2": true
+      },
+      "currentSourceEqualHistoricalMaterial": true,
+      "retainedNotices": [
+        {
+          "path": "third_party/licenses/d52/openssl/LICENSE.txt",
+          "bytes": 6406,
+          "sha256": "d0047be11f613ca5afebb508c19242fdecd55b740d70ea031c00c11784f37ee7",
+          "bytesEqualCurrentSource": true
+        }
+      ],
+      "linkedSelectionEstablishedByThisMaterialIndex": false
+    },
+    {
+      "originalHistoricalMaterial": {
+        "source": "third_party/sources/miniblink/node/openssl/openssl/crypto/bf/COPYRIGHT",
+        "bytes": 2387,
+        "sha256": "9bceb91e723ae5b88db5039ee0983e84c9b12d8fc7001148acefe0f3ac325e00",
+        "retainedAt": [
+          "third_party/licenses/kernel-source/node/openssl/openssl/crypto/bf/COPYRIGHT.txt"
+        ]
+      },
+      "currentSource": {
+        "path": "third_party/sources/miniblink/node/openssl/openssl/crypto/bf/COPYRIGHT",
+        "bytes": 2387,
+        "sha256": "9bceb91e723ae5b88db5039ee0983e84c9b12d8fc7001148acefe0f3ac325e00",
+        "source2EntryPresent": true,
+        "currentBytesChecked": true,
+        "currentBytesEqualSource2": true
+      },
+      "currentSourceEqualHistoricalMaterial": true,
+      "retainedNotices": [
+        {
+          "path": "third_party/licenses/kernel-source/node/openssl/openssl/crypto/bf/COPYRIGHT.txt",
+          "bytes": 2387,
+          "sha256": "9bceb91e723ae5b88db5039ee0983e84c9b12d8fc7001148acefe0f3ac325e00",
+          "bytesEqualCurrentSource": true
+        }
+      ],
+      "linkedSelectionEstablishedByThisMaterialIndex": false
+    },
+    {
+      "originalHistoricalMaterial": {
+        "source": "third_party/sources/miniblink/node/openssl/openssl/crypto/des/COPYRIGHT",
+        "bytes": 2701,
+        "sha256": "ba0599e698a819847042c3cc51bf693881e4c286f555b4d44df7c2fb5bfae236",
+        "retainedAt": [
+          "third_party/licenses/kernel-source/node/openssl/openssl/crypto/des/COPYRIGHT.txt"
+        ]
+      },
+      "currentSource": {
+        "path": "third_party/sources/miniblink/node/openssl/openssl/crypto/des/COPYRIGHT",
+        "bytes": 2701,
+        "sha256": "ba0599e698a819847042c3cc51bf693881e4c286f555b4d44df7c2fb5bfae236",
+        "source2EntryPresent": true,
+        "currentBytesChecked": true,
+        "currentBytesEqualSource2": true
+      },
+      "currentSourceEqualHistoricalMaterial": true,
+      "retainedNotices": [
+        {
+          "path": "third_party/licenses/kernel-source/node/openssl/openssl/crypto/des/COPYRIGHT.txt",
+          "bytes": 2701,
+          "sha256": "ba0599e698a819847042c3cc51bf693881e4c286f555b4d44df7c2fb5bfae236",
+          "bytesEqualCurrentSource": true
+        }
+      ],
+      "linkedSelectionEstablishedByThisMaterialIndex": false
+    },
+    {
+      "originalHistoricalMaterial": {
+        "source": "third_party/sources/miniblink/node/v8_inspector/LICENSE",
+        "bytes": 1586,
+        "sha256": "2b5d44220cee7d541efdef3126ce838b2e73eaebae2f441af3573cb2c0af4d70",
+        "retainedAt": [
+          "third_party/licenses/kernel-source/node/v8_inspector/LICENSE.txt"
+        ]
+      },
+      "currentSource": {
+        "path": "third_party/sources/miniblink/node/v8_inspector/LICENSE",
+        "bytes": 1586,
+        "sha256": "2b5d44220cee7d541efdef3126ce838b2e73eaebae2f441af3573cb2c0af4d70",
+        "source2EntryPresent": true,
+        "currentBytesChecked": true,
+        "currentBytesEqualSource2": true
+      },
+      "currentSourceEqualHistoricalMaterial": true,
+      "retainedNotices": [
+        {
+          "path": "third_party/licenses/kernel-source/node/v8_inspector/LICENSE.txt",
+          "bytes": 1586,
+          "sha256": "2b5d44220cee7d541efdef3126ce838b2e73eaebae2f441af3573cb2c0af4d70",
+          "bytesEqualCurrentSource": true
+        }
+      ],
+      "linkedSelectionEstablishedByThisMaterialIndex": false
+    },
+    {
+      "originalHistoricalMaterial": {
+        "source": "third_party/sources/miniblink/third_party/WebKit/LICENSE",
+        "bytes": 1681,
+        "sha256": "7a5dcff5e74eb93f51a0a2dbbce4def6956c94c1a00a9e1a5eea0fb2b58aafc0",
+        "retainedAt": [
+          "third_party/licenses/d52/webkit/LICENSE"
+        ]
+      },
+      "currentSource": {
+        "path": "third_party/sources/miniblink/third_party/WebKit/LICENSE",
+        "bytes": 1681,
+        "sha256": "7a5dcff5e74eb93f51a0a2dbbce4def6956c94c1a00a9e1a5eea0fb2b58aafc0",
+        "source2EntryPresent": true,
+        "currentBytesChecked": true,
+        "currentBytesEqualSource2": true
+      },
+      "currentSourceEqualHistoricalMaterial": true,
+      "retainedNotices": [
+        {
+          "path": "third_party/licenses/d52/webkit/LICENSE",
+          "bytes": 1681,
+          "sha256": "7a5dcff5e74eb93f51a0a2dbbce4def6956c94c1a00a9e1a5eea0fb2b58aafc0",
+          "bytesEqualCurrentSource": true
+        }
+      ],
+      "linkedSelectionEstablishedByThisMaterialIndex": false
+    },
+    {
+      "originalHistoricalMaterial": {
+        "source": "third_party/sources/miniblink/third_party/WebKit/LICENSE_FOR_ABOUT_CREDITS",
+        "bytes": 52450,
+        "sha256": "d25f8c11292987f54ab918fa43a755d75dfb6113f618bdf03680545d87abbca8",
+        "retainedAt": [
+          "third_party/licenses/d52/webkit/LICENSE_FOR_ABOUT_CREDITS"
+        ]
+      },
+      "currentSource": {
+        "path": "third_party/sources/miniblink/third_party/WebKit/LICENSE_FOR_ABOUT_CREDITS",
+        "bytes": 52450,
+        "sha256": "d25f8c11292987f54ab918fa43a755d75dfb6113f618bdf03680545d87abbca8",
+        "source2EntryPresent": true,
+        "currentBytesChecked": true,
+        "currentBytesEqualSource2": true
+      },
+      "currentSourceEqualHistoricalMaterial": true,
+      "retainedNotices": [
+        {
+          "path": "third_party/licenses/d52/webkit/LICENSE_FOR_ABOUT_CREDITS",
+          "bytes": 52450,
+          "sha256": "d25f8c11292987f54ab918fa43a755d75dfb6113f618bdf03680545d87abbca8",
+          "bytesEqualCurrentSource": true
+        }
+      ],
+      "linkedSelectionEstablishedByThisMaterialIndex": false
+    },
+    {
+      "originalHistoricalMaterial": {
+        "source": "third_party/sources/miniblink/third_party/WebKit/Source/core/LICENSE-APPLE",
+        "bytes": 1334,
+        "sha256": "308c5b0ccfb2fee0db58b92da093348a0a074e1d3ef86d17d9d526e77bd271e0",
+        "retainedAt": [
+          "third_party/licenses/d52/webkit/core/LICENSE-APPLE"
+        ]
+      },
+      "currentSource": {
+        "path": "third_party/sources/miniblink/third_party/WebKit/Source/core/LICENSE-APPLE",
+        "bytes": 1334,
+        "sha256": "308c5b0ccfb2fee0db58b92da093348a0a074e1d3ef86d17d9d526e77bd271e0",
+        "source2EntryPresent": true,
+        "currentBytesChecked": true,
+        "currentBytesEqualSource2": true
+      },
+      "currentSourceEqualHistoricalMaterial": true,
+      "retainedNotices": [
+        {
+          "path": "third_party/licenses/d52/webkit/core/LICENSE-APPLE",
+          "bytes": 1334,
+          "sha256": "308c5b0ccfb2fee0db58b92da093348a0a074e1d3ef86d17d9d526e77bd271e0",
+          "bytesEqualCurrentSource": true
+        }
+      ],
+      "linkedSelectionEstablishedByThisMaterialIndex": false
+    },
+    {
+      "originalHistoricalMaterial": {
+        "source": "third_party/sources/miniblink/third_party/WebKit/Source/core/LICENSE-LGPL-2",
+        "bytes": 25859,
+        "sha256": "c8b0be4bf525058bee87a75614cf05a5314f8f969e1b18cdd429ebc78e1149f6",
+        "retainedAt": [
+          "third_party/licenses/d52/webkit/core/LICENSE-LGPL-2"
+        ]
+      },
+      "currentSource": {
+        "path": "third_party/sources/miniblink/third_party/WebKit/Source/core/LICENSE-LGPL-2",
+        "bytes": 25859,
+        "sha256": "c8b0be4bf525058bee87a75614cf05a5314f8f969e1b18cdd429ebc78e1149f6",
+        "source2EntryPresent": true,
+        "currentBytesChecked": true,
+        "currentBytesEqualSource2": true
+      },
+      "currentSourceEqualHistoricalMaterial": true,
+      "retainedNotices": [
+        {
+          "path": "third_party/licenses/d52/webkit/core/LICENSE-LGPL-2",
+          "bytes": 25859,
+          "sha256": "c8b0be4bf525058bee87a75614cf05a5314f8f969e1b18cdd429ebc78e1149f6",
+          "bytesEqualCurrentSource": true
+        }
+      ],
+      "linkedSelectionEstablishedByThisMaterialIndex": false
+    },
+    {
+      "originalHistoricalMaterial": {
+        "source": "third_party/sources/miniblink/third_party/WebKit/Source/core/LICENSE-LGPL-2.1",
+        "bytes": 27038,
+        "sha256": "3cd5e100bd88dc1cffb85b1560a3473f4647ebd03d7f945f254f09399da70f0d",
+        "retainedAt": [
+          "third_party/licenses/d52/webkit/core/LICENSE-LGPL-2.1"
+        ]
+      },
+      "currentSource": {
+        "path": "third_party/sources/miniblink/third_party/WebKit/Source/core/LICENSE-LGPL-2.1",
+        "bytes": 27038,
+        "sha256": "3cd5e100bd88dc1cffb85b1560a3473f4647ebd03d7f945f254f09399da70f0d",
+        "source2EntryPresent": true,
+        "currentBytesChecked": true,
+        "currentBytesEqualSource2": true
+      },
+      "currentSourceEqualHistoricalMaterial": true,
+      "retainedNotices": [
+        {
+          "path": "third_party/licenses/d52/webkit/core/LICENSE-LGPL-2.1",
+          "bytes": 27038,
+          "sha256": "3cd5e100bd88dc1cffb85b1560a3473f4647ebd03d7f945f254f09399da70f0d",
+          "bytesEqualCurrentSource": true
+        }
+      ],
+      "linkedSelectionEstablishedByThisMaterialIndex": false
+    },
+    {
+      "originalHistoricalMaterial": {
+        "source": "third_party/sources/miniblink/third_party/WebKit/Source/devtools/front_end/acorn/LICENSE",
+        "bytes": 1105,
+        "sha256": "66bdd11215501e6e37dee79f5fc8b452cff4318e3f2ddb00f47c1e77b6f1b464",
+        "retainedAt": [
+          "third_party/licenses/kernel-source/third_party/WebKit/Source/devtools/front_end/acorn/LICENSE.txt"
+        ]
+      },
+      "currentSource": {
+        "path": "third_party/sources/miniblink/third_party/WebKit/Source/devtools/front_end/acorn/LICENSE",
+        "bytes": 1105,
+        "sha256": "66bdd11215501e6e37dee79f5fc8b452cff4318e3f2ddb00f47c1e77b6f1b464",
+        "source2EntryPresent": true,
+        "currentBytesChecked": true,
+        "currentBytesEqualSource2": true
+      },
+      "currentSourceEqualHistoricalMaterial": true,
+      "retainedNotices": [
+        {
+          "path": "third_party/licenses/kernel-source/third_party/WebKit/Source/devtools/front_end/acorn/LICENSE.txt",
+          "bytes": 1105,
+          "sha256": "66bdd11215501e6e37dee79f5fc8b452cff4318e3f2ddb00f47c1e77b6f1b464",
+          "bytesEqualCurrentSource": true
+        }
+      ],
+      "linkedSelectionEstablishedByThisMaterialIndex": false
+    },
+    {
+      "originalHistoricalMaterial": {
+        "source": "third_party/sources/miniblink/third_party/WebKit/Source/devtools/front_end/cm/LICENSE",
+        "bytes": 1113,
+        "sha256": "f7dfffd11a9b093c182bd0bce82470aa462b63c79e88e29255c766a67a6fdd13",
+        "retainedAt": [
+          "third_party/licenses/kernel-source/third_party/WebKit/Source/devtools/front_end/cm/LICENSE.txt"
+        ]
+      },
+      "currentSource": {
+        "path": "third_party/sources/miniblink/third_party/WebKit/Source/devtools/front_end/cm/LICENSE",
+        "bytes": 1113,
+        "sha256": "f7dfffd11a9b093c182bd0bce82470aa462b63c79e88e29255c766a67a6fdd13",
+        "source2EntryPresent": true,
+        "currentBytesChecked": true,
+        "currentBytesEqualSource2": true
+      },
+      "currentSourceEqualHistoricalMaterial": true,
+      "retainedNotices": [
+        {
+          "path": "third_party/licenses/kernel-source/third_party/WebKit/Source/devtools/front_end/cm/LICENSE.txt",
+          "bytes": 1113,
+          "sha256": "f7dfffd11a9b093c182bd0bce82470aa462b63c79e88e29255c766a67a6fdd13",
+          "bytesEqualCurrentSource": true
+        }
+      ],
+      "linkedSelectionEstablishedByThisMaterialIndex": false
+    },
+    {
+      "originalHistoricalMaterial": {
+        "source": "third_party/sources/miniblink/third_party/WebKit/Source/devtools/front_end/cm/LICENSE_python",
+        "bytes": 1095,
+        "sha256": "da0307e88178ab5965d9aea4cad4f393febd45445f7ce24699a3b1cc0ef3a97b",
+        "retainedAt": [
+          "third_party/licenses/kernel-source/third_party/WebKit/Source/devtools/front_end/cm/LICENSE_python.txt"
+        ]
+      },
+      "currentSource": {
+        "path": "third_party/sources/miniblink/third_party/WebKit/Source/devtools/front_end/cm/LICENSE_python",
+        "bytes": 1095,
+        "sha256": "da0307e88178ab5965d9aea4cad4f393febd45445f7ce24699a3b1cc0ef3a97b",
+        "source2EntryPresent": true,
+        "currentBytesChecked": true,
+        "currentBytesEqualSource2": true
+      },
+      "currentSourceEqualHistoricalMaterial": true,
+      "retainedNotices": [
+        {
+          "path": "third_party/licenses/kernel-source/third_party/WebKit/Source/devtools/front_end/cm/LICENSE_python.txt",
+          "bytes": 1095,
+          "sha256": "da0307e88178ab5965d9aea4cad4f393febd45445f7ce24699a3b1cc0ef3a97b",
+          "bytesEqualCurrentSource": true
+        }
+      ],
+      "linkedSelectionEstablishedByThisMaterialIndex": false
+    },
+    {
+      "originalHistoricalMaterial": {
+        "source": "third_party/sources/miniblink/third_party/WebKit/Source/devtools/front_end/cm_modes/LICENSE",
+        "bytes": 1113,
+        "sha256": "f7dfffd11a9b093c182bd0bce82470aa462b63c79e88e29255c766a67a6fdd13",
+        "retainedAt": [
+          "third_party/licenses/kernel-source/third_party/WebKit/Source/devtools/front_end/cm_modes/LICENSE.txt"
+        ]
+      },
+      "currentSource": {
+        "path": "third_party/sources/miniblink/third_party/WebKit/Source/devtools/front_end/cm_modes/LICENSE",
+        "bytes": 1113,
+        "sha256": "f7dfffd11a9b093c182bd0bce82470aa462b63c79e88e29255c766a67a6fdd13",
+        "source2EntryPresent": true,
+        "currentBytesChecked": true,
+        "currentBytesEqualSource2": true
+      },
+      "currentSourceEqualHistoricalMaterial": true,
+      "retainedNotices": [
+        {
+          "path": "third_party/licenses/kernel-source/third_party/WebKit/Source/devtools/front_end/cm_modes/LICENSE.txt",
+          "bytes": 1113,
+          "sha256": "f7dfffd11a9b093c182bd0bce82470aa462b63c79e88e29255c766a67a6fdd13",
+          "bytesEqualCurrentSource": true
+        }
+      ],
+      "linkedSelectionEstablishedByThisMaterialIndex": false
+    },
+    {
+      "originalHistoricalMaterial": {
+        "source": "third_party/sources/miniblink/third_party/WebKit/Source/devtools/scripts/closure/COPYING",
+        "bytes": 11560,
+        "sha256": "3ddf9be5c28fe27dad143a5dc76eea25222ad1dd68934a047064e56ed2fa40c5",
+        "retainedAt": [
+          "third_party/licenses/d52/brotli/LICENSE.txt"
+        ]
+      },
+      "currentSource": {
+        "path": "third_party/sources/miniblink/third_party/WebKit/Source/devtools/scripts/closure/COPYING",
+        "bytes": 11560,
+        "sha256": "3ddf9be5c28fe27dad143a5dc76eea25222ad1dd68934a047064e56ed2fa40c5",
+        "source2EntryPresent": true,
+        "currentBytesChecked": true,
+        "currentBytesEqualSource2": true
+      },
+      "currentSourceEqualHistoricalMaterial": true,
+      "retainedNotices": [
+        {
+          "path": "third_party/licenses/d52/brotli/LICENSE.txt",
+          "bytes": 11560,
+          "sha256": "3ddf9be5c28fe27dad143a5dc76eea25222ad1dd68934a047064e56ed2fa40c5",
+          "bytesEqualCurrentSource": true
+        }
+      ],
+      "linkedSelectionEstablishedByThisMaterialIndex": false
+    },
+    {
+      "originalHistoricalMaterial": {
+        "source": "third_party/sources/miniblink/third_party/WebKit/Source/wtf/dtoa/COPYING",
+        "bytes": 1553,
+        "sha256": "befd10530f302b2108022be94d74eed4943880fc0626ab762ca7b53521813eeb",
+        "retainedAt": [
+          "third_party/licenses/d52/v8_5_7/LICENSE.v8"
+        ]
+      },
+      "currentSource": {
+        "path": "third_party/sources/miniblink/third_party/WebKit/Source/wtf/dtoa/COPYING",
+        "bytes": 1553,
+        "sha256": "befd10530f302b2108022be94d74eed4943880fc0626ab762ca7b53521813eeb",
+        "source2EntryPresent": true,
+        "currentBytesChecked": true,
+        "currentBytesEqualSource2": true
+      },
+      "currentSourceEqualHistoricalMaterial": true,
+      "retainedNotices": [
+        {
+          "path": "third_party/licenses/d52/v8_5_7/LICENSE.v8",
+          "bytes": 1553,
+          "sha256": "befd10530f302b2108022be94d74eed4943880fc0626ab762ca7b53521813eeb",
+          "bytesEqualCurrentSource": true
+        }
+      ],
+      "linkedSelectionEstablishedByThisMaterialIndex": false
+    },
+    {
+      "originalHistoricalMaterial": {
+        "source": "third_party/sources/miniblink/third_party/WebKit/Source/wtf/dtoa/LICENSE",
+        "bytes": 1553,
+        "sha256": "befd10530f302b2108022be94d74eed4943880fc0626ab762ca7b53521813eeb",
+        "retainedAt": [
+          "third_party/licenses/d52/v8_5_7/LICENSE.v8"
+        ]
+      },
+      "currentSource": {
+        "path": "third_party/sources/miniblink/third_party/WebKit/Source/wtf/dtoa/LICENSE",
+        "bytes": 1553,
+        "sha256": "befd10530f302b2108022be94d74eed4943880fc0626ab762ca7b53521813eeb",
+        "source2EntryPresent": true,
+        "currentBytesChecked": true,
+        "currentBytesEqualSource2": true
+      },
+      "currentSourceEqualHistoricalMaterial": true,
+      "retainedNotices": [
+        {
+          "path": "third_party/licenses/d52/v8_5_7/LICENSE.v8",
+          "bytes": 1553,
+          "sha256": "befd10530f302b2108022be94d74eed4943880fc0626ab762ca7b53521813eeb",
+          "bytesEqualCurrentSource": true
+        }
+      ],
+      "linkedSelectionEstablishedByThisMaterialIndex": false
+    },
+    {
+      "originalHistoricalMaterial": {
+        "source": "third_party/sources/miniblink/third_party/WebKit/Tools/Scripts/webkitpy/thirdparty/mod_pywebsocket/COPYING",
+        "bytes": 1503,
+        "sha256": "06b680284ee999d6591aa0c0708a14b22deb97da5b7d6b97ce28319148f3fd6a",
+        "retainedAt": [
+          "third_party/licenses/kernel-source/third_party/WebKit/Tools/Scripts/webkitpy/thirdparty/mod_pywebsocket/COPYING.txt"
+        ]
+      },
+      "currentSource": {
+        "path": "third_party/sources/miniblink/third_party/WebKit/Tools/Scripts/webkitpy/thirdparty/mod_pywebsocket/COPYING",
+        "bytes": 1503,
+        "sha256": "06b680284ee999d6591aa0c0708a14b22deb97da5b7d6b97ce28319148f3fd6a",
+        "source2EntryPresent": true,
+        "currentBytesChecked": true,
+        "currentBytesEqualSource2": true
+      },
+      "currentSourceEqualHistoricalMaterial": true,
+      "retainedNotices": [
+        {
+          "path": "third_party/licenses/kernel-source/third_party/WebKit/Tools/Scripts/webkitpy/thirdparty/mod_pywebsocket/COPYING.txt",
+          "bytes": 1503,
+          "sha256": "06b680284ee999d6591aa0c0708a14b22deb97da5b7d6b97ce28319148f3fd6a",
+          "bytesEqualCurrentSource": true
+        }
+      ],
+      "linkedSelectionEstablishedByThisMaterialIndex": false
+    },
+    {
+      "originalHistoricalMaterial": {
+        "source": "third_party/sources/miniblink/third_party/WebKit/Tools/Scripts/webkitpy/thirdparty/wpt/wpt/LICENSE",
+        "bytes": 148,
+        "sha256": "f2c400b1eca0e4705521cadc6da2b6ba03928ee7e7dc1e048e9d22d8f3133fec",
+        "retainedAt": [
+          "third_party/licenses/kernel-source/third_party/WebKit/Tools/Scripts/webkitpy/thirdparty/wpt/wpt/LICENSE.txt"
+        ]
+      },
+      "currentSource": {
+        "path": "third_party/sources/miniblink/third_party/WebKit/Tools/Scripts/webkitpy/thirdparty/wpt/wpt/LICENSE",
+        "bytes": 148,
+        "sha256": "f2c400b1eca0e4705521cadc6da2b6ba03928ee7e7dc1e048e9d22d8f3133fec",
+        "source2EntryPresent": true,
+        "currentBytesChecked": true,
+        "currentBytesEqualSource2": true
+      },
+      "currentSourceEqualHistoricalMaterial": true,
+      "retainedNotices": [
+        {
+          "path": "third_party/licenses/kernel-source/third_party/WebKit/Tools/Scripts/webkitpy/thirdparty/wpt/wpt/LICENSE.txt",
+          "bytes": 148,
+          "sha256": "f2c400b1eca0e4705521cadc6da2b6ba03928ee7e7dc1e048e9d22d8f3133fec",
+          "bytesEqualCurrentSource": true
+        }
+      ],
+      "linkedSelectionEstablishedByThisMaterialIndex": false
+    },
+    {
+      "originalHistoricalMaterial": {
+        "source": "third_party/sources/miniblink/third_party/WebKit/Tools/Scripts/webkitpy/thirdparty/wpt/wpt/tools/LICENSE",
+        "bytes": 1534,
+        "sha256": "d9fde12f36e9783f77637fed76d73fbfa8787ce8d3ad96a9df38eb226655928b",
+        "retainedAt": [
+          "third_party/licenses/kernel-source/third_party/WebKit/Tools/Scripts/webkitpy/thirdparty/wpt/wpt/tools/LICENSE.txt"
+        ]
+      },
+      "currentSource": {
+        "path": "third_party/sources/miniblink/third_party/WebKit/Tools/Scripts/webkitpy/thirdparty/wpt/wpt/tools/LICENSE",
+        "bytes": 1534,
+        "sha256": "d9fde12f36e9783f77637fed76d73fbfa8787ce8d3ad96a9df38eb226655928b",
+        "source2EntryPresent": true,
+        "currentBytesChecked": true,
+        "currentBytesEqualSource2": true
+      },
+      "currentSourceEqualHistoricalMaterial": true,
+      "retainedNotices": [
+        {
+          "path": "third_party/licenses/kernel-source/third_party/WebKit/Tools/Scripts/webkitpy/thirdparty/wpt/wpt/tools/LICENSE.txt",
+          "bytes": 1534,
+          "sha256": "d9fde12f36e9783f77637fed76d73fbfa8787ce8d3ad96a9df38eb226655928b",
+          "bytesEqualCurrentSource": true
+        }
+      ],
+      "linkedSelectionEstablishedByThisMaterialIndex": false
+    },
+    {
+      "originalHistoricalMaterial": {
+        "source": "third_party/sources/miniblink/third_party/WebKit/Tools/Scripts/webkitpy/thirdparty/wpt/wpt/tools/wptserve/LICENSE",
+        "bytes": 1534,
+        "sha256": "d9fde12f36e9783f77637fed76d73fbfa8787ce8d3ad96a9df38eb226655928b",
+        "retainedAt": [
+          "third_party/licenses/kernel-source/third_party/WebKit/Tools/Scripts/webkitpy/thirdparty/wpt/wpt/tools/wptserve/LICENSE.txt"
+        ]
+      },
+      "currentSource": {
+        "path": "third_party/sources/miniblink/third_party/WebKit/Tools/Scripts/webkitpy/thirdparty/wpt/wpt/tools/wptserve/LICENSE",
+        "bytes": 1534,
+        "sha256": "d9fde12f36e9783f77637fed76d73fbfa8787ce8d3ad96a9df38eb226655928b",
+        "source2EntryPresent": true,
+        "currentBytesChecked": true,
+        "currentBytesEqualSource2": true
+      },
+      "currentSourceEqualHistoricalMaterial": true,
+      "retainedNotices": [
+        {
+          "path": "third_party/licenses/kernel-source/third_party/WebKit/Tools/Scripts/webkitpy/thirdparty/wpt/wpt/tools/wptserve/LICENSE.txt",
+          "bytes": 1534,
+          "sha256": "d9fde12f36e9783f77637fed76d73fbfa8787ce8d3ad96a9df38eb226655928b",
+          "bytesEqualCurrentSource": true
+        }
+      ],
+      "linkedSelectionEstablishedByThisMaterialIndex": false
+    },
+    {
+      "originalHistoricalMaterial": {
+        "source": "third_party/sources/miniblink/third_party/brotli/LICENSE",
+        "bytes": 11560,
+        "sha256": "3ddf9be5c28fe27dad143a5dc76eea25222ad1dd68934a047064e56ed2fa40c5",
+        "retainedAt": [
+          "third_party/licenses/d52/brotli/LICENSE.txt"
+        ]
+      },
+      "currentSource": {
+        "path": "third_party/sources/miniblink/third_party/brotli/LICENSE",
+        "bytes": 11560,
+        "sha256": "3ddf9be5c28fe27dad143a5dc76eea25222ad1dd68934a047064e56ed2fa40c5",
+        "source2EntryPresent": true,
+        "currentBytesChecked": true,
+        "currentBytesEqualSource2": true
+      },
+      "currentSourceEqualHistoricalMaterial": true,
+      "retainedNotices": [
+        {
+          "path": "third_party/licenses/d52/brotli/LICENSE.txt",
+          "bytes": 11560,
+          "sha256": "3ddf9be5c28fe27dad143a5dc76eea25222ad1dd68934a047064e56ed2fa40c5",
+          "bytesEqualCurrentSource": true
+        }
+      ],
+      "linkedSelectionEstablishedByThisMaterialIndex": false
+    },
+    {
+      "originalHistoricalMaterial": {
+        "source": "third_party/sources/miniblink/third_party/harfbuzz-ng/COPYING",
+        "bytes": 1726,
+        "sha256": "2c631526dad2d97beacfe20c3957b323a8bc98e425d5e8059bf1c7c603392814",
+        "retainedAt": [
+          "third_party/licenses/d52/harfbuzz/COPYING.txt"
+        ]
+      },
+      "currentSource": {
+        "path": "third_party/sources/miniblink/third_party/harfbuzz-ng/COPYING",
+        "bytes": 1726,
+        "sha256": "2c631526dad2d97beacfe20c3957b323a8bc98e425d5e8059bf1c7c603392814",
+        "source2EntryPresent": true,
+        "currentBytesChecked": true,
+        "currentBytesEqualSource2": true
+      },
+      "currentSourceEqualHistoricalMaterial": true,
+      "retainedNotices": [
+        {
+          "path": "third_party/licenses/d52/harfbuzz/COPYING.txt",
+          "bytes": 1726,
+          "sha256": "2c631526dad2d97beacfe20c3957b323a8bc98e425d5e8059bf1c7c603392814",
+          "bytesEqualCurrentSource": true
+        }
+      ],
+      "linkedSelectionEstablishedByThisMaterialIndex": false
+    },
+    {
+      "originalHistoricalMaterial": {
+        "source": "third_party/sources/miniblink/third_party/jinja2/LICENSE",
+        "bytes": 1554,
+        "sha256": "26fcd436fdc8a39d44896ac03e6f1dfd25e38499c48f20d8bc1dd3bf0aaa8a5b",
+        "retainedAt": [
+          "third_party/licenses/kernel-source/third_party/jinja2/LICENSE.txt"
+        ]
+      },
+      "currentSource": {
+        "path": "third_party/sources/miniblink/third_party/jinja2/LICENSE",
+        "bytes": 1554,
+        "sha256": "26fcd436fdc8a39d44896ac03e6f1dfd25e38499c48f20d8bc1dd3bf0aaa8a5b",
+        "source2EntryPresent": true,
+        "currentBytesChecked": true,
+        "currentBytesEqualSource2": true
+      },
+      "currentSourceEqualHistoricalMaterial": true,
+      "retainedNotices": [
+        {
+          "path": "third_party/licenses/kernel-source/third_party/jinja2/LICENSE.txt",
+          "bytes": 1554,
+          "sha256": "26fcd436fdc8a39d44896ac03e6f1dfd25e38499c48f20d8bc1dd3bf0aaa8a5b",
+          "bytesEqualCurrentSource": true
+        }
+      ],
+      "linkedSelectionEstablishedByThisMaterialIndex": false
+    },
+    {
+      "originalHistoricalMaterial": {
+        "source": "third_party/sources/miniblink/third_party/khronos/LICENSE",
+        "bytes": 2614,
+        "sha256": "9f2417f97eab28dcb3e7794449ff16adad13feece3ddb26e00866fa562df64ea",
+        "retainedAt": [
+          "third_party/licenses/kernel-source/third_party/khronos/LICENSE.txt"
+        ]
+      },
+      "currentSource": {
+        "path": "third_party/sources/miniblink/third_party/khronos/LICENSE",
+        "bytes": 2614,
+        "sha256": "9f2417f97eab28dcb3e7794449ff16adad13feece3ddb26e00866fa562df64ea",
+        "source2EntryPresent": true,
+        "currentBytesChecked": true,
+        "currentBytesEqualSource2": true
+      },
+      "currentSourceEqualHistoricalMaterial": true,
+      "retainedNotices": [
+        {
+          "path": "third_party/licenses/kernel-source/third_party/khronos/LICENSE.txt",
+          "bytes": 2614,
+          "sha256": "9f2417f97eab28dcb3e7794449ff16adad13feece3ddb26e00866fa562df64ea",
+          "bytesEqualCurrentSource": true
+        }
+      ],
+      "linkedSelectionEstablishedByThisMaterialIndex": false
+    },
+    {
+      "originalHistoricalMaterial": {
+        "source": "third_party/sources/miniblink/third_party/libxml/src/Copyright",
+        "bytes": 1525,
+        "sha256": "82517a90bd5aa2263e9013ed3186b6a6dbd43740d26e30e65e508787b2defc03",
+        "retainedAt": [
+          "third_party/licenses/d52/libxml/Copyright.txt"
+        ]
+      },
+      "currentSource": {
+        "path": "third_party/sources/miniblink/third_party/libxml/src/Copyright",
+        "bytes": 1525,
+        "sha256": "82517a90bd5aa2263e9013ed3186b6a6dbd43740d26e30e65e508787b2defc03",
+        "source2EntryPresent": true,
+        "currentBytesChecked": true,
+        "currentBytesEqualSource2": true
+      },
+      "currentSourceEqualHistoricalMaterial": true,
+      "retainedNotices": [
+        {
+          "path": "third_party/licenses/d52/libxml/Copyright.txt",
+          "bytes": 1525,
+          "sha256": "82517a90bd5aa2263e9013ed3186b6a6dbd43740d26e30e65e508787b2defc03",
+          "bytesEqualCurrentSource": true
+        }
+      ],
+      "linkedSelectionEstablishedByThisMaterialIndex": false
+    },
+    {
+      "originalHistoricalMaterial": {
+        "source": "third_party/sources/miniblink/third_party/libxslt/Copyright",
+        "bytes": 3021,
+        "sha256": "a8de51c4709e774bf528d324a2df8b8adeaff5cf933c2909994561f77215ec93",
+        "retainedAt": [
+          "third_party/licenses/kernel-source/third_party/libxslt/Copyright.txt"
+        ]
+      },
+      "currentSource": {
+        "path": "third_party/sources/miniblink/third_party/libxslt/Copyright",
+        "bytes": 3021,
+        "sha256": "a8de51c4709e774bf528d324a2df8b8adeaff5cf933c2909994561f77215ec93",
+        "source2EntryPresent": true,
+        "currentBytesChecked": true,
+        "currentBytesEqualSource2": true
+      },
+      "currentSourceEqualHistoricalMaterial": true,
+      "retainedNotices": [
+        {
+          "path": "third_party/licenses/kernel-source/third_party/libxslt/Copyright.txt",
+          "bytes": 3021,
+          "sha256": "a8de51c4709e774bf528d324a2df8b8adeaff5cf933c2909994561f77215ec93",
+          "bytesEqualCurrentSource": true
+        }
+      ],
+      "linkedSelectionEstablishedByThisMaterialIndex": false
+    },
+    {
+      "originalHistoricalMaterial": {
+        "source": "third_party/sources/miniblink/third_party/npapi/LICENSE",
+        "bytes": 1567,
+        "sha256": "b50787fc6723765e24cc0c78b16d4de6b1150519563714896464d68933e72581",
+        "retainedAt": [
+          "third_party/licenses/kernel-source/third_party/npapi/LICENSE.txt"
+        ]
+      },
+      "currentSource": {
+        "path": "third_party/sources/miniblink/third_party/npapi/LICENSE",
+        "bytes": 1567,
+        "sha256": "b50787fc6723765e24cc0c78b16d4de6b1150519563714896464d68933e72581",
+        "source2EntryPresent": true,
+        "currentBytesChecked": true,
+        "currentBytesEqualSource2": true
+      },
+      "currentSourceEqualHistoricalMaterial": true,
+      "retainedNotices": [
+        {
+          "path": "third_party/licenses/kernel-source/third_party/npapi/LICENSE.txt",
+          "bytes": 1567,
+          "sha256": "b50787fc6723765e24cc0c78b16d4de6b1150519563714896464d68933e72581",
+          "bytesEqualCurrentSource": true
+        }
+      ],
+      "linkedSelectionEstablishedByThisMaterialIndex": false
+    },
+    {
+      "originalHistoricalMaterial": {
+        "source": "third_party/sources/miniblink/third_party/ply/LICENSE",
+        "bytes": 1573,
+        "sha256": "33605f3bc091e69b7c063a2967cbea66bc9e98bce83a9db9be39eb08514f594f",
+        "retainedAt": [
+          "third_party/licenses/kernel-source/third_party/ply/LICENSE.txt"
+        ]
+      },
+      "currentSource": {
+        "path": "third_party/sources/miniblink/third_party/ply/LICENSE",
+        "bytes": 1573,
+        "sha256": "33605f3bc091e69b7c063a2967cbea66bc9e98bce83a9db9be39eb08514f594f",
+        "source2EntryPresent": true,
+        "currentBytesChecked": true,
+        "currentBytesEqualSource2": true
+      },
+      "currentSourceEqualHistoricalMaterial": true,
+      "retainedNotices": [
+        {
+          "path": "third_party/licenses/kernel-source/third_party/ply/LICENSE.txt",
+          "bytes": 1573,
+          "sha256": "33605f3bc091e69b7c063a2967cbea66bc9e98bce83a9db9be39eb08514f594f",
+          "bytesEqualCurrentSource": true
+        }
+      ],
+      "linkedSelectionEstablishedByThisMaterialIndex": false
+    },
+    {
+      "originalHistoricalMaterial": {
+        "source": "third_party/sources/miniblink/third_party/sfntly/COPYING.txt",
+        "bytes": 11567,
+        "sha256": "e30ee8ec0e6271e44020bc9160ba21ffaf597e0836c35705b46dac1ed5695c47",
+        "retainedAt": [
+          "third_party/licenses/kernel-source/third_party/sfntly/COPYING.txt.txt"
+        ]
+      },
+      "currentSource": {
+        "path": "third_party/sources/miniblink/third_party/sfntly/COPYING.txt",
+        "bytes": 11567,
+        "sha256": "e30ee8ec0e6271e44020bc9160ba21ffaf597e0836c35705b46dac1ed5695c47",
+        "source2EntryPresent": true,
+        "currentBytesChecked": true,
+        "currentBytesEqualSource2": true
+      },
+      "currentSourceEqualHistoricalMaterial": true,
+      "retainedNotices": [
+        {
+          "path": "third_party/licenses/kernel-source/third_party/sfntly/COPYING.txt.txt",
+          "bytes": 11567,
+          "sha256": "e30ee8ec0e6271e44020bc9160ba21ffaf597e0836c35705b46dac1ed5695c47",
+          "bytesEqualCurrentSource": true
+        }
+      ],
+      "linkedSelectionEstablishedByThisMaterialIndex": false
+    },
+    {
+      "originalHistoricalMaterial": {
+        "source": "third_party/sources/miniblink/third_party/sfntly/src/cpp/COPYING.txt",
+        "bytes": 11567,
+        "sha256": "e30ee8ec0e6271e44020bc9160ba21ffaf597e0836c35705b46dac1ed5695c47",
+        "retainedAt": [
+          "third_party/licenses/kernel-source/third_party/sfntly/src/cpp/COPYING.txt.txt"
+        ]
+      },
+      "currentSource": {
+        "path": "third_party/sources/miniblink/third_party/sfntly/src/cpp/COPYING.txt",
+        "bytes": 11567,
+        "sha256": "e30ee8ec0e6271e44020bc9160ba21ffaf597e0836c35705b46dac1ed5695c47",
+        "source2EntryPresent": true,
+        "currentBytesChecked": true,
+        "currentBytesEqualSource2": true
+      },
+      "currentSourceEqualHistoricalMaterial": true,
+      "retainedNotices": [
+        {
+          "path": "third_party/licenses/kernel-source/third_party/sfntly/src/cpp/COPYING.txt.txt",
+          "bytes": 11567,
+          "sha256": "e30ee8ec0e6271e44020bc9160ba21ffaf597e0836c35705b46dac1ed5695c47",
+          "bytesEqualCurrentSource": true
+        }
+      ],
+      "linkedSelectionEstablishedByThisMaterialIndex": false
+    },
+    {
+      "originalHistoricalMaterial": {
+        "source": "third_party/sources/miniblink/third_party/skia/LICENSE",
+        "bytes": 1580,
+        "sha256": "819e2d4f7c7162eebd28d7ce97fec174a821baa0d3a5f1cca864dd285b577422",
+        "retainedAt": [
+          "third_party/licenses/d52/skia/LICENSE.txt"
+        ]
+      },
+      "currentSource": {
+        "path": "third_party/sources/miniblink/third_party/skia/LICENSE",
+        "bytes": 1580,
+        "sha256": "819e2d4f7c7162eebd28d7ce97fec174a821baa0d3a5f1cca864dd285b577422",
+        "source2EntryPresent": true,
+        "currentBytesChecked": true,
+        "currentBytesEqualSource2": true
+      },
+      "currentSourceEqualHistoricalMaterial": true,
+      "retainedNotices": [
+        {
+          "path": "third_party/licenses/d52/skia/LICENSE.txt",
+          "bytes": 1580,
+          "sha256": "819e2d4f7c7162eebd28d7ce97fec174a821baa0d3a5f1cca864dd285b577422",
+          "bytesEqualCurrentSource": true
+        }
+      ],
+      "linkedSelectionEstablishedByThisMaterialIndex": false
+    },
+    {
+      "originalHistoricalMaterial": {
+        "source": "third_party/sources/miniblink/third_party/skia/platform_tools/android/third_party/ashmem/LICENSE",
+        "bytes": 11560,
+        "sha256": "3ddf9be5c28fe27dad143a5dc76eea25222ad1dd68934a047064e56ed2fa40c5",
+        "retainedAt": [
+          "third_party/licenses/d52/brotli/LICENSE.txt"
+        ]
+      },
+      "currentSource": {
+        "path": "third_party/sources/miniblink/third_party/skia/platform_tools/android/third_party/ashmem/LICENSE",
+        "bytes": 11560,
+        "sha256": "3ddf9be5c28fe27dad143a5dc76eea25222ad1dd68934a047064e56ed2fa40c5",
+        "source2EntryPresent": true,
+        "currentBytesChecked": true,
+        "currentBytesEqualSource2": true
+      },
+      "currentSourceEqualHistoricalMaterial": true,
+      "retainedNotices": [
+        {
+          "path": "third_party/licenses/d52/brotli/LICENSE.txt",
+          "bytes": 11560,
+          "sha256": "3ddf9be5c28fe27dad143a5dc76eea25222ad1dd68934a047064e56ed2fa40c5",
+          "bytesEqualCurrentSource": true
+        }
+      ],
+      "linkedSelectionEstablishedByThisMaterialIndex": false
+    },
+    {
+      "originalHistoricalMaterial": {
+        "source": "third_party/sources/miniblink/third_party/skia/third_party/etc1/LICENSE",
+        "bytes": 9393,
+        "sha256": "9c85803f15b94b4d4000674ae433c885e27f0d6ee8533c4252e1cdf74d1ca9cc",
+        "retainedAt": [
+          "third_party/licenses/kernel-source/third_party/skia/third_party/etc1/LICENSE.txt"
+        ]
+      },
+      "currentSource": {
+        "path": "third_party/sources/miniblink/third_party/skia/third_party/etc1/LICENSE",
+        "bytes": 9393,
+        "sha256": "9c85803f15b94b4d4000674ae433c885e27f0d6ee8533c4252e1cdf74d1ca9cc",
+        "source2EntryPresent": true,
+        "currentBytesChecked": true,
+        "currentBytesEqualSource2": true
+      },
+      "currentSourceEqualHistoricalMaterial": true,
+      "retainedNotices": [
+        {
+          "path": "third_party/licenses/kernel-source/third_party/skia/third_party/etc1/LICENSE.txt",
+          "bytes": 9393,
+          "sha256": "9c85803f15b94b4d4000674ae433c885e27f0d6ee8533c4252e1cdf74d1ca9cc",
+          "bytesEqualCurrentSource": true
+        }
+      ],
+      "linkedSelectionEstablishedByThisMaterialIndex": false
+    },
+    {
+      "originalHistoricalMaterial": {
+        "source": "third_party/sources/miniblink/third_party/skia/third_party/libpng/LICENSE",
+        "bytes": 7093,
+        "sha256": "ef55d9376df1f5ee3af751c4aebc511889dba0e34a53d1bac3ea33702c300421",
+        "retainedAt": [
+          "third_party/licenses/kernel-source/third_party/skia/third_party/libpng/LICENSE.txt"
+        ]
+      },
+      "currentSource": {
+        "path": "third_party/sources/miniblink/third_party/skia/third_party/libpng/LICENSE",
+        "bytes": 7093,
+        "sha256": "ef55d9376df1f5ee3af751c4aebc511889dba0e34a53d1bac3ea33702c300421",
+        "source2EntryPresent": true,
+        "currentBytesChecked": true,
+        "currentBytesEqualSource2": true
+      },
+      "currentSourceEqualHistoricalMaterial": true,
+      "retainedNotices": [
+        {
+          "path": "third_party/licenses/kernel-source/third_party/skia/third_party/libpng/LICENSE.txt",
+          "bytes": 7093,
+          "sha256": "ef55d9376df1f5ee3af751c4aebc511889dba0e34a53d1bac3ea33702c300421",
+          "bytesEqualCurrentSource": true
+        }
+      ],
+      "linkedSelectionEstablishedByThisMaterialIndex": false
+    },
+    {
+      "originalHistoricalMaterial": {
+        "source": "third_party/sources/miniblink/third_party/zlib/LICENSE",
+        "bytes": 1151,
+        "sha256": "e757be93a060abe3681dd89c5a7a19cd49cdaf76e96772fea65b6f6fb06634e4",
+        "retainedAt": [
+          "third_party/licenses/d52/zlib/LICENSE.txt"
+        ]
+      },
+      "currentSource": {
+        "path": "third_party/sources/miniblink/third_party/zlib/LICENSE",
+        "bytes": 1151,
+        "sha256": "e757be93a060abe3681dd89c5a7a19cd49cdaf76e96772fea65b6f6fb06634e4",
+        "source2EntryPresent": true,
+        "currentBytesChecked": true,
+        "currentBytesEqualSource2": true
+      },
+      "currentSourceEqualHistoricalMaterial": true,
+      "retainedNotices": [
+        {
+          "path": "third_party/licenses/d52/zlib/LICENSE.txt",
+          "bytes": 1151,
+          "sha256": "e757be93a060abe3681dd89c5a7a19cd49cdaf76e96772fea65b6f6fb06634e4",
+          "bytesEqualCurrentSource": true
+        }
+      ],
+      "linkedSelectionEstablishedByThisMaterialIndex": false
+    },
+    {
+      "originalHistoricalMaterial": {
+        "source": "third_party/sources/miniblink/v8_5_7/LICENSE",
+        "bytes": 2970,
+        "sha256": "5e10421a5b98a1358464c43cdd17e12a8ab9f67353303bb9d44908027210fc2e",
+        "retainedAt": [
+          "third_party/licenses/d52/v8_5_7/LICENSE"
+        ]
+      },
+      "currentSource": {
+        "path": "third_party/sources/miniblink/v8_5_7/LICENSE",
+        "bytes": 2970,
+        "sha256": "5e10421a5b98a1358464c43cdd17e12a8ab9f67353303bb9d44908027210fc2e",
+        "source2EntryPresent": true,
+        "currentBytesChecked": true,
+        "currentBytesEqualSource2": true
+      },
+      "currentSourceEqualHistoricalMaterial": true,
+      "retainedNotices": [
+        {
+          "path": "third_party/licenses/d52/v8_5_7/LICENSE",
+          "bytes": 2970,
+          "sha256": "5e10421a5b98a1358464c43cdd17e12a8ab9f67353303bb9d44908027210fc2e",
+          "bytesEqualCurrentSource": true
+        }
+      ],
+      "linkedSelectionEstablishedByThisMaterialIndex": false
+    },
+    {
+      "originalHistoricalMaterial": {
+        "source": "third_party/sources/miniblink/v8_5_7/LICENSE.fdlibm",
+        "bytes": 256,
+        "sha256": "9117ecd79d00160524d0c923aa41c10cd3cab3753bc985e3069eaa9f1481cc17",
+        "retainedAt": [
+          "third_party/licenses/d52/v8_5_7/LICENSE.fdlibm"
+        ]
+      },
+      "currentSource": {
+        "path": "third_party/sources/miniblink/v8_5_7/LICENSE.fdlibm",
+        "bytes": 256,
+        "sha256": "9117ecd79d00160524d0c923aa41c10cd3cab3753bc985e3069eaa9f1481cc17",
+        "source2EntryPresent": true,
+        "currentBytesChecked": true,
+        "currentBytesEqualSource2": true
+      },
+      "currentSourceEqualHistoricalMaterial": true,
+      "retainedNotices": [
+        {
+          "path": "third_party/licenses/d52/v8_5_7/LICENSE.fdlibm",
+          "bytes": 256,
+          "sha256": "9117ecd79d00160524d0c923aa41c10cd3cab3753bc985e3069eaa9f1481cc17",
+          "bytesEqualCurrentSource": true
+        }
+      ],
+      "linkedSelectionEstablishedByThisMaterialIndex": false
+    },
+    {
+      "originalHistoricalMaterial": {
+        "source": "third_party/sources/miniblink/v8_5_7/LICENSE.strongtalk",
+        "bytes": 1511,
+        "sha256": "45d1dff3ad3ed6aec8947f7ce6a4781c535f1d73450b703c594d8bc6285c7736",
+        "retainedAt": [
+          "third_party/licenses/d52/v8_5_7/LICENSE.strongtalk"
+        ]
+      },
+      "currentSource": {
+        "path": "third_party/sources/miniblink/v8_5_7/LICENSE.strongtalk",
+        "bytes": 1511,
+        "sha256": "45d1dff3ad3ed6aec8947f7ce6a4781c535f1d73450b703c594d8bc6285c7736",
+        "source2EntryPresent": true,
+        "currentBytesChecked": true,
+        "currentBytesEqualSource2": true
+      },
+      "currentSourceEqualHistoricalMaterial": true,
+      "retainedNotices": [
+        {
+          "path": "third_party/licenses/d52/v8_5_7/LICENSE.strongtalk",
+          "bytes": 1511,
+          "sha256": "45d1dff3ad3ed6aec8947f7ce6a4781c535f1d73450b703c594d8bc6285c7736",
+          "bytesEqualCurrentSource": true
+        }
+      ],
+      "linkedSelectionEstablishedByThisMaterialIndex": false
+    },
+    {
+      "originalHistoricalMaterial": {
+        "source": "third_party/sources/miniblink/v8_5_7/LICENSE.v8",
+        "bytes": 1553,
+        "sha256": "befd10530f302b2108022be94d74eed4943880fc0626ab762ca7b53521813eeb",
+        "retainedAt": [
+          "third_party/licenses/d52/v8_5_7/LICENSE.v8"
+        ]
+      },
+      "currentSource": {
+        "path": "third_party/sources/miniblink/v8_5_7/LICENSE.v8",
+        "bytes": 1553,
+        "sha256": "befd10530f302b2108022be94d74eed4943880fc0626ab762ca7b53521813eeb",
+        "source2EntryPresent": true,
+        "currentBytesChecked": true,
+        "currentBytesEqualSource2": true
+      },
+      "currentSourceEqualHistoricalMaterial": true,
+      "retainedNotices": [
+        {
+          "path": "third_party/licenses/d52/v8_5_7/LICENSE.v8",
+          "bytes": 1553,
+          "sha256": "befd10530f302b2108022be94d74eed4943880fc0626ab762ca7b53521813eeb",
+          "bytesEqualCurrentSource": true
+        }
+      ],
+      "linkedSelectionEstablishedByThisMaterialIndex": false
+    },
+    {
+      "originalHistoricalMaterial": {
+        "source": "third_party/sources/miniblink/v8_5_7/LICENSE.valgrind",
+        "bytes": 2107,
+        "sha256": "23365f7ef7771a5446e48eb9ae626b81d75a20ddf8631f7c3fe89d9f814f9b99",
+        "retainedAt": [
+          "third_party/licenses/d52/v8_5_7/LICENSE.valgrind"
+        ]
+      },
+      "currentSource": {
+        "path": "third_party/sources/miniblink/v8_5_7/LICENSE.valgrind",
+        "bytes": 2107,
+        "sha256": "23365f7ef7771a5446e48eb9ae626b81d75a20ddf8631f7c3fe89d9f814f9b99",
+        "source2EntryPresent": true,
+        "currentBytesChecked": true,
+        "currentBytesEqualSource2": true
+      },
+      "currentSourceEqualHistoricalMaterial": true,
+      "retainedNotices": [
+        {
+          "path": "third_party/licenses/d52/v8_5_7/LICENSE.valgrind",
+          "bytes": 2107,
+          "sha256": "23365f7ef7771a5446e48eb9ae626b81d75a20ddf8631f7c3fe89d9f814f9b99",
+          "bytesEqualCurrentSource": true
+        }
+      ],
+      "linkedSelectionEstablishedByThisMaterialIndex": false
+    },
+    {
+      "originalHistoricalMaterial": {
+        "source": "third_party/sources/miniblink/v8_5_7/src/third_party/valgrind/LICENSE",
+        "bytes": 2493,
+        "sha256": "043056115cd22dc9422466835f19ecb3124fda90f7a5e8b42e57add3459f37c4",
+        "retainedAt": [
+          "third_party/licenses/kernel-source/v8_5_7/src/third_party/valgrind/LICENSE.txt"
+        ]
+      },
+      "currentSource": {
+        "path": "third_party/sources/miniblink/v8_5_7/src/third_party/valgrind/LICENSE",
+        "bytes": 2493,
+        "sha256": "043056115cd22dc9422466835f19ecb3124fda90f7a5e8b42e57add3459f37c4",
+        "source2EntryPresent": true,
+        "currentBytesChecked": true,
+        "currentBytesEqualSource2": true
+      },
+      "currentSourceEqualHistoricalMaterial": true,
+      "retainedNotices": [
+        {
+          "path": "third_party/licenses/kernel-source/v8_5_7/src/third_party/valgrind/LICENSE.txt",
+          "bytes": 2493,
+          "sha256": "043056115cd22dc9422466835f19ecb3124fda90f7a5e8b42e57add3459f37c4",
+          "bytesEqualCurrentSource": true
+        }
+      ],
+      "linkedSelectionEstablishedByThisMaterialIndex": false
+    },
+    {
+      "originalHistoricalMaterial": {
+        "source": "third_party/sources/miniblink/v8_5_7/src/third_party/vtune/LICENSE",
+        "bytes": 2790,
+        "sha256": "0f8d39edfb7c8776a65ba174b6fddc5c95698142b1492c440d0b8e097d876d7c",
+        "retainedAt": [
+          "third_party/licenses/kernel-source/v8_5_7/src/third_party/vtune/LICENSE.txt"
+        ]
+      },
+      "currentSource": {
+        "path": "third_party/sources/miniblink/v8_5_7/src/third_party/vtune/LICENSE",
+        "bytes": 2790,
+        "sha256": "0f8d39edfb7c8776a65ba174b6fddc5c95698142b1492c440d0b8e097d876d7c",
+        "source2EntryPresent": true,
+        "currentBytesChecked": true,
+        "currentBytesEqualSource2": true
+      },
+      "currentSourceEqualHistoricalMaterial": true,
+      "retainedNotices": [
+        {
+          "path": "third_party/licenses/kernel-source/v8_5_7/src/third_party/vtune/LICENSE.txt",
+          "bytes": 2790,
+          "sha256": "0f8d39edfb7c8776a65ba174b6fddc5c95698142b1492c440d0b8e097d876d7c",
+          "bytesEqualCurrentSource": true
+        }
+      ],
+      "linkedSelectionEstablishedByThisMaterialIndex": false
+    },
+    {
+      "originalHistoricalMaterial": {
+        "source": "third_party/sources/miniblink/v8_5_7/testing/gmock/LICENSE",
+        "bytes": 1503,
+        "sha256": "46c35a3c9ac8ef63c16ca69b5cf0166df9fcdb789e318175c92a219de517b8e7",
+        "retainedAt": [
+          "third_party/licenses/kernel-source/v8_5_7/testing/gmock/LICENSE.txt"
+        ]
+      },
+      "currentSource": {
+        "path": "third_party/sources/miniblink/v8_5_7/testing/gmock/LICENSE",
+        "bytes": 1503,
+        "sha256": "46c35a3c9ac8ef63c16ca69b5cf0166df9fcdb789e318175c92a219de517b8e7",
+        "source2EntryPresent": true,
+        "currentBytesChecked": true,
+        "currentBytesEqualSource2": true
+      },
+      "currentSourceEqualHistoricalMaterial": true,
+      "retainedNotices": [
+        {
+          "path": "third_party/licenses/kernel-source/v8_5_7/testing/gmock/LICENSE.txt",
+          "bytes": 1503,
+          "sha256": "46c35a3c9ac8ef63c16ca69b5cf0166df9fcdb789e318175c92a219de517b8e7",
+          "bytesEqualCurrentSource": true
+        }
+      ],
+      "linkedSelectionEstablishedByThisMaterialIndex": false
+    },
+    {
+      "originalHistoricalMaterial": {
+        "source": "third_party/sources/miniblink/v8_5_7/testing/gmock/scripts/generator/LICENSE",
+        "bytes": 11589,
+        "sha256": "e438ef741bf3660b5c54f4452d7c0b387c8557207cc3e9cda499e461a94df2b2",
+        "retainedAt": [
+          "third_party/licenses/kernel-source/v8_5_7/testing/gmock/scripts/generator/LICENSE.txt"
+        ]
+      },
+      "currentSource": {
+        "path": "third_party/sources/miniblink/v8_5_7/testing/gmock/scripts/generator/LICENSE",
+        "bytes": 11589,
+        "sha256": "e438ef741bf3660b5c54f4452d7c0b387c8557207cc3e9cda499e461a94df2b2",
+        "source2EntryPresent": true,
+        "currentBytesChecked": true,
+        "currentBytesEqualSource2": true
+      },
+      "currentSourceEqualHistoricalMaterial": true,
+      "retainedNotices": [
+        {
+          "path": "third_party/licenses/kernel-source/v8_5_7/testing/gmock/scripts/generator/LICENSE.txt",
+          "bytes": 11589,
+          "sha256": "e438ef741bf3660b5c54f4452d7c0b387c8557207cc3e9cda499e461a94df2b2",
+          "bytesEqualCurrentSource": true
+        }
+      ],
+      "linkedSelectionEstablishedByThisMaterialIndex": false
+    },
+    {
+      "originalHistoricalMaterial": {
+        "source": "third_party/sources/miniblink/v8_5_7/testing/gtest/LICENSE",
+        "bytes": 1503,
+        "sha256": "46c35a3c9ac8ef63c16ca69b5cf0166df9fcdb789e318175c92a219de517b8e7",
+        "retainedAt": [
+          "third_party/licenses/kernel-source/v8_5_7/testing/gtest/LICENSE.txt"
+        ]
+      },
+      "currentSource": {
+        "path": "third_party/sources/miniblink/v8_5_7/testing/gtest/LICENSE",
+        "bytes": 1503,
+        "sha256": "46c35a3c9ac8ef63c16ca69b5cf0166df9fcdb789e318175c92a219de517b8e7",
+        "source2EntryPresent": true,
+        "currentBytesChecked": true,
+        "currentBytesEqualSource2": true
+      },
+      "currentSourceEqualHistoricalMaterial": true,
+      "retainedNotices": [
+        {
+          "path": "third_party/licenses/kernel-source/v8_5_7/testing/gtest/LICENSE.txt",
+          "bytes": 1503,
+          "sha256": "46c35a3c9ac8ef63c16ca69b5cf0166df9fcdb789e318175c92a219de517b8e7",
+          "bytesEqualCurrentSource": true
+        }
+      ],
+      "linkedSelectionEstablishedByThisMaterialIndex": false
+    }
+  ],
+  "historicalMaterialIndex": {
+    "pin": {
+      "path": "third_party/licenses/kernel-source/index.json.txt",
+      "bytes": 16544,
+      "sha256": "d610a6d5144a1819f5c8e86f74c218b100c44a3621b5d3c6fa2c86d46af6182d"
+    },
+    "historicalSourceManifestSha256": "52e19555127cff41afabb4ee9e7b0af662630cbdfce35f270d0d4753473d1cf4",
+    "currentRecheckMeaning": "Original historical index remains unchanged. Current referenced source/notice bytes are checked separately against Source2; a matching text is material reuse, not new applicability approval."
+  },
+  "outsideContexts": {
+    "x64": [
+      {
+        "library": "<unattributed>",
+        "symbolRows": 22,
+        "memberCount": 1
+      },
+      {
+        "library": "GDIPlus",
+        "symbolRows": 28,
+        "memberCount": 1
+      },
+      {
+        "library": "IPHLPAPI",
+        "symbolRows": 1,
+        "memberCount": 1
+      },
+      {
+        "library": "Imm32",
+        "symbolRows": 6,
+        "memberCount": 1
+      },
+      {
+        "library": "Psapi",
+        "symbolRows": 2,
+        "memberCount": 1
+      },
+      {
+        "library": "Shlwapi",
+        "symbolRows": 9,
+        "memberCount": 1
+      },
+      {
+        "library": "Userenv",
+        "symbolRows": 1,
+        "memberCount": 1
+      },
+      {
+        "library": "Usp10",
+        "symbolRows": 6,
+        "memberCount": 1
+      },
+      {
+        "library": "Ws2_32",
+        "symbolRows": 44,
+        "memberCount": 1
+      },
+      {
+        "library": "advapi32",
+        "symbolRows": 19,
+        "memberCount": 1
+      },
+      {
+        "library": "comdlg32",
+        "symbolRows": 2,
+        "memberCount": 1
+      },
+      {
+        "library": "gdi32",
+        "symbolRows": 59,
+        "memberCount": 1
+      },
+      {
+        "library": "kernel32",
+        "symbolRows": 233,
+        "memberCount": 1
+      },
+      {
+        "library": "libcmt",
+        "symbolRows": 307,
+        "memberCount": 41
+      },
+      {
+        "library": "libcpmt",
+        "symbolRows": 677,
+        "memberCount": 28
+      },
+      {
+        "library": "libucrt",
+        "symbolRows": 4161,
+        "memberCount": 302
+      },
+      {
+        "library": "libvcruntime",
+        "symbolRows": 536,
+        "memberCount": 33
+      },
+      {
+        "library": "ole32",
+        "symbolRows": 13,
+        "memberCount": 1
+      },
+      {
+        "library": "shell32",
+        "symbolRows": 9,
+        "memberCount": 2
+      },
+      {
+        "library": "user32",
+        "symbolRows": 102,
+        "memberCount": 1
+      },
+      {
+        "library": "uuid",
+        "symbolRows": 6,
+        "memberCount": 4
+      },
+      {
+        "library": "version",
+        "symbolRows": 6,
+        "memberCount": 1
+      },
+      {
+        "library": "wininet",
+        "symbolRows": 11,
+        "memberCount": 1
+      },
+      {
+        "library": "winmm",
+        "symbolRows": 3,
+        "memberCount": 1
+      }
+    ],
+    "x86": [
+      {
+        "library": "IPHLPAPI",
+        "symbolRows": 1,
+        "memberCount": 1
+      },
+      {
+        "library": "Imm32",
+        "symbolRows": 6,
+        "memberCount": 1
+      },
+      {
+        "library": "Psapi",
+        "symbolRows": 2,
+        "memberCount": 1
+      },
+      {
+        "library": "Shlwapi",
+        "symbolRows": 9,
+        "memberCount": 1
+      },
+      {
+        "library": "Userenv",
+        "symbolRows": 1,
+        "memberCount": 1
+      },
+      {
+        "library": "Usp10",
+        "symbolRows": 6,
+        "memberCount": 1
+      },
+      {
+        "library": "Ws2_32",
+        "symbolRows": 41,
+        "memberCount": 1
+      },
+      {
+        "library": "advapi32",
+        "symbolRows": 19,
+        "memberCount": 1
+      },
+      {
+        "library": "comdlg32",
+        "symbolRows": 2,
+        "memberCount": 1
+      },
+      {
+        "library": "gdi32",
+        "symbolRows": 59,
+        "memberCount": 1
+      },
+      {
+        "library": "kernel32",
+        "symbolRows": 228,
+        "memberCount": 1
+      },
+      {
+        "library": "libcmt",
+        "symbolRows": 243,
+        "memberCount": 50
+      },
+      {
+        "library": "libcpmt",
+        "symbolRows": 621,
+        "memberCount": 28
+      },
+      {
+        "library": "libucrt",
+        "symbolRows": 2542,
+        "memberCount": 302
+      },
+      {
+        "library": "libvcruntime",
+        "symbolRows": 539,
+        "memberCount": 39
+      },
+      {
+        "library": "ole32",
+        "symbolRows": 12,
+        "memberCount": 1
+      },
+      {
+        "library": "shell32",
+        "symbolRows": 6,
+        "memberCount": 2
+      },
+      {
+        "library": "user32",
+        "symbolRows": 101,
+        "memberCount": 1
+      },
+      {
+        "library": "uuid",
+        "symbolRows": 6,
+        "memberCount": 4
+      },
+      {
+        "library": "version",
+        "symbolRows": 6,
+        "memberCount": 1
+      },
+      {
+        "library": "winmm",
+        "symbolRows": 3,
+        "memberCount": 1
+      }
+    ]
+  },
+  "gaps": [
+    {
+      "id": "source-version-conflicts",
+      "engineering": true,
+      "detail": "Resolve zlib header 1.2.11 / README 1.2.5 / LICENSE prelude 1.2.4 before claiming a single upstream version. Preserve all three raw pins."
+    },
+    {
+      "id": "unknown-source-origins",
+      "engineering": true,
+      "detail": "OTS, Skia, Blink/Chromium/Main, adapted ICU and subsidiary versions remain unknown where no local exact provenance exists. Obtain upstream revision/patch evidence; do not infer from notice filenames or engine family names."
+    },
+    {
+      "id": "recovered-notice-matching",
+      "engineering": true,
+      "detail": "OTS, IJG and curl recovered notices are retained, but absent original accompanying source LICENSE/README/COPYING files prevent direct current-source byte equality. Current declarations and recovered texts are separately pinned."
+    },
+    {
+      "id": "member-source-ambiguity",
+      "engineering": true,
+      "detail": "Basename candidate matches do not evaluate MSBuild conditions, preprocessor branches, PCH/header code, generated-resource contents, linker folding or renamed objects. Preserve ambiguous and unmatched members; inspect raw compile/link inputs where needed."
+    },
+    {
+      "id": "nested-and-file-level-completeness",
+      "engineering": true,
+      "detail": "This is a bounded component crosswalk, not exhaustive transitive inventory. Header/inline/vendor resource material, adapted files, V8/Skia/WebKit/OpenSSL subsidiary notices and CRT/Windows SDK provider inputs still need complete per-binary review."
+    },
+    {
+      "id": "static-provider-origin",
+      "engineering": true,
+      "detail": "Current Source2 live bytes and exact MAPs are bound, but the eleven libraries were reused. This collection does not add historical whole-provider archive byte provenance or perform new recompilation."
+    },
+    {
+      "id": "runtime-distribution-terms",
+      "engineering": true,
+      "detail": "This archive covers the native kernel member/source crosswalk only. Installed SDK, Starter, Workbench, JavaScript/inspector assets, WebView2/CRT and future-version notice delivery require their own exact payload evidence and complete terms mapping; historic six-package 0.5.0 notice equality is not reclassified as 0.6.0 package approval."
+    },
+    {
+      "id": "human-terms-and-accountability",
+      "engineering": false,
+      "detail": "Maintainer must identify the responsible reviewer and review applicable obligations, combined redistribution terms and release approval. No reviewer, license choice for subsidiary alternatives, legal opinion or approval is fabricated."
+    }
+  ],
+  "responsibleReviewer": null,
+  "humanApprovalRecorded": false,
+  "binaryLicenseReviewComplete": false,
+  "transitiveDependencyInventoryComplete": false,
+  "applicableTermsReviewed": false,
+  "redistributionTermsApproved": false,
+  "productionQualificationComplete": false,
+  "fullDevtoolsGoalComplete": false,
+  "releaseReady": false
+}

@@ -1,5 +1,15 @@
 # 0.3 SDK 中期准入判定
 
+## 2026-10-29：0.6.0 的三项限定结论
+
+**工程交付：已完成限定发布，完整独立交付仍未验收。** 两架构内核与必要 SDK 构建、安装消费者、默认应用八次运行及九份供应/应用 ZIP 有实际记录，见[发布说明](../releases/0.6.0.md)与[RELEASE-FACTS](../../verification/production-validation/0.6.0-release-2026-10-29/RELEASE-FACTS.json)。完整源码 ZIP 的解压重建、搬移、离线及升级回退不能由上述短验外推。[根报告](../../verification/acceptance.json)已正确绑定 0.6.0，保持 `status=unverified`、`collectionExecuted=false`、`sourceDeliveryVerified=false`；旧验收版本漂移已经修复，不需重复处理。
+
+**指定范围生产：尚未通过。** 普通 GitHub Release 分类不改变 `releaseReady=false`、`productionQualificationComplete=false`、`fullDevtoolsGoalComplete=false`。受控 DevTools GUI 仅有已记录代表例；真实 Shell、菜单/快捷键、驻留、同文档租期、目标系统及完整资源/关闭矩阵按各专项继续跟踪。千次、八小时、完整性能和环境资格按[长测交接](../testing/v0.6.0-long-run-handoff.md)后置，授权与内核维护门槛见[已知限制](../known-issues.md)。
+
+**相对 Electron 的采用价值：仍未判定。** 尚无本轮完整的同机交替性能、实际输入到呈现、进程树资源、完整产品体积与接入/维护成本结论。历史预检、体积样本和必要短测不替代这些证据。
+
+发布后的[工具源码收尾](../maintenance/windows-tooling-failure-closeout-20261029.md)及原始失败另有独立身份，不替换已发布载荷或扩大上述结论。已通过且输入未变的结果直接复用；下方各节完整保留历史候选结论，其中“当前”只指对应日期与输入。
+
 ## 2026-09-28 preview.15 当前输入的三项结论
 
 **工程交付：部分通过，完整独立交付未通过。** 当前 419 文件 SDK Core 的构建与包身份、此前完整源码无 Git 解压编译、独立接入等局部证据已保存；V02 Demo 更新后的 718 文件源码已完成[双架构正式 Release 应用构建](../../verification/production-validation/v02-continuous-task-official-build-2026-09-27/README.md)和本机[两架构可见单轮交互](../../verification/production-validation/v02-current-visible-x64-2026-09-27/README.md)、[x86 单轮](../../verification/production-validation/v02-current-visible-x86-2026-09-27/README.md)。旧完整源码 ZIP 不包含这次新 Demo 输入，不能据此宣布当前整套交付已从原封包独立重建；`sourceDeliveryVerified=false`。

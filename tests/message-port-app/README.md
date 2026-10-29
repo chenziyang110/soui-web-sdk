@@ -18,3 +18,11 @@
 八项覆盖双向 FIFO/多消息异步、排空后 refill、页面线程内 transfer、close 后下一 turn 的有限抑制、回调重入、Dedicated Worker FIFO、self.close 与 terminate 请求后的120ms有限消息静默及页面定时器前进。消息端口不能传到 Worker（原 vendor main-thread assertion）。有实际 pulse 才请求 Worker 停止；最终 terminate 只清理 fixture 残留。native action acceptance.message-port.report 使用原 typed validator/真实 session scope 授权，caseId/status 枚举带已修复 maxLength24/11；sidecar owner 在所有 window/Host/Bridge 关闭后析构，页面收到真实当前 session ACK 后才记录身份，最后报告 ACK 完成后才走原 ready。
 
 历史私有 fixture 的 x64/x86 baseline/candidate 四臂已真实通过，共16文档/128 cases/160 sidecar rows；这不能证明本次新目录/共享入口已测试。Worker 原生 join、debugger通用 wait/kill、polyfill scheduler 实际分支、完整 kernel 构建、资源增长、OS 和正式发布资格仍未验证。新入口采用前需在正常源交付中重新 PrepareOnly、stage 和四臂 strict Owned 复验，并检查默认 ordinary prepare 仍选择原普通源码。
+
+## 2026-10-29 当前夹具的异步 Runtime 关闭
+
+旧 0.5.1-preview.1 独立消费者在真实 mount、三次 reload 与 Host 关闭后，首次 Runtime 关闭返回 `E_RUNTIME_SHUTDOWN_PENDING`；该运行仍退出 1，不能由先前完成的 32 项浏览器行为计为整体通过。
+
+当前夹具采用普通 `tests/acceptance-app` 已有的 `poll_runtime_shutdown` 合同，仅重试明确的 `E_RUNTIME_SHUTDOWN_PENDING`，其他错误原样返回并使步骤失败。轮询使用本夹具原 `until` 的一次固定 step timeout、原消息服务与 `MsgWaitForMultipleObjectsEx`，不延长原监督期限、不忙等、不减少九个生命周期步骤或修改浏览器行为。幂等关闭也走同一合同。`shutdown-poll.h` 与普通夹具保持相同字节，放在本目录以支持独立复制、公开安装 SDK 编译。
+
+本修改需要新消费者源码/EXE 身份和实际短测。旧 SDK、套件、Web、失败样本及验收结论保持原身份；新编译准备不证明 Runtime、四臂或生产资格通过。

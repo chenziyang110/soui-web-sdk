@@ -1,5 +1,15 @@
 # 公共能力与验收映射
 
+## 当前与历史证据边界，2026-10-29
+
+当前交付为 0.6.0；[发布说明](../releases/0.6.0.md)和[RELEASE-FACTS](../../verification/production-validation/0.6.0-release-2026-10-29/RELEASE-FACTS.json)记录两架构必要构建、安装消费者、默认应用八次运行、受控 DevTools GUI 代表例和供应/应用归档的限定范围。当前[根验收报告](../../verification/acceptance.json)为 0.6.0、`status=unverified`、`collectionExecuted=false`；`releaseReady=false`、`productionQualificationComplete=false`、`fullDevtoolsGoalComplete=false`。
+
+下方 V01–V06 表和采用价值项保留原日期、候选、失败及未完成条件，是历史追踪记录；其中“当前”“待实现”或“待审查分支”不直接描述今日源码，也不能把旧通过改挂到 0.6.0。当前实现须结合公共源码、后续 ADR 和[已知限制](../known-issues.md)核对；已实现不等于完整场景验收通过。现有短测不关闭真实 Shell/驻留、长时续期、目标系统/IME/DPI/多屏、完整交付或 Electron 采用价值门槛。
+
+千次生命周期、八小时及完整性能/环境资格继续按[交接](../testing/v0.6.0-long-run-handoff.md)后置，输入未变且已通过的短测不重复。发布后的[工具源码收尾](../maintenance/windows-tooling-failure-closeout-20261029.md)另有输入和验证身份，不替换已发布包。
+
+## 历史 preview.15 及以前的逐项映射
+
 当前开发候选为 preview.15：SDK Core 419 文件身份冻结，V02 Demo 输入为 718 文件源码 SHA-256 `15152ef430d70b8cfbb0682c2a5adb02cdbf5ca64c64e6e93252be9b0708e46d`。本机 x86/x64 当前构建各有一次真实 V02 可见交互短测，Win7 SP1 x86 当前构建已有短启动和页面滚动证据；完整 V01–V06、跨平台长稳及生产准入仍未通过。下表各历史证据保留原候选身份，不跨版本合并。
 
 历史 preview.13 已完成[安装恢复](../../verification/production-validation/preview13-install-recovery-2026-09-26/README.md)、[已知旧现场副本恢复及独立账本四配置编译](../../verification/production-validation/preview13-legacy-recovery-build-2026-09-26/README.md)，以及[完整源码无 Git 解压、SDK/Starter/Workbench 四配置构建、44 项原生与 8 项交付身份测试](../../verification/production-validation/preview13-full-source-build-2026-09-26/README.md)。该版业务与应用 GUI、目标平台、底层完整重编未验证。以下 preview.11 开发快照及各历史结果保留原输入身份。

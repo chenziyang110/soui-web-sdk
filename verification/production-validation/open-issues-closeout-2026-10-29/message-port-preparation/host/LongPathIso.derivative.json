@@ -1,0 +1,43 @@
+{
+  "schema": "soui.issue77-iso-extended-path-derivative/v1",
+  "originalHelper": {
+    "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vm-short-prep/media-tooldeps-4/BoundedIsoIO.cs",
+    "bytes": 11926,
+    "sha256": "fbedad4f3f1dd8357df8615f15917572e191681c676eba56d2b23507bf24dc72"
+  },
+  "derivedHelper": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port/BoundedIsoIO.longpath.cs",
+    "bytes": 11934,
+    "sha256": "00789c652e6e2c3639ee2896c05e56023974fc6ef8d334b8c4d5098d3003417a"
+  },
+  "before": "handle=Native.CreateFileW(PathName,isDirectory?",
+  "after": "handle=Native.CreateFileW(@\"\\\\?\\\"+PathName,isDirectory?",
+  "exactSingleReversibleReplacement": true,
+  "originalWriter": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port/Write-IssuesIso.ps1",
+    "bytes": 7782,
+    "sha256": "87f5612c51937a7b7f2237ccca83dda1100a9116a01c27e304992c3089f21350"
+  },
+  "derivedWriter": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port/Write-IssuesIso.r2.ps1",
+    "bytes": 8264,
+    "sha256": "e5d81b4f3e9afcd5c1797a80137f0cab7b6101d1976c320524f083884138d5c7"
+  },
+  "preservedFences": [
+    "Plain normal absolute path validation",
+    "Ancestor reparse rejection",
+    "Held final-path identity comparison",
+    "Single hardlink requirement",
+    "Read-only sharing denies writes/deletion",
+    "Bounded hash/EOF/read loops",
+    "Source closed file/directory sets",
+    "Original120000/2000 budgets"
+  ],
+  "nativeChange": "Only CreateFileW receives the extended local path spelling; PathName and final identity remain the original normal spelling.",
+  "comChange": "AddTree receives the same validated source root with extended prefix; payload relative names and bytes are unchanged.",
+  "firstFailure": "Original helper failed opening an existing262-character directory with Win32 error3; no ISO/VM/product execution.",
+  "rootIndependentReviewPending": true,
+  "productExecuted": false,
+  "vmTouched": false,
+  "releaseReady": false
+}

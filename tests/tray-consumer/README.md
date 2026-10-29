@@ -2,7 +2,7 @@
 
 直接 CMake 示例按 3.27 以上准确选择 Windows SDK 10.0.19041.0；3.24–3.26 改用 `-A x64`（x86 为 `-A Win32`），仍保留完整引号的 `-DCMAKE_SYSTEM_VERSION=10.0.19041.0`。已有生成平台不同的目录请选新目录，或检查其所有权后显式 `--fresh`；不能在旧缓存中直接切换平台。
 
-本目录通过安装后的 `find_package(SouiSdk 0.3.0 EXACT)` 和 `Soui::Sdk` 编译，只引用公开头文件。应用自己创建隐藏顶层 HWND 并提供消息循环，调用公共 `tray_service`、`menu_service` 和 `global_shortcut`；不创建 WebView，不依赖模板、Workbench、私有 SDK 头文件或内核 DLL。仍需要对应架构的受支持 MSVC 运行库。preview.10 的输入与行为不同于 preview.9，旧短测不能证明本版通过。
+本目录通过安装后的 `find_package(SouiSdk 0.6.0 EXACT)` 和 `Soui::Sdk` 编译，只引用公开头文件。应用自己创建隐藏顶层 HWND 并提供消息循环，调用公共 `tray_service`、`menu_service` 和 `global_shortcut`；不创建 WebView，不依赖模板、Workbench、私有 SDK 头文件或内核 DLL。仍需要对应架构的受支持 MSVC 运行库。preview.10 的输入与行为不同于 preview.9，旧短测不能证明本版通过。
 
 程序必须显式选择一个模式，不接受其他参数：
 
