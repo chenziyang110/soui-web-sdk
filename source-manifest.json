@@ -67,8 +67,8 @@
     {
       "path": "CHANGELOG.md",
       "normalization": "lf",
-      "bytes": 63098,
-      "sha256": "ece1a246d38b1b5ee62bad991454e6d3697ceafec5001988b17c1b302f98d5d9"
+      "bytes": 63603,
+      "sha256": "6d9d215ed550c4bee9ba0d2ea89941656b256b91df59096e8421cae15a00d1f7"
     },
     {
       "path": "CMakeLists.txt",
@@ -3241,8 +3241,8 @@
     {
       "path": "docs/adr/0123-input-admission-and-scheduler.md",
       "normalization": "lf",
-      "bytes": 20356,
-      "sha256": "0c2a40a01a395fb1fb291990f0f7a20152ba3f287f675fe51c42173f49f8f952"
+      "bytes": 21770,
+      "sha256": "1a1ab7771878a7bf8e55ec75026d708d5a743f8088e3a19ba6058d9f8be9c0a5"
     },
     {
       "path": "docs/adr/0123-public-devtools-candidate.md",
@@ -3591,6 +3591,12 @@
       "normalization": "lf",
       "bytes": 3323,
       "sha256": "50c247177c23e760a384d9d7d1293412da0d1dbf9c8e226df50f7b33729da963"
+    },
+    {
+      "path": "docs/performance/input-deadline-refinement.md",
+      "normalization": "lf",
+      "bytes": 3576,
+      "sha256": "a09ef313aab0da9aba6b0563e5318fc32ee38d0ac000d3de3c6177a1117c3d5b"
     },
     {
       "path": "docs/performance/main-integration.md",
@@ -4171,8 +4177,8 @@
     {
       "path": "sdk/include/soui/host/engine_thread.h",
       "normalization": "lf",
-      "bytes": 5039,
-      "sha256": "21a98e7df492398db25151bc6cf0106623664bbe1b92fc4268576fbb63d1fca6"
+      "bytes": 5085,
+      "sha256": "0b57135589356f5973032d53e1304fa5cda0679071d20aba09d1bb6392e4273d"
     },
     {
       "path": "sdk/include/soui/host/frame_pacer.h",
@@ -8449,8 +8455,8 @@
     {
       "path": "sdk/src/host/cooperative_turn_budget.h",
       "normalization": "lf",
-      "bytes": 639,
-      "sha256": "fe94d4f018b09bcc33f0c3687fcaad3c3406923b792ff07325660b09c2811ce9"
+      "bytes": 832,
+      "sha256": "18f61790f6c5075dfdd0a6b74a32e616b6363f1b5168df0d375484818e60cf76"
     },
     {
       "path": "sdk/src/host/cursor_broker.cpp",
@@ -8569,8 +8575,8 @@
     {
       "path": "sdk/src/host/engine_input_service.h",
       "normalization": "lf",
-      "bytes": 1161,
-      "sha256": "281d224e69c7b95d114c0e6d37be8ceec2ed01a23b10ab0fc63856023cae7533"
+      "bytes": 1525,
+      "sha256": "eced8603b6adbecd8d73054b899de48df24cc2edac6d7be6857941a8226bb976"
     },
     {
       "path": "sdk/src/host/engine_startup_test_hooks.h",
@@ -8581,8 +8587,8 @@
     {
       "path": "sdk/src/host/engine_thread.cpp",
       "normalization": "lf",
-      "bytes": 30394,
-      "sha256": "233ac85d7ed4bdeb1e2ce6ab5e1e1a6e974cfdaf7a963e116ee5f2310e50b45d"
+      "bytes": 30527,
+      "sha256": "690a5f6d8b36405e66debd4790be4a2c2d421b085cb43ed04d5f445c01f223e8"
     },
     {
       "path": "sdk/src/host/host_frame_policy.h",
@@ -8599,8 +8605,8 @@
     {
       "path": "sdk/src/host/input_mailbox.h",
       "normalization": "lf",
-      "bytes": 12609,
-      "sha256": "d7474d35fadf162bffbd92daf541af0c397ffc50b5a52d9080765214c9c4476d"
+      "bytes": 13059,
+      "sha256": "f5fac2ed3d9b402d067bb39f3986a7c7335bc10420c4062e9c31fe18f6456b3b"
     },
     {
       "path": "sdk/src/host/input_sequence.h",
@@ -10651,8 +10657,8 @@
     {
       "path": "tests/native/input_admission/README.md",
       "normalization": "lf",
-      "bytes": 1527,
-      "sha256": "e271406b29705c37648b395c8ff2e2209453caefe26bc49c1f31cc57122299fa"
+      "bytes": 2448,
+      "sha256": "c83aa88d87e24cdddfdbf766ec6ecb353081f6c18bef7a7cb26779e7b4377a7e"
     },
     {
       "path": "tests/native/input_admission/RESIZE-FAILURE-SCENARIOS.md",
@@ -10667,10 +10673,16 @@
       "sha256": "c4de8071e658a1197024630375b487eb3fed9b17dffc91539c662b4a093afe5f"
     },
     {
+      "path": "tests/native/input_admission/deadline_cases.h",
+      "normalization": "lf",
+      "bytes": 9533,
+      "sha256": "9e920fdcd374f1e2afb392a8b75eef2e56fac0d2ce5b51314c21cbdcf324168c"
+    },
+    {
       "path": "tests/native/input_admission/fixture.cpp",
       "normalization": "lf",
-      "bytes": 9265,
-      "sha256": "fb45ceab2109a733586786808e39d78c83199fceabbd500fe5f8d16064f78ebd"
+      "bytes": 9374,
+      "sha256": "928569bb29033514ae02df53a97b06108f896e85607abdc6d5a1566a788c7485"
     },
     {
       "path": "tests/native/input_admission/ordinal_cases.h",

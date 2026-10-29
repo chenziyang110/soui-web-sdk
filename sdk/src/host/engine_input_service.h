@@ -1,4 +1,5 @@
 #pragma once
+#include <chrono>
 #include <cstdint>
 #include <limits>
 
@@ -20,6 +21,13 @@ class engine_input_service {
   // Atomic published head only: called under Engine mutex, never take a channel lock.
   [[nodiscard]] virtual std::uint64_t oldest_order() const noexcept { return 0; }
   virtual void service_before(std::uint64_t exclusive_order) noexcept { (void)exclusive_order; service(); }
+  // Private, cooperative deadline adoption. Existing providers keep their
+  // service contract until they explicitly participate in the shared budget.
+  virtual void service_before_until(std::uint64_t exclusive_order,
+      std::chrono::steady_clock::time_point deadline) noexcept {
+    (void)deadline;
+    service_before(exclusive_order);
+  }
   virtual void quiesce() noexcept = 0;
   virtual void close() noexcept = 0;
 };

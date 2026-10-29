@@ -287,7 +287,7 @@ bool engine_thread::has_pending_input_locked() const noexcept {
   return false;
 }
 
-void engine_thread::service_one_input() {
+void engine_thread::service_one_input(std::chrono::steady_clock::time_point deadline) {
   std::shared_ptr<detail::engine_input_service> selected;
   bool stopping = false;
   std::uint64_t cutoff = 0;
@@ -308,7 +308,7 @@ void engine_thread::service_one_input() {
   }
   if (selected) {
     if (stopping) selected->quiesce();
-    selected->service_before(cutoff);
+    selected->service_before_until(cutoff, deadline);
     std::lock_guard<std::mutex> lock(mutex_);
     --executing_;
     if (!queued_ && !executing_ && !has_pending_input_locked()) idle_.notify_all();
@@ -650,7 +650,8 @@ void engine_thread::run(initializer initialize, task shutdown) noexcept {
       const detail::trace_duration provider_cost(input_trace::duration_metric::engine_provider);
       try { owner_opportunity_(); } catch (...) { /* Cooperative provider boundary. */ }
     }
-    { const detail::trace_duration input_cost(input_trace::duration_metric::engine_input); service_one_input(); }
+    { const detail::trace_duration input_cost(input_trace::duration_metric::engine_input);
+      service_one_input(turn_budget.limit((std::chrono::steady_clock::time_point::max)())); }
     // Service a bounded FIFO batch too. One task per native batch makes an
     // input burst accumulate behind expensive paint messages, even though
     // neither queue is strictly starved. Neither budget can preempt a callback.
