@@ -155,6 +155,52 @@
             naturalHeight: skin._svgImage && skin._svgImage.naturalHeight,
             backingWidth: r.canvas.width, backingHeight: r.canvas.height};
     }
+    function byteSnapshot(bytes) {
+        assert(bytes && bytes.length <= 65536, 'Diagnostic byte snapshot exceeds fixed 64KiB limit');
+        let checksum = 2166136261, binary = '';
+        for (let index = 0; index < bytes.length; index++) {
+            checksum = Math.imul(checksum ^ bytes[index], 16777619) >>> 0;
+            binary += String.fromCharCode(bytes[index]);
+        }
+        return {bytes: bytes.length, fnv1a32: checksum.toString(16).padStart(8, '0'), base64: btoa(binary)};
+    }
+    function byteDifference(left, right) {
+        let differentBytes = 0, differentPixels = 0, maximumChannelDelta = 0;
+        let previousDifferentPixel = -1;
+        const firstDifferences = [];
+        for (let index = 0; index < Math.max(left.length, right.length); index++) {
+            if (left[index] === right[index]) continue;
+            differentBytes++;
+            const pixel = Math.floor(index / 4);
+            if (pixel !== previousDifferentPixel) {differentPixels++; previousDifferentPixel = pixel;}
+            maximumChannelDelta = Math.max(maximumChannelDelta, Math.abs((left[index] || 0) - (right[index] || 0)));
+            if (firstDifferences.length < 32) firstDifferences.push({offset: index, pixel: Math.floor(index / 4), left: left[index], right: right[index]});
+        }
+        return {equal: left.length === right.length && differentBytes === 0, leftBytes: left.length,
+            rightBytes: right.length, differentBytes, differentPixels, maximumChannelDelta, firstDifferences};
+    }
+    function svgDiagnostic(context, id) {
+        const r = context.renderer, drawable = r._allDrawables[id], skin = drawable.skin;
+        const source = String(skin._svgImage.src);
+        assert(source.length <= 65536, 'Fixed SVG URI exceeds diagnostic limit');
+        // These are the actual ImageData.data bytes passed by createMIP to
+        // Silhouette.update. Copy the existing buffer, without another Canvas
+        // readback that could perturb Chromium's GPU/CPU backend heuristic.
+        const silhouette = byteSnapshot(skin._silhouette._colorData);
+        const canvas = skin._canvas;
+        const uniforms = drawable.getUniforms();
+        const effectUniforms = {};
+        for (const key of Object.keys(uniforms)) if (/^u_(fisheye|whirl|pixelate|mosaic|color|brightness|ghost)$/.test(key)) effectUniforms[key] = uniforms[key];
+        return {svgSource: source, svgGeneration: skin._svgGeneration,
+            silhouette, sourceCanvas: {width: canvas.width, height: canvas.height, extraReadbackPerformed: false},
+            enabledEffects: drawable.enabledEffects, effectUniforms,
+            skinUseNearest: skin.useNearest(drawable.scale, drawable),
+            cpuTouchMode: drawable.isTouching === drawable._isTouchingNearest ? 'nearest' :
+                drawable.isTouching === drawable._isTouchingLinear ? 'linear' : 'other',
+            inverseMatrix: Array.from(drawable._inverseMatrix),
+            modelMatrix: Array.from(uniforms.u_modelMatrix),
+            observation: 'Existing createMIP ImageData.data copied; no extra source Canvas readback'};
+    }
     function svgOracle(context, id) {
         const before = raster(context, id), hullBeforePixels = rawHull(context, id);
         const beforePixels = raster(context, id);
@@ -164,11 +210,13 @@
         // same draw/MIP promotion, never a pre-draw hull against a post-draw one.
         const after = raster(context, id), hull = rawHull(context, id);
         context.renderer._allDrawables[id].setConvexHullDirty();
-        return {before, beforePixels, hullBeforePixels, after, hull, bounds: bounds(context, id), pixels: rgba};
+        const rectangle = bounds(context, id);
+        const diagnostic = svgDiagnostic(context, id);
+        return {before, beforePixels, hullBeforePixels, after, hull, bounds: rectangle, pixels: rgba, diagnostic};
     }
     function oracleMetadata(value) {
         return {before: value.before, beforePixels: value.beforePixels, after: value.after, hullBeforePixels: value.hullBeforePixels,
-            hull: value.hull, bounds: value.bounds, rgbaBytes: value.pixels.length};
+            hull: value.hull, bounds: value.bounds, rgbaBytes: value.pixels.length, diagnostic: value.diagnostic};
     }
     function compare(a, b, ids, name, withPixels = true) {
         alive();
@@ -300,15 +348,52 @@
         await Promise.all(superseded);
         await Promise.all(pair.map(item => loaded(item.renderer._allSkins[bitmapIds[0]])));
         compare(a, b, [main, shared], 'consecutive SVG last generation');
-        report.svgFinalOracles = [];
-        for (const item of pair) {
-            const final = svgOracle(item, main);
-            report.svgFinalOracles.push(oracleMetadata(final));
-            equal(final.after, variantOne.after, 'Consecutive SVG oracle raster/MIP preconditions differ');
-            equal(final.hull, variantOne.hull, 'Consecutive SVG update did not retain known final variant hull');
-            equal(final.bounds, variantOne.bounds, 'Consecutive SVG update did not retain known final variant bounds');
-            equalPixels(final.pixels, variantOne.pixels, 'Consecutive SVG update final variant pixel oracle');
+        // Collect both paths and all pixel differences before the first strong
+        // oracle can throw. Earlier evidence stopped at the first hull delta.
+        const finals = pair.map(item => svgOracle(item, main));
+        report.svgFinalOracles = finals.map(oracleMetadata);
+        report.svgFinalPixelDifferences = finals.map(final => byteDifference(final.pixels, variantOne.pixels));
+        report.svgSameStateHullRuns = pair.map(item => Array.from({length: 8}, () => rawHull(item, main)));
+        report.svgRepeatedIdenticalDecode = [];
+        for (let repeat = 0; repeat < 3; repeat++) {
+            for (const item of pair) await item.renderer.updateSVGSkin(bitmapIds[0], svg(1), [12, 18]);
+            await Promise.all(pair.map(item => loaded(item.renderer._allSkins[bitmapIds[0]])));
+            report.svgRepeatedIdenticalDecode.push(pair.map(item => {
+                const snapshot = svgOracle(item, main);
+                return {...oracleMetadata(snapshot), pixelDifferenceFromKnownVariant: byteDifference(snapshot.pixels, variantOne.pixels)};
+            }));
         }
+        // This observation is deliberately last: all original strong-oracle
+        // inputs, same-state runs and decode-trace snapshots are already saved.
+        // It cannot establish the earlier backend and is labelled by generation.
+        report.svgDeferredSourceCanvasReadbacks = pair.map(item => {
+            const skin = item.renderer._allDrawables[main].skin, canvas = skin._canvas;
+            assert(canvas.width * canvas.height * 4 <= 65536, 'Deferred SVG canvas exceeds diagnostic limit');
+            return {svgGeneration: skin._svgGeneration, width: canvas.width, height: canvas.height,
+                rgba: byteSnapshot(skin._context.getImageData(0, 0, canvas.width, canvas.height).data),
+                intrusiveReadback: true, occursAfterAllPrimaryOracleAndDecodeTraceSamples: true};
+        });
+        const knownVariantCase = {name: 'consecutive SVG known-variant oracle', assertionsBefore: report.assertions, passed: false};
+        try {
+            // Keep this strong oracle and its exact comparisons. A failure
+            // remains a whole-run failure while independent later cases run.
+            for (const final of finals) {
+                equal(final.after, variantOne.after, 'Consecutive SVG oracle raster/MIP preconditions differ');
+                equal(final.hull, variantOne.hull, 'Consecutive SVG update did not retain known final variant hull');
+                equal(final.bounds, variantOne.bounds, 'Consecutive SVG update did not retain known final variant bounds');
+                equalPixels(final.pixels, variantOne.pixels, 'Consecutive SVG update final variant pixel oracle');
+            }
+            knownVariantCase.passed = true;
+        } catch (error) {
+            if (!error || error.message !== 'Consecutive SVG update did not retain known final variant hull') throw error;
+            report.failures.push({case: knownVariantCase.name, message: String(error && error.message || error),
+                stack: String(error && error.stack || '').slice(0, 8192)});
+            knownVariantCase.failureIndex = report.failures.length - 1;
+        }
+        knownVariantCase.assertions = report.assertions - knownVariantCase.assertionsBefore;
+        report.cases.push(knownVariantCase);
+        // Reset both paths to the same known bitmap before pen and capacity
+        // cases. No unknown SVG geometry is carried into their prerequisites.
         for (const item of pair) item.renderer.updateBitmapSkin(bitmapIds[0], image(), 1, [16, 12]);
         compare(a, b, [main, shared], 'SVG to bitmap reskin');
         const penIds = pair.map(item => {const id = item.renderer.createPenSkin(); item.skins.add(id); return id;});
@@ -341,7 +426,7 @@
         }
         assert(b.renderer._localHullCache.size === 0 && b.renderer._localHullCache.pointCount === 0, 'Destroyed skins retained cache entries/points');
         report.cases.push({name: 'destroy drawable/skin and empty cache'});
-        report.completed = true; report.passed = true;
+        report.completed = true; report.passed = report.failures.length === 0;
     }
     Promise.resolve().then(run).catch(error => {
         report.failures.push({message: String(error && error.message || error), stack: String(error && error.stack || '').slice(0,8192)});

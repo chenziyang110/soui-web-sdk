@@ -25,3 +25,15 @@ CPU原始文件373591B，12528 samples/509 nodes。实际有26个负timeDelta，
 - `S-session/browser-trace-chunks.json`：`3c0378ed532cd1246a49f101c487a426249e89a3cc43f9725dec5a34f125edc0`
 
 这些本地证据没有加入SDK运行包。完整前台、输入、体积对照及稳定性验收继续保持未完成。
+
+## 后续可见页面采样
+
+在用户明确表示可手动置前后，刷新专用S消费者并运行一次新的有界采样。增量构建27786ms自然0/0，4个对象本轮实际重编；31个对象按旧实际编译证据逐项核对source/object/argv/精确headers后复用。105个实际头文件、6115项provider输入和三份内嵌协议已核验。EXE仍1486848B，SHA `4e5dad2730dd413551b8a0e88a9089cc0f8884e7bde53b7afbd44a1076f709fa`；源上下文为b424db369及已记录的非S脏文件，不能冒充完整干净发布构建。
+
+`diagnostic-foreground-S-r1`自然0/0、27960ms，12个进程全部退出、资源3302项前后SHA不变。页面采集前后均visible、241 targets/240 threads；约10秒观察到987次rAF及607次VM step/draw/targetsUpdate。面板本身完成且valid，诊断窗口率98.687仅是带Profiler/Tracing的观察值，不能用作正常应用FPS对比。原生前台观察0/244、页面hasFocus=false，严格焦点条件未通过；trace到67108761B发生上限溢出，不能用于完整因果链。
+
+实际CPU文件619763B、24733 samples/692 nodes/0 unknown。58个负timeDelta被严格reader拒绝，仍未钳零或换算CPU时间；未加权计数有19245个program、3916个idle、41个GC及1531个其他样本。已识别的`_step`包含样本1473个，其中`emitTargetsUpdate`780、`stepThreads`433、`draw`253；`handleTargetsUpdate`771与React的`notifyNestedSubs`736说明状态事件的GUI订阅链值得优先调查。这是已归因子树中的样本关系，不能称53%总CPU，也不能排除大量program样本中的成本。
+
+`_getConvexHullPointsForDrawable`包含样本50个，当前证据支持先查GUI通知/props扩散，尚不足以按预想继续改hull、默认调度预算或QoS。实际bundle及函数坐标/片段已绑定；source map没有被当作可靠的具体源码归因。原始CPU SHA为`2e1f89e76b411c440eb5e7330f9e8d89b1f013cbfa3c8f266a4e314f27777cd7`；计数、源路径、限定分母和资格分别保存在该证据集合的`analysis/cpu-counts-and-calltree.json`、`hotpath-assessment.json`和`qualification.json`。未重新启动Electron或完成S/W有效配对。
+
+下一次人工配对应先补明确的原生“开始采集”入口，在页面准备后由用户点击，再核验真实owner前台及页面focus后进入既有warmup/capture；不能把“用户准备好了”或ShowWindow返回当作焦点证据。该入口尚未实现；应保持原总期限、内容viewport、固定负载和失败规则，不以自动输入或删掉focus条件取得通过。
