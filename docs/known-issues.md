@@ -20,6 +20,7 @@ MiniBlink x86 Release真实暂停后原生关闭代表例自然完成；首轮�
 | PowerShell 临时解压 | PS5 在长临时路径下曾出现空 stage 或不完整解压；MAX_PATH 只是候选原因，尚无确定根因。保留原失败，并在全新目录解压后逐文件验内容，不以退出 0 代替闭集核验 |
 | source SDK 发布目录 | 规范输出目录两次 rename 返回 EPERM；合法外部目录的公开 pack 成功，原失败仍保留。根因未定，不归因于 MAX_PATH 或 Defender，也不修改权限/覆盖守卫来取得成功 |
 | 非自然构建与操作期限 | 八个辅助 compiler Job 的失败及两次原 C64 GUI 操作超时/强清保留于 RELEASE-FACTS；产物已核、适用尾部接纳或后续新例不改写原监督结果 |
+| 公共托盘恢复 | 当前安装 SDK 0.6.0 的独立 x64/x86 消费者已在 Server 2022 VM 完成真实 Explorer 重启恢复、显式移除后再次重启不复活及自然清理退出，见[本轮限定结果](maintenance/open-issues-20261029.md)。焦点归还仍失败，Win7 与完整托盘/驻留资格待验 |
 | 生产及环境资格 | D07 真实租期、D13 千次、D14 八小时、完整性能和目标系统/IME/DPI/多屏资格继续待验，见[长测交接](testing/v0.6.0-long-run-handoff.md)。原期限、owner 身份、默认拒绝和资源 fence 不变 |
 
 ## 历史记录

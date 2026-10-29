@@ -1,0 +1,48 @@
+{
+  "schema": "soui.current-tray-recovery-inputs/v1",
+  "controllerPid": 2164,
+  "controllerParentPid": 1484,
+  "controllerBirthNotCollected": true,
+  "manifest": {
+    "path": "C:\\trayrc-a1\\TrayRecovery.manifest.json",
+    "bytes": 14187,
+    "sha256": "1003ff60a0d933a2c3fab8cfbeca48901b36e6abc58ec39a98cf2ff80b841c86"
+  },
+  "controller": {
+    "path": "C:\\trayrc-a1\\Guest-TrayRecovery.cjs",
+    "bytes": 14459,
+    "sha256": "3746bb08fefb52448f076318e722c62d36e1f037580cd89adc2627b83b46b7a6"
+  },
+  "tools": {
+    "node": {
+      "path": "C:/issues8/tools/node.exe",
+      "bytes": 91380224,
+      "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+    },
+    "runner": {
+      "path": "C:/issues8/tools/OwnedProcessRunner.exe",
+      "bytes": 170496,
+      "sha256": "f254dadd4eccad3c57d69e98f260d15ee598c0b6441b7fe68fc4ef5b3b7dea83"
+    },
+    "ownedModule": {
+      "path": "C:/issues8/tools/owned-process.cjs",
+      "bytes": 8386,
+      "sha256": "8ccec5802c793b45990d2d7585f2c29fb618a7b170adebd5d270a7c291757ce7"
+    },
+    "ownedTail": {
+      "path": "C:/issues8/tools/owned-tail-evidence.cjs",
+      "bytes": 20024,
+      "sha256": "61bceb766ecdfae0552c26212b332c8d7dbd0c2f24833cf7d27d59932f2b23cd"
+    },
+    "exporter": {
+      "path": "C:/issues8/Guest-Export.ps1",
+      "bytes": 3074,
+      "sha256": "f1cc23cfa6d76d35b2a6d8dd0779ceb332a42b51f74271bf097b5e9b44f1ce7c"
+    }
+  },
+  "architecture": "x86",
+  "mode": "run",
+  "inputInjection": false,
+  "externalRestartProofRequired": true,
+  "releaseReady": false
+}

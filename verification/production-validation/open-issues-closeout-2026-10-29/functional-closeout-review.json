@@ -1,0 +1,77 @@
+{
+  "schema": "soui.functional-closeout-archive-independent-audit/v1",
+  "startedUtc": "2026-10-29T14:09:45.431Z",
+  "completedUtc": "2026-10-29T14:09:45.797Z",
+  "archive": "C:/sc07/verification/production-validation/open-issues-closeout-2026-10-29/functional-closeout",
+  "index": {
+    "path": "C:/sc07/verification/production-validation/open-issues-closeout-2026-10-29/functional-closeout/Files.index.json",
+    "bytes": 52496,
+    "sha256": "59f70e1762f079d58bde10983fee7545a425d67ad61a7aaff97be276923e0f99"
+  },
+  "sourceManifest": {
+    "path": "C:/sc07/verification/production-validation/open-issues-closeout-2026-10-29/functional-closeout/SOURCE-MANIFEST.json",
+    "bytes": 283152,
+    "sha256": "40987839d2603bcbd6a4b653308d2fc5b3623cfcc3f5f03d57ed606f8dd02e20"
+  },
+  "selection": {
+    "path": "C:/sc07/verification/production-validation/open-issues-closeout-2026-10-29/functional-closeout/Selection.actual.json",
+    "bytes": 196251,
+    "sha256": "564dba3ad649b69e3b2c47da620eb6adcd483dc49da770f769aa0f118eb59877"
+  },
+  "collector": {
+    "path": "C:/sc07/verification/production-validation/open-issues-closeout-2026-10-29/functional-closeout/Collect-CurrentExecution.cjs",
+    "bytes": 17441,
+    "sha256": "a0a415586d9243a41b35e1671f5a394e11aaff08564a677349eba25078ee85d1"
+  },
+  "independentDataAuditPassed": true,
+  "blockingFindings": 0,
+  "failures": [],
+  "scope": "Read-only data archive integrity/source equality audit; no product, compiler, verifier, Git, browser, VM, image-tool, or lease/catalog access",
+  "checked": {
+    "closedArchiveFiles": 275,
+    "indexedFiles": 274,
+    "indexedBytesWithIndex": 7563646,
+    "indexRowsBytesAndShaVerified": 274,
+    "sourceRows": 269,
+    "sourceBytes": 7011801,
+    "sourceCopyBytesEqual": 269,
+    "currentSourceIdentityMatches": 269,
+    "currentGroupClosedMemberSets": 19,
+    "archiveStableBeforeAfter": true,
+    "noForbiddenBinaryOrWholePrivateFilename": true,
+    "recordedTokenAuditZeroMatches": true
+  },
+  "retainedFirstDataFailure": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/functional-closeout-archive-failed-node-link-1",
+    "files": 273,
+    "sharedFilesByteIdenticalToSuccessfulArchive": 273,
+    "collectionAndIndexAbsent": true,
+    "rawRootDiagnostic": "Root reported late ancestor-symlink guard while pinning C:/nvm4w/nodejs; this audit corroborates preserved pre-Collection273file set and later physical-node success, and does not invent a raw diagnostic artifact",
+    "productOrBuildRepeated": false,
+    "partialModifiedByAuditor": false
+  },
+  "privacy": {
+    "privateCatalogReadByAuditor": false,
+    "leaseOrTokenReadByAuditor": false,
+    "tokenRescanPerformed": false,
+    "recordedCollectorTokenAuditReusedOnly": true,
+    "arbitrarySecretsOrScreenshotOcrClaimed": false
+  },
+  "qualification": {
+    "newProductTestsExecuted": 0,
+    "newBuildsExecuted": 0,
+    "newVmActionsExecuted": 0,
+    "archiveCanonicalModified": false,
+    "legalApproval": false,
+    "focusQualified": false,
+    "win7Qualified": false,
+    "allEightIssuesClosed": false,
+    "productionQualificationComplete": false,
+    "releaseReady": false
+  },
+  "limitations": [
+    "Integrity audit does not replay raw native lifecycle/functional validators or UI actions; existing actual analyses retain those claims",
+    "Recorded token scan reviewed without rereading the private catalog/token after copy",
+    "Prior immutable archives are referenced by exact indexes; their whole contents are not duplicated or rehashed here"
+  ]
+}

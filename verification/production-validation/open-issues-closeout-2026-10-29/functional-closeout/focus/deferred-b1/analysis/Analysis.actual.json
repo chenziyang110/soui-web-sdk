@@ -1,0 +1,239 @@
+{
+  "schema": "soui.independent-deferred-native-focus-actual-analysis/v1",
+  "createdUtc": "2026-10-29T13:19:13.712Z",
+  "reviewer": "focus_review_supported",
+  "scope": "Offline original selected-frame/index/raw/source identities/process stream and actual deferred sequence review only; no probe, SDK, VM, build, test or Git execution",
+  "dataReviewBlockingFindings": 0,
+  "findings": [],
+  "input": {
+    "decode": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/focusc-b1-run/Decode.actual.json",
+      "bytes": 6312,
+      "sha256": "a3edc000d160f86d52cb01c6125691feba034d00ded37c173301e225c0b8b739"
+    },
+    "index": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/focusc-b1-run/Files.index.json",
+      "bytes": 2951,
+      "sha256": "3c816f10edf463bb4cbdc8ae808c3f4f7255f658fba0e98c26bdec7dbca20b19"
+    },
+    "frame": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/focusc-b1-run/Serial.frame.raw",
+      "bytes": 70543,
+      "sha256": "cba0de34e1ae5247866e7af04771c09f0ef723a80dbb537fefeaea5ed8ec1ffe"
+    },
+    "tag": "ISSUESHORT9FB653152A964105AD626EBF36AACF09",
+    "files": 18,
+    "indexRecords": 17,
+    "rawFiles": 14,
+    "payloadFiles": 13,
+    "payloadBytes": 35474,
+    "rawBytes": 39451,
+    "fullFrameEnvelopeCatalogPayloadClosedSetReplayed": true,
+    "wholeSerialCopied": false,
+    "summary": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/focusc-b1-run/raw/Summary.actual.json",
+      "bytes": 4571,
+      "sha256": "5ada1bd835cd8b340d02d020bbc1bcfd29c4f32204e1bb302792ab5f1758aee6"
+    },
+    "nativeEvents": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/focusc-b1-run/raw/native/Native.events.ndjson",
+      "bytes": 16745,
+      "sha256": "f27256aeddc5c330212a310100c112423c6e57d1ae7a6843b106366d0bfbd68d"
+    }
+  },
+  "sourceIdentity": {
+    "sourcePins": 27,
+    "newCarrierFilesByteMatched": 6,
+    "otherToolCrtPinsMatchedPriorActualA2": 21,
+    "source": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/tray-focus-deferred-current/payload/NativeFocusControl.cs",
+      "bytes": 36991,
+      "sha256": "8efacf1e18b2f90eb2945a3ee3edeb04eb0947b2ea8b9994294fb03928557fb9"
+    },
+    "preparation": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/tray-focus-deferred-current/payload/Preparation-b1.actual.json",
+      "bytes": 3067,
+      "sha256": "dfee96241c9da94c16a1e4dc2fe2f75c7339d87270372b4eee94a88ea19c4b3c"
+    },
+    "sourceCompilerEvidence": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/focusc-b1-run/raw/native/Compilation.actual.json",
+      "bytes": 541,
+      "sha256": "852b89edbf3b508e02356e4ee79d6403c850cb32b9bd408ecd07ca35bbfb5dd9"
+    },
+    "originalPureStreamValidator": {
+      "path": "F:/work/soui-issue96/tools/internal/standard-build.cjs",
+      "bytes": 39757,
+      "sha256": "0411e6813baae2d4134c5b1735f56c63a31579168f4f8be12c1ea189d8cb220e"
+    },
+    "allSourcePinsSameBeforeAfterAsRecordedByController": true,
+    "scope": "Reviewer matches six host-frozen carrier bytes and21 prior actual guest tool/CRT identities. Guest source/tool pre/post rereads were made by the pinned controller; no reviewer guest-disk reread is claimed."
+  },
+  "process": {
+    "controllerPid": 2816,
+    "controllerBirthCollected": false,
+    "controllerPidAbsentBeforeExportAsRecorded": true,
+    "rootPid": 3424,
+    "rootBirth": "134377530706253534",
+    "rootExitCode": 1,
+    "supervisorExitCode": 1,
+    "probeExitCode": 1,
+    "ownedElapsedMs": 58601,
+    "nativeElapsedMs": 57097,
+    "jobActiveBeforeCleanup": 0,
+    "jobActiveAfterClosure": 0,
+    "jobTotalProcesses": 4,
+    "forcedTermination": false,
+    "fallbackUsed": false,
+    "originalWholeRawStreamValidated": true,
+    "observedImages": [
+      "powershell.exe",
+      "conhost.exe",
+      "csc.exe"
+    ],
+    "allFourHistoricalMemberImagesIdentified": false,
+    "unavailableMemberObservationsRetained": [
+      {
+        "event": "member-unavailable",
+        "pid": 4252,
+        "win32Error": 87
+      },
+      {
+        "event": "owned-member",
+        "pid": 3424,
+        "creationFileTime": "134377530706253534",
+        "image": null,
+        "imageReadError": 5
+      }
+    ],
+    "wholeJobClosureIsSuccess": false
+  },
+  "actualSequence": {
+    "nativeEvents": 38,
+    "originalContextSendFlags": 2,
+    "callbackReturningSendFlags": 2,
+    "callbackReturningDidNotClaimUnwind": true,
+    "wmNullDequeueOrder": 103,
+    "completionDequeueOrder": 104,
+    "wmNullAndCompletionActualDispatchSendFlags": 0,
+    "contextDepthAtDispatch": 0,
+    "callbackUnwindConfirmed": true,
+    "ownerBeforeFocus": {
+      "hwnd": "0x160254",
+      "isWindow": true,
+      "visible": false,
+      "root": "0x160254",
+      "parent": "0x0",
+      "threadId": 2708,
+      "processId": 3424,
+      "style": "0x4cf0000",
+      "topLevel": true
+    },
+    "foregroundBeforeFocus": {
+      "hwnd": "0x160254",
+      "isWindow": true,
+      "visible": false,
+      "root": "0x160254",
+      "parent": "0x0",
+      "threadId": 2708,
+      "processId": 3424,
+      "style": "0x4cf0000",
+      "topLevel": true
+    },
+    "ownerThreadBeforeFocus": {
+      "requestedThreadId": 2708,
+      "ok": true,
+      "lastErrorAfterClear": 0,
+      "flags": 0,
+      "active": "0x160254",
+      "focus": "0x160254",
+      "capture": "0x0",
+      "menuOwner": "0x0",
+      "moveSize": "0x0",
+      "caret": "0x0"
+    },
+    "nimSetFocus": {
+      "operation": 3,
+      "calls": 1,
+      "accepted": false,
+      "elapsedMs": 57086,
+      "lastErrorAfterClear": -2147467259,
+      "lastErrorHex": "0x80004005",
+      "extendedErrorContractDocumented": false
+    },
+    "foregroundAfterFocus": {
+      "hwnd": "0x2002a",
+      "isWindow": true,
+      "visible": true,
+      "root": "0x2002a",
+      "parent": "0x0",
+      "threadId": 1576,
+      "processId": 1440,
+      "style": "0x96000000",
+      "topLevel": true
+    },
+    "foregroundThreadAfterFocus": {
+      "requestedThreadId": 1576,
+      "ok": true,
+      "lastErrorAfterClear": 0,
+      "flags": 0,
+      "active": "0x2002a",
+      "focus": "0x0",
+      "capture": "0x0",
+      "menuOwner": "0x0",
+      "moveSize": "0x0",
+      "caret": "0x0"
+    },
+    "postFocusClassOrImageRecorded": false,
+    "foregroundAttempts": 1,
+    "menuReturnedCommand": 0,
+    "menuLastErrorAfterClear": 0,
+    "cleanupConfirmed": true,
+    "deadlineReached": false,
+    "controlValid": true,
+    "controlSucceeded": false,
+    "nativeExitCode": 1
+  },
+  "gestureObservation": {
+    "source": "Parent Root NEW_TASK reported one actual right-click/menu/Escape. Screenshots independently read from existing files; no reviewer input or raw keyboard authentication.",
+    "screenshotPins": [
+      {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/tray-focus-deferred-current/observed/menu-visible.actual.png",
+        "bytes": 145776,
+        "sha256": "4032a6d807973601d05c3d7e596d2f04fe162d149be9905f000cd01060678028"
+      },
+      {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/tray-focus-deferred-current/observed/after-escape.actual.png",
+        "bytes": 144183,
+        "sha256": "69f16121626e700658751d4f928e6349c706421dcf964b6a9757e72fb145ae64"
+      }
+    ],
+    "reviewerSawMenuVisibleThenAbsent": true,
+    "rawGestureAuthentication": false,
+    "rawEscapeEstablishedByController": false
+  },
+  "conclusion": {
+    "result": "Valid deferred native control still returns FALSE. This one changed timing did not resolve the observed focus failure under these exact VM conditions.",
+    "deferredCallbackTimingFixSupported": false,
+    "rootCauseProven": false,
+    "sdkFixClaimed": false,
+    "apiGloballyUnsupported": false,
+    "osUnsupportedClaimed": false,
+    "failureReclassified": false,
+    "foregroundSwitchIsApiSuccess": false,
+    "furtherDiagnosticProposed": false,
+    "furtherVmCaseRequiredByThisAnalysis": false
+  },
+  "analysisExecuted": {
+    "probeOrProductRerun": false,
+    "nativeCompilation": false,
+    "vmInput": false,
+    "sdkSourceModification": false,
+    "canonicalArchiveModification": false,
+    "gitModification": false
+  },
+  "testPassed": false,
+  "sdkFixed": false,
+  "currentSdk060Qualified": false,
+  "productionQualificationComplete": false,
+  "releaseReady": false
+}

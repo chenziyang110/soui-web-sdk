@@ -1,0 +1,75 @@
+{
+  "schema": "soui.deferred-native-focus-static-review/v1",
+  "createdUtc": "2026-10-29T13:06:58.483Z",
+  "sourcePreparation": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/tray-focus-deferred-current/Preparation.actual.json",
+    "bytes": 3657,
+    "sha256": "c47edc94ea20283b365614516519450db4cb69dec691ac8d93580bbbb6800a45"
+  },
+  "carrierSelection": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/tray-focus-deferred-current/ControlIso.selection.prepared.json",
+    "bytes": 1647,
+    "sha256": "64d8ca4109bf8b3330ef17e0bea876fb456803dadd2b41932977c0e9d2e56324"
+  },
+  "carrierFiles": 6,
+  "carrierBytes": 67139,
+  "sourceDiff": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/tray-focus-deferred-current/Deferred-b1.prepared.diff",
+    "bytes": 20964,
+    "sha256": "bc29500149d28d854553d4b64c7b32930eba8226c86fb84cae93a3a0b9be0952"
+  },
+  "validation": {
+    "powerShellParserFiles": 2,
+    "powerShellParserErrors": 0,
+    "nodeCheckSyntaxPassed": true,
+    "pureEvidencePathCasesPassed": 9,
+    "pureEvidencePathCasesCreatedFiles": false,
+    "csharpCompiled": false,
+    "csharpSyntaxCompilerInvoked": false,
+    "csharpSourceReviewOnly": true,
+    "singleFocusCallSite": 1,
+    "singlePrivateCompletionPostSite": 1,
+    "ordinaryForegroundAttemptSites": 1,
+    "timerSitesUnchanged": 1,
+    "originalHelpersByteEqualAfterOnlyNamespaceAndPreparationDigestSubstitution": true,
+    "originalCrtInputsByteIdentical": true,
+    "originalSourceFilesUnchanged": true,
+    "existingDecoderAcceptsFocuscB1Run": true,
+    "decoderChanged": false
+  },
+  "deferredOrderRequired": [
+    "actual original tray context-menu callback",
+    "TrackPopupMenuEx returns with no selection and no error; real Escape remains external evidence",
+    "original WM_NULL posted; original menu destroyed",
+    "one WM_APP+20 completion posted",
+    "original callback return boundary reached",
+    "WM_NULL retrieved by original GetMessage loop and dispatched, no sent-message context",
+    "completion retrieved by original GetMessage loop and dispatched, no sent-message context",
+    "same owner/top-level/PID/TID/foreground/registration/deadline/menu guards rechecked",
+    "NIM_SETFOCUS invoked exactly once; FALSE remains exit1"
+  ],
+  "actualUnwindEvidenceBoundary": "tray.callback.returning explicitly does not claim unwind. Confirmation is emitted only from completion actually retrieved by the outer GetMessage loop after exactly one WM_NULL dispatch and context callback depth0.",
+  "inSendMessageExReference": "https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-insendmessageex",
+  "supervision": {
+    "timeoutMs": 90000,
+    "drainMs": 2000,
+    "innerDeadlineMs": 60000,
+    "controllerBirthCollected": false,
+    "exportRequiresActualRootPidBirthAndUnknownBirthControllerPidAbsence": true,
+    "exportStillRequiresClosedJob": true,
+    "wholeJobClosureDoesNotImplySuccess": true
+  },
+  "scope": {
+    "rootMustReviewBeforeExecution": true,
+    "isoCreated": false,
+    "nativeCompiled": false,
+    "nativeExecuted": false,
+    "vmTouched": false,
+    "sdkOrProductChanged": false,
+    "sdkFixed": false,
+    "oldA2FailureRetained": true,
+    "osUnsupportedClaimed": false,
+    "foregroundGuardRelaxed": false,
+    "releaseReady": false
+  }
+}

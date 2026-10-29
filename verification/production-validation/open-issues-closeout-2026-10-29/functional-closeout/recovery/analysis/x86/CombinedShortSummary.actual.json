@@ -1,0 +1,125 @@
+{
+  "schema": "soui.tray-recovery-twoarch-finite-short-composition/v1",
+  "derivedUtc": "2026-10-29T14:02:06.521Z",
+  "scope": "Composition of the two independently reviewed actual tray recovery shorts only. No extra execution or test, no new product/source build and no canonical archive copy.",
+  "profile": "SouiSdk0.6 installed public tray_service; native owner/id73; first actual Explorer restart recovers; one explicit remove; second actual Explorer restart does not resurrect; fixed500ms observation and natural cleanup.",
+  "manifest": {
+    "path": "C:\\trayrc-a1\\TrayRecovery.manifest.json",
+    "bytes": 14187,
+    "sha256": "1003ff60a0d933a2c3fab8cfbeca48901b36e6abc58ec39a98cf2ff80b841c86"
+  },
+  "stage": {
+    "path": "C:\\issue-closeout-evidence\\trayrc-a1-stage\\Stage.actual.json",
+    "bytes": 13670,
+    "sha256": "ed5dc9cb9be8c39d41e023b9161cadcbfa24e03a39a2d3d831c396746f114068"
+  },
+  "fixedBudgets": {
+    "innerMs": 90000,
+    "ownedMs": 100000,
+    "drainMs": 2000
+  },
+  "bothArchitecturesPassedWithinFiniteScope": true,
+  "cases": [
+    {
+      "architecture": "x64",
+      "analysis": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-analysis/trayrc-a1-x64/Analysis.actual.json",
+        "bytes": 10630,
+        "sha256": "9f164d59b812076bb1f93194bf7f19cc479cced74079e03dee38691abf8d3600"
+      },
+      "summary": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/trayrc-a1-x64/raw/Summary.actual.json",
+        "bytes": 7451,
+        "sha256": "0d64ff02732146ef103ea4c07247173b00597f5c3b8219266b7e0bb5401ef3b2"
+      },
+      "nativePid": 4516,
+      "nativeBirth": "134377555900031081",
+      "nativeElapsedMs": 52303,
+      "ownedElapsedMs": 52367,
+      "nativeExitCode": 0,
+      "wholeJobClosed": true,
+      "forceOrFallbackUsed": false,
+      "nativeRecords": 37,
+      "explorerIdentities": [
+        {
+          "pid": 1440,
+          "birthFileTime": "134377458949105068",
+          "imagePath": "C:\\Windows\\explorer.exe"
+        },
+        {
+          "pid": 1492,
+          "birthFileTime": "134377556022860935",
+          "imagePath": "C:\\Windows\\explorer.exe"
+        },
+        {
+          "pid": 4872,
+          "birthFileTime": "134377556329956152",
+          "imagePath": "C:\\Windows\\explorer.exe"
+        }
+      ],
+      "explicitRemoveCalls": 1,
+      "settleObservedMs": 523,
+      "firstRecoveryPassed": true,
+      "secondRestartDidNotResurrect": true,
+      "cleanupConfirmed": true,
+      "retainedScreenshots": 9,
+      "realRestartScenarioSupportedWithinRun": true,
+      "rawTaskbarMessageSenderAuthenticated": false
+    },
+    {
+      "architecture": "x86",
+      "analysis": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-analysis/trayrc-a1-x86/Analysis.actual.json",
+        "bytes": 10761,
+        "sha256": "bb904c8c568ad6139274ca96a56c11d031d41d699766e2730096e83baeffb70a"
+      },
+      "summary": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/trayrc-a1-x86/raw/Summary.actual.json",
+        "bytes": 7451,
+        "sha256": "b4227580243609e923211a92b8b36b4f322c04e189e724390d0c399f1c77c561"
+      },
+      "nativePid": 2168,
+      "nativeBirth": "134377558407059196",
+      "nativeElapsedMs": 74160,
+      "ownedElapsedMs": 74228,
+      "nativeExitCode": 0,
+      "wholeJobClosed": true,
+      "forceOrFallbackUsed": false,
+      "nativeRecords": 37,
+      "explorerIdentities": [
+        {
+          "pid": 4872,
+          "birthFileTime": "134377556329956152",
+          "imagePath": "C:\\Windows\\explorer.exe"
+        },
+        {
+          "pid": 1916,
+          "birthFileTime": "134377558689905839",
+          "imagePath": "C:\\Windows\\explorer.exe"
+        },
+        {
+          "pid": 3576,
+          "birthFileTime": "134377558941655870",
+          "imagePath": "C:\\Windows\\explorer.exe"
+        }
+      ],
+      "explicitRemoveCalls": 1,
+      "settleObservedMs": 548,
+      "firstRecoveryPassed": true,
+      "secondRestartDidNotResurrect": true,
+      "cleanupConfirmed": true,
+      "retainedScreenshots": 9,
+      "realRestartScenarioSupportedWithinRun": true,
+      "rawTaskbarMessageSenderAuthenticated": false
+    }
+  ],
+  "priorPassedUnchangedInputsRetested": false,
+  "extraRunsPerformed": false,
+  "focusQualified": false,
+  "previousFocusB1FailureReclassified": false,
+  "win7Qualified": false,
+  "fullIssueQualified": false,
+  "productionQualificationComplete": false,
+  "releaseReady": false,
+  "longTestsDeferred": true
+}

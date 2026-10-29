@@ -4,7 +4,9 @@
 
 当前交付为 0.6.0；[发布说明](../releases/0.6.0.md)和[RELEASE-FACTS](../../verification/production-validation/0.6.0-release-2026-10-29/RELEASE-FACTS.json)记录两架构必要构建、安装消费者、默认应用八次运行、受控 DevTools GUI 代表例和供应/应用归档的限定范围。当前[根验收报告](../../verification/acceptance.json)为 0.6.0、`status=unverified`、`collectionExecuted=false`；`releaseReady=false`、`productionQualificationComplete=false`、`fullDevtoolsGoalComplete=false`。
 
-下方 V01–V06 表和采用价值项保留原日期、候选、失败及未完成条件，是历史追踪记录；其中“当前”“待实现”或“待审查分支”不直接描述今日源码，也不能把旧通过改挂到 0.6.0。当前实现须结合公共源码、后续 ADR 和[已知限制](../known-issues.md)核对；已实现不等于完整场景验收通过。现有短测不关闭真实 Shell/驻留、长时续期、目标系统/IME/DPI/多屏、完整交付或 Electron 采用价值门槛。
+下方 V01–V06 表和采用价值项保留原日期、候选、失败及未完成条件，是历史追踪记录；其中“当前”“待实现”或“待审查分支”不直接描述今日源码，也不能把旧通过改挂到 0.6.0。当前实现须结合公共源码、后续 ADR 和[已知限制](../known-issues.md)核对；已实现不等于完整场景验收通过。这些限定结果不关闭完整 Shell/驻留、长时续期、目标系统/IME/DPI/多屏、完整交付或 Electron 采用价值门槛。
+
+本轮安装 SDK 0.6.0 的独立 x64/x86 公共托盘消费者，在 Server 2022 VM 中各完成两次真实 Explorer 重启、一次显式移除及移除后不复活，清理并自然退出，见[逐项收尾记录](../maintenance/open-issues-20261029.md)。此恢复项已有当前证据；菜单/快捷键的完整成功返回、焦点、三窗业务隔离、模态关闭与 Win7 仍单列，不修改下方历史失败。
 
 千次生命周期、八小时及完整性能/环境资格继续按[交接](../testing/v0.6.0-long-run-handoff.md)后置，输入未变且已通过的短测不重复。发布后的[工具源码收尾](../maintenance/windows-tooling-failure-closeout-20261029.md)另有输入和验证身份，不替换已发布包。
 
