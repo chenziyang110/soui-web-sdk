@@ -5,6 +5,7 @@ import path from 'node:path';
 import {spawnSync} from 'node:child_process';
 import {buildOfflineAssets} from './offline-assets.mjs';
 import {verifySourceVendor} from '../upstream/provenance.mjs';
+import {resolveRendererProfile} from '../upstream/renderer-profiles.mjs';
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 const cache = path.resolve(root, '../.scratch-cache');
@@ -51,8 +52,7 @@ if (sourceRecord) {
   const html = await readFile(htmlPath,'utf8');
   const anchor = '<html lang="zh-CN">';
   if (html.split(anchor).length !== 2) throw new Error('Scratch HTML identity anchor changed.');
-  if (!['stock','local-hull-cache-v1'].includes(sourceRecord.rendererProfile))
-    throw new Error('Invalid source vendor renderer profile.');
+  resolveRendererProfile(sourceRecord.rendererProfile);
   await writeFile(htmlPath,html.replace(anchor,`<html lang="zh-CN" data-scratch-source-commit="${sourceRecord.sourceCommit}" data-scratch-source-version="${sourceRecord.upstreamSourceVersion}" data-scratch-renderer-profile="${sourceRecord.rendererProfile}">`));
 }
 // Build from this delivery's public client, retaining SDK session and renewal semantics.

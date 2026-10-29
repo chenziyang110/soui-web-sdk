@@ -3,7 +3,7 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {createHash} from 'node:crypto';
 import {spawnSync} from 'node:child_process';
-import {verifySourceVendor} from './upstream/provenance.mjs';
+import {verifySourceVendor,verifyRuntimeSourceSelection} from './upstream/provenance.mjs';
 
 const demo = path.dirname(fileURLToPath(import.meta.url));
 const sdk = path.resolve(demo, '../..');
@@ -20,26 +20,7 @@ const vendorLock=JSON.parse(await fs.readFile(path.join(demo,'web/vendor-lock.js
 const version = (await fs.readFile(path.join(sdk,'VERSION'),'utf8')).trim();
 if (!/^0\.6\.0(?:-[A-Za-z0-9.-]+)?$/.test(version)) throw new Error('Expected 0.6.0 SDK version');
 const built = path.join(sdk, `out/scratch-${arch}-package/bin/Release/SouiScratch`);
-async function verifyRuntimeSelection(resources) {
-  let record;
-  try {record=JSON.parse(await fs.readFile(path.join(resources,'scratch-legal/source-build.json'),'utf8'));}
-  catch(error){if(error.code!=='ENOENT')throw error;}
-  if(sourceIdentity) {
-    if(!record || record.schema!=='soui.scratch-runtime-source/v1' ||
-        record.fullSourceRecordSha256!==sourceIdentity.recordSha256 ||
-        record.sourceCommit!==sourceRecord.sourceCommit || record.sourceLockSha256!==sourceRecord.sourceLockSha256 ||
-        record.upstreamSourceVersion!==sourceRecord.upstreamSourceVersion ||
-        record.referenceArtifactVersion!==sourceRecord.referenceArtifactVersion ||
-        record.bundleSha256!==sourceRecord.bundleSha256 ||
-        hash(await fs.readFile(path.join(resources,'scratch-gui-standalone.js')))!==sourceRecord.bundleSha256)
-      throw new Error('Packaged runtime does not match the selected source vendor; rebuild with the same SourceVendor.');
-    const html=await fs.readFile(path.join(resources,'index.html'),'utf8');
-    if(!html.includes(`data-scratch-source-commit="${sourceRecord.sourceCommit}"`) ||
-        !html.includes(`data-scratch-source-version="${sourceRecord.upstreamSourceVersion}"`))
-      throw new Error('Packaged HTML does not identify the selected source vendor.');
-  } else if(record) throw new Error('Source-built runtime requires its explicit SourceVendor; stock packaging cannot adopt it.');
-}
-await verifyRuntimeSelection(path.join(built,'resources'));
+await verifyRuntimeSourceSelection(path.join(built,'resources'),sourceIdentity);
 const deliveries = path.resolve(sdk, '../deliverables');
 await fs.mkdir(deliveries,{recursive:true});
 let folder;
@@ -66,7 +47,7 @@ async function copyTree(source,destination,{sourceOnly=false}={}) {
   } else throw new Error('Unsupported file type: '+source);
 }
 await copyTree(built,folder);
-await verifyRuntimeSelection(path.join(folder,'resources'));
+await verifyRuntimeSourceSelection(path.join(folder,'resources'),sourceIdentity);
 const resources=JSON.parse(await fs.readFile(path.join(folder,'resources/.scratch-resources.json'),'utf8'));
 for(const entry of resources.files) {
   const file=path.resolve(folder,'resources',entry.path);
@@ -151,6 +132,7 @@ await fs.writeFile(path.join(folder,'package-manifest.json'),JSON.stringify({sch
   scratchVersion:sourceRecord?.upstreamSourceVersion ?? vendorLock.version,
   scratchVendor:sourceRecord ? {kind:'patched-source',upstreamSourceVersion:sourceRecord.upstreamSourceVersion,
     referenceArtifactVersion:sourceRecord.referenceArtifactVersion,sourceCommit:sourceRecord.sourceCommit,
+    rendererProfile:sourceRecord.rendererProfile,
     sourceBuildSha256:sourceIdentity.recordSha256,bundleSha256:sourceRecord.bundleSha256,
     sourceMaterials:'source-materials/scratch-source-build'} : {kind:'reference-artifact',referenceArtifactVersion:vendorLock.version},
   architecture:arch,configuration:'Release',productionReady:false,files:inventory},null,2));

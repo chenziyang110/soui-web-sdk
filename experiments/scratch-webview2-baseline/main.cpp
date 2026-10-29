@@ -9,6 +9,7 @@
 #include "loader_policy.h"
 #include "preload.h"
 #include "diagnostic-webview2-session.h"
+#include "manual-profile-start.h"
 #include <algorithm>
 #include <chrono>
 #include <cmath>
@@ -125,6 +126,8 @@ struct application : std::enable_shared_from_this<application> {
   ComPtr<ICoreWebView2Controller> controller;
   ComPtr<ICoreWebView2> core;
   bool diagnosticMode{},diagnosticPublished{};
+  soui::scratch_diagnostic::manual_profile_start manual;
+  ULONGLONG diagnosticReadyAt{};
   std::shared_ptr<soui::scratch_diagnostic::webview2_capture> diagnostic;
   json failures=json::array(),windowEvents=json::array();
   json record{{"schema","soui.scratch-raw-webview2-session/v1"},{"backend","W: raw WebView2 HWND"},
@@ -260,8 +263,10 @@ struct application : std::enable_shared_from_this<application> {
       response={{"requestId",id},{"ok",false},{"error",{{"code","E_SESSION"},{"message","Invalid comparison session"}}}};
     else if(method=="app.info")response["result"]={{"sdkVersion",SOUI_SDK_VERSION_STRING},{"buildId","raw WebView2 comparison W"},{"backend","WebView2 raw W"},{"runtimeVersion",record.value("runtimeVersion",std::string{})}};
     else if(method=="bridge.probe.report"){
-      ready=true;KillTimer(window,3);response["result"]={{"ready",true}};
-      if(diagnosticMode && !diagnostic && !SetTimer(window,4,500,nullptr))throw std::runtime_error("Diagnostic owner timer unavailable");
+      const bool firstReady=!ready;
+      if(firstReady){ready=true;diagnosticReadyAt=GetTickCount64();}
+      KillTimer(window,3);response["result"]={{"ready",true}};
+      if(firstReady && diagnosticMode && !SetTimer(window,4,500,nullptr))throw std::runtime_error("Diagnostic owner timer unavailable");
     }
     else response={{"requestId",id},{"ok",false},{"error",{{"code","E_UNSUPPORTED"},{"message","Rendering comparison only; native business actions are unavailable"}}}};
     const auto envelope=json{{"kind","response"},{"documentId",documentId},{"requestId",id},{"invocationId",invocation},{"raw",response.dump()}}.dump();
@@ -320,6 +325,11 @@ struct application : std::enable_shared_from_this<application> {
   }
   void diagnosticTick() {
     if(!diagnosticMode || !ready || closing)return;
+    manual.reflect_readiness(window,true);
+    if(manual.waiting()) {
+      if(GetTickCount64()-diagnosticReadyAt>120000)failed("Manual start exceeded the original diagnostic budget");
+      return;
+    }
     if(!diagnostic) {
       const auto weak=weak_from_this();
       diagnostic=std::make_shared<soui::scratch_diagnostic::webview2_capture>(core.Get(),output/L"diagnostic",[weak]{
@@ -328,7 +338,8 @@ struct application : std::enable_shared_from_this<application> {
           {"minimized",IsIconic(s->window)!=FALSE},{"geometryQualified",geometry&&bounds.right==s->width&&bounds.bottom==s->height},
           {"width",bounds.right},{"height",bounds.bottom}};
       },width,height);
-      active=true;measureAt=GetTickCount64();windowEvents=json::array();diagnostic->start();
+      active=true;measureAt=GetTickCount64();windowEvents=json::array();
+      diagnostic->start(manual.enabled()?diagnosticReadyAt:0,manual.enabled());
     } else diagnostic->tick();
     if(diagnostic->done() && !diagnosticPublished) {
       diagnosticPublished=true;active=false;KillTimer(window,4);const auto& captured=diagnostic->result();
@@ -346,12 +357,32 @@ struct application : std::enable_shared_from_this<application> {
     if(message==WM_NCCREATE){self=static_cast<application*>(reinterpret_cast<CREATESTRUCTW*>(lparam)->lpCreateParams);SetWindowLongPtrW(window,GWLP_USERDATA,reinterpret_cast<LONG_PTR>(self));self->window=window;}
     if(!self)return DefWindowProcW(window,message,wparam,lparam);
     try {
+      if(message==WM_COMMAND && LOWORD(wparam)==soui::scratch_diagnostic::manual_profile_start::command_id && HIWORD(wparam)==0){
+        if(!self->closing && self->manual.waiting() && self->ready && self->controller &&
+            soui::scratch_diagnostic::profile_owner_guard(window)){
+          const auto controller=self->controller;
+          check(controller->MoveFocus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC),"Manual diagnostic focus");
+          if(self->closing || !IsWindow(window) || self->controller.Get()!=controller.Get())return 0;
+          const bool owner_foreground=soui::scratch_diagnostic::profile_owner_guard(window);
+          if(self->manual.request(true,owner_foreground)){
+            LARGE_INTEGER at{};QueryPerformanceCounter(&at);
+            self->record["manualStartRequest"]={{"qpc",std::to_string(at.QuadPart)},{"nativeForeground",owner_foreground},{"hardwareInputProven",false},
+              {"budgetBeganTick",std::to_string(self->diagnosticReadyAt)}};
+            self->manual.reflect_readiness(window,true);
+            SetWindowTextW(window,L"Raw WebView2 W — 已开始，请保持前台约30秒");
+          }
+        }
+        return 0;
+      }
       if(message==WM_SIZE){self->resizeEvent(wparam==SIZE_MINIMIZED?"minimized":"resize");self->bounds();return 0;}
       if(message==WM_ACTIVATE){if(LOWORD(wparam)==WA_INACTIVE)self->resizeEvent("blur");return 0;}
       if(message==WM_KEYDOWN && wparam==VK_F6){self->boundary([&]{self->sample();});return 0;}
       if(message==WM_APP+41){self->boundary([&]{self->sample();});return 0;}
       if(message==WM_SETFOCUS){const auto controller=self->controller;if(controller)check(controller->MoveFocus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC),"Focus");return 0;}
-      if(message==WM_CLOSE){self->close();return 0;}
+      if(message==WM_CLOSE){
+        if(self->manual.enabled() && !self->diagnosticPublished && !self->closing && self->exitCode==0){self->exitCode=4;self->record["manualStartCancelled"]=true;}
+        self->close();return 0;
+      }
       if(message==WM_TIMER && wparam==1){if(GetTickCount64()-self->closeAt>10000){try{self->record["cleanup"]="deadline-failed-not-passed";self->record["pass"]=false;self->save();}catch(...){}ExitProcess(3);}self->close();return 0;}
       if(message==WM_TIMER && wparam==2){KillTimer(window,2);if(self->active)self->failed("Sample deadline exceeded");return 0;}
       if(message==WM_TIMER && wparam==3){KillTimer(window,3);if(!self->ready)self->failed("Scratch startup deadline exceeded");return 0;}
@@ -375,8 +406,10 @@ int WINAPI wWinMain(HINSTANCE instance,HINSTANCE,LPWSTR,int show) {
       if(name==L"--resources")app->resources=std::filesystem::canonical(value);
       else if(name==L"--output")app->output=std::filesystem::absolute(value).lexically_normal();
       else if(name==L"--diagnostic"){if(value!=L"profile")throw std::runtime_error("Only --diagnostic profile is supported");app->diagnosticMode=true;}
+      else if(name==L"--start"){if(value!=L"manual" || app->manual.enabled())throw std::runtime_error("Only one --start manual is supported");app->manual=soui::scratch_diagnostic::manual_profile_start(true);}
       else if(name==L"--width"||name==L"--height"){if(value.empty()||value.find_first_not_of(L"0123456789")!=std::wstring::npos)throw std::runtime_error("Invalid dimensions");const auto size=std::stoul(value);if(size<200||size>8192)throw std::runtime_error("Dimension range");if(name==L"--width")app->width=static_cast<int>(size);else app->height=static_cast<int>(size);}
       else throw std::runtime_error("Unknown option");}
+    if(app->manual.enabled() && !app->diagnosticMode)throw std::runtime_error("Manual start requires --diagnostic profile");
     if(app->resources.empty()||app->output.empty()||app->output.filename().empty())throw std::runtime_error("Required: --resources DIR --output NEW_DIRECTORY [--width 1424 --height 861]");
     // Resolve an existing parent junction before admitting a new child: a
     // lexical path outside resources can otherwise write into the served tree.
@@ -417,11 +450,12 @@ int WINAPI wWinMain(HINSTANCE instance,HINSTANCE,LPWSTR,int show) {
       {std::ofstream stream(file,std::ios::binary);stream<<input.second;if(!stream)throw std::runtime_error("Diagnostic input export failed");}
       app->record["diagnosticSourceInputs"].push_back({{"name",utf8(input.first)},{"bytes",input.second.size()},{"sha256",fileHash(file)}});
     }
-    app->record["diagnosticOnly"]=app->diagnosticMode;app->save();
+    app->record["diagnosticOnly"]=app->diagnosticMode;app->record["manualStartRequired"]=app->manual.enabled();app->save();
     const auto dpi=reinterpret_cast<BOOL(WINAPI*)(HANDLE)>(GetProcAddress(GetModuleHandleW(L"user32.dll"),"SetProcessDpiAwarenessContext"));if(dpi)dpi(reinterpret_cast<HANDLE>(-4));
     WNDCLASSW type{};type.hInstance=instance;type.lpfnWndProc=&application::procedure;type.lpszClassName=L"ScratchRawWebView2Baseline";type.hCursor=LoadCursorW(nullptr,IDC_ARROW);if(!RegisterClassW(&type))throw std::runtime_error("Window class");
-    RECT bounds{0,0,app->width,app->height};if(!AdjustWindowRectEx(&bounds,WS_OVERLAPPEDWINDOW,FALSE,0))throw std::runtime_error("Window dimensions");
+    RECT bounds{0,0,app->width,app->height};if(!AdjustWindowRectEx(&bounds,WS_OVERLAPPEDWINDOW,app->manual.enabled(),0))throw std::runtime_error("Window dimensions");
     if(!CreateWindowExW(0,type.lpszClassName,L"Scratch — raw WebView2 W (F6 records loaded scene)",WS_OVERLAPPEDWINDOW,CW_USEDEFAULT,CW_USEDEFAULT,bounds.right-bounds.left,bounds.bottom-bounds.top,nullptr,nullptr,instance,app.get()))throw std::runtime_error("Window creation");
+    app->manual.attach(app->window);
     ShowWindow(app->window,show);app->start();MSG message{};int received{};
     while((received=GetMessageW(&message,nullptr,0,0))>0){if(message.message==WM_KEYDOWN && message.wParam==VK_F6){app->boundary([&]{app->sample();});continue;}TranslateMessage(&message);DispatchMessageW(&message);}
     result=received<0 ? 2 : static_cast<int>(message.wParam);

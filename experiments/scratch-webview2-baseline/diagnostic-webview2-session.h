@@ -3,6 +3,7 @@
 // close and keeps this session alive until pending()==0 after cancellation.
 #include "diagnostic-capture-policy.h"
 #include "diagnostic-inputs.h"
+#include "manual-profile-start.h"
 #include <WebView2.h>
 #include <wrl.h>
 #include <windows.h>
@@ -35,9 +36,14 @@ class webview2_capture final : public std::enable_shared_from_this<webview2_capt
   bool done() const noexcept { return phase_ == phase::done || phase_ == phase::timed_out; }
   bool timed_out() const noexcept { return timed_out_; }
   const json& result() const noexcept { return result_; }
-  void start() {
+  void start(ULONGLONG original_epoch = 0, bool require_page_focus = false) {
     if (phase_ != phase::idle) throw std::runtime_error("Diagnostic capture may start only once");
-    phase_ = phase::setup; begun_ = GetTickCount64();
+    const auto now = GetTickCount64();
+    const auto budget_begin = profile_budget_begin(now, original_epoch);
+    phase_ = phase::setup; begun_ = budget_begin;
+    require_page_focus_ = require_page_focus;
+    result_["budgetBeganTick"] = std::to_string(begun_);
+    result_["manualPageFocusRequired"] = require_page_focus_;
     subscribe(L"Tracing.dataCollected"); subscribe(L"Tracing.bufferUsage"); subscribe(L"Tracing.tracingComplete");
     script(page_script::setup, [self=shared_from_this()](bool ok, const json&) {
       if (!ok) return self->abort("Scene setup failed"); self->phase_ = phase::waiting;
@@ -58,6 +64,7 @@ class webview2_capture final : public std::enable_shared_from_this<webview2_capt
           if(value.value("width",0)!=self->width_ || value.value("height",0)!=self->height_ ||
               value.value("devicePixelRatio",0.0)!=1.0 || value.value("visibility",std::string{})!="visible")
             return self->abort("Diagnostic page viewport/DPR differs");
+          if (self->require_page_focus_ && !value.value("hasFocus",false)) return;
           self->result_["configuration"] = value;
           if (!self->guard("warmup-start")) return self->abort("Native warmup guard failed");
           self->phase_ = phase::setup;
@@ -108,6 +115,7 @@ class webview2_capture final : public std::enable_shared_from_this<webview2_capt
   int width_{},height_{};
   ULONGLONG begun_{}, deadline_{};
   bool profiler_enabled_{}, profiler_started_{}, trace_started_{}, trace_complete_{}, timed_out_{},retiring_events_{};
+  bool require_page_focus_{};
   bool native_fault_{},event_failure_{};
   bool cancel_export_needed_{},cancel_exported_{};
   unsigned successful_subscriptions_{};

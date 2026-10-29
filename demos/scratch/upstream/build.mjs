@@ -17,7 +17,7 @@ const argv = process.argv.slice(2);
 const options = new Map();
 for (let i=0;i<argv.length;i+=2) {
   if (!['--source-root','--output','--npm-cli','--renderer-profile'].includes(argv[i]) || !argv[i+1] || options.has(argv[i]))
-    throw new Error('Usage: node build.mjs --source-root CLEAN_PINNED_CHECKOUT --output NEW_DIRECTORY [--npm-cli NPM_CLI_JS] [--renderer-profile stock|local-hull-cache-v1]');
+    throw new Error('Usage: node build.mjs --source-root CLEAN_PINNED_CHECKOUT --output NEW_DIRECTORY [--npm-cli NPM_CLI_JS] [--renderer-profile stock|local-hull-cache-v1|local-hull-cache-gui-shared-v1]');
   options.set(argv[i],argv[i+1]);
 }
 if (!options.has('--source-root') || !options.has('--output')) throw new Error('source-root and output are required.');

@@ -3,6 +3,7 @@
 #include <soui/version.h>
 #include "../../sdk/renderers/webview2/stage0_devtools.h"
 #include "../scratch-webview2-baseline/diagnostic-capture-policy.h"
+#include "../scratch-webview2-baseline/manual-profile-start.h"
 #include "diagnostic_recipe.h"
 #include <windows.h>
 #include <shellapi.h>
@@ -33,6 +34,7 @@ bool contains_path(const std::filesystem::path& parent, const std::filesystem::p
 }
 struct application final {
   HWND window{};
+  soui::scratch_diagnostic::manual_profile_start manual;
   std::filesystem::path output, resources, profile;
   std::string prepared_runtime_version;
   soui::sdk::json_bridge bridge{"app://scratch-studio"};
@@ -111,7 +113,9 @@ struct application final {
     if (closing) { close(); return; }
     observe_window();
     if (clock_type::now() - began > std::chrono::seconds(120)) { fail("Diagnostic 120s total deadline exceeded"); return; }
-    if (!preparation_completed || !host || !host->application_ready()) return;
+    const bool ready = preparation_completed && host && host->application_ready();
+    manual.reflect_readiness(window, ready);
+    if (!ready || manual.waiting()) return;
     if (!granted) {
       if (!grant_preflight_checked) {
         const auto before = access::observe(*renderer);
@@ -144,6 +148,10 @@ struct application final {
               response.value("devicePixelRatio",0.0) != 1.0 || response.value("visibility",std::string()) != "visible") {
             fail("Diagnostic viewport, DPR or visibility differs from the fixed protocol"); return;
           }
+          if (!manual.page_admitted(soui::scratch_diagnostic::profile_owner_guard(window),
+              response.value("hasFocus",false))) {
+            response_ready=false; due=clock_type::now()+std::chrono::milliseconds(500); return;
+          }
           record["configuration"] = response;
           phase = 2; page(action::install,"page.install");
         } else if (clock_type::now() >= due) page(action::query,"page.query");
@@ -158,6 +166,9 @@ struct application final {
         if (response_ready) { response_ready=false; due=clock_type::now()+std::chrono::seconds(10); phase=6; } break;
       case 6:
         if (clock_type::now() >= due) {
+          if (manual.enabled() && !soui::scratch_diagnostic::profile_owner_guard(window)) {
+            fail("Manual diagnostic lost foreground during warmup"); return;
+          }
           if (trace_supported) { phase = 7; command(L"Tracing.start"); }
           else { phase = 8; command(L"Profiler.start"); }
         } break;
@@ -165,9 +176,19 @@ struct application final {
       case 8: if (response_ready) { phase = 9; page(action::start,"page.start"); } break;
       case 9:
         if (response_ready) { record["captureStart"] = response; response_ready = false; due = clock_type::now() + std::chrono::seconds(10); phase = 10; } break;
-      case 10: if (clock_type::now() >= due) { phase = 11; page(action::finish,"page.finish"); } break;
+      case 10:
+        if (manual.enabled() && !soui::scratch_diagnostic::profile_owner_guard(window)) {
+          fail("Manual diagnostic lost foreground during capture"); return;
+        }
+        if (clock_type::now() >= due) { phase = 11; page(action::finish,"page.finish"); } break;
       case 11:
-        if (response_ready) { record["page"] = response; phase = 12; command(L"Profiler.stop"); } break;
+        if (response_ready) {
+          record["page"] = response;
+          if (manual.enabled() && !response.value("pageGuardsQualified",false)) {
+            exit_code=2;record["failures"].push_back("Manual diagnostic page focus/visibility guard failed");
+          }
+          phase = 12; command(L"Profiler.stop");
+        } break;
       case 12:
         if (response_ready) {
           if (!response.is_object() || !response.contains("profile") || !response["profile"].is_object()) {
@@ -230,6 +251,7 @@ struct application final {
     KillTimer(window,1); DestroyWindow(window);
   }
   void start() {
+    record["manualStartRequired"]=manual.enabled();
     LARGE_INTEGER frequency{}; QueryPerformanceFrequency(&frequency);
     record["qpcFrequency"]=frequency.QuadPart; record["pid"]=GetCurrentProcessId();
     record["resources"]=resources.u8string();
@@ -267,6 +289,23 @@ struct application final {
     if (!app) return DefWindowProcW(window,message,wparam,lparam);
     try {
       switch (message) {
+        case WM_COMMAND:
+          if (LOWORD(wparam)==soui::scratch_diagnostic::manual_profile_start::command_id && HIWORD(wparam)==0 && !app->closing) {
+            const bool ready=app->preparation_completed && app->host && app->host->application_ready();
+            if (!app->manual.waiting() || !ready || !soui::scratch_diagnostic::profile_owner_guard(window)) return 0;
+            const auto focused=app->host->focus();
+            if (!focused.ok) { app->fail("Manual diagnostic focus request failed: "+focused.code); return 0; }
+            if (app->closing || !IsWindow(window)) return 0;
+            const bool owner_foreground=soui::scratch_diagnostic::profile_owner_guard(window);
+            if (app->manual.request(ready,owner_foreground)) {
+              LARGE_INTEGER at{};QueryPerformanceCounter(&at);
+              app->record["manualStartRequest"]={{"qpc",std::to_string(at.QuadPart)},{"nativeForeground",owner_foreground},{"hardwareInputProven",false}};
+              app->manual.reflect_readiness(window,true);
+              SetWindowTextW(window,L"SOUI SDK S — 已开始，请保持前台约30秒");
+            }
+            return 0;
+          }
+          break;
         case soui::sdk::webview2_event_message: if (app->host && !app->closing) app->host->pump(); if (app->closing) app->close(); return 0;
         case WM_TIMER: case wake_message: app->advance(); return 0;
         case WM_SIZE:
@@ -290,8 +329,10 @@ struct application final {
 int WINAPI wWinMain(HINSTANCE instance,HINSTANCE,LPWSTR,int show) {
   int argc{}; auto** argv=CommandLineToArgvW(GetCommandLineW(),&argc);
   if (!argv) return 2;
-  if (argc != 5 || std::wstring(argv[1]) != L"--resources" || std::wstring(argv[3]) != L"--output") { LocalFree(argv); return 2; }
-  application app; app.resources=argv[2]; app.output=argv[4]; LocalFree(argv);
+  if ((argc != 5 && argc != 7) || std::wstring(argv[1]) != L"--resources" || std::wstring(argv[3]) != L"--output" ||
+      (argc==7 && (std::wstring(argv[5])!=L"--start" || std::wstring(argv[6])!=L"manual"))) { LocalFree(argv); return 2; }
+  application app; app.manual=soui::scratch_diagnostic::manual_profile_start(argc==7);
+  app.resources=argv[2]; app.output=argv[4]; LocalFree(argv);
   try {
     if (!app.resources.is_absolute() || !app.output.is_absolute() || !std::filesystem::is_directory(app.resources) ||
         !std::filesystem::is_directory(app.output.parent_path()) || app.output.filename().empty() || std::filesystem::exists(app.output)) return 2;
@@ -307,10 +348,11 @@ int WINAPI wWinMain(HINSTANCE instance,HINSTANCE,LPWSTR,int show) {
     WNDCLASSW type{}; type.hInstance=instance; type.lpfnWndProc=&application::procedure;
     type.lpszClassName=L"SouiScratchDiagnostic"; type.hCursor=LoadCursorW(nullptr,IDC_ARROW);
     if (!RegisterClassW(&type)) throw std::runtime_error("Diagnostic window class registration failed");
-    RECT bounds{0,0,1424,861}; if (!AdjustWindowRectEx(&bounds,WS_OVERLAPPEDWINDOW,FALSE,0)) throw std::runtime_error("Diagnostic client size failed");
+    RECT bounds{0,0,1424,861}; if (!AdjustWindowRectEx(&bounds,WS_OVERLAPPEDWINDOW,app.manual.enabled(),0)) throw std::runtime_error("Diagnostic client size failed");
     if (!CreateWindowExW(0,type.lpszClassName,L"SOUI SDK S — diagnostic profiling",WS_OVERLAPPEDWINDOW|WS_CLIPCHILDREN,
         CW_USEDEFAULT,CW_USEDEFAULT,bounds.right-bounds.left,bounds.bottom-bounds.top,nullptr,nullptr,instance,&app))
       throw std::runtime_error("Diagnostic window creation failed");
+    app.manual.attach(app.window);
     if (!SetTimer(app.window,1,100,nullptr)) throw std::runtime_error("Diagnostic timer creation failed");
     app.start(); ShowWindow(app.window,show);
     MSG message{};
@@ -323,6 +365,7 @@ int WINAPI wWinMain(HINSTANCE instance,HINSTANCE,LPWSTR,int show) {
   } catch (const std::exception& error) {
     save(app.output / "startup-error.json",{{"error",error.what()},{"diagnosticOnly",true}});
     if (app.preparation_started) std::terminate();
+    if (app.window && IsWindow(app.window)) DestroyWindow(app.window);
   }
   app.watch.reset(); app.host.reset(); CoUninitialize(); return result;
 }

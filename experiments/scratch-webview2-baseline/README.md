@@ -2,7 +2,7 @@
 
 此目录是本地性能实验消费者，直接创建 WebView2 Environment/普通 HWND Controller，不链接或创建 `Soui::WebView2`、SDK Host、正式 Bridge worker 或业务服务。它用于把同一 Scratch 页面中的 SDK 增量与 Runtime/页面差异分开。不是发布后端，不代表正式 SDK、安全或生产生命周期验收。
 
-当前为源码候选，**未编译、未启动、未采样**。存在可执行构建/采集入口不等于 E/W/S 三层对照已经完成。
+当前为隔离实验消费者。专用 x64 LLVM22/MSVC142 构建已执行，默认 MSVC143 与完整 E/W/S 三层对照尚未完成；实际证据范围不能从入口存在或编译成功推定。
 
 ## 构建与运行
 
@@ -47,6 +47,8 @@ Build 只通过当前 SDK 的 `Restore-WebView2.ps1` 取已固定/校验的包�
 ## 固定诊断模式
 
 新消费者可加 `--diagnostic profile`，自动通过同页既有场景选择、载入按钮和确认框加载 sprites/heavy；不修改产品页面、VM 频率或资源，不接触已打开的手动 S/E 窗口。该模式只执行一次 10 秒预热 + 10 秒 instrumented profile，不执行 F6 的正式 30 秒采集。
+
+由用户操作前台时，额外传 `--start manual`。页面 ready 后原生菜单启用“开始采集”；用户点击后，原生 owner 与页面实际焦点均符合要求才进入原预热。菜单占用 client 外空间，内容仍为指定尺寸。人工等待包含在首次 ready 起的原 120 秒诊断预算，点击和重复 ready 不重置期限；取消或失焦不会写成成功。S 专用目标使用 `--resources DIR --output NEW_DIRECTORY --start manual`，仍沿用原启动起 120 秒总期限。不传此选项保留原自动模式。这是诊断归因入口，正常应用的 FPS 观察继续使用普通性能面板。
 
 共同输入是本目录 `diagnostic-protocol.json`、`diagnostic-page-scripts.json`、`diagnostic-probe.js`。CMake 将其固定嵌入 W；S 独立诊断消费者与 E 驱动使用同配方，需核实际嵌入/读取字节 SHA。固定 CDP allowlist 仅包含 Profiler enable/setSamplingInterval/start/stop/disable 与 Tracing getCategories/start/end；没有 remote debugging port、任意网页 Evaluate 或 browser flags。原 loader/sandbox/resource 策略保持。
 

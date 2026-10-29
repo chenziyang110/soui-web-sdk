@@ -2,11 +2,67 @@ import {createHash} from 'node:crypto';
 import {readdir, lstat, readFile} from 'node:fs/promises';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
-import {resolveRendererProfile,verifyPatchedSources,verifySourcePaths,verifyShippedRecipe} from './renderer-profiles.mjs';
+import {resolveRendererProfile,verifyPatchRecords,verifyPatchedSources,verifySourcePaths,verifyShippedRecipe} from './renderer-profiles.mjs';
 
 const here=path.dirname(fileURLToPath(import.meta.url));
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 const lf=text=>text.replace(/\r\n/g,'\n');
+const canonical=value=>JSON.stringify(value,(_,item)=>item && !Array.isArray(item) && typeof item==='object' ?
+  Object.fromEntries(Object.keys(item).sort().map(key=>[key,item[key]])):item);
+function rootAttributes(html) {
+  // The generated entry has an explicit root after its whitespace, comments
+  // and optional doctype. Do not accept an HTML-looking string inside a
+  // comment/script, or an implicit browser root with no identity attributes.
+  let remaining=html.replace(/^\uFEFF/,'').trimStart(),doctypeSeen=false;
+  for(;;) {
+    if(remaining.startsWith('<!--')) {
+      const end=remaining.indexOf('-->');
+      if(end<0)return new Map();
+      remaining=remaining.slice(end+3).trimStart();continue;
+    }
+    const doctype=/^<!doctype\s+html\b[^>]*>/i.exec(remaining);
+    if(!doctype || doctypeSeen)break;
+    doctypeSeen=true;remaining=remaining.slice(doctype[0].length).trimStart();
+  }
+  const root=/^<html(?=\s|>)[^>]*>/i.exec(remaining),attributes=new Map();
+  if(root)for(const item of root[0].matchAll(/\s+([\w:.-]+)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/g)) {
+    const name=item[1].toLowerCase(),values=attributes.get(name) ?? [];
+    values.push(item[2] ?? item[3] ?? item[4]);attributes.set(name,values);
+  }
+  return attributes;
+}
+
+// Shared by package verification before and after copying the runtime. This
+// does not replace verifySourceVendor: its identity must already be verified.
+export async function verifyRuntimeSourceSelection(resources,sourceIdentity) {
+  let record;
+  try {record=JSON.parse(await readFile(path.join(resources,'scratch-legal/source-build.json'),'utf8'));}
+  catch(error) {if(error.code!=='ENOENT')throw error;}
+  if(!sourceIdentity) {
+    if(record)throw new Error('Source-built runtime requires its explicit SourceVendor; stock packaging cannot adopt it.');
+    return;
+  }
+  const sourceRecord=sourceIdentity.record;
+  if(!record || record.schema!=='soui.scratch-runtime-source/v1' ||
+      typeof sourceRecord.rendererProfile!=='string' ||
+      record.rendererProfile!==resolveRendererProfile(sourceRecord.rendererProfile) ||
+      canonical(record.patches)!==canonical(sourceRecord.patches) ||
+      record.fullSourceRecordSha256!==sourceIdentity.recordSha256 ||
+      record.sourceCommit!==sourceRecord.sourceCommit || record.sourceLockSha256!==sourceRecord.sourceLockSha256 ||
+      record.upstreamSourceVersion!==sourceRecord.upstreamSourceVersion ||
+      record.referenceArtifactVersion!==sourceRecord.referenceArtifactVersion ||
+      record.bundleSha256!==sourceRecord.bundleSha256 ||
+      sha(await readFile(path.join(resources,'scratch-gui-standalone.js')))!==sourceRecord.bundleSha256)
+    throw new Error('Packaged runtime does not match the selected source vendor/profile; rebuild with the same SourceVendor.');
+  const html=await readFile(path.join(resources,'index.html'),'utf8');
+  const attributes=rootAttributes(html);
+  for(const [name,value] of [['data-scratch-source-commit',sourceRecord.sourceCommit],
+    ['data-scratch-source-version',sourceRecord.upstreamSourceVersion],['data-scratch-renderer-profile',sourceRecord.rendererProfile]]) {
+    const values=attributes.get(name);
+    if(!values || values.length!==1 || values[0]!==value)
+      throw new Error('Packaged HTML does not identify the selected source vendor/profile.');
+  }
+}
 
 export async function distInventory(root, relative='') {
   const files=[];
@@ -43,6 +99,9 @@ export async function verifySourceVendor(root) {
   const lock=JSON.parse(await readFile(path.join(here,'../web/vendor-lock.json'),'utf8'));
   const lockSha='cabc070103553a7fe01332190b884c0dd8bc5517a64c13dc967f8afc92efa1ed';
   const reducer=lf(await readFile(path.join(here,'targets-reducer.js'),'utf8'));
+  // Reject a renamed/mixed profile before hashing a complete source/dist tree.
+  // The subsequent checks still verify every actual source and recipe byte.
+  verifyPatchRecords(rendererProfile,record.patches,sha(reducer));
   if(record.schema!=='soui.scratch-source-build/v1' ||
       record.sourceCommit!==lock.source.split('/').at(-1) || record.referenceArtifactVersion!==lock.version ||
       record.sourceLockSha256!==lockSha ||

@@ -1,6 +1,6 @@
 # ADR-0144：共享角色列表的全局状态订阅
 
-状态：设计待实现，须完成下述语义与实际收益验证；未加入现有bundle。
+状态：源码实现与真实 React/Redux 语义对照已完成；新 profile 的完整 bundle 构建与实际收益验证待执行。既有 bundle 未替换。
 
 ## 背景与证据
 
@@ -15,6 +15,8 @@
 `sprite-selector-item.jsx`保留现有default connected导出，新增named Context wrapper；缺Provider时回退原connected组件。合并props保持原connect的ownProps→stateProps→dispatchProps覆盖顺序。`sprite-list.jsx`只替换现有500ms asset HOC包裹对象，并把Provider放在现有SortableHOC外，不新增DOM层。
 
 缺Provider使用独立sentinel，不能把false的dragging/receivedBlocks当作缺失。按own id保留原`receivedBlocks && hoveredSprite === id`结果，不额外强制Boolean。dispatch回调在无关targets action时稳定，并随实际store替换正确更新。
+
+显式 `store`/`context` props 沿用旧 Sortable 入口，并用 MISSING context 隔离外层共享 Provider；不把 connect 的显式 store 自动传播给后代。这样保留原空列表可在无默认 Provider 时运行的边界。普通列表才接入共享订阅。hover 回调保留 undefined 返回，拖动回调保留 dispatch 原返回值。
 
 固定层次为Provider→SortableHOC(SpriteList)→既有asset节流器→Context consumer→既有PureComponent。consumer必须位于节流器内部：全局drag/hover仍可更新角色，但使用节流器最近一次实际render传入的asset。不得把全局props提升后穿过节流器，导致这些动作顺带提前刷新asset。
 
@@ -35,3 +37,9 @@
 - 完整新profile源码构建、对应源码/recipe闭包及bundle身份核验，再执行同逻辑工作量采样。没有实际前后收益前保持设计/候选状态，不更新性能资格。
 
 回退使用原profile和匹配bundle，或撤销这三处GUI接线并对应重建；不撤销已有hull失效、真实计量、权限或关闭屏障。
+
+## 已执行的限定验证
+
+真实 React、ReactDOM、Redux、react-redux 及原容器/Sortable 对照 9/9 通过。240 叶节点乘 8 次 targets dispatch：原叶 selector 1920 次，新叶 selector 0 次、共享 selector 8 次；DOM 和 action 数相同。覆盖原资产节流、原始 false/0/id 类型、回调返回、重排、rename/delete/restore、VM/storage/store 替换及 unmount。视觉叶与对话框边界使用 stub，未运行完整 VM/WebGL 工作负载，不能作为 FPS 或全组件渲染资格。上游 lint 对照无新增错误。
+
+新旧 profile、recipe/source 闭集及实际 runtime/HTML 采用边界测试最终 19/19 自然通过，25 项输入前后字节不变；实际运行命令为 `node --test --test-reporter=tap demos/scratch/upstream/renderer-profiles.test.mjs demos/scratch/upstream/targets-reducer.test.mjs`。完整 SourceVendor 构建及运行包核验另行记录，不用夹具通过代替。

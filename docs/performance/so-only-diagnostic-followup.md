@@ -36,4 +36,4 @@ CPU原始文件373591B，12528 samples/509 nodes。实际有26个负timeDelta，
 
 `_getConvexHullPointsForDrawable`包含样本50个，当前证据支持先查GUI通知/props扩散，尚不足以按预想继续改hull、默认调度预算或QoS。实际bundle及函数坐标/片段已绑定；source map没有被当作可靠的具体源码归因。原始CPU SHA为`2e1f89e76b411c440eb5e7330f9e8d89b1f013cbfa3c8f266a4e314f27777cd7`；计数、源路径、限定分母和资格分别保存在该证据集合的`analysis/cpu-counts-and-calltree.json`、`hotpath-assessment.json`和`qualification.json`。未重新启动Electron或完成S/W有效配对。
 
-下一次人工配对应先补明确的原生“开始采集”入口，在页面准备后由用户点击，再核验真实owner前台及页面focus后进入既有warmup/capture；不能把“用户准备好了”或ShowWindow返回当作焦点证据。该入口尚未实现；应保持原总期限、内容viewport、固定负载和失败规则，不以自动输入或删掉focus条件取得通过。
+后续已实现可选 `--start manual`：在页面准备后由用户点击原生“开始采集”菜单，再核验真实 owner 前台及页面 focus 后进入既有 warmup/capture。该入口保持原总期限、内容 viewport、固定负载和失败规则；不能把“用户准备好了”、菜单命令或 ShowWindow 返回当作焦点或真实硬件输入证据。默认自动模式保持。隐藏原生窗口夹具验证菜单 ready/一次性/关闭与 1424×861 client 尺寸；实际人工点击、前台采样与性能资格仍未取得。
