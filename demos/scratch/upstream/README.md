@@ -27,4 +27,33 @@ SourceVendor 不能与 SkipWeb 混用，避免用旧输出冒充源码候选。B
 
 Package 继续显式传递 SourceVendor 并复用 Web 构建的 provenance 核验。它要求部署的 runtime bundle、HTML 身份与 source-build 记录一致，复制后再次核验源码闭集；不能把源码版 runtime 当作 stock 打包，也不能只交付旧 npm 原包充当补丁版对应源码。包说明及 `package-manifest.json` 分开记录实际源码版本 15.2.0 和对照 artifact 15.3.0。
 
-当前未执行 npm 安装、上游编译或性能测试。结构性分配减少不等于已证明 FPS 提升。skin 共享、角色虚拟化、VM/Worker 改造仍需 profile 和独立兼容设计，不默认启用。最终产物还必须通过共同体积门禁。
+## Renderer 源配置与可重现配方
+
+`--renderer-profile` 仅接受 `stock`（默认）和 `local-hull-cache-v1`。这里的 stock 指原有**源码构建的 renderer**；它仍保留既有 targets reducer 优化和中立 Runtime 计数器这两个补丁，不等于未修改的 npm15.3 artifact。
+
+```powershell
+node demos/scratch/upstream/build.mjs --source-root CLEAN_PINNED_CHECKOUT --output NEW_STOCK_OUTPUT --renderer-profile stock
+node demos/scratch/upstream/build.mjs --source-root ANOTHER_CLEAN_PINNED_CHECKOUT --output NEW_CACHE_OUTPUT --renderer-profile local-hull-cache-v1
+```
+
+两次均需固定 upstream/lock 的独立干净 checkout；不接受任意 patch 文件、replacement 根目录或未知 profile。缓存配置只增加已审 r2 的两个替换文件 RenderWebGL.js、Silhouette.js 和新增 LocalHullCache.js。模块登记它们唯一允许的路径、原始 LF SHA（新增文件为 null）与结果 LF SHA，并在写入前校验原始文件/新文件不存在，构建后再次校验精确五补丁闭集。
+
+复制完整对应源码时显式加入新增 LocalHullCache.js；不能只运行 git ls-files 然后遗漏未跟踪的新源。stock 的对应源路径闭集为3411项，缓存配置3412项，路径集合绑定固定 release/profile 的 SHA，校验拒绝少文件、多文件或把缓存修改隐藏在 stock 清单里。
+
+新输出额外包含 recipe/。它镜像最小 SDK 目录布局，随附 build/provenance/profile module、targets patch、本文、vendor-lock 和 SDK LICENSE.md；缓存配置另含3份固定 renderer replacement 文件。构建前冻结这些真实配方字节、构建后确认未变，再复制进输出并登记完整 recipeFiles。接收方既核 source/dist 清单，也核 shipped recipe 的固定路径闭集及与当前可信配方逐字一致；不可自行改 record 的 driver/module hash 来收养旧产物。
+
+完整配方可以从其自身路径重跑，仍要求新的干净上游 checkout 和新的输出位置：
+
+```powershell
+node SOURCE_BUILD/recipe/demos/scratch/upstream/build.mjs --source-root NEW_CLEAN_CHECKOUT --output ANOTHER_NEW_OUTPUT --renderer-profile local-hull-cache-v1
+```
+
+source-build.json 显式登记 rendererProfile、2或5个精确patch、sourceMemberPathsSha256、recipeFiles，继续绑定 driver、provenance、完整对应源、lock 与 dist。新 driver/provenance 的身份已变，既有记录必须原样保留；控制和候选都要全新构建后才可声称通过新接收器。
+
+## 同资源 cache off/on 与旧路径开销控制
+
+缓存 profile 的构建**默认仍关闭缓存**。只在受控实验中，对同一个已冻结的新 bundle 显式调用 `vm.renderer.setLocalHullCacheEnabled(false|true)`。实验须记录实际 renderer 是否存在该 API、当前缓存是否启用、条目/点数以及页面/bundle/workload 身份；不存在 API或状态不符应失败，不能默默记成 cache on。
+
+最小三组为：R0=新 driver 的 stock 源 profile，R1=cache profile 的同一新 bundle/off，R2=与R1逐字同资源/on。R1-R2衡量启用缓存的增量，R0-R1检查新 off 路径的 revision token/额外判断成本，R0-R2检查净变化。每组保持逻辑60Hz请求、真实VMsteps/运动积木量、目标数、素材、Runtime、GPU、计量接线相同；不要降低逻辑量来抬高 rAF。
+
+这一版新增 profile 尚未执行 npm ci、上游构建、真实 SVG/MIP 浏览器测试或 FPS 对照。已有原算法 oracle 与局部 Node 差分/微基准只支持算法候选，不代表浏览器收益。真实启用时机和产品默认由集成者在 profile/兼容验证后决定。用户允许少量透明体积增长；应报告 bundle、runtime/ZIP 与缓存内存的实际增量，不以牺牲正确性抵扣字节。跨角色 skin 共享、GUI delta、虚拟化和 VM/Worker 改造仍为独立阶段。

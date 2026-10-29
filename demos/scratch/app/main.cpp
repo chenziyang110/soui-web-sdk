@@ -187,7 +187,7 @@ LRESULT CALLBACK procedure(HWND window, UINT message, WPARAM wparam, LPARAM lpar
   }
   return DefWindowProcW(window, message, wparam, lparam);
 }
-int run(HINSTANCE instance, bool smoke) {
+int run(HINSTANCE instance, bool smoke, bool compare_preview) {
   wchar_t executable[32768]{}, local[MAX_PATH]{};
   const auto executable_length = GetModuleFileNameW(nullptr, executable, 32768);
   if (!executable_length || executable_length >= 32768 ||
@@ -196,6 +196,7 @@ int run(HINSTANCE instance, bool smoke) {
   app.smoke = smoke; app.root = std::filesystem::path(executable).parent_path();
   app.profile = std::filesystem::path(local) / "SouiScratch";
   if (smoke) app.profile /= std::wstring(L"smoke-") + std::to_wstring(GetCurrentProcessId());
+  if (compare_preview) app.profile /= std::wstring(L"compare-") + std::to_wstring(GetCurrentProcessId());
   std::filesystem::create_directories(app.profile);
   app.log("process-start");
   if (!app.bridge.register_method("app.info", "app.info", [&app](std::string_view) {
@@ -218,8 +219,23 @@ int run(HINSTANCE instance, bool smoke) {
   type.lpfnWndProc = procedure; type.hInstance = instance; type.lpszClassName = L"SouiScratch";
   type.hCursor = LoadCursorW(nullptr, IDC_ARROW);
   if (!RegisterClassW(&type)) return 1;
-  const auto window = CreateWindowExW(0, type.lpszClassName, L"Scratch 学习工作室 · SOUI SDK 0.6", WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
-      CW_USEDEFAULT, CW_USEDEFAULT, 1440, 900, nullptr, nullptr, instance, &app);
+  constexpr DWORD style = WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN;
+  RECT bounds{0, 0, 1440, 900};
+  if (compare_preview) {
+    // Keep the ordinary demo's import baseline; comparison sizing uses modern
+    // DPI APIs only when they are available in the installed WebView2 system.
+    const auto user32 = GetModuleHandleW(L"user32.dll");
+    const auto get_dpi = reinterpret_cast<UINT(WINAPI*)()>(GetProcAddress(user32, "GetDpiForSystem"));
+    const auto adjust = reinterpret_cast<BOOL(WINAPI*)(LPRECT,DWORD,BOOL,DWORD,UINT)>(
+        GetProcAddress(user32, "AdjustWindowRectExForDpi"));
+    if (!get_dpi || !adjust) return 1;
+    const auto dpi = get_dpi();
+    bounds = {0, 0, MulDiv(1424, dpi, 96), MulDiv(861, dpi, 96)};
+    if (!adjust(&bounds, style, FALSE, 0, dpi)) return 1;
+  }
+  const auto window = CreateWindowExW(0, type.lpszClassName,
+      compare_preview ? L"Scratch · SOUI WebView2 · 渲染优化对比" : L"Scratch 学习工作室 · SOUI SDK 0.6", style,
+      CW_USEDEFAULT, CW_USEDEFAULT, bounds.right - bounds.left, bounds.bottom - bounds.top, nullptr, nullptr, instance, &app);
   if (!window) return 1;
   try {
   auto adapter = std::make_unique<soui::sdk::webview2_adapter>(window, app.profile / "browser");
@@ -297,12 +313,13 @@ int WINAPI wWinMain(HINSTANCE instance, HINSTANCE, LPWSTR, int) {
   auto** arguments = CommandLineToArgvW(GetCommandLineW(), &count);
   if (!arguments) return 1;
   const bool smoke = count == 2 && std::wstring(arguments[1]) == L"--smoke-test";
+  const bool compare_preview = count == 2 && std::wstring(arguments[1]) == L"--compare-preview";
   LocalFree(arguments);
-  if (count > 2 || (count == 2 && !smoke)) return 2;
+  if (count > 2 || (count == 2 && !smoke && !compare_preview)) return 2;
   const auto com = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
   if (FAILED(com)) return 1;
   int result = 1;
-  try { result = run(instance, smoke); } catch (...) {}
+  try { result = run(instance, smoke, compare_preview); } catch (...) {}
   CoUninitialize();
   return result;
 }

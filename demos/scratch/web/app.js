@@ -7,6 +7,7 @@ const GUI = window.GUI;
 const byId = id => document.getElementById(id);
 let vm, client, baseProject, ready = false, busy = false, messageTimer;
 let sdkInfo, currentPerformance = null;
+let rendererOptimizationRequested = true;
 const maximumProject = 16 * 1024 * 1024;
 const status = text => {byId('native-status').textContent = text;};
 function message(text) {
@@ -35,6 +36,19 @@ function confirmReplace(text) {
   if(dialog.open) return Promise.resolve(false);
   return new Promise(resolve => {dialog.onclose=()=>resolve(dialog.returnValue==='continue');dialog.showModal();});
 }
+function rendererOptimizationState() {
+  const renderer = vm?.renderer;
+  return typeof renderer?.setLocalHullCacheEnabled === 'function' ? renderer._localHullCache !== null : null;
+}
+function applyRendererOptimization() {
+  const supported = rendererOptimizationState() !== null;
+  byId('renderer-optimization-control').hidden = !supported;
+  if (supported) {
+    if (rendererOptimizationState() !== rendererOptimizationRequested)
+      vm.renderer.setLocalHullCacheEnabled(rendererOptimizationRequested);
+    byId('renderer-optimization').checked = rendererOptimizationState();
+  }
+}
 try {
   if (!GUI) throw new Error('Scratch 编辑器未能加载，请重新构建本地资源。');
   const storage = new GUI.ScratchStorage();
@@ -48,7 +62,7 @@ try {
   const editor = GUI.createStandaloneRoot(state, byId('editor'));
   editor.render({basePath:'./', platform:'DESKTOP', canEditTitle:true, canSave:false, canManageFiles:false, canCreateNew:false, canShare:false, canUseCloud:false, enableCommunity:false, backpackVisible:false, projectId:'0', projectTitle:'小猫画圆',
     onVmInit: machine => {vm = machine;},
-    onProjectLoaded: () => {ready = true; byId('loading').hidden = true; connection.then(() => client.call('bridge.probe.report', {ready:true})).catch(failed);}
+    onProjectLoaded: () => {applyRendererOptimization(); ready = true; byId('loading').hidden = true; connection.then(() => client.call('bridge.probe.report', {ready:true})).catch(failed);}
   });
   // Local diagnostics contain application state only; Bridge credentials stay in the public client.
   window.souiScratch = {get vm(){return vm;}, get ready(){return ready;}, state};
@@ -109,6 +123,14 @@ function updatePerformance(snapshot) {
   else if(snapshot.status==='stopped')performanceValue('performance-state','记录已停止，结果可导出；完整时窗对照未完成。');
 }
 const performanceMeter=createPerformanceMeter({getVM:()=>vm,onUpdate:updatePerformance});
+byId('renderer-optimization').onchange=()=>{
+  if(busy || rendererOptimizationState()===null) {applyRendererOptimization();return;}
+  rendererOptimizationRequested=byId('renderer-optimization').checked;
+  applyRendererOptimization();
+  performanceMeter.reset();
+  if(currentPerformance)currentPerformance.metadata.localHullCacheEnabled=rendererOptimizationState();
+  byId('performance-state').textContent='渲染优化已切换。等待几秒稳定后，重新记录 30 秒。';
+};
 function describePerformance() {
   const scene=performanceScenes.find(item=>item.id===byId('performance-scene').value);
   const level=scene.levels[byId('performance-level').value];
@@ -131,7 +153,7 @@ byId('performance-load').onclick=async()=>{
     const workloadSha256=Array.from(new Uint8Array(digest),byte=>byte.toString(16).padStart(2,'0')).join('');
     await vm.loadProject(JSON.stringify(project));
     vm.setCompatibilityMode(false);vm.greenFlag();
-    currentPerformance={sceneId,level,metadata:{sdkVersion:sdkInfo?.sdkVersion??null,buildId:sdkInfo?.buildId??null,backend:sdkInfo?.backend??null,runtimeVersion:sdkInfo?.runtimeVersion??null,scratchSourceCommit:document.documentElement.dataset.scratchSourceCommit??null,scratchSourceVersion:document.documentElement.dataset.scratchSourceVersion??null,workloadRecipe:project.meta.agent,workloadSha256,sceneSeed:scene.seed,configuredLoad:scene.levels[level],vmTargetStepHz:60,runtimeStepMs:vm.runtime.currentStepTime??null}};
+    currentPerformance={sceneId,level,metadata:{sdkVersion:sdkInfo?.sdkVersion??null,buildId:sdkInfo?.buildId??null,backend:sdkInfo?.backend??null,runtimeVersion:sdkInfo?.runtimeVersion??null,scratchSourceCommit:document.documentElement.dataset.scratchSourceCommit??null,scratchSourceVersion:document.documentElement.dataset.scratchSourceVersion??null,rendererProfile:document.documentElement.dataset.scratchRendererProfile??null,localHullCacheEnabled:rendererOptimizationState(),workloadRecipe:project.meta.agent,workloadSha256,sceneSeed:scene.seed,configuredLoad:scene.levels[level],vmTargetStepHz:60,runtimeStepMs:vm.runtime.currentStepTime??null}};
     byId('performance-state').textContent=`${scene.title}已运行。等待克隆/角色数量稳定后，点击“记录 30 秒”。`;
     message('性能场景正在运行；可在负载中拖动积木、切换造型或操作舞台。');
   }catch(error){failed(error);}finally{busy=false;}
@@ -139,7 +161,7 @@ byId('performance-load').onclick=async()=>{
 byId('performance-stop').onclick=()=>{vm?.stopAll();performanceMeter.stop();byId('performance-state').textContent='已停止全部脚本。';};
 byId('performance-measure').onclick=()=>{
   if(!ready||busy||!currentPerformance)return message('请先载入并运行一个性能场景。');
-  performanceMeter.start({...currentPerformance,durationMs:30000});
+  performanceMeter.start({...currentPerformance,metadata:{...currentPerformance.metadata,localHullCacheEnabled:rendererOptimizationState()},durationMs:30000});
 };
 byId('performance-export').onclick=async()=>{
   if(!client||busy)return;

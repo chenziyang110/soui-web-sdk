@@ -60,6 +60,15 @@ out/scratch-x64/Release/SouiScratch_export_contract.exe
 | 并发计算与绘制 | 20 角色 × 12 次/轮 | 60 角色 × 32 次/轮 | 120 角色 × 64 次/轮 |
 
 选择场景和负载，点击“载入并运行”；等角色/克隆数量稳定后，点击“记录 30 秒”。
+
+采用 `local-hull-cache-v1` SourceVendor 构建时，面板显示默认勾选的“启用渲染优化”。
+它切换同一 bundle 的静态造型凸包缓存，不改变角色数量、脚本或 VM 步进目标；切换会清除上一轮计量，等待稳定后重新记录。
+原始 npm 包或 stock 源码构建不显示该选项。JSON 同时记录 `rendererProfile` 与实际 `localHullCacheEnabled`；
+同 bundle 关/开只能说明缓存效果，与原始发行包的净差异还需单独对照。
+
+手动对比可用 `SouiScratch.exe --compare-preview`：使用独立进程 profile，初始页面为 1424×861 逻辑像素，
+窗口正常关闭，无自动测试或退出。Electron 应使用完全相同的 `resources` 和相同页面尺寸；分别置前记录，保留完整 30 秒结果。
+
 记录中可拖动积木、操作舞台、切换造型，观察负载下的交互。点击“停止全部”可停止脚本。
 “导出 JSON 报告”使用本机保存对话框，包含 SDK/构建/Runtime 标识、场景种子与项目配方摘要、
 负载配置、rAF FPS、P50/P95/P99 帧间隔、长帧、Long Tasks、活动线程和可用的 JS 堆指标。

@@ -67,8 +67,8 @@
     {
       "path": "CHANGELOG.md",
       "normalization": "lf",
-      "bytes": 62438,
-      "sha256": "c5b4b4b74821f9f51d0f179b831337bdbd0d89a677c7189520129fad730805db"
+      "bytes": 63098,
+      "sha256": "ece1a246d38b1b5ee62bad991454e6d3697ceafec5001988b17c1b302f98d5d9"
     },
     {
       "path": "CMakeLists.txt",
@@ -835,8 +835,8 @@
     {
       "path": "demos/scratch/README.md",
       "normalization": "lf",
-      "bytes": 8532,
-      "sha256": "58e71ea784913658da3218a66948eaaed00d5acaeeeedc0ad22c4d7bb9a550ef"
+      "bytes": 9336,
+      "sha256": "230106d8cd1d493bc65e3d259fba58250a1bfce85d0fb8d5808b9131c74ae809"
     },
     {
       "path": "demos/scratch/Start.cmd",
@@ -853,8 +853,8 @@
     {
       "path": "demos/scratch/app/main.cpp",
       "normalization": "lf",
-      "bytes": 16133,
-      "sha256": "abc8708597adab9e2376f94d2f03c552a29b7d99a396cd85d629e3240822163c"
+      "bytes": 17271,
+      "sha256": "6da61c410a77722ca7b99a20410c6bc7612e8a810d5b6bf4a48980a7e2ce9d7f"
     },
     {
       "path": "demos/scratch/app/project_file_save.h",
@@ -919,20 +919,50 @@
     {
       "path": "demos/scratch/upstream/README.md",
       "normalization": "lf",
-      "bytes": 3408,
-      "sha256": "5f75a112855cc8376dc5a36959ee560cb7ff62eb8dc47dc7b4ae30a1db22aba2"
+      "bytes": 7009,
+      "sha256": "44331279d5b8e3a55e8a4e7757273a38aa8423fc4e9977c561760e9db6d69987"
     },
     {
       "path": "demos/scratch/upstream/build.mjs",
       "normalization": "lf",
-      "bytes": 7459,
-      "sha256": "81ac68989d0248ebdb0732ec84c29e53a12cd5b3025a027f1f35d41f31185eeb"
+      "bytes": 8722,
+      "sha256": "fa79ae2607c2f7c3558cc47592c7a6a45ecc6650941c78029a8ce70a4679bf1b"
     },
     {
       "path": "demos/scratch/upstream/provenance.mjs",
       "normalization": "lf",
-      "bytes": 4371,
-      "sha256": "db9b4af4adab2968227914b9cd8a20327ebdbd513b3211da22a86148880abbb6"
+      "bytes": 4684,
+      "sha256": "d8954d7b4b611c4e593af71a2d332f57f3aedb1d79f746d843fbd5570315ca50"
+    },
+    {
+      "path": "demos/scratch/upstream/renderer-profiles.mjs",
+      "normalization": "lf",
+      "bytes": 6822,
+      "sha256": "d85a741fd3b6153d7325f9c142be20ff0cdb8143deb5761577698f4485fde781"
+    },
+    {
+      "path": "demos/scratch/upstream/renderer-profiles.test.mjs",
+      "normalization": "lf",
+      "bytes": 8656,
+      "sha256": "3a568bbf4202ef3cb698e93b5f7ae308f20967501eb83be79024095baea97ffa"
+    },
+    {
+      "path": "demos/scratch/upstream/renderer/local-hull-cache-v1/LocalHullCache.js",
+      "normalization": "lf",
+      "bytes": 1622,
+      "sha256": "119d906641725593a9d47bd8a9dcb73970820a8e331e21af518b1be5f9d27695"
+    },
+    {
+      "path": "demos/scratch/upstream/renderer/local-hull-cache-v1/RenderWebGL.js",
+      "normalization": "lf",
+      "bytes": 86563,
+      "sha256": "6d05af5925e2b0aa8e76adf131a703c6a3a30f83452e7012d5211265dae37731"
+    },
+    {
+      "path": "demos/scratch/upstream/renderer/local-hull-cache-v1/Silhouette.js",
+      "normalization": "lf",
+      "bytes": 9531,
+      "sha256": "9ba6f39d38b25cbfb8686f0ca93926e72f48152f0f2d2b4cc950972048b05b71"
     },
     {
       "path": "demos/scratch/upstream/targets-reducer.js",
@@ -945,6 +975,42 @@
       "normalization": "lf",
       "bytes": 1509,
       "sha256": "0e232085191dc94e69d9f9a880a3b406a314452144e89981cf23e6d2cb194086"
+    },
+    {
+      "path": "demos/scratch/upstream/test-fixtures/renderer-profiles/LICENSE",
+      "normalization": "lf",
+      "bytes": 34523,
+      "sha256": "8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef"
+    },
+    {
+      "path": "demos/scratch/upstream/test-fixtures/renderer-profiles/README.md",
+      "normalization": "lf",
+      "bytes": 791,
+      "sha256": "d85061606f9cced85590988a3b0ad5f70223a0e95847bd890e2ff75422f8d6e8"
+    },
+    {
+      "path": "demos/scratch/upstream/test-fixtures/renderer-profiles/RenderWebGL.original.js",
+      "normalization": "lf",
+      "bytes": 84909,
+      "sha256": "f31804dba07683b38677d5be88afe8ee6f35906ae9ce763afd9d19bede23c7a2"
+    },
+    {
+      "path": "demos/scratch/upstream/test-fixtures/renderer-profiles/Silhouette.original.js",
+      "normalization": "lf",
+      "bytes": 9279,
+      "sha256": "101f6bd3292b3ca6c9013535fc6e46ab7152203817863ea8444fd6b9d03948cf"
+    },
+    {
+      "path": "demos/scratch/upstream/test-fixtures/renderer-profiles/runtime.with-counters.js",
+      "normalization": "lf",
+      "bytes": 104192,
+      "sha256": "c5ada9b1ed82bafc0a2ee301ff2c3096d20fe71e1db0cc6b912d70a775516230"
+    },
+    {
+      "path": "demos/scratch/upstream/test-fixtures/renderer-profiles/source-paths.json",
+      "normalization": "lf",
+      "bytes": 250715,
+      "sha256": "c14ddbcde1838b0ab1fd41db5ab23a82ac4070e3efc75d45c7d4d2abc0b8b08b"
     },
     {
       "path": "demos/scratch/verification.md",
@@ -973,20 +1039,20 @@
     {
       "path": "demos/scratch/web/app.js",
       "normalization": "lf",
-      "bytes": 12255,
-      "sha256": "74cd80d628d956acb8b95f806dcb5736ef45ce269f35b64f054ebaf5ccc1b020"
+      "bytes": 13614,
+      "sha256": "d86efe7d8ab9f62924fe753ee39487070e51c70e8c0cded4da6bcd82e5d9dd3e"
     },
     {
       "path": "demos/scratch/web/build.mjs",
       "normalization": "lf",
-      "bytes": 5706,
-      "sha256": "d8276ceba60a3cc6304c64f639488514b26e90af7c3f6d36d73186b6cbd5a395"
+      "bytes": 5961,
+      "sha256": "733d8098f66d730663a25125f989924203a369736942600767f7ee0bc9acbe75"
     },
     {
       "path": "demos/scratch/web/index.html",
       "normalization": "lf",
-      "bytes": 3880,
-      "sha256": "1420e9177af9f7c1014182952ca2ac351e8f0585c3ebf91870f2a6275c01b020"
+      "bytes": 4014,
+      "sha256": "4736633276882b6ca97d4d521a991b931da947688b9da812d2014fc49c9daa3a"
     },
     {
       "path": "demos/scratch/web/lessons.js",
@@ -1015,8 +1081,8 @@
     {
       "path": "demos/scratch/web/performance-export.test.mjs",
       "normalization": "lf",
-      "bytes": 5356,
-      "sha256": "8c7a36aaa72f531eefff129091718ac1f6c4a4a730cd94e8e18af2c32258d1c7"
+      "bytes": 7154,
+      "sha256": "b58d420ecd3903571c5c767c6009b06e5fe24f0f048206686aebdbb37c406302"
     },
     {
       "path": "demos/scratch/web/performance-meter.js",

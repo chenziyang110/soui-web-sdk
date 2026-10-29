@@ -51,7 +51,9 @@ if (sourceRecord) {
   const html = await readFile(htmlPath,'utf8');
   const anchor = '<html lang="zh-CN">';
   if (html.split(anchor).length !== 2) throw new Error('Scratch HTML identity anchor changed.');
-  await writeFile(htmlPath,html.replace(anchor,`<html lang="zh-CN" data-scratch-source-commit="${sourceRecord.sourceCommit}" data-scratch-source-version="${sourceRecord.upstreamSourceVersion}">`));
+  if (!['stock','local-hull-cache-v1'].includes(sourceRecord.rendererProfile))
+    throw new Error('Invalid source vendor renderer profile.');
+  await writeFile(htmlPath,html.replace(anchor,`<html lang="zh-CN" data-scratch-source-commit="${sourceRecord.sourceCommit}" data-scratch-source-version="${sourceRecord.upstreamSourceVersion}" data-scratch-renderer-profile="${sourceRecord.rendererProfile}">`));
 }
 // Build from this delivery's public client, retaining SDK session and renewal semantics.
 const sdk = path.resolve(root, '../../../sdk/web');
@@ -67,6 +69,7 @@ if (sourceRecord) await writeFile(path.join(output,'scratch-legal/source-build.j
   schema:'soui.scratch-runtime-source/v1',sourceCommit:sourceRecord.sourceCommit,
   sourceLockSha256:sourceRecord.sourceLockSha256,patches:sourceRecord.patches,
   bundleSha256:sourceRecord.bundleSha256,upstreamSourceVersion:sourceRecord.upstreamSourceVersion,
+  rendererProfile:sourceRecord.rendererProfile,
   referenceArtifactVersion:sourceRecord.referenceArtifactVersion,
   fullSourceRecordSha256:createHash('sha256').update(await readFile(path.join(sourceVendor,'source-build.json'))).digest('hex')
 },null,2)+'\n');

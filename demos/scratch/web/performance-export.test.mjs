@@ -7,7 +7,7 @@ import {createPerformanceMeter} from './performance-meter.js';
 // Execute the real application and onclick handler. Import dependencies and
 // browser/native boundaries are supplied by the fixture; export decisions and
 // serialization stay production code. No real GUI or measured run is created.
-async function application() {
+async function application({renderer}={}) {
   let now=0,nextId=0;
   const nodes=new Map(),timers=new Map(),frames=new Map(),documentListeners=new Map(),saved=[];
   const node=id=>{
@@ -28,9 +28,11 @@ async function application() {
     if(method==='app.saveMetrics'){saved.push(JSON.parse(params.report));return {saved:true};}
     return {ready:true};
   }};
+  let projectLoaded;
+  const machine={runtime,renderer};
   const GUI={ScratchStorage:class {constructor(){this.builtinHelper={_store(){}};this.AssetType={Project:'Project',ImageVector:'svg',ImageBitmap:'png',Sound:'sound'};this.DataFormat={};}addWebStore(){}},
     buildDefaultProject:()=>[{assetType:'Project',data:'{"targets":[]}'}],setAppElement(){},EditorState:class {},
-    createStandaloneRoot:()=>({render(options){options.onVmInit({runtime});options.onProjectLoaded();}})};
+    createStandaloneRoot:()=>({render(options){projectLoaded=options.onProjectLoaded;options.onVmInit(machine);projectLoaded();}})};
   const window={GUI,addEventListener(){}};
   const source=readFileSync(process.env.SOUI_SCRATCH_EXPORT_APP_SOURCE??new URL('./app.js',import.meta.url),'utf8');
   const imports=source.match(/^import .*;\r?$/gm)??[];
@@ -43,7 +45,7 @@ async function application() {
   // Native startup resolves asynchronously before any export action is allowed.
   await new Promise(resolve=>setImmediate(resolve));
   const meter=window.souiScratchPerformance.meter;
-  return {meter,saved,node,
+  return {meter,saved,node,runtime,projectLoaded,
     async export(){await node('performance-export').onclick();},
     deadline(){now=1000;for(const [id,timer]of [...timers])if(timer.at<=now){timers.delete(id);timer.fn();}},
     frame(){now=10;const work=[...frames.values()];frames.clear();for(const fn of work)fn(now);},
@@ -57,6 +59,38 @@ test('real UI exports a completed zero-frame or one-frame window without losing 
     await app.export();assert.equal(app.saved.length,1);assert.deepEqual(app.saved[0],before);
     assert.equal(app.saved[0].windowRafFps,oneFrame?1:0);assert.equal(app.saved[0].censored,true);
   }
+});
+
+test('real UI enables supported cache once and clears a measurement when its mode changes',async()=>{
+  const changes=[];
+  const renderer={_localHullCache:null,setLocalHullCacheEnabled(enabled){changes.push(enabled);this._localHullCache=enabled?new Map():null;}};
+  const app=await application({renderer});
+  assert.equal(app.node('renderer-optimization-control').hidden,false);
+  assert.equal(app.node('renderer-optimization').checked,true);
+  assert.deepEqual(changes,[true]);
+  renderer._localHullCache.set('warm','retained');
+  app.projectLoaded();
+  assert.deepEqual(changes,[true],'a project load must not clear an unchanged mode');
+  assert.equal(renderer._localHullCache.get('warm'),'retained');
+  const targets=app.runtime.targets,threads=app.runtime.threads;
+  app.meter.start({durationMs:1000});
+  app.node('renderer-optimization').checked=false;
+  app.node('renderer-optimization').onchange();
+  assert.deepEqual(changes,[true,false]);
+  assert.equal(renderer._localHullCache,null);
+  assert.equal(app.meter.snapshot().recording,false);
+  assert.equal(app.meter.collectReport().status,'idle');
+  assert.equal(app.runtime.targets,targets);
+  assert.equal(app.runtime.threads,threads);
+  await app.export();assert.equal(app.saved.length,0,'the old mode report must not be exported as a new mode');
+});
+
+test('real UI hides unsupported renderer optimization without changing VM state',async()=>{
+  const app=await application();
+  assert.equal(app.node('renderer-optimization-control').hidden,true);
+  app.node('renderer-optimization').onchange();
+  assert.equal(app.node('renderer-optimization-control').hidden,true);
+  assert.equal(app.runtime.targets.length,1);
 });
 test('real UI preserves stopped and invalid evidence even before the first frame',async()=>{
   for(const terminal of ['stopped','invalid']){
