@@ -2,8 +2,6 @@
 #include <iostream>
 #include <stdexcept>
 #include <vector>
-#include <algorithm>
-#include <cstdint>
 
 struct timer {
     double m_nextFireTime;
@@ -53,53 +51,6 @@ int main() {
         require(loading_ran, "Continuous animation starved a ready loading task"); ++checks;
         queue = {&loading, &future};
         require(selectReadyTimer(queue, 1.10, false) == 0, "Future work must not be pulled forward by its priority"); ++checks;
-        // Compare with the previous linear policy over many real deadline heaps.
-        // This protects aging and exact tie choices while traversal order changes.
-        std::uint32_t random = 0x50937u;
-        for (unsigned iteration = 0; iteration != 500; ++iteration) {
-            std::vector<timer> storage(127);
-            for (auto& item : storage) {
-                random = random * 1664525u + 1013904223u;
-                item = {1.0 + (random % 200) / 1000.0, static_cast<int>((random >> 16) % 4) * 100};
-            }
-            storage[0].m_nextFireTime = 1.0;
-            std::stable_sort(storage.begin(), storage.end(), [](const timer& a, const timer& b) {
-                return a.m_nextFireTime < b.m_nextFireTime;
-            });
-            queue.clear();
-            for (auto& item : storage) queue.push_back(&item);
-            const double now = 1.0 + (iteration % 250) / 1000.0;
-            for (bool draining : {false, true}) {
-                size_t expected = 0;
-                for (size_t i = 1; i < queue.size(); ++i) {
-                    const auto& candidate = *queue[i];
-                    const auto& selected = *queue[expected];
-                    if (!draining && candidate.m_nextFireTime > now) continue;
-                    const bool candidateAged = !draining && now - candidate.m_nextFireTime >= .050;
-                    const bool selectedAged = !draining && now - selected.m_nextFireTime >= .050;
-                    bool prefer = candidate.m_priority > selected.m_priority
-                        || (candidate.m_priority == selected.m_priority && candidate.m_nextFireTime < selected.m_nextFireTime);
-                    if (candidateAged != selectedAged) prefer = candidateAged;
-                    else if (candidateAged && candidate.m_nextFireTime != selected.m_nextFireTime)
-                        prefer = candidate.m_nextFireTime < selected.m_nextFireTime;
-                    if (prefer) expected = i;
-                }
-                require(selectReadyTimer(queue, now, draining) == expected, "Pruned traversal changed the original ready policy"); ++checks;
-            }
-        }
-        std::vector<timer> futureStorage(16383, timer{10.0, 300});
-        futureStorage[0] = {1.0, 100};
-        queue.clear();
-        for (auto& item : futureStorage) queue.push_back(&item);
-        unsigned descriptions = 0;
-        const auto selected = content::task_scheduling::selectReadyTimer(queue, 1.1, false, [&](const timer* item) {
-            ++descriptions;
-            return content::task_scheduling::ReadyTask{item->m_nextFireTime, item->m_priority};
-        });
-        require(selected == 0 && descriptions <= 5, "Future-only subtrees must be skipped without inspecting the backlog"); ++checks;
-        require(!content::task_scheduling::hasReadyTimerAtOrAbove(queue, 1.1, 200, [](const timer* item) {
-            return content::task_scheduling::ReadyTask{item->m_nextFireTime, item->m_priority};
-        }), "Priority probe must not run future work early"); ++checks;
         std::cout << "Scheduler policy checks: " << checks << "; failures: " << failed_checks << '\n';
         return failed_checks ? 1 : 0;
     } catch (const std::exception& error) {

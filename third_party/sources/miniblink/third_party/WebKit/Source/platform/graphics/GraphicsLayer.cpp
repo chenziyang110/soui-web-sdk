@@ -24,6 +24,8 @@
  */
 
 #include "config.h"
+
+#include <cmath>
 #include "platform/graphics/GraphicsLayer.h"
 
 #include "SkImageFilter.h"
@@ -1120,6 +1122,7 @@ void GraphicsLayer::setScrollableArea(ScrollableArea* scrollableArea, bool isVie
     if (m_scrollableArea == scrollableArea)
         return;
 
+    m_layer->layer()->invalidateCompositorScroll();
     m_scrollableArea = scrollableArea;
 
     // Viewport scrolling may involve pinch zoom and gets routed through
@@ -1146,6 +1149,30 @@ void GraphicsLayer::notifyAnimationFinished(double, int group)
 {
     if (m_scrollableArea)
         m_scrollableArea->notifyCompositorAnimationFinished(group);
+}
+
+bool GraphicsLayer::canonicalizeCompositorScrollPosition(
+    const WebDoublePoint& visual, WebDoublePoint& canonical) const
+{
+    if (!m_scrollableArea) {
+        canonical = visual;
+        return true;
+    }
+    // Mirror didScroll -> ScrollableArea::setScrollPosition ->
+    // scrollPositionChanged, then ScrollingCoordinator's relative coordinates.
+    DoublePoint position = m_scrollableArea->minimumScrollPosition()
+        + toDoubleSize(visual);
+    if (!std::isfinite(position.x()) || !std::isfinite(position.y()))
+        return false;
+    position = m_scrollableArea->clampScrollPosition(position);
+    if (!std::isfinite(position.x()) || !std::isfinite(position.y()))
+        return false;
+    if (m_scrollableArea->shouldUseIntegerScrollOffset())
+        position = flooredIntPoint(position);
+    const DoubleSize relative = position
+        - m_scrollableArea->minimumScrollPositionDouble();
+    canonical = WebDoublePoint(relative.width(), relative.height());
+    return true;
 }
 
 void GraphicsLayer::didScroll()

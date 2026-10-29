@@ -1,0 +1,1480 @@
+{
+  "schema": "soui.input-latency-kernel-builds/v1",
+  "passed": true,
+  "scope": "Dual-architecture public source builds, natural process closure and static PE compatibility",
+  "source": {
+    "baseline": "sdk/verification/production-validation/input-latency-scheduling-2026-10-21/baseline-source.json",
+    "delta": "sdk/third_party/manifests/kernel-input-latency-source.json",
+    "identity": "d43a213508fa0689880c8498333110e5af3133c32c9733730573fc8f4223c695",
+    "changedVendorFiles": [
+      {
+        "path": "third_party/sources/miniblink/content/web_impl_win/BlinkPlatformImpl.cpp",
+        "bytes": 40263,
+        "sha256": "b03dc07c12abfa1a43a53390d665067f6a35272e3dd11dfde15f3b70cf68cadc"
+      },
+      {
+        "path": "third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp",
+        "bytes": 24846,
+        "sha256": "fa7295aee946697c6a9b122daea593b7c435f39ae1585c2774e8d13476e953cc"
+      },
+      {
+        "path": "third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.h",
+        "bytes": 4325,
+        "sha256": "673e9acc5bb267a5afb733a7eb4c84de2ac845699e49fa44e27f1fbcafd2ea7d"
+      }
+    ]
+  },
+  "requiredRuntimeExports": [
+    "jsArg",
+    "jsArgCount",
+    "jsBoolean",
+    "jsDouble",
+    "jsEval",
+    "jsGetWebView",
+    "jsIsString",
+    "jsString",
+    "jsToBoolean",
+    "jsToInt",
+    "jsToString",
+    "jsToTempString",
+    "jsUndefined",
+    "wkeCancelComposition",
+    "wkeConfirmComposition",
+    "wkeCreateWebView",
+    "wkeDestroyWebView",
+    "wkeFinalize",
+    "wkeFinalizePrepared",
+    "wkeFireKeyDownEvent",
+    "wkeFireKeyPressEvent",
+    "wkeFireKeyUpEvent",
+    "wkeFireMouseEvent",
+    "wkeFireMouseWheelEvent",
+    "wkeGetCaretRect",
+    "wkeGetCursorBrokerApi",
+    "wkeGetHostHWND",
+    "wkeGetInteractionApi",
+    "wkeGetString",
+    "wkeGetURL",
+    "wkeGlobalExec",
+    "wkeInitializeEx",
+    "wkeIsDirty",
+    "wkeIsInitialize",
+    "wkeIsMainFrame",
+    "wkeIsProcessingUserGesture",
+    "wkeJsBindFunction",
+    "wkeKillFocus",
+    "wkeLoadFileW",
+    "wkeOnDidCreateScriptContext",
+    "wkeOnDocumentReady",
+    "wkeOnDocumentReady2",
+    "wkeOnNavigation",
+    "wkeOnPaintUpdated",
+    "wkePrepareWorkerShutdown",
+    "wkeReload",
+    "wkeRepaintIfNeeded",
+    "wkeResize",
+    "wkeResizeWindow",
+    "wkeRunJS",
+    "wkeSetComposition",
+    "wkeSetContextMenuEnabled",
+    "wkeSetDebugConfig",
+    "wkeSetFocus",
+    "wkeSetHandle",
+    "wkeSetNavigationToNewWindowEnable",
+    "wkeSetZoomFactor",
+    "wkeShowWindow",
+    "wkeShutdown",
+    "wkeUpdate",
+    "wkeWake"
+  ],
+  "builds": [
+    {
+      "architecture": "x86",
+      "profile": "LLVM22MSVC142",
+      "sourceIdentity": "d43a213508fa0689880c8498333110e5af3133c32c9733730573fc8f4223c695",
+      "sourceFileCount": 23545,
+      "sourceDirectoryCount": 1330,
+      "sourceBytes": 321016301,
+      "naturalCompletion": {
+        "passed": true,
+        "rootExitCode": 0,
+        "supervisorExitCode": 0,
+        "subjectPid": 26828,
+        "creationFileTime": "134370289651418111",
+        "elapsedMs": 2136172,
+        "totalProcesses": 15434,
+        "survivingProcesses": 0,
+        "forcedCleanup": false
+      },
+      "ownedStreamReader": {
+        "externalFullKernelOnly": true,
+        "limits": {
+          "maximumBytes": 67108864,
+          "maximumRows": 500000,
+          "maximumLineBytes": 20000
+        },
+        "actualBytes": 15599366,
+        "actualRows": 99776,
+        "allRowsValidated": true,
+        "distinctMemberIdentities": 14273,
+        "reusedMemberPids": 4208,
+        "unavailableMemberObservations": 1215,
+        "noLongerOwnedMemberObservations": 0,
+        "standardReader": {
+          "maximumBytes": 16777216,
+          "maximumRows": 100000,
+          "accepted": true,
+          "refusal": null
+        },
+        "sdkStandardBuildQualification": false
+      },
+      "scheduling": {
+        "requestedEnvironment": {
+          "UseMultiToolTask": "true",
+          "CL_MPCount": "8",
+          "EnforceProcessCountAcrossBuilds": "true"
+        },
+        "installedInputsStable": true,
+        "actualParallelismObservedByThisVerifier": false,
+        "processLimitScope": "Parallel ordinary translation units; separate PCH, assembler, resource and link phases are outside this exact cap"
+      },
+      "beforeAfterInventoryBytesEqual": true,
+      "staticLibrariesVerified": 11,
+      "candidate": {
+        "bytes": 28115968,
+        "sha256": "e9e34583ff13a59111f7e55ae76593c892603bc099a4e50357e26ed72f394e8b",
+        "machine": 332
+      },
+      "staticPe": {
+        "old": {
+          "namedExports": 9871,
+          "occupiedOrdinals": 9871,
+          "functionSlots": 9224,
+          "ordinalOnly": [],
+          "identitySha256": "9b356b02c314b8be21f6df4466ef7183d7d121498ec51e4f2d25fcc322117f0b"
+        },
+        "candidate": {
+          "namedExports": 9871,
+          "occupiedOrdinals": 9871,
+          "functionSlots": 9224,
+          "ordinalOnly": [],
+          "identitySha256": "9b356b02c314b8be21f6df4466ef7183d7d121498ec51e4f2d25fcc322117f0b"
+        },
+        "allOldNamesPreserved": true,
+        "allOldOrdinalSlotsPreserved": true,
+        "oldNamedOrdinalsPreserved": true,
+        "requiredRuntimeApiPreserved": true,
+        "missingNames": [],
+        "changedOrdinals": [],
+        "missingOrdinalSlots": [],
+        "changedForwarders": [],
+        "changedKinds": [],
+        "missingRequiredRuntimeApi": [],
+        "addedNames": [],
+        "imports": {
+          "oldModules": [
+            "advapi32.dll",
+            "comdlg32.dll",
+            "gdi32.dll",
+            "imm32.dll",
+            "iphlpapi.dll",
+            "kernel32.dll",
+            "ole32.dll",
+            "psapi.dll",
+            "shell32.dll",
+            "shlwapi.dll",
+            "user32.dll",
+            "userenv.dll",
+            "usp10.dll",
+            "version.dll",
+            "winmm.dll",
+            "ws2_32.dll"
+          ],
+          "candidateModules": [
+            "advapi32.dll",
+            "comdlg32.dll",
+            "gdi32.dll",
+            "imm32.dll",
+            "iphlpapi.dll",
+            "kernel32.dll",
+            "ole32.dll",
+            "psapi.dll",
+            "shell32.dll",
+            "shlwapi.dll",
+            "user32.dll",
+            "userenv.dll",
+            "usp10.dll",
+            "version.dll",
+            "winmm.dll",
+            "ws2_32.dll"
+          ],
+          "addedModules": [],
+          "removedModules": [],
+          "addedSymbols": [],
+          "removedSymbols": [],
+          "addedDelayModules": [],
+          "removedDelayModules": [],
+          "addedDelaySymbols": [],
+          "removedDelaySymbols": []
+        },
+        "importSetsUnchanged": true,
+        "passed": true
+      }
+    },
+    {
+      "architecture": "x64",
+      "profile": "LLVM22MSVC142",
+      "sourceIdentity": "d43a213508fa0689880c8498333110e5af3133c32c9733730573fc8f4223c695",
+      "sourceFileCount": 23545,
+      "sourceDirectoryCount": 1330,
+      "sourceBytes": 321016301,
+      "naturalCompletion": {
+        "passed": true,
+        "rootExitCode": 0,
+        "supervisorExitCode": 0,
+        "subjectPid": 11760,
+        "creationFileTime": "134370289651556496",
+        "elapsedMs": 2137819,
+        "totalProcesses": 15225,
+        "survivingProcesses": 0,
+        "forcedCleanup": false
+      },
+      "ownedStreamReader": {
+        "externalFullKernelOnly": true,
+        "limits": {
+          "maximumBytes": 67108864,
+          "maximumRows": 500000,
+          "maximumLineBytes": 20000
+        },
+        "actualBytes": 15541955,
+        "actualRows": 99286,
+        "allRowsValidated": true,
+        "distinctMemberIdentities": 14146,
+        "reusedMemberPids": 4155,
+        "unavailableMemberObservations": 1203,
+        "noLongerOwnedMemberObservations": 0,
+        "standardReader": {
+          "maximumBytes": 16777216,
+          "maximumRows": 100000,
+          "accepted": true,
+          "refusal": null
+        },
+        "sdkStandardBuildQualification": false
+      },
+      "scheduling": {
+        "requestedEnvironment": {
+          "UseMultiToolTask": "true",
+          "CL_MPCount": "8",
+          "EnforceProcessCountAcrossBuilds": "true"
+        },
+        "installedInputsStable": true,
+        "actualParallelismObservedByThisVerifier": false,
+        "processLimitScope": "Parallel ordinary translation units; separate PCH, assembler, resource and link phases are outside this exact cap"
+      },
+      "beforeAfterInventoryBytesEqual": true,
+      "staticLibrariesVerified": 11,
+      "candidate": {
+        "bytes": 38960128,
+        "sha256": "b961baeaf86e7ac363fbf1c986752ae006aed6a269eeb2fdff8e55e8dd20481c",
+        "machine": 34404
+      },
+      "staticPe": {
+        "old": {
+          "namedExports": 9659,
+          "occupiedOrdinals": 9659,
+          "functionSlots": 9012,
+          "ordinalOnly": [],
+          "identitySha256": "462edff159062263b914b3d92f1c173965fe7e9e1861bb1b96d9fa8000e88dd9"
+        },
+        "candidate": {
+          "namedExports": 9659,
+          "occupiedOrdinals": 9659,
+          "functionSlots": 9012,
+          "ordinalOnly": [],
+          "identitySha256": "462edff159062263b914b3d92f1c173965fe7e9e1861bb1b96d9fa8000e88dd9"
+        },
+        "allOldNamesPreserved": true,
+        "allOldOrdinalSlotsPreserved": true,
+        "oldNamedOrdinalsPreserved": true,
+        "requiredRuntimeApiPreserved": true,
+        "missingNames": [],
+        "changedOrdinals": [],
+        "missingOrdinalSlots": [],
+        "changedForwarders": [],
+        "changedKinds": [],
+        "missingRequiredRuntimeApi": [],
+        "addedNames": [],
+        "imports": {
+          "oldModules": [
+            "advapi32.dll",
+            "comdlg32.dll",
+            "gdi32.dll",
+            "gdiplus.dll",
+            "imm32.dll",
+            "iphlpapi.dll",
+            "kernel32.dll",
+            "ole32.dll",
+            "psapi.dll",
+            "shell32.dll",
+            "shlwapi.dll",
+            "user32.dll",
+            "userenv.dll",
+            "usp10.dll",
+            "version.dll",
+            "wininet.dll",
+            "winmm.dll",
+            "ws2_32.dll"
+          ],
+          "candidateModules": [
+            "advapi32.dll",
+            "comdlg32.dll",
+            "gdi32.dll",
+            "gdiplus.dll",
+            "imm32.dll",
+            "iphlpapi.dll",
+            "kernel32.dll",
+            "ole32.dll",
+            "psapi.dll",
+            "shell32.dll",
+            "shlwapi.dll",
+            "user32.dll",
+            "userenv.dll",
+            "usp10.dll",
+            "version.dll",
+            "wininet.dll",
+            "winmm.dll",
+            "ws2_32.dll"
+          ],
+          "addedModules": [],
+          "removedModules": [],
+          "addedSymbols": [],
+          "removedSymbols": [],
+          "addedDelayModules": [],
+          "removedDelayModules": [],
+          "addedDelaySymbols": [],
+          "removedDelaySymbols": []
+        },
+        "importSetsUnchanged": true,
+        "passed": true
+      }
+    }
+  ],
+  "evidence": [
+    {
+      "label": "build3/x64/baseline.dll",
+      "bytes": 38959616,
+      "sha256": "f552226e00c16c9df1ef6cb94081c69b37185c44741197d5a337a4ed70d1fdef"
+    },
+    {
+      "label": "build3/x64/binlogs/harfbuzz.binlog",
+      "bytes": 345829,
+      "sha256": "431307b4db991ea322969a21f4c681aed11689e2a43be98edc6a29607e05c7c7"
+    },
+    {
+      "label": "build3/x64/binlogs/libcurl.binlog",
+      "bytes": 488713,
+      "sha256": "2d2b867a9dd8f41b3eab6b3c0af5372386481f5fbf28df490116ab49dd31856e"
+    },
+    {
+      "label": "build3/x64/binlogs/libjpeg.binlog",
+      "bytes": 318296,
+      "sha256": "ce32ed76c2f03f543bdbaa273ad986a0034d853c15ac03b409a91a2ceed5cc42"
+    },
+    {
+      "label": "build3/x64/binlogs/libpng.binlog",
+      "bytes": 324095,
+      "sha256": "1fd6631b4467dd89ac753930681c76729190f8cfd413a98e485d29f4abb3fbc8"
+    },
+    {
+      "label": "build3/x64/binlogs/libxml.binlog",
+      "bytes": 352540,
+      "sha256": "3bd986e2ba216200bbb99942444afca4318e10b5c4547880a9bdaa2272128d36"
+    },
+    {
+      "label": "build3/x64/binlogs/miniblink.binlog",
+      "bytes": 34567081,
+      "sha256": "fb743b72603c3a974c5b0efeb0a88e88f12d2e46a8245578cbfbd345793fed75"
+    },
+    {
+      "label": "build3/x64/binlogs/openssl.binlog",
+      "bytes": 1011214,
+      "sha256": "47bc70adc5d83ad98ad76caa032a6fa98f60d7b28e32b7219c79e160a768a9ea"
+    },
+    {
+      "label": "build3/x64/binlogs/ots.binlog",
+      "bytes": 452635,
+      "sha256": "76217155ddaf62ec0da47c5d24c59b386ea311c23decb280a715e8bb17479d81"
+    },
+    {
+      "label": "build3/x64/binlogs/skia.binlog",
+      "bytes": 1045462,
+      "sha256": "9a3970d89c29ac4af79841122873e2f78a7dbcf8e875905e890488ea7e3bfc99"
+    },
+    {
+      "label": "build3/x64/binlogs/v8_5_7_1.binlog",
+      "bytes": 1092211,
+      "sha256": "f73144ba3b94fd2170f92753de2867ef3e3fd1108e2e91f75f2db9ecc4c250c6"
+    },
+    {
+      "label": "build3/x64/binlogs/v8_5_7.binlog",
+      "bytes": 1189439,
+      "sha256": "77de540c1609867413614163dc902140d0ad1dc4465f65c87f5ff90997f3a1e3"
+    },
+    {
+      "label": "build3/x64/binlogs/zlib.binlog",
+      "bytes": 316953,
+      "sha256": "d94c188078038212458041f4cb9b0c9688bdf7909863d8bbeea77b80f7ac68b8"
+    },
+    {
+      "label": "build3/x64/build-Miniblink.json",
+      "bytes": 5927,
+      "sha256": "d845d59a350aaaac5258a28fa4865c1c8fdda6a212edc8021e6363629df0559e"
+    },
+    {
+      "label": "build3/x64/candidate.dll",
+      "bytes": 38960128,
+      "sha256": "b961baeaf86e7ac363fbf1c986752ae006aed6a269eeb2fdff8e55e8dd20481c"
+    },
+    {
+      "label": "build3/x64/candidate.map",
+      "bytes": 55377148,
+      "sha256": "4b2b88546a60d3b880b40556d378a6affe2a090257fcbdf770d45f11b813728e"
+    },
+    {
+      "label": "build3/x64/capture/context.json",
+      "bytes": 1385,
+      "sha256": "0c8d86aa12d664af19ea7314e33d7074c8a4595c17bddd31cba97f9ce8d66dd1"
+    },
+    {
+      "label": "build3/x64/capture/owned.ndjson",
+      "bytes": 15541955,
+      "sha256": "24c2c963d8a80aefde2543ba260da97e4f840036a02e61eaccb61b996e030d84"
+    },
+    {
+      "label": "build3/x64/capture/ready.json",
+      "bytes": 62,
+      "sha256": "0344e9afe6f0fce9a502be093afee0882f985f5a5bcaff4d50b894a0c78aa497"
+    },
+    {
+      "label": "build3/x64/capture/result.json",
+      "bytes": 1126,
+      "sha256": "98effd2f8e350aa23fde3e0135e13563b6511ff4e2167bd989e747ecb76d9586"
+    },
+    {
+      "label": "build3/x64/capture/scheduling-finished.json",
+      "bytes": 271,
+      "sha256": "a89aeb244816b0256e64b4523b3a4725dc45e5e20a563052095b2b0e9ea3d04d"
+    },
+    {
+      "label": "build3/x64/capture/scheduling.json",
+      "bytes": 2974,
+      "sha256": "eae131604685295307bde384f34e737351fb877cb3dedc1be75f9e007c2940f2"
+    },
+    {
+      "label": "build3/x64/capture/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "build3/x64/capture/stdout.log",
+      "bytes": 694,
+      "sha256": "1d0d106329027d0d26d424a16192983a894a246c2f1733f3366f2798458571eb"
+    },
+    {
+      "label": "build3/x64/compiler-inputs/input-0",
+      "bytes": 94524,
+      "sha256": "d57290c04b4df8aab328996a43500c4cb37d745cb1a66732f9d5f5e98b0e4e78"
+    },
+    {
+      "label": "build3/x64/compiler-inputs/input-1",
+      "bytes": 79358,
+      "sha256": "8a32c078fc710d50a30fc3b68a784cc335ab8624b57fc09890651de8d530ab61"
+    },
+    {
+      "label": "build3/x64/compiler-inputs/input-10",
+      "bytes": 5053,
+      "sha256": "b3e62a046ddf28d09eedebe6eb9461cb7060e47cad2c69964b222c4eea10347e"
+    },
+    {
+      "label": "build3/x64/compiler-inputs/input-11",
+      "bytes": 125299,
+      "sha256": "afbb65075ab35bdccc993fe0a9791decc03a6107b00b17a2d985c1ed421f64d4"
+    },
+    {
+      "label": "build3/x64/compiler-inputs/input-12",
+      "bytes": 27622,
+      "sha256": "34880e9400c7a625eda7f2797234f60a9b1456ffa7dcb7c4210002da559a3525"
+    },
+    {
+      "label": "build3/x64/compiler-inputs/input-13",
+      "bytes": 10913,
+      "sha256": "28fb1fd59d1d46b03487925f8f6399eeb5aa0c57742e12094f473b1b40eb292d"
+    },
+    {
+      "label": "build3/x64/compiler-inputs/input-14",
+      "bytes": 43968,
+      "sha256": "1576fdb40eb225dff53489db2fd52e41c7bb24f1e621e4a95c2c7f4a7216949c"
+    },
+    {
+      "label": "build3/x64/compiler-inputs/input-15",
+      "bytes": 11497,
+      "sha256": "8af081872a0d03592cef7df997c6b3aeede7e702f1b288dac358e5efa5c8efb2"
+    },
+    {
+      "label": "build3/x64/compiler-inputs/input-16",
+      "bytes": 7153,
+      "sha256": "65ccd069fe343519a7ec0698ccaf5a6f0388f1af180b959b8271902b983cb099"
+    },
+    {
+      "label": "build3/x64/compiler-inputs/input-17",
+      "bytes": 1431,
+      "sha256": "d2829f1e32c6b6ce3a6066c71576c8044d8bcbf6b0f728f95320a92015c221c5"
+    },
+    {
+      "label": "build3/x64/compiler-inputs/input-18",
+      "bytes": 7365180,
+      "sha256": "5648042445e736fee9b44f1931309756427e6c9ee5facc826e095d911721e38a"
+    },
+    {
+      "label": "build3/x64/compiler-inputs/input-19",
+      "bytes": 1090934,
+      "sha256": "ecb158d07c71642e835ab6eaad1ed5128f49e14be30c157f8883f5ccb7dba9bb"
+    },
+    {
+      "label": "build3/x64/compiler-inputs/input-2",
+      "bytes": 104747608,
+      "sha256": "ec094d5f8f37c106eefcfc47c9997c261a06e3bd8eaaa7255835983a58524156"
+    },
+    {
+      "label": "build3/x64/compiler-inputs/input-20",
+      "bytes": 19128,
+      "sha256": "f53ed7df376ff500d14bfbb4e495711c4cb3f8aa186a8b15ee4ef9a937fd84eb"
+    },
+    {
+      "label": "build3/x64/compiler-inputs/input-21",
+      "bytes": 5576280,
+      "sha256": "ea6de3079f96374269b3530b81166a0d25c87b92c81d686ab2bad88c0d73de11"
+    },
+    {
+      "label": "build3/x64/compiler-inputs/input-22",
+      "bytes": 17628572,
+      "sha256": "9fcfd079ae918372fbf8801bb29f592b1d24f60209afe10e649d03f13608571f"
+    },
+    {
+      "label": "build3/x64/compiler-inputs/input-23",
+      "bytes": 1223382,
+      "sha256": "1eb044056e692649ff362b9506f4dc12753bce8e3ef88b1cbd0a3086d6bc7489"
+    },
+    {
+      "label": "build3/x64/compiler-inputs/input-24",
+      "bytes": 285588,
+      "sha256": "7ef4eac926bf597d2f243f16cdfed7e0db22cb3ca34a1d7e088a84c994a03d66"
+    },
+    {
+      "label": "build3/x64/compiler-inputs/input-25",
+      "bytes": 35488094,
+      "sha256": "335d768550631d4f667b12c5f3a7a7155e341117cd61ce11aadc533b031be80c"
+    },
+    {
+      "label": "build3/x64/compiler-inputs/input-26",
+      "bytes": 300468,
+      "sha256": "d9810feacbb1150584cdd484ea1ce60b4e6b3ddec3b8afa505c0ae47330027e2"
+    },
+    {
+      "label": "build3/x64/compiler-inputs/input-27",
+      "bytes": 164334,
+      "sha256": "b44c0246135462a839e279fdfb73172bbf7dd4ff05d21212ac1867c029080f28"
+    },
+    {
+      "label": "build3/x64/compiler-inputs/input-28",
+      "bytes": 3115,
+      "sha256": "d9d3a0119dc9da8845b2469c6a60defeee7bd57a7f866ddca6e5c5330824ca45"
+    },
+    {
+      "label": "build3/x64/compiler-inputs/input-29",
+      "bytes": 5543,
+      "sha256": "c36365f2758de235ac79babdccfb2b945dd70c974c51e1efaddcaa8e74555cda"
+    },
+    {
+      "label": "build3/x64/compiler-inputs/input-3",
+      "bytes": 71454768,
+      "sha256": "631a02cecb87f9f7f2270713d6c7f84e54a0fabce6c6638d21d3a0caea78204d"
+    },
+    {
+      "label": "build3/x64/compiler-inputs/input-30",
+      "bytes": 376112,
+      "sha256": "3b6653078e066a29358e7b81e0da45a22bf8f6e782899e5f79ead399aa5097df"
+    },
+    {
+      "label": "build3/x64/compiler-inputs/input-31",
+      "bytes": 10163,
+      "sha256": "693b4a30c7379e84d2675101a8d47178cf62f45df2e2f09be5c206107e9c9ca2"
+    },
+    {
+      "label": "build3/x64/compiler-inputs/input-32",
+      "bytes": 605800,
+      "sha256": "db49a7db306f5889c19b65a720e010cc0548891e98ca11fb6d0fa8af869097fd"
+    },
+    {
+      "label": "build3/x64/compiler-inputs/input-33",
+      "bytes": 17144,
+      "sha256": "ae77f201aaa4bb65c1b2e77407eb0c7da9ce55d1040f48f392ba27e9bdd1aeca"
+    },
+    {
+      "label": "build3/x64/compiler-inputs/input-34",
+      "bytes": 5927,
+      "sha256": "f1554b50ff1c213406e896c505f5848cd628572b96b43d15ab610470d9b9826b"
+    },
+    {
+      "label": "build3/x64/compiler-inputs/input-35",
+      "bytes": 5815,
+      "sha256": "10ce60eb2b827102e0b10cbdcd17b1c770208030ec02dba1309803797347c5c3"
+    },
+    {
+      "label": "build3/x64/compiler-inputs/input-36",
+      "bytes": 9021,
+      "sha256": "0d5df417fbfac68bbb2357987c8003aaec97537b16cb88d7d357197333dc4e82"
+    },
+    {
+      "label": "build3/x64/compiler-inputs/input-37",
+      "bytes": 8099,
+      "sha256": "69b42eae472597a97061741e5a401c19e3bf665aa134646ba555645afe432d36"
+    },
+    {
+      "label": "build3/x64/compiler-inputs/input-38",
+      "bytes": 11427,
+      "sha256": "2a81487d800b50a55032839b96abc2844188161d3dca7598e04ff1b9af2609ef"
+    },
+    {
+      "label": "build3/x64/compiler-inputs/input-39",
+      "bytes": 1471,
+      "sha256": "01bc9f21ad0f08f9a56dbb160334483078120e2fcb62b690d2dd1590db8ff936"
+    },
+    {
+      "label": "build3/x64/compiler-inputs/input-4",
+      "bytes": 18463832,
+      "sha256": "41ccf71f32fad386a5b7f7926175c4a8a74196d050e2bcbf7b06a93d080288f5"
+    },
+    {
+      "label": "build3/x64/compiler-inputs/input-5",
+      "bytes": 71208,
+      "sha256": "2cbcc6024fe41ae92fada6b3f74e6e2a1b2fe71c51b288167d6abab319da2628"
+    },
+    {
+      "label": "build3/x64/compiler-inputs/input-6",
+      "bytes": 1847888,
+      "sha256": "a86c27bb35ccf3c27c206406e26262216fadba3de0eed7173447bcbfe03ff74c"
+    },
+    {
+      "label": "build3/x64/compiler-inputs/input-7",
+      "bytes": 3776568,
+      "sha256": "9546466f0feca6d62d7d4ea9b7fbc381f8e302cb7f02f4ce327a39d8577bb293"
+    },
+    {
+      "label": "build3/x64/compiler-inputs/input-8",
+      "bytes": 339968,
+      "sha256": "15cd209c995b7d3009c91ca40892d5b8f1fb162f3e5f10716642ea278e8e0d7b"
+    },
+    {
+      "label": "build3/x64/compiler-inputs/input-9",
+      "bytes": 301368,
+      "sha256": "362a356ce7f0940ec74f73a8fc2c990a2cc24a38a11c90bbd8eca947110ad139"
+    },
+    {
+      "label": "build3/x64/compiler-version/executableAfter",
+      "bytes": 104747608,
+      "sha256": "ec094d5f8f37c106eefcfc47c9997c261a06e3bd8eaaa7255835983a58524156"
+    },
+    {
+      "label": "build3/x64/compiler-version/executableBefore",
+      "bytes": 104747608,
+      "sha256": "ec094d5f8f37c106eefcfc47c9997c261a06e3bd8eaaa7255835983a58524156"
+    },
+    {
+      "label": "build3/x64/compiler-version/stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "build3/x64/compiler-version/stdout",
+      "bytes": 242,
+      "sha256": "a8e6844e85eb2c4633785606393c96408f24bb297f8ce85735ea196ec4919695"
+    },
+    {
+      "label": "build3/x64/installed-scheduling/input-0",
+      "bytes": 19105,
+      "sha256": "d987c20d12dca28590f2222e633c97d578144f4d39cca46b0604c9042f7a609b"
+    },
+    {
+      "label": "build3/x64/installed-scheduling/input-1",
+      "bytes": 37168,
+      "sha256": "03d9d3e0a97f1062b312f32da542398a271eb32cb6f1dd733130ca59ab0308e0"
+    },
+    {
+      "label": "build3/x64/installed-scheduling/input-2",
+      "bytes": 174646,
+      "sha256": "7dadbd0316214fd716f78d5ae35a10d8d137218d90e040381db3edcfdc37ce68"
+    },
+    {
+      "label": "build3/x64/installed-scheduling/input-3",
+      "bytes": 32371,
+      "sha256": "c734a0c4e3f23a0a6123cd900ee48c465ea9babd64a4631e5261f91727258e66"
+    },
+    {
+      "label": "build3/x64/installed-scheduling/input-4",
+      "bytes": 2066,
+      "sha256": "463ada079e7e0f153f1e2bf2792181231c171ca3a3cdbb9fdd7ebb48ca59f8cb"
+    },
+    {
+      "label": "build3/x64/installed-scheduling/input-5",
+      "bytes": 584544,
+      "sha256": "123b520c16888fa3cedc1356d2e091726da85aa676bc4a5c2ad1ea6c19e067e6"
+    },
+    {
+      "label": "build3/x64/installed-scheduling/input-6",
+      "bytes": 970,
+      "sha256": "efdd016326f6411992b26aa7a34c2ec79753b3e0706043d32a292626c7c7c1e2"
+    },
+    {
+      "label": "build3/x64/installed-scheduling/input-7",
+      "bytes": 970,
+      "sha256": "efdd016326f6411992b26aa7a34c2ec79753b3e0706043d32a292626c7c7c1e2"
+    },
+    {
+      "label": "build3/x64/kernel-llvm-inputs.json",
+      "bytes": 25185,
+      "sha256": "84c21200483014702ccce2f74293e19ce869d89777f92fbe0e2ac6ab206447b7"
+    },
+    {
+      "label": "build3/x64/kernel-source-after.json",
+      "bytes": 4585854,
+      "sha256": "77cb5cfb5bcd74ecb645feccf7705478bd07a1760e26283510fbdbe2ac920ea0"
+    },
+    {
+      "label": "build3/x64/kernel-source-before.json",
+      "bytes": 4585854,
+      "sha256": "77cb5cfb5bcd74ecb645feccf7705478bd07a1760e26283510fbdbe2ac920ea0"
+    },
+    {
+      "label": "build3/x64/libraries/harfbuzz.lib",
+      "bytes": 3502994,
+      "sha256": "634f982acb715846c976496c778937af80d9b3cfc546ffa2d68b7d706f60761b"
+    },
+    {
+      "label": "build3/x64/libraries/libcurl.lib",
+      "bytes": 5072230,
+      "sha256": "6b8aa94d11aae9c3983d0832482639450861e8693cb36271671c60091cd56dc5"
+    },
+    {
+      "label": "build3/x64/libraries/libjpeg.lib",
+      "bytes": 1397490,
+      "sha256": "75c28805aae9316ad122fe1db12b9fa82f2e77c88f40c797464bb46ecb1f07d0"
+    },
+    {
+      "label": "build3/x64/libraries/libpng.lib",
+      "bytes": 982280,
+      "sha256": "c770cf6be1195854178b0b49ec05530ff6e44eb997cfa51887d968916fc31af3"
+    },
+    {
+      "label": "build3/x64/libraries/libxml.lib",
+      "bytes": 4734048,
+      "sha256": "6150d1cea9a542d99d5269d753555e6a3b0a3f1b31723372db44ee9369f9778c"
+    },
+    {
+      "label": "build3/x64/libraries/openssl.lib",
+      "bytes": 18184944,
+      "sha256": "cc2c093f58cc020cfde6a2e2b787066b838211ed19ad2aea5334245263ca3cdb"
+    },
+    {
+      "label": "build3/x64/libraries/ots.lib",
+      "bytes": 11124742,
+      "sha256": "13cf453011fc003a48e1cebe182bd4b1aa9bfccdb1c812f2d44e4d672ced3be5"
+    },
+    {
+      "label": "build3/x64/libraries/skia.lib",
+      "bytes": 26449410,
+      "sha256": "fdd3cac8522cd70057a1a4580b530b2cfe22ed8885af3f7a722c2a22224bef72"
+    },
+    {
+      "label": "build3/x64/libraries/v8_5_7_1.lib",
+      "bytes": 571845000,
+      "sha256": "e010a9eb35ede19ec5432706aa93821fd140b75a81108860d927703137fe3136"
+    },
+    {
+      "label": "build3/x64/libraries/v8_5_7.lib",
+      "bytes": 655011908,
+      "sha256": "94e4dd4e9b32510a96644558d3ce401ecf7037750fac1b0be95d094eee171b8c"
+    },
+    {
+      "label": "build3/x64/libraries/zlib.lib",
+      "bytes": 300980,
+      "sha256": "16c4969b451a841b85df684b3b4d1f7aa2e2a48a81332d10c35362337135d4b8"
+    },
+    {
+      "label": "build3/x64/logs/harfbuzz.log",
+      "bytes": 1035146,
+      "sha256": "ecebffec3b946e0ed20dc81eac0eedf0085e2085d4989a0fdc14f551ec39e5f6"
+    },
+    {
+      "label": "build3/x64/logs/libcurl.log",
+      "bytes": 3848676,
+      "sha256": "188935bb303d8f658e06f11cef2ecddbcb42a4905ce46d0137bf5cd6eb2f8dc7"
+    },
+    {
+      "label": "build3/x64/logs/libjpeg.log",
+      "bytes": 186075,
+      "sha256": "cdf8f655a964507236a2d05bd9f21c20bf8907953fd287df404a6cb1c28189a2"
+    },
+    {
+      "label": "build3/x64/logs/libpng.log",
+      "bytes": 473093,
+      "sha256": "9907afa2ca5bd6de749adc378eeb6f20b04344f21fafa32a3a70c1aef51ad6fc"
+    },
+    {
+      "label": "build3/x64/logs/libxml.log",
+      "bytes": 682793,
+      "sha256": "09575f665ce375538c022ba303ff7d97259fef28fe5c47d0a754421d1e17bca1"
+    },
+    {
+      "label": "build3/x64/logs/miniblink.log",
+      "bytes": 1375639777,
+      "sha256": "50d316ae5bcb2e5490d83cae9cefde9508eed965fcf220e16eebb09e859f0415"
+    },
+    {
+      "label": "build3/x64/logs/openssl.log",
+      "bytes": 15009658,
+      "sha256": "f86ebaa6e2b8629911abbb58c971be4ea34ddef64849aee7a9c63e01cb74320f"
+    },
+    {
+      "label": "build3/x64/logs/ots.log",
+      "bytes": 2629437,
+      "sha256": "f78d43b69fac0aa0daf34ae05eb8eff03c63da5cf98f3ef189534e1ad74fffde"
+    },
+    {
+      "label": "build3/x64/logs/skia.log",
+      "bytes": 15861078,
+      "sha256": "39c14d0324a934990faee0cc5ecc373439c729437cee47ebc4d445e077c82f06"
+    },
+    {
+      "label": "build3/x64/logs/v8_5_7_1.log",
+      "bytes": 17250855,
+      "sha256": "c73fefcc833fb9a5600bb281534b1a2deed3ac7222a71066f2e43eadcef6382d"
+    },
+    {
+      "label": "build3/x64/logs/v8_5_7.log",
+      "bytes": 19436465,
+      "sha256": "af1c0f96e58a09082a70b4ec40d89cdd61b670e05ae4edf74521300faa102d76"
+    },
+    {
+      "label": "build3/x64/logs/zlib.log",
+      "bytes": 188957,
+      "sha256": "f11649b5eb5381f7d24bfdd36491f242b995eebd447eb547710d197be991c1d8"
+    },
+    {
+      "label": "build3/x64/tools/owned-runner",
+      "bytes": 234496,
+      "sha256": "c42077f6fb3f7b04953c9f063b3a016a1dfa6ceb9f213ac76255b9957c712fb0"
+    },
+    {
+      "label": "build3/x64/tools/powershell",
+      "bytes": 301368,
+      "sha256": "362a356ce7f0940ec74f73a8fc2c990a2cc24a38a11c90bbd8eca947110ad139"
+    },
+    {
+      "label": "build3/x86/baseline.dll",
+      "bytes": 28115968,
+      "sha256": "90a214ca2d416eda8e980cab7aacb80fffef777ace20c06179f41e584dae093b"
+    },
+    {
+      "label": "build3/x86/binlogs/harfbuzz.binlog",
+      "bytes": 348530,
+      "sha256": "d57e1a6905808596cad30bacffe9b30f94deb57e29337bfe69f7fe7b389ffd4e"
+    },
+    {
+      "label": "build3/x86/binlogs/libcurl.binlog",
+      "bytes": 491132,
+      "sha256": "f6264d93afaa46a46a46d8c34f55638d25fc97f4633c52c6066dbca46d851a4c"
+    },
+    {
+      "label": "build3/x86/binlogs/libjpeg.binlog",
+      "bytes": 319291,
+      "sha256": "ff1becf63ecec6b6afbd94d9c5dab272d2c6ba7ebe02f40a8846f4aafa64972b"
+    },
+    {
+      "label": "build3/x86/binlogs/libpng.binlog",
+      "bytes": 322251,
+      "sha256": "a206502adf7bd2cec27cb72877803b54ecef8d1e73fe0641228c439f026d9a6e"
+    },
+    {
+      "label": "build3/x86/binlogs/libxml.binlog",
+      "bytes": 352136,
+      "sha256": "e43056af48dd8fdbcede307646d9177fbab0c999cc4215e59b3fc742fde3a680"
+    },
+    {
+      "label": "build3/x86/binlogs/miniblink.binlog",
+      "bytes": 34804704,
+      "sha256": "bc1fb9489c410564d4d2ef5b6cc74c3fb266417138fdf8e66c70d75aa0f5fa14"
+    },
+    {
+      "label": "build3/x86/binlogs/openssl.binlog",
+      "bytes": 999670,
+      "sha256": "bdf92324d5d7ae71337c4647c1c3b67a4fb272ba4f98c9b04c1550eb07caa908"
+    },
+    {
+      "label": "build3/x86/binlogs/ots.binlog",
+      "bytes": 448087,
+      "sha256": "b9f485738d74c2785be4d2931773e8b210ef111b908ce1ad73ce8ed3d8270023"
+    },
+    {
+      "label": "build3/x86/binlogs/skia.binlog",
+      "bytes": 1052992,
+      "sha256": "2ffe17f191e7a168b2811b6bcf3c7007d70f76c2fca017f3c875e2a6da93ea93"
+    },
+    {
+      "label": "build3/x86/binlogs/v8_5_7_1.binlog",
+      "bytes": 1036646,
+      "sha256": "e67e34055bb50420f8e6618409e96c0d9c1d5e370288bda1e38ea9152c88dfbe"
+    },
+    {
+      "label": "build3/x86/binlogs/v8_5_7.binlog",
+      "bytes": 1199573,
+      "sha256": "68e459ddcdf4f1d77235a9247c10f412bfdb955774a781a86ba9a47bd7015557"
+    },
+    {
+      "label": "build3/x86/binlogs/zlib.binlog",
+      "bytes": 317057,
+      "sha256": "1fab62cd4eb714f9a933faca794bc80e7c9e10d0b925fe0d1a2e3a589269d729"
+    },
+    {
+      "label": "build3/x86/build-Miniblink.json",
+      "bytes": 5913,
+      "sha256": "f4aef4ec5d5969790abe21af24a0ed06d91666b3388f99fcf10829aa45b204a8"
+    },
+    {
+      "label": "build3/x86/candidate.dll",
+      "bytes": 28115968,
+      "sha256": "e9e34583ff13a59111f7e55ae76593c892603bc099a4e50357e26ed72f394e8b"
+    },
+    {
+      "label": "build3/x86/candidate.map",
+      "bytes": 48820626,
+      "sha256": "9f54ea1dbe1eab533731bc0c951e6c1efe90d972481fd7706ce1bee23227584e"
+    },
+    {
+      "label": "build3/x86/capture/context.json",
+      "bytes": 1385,
+      "sha256": "eeadffd650a8f1ab41f40ea61e125664e589a8d89777282f41a14a14ae25e57f"
+    },
+    {
+      "label": "build3/x86/capture/owned.ndjson",
+      "bytes": 15599366,
+      "sha256": "e62eaf2495108e70459c39084c181d172e654169b2a1ec655576b57916d39c54"
+    },
+    {
+      "label": "build3/x86/capture/ready.json",
+      "bytes": 62,
+      "sha256": "7e2e11d9eb70a96c7c6c912883b09c418a58a0431a7ff5bc64d4ce2c2721f22c"
+    },
+    {
+      "label": "build3/x86/capture/result.json",
+      "bytes": 1126,
+      "sha256": "241de707800a9c437b67476d200284f9eab4a568b8a121dd91a220a5b7dcb98c"
+    },
+    {
+      "label": "build3/x86/capture/scheduling-finished.json",
+      "bytes": 271,
+      "sha256": "a89aeb244816b0256e64b4523b3a4725dc45e5e20a563052095b2b0e9ea3d04d"
+    },
+    {
+      "label": "build3/x86/capture/scheduling.json",
+      "bytes": 2974,
+      "sha256": "fb8a4b6c551a452e6789c859c3acae6e4354b49a7281714ed3f1c56b6c6eafaf"
+    },
+    {
+      "label": "build3/x86/capture/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "build3/x86/capture/stdout.log",
+      "bytes": 694,
+      "sha256": "c6530a0d2b903ed8024918c1fb40b1c3837029dc11f5cd1a52988cbaac58a324"
+    },
+    {
+      "label": "build3/x86/compiler-inputs/input-0",
+      "bytes": 94524,
+      "sha256": "d57290c04b4df8aab328996a43500c4cb37d745cb1a66732f9d5f5e98b0e4e78"
+    },
+    {
+      "label": "build3/x86/compiler-inputs/input-1",
+      "bytes": 79358,
+      "sha256": "8a32c078fc710d50a30fc3b68a784cc335ab8624b57fc09890651de8d530ab61"
+    },
+    {
+      "label": "build3/x86/compiler-inputs/input-10",
+      "bytes": 5053,
+      "sha256": "b3e62a046ddf28d09eedebe6eb9461cb7060e47cad2c69964b222c4eea10347e"
+    },
+    {
+      "label": "build3/x86/compiler-inputs/input-11",
+      "bytes": 125299,
+      "sha256": "afbb65075ab35bdccc993fe0a9791decc03a6107b00b17a2d985c1ed421f64d4"
+    },
+    {
+      "label": "build3/x86/compiler-inputs/input-12",
+      "bytes": 27622,
+      "sha256": "34880e9400c7a625eda7f2797234f60a9b1456ffa7dcb7c4210002da559a3525"
+    },
+    {
+      "label": "build3/x86/compiler-inputs/input-13",
+      "bytes": 10913,
+      "sha256": "28fb1fd59d1d46b03487925f8f6399eeb5aa0c57742e12094f473b1b40eb292d"
+    },
+    {
+      "label": "build3/x86/compiler-inputs/input-14",
+      "bytes": 43968,
+      "sha256": "1576fdb40eb225dff53489db2fd52e41c7bb24f1e621e4a95c2c7f4a7216949c"
+    },
+    {
+      "label": "build3/x86/compiler-inputs/input-15",
+      "bytes": 11497,
+      "sha256": "8af081872a0d03592cef7df997c6b3aeede7e702f1b288dac358e5efa5c8efb2"
+    },
+    {
+      "label": "build3/x86/compiler-inputs/input-16",
+      "bytes": 7153,
+      "sha256": "65ccd069fe343519a7ec0698ccaf5a6f0388f1af180b959b8271902b983cb099"
+    },
+    {
+      "label": "build3/x86/compiler-inputs/input-17",
+      "bytes": 1431,
+      "sha256": "d2829f1e32c6b6ce3a6066c71576c8044d8bcbf6b0f728f95320a92015c221c5"
+    },
+    {
+      "label": "build3/x86/compiler-inputs/input-18",
+      "bytes": 7337366,
+      "sha256": "bb85988bf95afd3f61790783f77efa52998a97905224a0f3ec0711d26e0bbfc7"
+    },
+    {
+      "label": "build3/x86/compiler-inputs/input-19",
+      "bytes": 1071956,
+      "sha256": "0023422f1af59f6089887fef5d31e3515befd8334725195a55774f9709d24f8d"
+    },
+    {
+      "label": "build3/x86/compiler-inputs/input-2",
+      "bytes": 104747608,
+      "sha256": "ec094d5f8f37c106eefcfc47c9997c261a06e3bd8eaaa7255835983a58524156"
+    },
+    {
+      "label": "build3/x86/compiler-inputs/input-20",
+      "bytes": 71470,
+      "sha256": "762a1ad30f77233892efc8cb970aa16b2ed6a67521b176934aa1216b4a327c13"
+    },
+    {
+      "label": "build3/x86/compiler-inputs/input-21",
+      "bytes": 5553134,
+      "sha256": "1306cca7c0a569ee5b48fd5e23a7e2fd0ef3be83f622cb8d9d05cb433287ef01"
+    },
+    {
+      "label": "build3/x86/compiler-inputs/input-22",
+      "bytes": 15332704,
+      "sha256": "56a2b9c86ab2843e7a1cb3ace4d1daf8d05017067b60536dc7ff5860f21d7c94"
+    },
+    {
+      "label": "build3/x86/compiler-inputs/input-23",
+      "bytes": 1105916,
+      "sha256": "a96a33ada7f5a2fc2f07841e76378e5bebf788713777d22762bcf46941024509"
+    },
+    {
+      "label": "build3/x86/compiler-inputs/input-24",
+      "bytes": 299244,
+      "sha256": "ccd3dad2a72ad555a320b855eea24eb9b6fc2d216473bd794ae7831bde00913d"
+    },
+    {
+      "label": "build3/x86/compiler-inputs/input-25",
+      "bytes": 34228228,
+      "sha256": "c7fc69f7e79a2a8011a974c06a2c850f2186415ee408efc6d6b0d376a53c84f7"
+    },
+    {
+      "label": "build3/x86/compiler-inputs/input-26",
+      "bytes": 318080,
+      "sha256": "5aeb181e7ca4c72b8881c0fcb26f4dccc69089324e6bbc2e0fb3e1ef522a7b8a"
+    },
+    {
+      "label": "build3/x86/compiler-inputs/input-27",
+      "bytes": 176154,
+      "sha256": "592709800a0bf13688a5109afcf481eb62f36fafa690ff23f704f7c7a43ac660"
+    },
+    {
+      "label": "build3/x86/compiler-inputs/input-28",
+      "bytes": 3115,
+      "sha256": "d9d3a0119dc9da8845b2469c6a60defeee7bd57a7f866ddca6e5c5330824ca45"
+    },
+    {
+      "label": "build3/x86/compiler-inputs/input-29",
+      "bytes": 5543,
+      "sha256": "c36365f2758de235ac79babdccfb2b945dd70c974c51e1efaddcaa8e74555cda"
+    },
+    {
+      "label": "build3/x86/compiler-inputs/input-3",
+      "bytes": 71454768,
+      "sha256": "631a02cecb87f9f7f2270713d6c7f84e54a0fabce6c6638d21d3a0caea78204d"
+    },
+    {
+      "label": "build3/x86/compiler-inputs/input-30",
+      "bytes": 376112,
+      "sha256": "3b6653078e066a29358e7b81e0da45a22bf8f6e782899e5f79ead399aa5097df"
+    },
+    {
+      "label": "build3/x86/compiler-inputs/input-31",
+      "bytes": 10163,
+      "sha256": "693b4a30c7379e84d2675101a8d47178cf62f45df2e2f09be5c206107e9c9ca2"
+    },
+    {
+      "label": "build3/x86/compiler-inputs/input-32",
+      "bytes": 647232,
+      "sha256": "fc631050d7a32e3cc0e9ba7ff9a86e926e79fe08afc78b34747f1163a0f6f177"
+    },
+    {
+      "label": "build3/x86/compiler-inputs/input-33",
+      "bytes": 17144,
+      "sha256": "ae77f201aaa4bb65c1b2e77407eb0c7da9ce55d1040f48f392ba27e9bdd1aeca"
+    },
+    {
+      "label": "build3/x86/compiler-inputs/input-34",
+      "bytes": 5927,
+      "sha256": "f1554b50ff1c213406e896c505f5848cd628572b96b43d15ab610470d9b9826b"
+    },
+    {
+      "label": "build3/x86/compiler-inputs/input-35",
+      "bytes": 5815,
+      "sha256": "10ce60eb2b827102e0b10cbdcd17b1c770208030ec02dba1309803797347c5c3"
+    },
+    {
+      "label": "build3/x86/compiler-inputs/input-36",
+      "bytes": 9021,
+      "sha256": "0d5df417fbfac68bbb2357987c8003aaec97537b16cb88d7d357197333dc4e82"
+    },
+    {
+      "label": "build3/x86/compiler-inputs/input-37",
+      "bytes": 8099,
+      "sha256": "69b42eae472597a97061741e5a401c19e3bf665aa134646ba555645afe432d36"
+    },
+    {
+      "label": "build3/x86/compiler-inputs/input-38",
+      "bytes": 11427,
+      "sha256": "2a81487d800b50a55032839b96abc2844188161d3dca7598e04ff1b9af2609ef"
+    },
+    {
+      "label": "build3/x86/compiler-inputs/input-39",
+      "bytes": 1471,
+      "sha256": "01bc9f21ad0f08f9a56dbb160334483078120e2fcb62b690d2dd1590db8ff936"
+    },
+    {
+      "label": "build3/x86/compiler-inputs/input-4",
+      "bytes": 18463832,
+      "sha256": "41ccf71f32fad386a5b7f7926175c4a8a74196d050e2bcbf7b06a93d080288f5"
+    },
+    {
+      "label": "build3/x86/compiler-inputs/input-5",
+      "bytes": 71208,
+      "sha256": "2cbcc6024fe41ae92fada6b3f74e6e2a1b2fe71c51b288167d6abab319da2628"
+    },
+    {
+      "label": "build3/x86/compiler-inputs/input-6",
+      "bytes": 1847888,
+      "sha256": "a86c27bb35ccf3c27c206406e26262216fadba3de0eed7173447bcbfe03ff74c"
+    },
+    {
+      "label": "build3/x86/compiler-inputs/input-7",
+      "bytes": 3776568,
+      "sha256": "9546466f0feca6d62d7d4ea9b7fbc381f8e302cb7f02f4ce327a39d8577bb293"
+    },
+    {
+      "label": "build3/x86/compiler-inputs/input-8",
+      "bytes": 339968,
+      "sha256": "15cd209c995b7d3009c91ca40892d5b8f1fb162f3e5f10716642ea278e8e0d7b"
+    },
+    {
+      "label": "build3/x86/compiler-inputs/input-9",
+      "bytes": 301368,
+      "sha256": "362a356ce7f0940ec74f73a8fc2c990a2cc24a38a11c90bbd8eca947110ad139"
+    },
+    {
+      "label": "build3/x86/compiler-version/executableAfter",
+      "bytes": 104747608,
+      "sha256": "ec094d5f8f37c106eefcfc47c9997c261a06e3bd8eaaa7255835983a58524156"
+    },
+    {
+      "label": "build3/x86/compiler-version/executableBefore",
+      "bytes": 104747608,
+      "sha256": "ec094d5f8f37c106eefcfc47c9997c261a06e3bd8eaaa7255835983a58524156"
+    },
+    {
+      "label": "build3/x86/compiler-version/stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "build3/x86/compiler-version/stdout",
+      "bytes": 242,
+      "sha256": "a8e6844e85eb2c4633785606393c96408f24bb297f8ce85735ea196ec4919695"
+    },
+    {
+      "label": "build3/x86/installed-scheduling/input-0",
+      "bytes": 19105,
+      "sha256": "d987c20d12dca28590f2222e633c97d578144f4d39cca46b0604c9042f7a609b"
+    },
+    {
+      "label": "build3/x86/installed-scheduling/input-1",
+      "bytes": 37168,
+      "sha256": "03d9d3e0a97f1062b312f32da542398a271eb32cb6f1dd733130ca59ab0308e0"
+    },
+    {
+      "label": "build3/x86/installed-scheduling/input-2",
+      "bytes": 174646,
+      "sha256": "7dadbd0316214fd716f78d5ae35a10d8d137218d90e040381db3edcfdc37ce68"
+    },
+    {
+      "label": "build3/x86/installed-scheduling/input-3",
+      "bytes": 32371,
+      "sha256": "c734a0c4e3f23a0a6123cd900ee48c465ea9babd64a4631e5261f91727258e66"
+    },
+    {
+      "label": "build3/x86/installed-scheduling/input-4",
+      "bytes": 2066,
+      "sha256": "463ada079e7e0f153f1e2bf2792181231c171ca3a3cdbb9fdd7ebb48ca59f8cb"
+    },
+    {
+      "label": "build3/x86/installed-scheduling/input-5",
+      "bytes": 584544,
+      "sha256": "123b520c16888fa3cedc1356d2e091726da85aa676bc4a5c2ad1ea6c19e067e6"
+    },
+    {
+      "label": "build3/x86/installed-scheduling/input-6",
+      "bytes": 970,
+      "sha256": "efdd016326f6411992b26aa7a34c2ec79753b3e0706043d32a292626c7c7c1e2"
+    },
+    {
+      "label": "build3/x86/installed-scheduling/input-7",
+      "bytes": 970,
+      "sha256": "efdd016326f6411992b26aa7a34c2ec79753b3e0706043d32a292626c7c7c1e2"
+    },
+    {
+      "label": "build3/x86/kernel-llvm-inputs.json",
+      "bytes": 25179,
+      "sha256": "e0889f063344389b94a5bed6ba774cdf00552f9e54a22e0a93f6667c1bcc669a"
+    },
+    {
+      "label": "build3/x86/kernel-source-after.json",
+      "bytes": 4585854,
+      "sha256": "77cb5cfb5bcd74ecb645feccf7705478bd07a1760e26283510fbdbe2ac920ea0"
+    },
+    {
+      "label": "build3/x86/kernel-source-before.json",
+      "bytes": 4585854,
+      "sha256": "77cb5cfb5bcd74ecb645feccf7705478bd07a1760e26283510fbdbe2ac920ea0"
+    },
+    {
+      "label": "build3/x86/libraries/harfbuzz.lib",
+      "bytes": 3794540,
+      "sha256": "0a295a835c90558d46bbda854ff5e51d5dc6e5497247f309851173415fb0801d"
+    },
+    {
+      "label": "build3/x86/libraries/libcurl.lib",
+      "bytes": 5438806,
+      "sha256": "a416f74abbbb13b69ccb4062b4934a4f63b00582c9ac12272b2e06404cff3c42"
+    },
+    {
+      "label": "build3/x86/libraries/libjpeg.lib",
+      "bytes": 1697240,
+      "sha256": "5ddfab2ddda79834987b18993d0dc2438b231185b396c0c0685bb774ab154d35"
+    },
+    {
+      "label": "build3/x86/libraries/libpng.lib",
+      "bytes": 1167014,
+      "sha256": "c7aaa4a7cd5f72ac71f106d806bfc4016cb13d8f35b38b2e13b6050948fc71c8"
+    },
+    {
+      "label": "build3/x86/libraries/libxml.lib",
+      "bytes": 4801776,
+      "sha256": "545297ac961f9dfa55d293ccd41f2c92b3de49b64e650c5652293015cae95ccc"
+    },
+    {
+      "label": "build3/x86/libraries/openssl.lib",
+      "bytes": 17989260,
+      "sha256": "55b80309070576c398e12e0c3f82e11fb916ae66ea7c5efe54095c9d5fda15a9"
+    },
+    {
+      "label": "build3/x86/libraries/ots.lib",
+      "bytes": 11346866,
+      "sha256": "ec8307205432e04f687e2aa3f18fafb169df006952f035b238b968b6398800b5"
+    },
+    {
+      "label": "build3/x86/libraries/skia.lib",
+      "bytes": 27125554,
+      "sha256": "a45e0a03e74dc00bc0e63011662306f959a7f78495dcf762e38990200c134590"
+    },
+    {
+      "label": "build3/x86/libraries/v8_5_7_1.lib",
+      "bytes": 528413692,
+      "sha256": "9554f1de0ca3940564e87bfc6f58db44c1ede19da934395446b5bcd1b4843697"
+    },
+    {
+      "label": "build3/x86/libraries/v8_5_7.lib",
+      "bytes": 656275080,
+      "sha256": "62db3a1a94d6cbdf1b3daa56f4b549e26c39ef581141c6c156abbeba6b406bf7"
+    },
+    {
+      "label": "build3/x86/libraries/zlib.lib",
+      "bytes": 396488,
+      "sha256": "1467fe0a2a7ec3b597a5b76ac41ce60b4b3ba147db9617e384dfbb8340fb17a8"
+    },
+    {
+      "label": "build3/x86/logs/harfbuzz.log",
+      "bytes": 1035239,
+      "sha256": "62c73fa9573e8bb3702c4cd29880ec4eca009cf60fc264dd019e663d5edf5bf4"
+    },
+    {
+      "label": "build3/x86/logs/libcurl.log",
+      "bytes": 3841991,
+      "sha256": "5de94aae025045f0ae9d70c468f9558e5c243b976548482c6966dfe887dfd966"
+    },
+    {
+      "label": "build3/x86/logs/libjpeg.log",
+      "bytes": 186079,
+      "sha256": "dbace423848faf86fe267c47b156defb66063355bcae20bd1496351f61b018d8"
+    },
+    {
+      "label": "build3/x86/logs/libpng.log",
+      "bytes": 475853,
+      "sha256": "13e4652a25a84ddc305ba342593f3cbabc3a6eb346c1bc15bcc52f40ccf94ac2"
+    },
+    {
+      "label": "build3/x86/logs/libxml.log",
+      "bytes": 676207,
+      "sha256": "8975df273a2e56bd2dcf7adc8d53765b7fe3c76894152831128e20b28dc63aa2"
+    },
+    {
+      "label": "build3/x86/logs/miniblink.log",
+      "bytes": 1370998849,
+      "sha256": "dc711f8ae56d7c636e492849b6c86301bfc1d9741568c527f20fdf3b5ae50c54"
+    },
+    {
+      "label": "build3/x86/logs/openssl.log",
+      "bytes": 14725762,
+      "sha256": "0895f99b23719938f33b811a4ad47d4ee7b84c58373b479bf188505c580bd13d"
+    },
+    {
+      "label": "build3/x86/logs/ots.log",
+      "bytes": 2628695,
+      "sha256": "865cdcdd0e943e06ea8df6b2e535048c3a7e4208fb69366894961054a164cddd"
+    },
+    {
+      "label": "build3/x86/logs/skia.log",
+      "bytes": 15937329,
+      "sha256": "1898b68c7f7b1a202dfc451df5a8d6ff58b91cc50504abf26997e2e8e758a65c"
+    },
+    {
+      "label": "build3/x86/logs/v8_5_7_1.log",
+      "bytes": 16381484,
+      "sha256": "1466568c1a4fb298ae4471fe6c299d7897b2035117db8be77670054d6d05f86b"
+    },
+    {
+      "label": "build3/x86/logs/v8_5_7.log",
+      "bytes": 20028026,
+      "sha256": "4ab5ab6abfa96a61de9669b9a721e1e7e7f518bc711e4f979acb3d86a9f427bb"
+    },
+    {
+      "label": "build3/x86/logs/zlib.log",
+      "bytes": 189037,
+      "sha256": "9fcfba0d1897f95a326f1d37b43b9665232116c4eeb7ec348723a04d9107fa3c"
+    },
+    {
+      "label": "build3/x86/tools/owned-runner",
+      "bytes": 234496,
+      "sha256": "c42077f6fb3f7b04953c9f063b3a016a1dfa6ceb9f213ac76255b9957c712fb0"
+    },
+    {
+      "label": "build3/x86/tools/powershell",
+      "bytes": 301368,
+      "sha256": "362a356ce7f0940ec74f73a8fc2c990a2cc24a38a11c90bbd8eca947110ad139"
+    },
+    {
+      "label": "external-verifier/full-kernel-owned-stream.cjs",
+      "bytes": 9009,
+      "sha256": "8bf8459981424764628f4f3cd48d39cacf2ec0a53c72be667edb9bd35a75d87d"
+    },
+    {
+      "label": "external-verifier/kernel-builds3.cjs",
+      "bytes": 32646,
+      "sha256": "10f9cf632e35670fb3fc800c54ee7ed5638507ad32aa49c9dccad2114571bffb"
+    },
+    {
+      "label": "sdk/sdk/src/host/runtime_shutdown_api.h",
+      "bytes": 360,
+      "sha256": "aeaac3b5b09fe6a527c1fe10014494a8d22be963534c86c18a2c0270c434e90a"
+    },
+    {
+      "label": "sdk/sdk/src/host/source_kernel_api.h",
+      "bytes": 2943,
+      "sha256": "cc4361a31bd69d14c55fba84959fa5d6df7827792bdd9180f8ab5f014f03c952"
+    },
+    {
+      "label": "sdk/third_party/manifests/kernel-build-050.json",
+      "bytes": 3675,
+      "sha256": "da7fa3fe8666dfd0ec5c4f600c01b271386039f03a0abf0639f3fa2b87b579e7"
+    },
+    {
+      "label": "sdk/third_party/manifests/kernel-input-latency-source.json",
+      "bytes": 3063,
+      "sha256": "bb8dbd28c9d2079205fc3c1f8d7fbe451dcf52dddca106f86e89ee8a3ef756be"
+    },
+    {
+      "label": "sdk/third_party/patches/miniblink/0013-bound-main-thread-scheduler-batches.patch",
+      "bytes": 4625,
+      "sha256": "8a4acaee8575e38104b8aaf5d6d908587cdbb5479e3e8aa4d77de7d019ee4534"
+    },
+    {
+      "label": "sdk/third_party/sources/miniblink/content/web_impl_win/BlinkPlatformImpl.cpp",
+      "bytes": 40263,
+      "sha256": "b03dc07c12abfa1a43a53390d665067f6a35272e3dd11dfde15f3b70cf68cadc"
+    },
+    {
+      "label": "sdk/third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp",
+      "bytes": 24846,
+      "sha256": "fa7295aee946697c6a9b122daea593b7c435f39ae1585c2774e8d13476e953cc"
+    },
+    {
+      "label": "sdk/third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.h",
+      "bytes": 4325,
+      "sha256": "673e9acc5bb267a5afb733a7eb4c84de2ac845699e49fa44e27f1fbcafd2ea7d"
+    },
+    {
+      "label": "sdk/tools/internal/owned-tail-evidence.cjs",
+      "bytes": 20024,
+      "sha256": "61bceb766ecdfae0552c26212b332c8d7dbd0c2f24833cf7d27d59932f2b23cd"
+    },
+    {
+      "label": "sdk/tools/internal/standard-build.cjs",
+      "bytes": 39757,
+      "sha256": "0411e6813baae2d4134c5b1735f56c63a31579168f4f8be12c1ea189d8cb220e"
+    },
+    {
+      "label": "sdk/verification/production-validation/input-latency-scheduling-2026-10-21/baseline-source.json",
+      "bytes": 1706,
+      "sha256": "1b8fd69b0ac90c4fee6ea0b0e47c447c9d403f880101e0371a9347e0462af1b1"
+    }
+  ],
+  "limitations": [
+    "Raw build evidence remains external and is bound by portable labels and byte hashes.",
+    "PE tables establish symbol and ordinal compatibility only; no DLL execution or runtime ABI qualification.",
+    "No SDK binary import, package publication, runtime input-latency acceptance or full production qualification is implied."
+  ],
+  "dllExecutedByThisVerifier": false,
+  "sdkBinaryImported": false,
+  "publicCollectorExecuted": false,
+  "runtimeInputLatencyValidated": false,
+  "toolchainQualification": false,
+  "releaseReady": false
+}

@@ -11,11 +11,15 @@
 #include "wke/ViewDiagnosticsState.h"
 #include <stdexcept>
 #include <exception>
+#include <algorithm>
+#include <new>
 
 #include "content/web_impl_win/BlinkPlatformImpl.h"
 #include "content/browser/WebFrameClientImpl.h"
 #include "third_party/WebKit/public/platform/WebDragData.h"
 #include "third_party/WebKit/public/platform/WebThread.h"
+#include "third_party/WebKit/public/platform/WebTraceLocation.h"
+#include "third_party/WebKit/public/platform/Platform.h"
 #include "third_party/WebKit/public/web/WebDocument.h"
 #include "third_party/WebKit/public/web/WebScriptSource.h"
 #include "third_party/WebKit/Source/web/WebViewImpl.h"
@@ -32,6 +36,180 @@
 #include <shlwapi.h>
 
 namespace wke {
+extern DWORD wkeThreadId;
+
+namespace {
+using PaintState = content::PaintLifetimeState;
+using PaintKind = content::PaintCloseKind;
+static void queuePaintClose(const std::shared_ptr<PaintState>& state);
+static bool paintOwner() { return wkeIsInit && ::GetCurrentThreadId() == wkeThreadId; }
+static void invokePaintClose(CWebView* view, PaintKind kind)
+{
+    if (kind == PaintKind::window)
+        wkeDestroyWebWindow(view);
+    else if (kind == PaintKind::direct)
+        view->destroy();
+    else if (kind == PaintKind::view)
+        wkeDestroyWebView(view);
+}
+class DeferredPaintCloseTask final : public blink::WebThread::Task {
+public:
+    DeferredPaintCloseTask(const std::shared_ptr<PaintState>& state, uint64_t ticket)
+        : m_state(state), m_ticket(ticket) { }
+    ~DeferredPaintCloseTask() override
+    {
+        auto& runtime = content::paintLifetimeRuntime();
+        std::lock_guard<std::mutex> lock(runtime.mutex);
+        m_state->policy.disposeTask(m_ticket);
+        --runtime.queued; // A run receipt also lives until actual Task disposal.
+    }
+    void run() override
+    {
+        if (!paintOwner())
+            return;
+        CWebView* target = nullptr;
+        PaintKind kind = PaintKind::none;
+        {
+            auto& runtime = content::paintLifetimeRuntime();
+            std::lock_guard<std::mutex> lock(runtime.mutex);
+            if (m_state->policy.queued != m_ticket)
+                return;
+            m_state->policy.disposeTask(m_ticket);
+            if (m_state->policy.ready()) {
+                target = static_cast<CWebView*>(m_state->target);
+                kind = m_state->policy.pending;
+            }
+        }
+        if (target)
+            invokePaintClose(target, kind);
+    }
+private:
+    std::shared_ptr<PaintState> m_state;
+    uint64_t m_ticket;
+};
+static void queuePaintClose(const std::shared_ptr<PaintState>& state)
+{
+    uint64_t ticket;
+    blink::WebThread* owner;
+    {
+        auto& runtime = content::paintLifetimeRuntime();
+        std::lock_guard<std::mutex> lock(runtime.mutex);
+        if (!state->target || !state->owner)
+            return;
+        ticket = state->policy.reserveTask();
+        if (!ticket)
+            return;
+        owner = state->owner;
+        ++runtime.queued;
+    }
+    auto* task = new (std::nothrow) DeferredPaintCloseTask(state, ticket);
+    if (!task) {
+        auto& runtime = content::paintLifetimeRuntime();
+        std::lock_guard<std::mutex> lock(runtime.mutex);
+        state->policy.disposeTask(ticket);
+        --runtime.queued;
+        return; // Intent survives; bounded owner opportunities retry it.
+    }
+    owner->postTask(FROM_HERE, task); // Disposal acknowledges rejected admission.
+}
+static void bindPaintLifetime(const std::shared_ptr<PaintState>& state, CWebView* target)
+{
+    auto& runtime = content::paintLifetimeRuntime();
+    std::lock_guard<std::mutex> lock(runtime.mutex);
+    state->target = target;
+    state->owner = blink::Platform::current()->mainThread();
+    state->onIdle = queuePaintClose;
+}
+static void invalidatePaintLifetime(const std::shared_ptr<PaintState>& state)
+{
+    auto& runtime = content::paintLifetimeRuntime();
+    std::lock_guard<std::mutex> lock(runtime.mutex);
+    if (state->policy.active || state->policy.nativeFailed)
+        std::terminate(); // A raw delete may never unwind a live paint stack.
+    if (state->policy.pending != PaintKind::none)
+        --runtime.pending;
+    state->policy.invalidate();
+    state->target = nullptr;
+    state->owner = nullptr;
+}
+} // namespace
+
+content::PaintClosePermit CWebView::acquirePaintClosePermit(content::PaintCloseKind kind)
+{
+    content::PaintClosePermit permit(m_paintLifetime, kind);
+    if (!permit)
+        queuePaintClose(m_paintLifetime);
+    return permit;
+}
+bool CWebView::takeWindowDestroyCallback()
+{
+    auto& runtime = content::paintLifetimeRuntime();
+    std::lock_guard<std::mutex> lock(runtime.mutex);
+    return m_paintLifetime->policy.takeDestroyCallback();
+}
+bool CWebView::prepareNativeWindowClose() { return true; }
+
+void CWebView::quiescePaintCallbacks()
+{
+    auto& runtime = content::paintLifetimeRuntime();
+    std::lock_guard<std::mutex> lock(runtime.mutex);
+    m_paintLifetime->policy.sealed = true;
+}
+bool CWebView::paintCallbacksDrained() const
+{
+    auto& runtime = content::paintLifetimeRuntime();
+    std::lock_guard<std::mutex> lock(runtime.mutex);
+    return m_paintLifetime->policy.active == 0;
+}
+void CWebView::serviceDeferredPaintCloses()
+{
+    if (!paintOwner())
+        return;
+    static content::PaintCloseServiceCursor<wkeWebView> cursor;
+    if (!cursor.enterService())
+        return;
+    struct ServiceExit {
+        content::PaintCloseServiceCursor<wkeWebView>& cursor;
+        ~ServiceExit() { cursor.leaveService(); }
+    } serviceExit{cursor};
+    const size_t budget = (std::min)(size_t(32), g_liveWebViews.size());
+    for (size_t count = 0; count < budget && !g_liveWebViews.empty(); ++count) {
+        CWebView* const target = cursor.next(g_liveWebViews);
+        const auto state = target->m_paintLifetime;
+        PaintKind kind = PaintKind::none;
+        {
+            auto& runtime = content::paintLifetimeRuntime();
+            std::lock_guard<std::mutex> lock(runtime.mutex);
+            if (state->policy.ready())
+                kind = state->policy.pending;
+        }
+        if (kind != PaintKind::none)
+            invokePaintClose(target, kind);
+        else
+            target->webPage()->retryRejectedDrawWake();
+    }
+}
+bool CWebView::preparePaintShutdown()
+{
+    {
+        auto& runtime = content::paintLifetimeRuntime();
+        std::lock_guard<std::mutex> lock(runtime.mutex);
+        runtime.closing = true;
+    }
+    serviceDeferredPaintCloses();
+    auto& runtime = content::paintLifetimeRuntime();
+    std::lock_guard<std::mutex> lock(runtime.mutex);
+    return runtime.drained();
+}
+bool CWebView::resumePaintRuntime()
+{
+    auto& runtime = content::paintLifetimeRuntime();
+    std::lock_guard<std::mutex> lock(runtime.mutex);
+    if (!runtime.drained())
+        return false;
+    runtime.closing = false;
+    return true;
+}
 
 CWebView::CWebView(COLORREF color)
     : m_hWnd(NULL)
@@ -65,6 +243,8 @@ CWebView::CWebView(COLORREF color)
     try {
         // Engine construction has no proven partial abort; never return FAILED.
         _initPage(color);
+        m_paintLifetime = m_webPage->paintLifetimeState();
+        bindPaintLifetime(m_paintLifetime, this);
         _initHandler();
         _initMemoryDC();
 
@@ -80,6 +260,8 @@ CWebView::CWebView(COLORREF color)
 
 CWebView::~CWebView()
 {
+    auto destructorPermit = acquirePaintClosePermit(content::PaintCloseKind::view);
+    invalidatePaintLifetime(m_paintLifetime);
     net::ActivatingObjCheck::inst()->remove(m_id);
     g_liveWebViews.erase(this);
     m_webPage->close();
@@ -100,9 +282,11 @@ bool CWebView::create()
 
 void CWebView::destroy()
 {
-    if (!brokerMayDestroyRawView(this))
+    if (!paintOwner() || !brokerMayDestroyRawView(this))
         return;
-    delete this;
+    auto permit = acquirePaintClosePermit(content::PaintCloseKind::direct);
+    if (permit && prepareNativeWindowClose())
+        delete this;
 }
 
 const utf8* CWebView::name() const

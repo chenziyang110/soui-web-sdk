@@ -27,13 +27,41 @@ if (!(Test-Path -LiteralPath (Join-Path $PSScriptRoot 'web/dist/index.html') -Pa
 }
 . (Join-Path $sdkRoot 'tools/internal/Find-Toolchain.ps1')
 . (Join-Path $sdkRoot 'tools/internal/CMake-Configure.ps1')
-$null = Get-SouiToolchain
+. (Join-Path $sdkRoot 'tools/internal/Msvc-CompilerLifecycle.ps1')
+$toolchain = Get-SouiToolchain
 $cmake = (Get-Command cmake.exe -CommandType Application -ErrorAction Stop).Source
 $webview2Package = & (Join-Path $sdkRoot 'tools/internal/Restore-WebView2.ps1')
 $configure = @(Get-SouiCMakeConfigureArguments -CMake $cmake -WorkspaceRoot $sdkRoot `
   -SourceDirectory $PSScriptRoot -BuildDirectory $output -Architecture $Architecture)
-& $cmake @configure "-DSOUI_WEBVIEW2_SDK_ROOT=$webview2Package"
-if ($LASTEXITCODE -ne 0) { throw 'Scratch CMake configuration failed.' }
-& $cmake --build $output --config $Configuration --target SouiScratch_resources --parallel 2
-if ($LASTEXITCODE -ne 0) { throw 'Scratch native build/deployment failed.' }
+$nodeReuse = Get-Item -LiteralPath 'Env:MSBUILDDISABLENODEREUSE' -ErrorAction SilentlyContinue
+$compilerPhase = $null
+$primaryFailure = $null
+try {
+  $env:MSBUILDDISABLENODEREUSE = '1'
+  $compilerPhase = Start-SouiMsvcCompilerPhase -Toolchain $toolchain -Architecture $Architecture -EvidenceRoot $output -Phase configure
+  & $cmake @configure "-DSOUI_WEBVIEW2_SDK_ROOT=$webview2Package"
+  Complete-SouiMsvcCompilerPhase $compilerPhase $LASTEXITCODE 'Scratch CMake configuration failed.'
+  $targets = @('SouiScratch_resources')
+  if ($ForPackage) { $targets += 'SouiScratch_export_contract' }
+  $compilerPhase = Start-SouiMsvcCompilerPhase -Toolchain $toolchain -Architecture $Architecture -EvidenceRoot $output -Phase build
+  & $cmake --build $output --config $Configuration --target @targets --parallel 2
+  Complete-SouiMsvcCompilerPhase $compilerPhase $LASTEXITCODE 'Scratch native build/deployment failed.'
+} catch {
+  $primaryFailure = $_
+  throw
+} finally {
+  $cleanupFailures = [Collections.Generic.List[string]]::new()
+  try { Close-SouiMsvcCompilerPhase $compilerPhase } catch { $cleanupFailures.Add($_.Exception.Message) }
+  try {
+    if ($null -ne $nodeReuse) { Set-Item -LiteralPath 'Env:MSBUILDDISABLENODEREUSE' -Value $nodeReuse.Value -ErrorAction Stop }
+    else { Remove-Item -LiteralPath 'Env:MSBUILDDISABLENODEREUSE' -ErrorAction SilentlyContinue }
+    $restored = Get-Item -LiteralPath 'Env:MSBUILDDISABLENODEREUSE' -ErrorAction SilentlyContinue
+    if (($null -ne $restored) -ne ($null -ne $nodeReuse) -or
+        ($null -ne $nodeReuse -and $restored.Value -cne $nodeReuse.Value)) { throw 'Build environment restore differs.' }
+  } catch { $cleanupFailures.Add($_.Exception.Message) }
+  if ($cleanupFailures.Count) {
+    if ($primaryFailure) { $primaryFailure.Exception.Data['cleanupFailures'] = $cleanupFailures.ToArray(); Write-Warning ($cleanupFailures -join '; ') }
+    else { throw ($cleanupFailures -join '; ') }
+  }
+}
 Write-Output (Join-Path $output "bin/$Configuration/SouiScratch/SouiScratch.exe")

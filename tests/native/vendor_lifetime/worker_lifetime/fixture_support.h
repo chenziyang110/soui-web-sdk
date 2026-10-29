@@ -64,7 +64,6 @@ using ThreadIdentifier = std::uint32_t;
 inline ThreadIdentifier currentThread() { return ::GetCurrentThreadId(); }
 inline bool isMainThread() { return ::GetCurrentThreadId() == fixture::engineThreadId; }
 inline double currentTime() { LARGE_INTEGER n{}, f{}; ::QueryPerformanceCounter(&n); ::QueryPerformanceFrequency(&f); return static_cast<double>(n.QuadPart) / static_cast<double>(f.QuadPart); }
-inline double monotonicallyIncreasingTime() { return currentTime(); }
 }
 using WTF::ThreadIdentifier;
 using WTF::currentThread;

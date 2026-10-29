@@ -1,0 +1,64 @@
+{
+  "schema": "soui.release.install-legal-closure-fix/v1",
+  "createdUtc": "2026-10-28T15:15:01.042Z",
+  "files": [
+    {
+      "path": "C:/sr06/sdk/CMakeLists.txt",
+      "bytes": 5993,
+      "sha256": "40be1150c183b02369d31165a560b8f1d48bb53cc56cf954e832b2e9efdfedc4"
+    },
+    {
+      "path": "C:/sr06/tools/internal/deploy-resources.cjs",
+      "bytes": 8632,
+      "sha256": "fad5a0380dd7f8aa811b2c1fdf12a914b636f4fab2704ae29036fe79ea1a1e85"
+    },
+    {
+      "path": "C:/sr06/docs/licenses/v0.6.0-redistribution.md",
+      "bytes": 5427,
+      "sha256": "475eeb756afa369a58d19170c86de19de17a407043358cb82b0a002458176f5c"
+    },
+    {
+      "path": "C:/sr06/tests/sdk/delivery-identity.test.cjs",
+      "bytes": 29424,
+      "sha256": "379f8f653e5e35dbdced63475d3c56e320f98175b9b876e88087ed90d30f1f17"
+    }
+  ],
+  "changes": [
+    "Keep existing LICENSE installation and legacy licenses destination; add hierarchical third_party/licenses and referenced redistribution doc to compiled install.",
+    "Runtime legal closure requires/copies new doc only when actual notice references it; missing doc fails before staging. Bind published notice bytes to the discovery snapshot.",
+    "Use official repository v0.6.0 full-source links for build/pairing instructions, retaining relative license links."
+  ],
+  "newFixture": "deployment preserves referenced redistribution documentation and rejects missing input before staging",
+  "testResult": {
+    "redExit": 1,
+    "redReason": "Missing expected exception before fix",
+    "greenExit": 0,
+    "passed": 6,
+    "failed": 0,
+    "selection": "^(deployment |linked resource directories)",
+    "artifacts": [
+      "red.result.json",
+      "red.stdout.bin",
+      "green.result.json",
+      "green.stdout.bin"
+    ]
+  },
+  "frozenControls": {
+    "driverInputs": {
+      "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/kernel-prep/revision-2/DriverInputs.json",
+      "bytes": 4099,
+      "sha256": "f05715528241021eb986da39838f4c546c4491b65107d10791bfcd9f45104b32"
+    },
+    "checked": 14,
+    "failures": [],
+    "deliveryIdentityEdited": false
+  },
+  "docRelativeLinksMissing": [],
+  "installActuallyExecutedByThisAgent": false,
+  "installVerificationOwner": "remaining_delivery_input",
+  "sourceOrVendorEdited": false,
+  "indexEdited": false,
+  "commitCreated": false,
+  "productExecuted": false,
+  "releaseReady": false
+}

@@ -1,0 +1,95 @@
+{
+  "schema": "soui.release.devtools-component-archive-observation/v1",
+  "assembly": {
+    "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/frontend-prep/CurrentMaterials-x86-3.json",
+    "bytes": 6590,
+    "sha256": "27aab77fb1106c5352c373a6b26c0aeebc3525fee41a3acd475ab23f345e7e3c"
+  },
+  "artifact": {
+    "path": "C:/sr06/dist/SouiDevTools-0.6.0-windows-x86.zip",
+    "bytes": 14243258,
+    "sha256": "53387d24a2a583ef392408f040ab9a6e74c7e820e076d2544cbc1676823cb9e1"
+  },
+  "metadata": {
+    "path": "C:/sr06/dist/SouiDevTools-0.6.0-windows-x86.zip.json",
+    "bytes": 162739,
+    "sha256": "b3dced42b961a6c947d6096ee72a870fc75127a4364edae171f3de7068810490"
+  },
+  "commands": [
+    {
+      "mode": "create",
+      "executable": "C:/Program Files/7-Zip/7z.exe",
+      "args": [
+        "a",
+        "-tzip",
+        "-mx=5",
+        "-mmt=2",
+        "C:/sr06/dist/SouiDevTools-0.6.0-windows-x86.zip",
+        "*"
+      ],
+      "cwd": "C:/sr06/out/devtools-delivery/x86-3/materials",
+      "timeoutMs": 180000,
+      "exitCode": 0,
+      "signal": null,
+      "stdout": {
+        "path": "C:/sr06/out/devtools-component-archive-x86/create-stdout.bin",
+        "bytes": 377,
+        "sha256": "eeed6b2937cb76c9a42d4872477c83b373409a22589a2bcf29f07fc736cbb3d6"
+      },
+      "stderr": {
+        "path": "C:/sr06/out/devtools-component-archive-x86/create-stderr.bin",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "mode": "test",
+      "executable": "C:/Program Files/7-Zip/7z.exe",
+      "args": [
+        "t",
+        "C:/sr06/dist/SouiDevTools-0.6.0-windows-x86.zip"
+      ],
+      "cwd": "C:/sr06/out/devtools-component-archive-x86",
+      "timeoutMs": 180000,
+      "exitCode": 0,
+      "signal": null,
+      "stdout": {
+        "path": "C:/sr06/out/devtools-component-archive-x86/test-stdout.bin",
+        "bytes": 399,
+        "sha256": "225e6d8e9b821e87f5993a163c5a9b6622975e3c91bc91110aaf838645647e43"
+      },
+      "stderr": {
+        "path": "C:/sr06/out/devtools-component-archive-x86/test-stderr.bin",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "mode": "extract",
+      "executable": "C:/Program Files/7-Zip/7z.exe",
+      "args": [
+        "x",
+        "C:/sr06/dist/SouiDevTools-0.6.0-windows-x86.zip",
+        "-oC:/sr06/out/devtools-component-archive-x86/extracted"
+      ],
+      "cwd": "C:/sr06/out/devtools-component-archive-x86",
+      "timeoutMs": 180000,
+      "exitCode": 0,
+      "signal": null,
+      "stdout": {
+        "path": "C:/sr06/out/devtools-component-archive-x86/extract-stdout.bin",
+        "bytes": 402,
+        "sha256": "cb58e2cab1ff53204dc602499a69360e10d752f03c13841940a0fb706ebda79d"
+      },
+      "stderr": {
+        "path": "C:/sr06/out/devtools-component-archive-x86/extract-stderr.bin",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "archiveIntegrityPassed": true,
+  "extractedMembersExactlyMatch": true,
+  "productExecuted": false,
+  "releaseReady": false
+}

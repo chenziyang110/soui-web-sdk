@@ -31,6 +31,8 @@ CWebView::CWebView(COLORREF color)
     try {
         // Engine construction has no proven partial abort; never return FAILED.
         _initPage(color);
+        m_paintLifetime = m_webPage->paintLifetimeState();
+        bindPaintLifetime(m_paintLifetime, this);
         _initHandler();
         _initMemoryDC();
 
@@ -47,6 +49,8 @@ CWebView::CWebView(COLORREF color)
 // Exact method bytes from third_party/sources/miniblink/wke/wkeWebView.cpp
 CWebView::~CWebView()
 {
+    auto destructorPermit = acquirePaintClosePermit(content::PaintCloseKind::view);
+    invalidatePaintLifetime(m_paintLifetime);
     net::ActivatingObjCheck::inst()->remove(m_id);
     g_liveWebViews.erase(this);
     m_webPage->close();

@@ -4,7 +4,7 @@ import {fileURLToPath} from 'node:url';
 import path from 'node:path';
 import {spawnSync} from 'node:child_process';
 import {buildOfflineAssets} from './offline-assets.mjs';
-import {distInventory} from '../upstream/provenance.mjs';
+import {verifySourceVendor} from '../upstream/provenance.mjs';
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 const cache = path.resolve(root, '../.scratch-cache');
@@ -16,17 +16,7 @@ if (buildArgs.length && (buildArgs.length !== 2 || buildArgs[0] !== '--source-ve
 const sourceVendor = buildArgs.length ? path.resolve(buildArgs[1]) : null;
 let sourceRecord = null;
 if (sourceVendor) {
-  sourceRecord = JSON.parse(await readFile(path.join(sourceVendor,'source-build.json'),'utf8'));
-  const digest = bytes => createHash('sha256').update(bytes).digest('hex');
-  if (sourceRecord.schema !== 'soui.scratch-source-build/v1' ||
-      sourceRecord.sourceCommit !== lock.source.split('/').at(-1) ||
-      sourceRecord.referenceArtifactVersion !== lock.version ||
-      sourceRecord.sourceLockSha256 !== 'cabc070103553a7fe01332190b884c0dd8bc5517a64c13dc967f8afc92efa1ed' ||
-      sourceRecord.patchDriverSha256 !== digest(await readFile(path.join(root,'../upstream/build.mjs'))) ||
-      sourceRecord.reducerPatchSha256 !== digest((await readFile(path.join(root,'../upstream/targets-reducer.js'),'utf8')).replace(/\r\n/g,'\n')) ||
-      sourceRecord.bundleSha256 !== digest(await readFile(path.join(sourceVendor,'dist/scratch-gui-standalone.js'))) ||
-      JSON.stringify(sourceRecord.distFiles) !== JSON.stringify(await distInventory(path.join(sourceVendor,'dist'))))
-    throw new Error('Scratch source candidate provenance or dist inventory mismatch.');
+  sourceRecord = (await verifySourceVendor(sourceVendor)).record;
 }
 await mkdir(cache, {recursive: true});
 const archive = path.join(cache, 'scratch-scratch-gui-standalone-15.3.0.tgz');

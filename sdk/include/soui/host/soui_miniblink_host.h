@@ -23,7 +23,7 @@
 
 namespace soui::sdk {
 
-namespace detail { class bridge_request_budget; class cursor_broker_endpoint; class miniblink_devtools_session; class input_admission; }
+namespace detail { class bridge_request_budget; class cursor_broker_endpoint; class trace_thread_registration; class native_trace_ui_lease; class miniblink_devtools_session; }
 
 inline constexpr std::uint32_t bridge_event_message = 0x84D2U;
 inline constexpr std::uint32_t ime_position_message = 0x84D3U;
@@ -164,19 +164,25 @@ class dynamic_miniblink_adapter final : public webview_host_adapter,
   [[nodiscard]] host_result unmount_pending(const char* message);
   [[nodiscard]] host_result close_cursor_endpoint();
   [[nodiscard]] bool advance_cursor_document_on_engine();
-  [[nodiscard]] bool update_cursor_identity_on_engine(bool permit_geometry_race = false);
+  [[nodiscard]] bool update_cursor_identity_on_engine();
+  void publish_applied_input_identity_on_engine() noexcept;
+  [[nodiscard]] bool independent_input_identity_applied(interaction_generation) const noexcept;
   void sync_cursor_input_generation() noexcept;
   void pump_on_engine();
+  void sample_host_visibility() noexcept;
+  void apply_host_visibility_on_engine() noexcept;
   [[nodiscard]] host_result reload_on_engine(std::uint64_t receipt);
   [[nodiscard]] bool create_input_window();
   [[nodiscard]] bool destroy_input_window();
   void refresh_wheel_settings() noexcept;
-  void dispatch_input_on_engine(input_packet packet);
+  void dispatch_input_on_engine(const input_packet& packet);
+  void cancel_input_on_engine();
   [[nodiscard]] bool submit_wheel(const input_packet& packet,
                                   scroll_sample& sample) override;
   [[nodiscard]] bool capture_scroll_barrier(
       const input_packet& packet, scroll_sample& sample) override;
   [[nodiscard]] bool post_input(const input_packet& packet) override;
+  [[nodiscard]] input_admission_result post_input_typed(const input_packet& packet) override;
   [[nodiscard]] input_packet make_input_packet(input_kind kind) noexcept;
   void resolve_bridge_response(std::string request_id, std::string response,
                                std::uint64_t generation, std::uint64_t context_receipt);
@@ -210,9 +216,19 @@ class dynamic_miniblink_adapter final : public webview_host_adapter,
   bool bridge_com_initialized_{false};
   std::atomic<std::uint64_t> bridge_generation_{0};
   interaction_router interaction_router_;
-  std::unique_ptr<detail::input_admission> input_admission_;
-  std::atomic<std::uint64_t> input_rejections_{0};
-  std::atomic<unsigned> last_input_admission_{0};
+  std::shared_ptr<detail::engine_input_service> input_mailbox_;
+  std::unique_ptr<detail::trace_thread_registration> input_trace_owner_;
+  std::shared_ptr<detail::native_trace_ui_lease> native_input_trace_owner_;
+  std::array<bool, 256> input_keys_on_engine_{};
+  bool input_pointer_on_engine_{false};
+  int input_pointer_x_{0}, input_pointer_y_{0};
+  std::atomic<bool> input_focus_requested_{false};
+  std::atomic<bool> input_recovery_limited_{false};
+  std::uint32_t input_injection_tag_{0}; // UI diagnostic context; never authorization.
+  std::atomic<std::uint64_t> input_trace_view_id_{0};
+  bool engine_document_confirmed_{false}, engine_geometry_applied_{false}; // Engine owner, actual callbacks/resize only.
+  mutable std::mutex applied_input_identity_mutex_;
+  interaction_generation applied_input_identity_; // Actual owner-applied tuple; not a scene-current claim.
   const void* interaction_api_{nullptr};
   void* interaction_endpoint_{nullptr};
   const void* cursor_api_{nullptr};
@@ -253,11 +269,15 @@ class dynamic_miniblink_adapter final : public webview_host_adapter,
   bool cursor_close_pending_{false};
   bool cursor_vendor_destroyed_{false};
   interaction_generation interaction_generation_;
+  interaction_generation engine_input_generation_; // Engine owner: actually applied context/resize.
+  std::uint64_t engine_requested_document_generation_{1}; // Captured by the actual owner reload; confirmed at context creation.
   std::atomic<std::uint64_t> next_input_sequence_{0};
   wheel_smoothing_policy wheel_smoothing_;
   std::atomic<std::uint32_t> wheel_scroll_lines_{3};
   std::atomic<std::uint32_t> wheel_scroll_characters_{1};
   std::atomic<bool> pump_pending_{false};
+  std::atomic<bool> host_visible_intent_{false}, host_visibility_dirty_{true};
+  std::atomic<int> host_visibility_applied_{-1}; // Unknown until capability-checked owner OK; not a desktop-present receipt.
   bool ime_composing_{false};
   window_chrome window_chrome_;
   chrome_action pressed_chrome_{chrome_action::none}; // UI-thread only
@@ -284,8 +304,6 @@ class dynamic_miniblink_adapter final : public webview_host_adapter,
   std::chrono::steady_clock::time_point resource_status_query_at_{}; // Engine owner only.
   std::atomic<int> configured_main_frame_rate_{-1};
   bool experimental_main_frame_scheduler_{false};
-  bool gpu_trace_active_{false};
-  std::filesystem::path gpu_trace_path_;
 #ifdef SOUI_BRIDGE_BENCHMARK
   [[nodiscard]] std::string collect_benchmark_result_on_engine();
   std::filesystem::path benchmark_dataset_;

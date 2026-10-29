@@ -1,0 +1,68 @@
+{
+  "schema": "soui.windows-tooling-short/v1",
+  "results": [
+    {
+      "name": "changed-contracts",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "tests/sdk/msvc-compiler-lifecycle.test.cjs",
+        "tests/sdk/msbuild-entrypoint-policy.test.cjs",
+        "tests/sdk/sdk-publication-recovery.test.cjs",
+        "tests/sdk/sdk-publication-diagnostics.test.cjs",
+        "tests/sdk/archive-stage.test.cjs"
+      ],
+      "start": "2026-10-29T03:40:50.355Z",
+      "finish": "2026-10-29T03:41:03.315Z",
+      "exitCode": 1,
+      "signal": null,
+      "error": null,
+      "tests": 58,
+      "pass": 50,
+      "fail": 8,
+      "skipped": 0
+    },
+    {
+      "name": "changed-preparation-fingerprint",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=compiler lifecycle input drift|unchanged source and matching",
+        "tests/benchmark/measurement-preparation-source.test.cjs"
+      ],
+      "start": "2026-10-29T03:41:03.316Z",
+      "finish": "2026-10-29T03:41:04.202Z",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "tests": 6,
+      "pass": 6,
+      "fail": 0,
+      "skipped": 0
+    },
+    {
+      "name": "archive-tool-identity-compatibility",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=tool identity",
+        "tests/sdk/compression-profiles.test.cjs"
+      ],
+      "start": "2026-10-29T03:41:04.203Z",
+      "finish": "2026-10-29T03:41:05.220Z",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "tests": 2,
+      "pass": 2,
+      "fail": 0,
+      "skipped": 0
+    }
+  ],
+  "sourcesUnchanged": true,
+  "passed": false,
+  "qualificationPassed": false
+}

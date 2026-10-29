@@ -1,6 +1,9 @@
 #include "fixture_support.h"
+#include "content/common/InputFrameTrace.cpp"
 #include "content/web_impl_win/WebThreadImpl.h"
 #include "content/web_impl_win/WebTimerBase.h"
+#include "fragments/shutdown_fire_entrypoint.inc"
+#include <array>
 
 namespace fixture {
 constexpr DWORD boundMs = 5000;
@@ -32,6 +35,11 @@ HWND nativeWindow = nullptr;
 unsigned (__stdcall* actualEntry)(void*) = nullptr;
 void* actualArgument = nullptr;
 content::WebThreadImpl* committed = nullptr;
+constexpr UINT schedulerProbeMessage = WM_APP + 0x31;
+std::atomic<bool> controlledSchedulerClock{false}, workerSchedulerProbe{false};
+std::atomic<double> schedulerSeconds{100.0};
+std::atomic<unsigned> schedulerTaskRuns{0}, nativeProbeRuns{0}, nativeProbeSeen{0};
+std::atomic<unsigned> workerFirstYieldRuns{0}, workerMidChainWaits{0};
 
 bool isCase(const char* name) { return caseId && std::strcmp(caseId, name) == 0; }
 void note(const char* phase, unsigned long long value = 0) {
@@ -89,6 +97,12 @@ std::uintptr_t __cdecl sourceBeginThread(void* security, unsigned stack,
     return result;
 }
 DWORD WINAPI sourceWait(HANDLE handle, DWORD timeout) {
+    if (workerSchedulerProbe && handle == wake && ::GetCurrentThreadId() == workerNativeId
+        && timeout != INFINITE && schedulerTaskRuns > 0 && schedulerTaskRuns < 96) {
+        unsigned expected = 0;
+        workerFirstYieldRuns.compare_exchange_strong(expected, schedulerTaskRuns.load());
+        ++workerMidChainWaits;
+    }
     if (handle == worker && timeout == INFINITE && failJoin && std::strcmp(waitFault, "wait") == 0) {
         failJoin = false;
         ++injectedWaitFailures;
@@ -166,7 +180,24 @@ UINT_PTR WINAPI sourceSetTimer(HWND window, UINT_PTR id, UINT interval, TIMERPRO
 BOOL WINAPI sourceKillTimer(HWND window, UINT_PTR id) { const BOOL result = ::KillTimer(window, id); if (result) ++timerKilled; return result; }
 BOOL WINAPI sourceDestroyWindow(HWND window) { const BOOL result = ::DestroyWindow(window); if (result) ++windowDestroyed; return result; }
 BOOL WINAPI sourceUnregisterClass(LPCWSTR name, HINSTANCE instance) { const BOOL result = ::UnregisterClassW(name, instance); if (result) ++classUnregistered; return result; }
+LRESULT WINAPI sourceDefWindowProc(HWND window, UINT message, WPARAM first, LPARAM second) {
+    if (message == schedulerProbeMessage) {
+        nativeProbeRuns = schedulerTaskRuns.load();
+        ++nativeProbeSeen;
+        return 0;
+    }
+    return ::DefWindowProcW(window, message, first, second);
 }
+}
+
+namespace WTF {
+// Only the dependency clock is controlled. The real scheduler loop, heap,
+// task ownership, native timer window and message dispatch remain production code.
+double fixtureSchedulerTime() {
+    return fixture::controlledSchedulerClock ? fixture::schedulerSeconds.load() : currentTime();
+}
+}
+using WTF::fixtureSchedulerTime;
 
 void* operator new(std::size_t size) {
     if (fixture::failNextAllocation) { fixture::failNextAllocation = false; ++fixture::allocationFailures; fixture::note("stl-bad-alloc"); throw std::bad_alloc(); }
@@ -204,6 +235,10 @@ void operator delete[](void* pointer, std::size_t) noexcept { ::operator delete(
 #define KillTimer fixture::sourceKillTimer
 #define DestroyWindow fixture::sourceDestroyWindow
 #define UnregisterClassW fixture::sourceUnregisterClass
+#undef DefWindowProc
+#define DefWindowProc fixture::sourceDefWindowProc
+#define currentTime fixtureSchedulerTime
+#define monotonicallyIncreasingTime fixtureSchedulerTime
 #include "content/web_impl_win/WebThreadImpl.cpp"
 #include "content/web_impl_win/WebTimerBase.cpp"
 namespace content {
@@ -231,6 +266,9 @@ int CheckReEnter::s_kEnterCount = 0;
 #undef KillTimer
 #undef DestroyWindow
 #undef UnregisterClassW
+#undef DefWindowProc
+#undef currentTime
+#undef monotonicallyIncreasingTime
 
 blink::Platform* blink::Platform::current() { return fixture::platform; }
 
@@ -239,7 +277,6 @@ struct TaskReceipt {
     std::atomic<int> run{0}, disposed{0};
     std::atomic<DWORD> tid{0};
     std::atomic<bool> tlsMatches{false};
-    std::atomic<double> executedAt{0};
     HANDLE ran = nullptr;
 };
 class KnownTask final : public blink::WebThread::Task {
@@ -247,7 +284,6 @@ public:
     KnownTask(TaskReceipt& receipt, content::WebThreadImpl* owner) : receipt_(receipt), owner_(owner) { }
     ~KnownTask() override { ++receipt_.disposed; }
     void run() override {
-        receipt_.executedAt = WTF::monotonicallyIncreasingTime();
         ++receipt_.run;
         receipt_.tid = ::GetCurrentThreadId();
         receipt_.tlsMatches = platform->currentThread() == owner_;
@@ -264,6 +300,44 @@ public:
 private:
     content::WebThreadImpl* worker_;
 };
+struct SchedulerReceipt {
+    static constexpr unsigned taskCount = 96;
+    std::array<std::atomic<unsigned>, taskCount> runs{};
+    std::atomic<unsigned> disposed{0};
+    double stepSeconds = 0;
+    HANDLE completed = nullptr;
+    HANDLE retired = nullptr;
+};
+class SchedulerTask final : public blink::WebThread::Task {
+public:
+    SchedulerTask(SchedulerReceipt& receipt, content::WebThreadImpl* owner, unsigned index, bool repost)
+        : receipt_(receipt), owner_(owner), index_(index), repost_(repost) { }
+    ~SchedulerTask() override {
+        if (++receipt_.disposed == SchedulerReceipt::taskCount && receipt_.retired) ::SetEvent(receipt_.retired);
+    }
+    void run() override {
+        ++receipt_.runs[index_];
+        ++schedulerTaskRuns;
+        if (receipt_.stepSeconds)
+            schedulerSeconds = schedulerSeconds.load() + receipt_.stepSeconds;
+        if (repost_ && index_ == 0 && ::GetCurrentThreadId() == engineThreadId)
+            ::PostMessageW(nativeWindow, schedulerProbeMessage, 0, 0);
+        if (repost_ && index_ + 1 < SchedulerReceipt::taskCount)
+            owner_->postTask(FROM_HERE, new SchedulerTask(receipt_, owner_, index_ + 1, true));
+        if (receipt_.completed && schedulerTaskRuns == SchedulerReceipt::taskCount)
+            ::SetEvent(receipt_.completed);
+    }
+private:
+    SchedulerReceipt& receipt_;
+    content::WebThreadImpl* owner_;
+    unsigned index_;
+    bool repost_;
+};
+bool schedulerTasksExactlyOnce(const SchedulerReceipt& receipt) {
+    for (const auto& count : receipt.runs)
+        if (count != 1) return false;
+    return receipt.disposed == SchedulerReceipt::taskCount;
+}
 HANDLE makeGate() {
     HANDLE result = ::CreateEventW(nullptr, TRUE, FALSE, nullptr);
     if (!result) ::ExitProcess(94);
@@ -271,6 +345,7 @@ HANDLE makeGate() {
 }
 bool waitGate(HANDLE gate) { return ::WaitForSingleObject(gate, boundMs) == WAIT_OBJECT_0; }
 unsigned __stdcall registryContender(void*) {
+    std::set_terminate(terminated);
     closingRegistry = true;
     platform->closeThread();
     closingRegistry = false;
@@ -305,8 +380,11 @@ void summary(bool passed, const char* reason, bool expectedFailFast = false) {
     std::fflush(stdout);
 }
 [[noreturn]] void terminated() {
-    const bool expectedCase = isCase("native-wait-fails") || isCase("worker-self-delete");
-    const bool seamObserved = isCase("worker-self-delete") ? ::GetCurrentThreadId() == workerNativeId
+    const bool registryFence = isCase("registry-live-fence") || isCase("concurrent-registry-close");
+    const bool expectedCase = isCase("native-wait-fails") || isCase("worker-self-delete") || registryFence;
+    const bool seamObserved = registryFence ? debugBreaks >= 1 && (isCase("registry-live-fence")
+        || (closeInspections == 1 && inspectedCount == 1 && inspectedReady == 1))
+        : isCase("worker-self-delete") ? ::GetCurrentThreadId() == workerNativeId
         : injectedWaitFailures + injectedExitFailures == 1;
     const bool retained = platform && platform->m_threadNum == 1 && platform->m_threads.size() == 1
         && workerFrees == 0 && schedulerFrees == 0 && workerClosed == 0 && eventClosed == 0;
@@ -479,8 +557,8 @@ bool mainThreadCase() {
     auto* thread = static_cast<content::WebThreadImpl*>(platform->currentThread());
     const bool mainIdentity = thread && thread->isCurrentThread() && thread->threadId() == engineThreadId
         && platform->currentThread() == thread && platform->m_threadNum == 1;
-    // Idle owns a wake window but no periodic native timer.
-    const bool idleWithoutTick = timerAcquired == 0;
+    // Deadline scheduling leaves an idle MainThread without a periodic tick.
+    const bool firstNativeTick = content::armedDeadline == 0;
     TaskReceipt receipt; receipt.ran = makeGate();
     thread->postTask(FROM_HERE, new KnownTask(receipt, thread));
     const ULONGLONG deadline = ::GetTickCount64() + boundMs;
@@ -490,67 +568,239 @@ bool mainThreadCase() {
         while (::PeekMessageW(&message, nullptr, 0, 0, PM_REMOVE)) { ::TranslateMessage(&message); ::DispatchMessageW(&message); }
     }
     const bool taskRan = receipt.run == 1 && receipt.tid == engineThreadId && receipt.tlsMatches;
-    TaskReceipt delayed; delayed.ran = makeGate();
-    const double admittedAt = WTF::monotonicallyIncreasingTime();
-    thread->postDelayedTask(FROM_HERE, new KnownTask(delayed, thread), 25);
-    const ULONGLONG delayedLimit = ::GetTickCount64() + boundMs;
-    while (!delayed.run && ::GetTickCount64() < delayedLimit) {
-        ::MsgWaitForMultipleObjectsEx(0, nullptr, 50, QS_ALLINPUT, MWMO_INPUTAVAILABLE);
-        MSG message{};
-        while (::PeekMessageW(&message, nullptr, 0, 0, PM_REMOVE)) { ::TranslateMessage(&message); ::DispatchMessageW(&message); }
-    }
-    const bool futureRan = delayed.run == 1 && delayed.tid == engineThreadId && delayed.tlsMatches
-        && delayed.executedAt.load() - admittedAt >= .025;
-    bool deferredRecovery = true;
-    for (bool rearmFuture : {false, true}) {
-        TaskReceipt deferred, resumed;
-        deferred.ran = makeGate(); resumed.ran = makeGate();
-        content::CheckReEnter::incrementEnterCount();
-        thread->postTask(FROM_HERE, new KnownTask(deferred, thread));
-        MSG message{};
-        while (::PeekMessageW(&message, nativeWindow, content::timerFiredMessage,
-            content::timerFiredMessage, PM_REMOVE))
-            ::DispatchMessageW(&message); // Real guard must defer the accepted task.
-        const UINT_PTR retiredTicket = content::fallbackTimerID;
-        content::CheckReEnter::decrementEnterCount();
-        content::setSharedTimerDeadline(rearmFuture ? WTF::monotonicallyIncreasingTime() + .05 : 0);
-        // KillTimer leaves already posted WM_TIMER messages behind. A retired
-        // fallback ticket must not consume a new deadline or run deferred work.
-        ::PostMessageW(nativeWindow, WM_TIMER, retiredTicket, 0);
-        while (::PeekMessageW(&message, nativeWindow, WM_TIMER, WM_TIMER, PM_REMOVE))
-            ::DispatchMessageW(&message);
-        deferredRecovery = deferredRecovery && retiredTicket != 0 && deferred.run == 0;
-        thread->postTask(FROM_HERE, new KnownTask(resumed, thread));
-        const ULONGLONG recoveryLimit = ::GetTickCount64() + boundMs;
-        while ((!deferred.run || !resumed.run) && ::GetTickCount64() < recoveryLimit) {
-            ::MsgWaitForMultipleObjectsEx(0, nullptr, 50, QS_ALLINPUT, MWMO_INPUTAVAILABLE);
-            while (::PeekMessageW(&message, nullptr, 0, 0, PM_REMOVE)) { ::TranslateMessage(&message); ::DispatchMessageW(&message); }
-        }
-        thread->fire(); // Retire actual self-deleting timers before local receipts die.
-        deferredRecovery = deferredRecovery && deferred.run == 1 && resumed.run == 1
-            && deferred.disposed == 1 && resumed.disposed == 1;
-        ::CloseHandle(deferred.ran); ::CloseHandle(resumed.ran);
-    }
     const HWND window = nativeWindow;
-    const bool nativeAlive = window && ::IsWindow(window) && windowAcquired == 1;
-    TaskReceipt quitPending; quitPending.ran = makeGate();
-    thread->postTask(FROM_HERE, new KnownTask(quitPending, thread));
-    ::PostQuitMessage(0);
-    MSG quitMessage{};
-    while (::PeekMessageW(&quitMessage, nativeWindow, content::timerFiredMessage,
-        content::timerFiredMessage, PM_REMOVE))
-        ::DispatchMessageW(&quitMessage);
-    const bool quitUnstarved = quitPending.run == 0
-        && ::PeekMessageW(&quitMessage, nullptr, WM_QUIT, WM_QUIT, PM_REMOVE);
+    const bool nativeAlive = window && ::IsWindow(window) && windowAcquired == 1 && content::armedDeadline == 0;
     delete thread;
-    const bool nativeReleased = windowDestroyed == 1 && !::IsWindow(window) && classUnregistered == 1;
+    const bool nativeReleased = windowDestroyed == 1 && !::IsWindow(window) && !content::deadlineTimer && !content::retryTimer && classUnregistered == 1;
     ::CloseHandle(receipt.ran);
-    ::CloseHandle(delayed.ran);
-    ::CloseHandle(quitPending.ran);
-    return mainIdentity && idleWithoutTick && taskRan && futureRan && deferredRecovery && quitUnstarved
-        && quitPending.run == 1 && quitPending.disposed == 1 && delayed.disposed == 1 && receipt.disposed == 1 && nativeAlive && nativeReleased
+    return mainIdentity && firstNativeTick && taskRan && receipt.disposed == 1 && nativeAlive && nativeReleased
         && launchAttempts == 0 && eventAttempts == 0 && platform->m_threadNum == 0 && platform->m_threads.empty()
         && schedulerFrees == 1 && sectionsInitialized == 2 && sectionsDeleted == 2;
+}
+content::WebThreadImpl* schedulerMainThread() {
+    ::TlsFree(content::sCurrentThreadTlsKey);
+    content::sCurrentThreadTlsKey = static_cast<DWORD>(-1);
+    platform->m_mainThreadId = static_cast<ThreadIdentifier>(-1);
+    controlledSchedulerClock = true;
+    return static_cast<content::WebThreadImpl*>(platform->currentThread());
+}
+bool dispatchSchedulerTurn(const TaskReceipt* requiredReceipt = nullptr) {
+    const ULONGLONG deadline = ::GetTickCount64() + boundMs;
+    const unsigned runsBefore = schedulerTaskRuns.load();
+    while (::GetTickCount64() < deadline) {
+        ::MsgWaitForMultipleObjectsEx(0, nullptr, 50, QS_ALLINPUT, MWMO_INPUTAVAILABLE);
+        MSG message{};
+        while (::PeekMessageW(&message, nullptr, 0, 0, PM_REMOVE)) {
+            const bool schedulerTurn = message.hwnd == nativeWindow
+                && ((message.message == WM_TIMER && message.wParam == content::timerID)
+                    || message.message == content::continuationMessage || message.message == content::timerFiredMessage);
+            ::TranslateMessage(&message);
+            ::DispatchMessageW(&message);
+            // A continuation can deliberately yield to pending native work.
+            // Observe actual task progress before treating it as a batch.
+            if (schedulerTurn && (requiredReceipt ? requiredReceipt->run != 0
+                                                   : schedulerTaskRuns.load() > runsBefore)) return true;
+        }
+    }
+    return false;
+}
+bool mainSchedulerBudgetCase(bool clockBudget) {
+    SchedulerReceipt receipt;
+    receipt.stepSeconds = clockBudget ? 0.001 : 0;
+    auto* thread = schedulerMainThread();
+    if (!thread || !nativeWindow) return false;
+    TaskReceipt future;
+    future.ran = makeGate();
+    thread->postDelayedTask(FROM_HERE, new KnownTask(future, thread), 500);
+    thread->postTask(FROM_HERE, new SchedulerTask(receipt, thread, 0, true));
+    if (!dispatchSchedulerTurn()) return false;
+    const unsigned firstSlice = schedulerTaskRuns.load();
+    note("first-timer-ready-tasks", firstSlice);
+    const bool yielded = firstSlice > 0 && firstSlice < SchedulerReceipt::taskCount
+        && (clockBudget ? firstSlice >= 2 && firstSlice <= 3 : firstSlice <= 32);
+    const ULONGLONG deadline = ::GetTickCount64() + boundMs;
+    while (schedulerTaskRuns < SchedulerReceipt::taskCount && ::GetTickCount64() < deadline)
+        if (!dispatchSchedulerTurn()) break;
+    const bool nativeTurn = nativeProbeSeen == 1 && nativeProbeRuns > 0
+        && nativeProbeRuns < SchedulerReceipt::taskCount;
+    note("native-probe-ready-tasks", nativeProbeRuns);
+    const bool futureNotEarly = future.run == 0 && schedulerSeconds < 100.5;
+    schedulerSeconds = 100.5;
+    const bool futureCompleted = dispatchSchedulerTurn(&future) && future.run == 1 && future.tlsMatches;
+    delete thread;
+    ::CloseHandle(future.ran);
+    return yielded && nativeTurn && futureNotEarly && futureCompleted && future.disposed == 1
+        && schedulerTasksExactlyOnce(receipt) && windowDestroyed == 1 && !content::deadlineTimer && !content::retryTimer
+        && platform->m_threadNum == 0 && platform->m_threads.empty();
+}
+bool mainSchedulerContinuationCase() {
+    SchedulerReceipt receipt;
+    auto* thread = schedulerMainThread();
+    if (!thread || !nativeWindow) return false;
+    // Isolate the posted continuation. With the native fallback disabled only
+    // in this test, retained ready tasks must still finish through the real
+    // window procedure. This is not a hardware-input fairness measurement.
+    const bool fallbackStopped = content::armedDeadline == 0; // Idle has no fallback to disable.
+    TaskReceipt future;
+    future.ran = makeGate();
+    thread->postDelayedTask(FROM_HERE, new KnownTask(future, thread), 500);
+    thread->postTask(FROM_HERE, new SchedulerTask(receipt, thread, 0, true));
+    thread->fire();
+    const unsigned firstSlice = schedulerTaskRuns.load();
+    unsigned messagesDispatched = 0;
+    while (schedulerTaskRuns < SchedulerReceipt::taskCount && messagesDispatched < 128) {
+        MSG message{};
+        if (!::PeekMessageW(&message, nativeWindow, WM_APP, 0xffff, PM_REMOVE)) break;
+        ::TranslateMessage(&message);
+        ::DispatchMessageW(&message);
+        ++messagesDispatched;
+    }
+    const bool continuationCompleted = schedulerTaskRuns == SchedulerReceipt::taskCount;
+    const bool futureNotEarly = future.run == 0 && schedulerSeconds == 100.0;
+    note("continuation-messages-dispatched", messagesDispatched);
+    note("continuation-ready-tasks", schedulerTaskRuns);
+    delete thread;
+    ::CloseHandle(future.ran);
+    return fallbackStopped && firstSlice > 0 && firstSlice <= 32 && continuationCompleted
+        && futureNotEarly && future.run == 1 && future.disposed == 1
+        && schedulerTasksExactlyOnce(receipt) && windowDestroyed == 1
+        && platform->m_threadNum == 0 && platform->m_threads.empty();
+}
+class DelayedPostAfterLongCallback : public blink::WebThread::Task {
+public:
+    DelayedPostAfterLongCallback(content::WebThreadImpl* thread, TaskReceipt& receipt)
+        : thread_(thread), receipt_(receipt) {}
+    void run() override {
+        schedulerSeconds.store(schedulerSeconds.load() + 0.010);
+        thread_->postDelayedTask(FROM_HERE, new KnownTask(receipt_, thread_), 1);
+    }
+private:
+    content::WebThreadImpl* thread_;
+    TaskReceipt& receipt_;
+};
+bool mainSchedulerFirstWakeCase() {
+    auto* thread = schedulerMainThread();
+    if (!thread || !nativeWindow) return false;
+    const bool fallbackStopped = content::armedDeadline == 0; // Idle has no fallback to disable.
+    TaskReceipt receipt;
+    receipt.ran = makeGate();
+    thread->postTask(FROM_HERE, new KnownTask(receipt, thread));
+    MSG message{};
+    const bool queued = ::PeekMessageW(&message, nativeWindow, WM_APP, 0xffff, PM_REMOVE) != FALSE;
+    if (queued) ::DispatchMessageW(&message);
+    const bool ranWithoutTick = receipt.run == 1 && receipt.tlsMatches;
+    TaskReceipt delayed; delayed.ran = makeGate();
+    thread->postTask(FROM_HERE, new DelayedPostAfterLongCallback(thread, delayed));
+    thread->fire();
+    thread->fire(); // No clock advance: the retry must still be in the future.
+    const bool delayedFromPost = delayed.run == 0;
+    schedulerSeconds.store(schedulerSeconds.load() + 0.002);
+    thread->fire();
+    const bool delayedCompleted = delayed.run == 1 && delayed.tlsMatches;
+    delete thread;
+    ::CloseHandle(receipt.ran); ::CloseHandle(delayed.ran);
+    return fallbackStopped && queued && ranWithoutTick && receipt.disposed == 1
+        && delayedFromPost && delayedCompleted && delayed.disposed == 1;
+}
+struct SchedulerAdmissionProducer {
+    content::WebThreadImpl* thread;
+    SchedulerReceipt* receipt;
+};
+unsigned __stdcall postFutureSchedulerBatch(void* value) {
+    auto* producer = static_cast<SchedulerAdmissionProducer*>(value);
+    for (unsigned i = 0; i < SchedulerReceipt::taskCount; ++i)
+        producer->thread->postDelayedTask(FROM_HERE,
+            new SchedulerTask(*producer->receipt, producer->thread, i, false), 1000);
+    return 0;
+}
+bool mainSchedulerAdmissionCase(bool closeWithPendingAdmission) {
+    SchedulerReceipt receipt;
+    auto* thread = schedulerMainThread();
+    if (!thread || !nativeWindow) return false;
+    const bool fallbackStopped = content::armedDeadline == 0; // Idle has no fallback to disable.
+    SchedulerAdmissionProducer producer{thread, &receipt};
+    HANDLE native = reinterpret_cast<HANDLE>(::_beginthreadex(nullptr, 0,
+        postFutureSchedulerBatch, &producer, 0, nullptr));
+    if (!native || ::WaitForSingleObject(native, boundMs) != WAIT_OBJECT_0) ::ExitProcess(98);
+    DWORD exitCode = STILL_ACTIVE;
+    const bool producerReturned = ::GetExitCodeThread(native, &exitCode) && exitCode == 0;
+    const bool producerClosed = ::CloseHandle(native) != FALSE;
+    MSG message{};
+    const bool queued = ::PeekMessageW(&message, nativeWindow, WM_APP, 0xffff, PM_REMOVE) != FALSE;
+    if (queued) ::DispatchMessageW(&message);
+    const size_t firstAdmitted = thread->timerHeap().size();
+    const bool bounded = firstAdmitted > 0 && firstAdmitted <= 32;
+    unsigned dispatched = 0;
+    if (!closeWithPendingAdmission) {
+        while (thread->timerHeap().size() < SchedulerReceipt::taskCount && dispatched++ < 128) {
+            if (!::PeekMessageW(&message, nativeWindow, WM_APP, 0xffff, PM_REMOVE)) break;
+            ::DispatchMessageW(&message);
+        }
+    }
+    const bool admissionState = closeWithPendingAdmission
+        ? thread->timerHeap().size() < SchedulerReceipt::taskCount
+        : thread->timerHeap().size() == SchedulerReceipt::taskCount;
+    const bool futureNotRun = schedulerTaskRuns == 0;
+    note("first-batch-admitted", firstAdmitted);
+    note("admitted-before-shutdown", thread->timerHeap().size());
+    delete thread;
+    return fallbackStopped && producerReturned && producerClosed && queued && bounded
+        && admissionState && futureNotRun && schedulerTasksExactlyOnce(receipt)
+        && windowDestroyed == 1 && platform->m_threadNum == 0 && platform->m_threads.empty();
+}
+bool workerSchedulerBudgetCase(bool clockBudget) {
+    SchedulerReceipt receipt;
+    receipt.stepSeconds = clockBudget ? 0.001 : 0;
+    receipt.completed = makeGate();
+    receipt.retired = makeGate();
+    controlledSchedulerClock = true;
+    workerSchedulerProbe = true;
+    auto* thread = static_cast<content::WebThreadImpl*>(platform->createThread("FixtureWorker"));
+    thread->postTask(FROM_HERE, new SchedulerTask(receipt, thread, 0, true));
+    const bool completed = waitGate(receipt.completed);
+    const bool retired_while_idle = completed && waitGate(receipt.retired);
+    delete thread;
+    ::CloseHandle(receipt.completed);
+    ::CloseHandle(receipt.retired);
+    note("worker-first-yield-ready-tasks", workerFirstYieldRuns);
+    const bool cooperativeBudget = clockBudget
+        ? workerFirstYieldRuns >= 2 && workerFirstYieldRuns <= 3
+        : workerFirstYieldRuns > 0 && workerFirstYieldRuns <= 32;
+    return completed && retired_while_idle && cooperativeBudget && workerMidChainWaits > 0
+        && schedulerTasksExactlyOnce(receipt) && cleanWorkerReceipt();
+}
+bool mainSchedulerShutdownCase() {
+    SchedulerReceipt receipt;
+    auto* thread = schedulerMainThread();
+    for (unsigned index = 0; index < SchedulerReceipt::taskCount; ++index)
+        thread->postDelayedTask(FROM_HERE, new SchedulerTask(receipt, thread, index, false), 1000);
+    const bool notRunEarly = schedulerTaskRuns == 0;
+    delete thread;
+    note("shutdown-drained-ready-tasks", schedulerTaskRuns);
+    return notRunEarly && schedulerTaskRuns == SchedulerReceipt::taskCount
+        && schedulerTasksExactlyOnce(receipt) && windowDestroyed == 1 && timerKilled >= 1
+        && platform->m_threadNum == 0 && platform->m_threads.empty();
+}
+bool mainSchedulerPreShutdownCase() {
+    SchedulerReceipt receipt;
+    auto* thread = schedulerMainThread();
+    for (unsigned index = 0; index < SchedulerReceipt::taskCount; ++index)
+        thread->postTask(FROM_HERE, new SchedulerTask(receipt, thread, index, false));
+    // The proof gate derives this token from all three actual shutdown-owner
+    // callsites, while the complete owner function is copied as exact bytes.
+    thread->FIXTURE_PRE_SHUTDOWN_FIRE_ENTRYPOINT();
+    const unsigned beforeShutdown = schedulerTaskRuns.load();
+    note("pre-shutdown-drained-ready-tasks", beforeShutdown);
+    TaskReceipt acceptedAfterDrain;
+    acceptedAfterDrain.ran = makeGate();
+    thread->postTask(FROM_HERE, new KnownTask(acceptedAfterDrain, thread));
+    thread->fire();
+    const bool stillAccepting = acceptedAfterDrain.run == 1 && acceptedAfterDrain.tlsMatches;
+    delete thread;
+    ::CloseHandle(acceptedAfterDrain.ran);
+    return beforeShutdown == SchedulerReceipt::taskCount && stillAccepting
+        && acceptedAfterDrain.disposed == 1 && schedulerTasksExactlyOnce(receipt)
+        && platform->m_threadNum == 0 && platform->m_threads.empty();
 }
 bool dispatch() {
     if (isCase("scheduler-new-bad-alloc") || isCase("event-null") || isCase("native-launch-zero")
@@ -559,7 +809,22 @@ bool dispatch() {
     if (isCase("ready-acquire-visibility")) return visibilityCase();
     if (isCase("native-exit-delayed")) return delayedExitCase();
     if (isCase("concurrent-registry-close")) return concurrentRegistryCase();
+    if (isCase("registry-live-fence")) {
+        (void)platform->createThread("FixtureWorker");
+        platform->closeThread();
+        return false; // DebugBreak returning must not permit close success.
+    }
     if (isCase("main-thread-compatibility")) return mainThreadCase();
+    if (isCase("main-scheduler-task-budget")) return mainSchedulerBudgetCase(false);
+    if (isCase("main-scheduler-clock-budget")) return mainSchedulerBudgetCase(true);
+    if (isCase("main-scheduler-continuation")) return mainSchedulerContinuationCase();
+    if (isCase("main-scheduler-first-task-wake")) return mainSchedulerFirstWakeCase();
+    if (isCase("main-scheduler-admission-budget")) return mainSchedulerAdmissionCase(false);
+    if (isCase("main-scheduler-admission-shutdown")) return mainSchedulerAdmissionCase(true);
+    if (isCase("worker-scheduler-task-budget")) return workerSchedulerBudgetCase(false);
+    if (isCase("worker-scheduler-clock-budget")) return workerSchedulerBudgetCase(true);
+    if (isCase("main-scheduler-shutdown-drain")) return mainSchedulerShutdownCase();
+    if (isCase("main-scheduler-pre-shutdown-drain")) return mainSchedulerPreShutdownCase();
     if (isCase("native-wait-fails")) {
         auto* thread = static_cast<content::WebThreadImpl*>(platform->createThread("FixtureWorker"));
         failJoin = true;
@@ -577,6 +842,10 @@ bool dispatch() {
 }
 int main(int argc, char** argv) {
     if (argc < 2 || argc > 3) return 96;
+    namespace trace = content::input_frame_trace;
+    if (!trace::process_recorder().configure(trace::current_identity(0x20261026, 1), trace::mode::scalar)
+        || !trace::register_current_thread()) return 95;
+    struct TraceDetach { ~TraceDetach() { trace::detach_current_thread(); } } traceDetach;
     fixture::caseId = argv[1];
     if (argc == 3) {
         if (std::strcmp(argv[2], "wait") && std::strcmp(argv[2], "exit-code")) return 97;

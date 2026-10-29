@@ -1,6 +1,8 @@
 # SDK API
 
-## 本地编辑器资源模式（本地候选）
+本页描述 0.6.0 集成后的源码接口。新发布的构建、消费者与 Runtime 结果正在收口，见[发布说明](releases/0.6.0.md)；带 preview 标识的旧记录仍保留各自身份。
+
+## 本地编辑器资源模式（后续源码候选）
 
 `host_config.resource_policy` 默认是 `local_resource_policy::strict`。
 经应用方审核的本地编辑器可在原生配置中选择 `isolated_local_editor`；目前仅
@@ -11,7 +13,9 @@ JS 中框架与远程表达式的启发式扫描。WebView2 允许 `about:blank`
 
 此模式信任封装的应用代码；SDK 不检查 DOM 的 sandbox 属性，也不承诺任意 srcdoc
 安全。Scratch Demo 使用上游 `sandbox="allow-scripts"` 的不透明绘图沙盒。
-它不授予第三方内容原生权限，也不启用 DevTools。详见 [ADR 0136](adr/0136-local-editor-sandbox.md)。
+它不授予第三方内容原生权限，也不启用 DevTools。公共配置和 adapter 虚表已扩展，
+须配套重编，不能混用已发布 0.6.0 二进制。主线集成未编译或运行，详见
+[ADR 0142](adr/0142-isolated-local-editor.md)。
 
 ## 可选自动后端宿主
 
@@ -26,9 +30,9 @@ JS 中框架与远程表达式的启发式扫描。WebView2 允许 `about:blank`
 退出屏障由组件持有，MiniBlink 最终进程级退出仍由应用在所有宿主销毁后执行。
 基础 `Soui::Sdk` 和原始宿主 API 保留。使用与验证入口见[自动后端](auto-backend.md)。
 
-## 受控 DevTools 候选接口
+## 公共原生受控 DevTools
 
-`<soui/devtools.h>`与公共Host提供原生配置、不透明grant、逐项能力、异步操作编号/有界历史、真实状态观察与撤销。默认disabled；普通Bridge、UIA、CLI和环境变量不发放调试许可。两个内置后端已接入明确的目标销毁策略，WebView2的连接/可见/暂停保持unknown，MiniBlink使用实际受控snapshot。候选代码已接入两种模板和Workbench，编译/运行证据分开记录，完整D01–D14尚未验收。接入、watch所有权、关闭及资源pin见[DevTools接入](devtools.md)和[ADR0123](adr/0123-public-devtools-candidate.md)。
+`<soui/devtools.h>`与公共Host提供原生配置、不透明grant、逐项能力、异步操作编号/有界历史、真实状态观察与撤销。默认disabled；普通Bridge、UIA、CLI和环境变量不发放调试许可。两个内置后端已接入明确的目标销毁策略，WebView2的连接/可见/暂停保持unknown，MiniBlink使用实际受控snapshot。本接口接入两种模板和Workbench，编译/运行证据分开记录，完整D01–D14尚未验收。接入、watch所有权、关闭及资源pin见[DevTools接入](devtools.md)和[ADR0123](adr/0123-public-devtools-candidate.md)。
 
 `preview.8` 的 `<soui/host/soui_miniblink_host.h>` 新增显式双参数构造
 `dynamic_miniblink_adapter(diagnostics::mode, miniblink_local_resource_options)`，
@@ -40,6 +44,15 @@ business-resource ABI 的内核明确拒绝。新模式不授予调试许可，�
 ## 0.4 现代后端与环境探测
 
 可选 `Soui::WebView2` 导出 `<soui/host/webview2_host.h>`；UI STA 异步准备后使用相同 `webview_host`。`show()` 恢复隐藏视图并保留会话。公共 `<soui/host/runtime_profile.h>` 提供实际系统/PE/架构探测和候选档位选择；Web SDK 导出 `inspectSouiWebFeatures`、`requireSouiWebFeatures`。这些探测不授予原生权限，不代表目标环境认证。完整初始化、通知、关闭和部署契约见 [现代后端](modern-backend.md)。
+
+## MiniBlink 关闭继续状态
+
+MiniBlink 的 `close()/destroy()` 在引擎 FIFO 或 Bridge worker 尚未完成清理时返回
+`E_CURSOR_CLOSE_PENDING`；调用者必须继续持有 Host、借用的 Bridge 和两个 HWND，
+在原关闭总期限内从后续 UI 轮次重试。第一次调用即撤回该适配器的文档和普通
+操作准入，pending 期间 reload/show/resize/focus 也返回该状态，pump 只推进清理。
+只有实际清理完成才可销毁对象；排队成功、窗口隐藏或重试计时器不表示关闭成功。
+这不改变进程级 Runtime 关闭入口，详见 [ADR 0118](adr/0118-miniblink-nonblocking-unmount.md)。
 
 WebView2 初始化会在 loader 前拒绝外部 Runtime/profile/浏览器参数或调试环境变量，以及适用的 HKLM/HKCU WebView2 override，返回 `E_WEBVIEW2_LOADER_OVERRIDE`；读取无法核实返回 `E_WEBVIEW2_LOADER_POLICY`。存在策略值但无法完整确定应用身份时返回 `E_POLICY_ID_UNRESOLVED`，即使该值可能属于其他应用也不猜作安全。此时不会创建浏览器或清空进程环境，SDK 不修改注册表或应用 AppID。应用应通过其原生初始化提供可核实的身份，并移除适用于该进程的外部 override；详见 [ADR 0122](adr/0122-webview2-stage0-native-admission.md)。该检查已接入候选实现，真实候选验证仍待完成；检查本身不授予调试许可，公共 DevTools 入口仍须遵守上文的原生策略与目标许可契约。
 
@@ -293,7 +306,7 @@ Host 独立限制 256 个普通请求和 128 个取消/释放请求，涵盖排�
 安装后在外部工程使用：
 
 ```cmake
-find_package(SouiSdk 0.5.0 EXACT CONFIG REQUIRED)
+find_package(SouiSdk 0.6.0 EXACT CONFIG REQUIRED)
 target_link_libraries(MyTarget PRIVATE Soui::Sdk)
 ```
 

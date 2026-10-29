@@ -2,6 +2,8 @@
 
 Retain upstream license and copyright files under third_party/licenses/ and the source trees. The current source-material inventory is third_party/manifests/dependencies.json. Its sdkVersion identifies the inventory candidate; it does not extend a binary license review.
 
+First-party SDK, template, Demo and maintenance code is licensed under MIT; see LICENSE.md. This grant does not replace any third-party license. Source SDK packages, CMake installations and application resources include the first-party license alongside these notices from 0.5.1-preview.1 onward.
+
 | Component | Materials | License / provenance |
 |---|---|---|
 | SOUI 2.9.0.3 lineage | Sources, headers, x86/x64 DLLs and import libraries | [Original SOUI source license](third_party/licenses/soui/license.txt) and retained notices |
@@ -27,3 +29,20 @@ Source-tooling supplemental material for @babel/parser 7.29.9 is retained separa
 Compatibility builds adapt the locked core-js `internals/object-create.js` module through the source-controlled `tools/internal/compat-polyfills.cjs` build step. The derivative uses the Chrome 49 target's native `Object.create` and fails if that capability is absent; it omits the obsolete IE iframe fallback while retaining other automatic polyfills. The helper records original and adapted identities. This is a separate supplemental material from the 68-package inventory above; its locally copied license and recorded lock integrity do not assert a new independent registry-archive verification or complete redistribution approval.
 
 [Supplemental kernel source materials](third_party/licenses/kernel-source/README.md) preserve previously omitted named license/copyright texts from the fixed source tree, with exact source-to-copy hashes. Build/test materials are explicitly included as a source inventory; final binary applicability and redistribution review remain separate.
+
+
+## 0.6.0 corresponding-source distribution
+
+The current release supplies LGPL-covered WebKit/Blink portions with the full corresponding-source archive at the same release download location; the compact source SDK alone is not the complete MiniBlink source. Preserve the original LGPL, BSD, Apache, MIT and subsidiary notices. Source, local modifications, generated inputs, interfaces and compilation/installation scripts are retained for rebuilding the libraries and supplied SDK consumers. Modification for private use and reverse engineering to debug those modifications are not prohibited. DevTools image pins remain enforced; modified components require regenerating trusted pins and rebuilding the native consumer.
+
+This software is based in part on the work of the Independent JPEG Group.
+
+This product includes software developed by the OpenSSL Project for use in the OpenSSL Toolkit. (http://www.openssl.org/)
+
+This product includes cryptographic software written by Eric Young (eay@cryptsoft.com).
+
+This product includes software written by Tim Hudson (tjh@cryptsoft.com).
+
+The original OpenSSL/SSLeay license and applicable advertising acknowledgments remain in third_party/licenses/d52/openssl/LICENSE.txt. The source candidate excludes copied legacy Microsoft SDK headers under miniblink/vc6 and miniblink/third_party/GDIPlus; the rebuild uses a separately installed Windows SDK 10.0.19041.0. It does not redistribute compiler/SDK source under the first-party license. Historical binary reviews keep their original identities. See [0.6.0 redistribution and corresponding-source instructions](docs/licenses/v0.6.0-redistribution.md).
+
+The WebView2 SDK and Loader notices do not license the browser Runtime. The Runtime remains separately installed and is not bundled or automatically installed by this SDK.

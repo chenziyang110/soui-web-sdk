@@ -1,6 +1,7 @@
 {
   "schema": "soui.miniblink-source-candidate/v1",
-  "baselineCommit": "c17c79bdf470fae681c63324ceaa2a519151afc9",
+  "baselineCommit": "0cdc0a9ace0cdce664ec4a9b54e5f8f71b97ba48",
+  "portedFromCommit": "ce996ac8e534c634ced4389dd06f0a8dba0f0def",
   "status": "source-only",
   "hashScope": "raw-file-bytes",
   "binaryRebuilt": false,
@@ -8,34 +9,19 @@
   "performanceVerified": false,
   "packageSizeVerified": false,
   "patch": {
-    "path": "third_party/patches/miniblink/0017-deadline-owner-scheduling.patch",
-    "sha256": "b98c2bf2f5e79c5a0c9c3b670e0e56917ed2a00d3299f6d4decea61dc9d8a117"
+    "path": "third_party/patches/miniblink/0025-main-integrated-deadline-scheduling.patch",
+    "sha256": "41ae4a9ba8911a4a716d702e9d766df2c0df7ef263d7ba500ca3ab56d32b6ef1"
   },
   "files": [
     {
       "path": "third_party/sources/miniblink/content/browser/SharedTimerWin.h",
-      "bytes": 10018,
-      "sha256": "69e4fbdc62818af8f649067f6ea0853f9362efd5ed9116a7c286d63c22a3a86f"
+      "bytes": 12716,
+      "sha256": "2cdb88ed22ddcf5486b921fd35fe0de1ad2ba901a1eb6466a82e81e79bcb1356"
     },
     {
       "path": "third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp",
-      "bytes": 25583,
-      "sha256": "e4212515786b46f4bbf286fad9cd3bcd18b86b77e0bf14f1896f4b2f2a749805"
-    },
-    {
-      "path": "third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.h",
-      "bytes": 4369,
-      "sha256": "8d981184e7439b5ce9933a8f9df29617ddeebd5c7308c69cd988329f6b8a7012"
-    },
-    {
-      "path": "third_party/sources/miniblink/content/web_impl_win/WebTimerBase.cpp",
-      "bytes": 13009,
-      "sha256": "cd40b02bf897008472b189f80ad7908ab02eb9df240dfa11025fe3102003386c"
-    },
-    {
-      "path": "third_party/sources/miniblink/content/web_impl_win/TaskSchedulingPolicy.h",
-      "bytes": 3745,
-      "sha256": "cbf017b7004c61806d9f31be925c238b74ba60a65ccb614d4f9e8c59728feb9a"
+      "bytes": 30525,
+      "sha256": "a7c20cad2ebada70f83eb68121f719a34f597faa8eaf739751d49662e3362e4f"
     }
   ]
 }

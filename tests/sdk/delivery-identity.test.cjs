@@ -306,6 +306,7 @@ test('deployment replaces stale Web assets and preserves app data outside resour
   const app = path.join(root, 'app');
   write(source, 'index.html', 'new');
   write(source, 'assets/current.js', 'current');
+  write(root, 'LICENSE.md', 'First-party license');
   write(root, 'THIRD_PARTY_NOTICES.md', 'SDK notices');
   write(root, 'third_party/licenses/example-LICENSE.txt', 'Dependency license');
   write(app, 'resources/index.html', 'old');
@@ -327,15 +328,46 @@ test('deployment replaces stale Web assets and preserves app data outside resour
   fs.unlinkSync(path.join(root, 'THIRD_PARTY_NOTICES.md'));
   assert.throws(() => deploy.replace(source, app, root), /ENOENT|missing/);
   assert.equal(fs.readFileSync(path.join(app, 'resources/legal/THIRD_PARTY_NOTICES.md'), 'utf8'), 'SDK notices');
+  write(root, 'LICENSE.md', 'First-party license');
   write(root, 'THIRD_PARTY_NOTICES.md', 'SDK notices');
   const before = identity.source(root).sha256;
   fs.writeFileSync(path.join(root, 'third_party/licenses/example-LICENSE.txt'), 'Altered license');
   assert.notEqual(identity.source(root).sha256, before);
 });
 
+test('deployment preserves referenced redistribution documentation and rejects missing input before staging', t => {
+  const root = fixture(t), source = path.join(root, 'source'), app = path.join(root, 'app');
+  const document = 'docs/licenses/v0.6.0-redistribution.md';
+  const notice = Buffer.from(`SDK notices\r\n[Corresponding source](${document})\r\n`);
+  const original = Buffer.from('\uFEFF# Redistribution\r\n保留原始字节\r\n');
+  write(root, 'LICENSE.md', 'SDK license');
+  write(root, 'THIRD_PARTY_NOTICES.md', notice);
+  write(root, 'third_party/licenses/example-LICENSE.txt', 'Dependency license');
+  write(source, 'index.html', 'new');
+  write(app, 'resources/index.html', 'old');
+  const mkdir = fs.mkdirSync;
+  let stageAttempts = 0;
+  fs.mkdirSync = function(directory, ...args) {
+    if (path.basename(String(directory)).startsWith('.resources-new-')) ++stageAttempts;
+    return mkdir.call(this, directory, ...args);
+  };
+  try {
+    assert.throws(() => deploy.replace(source, app, root), /SDK legal materials missing.*redistribution/);
+    assert.equal(stageAttempts, 0, 'missing referenced documentation began a transaction');
+  } finally { fs.mkdirSync = mkdir; }
+  assert.equal(fs.readFileSync(path.join(app, 'resources/index.html'), 'utf8'), 'old');
+  assert.deepEqual(fs.readdirSync(app), ['resources']);
+  write(root, document, original);
+  deploy.replace(source, app, root);
+  assert.deepEqual(fs.readFileSync(path.join(app, 'resources/legal', document)), original);
+  assert.deepEqual(fs.readFileSync(path.join(app, 'resources/legal/THIRD_PARTY_NOTICES.md')), notice);
+  assert.equal(fs.readFileSync(path.join(app, 'resources/index.html'), 'utf8'), 'new');
+});
+
 test('deployment survives a temporary Windows denial while publishing staged resources', {skip: process.platform !== 'win32'}, t => {
   const root = fixture(t), source = path.join(root, 'web'), app = path.join(root, 'app');
   write(source, 'index.html', 'new');
+  write(root, 'LICENSE.md', 'First-party license');
   write(root, 'THIRD_PARTY_NOTICES.md', 'SDK notices');
   write(root, 'third_party/licenses/example-LICENSE.txt', 'Dependency license');
   write(app, 'resources/index.html', 'old');
@@ -357,6 +389,7 @@ test('deployment survives a temporary Windows denial while publishing staged res
 test('deployment bounds persistent Windows publication denials and restores old resources', {skip: process.platform !== 'win32'}, t => {
   const root = fixture(t), source = path.join(root, 'web'), app = path.join(root, 'app');
   write(source, 'index.html', 'new');
+  write(root, 'LICENSE.md', 'First-party license');
   write(root, 'THIRD_PARTY_NOTICES.md', 'SDK notices');
   write(root, 'third_party/licenses/example-LICENSE.txt', 'Dependency license');
   write(app, 'resources/index.html', 'old');
@@ -375,6 +408,7 @@ test('deployment bounds persistent Windows publication denials and restores old 
 test('deployment immediately propagates other publication errors and restores old resources', t => {
   const root = fixture(t), source = path.join(root, 'web'), app = path.join(root, 'app');
   write(source, 'index.html', 'new');
+  write(root, 'LICENSE.md', 'First-party license');
   write(root, 'THIRD_PARTY_NOTICES.md', 'SDK notices');
   write(root, 'third_party/licenses/example-LICENSE.txt', 'Dependency license');
   write(app, 'resources/index.html', 'old');
@@ -393,6 +427,7 @@ test('deployment immediately propagates other publication errors and restores ol
 test('linked resource directories are rejected before deployment changes', t => {
   const root = fixture(t);
   write(root, 'source/index.html', 'new');
+  write(root, 'LICENSE.md', 'First-party license');
   write(root, 'THIRD_PARTY_NOTICES.md', 'SDK notices');
   write(root, 'third_party/licenses/example-LICENSE.txt', 'Dependency license');
   write(root, 'outside/protected.txt', 'keep');
@@ -408,12 +443,14 @@ test('SDK packages are identical across source EOLs but installed bytes remain p
   const licenseBytes = Buffer.from([0x4c, 0x69, 0x63, 0x65, 0x6e, 0x73, 0x65, 13, 10, 0xa9, 13, 10]);
   for (const name of sdk.managedRoots) write(source, `${name}/fixture.txt`,
     name === 'third_party/licenses' ? licenseBytes : 'one\r\ntwo\r\n');
-  for (const name of sdk.managedFiles) write(source, name, 'tool\r\n');
+  for (const name of sdk.managedFiles) write(source, name,
+    name === 'LICENSE.md' ? licenseBytes : 'tool\r\n');
   write(source, 'sdk/legacy.h', Buffer.from([0xd6, 0xd0, 0xce, 0xc4, 13, 10]));
   sdk.pack(source, path.join(root, 'crlf'), '0.3.0-preview.1');
   for (const name of sdk.managedRoots) write(source, `${name}/fixture.txt`,
     name === 'third_party/licenses' ? licenseBytes : 'one\ntwo\n');
-  for (const name of sdk.managedFiles) write(source, name, 'tool\n');
+  for (const name of sdk.managedFiles) write(source, name,
+    name === 'LICENSE.md' ? licenseBytes : 'tool\n');
   write(source, 'sdk/legacy.h', Buffer.from([0xd6, 0xd0, 0xce, 0xc4, 10]));
   sdk.pack(source, path.join(root, 'lf'), '0.3.0-preview.1');
   assert.deepEqual(sdk.readPackage(path.join(root, 'crlf')), sdk.readPackage(path.join(root, 'lf')));
@@ -421,6 +458,7 @@ test('SDK packages are identical across source EOLs but installed bytes remain p
   sdk.install(path.join(root, 'lf'), project);
   assert.deepEqual(fs.readFileSync(path.join(root, 'lf/payload/third_party/licenses/fixture.txt')), licenseBytes);
   assert.deepEqual(fs.readFileSync(path.join(project, 'third_party/licenses/fixture.txt')), licenseBytes);
+  assert.deepEqual(fs.readFileSync(path.join(project, 'LICENSE.md')), licenseBytes);
   write(project, 'sdk/fixture.txt', 'one\r\ntwo\r\n');
   assert.throws(() => sdk.readLock(project), /modified/);
 });

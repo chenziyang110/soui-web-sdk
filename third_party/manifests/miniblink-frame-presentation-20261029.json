@@ -1,93 +1,74 @@
 {
   "schema": "soui.miniblink-source-candidate/v1",
-  "baselineCommit": "c17c79bdf470fae681c63324ceaa2a519151afc9",
+  "baselineCommit": "0cdc0a9ace0cdce664ec4a9b54e5f8f71b97ba48",
+  "portedFromCommit": "ce996ac8e534c634ced4389dd06f0a8dba0f0def",
   "status": "source-only",
   "hashScope": "raw-file-bytes",
   "binaryRebuilt": false,
   "testsExecuted": false,
   "performanceVerified": false,
   "packageSizeVerified": false,
-  "capabilities": {
-    "preciseFrameRate": 8,
-    "onDemandUiMirror": 16,
-    "resourceWakeStatus": 32,
-    "onDemandUiMirrorQualification": "CPU build only"
-  },
-  "notificationFailurePolicy": "Owning payload cancellation clears pending slot and latches notification-failed; native host reports E_RESOURCE_WAKE and requires target recreation. No OOM automatic recovery claim.",
   "patch": {
-    "path": "third_party/patches/miniblink/0016-frame-presentation-and-resource-wakes.patch",
-    "sha256": "31a73e18afb2a8324d24af091bd33d771de4979e0cde342d7bde3deab3d80fbd"
+    "path": "third_party/patches/miniblink/0024-main-integrated-frame-presentation.patch",
+    "sha256": "2358396d1fc07d23c9896014287beb488e9fe61334b48ac979928309b18632a9"
   },
   "files": [
     {
       "path": "third_party/include/miniblink/wke.h",
-      "sha256": "935a969959c40119c9c9f82a667915c490fd4e57bd98f4afb626af922feafac3",
-      "bytes": 70971
-    },
-    {
-      "path": "third_party/sources/miniblink/wke/wkedefine.h",
-      "sha256": "b0dea4fe395827bfe1e56eccef3ef63a65a249c0d9f92ea933c58085e1472951",
-      "bytes": 70475
-    },
-    {
-      "path": "third_party/sources/miniblink/wke/wke.cpp",
-      "sha256": "e538cb7e2f28f557aba6cf3aab0d73e9bcb25174d97f748e29f6bee5fe011137",
-      "bytes": 101974
-    },
-    {
-      "path": "third_party/sources/miniblink/content/browser/WebPageImpl.cpp",
-      "sha256": "df7fc1ca6d891d6a2fd38e4e1da4c9f4c66fd09368bf9a4b2e10b0e439284bf6",
-      "bytes": 85167
-    },
-    {
-      "path": "third_party/sources/miniblink/content/browser/WebPageImpl.h",
-      "sha256": "ff6d089aebff3de34b0932059fccb21ba9be515e9978b0b1e79caa38405ffa9b",
-      "bytes": 12546
-    },
-    {
-      "path": "third_party/sources/miniblink/cc/trees/LayerTreeHost.cpp",
-      "sha256": "61f5295afee17631f461749f2e45307ef044ca5cc6a5f4ab61475f59a69114d5",
-      "bytes": 120937
-    },
-    {
-      "path": "third_party/sources/miniblink/cc/trees/LayerTreeHost.h",
-      "sha256": "9fe3b8f538034f55f26a85d28ebcdf6d7952dd2812c74be144d157a736498fa3",
-      "bytes": 13989
-    },
-    {
-      "path": "third_party/sources/miniblink/cc/trees/LayerTreeHostClient.h",
-      "sha256": "6353b9cd20c6125b4655bde023b39ffa26139895ad3cba21d2216c1ce5378d24",
-      "bytes": 526
-    },
-    {
-      "path": "third_party/sources/miniblink/cc/trees/ActionsFrameGroup.cpp",
-      "sha256": "b05a4eaf15d24fa5bd43ada98dc9542755a9b4ebf5efbac769a4a5698267d024",
-      "bytes": 8881
-    },
-    {
-      "path": "third_party/sources/miniblink/cc/raster/RasterTask.cpp",
-      "sha256": "36b6d8635b69c856e5a98e5751b2ba11f6260b558835d7b4ec1f196af39efe35",
-      "bytes": 21207
-    },
-    {
-      "path": "third_party/sources/miniblink/cc/raster/RasterTask.h",
-      "sha256": "64c27b8deb490103dad6447f90377a64308e1cfa7955948e6520ac704104c192",
-      "bytes": 5761
-    },
-    {
-      "path": "third_party/sources/miniblink/cc/trees/FrameSchedulingPolicy.h",
-      "sha256": "c37151d98f7b1fc13b754f644429684b0b71e983f1855f0b8bbc72daf6e019ce",
-      "bytes": 974
-    },
-    {
-      "path": "third_party/sources/miniblink/cc/trees/DirtyRegionPolicy.h",
-      "sha256": "32fe5bd24fa86f8bb4573cd1da5fea12d3a71118a8eefb4ce6a28f63a86abc46",
-      "bytes": 1411
+      "bytes": 71270,
+      "sha256": "0e0b07cc1b8cd9a25b869c67405b5c51bfcf2715b1d4e34b717686df4d9dd8de"
     },
     {
       "path": "third_party/sources/miniblink/cc/raster/CompletionWaiters.h",
-      "sha256": "b53486c93703fe4e656caa5c02dbd2a9c81bdbf2c6ea9fdd5b09deac3651be52",
-      "bytes": 1291
+      "bytes": 1291,
+      "sha256": "b53486c93703fe4e656caa5c02dbd2a9c81bdbf2c6ea9fdd5b09deac3651be52"
+    },
+    {
+      "path": "third_party/sources/miniblink/cc/raster/RasterTask.cpp",
+      "bytes": 28621,
+      "sha256": "43f8c49954d3c2d03dd76f14458d6765c75d862c91eab471dbe8c4eb646aa8e3"
+    },
+    {
+      "path": "third_party/sources/miniblink/cc/raster/RasterTask.h",
+      "bytes": 6967,
+      "sha256": "50962159b0fced88caba16ff18e9740bfeb47792abeb08e3fcb98806ea2e8b28"
+    },
+    {
+      "path": "third_party/sources/miniblink/cc/trees/DirtyRegionPolicy.h",
+      "bytes": 1411,
+      "sha256": "32fe5bd24fa86f8bb4573cd1da5fea12d3a71118a8eefb4ce6a28f63a86abc46"
+    },
+    {
+      "path": "third_party/sources/miniblink/cc/trees/LayerTreeHost.cpp",
+      "bytes": 144359,
+      "sha256": "6b08b5279ec0a36f80b261a59357b385dbd4bf8594466ebe1282fec7a6bcca5b"
+    },
+    {
+      "path": "third_party/sources/miniblink/cc/trees/LayerTreeHost.h",
+      "bytes": 17873,
+      "sha256": "bf6c92649a7c62a88cfb9daf3bfd44177da91771ec0bb40a53fc23321a5eb4da"
+    },
+    {
+      "path": "third_party/sources/miniblink/content/browser/WebPageImpl.cpp",
+      "bytes": 94066,
+      "sha256": "f7e5795562105d5fbfc66a6594823530d86d971963a4d8df5f82dd8799ee1264"
+    },
+    {
+      "path": "third_party/sources/miniblink/wke/wke.cpp",
+      "bytes": 104960,
+      "sha256": "add9e26769f6405c0d262446c251fcd788c0dd59d2260cf3415b25807ed2e8bd"
+    },
+    {
+      "path": "third_party/sources/miniblink/wke/wkedefine.h",
+      "bytes": 70772,
+      "sha256": "17485a2c5b776f9533f88d7274a91014760652ddb8af7e4280578b5292c22939"
     }
-  ]
+  ],
+  "capabilities": {
+    "preciseFrameRate": 8,
+    "onDemandUiMirror": 16,
+    "resourceWakeStatus": 32,
+    "onDemandUiMirrorQualification": "CPU build only; main mirror consumer/lease ownership retained"
+  },
+  "notificationFailurePolicy": "Main shared cancellation state and exceptional retry retained; sticky notification-failed is capability-gated and requires target recreation."
 }

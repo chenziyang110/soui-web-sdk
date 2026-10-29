@@ -57,7 +57,8 @@ if(Test-Path -LiteralPath $OutputFile){throw 'Archive already exists; choose a n
 New-Item -ItemType Directory -Force -Path (Split-Path $OutputFile) | Out-Null
 Push-Location $stage
 try {
- & $zipPath a -tzip -mx=5 -mmt=2 $OutputFile '*' -scsUTF-8 *> $archiveLog
+ # -scsUTF-8 controls list files only; -mcu=on writes UTF-8 ZIP filename headers.
+ & $zipPath a -tzip -mx=5 -mmt=2 -mcu=on $OutputFile '*' -scsUTF-8 *> $archiveLog
  if($LASTEXITCODE -ne 0){throw 'Archive creation failed; see out/package/archive.log'}
  & $zipPath t $OutputFile *> $testLog
  if($LASTEXITCODE -ne 0){throw 'Archive verification failed'}

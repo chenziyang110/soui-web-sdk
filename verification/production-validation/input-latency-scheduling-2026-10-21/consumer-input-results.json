@@ -1,0 +1,3128 @@
+{
+  "schema": "soui.consumer-input-results/v1",
+  "scope": "One fixed-order diagnostic input comparison in an isolated Windows 10 guest using deployed consumer applications",
+  "traceIntegrityVerified": true,
+  "performanceAccepted": false,
+  "benchmarkValid": false,
+  "releaseReady": false,
+  "physicalPresentationMeasured": false,
+  "actionOrder": [
+    "pe-old",
+    "pe-new",
+    "main-old",
+    "main-new"
+  ],
+  "sourceBinding": {
+    "sdkEvidenceCommit": "eaed591a99d3f98f39c378f59a2c62bc95a9f9bc",
+    "plannedSourceCommitDomain": "SDK candidate evidence commit; not the consumer product source commit",
+    "kernelSourceIdentity": "d43a213508fa0689880c8498333110e5af3133c32c9733730573fc8f4223c695",
+    "kernelBuildEvidence": {
+      "label": "kernel-builds.json",
+      "bytes": 49690,
+      "sha256": "9374884af5c22aadd53f52607d1b9de4d9063bec12f3829fce260ae6e5e98fa9"
+    },
+    "changedVendorFiles": [
+      {
+        "path": "third_party/sources/miniblink/content/web_impl_win/BlinkPlatformImpl.cpp",
+        "bytes": 40263,
+        "sha256": "b03dc07c12abfa1a43a53390d665067f6a35272e3dd11dfde15f3b70cf68cadc"
+      },
+      {
+        "path": "third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp",
+        "bytes": 24846,
+        "sha256": "fa7295aee946697c6a9b122daea593b7c435f39ae1585c2774e8d13476e953cc"
+      },
+      {
+        "path": "third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.h",
+        "bytes": 4325,
+        "sha256": "673e9acc5bb267a5afb733a7eb4c84de2ac845699e49fa44e27f1fbcafd2ea7d"
+      }
+    ],
+    "consumerBuildMethod": "Separate CMake input diagnostic with generated observation sources; no standard product build receipt is claimed",
+    "consumerProductCommitProven": false,
+    "consumerDiagnosticEvidence": [
+      {
+        "label": "consumer-diagnostic/trace-Win32-build.log",
+        "bytes": 8604,
+        "sha256": "c9b2e22c3521cb85884a2de5f39de4b375d224b2fca1db7b6013cef5661b22db"
+      },
+      {
+        "label": "consumer-diagnostic/trace-Win32-configure.log",
+        "bytes": 1019,
+        "sha256": "041ec985db392a7d21f0a2013f7391a1c35398956458ee6d153091b8f186488d"
+      },
+      {
+        "label": "consumer-diagnostic/trace-x64-build.log",
+        "bytes": 19458,
+        "sha256": "07a70f489c14e9dd09644b6841a0a87a4ec5bf937833ceed2aa0743a4e608a2f"
+      },
+      {
+        "label": "consumer-diagnostic/trace-x64-configure.log",
+        "bytes": 1018,
+        "sha256": "51c05e47894779f882089e4cec12c4c4a3bd085205cf2e52c836c3148e869b77"
+      },
+      {
+        "label": "consumer-diagnostic/inputs.json",
+        "bytes": 1012,
+        "sha256": "b904ba4ef3f4e9e1392a71be45821284cee64b66ef283a729859eeea80b23a12"
+      },
+      {
+        "label": "consumer-diagnostic/measurement-inputs.json",
+        "bytes": 990,
+        "sha256": "c19c859f710def11c60a1da5e98b3254b6b1e8fb877cae9dd8ccc1500cd8a812"
+      },
+      {
+        "label": "consumer-diagnostic/runtime-file-manifest.json",
+        "bytes": 254541,
+        "sha256": "b92d4c5a736b1cfaa4e51002cd2e2a64f8272423683bb12db3c8bdd8c912194c"
+      }
+    ],
+    "observationSourcePins": [
+      {
+        "label": "consumer-diagnostic/trace-Win32/observed/soui_miniblink_host.cpp",
+        "bytes": 205669,
+        "sha256": "bdc674a799681db167277063b2a83f5b2495bedc9b8ea64f77a922c7c860f707"
+      },
+      {
+        "label": "consumer-diagnostic/baseline-generated-x64/soui_miniblink_host.cpp",
+        "bytes": 205669,
+        "sha256": "bdc674a799681db167277063b2a83f5b2495bedc9b8ea64f77a922c7c860f707"
+      },
+      {
+        "label": "consumer-diagnostic/trace-Win32/observed/engine_thread.cpp",
+        "bytes": 22037,
+        "sha256": "e6d08200caf4d2d27e597df0e11d3b7ac78c7a28a06a336d9d9323ae25139f41"
+      },
+      {
+        "label": "consumer-diagnostic/baseline-generated-x64/engine_thread.cpp",
+        "bytes": 22037,
+        "sha256": "e6d08200caf4d2d27e597df0e11d3b7ac78c7a28a06a336d9d9323ae25139f41"
+      },
+      {
+        "label": "consumer-diagnostic/trace-Win32/observed/web_body.cpp",
+        "bytes": 2869,
+        "sha256": "edce85f365c961727707f06910257f037cf2fd697abbaa9f692d8cd4ae534070"
+      },
+      {
+        "label": "consumer-diagnostic/baseline-generated-x64/web_body.cpp",
+        "bytes": 2869,
+        "sha256": "edce85f365c961727707f06910257f037cf2fd697abbaa9f692d8cd4ae534070"
+      },
+      {
+        "label": "consumer-source/JZWinPassClearPE/tests/input-latency/CMakeLists.txt",
+        "bytes": 4696,
+        "sha256": "83852430e9dcd7ee77cf80d20a997c6876537bfdd7e4237767a3d2f237da5884"
+      },
+      {
+        "label": "consumer-source/JZWinPassClearPE/tests/input-latency/input_trace.hpp",
+        "bytes": 4121,
+        "sha256": "9226ada68f141ea52aed375b5e54c4e4ec998b3e9fcc025352886c0982cd4e4f"
+      }
+    ],
+    "x64Preservation": "Use the preserved media/pe-trace executable and baseline-generated-x64 sources. Later trace-x64 zero-interval output is not used as this baseline."
+  },
+  "payloadBinding": {
+    "preparation": {
+      "label": "media-preparation-build3-1.json",
+      "bytes": 266865,
+      "sha256": "e58b7cd914212e923cb4e38dd989fe90ba25a8d277e3c1bfea9ef4d9a86b5f59"
+    },
+    "isoProvenance": {
+      "label": "iso-media-provenance-build3-1.json",
+      "bytes": 3200,
+      "sha256": "e0b8dceceb79caa782ca9072c7401394f34d407418eabfd2d2ebc7165881d327"
+    },
+    "applicationIso": {
+      "label": "input-comparison-1.iso",
+      "bytes": 3002466304,
+      "sha256": "12bbc215829e63306751220108dda03427cbd97176d18d44fe668d518f1509c8"
+    },
+    "beforeIsoMatches": true,
+    "allApplicationFilesRehashed": 1166,
+    "inventoryMatchesPreparation": true,
+    "onlyPairDifferences": {
+      "main": [
+        {
+          "path": "web/node.dll",
+          "before": {
+            "path": "web/node.dll",
+            "bytes": 28115968,
+            "sha256": "90a214ca2d416eda8e980cab7aacb80fffef777ace20c06179f41e584dae093b"
+          },
+          "after": {
+            "path": "web/node.dll",
+            "bytes": 28115968,
+            "sha256": "e9e34583ff13a59111f7e55ae76593c892603bc099a4e50357e26ed72f394e8b"
+          }
+        }
+      ],
+      "pe": [
+        {
+          "path": "node.dll",
+          "before": {
+            "path": "node.dll",
+            "bytes": 38959616,
+            "sha256": "f552226e00c16c9df1ef6cb94081c69b37185c44741197d5a337a4ed70d1fdef"
+          },
+          "after": {
+            "path": "node.dll",
+            "bytes": 38960128,
+            "sha256": "b961baeaf86e7ac363fbf1c986752ae006aed6a269eeb2fdff8e55e8dd20481c"
+          }
+        }
+      ]
+    },
+    "mainRootNodeDllPreserved": {
+      "bytes": 28868136,
+      "sha256": "44fb77afdc419e74a3cf493f96060ae121ed68c4763b8f0cc10b7373c260f156"
+    },
+    "selectedRuntimeFiles": {
+      "pe-old": [
+        {
+          "label": "application-media/pe-old/JZWinPassClearPE.exe",
+          "bytes": 1163776,
+          "sha256": "6f2a21177d21a84cdd61aa2eaee9279bc09136501c69c335eccb0839e973fe8b"
+        },
+        {
+          "label": "application-media/pe-old/node.dll",
+          "bytes": 38959616,
+          "sha256": "f552226e00c16c9df1ef6cb94081c69b37185c44741197d5a337a4ed70d1fdef"
+        }
+      ],
+      "pe-new": [
+        {
+          "label": "application-media/pe-new/JZWinPassClearPE.exe",
+          "bytes": 1163776,
+          "sha256": "6f2a21177d21a84cdd61aa2eaee9279bc09136501c69c335eccb0839e973fe8b"
+        },
+        {
+          "label": "application-media/pe-new/node.dll",
+          "bytes": 38960128,
+          "sha256": "b961baeaf86e7ac363fbf1c986752ae006aed6a269eeb2fdff8e55e8dd20481c"
+        }
+      ],
+      "main-old": [
+        {
+          "label": "application-media/main-old/JZWinPassClear.exe",
+          "bytes": 4358144,
+          "sha256": "1ed1c729aceaf87fa50a16c4abb7883093822c0a254a1af5a3c4191ab03cff67"
+        },
+        {
+          "label": "application-media/main-old/web/JZWinPassClearWebHost.exe",
+          "bytes": 499712,
+          "sha256": "4c641091cc835c02610dda5f934af3fdc47196c498fe2af390e2667368f811dc"
+        },
+        {
+          "label": "application-media/main-old/web/node.dll",
+          "bytes": 28115968,
+          "sha256": "90a214ca2d416eda8e980cab7aacb80fffef777ace20c06179f41e584dae093b"
+        },
+        {
+          "label": "application-media/main-old/node.dll",
+          "bytes": 28868136,
+          "sha256": "44fb77afdc419e74a3cf493f96060ae121ed68c4763b8f0cc10b7373c260f156"
+        }
+      ],
+      "main-new": [
+        {
+          "label": "application-media/main-new/JZWinPassClear.exe",
+          "bytes": 4358144,
+          "sha256": "1ed1c729aceaf87fa50a16c4abb7883093822c0a254a1af5a3c4191ab03cff67"
+        },
+        {
+          "label": "application-media/main-new/web/JZWinPassClearWebHost.exe",
+          "bytes": 499712,
+          "sha256": "4c641091cc835c02610dda5f934af3fdc47196c498fe2af390e2667368f811dc"
+        },
+        {
+          "label": "application-media/main-new/web/node.dll",
+          "bytes": 28115968,
+          "sha256": "e9e34583ff13a59111f7e55ae76593c892603bc099a4e50357e26ed72f394e8b"
+        },
+        {
+          "label": "application-media/main-new/node.dll",
+          "bytes": 28868136,
+          "sha256": "44fb77afdc419e74a3cf493f96060ae121ed68c4763b8f0cc10b7373c260f156"
+        }
+      ]
+    },
+    "runtimeLoadedModuleHashIndependentlyRecorded": false,
+    "limitation": "The ISO and deployment file hashes plus observed launch from each selected directory bind the inputs. The trace does not independently record loaded module paths or hashes."
+  },
+  "traceBinding": {
+    "raw": {
+      "label": "raw/consumer-input-traces.csv",
+      "bytes": 1921401,
+      "sha256": "1d9386765d143fc6062bfc136cce3d9bc19f4c7c38787f3cc2637b62187255a8"
+    },
+    "sourceSerial": {
+      "label": "input-comparison-run-1/serial-new.bin",
+      "bytes": 1921401,
+      "sha256": "1d9386765d143fc6062bfc136cce3d9bc19f4c7c38787f3cc2637b62187255a8"
+    },
+    "originalGuestSerialInterval": {
+      "label": "external/guest-serial.log",
+      "snapshotPrefixBytes": 4015638,
+      "snapshotPrefixSha256": "d544f2eafb8dcded6ce35748e0fdc1d2b9ef91c9222aad4611b53975fd6547b2",
+      "extractionStartByte": 2094237,
+      "extractionEndByteExclusive": 4015638,
+      "extractionBytes": 1921401,
+      "extractionSha256": "1d9386765d143fc6062bfc136cce3d9bc19f4c7c38787f3cc2637b62187255a8",
+      "note": "The guest serial file continues growing. The frozen prefix and exact extracted interval are bound; this is not a hash of its later full contents."
+    },
+    "lines": 32061,
+    "ignoredBytes": 0,
+    "allFourCompleteEnvelopes": true,
+    "overflow": false,
+    "blockBytesConcatenatedUnchanged": true,
+    "parser": {
+      "label": "analyze-input-traces.py",
+      "bytes": 5456,
+      "sha256": "ec82e8687a67fcac7c4d1f2b6f7127edaed409cf50bb5f0587ea9f2319bcb8dd"
+    },
+    "parserByteIdenticalToOriginal": true,
+    "originalParser": {
+      "label": "consumer-source/JZWinPassClearPE/tests/input-latency/analyze.py",
+      "bytes": 5456,
+      "sha256": "ec82e8687a67fcac7c4d1f2b6f7127edaed409cf50bb5f0587ea9f2319bcb8dd"
+    },
+    "originalAnalysis": {
+      "label": "external/input-comparison-analysis-1/summary.json",
+      "bytes": 66330,
+      "sha256": "5478eca8bdbb475e57f91b7b74520d8ddee838be1344a38f6d24f4e557d90230"
+    },
+    "recomputedStatisticsEqualOriginalAnalysis": true,
+    "auxiliaryCaptureFiles": [
+      {
+        "label": "external/input-comparison-run-1/before.json",
+        "bytes": 348,
+        "sha256": "cf80b259208f6f1538e25a7b76443818b2d3290ee145d09f3dd65a963e373d0f"
+      },
+      {
+        "label": "external/input-comparison-run-1/planned.json",
+        "bytes": 379,
+        "sha256": "3321cbfe1c79869e1bf70ec59099b5e22d44f53b884c8040a1a451c42d4eeda4"
+      },
+      {
+        "label": "external/input-comparison-run-1/actions.ndjson",
+        "bytes": 802,
+        "sha256": "fcf06ea4f252fd26a9d94dd3a906e1a510debba75d617f2c405e5cd884fa1561"
+      },
+      {
+        "label": "external/input-comparison-run-1/media-result.json",
+        "bytes": 143,
+        "sha256": "b1b0d4873ce460cbb1f6723e714613f7d546f7607df737a4ada0d2576f02e792"
+      },
+      {
+        "label": "external/input-comparison-run-1/partial-1.bin",
+        "bytes": 341112,
+        "sha256": "c860f0dde16cba688fbc2caeae00f3eedb972b60acca6724f1c6e0f4a284397d"
+      },
+      {
+        "label": "external/input-comparison-run-1/partial-2.bin",
+        "bytes": 649645,
+        "sha256": "08eb90f5916e9c74e8a20be83a696aebdac222fb730095a224932788e2e89fb4"
+      },
+      {
+        "label": "external/input-comparison-run-1/partial-3.bin",
+        "bytes": 1187222,
+        "sha256": "64c278f48153c965a3f509c3a836f8bffee1e86ed0404971d1bcbe7dcda1ff5b"
+      }
+    ],
+    "screenshots": [
+      {
+        "label": "external/input-comparison-run-1/main-new-image.png",
+        "bytes": 70237,
+        "sha256": "1529216fa0ebff71c2ab48949b9c9f5b5715c7058dd24ec582ff3b0cd0b44312"
+      },
+      {
+        "label": "external/input-comparison-run-1/main-new-launch.png",
+        "bytes": 99437,
+        "sha256": "21b6c95f3e72018da640b59178a419f83e77b39b53ac20af114e98aa05850c05"
+      },
+      {
+        "label": "external/input-comparison-run-1/main-old-image.png",
+        "bytes": 70236,
+        "sha256": "abf3f3e1d5bab35c084af85a79c0cc4e4dd7d1157c52ba398e81b60bdf3d26c4"
+      },
+      {
+        "label": "external/input-comparison-run-1/main-old-launch.png",
+        "bytes": 100148,
+        "sha256": "b0d78640e48da1f99bb192963fe8e44f27634e14c810c9262acede4a4decdac5"
+      },
+      {
+        "label": "external/input-comparison-run-1/pe-new-help.png",
+        "bytes": 49993,
+        "sha256": "8384eae5102e8a9fd6fe1319337b4d07def6fc30263a82f8e3b367c8640dfa39"
+      },
+      {
+        "label": "external/input-comparison-run-1/pe-new-launch.png",
+        "bytes": 104661,
+        "sha256": "be8a09d0b395393d74856270ac00c98d6cfb183526e81cb394f6296669ae528b"
+      },
+      {
+        "label": "external/input-comparison-run-1/pe-old-help.png",
+        "bytes": 49995,
+        "sha256": "16c656e576303ee86ed59dbf7ccb5307698fe8994ddb378c38774d8af9db57d7"
+      },
+      {
+        "label": "external/input-comparison-run-1/pe-old-launch.png",
+        "bytes": 104753,
+        "sha256": "a4b5e4771818008017683325b4c1a3e5b489d8eee9939768c23cfdae25e25dbe"
+      },
+      {
+        "label": "external/input-comparison-run-1/pre-load.png",
+        "bytes": 87194,
+        "sha256": "6c0d3baafef76dbfc22e9b658be928d7a80df4a9ad27c9045810f4aa8bae75a2"
+      }
+    ],
+    "offsetConventions": {
+      "byteOffset": "Zero-based inclusive offset within raw/consumer-input-traces.csv",
+      "endByteExclusive": "Zero-based exclusive end within raw/consumer-input-traces.csv",
+      "serialLine": "One-based line within raw/consumer-input-traces.csv",
+      "sourceSerialAppendByteOffset": "Zero-based offset within the growing original guest serial file, using the frozen prefix boundary"
+    }
+  },
+  "metricDefinitions": {
+    "queue": "queued to dispatch on the engine; starts after SDK submission",
+    "dispatch": "dispatch to dispatched; includes dispatch guards and any synchronous input call",
+    "mouse": "fire to fired around wkeFireMouseEvent; no success return or visual completion is inferred",
+    "nativeCallback": "native_begin to native_end around DispatchMessageW; all recorded native callbacks here are message 275 (WM_TIMER)",
+    "percentiles": "Nearest-rank summaries of this small recorded sample only; not stable population estimates",
+    "startupIncluded": true,
+    "startupWindowExcluded": false,
+    "sessionsHaveDifferentLengths": true,
+    "eventOrPacketTotalsUsedAsPerformanceComparison": false,
+    "opticalTimingMeasured": false,
+    "physicalInputTimingMeasured": false,
+    "nativeBaselineCompared": false,
+    "winPeBootCompared": false
+  },
+  "results": [
+    {
+      "pid": 3376,
+      "events": 5690,
+      "packets": 33,
+      "groupedBySdkInputKind": {
+        "1": {
+          "queue": {
+            "count": 16,
+            "p50Ms": 0.1159,
+            "p95Ms": 105.45070000000001,
+            "maxMs": 105.45070000000001,
+            "over50Ms": 5
+          },
+          "dispatch": {
+            "count": 16,
+            "p50Ms": 0.3114,
+            "p95Ms": 1.2974,
+            "maxMs": 1.2974,
+            "over50Ms": 0
+          },
+          "mouse": {
+            "count": 16,
+            "p50Ms": 0.3023,
+            "p95Ms": 1.2871000000000001,
+            "maxMs": 1.2871000000000001,
+            "over50Ms": 0
+          }
+        },
+        "2": {
+          "queue": {
+            "count": 7,
+            "p50Ms": 0.5122,
+            "p95Ms": 50.1347,
+            "maxMs": 50.1347,
+            "over50Ms": 1
+          },
+          "dispatch": {
+            "count": 7,
+            "p50Ms": 0.6259,
+            "p95Ms": 1.1416,
+            "maxMs": 1.1416,
+            "over50Ms": 0
+          },
+          "mouse": {
+            "count": 7,
+            "p50Ms": 0.5709000000000001,
+            "p95Ms": 1.131,
+            "maxMs": 1.131,
+            "over50Ms": 0
+          }
+        },
+        "3": {
+          "queue": {
+            "count": 7,
+            "p50Ms": 25.8077,
+            "p95Ms": 50.7764,
+            "maxMs": 50.7764,
+            "over50Ms": 1
+          },
+          "dispatch": {
+            "count": 7,
+            "p50Ms": 2.2176,
+            "p95Ms": 15.403300000000002,
+            "maxMs": 15.403300000000002,
+            "over50Ms": 0
+          },
+          "mouse": {
+            "count": 7,
+            "p50Ms": 2.1619,
+            "p95Ms": 15.365200000000002,
+            "maxMs": 15.365200000000002,
+            "over50Ms": 0
+          }
+        },
+        "8": {
+          "queue": {
+            "count": 2,
+            "p50Ms": 3.1853000000000002,
+            "p95Ms": 4.8344000000000005,
+            "maxMs": 4.8344000000000005,
+            "over50Ms": 0
+          },
+          "dispatch": {
+            "count": 2,
+            "p50Ms": 0.0041,
+            "p95Ms": 0.0118,
+            "maxMs": 0.0118,
+            "over50Ms": 0
+          },
+          "mouse": {
+            "count": 0
+          }
+        },
+        "7": {
+          "queue": {
+            "count": 1,
+            "p50Ms": 4.4348,
+            "p95Ms": 4.4348,
+            "maxMs": 4.4348,
+            "over50Ms": 0
+          },
+          "dispatch": {
+            "count": 1,
+            "p50Ms": 0.011300000000000001,
+            "p95Ms": 0.011300000000000001,
+            "maxMs": 0.011300000000000001,
+            "over50Ms": 0
+          },
+          "mouse": {
+            "count": 0
+          }
+        }
+      },
+      "nativeCallback": {
+        "count": 2752,
+        "p50Ms": 0.0146,
+        "p95Ms": 0.8272,
+        "maxMs": 95.4591,
+        "over50Ms": 31
+      },
+      "longestNativeCallbacks": [
+        {
+          "message": 275,
+          "startQpc": 102812194621,
+          "endQpc": 102813149212,
+          "ms": 95.4591
+        },
+        {
+          "message": 275,
+          "startQpc": 103217633677,
+          "endQpc": 103218534142,
+          "ms": 90.04650000000001
+        },
+        {
+          "message": 275,
+          "startQpc": 102810342508,
+          "endQpc": 102811160364,
+          "ms": 81.7856
+        },
+        {
+          "message": 275,
+          "startQpc": 103043111082,
+          "endQpc": 103043708566,
+          "ms": 59.748400000000004
+        },
+        {
+          "message": 275,
+          "startQpc": 102901473448,
+          "endQpc": 102902066254,
+          "ms": 59.2806
+        },
+        {
+          "message": 275,
+          "startQpc": 102971766120,
+          "endQpc": 102972352642,
+          "ms": 58.6522
+        },
+        {
+          "message": 275,
+          "startQpc": 102821724968,
+          "endQpc": 102822308321,
+          "ms": 58.335300000000004
+        },
+        {
+          "message": 275,
+          "startQpc": 103042371134,
+          "endQpc": 103042950683,
+          "ms": 57.9549
+        },
+        {
+          "message": 275,
+          "startQpc": 103372619121,
+          "endQpc": 103373196478,
+          "ms": 57.7357
+        },
+        {
+          "message": 275,
+          "startQpc": 102971160919,
+          "endQpc": 102971736742,
+          "ms": 57.582300000000004
+        },
+        {
+          "message": 275,
+          "startQpc": 103129779493,
+          "endQpc": 103130353916,
+          "ms": 57.4423
+        },
+        {
+          "message": 275,
+          "startQpc": 103297588527,
+          "endQpc": 103298162107,
+          "ms": 57.358000000000004
+        },
+        {
+          "message": 275,
+          "startQpc": 103298163595,
+          "endQpc": 103298730527,
+          "ms": 56.693200000000004
+        },
+        {
+          "message": 275,
+          "startQpc": 103217067208,
+          "endQpc": 103217626354,
+          "ms": 55.9146
+        },
+        {
+          "message": 275,
+          "startQpc": 102821164300,
+          "endQpc": 102821721402,
+          "ms": 55.7102
+        },
+        {
+          "message": 275,
+          "startQpc": 102900894030,
+          "endQpc": 102901448930,
+          "ms": 55.49
+        },
+        {
+          "message": 275,
+          "startQpc": 103130360084,
+          "endQpc": 103130913380,
+          "ms": 55.3296
+        },
+        {
+          "message": 275,
+          "startQpc": 103297029832,
+          "endQpc": 103297579316,
+          "ms": 54.9484
+        },
+        {
+          "message": 275,
+          "startQpc": 103298734630,
+          "endQpc": 103299281399,
+          "ms": 54.6769
+        },
+        {
+          "message": 275,
+          "startQpc": 102811660964,
+          "endQpc": 102812194422,
+          "ms": 53.345800000000004
+        }
+      ],
+      "slowestPackets": [
+        {
+          "sequence": 32,
+          "kind": 1,
+          "queuedQpc": 103372142814,
+          "queueMs": 105.45070000000001,
+          "dispatchMs": 0.2431,
+          "mouseMs": 0.22510000000000002,
+          "mouseApiReached": true,
+          "overlappingNativeCallbacks": [
+            {
+              "message": 275,
+              "startQpc": 103372093878,
+              "endQpc": 103372594200,
+              "ms": 50.0322
+            },
+            {
+              "message": 275,
+              "startQpc": 103372619121,
+              "endQpc": 103373196478,
+              "ms": 57.7357
+            }
+          ]
+        },
+        {
+          "sequence": 10,
+          "kind": 1,
+          "queuedQpc": 102971461880,
+          "queueMs": 89.6101,
+          "dispatchMs": 0.5245000000000001,
+          "mouseMs": 0.4882,
+          "mouseApiReached": true,
+          "overlappingNativeCallbacks": [
+            {
+              "message": 275,
+              "startQpc": 102971160919,
+              "endQpc": 102971736742,
+              "ms": 57.582300000000004
+            },
+            {
+              "message": 275,
+              "startQpc": 102971766120,
+              "endQpc": 102972352642,
+              "ms": 58.6522
+            }
+          ]
+        },
+        {
+          "sequence": 14,
+          "kind": 1,
+          "queuedQpc": 103042822980,
+          "queueMs": 89.0313,
+          "dispatchMs": 0.18330000000000002,
+          "mouseMs": 0.1454,
+          "mouseApiReached": true,
+          "overlappingNativeCallbacks": [
+            {
+              "message": 275,
+              "startQpc": 103042371134,
+              "endQpc": 103042950683,
+              "ms": 57.9549
+            },
+            {
+              "message": 275,
+              "startQpc": 103043111082,
+              "endQpc": 103043708566,
+              "ms": 59.748400000000004
+            }
+          ]
+        },
+        {
+          "sequence": 6,
+          "kind": 1,
+          "queuedQpc": 102901333308,
+          "queueMs": 73.4231,
+          "dispatchMs": 0.6621,
+          "mouseMs": 0.6439,
+          "mouseApiReached": true,
+          "overlappingNativeCallbacks": [
+            {
+              "message": 275,
+              "startQpc": 102900894030,
+              "endQpc": 102901448930,
+              "ms": 55.49
+            },
+            {
+              "message": 275,
+              "startQpc": 102901473448,
+              "endQpc": 102902066254,
+              "ms": 59.2806
+            }
+          ]
+        },
+        {
+          "sequence": 28,
+          "kind": 1,
+          "queuedQpc": 103296456329,
+          "queueMs": 57.0611,
+          "dispatchMs": 0.25780000000000003,
+          "mouseMs": 0.2526,
+          "mouseApiReached": true,
+          "overlappingNativeCallbacks": [
+            {
+              "message": 275,
+              "startQpc": 103296526759,
+              "endQpc": 103297026913,
+              "ms": 50.0154
+            }
+          ]
+        },
+        {
+          "sequence": 31,
+          "kind": 3,
+          "queuedQpc": 103372093339,
+          "queueMs": 50.7764,
+          "dispatchMs": 1.7933000000000001,
+          "mouseMs": 1.75,
+          "mouseApiReached": true,
+          "overlappingNativeCallbacks": [
+            {
+              "message": 275,
+              "startQpc": 103372093878,
+              "endQpc": 103372594200,
+              "ms": 50.0322
+            }
+          ]
+        },
+        {
+          "sequence": 13,
+          "kind": 3,
+          "queuedQpc": 103042601478,
+          "queueMs": 35.5492,
+          "dispatchMs": 15.403300000000002,
+          "mouseMs": 15.365200000000002,
+          "mouseApiReached": true,
+          "overlappingNativeCallbacks": [
+            {
+              "message": 275,
+              "startQpc": 103042371134,
+              "endQpc": 103042950683,
+              "ms": 57.9549
+            }
+          ]
+        },
+        {
+          "sequence": 30,
+          "kind": 2,
+          "queuedQpc": 103372092865,
+          "queueMs": 50.1347,
+          "dispatchMs": 0.6878000000000001,
+          "mouseMs": 0.612,
+          "mouseApiReached": true,
+          "overlappingNativeCallbacks": [
+            {
+              "message": 275,
+              "startQpc": 103372093878,
+              "endQpc": 103372594200,
+              "ms": 50.0322
+            }
+          ]
+        },
+        {
+          "sequence": 20,
+          "kind": 1,
+          "queuedQpc": 103129280905,
+          "queueMs": 49.650400000000005,
+          "dispatchMs": 0.18150000000000002,
+          "mouseMs": 0.17880000000000001,
+          "mouseApiReached": true,
+          "overlappingNativeCallbacks": [
+            {
+              "message": 275,
+              "startQpc": 103129277337,
+              "endQpc": 103129777392,
+              "ms": 50.005500000000005
+            }
+          ]
+        },
+        {
+          "sequence": 12,
+          "kind": 2,
+          "queuedQpc": 103042601065,
+          "queueMs": 34.9635,
+          "dispatchMs": 0.6259,
+          "mouseMs": 0.5709000000000001,
+          "mouseApiReached": true,
+          "overlappingNativeCallbacks": [
+            {
+              "message": 275,
+              "startQpc": 103042371134,
+              "endQpc": 103042950683,
+              "ms": 57.9549
+            }
+          ]
+        },
+        {
+          "sequence": 9,
+          "kind": 3,
+          "queuedQpc": 102971431500,
+          "queueMs": 31.236900000000002,
+          "dispatchMs": 2.2176,
+          "mouseMs": 2.1619,
+          "mouseApiReached": true,
+          "overlappingNativeCallbacks": [
+            {
+              "message": 275,
+              "startQpc": 102971160919,
+              "endQpc": 102971736742,
+              "ms": 57.582300000000004
+            }
+          ]
+        },
+        {
+          "sequence": 8,
+          "kind": 2,
+          "queuedQpc": 102971431090,
+          "queueMs": 30.5667,
+          "dispatchMs": 0.7091000000000001,
+          "mouseMs": 0.6445000000000001,
+          "mouseApiReached": true,
+          "overlappingNativeCallbacks": [
+            {
+              "message": 275,
+              "startQpc": 102971160919,
+              "endQpc": 102971736742,
+              "ms": 57.582300000000004
+            }
+          ]
+        },
+        {
+          "sequence": 5,
+          "kind": 3,
+          "queuedQpc": 102901190873,
+          "queueMs": 25.8077,
+          "dispatchMs": 2.4414000000000002,
+          "mouseMs": 2.3788,
+          "mouseApiReached": true,
+          "overlappingNativeCallbacks": [
+            {
+              "message": 275,
+              "startQpc": 102900894030,
+              "endQpc": 102901448930,
+              "ms": 55.49
+            }
+          ]
+        },
+        {
+          "sequence": 27,
+          "kind": 3,
+          "queuedQpc": 103296326376,
+          "queueMs": 0.043500000000000004,
+          "dispatchMs": 6.4425,
+          "mouseMs": 6.4345,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 15,
+          "kind": 8,
+          "queuedQpc": 103043923865,
+          "queueMs": 4.8344000000000005,
+          "dispatchMs": 0.0041,
+          "mouseApiReached": false
+        },
+        {
+          "sequence": 1,
+          "kind": 1,
+          "queuedQpc": 102820224394,
+          "queueMs": 4.6966,
+          "dispatchMs": 0.0478,
+          "mouseMs": 0.0356,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 16,
+          "kind": 7,
+          "queuedQpc": 103043927921,
+          "queueMs": 4.4348,
+          "dispatchMs": 0.011300000000000001,
+          "mouseApiReached": false
+        },
+        {
+          "sequence": 33,
+          "kind": 8,
+          "queuedQpc": 103516186278,
+          "queueMs": 3.1853000000000002,
+          "dispatchMs": 0.0118,
+          "mouseApiReached": false
+        },
+        {
+          "sequence": 21,
+          "kind": 1,
+          "queuedQpc": 103216240171,
+          "queueMs": 0.0103,
+          "dispatchMs": 1.2974,
+          "mouseMs": 1.2871000000000001,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 24,
+          "kind": 1,
+          "queuedQpc": 103217054999,
+          "queueMs": 0.9794,
+          "dispatchMs": 0.2373,
+          "mouseMs": 0.22030000000000002,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 4,
+          "kind": 2,
+          "queuedQpc": 102900284410,
+          "queueMs": 0.013900000000000001,
+          "dispatchMs": 1.1416,
+          "mouseMs": 1.131,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 2,
+          "kind": 1,
+          "queuedQpc": 102820391197,
+          "queueMs": 0.007500000000000001,
+          "dispatchMs": 1.0779,
+          "mouseMs": 1.0673000000000001,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 18,
+          "kind": 2,
+          "queuedQpc": 103129112250,
+          "queueMs": 0.5122,
+          "dispatchMs": 0.5124000000000001,
+          "mouseMs": 0.5106,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 19,
+          "kind": 3,
+          "queuedQpc": 103129267053,
+          "queueMs": 0.0723,
+          "dispatchMs": 0.9446,
+          "mouseMs": 0.9303,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 26,
+          "kind": 2,
+          "queuedQpc": 103296254114,
+          "queueMs": 0.4385,
+          "dispatchMs": 0.25720000000000004,
+          "mouseMs": 0.25570000000000004,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 3,
+          "kind": 1,
+          "queuedQpc": 102900132140,
+          "queueMs": 0.022500000000000003,
+          "dispatchMs": 0.5592,
+          "mouseMs": 0.5413,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 17,
+          "kind": 1,
+          "queuedQpc": 103129111621,
+          "queueMs": 0.1159,
+          "dispatchMs": 0.458,
+          "mouseMs": 0.4501,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 7,
+          "kind": 1,
+          "queuedQpc": 102970613647,
+          "queueMs": 0.0086,
+          "dispatchMs": 0.5233,
+          "mouseMs": 0.5144000000000001,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 25,
+          "kind": 1,
+          "queuedQpc": 103296253448,
+          "queueMs": 0.0746,
+          "dispatchMs": 0.42910000000000004,
+          "mouseMs": 0.42050000000000004,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 23,
+          "kind": 3,
+          "queuedQpc": 103216549590,
+          "queueMs": 0.0674,
+          "dispatchMs": 0.35810000000000003,
+          "mouseMs": 0.3463,
+          "mouseApiReached": true
+        }
+      ],
+      "paintCallbacks": 27,
+      "physicalPresentationMeasured": false,
+      "note": "Paint callbacks are not attributed to inputs; mouseApiReached does not prove an action succeeded.",
+      "bucket": "pe-old",
+      "rawBytes": 341112,
+      "rawSha256": "c860f0dde16cba688fbc2caeae00f3eedb972b60acca6724f1c6e0f4a284397d",
+      "incompletePackets": [],
+      "envelope": {
+        "pid": 3376,
+        "frequency": 10000000,
+        "total": 5690,
+        "capacity": 32768,
+        "byteOffset": 0,
+        "startLine": 1,
+        "endByteExclusive": 341112,
+        "endLine": 5692,
+        "bytes": 341112,
+        "sha256": "c860f0dde16cba688fbc2caeae00f3eedb972b60acca6724f1c6e0f4a284397d",
+        "sourceSerialAppendByteOffset": 2094237,
+        "sourceSerialAppendEndByteExclusive": 2435349,
+        "firstQpc": 102800455781,
+        "lastQpc": 103518838051,
+        "recordedSpanMs": 71838.227,
+        "overflow": false
+      },
+      "stageCounts": {
+        "native_begin": 2752,
+        "native_end": 2752,
+        "paint": 27,
+        "queued": 33,
+        "dispatch": 33,
+        "fire": 30,
+        "fired": 30,
+        "dispatched": 33
+      },
+      "nativeMessageCounts": {
+        "275": 2752
+      },
+      "incompletePacketRawEvents": []
+    },
+    {
+      "pid": 4600,
+      "events": 5147,
+      "packets": 31,
+      "groupedBySdkInputKind": {
+        "1": {
+          "queue": {
+            "count": 14,
+            "p50Ms": 0.0106,
+            "p95Ms": 0.0823,
+            "maxMs": 0.0823,
+            "over50Ms": 0
+          },
+          "dispatch": {
+            "count": 14,
+            "p50Ms": 0.46590000000000004,
+            "p95Ms": 6.8719,
+            "maxMs": 6.8719,
+            "over50Ms": 0
+          },
+          "mouse": {
+            "count": 14,
+            "p50Ms": 0.4566,
+            "p95Ms": 6.8539,
+            "maxMs": 6.8539,
+            "over50Ms": 0
+          }
+        },
+        "2": {
+          "queue": {
+            "count": 7,
+            "p50Ms": 0.015600000000000001,
+            "p95Ms": 1.5776000000000001,
+            "maxMs": 1.5776000000000001,
+            "over50Ms": 0
+          },
+          "dispatch": {
+            "count": 7,
+            "p50Ms": 0.4884,
+            "p95Ms": 2.1906000000000003,
+            "maxMs": 2.1906000000000003,
+            "over50Ms": 0
+          },
+          "mouse": {
+            "count": 7,
+            "p50Ms": 0.4793,
+            "p95Ms": 2.1823,
+            "maxMs": 2.1823,
+            "over50Ms": 0
+          }
+        },
+        "3": {
+          "queue": {
+            "count": 7,
+            "p50Ms": 0.0942,
+            "p95Ms": 0.7185,
+            "maxMs": 0.7185,
+            "over50Ms": 0
+          },
+          "dispatch": {
+            "count": 7,
+            "p50Ms": 1.5181,
+            "p95Ms": 14.4175,
+            "maxMs": 14.4175,
+            "over50Ms": 0
+          },
+          "mouse": {
+            "count": 7,
+            "p50Ms": 1.5112,
+            "p95Ms": 14.407,
+            "maxMs": 14.407,
+            "over50Ms": 0
+          }
+        },
+        "8": {
+          "queue": {
+            "count": 2,
+            "p50Ms": 3.3222,
+            "p95Ms": 4.098,
+            "maxMs": 4.098,
+            "over50Ms": 0
+          },
+          "dispatch": {
+            "count": 2,
+            "p50Ms": 0.0027,
+            "p95Ms": 0.016900000000000002,
+            "maxMs": 0.016900000000000002,
+            "over50Ms": 0
+          },
+          "mouse": {
+            "count": 0
+          }
+        },
+        "7": {
+          "queue": {
+            "count": 1,
+            "p50Ms": 3.0116,
+            "p95Ms": 3.0116,
+            "maxMs": 3.0116,
+            "over50Ms": 0
+          },
+          "dispatch": {
+            "count": 1,
+            "p50Ms": 0.0043,
+            "p95Ms": 0.0043,
+            "maxMs": 0.0043,
+            "over50Ms": 0
+          },
+          "mouse": {
+            "count": 0
+          }
+        }
+      },
+      "nativeCallback": {
+        "count": 2484,
+        "p50Ms": 0.0154,
+        "p95Ms": 0.8420000000000001,
+        "maxMs": 36.8863,
+        "over50Ms": 0
+      },
+      "longestNativeCallbacks": [
+        {
+          "message": 275,
+          "startQpc": 104322270107,
+          "endQpc": 104322638970,
+          "ms": 36.8863
+        },
+        {
+          "message": 275,
+          "startQpc": 104322864193,
+          "endQpc": 104323197233,
+          "ms": 33.304
+        },
+        {
+          "message": 275,
+          "startQpc": 104321580025,
+          "endQpc": 104321790911,
+          "ms": 21.0886
+        },
+        {
+          "message": 275,
+          "startQpc": 104720647816,
+          "endQpc": 104720851116,
+          "ms": 20.330000000000002
+        },
+        {
+          "message": 275,
+          "startQpc": 104320916920,
+          "endQpc": 104321115480,
+          "ms": 19.856
+        },
+        {
+          "message": 275,
+          "startQpc": 104323340741,
+          "endQpc": 104323470217,
+          "ms": 12.947600000000001
+        },
+        {
+          "message": 275,
+          "startQpc": 104324306126,
+          "endQpc": 104324398068,
+          "ms": 9.1942
+        },
+        {
+          "message": 275,
+          "startQpc": 104323504536,
+          "endQpc": 104323577969,
+          "ms": 7.3433
+        },
+        {
+          "message": 275,
+          "startQpc": 104649645767,
+          "endQpc": 104649699090,
+          "ms": 5.3323
+        },
+        {
+          "message": 275,
+          "startQpc": 104323197795,
+          "endQpc": 104323247671,
+          "ms": 4.9876000000000005
+        },
+        {
+          "message": 275,
+          "startQpc": 104323993896,
+          "endQpc": 104324036643,
+          "ms": 4.2747
+        },
+        {
+          "message": 275,
+          "startQpc": 104321529994,
+          "endQpc": 104321562079,
+          "ms": 3.2085000000000004
+        },
+        {
+          "message": 275,
+          "startQpc": 104322088801,
+          "endQpc": 104322119634,
+          "ms": 3.0833
+        },
+        {
+          "message": 275,
+          "startQpc": 104560946189,
+          "endQpc": 104560974366,
+          "ms": 2.8177000000000003
+        },
+        {
+          "message": 275,
+          "startQpc": 104642578434,
+          "endQpc": 104642604113,
+          "ms": 2.5679000000000003
+        },
+        {
+          "message": 275,
+          "startQpc": 104888894493,
+          "endQpc": 104888918301,
+          "ms": 2.3808000000000002
+        },
+        {
+          "message": 275,
+          "startQpc": 104642261356,
+          "endQpc": 104642284752,
+          "ms": 2.3396
+        },
+        {
+          "message": 275,
+          "startQpc": 104322654852,
+          "endQpc": 104322678199,
+          "ms": 2.3347
+        },
+        {
+          "message": 275,
+          "startQpc": 104655937413,
+          "endQpc": 104655959543,
+          "ms": 2.213
+        },
+        {
+          "message": 275,
+          "startQpc": 104656097824,
+          "endQpc": 104656119928,
+          "ms": 2.2104
+        }
+      ],
+      "slowestPackets": [
+        {
+          "sequence": 11,
+          "kind": 3,
+          "queuedQpc": 104565536735,
+          "queueMs": 0.0942,
+          "dispatchMs": 14.4175,
+          "mouseMs": 14.407,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 22,
+          "kind": 1,
+          "queuedQpc": 104720036085,
+          "queueMs": 0.0236,
+          "dispatchMs": 6.8719,
+          "mouseMs": 6.8539,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 18,
+          "kind": 1,
+          "queuedQpc": 104636650050,
+          "queueMs": 0.009000000000000001,
+          "dispatchMs": 6.0505,
+          "mouseMs": 6.0426,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 25,
+          "kind": 3,
+          "queuedQpc": 104815656441,
+          "queueMs": 0.0434,
+          "dispatchMs": 4.5395,
+          "mouseMs": 4.5313,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 31,
+          "kind": 8,
+          "queuedQpc": 104959453704,
+          "queueMs": 4.098,
+          "dispatchMs": 0.016900000000000002,
+          "mouseApiReached": false
+        },
+        {
+          "sequence": 13,
+          "kind": 8,
+          "queuedQpc": 104565873902,
+          "queueMs": 3.3222,
+          "dispatchMs": 0.0027,
+          "mouseApiReached": false
+        },
+        {
+          "sequence": 14,
+          "kind": 7,
+          "queuedQpc": 104565877039,
+          "queueMs": 3.0116,
+          "dispatchMs": 0.0043,
+          "mouseApiReached": false
+        },
+        {
+          "sequence": 29,
+          "kind": 3,
+          "queuedQpc": 104889054414,
+          "queueMs": 0.1704,
+          "dispatchMs": 2.1013,
+          "mouseMs": 2.0891,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 2,
+          "kind": 2,
+          "queuedQpc": 104407863438,
+          "queueMs": 0.0105,
+          "dispatchMs": 2.1906000000000003,
+          "mouseMs": 2.1823,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 10,
+          "kind": 2,
+          "queuedQpc": 104565388077,
+          "queueMs": 1.5776000000000001,
+          "dispatchMs": 0.3769,
+          "mouseMs": 0.3637,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 3,
+          "kind": 3,
+          "queuedQpc": 104408016916,
+          "queueMs": 0.041800000000000004,
+          "dispatchMs": 1.5181,
+          "mouseMs": 1.5112,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 7,
+          "kind": 3,
+          "queuedQpc": 104487327348,
+          "queueMs": 0.052500000000000005,
+          "dispatchMs": 1.2302,
+          "mouseMs": 1.2196,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 21,
+          "kind": 3,
+          "queuedQpc": 104719911579,
+          "queueMs": 0.7185,
+          "dispatchMs": 0.1666,
+          "mouseMs": 0.16290000000000002,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 16,
+          "kind": 2,
+          "queuedQpc": 104636381509,
+          "queueMs": 0.4756,
+          "dispatchMs": 0.3482,
+          "mouseMs": 0.34600000000000003,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 30,
+          "kind": 1,
+          "queuedQpc": 104889207155,
+          "queueMs": 0.0099,
+          "dispatchMs": 0.7773,
+          "mouseMs": 0.7666000000000001,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 20,
+          "kind": 2,
+          "queuedQpc": 104719910983,
+          "queueMs": 0.1907,
+          "dispatchMs": 0.5854,
+          "mouseMs": 0.5736,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 19,
+          "kind": 1,
+          "queuedQpc": 104719751853,
+          "queueMs": 0.0106,
+          "dispatchMs": 0.5979,
+          "mouseMs": 0.5868,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 28,
+          "kind": 2,
+          "queuedQpc": 104888919739,
+          "queueMs": 0.0097,
+          "dispatchMs": 0.5952000000000001,
+          "mouseMs": 0.5886,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 5,
+          "kind": 1,
+          "queuedQpc": 104487021224,
+          "queueMs": 0.0184,
+          "dispatchMs": 0.5625,
+          "mouseMs": 0.5464,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 23,
+          "kind": 1,
+          "queuedQpc": 104815349709,
+          "queueMs": 0.0114,
+          "dispatchMs": 0.5425,
+          "mouseMs": 0.5322,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 15,
+          "kind": 1,
+          "queuedQpc": 104636380765,
+          "queueMs": 0.0823,
+          "dispatchMs": 0.46590000000000004,
+          "mouseMs": 0.4566,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 9,
+          "kind": 1,
+          "queuedQpc": 104565229428,
+          "queueMs": 0.0182,
+          "dispatchMs": 0.5061,
+          "mouseMs": 0.4959,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 24,
+          "kind": 2,
+          "queuedQpc": 104815501302,
+          "queueMs": 0.015600000000000001,
+          "dispatchMs": 0.4884,
+          "mouseMs": 0.4793,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 26,
+          "kind": 1,
+          "queuedQpc": 104815728750,
+          "queueMs": 0.0085,
+          "dispatchMs": 0.44480000000000003,
+          "mouseMs": 0.4363,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 6,
+          "kind": 2,
+          "queuedQpc": 104487178294,
+          "queueMs": 0.0081,
+          "dispatchMs": 0.3932,
+          "mouseMs": 0.38680000000000003,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 4,
+          "kind": 1,
+          "queuedQpc": 104408033020,
+          "queueMs": 0.0056,
+          "dispatchMs": 0.3498,
+          "mouseMs": 0.3448,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 27,
+          "kind": 1,
+          "queuedQpc": 104888749913,
+          "queueMs": 0.0112,
+          "dispatchMs": 0.3292,
+          "mouseMs": 0.31920000000000004,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 17,
+          "kind": 3,
+          "queuedQpc": 104636531895,
+          "queueMs": 0.09620000000000001,
+          "dispatchMs": 0.1517,
+          "mouseMs": 0.14250000000000002,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 12,
+          "kind": 1,
+          "queuedQpc": 104565705794,
+          "queueMs": 0.0071,
+          "dispatchMs": 0.1699,
+          "mouseMs": 0.1625,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 8,
+          "kind": 1,
+          "queuedQpc": 104487568148,
+          "queueMs": 0.0086,
+          "dispatchMs": 0.1044,
+          "mouseMs": 0.0959,
+          "mouseApiReached": true
+        }
+      ],
+      "paintCallbacks": 30,
+      "physicalPresentationMeasured": false,
+      "note": "Paint callbacks are not attributed to inputs; mouseApiReached does not prove an action succeeded.",
+      "bucket": "pe-new",
+      "rawBytes": 308533,
+      "rawSha256": "609d9604e870ec094050a617b60ab7eee06d0176247cf3be2a3cfbf3b96b3793",
+      "incompletePackets": [],
+      "envelope": {
+        "pid": 4600,
+        "frequency": 10000000,
+        "total": 5147,
+        "capacity": 32768,
+        "byteOffset": 341112,
+        "startLine": 5693,
+        "endByteExclusive": 649645,
+        "endLine": 10841,
+        "bytes": 308533,
+        "sha256": "609d9604e870ec094050a617b60ab7eee06d0176247cf3be2a3cfbf3b96b3793",
+        "sourceSerialAppendByteOffset": 2435349,
+        "sourceSerialAppendEndByteExclusive": 2743882,
+        "firstQpc": 104320639008,
+        "lastQpc": 104961625746,
+        "recordedSpanMs": 64098.6738,
+        "overflow": false
+      },
+      "stageCounts": {
+        "native_begin": 2484,
+        "native_end": 2484,
+        "paint": 30,
+        "queued": 31,
+        "dispatch": 31,
+        "fire": 28,
+        "fired": 28,
+        "dispatched": 31
+      },
+      "nativeMessageCounts": {
+        "275": 2484
+      },
+      "incompletePacketRawEvents": []
+    },
+    {
+      "pid": 2684,
+      "events": 8969,
+      "packets": 41,
+      "groupedBySdkInputKind": {
+        "1": {
+          "queue": {
+            "count": 19,
+            "p50Ms": 0.0417,
+            "p95Ms": 65.0283,
+            "maxMs": 65.0283,
+            "over50Ms": 3
+          },
+          "dispatch": {
+            "count": 19,
+            "p50Ms": 0.37220000000000003,
+            "p95Ms": 60.456300000000006,
+            "maxMs": 60.456300000000006,
+            "over50Ms": 1
+          },
+          "mouse": {
+            "count": 19,
+            "p50Ms": 0.37010000000000004,
+            "p95Ms": 60.4469,
+            "maxMs": 60.4469,
+            "over50Ms": 1
+          }
+        },
+        "2": {
+          "queue": {
+            "count": 8,
+            "p50Ms": 0.2131,
+            "p95Ms": 57.242200000000004,
+            "maxMs": 57.242200000000004,
+            "over50Ms": 1
+          },
+          "dispatch": {
+            "count": 8,
+            "p50Ms": 0.5487000000000001,
+            "p95Ms": 1.6647,
+            "maxMs": 1.6647,
+            "over50Ms": 0
+          },
+          "mouse": {
+            "count": 8,
+            "p50Ms": 0.47390000000000004,
+            "p95Ms": 1.6532,
+            "maxMs": 1.6532,
+            "over50Ms": 0
+          }
+        },
+        "3": {
+          "queue": {
+            "count": 8,
+            "p50Ms": 1.1074000000000002,
+            "p95Ms": 49.492900000000006,
+            "maxMs": 49.492900000000006,
+            "over50Ms": 0
+          },
+          "dispatch": {
+            "count": 8,
+            "p50Ms": 2.8813,
+            "p95Ms": 27.1765,
+            "maxMs": 27.1765,
+            "over50Ms": 0
+          },
+          "mouse": {
+            "count": 8,
+            "p50Ms": 2.8475,
+            "p95Ms": 27.1169,
+            "maxMs": 27.1169,
+            "over50Ms": 0
+          }
+        },
+        "8": {
+          "queue": {
+            "count": 2,
+            "p50Ms": 0.0235,
+            "p95Ms": 15.6074,
+            "maxMs": 15.6074,
+            "over50Ms": 0
+          },
+          "dispatch": {
+            "count": 2,
+            "p50Ms": 0.021400000000000002,
+            "p95Ms": 0.0459,
+            "maxMs": 0.0459,
+            "over50Ms": 0
+          },
+          "mouse": {
+            "count": 0
+          }
+        },
+        "7": {
+          "queue": {
+            "count": 1,
+            "p50Ms": 13.9745,
+            "p95Ms": 13.9745,
+            "maxMs": 13.9745,
+            "over50Ms": 0
+          },
+          "dispatch": {
+            "count": 1,
+            "p50Ms": 1.1520000000000001,
+            "p95Ms": 1.1520000000000001,
+            "maxMs": 1.1520000000000001,
+            "over50Ms": 0
+          },
+          "mouse": {
+            "count": 0
+          }
+        },
+        "4": {
+          "queue": {
+            "count": 1,
+            "p50Ms": 0.5918,
+            "p95Ms": 0.5918,
+            "maxMs": 0.5918,
+            "over50Ms": 0
+          },
+          "dispatch": {
+            "count": 1,
+            "p50Ms": 2.8614,
+            "p95Ms": 2.8614,
+            "maxMs": 2.8614,
+            "over50Ms": 0
+          },
+          "mouse": {
+            "count": 0
+          }
+        },
+        "6": {
+          "queue": {
+            "count": 1,
+            "p50Ms": 3.4462,
+            "p95Ms": 3.4462,
+            "maxMs": 3.4462,
+            "over50Ms": 0
+          },
+          "dispatch": {
+            "count": 1,
+            "p50Ms": 0.0108,
+            "p95Ms": 0.0108,
+            "maxMs": 0.0108,
+            "over50Ms": 0
+          },
+          "mouse": {
+            "count": 0
+          }
+        },
+        "5": {
+          "queue": {
+            "count": 1,
+            "p50Ms": 2.9909000000000003,
+            "p95Ms": 2.9909000000000003,
+            "maxMs": 2.9909000000000003,
+            "over50Ms": 0
+          },
+          "dispatch": {
+            "count": 1,
+            "p50Ms": 0.029300000000000003,
+            "p95Ms": 0.029300000000000003,
+            "maxMs": 0.029300000000000003,
+            "over50Ms": 0
+          },
+          "mouse": {
+            "count": 0
+          }
+        }
+      },
+      "nativeCallback": {
+        "count": 4318,
+        "p50Ms": 0.0175,
+        "p95Ms": 0.8894000000000001,
+        "maxMs": 133.4274,
+        "over50Ms": 51
+      },
+      "longestNativeCallbacks": [
+        {
+          "message": 275,
+          "startQpc": 105678793991,
+          "endQpc": 105680128265,
+          "ms": 133.4274
+        },
+        {
+          "message": 275,
+          "startQpc": 106554700148,
+          "endQpc": 106556012445,
+          "ms": 131.2297
+        },
+        {
+          "message": 275,
+          "startQpc": 105667629342,
+          "endQpc": 105668385681,
+          "ms": 75.6339
+        },
+        {
+          "message": 275,
+          "startQpc": 105677587753,
+          "endQpc": 105678293109,
+          "ms": 70.5356
+        },
+        {
+          "message": 275,
+          "startQpc": 106058924419,
+          "endQpc": 106059606082,
+          "ms": 68.1663
+        },
+        {
+          "message": 275,
+          "startQpc": 105668386076,
+          "endQpc": 105669026225,
+          "ms": 64.0149
+        },
+        {
+          "message": 275,
+          "startQpc": 105670626241,
+          "endQpc": 105671249177,
+          "ms": 62.293600000000005
+        },
+        {
+          "message": 275,
+          "startQpc": 106340663776,
+          "endQpc": 106341261942,
+          "ms": 59.8166
+        },
+        {
+          "message": 275,
+          "startQpc": 105680129839,
+          "endQpc": 105680686325,
+          "ms": 55.6486
+        },
+        {
+          "message": 275,
+          "startQpc": 106262978904,
+          "endQpc": 106263522022,
+          "ms": 54.311800000000005
+        },
+        {
+          "message": 275,
+          "startQpc": 105670073385,
+          "endQpc": 105670614675,
+          "ms": 54.129000000000005
+        },
+        {
+          "message": 275,
+          "startQpc": 106464555330,
+          "endQpc": 106465096596,
+          "ms": 54.1266
+        },
+        {
+          "message": 275,
+          "startQpc": 105672936188,
+          "endQpc": 105673473043,
+          "ms": 53.685500000000005
+        },
+        {
+          "message": 275,
+          "startQpc": 106163691698,
+          "endQpc": 106164225004,
+          "ms": 53.330600000000004
+        },
+        {
+          "message": 275,
+          "startQpc": 105671768791,
+          "endQpc": 105672300986,
+          "ms": 53.219500000000004
+        },
+        {
+          "message": 275,
+          "startQpc": 106463491064,
+          "endQpc": 106464022407,
+          "ms": 53.1343
+        },
+        {
+          "message": 275,
+          "startQpc": 106262344589,
+          "endQpc": 106262875656,
+          "ms": 53.106700000000004
+        },
+        {
+          "message": 275,
+          "startQpc": 106464023580,
+          "endQpc": 106464554268,
+          "ms": 53.0688
+        },
+        {
+          "message": 275,
+          "startQpc": 105699043475,
+          "endQpc": 105699573890,
+          "ms": 53.0415
+        },
+        {
+          "message": 275,
+          "startQpc": 106557056224,
+          "endQpc": 106557586331,
+          "ms": 53.0107
+        }
+      ],
+      "slowestPackets": [
+        {
+          "sequence": 21,
+          "kind": 1,
+          "queuedQpc": 106262291024,
+          "queueMs": 58.652300000000004,
+          "dispatchMs": 10.1174,
+          "mouseMs": 10.0754,
+          "mouseApiReached": true,
+          "overlappingNativeCallbacks": [
+            {
+              "message": 275,
+              "startQpc": 106261811575,
+              "endQpc": 106262311645,
+              "ms": 50.007000000000005
+            },
+            {
+              "message": 275,
+              "startQpc": 106262344589,
+              "endQpc": 106262875656,
+              "ms": 53.106700000000004
+            }
+          ]
+        },
+        {
+          "sequence": 8,
+          "kind": 1,
+          "queuedQpc": 105986949931,
+          "queueMs": 65.0283,
+          "dispatchMs": 0.739,
+          "mouseMs": 0.6799000000000001,
+          "mouseApiReached": true,
+          "overlappingNativeCallbacks": [
+            {
+              "message": 275,
+              "startQpc": 105987083087,
+              "endQpc": 105987598014,
+              "ms": 51.4927
+            }
+          ]
+        },
+        {
+          "sequence": 35,
+          "kind": 1,
+          "queuedQpc": 106679344333,
+          "queueMs": 0.0085,
+          "dispatchMs": 60.456300000000006,
+          "mouseMs": 60.4469,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 36,
+          "kind": 2,
+          "queuedQpc": 106679403954,
+          "queueMs": 57.242200000000004,
+          "dispatchMs": 1.4385000000000001,
+          "mouseMs": 1.3693,
+          "mouseApiReached": true,
+          "overlappingNativeCallbacks": [
+            {
+              "message": 275,
+              "startQpc": 106679949046,
+              "endQpc": 106679976366,
+              "ms": 2.732
+            }
+          ]
+        },
+        {
+          "sequence": 13,
+          "kind": 1,
+          "queuedQpc": 106058375970,
+          "queueMs": 54.129400000000004,
+          "dispatchMs": 0.24980000000000002,
+          "mouseMs": 0.24230000000000002,
+          "mouseApiReached": true,
+          "overlappingNativeCallbacks": [
+            {
+              "message": 275,
+              "startQpc": 106058417081,
+              "endQpc": 106058917216,
+              "ms": 50.0135
+            }
+          ]
+        },
+        {
+          "sequence": 37,
+          "kind": 3,
+          "queuedQpc": 106679495844,
+          "queueMs": 49.492900000000006,
+          "dispatchMs": 1.0692000000000002,
+          "mouseMs": 1.0183,
+          "mouseApiReached": true,
+          "overlappingNativeCallbacks": [
+            {
+              "message": 275,
+              "startQpc": 106679949046,
+              "endQpc": 106679976366,
+              "ms": 2.732
+            }
+          ]
+        },
+        {
+          "sequence": 38,
+          "kind": 1,
+          "queuedQpc": 106679652366,
+          "queueMs": 34.910900000000005,
+          "dispatchMs": 0.21430000000000002,
+          "mouseMs": 0.1694,
+          "mouseApiReached": true,
+          "overlappingNativeCallbacks": [
+            {
+              "message": 275,
+              "startQpc": 106679949046,
+              "endQpc": 106679976366,
+              "ms": 2.732
+            }
+          ]
+        },
+        {
+          "sequence": 7,
+          "kind": 3,
+          "queuedQpc": 105986800120,
+          "queueMs": 1.1074000000000002,
+          "dispatchMs": 27.1765,
+          "mouseMs": 27.1169,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 17,
+          "kind": 1,
+          "queuedQpc": 106162880780,
+          "queueMs": 27.672700000000003,
+          "dispatchMs": 0.2963,
+          "mouseMs": 0.20070000000000002,
+          "mouseApiReached": true,
+          "overlappingNativeCallbacks": [
+            {
+              "message": 275,
+              "startQpc": 106162657430,
+              "endQpc": 106163157477,
+              "ms": 50.0047
+            }
+          ]
+        },
+        {
+          "sequence": 20,
+          "kind": 3,
+          "queuedQpc": 106262148282,
+          "queueMs": 16.7432,
+          "dispatchMs": 2.8813,
+          "mouseMs": 2.8475,
+          "mouseApiReached": true,
+          "overlappingNativeCallbacks": [
+            {
+              "message": 275,
+              "startQpc": 106261811575,
+              "endQpc": 106262311645,
+              "ms": 50.007000000000005
+            }
+          ]
+        },
+        {
+          "sequence": 19,
+          "kind": 2,
+          "queuedQpc": 106262147821,
+          "queueMs": 16.3835,
+          "dispatchMs": 0.40490000000000004,
+          "mouseMs": 0.3529,
+          "mouseApiReached": true,
+          "overlappingNativeCallbacks": [
+            {
+              "message": 275,
+              "startQpc": 106261811575,
+              "endQpc": 106262311645,
+              "ms": 50.007000000000005
+            }
+          ]
+        },
+        {
+          "sequence": 26,
+          "kind": 8,
+          "queuedQpc": 106341110479,
+          "queueMs": 15.6074,
+          "dispatchMs": 0.0459,
+          "mouseApiReached": false,
+          "overlappingNativeCallbacks": [
+            {
+              "message": 275,
+              "startQpc": 106340663776,
+              "endQpc": 106341261942,
+              "ms": 59.8166
+            }
+          ]
+        },
+        {
+          "sequence": 27,
+          "kind": 7,
+          "queuedQpc": 106341127271,
+          "queueMs": 13.9745,
+          "dispatchMs": 1.1520000000000001,
+          "mouseApiReached": false,
+          "overlappingNativeCallbacks": [
+            {
+              "message": 275,
+              "startQpc": 106340663776,
+              "endQpc": 106341261942,
+              "ms": 59.8166
+            }
+          ]
+        },
+        {
+          "sequence": 12,
+          "kind": 3,
+          "queuedQpc": 106058299004,
+          "queueMs": 0.039,
+          "dispatchMs": 11.762500000000001,
+          "mouseMs": 11.7545,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 24,
+          "kind": 3,
+          "queuedQpc": 106340068129,
+          "queueMs": 1.1557,
+          "dispatchMs": 6.713100000000001,
+          "mouseMs": 6.6711,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 34,
+          "kind": 1,
+          "queuedQpc": 106553063449,
+          "queueMs": 5.2605,
+          "dispatchMs": 0.3411,
+          "mouseMs": 0.2713,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 3,
+          "kind": 3,
+          "queuedQpc": 105908647687,
+          "queueMs": 1.8027000000000002,
+          "dispatchMs": 1.7124000000000001,
+          "mouseMs": 1.7086000000000001,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 29,
+          "kind": 6,
+          "queuedQpc": 106461166860,
+          "queueMs": 3.4462,
+          "dispatchMs": 0.0108,
+          "mouseApiReached": false
+        },
+        {
+          "sequence": 28,
+          "kind": 4,
+          "queuedQpc": 106461166782,
+          "queueMs": 0.5918,
+          "dispatchMs": 2.8614,
+          "mouseApiReached": false
+        },
+        {
+          "sequence": 40,
+          "kind": 1,
+          "queuedQpc": 106760434185,
+          "queueMs": 3.0084,
+          "dispatchMs": 0.37220000000000003,
+          "mouseMs": 0.37010000000000004,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 16,
+          "kind": 3,
+          "queuedQpc": 106162624328,
+          "queueMs": 0.0719,
+          "dispatchMs": 3.2296,
+          "mouseMs": 3.2176,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 30,
+          "kind": 5,
+          "queuedQpc": 106461171523,
+          "queueMs": 2.9909000000000003,
+          "dispatchMs": 0.029300000000000003,
+          "mouseApiReached": false
+        },
+        {
+          "sequence": 33,
+          "kind": 3,
+          "queuedQpc": 106552551638,
+          "queueMs": 0.7171000000000001,
+          "dispatchMs": 1.6380000000000001,
+          "mouseMs": 1.6354000000000002,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 4,
+          "kind": 1,
+          "queuedQpc": 105909327237,
+          "queueMs": 1.5236,
+          "dispatchMs": 0.5007,
+          "mouseMs": 0.4388,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 2,
+          "kind": 2,
+          "queuedQpc": 105908646918,
+          "queueMs": 0.2131,
+          "dispatchMs": 1.6647,
+          "mouseMs": 1.6532,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 14,
+          "kind": 1,
+          "queuedQpc": 106162470856,
+          "queueMs": 0.054200000000000005,
+          "dispatchMs": 1.3789,
+          "mouseMs": 1.3659000000000001,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 23,
+          "kind": 2,
+          "queuedQpc": 106340067476,
+          "queueMs": 0.6546000000000001,
+          "dispatchMs": 0.5653,
+          "mouseMs": 0.48550000000000004,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 6,
+          "kind": 2,
+          "queuedQpc": 105986799510,
+          "queueMs": 0.6173000000000001,
+          "dispatchMs": 0.5487000000000001,
+          "mouseMs": 0.47390000000000004,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 32,
+          "kind": 2,
+          "queuedQpc": 106552551009,
+          "queueMs": 0.1193,
+          "dispatchMs": 0.6595000000000001,
+          "mouseMs": 0.6483,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 5,
+          "kind": 1,
+          "queuedQpc": 105985938811,
+          "queueMs": 0.019,
+          "dispatchMs": 0.528,
+          "mouseMs": 0.5089,
+          "mouseApiReached": true
+        }
+      ],
+      "paintCallbacks": 140,
+      "physicalPresentationMeasured": false,
+      "note": "Paint callbacks are not attributed to inputs; mouseApiReached does not prove an action succeeded.",
+      "bucket": "main-old",
+      "rawBytes": 537577,
+      "rawSha256": "0afd61a054043c446b0de6bc6526bdeec831324ed3352dc24c8ae92903408502",
+      "incompletePackets": [],
+      "envelope": {
+        "pid": 2684,
+        "frequency": 10000000,
+        "total": 8969,
+        "capacity": 32768,
+        "byteOffset": 649645,
+        "startLine": 10842,
+        "endByteExclusive": 1187222,
+        "endLine": 19812,
+        "bytes": 537577,
+        "sha256": "0afd61a054043c446b0de6bc6526bdeec831324ed3352dc24c8ae92903408502",
+        "sourceSerialAppendByteOffset": 2743882,
+        "sourceSerialAppendEndByteExclusive": 3281459,
+        "firstQpc": 105659284573,
+        "lastQpc": 106763032434,
+        "recordedSpanMs": 110374.7861,
+        "overflow": false
+      },
+      "stageCounts": {
+        "native_begin": 4318,
+        "native_end": 4318,
+        "paint": 140,
+        "queued": 41,
+        "dispatch": 41,
+        "fire": 35,
+        "fired": 35,
+        "dispatched": 41
+      },
+      "nativeMessageCounts": {
+        "275": 4318
+      },
+      "incompletePacketRawEvents": []
+    },
+    {
+      "pid": 3040,
+      "events": 12247,
+      "packets": 41,
+      "groupedBySdkInputKind": {
+        "1": {
+          "queue": {
+            "count": 19,
+            "p50Ms": 0.0176,
+            "p95Ms": 15.5395,
+            "maxMs": 15.5395,
+            "over50Ms": 0
+          },
+          "dispatch": {
+            "count": 19,
+            "p50Ms": 0.48050000000000004,
+            "p95Ms": 5.9242,
+            "maxMs": 5.9242,
+            "over50Ms": 0
+          },
+          "mouse": {
+            "count": 18,
+            "p50Ms": 0.47040000000000004,
+            "p95Ms": 5.915900000000001,
+            "maxMs": 5.915900000000001,
+            "over50Ms": 0
+          }
+        },
+        "2": {
+          "queue": {
+            "count": 8,
+            "p50Ms": 0.010700000000000001,
+            "p95Ms": 0.1,
+            "maxMs": 0.1,
+            "over50Ms": 0
+          },
+          "dispatch": {
+            "count": 8,
+            "p50Ms": 0.4066,
+            "p95Ms": 0.7105,
+            "maxMs": 0.7105,
+            "over50Ms": 0
+          },
+          "mouse": {
+            "count": 8,
+            "p50Ms": 0.3965,
+            "p95Ms": 0.7030000000000001,
+            "maxMs": 0.7030000000000001,
+            "over50Ms": 0
+          }
+        },
+        "3": {
+          "queue": {
+            "count": 8,
+            "p50Ms": 0.07150000000000001,
+            "p95Ms": 0.459,
+            "maxMs": 0.459,
+            "over50Ms": 0
+          },
+          "dispatch": {
+            "count": 8,
+            "p50Ms": 2.8427000000000002,
+            "p95Ms": 26.608700000000002,
+            "maxMs": 26.608700000000002,
+            "over50Ms": 0
+          },
+          "mouse": {
+            "count": 8,
+            "p50Ms": 2.8405,
+            "p95Ms": 26.599,
+            "maxMs": 26.599,
+            "over50Ms": 0
+          }
+        },
+        "8": {
+          "queue": {
+            "count": 2,
+            "p50Ms": 0.0194,
+            "p95Ms": 0.9114000000000001,
+            "maxMs": 0.9114000000000001,
+            "over50Ms": 0
+          },
+          "dispatch": {
+            "count": 2,
+            "p50Ms": 0.0128,
+            "p95Ms": 0.0161,
+            "maxMs": 0.0161,
+            "over50Ms": 0
+          },
+          "mouse": {
+            "count": 0
+          }
+        },
+        "7": {
+          "queue": {
+            "count": 1,
+            "p50Ms": 4.2453,
+            "p95Ms": 4.2453,
+            "maxMs": 4.2453,
+            "over50Ms": 0
+          },
+          "dispatch": {
+            "count": 1,
+            "p50Ms": 0.2626,
+            "p95Ms": 0.2626,
+            "maxMs": 0.2626,
+            "over50Ms": 0
+          },
+          "mouse": {
+            "count": 0
+          }
+        },
+        "4": {
+          "queue": {
+            "count": 1,
+            "p50Ms": 0.3209,
+            "p95Ms": 0.3209,
+            "maxMs": 0.3209,
+            "over50Ms": 0
+          },
+          "dispatch": {
+            "count": 1,
+            "p50Ms": 19.6842,
+            "p95Ms": 19.6842,
+            "maxMs": 19.6842,
+            "over50Ms": 0
+          },
+          "mouse": {
+            "count": 0
+          }
+        },
+        "6": {
+          "queue": {
+            "count": 1,
+            "p50Ms": 20.567500000000003,
+            "p95Ms": 20.567500000000003,
+            "maxMs": 20.567500000000003,
+            "over50Ms": 0
+          },
+          "dispatch": {
+            "count": 1,
+            "p50Ms": 0.0189,
+            "p95Ms": 0.0189,
+            "maxMs": 0.0189,
+            "over50Ms": 0
+          },
+          "mouse": {
+            "count": 0
+          }
+        },
+        "5": {
+          "queue": {
+            "count": 1,
+            "p50Ms": 0.2597,
+            "p95Ms": 0.2597,
+            "maxMs": 0.2597,
+            "over50Ms": 0
+          },
+          "dispatch": {
+            "count": 1,
+            "p50Ms": 8.1267,
+            "p95Ms": 8.1267,
+            "maxMs": 8.1267,
+            "over50Ms": 0
+          },
+          "mouse": {
+            "count": 0
+          }
+        }
+      },
+      "nativeCallback": {
+        "count": 5944,
+        "p50Ms": 0.0287,
+        "p95Ms": 0.9127000000000001,
+        "maxMs": 75.45490000000001,
+        "over50Ms": 2
+      },
+      "longestNativeCallbacks": [
+        {
+          "message": 275,
+          "startQpc": 107419738891,
+          "endQpc": 107420493440,
+          "ms": 75.45490000000001
+        },
+        {
+          "message": 275,
+          "startQpc": 107415659197,
+          "endQpc": 107416213938,
+          "ms": 55.4741
+        },
+        {
+          "message": 275,
+          "startQpc": 107416448768,
+          "endQpc": 107416933419,
+          "ms": 48.4651
+        },
+        {
+          "message": 275,
+          "startQpc": 107418049040,
+          "endQpc": 107418469164,
+          "ms": 42.0124
+        },
+        {
+          "message": 275,
+          "startQpc": 107417089075,
+          "endQpc": 107417305008,
+          "ms": 21.5933
+        },
+        {
+          "message": 275,
+          "startQpc": 108213586835,
+          "endQpc": 108213798744,
+          "ms": 21.190900000000003
+        },
+        {
+          "message": 275,
+          "startQpc": 107413776410,
+          "endQpc": 107413980739,
+          "ms": 20.4329
+        },
+        {
+          "message": 275,
+          "startQpc": 107414794660,
+          "endQpc": 107414995044,
+          "ms": 20.0384
+        },
+        {
+          "message": 275,
+          "startQpc": 107813552554,
+          "endQpc": 107813748001,
+          "ms": 19.544700000000002
+        },
+        {
+          "message": 275,
+          "startQpc": 108613450971,
+          "endQpc": 108613598129,
+          "ms": 14.715800000000002
+        },
+        {
+          "message": 275,
+          "startQpc": 107417305404,
+          "endQpc": 107417402189,
+          "ms": 9.6785
+        },
+        {
+          "message": 275,
+          "startQpc": 107417746245,
+          "endQpc": 107417808332,
+          "ms": 6.2087
+        },
+        {
+          "message": 275,
+          "startQpc": 107414498451,
+          "endQpc": 107414558138,
+          "ms": 5.9687
+        },
+        {
+          "message": 275,
+          "startQpc": 107422681222,
+          "endQpc": 107422739010,
+          "ms": 5.7788
+        },
+        {
+          "message": 275,
+          "startQpc": 108613611038,
+          "endQpc": 108613664404,
+          "ms": 5.336600000000001
+        },
+        {
+          "message": 275,
+          "startQpc": 107438808597,
+          "endQpc": 107438848710,
+          "ms": 4.0113
+        },
+        {
+          "message": 275,
+          "startQpc": 107415361920,
+          "endQpc": 107415401495,
+          "ms": 3.9575
+        },
+        {
+          "message": 275,
+          "startQpc": 107416934784,
+          "endQpc": 107416974337,
+          "ms": 3.9553000000000003
+        },
+        {
+          "message": 275,
+          "startQpc": 107416214402,
+          "endQpc": 107416249637,
+          "ms": 3.5235000000000003
+        },
+        {
+          "message": 275,
+          "startQpc": 108377567544,
+          "endQpc": 108377602686,
+          "ms": 3.5142
+        }
+      ],
+      "slowestPackets": [
+        {
+          "sequence": 8,
+          "kind": 3,
+          "queuedQpc": 108051395055,
+          "queueMs": 0.0666,
+          "dispatchMs": 26.608700000000002,
+          "mouseMs": 26.599,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 29,
+          "kind": 6,
+          "queuedQpc": 108579624159,
+          "queueMs": 20.567500000000003,
+          "dispatchMs": 0.0189,
+          "mouseApiReached": false,
+          "overlappingNativeCallbacks": [
+            {
+              "message": 275,
+              "startQpc": 108579626525,
+              "endQpc": 108579626885,
+              "ms": 0.036000000000000004
+            },
+            {
+              "message": 275,
+              "startQpc": 108579824235,
+              "endQpc": 108579829815,
+              "ms": 0.558
+            }
+          ]
+        },
+        {
+          "sequence": 28,
+          "kind": 4,
+          "queuedQpc": 108579624016,
+          "queueMs": 0.3209,
+          "dispatchMs": 19.6842,
+          "mouseApiReached": false
+        },
+        {
+          "sequence": 9,
+          "kind": 1,
+          "queuedQpc": 108051513469,
+          "queueMs": 15.5395,
+          "dispatchMs": 1.4061000000000001,
+          "mouseMs": 1.4039000000000001,
+          "mouseApiReached": true,
+          "overlappingNativeCallbacks": [
+            {
+              "message": 275,
+              "startQpc": 108051661883,
+              "endQpc": 108051668858,
+              "ms": 0.6975
+            }
+          ]
+        },
+        {
+          "sequence": 12,
+          "kind": 3,
+          "queuedQpc": 108147638486,
+          "queueMs": 0.07150000000000001,
+          "dispatchMs": 12.7201,
+          "mouseMs": 12.7065,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 24,
+          "kind": 3,
+          "queuedQpc": 108465765998,
+          "queueMs": 0.0589,
+          "dispatchMs": 8.9291,
+          "mouseMs": 8.9171,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 30,
+          "kind": 5,
+          "queuedQpc": 108580193207,
+          "queueMs": 0.2597,
+          "dispatchMs": 8.1267,
+          "mouseApiReached": false
+        },
+        {
+          "sequence": 21,
+          "kind": 1,
+          "queuedQpc": 108364019258,
+          "queueMs": 0.5799000000000001,
+          "dispatchMs": 5.9242,
+          "mouseMs": 5.915900000000001,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 2,
+          "kind": 1,
+          "queuedQpc": 107952641329,
+          "queueMs": 0.0118,
+          "dispatchMs": 5.699800000000001,
+          "mouseMs": 5.6244000000000005,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 27,
+          "kind": 7,
+          "queuedQpc": 108466051958,
+          "queueMs": 4.2453,
+          "dispatchMs": 0.2626,
+          "mouseApiReached": false
+        },
+        {
+          "sequence": 4,
+          "kind": 3,
+          "queuedQpc": 107952954613,
+          "queueMs": 0.0965,
+          "dispatchMs": 4.2112,
+          "mouseMs": 4.190300000000001,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 33,
+          "kind": 3,
+          "queuedQpc": 108679869553,
+          "queueMs": 0.459,
+          "dispatchMs": 2.8427000000000002,
+          "mouseMs": 2.8405,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 20,
+          "kind": 3,
+          "queuedQpc": 108363886238,
+          "queueMs": 0.16090000000000002,
+          "dispatchMs": 2.8099000000000003,
+          "mouseMs": 2.7916000000000003,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 16,
+          "kind": 3,
+          "queuedQpc": 108260681581,
+          "queueMs": 0.047900000000000005,
+          "dispatchMs": 1.8581,
+          "mouseMs": 1.8494000000000002,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 25,
+          "kind": 1,
+          "queuedQpc": 108465850074,
+          "queueMs": 1.6324,
+          "dispatchMs": 0.16740000000000002,
+          "mouseMs": 0.152,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 37,
+          "kind": 3,
+          "queuedQpc": 108809014963,
+          "queueMs": 0.07730000000000001,
+          "dispatchMs": 1.2974,
+          "mouseMs": 1.2844,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 31,
+          "kind": 1,
+          "queuedQpc": 108679705487,
+          "queueMs": 0.0167,
+          "dispatchMs": 1.2323,
+          "mouseMs": 1.2149,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 34,
+          "kind": 1,
+          "queuedQpc": 108679929471,
+          "queueMs": 0.009000000000000001,
+          "dispatchMs": 0.9564,
+          "mouseMs": 0.9484,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 26,
+          "kind": 8,
+          "queuedQpc": 108466034425,
+          "queueMs": 0.9114000000000001,
+          "dispatchMs": 0.0161,
+          "mouseApiReached": false
+        },
+        {
+          "sequence": 22,
+          "kind": 1,
+          "queuedQpc": 108465454316,
+          "queueMs": 0.0246,
+          "dispatchMs": 0.8491000000000001,
+          "mouseMs": 0.8317,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 7,
+          "kind": 2,
+          "queuedQpc": 108051257418,
+          "queueMs": 0.031,
+          "dispatchMs": 0.7105,
+          "mouseMs": 0.7030000000000001,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 40,
+          "kind": 1,
+          "queuedQpc": 108906672943,
+          "queueMs": 0.006,
+          "dispatchMs": 0.6881,
+          "mouseMs": 0.6797000000000001,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 3,
+          "kind": 2,
+          "queuedQpc": 107952804395,
+          "queueMs": 0.0074,
+          "dispatchMs": 0.5993,
+          "mouseMs": 0.5920000000000001,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 35,
+          "kind": 1,
+          "queuedQpc": 108808693437,
+          "queueMs": 0.0858,
+          "dispatchMs": 0.48050000000000004,
+          "mouseMs": 0.47040000000000004,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 10,
+          "kind": 1,
+          "queuedQpc": 108147335049,
+          "queueMs": 0.0275,
+          "dispatchMs": 0.5337000000000001,
+          "mouseMs": 0.5138,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 14,
+          "kind": 1,
+          "queuedQpc": 108260498793,
+          "queueMs": 0.024800000000000003,
+          "dispatchMs": 0.5166000000000001,
+          "mouseMs": 0.49470000000000003,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 11,
+          "kind": 2,
+          "queuedQpc": 108147488626,
+          "queueMs": 0.0126,
+          "dispatchMs": 0.5029,
+          "mouseMs": 0.4934,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 36,
+          "kind": 2,
+          "queuedQpc": 108808873259,
+          "queueMs": 0.0134,
+          "dispatchMs": 0.4937,
+          "mouseMs": 0.4863,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 32,
+          "kind": 2,
+          "queuedQpc": 108679869065,
+          "queueMs": 0.1,
+          "dispatchMs": 0.4066,
+          "mouseMs": 0.3965,
+          "mouseApiReached": true
+        },
+        {
+          "sequence": 6,
+          "kind": 1,
+          "queuedQpc": 108051251659,
+          "queueMs": 0.0427,
+          "dispatchMs": 0.41200000000000003,
+          "mouseMs": 0.4025,
+          "mouseApiReached": true
+        }
+      ],
+      "paintCallbacks": 168,
+      "physicalPresentationMeasured": false,
+      "note": "Paint callbacks are not attributed to inputs; mouseApiReached does not prove an action succeeded.",
+      "bucket": "main-new",
+      "rawBytes": 734179,
+      "rawSha256": "d9b9d935f26accae8b0300acb876d4021e48a97ed1d434552110831f0eefa72b",
+      "incompletePackets": [
+        {
+          "sequence": 41,
+          "kind": 1,
+          "missing": [
+            "fire",
+            "fired"
+          ]
+        }
+      ],
+      "envelope": {
+        "pid": 3040,
+        "frequency": 10000000,
+        "total": 12247,
+        "capacity": 32768,
+        "byteOffset": 1187222,
+        "startLine": 19813,
+        "endByteExclusive": 1921401,
+        "endLine": 32061,
+        "bytes": 734179,
+        "sha256": "d9b9d935f26accae8b0300acb876d4021e48a97ed1d434552110831f0eefa72b",
+        "sourceSerialAppendByteOffset": 3281459,
+        "sourceSerialAppendEndByteExclusive": 4015638,
+        "firstQpc": 107413447003,
+        "lastQpc": 108908994668,
+        "recordedSpanMs": 149554.7665,
+        "overflow": false
+      },
+      "stageCounts": {
+        "native_begin": 5944,
+        "native_end": 5944,
+        "paint": 168,
+        "queued": 41,
+        "dispatch": 41,
+        "fire": 34,
+        "fired": 34,
+        "dispatched": 41
+      },
+      "nativeMessageCounts": {
+        "275": 5944
+      },
+      "incompletePacketRawEvents": [
+        {
+          "tick": 108906819482,
+          "seq": 41,
+          "stage": "queued",
+          "thread": 1828,
+          "kind": 1,
+          "x": 599,
+          "y": 402,
+          "width": 0,
+          "height": 0,
+          "serialByteOffset": 1920904,
+          "serialLine": 32053
+        },
+        {
+          "tick": 108906824027,
+          "seq": 41,
+          "stage": "dispatch",
+          "thread": 3488,
+          "kind": 1,
+          "x": 599,
+          "y": 402,
+          "width": 0,
+          "height": 0,
+          "serialByteOffset": 1921082,
+          "serialLine": 32056
+        },
+        {
+          "tick": 108906824029,
+          "seq": 41,
+          "stage": "dispatched",
+          "thread": 3488,
+          "kind": 1,
+          "x": 599,
+          "y": 402,
+          "width": 0,
+          "height": 0,
+          "serialByteOffset": 1921142,
+          "serialLine": 32057
+        }
+      ]
+    }
+  ],
+  "observedComparison": {
+    "moveQueueMaxMs": {
+      "peOld": 105.4507,
+      "peNew": 0.0823,
+      "mainOld": 65.0283,
+      "mainNew": 15.5395
+    },
+    "completedMouseUpCalls": {
+      "peOld": 7,
+      "peNew": 7,
+      "mainOld": 8,
+      "mainNew": 8
+    },
+    "mainNewMouseCallMaxMs": 26.599,
+    "fullSessionNativeTimerCallbackMaxMs": {
+      "peOld": 95.4591,
+      "peNew": 36.8863,
+      "mainOld": 133.4274,
+      "mainNew": 75.4549
+    },
+    "interpretation": "The recorded move queue maxima are lower in the candidate runs. Cooperative 2 ms scheduler batching does not cap an individual callback or establish full input-to-display latency."
+  },
+  "guiObservations": {
+    "source": "Operator observation reported by the parent task, supplemented by the bound screenshots and actions log",
+    "safeActionsObservedEffective": true,
+    "normalUiCloseObserved": true,
+    "mainActions": "Device refresh; usage guide; notebook; branded desktop; step 2; UEFI image; Esc; return; normal close confirmation",
+    "peActions": "Seven safe clicks were repeated in the old and new PE application directories",
+    "limitation": "The actions log records main-new startup only; its later action effectiveness and normal close are operator observations, not extra entries inferred from that log."
+  },
+  "incompletePacket": {
+    "bucket": "main-new",
+    "sequence": 41,
+    "sdkInputKind": 1,
+    "meaning": "pointer_move",
+    "x": 599,
+    "y": 402,
+    "rawEvents": [
+      {
+        "tick": 108906819482,
+        "seq": 41,
+        "stage": "queued",
+        "thread": 1828,
+        "kind": 1,
+        "x": 599,
+        "y": 402,
+        "width": 0,
+        "height": 0,
+        "serialByteOffset": 1920904,
+        "serialLine": 32053
+      },
+      {
+        "tick": 108906824027,
+        "seq": 41,
+        "stage": "dispatch",
+        "thread": 3488,
+        "kind": 1,
+        "x": 599,
+        "y": 402,
+        "width": 0,
+        "height": 0,
+        "serialByteOffset": 1921082,
+        "serialLine": 32056
+      },
+      {
+        "tick": 108906824029,
+        "seq": 41,
+        "stage": "dispatched",
+        "thread": 3488,
+        "kind": 1,
+        "x": 599,
+        "y": 402,
+        "width": 0,
+        "height": 0,
+        "serialByteOffset": 1921142,
+        "serialLine": 32057
+      }
+    ],
+    "missing": [
+      "fire",
+      "fired"
+    ],
+    "queueMs": 0.4545,
+    "dispatchMs": 0.0002,
+    "mouseApiReached": false,
+    "successfulMouseCall": false,
+    "reasonProven": false,
+    "explanation": "The dispatch wrapper completed without a recorded mouse call. The trace schema has no target, generation, modifiers or guard reason. Its exact cause and any relationship to closing are not proven; coordinates do not identify a close button."
+  },
+  "closeEvidence": {
+    "generatedSource": "consumer-diagnostic/trace-Win32/observed/web_body.cpp",
+    "line": 58,
+    "condition": "const bool closed = !host_ || host_->destroy().ok; if (closed) rk_input_trace::flush();",
+    "scope": "A complete export supports that the diagnostic close condition was satisfied. An already absent or closed host may also satisfy it.",
+    "dispatchGuards": {
+      "source": "consumer-diagnostic/trace-Win32/observed/soui_miniblink_host.cpp",
+      "lines": [
+        2330,
+        2332,
+        2338
+      ],
+      "scope": "Context, input permission, cursor permission, view or interaction-generation guards may return before fire; actual branch is not recorded."
+    },
+    "noRootProcessExitCodeEvidence": true,
+    "noOwnedJobClosureEvidence": true,
+    "normalRootExitClaimed": false,
+    "emptyJobClaimed": false
+  },
+  "limitations": [
+    "One short diagnostic run in fixed PE-old, PE-new, main-old, main-new order; small samples, no randomized or repeated performance experiment.",
+    "Startup is included and session lengths differ; full-session event, packet, paint and callback totals are not throughput comparisons.",
+    "The independent PE application ran under Windows 10, not a WinPE boot.",
+    "No optical input/display timing, physical presentation measurement or native-renderer baseline was performed.",
+    "Paint callbacks are not attributed to individual inputs, and mouseApiReached does not prove that an action succeeded.",
+    "The final main-new move packet is incomplete at the mouse interface and remains explicitly reported.",
+    "These consumer launches used no owned Job launcher. GUI close observation and complete trace export do not establish root-process natural exit, an exit code, or an empty Job.",
+    "This record does not expand SDK production qualification or release readiness."
+  ]
+}

@@ -1,5 +1,6 @@
 #include <soui/host/soui_miniblink_host.h>
 #include "../../sdk/src/host/engine_admission.h"
+#include "../../sdk/src/host/input_mailbox.h"
 #include <windows.h>
 #include "../../third_party/include/miniblink/wke.h"
 
@@ -30,13 +31,37 @@ struct signal final {
   void open() { if (!opened.exchange(true)) promise.set_value(); }
 };
 
+// Actual bounded mailbox and Engine registration; only close's completion is
+// held so the UI can observe the new retirement phase without a view or DLL.
+struct input_retirement_probe final : soui::sdk::detail::engine_input_service {
+  engine_thread& engine;
+  std::shared_ptr<signal> release, entered{std::make_shared<signal>()};
+  soui::sdk::detail::input_mailbox mailbox{[](const soui::sdk::input_packet*) {}};
+  std::atomic<unsigned> quiesced{0}, closed{0}, late_calls{0};
+  std::atomic<bool> wrong_owner{false}, late_ready{false};
+  input_retirement_probe(engine_thread& owner, std::shared_ptr<signal> finish)
+      : engine(owner), release(std::move(finish)) {}
+  bool pending() const noexcept override { return mailbox.pending() || late_ready.load(); }
+  void service() noexcept override {
+    if (late_ready.exchange(false)) ++late_calls;
+    mailbox.service();
+  }
+  void quiesce() noexcept override { ++quiesced; mailbox.quiesce(); }
+  void close() noexcept override {
+    if (!engine.is_owner_thread()) wrong_owner.store(true);
+    ++closed; entered->open(); release->future.wait();
+    mailbox.close();
+  }
+};
+
 struct fixture final {
   engine_thread engine;
   std::shared_ptr<signal> entered{std::make_shared<signal>()};
   std::shared_ptr<signal> release{std::make_shared<signal>()};
   dynamic_miniblink_adapter adapter;
   engine_thread* bridge_observer{nullptr};
-  explicit fixture(bool blocked_bridge = false, void* reload_view = nullptr) {
+  std::shared_ptr<input_retirement_probe> input;
+  explicit fixture(bool blocked_bridge = false, bool with_input = false, void* reload_view = nullptr) {
     require(engine.start([] { return true; }), "real engine startup failed");
     std::unique_ptr<engine_thread> bridge;
     try {
@@ -45,11 +70,12 @@ struct fixture final {
         require(bridge->start([] { return true; }), "bridge worker startup failed");
         bridge_observer = bridge.get();
       }
+      if (with_input) input = std::make_shared<input_retirement_probe>(engine, release);
       if (reload_view) {
-        require(!blocked_bridge, "reload fixture does not manufacture a Bridge worker");
+        require(!blocked_bridge && !with_input, "reload fixture does not manufacture a Bridge worker");
         engine_admission::bind_reload_fixture(adapter, engine, reload_view);
       } else {
-        engine_admission::bind_unmount_fixture(adapter, engine, std::move(bridge));
+        engine_admission::bind_unmount_fixture(adapter, engine, std::move(bridge), input);
       }
       if (blocked_bridge) {
         require(bridge_observer->post([e=entered,r=release] { e->open(); r->future.wait(); }), "bridge blocker rejected");
@@ -164,7 +190,7 @@ struct reload_fixture final {
   // original unmount completion, capture retirement and the real Engine join.
   native_reload_observation native;
   native_reload_spies spies{native};
-  fixture host{false, &native.opaque_view};
+  fixture host{false, false, &native.opaque_view};
   reload_fixture() { native.engine = &host.engine; }
   void require_owner() const {
     require(!native.wrong_view.load() && !native.wrong_owner.load(),
@@ -317,10 +343,59 @@ void blocked_bridge_worker_remains_owned() {
   f.finish();
 }
 
+void input_retirement_remains_pending_until_actual_owner_completion() {
+  fixture f(false, true);
+  return_watchdog watchdog(f.release);
+  const auto deadline = std::chrono::steady_clock::now() + 5s;
+  while (f.input->entered->future.wait_for(0ms) != std::future_status::ready) {
+    const auto pending = f.adapter.unmount();
+    require(!pending.ok && pending.code == "E_CURSOR_CLOSE_PENDING", "input retirement did not retain pending");
+    require(std::chrono::steady_clock::now() < deadline, "input retirement never reached the Engine owner");
+    std::this_thread::sleep_for(1ms);
+  }
+  watchdog.finish();
+  require(!watchdog.had_to_release->load() && !f.release->opened.load(), "input retirement waited for its callback");
+  require(f.input->quiesced.load() == 1 && f.input->closed.load() == 1 && !f.input->wrong_owner.load(),
+          "input retirement was not quiesced once and closed on its real Engine owner");
+  soui::sdk::input_packet late;
+  late.kind = soui::sdk::input_kind::key_down;
+  require(f.input->mailbox.post(late) == soui::sdk::input_admission_result::stopped,
+          "quiescing input admitted a late packet");
+  for (unsigned n=0; n<4; ++n) {
+    require(f.adapter.unmount().code == "E_CURSOR_CLOSE_PENDING", "input polling lost its original pending result");
+    f.adapter.pump();
+  }
+  require(engine_admission::unmount_fixture_engine(f.adapter) == &f.engine && f.input->closed.load() == 1,
+          "pending input released the Runtime owner or duplicated unregister");
+  require(engine_admission::observe(f.engine).queued[0] == 0, "input closing pump queued ordinary work");
+  f.finish();
+  require(f.input->closed.load() == 1, "completed input was closed twice");
+  // A delayed producer wake cannot re-enter an already detached service.
+  f.input->late_ready.store(true);
+  engine_admission::notify_input(f.engine);
+  const auto fence = std::make_shared<signal>();
+  require(f.engine.post([fence] { fence->open(); }), "late input fence rejected");
+  require(fence->future.wait_for(5s) == std::future_status::ready, "late input fence did not finish");
+  require(f.input->late_calls.load() == 0 && f.input->mailbox.post(late) == soui::sdk::input_admission_result::stopped,
+          "retired input accepted a late callback or packet");
+}
+
 void unused_adapter_can_cross_construction_thread() {
   dynamic_miniblink_adapter adapter;
   const auto result = std::async(std::launch::async, [&adapter] { return adapter.unmount(); }).get();
   require(result.ok, "unused adapter teardown incorrectly required its construction thread");
+}
+
+void early_devtools_revocation_rejects_focus_before_unmount_continuation() {
+  fixture f;
+  engine_admission::revoke_devtools_fixture(f.adapter);
+  const auto focused = f.adapter.focus();
+  require(!focused.ok && focused.code == "E_CURSOR_CLOSE_PENDING",
+          "revoked target reached native focus before its teardown continuation existed");
+  std::intptr_t result{};
+  require(!f.adapter.handle_native_window_message(WM_SETFOCUS, 0, 0, result),
+          "late focus entered the revoked target before unmount continuation creation");
+  f.finish();
 }
 } // namespace
 
@@ -328,6 +403,8 @@ int main(int argc, char** argv) {
   try {
     if (argc == 2 && std::string_view(argv[1]) == "unused-transfer") {
       unused_adapter_can_cross_construction_thread();
+    } else if (argc == 2 && std::string_view(argv[1]) == "devtools-early-retirement") {
+      early_devtools_revocation_rejects_focus_before_unmount_continuation();
     } else if (argc == 2 && std::string_view(argv[1]) == "reload") {
       blocked_fifo_reload_keeps_one_owned_operation();
       closing_cancels_a_queued_reload_before_native_execution();
@@ -337,6 +414,7 @@ int main(int argc, char** argv) {
     } else {
       require(argc == 1, "unexpected test argument");
       blocked_fifo_returns_pending_without_duplicate_work();
+      input_retirement_remains_pending_until_actual_owner_completion();
       blocked_bridge_worker_remains_owned();
     }
     std::cout << "Actual no-view Miniblink unmount continuation passed; no DLL or debugger pause qualified\n";

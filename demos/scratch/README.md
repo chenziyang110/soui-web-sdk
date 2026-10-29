@@ -14,10 +14,11 @@ demos/scratch/Start.cmd
 该入口会使用 `out/scratch-x64-package/` 重新构建，核验导出契约，并生成仓库上级
 `deliverables/SouiScratch-<版本>-windows-x64-rN/` 与同名 ZIP、SHA-256 文件。
 完整解压后双击包内“打开演示.cmd”。包中包括本地素材、当前接入/SDK 构建输入、
-原始 Scratch npm 分发包与许可证；上游完整重建另需固定仓库的构建配置。
+原始 Scratch npm 分发包与许可证。显式 `-SourceVendor` 的包另含完整补丁源码、锁、构建记录与 dist 清单，核对部署身份后随包交付；实际源码版本与对照分发版本分别记录。
 只交付本地未签名候选，不执行公开发布。
 
 开发机需 Node.js、MSVC v143、Windows SDK 10.0.19041.0 和 CMake 3.24 以上。
+构建入口复用主线的 MSVC compiler phase 自然收尾与 node-reuse 策略；已有其他 compiler/VCTIP 进程时会拒绝此次独占阶段，并保留阶段记录。
 用户机器需安装 Microsoft WebView2 Runtime。此 Demo 的现代浏览器要求独立于 SDK 的兼容 MiniBlink 档位。
 构建输出为 `out/scratch-x64/bin/Release/SouiScratch/`；迁移时复制整个输出目录。
 
@@ -91,9 +92,11 @@ Scratch 采用 AGPL-3.0-only，名称和角色图形的商标归 Scratch Foundat
 及 bundle 的 `.LICENSE.txt`。本演示不表示 Scratch 官方背书，公开再分发前需按实际组合代码完成许可交付。
 
 Scratch 使用隔离 Paper 绘图沙盒；该 Demo 显式采用 SDK 的 `isolated_local_editor` 本地候选模式，
-新增的公共配置及约束见 `docs/api.md` 和 ADR 0136，必须连同当前 SDK 重新构建。
+新增的公共配置及约束见 `docs/api.md` 和 [ADR 0142](../../docs/adr/0142-isolated-local-editor.md)，必须连同当前 SDK 重新构建；不能链接已发布的 0.6.0 二进制混用新增配置。
 
 ## 验证与范围
+
+本次基于 `main` 的源码集成保留 SDK 版本入口 `VERSION`，没有生成或验证新的 0.6.0 发行包。编译、运行、体积门禁及 E/W/S 性能对照交由专人执行；下列历史结果不能作为当前源码通过证据。
 
 浏览器功能检查：`node demos/scratch/verify-web.cjs`（需开发环境提供 Playwright）。
 它覆盖程序驱动角色、工程序列化/重新载入、绘图沙盒及本地资源；报告在 `out/scratch-verification/`。

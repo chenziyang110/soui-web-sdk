@@ -99,8 +99,10 @@ for(const relative of run('git',['ls-files','-z'],true).split('\0').filter(Boole
 await writeFile(path.join(output,'source-build.json'),JSON.stringify({schema:'soui.scratch-source-build/v1',
   sourceCommit,sourceLockSha256:lockSha256,patches,
   patchDriverSha256:sha(await readFile(fileURLToPath(import.meta.url))),
+  provenanceModuleSha256:sha(await readFile(path.join(here,'provenance.mjs'))),
   reducerPatchSha256:sha(patchedReducer),bundleSha256:sha(bundle),
   distFiles:await distInventory(path.join(output,'dist')),
+  sourceFiles:await distInventory(path.join(output,'sources')),
   // The published 15.3.0 artifact uses this release commit whose source package
   // versions remain 15.2.0. Preserve that distinction rather than relabel it.
   upstreamSourceVersion:JSON.parse(await readFile(path.join(root,'package.json'),'utf8')).version,

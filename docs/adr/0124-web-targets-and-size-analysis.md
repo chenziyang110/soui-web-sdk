@@ -55,6 +55,11 @@ runtimeProfile、webProfile 和业务目标相互独立，分别描述后端、�
 本次不改变原生运行实现；未执行的原生和目标系统验证必须单列，不扩大
 releaseReady 或生产声明。未发布工具须随新的 SDK 身份发布，不能覆盖 0.5.0。
 
+共享工作区历史验证包括新增目标测试、原兼容回归，以及仓库外 x64 Release
+原生消费探针的实际编译、默认目标自动切换和无窗口内核加载。
+拆分后候选复验单列于 [PR 验证范围](../../verification/production-validation/auto-host-pr-2026-10-23/README.md)，
+不能把历史结果当作本候选完整原生验收。
+
 2026-10-23 的[限定验证记录](../../verification/production-validation/web-targets-2026-10-23/README.md)
 包括 62 项新增测试、原兼容回归，以及仓库外 x64 Release 原生消费探针的实际
 编译、默认目标自动切换和无窗口内核加载。它不代表完整当前 SDK 原生验收。

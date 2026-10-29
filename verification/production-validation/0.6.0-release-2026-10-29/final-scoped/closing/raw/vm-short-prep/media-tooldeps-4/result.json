@@ -1,0 +1,177 @@
+{
+  "schema": "soui.release06-tooldeps-data-media/v1",
+  "iso": {
+    "path": "C:/s06tooldepsmedia/SouiRelease06ToolDeps.iso",
+    "bytes": 2615296,
+    "sha256": "be851f635cefff11cfae6c0a69d7f03a11c822d10b2137f28b7f149f1dcd8e3d"
+  },
+  "files": [
+    {
+      "path": "7ZIP-LICENSE.TXT",
+      "bytes": 6031,
+      "sha256": "3a184aa13dc8ad30734e28ff901b478ccbcb5b41be52427a5e7609c8fd9e5ddb"
+    },
+    {
+      "path": "7z.dll",
+      "bytes": 1906176,
+      "sha256": "5bd20fb38499d95c39594f41d4781b6181b3304b7f1f4d06b0182f514e7eaa74"
+    },
+    {
+      "path": "7z.exe",
+      "bytes": 575488,
+      "sha256": "4cd7d776c686427226a151789d2d61f0b2ed2c392148cc4e69c0238362fafecf"
+    },
+    {
+      "path": "DEFAULT-RERUN.PS1",
+      "bytes": 1670,
+      "sha256": "60cc7be30e4ccd57c3f7e5466ffc77e18ea8c555db34d8aef49bc04e65621ca4"
+    },
+    {
+      "path": "DIAG-INSTALL-7Z.PS1",
+      "bytes": 1825,
+      "sha256": "a8e3c8e70c05132a03c1ec25030b3955141794dc7f9bf95061161cde5e964a3f"
+    },
+    {
+      "path": "EXPORT.PS1",
+      "bytes": 4230,
+      "sha256": "4086d69675c24f04bd76a4e775f0b66ed834299eebeadfdc5d683faf24a3da0b"
+    },
+    {
+      "path": "INSTALL.PS1",
+      "bytes": 511,
+      "sha256": "05315e7416322852d1116a9da189cb649b0e42a6f539c159d02373e34141e1c7"
+    },
+    {
+      "path": "PLAN.JSON",
+      "bytes": 50759,
+      "sha256": "d3cb416c6dbc4630b378907c4a6bf8ae9201db652f00a91de9e7e708993d6ea5"
+    },
+    {
+      "path": "README.TXT",
+      "bytes": 1703,
+      "sha256": "cad41df7d8823f8ed7af95526d7f46fb1ad9d0ed0c67dd9bc126f0f166840918"
+    },
+    {
+      "path": "install-deps.cjs",
+      "bytes": 5535,
+      "sha256": "f83e3a784bd15dc3dbe7c5c2f8379cb05f025a30bd0487fefcdc5350274791e0"
+    },
+    {
+      "path": "publish-diag.cjs",
+      "bytes": 3634,
+      "sha256": "cc2056fc67ba5204514fbb37cb8b0c3a898ca614f00a79ba336e74dec02c7716"
+    }
+  ],
+  "controls": {
+    "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vm-short-prep/media-tooldeps-4/Controls.actual.json",
+    "bytes": 2368,
+    "sha256": "a7a7d3aa2989578f7c13b28b938050143bd9d0ef7d1e1f28dfd41054133b8d38"
+  },
+  "dependencyPlan": {
+    "path": "C:/s06tooldepsmedia/iso-tree/PLAN.JSON",
+    "bytes": 50759,
+    "sha256": "d3cb416c6dbc4630b378907c4a6bf8ae9201db652f00a91de9e7e708993d6ea5"
+  },
+  "steps": [
+    {
+      "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+      "args": [
+        "-NoProfile",
+        "-NonInteractive",
+        "-Command",
+        "$ErrorActionPreference=\"Stop\";foreach($p in @('C:\\s06tooldepsmedia\\iso-tree\\INSTALL.PS1','C:\\s06tooldepsmedia\\iso-tree\\DEFAULT-RERUN.PS1','C:\\s06tooldepsmedia\\iso-tree\\DIAG-INSTALL-7Z.PS1','C:\\s06tooldepsmedia\\iso-tree\\EXPORT.PS1')){$t=$null;$e=$null;$null=[Management.Automation.Language.Parser]::ParseFile($p,[ref]$t,[ref]$e);if($e.Count){throw ($e|Out-String)}}"
+      ],
+      "cwd": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\vm-short-prep\\media-tooldeps-4",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 785.1589
+    },
+    {
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "--check",
+        "C:\\s06tooldepsmedia\\iso-tree\\install-deps.cjs"
+      ],
+      "cwd": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\vm-short-prep\\media-tooldeps-4",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 90.0998
+    },
+    {
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "--check",
+        "C:\\s06tooldepsmedia\\iso-tree\\publish-diag.cjs"
+      ],
+      "cwd": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\vm-short-prep\\media-tooldeps-4",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 98.1326
+    },
+    {
+      "executable": "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/pwsh.exe",
+      "args": [
+        "-NoLogo",
+        "-NoProfile",
+        "-NonInteractive",
+        "-Sta",
+        "-File",
+        "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vm-short-prep/media-tooldeps-4/Write-Iso.ps1",
+        "-Plan",
+        "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vm-short-prep/media-tooldeps-4/plan.json",
+        "-PlanSha256",
+        "35a93aa6f953c7a0d2b1404c854df4a1c8612282ded6e7dcef5043ed63b69da9"
+      ],
+      "cwd": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\vm-short-prep\\media-tooldeps-4",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 1058.1918
+    },
+    {
+      "executable": "C:/Program Files/7-Zip/7z.exe",
+      "args": [
+        "l",
+        "-slt",
+        "-ba",
+        "-sccUTF-8",
+        "C:\\s06tooldepsmedia\\SouiRelease06ToolDeps.iso"
+      ],
+      "cwd": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\vm-short-prep\\media-tooldeps-4",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 43.5737
+    },
+    {
+      "executable": "C:/Program Files/7-Zip/7z.exe",
+      "args": [
+        "x",
+        "-sccUTF-8",
+        "-y",
+        "-oC:\\s06tooldepsmedia\\iso-readback",
+        "C:\\s06tooldepsmedia\\SouiRelease06ToolDeps.iso"
+      ],
+      "cwd": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\vm-short-prep\\media-tooldeps-4",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 40.3522
+    }
+  ],
+  "dependencyRows": 79,
+  "sourceX64Rows": 40,
+  "sourceX86Rows": 39,
+  "noDllBytesTransported": true,
+  "portable7zOnlyNewDataBinaries": true,
+  "readbackAllRawExact": true,
+  "defaultRerunControllerOrBudgetModified": false,
+  "oldIsosAndStagesPreserved": true,
+  "sourceOrIndexChanged": false,
+  "guestInstallOrProductsExecutedHost": false,
+  "vmTouched": false,
+  "releaseReady": false
+}

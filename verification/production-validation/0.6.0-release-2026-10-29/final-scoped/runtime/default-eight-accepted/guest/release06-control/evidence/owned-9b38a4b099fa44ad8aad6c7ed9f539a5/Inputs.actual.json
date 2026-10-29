@@ -1,0 +1,92 @@
+{
+  "schema": "soui.release-vm-owned-inputs/v1",
+  "root": "C:\\sr06",
+  "selection": [
+    "x86:desktop",
+    "x86:modern",
+    "x64:desktop",
+    "x64:modern"
+  ],
+  "builds": [
+    {
+      "architecture": "x86",
+      "build": {
+        "path": "C:\\sr06\\out\\x86\\build-Release.json",
+        "bytes": 814760,
+        "sha256": "bba72443655141c695b0287d3ce0b271a66860795b4f5abf77af54c320ebe5ec"
+      },
+      "buildId": "6d3166b8-5989-4356-8970-1ab5c879db00",
+      "sourceSha256": "67a8c649a1a08e96e76dd4d0f7782b53f229e1f26ad65e6a2738bc7173555264",
+      "innerRunner": {
+        "path": "C:\\sr06\\out\\benchmark-protocol-x86\\Release\\OwnedProcessRunner.exe",
+        "requestedPath": "C:\\sr06\\out\\benchmark-protocol-x86\\Release\\OwnedProcessRunner.exe",
+        "resolvedPath": "C:\\sr06\\out\\benchmark-protocol-x86\\Release\\OwnedProcessRunner.exe",
+        "bytes": 146944,
+        "sha256": "6b5714225b60f8c06f33804478166e35d6da1c21aa099a03026e91f0462e7704"
+      }
+    },
+    {
+      "architecture": "x64",
+      "build": {
+        "path": "C:\\sr06\\out\\x64\\build-Release.json",
+        "bytes": 814721,
+        "sha256": "1b753456ae547ce0cd939fe02674025e3dfca34ffba3ec3f3d13fb8271dc6c05"
+      },
+      "buildId": "7ecb5a92-de8e-4ab1-8b24-19606f889f03",
+      "sourceSha256": "67a8c649a1a08e96e76dd4d0f7782b53f229e1f26ad65e6a2738bc7173555264",
+      "innerRunner": {
+        "path": "C:\\sr06\\out\\benchmark-protocol\\Release\\OwnedProcessRunner.exe",
+        "requestedPath": "C:\\sr06\\out\\benchmark-protocol\\Release\\OwnedProcessRunner.exe",
+        "resolvedPath": "C:\\sr06\\out\\benchmark-protocol\\Release\\OwnedProcessRunner.exe",
+        "bytes": 170496,
+        "sha256": "f254dadd4eccad3c57d69e98f260d15ee598c0b6441b7fe68fc4ef5b3b7dea83"
+      }
+    }
+  ],
+  "controllerRunner": {
+    "path": "C:\\sr06\\out\\benchmark-protocol\\Release\\OwnedProcessRunner.exe",
+    "requestedPath": "C:\\sr06\\out\\benchmark-protocol\\Release\\OwnedProcessRunner.exe",
+    "resolvedPath": "C:\\sr06\\out\\benchmark-protocol\\Release\\OwnedProcessRunner.exe",
+    "bytes": 170496,
+    "sha256": "f254dadd4eccad3c57d69e98f260d15ee598c0b6441b7fe68fc4ef5b3b7dea83"
+  },
+  "controllerArchitecture": "x64",
+  "controller": {
+    "path": "C:\\release06-control\\Guest-Owned-Smokes.cjs",
+    "bytes": 8865,
+    "sha256": "1d96606d39ef755482bd1a1b23dbdaf2b3297811bac8d3405aa7487338ff4c61"
+  },
+  "node": {
+    "path": "C:\\release06-tools\\node\\node.exe",
+    "requestedPath": "C:\\release06-tools\\node\\node.exe",
+    "resolvedPath": "C:\\release06-tools\\node\\node.exe",
+    "bytes": 91380224,
+    "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+  },
+  "powershell": {
+    "path": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+    "requestedPath": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+    "resolvedPath": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+    "bytes": 450560,
+    "sha256": "1c84c8632c5269f24876ed9f49fa810b49f77e1e92e8918fc164c34b020f9a94"
+  },
+  "desktopInnerMs": [
+    45000,
+    2000
+  ],
+  "modernInnerMs": [
+    40000,
+    2000
+  ],
+  "outerBudgets": {
+    "desktop": {
+      "timeoutMs": 180000,
+      "drainMs": 2000
+    },
+    "modern": {
+      "timeoutMs": 90000,
+      "drainMs": 2000
+    }
+  },
+  "releaseReady": false
+}

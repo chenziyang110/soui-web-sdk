@@ -1,0 +1,19 @@
+-- Selecting Windows SDK version 10.0.19041.0 to target Windows 10.0.26200.
+-- The C compiler identification is MSVC 19.44.35226.0
+-- The CXX compiler identification is MSVC 19.44.35226.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Private vendor source regressions NOT registered (SOUI_BUILD_VENDOR_TESTS=OFF); vendor regression gate not evaluated
+CMake Error at sdk/renderers/webview2/CMakeLists.txt:8 (find_path):
+  Could not find SOUI_WEBVIEW2_INCLUDE using the following files: WebView2.h
+
+
+-- Configuring incomplete, errors occurred!

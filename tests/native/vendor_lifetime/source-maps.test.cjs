@@ -12,7 +12,7 @@ function slice(buffer,start,end){assert.ok(Number.isSafeInteger(start)&&Number.i
 const workerDirectory='tests/native/vendor_lifetime/worker_lifetime/';
 const worker=JSON.parse(read(workerDirectory+'source-map.json'));
 function workerChecks(map=worker){
-  assert.equal(map.schema,'worker-lifetime-source-map/1');assert.equal(map.sources.length,13);assert.equal(map.copies.length,12);assert.equal(map.payloads.length,22);
+  assert.equal(map.schema,'worker-lifetime-source-map/1');assert.equal(map.sources.length,16);assert.equal(map.copies.length,15);assert.equal(map.payloads.length,22);
   const sources=new Map();
   for(const row of map.sources){assert.ok(!sources.has(row.path));const bytes=read(row.path);pin(bytes,row);sources.set(row.path,bytes);}
   for(const row of map.payloads)pin(read(workerDirectory+row.path),row);
@@ -33,7 +33,7 @@ function inlineChecks(directory,prefix){const text=read(directory+'CMakeLists.tx
     const actual=slice(read(source),begin,begin+size),expected=slice(read(directory+fixture),at,at+size);assert.deepEqual(actual,expected);}
   return ranges;
 }
-test('Worker current whole pins, all payloads and twelve exact outputs match',()=>workerChecks());
+test('Worker current whole pins, all payloads and fifteen exact outputs match',()=>workerChecks());
 test('Worker stale offsets or independently changed pins fail without disabling gates',()=>{
   for(const mutate of [m=>m.sources[0].sha256='0'.repeat(64),m=>m.copies[2].startByte++,m=>m.copies[0].endByteExclusive--,
     m=>m.payloads[0].bytes++,m=>m.copies.pop()]){const m=structuredClone(worker);mutate(m);assert.throws(()=>workerChecks(m));}
@@ -54,7 +54,7 @@ test('new shutdown interface is actual declaration bytes used by the fixture pro
   assert.match(fragment,/virtual bool duplicateShutdownWitness\(ShutdownWitness&\)/);
   assert.match(read(workerDirectory+'fixture_support.h').toString('utf8'),/#include "fragments\/webthread_shutdown_interface.inc"/);
   const gate=read(workerDirectory+'source-bytes.cmake').toString('utf8');
-  assert.match(gate,/NOT copy_count EQUAL 12/);assert.match(gate,/NOT observed_hex STREQUAL expected_hex/);
+  assert.match(gate,/NOT copy_count EQUAL 15/);assert.match(gate,/NOT observed_hex STREQUAL expected_hex/);
   assert.match(gate,/Recheck every live input/);
 });
 test('dragdata all pins and ten source-to-fixture HEX ranges agree',()=>{

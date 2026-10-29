@@ -37,6 +37,7 @@ public:
     void buildMousePosInfo(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam, bool* handle, blink::IntPoint* pos, blink::IntPoint* globalPos);
 
     void setIsDraggableNodeMousedown();
+    void cancelInputState(HWND ownerWindow);
 
     void setHwndRenderOffset(const blink::IntPoint& offset)
     {

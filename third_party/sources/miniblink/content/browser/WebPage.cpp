@@ -121,6 +121,52 @@ void WebPage::setDrawMinInterval(double drawMinInterval)
         m_pageImpl->setDrawMinInterval(drawMinInterval);
 }
 
+std::shared_ptr<content::PaintLifetimeState> WebPage::paintLifetimeState() const
+{
+    return m_pageImpl ? m_pageImpl->m_layerTreeHost->paintLifetimeState() : nullptr;
+}
+
+void WebPage::retryRejectedDrawWake()
+{
+    if (!m_pageImpl || (!m_pageImpl->m_layerTreeHost->hasRejectedDrawWake()
+        && !m_pageImpl->hasVisibilityOwnerRetry()))
+        return;
+    PaintActivityScope activity(m_pageImpl->m_layerTreeHost->paintLifetimeState());
+    if (activity) {
+        m_pageImpl->m_layerTreeHost->retryPendingOwnerWork();
+        m_pageImpl->retryVisibilityOwnerWork();
+    }
+}
+
+bool WebPage::cancelInputState()
+{
+    return m_pageImpl && m_pageImpl->cancelInputState();
+}
+
+bool WebPage::setHostVisible(bool visible)
+{
+    return m_pageImpl && m_pageImpl->setHostVisible(visible);
+}
+
+bool WebPage::setViewTraceIdentity(const content::input_frame_trace::event& value)
+{
+    return m_pageImpl && m_pageImpl->setViewTraceIdentity(value);
+}
+
+void WebPage::setInputTraceContext(const content::input_frame_trace::event& value)
+{
+    if (m_pageImpl) m_pageImpl->setInputTraceContext(value);
+}
+
+void WebPage::setUiMirrorConsumerRequired(bool required)
+{
+    if (m_pageImpl) m_pageImpl->setUiMirrorConsumerRequired(required);
+}
+bool WebPage::uiMirrorConsumerRequired() const
+{
+    return !m_pageImpl || m_pageImpl->uiMirrorConsumerRequired();
+}
+
 void WebPage::setMainFrameRate(int rate)
 {
     if (m_pageImpl) m_pageImpl->setMainFrameRate(rate);

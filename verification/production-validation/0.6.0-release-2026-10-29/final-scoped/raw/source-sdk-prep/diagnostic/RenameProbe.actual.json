@@ -1,0 +1,134 @@
+{
+  "schema": "soui.sdk-publication-diagnostic/v1",
+  "startedAt": "2026-10-28T17:54:53.635Z",
+  "ownedRoot": "C:\\sr06\\out\\sdk-publish-diagnostic-cbbd3a8b-5324-45c7-8191-449452c0e43f",
+  "mode": "enumeration-only and synthetic-file sibling rename probes",
+  "packCalled": false,
+  "productStarted": false,
+  "compilerStarted": false,
+  "retryPolicy": {
+    "maximumCalls": 6,
+    "totalWaitBudgetMs": 450,
+    "unchanged": true
+  },
+  "failedPublication": {
+    "stage": "C:/sr06/dist/sdk/0.6.0.staging-79314dad-b384-4cbf-b562-718dbfde294e",
+    "output": "C:/sr06/dist/sdk/0.6.0",
+    "sameLexicalParent": true,
+    "sameDrive": true,
+    "stageChars": 67,
+    "outputChars": 22
+  },
+  "managedEnumeration": {
+    "optionalGuiBindings": false,
+    "count": 1496,
+    "nativeExtensionCount": 136,
+    "over259AtOldStage": 0,
+    "over259AtFinal": 0,
+    "longest": [
+      {
+        "relative": "sdk/resources/devtools/miniblink/baseline/front_end/stage0-images/bb229a48bee31f5d54ca12dc9bd960c63a671f0d4be86a054c1d324a44499d96.gif",
+        "sourceChars": 142,
+        "oldStageChars": 210,
+        "finalChars": 165
+      },
+      {
+        "relative": "third_party/manifests/provenance/preview14/verification/production-validation/kernel-link-inputs-2026-09-25/observation.json",
+        "sourceChars": 132,
+        "oldStageChars": 200,
+        "finalChars": 155
+      },
+      {
+        "relative": "third_party/licenses/kernel-source/third_party/WebKit/Tools/Scripts/webkitpy/thirdparty/wpt/wpt/tools/wptserve/LICENSE.txt",
+        "sourceChars": 130,
+        "oldStageChars": 198,
+        "finalChars": 153
+      },
+      {
+        "relative": "third_party/manifests/provenance/preview14/verification/production-validation/kernel-notice-inventory-2026-09-25/README.md",
+        "sourceChars": 130,
+        "oldStageChars": 198,
+        "finalChars": 153
+      },
+      {
+        "relative": "third_party/manifests/provenance/preview14/verification/production-validation/kernel-notice-recovery-2026-09-25/README.md",
+        "sourceChars": 129,
+        "oldStageChars": 197,
+        "finalChars": 152
+      },
+      {
+        "relative": "third_party/licenses/kernel-source/third_party/WebKit/Tools/Scripts/webkitpy/thirdparty/mod_pywebsocket/COPYING.txt",
+        "sourceChars": 123,
+        "oldStageChars": 191,
+        "finalChars": 146
+      },
+      {
+        "relative": "third_party/manifests/provenance/preview14/third_party/patches/miniblink/0008-bound-ready-task-priority-wait.patch",
+        "sourceChars": 122,
+        "oldStageChars": 190,
+        "finalChars": 145
+      },
+      {
+        "relative": "third_party/licenses/kernel-source/third_party/WebKit/Tools/Scripts/webkitpy/thirdparty/wpt/wpt/tools/LICENSE.txt",
+        "sourceChars": 121,
+        "oldStageChars": 189,
+        "finalChars": 144
+      }
+    ]
+  },
+  "probes": [
+    {
+      "name": "small",
+      "syntheticOnly": true,
+      "relative": "payload/small.txt",
+      "descendantChars": 140,
+      "holdCurrentDirectory": false,
+      "attempts": [
+        {
+          "attempt": 0,
+          "ok": true
+        }
+      ],
+      "elapsedMs": 0.9442,
+      "outputExists": true
+    },
+    {
+      "name": "longest",
+      "syntheticOnly": true,
+      "relative": "payload/sdk/resources/devtools/miniblink/baseline/front_end/stage0-images/bb229a48bee31f5d54ca12dc9bd960c63a671f0d4be86a054c1d324a44499d96.gif",
+      "descendantChars": 267,
+      "holdCurrentDirectory": false,
+      "attempts": [
+        {
+          "attempt": 0,
+          "ok": true
+        }
+      ],
+      "elapsedMs": 0.7155,
+      "outputExists": true
+    },
+    {
+      "name": "cwd-held",
+      "syntheticOnly": true,
+      "relative": "payload/small.txt",
+      "descendantChars": 143,
+      "holdCurrentDirectory": true,
+      "attempts": [
+        {
+          "attempt": 0,
+          "ok": false,
+          "code": "EBUSY",
+          "errno": -4082
+        }
+      ],
+      "elapsedMs": 0.1966,
+      "outputExists": false
+    }
+  ],
+  "limitations": [
+    "No original failed stage remains to inspect; no lock-owner tracing was performed.",
+    "Out sibling probe does not test write/rename access to dist/sdk.",
+    "The current-directory-held synthetic control cannot identify the original lock owner or prove the same failure mechanism.",
+    "No full payload, native PE files, or original package content was copied; no SDK pack was rerun."
+  ]
+}

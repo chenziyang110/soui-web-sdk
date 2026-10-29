@@ -8,16 +8,21 @@ const encoded = value => JSON.stringify(value, null, 2) + '\n';
 const readJson = file => JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, ''));
 const skipped = new Set(['out', 'dist', 'dist-legacy', 'dist-react', 'dist-vue', 'node_modules', '.git', '.vs']);
 
-function safePath(root, name = '') {
+// Optional check() lets an owning operation enforce its deadline during each
+// ancestor inspection. Existing callers retain the same path/link semantics.
+function safePath(root, name = '', check = () => {}) {
+  if (typeof check !== 'function') throw new TypeError('Path check must be a function');
   if (name && (typeof name !== 'string' || name.includes('\\') || name.includes(':') ||
       name.split('/').some(p => !p || p === '.' || p === '..' || /[<>"|?*\x00-\x1f]|[. ]$/.test(p) ||
         /^(con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\.|$)/i.test(p)))) throw new Error(`Invalid path: ${name}`);
   const full = path.resolve(root, name);
   let cursor = full;
   while (true) {
+    check();
     try {
       if (fs.lstatSync(cursor).isSymbolicLink()) throw new Error(`Linked path: ${cursor}`);
     } catch (error) { if (error.code !== 'ENOENT') throw error; }
+    check();
     const parent = path.dirname(cursor);
     if (parent === cursor) break;
     cursor = parent;
@@ -34,6 +39,8 @@ function walk(root, relative = '', exclude = () => false) {
   });
 }
 function normalization(name, data) {
+  if (name === 'sdk/resources/devtools/miniblink/baseline-manifest.json' ||
+      name.startsWith('sdk/resources/devtools/miniblink/baseline/')) return 'none';
   if (name === 'LICENSE.md' || name.startsWith('third_party/licenses/')) return 'none';
   if (/\.(dll|lib|exe|pdb|png|jpe?g|gif|ico|zip|7z|pdf|woff2?|ttf|mp[34]|wav|bin)$/i.test(name)) return 'none';
   const legacyText = /\.(c|cc|cpp|cxx|h|hpp|hxx|inl|inc|tlh|idl|def|rc|cmake|txt|props|targets|vcxproj|filters|xml|sln|cmd|bat|ps1)$/i.test(name);

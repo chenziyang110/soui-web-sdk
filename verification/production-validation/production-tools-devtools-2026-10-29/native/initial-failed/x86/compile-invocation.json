@@ -1,0 +1,47 @@
+{
+    "schema":  "soui.native-closeout-compile/v1",
+    "architecture":  "x86",
+    "configuration":  "Release",
+    "source":  "C:\\s06-closeout-native-940cee1533ee4474a3f5a985cb9a9f73",
+    "build":  "C:\\s06-closeout-native-940cee1533ee4474a3f5a985cb9a9f73\\build-x86",
+    "installPrefix":  "C:/sr06/out/release-install-x86-release",
+    "executable":  "C:/Program Files/CMake/bin/cmake.exe",
+    "configureArguments":  [
+                               "-S",
+                               "C:\\s06-closeout-native-940cee1533ee4474a3f5a985cb9a9f73",
+                               "-B",
+                               "C:\\s06-closeout-native-940cee1533ee4474a3f5a985cb9a9f73\\build-x86",
+                               "-G",
+                               "Visual Studio 17 2022",
+                               "-A",
+                               "Win32,version=10.0.19041.0",
+                               "-T",
+                               "v143,host=x64,version=14.44.35207",
+                               "-DCMAKE_SYSTEM_VERSION=10.0.19041.0",
+                               "-DCMAKE_PREFIX_PATH=C:/sr06/out/release-install-x86-release",
+                               "-DCMAKE_CONFIGURATION_TYPES=Release"
+                           ],
+    "buildArguments":  [
+                           "--build",
+                           "C:\\s06-closeout-native-940cee1533ee4474a3f5a985cb9a9f73\\build-x86",
+                           "--config",
+                           "Release",
+                           "--target",
+                           "soui_devtools_host_tests",
+                           "--parallel",
+                           "2",
+                           "--",
+                           "/nr:false"
+                       ],
+    "configureExitCode":  0,
+    "buildExitCode":  1,
+    "environment":  {
+                        "MSBUILDDISABLENODEREUSE":  "1"
+                    },
+    "callerEnvironment":  {
+                              "present":  true,
+                              "value":  "1"
+                          },
+    "callerEnvironmentRestored":  true,
+    "compilerHelperSuppressionConfigured":  false
+}

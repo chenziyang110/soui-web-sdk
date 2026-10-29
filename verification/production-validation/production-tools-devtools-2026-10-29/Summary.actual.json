@@ -1,0 +1,147 @@
+{
+  "schema": "soui.production-tools-devtools-closeout/v1",
+  "recordedAt": "2026-10-29T02:51:20.205Z",
+  "version": "0.6.0",
+  "status": "LIMITED_NECESSARY_ITEMS_VERIFIED_NOT_FULL_PRODUCTION",
+  "baseline": "8b7b57341d78d101ebc317de6cef8ac19b4a7531",
+  "qualification": {
+    "releaseReady": false,
+    "productionQualificationComplete": false,
+    "fullDevtoolsGoalComplete": false
+  },
+  "tools": {
+    "initial": [
+      {
+        "name": "unicode-zip",
+        "tests": 7,
+        "passed": 4,
+        "failed": 3
+      },
+      {
+        "name": "failure-and-environment",
+        "tests": 11,
+        "passed": 11,
+        "failed": 0
+      },
+      {
+        "name": "affected-standard-build-contract",
+        "tests": 46,
+        "passed": 40,
+        "failed": 6
+      }
+    ],
+    "repairs": [
+      {
+        "name": "ps5-zip-readback-repaired",
+        "tests": 3,
+        "passed": 3,
+        "failed": 0
+      },
+      {
+        "name": "fresh-checkout-fixture-repaired",
+        "tests": 6,
+        "passed": 6,
+        "failed": 0
+      }
+    ],
+    "uniqueLogicalCasesCurrentlySuccessful": 64,
+    "unchangedPassedCasesNotRepeated": true,
+    "firstFailuresRetained": true,
+    "repairChanges": "PS5 explicit compression assembly and fresh-worktree out fixture initialization only."
+  },
+  "native": {
+    "architectures": [
+      "x64",
+      "x86"
+    ],
+    "configuration": "Release",
+    "scenariosPerArchitecture": 10,
+    "currentTest": {
+      "path": "C:/sc07/tests/native/devtools_host_tests.cpp",
+      "bytes": 18438,
+      "sha256": "1ecbd95d5276c43a1f621ca3f6bca7b761dc86fc706a69bb1f7ec05c873b7749"
+    },
+    "passedResults": "native/accepted/summary.json",
+    "firstCompilationFailureRetained": "native/initial-failed/summary.json",
+    "firstFailureReason": "New test used private running(); two assertions changed to the existing public session state. No product SDK changed.",
+    "installedSdkAndProductionSourcesUnchanged": true,
+    "scope": "Controlled adapter public facade only, not real Engine or Inspector."
+  },
+  "pausedClose": {
+    "architecture": "x86",
+    "backend": "MiniBlink",
+    "identity": {
+      "pid": 1760,
+      "creationFileTime": "134377149663488156",
+      "genericSupervisionPassed": true,
+      "closureConfirmed": true
+    },
+    "executable": {
+      "path": "C:/soui-release06-compat-diag/out/x86/bin/Release/SouiRelease06CompatDiag/SouiRelease06CompatDiag.exe",
+      "bytes": 1008128,
+      "sha256": "7dd3a5416b8e85d4e9c4fb7013a7e55616c4de56d9c2d2b7ab941214db8f0d22"
+    },
+    "delivery": {
+      "sdkVersion": "0.6.0",
+      "architecture": "x86",
+      "mode": "delivery",
+      "kernelSha256": "dc8c37178f4bbd9260edc973d61af876cf8460178eaf89fa2994fdffc94abc9a",
+      "frontendManifestSha256": "0ad753089316c0c0b910afbe95f8706e21d2f5a9436c42d6649c8b387d4bd8ed",
+      "approvalSha256": "468b7065003f06a25c94297f0db2065e35a4e50a97787452130cddf89649056a",
+      "identity": {
+        "path": "C:/soui-release06-compat-diag/out/x86/bin/Release/SouiRelease06CompatDiag/devtools/package/package.json",
+        "bytes": 159582,
+        "sha256": "33ebb1a17530af20e51531e5c302701535585c4a1339998ed2f5ab10020934af"
+      },
+      "members": 859
+    },
+    "sdkLock": {
+      "path": "C:/soui-release06-compat-diag/sdk-lock.json",
+      "bytes": 371572,
+      "sha256": "300d5b0d11592608bcf43fbdfe8b169c599e66626c8917e1e402aa15c01f76a6"
+    },
+    "runner": {
+      "path": "C:\\sr06\\out\\benchmark-protocol\\Release\\OwnedProcessRunner.exe",
+      "requestedPath": "C:\\sr06\\out\\benchmark-protocol\\Release\\OwnedProcessRunner.exe",
+      "resolvedPath": "C:\\sr06\\out\\benchmark-protocol\\Release\\OwnedProcessRunner.exe",
+      "bytes": 170496,
+      "sha256": "f254dadd4eccad3c57d69e98f260d15ee598c0b6441b7fe68fc4ef5b3b7dea83"
+    },
+    "timeoutMs": 120000,
+    "drainMs": 2000,
+    "terminal": {
+      "event": "terminal",
+      "reason": "completed",
+      "elapsedMs": 86414,
+      "rootExited": true,
+      "rootExitCode": 0,
+      "activeBeforeCleanup": 0,
+      "terminatedOwnedJob": false,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "totalProcesses": 1,
+      "limitTerminatedProcesses": 0,
+      "passed": true
+    },
+    "sourceLine": 12,
+    "realPauseVisuallyObserved": true,
+    "manualResumeBetweenPauseAndNativeClose": false,
+    "action": "Native business target window X close, with paused Inspector still visible. Product close wake resumes only as required by native retirement.",
+    "actualApplicationLog": "process-start\r\nhost-started\r\ndevtools-open-accepted\r\nhost-close-start\r\nE_DEVTOOLS_PENDING\r\nE_CURSOR_CLOSE_PENDING\r\nhost-close-complete\r\n",
+    "guiOperator": "User-owned peer continuation chat; stopped by user, original screenshot/action sequence reviewed by Root. Root exported and publicly revalidated raw outcome without repeating the successful case.",
+    "originatingThread": "01a18566-003d-7d72-ac77-67e9ed950efa",
+    "acceptedGuest": "generated-compatibility-x86-33e5e372-4f21-4c43-a8e6-e6418bc88a5d",
+    "failedGuest": "generated-compatibility-x86-c05d78b3-4532-4cde-853a-bd00435cc382",
+    "originalTimeoutAndForcedCleanupRetained": true,
+    "limits": [
+      "One exact x86 Release consumer and environment only; not full D06, WebView2 paused-close, x64 or Debug qualification.",
+      "Host-close-complete and natural Job closure support the existing retirement contract; no unobserved heap/internal domains or counters are inferred."
+    ]
+  },
+  "remaining": [
+    "VCTIP natural shutdown unresolved; diagnostics and MSBuild node-reuse controls do not certify VCTIP suppression.",
+    "Persistent EPERM lock owner and PS5 long-stage original cause remain unknown.",
+    "D07 real30-minute, D13 1000cycles, D14 8h, full performance/environment/security/licensing/signing qualification deferred."
+  ],
+  "sourceAndAssetPolicy": "No production C++/renderer/kernel/prebuilt change. Original release tag/assets, prepared metadata and acceptance file are unchanged. Changed tools do not inherit unchanged old prepared fingerprints."
+}

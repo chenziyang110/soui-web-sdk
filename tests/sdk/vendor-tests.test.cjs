@@ -32,7 +32,7 @@ function jsonRegistry(names) {
     tests: names.map(name => ({name, command: ['not-executed.exe'], properties: []}))});
 }
 const sdkName = 'sdk.native.contract';
-const allNames = [sdkName, ...manifest.names];
+const allNames = [sdkName, ...manifest.names, ...manifest.auxiliaryNames];
 
 test('a missing cache cannot authorize unit or vendor acceptance', t => {
   const f = fixture(t);
@@ -76,18 +76,23 @@ test('generated application and relative-root inputs cannot stand in for root na
   fs.writeFileSync(path.join(f.root, 'project.json'), '{}');
   assert.throws(() => configuration(f.root, 'x64', 'Release'), /generated app/);
 });
-test('ON accepts all 54 registered names and OFF preserves SDK registration only', () => {
-  assert.deepEqual(registry(jsonRegistry(allNames), 'ON'), {registeredVendorTests: 54, registeredNativeTests: 55});
+test('ON accepts all 78 registered names and OFF preserves SDK registration only', () => {
+  assert.deepEqual(registry(jsonRegistry(allNames), 'ON'), {registeredVendorTests: 78, registeredNativeTests: 83});
   assert.deepEqual(registry(jsonRegistry([sdkName]), 'OFF'), {registeredVendorTests: 0, registeredNativeTests: 1});
 });
 test('one missing, extra, duplicate or disabled vendor case rejects the whole registry', () => {
-  assert.throws(() => registry(jsonRegistry(allNames.slice(0, -1)), 'ON'), /all 54 exact names/);
-  assert.throws(() => registry(jsonRegistry([...allNames, 'kernel.native.unexpected']), 'ON'), /all 54 exact names/);
+  assert.throws(() => registry(jsonRegistry(allNames.filter(name => name !== manifest.names[0])), 'ON'), /all 78 exact names/);
+  assert.throws(() => registry(jsonRegistry([...allNames, 'kernel.native.unexpected']), 'ON'), /all 78 exact names/);
   assert.throws(() => registry(jsonRegistry([...allNames, manifest.names[0]]), 'ON'), /Duplicate/);
   const disabled = JSON.parse(jsonRegistry(allNames));
   disabled.tests[1].properties.push({name: 'DISABLED', value: true});
   assert.throws(() => registry(JSON.stringify(disabled), 'ON'), /disabled/);
+  const auxiliaryDisabled = JSON.parse(jsonRegistry(allNames));
+  auxiliaryDisabled.tests.find(item => item.name === manifest.auxiliaryNames[0]).properties.push({name: 'DISABLED', value: true});
+  assert.throws(() => registry(JSON.stringify(auxiliaryDisabled), 'ON'), /disabled/);
   assert.throws(() => registry(jsonRegistry(allNames), 'OFF'), /OFF cache conflicts/);
+  assert.throws(() => registry(jsonRegistry(allNames.filter(name => name !== manifest.auxiliaryNames[0])), 'ON'), /exact scheduler source contracts/);
+  assert.throws(() => registry(jsonRegistry([...allNames, 'scheduler.unexpected']), 'ON'), /exact scheduler source contracts/);
 });
 test('empty, malformed or SDK-free CTest output is not a zero-test success', () => {
   assert.throws(() => registry(jsonRegistry([]), 'OFF'), /empty/);
@@ -103,6 +108,8 @@ test('an actual registry subprocess error propagates instead of producing an acc
 
 test('manifest follows every actual vendor CMake case registration', () => {
   const leaves = ['tests/native/CMakeLists.txt', 'tests/native/vendor_lifetime/CMakeLists.txt',
+    'tests/native/input_ui_policies.cmake', 'tests/native/render_deadline_policy/CMakeLists.txt',
+    'tests/native/render_diagnostic_source/CMakeLists.txt', 'tests/native/host_visibility_source/CMakeLists.txt', 'tests/native/window_close_lifetime/CMakeLists.txt', 'tests/native/independent_wheel_source/CMakeLists.txt',
     'tests/native/vendor_lifetime/worker_lifetime/CMakeLists.txt', 'tests/native/vendor_lifetime/dragdata/CMakeLists.txt',
     'tests/native/vendor_lifetime/ctor_shell/CMakeLists.txt', 'tests/native/vendor_lifetime/legacy_drag/CMakeLists.txt',
     'tests/native/request_close/CMakeLists.txt'];
@@ -110,6 +117,7 @@ test('manifest follows every actual vendor CMake case registration', () => {
   for (const leaf of leaves) {
     const source = fs.readFileSync(path.join(repository, leaf), 'utf8');
     for (const match of source.matchAll(/add_test\(NAME\s+(kernel\.native\.[^\s)$]+)\s/g)) names.add(match[1]);
+    for (const match of source.matchAll(/soui_input_ui_policy_test\([^)]*\s+(kernel\.native\.[^\s)]+)\)/g)) names.add(match[1]);
     for (const loop of source.matchAll(/foreach\(case IN ITEMS\s+([^)]*)\)([\s\S]*?)endforeach\(\)/g)) {
       const items = loop[1].trim().split(/\s+/);
       for (const registration of loop[2].matchAll(/add_test\(NAME\s+(kernel\.native\.[^\s)]+)\s/g)) {
@@ -117,14 +125,46 @@ test('manifest follows every actual vendor CMake case registration', () => {
       }
     }
   }
-  assert.equal(names.size, 54);
+  assert.equal(names.size, 78);
   assert.deepEqual([...names].sort(), manifest.names);
+});
+
+test('auxiliary scheduler names bind the actual standalone source fixtures', () => {
+  const names = new Set();
+  for (const leaf of ['scheduler_continuation', 'scheduler_index']) {
+    const source = fs.readFileSync(path.join(repository, 'tests/native', leaf, 'CMakeLists.txt'), 'utf8');
+    for (const match of source.matchAll(/add_test\(NAME\s+(scheduler\.[^\s)$]+)\s/g)) names.add(match[1]);
+    for (const loop of source.matchAll(/foreach\(failure IN ITEMS\s+([^)]*)\)([\s\S]*?)endforeach\(\)/g)) {
+      for (const registration of loop[2].matchAll(/add_test\(NAME\s+(scheduler\.[^\s)]+)\s/g))
+        for (const failure of loop[1].trim().split(/\s+/)) names.add(registration[1].replace('${failure}', failure));
+    }
+  }
+  assert.deepEqual([...names].sort(), manifest.auxiliaryNames);
 });
 test('central vendor preflight covers the union of actual leaf source inputs', () => {
   const prefix = 'third_party/sources/miniblink/';
   const expected = new Set(['wke/wke.cpp', 'net/ActivatingObjCheck.cpp', 'net/ActivatingObjCheck.h',
     'wke/CursorDescriptorBroker.cpp', 'wke/CursorDescriptorBroker.h', 'wke/wke_cursor_broker.h',
-    'content/web_impl_win/TaskSchedulingPolicy.h'].map(relative => prefix + relative));
+    'content/web_impl_win/TaskSchedulingPolicy.h', 'content/web_impl_win/TaskSchedulingIndex.h',
+    'content/common/InputFrameTrace.cpp', 'content/common/InputFrameTrace.h',
+    'cc/trees/FrameDeadlinePolicy.h', 'cc/trees/LegacyPaintRetryPolicy.h',
+    'cc/trees/ResourceNotificationPolicy.h',
+    'cc/trees/RenderDiagnosticTrace.h', 'cc/trees/GpuSkiaSurface.cpp',
+    'cc/trees/FrameBufferLeasePolicy.h',
+    'cc/trees/InputFrameCoverage.h',
+    'cc/trees/IndependentInputTrace.h',
+    'cc/trees/ViewTraceIdentity.h',
+    'cc/trees/DrawFrameWakePolicy.h',
+    'cc/raster/RasterSchedulingPolicy.h',
+    'cc/raster/RasterCandidateBudget.h',
+    'content/browser/HostVisibilityPolicy.h',
+    'content/common/PaintLifetime.h',
+    'cc/input/ScrollController.h',
+    'cc/input/ScrollController.cpp',
+    'cc/trees/ScrollTreeSnapshot.h',
+    'cc/trees/ScrollTreeSnapshot.cpp',
+    'cc/trees/LayerTreeHost.cpp',
+    'wke/wkeWebWindow.cpp'].map(relative => prefix + relative));
   const worker = JSON.parse(fs.readFileSync(path.join(repository, 'tests/native/vendor_lifetime/worker_lifetime/source-map.json'), 'utf8'));
   worker.sources.forEach(source => expected.add(source.path));
   const legacy = JSON.parse(fs.readFileSync(path.join(repository, 'tests/native/vendor_lifetime/legacy_drag/source-map.json'), 'utf8'));
@@ -139,7 +179,7 @@ test('central vendor preflight covers the union of actual leaf source inputs', (
   const required = module.match(/set\(_soui_vendor_required\s+([\s\S]*?)\n\)/);
   assert.ok(required, 'Actual central required inputs are required');
   const actual = [...required[1].matchAll(/"([^"]+)"/g)].map(match => match[1]);
-  assert.equal(expected.size, 27);
+  assert.equal(expected.size, 50);
   assert.equal(new Set(actual).size, actual.length);
   assert.deepEqual(actual.sort(), [...expected].sort());
 });
@@ -154,7 +194,7 @@ test('private source freeze binds all actual required files and rejects one abse
   const required = moduleText.match(/set\(_soui_vendor_required\s+([\s\S]*?)\n\)/);
   assert.ok(required);
   const names = [...required[1].matchAll(/"([^"]+)"/g)].map(match => match[1]).sort();
-  assert.equal(names.length, 27);
+  assert.equal(names.length, 50);
   fs.mkdirSync(path.join(f.root, 'cmake'));
   fs.writeFileSync(path.join(f.root, 'cmake/SouiVendorTests.cmake'), moduleText);
   for (const [index, name] of names.entries()) {
@@ -190,4 +230,83 @@ test('real entrypoints reject unsupported vendor flag combinations before buildi
   const generated = run(path.join(f.root, 'tools/Build.ps1'), ['-WithVendorTests']);
   assert.notEqual(generated.status, 0);
   assert.match(generated.stderr + generated.stdout, /WithVendorTests requires the source devkit root/);
+});
+
+// Exercise CMake itself, independently of the synthetic cache/registry tests above.
+// These fixtures test configuration policy only; they do not compile a private kernel.
+function configureFixture(t, privateSource = 'absent') {
+  const parent = fs.realpathSync(os.tmpdir());
+  const root = fs.mkdtempSync(path.join(parent, 'soui-vendor-configure-'));
+  t.after(() => {
+    const resolved = fs.realpathSync(root);
+    assert.equal(path.dirname(resolved), parent);
+    assert.ok(path.basename(resolved).startsWith('soui-vendor-configure-'));
+    fs.rmSync(resolved, {recursive: true, force: true});
+  });
+  fs.mkdirSync(path.join(root, 'cmake'));
+  fs.copyFileSync(path.join(repository, 'cmake/SouiVendorTests.cmake'), path.join(root, 'cmake/SouiVendorTests.cmake'));
+  fs.writeFileSync(path.join(root, 'CMakeLists.txt'), 'cmake_minimum_required(VERSION 3.24)\n' +
+    'project(VendorConfigurationBoundary NONE)\noption(SOUI_BUILD_TESTS "SDK tests" ON)\ninclude(cmake/SouiVendorTests.cmake)\n');
+  const privateRoot = path.join(root, 'third_party/sources/miniblink');
+  if (privateSource !== 'absent') fs.mkdirSync(privateRoot, {recursive: true});
+  if (privateSource === 'complete') {
+    // Synthetic regular files suffice for this preflight. Do not require private
+    // sources just to run the portable SDK's configuration-policy tests.
+    const moduleText = fs.readFileSync(path.join(root, 'cmake/SouiVendorTests.cmake'), 'utf8');
+    const block = moduleText.match(/set\(_soui_vendor_required\s+([\s\S]*?)\n\)/);
+    assert.ok(block);
+    for (const match of block[1].matchAll(/"([^"]+)"/g)) {
+      const destination = path.join(root, match[1]);
+      fs.mkdirSync(path.dirname(destination), {recursive: true});
+      fs.writeFileSync(destination, '// Configuration-only fixture; not kernel source or build evidence.\n');
+    }
+  }
+  const configure = (args = []) => cp.spawnSync('cmake', ['-S', root, '-B', path.join(root, 'build'), ...args],
+    {encoding: 'utf8', windowsHide: true, timeout: 30000});
+  const cache = () => fs.readFileSync(path.join(root, 'build/CMakeCache.txt'), 'utf8');
+  return {root, privateRoot, configure, cache};
+}
+
+test('actual fresh CMake defaults portable sources OFF and preserves SDK tests ON', t => {
+  const f = configureFixture(t), result = f.configure();
+  assert.equal(result.status, 0, result.stderr || result.error?.message);
+  assert.match(f.cache(), /^SOUI_BUILD_VENDOR_TESTS:BOOL=OFF$/m);
+  assert.match(f.cache(), /^SOUI_BUILD_TESTS:BOOL=ON$/m);
+  assert.match(result.stdout, /vendor regression gate not evaluated/);
+});
+
+test('actual fresh CMake defaults a complete private root ON', t => {
+  const f = configureFixture(t, 'complete'), result = f.configure();
+  assert.equal(result.status, 0, result.stderr || result.error?.message);
+  assert.match(f.cache(), /^SOUI_BUILD_VENDOR_TESTS:BOOL=ON$/m);
+  assert.match(result.stdout, /existing source-byte gates still apply/);
+});
+
+for (const scenario of [
+  {name: 'absent root explicitly ON', source: 'absent', args: ['-DSOUI_BUILD_VENDOR_TESTS=ON'], error: /lack required regular files/},
+  {name: 'existing incomplete root by default', source: 'incomplete', args: [], error: /lack required regular files/},
+  {name: 'SDK tests OFF with vendor ON', source: 'complete', args: ['-DSOUI_BUILD_TESTS=OFF', '-DSOUI_BUILD_VENDOR_TESTS=ON'], error: /requires SOUI_BUILD_TESTS=ON/},
+  {name: 'required source replaced by a directory', source: 'complete', args: [], directory: true, error: /lack required regular files/},
+]) {
+  test('actual CMake rejects ' + scenario.name, t => {
+    const f = configureFixture(t, scenario.source);
+    if (scenario.directory) {
+      const file = path.join(f.privateRoot, 'wke/wke.cpp');
+      fs.unlinkSync(file); fs.mkdirSync(file);
+    }
+    const result = f.configure(scenario.args);
+    assert.equal(result.signal, null); assert.equal(result.error, undefined);
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr + result.stdout, scenario.error);
+  });
+}
+
+test('actual CMake keeps cached ON and refuses a later missing private input', t => {
+  const f = configureFixture(t, 'complete');
+  assert.equal(f.configure().status, 0);
+  fs.unlinkSync(path.join(f.privateRoot, 'wke/wke.cpp'));
+  const result = f.configure();
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /lack required regular files/);
+  assert.match(f.cache(), /^SOUI_BUILD_VENDOR_TESTS:BOOL=ON$/m);
 });

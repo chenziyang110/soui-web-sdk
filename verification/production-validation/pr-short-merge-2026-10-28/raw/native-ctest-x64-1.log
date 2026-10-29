@@ -1,0 +1,190 @@
+Test project C:/pm-build/x64-19041
+      Start   6: sdk.native.source-kernel-api
+      Start   8: kernel.native.fractional-frame-phase
+      Start   9: kernel.native.resource-notification-policy
+      Start  10: kernel.native.frame-buffer-lease-policy
+ 1/88 Test   #8: kernel.native.fractional-frame-phase ..............................   Passed    0.23 sec
+ 2/88 Test   #9: kernel.native.resource-notification-policy ........................   Passed    0.15 sec
+      Start  11: kernel.native.input-frame-coverage
+      Start  12: kernel.native.raster-scheduling-policy
+ 3/88 Test   #6: sdk.native.source-kernel-api ......................................   Passed    0.51 sec
+ 4/88 Test  #10: kernel.native.frame-buffer-lease-policy ...........................   Passed    0.27 sec
+ 5/88 Test  #11: kernel.native.input-frame-coverage ................................   Passed    0.19 sec
+      Start  13: kernel.native.render-scene-transaction
+      Start  14: kernel.native.independent-input-trace
+      Start  15: kernel.native.input-frame-trace
+ 6/88 Test  #12: kernel.native.raster-scheduling-policy ............................   Passed    0.37 sec
+ 7/88 Test  #13: kernel.native.render-scene-transaction ............................   Passed    0.26 sec
+ 8/88 Test  #14: kernel.native.independent-input-trace .............................   Passed    0.18 sec
+      Start  18: kernel.native.scheduler-fairness
+      Start  67: sdk.native.input-frame-backend-validation
+      Start  68: sdk.native.input-mailbox
+ 9/88 Test  #67: sdk.native.input-frame-backend-validation .........................   Passed    0.17 sec
+      Start  69: kernel.native.legacy-paint-deadline
+10/88 Test  #18: kernel.native.scheduler-fairness ..................................   Passed    0.35 sec
+11/88 Test  #15: kernel.native.input-frame-trace ...................................   Passed    0.45 sec
+      Start  70: kernel.native.window-close-lifetime-source
+      Start  71: kernel.native.independent-wheel-source
+12/88 Test  #68: sdk.native.input-mailbox ..........................................***Failed    0.37 sec
+input context did not survive actual FIFO
+
+13/88 Test  #69: kernel.native.legacy-paint-deadline ...............................   Passed    0.29 sec
+14/88 Test  #70: kernel.native.window-close-lifetime-source ........................   Passed    0.20 sec
+      Start  72: kernel.native.host-visibility-source
+      Start  73: kernel.native.render-diagnostic-source
+      Start  74: scheduler.continuation.contract
+15/88 Test  #71: kernel.native.independent-wheel-source ............................   Passed    0.38 sec
+16/88 Test  #72: kernel.native.host-visibility-source ..............................   Passed    0.28 sec
+17/88 Test  #73: kernel.native.render-diagnostic-source ............................   Passed    0.19 sec
+      Start  75: scheduler.deadline.close-failure
+      Start  76: scheduler.deadline.unregister-failure
+      Start  77: scheduler.index.contract
+18/88 Test  #74: scheduler.continuation.contract ...................................   Passed    0.29 sec
+      Start  78: kernel.native.lifetime.endpoint-empty-registry
+19/88 Test  #78: kernel.native.lifetime.endpoint-empty-registry ....................   Passed    0.11 sec
+      Start  79: kernel.native.lifetime.endpoint-second-vector-growth-fault
+20/88 Test  #79: kernel.native.lifetime.endpoint-second-vector-growth-fault ........   Passed    0.02 sec
+      Start  80: kernel.native.lifetime.endpoint-all-allocation-forbidden
+21/88 Test  #80: kernel.native.lifetime.endpoint-all-allocation-forbidden ..........   Passed    0.02 sec
+      Start  81: kernel.native.lifetime.endpoint-create-allocation-failure
+22/88 Test  #81: kernel.native.lifetime.endpoint-create-allocation-failure .........   Passed    0.02 sec
+      Start  82: kernel.native.lifetime.endpoint-create-registry-growth-failure
+23/88 Test  #76: scheduler.deadline.unregister-failure .............................   Passed    0.35 sec
+      Start  83: kernel.native.lifetime.endpoint-create-success
+24/88 Test  #82: kernel.native.lifetime.endpoint-create-registry-growth-failure ....   Passed    0.03 sec
+      Start  84: kernel.native.lifetime.endpoint-create-invalid
+25/88 Test  #83: kernel.native.lifetime.endpoint-create-success ....................   Passed    0.02 sec
+      Start  85: kernel.native.lifetime.activation-insert-failure-lock-release
+26/88 Test  #75: scheduler.deadline.close-failure ..................................   Passed    0.50 sec
+      Start  86: kernel.native.lifetime.activation-snapshot-failure-lock-release
+27/88 Test  #84: kernel.native.lifetime.endpoint-create-invalid ....................   Passed    0.10 sec
+      Start  87: kernel.native.worker-lifetime.scheduler-new-bad-alloc
+28/88 Test  #85: kernel.native.lifetime.activation-insert-failure-lock-release .....   Passed    0.20 sec
+      Start  88: kernel.native.worker-lifetime.event-null
+29/88 Test  #86: kernel.native.lifetime.activation-snapshot-failure-lock-release ...   Passed    0.13 sec
+      Start  89: kernel.native.worker-lifetime.native-launch-zero
+30/88 Test  #87: kernel.native.worker-lifetime.scheduler-new-bad-alloc .............   Passed    0.13 sec
+      Start  90: kernel.native.worker-lifetime.registry-reserve-bad-alloc
+31/88 Test  #88: kernel.native.worker-lifetime.event-null ..........................   Passed    0.05 sec
+      Start  91: kernel.native.worker-lifetime.startup-tls-failure
+32/88 Test  #89: kernel.native.worker-lifetime.native-launch-zero ..................   Passed    0.04 sec
+      Start  92: kernel.native.worker-lifetime.ready-acquire-visibility
+33/88 Test  #90: kernel.native.worker-lifetime.registry-reserve-bad-alloc ..........   Passed    0.04 sec
+      Start  93: kernel.native.worker-lifetime.native-exit-delayed
+34/88 Test  #91: kernel.native.worker-lifetime.startup-tls-failure .................   Passed    0.03 sec
+      Start  94: kernel.native.worker-lifetime.native-wait-fails
+35/88 Test  #93: kernel.native.worker-lifetime.native-exit-delayed .................   Passed    0.05 sec
+      Start  95: kernel.native.worker-lifetime.worker-self-delete
+36/88 Test  #94: kernel.native.worker-lifetime.native-wait-fails ...................   Passed    0.12 sec
+      Start  96: kernel.native.worker-lifetime.normal-worker-close
+37/88 Test  #77: scheduler.index.contract ..........................................   Passed    0.76 sec
+      Start  97: kernel.native.worker-lifetime.concurrent-registry-close
+38/88 Test  #95: kernel.native.worker-lifetime.worker-self-delete ..................   Passed    0.14 sec
+      Start  98: kernel.native.worker-lifetime.registry-live-fence
+39/88 Test  #96: kernel.native.worker-lifetime.normal-worker-close .................   Passed    0.10 sec
+      Start  99: kernel.native.worker-lifetime.main-thread-compatibility
+40/88 Test  #97: kernel.native.worker-lifetime.concurrent-registry-close ...........   Passed    0.11 sec
+      Start 100: kernel.native.worker-lifetime.main-scheduler-task-budget
+41/88 Test  #99: kernel.native.worker-lifetime.main-thread-compatibility ...........   Passed    0.04 sec
+      Start 101: kernel.native.worker-lifetime.main-scheduler-clock-budget
+42/88 Test  #98: kernel.native.worker-lifetime.registry-live-fence .................   Passed    0.12 sec
+      Start 102: kernel.native.worker-lifetime.main-scheduler-continuation
+43/88 Test #102: kernel.native.worker-lifetime.main-scheduler-continuation .........   Passed    0.03 sec
+      Start 103: kernel.native.worker-lifetime.main-scheduler-first-task-wake
+44/88 Test #103: kernel.native.worker-lifetime.main-scheduler-first-task-wake ......   Passed    0.03 sec
+      Start 104: kernel.native.worker-lifetime.main-scheduler-admission-budget
+45/88 Test #104: kernel.native.worker-lifetime.main-scheduler-admission-budget .....   Passed    0.04 sec
+      Start 105: kernel.native.worker-lifetime.main-scheduler-admission-shutdown
+46/88 Test #105: kernel.native.worker-lifetime.main-scheduler-admission-shutdown ...   Passed    0.03 sec
+      Start 106: kernel.native.worker-lifetime.worker-scheduler-no-count-cap
+47/88 Test #106: kernel.native.worker-lifetime.worker-scheduler-no-count-cap .......   Passed    0.05 sec
+      Start 107: kernel.native.worker-lifetime.worker-scheduler-clock-budget
+48/88 Test #107: kernel.native.worker-lifetime.worker-scheduler-clock-budget .......   Passed    0.04 sec
+      Start 108: kernel.native.worker-lifetime.main-scheduler-shutdown-drain
+49/88 Test #108: kernel.native.worker-lifetime.main-scheduler-shutdown-drain .......   Passed    0.03 sec
+      Start 109: kernel.native.worker-lifetime.main-scheduler-pre-shutdown-drain
+50/88 Test #109: kernel.native.worker-lifetime.main-scheduler-pre-shutdown-drain ...   Passed    0.04 sec
+      Start 110: kernel.native.lifetime.dragdata-array-allocation-failure
+51/88 Test #101: kernel.native.worker-lifetime.main-scheduler-clock-budget .........   Passed    0.45 sec
+      Start 111: kernel.native.lifetime.dragdata-utf8-partial-string-failure
+52/88 Test #110: kernel.native.lifetime.dragdata-array-allocation-failure ..........   Passed    0.12 sec
+      Start 112: kernel.native.lifetime.dragdata-utf8-later-item-failure
+53/88 Test #111: kernel.native.lifetime.dragdata-utf8-partial-string-failure .......   Passed    0.03 sec
+      Start 113: kernel.native.lifetime.dragdata-downstream-owned-copy-failure
+54/88 Test #112: kernel.native.lifetime.dragdata-utf8-later-item-failure ...........   Passed    0.03 sec
+      Start 114: kernel.native.lifetime.dragdata-callback-unwind-counts
+55/88 Test #113: kernel.native.lifetime.dragdata-downstream-owned-copy-failure .....   Passed    0.03 sec
+      Start 115: kernel.native.lifetime.dragdata-callback-argument-unwind-counts
+56/88 Test #114: kernel.native.lifetime.dragdata-callback-unwind-counts ............   Passed    0.03 sec
+      Start 116: kernel.native.lifetime.dragdata-controlled-257-invalid
+57/88 Test #100: kernel.native.worker-lifetime.main-scheduler-task-budget ..........   Passed    0.54 sec
+      Start 117: kernel.native.lifetime.dragdata-legacy-257-preserved
+58/88 Test #115: kernel.native.lifetime.dragdata-callback-argument-unwind-counts ...   Passed    0.03 sec
+      Start 118: kernel.native.lifetime.dragdata-custom-257-preserved
+59/88 Test #116: kernel.native.lifetime.dragdata-controlled-257-invalid ............   Passed    0.03 sec
+      Start 119: kernel.native.lifetime.dragdata-mixed-success-releases
+60/88 Test #117: kernel.native.lifetime.dragdata-legacy-257-preserved ..............   Passed    0.03 sec
+      Start 120: kernel.native.lifetime.dragdata-empty-success-releases
+61/88 Test #118: kernel.native.lifetime.dragdata-custom-257-preserved ..............   Passed    0.03 sec
+      Start 121: kernel.native.lifetime.ctor_shell-shell-success
+62/88 Test #119: kernel.native.lifetime.dragdata-mixed-success-releases ............   Passed    0.13 sec
+      Start 122: kernel.native.lifetime.ctor_shell-handler-before-publication
+63/88 Test #120: kernel.native.lifetime.dragdata-empty-success-releases ............   Passed    0.14 sec
+      Start 123: kernel.native.lifetime.ctor_shell-view-success
+64/88 Test #121: kernel.native.lifetime.ctor_shell-shell-success ...................   Passed    0.15 sec
+      Start 124: kernel.native.lifetime.ctor_shell-activation-failure
+65/88 Test #122: kernel.native.lifetime.ctor_shell-handler-before-publication ......   Passed    0.05 sec
+66/88 Test  #92: kernel.native.worker-lifetime.ready-acquire-visibility ............   Passed    1.03 sec
+      Start 125: kernel.native.lifetime.ctor_shell-view-handler-rollback
+      Start 126: kernel.native.lifetime.ctor_shell-engine-terminate
+67/88 Test #123: kernel.native.lifetime.ctor_shell-view-success ....................   Passed    0.06 sec
+      Start 127: kernel.native.lifetime.ctor_shell-live-insert-terminate
+68/88 Test #124: kernel.native.lifetime.ctor_shell-activation-failure ..............   Passed    0.05 sec
+69/88 Test #125: kernel.native.lifetime.ctor_shell-view-handler-rollback ...........   Passed    0.04 sec
+      Start 128: kernel.native.lifetime.legacy_drag-task-allocation-fails
+      Start 129: kernel.native.lifetime.legacy_drag-synchronous-success
+70/88 Test #126: kernel.native.lifetime.ctor_shell-engine-terminate ................   Passed    0.13 sec
+      Start 130: kernel.native.lifetime.legacy_drag-synchronous-consumer-fails
+71/88 Test #127: kernel.native.lifetime.ctor_shell-live-insert-terminate ...........   Passed    0.13 sec
+      Start 131: kernel.native.request-close.ordinary-first-menu
+72/88 Test #128: kernel.native.lifetime.legacy_drag-task-allocation-fails ..........   Passed    0.23 sec
+73/88 Test #129: kernel.native.lifetime.legacy_drag-synchronous-success ............   Passed    0.14 sec
+      Start 132: kernel.native.request-close.queued-no-readmission
+      Start 133: kernel.native.request-close.running-no-readmission
+74/88 Test #130: kernel.native.lifetime.legacy_drag-synchronous-consumer-fails .....   Passed    0.17 sec
+      Start 134: kernel.native.request-close.sticky-failed-pending-menu
+75/88 Test #131: kernel.native.request-close.ordinary-first-menu ...................   Passed    0.17 sec
+      Start 135: kernel.native.request-close.genuine-menu-empty-retry
+76/88 Test #132: kernel.native.request-close.queued-no-readmission .................   Passed    0.09 sec
+      Start 136: kernel.native.request-close.menu-callout-reentrant
+77/88 Test #133: kernel.native.request-close.running-no-readmission ................   Passed    0.08 sec
+      Start 137: kernel.native.request-close.post-menu-drain-no-readmission
+78/88 Test #134: kernel.native.request-close.sticky-failed-pending-menu ............   Passed    0.07 sec
+      Start 138: kernel.native.request-close.failed-menu-drained-no-readmission
+79/88 Test #135: kernel.native.request-close.genuine-menu-empty-retry ..............   Passed    0.07 sec
+      Start 139: kernel.native.request-close.native-admission-fault-empty-retry
+80/88 Test #136: kernel.native.request-close.menu-callout-reentrant ................   Passed    0.06 sec
+      Start 140: kernel.native.request-close.com-ledger-empty-retry
+81/88 Test #137: kernel.native.request-close.post-menu-drain-no-readmission ........   Passed    0.06 sec
+      Start 141: kernel.native.request-close.boundary-exhausted-drain
+82/88 Test #138: kernel.native.request-close.failed-menu-drained-no-readmission ....   Passed    0.06 sec
+      Start 220: sdk.native.host-frame-policy
+83/88 Test #140: kernel.native.request-close.com-ledger-empty-retry ................   Passed    0.14 sec
+84/88 Test #139: kernel.native.request-close.native-admission-fault-empty-retry ....   Passed    0.16 sec
+85/88 Test #141: kernel.native.request-close.boundary-exhausted-drain ..............   Passed    0.13 sec
+      Start 221: sdk.native.native-trace-ui-lease
+      Start 222: sdk.native.webview2-owner-policy
+86/88 Test #220: sdk.native.host-frame-policy ......................................   Passed    0.32 sec
+87/88 Test #221: sdk.native.native-trace-ui-lease ..................................***Failed    0.19 sec
+different getter/module reused stale native lease
+
+88/88 Test #222: sdk.native.webview2-owner-policy ..................................   Passed    0.10 sec
+
+98% tests passed, 2 tests failed out of 88
+
+Total Test time (real) =   4.12 sec
+
+The following tests FAILED:
+	 68 - sdk.native.input-mailbox (Failed)
+	221 - sdk.native.native-trace-ui-lease (Failed)
+Errors while running CTest

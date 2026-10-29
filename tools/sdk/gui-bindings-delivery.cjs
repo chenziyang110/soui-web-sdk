@@ -13,6 +13,9 @@ const packages = [
     import: `dist/${framework}/src/index.js`, types: `dist/${framework}/src/index.d.ts`, framework}))
 ];
 const previousPeerRange = '>=0.4.0-0 <0.5.0 || >=0.5.0-0 <0.6.0';
+const mitPeerRange = '>=0.4.0-0 <0.5.0 || >=0.5.0-0 <0.5.1 || >=0.5.1-0 <0.6.0';
+const mainPreviewPeerRange = mitPeerRange + ' || 0.6.0-preview.3';
+const peerRange = mainPreviewPeerRange + ' || 0.6.0';
 const previewPeerRanges = new Map([
   ['0.6.0-preview.1', previousPeerRange + ' || 0.6.0-preview.1'],
   ['0.6.0-preview.2', previousPeerRange + ' || 0.6.0-preview.2'],
@@ -41,6 +44,7 @@ function metadata(root, version = versionOf(root)) {
   // stable lines and prerelease tuples covered by that declaration may use it.
   const acceptsPreviousPeer = /^0\.[45]\.(0|[1-9][0-9]*)$/.test(version) ||
     /^0\.[45]\.0-(preview|rc)\.(0|[1-9][0-9]*)$/.test(version);
+  const acceptsMitPeer = acceptsPreviousPeer || /^0\.5\.1-(preview|rc)\.(0|[1-9][0-9]*)$/.test(version);
   const previewPeer = previewPeerRanges.get(version);
   for (const entry of packages) {
     const meta = read(root, `${entry.root}/package.json`), lock = read(root, `${entry.root}/package-lock.json`);
@@ -52,12 +56,16 @@ function metadata(root, version = versionOf(root)) {
     if (entry.framework) {
       const nativePeer = meta.peerDependencies?.['@soui/native-sdk'];
       const acceptsNativePeer = (previewPeer !== undefined && nativePeer === previewPeer) ||
-        (acceptsPreviousPeer && (nativePeer === previousPeerRange || nativePeer === previewPeerRanges.get('0.6.0-preview.1')));
+        (acceptsPreviousPeer && (nativePeer === previousPeerRange || nativePeer === previewPeerRanges.get('0.6.0-preview.1'))) ||
+        (acceptsMitPeer && [mitPeerRange, mainPreviewPeerRange, peerRange].includes(nativePeer)) ||
+        (version === '0.6.0-preview.3' && nativePeer === mainPreviewPeerRange) ||
+        (version === '0.6.0' && nativePeer === peerRange);
       const lockPeers = lock.packages[''].peerDependencies;
-      // Preserve the previous producers' minimal lock shape. The new preview
-      // requires the root peer declaration, and any supplied declaration must
-      // agree exactly with package.json rather than hiding a different peer.
-      const matchingLockPeers = lockPeers === undefined ? !['0.6.0-preview.3', '0.6.0-preview.4', '0.6.0-preview.5', '0.6.0-preview.6', '0.6.0-preview.7', '0.6.0-preview.8', '0.6.0-preview.9'].includes(version) :
+      // Preserve old producer spellings/lock shapes. Only the exact p9 preview
+      // contracts from .3 onward and the new stable contract require root peers.
+      const requiresLockPeers = version === '0.6.0' || (nativePeer === previewPeer &&
+        ['0.6.0-preview.3', '0.6.0-preview.4', '0.6.0-preview.5', '0.6.0-preview.6', '0.6.0-preview.7', '0.6.0-preview.8', '0.6.0-preview.9'].includes(version));
+      const matchingLockPeers = lockPeers === undefined ? !requiresLockPeers :
         lockPeers && typeof lockPeers === 'object' && !Array.isArray(lockPeers) &&
         Object.keys(lockPeers).sort().join(',') === ['@soui/native-sdk', entry.framework].sort().join(',') &&
         Object.entries(lockPeers).every(([name, value]) => value === meta.peerDependencies?.[name]);

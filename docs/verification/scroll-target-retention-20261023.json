@@ -1,0 +1,430 @@
+{
+  "schema": "soui.scroll-target-retention-regression/v1",
+  "recordedDate": "2026-10-23",
+  "status": "第二版双架构主 native 回归及完整 x86 内核编译通过；真实宿主返回与取消关闭可用，滚动 epoch 连续性中断，目标守恒及 producer 闭环验收未通过，独立收缩问题保留",
+  "overallPassed": false,
+  "targetedNativeRegressionPassed": true,
+  "releaseReady": false,
+  "scope": "生产 ScrollController/ScrollTreeSnapshot 的独立 native 回归及完整 x86 内核构建文件绑定；不替代真实内核运行或 GUI 验收",
+  "environment": {
+    "execution": "隔离 Windows 来宾",
+    "osVersion": "10.0.19045.0",
+    "configuration": "Release",
+    "toolset": "v143",
+    "windowsSdk": "10.0.19041.0",
+    "runtime": "MultiThreaded",
+    "architectures": ["x86", "x64"]
+  },
+  "sourceIdentity": {
+    "parentCommit": "bc2fa4e974fc65cf28ed0201e38debfe1c2966ec",
+    "controllerPath": "third_party/sources/miniblink/cc/input/ScrollController.cpp",
+    "baselineControllerSha256": "196A0E1A7D45DD9D930436712A6740A62348D7F1CEECCAA99A5D1958C5F08DD6",
+    "firstCandidateControllerSha256": "23624807419B68681A374AA7EA4D8F3F432B03694C3135163140F6580A24B41F",
+    "revisedControllerSha256": "3C0D023013007D3C8269F436C098552001C216D2AC7103F218E4AC8CB60BDEF8",
+    "currentControllerHeaderSha256": "F526FDC590B77FEC6241296F29C4D1396D672D2E9C75EAA072D36EE73A86CD77",
+    "currentLayerTreeHostCppSha256": "266E5DA6E3BF5530168F3BE090DDBBB80674859F4894BE15329670F3C83C2006",
+    "originalOraclePath": "tests/native/scroll_target_retention/accepted_target_retention_tests.cpp",
+    "originalOracleSha256": "4407D57B583B40DBDB6B90E1D06AEC9E4AD88C1CA0945B7CB9FB807472D5A4EE",
+    "originalOracleByteIdenticalToBaselineFixture": true,
+    "boundaryFixturePath": "tests/native/scroll_target_retention/target_retention_boundary_tests.cpp",
+    "boundaryFixtureSha256": "DBEB5391C0F506645FFFB142F864A9B4D469D397510BEF16A7A9570FC07E338A",
+    "coverageFixturePath": "tests/native/scroll_coverage/scroll_coverage_tests.cpp",
+    "coverageFixtureSha256": "A87A78A3841D8869FB2A3B01B888E0CAD5A32A5009CA8041C6D72837B5F7FBA3",
+    "allThreeFixturesByteIdenticalToFirstCandidateRun": true,
+    "movementEpsilon": 0.000001
+  },
+  "oracle": {
+    "realBoundsY": [0, 1000],
+    "initialReadyCoverageY": [0, 300],
+    "inputs": [
+      {"deltaY": 250, "smooth": false},
+      {"deltaY": 100, "smooth": true}
+    ],
+    "expectedEndpointY": 350,
+    "sameScrollEpoch": true,
+    "mustRemainInsideReadyCoverage": true,
+    "expectedFailureDoesNotInvertExitCode": true
+  },
+  "baselineRed": {
+    "status": "已复现，真实失败保留",
+    "testPassed": false,
+    "casesPerArchitecture": [
+      {"scenario": "expand-before-second-input", "accepted": 2, "coverageSafe": true, "endpointY": 349.99999925233919, "passed": true},
+      {"scenario": "expand-after-motion", "accepted": 2, "coverageSafe": true, "endpointY": 299.99999936159156, "passed": false}
+    ],
+    "executions": [
+      {
+        "architecture": "x86",
+        "executableSha256": "461B23E730371D6ADAD222495D11D6BD058398269B498EB288A7A401F684DEF3",
+        "stdoutSha256": "882A169040A85C338F033290F36314F083C96AD57359187436ABAB9A7D7BB6BB",
+        "guestHashMatched": true,
+        "stateRecords": 610,
+        "allRecordedStatesCovered": true,
+        "passed": 1,
+        "failed": 1,
+        "exitCode": 1
+      },
+      {
+        "architecture": "x64",
+        "executableSha256": "6CACE17232F8F61AD44BE2F858F242FB43D891268DBB9A10A2F16C3D72E44CE1",
+        "stdoutSha256": "DDC80C6C7285866322A786DD5442A8962E954A141DD903A187613CCAE958C791",
+        "guestHashMatched": true,
+        "stateRecords": 610,
+        "allRecordedStatesCovered": true,
+        "passed": 1,
+        "failed": 1,
+        "exitCode": 1
+      }
+    ],
+    "suiteExitCode": 1,
+    "allExitsCaptured": true,
+    "serialWriteFailed": false
+  },
+  "firstCandidateRun": {
+    "status": "边界失败保留；未通过整套回归",
+    "testPassed": false,
+    "earlyEndpointY": 349.99999925233919,
+    "lateEndpointY": 349.99999936159156,
+    "acceptedPerScenario": 2,
+    "allOracleRecordedStatesCovered": true,
+    "failedBoundaryCases": ["real-content-bounds", "saturated-target-noop"],
+    "failureExplanation": "真实末端约 7e-7 的舍入残差被严格不等误判为在途目标，额外外向输入未拒绝；第二版改用既有 1e-6 移动阈值，后续运行结果独立记录",
+    "executions": [
+      {
+        "id": "original-x86",
+        "architecture": "x86",
+        "executableSha256": "ADFA0EB0625C9946F2B496AA9EABA1B0D1FB61E0C2A856868EEFAABF5D9AF40E",
+        "stdoutSha256": "EDDAB343225719811D3C6CE67BBAF338B723BF9A09085FDE5136E7554E7B7AE2",
+        "passed": 2, "failed": 0, "exitCode": 0
+      },
+      {
+        "id": "boundaries-x86",
+        "architecture": "x86",
+        "executableSha256": "31894BCD2090DE36025DB494D94D80CD273267134FB645C5D2B9325E32157664",
+        "stdoutSha256": "9164050147F43B42E257627C36347E922B952D0AA1560096BF7AA672A0F15CD1",
+        "passed": 17, "failed": 2, "exitCode": 1
+      },
+      {
+        "id": "coverage-x86",
+        "architecture": "x86",
+        "executableSha256": "D17427EF5E2805D6B70736810EC5722A19AA31AFEBD0E6664C9774418FBD11A5",
+        "stdoutSha256": "A07B14F2A79F25D461AEAD846F1B8CF47E1A5AC7E5BFC1F586751348ADE52782",
+        "passed": 13, "failed": 0, "exitCode": 0
+      },
+      {
+        "id": "original-x64",
+        "architecture": "x64",
+        "executableSha256": "55A0064EF5E145E5BA4FDD549C2D64E496B8816BF64C44E4A2630BD9BD5429FE",
+        "stdoutSha256": "3FD57EF3375EA5E81B6C844C3D096466B64414C227F1B3D4E60878237665049E",
+        "passed": 2, "failed": 0, "exitCode": 0
+      },
+      {
+        "id": "boundaries-x64",
+        "architecture": "x64",
+        "executableSha256": "A35FA3D4C90206BC3F9EAFB770673EAE2982268AE854494ABE18D3E40105BCEA",
+        "stdoutSha256": "095D317F137BD97C00003FF598315D08C67B23778F4F2A8151A2186D366E02D2",
+        "passed": 17, "failed": 2, "exitCode": 1
+      },
+      {
+        "id": "coverage-x64",
+        "architecture": "x64",
+        "executableSha256": "3888AD13A328C0F01B119A6B32EE8708FFC66F34E6D6F6625B7C2750237C8E2A",
+        "stdoutSha256": "A07B14F2A79F25D461AEAD846F1B8CF47E1A5AC7E5BFC1F586751348ADE52782",
+        "passed": 13, "failed": 0, "exitCode": 0
+      }
+    ],
+    "allGuestTraceHashesMatched": true,
+    "allExitsCaptured": true,
+    "processesCompleted": 6,
+    "processesPlanned": 6,
+    "serialWriteFailed": false,
+    "suiteExitCode": 1
+  },
+  "revisedCandidate": {
+    "status": "原始 oracle、19 项边界及既有 13 项回归均在两架构通过",
+    "nativeBuildPassed": true,
+    "buildArchitectures": ["x86", "x64"],
+    "runtimePassed": true,
+    "runtimeScope": "独立 Controller/Snapshot 主回归",
+    "runtimeResultsInheritedFromFirstCandidate": false,
+    "knownContractionDiagnosticIncludedInMainPassCount": false,
+    "sourceUnchangedDuringBuild": true,
+    "runtimeExecutablesMatchBuild": true,
+    "allGuestTraceHashesMatched": true,
+    "allExitsCaptured": true,
+    "processesCompleted": 6,
+    "processesPlanned": 6,
+    "serialWriteFailed": false,
+    "suiteExitCode": 0,
+    "earlyEndpointY": 349.99999925233919,
+    "lateEndpointY": 349.99999936159156,
+    "allOracleRecordedStatesCovered": true,
+    "executions": [
+      {
+        "id": "original-x86", "architecture": "x86",
+        "executableSha256": "6F609E27529D16ED67D2A135AB3966D6546CF3E306EF394BAC89F8EC958CFBA3",
+        "stdoutSha256": "EDDAB343225719811D3C6CE67BBAF338B723BF9A09085FDE5136E7554E7B7AE2",
+        "passed": 2, "failed": 0, "exitCode": 0
+      },
+      {
+        "id": "boundaries-x86", "architecture": "x86",
+        "executableSha256": "2FFC5060353101D916152A71894C154A6E03F5DBD61FD96B46226F87086258E0",
+        "stdoutSha256": "B6306B4F3C1F3C0B9D3DE753C0F485A135CA3FA7DCB012C27DA0126BA7934D5D",
+        "passed": 19, "failed": 0, "exitCode": 0
+      },
+      {
+        "id": "coverage-x86", "architecture": "x86",
+        "executableSha256": "E6728F423E97CC65B5611C0E9786CDA51BDB5DBAA004F71894A360FD9F159855",
+        "stdoutSha256": "A07B14F2A79F25D461AEAD846F1B8CF47E1A5AC7E5BFC1F586751348ADE52782",
+        "passed": 13, "failed": 0, "exitCode": 0
+      },
+      {
+        "id": "original-x64", "architecture": "x64",
+        "executableSha256": "EDAC2746B06C445E36027AF88C452223E2E41CA64DF8463BB1CD5365EA229A1B",
+        "stdoutSha256": "3FD57EF3375EA5E81B6C844C3D096466B64414C227F1B3D4E60878237665049E",
+        "passed": 2, "failed": 0, "exitCode": 0
+      },
+      {
+        "id": "boundaries-x64", "architecture": "x64",
+        "executableSha256": "FFC0F19AB480711D8ED704E09EF81AD2F1F516A1980EED3F46FF1420728D3602",
+        "stdoutSha256": "408B7FE3CA914B332CA866A23154EFD982AD6E7B9E3FF015C9D0C95E1CA36C05",
+        "passed": 19, "failed": 0, "exitCode": 0
+      },
+      {
+        "id": "coverage-x64", "architecture": "x64",
+        "executableSha256": "3976F61EBB3833E8993ED61161C1F851A90BDAAF1C1C1D894F3BAD5611038A54",
+        "stdoutSha256": "A07B14F2A79F25D461AEAD846F1B8CF47E1A5AC7E5BFC1F586751348ADE52782",
+        "passed": 13, "failed": 0, "exitCode": 0
+      }
+    ]
+  },
+  "harnessAttemptWithoutResults": {
+    "status": "未取得可验证的测试结果",
+    "observationSource": "现场验收者报告",
+    "observed": "确认启动后窗口关闭，未取得新测试事件或退出回执",
+    "testsExecuted": null,
+    "testExecutionConfirmed": false,
+    "capturedExitCode": null,
+    "separateStaticReproduction": "PowerShell 5 清单数组构造与运算优先级问题已独立复现并修正",
+    "staticReproductionIsGuestErrorOutput": false,
+    "runtimeCauseProven": false,
+    "replacementMediaPrepared": true
+  },
+  "firstCandidateFullKernelBuild": {
+    "architecture": "x86",
+    "status": "边界失败后受控停止，未通过",
+    "elapsedMs": 375532,
+    "exitCode": 124,
+    "stopRequested": true,
+    "closureConfirmed": true,
+    "activeProcesses": 0,
+    "passed": false,
+    "evidencePreserved": true
+  },
+  "knownCoverageContraction": {
+    "scope": "同 epoch 覆盖收缩排除当前 visual 后再扩大，可能重放旧 consumed 位置或反向校正",
+    "separateFromTargetRetention": true,
+    "fixedByThisPatch": false,
+    "status": "旧基线与首版修复两架构均已执行并失败；第二版未执行此独立诊断",
+    "executedCount": 4,
+    "comparison": "旧基线/首版修复 controller × x86/x64",
+    "oldControllerSha256": "196A0E1A7D45DD9D930436712A6740A62348D7F1CEECCAA99A5D1958C5F08DD6",
+    "firstCandidateControllerSha256": "23624807419B68681A374AA7EA4D8F3F432B03694C3135163140F6580A24B41F",
+    "revisedEpsilonControllerTested": false,
+    "sameOracleSha256": "DBEB5391C0F506645FFFB142F864A9B4D469D397510BEF16A7A9570FC07E338A",
+    "visualAfterShrinkY": 200,
+    "visualAfterExpandBeforeNextSampleY": 250,
+    "failedCase": "coverage-shrink-expand-no-replay",
+    "option": "SOUI_BUILD_SCROLL_CONTRACTION_DIAGNOSTIC",
+    "defaultEnabled": false,
+    "expectedFailureIsPassing": false,
+    "actualExitCodes": [1, 1, 1, 1],
+    "allGuestTraceHashesMatched": true,
+    "executions": [
+      {
+        "id": "contraction-new-x86", "architecture": "x86", "sourceRevision": "首版修复",
+        "executableSha256": "8C47B96822A51E664850C854E6F5F1ED63F8E089B6F758981609EE5DDA14FD1A",
+        "stdoutSha256": "013FD72A0378F410B5747F2764E100749EF56FD08DDF640D644F2AEC2781F799",
+        "passed": 0, "failed": 1, "exitCode": 1
+      },
+      {
+        "id": "contraction-new-x64", "architecture": "x64", "sourceRevision": "首版修复",
+        "executableSha256": "83F997D381E3ADB4E413CBEE85199B3CB4A3327BC7B22450DB45E1B099E7E0E2",
+        "stdoutSha256": "235D688F0767DC5FA11AA2C37F67C1D5A66ED47B35FB818269BA8F50E6A3B515",
+        "passed": 0, "failed": 1, "exitCode": 1
+      },
+      {
+        "id": "contraction-old-x86", "architecture": "x86", "sourceRevision": "旧基线",
+        "executableSha256": "5676E39EF27BFDEA841D4AD0B98D69137403A30360B15B63F956DE0107EEDA9C",
+        "stdoutSha256": "443F2C7CC3D928B45EF01491C749F1D6868755C2E1695751DFA38E47C82F7784",
+        "passed": 0, "failed": 1, "exitCode": 1
+      },
+      {
+        "id": "contraction-old-x64", "architecture": "x64", "sourceRevision": "旧基线",
+        "executableSha256": "9ED0009D19CD359C739600F39C85269428B5EBB54E365DD7F0EF660E991C0725",
+        "stdoutSha256": "0363918587A22DE356C8058A6CA933EB426A539B7B1356D9E8DB5D93E13C25A2",
+        "passed": 0, "failed": 1, "exitCode": 1
+      }
+    ]
+  },
+  "revisedFullKernelBuild": {
+    "architecture": "x86",
+    "status": "完整内核编译及文件绑定核验通过；真实宿主已启动，完整集成验收待完成",
+    "acceptanceScope": "build-only-accepted",
+    "profile": "LLVM22MSVC142",
+    "observedCompilerVersionProbe": "22.1.3",
+    "requestedMsvcCompatibility": "19.29.30159",
+    "windowsSdk": "10.0.19041.0",
+    "elapsedMs": 976876,
+    "exitCode": 0,
+    "supervisorExitCode": 0,
+    "passed": true,
+    "naturalCompletion": true,
+    "stopRequested": false,
+    "terminatedOwnedJob": false,
+    "closureConfirmed": true,
+    "activeProcesses": 0,
+    "rawTerminalMatchesResult": true,
+    "kernel": {
+      "fileName": "node.dll",
+      "bytes": 28117504,
+      "sha256": "7991EB3968DD3335935BE5E2ACA75249558B8DC1BE4B15FDF49A8F8362CC8E48",
+      "peMachine": "0x014c",
+      "dllCharacteristic": true
+    },
+    "linkerMap": {
+      "bytes": 48822061,
+      "sha256": "1B8A1FE930FF227EABCC4C71E04B27650A366EEEC31732A2148EEEF50D45D8F2"
+    },
+    "sourceSnapshotIdentity": "517c9d8f07227fbcd9b6463712bb725037edfaab5eb84e44649a87ba8d39aaa0",
+    "sourceFileCount": 23545,
+    "sourceDirectoryCount": 1330,
+    "sourceTotalBytes": 321023006,
+    "sourceBeforeAfterByteIdentical": true,
+    "allLiveSourceFilesIndependentlyRehashed": true,
+    "frozenFilesMatched": 6,
+    "compilerInputPinsRehashed": 40,
+    "dependencyLibrariesRehashed": 11,
+    "frozenFiles": [
+      {"path": "third_party/sources/miniblink/cc/input/ScrollController.cpp", "sha256": "3C0D023013007D3C8269F436C098552001C216D2AC7103F218E4AC8CB60BDEF8"},
+      {"path": "third_party/sources/miniblink/cc/input/ScrollController.h", "sha256": "F526FDC590B77FEC6241296F29C4D1396D672D2E9C75EAA072D36EE73A86CD77"},
+      {"path": "third_party/sources/miniblink/cc/trees/LayerTreeHost.cpp", "sha256": "266E5DA6E3BF5530168F3BE090DDBBB80674859F4894BE15329670F3C83C2006"},
+      {"path": "third_party/sources/miniblink/cc/trees/LayerTreeHost.h", "sha256": "858084193D3D6BC65FF77B3E3BC717ECDE8D3DDB9AE61AD59F8F257D9A17DCEC"},
+      {"path": "third_party/sources/miniblink/cc/trees/ScrollTreeSnapshot.cpp", "sha256": "FCF1CBD6B32480D411D4F38ECD5BD13C72E95E41E3B8AE45E51E6ECE17E90D88"},
+      {"path": "third_party/sources/miniblink/cc/trees/ScrollTreeSnapshot.h", "sha256": "EFFD2453DCB4D7004F91F891A2C16EEB346716B9A82FF9B3FAFD57CD056C837D"}
+    ],
+    "toolchainQualified": false,
+    "compilerExecutionAttestation": null,
+    "wholeJobAttestation": null,
+    "fullX64KernelBuilt": false,
+    "kernelRuntimeValidated": false,
+    "producerWakeIntegrationValidated": false,
+    "guiValidated": false,
+    "releaseReady": false
+  },
+  "partialGuiObservation": {
+    "architecture": "x86",
+    "osVersion": "10.0.19045",
+    "kernelSha256": "7991EB3968DD3335935BE5E2ACA75249558B8DC1BE4B15FDF49A8F8362CC8E48",
+    "runtimeStarted": true,
+    "observationSource": "现场验收者报告，启动身份、退出与日志散列另由原始回执核对",
+    "returnActionObservedWorking": true,
+    "cancelAndCloseObservedWorking": true,
+    "capturedExitCode": 1,
+    "exitContext": "现场主动取消并关闭；不计作安装成功退出",
+    "hostLogBytes": 2650555,
+    "hostLogSha256": "4675797FE4BB578241F5072509A0D41716A4B4E8DA1EBA426945AB0253377897",
+    "pluginLogBytes": 1122090,
+    "pluginLogSha256": "50BB395BA0A5F1B72DD3D8C484EA9E87A303A5B8B26C43909367994D688AD2F2",
+    "recoveredLogHashesMatchGuest": true,
+    "offsetTraceReviewed": true,
+    "continuousEndpointComparisonAvailable": false,
+    "endpointConservationValidated": false,
+    "producerWakeIntegrationValidated": false,
+    "fullGuiValidated": false,
+    "fluidityValidated": false
+  },
+  "actualOffsetComparison": {
+    "scope": "同一隔离系统的两轮真实滚轮与不快于 100 ms 的只读 controller visual/consumed 采样；非 DOM、逻辑目标或屏幕呈现",
+    "sourceLogHashesIndependentlyRechecked": true,
+    "nativeWheelCountPerRun": 8,
+    "nativeWheelDeltaSumPerRun": -960,
+    "acceptedCountPerRun": 8,
+    "acceptedRequestedDeltaYPerRun": 800,
+    "fallbackCountPerRun": 0,
+    "logDroppedRecordsPerRun": 0,
+    "smoothOffCountPerRun": 1,
+    "smoothOnCountPerRun": 7,
+    "initialVisualYPerRun": 0,
+    "sameNodeIdentityWithinEachProcess": true,
+    "nodeIdPerProcess": 31,
+    "nodeGenerationPerProcess": 1,
+    "nodeNumbersDoNotEstablishCrossProcessIdentity": true,
+    "baseline": {
+      "kernelSha256": "6E293A3C8BF6F4F4CF32162B8BD01B165017C4BF7F34AF18A9B481A3E6B81185",
+      "nativeInputSpanMs": 701.2638,
+      "initialEpoch": 1,
+      "lastObservedEpoch": 7,
+      "lastObservedVisualY": 226,
+      "lastObservedConsumedY": 0,
+      "tailStationarySamples": 20,
+      "tailStationarySpanMs": 2373.2148,
+      "hostLogSha256": "AC7D7BAC6B233543C0CF2CFBC912B5D152D5C3D506C46DCD2140D9526CDD40BD",
+      "pluginLogSha256": "D7897DBBD252A09BEA181F15B6BCA8A901EF60E1ECD1967759C2D8570EB97A52"
+    },
+    "candidate": {
+      "kernelSha256": "7991EB3968DD3335935BE5E2ACA75249558B8DC1BE4B15FDF49A8F8362CC8E48",
+      "nativeInputSpanMs": 660.0938,
+      "initialEpoch": 1,
+      "lastObservedEpoch": 6,
+      "lastObservedVisualY": 203,
+      "lastObservedConsumedY": 0,
+      "tailStationarySamples": 19,
+      "tailStationarySpanMs": 2249.4535,
+      "hostLogSha256": "4675797FE4BB578241F5072509A0D41716A4B4E8DA1EBA426945AB0253377897",
+      "pluginLogSha256": "50BB395BA0A5F1B72DD3D8C484EA9E87A303A5B8B26C43909367994D688AD2F2"
+    },
+    "continuousEpochComparisonAvailable": false,
+    "crossEpochDistanceSubtractionPerformed": false,
+    "stationarityProvesTargetCompletion": false,
+    "epochResetCauseConfirmed": false,
+    "producerWakeIntegrationValidated": false,
+    "fluidityValidated": false
+  },
+  "evidenceReview": {
+    "basis": "已保留的外部运行回执、恢复 stdout/stderr、来宾散列及源码清单；公开摘要去除机器路径和产品身份",
+    "baselineValidationReceiptSha256": "F2080F0DC8DB32AED214CB62357AC34E9D2A511B7A64057169FDDFD7D70833BF",
+    "firstCandidateValidationReceiptSha256": "E637FF84922D10361A33EFC0197540C9E93E52C14EE3302A817B90213D6D1D2A",
+    "revisedValidationReceiptSha256": "8B9A76A4CB0FEF5334DA63F118ADA54B02699A23A226BB09F875DCD2795E5681",
+    "revisedSourceBindingReceiptSha256": "0D7E4EF307DF2CB6A7939D17D81F4F7F7964DAF262A18C4A48B13225932DE160",
+    "contractionValidationReceiptSha256": "59C1B4F5DFECA396EAE286653E765E36E765F7866E10178595491B6CD8BFB724",
+    "contractionSourceBindingReceiptSha256": "6E1CD6AB325637A9B29583EE8DC8B790B0ED66484CB11F0363BC6632FADA33F3",
+    "revisedFullKernelBuildReceiptSha256": "C069F844FB6FBB2B2024CE676DE1DF7B3D1BC713A1D4CE4144150A7ECBB3E33D",
+    "revisedFullKernelFreezeReceiptSha256": "3A4ECCC13DD4D9C2FEA8ECA76325C7D4DB0F0328CE7FBA90A4293C1CFCC68AE8",
+    "revisedFullKernelAcceptanceReceiptSha256": "77FC70F740798F7957BBEC68C550BB93D9C9BA5A60FC7A60497FB782F6C42E5A",
+    "revisedFullKernelOwnedResultSha256": "7AD61DA12D534F6C3A0B81462B795C18EB42647E6CAD3D1766B2DC028938C086",
+    "revisedFullKernelSourceManifestSha256": "AE8059B26AF23B38CF7CCE1290525A6840A5B6D6A9F661CD522A4ED97372FC25",
+    "revisedFullKernelInputsReceiptSha256": "BB4E27F319BA84A1FDBD08A34E5AD21922F89FB4C0A760562D6C2BBCE7D74D34",
+    "revisedFullKernelSourceFreezeAndBinaryBindingIndependentlyRechecked": true,
+    "actualOffsetAnalysisReceiptSha256": "F6EB0A7E8CE2A99140CF4D9DF589091C540BF577BBE3F6975668EF7F31B6ECB1",
+    "stagedWhitespaceCheckPassed": false,
+    "stagedWhitespaceWarnings": [
+      "tests/native/scroll_target_retention/accepted_target_retention_tests.cpp:251: new blank line at EOF",
+      "tests/native/scroll_target_retention/target_retention_boundary_tests.cpp:512: new blank line at EOF"
+    ],
+    "whitespaceWarningsPreserveExecutedFixtureBytes": true,
+    "revisedAndContractionRecoveredFileSizesAndHashesIndependentlyRechecked": true,
+    "documentPreparationExecutedTests": false,
+    "historicalFailuresPreserved": true
+  },
+  "limits": [
+    "独立测试没有执行完整 LayerTreeHost、TileGrid、raster worker 或真实资源 producer/fence 唤醒",
+    "修订版编译成功不能继承首版的任何运行通过结论",
+    "完整 x86 修订内核编译和文件绑定通过，实际宿主运行仅记录返回与取消关闭可用；完整 x64 内核没有本轮构建通过证据",
+    "构建配置、版本探针和输入文件散列不等于逐翻译单元执行证明或完整工具链资格验收",
+    "原生输入、fallback、点击屏障、滑块、关闭与实际 GUI offset 需要独立集成验证",
+    "真实滚轮两轮均发生 scroll epoch 变化，不能按跨 epoch 累计值宣称目标守恒、丢失距离或 producer 闭环通过",
+    "不证明 GUI 内容差异的具体原因、整体流畅度、屏幕 FPS 或呈现延迟",
+    "不修改固定预编译包、全局验收状态、版本或发布状态"
+  ]
+}

@@ -5,27 +5,32 @@ if(NOT DEFINED SOUI_DISTRIBUTION_ROOT OR SOUI_DISTRIBUTION_ROOT STREQUAL "")
 endif()
 get_filename_component(public_ctor_shell_vendor_root "${SOUI_DISTRIBUTION_ROOT}/third_party/sources/miniblink" ABSOLUTE)
 set(public_ctor_shell_fixture_pins
-  "constructor_tests.cpp|16175|40ad93d67ff3c2ddea9dc50eded1c1e62fc602998f3251175968f9658ba36f22"
+  "constructor_tests.cpp|17447|68c34f0d276727846b00727bea0105f613e092e43fa9f1f343f7ac9ea47c8a68"
   ".gitattributes|125|b32a221be14133b9f872795c50f40e031220f2e26259ce366251ef849af46e29"
-  "extracted/web_view.h|4480|4aba247d7e7ee6574d6d2a8c057cda8bf019940250aea7d0b5cae21c01f8e3a1"
+  "extracted/web_view.h|4719|e4d4e56b20387ffca9a155ae3441819f59eefb8a6c078b657fdcfb36bd445c56"
   "extracted/web_page.h|1049|08ddcb8678821b8426b6cb1126c4c121d7debf9d4b0a186fa7607847a77c3c57"
+  "extracted/paint_lifetime.h|1282|5de48a8f43527374883d44a00b6d95c315b607955b405e8c4c4c27dc68396f20"
 )
 set(public_ctor_shell_source_pins
-  "third_party/sources/miniblink/wke/wkeWebView.cpp|44204|56baf71e8e9cb9ffe49b77f6bd58fda95d46d1433f238b9eb1e5b4afa54d5206"
-  "third_party/sources/miniblink/content/browser/WebPage.cpp|14334|5ba34fba9a2f44a033d08f7843efb6ca7a508d8529aa084d9ac505e576d2a45d"
+  "third_party/sources/miniblink/wke/wkeWebView.cpp|50847|e90ca4401a2110978490040601418f6f9a90654bae56ed8279c2f03688096e32"
+  "third_party/sources/miniblink/content/browser/WebPage.cpp|15670|76ba0665b50fd423c71cd81edee73942971b2c01358efb64709c8e94ef41c5f6"
   "third_party/sources/miniblink/net/ActivatingObjCheck.cpp|3100|e2f04bfb9fb0e8ddcf9a7a8bbd9ca5598ce21dccd5f035863f8630702a64842b"
   "third_party/sources/miniblink/net/ActivatingObjCheck.h|660|6e85aca76332bc4fc2e5465501c97d76a240b9bee3021b0d24a88a8cedbe28f6"
+  "third_party/sources/miniblink/content/common/PaintLifetime.h|7468|52d7f3da7239c59d7c4d2cd9e59186b71ef65047c0d233b5898eaddc0c8eed6e"
 )
 # source|source-byte-offset|fixture|fixture-byte-offset|exact-byte-length
 set(public_ctor_shell_ranges
-  "third_party/sources/miniblink/wke/wkeWebView.cpp|1159|extracted/web_view.h|76|1194"
-  "third_party/sources/miniblink/wke/wkeWebView.cpp|2354|extracted/web_view.h|1347|168"
-  "third_party/sources/miniblink/wke/wkeWebView.cpp|2523|extracted/web_view.h|1592|159"
-  "third_party/sources/miniblink/wke/wkeWebView.cpp|31310|extracted/web_view.h|1828|2173"
-  "third_party/sources/miniblink/wke/wkeWebView.cpp|31068|extracted/web_view.h|4078|241"
-  "third_party/sources/miniblink/wke/wkeWebView.cpp|33484|extracted/web_view.h|4396|84"
+  "third_party/sources/miniblink/wke/wkeWebView.cpp|7420|extracted/web_view.h|76|1303"
+  "third_party/sources/miniblink/wke/wkeWebView.cpp|8724|extracted/web_view.h|1456|298"
+  "third_party/sources/miniblink/wke/wkeWebView.cpp|9023|extracted/web_view.h|1831|159"
+  "third_party/sources/miniblink/wke/wkeWebView.cpp|37953|extracted/web_view.h|2067|2173"
+  "third_party/sources/miniblink/wke/wkeWebView.cpp|37711|extracted/web_view.h|4317|241"
+  "third_party/sources/miniblink/wke/wkeWebView.cpp|40127|extracted/web_view.h|4635|84"
   "third_party/sources/miniblink/content/browser/WebPage.cpp|1179|extracted/web_page.h|85|632"
   "third_party/sources/miniblink/content/browser/WebPage.cpp|1812|extracted/web_page.h|803|246"
+  "third_party/sources/miniblink/wke/wkeWebView.cpp|4017|extracted/paint_lifetime.h|76|326"
+  "third_party/sources/miniblink/wke/wkeWebView.cpp|4343|extracted/paint_lifetime.h|479|493"
+  "third_party/sources/miniblink/wke/wkeWebView.cpp|4852|extracted/paint_lifetime.h|1049|233"
 )
 foreach(kind IN ITEMS fixture source)
   foreach(record IN LISTS public_ctor_shell_${kind}_pins)

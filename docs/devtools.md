@@ -1,4 +1,6 @@
-# 原生受控 DevTools（候选）
+# 原生受控 DevTools
+
+0.6.0 纳入本功能源码。各构建、运行和交付的实际范围与未完成项见 [0.6.0 发布说明](https://github.com/chenziyang110/soui-web-sdk/blob/v0.6.0/docs/releases/0.6.0.md)；旧 preview 结果只属于其原身份。对应源码与材料见[再分发说明](licenses/v0.6.0-redistribution.md)。
 
 本候选已接入公共Host、两个内置后端、两种模板和Workbench，编译通过与真实运行验收分别记录。默认关闭，Debug和Release使用同一许可逻辑。当前两个内置后端采用应用明确接受的`destroy_target`结束策略：结束诊断关闭当前业务Host，调用方先处理未保存状态。无损`detach`不是本候选已声明的内置能力。
 
@@ -10,7 +12,7 @@
 
 `0.6.0-preview.8` 已接线显式的 MiniBlink 本地 HTTPS 资源模式，见 [ADR 0135](adr/0135-owned-local-resource-origin.md)。这为旧 `file:` 页面被内核拒绝的 `fetch` 提供新的来源模式；不调整 CORS、调试授权或 inspector 资源预算。新代码完成静态审查后统一编译、实测，旧候选结果不作为新模式的运行证据。
 
-## 当前候选的实际验证范围（2026-10-28）
+## 历史 preview.9 的实际验证范围（2026-10-28）
 
 `0.6.0-preview.9` 是本地未发布候选。source-kernel loader 已补齐可选 `wkeLoadURL` 绑定；无该导出的旧 file-only vendor 继续支持，显式 HTTPS 模式仍按原能力契约拒绝。本轮另修复 Windows 字体最后候选、Workbench 原生夹具交付和受控 HTTPS ready 探针，保留原授权、资源 fence、关闭期限及历史失败。
 
@@ -135,7 +137,15 @@ target_link_libraries(native_consumer PRIVATE Soui::WebView2 Soui::ActionJson)
 
 MiniBlink使用配对的内核和离线inspector。原生配置必须提供安装交付固定的内核image与`approved-manifest.json`完整SHA256；不能对待验目录现算一个值再当作信任pin。worker核实际加载内核文件、外部manifest pin及全部member散列，无任意网络读取，拒绝链接逃逸和超限资源。ABI兼容不能替代资源配对身份。本地配对、部署与源码诊断档已有各自产物证据；完整安装消费者、搬移及许可准入仍需按声明范围验收。
 
-正式前端源覆盖位于`sdk/resources/devtools/miniblink/`。先用`node tools/internal/devtools-frontend.cjs compose`合成供应前端：显式传入`--baseline-root`（仅包含原清单650成员）、`--baseline-manifest`及`--baseline-manifest-sha256`、`--source-root`及当前`source.json`的`--source-sha256`、`--kernel-sha256`与全新`--output`。文件路径使用本地绝对路径；基线manifest可位于基线目录外。工具核对原清单、七份正式源覆盖及逐项基线pin，输出`payload/`、新的`approved-manifest.json`和`composition-receipt.json`。覆盖源使用LF，与源码SDK安装的文本规范化一致。此步骤只生成技术材料：不验证内核运行，不生成外部批准，不改变原生策略。将所选内核、合成的650成员及新清单、原许可材料和另行审查的配对文档组成完整供应输入，再显式选择其pin。
+#### 随包 Inspector 基线
+
+源码SDK交付`sdk/resources/devtools/miniblink/baseline/`中的650个原始Inspector成员、同级`baseline-manifest.json`、`source.json`及七份`overrides/`正式源覆盖。用户可使用这些随包输入合成离线前端，无需另找未交付的旧基线目录或下载前端。原基线清单SHA256为`2ecbd35cbc51c30efe97717c2fb8713fb032979b47286673cf70d2e6b1dcf7c2`；成员中的七份许可证/版权材料一并保留。实际发行封存仍以该次`sdk-manifest.json`、项目`sdk-lock.json`及配对清单的真实成员与散列为准。
+
+基线成员和`baseline-manifest.json`按原字节交付，包括原有换行；不要执行格式化或换行转换。Git属性和源码SDK的规范化规则仅对这两个精确路径范围保留原字节；相邻的普通源码继续按既有LF规则处理，七份正式源覆盖也使用LF。任一已安装基线成员被改写时，SDK锁校验与前端合成均会拒绝它；重新计算本地散列不能替代原可信基线pin。
+
+用`node tools/internal/devtools-frontend.cjs compose`合成供应前端时，`--baseline-root`指向随包的`baseline/`（只含原清单650成员），`--baseline-manifest`指向同级`baseline-manifest.json`，`--baseline-manifest-sha256`使用上面的原清单pin。`--source-root`指向`sdk/resources/devtools/miniblink/`，`--source-sha256`固定该次实际`source.json`，另显式给出所选内核的`--kernel-sha256`和全新`--output`。所有路径使用本地绝对路径。工具核对原清单、七份覆盖及逐项基线pin，输出`payload/`、新的`approved-manifest.json`和`composition-receipt.json`。
+
+合成只生成技术材料：`requestedKernelSha256`表示调用方请求的身份，`kernelVerified`、`runtimeVerified`和`approvalCreated`仍为false，不改变原生策略，也不验证该DLL的实际运行。使用自己重编的内核时，须另核真实DLL与目标架构，将合成的650成员、新清单、原许可材料和另行审查的配对文档组成完整供应输入，再显式选择它们的pin。纯文件回归`tests/sdk/devtools-baseline-sdk.test.cjs`覆盖源码SDK打包、读取、安装、锁和合成的字节保留及EOL改写拒绝；它不执行前端或内核，不构成运行资格。
 
 构建工具的`-WithDevToolsPackage`显式选择离线MiniBlink交付材料，必须同时给出`-DevToolsPackageRoot`、`-DevToolsKernelRelative`、`-DevToolsKernelSha256`、`-DevToolsManifestSha256`、`-DevToolsApprovalRelative`和`-DevToolsApprovalSha256`。前三个SHA值分别固定实际内核、`approved-manifest.json`和外部批准文档；来源是应用已审查的供应输入，工具不会自签或下载。这些构建参数只选择复制材料，不授予会话权限；应用源码的`allow_native_devtools`仍默认false。WebView2使用Runtime前端，不选择这份MiniBlink离线包。
 

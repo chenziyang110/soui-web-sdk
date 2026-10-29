@@ -1,0 +1,95 @@
+{
+  "arch": "x64",
+  "configuration": "Release",
+  "mode": "unit",
+  "stable": true,
+  "natural": true,
+  "result": {
+    "pid": 74188,
+    "creationFileTime": "134366055210284064",
+    "exitCode": 0,
+    "supervisorExitCode": 0,
+    "signal": null,
+    "spawnError": null,
+    "reportError": null,
+    "stopRequested": false,
+    "fallbackUsed": false,
+    "closureConfirmed": true,
+    "passed": true,
+    "terminal": {
+      "event": "terminal",
+      "reason": "completed",
+      "elapsedMs": 408210,
+      "rootExited": true,
+      "rootExitCode": 0,
+      "activeBeforeCleanup": 0,
+      "terminatedOwnedJob": false,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "totalProcesses": 1407,
+      "limitTerminatedProcesses": 0,
+      "passed": true
+    },
+    "report": "C:\\work\\sm05-source30-pipeline-2\\unit-x64-Release-source30-1\\unit.ndjson",
+    "reportSha256": "72a241da47a9a4d289f48cafc3b0227c766b6efcf7456e6ff5f50be9034076ba",
+    "runnerSha256": "f4b59ae2add80cf9011deeed73abaf86a593bf951205d459a8d431952ae8ee0c",
+    "executableSha256": "362a356ce7f0940ec74f73a8fc2c990a2cc24a38a11c90bbd8eca947110ad139"
+  },
+  "terminal": {
+    "event": "terminal",
+    "reason": "completed",
+    "elapsedMs": 408210,
+    "rootExited": true,
+    "rootExitCode": 0,
+    "activeBeforeCleanup": 0,
+    "terminatedOwnedJob": false,
+    "closureConfirmed": true,
+    "activeProcesses": 0,
+    "totalProcesses": 1407,
+    "limitTerminatedProcesses": 0,
+    "passed": true
+  },
+  "pins": [
+    {
+      "path": "C:/work/sm05-release-050/source-manifest.json",
+      "sha256": "ad031346ae01ff74fa840e8c2ca820bd3e879a0848d41e8cb7c20f408c68e4b6"
+    },
+    {
+      "path": "C:/work/sm05-release-050/out/x64/build-Release.json",
+      "sha256": "041176421cf8adeff6caeff6383391488daa7c9d6accb1e82868719493656a2c"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-pipeline-2\\run-unit.cjs",
+      "sha256": "194012be43633a028d0f6be752e64260b948f1fda5b9c9ae65407854d1594cbc"
+    }
+  ],
+  "ctest": {
+    "scope": "standard-UnitOnly-internal-CTest",
+    "configuration": "Release",
+    "architecture": "x64",
+    "tests": 208,
+    "failed": 0,
+    "skipped": 0,
+    "stdout": {
+      "path": "C:\\work\\sm05-source30-pipeline-2\\unit-x64-Release-source30-1\\unit-stdout.bin",
+      "bytes": 120555,
+      "sha256": "54bc0632ea97dcd2191e8f7c8637748e6b9d8276c49a4108f0368510e07a417e"
+    },
+    "originalLog": {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\Testing\\Temporary\\LastTest.log",
+      "bytes": 142,
+      "sha256": "ab646546da6cd6937cbedd4db70ba08d6b674b60267d733c27208ced346400b8"
+    },
+    "log": {
+      "path": "C:\\work\\sm05-source30-pipeline-2\\unit-x64-Release-source30-1\\ctest-LastTest.log",
+      "bytes": 142,
+      "sha256": "ab646546da6cd6937cbedd4db70ba08d6b674b60267d733c27208ced346400b8"
+    },
+    "subject": {
+      "pid": 74188,
+      "creationFileTime": "134366055210284064"
+    },
+    "duplicateDirectCTestExecuted": false
+  },
+  "evidenceFailure": null
+}

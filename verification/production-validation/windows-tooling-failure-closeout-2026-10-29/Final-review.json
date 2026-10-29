@@ -1,0 +1,95 @@
+{
+  "schema": "soui.windows-tooling-independent-final-review/v1",
+  "recordedAt": "2026-10-29T03:56:18.1676030Z",
+  "reviewer": "pr127_review",
+  "baseline": "b9d53f9e182bfd335c9bd6fb23690b40718999ef",
+  "scope": "Read-only retained-evidence and current-code-pin review; no tests or native programs re-executed",
+  "blockers": [],
+  "assessment": "No concrete blockers found within necessary short verification scope",
+  "canonicalIndex": {
+    "excludes": [
+      "Files.index.json",
+      "Summary.actual.json"
+    ],
+    "bytes": 1253805,
+    "files": 167,
+    "allExactBytesAndSha256": true,
+    "rawClosedSetMatches": true
+  },
+  "logicalCases": {
+    "initialUnique": 66,
+    "unrepairedFailures": 0,
+    "targetedPassed": 12,
+    "initialFailed": 8,
+    "previousFalsePositiveNativeRefusalsRepeated": 2,
+    "initialPassed": 58,
+    "originalFailuresRetained": true,
+    "priorPassesRepeated": 4
+  },
+  "currentPins": {
+    "docsOutsideCodeReview": true,
+    "nativeCurrentInputsChecked": 43,
+    "initialAndRepairedTestsMatch": true,
+    "nativeBeforeAfterSame": true,
+    "nativeCurrentInputDrift": 0,
+    "candidateSdkToolCodeMatchesCurrent": true
+  },
+  "native": {
+    "rawHashesReadyAndTerminalMatch": true,
+    "fullBuildEntriesExecuted": false,
+    "drainMs": 2000,
+    "originalPreparationGenericSupervisionPassed": null,
+    "architectures": [
+      {
+        "helperIdentitiesInRaw": 2,
+        "creationFileTime": "134377193591860325",
+        "architecture": "x64",
+        "elapsedMs": 50590,
+        "pid": 60820
+      },
+      {
+        "helperIdentitiesInRaw": 2,
+        "creationFileTime": "134377194101284534",
+        "architecture": "x86",
+        "elapsedMs": 54085,
+        "pid": 104376
+      }
+    ],
+    "activeProcesses": 0,
+    "supervisorExitCode": 0,
+    "generatedExecutablesExecuted": false,
+    "timeoutMs": 120000,
+    "forcedTermination": false,
+    "rootExitCode": 0
+  },
+  "initialRefusal": {
+    "separateAuthorizedOrphanCleanupIsNaturalTestProof": false,
+    "reason": "Preexisting foreign VCTIP ready event",
+    "rootExitCode": 1,
+    "activeProcesses": 0,
+    "forcedTermination": false,
+    "supervisorExitCode": 1
+  },
+  "sdkCandidate": {
+    "sourceCandidateOnly": true,
+    "physicalFilesIncludingManifest": 1502,
+    "manifestSha256": "466032c40d61cc7c816a13777bbe295b9d97c44e4d211715170f896288b10453",
+    "payloadBytes": 112873502,
+    "manifestBytes": 354507,
+    "everyPayloadHashAndClosedSetMatches": true,
+    "output": "C:/sc07/dist/sdk/0.6.0",
+    "payloadFiles": 1501,
+    "publishedReleaseModified": false
+  },
+  "remaining": [
+    "Eight historical compiler failures remain historical failures",
+    "Historical EPERM lock owner unknown",
+    "Historical PS5 failure root cause unknown",
+    "Full build entries and all workload shapes not qualified",
+    "No refreshed preparation inferred",
+    "Production and long qualification unchanged"
+  ],
+  "releaseReady": false,
+  "productionQualificationComplete": false,
+  "fullDevtoolsGoalComplete": false
+}

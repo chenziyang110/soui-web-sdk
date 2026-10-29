@@ -1,0 +1,140 @@
+{
+  "schema": "soui.production-closeout-final-review/v1",
+  "reviewer": "/root/build_tool_closeout",
+  "reviewedAtUtc": "2026-10-29T02:58:59.9639329Z",
+  "baseline": "8b7b57341d78d101ebc317de6cef8ac19b4a7531",
+  "result": "no_blocking_findings_in_limited_scope",
+  "blockerCount": 0,
+  "blockingFindings": [],
+  "codePins": [
+    {
+      "path": "C:\\sc07\\.gitattributes",
+      "bytes": 40805,
+      "sha256": "1724014cce07709537d849e0cabb59d2c01a606acb4a00e43f2b6321566ba7a2"
+    },
+    {
+      "path": "C:\\sc07\\tools\\Build.ps1",
+      "bytes": 15523,
+      "sha256": "7bec1b4577457c18ea30a818e60f7c1a8fa2938fd1fce4a92d34f964c58d5b81"
+    },
+    {
+      "path": "C:\\sc07\\tools\\Package.ps1",
+      "bytes": 4444,
+      "sha256": "fda405be566a3655b1f2e77051dc68d32ed6159b1cf26e7a45764618d40e8ce0"
+    },
+    {
+      "path": "C:\\sc07\\tools\\internal\\Build-ValidationTools.ps1",
+      "bytes": 9121,
+      "sha256": "622d0a0f10e9437625226338971d09d0bfde6be00bf4bc86b832601b76a67e28"
+    },
+    {
+      "path": "C:\\sc07\\tools\\internal\\compression-profiles.cjs",
+      "bytes": 6856,
+      "sha256": "5ceed26c63d996cd40560270195c1ec36defca6eae091da4f452ab83a50910f4"
+    },
+    {
+      "path": "C:\\sc07\\tools\\internal\\standard-build.cjs",
+      "bytes": 43746,
+      "sha256": "fd632d3f221dbf192038bd68e3fdd46ceceac2d845ea7a03769c8ac155f7c9ab"
+    },
+    {
+      "path": "C:\\sc07\\tools\\sdk\\soui-sdk.cjs",
+      "bytes": 17060,
+      "sha256": "6ec0964bc09023df4c0c8cf3b7c6c6c8f6da29fcc324513222e5e21ffb994958"
+    },
+    {
+      "path": "C:\\sc07\\tests\\native\\devtools_host_tests.cpp",
+      "bytes": 18438,
+      "sha256": "1ecbd95d5276c43a1f621ca3f6bca7b761dc86fc706a69bb1f7ec05c873b7749"
+    },
+    {
+      "path": "C:\\sc07\\tests\\sdk\\compression-profiles.test.cjs",
+      "bytes": 20039,
+      "sha256": "928e844fdf0ce7eb59e7b473f5fdf26e4f6b9e4f9585263339593fa8067ff32e"
+    },
+    {
+      "path": "C:\\sc07\\tests\\sdk\\standard-build.test.cjs",
+      "bytes": 23284,
+      "sha256": "af9dca7f88def2c70e47353e427f3468844670081af12dd176ef98c3c887e46b"
+    },
+    {
+      "path": "C:\\sc07\\tests\\sdk\\compiler-closeout-diagnostics.test.cjs",
+      "bytes": 5044,
+      "sha256": "1c00da169e516b14363ddc38c00bfda32b534cdff4a8581d5fc2ffad4bfb81e2"
+    },
+    {
+      "path": "C:\\sc07\\tests\\sdk\\msbuild-entrypoint-policy.test.cjs",
+      "bytes": 5014,
+      "sha256": "b8cad0df8d3663ce079e801bf810eca6de3c0d6edfecafe75343a13d98641be7"
+    },
+    {
+      "path": "C:\\sc07\\tests\\sdk\\sdk-publication-diagnostics.test.cjs",
+      "bytes": 5838,
+      "sha256": "d3ee1d3dec4f36840a3ec8b748b961dfe4be0118087eb5d0c51691bccd6e14e3"
+    }
+  ],
+  "canonicalIndex": {
+    "path": "C:\\sc07\\verification\\production-validation\\production-tools-devtools-2026-10-29\\Files.index.json",
+    "bytes": 43156,
+    "sha256": "f211a432155bc97871d386a58aebb6d1a0e9efe48eac1daab189082a4c9b0970"
+  },
+  "canonicalSummary": {
+    "path": "C:\\sc07\\verification\\production-validation\\production-tools-devtools-2026-10-29\\Summary.actual.json",
+    "bytes": 6091,
+    "sha256": "0a32982aab0b7b95b414f18a9df4ed0c5816b4aad50b048e9595ec713e466f44"
+  },
+  "evidenceAudit": {
+    "indexedFiles": 124,
+    "indexedBytes": 1444876,
+    "allIndexedHashesAndByteCountsMatched": true,
+    "initialNativeArchiveGapResolved": true,
+    "toolUniqueLogicalCases": 64,
+    "toolInitialPassed": 55,
+    "toolInitialFailed": 9,
+    "targetedRepairPassed": 9,
+    "nativeArchitectures": [
+      "x64",
+      "x86"
+    ],
+    "nativeScenariosEach": 10,
+    "nativeCurrentTestSha256": "1ecbd95d5276c43a1f621ca3f6bca7b761dc86fc706a69bb1f7ec05c873b7749",
+    "fourNativeRawIdentityBudgetHashAndTerminalBindingsMatched": true,
+    "fourNativeJobsNaturalZero": true,
+    "nativeInitialC2248FailureRawPreserved": true,
+    "vmAcceptedIdentity": {
+      "pid": 1760,
+      "creationFileTime": "134377149663488156",
+      "elapsedMs": 86414,
+      "timeoutMs": 120000,
+      "drainMs": 2000,
+      "rootExitCode": 0,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": false
+    },
+    "vmInitialTimeoutForcedFailurePreserved": true,
+    "staticScreenshotsShowMainTsx12Paused": true,
+    "acceptanceEscalationFound": false,
+    "productionCodeOrPrebuiltChangesFound": false
+  },
+  "reviewedDocs": [
+    "CHANGELOG.md",
+    "docs/compression-profiles.md",
+    "docs/known-issues.md",
+    "docs/maintenance/production-tools-devtools-closeout-20261029.md",
+    "verification/production-validation/production-tools-devtools-2026-10-29/README.md"
+  ],
+  "limitations": [
+    "Read-only code/evidence review with SHA256 calculations only; no tests, builds, product/UI actions, VM operations or Git index writes",
+    "This lane authored the build-tool changes. The canonical reviews/build-static.json is the separate non-author review of the same current build-tool hashes",
+    "The native result proves controlled-adapter public Host contract only; actual pause/Inspector claims belong solely to the separately scoped existing x86 MiniBlink VM record",
+    "Screenshots show real pause; absence of manual Resume comes from the operator sequence reviewed and recorded by Root, not from a heap/internal-renderer trace",
+    "VCTIP natural shutdown, persistent EPERM lock owner, original PS5 long-stage cause and long production qualification remain unresolved",
+    "Historical early review pins intentionally remain historical; repaired test pin is independently reviewed in native/accepted/independent-static-review.json",
+    "Docs wording was reviewed for scope and counts; active Root wording edits are not frozen by this report"
+  ],
+  "resolvedReviewIssue": "Canonical first native failures initially lacked raw compile streams and build logs; Root added both architectures and harness without re-execution, and the refreshed 124-file index was verified",
+  "nonBlockingNote": "README Inputs.json spelling should name guest Inputs.actual.json; reported to Root separately",
+  "releaseReady": false,
+  "productionQualificationComplete": false,
+  "fullDevtoolsGoalComplete": false
+}

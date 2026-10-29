@@ -1,15 +1,15 @@
 # 双后端源码候选交接
 
-本候选按用户“先完成代码，专人集中编译测试”的安排交付。源码基线是 `c17c79bdf470fae681c63324ceaa2a519151afc9`；其中包含此前 DevTools/Scratch 修改，本轮性能评审从它之后开始。既有预编译 DLL、LIB 和旧安装包没有本轮优化，禁止用它们的成绩证明当前候选。
+本候选按用户“先完成代码，专人集中编译测试”的安排交付。PR #129 的主线底稿为 `0cdc0a9ace0cdce664ec4a9b54e5f8f71b97ba48`，旧冻结候选只提供增量来源。取舍与保留项见 [主线集成](main-integration.md)。既有预编译 DLL、LIB 和旧安装包没有本轮新增优化，禁止用它们的成绩证明当前候选。
 
 ## 方案落点
 
 | 原方案 | 当前源码交付 | 仍需实际证据的条件项 |
 |---|---|---|
 | MiniBlink M0 | 基线快照、独立补丁/原始字节清单、三项体积门禁 | 实际包、运行目录、SDK/内核字节均不增长 |
-| M1 调度/输入 | ready/deadline、2ms/32项合作批次、future 堆剪枝；同 FIFO 的输入结束容量；resize 后同文档的文本/结束事件 | 单个 JS/GC 不可抢占；总 producer 队列语义未重写；完整 ready 索引须有 profile |
+| M1 调度/输入 | 保留主线 ready/deadline AVL 索引、mailbox/FIFO ordinal、ordered cancel 与 geometry-applied fence；增加截止唤醒及 worker 批次增量 | 单个 JS/GC 不可抢占；索引、取消、IME 和跨线程唤醒需用集成后源码验证 |
 | M2 帧节拍/等待 | 分数帧周期、迟帧跳过、资源完成通知、拒绝通知的显式故障 | 实际 timer 精度、资源竞争、暂停与关闭 |
-| M3 呈现 | CPU DIRECT_HWND 按需 mirror，DC 请求取当前完整快照，能力探测兼容旧 DLL | 借用像素的用户回调仍遵守原锁；无额外 buffer 的安全解锁需另有生命周期证明 |
+| M3 呈现 | 在主线双画布 lease、paint activity 与 mirror consumer 生命周期上协商按需镜像能力，兼容旧 DLL | 不回退主线画布和关闭所有权；真实像素、透明及回调重入仍需验证 |
 | M4 光栅/脏区 | 新区域参与现有 8 区域最小成本合并，legacy 单次延后 | 可见 tile 优先级、opaque 清底、worker 并发须先定位热点 |
 | M5 页面/分配 | WebView2/Scratch 下述公共宿主及可追溯页面候选 | 不改 Chrome49 的 JS/GC 语义，不凭空认定 Bridge/布局为主热点 |
 | M6/M7 编译/GPU | 保留既有编译与软件路径，记录条件边界 | PGO、LTO 和实验 GPU 必须有代表性 profile、兼容与体积证据后才采用 |
@@ -29,7 +29,7 @@
 node --test demos/scratch/web/performance-meter.test.mjs demos/scratch/upstream/targets-reducer.test.mjs tests/sdk/performance-size-gate.test.mjs tests/sdk/performance-zip-inventory.test.mjs
 powershell.exe -File tools/Build-Dependencies.ps1 -Architecture x64 -Component Miniblink
 powershell.exe -File tools/Build.ps1 -Architecture x64 -Configuration Release -WithVendorTests -WithWebView2
-ctest --test-dir out/x64 -C Release -R '^(kernel\.native\.(scheduler-fairness|worker-lifetime\.)|sdk\.native\.(miniblink-frame-policy|input-admission|input-delivery-policy|webview2-capacity))' --output-on-failure
+ctest --test-dir out/x64 -C Release -R '^(scheduler\.|kernel\.native\.(scheduler-fairness|worker-lifetime\.|fractional-frame|resource-notification|frame-buffer|render-|input-frame|independent-input)|sdk\.native\.(miniblink-frame-policy|webview2-capacity|host-adapter|local-editor-policy|local-resource))' --output-on-failure
 ```
 
 构建入口若只产出依赖候选，须通过已有部署/身份入口显式选择该候选，确认 SDK 实际链接/载入匹配内核后才记结果。x86、Debug 与支持的兼容系统按此次影响单列；不可用一个架构结果外推。其他现有必需发布检查照原入口执行；不为本任务重跑无关历史长测。
@@ -43,4 +43,4 @@ ctest --test-dir out/x64 -C Release -R '^(kernel\.native\.(scheduler-fairness|wo
 
 ## 评审和回退
 
-ADR 0137–0141、各 lane 交接及 MiniBlink 0016/0017 补丁组成设计与来源记录。回退时保留匹配的一组 SDK、内核和页面；不得只换某个私有布局相关 DLL。Scratch 可继续选原锁定 artifact。独立静审解决的是源码可见缺陷，编译、正确性、大小及性能分别记录，均不由静审代替。
+ADR 0138–0143、各 lane 交接及 MiniBlink 0024/0025 补丁组成当前设计与来源记录；主线原有 0016/0017 等补丁不覆盖。回退时保留匹配的一组 SDK、内核和页面；不得只换某个私有布局相关 DLL。Scratch 可继续选原锁定 artifact。独立静审解决的是源码可见缺陷，编译、正确性、大小及性能分别记录，均不由静审代替。

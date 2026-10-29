@@ -14,7 +14,7 @@ node demos/scratch/upstream/build.mjs --source-root ../scratch-performance-sourc
 
 脚本检查干净提交、固定 package-lock 和两个修改文件原始 SHA256，应用源码改动，再以原 lock 执行 `npm ci` 和 workspace 构建。失败非零退出；不覆盖旧输出，不删除用户目录。`--npm-cli` 可指定当前 Node 配套 `npm-cli.js`，避免 Windows shell 拼接。构建会修改此专属 checkout，不要对含其他任务改动的目录运行。
 
-结果包含 dist、源码、原 lock、LICENSE 和 source-build.json。源码与 lock 单独提供，正式应用不复制这些维护文件；AGPL 完整源码交付与原 notices 继续保留。
+结果包含 dist、全部跟踪源码与配置、原 lock、LICENSE 和 source-build.json。记录绑定 driver、provenance module、完整源码和 dist 清单及两个补丁文件；缺少源码清单的旧记录必须由专人重新构建，不能直接采用。运行时资源不混入源码维护文件；选择 SourceVendor 的本地包将完整构建输出复制到 `source-materials/scratch-source-build/`，随包保留对应源码、锁、LICENSE 和构建身份。
 
 通过 Web 构建入口的 `--source-vendor` 参数采用该候选，入口必须核对 provenance 和 bundle 散列。原固定 npm 包保留为对照；两端性能比较使用同一选择，不允许仅优化 SOUI 页却以旧 Electron 页作宿主差距结论。
 
@@ -24,5 +24,7 @@ powershell.exe -File demos/scratch/Package.ps1 -Architecture x64 -SourceVendor .
 ```
 
 SourceVendor 不能与 SkipWeb 混用，避免用旧输出冒充源码候选。Build/Package 默认仍选固定对照包；经过体积、正确性及收益验收后再由集成者采用候选，不在未编译时切换发布默认值。
+
+Package 继续显式传递 SourceVendor 并复用 Web 构建的 provenance 核验。它要求部署的 runtime bundle、HTML 身份与 source-build 记录一致，复制后再次核验源码闭集；不能把源码版 runtime 当作 stock 打包，也不能只交付旧 npm 原包充当补丁版对应源码。包说明及 `package-manifest.json` 分开记录实际源码版本 15.2.0 和对照 artifact 15.3.0。
 
 当前未执行 npm 安装、上游编译或性能测试。结构性分配减少不等于已证明 FPS 提升。skin 共享、角色虚拟化、VM/Worker 改造仍需 profile 和独立兼容设计，不默认启用。最终产物还必须通过共同体积门禁。

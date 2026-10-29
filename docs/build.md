@@ -1,5 +1,7 @@
 # 构建与源码范围
 
+本页以 0.6.0 源码接口为准。本轮新内核、SDK、应用及消费者的构建/运行证明正在收口，状态见[发布说明](releases/0.6.0.md)；旧候选结果不改挂为当前发布通过。
+
 ## 环境
 
 - Windows x64 开发机、Visual Studio 2022 C++ 桌面开发组件、ATL、v143 工具集。
@@ -23,6 +25,8 @@
 
 应用打包保留默认 ZIP，也可显式选择[压缩档位](compression-profiles.md)；该文档
 提供同一载荷下的空间、解压时间和内存实测方法。
+
+自动宿主与双资源模板使用 `-WithAutoHost` 显式启用，详见[自动后端](auto-backend.md)。
 
 ```powershell
 powershell.exe -File tools/Build.ps1 -Architecture x64 -Configuration Release -Install
@@ -142,4 +146,4 @@ MiniBlink应用可用`tools/Build.ps1 -WithDevToolsPackage`选择经审查的离
 
 `tools/Build.ps1 -Architecture x64 -Configuration Release -WithUia` 或 `tools/Soui.ps1 build --architecture x64 --configuration Release --with-uia` 显式构建 `Soui::Uia`；可组合既有 `-SdkOnly`、`-Install` 和现代后端选项。未选择时明确配置 OFF。应用仍需按公共 API 注册可信原生投影和派发策略，构建选项不会自动投影业务页面。
 
-CMake 消费者使用 `find_package(SouiSdk 0.5.0 EXACT CONFIG REQUIRED COMPONENTS Uia)` 与 `Soui::Uia`。未安装该组件会拒绝 REQUIRED 请求。历史 MSVC 编译器尾进程例外未覆盖 UIA，不能与该例外组合；正常 MSVC/LLVM 构建保持各自既有验证规则。
+CMake 消费者使用 `find_package(SouiSdk 0.6.0 EXACT CONFIG REQUIRED COMPONENTS Uia)` 与 `Soui::Uia`。未安装该组件会拒绝 REQUIRED 请求。历史 MSVC 编译器尾进程例外未覆盖 UIA，不能与该例外组合；正常 MSVC/LLVM 构建保持各自既有验证规则。

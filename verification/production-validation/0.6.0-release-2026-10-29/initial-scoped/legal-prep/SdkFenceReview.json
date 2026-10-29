@@ -1,0 +1,138 @@
+{
+  "schema": "soui.release-sdk-fence-independent-source-review/v1",
+  "createdUtc": "2026-10-28T14:30:15.619Z",
+  "root": "C:/sr06",
+  "decision": "NO_REMAINING_BLOCKING_FINDING_IN_BOUNDED_STATIC_SCOPE",
+  "blockingFindings": [],
+  "reviewedSourcePins": [
+    {
+      "path": "sdk/src/host/soui_miniblink_host.cpp",
+      "bytes": 269957,
+      "sha256": "0f4de698a8d78dfb1864c7e58a8903a18f1f090577abd8786080fbf9742217e2"
+    },
+    {
+      "path": "sdk/src/host/devtools_host.cpp",
+      "bytes": 22777,
+      "sha256": "f952f73f8c0e3d9b5dc4d7ded2b1057c8110b383f02df99883365c0379d4664b"
+    },
+    {
+      "path": "sdk/src/host/input_mailbox.h",
+      "bytes": 12609,
+      "sha256": "d7474d35fadf162bffbd92daf541af0c397ffc50b5a52d9080765214c9c4476d"
+    },
+    {
+      "path": "sdk/src/host/owned_local_resource_session.cpp",
+      "bytes": 24180,
+      "sha256": "3422ad23d09ec48a7904b130cc1b337e8dd5439bc048849023c2e3ad4d8e6f59"
+    },
+    {
+      "path": "sdk/renderers/webview2/webview2_host.cpp",
+      "bytes": 116204,
+      "sha256": "4174bb1ae185dc8706e55655b5438bb9d10ab65aa744014b2ad32e6eb13b5aa9"
+    },
+    {
+      "path": "sdk/include/soui/devtools.h",
+      "bytes": 3389,
+      "sha256": "c21289bfa9fe128f623282ec7243791536a092255fabd288f5bc0414c14baac9"
+    },
+    {
+      "path": "tests/native/miniblink_unmount_tests.cpp",
+      "bytes": 20321,
+      "sha256": "bd8994cf27119f43c60a011c9a5cee49080161f3f7bf0c9d695f1db88ee3d5ab"
+    },
+    {
+      "path": "tests/native/devtools_host_tests.cpp",
+      "bytes": 13627,
+      "sha256": "002d7cb6ba9014b1d165f0ba686137912e3a1802a6c060a33c3e3fcce56d30af"
+    },
+    {
+      "path": "tests/native/local_resource_host_tests.cpp",
+      "bytes": 23073,
+      "sha256": "099efc8c28cc44e1aa3709066593890dd5d9a424976e9e85e500f886876e4d77"
+    },
+    {
+      "path": "tests/native/webview2_cancelled_controller_tests.cpp",
+      "bytes": 9749,
+      "sha256": "efdc17a0acf84888b0904cc6e25553f040685f53fb103f910c524407226c9b57"
+    },
+    {
+      "path": "tests/native/CMakeLists.txt",
+      "bytes": 44970,
+      "sha256": "dea21281cfc82867e2c9d08b0098f336dc766dad63b109e8aede175aa0e75eff"
+    },
+    {
+      "path": "tools/sdk/soui-sdk.cjs",
+      "bytes": 15231,
+      "sha256": "1e2fac33a47edea881f3ad1e5f62d47d2078db238fde42e0b650145c0fdd463b"
+    }
+  ],
+  "sourcePinsStableDuringFinalRecord": true,
+  "priorFinding": {
+    "trigger": "Early DevTools revoke sets unmount_requested before unmount_state exists; late native focus/recovery could reach the retiring target.",
+    "closedByActualSource": {
+      "earlyFocusEntry": true,
+      "earlyWindowGate": true,
+      "recoveryFocusGate": true,
+      "earlyMailboxQuiesce": true,
+      "fixtureCallsActualFence": true
+    },
+    "regression": {
+      "test": "sdk.native.devtools-early-retirement",
+      "target": "soui_miniblink_unmount_tests",
+      "argument": "devtools-early-retirement",
+      "evidence": "Actual adapter fence then public focus and WM_SETFOCUS before unmount continuation; finishes actual no-view Engine unmount.",
+      "reviewerExecuted": false,
+      "limits": "Does not exercise real HWND/paused inspector or native wkeSetFocus recovery branch."
+    }
+  },
+  "boundedFindings": [
+    {
+      "topic": "Mini revocation and Bridge/input authority",
+      "result": "Early fence clears Bridge admission/focus, quiesces mailbox, revokes local-resource admission and invalidates execution context before native close can resume a paused script. Updated entry/message/recovery gates retain this fence. Original cleanup lane owns input cancellation/unregister and retains mailbox until completion."
+    },
+    {
+      "topic": "Local-resource sticky failure",
+      "result": "accept_drain validates identity/counts and never promotes native Pending to retired. Physical release requires actual PayloadRetired and empty operations/callbacks/payload. terminal_result retains failure_code after physical release, and facade close/destroy returns that same origin failure."
+    },
+    {
+      "topic": "WebView2 async/COM ownership",
+      "result": "Normal async receipts settle exactly once; active completion holds state; unmount closes target before waiting pending native callbacks, then retains COM refs until callbacks return. unmount/Close reentry stays busy, current_source pins target and checks generation after COM, output ready publication rechecks phase/generation/document/stop after Post. serialize_output contains invocationId."
+    },
+    {
+      "topic": "Default deny/source delivery",
+      "result": "Public configuration access defaults disabled; templates retain allow_native_devtools=false; CMake package option remains OFF with explicit pins. Packaging selects materials without granting runtime authority; managedFiles includes new redistribution document."
+    }
+  ],
+  "specificCoverageLimits": [
+    {
+      "existingEntry": "sdk.native.devtools-facade-contract",
+      "scope": "Fake renderer Host native grant/default deny/stale grant/reentrant revoke/sticky failed retirement. Does not prove real native UI or loaded kernel."
+    },
+    {
+      "existingEntry": "sdk.native.local-resource-host",
+      "scope": "Actual SDK local-resource owner with fake native API includes failed retirement after physical cleanup; final fused source still needs its actual short-test result."
+    },
+    {
+      "existingEntry": "sdk.native.webview2-cancelled-controller",
+      "scope": "Actual private preparation/retirement code with fake COM tests cancelled-controller borrows/reentry/ref ownership; not a real Runtime/ExecuteScript-after-Close qualification."
+    },
+    {
+      "existingEntry": "sdk.native.devtools-early-retirement",
+      "scope": "New regression exists and has been read, not run by this reviewer. Root owns current build and execution; old product evidence stays on old identities."
+    }
+  ],
+  "reviewerActions": {
+    "sourceEdited": false,
+    "compiled": false,
+    "testsExecuted": false,
+    "gui": false,
+    "product": false,
+    "index": false
+  },
+  "qualifications": {
+    "actualFinalBuildPassClaimed": false,
+    "actualFinalRuntimePassClaimed": false,
+    "fullGoalComplete": false,
+    "releaseReady": false
+  }
+}

@@ -1,0 +1,818 @@
+{
+  "schema": "soui-scheduler-guest-results/1",
+  "scope": "isolated scheduler fixture correctness",
+  "runtimeExecuted": true,
+  "guestChildCasesValidated": 35,
+  "expectedOriginalFailures": 2,
+  "expectedFirst1LifecycleFailure": 1,
+  "finalGreenPassingCases": 32,
+  "totalChildElapsedMs": 11359,
+  "elapsedMeaning": "Sum of launcher per-child elapsed values; not an input-latency or performance measurement",
+  "analysisTool": {
+    "artifactLabel": "analyze-scheduler-run.cjs",
+    "storage": "repository",
+    "bytes": 20092,
+    "sha256": "27264065a3e37f07ad539eafe75bac6743521299e67ddeec786b1b66d9782b43"
+  },
+  "buildEvidence": {
+    "artifactLabel": "fixture-builds.json",
+    "storage": "repository",
+    "bytes": 26669,
+    "sha256": "b1ace427df6e076fe0664951ceeb9ce243b70880ab098581ca3a6a320a10790d"
+  },
+  "rawSerial": {
+    "artifactLabel": "raw/scheduler-guest-serial.bin",
+    "storage": "repository",
+    "bytes": 130475,
+    "sha256": "1e1fea0b040acce235ccd4b3d1d09fbfe0c74656731e622efc37ed6802c2a8e9"
+  },
+  "serialEnvelope": {
+    "prefixBytes": 39,
+    "payloadStartByte": 39,
+    "payloadEndByteExclusive": 130407,
+    "suffixBytes": 68,
+    "declaredPayloadBytes": 130368,
+    "payloadSha256": "ca40a6bcce56817ec6083d09e30f2fe14d0a2ba74a13036e545743ff89e9d066",
+    "complete": true,
+    "rawCrCount": 746,
+    "rawLfCount": 746,
+    "rawCrCrLfCount": 0,
+    "rawBytesPreserved": true
+  },
+  "parsedPayloadRecordCount": 742,
+  "analyzerSelfTest": {
+    "executed": true,
+    "mutationRejectionsVerified": 6
+  },
+  "externalEvidence": {
+    "external": [
+      {
+        "artifactLabel": "guest-regression-run-1/before.json",
+        "storage": "external-held",
+        "bytes": 279,
+        "sha256": "e4bb3170d726d94952eeb69c3f94341b67b83c7bc7c58f0b26554f0b4ebc69bd"
+      },
+      {
+        "artifactLabel": "guest-regression-run-1/child-outcomes.json",
+        "storage": "external-held",
+        "bytes": 17144,
+        "sha256": "84ff1a9532b889737704d0e2e0b42ac1ac793351c945378e5022b4ff98016d55"
+      },
+      {
+        "artifactLabel": "guest-regression-run-1/result.png",
+        "storage": "external-held",
+        "bytes": 77460,
+        "sha256": "3c32d9759959b0150474b50a27c3c5ee52a9c520b413da72fbbe1b595bb458db"
+      }
+    ],
+    "serialAppendStartByte": 1958841,
+    "iso": {
+      "artifactLabel": "guest-regression-3.iso",
+      "storage": "external-held",
+      "bytes": 8192000,
+      "sha256": "e19065c3be66d416a891cac6601b61119b802eff9626db7e5300590fe5c371d0"
+    },
+    "isoEntries": [
+      {
+        "artifactLabel": "guest-regression-3.iso/artifact-manifest.json",
+        "storage": "external-held",
+        "bytes": 29564,
+        "sha256": "e7ba542071846758719173c31f3a4d97cd29013d760d67b618e063baec50d5c6",
+        "matchesBuildArtifact": "guest-regression-3/artifact-manifest.json"
+      },
+      {
+        "artifactLabel": "guest-regression-3.iso/first1-x86/soui_worker_lifetime_regressions.exe",
+        "storage": "external-held",
+        "bytes": 50688,
+        "sha256": "62cbc415e9b3ea07c8864194999ee9304d4be77abb091cdc0ffaf412e91bcf23",
+        "matchesBuildArtifact": "guest-regression-3/first1-x86/soui_worker_lifetime_regressions.exe"
+      },
+      {
+        "artifactLabel": "guest-regression-3.iso/green-x64/soui_worker_lifetime_regressions.exe",
+        "storage": "external-held",
+        "bytes": 56320,
+        "sha256": "e026a53cb5818fe7357ab77fea4feec5c8cdca46e28af1156bbcefb1cdb1db8d",
+        "matchesBuildArtifact": "guest-regression-3/green-x64/soui_worker_lifetime_regressions.exe"
+      },
+      {
+        "artifactLabel": "guest-regression-3.iso/green-x86/soui_worker_lifetime_regressions.exe",
+        "storage": "external-held",
+        "bytes": 50688,
+        "sha256": "c09efe7ee1f562afdeb6daf5217d021bd8d458da0190efd860d5c00e173e0d69",
+        "matchesBuildArtifact": "guest-regression-3/green-x86/soui_worker_lifetime_regressions.exe"
+      },
+      {
+        "artifactLabel": "guest-regression-3.iso/red-x86/soui_worker_lifetime_regressions.exe",
+        "storage": "external-held",
+        "bytes": 50688,
+        "sha256": "0b2c7104cfb2781a5c8ba052513e5dc801acd6cf12bb885e01b47ee8ea18aef0",
+        "matchesBuildArtifact": "guest-regression-3/red-x86/soui_worker_lifetime_regressions.exe"
+      },
+      {
+        "artifactLabel": "guest-regression-3.iso/Run-Scheduler-Regression.exe",
+        "storage": "external-held",
+        "bytes": 130560,
+        "sha256": "3d52d1357233f6a9bcbfd5026faaae92db5fbf6b9136fc452b3002231a4a01bd",
+        "matchesBuildArtifact": "guest-regression-3/Run-Scheduler-Regression.exe"
+      }
+    ],
+    "isoEntryVerificationMethod": "7z x -so: archive bytes read only; no extracted program execution",
+    "bundleManifest": {
+      "artifactLabel": "guest-regression-3/artifact-manifest.json",
+      "storage": "external-held",
+      "bytes": 29564,
+      "sha256": "e7ba542071846758719173c31f3a4d97cd29013d760d67b618e063baec50d5c6"
+    }
+  },
+  "strictChecks": {
+    "oneSerialEnvelope": true,
+    "oneLauncherBeginAndEnd": true,
+    "fixedUniqueOrderedCaseMatrix": true,
+    "oneActualChildSummaryPerCase": true,
+    "expectedObservedExits": true,
+    "assignedToJobBeforeResume": true,
+    "naturalChildProcessSignals": true,
+    "allJobsDrainedAndHandlesClosed": true,
+    "noTimeouts": true,
+    "noForcedCleanup": true,
+    "childSummaryIdentityAndContractMatched": true,
+    "causalNotesMatched": true,
+    "externalOutcomeExtractionMatchesRaw": true,
+    "sealedIsoSelectedEntriesMatchBuildPins": true
+  },
+  "causalEvidence": {
+    "originalRed": {
+      "countFirstSliceTasks": 96,
+      "countNativeProbeAtTasks": 0,
+      "clockFirstSliceTasks": 50,
+      "clockNativeProbeAtTasks": 50
+    },
+    "first1Red": {
+      "preShutdownDrainTasks": 32
+    },
+    "finalGreen": [
+      {
+        "bucket": "green-x86",
+        "firstCountSliceTasks": 32,
+        "nativeCountProbeAtTasks": 32,
+        "firstClockSliceTasks": 2,
+        "nativeClockProbeAtTasks": 2,
+        "workerFirstCountYieldTasks": 0,
+        "workerFirstClockYieldTasks": 50,
+        "finalShutdownDrainTasks": 96,
+        "preShutdownDrainTasks": 96
+      },
+      {
+        "bucket": "green-x64",
+        "firstCountSliceTasks": 32,
+        "nativeCountProbeAtTasks": 32,
+        "firstClockSliceTasks": 2,
+        "nativeClockProbeAtTasks": 2,
+        "workerFirstCountYieldTasks": 0,
+        "workerFirstClockYieldTasks": 50,
+        "finalShutdownDrainTasks": 96,
+        "preShutdownDrainTasks": 96
+      }
+    ]
+  },
+  "cases": [
+    {
+      "bucket": "red-x86",
+      "case": "main-scheduler-task-budget",
+      "pid": 7960,
+      "executableArtifactLabel": "guest-regression-3/red-x86/soui_worker_lifetime_regressions.exe",
+      "expectedExit": 3,
+      "actualExit": 3,
+      "contractPassed": false,
+      "childReason": "actual-source-contract-failed",
+      "elapsedMs": 2687,
+      "jobDrained": true,
+      "timeout": false,
+      "forcedCleanup": false,
+      "nativeNotes": [
+        {
+          "phase": "first-timer-ready-tasks",
+          "value": 96
+        },
+        {
+          "phase": "native-probe-ready-tasks",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "bucket": "red-x86",
+      "case": "main-scheduler-clock-budget",
+      "pid": 1152,
+      "executableArtifactLabel": "guest-regression-3/red-x86/soui_worker_lifetime_regressions.exe",
+      "expectedExit": 3,
+      "actualExit": 3,
+      "contractPassed": false,
+      "childReason": "actual-source-contract-failed",
+      "elapsedMs": 172,
+      "jobDrained": true,
+      "timeout": false,
+      "forcedCleanup": false,
+      "nativeNotes": [
+        {
+          "phase": "first-timer-ready-tasks",
+          "value": 50
+        },
+        {
+          "phase": "native-probe-ready-tasks",
+          "value": 50
+        }
+      ]
+    },
+    {
+      "bucket": "first1-x86",
+      "case": "main-scheduler-pre-shutdown-drain",
+      "pid": 6676,
+      "executableArtifactLabel": "guest-regression-3/first1-x86/soui_worker_lifetime_regressions.exe",
+      "expectedExit": 3,
+      "actualExit": 3,
+      "contractPassed": false,
+      "childReason": "actual-source-contract-failed",
+      "elapsedMs": 250,
+      "jobDrained": true,
+      "timeout": false,
+      "forcedCleanup": false,
+      "nativeNotes": [
+        {
+          "phase": "pre-shutdown-drained-ready-tasks",
+          "value": 32
+        }
+      ]
+    },
+    {
+      "bucket": "green-x86",
+      "case": "scheduler-new-bad-alloc",
+      "pid": 6168,
+      "executableArtifactLabel": "guest-regression-3/green-x86/soui_worker_lifetime_regressions.exe",
+      "expectedExit": 0,
+      "actualExit": 0,
+      "contractPassed": true,
+      "childReason": "actual-source-contract-satisfied",
+      "elapsedMs": 250,
+      "jobDrained": true,
+      "timeout": false,
+      "forcedCleanup": false,
+      "nativeNotes": []
+    },
+    {
+      "bucket": "green-x86",
+      "case": "event-null",
+      "pid": 6792,
+      "executableArtifactLabel": "guest-regression-3/green-x86/soui_worker_lifetime_regressions.exe",
+      "expectedExit": 0,
+      "actualExit": 0,
+      "contractPassed": true,
+      "childReason": "actual-source-contract-satisfied",
+      "elapsedMs": 94,
+      "jobDrained": true,
+      "timeout": false,
+      "forcedCleanup": false,
+      "nativeNotes": []
+    },
+    {
+      "bucket": "green-x86",
+      "case": "native-launch-zero",
+      "pid": 6340,
+      "executableArtifactLabel": "guest-regression-3/green-x86/soui_worker_lifetime_regressions.exe",
+      "expectedExit": 0,
+      "actualExit": 0,
+      "contractPassed": true,
+      "childReason": "actual-source-contract-satisfied",
+      "elapsedMs": 93,
+      "jobDrained": true,
+      "timeout": false,
+      "forcedCleanup": false,
+      "nativeNotes": []
+    },
+    {
+      "bucket": "green-x86",
+      "case": "registry-reserve-bad-alloc",
+      "pid": 3512,
+      "executableArtifactLabel": "guest-regression-3/green-x86/soui_worker_lifetime_regressions.exe",
+      "expectedExit": 0,
+      "actualExit": 0,
+      "contractPassed": true,
+      "childReason": "actual-source-contract-satisfied",
+      "elapsedMs": 79,
+      "jobDrained": true,
+      "timeout": false,
+      "forcedCleanup": false,
+      "nativeNotes": []
+    },
+    {
+      "bucket": "green-x86",
+      "case": "startup-tls-failure",
+      "pid": 4652,
+      "executableArtifactLabel": "guest-regression-3/green-x86/soui_worker_lifetime_regressions.exe",
+      "expectedExit": 0,
+      "actualExit": 0,
+      "contractPassed": true,
+      "childReason": "actual-source-contract-satisfied",
+      "elapsedMs": 78,
+      "jobDrained": true,
+      "timeout": false,
+      "forcedCleanup": false,
+      "nativeNotes": []
+    },
+    {
+      "bucket": "green-x86",
+      "case": "ready-acquire-visibility",
+      "pid": 8008,
+      "executableArtifactLabel": "guest-regression-3/green-x86/soui_worker_lifetime_regressions.exe",
+      "expectedExit": 0,
+      "actualExit": 0,
+      "contractPassed": true,
+      "childReason": "actual-source-contract-satisfied",
+      "elapsedMs": 968,
+      "jobDrained": true,
+      "timeout": false,
+      "forcedCleanup": false,
+      "nativeNotes": []
+    },
+    {
+      "bucket": "green-x86",
+      "case": "native-exit-delayed",
+      "pid": 4548,
+      "executableArtifactLabel": "guest-regression-3/green-x86/soui_worker_lifetime_regressions.exe",
+      "expectedExit": 0,
+      "actualExit": 0,
+      "contractPassed": true,
+      "childReason": "actual-source-contract-satisfied",
+      "elapsedMs": 94,
+      "jobDrained": true,
+      "timeout": false,
+      "forcedCleanup": false,
+      "nativeNotes": []
+    },
+    {
+      "bucket": "green-x86",
+      "case": "normal-worker-close",
+      "pid": 340,
+      "executableArtifactLabel": "guest-regression-3/green-x86/soui_worker_lifetime_regressions.exe",
+      "expectedExit": 0,
+      "actualExit": 0,
+      "contractPassed": true,
+      "childReason": "actual-source-contract-satisfied",
+      "elapsedMs": 110,
+      "jobDrained": true,
+      "timeout": false,
+      "forcedCleanup": false,
+      "nativeNotes": []
+    },
+    {
+      "bucket": "green-x86",
+      "case": "concurrent-registry-close",
+      "pid": 8164,
+      "executableArtifactLabel": "guest-regression-3/green-x86/soui_worker_lifetime_regressions.exe",
+      "expectedExit": 0,
+      "actualExit": 0,
+      "contractPassed": true,
+      "childReason": "actual-source-contract-satisfied",
+      "elapsedMs": 109,
+      "jobDrained": true,
+      "timeout": false,
+      "forcedCleanup": false,
+      "nativeNotes": []
+    },
+    {
+      "bucket": "green-x86",
+      "case": "main-thread-compatibility",
+      "pid": 7484,
+      "executableArtifactLabel": "guest-regression-3/green-x86/soui_worker_lifetime_regressions.exe",
+      "expectedExit": 0,
+      "actualExit": 0,
+      "contractPassed": true,
+      "childReason": "actual-source-contract-satisfied",
+      "elapsedMs": 172,
+      "jobDrained": true,
+      "timeout": false,
+      "forcedCleanup": false,
+      "nativeNotes": []
+    },
+    {
+      "bucket": "green-x86",
+      "case": "main-scheduler-task-budget",
+      "pid": 7516,
+      "executableArtifactLabel": "guest-regression-3/green-x86/soui_worker_lifetime_regressions.exe",
+      "expectedExit": 0,
+      "actualExit": 0,
+      "contractPassed": true,
+      "childReason": "actual-source-contract-satisfied",
+      "elapsedMs": 219,
+      "jobDrained": true,
+      "timeout": false,
+      "forcedCleanup": false,
+      "nativeNotes": [
+        {
+          "phase": "first-timer-ready-tasks",
+          "value": 32
+        },
+        {
+          "phase": "native-probe-ready-tasks",
+          "value": 32
+        }
+      ]
+    },
+    {
+      "bucket": "green-x86",
+      "case": "main-scheduler-clock-budget",
+      "pid": 7648,
+      "executableArtifactLabel": "guest-regression-3/green-x86/soui_worker_lifetime_regressions.exe",
+      "expectedExit": 0,
+      "actualExit": 0,
+      "contractPassed": true,
+      "childReason": "actual-source-contract-satisfied",
+      "elapsedMs": 1390,
+      "jobDrained": true,
+      "timeout": false,
+      "forcedCleanup": false,
+      "nativeNotes": [
+        {
+          "phase": "first-timer-ready-tasks",
+          "value": 2
+        },
+        {
+          "phase": "native-probe-ready-tasks",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "bucket": "green-x86",
+      "case": "worker-scheduler-no-count-cap",
+      "pid": 4348,
+      "executableArtifactLabel": "guest-regression-3/green-x86/soui_worker_lifetime_regressions.exe",
+      "expectedExit": 0,
+      "actualExit": 0,
+      "contractPassed": true,
+      "childReason": "actual-source-contract-satisfied",
+      "elapsedMs": 94,
+      "jobDrained": true,
+      "timeout": false,
+      "forcedCleanup": false,
+      "nativeNotes": [
+        {
+          "phase": "worker-first-yield-ready-tasks",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "bucket": "green-x86",
+      "case": "worker-scheduler-clock-budget",
+      "pid": 5040,
+      "executableArtifactLabel": "guest-regression-3/green-x86/soui_worker_lifetime_regressions.exe",
+      "expectedExit": 0,
+      "actualExit": 0,
+      "contractPassed": true,
+      "childReason": "actual-source-contract-satisfied",
+      "elapsedMs": 109,
+      "jobDrained": true,
+      "timeout": false,
+      "forcedCleanup": false,
+      "nativeNotes": [
+        {
+          "phase": "worker-first-yield-ready-tasks",
+          "value": 50
+        }
+      ]
+    },
+    {
+      "bucket": "green-x86",
+      "case": "main-scheduler-shutdown-drain",
+      "pid": 3424,
+      "executableArtifactLabel": "guest-regression-3/green-x86/soui_worker_lifetime_regressions.exe",
+      "expectedExit": 0,
+      "actualExit": 0,
+      "contractPassed": true,
+      "childReason": "actual-source-contract-satisfied",
+      "elapsedMs": 78,
+      "jobDrained": true,
+      "timeout": false,
+      "forcedCleanup": false,
+      "nativeNotes": [
+        {
+          "phase": "shutdown-drained-ready-tasks",
+          "value": 96
+        }
+      ]
+    },
+    {
+      "bucket": "green-x86",
+      "case": "main-scheduler-pre-shutdown-drain",
+      "pid": 5080,
+      "executableArtifactLabel": "guest-regression-3/green-x86/soui_worker_lifetime_regressions.exe",
+      "expectedExit": 0,
+      "actualExit": 0,
+      "contractPassed": true,
+      "childReason": "actual-source-contract-satisfied",
+      "elapsedMs": 94,
+      "jobDrained": true,
+      "timeout": false,
+      "forcedCleanup": false,
+      "nativeNotes": [
+        {
+          "phase": "pre-shutdown-drained-ready-tasks",
+          "value": 96
+        }
+      ]
+    },
+    {
+      "bucket": "green-x64",
+      "case": "scheduler-new-bad-alloc",
+      "pid": 7020,
+      "executableArtifactLabel": "guest-regression-3/green-x64/soui_worker_lifetime_regressions.exe",
+      "expectedExit": 0,
+      "actualExit": 0,
+      "contractPassed": true,
+      "childReason": "actual-source-contract-satisfied",
+      "elapsedMs": 500,
+      "jobDrained": true,
+      "timeout": false,
+      "forcedCleanup": false,
+      "nativeNotes": []
+    },
+    {
+      "bucket": "green-x64",
+      "case": "event-null",
+      "pid": 4812,
+      "executableArtifactLabel": "guest-regression-3/green-x64/soui_worker_lifetime_regressions.exe",
+      "expectedExit": 0,
+      "actualExit": 0,
+      "contractPassed": true,
+      "childReason": "actual-source-contract-satisfied",
+      "elapsedMs": 78,
+      "jobDrained": true,
+      "timeout": false,
+      "forcedCleanup": false,
+      "nativeNotes": []
+    },
+    {
+      "bucket": "green-x64",
+      "case": "native-launch-zero",
+      "pid": 3264,
+      "executableArtifactLabel": "guest-regression-3/green-x64/soui_worker_lifetime_regressions.exe",
+      "expectedExit": 0,
+      "actualExit": 0,
+      "contractPassed": true,
+      "childReason": "actual-source-contract-satisfied",
+      "elapsedMs": 78,
+      "jobDrained": true,
+      "timeout": false,
+      "forcedCleanup": false,
+      "nativeNotes": []
+    },
+    {
+      "bucket": "green-x64",
+      "case": "registry-reserve-bad-alloc",
+      "pid": 7376,
+      "executableArtifactLabel": "guest-regression-3/green-x64/soui_worker_lifetime_regressions.exe",
+      "expectedExit": 0,
+      "actualExit": 0,
+      "contractPassed": true,
+      "childReason": "actual-source-contract-satisfied",
+      "elapsedMs": 79,
+      "jobDrained": true,
+      "timeout": false,
+      "forcedCleanup": false,
+      "nativeNotes": []
+    },
+    {
+      "bucket": "green-x64",
+      "case": "startup-tls-failure",
+      "pid": 7652,
+      "executableArtifactLabel": "guest-regression-3/green-x64/soui_worker_lifetime_regressions.exe",
+      "expectedExit": 0,
+      "actualExit": 0,
+      "contractPassed": true,
+      "childReason": "actual-source-contract-satisfied",
+      "elapsedMs": 78,
+      "jobDrained": true,
+      "timeout": false,
+      "forcedCleanup": false,
+      "nativeNotes": []
+    },
+    {
+      "bucket": "green-x64",
+      "case": "ready-acquire-visibility",
+      "pid": 6352,
+      "executableArtifactLabel": "guest-regression-3/green-x64/soui_worker_lifetime_regressions.exe",
+      "expectedExit": 0,
+      "actualExit": 0,
+      "contractPassed": true,
+      "childReason": "actual-source-contract-satisfied",
+      "elapsedMs": 922,
+      "jobDrained": true,
+      "timeout": false,
+      "forcedCleanup": false,
+      "nativeNotes": []
+    },
+    {
+      "bucket": "green-x64",
+      "case": "native-exit-delayed",
+      "pid": 3092,
+      "executableArtifactLabel": "guest-regression-3/green-x64/soui_worker_lifetime_regressions.exe",
+      "expectedExit": 0,
+      "actualExit": 0,
+      "contractPassed": true,
+      "childReason": "actual-source-contract-satisfied",
+      "elapsedMs": 93,
+      "jobDrained": true,
+      "timeout": false,
+      "forcedCleanup": false,
+      "nativeNotes": []
+    },
+    {
+      "bucket": "green-x64",
+      "case": "normal-worker-close",
+      "pid": 4952,
+      "executableArtifactLabel": "guest-regression-3/green-x64/soui_worker_lifetime_regressions.exe",
+      "expectedExit": 0,
+      "actualExit": 0,
+      "contractPassed": true,
+      "childReason": "actual-source-contract-satisfied",
+      "elapsedMs": 94,
+      "jobDrained": true,
+      "timeout": false,
+      "forcedCleanup": false,
+      "nativeNotes": []
+    },
+    {
+      "bucket": "green-x64",
+      "case": "concurrent-registry-close",
+      "pid": 7064,
+      "executableArtifactLabel": "guest-regression-3/green-x64/soui_worker_lifetime_regressions.exe",
+      "expectedExit": 0,
+      "actualExit": 0,
+      "contractPassed": true,
+      "childReason": "actual-source-contract-satisfied",
+      "elapsedMs": 94,
+      "jobDrained": true,
+      "timeout": false,
+      "forcedCleanup": false,
+      "nativeNotes": []
+    },
+    {
+      "bucket": "green-x64",
+      "case": "main-thread-compatibility",
+      "pid": 6832,
+      "executableArtifactLabel": "guest-regression-3/green-x64/soui_worker_lifetime_regressions.exe",
+      "expectedExit": 0,
+      "actualExit": 0,
+      "contractPassed": true,
+      "childReason": "actual-source-contract-satisfied",
+      "elapsedMs": 250,
+      "jobDrained": true,
+      "timeout": false,
+      "forcedCleanup": false,
+      "nativeNotes": []
+    },
+    {
+      "bucket": "green-x64",
+      "case": "main-scheduler-task-budget",
+      "pid": 7732,
+      "executableArtifactLabel": "guest-regression-3/green-x64/soui_worker_lifetime_regressions.exe",
+      "expectedExit": 0,
+      "actualExit": 0,
+      "contractPassed": true,
+      "childReason": "actual-source-contract-satisfied",
+      "elapsedMs": 203,
+      "jobDrained": true,
+      "timeout": false,
+      "forcedCleanup": false,
+      "nativeNotes": [
+        {
+          "phase": "first-timer-ready-tasks",
+          "value": 32
+        },
+        {
+          "phase": "native-probe-ready-tasks",
+          "value": 32
+        }
+      ]
+    },
+    {
+      "bucket": "green-x64",
+      "case": "main-scheduler-clock-budget",
+      "pid": 7772,
+      "executableArtifactLabel": "guest-regression-3/green-x64/soui_worker_lifetime_regressions.exe",
+      "expectedExit": 0,
+      "actualExit": 0,
+      "contractPassed": true,
+      "childReason": "actual-source-contract-satisfied",
+      "elapsedMs": 1406,
+      "jobDrained": true,
+      "timeout": false,
+      "forcedCleanup": false,
+      "nativeNotes": [
+        {
+          "phase": "first-timer-ready-tasks",
+          "value": 2
+        },
+        {
+          "phase": "native-probe-ready-tasks",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "bucket": "green-x64",
+      "case": "worker-scheduler-no-count-cap",
+      "pid": 6860,
+      "executableArtifactLabel": "guest-regression-3/green-x64/soui_worker_lifetime_regressions.exe",
+      "expectedExit": 0,
+      "actualExit": 0,
+      "contractPassed": true,
+      "childReason": "actual-source-contract-satisfied",
+      "elapsedMs": 94,
+      "jobDrained": true,
+      "timeout": false,
+      "forcedCleanup": false,
+      "nativeNotes": [
+        {
+          "phase": "worker-first-yield-ready-tasks",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "bucket": "green-x64",
+      "case": "worker-scheduler-clock-budget",
+      "pid": 2992,
+      "executableArtifactLabel": "guest-regression-3/green-x64/soui_worker_lifetime_regressions.exe",
+      "expectedExit": 0,
+      "actualExit": 0,
+      "contractPassed": true,
+      "childReason": "actual-source-contract-satisfied",
+      "elapsedMs": 94,
+      "jobDrained": true,
+      "timeout": false,
+      "forcedCleanup": false,
+      "nativeNotes": [
+        {
+          "phase": "worker-first-yield-ready-tasks",
+          "value": 50
+        }
+      ]
+    },
+    {
+      "bucket": "green-x64",
+      "case": "main-scheduler-shutdown-drain",
+      "pid": 7768,
+      "executableArtifactLabel": "guest-regression-3/green-x64/soui_worker_lifetime_regressions.exe",
+      "expectedExit": 0,
+      "actualExit": 0,
+      "contractPassed": true,
+      "childReason": "actual-source-contract-satisfied",
+      "elapsedMs": 78,
+      "jobDrained": true,
+      "timeout": false,
+      "forcedCleanup": false,
+      "nativeNotes": [
+        {
+          "phase": "shutdown-drained-ready-tasks",
+          "value": 96
+        }
+      ]
+    },
+    {
+      "bucket": "green-x64",
+      "case": "main-scheduler-pre-shutdown-drain",
+      "pid": 6312,
+      "executableArtifactLabel": "guest-regression-3/green-x64/soui_worker_lifetime_regressions.exe",
+      "expectedExit": 0,
+      "actualExit": 0,
+      "contractPassed": true,
+      "childReason": "actual-source-contract-satisfied",
+      "elapsedMs": 78,
+      "jobDrained": true,
+      "timeout": false,
+      "forcedCleanup": false,
+      "nativeNotes": [
+        {
+          "phase": "pre-shutdown-drained-ready-tasks",
+          "value": 96
+        }
+      ]
+    }
+  ],
+  "limitations": {
+    "intentionalTerminateCasesNotRun": [
+      "native-wait-fails",
+      "worker-self-delete"
+    ],
+    "fullKernelBuildValidatedByThisReport": false,
+    "productInputLatencyValidated": false,
+    "synchronousMouseCallbackLatencyValidated": false,
+    "performanceMeasurement": false,
+    "launcherProcessExitObserved": false,
+    "screenshotKeptExternal": true,
+    "uiObservation": "External screenshot shows 35/35 expected and COM1 export success; raw records are the correctness evidence",
+    "fixtureContractScope": "Passing fixture contracts include retained-task exact-once completion, delayed-task eligibility and continued admission after pre-shutdown drain; no broader engine qualification"
+  }
+}

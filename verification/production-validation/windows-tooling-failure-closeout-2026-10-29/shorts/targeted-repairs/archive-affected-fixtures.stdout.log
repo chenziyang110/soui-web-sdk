@@ -1,0 +1,64 @@
+TAP version 13
+# Subtest: archive tool runtime changes cannot authorize publication
+ok 1 - archive tool runtime changes cannot authorize publication
+  ---
+  duration_ms: 39.2184
+  type: 'test'
+  ...
+# Subtest: optional tool identity deadline covers streamed executable and runtime hashing
+ok 2 - optional tool identity deadline covers streamed executable and runtime hashing
+  ---
+  duration_ms: 7.9688
+  type: 'test'
+  ...
+# Subtest: optional tool identity failure preserves native status and streams 2
+ok 3 - optional tool identity failure preserves native status and streams 2
+  ---
+  duration_ms: 6.1102
+  type: 'test'
+  ...
+# Subtest: optional tool identity failure preserves native status and streams null
+ok 4 - optional tool identity failure preserves native status and streams null
+  ---
+  duration_ms: 6.8836
+  type: 'test'
+  ...
+# Subtest: existing destinations and a publication race are never merged or overwritten
+ok 5 - existing destinations and a publication race are never merged or overwritten
+  ---
+  duration_ms: 39.7304
+  type: 'test'
+  ...
+# Subtest: CLI preserves a native extraction failure in diagnostics and returns nonzero
+ok 6 - CLI preserves a native extraction failure in diagnostics and returns nonzero
+  ---
+  duration_ms: 112.892
+  type: 'test'
+  ...
+# Subtest: PS5 metadata plus actual 7z preserves Chinese names and paths beyond 260 characters
+ok 7 - PS5 metadata plus actual 7z preserves Chinese names and paths beyond 260 characters
+  ---
+  duration_ms: 1366.841
+  type: 'test'
+  ...
+# Subtest: actual ZIP metadata refuses ../outside.txt before any native extraction
+ok 8 - actual ZIP metadata refuses ../outside.txt before any native extraction
+  ---
+  duration_ms: 1035.0819
+  type: 'test'
+  ...
+# Subtest: actual ZIP metadata refuses link before any native extraction
+ok 9 - actual ZIP metadata refuses link before any native extraction
+  ---
+  duration_ms: 1023.1293
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3743.832

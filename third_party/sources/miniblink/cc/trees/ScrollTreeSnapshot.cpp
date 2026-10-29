@@ -1,6 +1,7 @@
 #include "cc/trees/ScrollTreeSnapshot.h"
 
 #include <cmath>
+#include <utility>
 
 namespace cc {
 
@@ -61,6 +62,34 @@ ScrollNodeSnapshot* ScrollTreeSnapshot::findMutableNode(
             return &m_nodes[i];
     }
     return nullptr;
+}
+
+bool ScrollTreeSnapshot::refreshCoverage(const ScrollNodeKey& key,
+    uint64_t scrollEpoch, const ScrollCoverageWindow& coverage,
+    bool coveragePrepared, bool hasResourceFence)
+{
+    ScrollNodeSnapshot* node = findMutableNode(key);
+    if (!node || node->scrollEpoch != scrollEpoch)
+        return false;
+
+    // TileGrid marks a tile prepared before its raster action is applied.
+    // Do not promote newly prepared coverage in a scene that can activate
+    // immediately without waiting for that action.
+    if (coveragePrepared && !node->coverageComplete && !hasResourceFence)
+        return false;
+
+    node->coverageComplete = coveragePrepared;
+    if (coveragePrepared) {
+        node->coverageMinimum = coverage.minimumOffset;
+        node->coverageMaximum = coverage.maximumOffset;
+        node->mainThreadReasons &= ~ScrollMainThreadReasonIncompleteCoverage;
+    } else {
+        node->coverageMinimum = node->baseOffset;
+        node->coverageMaximum = node->baseOffset;
+        node->mainThreadReasons |= ScrollMainThreadReasonIncompleteCoverage;
+    }
+    node->setInputPrediction(node->inputPrediction);
+    return true;
 }
 
 const ScrollNodeSnapshot* ScrollTreeSnapshot::scrollTargetAt(
@@ -151,19 +180,75 @@ SceneCoordinator::SceneCoordinator()
 
 bool SceneCoordinator::submit(const SceneTransaction& transaction)
 {
+    SceneTransaction owned(transaction);
+    return submit(std::move(owned));
+}
+
+bool SceneCoordinator::submit(SceneTransaction&& transaction)
+{
     if (m_hasPending || m_hasReady
         || !transaction.isValidForBase(activeVersion())) {
         return false;
     }
 
+    if (containsCancelledAction(transaction.firstActionId, transaction.lastActionId))
+        return false;
+    if (transaction.firstActionId > m_cancelledHighWatermark
+        || (!transaction.firstActionId && transaction.resourcesReady)) {
+        m_cancelledCount = 0;
+        m_cancelledHighWatermark = 0;
+        m_cancelledOverflow = false;
+    }
     if (transaction.resourcesReady) {
-        m_ready = transaction;
+        m_ready = std::move(transaction);
         m_hasReady = true;
     } else {
-        m_pending = transaction;
+        m_pending = std::move(transaction);
         m_hasPending = true;
     }
     return true;
+}
+
+bool SceneCoordinator::containsCancelledAction(int64_t first, int64_t last) const
+{
+    if (!first || !last)
+        return false;
+    if (m_cancelledOverflow && first <= m_cancelledHighWatermark)
+        return true; // Fail closed until a wholly newer action interval.
+    for (size_t index = 0; index < m_cancelledCount; ++index) {
+        if (m_cancelledActions[index] >= first && m_cancelledActions[index] <= last)
+            return true;
+    }
+    return false;
+}
+
+bool SceneCoordinator::cancelPendingForAction(int64_t actionId)
+{
+    if (actionId <= 0)
+        return false;
+    bool recorded = false;
+    for (size_t index = 0; index < m_cancelledCount; ++index)
+        recorded |= m_cancelledActions[index] == actionId;
+    if (!recorded) {
+        if (m_cancelledCount == maximumCancellationReceipts)
+            m_cancelledOverflow = true;
+        else
+            m_cancelledActions[m_cancelledCount++] = actionId;
+    }
+    if (actionId > m_cancelledHighWatermark)
+        m_cancelledHighWatermark = actionId;
+    bool cancelled = false;
+    if (m_hasPending && containsCancelledAction(m_pending.firstActionId, m_pending.lastActionId)) {
+        m_pending = SceneTransaction();
+        m_hasPending = false;
+        cancelled = true;
+    }
+    if (m_hasReady && containsCancelledAction(m_ready.firstActionId, m_ready.lastActionId)) {
+        m_ready = SceneTransaction();
+        m_hasReady = false;
+        cancelled = true;
+    }
+    return cancelled;
 }
 
 bool SceneCoordinator::markResourcesReady(uint64_t sceneVersion)
@@ -174,7 +259,7 @@ bool SceneCoordinator::markResourcesReady(uint64_t sceneVersion)
     }
 
     m_pending.resourcesReady = true;
-    m_ready = m_pending;
+    m_ready = std::move(m_pending);
     m_pending = SceneTransaction();
     m_hasPending = false;
     m_hasReady = true;
@@ -195,7 +280,7 @@ bool SceneCoordinator::activateReady()
     if (!m_hasReady)
         return false;
 
-    m_active = m_ready;
+    m_active = std::move(m_ready);
     m_ready = SceneTransaction();
     m_hasReady = false;
     return true;

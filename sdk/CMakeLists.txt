@@ -65,6 +65,7 @@ write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/SouiSdkConfigVersi
 install(TARGETS soui_sdk soui_action_json EXPORT SouiSdkTargets ARCHIVE DESTINATION lib/$<CONFIG>)
 install(FILES "${SOUI_DISTRIBUTION_ROOT}/third_party/include/json/json.hpp" DESTINATION include/soui/action-json)
 install(DIRECTORY include/ DESTINATION include)
+install(FILES "${SOUI_DISTRIBUTION_ROOT}/LICENSE.md" DESTINATION share/SouiSdk)
 set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${SOUI_DISTRIBUTION_ROOT}/THIRD_PARTY_NOTICES.md")
 file(READ "${SOUI_DISTRIBUTION_ROOT}/THIRD_PARTY_NOTICES.md" _soui_install_notices)
 string(REPLACE "](third_party/licenses/" "](licenses/"
@@ -74,6 +75,17 @@ install(FILES "${CMAKE_CURRENT_BINARY_DIR}/THIRD_PARTY_NOTICES.install.md"
   DESTINATION share/SouiSdk RENAME THIRD_PARTY_NOTICES.md)
 install(FILES "${SOUI_DISTRIBUTION_ROOT}/LICENSE.md" DESTINATION share/SouiSdk)
 install(DIRECTORY "${SOUI_DISTRIBUTION_ROOT}/third_party/licenses/" DESTINATION share/SouiSdk/licenses)
+install(DIRECTORY "${SOUI_DISTRIBUTION_ROOT}/third_party/licenses/" DESTINATION share/SouiSdk/third_party/licenses)
+set(_soui_redistribution_doc "docs/licenses/v0.6.0-redistribution.md")
+string(FIND "${_soui_install_notices}" "${_soui_redistribution_doc}" _soui_redistribution_reference)
+if(NOT _soui_redistribution_reference EQUAL -1)
+  set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${SOUI_DISTRIBUTION_ROOT}/${_soui_redistribution_doc}")
+  if(NOT EXISTS "${SOUI_DISTRIBUTION_ROOT}/${_soui_redistribution_doc}" OR
+      IS_DIRECTORY "${SOUI_DISTRIBUTION_ROOT}/${_soui_redistribution_doc}")
+    message(FATAL_ERROR "SDK legal materials missing: ${_soui_redistribution_doc}")
+  endif()
+  install(FILES "${SOUI_DISTRIBUTION_ROOT}/${_soui_redistribution_doc}" DESTINATION share/SouiSdk/docs/licenses)
+endif()
 install(EXPORT SouiSdkTargets NAMESPACE Soui:: DESTINATION lib/cmake/SouiSdk)
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/SouiSdkConfig.cmake"
   "${CMAKE_CURRENT_BINARY_DIR}/SouiSdkConfigVersion.cmake" DESTINATION lib/cmake/SouiSdk)

@@ -5,6 +5,7 @@
 #include <array>
 #include <cstdint>
 #include <memory>
+#include <atomic>
 
 namespace soui::sdk { class dynamic_miniblink_adapter; }
 
@@ -45,7 +46,6 @@ class engine_reply_ticket final {
  private:
   friend class soui::sdk::engine_thread;
   friend class engine_admission;
-  friend class input_admission;
   void release() noexcept;
   std::shared_ptr<engine_capacity_state> owner_;
   std::uint64_t generation_{0};
@@ -73,14 +73,13 @@ class engine_admission final {
   [[nodiscard]] static engine_admission_result post(engine_thread&, engine_lane, engine_thread::task);
   [[nodiscard]] static engine_admission_result reserve_reply(engine_thread&, engine_lane, engine_reply_ticket&);
   [[nodiscard]] static engine_admission_result submit_reply(engine_thread&, engine_reply_ticket&, engine_thread::task);
-  // Retain rejected captures for caller destruction after its own locks release.
-  [[nodiscard]] static engine_admission_result try_post(engine_thread&, engine_lane, engine_thread::task&);
-  [[nodiscard]] static engine_admission_result try_submit_reply(engine_thread&, engine_reply_ticket&, engine_thread::task&);
-  // Input starts verify their held completion credits in the same FIFO admission
-  // transaction, without consuming those credits or permitting epoch crossover.
-  [[nodiscard]] static engine_admission_result try_post_guarded(engine_thread&, engine_thread::task&,
-      const engine_reply_ticket* const* guards, std::size_t guard_count);
   [[nodiscard]] static engine_capacity_snapshot observe(const engine_thread&);
+  [[nodiscard]] static bool register_input(engine_thread&, const std::shared_ptr<engine_input_service>&);
+  static void unregister_input(engine_thread&, const std::shared_ptr<engine_input_service>&);
+  static void notify_input(engine_thread&) noexcept;
+  [[nodiscard]] static std::uint64_t commit_input(engine_thread&, std::atomic<std::uint64_t>& head,
+      std::atomic<bool>& pending, bool publish_head, bool recovery);
+  [[nodiscard]] static std::uint64_t input_cutoff(const engine_thread&);
   // Owner-only borrow of the actual mounted Host Engine; invalidated by teardown.
   // No callback, state setter, permission or wire endpoint is introduced.
   [[nodiscard]] static engine_thread* host_engine(dynamic_miniblink_adapter&) noexcept;
@@ -99,8 +98,10 @@ class engine_admission final {
   // Only the dedicated real-source unit target defines this. No view, DLL,
   // window, permission or installed SDK entry is created by this fixture.
   static void bind_unmount_fixture(dynamic_miniblink_adapter&, engine_thread&,
-                                   std::unique_ptr<engine_thread> bridge = {});
+                                   std::unique_ptr<engine_thread> bridge = {},
+                                   std::shared_ptr<engine_input_service> input = {});
   static void bind_reload_fixture(dynamic_miniblink_adapter&, engine_thread&, void* opaque_view);
+  static void revoke_devtools_fixture(dynamic_miniblink_adapter&);
   [[nodiscard]] static engine_thread* unmount_fixture_engine(dynamic_miniblink_adapter&) noexcept;
 #endif
 };

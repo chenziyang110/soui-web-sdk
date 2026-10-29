@@ -1,0 +1,2371 @@
+{
+  "files": [
+    {
+      "path": "bin/SouiRuntimeDoctor.exe",
+      "bytes": 254464,
+      "sha256": "c9729e31433cd3bca44c6e92fbd8cf3807a08c711a1b9cf83c1c0d5c47b6bb2c"
+    },
+    {
+      "path": "include/soui/action-json/json.hpp",
+      "bytes": 926077,
+      "sha256": "78496a32103398f5936cec4df6cf42fa52f2cb2495caf4270fa42c8ed8c4e851"
+    },
+    {
+      "path": "include/soui/bridge_adapter.h",
+      "bytes": 1374,
+      "sha256": "e172cdf617b5fc0b95dac51c43e2126d98607f41a23c77f00bb3f11d39142079"
+    },
+    {
+      "path": "include/soui/devtools.h",
+      "bytes": 3389,
+      "sha256": "c21289bfa9fe128f623282ec7243791536a092255fabd288f5bc0414c14baac9"
+    },
+    {
+      "path": "include/soui/diagnostics/cache_observation.h",
+      "bytes": 3697,
+      "sha256": "6cf9c6d5e36255ac9e2354ca6745782d59434481b0ce160e1c2fe4ef19589ef9"
+    },
+    {
+      "path": "include/soui/diagnostics/cache_observation_abi.h",
+      "bytes": 1757,
+      "sha256": "2bf5e6ba0a1b10b71b35d80d29354b476fd96965f511fe7387323ab1b8f8f39c"
+    },
+    {
+      "path": "include/soui/diagnostics/input_frame_trace.h",
+      "bytes": 11443,
+      "sha256": "0a5ab42a5459221402174cdb787e82ec84dc9e38bed64f6c6f81911dc21d38a7"
+    },
+    {
+      "path": "include/soui/diagnostics/miniblink_trace_source.h",
+      "bytes": 1401,
+      "sha256": "bcd0af02834047cde07838e43a34c3163c7e4b5a307262a27d533cdc5093b9ba"
+    },
+    {
+      "path": "include/soui/diagnostics/renderer_model_abi.h",
+      "bytes": 2262,
+      "sha256": "ad973b1eae3ae56aaa695580c8cb849c90da02d6b1d7c86be7691b1b6dea268a"
+    },
+    {
+      "path": "include/soui/diagnostics/renderer_model_binding.h",
+      "bytes": 3049,
+      "sha256": "185e0169e447de001d90618b0485679251e8f2bf264419ac56db34fe2f757ae7"
+    },
+    {
+      "path": "include/soui/diagnostics/renderer_observation_abi.h",
+      "bytes": 3031,
+      "sha256": "18fb3a800a32bbc964e5278c80bdc0f64ce85e347d90c7ee0e992c95db88b90d"
+    },
+    {
+      "path": "include/soui/diagnostics/renderer_observation_binding.h",
+      "bytes": 4389,
+      "sha256": "c6279c4b207901dfcc51534fcb6d8b967c8bf2a2c9d543c2fc01d4af725a11fd"
+    },
+    {
+      "path": "include/soui/diagnostics/runtime_metrics.h",
+      "bytes": 8334,
+      "sha256": "762893c33dba1fd41154d8aa020da5783bc40e4d9d9f562949b06fe8b1741620"
+    },
+    {
+      "path": "include/soui/diagnostics/storage_observation.h",
+      "bytes": 1760,
+      "sha256": "00625b26f0c774b8116b512360af51f903e89d408dd4d5cedb7233aad168b005"
+    },
+    {
+      "path": "include/soui/diagnostics/task_store_private_storage.h",
+      "bytes": 1353,
+      "sha256": "de9dbace491c62d8470db28a66d5ed2df8cbaf3703e591dff4274df021f99266"
+    },
+    {
+      "path": "include/soui/diagnostics/view_observation_abi.h",
+      "bytes": 1377,
+      "sha256": "160a7e4a1584a83c67dafafa6923107888ef43a6bc055ad534b8d486cb30e400"
+    },
+    {
+      "path": "include/soui/diagnostics/view_observation_binding.h",
+      "bytes": 3972,
+      "sha256": "005a7cc975b54ddedcfe8da3a5e07a312935627119a9003333d7f9ea0eb86774"
+    },
+    {
+      "path": "include/soui/host/async_result_slot.h",
+      "bytes": 2015,
+      "sha256": "54fb76d1b8faae67cf2baf7b4c5fef1599a337b0bd60fb3cfb45c2f81ced6840"
+    },
+    {
+      "path": "include/soui/host/auto_webview_host.h",
+      "bytes": 3291,
+      "sha256": "d3d5755ea1ac283c5e2cc0983deaa356ad4912199b7ee693e10fb1857df1e365"
+    },
+    {
+      "path": "include/soui/host/engine_thread.h",
+      "bytes": 5039,
+      "sha256": "21a98e7df492398db25151bc6cf0106623664bbe1b92fc4268576fbb63d1fca6"
+    },
+    {
+      "path": "include/soui/host/frame_pacer.h",
+      "bytes": 7453,
+      "sha256": "c94ec51e8a57c229d28a73c86863677fae39c187a69cb852ba318ab14d95dc95"
+    },
+    {
+      "path": "include/soui/host/frame_rate_policy.h",
+      "bytes": 2512,
+      "sha256": "a252a87eca7709f9652889ed5ad402cd4ad2ed0d6eb1b820294744dceae11229"
+    },
+    {
+      "path": "include/soui/host/interaction_protocol.h",
+      "bytes": 4806,
+      "sha256": "6f814cc74d5fa5fc8e674c70ff3e563db86790c504d79e07d2058600304d5f78"
+    },
+    {
+      "path": "include/soui/host/runtime_profile.h",
+      "bytes": 1433,
+      "sha256": "5d79c715900b24f7de3c44cba2e13ea415d2e2f96a929ad86667d633f6f4d051"
+    },
+    {
+      "path": "include/soui/host/soui_miniblink_host.h",
+      "bytes": 17508,
+      "sha256": "5dc65d8e369dc696272719bc3a22aca4c354f7907d2feb428d4e99c984555a97"
+    },
+    {
+      "path": "include/soui/host/webview2_host.h",
+      "bytes": 6187,
+      "sha256": "3662a2038d11e17dcb7913db374d6245be7f03d187ca3faf207969600a7a01ae"
+    },
+    {
+      "path": "include/soui/host/webview_host.h",
+      "bytes": 8669,
+      "sha256": "6f2fee4e1bbe3e039bf99787279de86b0168185cb45863aeb0cdb0512e55f323"
+    },
+    {
+      "path": "include/soui/host/window_chrome.h",
+      "bytes": 2359,
+      "sha256": "e33c8dc8bdd7a586d2e5c77151e81ddfc68e03edef1e25a5216b92a428a31a30"
+    },
+    {
+      "path": "include/soui/host/window_chrome_script.h",
+      "bytes": 1612,
+      "sha256": "662123135b3a3b9705898674b014ba52a1a0a1cf3913a5d40c320004e925b286"
+    },
+    {
+      "path": "include/soui/json_bridge.h",
+      "bytes": 6002,
+      "sha256": "e379813b1c3d0493d5a81eccb5e97642869324c71fbc8e3b2bff7f8968148b3e"
+    },
+    {
+      "path": "include/soui/runtime/accessibility/windows_uia_provider.h",
+      "bytes": 5883,
+      "sha256": "d83007533f164231cc6c1bddd6b37612db9443921f309180a4df5177a10e3819"
+    },
+    {
+      "path": "include/soui/runtime/agent/windows_local_endpoint.h",
+      "bytes": 3836,
+      "sha256": "e7e1dace8c710ee1f119d77b3c09e0480e6d8f732bf5f8450e30a7c9d4d8e35a"
+    },
+    {
+      "path": "include/soui/runtime/agent/windows_peer_identity.h",
+      "bytes": 3668,
+      "sha256": "c5578d685b3e40f3f65ab9ca483b9c89aac4c3bb4d359d227b0d5ee72fe51de1"
+    },
+    {
+      "path": "include/soui/runtime/bridge/action_contract.h",
+      "bytes": 1167,
+      "sha256": "11a77c9a9aa90bd8d1839f6d08eae8a892c78b7df11bdc37455f623f92c97936"
+    },
+    {
+      "path": "include/soui/runtime/bridge/bridge_transport.h",
+      "bytes": 6516,
+      "sha256": "4515de6093671fdfb23201d4b4a417f5ff558ac8982fb51e56f3da3cb950718e"
+    },
+    {
+      "path": "include/soui/runtime/core/events/event_bus.h",
+      "bytes": 1639,
+      "sha256": "1a4b250c614404faa146c9f3f9076b8c72feca46b88f5805f93b98aeea90de62"
+    },
+    {
+      "path": "include/soui/runtime/core/result/result.h",
+      "bytes": 626,
+      "sha256": "6517bbb345eba2c02df8267fc5467217ddd3107f57bda8541c622522b1f2c5ec"
+    },
+    {
+      "path": "include/soui/runtime/core/task/detail/storage_allocator.h",
+      "bytes": 10475,
+      "sha256": "097bfba9b9ca9de3b7fa21fcfb470608657af33c6a398dd723f0cff1dda45cba"
+    },
+    {
+      "path": "include/soui/runtime/core/task/task_store.h",
+      "bytes": 13816,
+      "sha256": "3ac7b4d5920c7896aaf3a329fe510fb1bd590290d855127e6e87bbd07c879f23"
+    },
+    {
+      "path": "include/soui/runtime/core/task/task_store_quota.h",
+      "bytes": 2024,
+      "sha256": "3ebc4d375999aa27fd988917fab9921bef119eb14ca26740271eae0514169b5d"
+    },
+    {
+      "path": "include/soui/runtime/host/session/webview_session.h",
+      "bytes": 1892,
+      "sha256": "bb11c4e2f554f8336f9783dfdc76c552fc95c62fcc12b37b371d6e05db382f9a"
+    },
+    {
+      "path": "include/soui/runtime/host/trusted_document.h",
+      "bytes": 2696,
+      "sha256": "f3bc081ba57d35153627c913b5b3c753b7fc02b745366396953fe2ef40a7964e"
+    },
+    {
+      "path": "include/soui/runtime/services/desktop/desktop_services.h",
+      "bytes": 2210,
+      "sha256": "669aad7eb79d7d8c39bc2263bae2b60b0e75014263e8f191fbc1e77d490560b2"
+    },
+    {
+      "path": "include/soui/runtime/services/desktop/global_shortcut.h",
+      "bytes": 3012,
+      "sha256": "800d40c2029697ca23f9148c75acbcc683b7893665c735f4ea0a9ce0810b1ae5"
+    },
+    {
+      "path": "include/soui/runtime/services/desktop/menu_service.h",
+      "bytes": 2461,
+      "sha256": "2e304780c55cbc92c49d14532ae04ad934b835f7ff3d3f43004c3faae1244605"
+    },
+    {
+      "path": "include/soui/runtime/services/desktop/tray_service.h",
+      "bytes": 2765,
+      "sha256": "00686e87bd122d6b89ddf9b1627b3d94ad05efbfc3e8e461c8365bce6ebbb02e"
+    },
+    {
+      "path": "include/soui/runtime/services/desktop/window_commands.h",
+      "bytes": 2377,
+      "sha256": "560151b5f9531b7929d8cdb38629d5d4b990a1ce60781e3c3b80041f35b37089"
+    },
+    {
+      "path": "include/soui/runtime/services/fileinsight-service/fileinsight-service.h",
+      "bytes": 668,
+      "sha256": "77fdc539ccb1f1158f3112ababff3c2e117f4fad9fc5127709fdfc03f2d8eeab"
+    },
+    {
+      "path": "include/soui/runtime/services/filesystem-readonly/directory_scanner.h",
+      "bytes": 5545,
+      "sha256": "ab303cb608d400e36655136ac1ef491dfdf5fd0acaeb2aed1615243ad93d0e55"
+    },
+    {
+      "path": "include/soui/runtime/services/gui/gui_commands.h",
+      "bytes": 1166,
+      "sha256": "f9ed1f922daa2521f1c6cc0093be77ed36cefbda5713243c7f8cc0febe453bb2"
+    },
+    {
+      "path": "include/soui/runtime/services/permissions/permission_store.h",
+      "bytes": 9308,
+      "sha256": "d4e8014eac9394d2e09ee7eb40b6f5f57319eb89e13ce95cc3ec4a9bbfa3e4df"
+    },
+    {
+      "path": "include/soui/runtime/services/task/task_service.h",
+      "bytes": 6859,
+      "sha256": "90875a496e4740ecdf72e081e4331e291a7991f3a758b86ede7c6158d7379045"
+    },
+    {
+      "path": "include/soui/version.h",
+      "bytes": 240,
+      "sha256": "74e0b9639567ae187c236628bec3b0a30e7ad113ee15f78b0cbd4283258f2cc0"
+    },
+    {
+      "path": "lib/Release/soui_auto_host.lib",
+      "bytes": 895652,
+      "sha256": "9e4d884444349e41baf4d407a5c1e671b55984b9b29b65c50862cef888f6915f"
+    },
+    {
+      "path": "lib/Release/soui_sdk.lib",
+      "bytes": 57039658,
+      "sha256": "ab67927611d8eb330a7ffc7d54331645230509552859863eea9eedb888ab2b49"
+    },
+    {
+      "path": "lib/Release/soui_webview2.lib",
+      "bytes": 8306938,
+      "sha256": "fba57307484557bb6bfb860b1d6c4c6a14adf8092409ae4b44f23fe69616b0f2"
+    },
+    {
+      "path": "lib/cmake/SouiSdk/SouiSdkConfig.cmake",
+      "bytes": 1377,
+      "sha256": "997a104e5ce0e9c4173e037830ddc33592546ebc434cea3e2346481d5c2dce13"
+    },
+    {
+      "path": "lib/cmake/SouiSdk/SouiSdkConfigVersion.cmake",
+      "bytes": 3332,
+      "sha256": "ba163dac84dea975beed6210d53406f709ba1f3ca4065828f94e4710b315df14"
+    },
+    {
+      "path": "lib/cmake/SouiSdk/SouiSdkTargets-release.cmake",
+      "bytes": 1863,
+      "sha256": "1172d48a20e1560b8d54da0d2c5abe66368d0026eba582f2564dede703454e88"
+    },
+    {
+      "path": "lib/cmake/SouiSdk/SouiSdkTargets.cmake",
+      "bytes": 5297,
+      "sha256": "b99f585dce6a426506180718c90b54e0c39d90287567caa28e341f7cca279df9"
+    },
+    {
+      "path": "lib/webview2/WebView2LoaderStatic.lib",
+      "bytes": 11463528,
+      "sha256": "e66284970876a616c82e7dcda75a17fd46d04827f9de81d4299b8862d34d25d6"
+    },
+    {
+      "path": "share/SouiSdk/LICENSE.md",
+      "bytes": 1377,
+      "sha256": "e66ea76381329e7ac8907b5022c1c4b3e0fb3f5a1a089653f86f3d0312059ac6"
+    },
+    {
+      "path": "share/SouiSdk/THIRD_PARTY_NOTICES.md",
+      "bytes": 7710,
+      "sha256": "fe634a71c15ed74660e385b0d9024269677a0ce23050c5702a444b3b5e41e2fc"
+    },
+    {
+      "path": "share/SouiSdk/docs/licenses/v0.6.0-redistribution.md",
+      "bytes": 5427,
+      "sha256": "475eeb756afa369a58d19170c86de19de17a407043358cb82b0a002458176f5c"
+    },
+    {
+      "path": "share/SouiSdk/licenses/KERNEL-NOTICES.md",
+      "bytes": 4462,
+      "sha256": "3db633169c636e1e6cf66d8be1880179dd1aff0f2e84d18f19f180651e449676"
+    },
+    {
+      "path": "share/SouiSdk/licenses/core-js-3.50.0/LICENSE",
+      "bytes": 1134,
+      "sha256": "b87653fff2d44426ab5cd4723cee3b1364dc8d35a0acdf098c54689543123bf8"
+    },
+    {
+      "path": "share/SouiSdk/licenses/core-js-3.50.0/source.json",
+      "bytes": 737,
+      "sha256": "924cd08f7c8fad83a0a15dba7c4676746f15bccd18d1704999cc4fd0e34143d6"
+    },
+    {
+      "path": "share/SouiSdk/licenses/d52/brotli/LICENSE.txt",
+      "bytes": 11560,
+      "sha256": "3ddf9be5c28fe27dad143a5dc76eea25222ad1dd68934a047064e56ed2fa40c5"
+    },
+    {
+      "path": "share/SouiSdk/licenses/d52/harfbuzz/COPYING.txt",
+      "bytes": 1726,
+      "sha256": "2c631526dad2d97beacfe20c3957b323a8bc98e425d5e8059bf1c7c603392814"
+    },
+    {
+      "path": "share/SouiSdk/licenses/d52/libpng/png.h",
+      "bytes": 143251,
+      "sha256": "4574c38e2688e9d7b49f1dd865e4130bee4bae55906fde3a02bbf120b8cc9a92"
+    },
+    {
+      "path": "share/SouiSdk/licenses/d52/libxml/Copyright.txt",
+      "bytes": 1525,
+      "sha256": "82517a90bd5aa2263e9013ed3186b6a6dbd43740d26e30e65e508787b2defc03"
+    },
+    {
+      "path": "share/SouiSdk/licenses/d52/miniblink/LICENSE.txt",
+      "bytes": 11537,
+      "sha256": "de2955977b885b81e1d0e1cdb0fc4619e5456c2928bb120cb39d44c4b792f25c"
+    },
+    {
+      "path": "share/SouiSdk/licenses/d52/miniblink/wke-license-declaration.h",
+      "bytes": 131,
+      "sha256": "a941bc0ff8be677a1c9251b922d480e3a0cdc39e0443161e274810f17b564044"
+    },
+    {
+      "path": "share/SouiSdk/licenses/d52/node/LICENSE-nodejs.txt",
+      "bytes": 61645,
+      "sha256": "aa89b6fe87f907791f69a13d807068e23d29c513ce18aa3e1d75b05b55c1ff07"
+    },
+    {
+      "path": "share/SouiSdk/licenses/d52/openssl/LICENSE.txt",
+      "bytes": 6406,
+      "sha256": "d0047be11f613ca5afebb508c19242fdecd55b740d70ea031c00c11784f37ee7"
+    },
+    {
+      "path": "share/SouiSdk/licenses/d52/skia/LICENSE.txt",
+      "bytes": 1580,
+      "sha256": "819e2d4f7c7162eebd28d7ce97fec174a821baa0d3a5f1cca864dd285b577422"
+    },
+    {
+      "path": "share/SouiSdk/licenses/d52/v8_5_7/LICENSE",
+      "bytes": 2970,
+      "sha256": "5e10421a5b98a1358464c43cdd17e12a8ab9f67353303bb9d44908027210fc2e"
+    },
+    {
+      "path": "share/SouiSdk/licenses/d52/v8_5_7/LICENSE.fdlibm",
+      "bytes": 256,
+      "sha256": "9117ecd79d00160524d0c923aa41c10cd3cab3753bc985e3069eaa9f1481cc17"
+    },
+    {
+      "path": "share/SouiSdk/licenses/d52/v8_5_7/LICENSE.strongtalk",
+      "bytes": 1511,
+      "sha256": "45d1dff3ad3ed6aec8947f7ce6a4781c535f1d73450b703c594d8bc6285c7736"
+    },
+    {
+      "path": "share/SouiSdk/licenses/d52/v8_5_7/LICENSE.v8",
+      "bytes": 1553,
+      "sha256": "befd10530f302b2108022be94d74eed4943880fc0626ab762ca7b53521813eeb"
+    },
+    {
+      "path": "share/SouiSdk/licenses/d52/v8_5_7/LICENSE.valgrind",
+      "bytes": 2107,
+      "sha256": "23365f7ef7771a5446e48eb9ae626b81d75a20ddf8631f7c3fe89d9f814f9b99"
+    },
+    {
+      "path": "share/SouiSdk/licenses/d52/webkit/LICENSE",
+      "bytes": 1681,
+      "sha256": "7a5dcff5e74eb93f51a0a2dbbce4def6956c94c1a00a9e1a5eea0fb2b58aafc0"
+    },
+    {
+      "path": "share/SouiSdk/licenses/d52/webkit/LICENSE_FOR_ABOUT_CREDITS",
+      "bytes": 52450,
+      "sha256": "d25f8c11292987f54ab918fa43a755d75dfb6113f618bdf03680545d87abbca8"
+    },
+    {
+      "path": "share/SouiSdk/licenses/d52/webkit/core/LICENSE-APPLE",
+      "bytes": 1334,
+      "sha256": "308c5b0ccfb2fee0db58b92da093348a0a074e1d3ef86d17d9d526e77bd271e0"
+    },
+    {
+      "path": "share/SouiSdk/licenses/d52/webkit/core/LICENSE-LGPL-2",
+      "bytes": 25859,
+      "sha256": "c8b0be4bf525058bee87a75614cf05a5314f8f969e1b18cdd429ebc78e1149f6"
+    },
+    {
+      "path": "share/SouiSdk/licenses/d52/webkit/core/LICENSE-LGPL-2.1",
+      "bytes": 27038,
+      "sha256": "3cd5e100bd88dc1cffb85b1560a3473f4647ebd03d7f945f254f09399da70f0d"
+    },
+    {
+      "path": "share/SouiSdk/licenses/d52/zlib/LICENSE.txt",
+      "bytes": 1151,
+      "sha256": "e757be93a060abe3681dd89c5a7a19cd49cdaf76e96772fea65b6f6fb06634e4"
+    },
+    {
+      "path": "share/SouiSdk/licenses/element-plus-2.11.1-LICENSE.txt",
+      "bytes": 1098,
+      "sha256": "7d6560ca47099f18ae7dc4d2fcdb3e0dcc207430a442525177f8af6dc229d1cc"
+    },
+    {
+      "path": "share/SouiSdk/licenses/element-plus-2.14.5-LICENSE.txt",
+      "bytes": 1077,
+      "sha256": "0790118bb4d66681db1d63181f72ef68e632d632f6db0373ef87cf328561af27"
+    },
+    {
+      "path": "share/SouiSdk/licenses/element-plus-2.14.7-LICENSE.txt",
+      "bytes": 1077,
+      "sha256": "0790118bb4d66681db1d63181f72ef68e632d632f6db0373ef87cf328561af27"
+    },
+    {
+      "path": "share/SouiSdk/licenses/ijg-jpeg-9a-README.txt",
+      "bytes": 19110,
+      "sha256": "c791da525733040e622ed257c7b096b8f5191b332604ead0c6bc2b54cbd8e0d1"
+    },
+    {
+      "path": "share/SouiSdk/licenses/kernel-source/README.md",
+      "bytes": 877,
+      "sha256": "7ccb5baf735fff9dd48d3d6218cc7ced202ccddcef81caff5e785b7436dfa52b"
+    },
+    {
+      "path": "share/SouiSdk/licenses/kernel-source/index.json.txt",
+      "bytes": 16544,
+      "sha256": "d610a6d5144a1819f5c8e86f74c218b100c44a3621b5d3c6fa2c86d46af6182d"
+    },
+    {
+      "path": "share/SouiSdk/licenses/kernel-source/node/LICENSE-http_parser.txt",
+      "bytes": 1274,
+      "sha256": "601db1017102482d1dafd638936111f8cf267aa722c87308d0d1dd0ce74f923d"
+    },
+    {
+      "path": "share/SouiSdk/licenses/kernel-source/node/LICENSE-libuv.txt",
+      "bytes": 2080,
+      "sha256": "dc80ef4333eb736c12fdac725aca4ffb60b3f766664652e84c2f2183ae1342fb"
+    },
+    {
+      "path": "share/SouiSdk/licenses/kernel-source/node/openssl/openssl/crypto/bf/COPYRIGHT.txt",
+      "bytes": 2387,
+      "sha256": "9bceb91e723ae5b88db5039ee0983e84c9b12d8fc7001148acefe0f3ac325e00"
+    },
+    {
+      "path": "share/SouiSdk/licenses/kernel-source/node/openssl/openssl/crypto/des/COPYRIGHT.txt",
+      "bytes": 2701,
+      "sha256": "ba0599e698a819847042c3cc51bf693881e4c286f555b4d44df7c2fb5bfae236"
+    },
+    {
+      "path": "share/SouiSdk/licenses/kernel-source/node/v8_inspector/LICENSE.txt",
+      "bytes": 1586,
+      "sha256": "2b5d44220cee7d541efdef3126ce838b2e73eaebae2f441af3573cb2c0af4d70"
+    },
+    {
+      "path": "share/SouiSdk/licenses/kernel-source/third_party/WebKit/Source/devtools/front_end/acorn/LICENSE.txt",
+      "bytes": 1105,
+      "sha256": "66bdd11215501e6e37dee79f5fc8b452cff4318e3f2ddb00f47c1e77b6f1b464"
+    },
+    {
+      "path": "share/SouiSdk/licenses/kernel-source/third_party/WebKit/Source/devtools/front_end/cm/LICENSE.txt",
+      "bytes": 1113,
+      "sha256": "f7dfffd11a9b093c182bd0bce82470aa462b63c79e88e29255c766a67a6fdd13"
+    },
+    {
+      "path": "share/SouiSdk/licenses/kernel-source/third_party/WebKit/Source/devtools/front_end/cm/LICENSE_python.txt",
+      "bytes": 1095,
+      "sha256": "da0307e88178ab5965d9aea4cad4f393febd45445f7ce24699a3b1cc0ef3a97b"
+    },
+    {
+      "path": "share/SouiSdk/licenses/kernel-source/third_party/WebKit/Source/devtools/front_end/cm_modes/LICENSE.txt",
+      "bytes": 1113,
+      "sha256": "f7dfffd11a9b093c182bd0bce82470aa462b63c79e88e29255c766a67a6fdd13"
+    },
+    {
+      "path": "share/SouiSdk/licenses/kernel-source/third_party/WebKit/Tools/Scripts/webkitpy/thirdparty/mod_pywebsocket/COPYING.txt",
+      "bytes": 1503,
+      "sha256": "06b680284ee999d6591aa0c0708a14b22deb97da5b7d6b97ce28319148f3fd6a"
+    },
+    {
+      "path": "share/SouiSdk/licenses/kernel-source/third_party/WebKit/Tools/Scripts/webkitpy/thirdparty/wpt/wpt/LICENSE.txt",
+      "bytes": 148,
+      "sha256": "f2c400b1eca0e4705521cadc6da2b6ba03928ee7e7dc1e048e9d22d8f3133fec"
+    },
+    {
+      "path": "share/SouiSdk/licenses/kernel-source/third_party/WebKit/Tools/Scripts/webkitpy/thirdparty/wpt/wpt/tools/LICENSE.txt",
+      "bytes": 1534,
+      "sha256": "d9fde12f36e9783f77637fed76d73fbfa8787ce8d3ad96a9df38eb226655928b"
+    },
+    {
+      "path": "share/SouiSdk/licenses/kernel-source/third_party/WebKit/Tools/Scripts/webkitpy/thirdparty/wpt/wpt/tools/wptserve/LICENSE.txt",
+      "bytes": 1534,
+      "sha256": "d9fde12f36e9783f77637fed76d73fbfa8787ce8d3ad96a9df38eb226655928b"
+    },
+    {
+      "path": "share/SouiSdk/licenses/kernel-source/third_party/jinja2/LICENSE.txt",
+      "bytes": 1554,
+      "sha256": "26fcd436fdc8a39d44896ac03e6f1dfd25e38499c48f20d8bc1dd3bf0aaa8a5b"
+    },
+    {
+      "path": "share/SouiSdk/licenses/kernel-source/third_party/khronos/LICENSE.txt",
+      "bytes": 2614,
+      "sha256": "9f2417f97eab28dcb3e7794449ff16adad13feece3ddb26e00866fa562df64ea"
+    },
+    {
+      "path": "share/SouiSdk/licenses/kernel-source/third_party/libxslt/Copyright.txt",
+      "bytes": 3021,
+      "sha256": "a8de51c4709e774bf528d324a2df8b8adeaff5cf933c2909994561f77215ec93"
+    },
+    {
+      "path": "share/SouiSdk/licenses/kernel-source/third_party/npapi/LICENSE.txt",
+      "bytes": 1567,
+      "sha256": "b50787fc6723765e24cc0c78b16d4de6b1150519563714896464d68933e72581"
+    },
+    {
+      "path": "share/SouiSdk/licenses/kernel-source/third_party/ply/LICENSE.txt",
+      "bytes": 1573,
+      "sha256": "33605f3bc091e69b7c063a2967cbea66bc9e98bce83a9db9be39eb08514f594f"
+    },
+    {
+      "path": "share/SouiSdk/licenses/kernel-source/third_party/sfntly/COPYING.txt.txt",
+      "bytes": 11567,
+      "sha256": "e30ee8ec0e6271e44020bc9160ba21ffaf597e0836c35705b46dac1ed5695c47"
+    },
+    {
+      "path": "share/SouiSdk/licenses/kernel-source/third_party/sfntly/src/cpp/COPYING.txt.txt",
+      "bytes": 11567,
+      "sha256": "e30ee8ec0e6271e44020bc9160ba21ffaf597e0836c35705b46dac1ed5695c47"
+    },
+    {
+      "path": "share/SouiSdk/licenses/kernel-source/third_party/skia/third_party/etc1/LICENSE.txt",
+      "bytes": 9393,
+      "sha256": "9c85803f15b94b4d4000674ae433c885e27f0d6ee8533c4252e1cdf74d1ca9cc"
+    },
+    {
+      "path": "share/SouiSdk/licenses/kernel-source/third_party/skia/third_party/libpng/LICENSE.txt",
+      "bytes": 7093,
+      "sha256": "ef55d9376df1f5ee3af751c4aebc511889dba0e34a53d1bac3ea33702c300421"
+    },
+    {
+      "path": "share/SouiSdk/licenses/kernel-source/v8_5_7/src/third_party/valgrind/LICENSE.txt",
+      "bytes": 2493,
+      "sha256": "043056115cd22dc9422466835f19ecb3124fda90f7a5e8b42e57add3459f37c4"
+    },
+    {
+      "path": "share/SouiSdk/licenses/kernel-source/v8_5_7/src/third_party/vtune/LICENSE.txt",
+      "bytes": 2790,
+      "sha256": "0f8d39edfb7c8776a65ba174b6fddc5c95698142b1492c440d0b8e097d876d7c"
+    },
+    {
+      "path": "share/SouiSdk/licenses/kernel-source/v8_5_7/testing/gmock/LICENSE.txt",
+      "bytes": 1503,
+      "sha256": "46c35a3c9ac8ef63c16ca69b5cf0166df9fcdb789e318175c92a219de517b8e7"
+    },
+    {
+      "path": "share/SouiSdk/licenses/kernel-source/v8_5_7/testing/gmock/scripts/generator/LICENSE.txt",
+      "bytes": 11589,
+      "sha256": "e438ef741bf3660b5c54f4452d7c0b387c8557207cc3e9cda499e461a94df2b2"
+    },
+    {
+      "path": "share/SouiSdk/licenses/kernel-source/v8_5_7/testing/gtest/LICENSE.txt",
+      "bytes": 1503,
+      "sha256": "46c35a3c9ac8ef63c16ca69b5cf0166df9fcdb789e318175c92a219de517b8e7"
+    },
+    {
+      "path": "share/SouiSdk/licenses/libcurl-7.61.1-COPYING.txt",
+      "bytes": 1088,
+      "sha256": "5f3849ec38ddb927e79f514bf948890c41b8d1407286a49609b8fb1585931095"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/README.md",
+      "bytes": 6400,
+      "sha256": "1b1691f6ffebd60d111b16189291d96de4cea63bb7560a346d1dd1db4b29ef63"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/async-validator-4.2.5/LICENSE.md",
+      "bytes": 1083,
+      "sha256": "5d0427088e37071c4b942de990f6365d5c2d195f3e957ce925322d184784e2eb"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/async-validator-4.2.5/upstream-package.json.txt",
+      "bytes": 1167,
+      "sha256": "3f91af4429bb8871ebd4c59dcf8b52b06fa9f4d6f6398a1d72f9258c255f40cc"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/babel__helper-string-parser-7.29.7/LICENSE",
+      "bytes": 1106,
+      "sha256": "117da2af0d4ce0fe1c8e19b5cff9dcd806adf973d328d27b11d4448c4ff24f76"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/babel__helper-string-parser-7.29.7/upstream-package.json.txt",
+      "bytes": 758,
+      "sha256": "ecbd1aaffa9ad000d3bc5a526067b89244cb3ec64c738fbae8b64a9e805f401b"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/babel__helper-validator-identifier-7.29.7/LICENSE",
+      "bytes": 1106,
+      "sha256": "117da2af0d4ce0fe1c8e19b5cff9dcd806adf973d328d27b11d4448c4ff24f76"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/babel__helper-validator-identifier-7.29.7/upstream-package.json.txt",
+      "bytes": 738,
+      "sha256": "1ad6aeced8b186ac259da45fea50ab9d65d3d958f6458c80e3c8013649d1b12d"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/babel__parser-7.29.8/LICENSE",
+      "bytes": 1086,
+      "sha256": "2e97627cb278aa7556fb9e8817368302301a595b6c7582512b8d74c57b773652"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/babel__parser-7.29.8/upstream-package.json.txt",
+      "bytes": 1382,
+      "sha256": "6d6a65b879cd7cd249a4367c0b57cce00e78c728de45056ac2a5ca1d1f528d1a"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/babel__parser-7.29.9/LICENSE",
+      "bytes": 1086,
+      "sha256": "2e97627cb278aa7556fb9e8817368302301a595b6c7582512b8d74c57b773652"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/babel__parser-7.29.9/origin.json",
+      "bytes": 893,
+      "sha256": "610b26028cf1f06f498f8f5e623dc645127d2682efbc82213f0c2a0f98a1453c"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/babel__parser-7.29.9/upstream-package.json.txt",
+      "bytes": 1382,
+      "sha256": "fa70cca00587bdb335e8249fa40e9356ed7b7c9a4fc92b1e74245ab1b852cda1"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/babel__runtime-7.29.7/LICENSE",
+      "bytes": 1106,
+      "sha256": "117da2af0d4ce0fe1c8e19b5cff9dcd806adf973d328d27b11d4448c4ff24f76"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/babel__runtime-7.29.7/upstream-package.json.txt",
+      "bytes": 41106,
+      "sha256": "8c4bf20c55e3f3a93df034b12746bf72185cf2acb0ef52847a3465d6e67c61e7"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/babel__types-7.29.8/LICENSE",
+      "bytes": 1106,
+      "sha256": "117da2af0d4ce0fe1c8e19b5cff9dcd806adf973d328d27b11d4448c4ff24f76"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/babel__types-7.29.8/upstream-package.json.txt",
+      "bytes": 1065,
+      "sha256": "f32460a35cc4649d81f10d4bc6dcfa1ade7a47f95df5db4bb4483f34d24b476e"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/csstype-3.2.3/LICENSE",
+      "bytes": 1062,
+      "sha256": "11d55bd4541c75ee7879547ac49089c489163dae49551389713c3d026cab383e"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/csstype-3.2.3/upstream-package.json.txt",
+      "bytes": 1985,
+      "sha256": "c818b74a9bc1556488b7ec2a65399224738f6619228f9a6491c5c02ca91f849e"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/ctrl__tinycolor-4.2.1/LICENSE",
+      "bytes": 1072,
+      "sha256": "40623170cffa92890b9a2decc5456de6bba6d4f75a7a7b7abc60cc9fdaf78b65"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/ctrl__tinycolor-4.2.1/upstream-package.json.txt",
+      "bytes": 1864,
+      "sha256": "59a309c461acb1af5046e8c43634605019813535df23d0f489172466675b36ba"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/dayjs-1.11.23/LICENSE",
+      "bytes": 1072,
+      "sha256": "5faab7526d055651be3aab769d58897be6bd91f3d39d137f25f12dba1b31d5dc"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/dayjs-1.11.23/upstream-package.json.txt",
+      "bytes": 2974,
+      "sha256": "680d74784223a074188617adc534fa5460171176d9904501241bbea087c3963b"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/dom-helpers-5.2.1/LICENSE",
+      "bytes": 1078,
+      "sha256": "1b0a9ba95a67bc484e028b13c61b83fc5aa1ca7957d1e2d43c2b0f70d9e9dd45"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/dom-helpers-5.2.1/upstream-package.json.txt",
+      "bytes": 1029,
+      "sha256": "efce7444ae9b3409183abbf4f09fdb5207217a38ad504c87ace88e1975a1d083"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/element-plus-2.14.7/LICENSE",
+      "bytes": 1077,
+      "sha256": "0790118bb4d66681db1d63181f72ef68e632d632f6db0373ef87cf328561af27"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/element-plus-2.14.7/upstream-package.json.txt",
+      "bytes": 2808,
+      "sha256": "0961f44f974f854a8899154d48e1726bfb5f8a85e8875c2efed987e826a39f6a"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/element-plus__icons-vue-2.3.2/LICENSE",
+      "bytes": 1121,
+      "sha256": "5db4ebb3abd8353774ae148723ccc14087d6dab99473f77a7b799b55defd8dfe"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/element-plus__icons-vue-2.3.2/upstream-package.json.txt",
+      "bytes": 2112,
+      "sha256": "bef1df5b66af31c0cb3164857d70f0db4b768617780dc87a5c7a642b127e9325"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/entities-7.0.1/LICENSE",
+      "bytes": 1260,
+      "sha256": "cb992345949ccd6e8394b2cd6c465f7b897c864f845937dbf64e8997f389e164"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/entities-7.0.1/upstream-package.json.txt",
+      "bytes": 3740,
+      "sha256": "b33b5d3fd4a8e196d3245c10ebb8feb2e076fc8d392f99a1050377d6e2b8b641"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/estree-walker-2.0.2/LICENSE",
+      "bytes": 1126,
+      "sha256": "8a6dcbabe7179f9c8489c08a7d874d0f1e093ae7449e03756ccf87cb9d0e296e"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/estree-walker-2.0.2/upstream-package.json.txt",
+      "bytes": 848,
+      "sha256": "6f08430331daeaedaa35e7a8ca347cdb7493922fe9485bf57eb4d619cfb0b3ad"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/floating-ui__core-1.8.0/LICENSE",
+      "bytes": 1089,
+      "sha256": "0e4c9a9b6c71019cbbea3bdc20b01223110a9035700f9c960c8fcbf78c2325ce"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/floating-ui__core-1.8.0/upstream-package.json.txt",
+      "bytes": 1655,
+      "sha256": "2f24216dd2a32b10e6c868173832a0667c3cdbee92886797b219aadac48d8b99"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/floating-ui__dom-1.8.0/LICENSE",
+      "bytes": 1089,
+      "sha256": "0e4c9a9b6c71019cbbea3bdc20b01223110a9035700f9c960c8fcbf78c2325ce"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/floating-ui__dom-1.8.0/upstream-package.json.txt",
+      "bytes": 1929,
+      "sha256": "59643af1b1bfc5a80b172c21ccbe21ea56eaa0115378f6077d9934458db25ac1"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/floating-ui__utils-0.2.12/LICENSE",
+      "bytes": 1089,
+      "sha256": "0e4c9a9b6c71019cbbea3bdc20b01223110a9035700f9c960c8fcbf78c2325ce"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/floating-ui__utils-0.2.12/upstream-package.json.txt",
+      "bytes": 1988,
+      "sha256": "b2138e8855520f4313f26ace0d93a9a9c9e6a862f0299a5aeaccb2370dd1bf40"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/index.json",
+      "bytes": 99135,
+      "sha256": "6b4f5f8dad3e08d2b180d1665701413aaa485d2dbccc4b410bade93178e6eb9b"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/jridgewell__sourcemap-codec-1.6.0/LICENSE",
+      "bytes": 1080,
+      "sha256": "769d154fbde32a915af110b1123650bc79f4cbe675acc66e005265bf069c6c6c"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/jridgewell__sourcemap-codec-1.6.0/upstream-package.json.txt",
+      "bytes": 2185,
+      "sha256": "ac7afd57294dbee1f891ca797e19e405340f2cd6031808e6d3845fec60a5b43f"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/js-tokens-4.0.0/LICENSE",
+      "bytes": 1103,
+      "sha256": "2213d91c606205c71eb051a199478cdc2adde945893404d7f1421436dd6d5cc1"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/js-tokens-4.0.0/upstream-package.json.txt",
+      "bytes": 649,
+      "sha256": "47345931827b3e26db9fe690abb81f856a0d040cbca8af1e69711a64cd58ce0d"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/lodash-4.18.1/LICENSE",
+      "bytes": 1952,
+      "sha256": "f71e8ed126b46346494aad5486874cd8f0aafe95092ed67d2e3cb6110f939abc"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/lodash-4.18.1/upstream-package.json.txt",
+      "bytes": 583,
+      "sha256": "5ef0a453b679125b155af19e1477f93b577ea826a57e1545f77608d326966e6a"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/lodash-es-4.18.1/LICENSE",
+      "bytes": 1952,
+      "sha256": "f71e8ed126b46346494aad5486874cd8f0aafe95092ed67d2e3cb6110f939abc"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/lodash-es-4.18.1/upstream-package.json.txt",
+      "bytes": 724,
+      "sha256": "83d054ea84cf0efe4db931cf24c4ca9dde533a0e49779d26176be9d43061c903"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/lodash-unified-1.0.3/upstream-package.json.txt",
+      "bytes": 637,
+      "sha256": "23fa098f88e0f8718bb68854b3574b4649f593065ecf56632c7f4adf23836c24"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/loose-envify-1.4.0/LICENSE",
+      "bytes": 1100,
+      "sha256": "4eb7543b08d955a6d23fcc224601d43ff566e775be918805e26210d7f6eb4893"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/loose-envify-1.4.0/upstream-package.json.txt",
+      "bytes": 809,
+      "sha256": "8c2e27dae366396ced36fe0f7c6d35d71a1440fd8e82df5f2005a5297888a0d4"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/magic-string-0.30.21/LICENSE",
+      "bytes": 1051,
+      "sha256": "1cbe51b907662f6cb1492b16c359384a595180bf0e4d101603ed525e75c4e484"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/magic-string-0.30.21/upstream-package.json.txt",
+      "bytes": 1840,
+      "sha256": "86814aaf7dacba9d31fbf361c3285981f1cbbda0a87108caa4131d297bd9eba2"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/memoize-one-6.0.0/LICENSE",
+      "bytes": 1073,
+      "sha256": "b1c501095de70182748cb8e8d97ac5577701a4ef3b755ba30d59fd87b24bdb0f"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/memoize-one-6.0.0/upstream-package.json.txt",
+      "bytes": 3179,
+      "sha256": "9941ebd5b052013e100b477c272a8e20d63c1bc7c57646da077a895c0b483e2f"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/nanoid-3.3.20/LICENSE",
+      "bytes": 1095,
+      "sha256": "da4db1480d9beea3483a2eda5c53b22238d0827d57da162b48f122e04d2d9987"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/nanoid-3.3.20/upstream-package.json.txt",
+      "bytes": 2295,
+      "sha256": "e2a77185ded1c006171e4e2f8b316d0e3b4c51a135a190851cfc888ea428f6bf"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/normalize-wheel-es-1.2.0/LICENSE",
+      "bytes": 1527,
+      "sha256": "658d037c5c078a24c27ab1e0f37050d407ad6628be94886a4e48f3e761f47f7d"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/normalize-wheel-es-1.2.0/upstream-package.json.txt",
+      "bytes": 967,
+      "sha256": "32d56b12d2ca2af82888c231d65efd173e2898b22966129038b6b555e36f9606"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/object-assign-4.1.1/license",
+      "bytes": 1119,
+      "sha256": "6fb9754611c20f6649f68805e8c990e83261f29316e29de9e6cedae607b8634c"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/object-assign-4.1.1/upstream-package.json.txt",
+      "bytes": 764,
+      "sha256": "5990bbffa235fc675debd925d50f6c3f48a2b4526d8c9f7555cadec9029d0d7f"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/picocolors-1.1.1/LICENSE",
+      "bytes": 787,
+      "sha256": "6582629e2979466878f6014313dcc2f3756c9616148682227ce3063dde310750"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/picocolors-1.1.1/upstream-package.json.txt",
+      "bytes": 552,
+      "sha256": "ef2ac226c4811d312e12c64214c453878653e834482125ae475f27cea60de737"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/postcss-8.5.29/LICENSE",
+      "bytes": 1095,
+      "sha256": "5be1f3465bba68a626777f984878814aaf35e7ef8e9fd314d469bcf887050fb8"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/postcss-8.5.29/upstream-package.json.txt",
+      "bytes": 2497,
+      "sha256": "d6f3d1e4970b5f3b4424348769974fecc13afccefccb95f09f8883f70b7f3d2e"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/primeicons-7.0.0/LICENSE",
+      "bytes": 1070,
+      "sha256": "140e5886a54d897d852dbf7eeffd2c464467eddfcb04374241f90c61658493bd"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/primeicons-7.0.0/upstream-package.json.txt",
+      "bytes": 420,
+      "sha256": "e89d41dd5a675f1a92959991bd5c51b333500b5af8e05d246b9df2c1fa8d7ed0"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/primereact-10.9.9/LICENSE.md",
+      "bytes": 1080,
+      "sha256": "9ec5e42e1b43dec267b8a8a43fc975d22039cb1cd4dde8dbf92561cf203fb3cc"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/primereact-10.9.9/upstream-package.json.txt",
+      "bytes": 1817,
+      "sha256": "681beee9345620e296d1cf329096a457b01cfabe508ee964702a3f5486338961"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/prop-types-15.8.1/LICENSE",
+      "bytes": 1080,
+      "sha256": "f657f99d3fb9647db92628e96007aabb46e5f04f33e49999075aab8e250ca7ce"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/prop-types-15.8.1/upstream-package.json.txt",
+      "bytes": 1656,
+      "sha256": "96aa387585c686397a80616d6a563759576e9b9fac1f80d57874aa4ee4730a2c"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/react-18.3.1/LICENSE",
+      "bytes": 1086,
+      "sha256": "52412d7bc7ce4157ea628bbaacb8829e0a9cb3c58f57f99176126bc8cf2bfc85"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/react-18.3.1/upstream-package.json.txt",
+      "bytes": 999,
+      "sha256": "d4e68a5c96babb20cad1daafea8b78822eae45b341552cf5418d06a5304fa64c"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/react-19.3.0/LICENSE",
+      "bytes": 1088,
+      "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/react-19.3.0/upstream-package.json.txt",
+      "bytes": 1242,
+      "sha256": "6e003e4e9ed25afa7fdd55613f8aa877cefa9b359d9c13f81ee704030248e24e"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/react-dom-18.3.1/LICENSE",
+      "bytes": 1086,
+      "sha256": "52412d7bc7ce4157ea628bbaacb8829e0a9cb3c58f57f99176126bc8cf2bfc85"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/react-dom-18.3.1/upstream-package.json.txt",
+      "bytes": 1353,
+      "sha256": "d2f29e31bd48b833e48cd7bbf41f192e8ee4ff8da249fdbe10d4ac4114b8b12e"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/react-dom-19.3.0/LICENSE",
+      "bytes": 1088,
+      "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/react-dom-19.3.0/upstream-package.json.txt",
+      "bytes": 3054,
+      "sha256": "136d4af63de473392ea79d6a21932b0ed9eb37fe518ce70f4621250f3d79e9bb"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/react-is-16.13.1/LICENSE",
+      "bytes": 1086,
+      "sha256": "52412d7bc7ce4157ea628bbaacb8829e0a9cb3c58f57f99176126bc8cf2bfc85"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/react-is-16.13.1/upstream-package.json.txt",
+      "bytes": 530,
+      "sha256": "06784c4340af9853928c519791684487b83076b3c84e8de6ba5f240e33700b71"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/react-transition-group-4.4.5/LICENSE",
+      "bytes": 1608,
+      "sha256": "b9adc17ad75a847d8743be2843935f0842a0ea4f45e7b0c7e17ed0be98614b9b"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/react-transition-group-4.4.5/upstream-package.json.txt",
+      "bytes": 1546,
+      "sha256": "2c6a5bfbbe8f65366df04ef7ea28a32fe6d8a8e582f3d68afb84ff3d3c86436a"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/resize-observer-polyfill-1.5.1/LICENSE",
+      "bytes": 1097,
+      "sha256": "49fad6f35ac45600d018ee56051c63e52103820d97d5ad512fe7018ec395b3df"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/resize-observer-polyfill-1.5.1/upstream-package.json.txt",
+      "bytes": 2450,
+      "sha256": "c4ae0c7a3684661179b5fda9db8f9fa45b2f0ad1840c43812374c1e1df5a3894"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/scheduler-0.23.2/LICENSE",
+      "bytes": 1086,
+      "sha256": "52412d7bc7ce4157ea628bbaacb8829e0a9cb3c58f57f99176126bc8cf2bfc85"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/scheduler-0.23.2/upstream-package.json.txt",
+      "bytes": 700,
+      "sha256": "0893643a24576d727174e639586b8833a53f2a7b4a2199a719b9cfcebe9bae88"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/scheduler-0.28.0/LICENSE",
+      "bytes": 1088,
+      "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/scheduler-0.28.0/upstream-package.json.txt",
+      "bytes": 558,
+      "sha256": "06290718f22bcd93f29eaa1ac8d2ec9a7592ba4fec12bf1230e7cdd9a871b324"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/source-map-js-1.2.2/LICENSE",
+      "bytes": 1526,
+      "sha256": "6cb0631f71c7749763fd3dd1d5bee52dd1070ec17f2edc1710079ad070bd2fbd"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/source-map-js-1.2.2/upstream-package.json.txt",
+      "bytes": 2548,
+      "sha256": "9f1ea63b1661d0f6e5fcd50b625d86cddd77de870a0019b23262360987b487f5"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/sxzz__popperjs-es-2.11.8/LICENSE.md",
+      "bytes": 1082,
+      "sha256": "bf67e2c9b7974543bb18ced3a0b37f53729aaff953b442dd89a3adaf90fd93e8"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/sxzz__popperjs-es-2.11.8/upstream-package.json.txt",
+      "bytes": 4133,
+      "sha256": "94c7268e4a9f66375345e13a951fa66d015ff166a963506edee6027c4a658c56"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/tanstack__query-core-5.104.1/LICENSE",
+      "bytes": 1079,
+      "sha256": "a405ee70c632bb938acb7ac5f210e814409b3760ea9d2329d8ed8ffcfd11a0e7"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/tanstack__query-core-5.104.1/upstream-package.json.txt",
+      "bytes": 2712,
+      "sha256": "ac5d0763eb06a76a1881315f806d634fb4e88321c37db4ffd757a8e167a85ace"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/tanstack__react-query-5.104.1/LICENSE",
+      "bytes": 1079,
+      "sha256": "a405ee70c632bb938acb7ac5f210e814409b3760ea9d2329d8ed8ffcfd11a0e7"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/tanstack__react-query-5.104.1/upstream-package.json.txt",
+      "bytes": 3629,
+      "sha256": "8e747c939b5ba98420d21118a689d52c17bee3407be126608c3591e82841c19c"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/types__lodash-4.17.25/LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/types__lodash-4.17.25/upstream-package.json.txt",
+      "bytes": 1691,
+      "sha256": "cf8bca120f8ddfea677ae74c80e4b92a70035f889a5721009c062d6baa5f9bbe"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/types__lodash-es-4.17.12/LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/types__lodash-es-4.17.12/upstream-package.json.txt",
+      "bytes": 1008,
+      "sha256": "6d8438f1cf2daf420336353e53326acc1476099dc95b4facc171a5efa9acb5dd"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/types__prop-types-15.7.15/LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/types__prop-types-15.7.15/upstream-package.json.txt",
+      "bytes": 1152,
+      "sha256": "ec2aa770e306720d83d14e146d2fa59df6bd2a379a206f9a492e4d5f87e12179"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/types__react-18.3.12/LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/types__react-18.3.12/upstream-package.json.txt",
+      "bytes": 6010,
+      "sha256": "f09f5e617e3e6695a7b0eb331a5991a91afa840f116f8e3145f9b5262d739266"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/types__react-transition-group-4.4.12/LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/types__react-transition-group-4.4.12/upstream-package.json.txt",
+      "bytes": 1344,
+      "sha256": "4bbc4d5ef67b5b515aab52042d049e19b5559504f3792e746adb6d876e79fd27"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/types__web-bluetooth-0.0.21/LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/types__web-bluetooth-0.0.21/upstream-package.json.txt",
+      "bytes": 1432,
+      "sha256": "74f7dfe22ba2256a690ed3859d832bfeeb0470d019f0064613e4d25c6a8ca67a"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/typescript-5.9.3/LICENSE.txt",
+      "bytes": 9197,
+      "sha256": "a7d00bfd54525bc694b6e32f64c7ebcf5e6b7ae3657be5cc12767bce74654a47"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/typescript-5.9.3/ThirdPartyNoticeText.txt",
+      "bytes": 37824,
+      "sha256": "1af3c68039c57e539422da82a4faada506ce6d0ea6f90e0b699d02dbcdb7a90c"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/typescript-5.9.3/upstream-package.json.txt",
+      "bytes": 3620,
+      "sha256": "822ef7ca6452205657b6288b066481ecf508bfbf43455d715cf7d3ec457561e6"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/vue-3.5.43/LICENSE",
+      "bytes": 1091,
+      "sha256": "1bb85cc9b13b81ef41c81c51866172fc345e0503c86726a6755b796590b70175"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/vue-3.5.43/upstream-package.json.txt",
+      "bytes": 2769,
+      "sha256": "b5cbf896563ac8087e8acdfe81ff5155db2eb75aced9725cdc05820be483cdda"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/vue-component-type-helpers-3.3.12/LICENSE",
+      "bytes": 1076,
+      "sha256": "ac07310d94980d9819cf2c28b3a2f63d11db283f48f02f67208b549f44860ac0"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/vue-component-type-helpers-3.3.12/upstream-package.json.txt",
+      "bytes": 350,
+      "sha256": "6ed3f209bdd4cd3fded3cd9f265c85d6bc81de4ea804944d65025e9497694ab8"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/vue__compiler-core-3.5.43/LICENSE",
+      "bytes": 1091,
+      "sha256": "1bb85cc9b13b81ef41c81c51866172fc345e0503c86726a6755b796590b70175"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/vue__compiler-core-3.5.43/upstream-package.json.txt",
+      "bytes": 1386,
+      "sha256": "807770bded967c94fb831230b89125c49a57c96517a7e4b8445be6f429fead04"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/vue__compiler-dom-3.5.43/LICENSE",
+      "bytes": 1091,
+      "sha256": "1bb85cc9b13b81ef41c81c51866172fc345e0503c86726a6755b796590b70175"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/vue__compiler-dom-3.5.43/upstream-package.json.txt",
+      "bytes": 1380,
+      "sha256": "0f18de20306ea6c4100cd46debb89b7503bfd2a62022cc890e67428d6747ef12"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/vue__compiler-sfc-3.5.43/LICENSE",
+      "bytes": 1091,
+      "sha256": "1bb85cc9b13b81ef41c81c51866172fc345e0503c86726a6755b796590b70175"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/vue__compiler-sfc-3.5.43/upstream-package.json.txt",
+      "bytes": 1710,
+      "sha256": "add07941324745443d8414cf988e0cd2c1e11daceb346304a636fedaec715025"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/vue__compiler-ssr-3.5.43/LICENSE",
+      "bytes": 1091,
+      "sha256": "1bb85cc9b13b81ef41c81c51866172fc345e0503c86726a6755b796590b70175"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/vue__compiler-ssr-3.5.43/upstream-package.json.txt",
+      "bytes": 728,
+      "sha256": "a197fdd82cb501fde4214e8f782d482d1e534ce8b08473e7d04caca0fe253e45"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/vue__reactivity-3.5.43/LICENSE",
+      "bytes": 1091,
+      "sha256": "1bb85cc9b13b81ef41c81c51866172fc345e0503c86726a6755b796590b70175"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/vue__reactivity-3.5.43/upstream-package.json.txt",
+      "bytes": 1297,
+      "sha256": "6802677cbb164158a6211705d5f9c2b97090da80686721e967208159b593d7ba"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/vue__runtime-core-3.5.43/LICENSE",
+      "bytes": 1091,
+      "sha256": "1bb85cc9b13b81ef41c81c51866172fc345e0503c86726a6755b796590b70175"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/vue__runtime-core-3.5.43/upstream-package.json.txt",
+      "bytes": 1233,
+      "sha256": "5305e8a668b201b4726126f2a7815696ea41915ecb478b96f96f42cca0b5854c"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/vue__runtime-dom-3.5.43/LICENSE",
+      "bytes": 1091,
+      "sha256": "1bb85cc9b13b81ef41c81c51866172fc345e0503c86726a6755b796590b70175"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/vue__runtime-dom-3.5.43/upstream-package.json.txt",
+      "bytes": 1424,
+      "sha256": "abfce0719cb6a045568c5aaf803209b79809c0945e32b3363ecc9100d869a6ac"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/vue__server-renderer-3.5.43/LICENSE",
+      "bytes": 1091,
+      "sha256": "1bb85cc9b13b81ef41c81c51866172fc345e0503c86726a6755b796590b70175"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/vue__server-renderer-3.5.43/upstream-package.json.txt",
+      "bytes": 1302,
+      "sha256": "6b880dfac934aa70d8a5b1cf08482ca387ac001c9a7b37779ae26500f79fab4e"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/vue__shared-3.5.43/LICENSE",
+      "bytes": 1091,
+      "sha256": "1bb85cc9b13b81ef41c81c51866172fc345e0503c86726a6755b796590b70175"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/vue__shared-3.5.43/upstream-package.json.txt",
+      "bytes": 1082,
+      "sha256": "d07532b80ccae41694f2dc2f1a66ed598d2be8c96d540b82630e9f40c85b5189"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/vueuse__core-15.0.0/LICENSE",
+      "bytes": 1101,
+      "sha256": "0f844b1160603552a01662ac2999c14e5fb4df487e65619b9ed4406e43eb3c0b"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/vueuse__core-15.0.0/upstream-package.json.txt",
+      "bytes": 1317,
+      "sha256": "474d54c4c405bde477162052aadaf789b9de092b901ce10ba8f5dab9524d37de"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/vueuse__metadata-15.0.0/LICENSE",
+      "bytes": 1101,
+      "sha256": "0f844b1160603552a01662ac2999c14e5fb4df487e65619b9ed4406e43eb3c0b"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/vueuse__metadata-15.0.0/upstream-package.json.txt",
+      "bytes": 958,
+      "sha256": "70a2557d0d95e34e512fbb080e5c373427e70e4c1ad21fb1798f74c720e6fcb9"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/vueuse__shared-15.0.0/LICENSE",
+      "bytes": 1101,
+      "sha256": "0f844b1160603552a01662ac2999c14e5fb4df487e65619b9ed4406e43eb3c0b"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/vueuse__shared-15.0.0/upstream-package.json.txt",
+      "bytes": 1006,
+      "sha256": "c0db6ce5b63842434470dabd7ff491673a822e11a9e76fd7cdc40f1b7ed17906"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/zustand-5.0.15/LICENSE",
+      "bytes": 1070,
+      "sha256": "c1e6e266563517467b1bf874817d23e426f3149252bd7d42758cd697514b8417"
+    },
+    {
+      "path": "share/SouiSdk/licenses/npm/zustand-5.0.15/upstream-package.json.txt",
+      "bytes": 2139,
+      "sha256": "b53b4d5e7f6baeb1e832792390354f8af54edaefbd6fe23b490a4d2d2e37dff1"
+    },
+    {
+      "path": "share/SouiSdk/licenses/ots-5.0.0-LICENSE.txt",
+      "bytes": 1563,
+      "sha256": "984523ee987f4e8b72d61df37d8f1189a7077cd4b77e41a397e35593b297a29d"
+    },
+    {
+      "path": "share/SouiSdk/licenses/soui/license.txt",
+      "bytes": 1066,
+      "sha256": "c916dfd120947435beb2ef74cb77c771ad6d4a3d724433213575c0e48183791a"
+    },
+    {
+      "path": "share/SouiSdk/licenses/tailwindcss-3.4.17-LICENSE.txt",
+      "bytes": 1071,
+      "sha256": "60e0b68c0f35c078eef3a5d29419d0b03ff84ec1df9c3f9d6e39a519a5ae7985"
+    },
+    {
+      "path": "share/SouiSdk/licenses/webview2-sdk-1.0.4258.31-LICENSE.txt",
+      "bytes": 1488,
+      "sha256": "324083bf015092054be9d5851dafa1b79cbfab3331ff983476d502839515d8bb"
+    },
+    {
+      "path": "share/SouiSdk/licenses/webview2-sdk-1.0.4258.31-NOTICE.txt",
+      "bytes": 3894,
+      "sha256": "106423785c5b7eba0a8e61d1837f2132e9c828e20ad530f565d981c1df60dd90"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/KERNEL-NOTICES.md",
+      "bytes": 4462,
+      "sha256": "3db633169c636e1e6cf66d8be1880179dd1aff0f2e84d18f19f180651e449676"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/core-js-3.50.0/LICENSE",
+      "bytes": 1134,
+      "sha256": "b87653fff2d44426ab5cd4723cee3b1364dc8d35a0acdf098c54689543123bf8"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/core-js-3.50.0/source.json",
+      "bytes": 737,
+      "sha256": "924cd08f7c8fad83a0a15dba7c4676746f15bccd18d1704999cc4fd0e34143d6"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/d52/brotli/LICENSE.txt",
+      "bytes": 11560,
+      "sha256": "3ddf9be5c28fe27dad143a5dc76eea25222ad1dd68934a047064e56ed2fa40c5"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/d52/harfbuzz/COPYING.txt",
+      "bytes": 1726,
+      "sha256": "2c631526dad2d97beacfe20c3957b323a8bc98e425d5e8059bf1c7c603392814"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/d52/libpng/png.h",
+      "bytes": 143251,
+      "sha256": "4574c38e2688e9d7b49f1dd865e4130bee4bae55906fde3a02bbf120b8cc9a92"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/d52/libxml/Copyright.txt",
+      "bytes": 1525,
+      "sha256": "82517a90bd5aa2263e9013ed3186b6a6dbd43740d26e30e65e508787b2defc03"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/d52/miniblink/LICENSE.txt",
+      "bytes": 11537,
+      "sha256": "de2955977b885b81e1d0e1cdb0fc4619e5456c2928bb120cb39d44c4b792f25c"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/d52/miniblink/wke-license-declaration.h",
+      "bytes": 131,
+      "sha256": "a941bc0ff8be677a1c9251b922d480e3a0cdc39e0443161e274810f17b564044"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/d52/node/LICENSE-nodejs.txt",
+      "bytes": 61645,
+      "sha256": "aa89b6fe87f907791f69a13d807068e23d29c513ce18aa3e1d75b05b55c1ff07"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/d52/openssl/LICENSE.txt",
+      "bytes": 6406,
+      "sha256": "d0047be11f613ca5afebb508c19242fdecd55b740d70ea031c00c11784f37ee7"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/d52/skia/LICENSE.txt",
+      "bytes": 1580,
+      "sha256": "819e2d4f7c7162eebd28d7ce97fec174a821baa0d3a5f1cca864dd285b577422"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/d52/v8_5_7/LICENSE",
+      "bytes": 2970,
+      "sha256": "5e10421a5b98a1358464c43cdd17e12a8ab9f67353303bb9d44908027210fc2e"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/d52/v8_5_7/LICENSE.fdlibm",
+      "bytes": 256,
+      "sha256": "9117ecd79d00160524d0c923aa41c10cd3cab3753bc985e3069eaa9f1481cc17"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/d52/v8_5_7/LICENSE.strongtalk",
+      "bytes": 1511,
+      "sha256": "45d1dff3ad3ed6aec8947f7ce6a4781c535f1d73450b703c594d8bc6285c7736"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/d52/v8_5_7/LICENSE.v8",
+      "bytes": 1553,
+      "sha256": "befd10530f302b2108022be94d74eed4943880fc0626ab762ca7b53521813eeb"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/d52/v8_5_7/LICENSE.valgrind",
+      "bytes": 2107,
+      "sha256": "23365f7ef7771a5446e48eb9ae626b81d75a20ddf8631f7c3fe89d9f814f9b99"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/d52/webkit/LICENSE",
+      "bytes": 1681,
+      "sha256": "7a5dcff5e74eb93f51a0a2dbbce4def6956c94c1a00a9e1a5eea0fb2b58aafc0"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/d52/webkit/LICENSE_FOR_ABOUT_CREDITS",
+      "bytes": 52450,
+      "sha256": "d25f8c11292987f54ab918fa43a755d75dfb6113f618bdf03680545d87abbca8"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/d52/webkit/core/LICENSE-APPLE",
+      "bytes": 1334,
+      "sha256": "308c5b0ccfb2fee0db58b92da093348a0a074e1d3ef86d17d9d526e77bd271e0"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/d52/webkit/core/LICENSE-LGPL-2",
+      "bytes": 25859,
+      "sha256": "c8b0be4bf525058bee87a75614cf05a5314f8f969e1b18cdd429ebc78e1149f6"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/d52/webkit/core/LICENSE-LGPL-2.1",
+      "bytes": 27038,
+      "sha256": "3cd5e100bd88dc1cffb85b1560a3473f4647ebd03d7f945f254f09399da70f0d"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/d52/zlib/LICENSE.txt",
+      "bytes": 1151,
+      "sha256": "e757be93a060abe3681dd89c5a7a19cd49cdaf76e96772fea65b6f6fb06634e4"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/element-plus-2.11.1-LICENSE.txt",
+      "bytes": 1098,
+      "sha256": "7d6560ca47099f18ae7dc4d2fcdb3e0dcc207430a442525177f8af6dc229d1cc"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/element-plus-2.14.5-LICENSE.txt",
+      "bytes": 1077,
+      "sha256": "0790118bb4d66681db1d63181f72ef68e632d632f6db0373ef87cf328561af27"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/element-plus-2.14.7-LICENSE.txt",
+      "bytes": 1077,
+      "sha256": "0790118bb4d66681db1d63181f72ef68e632d632f6db0373ef87cf328561af27"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/ijg-jpeg-9a-README.txt",
+      "bytes": 19110,
+      "sha256": "c791da525733040e622ed257c7b096b8f5191b332604ead0c6bc2b54cbd8e0d1"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/kernel-source/README.md",
+      "bytes": 877,
+      "sha256": "7ccb5baf735fff9dd48d3d6218cc7ced202ccddcef81caff5e785b7436dfa52b"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/kernel-source/index.json.txt",
+      "bytes": 16544,
+      "sha256": "d610a6d5144a1819f5c8e86f74c218b100c44a3621b5d3c6fa2c86d46af6182d"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/kernel-source/node/LICENSE-http_parser.txt",
+      "bytes": 1274,
+      "sha256": "601db1017102482d1dafd638936111f8cf267aa722c87308d0d1dd0ce74f923d"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/kernel-source/node/LICENSE-libuv.txt",
+      "bytes": 2080,
+      "sha256": "dc80ef4333eb736c12fdac725aca4ffb60b3f766664652e84c2f2183ae1342fb"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/kernel-source/node/openssl/openssl/crypto/bf/COPYRIGHT.txt",
+      "bytes": 2387,
+      "sha256": "9bceb91e723ae5b88db5039ee0983e84c9b12d8fc7001148acefe0f3ac325e00"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/kernel-source/node/openssl/openssl/crypto/des/COPYRIGHT.txt",
+      "bytes": 2701,
+      "sha256": "ba0599e698a819847042c3cc51bf693881e4c286f555b4d44df7c2fb5bfae236"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/kernel-source/node/v8_inspector/LICENSE.txt",
+      "bytes": 1586,
+      "sha256": "2b5d44220cee7d541efdef3126ce838b2e73eaebae2f441af3573cb2c0af4d70"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/kernel-source/third_party/WebKit/Source/devtools/front_end/acorn/LICENSE.txt",
+      "bytes": 1105,
+      "sha256": "66bdd11215501e6e37dee79f5fc8b452cff4318e3f2ddb00f47c1e77b6f1b464"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/kernel-source/third_party/WebKit/Source/devtools/front_end/cm/LICENSE.txt",
+      "bytes": 1113,
+      "sha256": "f7dfffd11a9b093c182bd0bce82470aa462b63c79e88e29255c766a67a6fdd13"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/kernel-source/third_party/WebKit/Source/devtools/front_end/cm/LICENSE_python.txt",
+      "bytes": 1095,
+      "sha256": "da0307e88178ab5965d9aea4cad4f393febd45445f7ce24699a3b1cc0ef3a97b"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/kernel-source/third_party/WebKit/Source/devtools/front_end/cm_modes/LICENSE.txt",
+      "bytes": 1113,
+      "sha256": "f7dfffd11a9b093c182bd0bce82470aa462b63c79e88e29255c766a67a6fdd13"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/kernel-source/third_party/WebKit/Tools/Scripts/webkitpy/thirdparty/mod_pywebsocket/COPYING.txt",
+      "bytes": 1503,
+      "sha256": "06b680284ee999d6591aa0c0708a14b22deb97da5b7d6b97ce28319148f3fd6a"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/kernel-source/third_party/WebKit/Tools/Scripts/webkitpy/thirdparty/wpt/wpt/LICENSE.txt",
+      "bytes": 148,
+      "sha256": "f2c400b1eca0e4705521cadc6da2b6ba03928ee7e7dc1e048e9d22d8f3133fec"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/kernel-source/third_party/WebKit/Tools/Scripts/webkitpy/thirdparty/wpt/wpt/tools/LICENSE.txt",
+      "bytes": 1534,
+      "sha256": "d9fde12f36e9783f77637fed76d73fbfa8787ce8d3ad96a9df38eb226655928b"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/kernel-source/third_party/WebKit/Tools/Scripts/webkitpy/thirdparty/wpt/wpt/tools/wptserve/LICENSE.txt",
+      "bytes": 1534,
+      "sha256": "d9fde12f36e9783f77637fed76d73fbfa8787ce8d3ad96a9df38eb226655928b"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/kernel-source/third_party/jinja2/LICENSE.txt",
+      "bytes": 1554,
+      "sha256": "26fcd436fdc8a39d44896ac03e6f1dfd25e38499c48f20d8bc1dd3bf0aaa8a5b"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/kernel-source/third_party/khronos/LICENSE.txt",
+      "bytes": 2614,
+      "sha256": "9f2417f97eab28dcb3e7794449ff16adad13feece3ddb26e00866fa562df64ea"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/kernel-source/third_party/libxslt/Copyright.txt",
+      "bytes": 3021,
+      "sha256": "a8de51c4709e774bf528d324a2df8b8adeaff5cf933c2909994561f77215ec93"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/kernel-source/third_party/npapi/LICENSE.txt",
+      "bytes": 1567,
+      "sha256": "b50787fc6723765e24cc0c78b16d4de6b1150519563714896464d68933e72581"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/kernel-source/third_party/ply/LICENSE.txt",
+      "bytes": 1573,
+      "sha256": "33605f3bc091e69b7c063a2967cbea66bc9e98bce83a9db9be39eb08514f594f"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/kernel-source/third_party/sfntly/COPYING.txt.txt",
+      "bytes": 11567,
+      "sha256": "e30ee8ec0e6271e44020bc9160ba21ffaf597e0836c35705b46dac1ed5695c47"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/kernel-source/third_party/sfntly/src/cpp/COPYING.txt.txt",
+      "bytes": 11567,
+      "sha256": "e30ee8ec0e6271e44020bc9160ba21ffaf597e0836c35705b46dac1ed5695c47"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/kernel-source/third_party/skia/third_party/etc1/LICENSE.txt",
+      "bytes": 9393,
+      "sha256": "9c85803f15b94b4d4000674ae433c885e27f0d6ee8533c4252e1cdf74d1ca9cc"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/kernel-source/third_party/skia/third_party/libpng/LICENSE.txt",
+      "bytes": 7093,
+      "sha256": "ef55d9376df1f5ee3af751c4aebc511889dba0e34a53d1bac3ea33702c300421"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/kernel-source/v8_5_7/src/third_party/valgrind/LICENSE.txt",
+      "bytes": 2493,
+      "sha256": "043056115cd22dc9422466835f19ecb3124fda90f7a5e8b42e57add3459f37c4"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/kernel-source/v8_5_7/src/third_party/vtune/LICENSE.txt",
+      "bytes": 2790,
+      "sha256": "0f8d39edfb7c8776a65ba174b6fddc5c95698142b1492c440d0b8e097d876d7c"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/kernel-source/v8_5_7/testing/gmock/LICENSE.txt",
+      "bytes": 1503,
+      "sha256": "46c35a3c9ac8ef63c16ca69b5cf0166df9fcdb789e318175c92a219de517b8e7"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/kernel-source/v8_5_7/testing/gmock/scripts/generator/LICENSE.txt",
+      "bytes": 11589,
+      "sha256": "e438ef741bf3660b5c54f4452d7c0b387c8557207cc3e9cda499e461a94df2b2"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/kernel-source/v8_5_7/testing/gtest/LICENSE.txt",
+      "bytes": 1503,
+      "sha256": "46c35a3c9ac8ef63c16ca69b5cf0166df9fcdb789e318175c92a219de517b8e7"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/libcurl-7.61.1-COPYING.txt",
+      "bytes": 1088,
+      "sha256": "5f3849ec38ddb927e79f514bf948890c41b8d1407286a49609b8fb1585931095"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/README.md",
+      "bytes": 6400,
+      "sha256": "1b1691f6ffebd60d111b16189291d96de4cea63bb7560a346d1dd1db4b29ef63"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/async-validator-4.2.5/LICENSE.md",
+      "bytes": 1083,
+      "sha256": "5d0427088e37071c4b942de990f6365d5c2d195f3e957ce925322d184784e2eb"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/async-validator-4.2.5/upstream-package.json.txt",
+      "bytes": 1167,
+      "sha256": "3f91af4429bb8871ebd4c59dcf8b52b06fa9f4d6f6398a1d72f9258c255f40cc"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/babel__helper-string-parser-7.29.7/LICENSE",
+      "bytes": 1106,
+      "sha256": "117da2af0d4ce0fe1c8e19b5cff9dcd806adf973d328d27b11d4448c4ff24f76"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/babel__helper-string-parser-7.29.7/upstream-package.json.txt",
+      "bytes": 758,
+      "sha256": "ecbd1aaffa9ad000d3bc5a526067b89244cb3ec64c738fbae8b64a9e805f401b"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/babel__helper-validator-identifier-7.29.7/LICENSE",
+      "bytes": 1106,
+      "sha256": "117da2af0d4ce0fe1c8e19b5cff9dcd806adf973d328d27b11d4448c4ff24f76"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/babel__helper-validator-identifier-7.29.7/upstream-package.json.txt",
+      "bytes": 738,
+      "sha256": "1ad6aeced8b186ac259da45fea50ab9d65d3d958f6458c80e3c8013649d1b12d"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/babel__parser-7.29.8/LICENSE",
+      "bytes": 1086,
+      "sha256": "2e97627cb278aa7556fb9e8817368302301a595b6c7582512b8d74c57b773652"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/babel__parser-7.29.8/upstream-package.json.txt",
+      "bytes": 1382,
+      "sha256": "6d6a65b879cd7cd249a4367c0b57cce00e78c728de45056ac2a5ca1d1f528d1a"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/babel__parser-7.29.9/LICENSE",
+      "bytes": 1086,
+      "sha256": "2e97627cb278aa7556fb9e8817368302301a595b6c7582512b8d74c57b773652"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/babel__parser-7.29.9/origin.json",
+      "bytes": 893,
+      "sha256": "610b26028cf1f06f498f8f5e623dc645127d2682efbc82213f0c2a0f98a1453c"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/babel__parser-7.29.9/upstream-package.json.txt",
+      "bytes": 1382,
+      "sha256": "fa70cca00587bdb335e8249fa40e9356ed7b7c9a4fc92b1e74245ab1b852cda1"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/babel__runtime-7.29.7/LICENSE",
+      "bytes": 1106,
+      "sha256": "117da2af0d4ce0fe1c8e19b5cff9dcd806adf973d328d27b11d4448c4ff24f76"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/babel__runtime-7.29.7/upstream-package.json.txt",
+      "bytes": 41106,
+      "sha256": "8c4bf20c55e3f3a93df034b12746bf72185cf2acb0ef52847a3465d6e67c61e7"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/babel__types-7.29.8/LICENSE",
+      "bytes": 1106,
+      "sha256": "117da2af0d4ce0fe1c8e19b5cff9dcd806adf973d328d27b11d4448c4ff24f76"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/babel__types-7.29.8/upstream-package.json.txt",
+      "bytes": 1065,
+      "sha256": "f32460a35cc4649d81f10d4bc6dcfa1ade7a47f95df5db4bb4483f34d24b476e"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/csstype-3.2.3/LICENSE",
+      "bytes": 1062,
+      "sha256": "11d55bd4541c75ee7879547ac49089c489163dae49551389713c3d026cab383e"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/csstype-3.2.3/upstream-package.json.txt",
+      "bytes": 1985,
+      "sha256": "c818b74a9bc1556488b7ec2a65399224738f6619228f9a6491c5c02ca91f849e"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/ctrl__tinycolor-4.2.1/LICENSE",
+      "bytes": 1072,
+      "sha256": "40623170cffa92890b9a2decc5456de6bba6d4f75a7a7b7abc60cc9fdaf78b65"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/ctrl__tinycolor-4.2.1/upstream-package.json.txt",
+      "bytes": 1864,
+      "sha256": "59a309c461acb1af5046e8c43634605019813535df23d0f489172466675b36ba"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/dayjs-1.11.23/LICENSE",
+      "bytes": 1072,
+      "sha256": "5faab7526d055651be3aab769d58897be6bd91f3d39d137f25f12dba1b31d5dc"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/dayjs-1.11.23/upstream-package.json.txt",
+      "bytes": 2974,
+      "sha256": "680d74784223a074188617adc534fa5460171176d9904501241bbea087c3963b"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/dom-helpers-5.2.1/LICENSE",
+      "bytes": 1078,
+      "sha256": "1b0a9ba95a67bc484e028b13c61b83fc5aa1ca7957d1e2d43c2b0f70d9e9dd45"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/dom-helpers-5.2.1/upstream-package.json.txt",
+      "bytes": 1029,
+      "sha256": "efce7444ae9b3409183abbf4f09fdb5207217a38ad504c87ace88e1975a1d083"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/element-plus-2.14.7/LICENSE",
+      "bytes": 1077,
+      "sha256": "0790118bb4d66681db1d63181f72ef68e632d632f6db0373ef87cf328561af27"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/element-plus-2.14.7/upstream-package.json.txt",
+      "bytes": 2808,
+      "sha256": "0961f44f974f854a8899154d48e1726bfb5f8a85e8875c2efed987e826a39f6a"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/element-plus__icons-vue-2.3.2/LICENSE",
+      "bytes": 1121,
+      "sha256": "5db4ebb3abd8353774ae148723ccc14087d6dab99473f77a7b799b55defd8dfe"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/element-plus__icons-vue-2.3.2/upstream-package.json.txt",
+      "bytes": 2112,
+      "sha256": "bef1df5b66af31c0cb3164857d70f0db4b768617780dc87a5c7a642b127e9325"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/entities-7.0.1/LICENSE",
+      "bytes": 1260,
+      "sha256": "cb992345949ccd6e8394b2cd6c465f7b897c864f845937dbf64e8997f389e164"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/entities-7.0.1/upstream-package.json.txt",
+      "bytes": 3740,
+      "sha256": "b33b5d3fd4a8e196d3245c10ebb8feb2e076fc8d392f99a1050377d6e2b8b641"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/estree-walker-2.0.2/LICENSE",
+      "bytes": 1126,
+      "sha256": "8a6dcbabe7179f9c8489c08a7d874d0f1e093ae7449e03756ccf87cb9d0e296e"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/estree-walker-2.0.2/upstream-package.json.txt",
+      "bytes": 848,
+      "sha256": "6f08430331daeaedaa35e7a8ca347cdb7493922fe9485bf57eb4d619cfb0b3ad"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/floating-ui__core-1.8.0/LICENSE",
+      "bytes": 1089,
+      "sha256": "0e4c9a9b6c71019cbbea3bdc20b01223110a9035700f9c960c8fcbf78c2325ce"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/floating-ui__core-1.8.0/upstream-package.json.txt",
+      "bytes": 1655,
+      "sha256": "2f24216dd2a32b10e6c868173832a0667c3cdbee92886797b219aadac48d8b99"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/floating-ui__dom-1.8.0/LICENSE",
+      "bytes": 1089,
+      "sha256": "0e4c9a9b6c71019cbbea3bdc20b01223110a9035700f9c960c8fcbf78c2325ce"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/floating-ui__dom-1.8.0/upstream-package.json.txt",
+      "bytes": 1929,
+      "sha256": "59643af1b1bfc5a80b172c21ccbe21ea56eaa0115378f6077d9934458db25ac1"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/floating-ui__utils-0.2.12/LICENSE",
+      "bytes": 1089,
+      "sha256": "0e4c9a9b6c71019cbbea3bdc20b01223110a9035700f9c960c8fcbf78c2325ce"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/floating-ui__utils-0.2.12/upstream-package.json.txt",
+      "bytes": 1988,
+      "sha256": "b2138e8855520f4313f26ace0d93a9a9c9e6a862f0299a5aeaccb2370dd1bf40"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/index.json",
+      "bytes": 99135,
+      "sha256": "6b4f5f8dad3e08d2b180d1665701413aaa485d2dbccc4b410bade93178e6eb9b"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/jridgewell__sourcemap-codec-1.6.0/LICENSE",
+      "bytes": 1080,
+      "sha256": "769d154fbde32a915af110b1123650bc79f4cbe675acc66e005265bf069c6c6c"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/jridgewell__sourcemap-codec-1.6.0/upstream-package.json.txt",
+      "bytes": 2185,
+      "sha256": "ac7afd57294dbee1f891ca797e19e405340f2cd6031808e6d3845fec60a5b43f"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/js-tokens-4.0.0/LICENSE",
+      "bytes": 1103,
+      "sha256": "2213d91c606205c71eb051a199478cdc2adde945893404d7f1421436dd6d5cc1"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/js-tokens-4.0.0/upstream-package.json.txt",
+      "bytes": 649,
+      "sha256": "47345931827b3e26db9fe690abb81f856a0d040cbca8af1e69711a64cd58ce0d"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/lodash-4.18.1/LICENSE",
+      "bytes": 1952,
+      "sha256": "f71e8ed126b46346494aad5486874cd8f0aafe95092ed67d2e3cb6110f939abc"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/lodash-4.18.1/upstream-package.json.txt",
+      "bytes": 583,
+      "sha256": "5ef0a453b679125b155af19e1477f93b577ea826a57e1545f77608d326966e6a"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/lodash-es-4.18.1/LICENSE",
+      "bytes": 1952,
+      "sha256": "f71e8ed126b46346494aad5486874cd8f0aafe95092ed67d2e3cb6110f939abc"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/lodash-es-4.18.1/upstream-package.json.txt",
+      "bytes": 724,
+      "sha256": "83d054ea84cf0efe4db931cf24c4ca9dde533a0e49779d26176be9d43061c903"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/lodash-unified-1.0.3/upstream-package.json.txt",
+      "bytes": 637,
+      "sha256": "23fa098f88e0f8718bb68854b3574b4649f593065ecf56632c7f4adf23836c24"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/loose-envify-1.4.0/LICENSE",
+      "bytes": 1100,
+      "sha256": "4eb7543b08d955a6d23fcc224601d43ff566e775be918805e26210d7f6eb4893"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/loose-envify-1.4.0/upstream-package.json.txt",
+      "bytes": 809,
+      "sha256": "8c2e27dae366396ced36fe0f7c6d35d71a1440fd8e82df5f2005a5297888a0d4"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/magic-string-0.30.21/LICENSE",
+      "bytes": 1051,
+      "sha256": "1cbe51b907662f6cb1492b16c359384a595180bf0e4d101603ed525e75c4e484"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/magic-string-0.30.21/upstream-package.json.txt",
+      "bytes": 1840,
+      "sha256": "86814aaf7dacba9d31fbf361c3285981f1cbbda0a87108caa4131d297bd9eba2"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/memoize-one-6.0.0/LICENSE",
+      "bytes": 1073,
+      "sha256": "b1c501095de70182748cb8e8d97ac5577701a4ef3b755ba30d59fd87b24bdb0f"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/memoize-one-6.0.0/upstream-package.json.txt",
+      "bytes": 3179,
+      "sha256": "9941ebd5b052013e100b477c272a8e20d63c1bc7c57646da077a895c0b483e2f"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/nanoid-3.3.20/LICENSE",
+      "bytes": 1095,
+      "sha256": "da4db1480d9beea3483a2eda5c53b22238d0827d57da162b48f122e04d2d9987"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/nanoid-3.3.20/upstream-package.json.txt",
+      "bytes": 2295,
+      "sha256": "e2a77185ded1c006171e4e2f8b316d0e3b4c51a135a190851cfc888ea428f6bf"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/normalize-wheel-es-1.2.0/LICENSE",
+      "bytes": 1527,
+      "sha256": "658d037c5c078a24c27ab1e0f37050d407ad6628be94886a4e48f3e761f47f7d"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/normalize-wheel-es-1.2.0/upstream-package.json.txt",
+      "bytes": 967,
+      "sha256": "32d56b12d2ca2af82888c231d65efd173e2898b22966129038b6b555e36f9606"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/object-assign-4.1.1/license",
+      "bytes": 1119,
+      "sha256": "6fb9754611c20f6649f68805e8c990e83261f29316e29de9e6cedae607b8634c"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/object-assign-4.1.1/upstream-package.json.txt",
+      "bytes": 764,
+      "sha256": "5990bbffa235fc675debd925d50f6c3f48a2b4526d8c9f7555cadec9029d0d7f"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/picocolors-1.1.1/LICENSE",
+      "bytes": 787,
+      "sha256": "6582629e2979466878f6014313dcc2f3756c9616148682227ce3063dde310750"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/picocolors-1.1.1/upstream-package.json.txt",
+      "bytes": 552,
+      "sha256": "ef2ac226c4811d312e12c64214c453878653e834482125ae475f27cea60de737"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/postcss-8.5.29/LICENSE",
+      "bytes": 1095,
+      "sha256": "5be1f3465bba68a626777f984878814aaf35e7ef8e9fd314d469bcf887050fb8"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/postcss-8.5.29/upstream-package.json.txt",
+      "bytes": 2497,
+      "sha256": "d6f3d1e4970b5f3b4424348769974fecc13afccefccb95f09f8883f70b7f3d2e"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/primeicons-7.0.0/LICENSE",
+      "bytes": 1070,
+      "sha256": "140e5886a54d897d852dbf7eeffd2c464467eddfcb04374241f90c61658493bd"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/primeicons-7.0.0/upstream-package.json.txt",
+      "bytes": 420,
+      "sha256": "e89d41dd5a675f1a92959991bd5c51b333500b5af8e05d246b9df2c1fa8d7ed0"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/primereact-10.9.9/LICENSE.md",
+      "bytes": 1080,
+      "sha256": "9ec5e42e1b43dec267b8a8a43fc975d22039cb1cd4dde8dbf92561cf203fb3cc"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/primereact-10.9.9/upstream-package.json.txt",
+      "bytes": 1817,
+      "sha256": "681beee9345620e296d1cf329096a457b01cfabe508ee964702a3f5486338961"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/prop-types-15.8.1/LICENSE",
+      "bytes": 1080,
+      "sha256": "f657f99d3fb9647db92628e96007aabb46e5f04f33e49999075aab8e250ca7ce"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/prop-types-15.8.1/upstream-package.json.txt",
+      "bytes": 1656,
+      "sha256": "96aa387585c686397a80616d6a563759576e9b9fac1f80d57874aa4ee4730a2c"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/react-18.3.1/LICENSE",
+      "bytes": 1086,
+      "sha256": "52412d7bc7ce4157ea628bbaacb8829e0a9cb3c58f57f99176126bc8cf2bfc85"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/react-18.3.1/upstream-package.json.txt",
+      "bytes": 999,
+      "sha256": "d4e68a5c96babb20cad1daafea8b78822eae45b341552cf5418d06a5304fa64c"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/react-19.3.0/LICENSE",
+      "bytes": 1088,
+      "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/react-19.3.0/upstream-package.json.txt",
+      "bytes": 1242,
+      "sha256": "6e003e4e9ed25afa7fdd55613f8aa877cefa9b359d9c13f81ee704030248e24e"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/react-dom-18.3.1/LICENSE",
+      "bytes": 1086,
+      "sha256": "52412d7bc7ce4157ea628bbaacb8829e0a9cb3c58f57f99176126bc8cf2bfc85"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/react-dom-18.3.1/upstream-package.json.txt",
+      "bytes": 1353,
+      "sha256": "d2f29e31bd48b833e48cd7bbf41f192e8ee4ff8da249fdbe10d4ac4114b8b12e"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/react-dom-19.3.0/LICENSE",
+      "bytes": 1088,
+      "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/react-dom-19.3.0/upstream-package.json.txt",
+      "bytes": 3054,
+      "sha256": "136d4af63de473392ea79d6a21932b0ed9eb37fe518ce70f4621250f3d79e9bb"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/react-is-16.13.1/LICENSE",
+      "bytes": 1086,
+      "sha256": "52412d7bc7ce4157ea628bbaacb8829e0a9cb3c58f57f99176126bc8cf2bfc85"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/react-is-16.13.1/upstream-package.json.txt",
+      "bytes": 530,
+      "sha256": "06784c4340af9853928c519791684487b83076b3c84e8de6ba5f240e33700b71"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/react-transition-group-4.4.5/LICENSE",
+      "bytes": 1608,
+      "sha256": "b9adc17ad75a847d8743be2843935f0842a0ea4f45e7b0c7e17ed0be98614b9b"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/react-transition-group-4.4.5/upstream-package.json.txt",
+      "bytes": 1546,
+      "sha256": "2c6a5bfbbe8f65366df04ef7ea28a32fe6d8a8e582f3d68afb84ff3d3c86436a"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/resize-observer-polyfill-1.5.1/LICENSE",
+      "bytes": 1097,
+      "sha256": "49fad6f35ac45600d018ee56051c63e52103820d97d5ad512fe7018ec395b3df"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/resize-observer-polyfill-1.5.1/upstream-package.json.txt",
+      "bytes": 2450,
+      "sha256": "c4ae0c7a3684661179b5fda9db8f9fa45b2f0ad1840c43812374c1e1df5a3894"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/scheduler-0.23.2/LICENSE",
+      "bytes": 1086,
+      "sha256": "52412d7bc7ce4157ea628bbaacb8829e0a9cb3c58f57f99176126bc8cf2bfc85"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/scheduler-0.23.2/upstream-package.json.txt",
+      "bytes": 700,
+      "sha256": "0893643a24576d727174e639586b8833a53f2a7b4a2199a719b9cfcebe9bae88"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/scheduler-0.28.0/LICENSE",
+      "bytes": 1088,
+      "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/scheduler-0.28.0/upstream-package.json.txt",
+      "bytes": 558,
+      "sha256": "06290718f22bcd93f29eaa1ac8d2ec9a7592ba4fec12bf1230e7cdd9a871b324"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/source-map-js-1.2.2/LICENSE",
+      "bytes": 1526,
+      "sha256": "6cb0631f71c7749763fd3dd1d5bee52dd1070ec17f2edc1710079ad070bd2fbd"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/source-map-js-1.2.2/upstream-package.json.txt",
+      "bytes": 2548,
+      "sha256": "9f1ea63b1661d0f6e5fcd50b625d86cddd77de870a0019b23262360987b487f5"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/sxzz__popperjs-es-2.11.8/LICENSE.md",
+      "bytes": 1082,
+      "sha256": "bf67e2c9b7974543bb18ced3a0b37f53729aaff953b442dd89a3adaf90fd93e8"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/sxzz__popperjs-es-2.11.8/upstream-package.json.txt",
+      "bytes": 4133,
+      "sha256": "94c7268e4a9f66375345e13a951fa66d015ff166a963506edee6027c4a658c56"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/tanstack__query-core-5.104.1/LICENSE",
+      "bytes": 1079,
+      "sha256": "a405ee70c632bb938acb7ac5f210e814409b3760ea9d2329d8ed8ffcfd11a0e7"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/tanstack__query-core-5.104.1/upstream-package.json.txt",
+      "bytes": 2712,
+      "sha256": "ac5d0763eb06a76a1881315f806d634fb4e88321c37db4ffd757a8e167a85ace"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/tanstack__react-query-5.104.1/LICENSE",
+      "bytes": 1079,
+      "sha256": "a405ee70c632bb938acb7ac5f210e814409b3760ea9d2329d8ed8ffcfd11a0e7"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/tanstack__react-query-5.104.1/upstream-package.json.txt",
+      "bytes": 3629,
+      "sha256": "8e747c939b5ba98420d21118a689d52c17bee3407be126608c3591e82841c19c"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/types__lodash-4.17.25/LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/types__lodash-4.17.25/upstream-package.json.txt",
+      "bytes": 1691,
+      "sha256": "cf8bca120f8ddfea677ae74c80e4b92a70035f889a5721009c062d6baa5f9bbe"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/types__lodash-es-4.17.12/LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/types__lodash-es-4.17.12/upstream-package.json.txt",
+      "bytes": 1008,
+      "sha256": "6d8438f1cf2daf420336353e53326acc1476099dc95b4facc171a5efa9acb5dd"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/types__prop-types-15.7.15/LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/types__prop-types-15.7.15/upstream-package.json.txt",
+      "bytes": 1152,
+      "sha256": "ec2aa770e306720d83d14e146d2fa59df6bd2a379a206f9a492e4d5f87e12179"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/types__react-18.3.12/LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/types__react-18.3.12/upstream-package.json.txt",
+      "bytes": 6010,
+      "sha256": "f09f5e617e3e6695a7b0eb331a5991a91afa840f116f8e3145f9b5262d739266"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/types__react-transition-group-4.4.12/LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/types__react-transition-group-4.4.12/upstream-package.json.txt",
+      "bytes": 1344,
+      "sha256": "4bbc4d5ef67b5b515aab52042d049e19b5559504f3792e746adb6d876e79fd27"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/types__web-bluetooth-0.0.21/LICENSE",
+      "bytes": 1141,
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/types__web-bluetooth-0.0.21/upstream-package.json.txt",
+      "bytes": 1432,
+      "sha256": "74f7dfe22ba2256a690ed3859d832bfeeb0470d019f0064613e4d25c6a8ca67a"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/typescript-5.9.3/LICENSE.txt",
+      "bytes": 9197,
+      "sha256": "a7d00bfd54525bc694b6e32f64c7ebcf5e6b7ae3657be5cc12767bce74654a47"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/typescript-5.9.3/ThirdPartyNoticeText.txt",
+      "bytes": 37824,
+      "sha256": "1af3c68039c57e539422da82a4faada506ce6d0ea6f90e0b699d02dbcdb7a90c"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/typescript-5.9.3/upstream-package.json.txt",
+      "bytes": 3620,
+      "sha256": "822ef7ca6452205657b6288b066481ecf508bfbf43455d715cf7d3ec457561e6"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/vue-3.5.43/LICENSE",
+      "bytes": 1091,
+      "sha256": "1bb85cc9b13b81ef41c81c51866172fc345e0503c86726a6755b796590b70175"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/vue-3.5.43/upstream-package.json.txt",
+      "bytes": 2769,
+      "sha256": "b5cbf896563ac8087e8acdfe81ff5155db2eb75aced9725cdc05820be483cdda"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/vue-component-type-helpers-3.3.12/LICENSE",
+      "bytes": 1076,
+      "sha256": "ac07310d94980d9819cf2c28b3a2f63d11db283f48f02f67208b549f44860ac0"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/vue-component-type-helpers-3.3.12/upstream-package.json.txt",
+      "bytes": 350,
+      "sha256": "6ed3f209bdd4cd3fded3cd9f265c85d6bc81de4ea804944d65025e9497694ab8"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/vue__compiler-core-3.5.43/LICENSE",
+      "bytes": 1091,
+      "sha256": "1bb85cc9b13b81ef41c81c51866172fc345e0503c86726a6755b796590b70175"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/vue__compiler-core-3.5.43/upstream-package.json.txt",
+      "bytes": 1386,
+      "sha256": "807770bded967c94fb831230b89125c49a57c96517a7e4b8445be6f429fead04"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/vue__compiler-dom-3.5.43/LICENSE",
+      "bytes": 1091,
+      "sha256": "1bb85cc9b13b81ef41c81c51866172fc345e0503c86726a6755b796590b70175"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/vue__compiler-dom-3.5.43/upstream-package.json.txt",
+      "bytes": 1380,
+      "sha256": "0f18de20306ea6c4100cd46debb89b7503bfd2a62022cc890e67428d6747ef12"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/vue__compiler-sfc-3.5.43/LICENSE",
+      "bytes": 1091,
+      "sha256": "1bb85cc9b13b81ef41c81c51866172fc345e0503c86726a6755b796590b70175"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/vue__compiler-sfc-3.5.43/upstream-package.json.txt",
+      "bytes": 1710,
+      "sha256": "add07941324745443d8414cf988e0cd2c1e11daceb346304a636fedaec715025"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/vue__compiler-ssr-3.5.43/LICENSE",
+      "bytes": 1091,
+      "sha256": "1bb85cc9b13b81ef41c81c51866172fc345e0503c86726a6755b796590b70175"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/vue__compiler-ssr-3.5.43/upstream-package.json.txt",
+      "bytes": 728,
+      "sha256": "a197fdd82cb501fde4214e8f782d482d1e534ce8b08473e7d04caca0fe253e45"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/vue__reactivity-3.5.43/LICENSE",
+      "bytes": 1091,
+      "sha256": "1bb85cc9b13b81ef41c81c51866172fc345e0503c86726a6755b796590b70175"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/vue__reactivity-3.5.43/upstream-package.json.txt",
+      "bytes": 1297,
+      "sha256": "6802677cbb164158a6211705d5f9c2b97090da80686721e967208159b593d7ba"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/vue__runtime-core-3.5.43/LICENSE",
+      "bytes": 1091,
+      "sha256": "1bb85cc9b13b81ef41c81c51866172fc345e0503c86726a6755b796590b70175"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/vue__runtime-core-3.5.43/upstream-package.json.txt",
+      "bytes": 1233,
+      "sha256": "5305e8a668b201b4726126f2a7815696ea41915ecb478b96f96f42cca0b5854c"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/vue__runtime-dom-3.5.43/LICENSE",
+      "bytes": 1091,
+      "sha256": "1bb85cc9b13b81ef41c81c51866172fc345e0503c86726a6755b796590b70175"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/vue__runtime-dom-3.5.43/upstream-package.json.txt",
+      "bytes": 1424,
+      "sha256": "abfce0719cb6a045568c5aaf803209b79809c0945e32b3363ecc9100d869a6ac"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/vue__server-renderer-3.5.43/LICENSE",
+      "bytes": 1091,
+      "sha256": "1bb85cc9b13b81ef41c81c51866172fc345e0503c86726a6755b796590b70175"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/vue__server-renderer-3.5.43/upstream-package.json.txt",
+      "bytes": 1302,
+      "sha256": "6b880dfac934aa70d8a5b1cf08482ca387ac001c9a7b37779ae26500f79fab4e"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/vue__shared-3.5.43/LICENSE",
+      "bytes": 1091,
+      "sha256": "1bb85cc9b13b81ef41c81c51866172fc345e0503c86726a6755b796590b70175"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/vue__shared-3.5.43/upstream-package.json.txt",
+      "bytes": 1082,
+      "sha256": "d07532b80ccae41694f2dc2f1a66ed598d2be8c96d540b82630e9f40c85b5189"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/vueuse__core-15.0.0/LICENSE",
+      "bytes": 1101,
+      "sha256": "0f844b1160603552a01662ac2999c14e5fb4df487e65619b9ed4406e43eb3c0b"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/vueuse__core-15.0.0/upstream-package.json.txt",
+      "bytes": 1317,
+      "sha256": "474d54c4c405bde477162052aadaf789b9de092b901ce10ba8f5dab9524d37de"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/vueuse__metadata-15.0.0/LICENSE",
+      "bytes": 1101,
+      "sha256": "0f844b1160603552a01662ac2999c14e5fb4df487e65619b9ed4406e43eb3c0b"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/vueuse__metadata-15.0.0/upstream-package.json.txt",
+      "bytes": 958,
+      "sha256": "70a2557d0d95e34e512fbb080e5c373427e70e4c1ad21fb1798f74c720e6fcb9"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/vueuse__shared-15.0.0/LICENSE",
+      "bytes": 1101,
+      "sha256": "0f844b1160603552a01662ac2999c14e5fb4df487e65619b9ed4406e43eb3c0b"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/vueuse__shared-15.0.0/upstream-package.json.txt",
+      "bytes": 1006,
+      "sha256": "c0db6ce5b63842434470dabd7ff491673a822e11a9e76fd7cdc40f1b7ed17906"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/zustand-5.0.15/LICENSE",
+      "bytes": 1070,
+      "sha256": "c1e6e266563517467b1bf874817d23e426f3149252bd7d42758cd697514b8417"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/npm/zustand-5.0.15/upstream-package.json.txt",
+      "bytes": 2139,
+      "sha256": "b53b4d5e7f6baeb1e832792390354f8af54edaefbd6fe23b490a4d2d2e37dff1"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/ots-5.0.0-LICENSE.txt",
+      "bytes": 1563,
+      "sha256": "984523ee987f4e8b72d61df37d8f1189a7077cd4b77e41a397e35593b297a29d"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/soui/license.txt",
+      "bytes": 1066,
+      "sha256": "c916dfd120947435beb2ef74cb77c771ad6d4a3d724433213575c0e48183791a"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/tailwindcss-3.4.17-LICENSE.txt",
+      "bytes": 1071,
+      "sha256": "60e0b68c0f35c078eef3a5d29419d0b03ff84ec1df9c3f9d6e39a519a5ae7985"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/webview2-sdk-1.0.4258.31-LICENSE.txt",
+      "bytes": 1488,
+      "sha256": "324083bf015092054be9d5851dafa1b79cbfab3331ff983476d502839515d8bb"
+    },
+    {
+      "path": "share/SouiSdk/third_party/licenses/webview2-sdk-1.0.4258.31-NOTICE.txt",
+      "bytes": 3894,
+      "sha256": "106423785c5b7eba0a8e61d1837f2132e9c828e20ad530f565d981c1df60dd90"
+    },
+    {
+      "path": "share/SouiSdk/webview2/LICENSE.txt",
+      "bytes": 1487,
+      "sha256": "0af8f1b807512aae39c2ac1aa4d0cae65cabecb6fd554b8439a5162a0d6eca55"
+    },
+    {
+      "path": "share/SouiSdk/webview2/NOTICE.txt",
+      "bytes": 3894,
+      "sha256": "106423785c5b7eba0a8e61d1837f2132e9c828e20ad530f565d981c1df60dd90"
+    },
+    {
+      "path": "share/SouiSdk/webview2/dependency.json",
+      "bytes": 574,
+      "sha256": "de654c9666da5e7b36eaadbaacd297c49942bc6ba8bcd9f6fee141f0308956e5"
+    }
+  ],
+  "noLocalAbsolutePathsInUtf8Text": true,
+  "noticeRelativeLinksMissing": []
+}

@@ -1,0 +1,55 @@
+{
+  "phase": "test",
+  "arch": "x64",
+  "attempt": "1",
+  "executable": {
+    "path": "C:/Program Files/CMake/bin/ctest.exe",
+    "bytes": 13829192,
+    "sha256": "0befb42121d9baf862ae21165788c08d45ca06c6ce12b9e68101a31542dd572c"
+  },
+  "args": [
+    "--test-dir",
+    "C:/sr06/out/release-vendor-x64-1",
+    "-C",
+    "Release",
+    "--output-on-failure",
+    "--no-tests=error",
+    "--parallel",
+    "1",
+    "--output-junit",
+    "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\vendor-short-prep\\x64-test-1.junit.xml",
+    "-R",
+    "^(sdk\\.native\\.(devtools-keyboard-snapshot|local-resource-state)|kernel\\.native\\.request-close\\.native-local-owner-fence|kernel\\.native\\.lifetime\\.ctor_shell-(view-success|view-handler-rollback))$"
+  ],
+  "cwd": "C:/sr06",
+  "build": "C:/sr06/out/release-vendor-x64-1",
+  "runner": {
+    "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vendor-short-prep/Run-Phase.cjs",
+    "bytes": 3451,
+    "sha256": "a7bf2f0005d3a0581a885b00fc83e7cb78d2af74a599354269e60edb60acc82d"
+  },
+  "startedUtc": "2026-10-28T15:30:00.527Z",
+  "environment": {
+    "MSBUILDDISABLENODEREUSE": "1"
+  },
+  "concurrency": "Root explicitly authorizes finite /m1 lane alongside existing kernel; not a global-idle claim",
+  "productHostStarted": false,
+  "guiStarted": false,
+  "result": "NATURAL_ZERO",
+  "pid": 91840,
+  "exitCode": 0,
+  "signal": null,
+  "finishedUtc": "2026-10-28T15:30:01.172Z",
+  "elapsedMs": 645,
+  "stdout": {
+    "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vendor-short-prep/x64-test-1.stdout.log",
+    "bytes": 908,
+    "sha256": "eb5844e3fff34e3a5c35602a0e360b195dbe33e560a499a6ed38f1514ddf0d40"
+  },
+  "stderr": {
+    "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vendor-short-prep/x64-test-1.stderr.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "forced": false
+}

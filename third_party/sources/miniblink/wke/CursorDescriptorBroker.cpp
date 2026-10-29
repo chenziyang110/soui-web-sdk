@@ -240,7 +240,8 @@ bool drained(const CursorBrokerControl& control)
             && !control.inspectorResources->queued() && !control.inspectorResources->dispatcherAlive()))
         && !control.scopes && !control.engineCallbacks && !control.devToolsBorrows && !control.oleRegistered
         && !control.comReferences && !control.nativeResources
-        && !control.nativeResourceAdmissionFault;
+        && !control.nativeResourceAdmissionFault
+        && (!control.view || control.view->paintCallbacksDrained());
 }
 void receipt(const CursorBrokerControl& control, wkeCursorBrokerDrainReceipt* out)
 {
@@ -473,6 +474,7 @@ unsigned int WKE_CALL_TYPE requestClose(wkeCursorBrokerEndpoint endpoint)
     auto control = findToken(endpoint);
     if (!control) return WKE_CURSOR_BROKER_STALE;
     if (control->destroying) return WKE_CURSOR_BROKER_CLOSING;
+    if (control->view) control->view->quiescePaintCallbacks();
     const bool alreadyClosing = control->closing.exchange(true);
     // Publish the original first-close sequence before the new external release
     // boundary, including when its counted admission has to return BUSY.

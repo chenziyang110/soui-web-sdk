@@ -31,8 +31,13 @@
 #ifndef cc_raster_RasterTask_h
 #define cc_raster_RasterTask_h
 
-#include <atomic>
 #include "wtf/Vector.h"
+#include <memory>
+#include <array>
+#include <atomic>
+#include <mutex>
+#include "cc/raster/RasterSchedulingPolicy.h"
+#include "cc/raster/RasterCandidateBudget.h"
 #include "cc/raster/CompletionWaiters.h"
 #include "skia/ext/refptr.h"
 #include "third_party/skia/include/core/SkPicture.h"
@@ -60,6 +65,7 @@ class TileGrid;
 class Tile;
 class RasterTaskWorkerThreadPool;
 class LayerTreeHost;
+struct UiPaintRetryState;
 class SkBitmapRefWrap;
 class TileActionInfoVector;
 class LayerChangeActionBlend;
@@ -121,6 +127,9 @@ public:
     void appendUnnecessaryTileToEvictAfterDrawFrame(Tile* tile);
 
     void waitHostRasteringIndexOld();
+    void fallbackCandidateBeforeDispatch(RasterCandidateBudget::Failure reason);
+    void dispatchCollectedTasks(bool qualified);
+    std::shared_ptr<UiPaintRetryState> resourceNotificationState() const;
 
     int getPendingRasterTaskNum() const;
 
@@ -132,6 +141,9 @@ public:
 private:
     int m_ref;
     Vector<RasterTask*> m_tasks;
+    bool m_collectCandidate = false;
+    uint64_t m_candidateGeneration = 0;
+    RasterCandidateBudget m_frameBudget;
     RasterTaskWorkerThreadPool* m_pool;
     
     //cc_blink::WebLayerImpl* m_layer;
@@ -155,7 +167,13 @@ public:
     // It is an error to call shared() before init() or after shutdown();
     static RasterTaskWorkerThreadPool* shared();
 
-    int selectOneIdleThread();
+    int selectOneIdleThread(bool visible = true);
+    bool concurrentCandidateEnabled() const { return m_threads.size() > 1; }
+    bool reserveCandidateBytes(uint64_t bytes);
+    void releaseCandidateBytes(uint64_t bytes);
+    void noteCandidateQualification(RasterCandidateBudget::Failure reason);
+    struct CandidateDiagnostics { uint64_t qualified, fallback; unsigned lastReason; };
+    CandidateDiagnostics candidateDiagnostics() const;
 
     bool willShutdown() const { return m_willShutdown; }
     void increasePendingRasterTaskNum();
@@ -174,8 +192,13 @@ private:
     ~RasterTaskWorkerThreadPool();
 
     Vector<blink::WebThreadSupportingGC*> m_threads;
-    Vector<int> m_threadBusyCount;
-    bool m_willShutdown;
+    std::array<std::atomic<int>, RasterSchedulingPolicy::maximumWorkers> m_threadBusyCount{};
+    std::mutex m_candidateBudgetMutex;
+    RasterSchedulingPolicy m_candidateBudget;
+    std::atomic<uint64_t> m_qualifiedFrames{0};
+    std::atomic<uint64_t> m_fallbackFrames{0};
+    std::atomic<unsigned> m_lastCandidateReason{0};
+    std::atomic<bool> m_willShutdown;
     std::atomic<int> m_pendingRasterTaskNum;
     CompletionWaiters<LayerTreeHost> m_completionWaiters;
 };

@@ -1,0 +1,117 @@
+diff --git a/third_party/sources/miniblink/wke/wkeWebWindow.cpp b/third_party/sources/miniblink/wke/wkeWebWindow.cpp
+index 6fe5d9eb..a84e0e98 100644
+--- a/third_party/sources/miniblink/wke/wkeWebWindow.cpp
++++ b/third_party/sources/miniblink/wke/wkeWebWindow.cpp
+@@ -4,6 +4,7 @@
+ #include "wke/wkeWebWindow.h"
+ #include "wke/wkeGlobalVar.h"
+ #include "content/browser/WebPage.h"
++#include "content/browser/WebPageImpl.h"
+ #include "cc/base/BdColor.h"
+ #include "base/strings/string_util.h"
+ #include <exception>
+@@ -41,6 +42,8 @@ CWebWindow::CWebWindow(COLORREF c)
+ {
+     m_state = kWkeWebWindowUninit;
+     m_gpuPresent = false;
++    m_hostVisibilityKnown = false;
++    m_hostVisible = true;
+ 
+     m_originalPaintUpdatedCallback = NULL;
+     m_originalPaintUpdatedCallbackParam = NULL;
+@@ -297,6 +300,20 @@ LRESULT CWebWindow::_windowProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
+     case WM_ERASEBKGND:
+         break;
+ 
++    case WM_SHOWWINDOW: {
++        content::PaintActivityScope activity(m_paintLifetime);
++        if (activity)
++            _syncHostVisibility(hwnd, wParam == FALSE);
++        return ::DefWindowProcW(hwnd, message, wParam, lParam);
++    }
++    case WM_WINDOWPOSCHANGED: {
++        content::PaintActivityScope activity(m_paintLifetime);
++        const LRESULT result = ::DefWindowProcW(hwnd, message, wParam, lParam);
++        if (activity)
++            _syncHostVisibility(hwnd);
++        return result;
++    }
++
+     case WM_CREATE:
+         ::DragAcceptFiles(hwnd, TRUE);
+         SetTimer(hwnd, (UINT_PTR)this, 20, NULL);
+@@ -383,6 +400,10 @@ LRESULT CWebWindow::_windowProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
+         break;
+ 
+     case WM_SIZE: {
++        content::PaintActivityScope activity(m_paintLifetime);
++        if (!activity)
++            return 0;
++        _syncHostVisibility(hwnd, wParam == SIZE_MINIMIZED);
+         RECT rc = { 0 };
+         ::GetClientRect(hwnd, &rc);
+         int width = rc.right - rc.left;
+@@ -772,9 +793,41 @@ void CWebWindow::onDestroy(wkeWindowDestroyCallback callback, void* param)
+     getWkeHandler()->windowDestroyCallbackParam = param;
+ }
+ 
++bool CWebWindow::_syncHostVisibility(HWND window, bool forceHidden)
++{
++    content::PaintActivityScope activity(m_paintLifetime);
++    if (!activity || ::GetCurrentThreadId() != wkeThreadId || m_hWnd != window
++        || !isOwnedCloseWindow(window, this) || !m_webPage)
++        return false;
++    const HWND root = ::GetAncestor(window, GA_ROOTOWNER);
++    const bool visible = !forceHidden && ::IsWindowVisible(window)
++        && root && ::IsWindow(root) && !::IsIconic(root) && !::IsIconic(window);
++    auto* const page = m_webPage->webPageImpl();
++    if (m_hostVisibilityKnown && m_hostVisible == visible && page
++        && page->layerTreeHost()->hostVisible() == visible)
++        return true;
++    m_hostVisibilityKnown = false;
++    if (!m_webPage->setHostVisible(visible))
++        return false;
++    m_hostVisibilityKnown = true;
++    m_hostVisible = visible;
++    return true;
++}
++
+ void CWebWindow::show(bool b)
+ {
+-    ::ShowWindow(m_hWnd, b ? SW_SHOW : SW_HIDE);
++    if (::GetCurrentThreadId() != wkeThreadId)
++        return;
++    content::PaintActivityScope activity(m_paintLifetime);
++    if (!activity)
++        return;
++    const HWND window = m_hWnd;
++    if (!isOwnedCloseWindow(window, this))
++        return;
++    ::ShowWindow(window, b ? SW_SHOW : SW_HIDE);
++    // ShowWindow can synchronously deliver callbacks and native close.
++    // The activity scope is released only after the final target access.
++    _syncHostVisibility(window);
+ }
+ 
+ void CWebWindow::enable(bool b)
+diff --git a/third_party/sources/miniblink/wke/wkeWebWindow.h b/third_party/sources/miniblink/wke/wkeWebWindow.h
+index 6a37f057..00f18fcf 100644
+--- a/third_party/sources/miniblink/wke/wkeWebWindow.h
++++ b/third_party/sources/miniblink/wke/wkeWebWindow.h
+@@ -43,6 +43,7 @@ protected:
+     bool _createWindow(const wkeWindowCreateInfo* info);
+     bool _destroyWindow();
+     void _initCallbacks();
++    bool _syncHostVisibility(HWND window, bool forceHidden = false);
+ 
+     static LRESULT CALLBACK _staticWindowProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
+     LRESULT _windowProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
+@@ -81,6 +82,8 @@ protected:
+     };
+     State m_state;
+     bool m_gpuPresent;
++    bool m_hostVisibilityKnown;
++    bool m_hostVisible;
+ };
+ 
+ };//namespace wke

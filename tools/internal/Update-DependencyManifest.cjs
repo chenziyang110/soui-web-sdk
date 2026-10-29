@@ -95,6 +95,8 @@ const definitions = [
  ['miniblink-build-provenance', provenanceSource, kernel.sdkVersion+' dual-architecture import', 'build identity record'],
  ['miniblink-cache-budget-patch', 'third_party/patches/miniblink/0012-retained-resource-byte-budget.patch', '0.5 retained-resource byte budget', 'same terms as Miniblink and Skia source'],
  ['miniblink-cache-source', 'third_party/manifests/kernel-cache-source-050.json', '0.5 exact retained-cache source delta', 'source identity record'],
+ ['miniblink-input-latency-patch', 'third_party/patches/miniblink/0013-bound-main-thread-scheduler-batches.patch', 'historical main-thread batch and shutdown-dispatch source delta', 'same terms as Miniblink source'],
+ ['miniblink-input-latency-source', 'third_party/manifests/kernel-input-latency-source.json', 'historical delta record; current DLL identity is in the selected kernel provenance', 'source identity record'],
  ['zlib-source', 'third_party/sources/zlib/source-manifest.json', '1.2.11', 'Zlib'],
  ['json', 'third_party/include/json/json.hpp', '3.11.3 with allocation-free destruction backport (9b179cee)', 'MIT'],
  ['tailwind-utility-css', 'demos/workbench/web/apps/react/utility.css', '3.4.17 generated utility subset', 'MIT; third_party/licenses/tailwindcss-3.4.17-LICENSE.txt'],

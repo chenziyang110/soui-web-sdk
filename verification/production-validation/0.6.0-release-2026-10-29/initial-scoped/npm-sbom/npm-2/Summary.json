@@ -1,0 +1,442 @@
+{
+  "sdkVersion": "0.6.0",
+  "rows": [
+    {
+      "name": "gui-react",
+      "directory": "sdk/bindings/react",
+      "program": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "C:/nvm4w/nodejs/node_modules/npm/bin/npm-cli.js",
+        "sbom",
+        "--package-lock-only",
+        "--sbom-format=cyclonedx",
+        "--offline",
+        "--ignore-scripts",
+        "--install-links"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "lock": {
+        "bytes": 3382,
+        "sha256": "931e8f8ba1f9438f435ab2d031a0fd7cab1568626cc2fe555305a2166be7a6a8"
+      },
+      "lockUnchanged": true,
+      "format": "CycloneDX",
+      "specVersion": "1.5",
+      "component": {
+        "bom-ref": "@soui/gui-react@0.6.0",
+        "type": "library",
+        "name": "react",
+        "version": "0.6.0",
+        "scope": "required",
+        "purl": "pkg:npm/%40soui/gui-react@0.6.0",
+        "properties": [
+          {
+            "name": "cdx:npm:package:private",
+            "value": "true"
+          }
+        ],
+        "externalReferences": [],
+        "licenses": [
+          {
+            "license": {
+              "id": "MIT"
+            }
+          }
+        ]
+      },
+      "components": 8,
+      "localDistributionRewrites": [
+        {
+          "name": "@soui/native-sdk",
+          "version": "0.6.0",
+          "original": "file:C:\\sr06\\sdk\\web",
+          "relative": "../sdk/web"
+        }
+      ],
+      "output": {
+        "path": "sbom-gui-react.cdx.json",
+        "bytes": 8287,
+        "sha256": "86614b7585e57ce8ec59f4ed6906cb4e1fc954a8fa2066d73918c5674799ed44"
+      }
+    },
+    {
+      "name": "gui-vue",
+      "directory": "sdk/bindings/vue",
+      "program": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "C:/nvm4w/nodejs/node_modules/npm/bin/npm-cli.js",
+        "sbom",
+        "--package-lock-only",
+        "--sbom-format=cyclonedx",
+        "--offline",
+        "--ignore-scripts",
+        "--install-links"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "lock": {
+        "bytes": 11728,
+        "sha256": "51bf8081be82ff490e046fd1960604fab5ddb71923356b7175ec9aa4392413c5"
+      },
+      "lockUnchanged": true,
+      "format": "CycloneDX",
+      "specVersion": "1.5",
+      "component": {
+        "bom-ref": "@soui/gui-vue@0.6.0",
+        "type": "library",
+        "name": "vue",
+        "version": "0.6.0",
+        "scope": "required",
+        "purl": "pkg:npm/%40soui/gui-vue@0.6.0",
+        "properties": [
+          {
+            "name": "cdx:npm:package:private",
+            "value": "true"
+          }
+        ],
+        "externalReferences": [],
+        "licenses": [
+          {
+            "license": {
+              "id": "MIT"
+            }
+          }
+        ]
+      },
+      "components": 25,
+      "localDistributionRewrites": [
+        {
+          "name": "@soui/native-sdk",
+          "version": "0.6.0",
+          "original": "file:C:\\sr06\\sdk\\web",
+          "relative": "../sdk/web"
+        }
+      ],
+      "output": {
+        "path": "sbom-gui-vue.cdx.json",
+        "bytes": 25510,
+        "sha256": "7384ced49dd41f61bc7ffd87afbc7483315a8503bf831ef06936f2c62c7858f3"
+      }
+    },
+    {
+      "name": "template",
+      "directory": "templates/desktop-app/web",
+      "program": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "C:/nvm4w/nodejs/node_modules/npm/bin/npm-cli.js",
+        "sbom",
+        "--package-lock-only",
+        "--sbom-format=cyclonedx",
+        "--offline",
+        "--ignore-scripts",
+        "--install-links"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "lock": {
+        "bytes": 130655,
+        "sha256": "39d35a469e78f724e73966d2b78cbc2ed9427d53dfd5d5a75dd66cd0ae298ffe"
+      },
+      "lockUnchanged": true,
+      "format": "CycloneDX",
+      "specVersion": "1.5",
+      "component": {
+        "bom-ref": "soui-starter@0.1.0",
+        "type": "library",
+        "name": "web",
+        "version": "0.1.0",
+        "scope": "required",
+        "purl": "pkg:npm/soui-starter@0.1.0",
+        "properties": [
+          {
+            "name": "cdx:npm:package:private",
+            "value": "true"
+          }
+        ],
+        "externalReferences": []
+      },
+      "components": 230,
+      "localDistributionRewrites": [],
+      "output": {
+        "path": "sbom-template.cdx.json",
+        "bytes": 251496,
+        "sha256": "fd1178da227b2fb5ec2ed2be19c885bb8ad573012c2811f27f1c6f0025fd0505"
+      }
+    },
+    {
+      "name": "modern-template",
+      "directory": "templates/modern-app/web",
+      "program": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "C:/nvm4w/nodejs/node_modules/npm/bin/npm-cli.js",
+        "sbom",
+        "--package-lock-only",
+        "--sbom-format=cyclonedx",
+        "--offline",
+        "--ignore-scripts",
+        "--install-links"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "lock": {
+        "bytes": 28768,
+        "sha256": "366801daa343066c7d1b4f6d5a61758662449929f0c55b933fda70d35a2cccde"
+      },
+      "lockUnchanged": true,
+      "format": "CycloneDX",
+      "specVersion": "1.5",
+      "component": {
+        "bom-ref": "soui-modern-starter@0.1.0",
+        "type": "library",
+        "name": "web",
+        "version": "0.1.0",
+        "scope": "required",
+        "purl": "pkg:npm/soui-modern-starter@0.1.0",
+        "properties": [
+          {
+            "name": "cdx:npm:package:private",
+            "value": "true"
+          }
+        ],
+        "externalReferences": []
+      },
+      "components": 48,
+      "localDistributionRewrites": [],
+      "output": {
+        "path": "sbom-modern-template.cdx.json",
+        "bytes": 49238,
+        "sha256": "c879d97d7090f737c492069d4ff37965535b53d5b66d264d08c09811baef8fb8"
+      }
+    },
+    {
+      "name": "demo",
+      "directory": "demos/workbench/web",
+      "program": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "C:/nvm4w/nodejs/node_modules/npm/bin/npm-cli.js",
+        "sbom",
+        "--package-lock-only",
+        "--sbom-format=cyclonedx",
+        "--offline",
+        "--ignore-scripts",
+        "--install-links"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "lock": {
+        "bytes": 167068,
+        "sha256": "1d5a7c4eee06562a091331a7d169933f35286f5c6d619aff4cdd4584b8a56fde"
+      },
+      "lockUnchanged": true,
+      "format": "CycloneDX",
+      "specVersion": "1.5",
+      "component": {
+        "bom-ref": "soui-miniblink-ai-web@0.1.0",
+        "type": "library",
+        "name": "web",
+        "version": "0.1.0",
+        "scope": "required",
+        "description": "Offline React/Vue web surfaces for the SOUI + Miniblink AI dev kit.",
+        "purl": "pkg:npm/soui-miniblink-ai-web@0.1.0",
+        "properties": [
+          {
+            "name": "cdx:npm:package:private",
+            "value": "true"
+          }
+        ],
+        "externalReferences": []
+      },
+      "components": 304,
+      "localDistributionRewrites": [],
+      "output": {
+        "path": "sbom-demo.cdx.json",
+        "bytes": 319405,
+        "sha256": "0424b3c2fae270067db89ba43e54017a940214eac9e0babdb895887cd84e2f7d"
+      }
+    },
+    {
+      "name": "reference-compat",
+      "directory": "demos/reference-workbench/web-compat",
+      "program": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "C:/nvm4w/nodejs/node_modules/npm/bin/npm-cli.js",
+        "sbom",
+        "--package-lock-only",
+        "--sbom-format=cyclonedx",
+        "--offline",
+        "--ignore-scripts",
+        "--install-links"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "lock": {
+        "bytes": 167788,
+        "sha256": "74ff68042f8b210cac922db10969a7acb0d13ae2ab1b9f7aa1178e7c901376ac"
+      },
+      "lockUnchanged": true,
+      "format": "CycloneDX",
+      "specVersion": "1.5",
+      "component": {
+        "bom-ref": "soui-miniblink-ai-web@0.1.0",
+        "type": "library",
+        "name": "web-compat",
+        "version": "0.1.0",
+        "scope": "required",
+        "description": "Offline React/Vue web surfaces for the SOUI + Miniblink AI dev kit.",
+        "purl": "pkg:npm/soui-miniblink-ai-web@0.1.0",
+        "properties": [
+          {
+            "name": "cdx:npm:package:private",
+            "value": "true"
+          }
+        ],
+        "externalReferences": []
+      },
+      "components": 305,
+      "localDistributionRewrites": [],
+      "output": {
+        "path": "sbom-reference-compat.cdx.json",
+        "bytes": 320350,
+        "sha256": "e4c226b1448e6eeb348cac5c0b21d2ff5d22218cb18dc26d97603fe18fdc315b"
+      }
+    },
+    {
+      "name": "reference-modern",
+      "directory": "demos/reference-workbench/web-modern",
+      "program": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "C:/nvm4w/nodejs/node_modules/npm/bin/npm-cli.js",
+        "sbom",
+        "--package-lock-only",
+        "--sbom-format=cyclonedx",
+        "--offline",
+        "--ignore-scripts",
+        "--install-links"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "lock": {
+        "bytes": 28768,
+        "sha256": "366801daa343066c7d1b4f6d5a61758662449929f0c55b933fda70d35a2cccde"
+      },
+      "lockUnchanged": true,
+      "format": "CycloneDX",
+      "specVersion": "1.5",
+      "component": {
+        "bom-ref": "soui-modern-starter@0.1.0",
+        "type": "library",
+        "name": "web-modern",
+        "version": "0.1.0",
+        "scope": "required",
+        "purl": "pkg:npm/soui-modern-starter@0.1.0",
+        "properties": [
+          {
+            "name": "cdx:npm:package:private",
+            "value": "true"
+          }
+        ],
+        "externalReferences": []
+      },
+      "components": 48,
+      "localDistributionRewrites": [],
+      "output": {
+        "path": "sbom-reference-modern.cdx.json",
+        "bytes": 49245,
+        "sha256": "b613a1ad06683cc6b8064bc099522cccbbe45d5538c9c81298d7d18453cd23e5"
+      }
+    },
+    {
+      "name": "acceptance-tools",
+      "directory": "tests/acceptance",
+      "program": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "C:/nvm4w/nodejs/node_modules/npm/bin/npm-cli.js",
+        "sbom",
+        "--package-lock-only",
+        "--sbom-format=cyclonedx",
+        "--offline",
+        "--ignore-scripts",
+        "--install-links"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "lock": {
+        "bytes": 122928,
+        "sha256": "9ea076c633e1f9ed6a968c16d4cd14207304cd7b4e122ad1ef0ebfef9f2964c4"
+      },
+      "lockUnchanged": true,
+      "format": "CycloneDX",
+      "specVersion": "1.5",
+      "component": {
+        "bom-ref": "soui-acceptance-tools@0.0.0",
+        "type": "library",
+        "name": "acceptance",
+        "version": "0.0.0",
+        "scope": "required",
+        "purl": "pkg:npm/soui-acceptance-tools@0.0.0",
+        "properties": [
+          {
+            "name": "cdx:npm:package:private",
+            "value": "true"
+          }
+        ],
+        "externalReferences": []
+      },
+      "components": 213,
+      "localDistributionRewrites": [],
+      "output": {
+        "path": "sbom-acceptance-tools.cdx.json",
+        "bytes": 234677,
+        "sha256": "844296e8e99797e489ab16c587c99317833f5d26b103918aa4d2feb08524fc0d"
+      }
+    },
+    {
+      "name": "electron-comparison",
+      "directory": "benchmarks/hosts/electron",
+      "program": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "C:/nvm4w/nodejs/node_modules/npm/bin/npm-cli.js",
+        "sbom",
+        "--package-lock-only",
+        "--sbom-format=cyclonedx",
+        "--offline",
+        "--ignore-scripts",
+        "--install-links"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "lock": {
+        "bytes": 5842,
+        "sha256": "2434774969c1d5fce41fda2d7ef07d48089717d4ebda8ea19ea34b17925d10e5"
+      },
+      "lockUnchanged": true,
+      "format": "CycloneDX",
+      "specVersion": "1.5",
+      "component": {
+        "bom-ref": "soui-electron-comparison-host@0.3.0",
+        "type": "library",
+        "name": "electron",
+        "version": "0.3.0",
+        "scope": "required",
+        "description": "Pinned Electron host for the shared SOUI SDK benchmark page",
+        "purl": "pkg:npm/soui-electron-comparison-host@0.3.0",
+        "properties": [
+          {
+            "name": "cdx:npm:package:private",
+            "value": "true"
+          }
+        ],
+        "externalReferences": []
+      },
+      "components": 13,
+      "localDistributionRewrites": [],
+      "output": {
+        "path": "sbom-electron-comparison.cdx.json",
+        "bytes": 13209,
+        "sha256": "6b1bff5c4753031acaeb67d8d51d0ea260c484ab168f9c6328cfa1f2d1ec563d"
+      }
+    }
+  ],
+  "releaseReady": false
+}

@@ -1,0 +1,128 @@
+{
+  "schema": "soui.kernel-source-delta/v1",
+  "sdkVersion": "0.5.0",
+  "status": "source-only-unreleased-candidate",
+  "scope": "W01 bounded independent trace recorders, versioned POD consumer, actual public SDK harness and same-product burst protocol; production hooks follow by owner; no builds or measurements",
+  "baseCommit": "ca58a1b0f5e2e97e6df84051bdc1cb9954a956f4",
+  "sourceIdentityScope": "Only listed staged source delta; historical import and prebuilt identities unchanged",
+  "patch": {
+    "path": "third_party/patches/miniblink/0016-input-ui-trace-foundation.patch",
+    "bytes": 64097,
+    "sha256": "0b989cdc0481a156268277e71f2dff5a85ebaa495b179585d46727ac0fb037dc"
+  },
+  "files": [
+    {
+      "path": "third_party/include/miniblink/input_ui_api.h",
+      "before": {
+        "absent": true
+      },
+      "after": {
+        "bytes": 4857,
+        "sha256": "21d80d3aeb00851dba15b970c785bb2d0e67a8eb4ec5825c404dd809d2d93df8"
+      }
+    },
+    {
+      "path": "third_party/include/miniblink/wke.h",
+      "before": {
+        "bytes": 70747,
+        "sha256": "5da51e29905d1b2bdd6ae8d209da55ca4698986d166a8cf04f31c6891915102e"
+      },
+      "after": {
+        "bytes": 71046,
+        "sha256": "d406cee09dc7f2c1dfa4d5690d831a82470dd5d8140df5f4f9bc902c07008cc7"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/build/miniblink/miniblink.vcxproj",
+      "before": {
+        "bytes": 1140769,
+        "sha256": "10414179b772caf1de85910026b63cb3447f0db42be9522814c3fe4fe5c723d8"
+      },
+      "after": {
+        "bytes": 1140891,
+        "sha256": "810b06af262cd2dcbbde026e7c81002b685bd57ad4bbbc9682dac7b36c8a1d1c"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/content/common/InputFrameTrace.cpp",
+      "before": {
+        "absent": true
+      },
+      "after": {
+        "bytes": 27076,
+        "sha256": "39ace8d73e4efc278102e730d4d2fe9180fc6953ccbe85a10776b0d2d5c2636a"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/content/common/InputFrameTrace.h",
+      "before": {
+        "absent": true
+      },
+      "after": {
+        "bytes": 9753,
+        "sha256": "726489fe182c849213da57be3b4b43de539ffff23399a1efe2daead1a90b641b"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/content/web_impl_win/BlinkPlatformImpl.cpp",
+      "before": {
+        "bytes": 40263,
+        "sha256": "b03dc07c12abfa1a43a53390d665067f6a35272e3dd11dfde15f3b70cf68cadc"
+      },
+      "after": {
+        "bytes": 40472,
+        "sha256": "f5af0c7dff32118f22a9f3ffca177938648b02c4bafd567a353004ce5cd0edae"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/wke/InputUiApi.cpp",
+      "before": {
+        "absent": true
+      },
+      "after": {
+        "bytes": 7347,
+        "sha256": "69fd12e1ce7d58bdcd78e6c3cb69ebe5491c5431d5009931c7d43a7f12dbcc11"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/wke/InputUiApi.h",
+      "before": {
+        "absent": true
+      },
+      "after": {
+        "bytes": 4857,
+        "sha256": "21d80d3aeb00851dba15b970c785bb2d0e67a8eb4ec5825c404dd809d2d93df8"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/wke/wke.cpp",
+      "before": {
+        "bytes": 98317,
+        "sha256": "46b92f710a9cbfc260bbbb61a2bbe3a11ed64c892df0efd31669352cfcafbdab"
+      },
+      "after": {
+        "bytes": 98536,
+        "sha256": "c08a66e6ae7d153a97f6d8d8d95199cd1eb51ea5abf1a51a24885c70e2357f29"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/wke/wkedefine.h",
+      "before": {
+        "bytes": 70251,
+        "sha256": "674827ef4572feb31d417b9ce14e007f95a30dd4b26ed284c9c04a96e1bf9369"
+      },
+      "after": {
+        "bytes": 70548,
+        "sha256": "dba9ae269be9123a5ccb6912c8254f10ae7f090e7b3e8fe7d11f4e1ac43788f0"
+      }
+    }
+  ],
+  "validation": {
+    "finalSourceCompiled": false,
+    "finalTestsExecuted": false,
+    "reversePatchCheckPerformed": true,
+    "forwardReplayExecuted": false
+  },
+  "candidateBinaryIdentity": null,
+  "releaseReady": false
+}

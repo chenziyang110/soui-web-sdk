@@ -55,6 +55,7 @@ function fixture(t) {
     runtimeProfile: 'compatibility'}));
   put('web/src/main.tsx', 'export const diagnosticFixture = <main>Fixture</main>;\n');
   put('web/package.json', JSON.stringify({private: true}));
+  put('LICENSE.md', '# Synthetic first-party license\n');
   put('THIRD_PARTY_NOTICES.md', '# Synthetic SDK notices\n');
   put('third_party/licenses/fixture-LICENSE.txt', 'Synthetic licensed fixture bytes.\n');
   put(`out/x64/bin/Release/${target}/${target}.exe`, Buffer.from('SYNTHETIC EXE: never executable\0'));

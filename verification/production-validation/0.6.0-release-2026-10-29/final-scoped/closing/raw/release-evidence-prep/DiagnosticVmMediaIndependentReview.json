@@ -1,0 +1,143 @@
+{
+  "schema": "soui.release06-diagnostic-vm-media-independent-review/v1",
+  "reviewedAt": "2026-10-28T18:46:31.517241+00:00",
+  "reviewer": "/root/remaining_policy_fault",
+  "decision": "ACCEPT_ACTUAL_FROZEN_R2_DIAGNOSTIC_CONTROLS_AND_DATA_MEDIA_FOR_OPERATOR_EXECUTION",
+  "blockingFindings": [],
+  "scope": "Independent read-only review of final actual scripts, current public reader implementation, original/shipped identities and existing data readback. No templates accepted as final; no guest/product/compiler or transport fixture execution.",
+  "reviewedPins": {
+    "result": {
+      "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vm-short-prep/media-diagnostic-2/result.json",
+      "bytes": 7668,
+      "sha256": "4273e96aa6fa88e565b9acee64d85a971294dcec16a29775fe0809a9dcd98710"
+    },
+    "controls": {
+      "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vm-short-prep/media-diagnostic-2/r2-Controls.actual.json",
+      "bytes": 2235,
+      "sha256": "cf82ab5caec10348387c655c86e763c3532e04fed10c4e777fcf32bf5c15e965"
+    },
+    "iso": {
+      "path": "C:/s06diagmedia/SouiRelease06Diagnostic.iso",
+      "bytes": 123736064,
+      "sha256": "a5bf0d89b03a7f519850abe59de8113d6f63c74e927a49f9cf6f461fe5a90667"
+    },
+    "scripts": [
+      {
+        "path": "C:/s06diagmedia/iso-tree-r2/DEFAULT-RESUME.PS1",
+        "bytes": 3609,
+        "sha256": "b793f36e2bb4b22d6ac8e37ce28b921a3f98e336f7eb8c8f3bab5f44f76fdb72"
+      },
+      {
+        "path": "C:/s06diagmedia/iso-tree-r2/INSTALL.PS1",
+        "bytes": 2696,
+        "sha256": "4cb9e8998033ea6dd8d76e35a7bbeb1036eacac0046b882bc828382cb6293318"
+      },
+      {
+        "path": "C:/s06diagmedia/iso-tree-r2/RUN.PS1",
+        "bytes": 1924,
+        "sha256": "afb1ab652f090255f24b1fa66a2e9bc3694f782d94cdb8016b16ed284e0e3d93"
+      },
+      {
+        "path": "C:/s06diagmedia/iso-tree-r2/case-launch.cjs",
+        "bytes": 12886,
+        "sha256": "6515911d91086cea620331cfadaa0207ede1479d04c4b54ee1ac43c075be356d"
+      },
+      {
+        "path": "C:/s06diagmedia/iso-tree-r2/DEFAULT-CARRIER.JSON",
+        "bytes": 1037218,
+        "sha256": "826c8b819562d1c989cc62b048f5ef608255b1c73670adcb2dfa8075a1f121cc"
+      },
+      {
+        "path": "C:/s06diagmedia/iso-tree-r2/DEFAULT-EXPORT.PS1",
+        "bytes": 4230,
+        "sha256": "4086d69675c24f04bd76a4e775f0b66ed834299eebeadfdc5d683faf24a3da0b"
+      }
+    ]
+  },
+  "actualDataChecks": {
+    "isoAndZipActualPinsMatched": true,
+    "tenFlatExistingIsoReadbackExactMembershipAndAllRawPinsMatched": true,
+    "originalDefaultCarrierAndExporterRawUnchanged": true,
+    "diagnosticZipUnchanged": true,
+    "payloadReadback": {
+      "files": 5846,
+      "bytes": 369043711,
+      "allRawFileLengthsAndSha256IndependentlyMatched": true,
+      "exactMembershipIndependentlyMatched": true,
+      "roster": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vm-short-prep/media-diagnostic-2/PayloadFiles.actual.json",
+        "bytes": 1394016,
+        "sha256": "efdbd45b79db71009c3507d514da4ecfdc17d0195327aeb66132776a065dcf06"
+      },
+      "scope": "Existing ZIP readback only; no re-extraction or public-reader reexecution by this reviewer."
+    },
+    "fourWhitelistTuplesExactlyMatchCurrentGeneratedArtifacts": true,
+    "sdkManifestSha256": "af9e61db01f8af4c8f0458be0821fab169ac26349110433c1d30dfd4f22ec21d",
+    "sdkLockSha256": "300d5b0d11592608bcf43fbdfe8b169c599e66626c8917e1e402aa15c01f76a6"
+  },
+  "contracts": {
+    "ps5Encoding": "DEFAULT-RESUME:11 and INSTALL:10 read catalog JSON with explicit -Encoding UTF8 -Raw before ConvertFrom-Json. Exporter:7-8 decodes original ReadAllBytes with Encoding.UTF8; no ANSI Get-Content JSON remains in actual entry chain. case-launch:160 sets Console.OutputEncoding=UTF8 for the actual .NET KnownFolder child output before Node UTF8 decoding.",
+    "defaultResume": "DEFAULT-RESUME:8-29 requires all three C roots absent, exact original pinned4815 catalog and exactly one retained nonlinked s06-stage-* directory. Every raw file and complete membership/reparse rule is verified before Directory.Move; no extraction/recompression, deletion, overwrite or budget change. Optional Stage must name that sole retained directory. Original failed ISO and failed guest preparation are not relabelled.",
+    "oneTimeInstall": "INSTALL:7-25 requires resumed base roots present and both diagnostic roots absent; pinned CARRIER+ZIP, fresh stage and all5846 raw/closed-set/nonlink checks precede publishing two ordinary roots. RUN never repeats this whole project count after application logs have been written.",
+    "perCaseReaders": "RUN selects one of four explicit cases only. Actual launcher:146-157 uses current prepared x64 Runner, generated project public readLock and verifyAcceptedBuild(MSVC143,source-diagnostic), fixed SDK manifest/lock/buildId/source/EXE, and compatibility verifyDelivery kernel/frontend/approval/package-identity pins. Four prior compiler generic failures are not imported as accepted supervision.",
+    "singleCaseBudget": {
+      "timeoutMs": 120000,
+      "drainMs": 2000,
+      "args": [],
+      "cwd": "Exact selected EXE directory",
+      "noResetOrExtension": true
+    },
+    "nativeNaturalStage": "case-launch:165-167 uses current standard.capture -> launchOwned; public validateStage requires exact start/context/ready/finished PID+birth and argv/cwd/subject/Runner hashes, whole natural root0/supervisor0/completed, zero activeBeforeCleanup/activeProcesses and no STOP/fallback/force/terminated Job. Runtime cannot use compiler-tail acceptance.",
+    "logBoundary": "case-launch:118-142/159-170 captures actual fixed application logs. Compatibility log is newly truncating process-start output; a pre-existing unchanged stat/hash log is marked attemptBytesCaptured=false, and a natural stage without fresh log fails complete capture. Modern resolves actual KnownFolder and appends to one profile: unchanged file identity and original full-prefix SHA are required, exact suffix offsets bound only the current complete raw attempt; a zero/no-process-start delta cannot reuse old rows. Plain single-link logs are bounded64MiB for inspection; full attempt log <=8MiB or failure with original retained, never truncated.",
+    "failedAndCompleteExport": "Fresh exclusive evidence files retain capture raw NDJSON/context/ready/finished/stdout/stderr, Summary, application raw bytes/boundary metadata or explicit capture-failure metadata. finally emits ExportFiles even after a case failure. RUN discovers only one fresh evidence directory and exports it through unchanged raw COM1 exporter; original case exit and EXPORT_EXIT are separate. Missing completed catalog, oversized data or incomplete serial frame cannot be accepted as full export.",
+    "guiBoundary": "Summary separates nativeOwnedNaturalStagePassed from completeCaseCapture; guiAcceptance remains null even for natural0. Root must independently record actually observed GUI/DevTools behavior. Data transport, product process closure and screenshots do not manufacture public unknown states, source-map/private rejection-code proof or whole DevTools qualification."
+  },
+  "addressedFindings": [
+    {
+      "finding": "Per-case5846 full-root verification rejects app-created smoke.log on second run",
+      "resolution": "Final INSTALL once plus thin RUN; no broad out ignore and no payload hash relaxation."
+    },
+    {
+      "finding": "App log omitted from capture output and modern old append rows could be mixed",
+      "resolution": "Exact known log paths, bounded raw capture and explicit prior/after identity/offset SHA metadata; source logs retained."
+    },
+    {
+      "finding": "PS5 KnownFolder output encoding and stale compatibility/empty modern log truth",
+      "resolution": "Final case-launch UTF8 Console output; stat/hash freshness and new process-start checks."
+    }
+  ],
+  "retainedFailures": {
+    "originalDefaultIsoPs5AnsiPreparation": "Root-reported actual preparation failure before any product start remains failed; new resume validates retained old extraction, not a rerun or rewrite of original ISO. Reviewer did not operate guest or claim independent GUI observation.",
+    "ownDataOnlyFailurePins": [
+      {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vm-short-prep/media-diagnostic-2/Failure-82b6fe09-ef0d-42cd-95a3-c5fc5c8c1120.actual.json",
+        "bytes": 2464,
+        "sha256": "0be8fb33e718bdc5daea32763733e5b38b0878c87b3ae2df81ccb98ce1382edd"
+      },
+      {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vm-short-prep/media-diagnostic-2/SealFailure-97d7a795-442e-4e63-9b22-090a7dcfabb7.json",
+        "bytes": 2093,
+        "sha256": "96e413f6f41736b3cd814c757e1ad789869ad4f01bfb7a0ed43877fbd1dc8ba1"
+      }
+    ],
+    "uppercaseCjsAndWriterPlanGuardFailures": "Original parse and explicit writer/plan guard refusals retained by author; actual final lowercase case-launch and pinned final plan/writer are separately recorded. No product failure is converted by these data-only corrections.",
+    "generatedCompilerGenericFailuresRemainFalse": true
+  },
+  "operationalBoundaries": [
+    "Use final r2 actual controls, not old LAUNCH.CJS/templates or initial RUN. INSTALL is once only; each runtime selection is explicit and sequential under Root VM ownership.",
+    "CASE_EXIT/CONTROLLER_EXIT alone does not establish EXPORT success; require EXPORT_EXIT0 and complete hash-verified extracted raw frame before accepting transported evidence.",
+    "Exporter8MiB whole raw cap includes metadata. If aggregate limit is exceeded, export fails and originals remain; do not truncate or extend application time.",
+    "The900000ms transport loop guard plus per-write15000ms timeout is separate from application deadlines, not a claim of strict <=900000ms total wall time.",
+    "Neither this static review nor successful ISO creation/transport declares GUI, functional DevTools, production or long-test pass."
+  ],
+  "productExecuted": false,
+  "vmTouched": false,
+  "compilerStarted": false,
+  "publicReadersOrTransportFixturesReexecuted": false,
+  "sourceOrMediaEdited": false,
+  "guiPassed": null,
+  "testPassed": null,
+  "releaseReady": false,
+  "productionQualificationComplete": false,
+  "fullDevtoolsGoalComplete": false
+}

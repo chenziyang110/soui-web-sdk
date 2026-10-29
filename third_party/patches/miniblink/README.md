@@ -47,6 +47,20 @@
 
 `0012-retained-resource-byte-budget.patch` 在 0011 后只改变 Blink 初始化、SkResourceCache 的正字节限制及对应注释三个文件。原始字节重放已核对，不转码上游文件或转换行尾。前后完整源码树身份、三个文件散列和补丁散列见 `third_party/manifests/kernel-cache-source-050.json`。历史 SOURCE-MANIFEST 保持原导入角色，当前编译身份由实际构建前后完整清单记录。策略及真实像素引用验证见 ADR-0102；完整新内核和应用结果另计。
 
+## 主线程调度批次：0013
+
+`0013-bound-main-thread-scheduler-batches.patch` 以 `dc1e5bca0f6467f3481c15d8f5f54dab7fa69d06` 为前件，修改 `WebThreadImpl.cpp`、`WebThreadImpl.h` 和 `BlinkPlatformImpl.cpp`。主线程正常调度在完成 32 个任务或超过 2 ms 协作预算后返回消息泵；单个回调、观察器及任务入队仍可能超过该预算。保留原 16 ms 共享定时器继续处理剩余任务，工作线程保留 50 ms 预算。平台关闭中的三次显式调度改用 `fireForShutdown()`，绕过正常主线程批次限制并沿用原 50 ms 预算；最终 `fireOnExit()` 清理保持原行为。批次之间的等待可能降低积压任务吞吐，策略和验收边界见 ADR-0118。
+
+补丁已在隔离副本进行正反向原始字节重放，并在当前源码执行反向非写入检查。重放显式使用 `git -c core.autocrlf=false -c core.eol=lf apply`，避免全局换行配置转换验证副本。补丁及三个修改文件的前后散列见 `third_party/manifests/kernel-input-latency-source.json`；该记录不声明完整源码树与历史内核相同。
+
+本次为未发布的源码候选。随仓库提供的 DLL、`kernel-build-050.json`、二进制许可记录及原生 SBOM 继续描述原有导入，不包含本补丁。完整内核重编、实际输入响应、积压吞吐和关闭验收分别记录；补丁重放不代表这些验证通过。
+
+## 任务唤醒与有界接纳：0014
+
+`0014-ready-task-wake-and-admission.patch` 以 PR109 的 `3293bebe27ba8508bbd9dfe8b6e0d445e7879f3f` 为前件，包含五个原始 vendor 文件的改动：SharedTimerWin、WebThreadImpl 头/实现、WebPageImpl 头/实现。新任务和就绪积压通过合并窗口消息唤醒，跨线程接纳纳入正常主线程预算；正延时按 post 时间计时，资源受阻的 commit 延后重试。原 timer、worker 吞吐预算、显式关闭排空和资源 fence 保留。
+
+前后字节数、散列及补丁身份见 `third_party/manifests/kernel-ready-task-source.json`。此为源码候选；最终编译、补丁重放和运行交由 PR 验证人员完成，不引用早期实验作为最终通过结果。历史导入身份、固定二进制来源及生产门槛保持原义。设计和兼容边界见 ADR-0121。
+
 ## WebCrypto 流式摘要：0013
 
 `0013-webcrypto-streaming-digests.patch` 修正 `WebCryptoImpl` 把输入原文当作摘要返回、忽略算法的实现。`DOMPatchSupport` 使用 SHA-1 摘要前十字节识别节点；旧实现会把同名前缀下的文本 `42` 与 `43` 判为相同。修正复用已有 OpenSSL 1.0.2 EVP，实现 SHA-1/256/384/512 的独立流式 context，结果最多 64 字节并保活到 digestor 析构；不再保存整个输入。未知算法、非零长度空指针和 EVP 失败均关闭该操作，finish 只能一次。DOM diff、编辑策略、权限、资源 fence 和截止期保持原规则。
@@ -60,9 +74,11 @@
 有效的原有 `FontPlatformData`/typeface 继续使用原路径。具名候选为空或不含 typeface 时，直接向当前 `SkFontMgr` 请求真实系统默认字体，要求非空且包含 glyph；保留原有效字号、粗斜体合成、方向、subpixel、`ShouldRetain` 和字体缓存所有权。不调用可能生成 `SkEmptyTypeface` 的默认包装，不伪造行高或关闭 Inspector 高亮。
 
 若 OS 字体管理器、默认 typeface 或 glyph 仍不可用，函数明确返回空值；这保留极端系统字体失败边界，不宣称所有字体资源故障已恢复。下游仍要求主字体非空，因此不保证该环境能安全退出或正常启动。此次仅完成源修复和补丁原始字节核对，尚未编译、执行或复测。已有 0013 及其历史验证说明原样保留；新内核、配对与受影响应用的统一短测需另绑定真实产物。
-## 2026-10-29 性能候选补丁
 
-- `0016-frame-presentation-and-resource-wakes.patch`：精确帧节拍、CPU按需镜像、资源就绪通知、legacy延后及dirty合并。当前字节映射：`third_party/manifests/miniblink-frame-presentation-20261029.json`；capability、失败状态与验收范围见 ADR0138、0140。
-- `0017-deadline-owner-scheduling.patch`：ready/deadline owner调度、有界批次、单调时钟、未来堆剪枝。当前字节映射：`third_party/manifests/miniblink-deadline-scheduler-20261029.json`；见 ADR0137。
+## 2026-10-29 主线性能增量：0024 / 0025
 
-两者均以隔离源码快照 `c17c79bdf470fae681c63324ceaa2a519151afc9` 为前件，修改文件不重叠；不能直接套到缺少此前 DevTools/输入改动的任意历史导入。当前只是源码候选：没有新内核DLL、编译/运行、大小或性能通过结论。原历史导入清单和已产生的二进制身份保持各自含义。
+`0024-main-integrated-frame-presentation.patch` 与 `0025-main-integrated-deadline-scheduling.patch` 均以主线 `0cdc0a9ace0cdce664ec4a9b54e5f8f71b97ba48` 为前件，覆盖的文件互不重叠；保留主线原有 0015–0023 输入、调度、资源、画布与 trace 实现。旧冻结候选中的 0016/0017 性能补丁不用于当前树，以免覆盖同号主线补丁。
+
+当前完整文件字节、来源和补丁散列分别记录于 `third_party/manifests/miniblink-frame-presentation-20261029.json`、`third_party/manifests/miniblink-deadline-scheduler-20261029.json`。第三方文件采用原始字节定点改写，保留混合行尾与编码；新头纳入补丁和完整源清单。设计取舍见 ADR-0138 / ADR-0143 及 `docs/performance/main-integration.md`。
+
+当前仅源码集成与静态身份检查；没有新内核 DLL、构建/测试、体积或性能通过结论。历史补丁、原导入清单、二进制及已发布 0.6.0 证据保持各自原始角色。

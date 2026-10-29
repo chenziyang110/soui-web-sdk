@@ -1,4 +1,5 @@
-#include "../../third_party/sources/miniblink/cc/trees/FrameSchedulingPolicy.h"
+#include "../../third_party/sources/miniblink/cc/trees/FrameDeadlinePolicy.h"
+#include "../../third_party/sources/miniblink/cc/trees/LegacyPaintRetryPolicy.h"
 #include "../../third_party/sources/miniblink/cc/trees/DirtyRegionPolicy.h"
 #include "../../third_party/sources/miniblink/cc/raster/CompletionWaiters.h"
 #include <algorithm>
@@ -39,22 +40,22 @@ void cadence()
         double deadline = 100.0 + interval;
         for (unsigned frame = 0; frame < 10000; ++frame) {
             const double lateWake = deadline + interval * 0.1;
-            deadline = cc::frame_scheduling::advanceDeadline(deadline, lateWake, interval);
+            deadline = cc::nextFrameDeadline(deadline, lateWake, interval);
             require(deadline > lateWake, "next target must be future, not a catch-up frame");
         }
         require(std::fabs(deadline - (100.0 + 10001 * interval)) < 0.000001,
             "fractional cadence must not accumulate integer-ms drift");
-        require(cc::frame_scheduling::advanceDeadline(200, 199, interval) == 200,
+        require(cc::nextFrameDeadline(200, 199, interval) == 200,
             "early wake must preserve the future deadline");
-        const double resumed = cc::frame_scheduling::advanceDeadline(100, 200, interval);
+        const double resumed = cc::nextFrameDeadline(100, 200, interval);
         require(resumed > 200 && resumed <= 200 + interval * 1.001,
             "idle recovery must skip the missed backlog");
     }
-    require(cc::frame_scheduling::advanceDeadline(10, 10, 0) == 0,
-        "disabled pacing must clear the deadline");
-    require(cc::frame_scheduling::remainingDelayMilliseconds(1.0001, 1) == 1,
+    require(cc::nextFrameDeadline(10, 10, 0) == 10,
+        "disabled pacing must use the current time");
+    require(cc::LegacyPaintRetryPolicy::delayMilliseconds(1, 1.0001) == 1,
         "sub-ms remaining delay must not become immediate retry");
-    require(cc::frame_scheduling::remainingDelayMilliseconds(1, 2) == 0,
+    require(cc::LegacyPaintRetryPolicy::delayMilliseconds(2, 1) == 0,
         "past deadline must not produce a negative delay");
 }
 void dirtySelection()

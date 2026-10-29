@@ -1,0 +1,124 @@
+{
+  "schema": "soui.release-vm-serial-extraction/v2",
+  "tag": "R06OWNED022A294719B7426BB44DC7E906025C77",
+  "inputObservedPin": {
+    "path": "C:\\Users\\11034\\.codex\\task-vms\\soui-devtools-qemu-stable-e89cf96f2d1e4685bbdac347cb9eea3d\\private-fe2e6175cf5a4a78b23d418330506ee3\\postsettings-cpu-nehalem-3f486e90\\runs\\166925c3-9fd3-4751-9a17-c45d880af0a6\\serial.log",
+    "bytes": 3868396,
+    "sha256": "a61968b9eda5a04316722e9f6c5634b9ec737f6a6af92d7525c31248848afac2"
+  },
+  "selectedFrame": {
+    "path": "SerialFrame.bin",
+    "bytes": 8140,
+    "sha256": "18261cf679a0d7128d8a68af71838f0095333d8d4443c6c13fef64b855e33b78",
+    "rawStartOffset": 3853246,
+    "rawEndOffsetExclusive": 3861386,
+    "uniqueExactBeginAndEnd": true
+  },
+  "decodedEnvelope": {
+    "path": "DecodedEnvelope.json",
+    "bytes": 22974,
+    "sha256": "69e5f89dd2a5ff7c8f4e730c579c8c81045f219c7022bfe4e496e4a04af7106f"
+  },
+  "compressedEnvelope": {
+    "path": "CompressedEnvelope.gz",
+    "bytes": 5264,
+    "sha256": "41c172d015f82e9ef030bfb25777acf90f5761680b975be27fb1d32fc1679b46"
+  },
+  "transportMetadata": {
+    "path": "TransportMeta.json",
+    "bytes": 586,
+    "sha256": "4ab4745e312e4bbc1f8c2cae69814ad87ec139bbf1c8fb9073fbb5c4122aa7b3"
+  },
+  "meta": {
+    "schema": "soui.release-vm-gzip-serial/v1",
+    "tag": "R06OWNED022A294719B7426BB44DC7E906025C77",
+    "evidenceDirectory": "C:\\release06-control\\evidence\\generated-modern-x86-e0f7d1f4-9d25-4766-81de-0706b78494f5",
+    "files": 11,
+    "rawBytes": 17094,
+    "catalogSha256": "f92bfae7f86e0463878061a24f1cf2e936f56e31b1b5350b4eac3dcbb70f1515",
+    "envelopeBytes": 22974,
+    "envelopeSha256": "69e5f89dd2a5ff7c8f4e730c579c8c81045f219c7022bfe4e496e4a04af7106f",
+    "gzipBytes": 5264,
+    "gzipSha256": "41c172d015f82e9ef030bfb25777acf90f5761680b975be27fb1d32fc1679b46",
+    "chunkChars": 2048,
+    "chunks": 4,
+    "ioBudgetMs": 900000,
+    "testPassed": null
+  },
+  "strictJsonReader": {
+    "source": "C:/sr06/tools/internal/owned-tail-evidence.cjs",
+    "copy": "StrictJsonReader.source.cjs",
+    "sha256": "61bceb766ecdfae0552c26212b332c8d7dbd0c2f24833cf7d27d59932f2b23cd",
+    "duplicateFree": true
+  },
+  "rawFiles": [
+    {
+      "path": "ExportFiles.actual.json",
+      "guestPath": "C:\\release06-control\\evidence\\generated-modern-x86-e0f7d1f4-9d25-4766-81de-0706b78494f5\\ExportFiles.actual.json",
+      "bytes": 2634,
+      "sha256": "f92bfae7f86e0463878061a24f1cf2e936f56e31b1b5350b4eac3dcbb70f1515"
+    },
+    {
+      "path": "guest/release06-control/evidence/generated-modern-x86-e0f7d1f4-9d25-4766-81de-0706b78494f5/ApplicationLog.actual.json",
+      "guestPath": "C:\\release06-control\\evidence\\generated-modern-x86-e0f7d1f4-9d25-4766-81de-0706b78494f5\\ApplicationLog.actual.json",
+      "bytes": 1198,
+      "sha256": "dd4eed51cd4cba54c36803a3a43bf271aff05becf55a6a5c9d5f85b07dde96e3"
+    },
+    {
+      "path": "guest/release06-control/evidence/generated-modern-x86-e0f7d1f4-9d25-4766-81de-0706b78494f5/Inputs.actual.json",
+      "guestPath": "C:\\release06-control\\evidence\\generated-modern-x86-e0f7d1f4-9d25-4766-81de-0706b78494f5\\Inputs.actual.json",
+      "bytes": 2066,
+      "sha256": "7600f3e6da7c3b4da45bc3b44e709db5bbe9216d9c5da51c704f8d182c00922d"
+    },
+    {
+      "path": "guest/release06-control/evidence/generated-modern-x86-e0f7d1f4-9d25-4766-81de-0706b78494f5/Summary.actual.json",
+      "guestPath": "C:\\release06-control\\evidence\\generated-modern-x86-e0f7d1f4-9d25-4766-81de-0706b78494f5\\Summary.actual.json",
+      "bytes": 471,
+      "sha256": "de93acf62ea88da3c47447bfe2dc091e60b23c9317c569bba6e065abd3e96f05"
+    },
+    {
+      "path": "guest/release06-control/evidence/generated-modern-x86-e0f7d1f4-9d25-4766-81de-0706b78494f5/application-attempt-log.bin",
+      "guestPath": "C:\\release06-control\\evidence\\generated-modern-x86-e0f7d1f4-9d25-4766-81de-0706b78494f5\\application-attempt-log.bin",
+      "bytes": 129,
+      "sha256": "fe61fe6005cb22376e65f6c2326ea075678eff8a12d932aa049154362aa4be5a"
+    },
+    {
+      "path": "guest/release06-control/evidence/generated-modern-x86-e0f7d1f4-9d25-4766-81de-0706b78494f5/case-finished.json",
+      "guestPath": "C:\\release06-control\\evidence\\generated-modern-x86-e0f7d1f4-9d25-4766-81de-0706b78494f5\\case-finished.json",
+      "bytes": 989,
+      "sha256": "f1217de7a575b2348afd11c4077518a59d56f03a2e61bc87452afba75c1da765"
+    },
+    {
+      "path": "guest/release06-control/evidence/generated-modern-x86-e0f7d1f4-9d25-4766-81de-0706b78494f5/case-ready.json",
+      "guestPath": "C:\\release06-control\\evidence\\generated-modern-x86-e0f7d1f4-9d25-4766-81de-0706b78494f5\\case-ready.json",
+      "bytes": 62,
+      "sha256": "7cab0c9c4c72154b596e6dc73f85cc863b23c04eae31247a041644a2310791cc"
+    },
+    {
+      "path": "guest/release06-control/evidence/generated-modern-x86-e0f7d1f4-9d25-4766-81de-0706b78494f5/case-stderr.bin",
+      "guestPath": "C:\\release06-control\\evidence\\generated-modern-x86-e0f7d1f4-9d25-4766-81de-0706b78494f5\\case-stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "guest/release06-control/evidence/generated-modern-x86-e0f7d1f4-9d25-4766-81de-0706b78494f5/case-stdout.bin",
+      "guestPath": "C:\\release06-control\\evidence\\generated-modern-x86-e0f7d1f4-9d25-4766-81de-0706b78494f5\\case-stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "guest/release06-control/evidence/generated-modern-x86-e0f7d1f4-9d25-4766-81de-0706b78494f5/case.ndjson",
+      "guestPath": "C:\\release06-control\\evidence\\generated-modern-x86-e0f7d1f4-9d25-4766-81de-0706b78494f5\\case.ndjson",
+      "bytes": 9058,
+      "sha256": "a31bd678a8d563495891aa7ae9ea869a2b5be56600d3dc5c900992f74d1f292c"
+    },
+    {
+      "path": "guest/release06-control/evidence/generated-modern-x86-e0f7d1f4-9d25-4766-81de-0706b78494f5/case.ndjson.context.json",
+      "guestPath": "C:\\release06-control\\evidence\\generated-modern-x86-e0f7d1f4-9d25-4766-81de-0706b78494f5\\case.ndjson.context.json",
+      "bytes": 487,
+      "sha256": "c84c8ddd58ba62cdd3a9b2752600d96c232d8383a733e0557c105ebe303421e2"
+    }
+  ],
+  "allRawMatched": true,
+  "testPassed": null
+}

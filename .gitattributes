@@ -1,4 +1,6 @@
 * text=auto
+verification/production-validation/remaining-issues-2026-10-16/raw/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/current-link-members-2026-10-16/*.gz binary
 verification/production-validation/win7-v11-command-interrupted-2026-09-29/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
 verification/production-validation/win7-v11-native-resize-2026-09-29/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
 *.c text eol=lf
@@ -23,6 +25,7 @@ verification/production-validation/win7-v11-native-resize-2026-09-29/raw/** -tex
 
 # Acceptance history is an immutable snapshot, including original BOM/newlines.
 verification/history/** -text -eol
+verification/production-validation/issue-maintenance-2026-10-16/raw/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
 
 # Preserve captured legal-validation scripts, reports and logs exactly.
 verification/production-validation/license-runtime-notices-2026-09-28/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
@@ -325,6 +328,9 @@ third_party/patches/soui/0001-llvm-conformance.patch -text -eol whitespace=cr-at
 tests/fixtures/source-regressions/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
 
 third_party/patches/miniblink/0012-retained-resource-byte-budget.patch -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
+third_party/patches/miniblink/0013-bound-main-thread-scheduler-batches.patch -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
+third_party/patches/miniblink/0014-ready-task-wake-and-admission.patch -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
+third_party/patches/miniblink/0015-input-ui-lifecycle-and-legacy-deadline.patch -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
 verification/production-validation/0.5-kernel-cache-rebuild-2026-10-15/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
 verification/production-validation/0.5-focused-fixes-2026-10-15/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
 
@@ -374,3 +380,50 @@ verification/production-validation/0.5-release-fixes-2026-10-16/** -text -eol wh
 # Preserve post-upgrade build records and scoped release originals byte-for-byte.
 verification/production-validation/0.5-post-upgrade-rebuild-2026-10-16/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
 verification/production-validation/0.5-source30-release-2026-10-16/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+# Captured scheduler evidence binds raw bytes, including its build JSON and analyzer.
+verification/production-validation/input-latency-scheduling-2026-10-21/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/input-latency-scheduling-2026-10-21/README.md text eol=lf diff
+
+third_party/patches/miniblink/0016-input-ui-trace-foundation.patch -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+
+third_party/patches/miniblink/0017-input-ui-admission-cancel.patch -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+
+third_party/patches/miniblink/0018-input-ui-deadline-index.patch -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+
+third_party/patches/miniblink/0019-input-ui-frame-resource.patch -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+
+third_party/patches/miniblink/0020-input-ui-render-lifetime.patch -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+
+third_party/patches/miniblink/0021-input-ui-native-window-visibility.patch -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+
+third_party/patches/miniblink/0022-input-ui-window-message-identity.patch -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+
+third_party/patches/miniblink/0023-input-ui-native-causal-hooks.patch -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+
+verification/production-validation/pr-short-merge-2026-10-28/*.json -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/pr-short-merge-2026-10-28/raw/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+
+# Preserve the kernel bytes used by source gates and compiler provenance.
+third_party/sources/miniblink/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
+
+# Main-integrated performance patches retain exact upstream context bytes.
+third_party/patches/miniblink/0024-main-integrated-frame-presentation.patch -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
+third_party/patches/miniblink/0025-main-integrated-deadline-scheduling.patch -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
+
+# Preserve the externally pinned Chromium override's inherited end spaces.
+sdk/resources/devtools/miniblink/overrides/front_end/sdk/InspectorBackend.js whitespace=-blank-at-eol
+sdk/resources/devtools/miniblink/baseline/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab conflict-marker-size=32
+sdk/resources/devtools/miniblink/baseline-manifest.json -text -eol
+
+# PLY's pinned upstream README uses a seven-equals heading underline.
+third_party/sources/miniblink/third_party/ply/README conflict-marker-size=32
+
+# Preserve current release evidence, including captured script and JSON bytes.
+verification/production-validation/0.6.0-release-2026-10-29/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab conflict-marker-size=32
+verification/production-validation/0.6.0-source2-kernel-2026-10-29/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab conflict-marker-size=32
+
+# Preserve this closeout's original report bytes and captured build input files.
+verification/production-validation/production-tools-devtools-2026-10-29/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
+
+# Preserve the Windows tooling failure and short-verification raw bytes.
+verification/production-validation/windows-tooling-failure-closeout-2026-10-29/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab

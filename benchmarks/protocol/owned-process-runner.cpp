@@ -430,7 +430,9 @@ int run(const options& config) {
             reason = rootCode == 0 ? "completed" : "root-failed";
             break;
         }
-        if (rootExited && (rootCode != 0 || elapsed() - rootExitedAt >= config.drain)) {
+        // A failed root keeps its original failure, but its owned descendants
+        // receive the same bounded drain before forced Job cleanup.
+        if (rootExited && elapsed() - rootExitedAt >= config.drain) {
             reason = rootCode == 0 ? "owned-descendants-remain" : "root-failed";
             break;
         }

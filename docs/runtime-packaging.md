@@ -57,7 +57,7 @@ powershell.exe -File tools/Package-Applications.ps1 -Architecture x64 -Bundle
 
 Bundle 生成 SouiApplications-<版本>-windows-<架构>-<档位>.bundle.zip。
 已有实际构建和启动证据要求继续执行；各应用的体积预算也仍在打包前检查。
--Profile modern 同样支持 Bundle，但 WebView2 Runtime 的准备方式不变。
+-Profile modern 与 -Profile auto 同样支持 Bundle，但 WebView2 Runtime 的准备方式不变。
 应用和 Bundle 均可使用[可选压缩档位](compression-profiles.md)；省略
 -CompressionProfile 时继续生成原 ZIP。
 

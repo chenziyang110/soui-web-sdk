@@ -294,6 +294,7 @@ LayerChangeActionBlend::LayerChangeActionBlend(int actionId, int layerId, TileAc
     , m_dirtyRect(dirtyRect)
     , m_dirtyRectBitmap(nullptr)
     , m_contentScale(1)
+    , m_cancelledBeforeRaster(false)
 {
 //     String outString = String::format("LayerChangeActionBlend: %d %d, %d %d\n", dirtyRect.x(), dirtyRect.y(), dirtyRect.width(), dirtyRect.height());
 //     OutputDebugStringW(outString.charactersWithNullTermination().data());
@@ -325,6 +326,10 @@ void LayerChangeActionBlend::appendPendingInvalidateRects(const WTF::Vector<SkRe
 
 void LayerChangeActionBlend::run(LayerTreeHost* host)
 {
+    if (m_cancelledBeforeRaster) {
+        host->onRasterActionCancelled(actionId());
+        return; // Receipt closes the action gap; it is not a ready resource.
+    }
     CompositingLayer* layer = host->getCCLayerById(m_layerId);
     CHECK_LAYER_EMPTY(layer);
 

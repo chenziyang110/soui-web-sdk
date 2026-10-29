@@ -1,0 +1,201 @@
+{
+  "schema": "soui.release.source2-kernel-observation/v1",
+  "architecture": "x86",
+  "driverInputs": {
+    "path": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\kernel-prep\\revision-3\\DriverInputs.json",
+    "bytes": 4096,
+    "sha256": "d985280d5c1113d021d1cf6f28ffde5a4ead1fe6ed85a2eb8a11a574f43265da"
+  },
+  "preparedInputs": {
+    "path": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\kernel-prep\\revision-3\\Prepared-x86.json",
+    "bytes": 1972192,
+    "sha256": "e3a2bd23eb0771c24863062825b6af0f5be34d9141fa5c0a92dbae2aea06e524"
+  },
+  "sourceIdentity": "26c5b73e4915bb4539e87b987cd8e952005f0fe41d987138d8d8e3b13eb25c95",
+  "wholeJobNatural": true,
+  "result": {
+    "pid": 76676,
+    "creationFileTime": "134376780741936951",
+    "exitCode": 0,
+    "supervisorExitCode": 0,
+    "signal": null,
+    "spawnError": null,
+    "reportError": null,
+    "stopRequested": false,
+    "fallbackUsed": false,
+    "closureConfirmed": true,
+    "passed": true,
+    "terminal": {
+      "event": "terminal",
+      "reason": "completed",
+      "elapsedMs": 3781741,
+      "rootExited": true,
+      "rootExitCode": 0,
+      "activeBeforeCleanup": 0,
+      "terminatedOwnedJob": false,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "totalProcesses": 3072,
+      "limitTerminatedProcesses": 0,
+      "passed": true
+    },
+    "report": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\kernel-prep\\revision-3\\execution-x86\\kernel.ndjson",
+    "reportSha256": "b3d11f1b97dd8f3bc218b61f26aa01581d8c1877026be6fa0bbf1982937da784",
+    "runnerSha256": "24794a81659b621a9e488beda2c983be6f4939de59c781bc8062e8fc8ea13478",
+    "executableSha256": "362a356ce7f0940ec74f73a8fc2c990a2cc24a38a11c90bbd8eca947110ad139"
+  },
+  "dll": {
+    "path": "C:\\sr06\\out\\release-kernel-x86-3\\miniblink\\bin\\node.dll",
+    "bytes": 28318208,
+    "sha256": "dc8c37178f4bbd9260edc973d61af876cf8460178eaf89fa2994fdffc94abc9a"
+  },
+  "map": {
+    "path": "C:\\sr06\\out\\release-kernel-x86-3\\miniblink\\bin\\node.map",
+    "bytes": 49159759,
+    "sha256": "361a9b2a784bc3bbf55c18dd39421efcc513b1ea1a0dfdd614264241b7e4114d"
+  },
+  "importLibrary": {
+    "path": "C:\\sr06\\out\\release-kernel-x86-3\\miniblink\\bin\\node.lib",
+    "bytes": 4757974,
+    "sha256": "e4547a8cfa3cc72dc4c0c961b9111f1450350f249a4560d806b514238f201bb6"
+  },
+  "staticPE": {
+    "machine": 332,
+    "exportCount": 9875,
+    "required": [
+      "wkeStage0GetDevToolsApi",
+      "wkeGetLocalResourceApi",
+      "wkeGetCursorBrokerApi",
+      "wkeGetViewDiagnosticsApi",
+      "wkeGetRendererDiagnosticsApi",
+      "wkeGetRendererModelDiagnosticsApi",
+      "wkeGetInteractionApi",
+      "wkeGetCacheDiagnosticsApi",
+      "wkeGetInputUiApi"
+    ],
+    "requiredPresent": true,
+    "imageExecuted": false
+  },
+  "tlogs": [
+    {
+      "path": "C:\\sr06\\out\\release-kernel-x86-3\\miniblink\\obj\\miniblink.tlog\\clang-cl.command.1.tlog",
+      "bytes": 18098186,
+      "sha256": "26f73bb8756a70180c3080d971b6b6cf1d604b04b92fa4a3343cec5fb0f27d61"
+    },
+    {
+      "path": "C:\\sr06\\out\\release-kernel-x86-3\\miniblink\\obj\\miniblink.tlog\\clang-cl.read.1.tlog",
+      "bytes": 366447362,
+      "sha256": "e891f530d04a24513b0746a88a3c43666b4a98811da232ba045f048cb51a0d0c"
+    },
+    {
+      "path": "C:\\sr06\\out\\release-kernel-x86-3\\miniblink\\obj\\miniblink.tlog\\clang-cl.write.1.tlog",
+      "bytes": 977148,
+      "sha256": "865bdc2aa9f99f47a73d6323e06730f8a01801fbad2c5c4da94a727021325c90"
+    },
+    {
+      "path": "C:\\sr06\\out\\release-kernel-x86-3\\miniblink\\obj\\miniblink.tlog\\lld-link.command.1.tlog",
+      "bytes": 841464,
+      "sha256": "4a544bf0fe68fac0e923200bb0cd600274302816b4bdab55f1338ac422c8ee0c"
+    },
+    {
+      "path": "C:\\sr06\\out\\release-kernel-x86-3\\miniblink\\obj\\miniblink.tlog\\lld-link.read.1.tlog",
+      "bytes": 834226,
+      "sha256": "aaffdfebbd7d61519d2a121c1f70af210bd0c5751d64b2b41e7b95b89129eb24"
+    },
+    {
+      "path": "C:\\sr06\\out\\release-kernel-x86-3\\miniblink\\obj\\miniblink.tlog\\lld-link.write.1.tlog",
+      "bytes": 410284,
+      "sha256": "c12e2f71be1941ca415dfd0fe55c9e776129b9581bdde3e335b717d2f6ec486f"
+    },
+    {
+      "path": "C:\\sr06\\out\\release-kernel-x86-3\\miniblink\\obj\\miniblink.tlog\\rc.command.1.tlog",
+      "bytes": 492,
+      "sha256": "e60acb671e63f0252476b1a25d05296ffbf7cb91dddb2bd0651114a44879656c"
+    },
+    {
+      "path": "C:\\sr06\\out\\release-kernel-x86-3\\miniblink\\obj\\miniblink.tlog\\rc.read.1.tlog",
+      "bytes": 2998,
+      "sha256": "22939496c6b0b4344de6473e260b27d2d295aa2d3cd847cd1f2f3f7a73fad8e4"
+    },
+    {
+      "path": "C:\\sr06\\out\\release-kernel-x86-3\\miniblink\\obj\\miniblink.tlog\\rc.write.1.tlog",
+      "bytes": 264,
+      "sha256": "b77d659211c2a5f0adbb4b3edde10f7c577f2c5d18136cff95df0c25d43b286e"
+    }
+  ],
+  "captureFiles": [
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\kernel-prep\\revision-3\\execution-x86\\kernel-finished.json",
+      "bytes": 995,
+      "sha256": "73bcb89c97771a5c59f63de337d1b9084b69f5f723fde626241739738ca78b7a"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\kernel-prep\\revision-3\\execution-x86\\kernel-ready.json",
+      "bytes": 63,
+      "sha256": "1b957ad3474a052063e32118182e64b3f6fc907c17e5c20a0a793fe1ab3538c7"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\kernel-prep\\revision-3\\execution-x86\\kernel-stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\kernel-prep\\revision-3\\execution-x86\\kernel-stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\kernel-prep\\revision-3\\execution-x86\\kernel.ndjson",
+      "bytes": 4631136,
+      "sha256": "b3d11f1b97dd8f3bc218b61f26aa01581d8c1877026be6fa0bbf1982937da784"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\kernel-prep\\revision-3\\execution-x86\\kernel.ndjson.context.json",
+      "bytes": 730,
+      "sha256": "9a98e2d1cfd43f3fb8de9a70ecc3e68f48bbae606695a78eeac8fd42c073ded7"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\kernel-prep\\revision-3\\execution-x86\\launch.json",
+      "bytes": 738,
+      "sha256": "883af11a24a724c8914ca5fba3fb12de513e50b69bf19dfb439688042727e3d5"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\kernel-prep\\revision-3\\execution-x86\\preflight-result.json",
+      "bytes": 38,
+      "sha256": "ad017ca0f5a4038b2d278cad4197f1caa073dd75666b8973e75d1e51cc739653"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\kernel-prep\\revision-3\\execution-x86\\preflight.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\kernel-prep\\revision-3\\execution-x86\\preflight.stdout.bin",
+      "bytes": 126,
+      "sha256": "680a1be0026fbdc7af9b5d86aeba4eced5c8ca88d05f6ea82b9f17c5f72e817d"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\kernel-prep\\revision-3\\execution-x86\\root-result.json",
+      "bytes": 995,
+      "sha256": "73bcb89c97771a5c59f63de337d1b9084b69f5f723fde626241739738ca78b7a"
+    }
+  ],
+  "buildResult": {
+    "path": "C:\\sr06\\out\\release-kernel-x86-3\\build-result.json",
+    "bytes": 7447,
+    "sha256": "a0998a19b31ccaf406d3efa57c5663ebeb6b6d726c15091c2efa43726052c634"
+  },
+  "historicalP9MainObjectsOrPchReused": false,
+  "explicitIncrementalFromRun2": false,
+  "admittedFreshRun2Objects": 0,
+  "admittedFreshRun2Pch": false,
+  "admittedObjectChanges": [],
+  "librariesReused": 11,
+  "librarySourceRawClosureEqual": true,
+  "actualCompilerSourceRoot": "C:/sr06/third_party/sources/miniblink",
+  "actualInstalledGdiPlusHeaderObserved": true,
+  "dllLoaded": false,
+  "productExecuted": false,
+  "testsExecuted": false,
+  "releaseReady": false
+}

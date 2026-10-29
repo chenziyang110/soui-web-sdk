@@ -10,13 +10,16 @@ const sdk = require('../../tools/sdk/soui-sdk.cjs');
 const identity = require('../../tools/internal/delivery-identity.cjs');
 const version = '0.5.0-preview.1';
 const previousPeerRange = '>=0.4.0-0 <0.5.0 || >=0.5.0-0 <0.6.0';
-const currentPeerRange = previousPeerRange + ' || 0.6.0-preview.1';
+const mitPeerRange = '>=0.4.0-0 <0.5.0 || >=0.5.0-0 <0.5.1 || >=0.5.1-0 <0.6.0';
+const mainPreviewPeerRange = mitPeerRange + ' || 0.6.0-preview.3';
+const currentPeerRange = mainPreviewPeerRange + ' || 0.6.0';
+const knownPreviews = Array.from({length: 9}, (_, index) => '0.6.0-preview.' + (index + 1));
 const repository = path.resolve(__dirname, '../..');
-
-test('canonical GUI metadata matches the current repository SDK version', () => {
-  const repositoryVersion = fs.readFileSync(path.join(repository, 'VERSION'), 'utf8').trim();
-  assert.equal(gui.metadata(repository), repositoryVersion);
+test('repository GUI metadata accepts the actual VERSION and lock files', () => {
+  const current = fs.readFileSync(path.join(repository, 'VERSION'), 'utf8').trim();
+  assert.equal(gui.metadata(repository), current);
 });
+
 function fixture(t, targetVersion = version, nativePeerRange = currentPeerRange) {
   const version = targetVersion;
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'soui-optional-gui-'));
@@ -126,9 +129,8 @@ test('previous preview optional GUI reads, installs and downgrades with its fixe
   assert.equal(fs.existsSync(path.join(project, 'tools/internal/sdk-version.cjs')), false);
   assert.equal(fs.readFileSync(path.join(project, 'app/business.txt'), 'utf8'), 'business-owned\n');
 });
-for (const candidate of ['0.6.0-preview.1', '0.6.0-preview.2', '0.6.0-preview.3', '0.6.0-preview.4', '0.6.0-preview.5'])
-test(candidate + ' delivers its own exact peer and rejects the previous declaration', t => {
-  const expectedPeer = previousPeerRange + ' || ' + candidate, f = fixture(t, candidate, expectedPeer);
+test('stable release delivers the exact new peer and rejects the previous declaration', t => {
+  const candidate = '0.6.0', f = fixture(t, candidate);
   const packed = path.join(f.root, 'candidate'), installed = path.join(f.root, 'installed');
   sdk.pack(f.source, packed, candidate, {withGuiBindings: true});
   sdk.install(packed, installed);
@@ -136,7 +138,7 @@ test(candidate + ' delivers its own exact peer and rejects the previous declarat
   for (const framework of ['react', 'vue']) {
     const name = `sdk/bindings/${framework}/package.json`;
     const delivered = JSON.parse(fs.readFileSync(path.join(installed, name)));
-    assert.equal(delivered.peerDependencies['@soui/native-sdk'], expectedPeer);
+    assert.equal(delivered.peerDependencies['@soui/native-sdk'], currentPeerRange);
   }
   const name = 'sdk/bindings/react/package.json';
   const metadata = JSON.parse(fs.readFileSync(path.join(f.source, name)));
@@ -144,66 +146,98 @@ test(candidate + ' delivers its own exact peer and rejects the previous declarat
   f.write(name, identity.encoded(metadata));
   assert.throws(() => gui.metadata(f.source), /borrow the exact local SDK/);
 });
-test('GUI peer declarations admit only identities covered by their range', t => {
-  for (const peer of [previousPeerRange, currentPeerRange]) {
-    for (const target of ['0.4.0-preview.1', '0.4.0-rc.1', '0.4.2', '0.5.0-preview.1', '0.5.0-rc.1', '0.5.3']) {
+test('MIT preview GUI upgrades to the current candidate and downgrades without rewriting its peer', t => {
+  const old = fixture(t, '0.5.1-preview.1', mitPeerRange);
+  const oldPackage = path.join(old.root, 'mit-preview'), project = path.join(old.root, 'project');
+  sdk.pack(old.source, oldPackage, '0.5.1-preview.1', {withGuiBindings: true});
+  sdk.install(oldPackage, project);
+  const original = gui.verify(project);
+  const next = fixture(t, '0.6.0'), nextPackage = path.join(next.root, 'candidate');
+  sdk.pack(next.source, nextPackage, '0.6.0', {withGuiBindings: true});
+  sdk.install(nextPackage, project);
+  assert.equal(gui.verify(project).sdkVersion, '0.6.0');
+  sdk.install(oldPackage, project);
+  assert.deepEqual(gui.verify(project), original);
+  for (const framework of ['react', 'vue']) {
+    const name = `sdk/bindings/${framework}/package.json`;
+    assert.equal(JSON.parse(fs.readFileSync(path.join(project, name))).peerDependencies['@soui/native-sdk'], mitPeerRange);
+    assert.deepEqual(fs.readFileSync(path.join(project, name)), fs.readFileSync(path.join(old.source, name)));
+  }
+});
+test('GUI peer declarations preserve legacy, MIT and exact stable contracts', t => {
+  for (const peer of [previousPeerRange, mitPeerRange, mainPreviewPeerRange, currentPeerRange]) {
+    for (const target of ['0.4.0-preview.1', '0.4.0-rc.1', '0.4.2', '0.5.0-preview.1', '0.5.0-rc.1', '0.5.3'])
+      assert.equal(gui.metadata(fixture(t, target, peer).source), target);
+    for (const target of ['0.4.1-preview.1', '0.5.2-preview.1', '0.6.0-preview.2', '0.6.0-rc.1', '0.6.1'])
+      assert.throws(() => gui.metadata(fixture(t, target, peer).source), /borrow the exact local SDK/);
+    for (const target of ['0.5.1-preview.1', '0.5.1-rc.1']) {
       const f = fixture(t, target, peer);
-      assert.equal(gui.metadata(f.source), target);
+      if (peer === previousPeerRange) assert.throws(() => gui.metadata(f.source), /borrow the exact local SDK/);
+      else assert.equal(gui.metadata(f.source), target);
     }
-    for (const target of ['0.4.1-preview.1', '0.5.1-preview.1', '0.6.0-preview.2', '0.6.0-preview.3', '0.6.0-preview.4', '0.6.0-preview.5', '0.6.0-rc.1', '0.6.0']) {
-      const f = fixture(t, target, peer);
+  }
+  assert.equal(gui.metadata(fixture(t, '0.6.0', currentPeerRange).source), '0.6.0');
+  for (const peer of [previousPeerRange, mitPeerRange, mainPreviewPeerRange])
+    assert.throws(() => gui.metadata(fixture(t, '0.6.0', peer).source), /borrow the exact local SDK/);
+  assert.equal(gui.metadata(fixture(t, '0.6.0-preview.3', mainPreviewPeerRange).source), '0.6.0-preview.3');
+});
+
+test('each p9-lineage preview retains only its own exact declaration', t => {
+  for (const [index, candidate] of knownPreviews.entries()) {
+    const expected = previousPeerRange + ' || ' + candidate;
+    assert.equal(gui.metadata(fixture(t, candidate, expected).source), candidate);
+    for (const peer of [previousPeerRange + ' || ' + knownPreviews[(index + 1) % knownPreviews.length], '*', '>=0.6.0-0 <0.7.0'])
+      assert.throws(() => gui.metadata(fixture(t, candidate, peer).source), /borrow the exact local SDK/);
+  }
+  for (const candidate of ['0.6.0-preview.999', '0.6.0-rc.1'])
+    assert.throws(() => gui.metadata(fixture(t, candidate, previousPeerRange + ' || ' + candidate).source), /borrow the exact local SDK/);
+});
+
+test('the p9 package reads, installs and rolls back with its original peer bytes', t => {
+  const old = fixture(t, '0.6.0-preview.9', previousPeerRange + ' || 0.6.0-preview.9');
+  const packed = path.join(old.root, 'p9'), project = path.join(old.root, 'project');
+  sdk.pack(old.source, packed, '0.6.0-preview.9', {withGuiBindings: true});
+  const original = sdk.readPackage(packed).optionalGuiBindings;
+  sdk.install(packed, project);
+  const next = fixture(t, '0.6.0'), released = path.join(next.root, 'stable');
+  sdk.pack(next.source, released, '0.6.0', {withGuiBindings: true});
+  sdk.install(released, project);
+  assert.equal(gui.verify(project).sdkVersion, '0.6.0');
+  sdk.install(packed, project);
+  assert.deepEqual(gui.verify(project), original);
+  for (const framework of ['react', 'vue']) {
+    const name = 'sdk/bindings/' + framework + '/package.json';
+    assert.deepEqual(fs.readFileSync(path.join(project, name)), fs.readFileSync(path.join(old.source, name)));
+  }
+});
+
+test('stable and strict previews require exact root lock peers and local SDK versions', t => {
+  for (const candidate of ['0.6.0', '0.6.0-preview.3', '0.6.0-preview.9']) {
+    const peer = candidate === '0.6.0' ? currentPeerRange : previousPeerRange + ' || ' + candidate;
+    for (const framework of ['react', 'vue']) for (const mutate of [
+      lock => { lock.packages[''].peerDependencies['@soui/native-sdk'] = '*'; },
+      lock => { lock.packages[''].peerDependencies[framework] = 'different-framework-peer'; },
+      lock => { delete lock.packages[''].peerDependencies; },
+      lock => { lock.packages['node_modules/@soui/native-sdk'].version = '0.6.0-preview.2'; }
+    ]) {
+      const f = fixture(t, candidate, peer), name = 'sdk/bindings/' + framework + '/package-lock.json';
+      const lock = JSON.parse(fs.readFileSync(path.join(f.source, name)));
+      mutate(lock); f.write(name, identity.encoded(lock));
       assert.throws(() => gui.metadata(f.source), /borrow the exact local SDK/);
     }
   }
-  const current = fixture(t, '0.6.0-preview.1', currentPeerRange);
-  assert.equal(gui.metadata(current.source), '0.6.0-preview.1');
-  const prior = fixture(t, '0.6.0-preview.1', previousPeerRange);
-  assert.throws(() => gui.metadata(prior.source), /borrow the exact local SDK/);
 });
 
-test('known 0.6 previews reject another preview peer, broad peers and unknown preview identities', t => {
-  const known = ['0.6.0-preview.1', '0.6.0-preview.2', '0.6.0-preview.3', '0.6.0-preview.4', '0.6.0-preview.5'];
-  for (const candidate of known) {
-    for (const other of known.filter(value => value !== candidate)) {
-      const f = fixture(t, candidate, previousPeerRange + ' || ' + other);
-      assert.throws(() => gui.metadata(f.source), /borrow the exact local SDK/);
-    }
-  }
-  for (const candidate of ['0.6.0-preview.3', '0.6.0-preview.4', '0.6.0-preview.5'])
-  for (const peer of ['*', '>=0.6.0-0 <0.7.0', previousPeerRange + ' || ' + known.join(' || ')]) {
-    const f = fixture(t, candidate, peer);
-    assert.throws(() => gui.metadata(f.source), /borrow the exact local SDK/);
-  }
-  for (const unsupported of ['0.6.0-preview.999', '0.6.0-rc.1', '0.6.0']) {
-    const f = fixture(t, unsupported, previousPeerRange + ' || ' + unsupported);
-    assert.throws(() => gui.metadata(f.source), /borrow the exact local SDK/);
-  }
-});
-
-for (const candidate of ['0.6.0-preview.3', '0.6.0-preview.4', '0.6.0-preview.5'])
-test(candidate + ' requires matching local SDK lock versions and exact root lock peers', t => {
-  const expectedPeer = previousPeerRange + ' || ' + candidate;
-  for (const framework of ['react', 'vue']) for (const mutate of [
-    lock => { lock.packages[''].peerDependencies['@soui/native-sdk'] = currentPeerRange; },
-    lock => { lock.packages[''].peerDependencies['@soui/native-sdk'] = '*'; },
-    lock => { lock.packages[''].peerDependencies[framework] = 'different-framework-peer'; },
-    lock => { delete lock.packages[''].peerDependencies; },
-    lock => { lock.packages['node_modules/@soui/native-sdk'].version = '0.6.0-preview.2'; },
+test('historical producers keep their original minimal lock shapes', t => {
+  for (const [candidate, peer] of [
+    ['0.5.0', previousPeerRange], ['0.5.1-preview.1', mitPeerRange],
+    ['0.6.0-preview.1', previousPeerRange + ' || 0.6.0-preview.1'],
+    ['0.6.0-preview.2', previousPeerRange + ' || 0.6.0-preview.2'],
+    ['0.6.0-preview.3', mainPreviewPeerRange]
   ]) {
-    const f = fixture(t, candidate, expectedPeer), name = `sdk/bindings/${framework}/package-lock.json`;
-    const lock = JSON.parse(fs.readFileSync(path.join(f.source, name)));
-    mutate(lock); f.write(name, identity.encoded(lock));
-    assert.throws(() => gui.metadata(f.source), /borrow the exact local SDK/);
-  }
-});
-
-test('previous known producers retain their minimal lock compatibility', t => {
-  for (const candidate of ['0.4.0-preview.1', '0.5.0-rc.1', '0.5.0', '0.6.0-preview.1', '0.6.0-preview.2']) {
-    const peer = candidate.startsWith('0.6.') ? previousPeerRange + ' || ' + candidate : previousPeerRange;
     const f = fixture(t, candidate, peer);
     for (const framework of ['react', 'vue']) {
-      const name = `sdk/bindings/${framework}/package-lock.json`;
-      const lock = JSON.parse(fs.readFileSync(path.join(f.source, name)));
+      const name = 'sdk/bindings/' + framework + '/package-lock.json', lock = JSON.parse(fs.readFileSync(path.join(f.source, name)));
       delete lock.packages[''].peerDependencies; f.write(name, identity.encoded(lock));
     }
     assert.equal(gui.metadata(f.source), candidate);
@@ -280,12 +314,12 @@ test('an installed historical declaration cannot bypass new GUI packaging input 
   assert.throws(() => sdk.pack(project, output, version, {withGuiBindings: true}), /Historical GUI source identity/);
   assert.equal(fs.existsSync(output), false);
 });
-for (const targetVersion of ['0.5.0-rc.1', '0.5.0']) test('optional GUI delivery preserves exact ' + targetVersion + ' identity', t => {
+for (const targetVersion of ['0.5.0-rc.1', '0.5.0', '0.5.1-preview.1']) test('optional GUI delivery preserves exact ' + targetVersion + ' identity', t => {
   const f = fixture(t, targetVersion), packed = path.join(f.root, 'packed'), installed = path.join(f.root, 'installed');
   sdk.pack(f.source, packed, targetVersion, {withGuiBindings: true});
   const manifest = sdk.readPackage(packed);
   assert.equal(manifest.version, targetVersion);
-  assert.equal(manifest.channel, targetVersion.includes('-rc.') ? 'rc' : 'stable');
+  assert.equal(manifest.channel, targetVersion.includes('-rc.') ? 'rc' : targetVersion.includes('-preview.') ? 'preview' : 'stable');
   assert.equal(manifest.releaseReady, false);
   assert.equal(manifest.optionalGuiBindings.sdkVersion, targetVersion);
   sdk.install(packed, installed);
@@ -391,66 +425,4 @@ test('a source-only fixed SDK allows unmanaged dist but still checks every manag
   f.record(installed);
   assert.throws(() => sdk.readLock(installed), /modified/);
   assert.throws(() => gui.verify(installed), /modified/, 'A build record must not bypass other managed SDK files');
-});
-
-for (const preview of [6, 7, 8, 9]) {
-  const candidate = '0.6.0-preview.' + preview, expectedPeer = previousPeerRange + ' || ' + candidate;
-  const previousCandidate = '0.6.0-preview.' + (preview - 1);
-  test(candidate + ' delivers its own exact peer and rejects previous declarations', t => {
-    const f = fixture(t, candidate, expectedPeer), packed = path.join(f.root, 'candidate'), installed = path.join(f.root, 'installed');
-    sdk.pack(f.source, packed, candidate, {withGuiBindings: true});
-    sdk.install(packed, installed);
-    assert.equal(gui.verify(installed).sdkVersion, candidate);
-    for (const framework of ['react', 'vue']) {
-      const meta = JSON.parse(fs.readFileSync(path.join(installed, `sdk/bindings/${framework}/package.json`)));
-      assert.equal(meta.peerDependencies['@soui/native-sdk'], expectedPeer);
-    }
-    for (const prior of [previousPeerRange, ...Array.from({length: preview - 1}, (_, index) =>
-      previousPeerRange + ' || 0.6.0-preview.' + (index + 1))]) {
-      const other = fixture(t, candidate, prior);
-      assert.throws(() => gui.metadata(other.source), /borrow the exact local SDK/);
-    }
-  });
-
-  test(candidate + ' requires matching local SDK lock versions and exact root lock peers', t => {
-    for (const framework of ['react', 'vue']) for (const mutate of [
-      lock => { lock.packages[''].peerDependencies['@soui/native-sdk'] = previousPeerRange + ' || ' + previousCandidate; },
-      lock => { lock.packages[''].peerDependencies['@soui/native-sdk'] = '*'; },
-      lock => { lock.packages[''].peerDependencies[framework] = 'different-framework-peer'; },
-      lock => { delete lock.packages[''].peerDependencies; },
-      lock => { lock.packages['node_modules/@soui/native-sdk'].version = previousCandidate; },
-      lock => { delete lock.packages[''].peerDependencies['@soui/native-sdk']; },
-      lock => { delete lock.packages[''].peerDependencies[framework]; },
-    ]) {
-      const f = fixture(t, candidate, expectedPeer), name = `sdk/bindings/${framework}/package-lock.json`;
-      const lock = JSON.parse(fs.readFileSync(path.join(f.source, name)));
-      mutate(lock); f.write(name, identity.encoded(lock));
-      assert.throws(() => gui.metadata(f.source), /borrow the exact local SDK/);
-    }
-    for (const framework of ['react', 'vue']) for (const mutate of [
-      lock => { lock.version = previousCandidate; },
-      lock => { lock.packages[''].version = previousCandidate; },
-    ]) {
-      const f = fixture(t, candidate, expectedPeer), name = `sdk/bindings/${framework}/package-lock.json`;
-      const lock = JSON.parse(fs.readFileSync(path.join(f.source, name)));
-      mutate(lock); f.write(name, identity.encoded(lock));
-      assert.throws(() => gui.metadata(f.source), /identity\/imports differ/);
-    }
-  });
-
-  test(candidate + ' known producer rejects broad peers and crossed producers', t => {
-    for (const peer of ['*', '>=0.6.0-0 <0.7.0', previousPeerRange + ' || ' + previousCandidate + ' || ' + candidate]) {
-      const f = fixture(t, candidate, peer);
-      assert.throws(() => gui.metadata(f.source), /borrow the exact local SDK/);
-    }
-    for (const other of [previousCandidate, '0.6.0-preview.' + (preview + 1)]) {
-      const f = fixture(t, other, expectedPeer);
-      assert.throws(() => gui.metadata(f.source), /borrow the exact local SDK/);
-    }
-  });
-}
-
-test('unknown 0.6.0-preview.10 cannot authorize its own exact peer', t => {
-  const unknown = fixture(t, '0.6.0-preview.10', previousPeerRange + ' || 0.6.0-preview.10');
-  assert.throws(() => gui.metadata(unknown.source), /borrow the exact local SDK/);
 });

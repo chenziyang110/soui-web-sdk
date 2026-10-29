@@ -8,15 +8,20 @@ param([switch]$FreshConfigure,
 $ErrorActionPreference='Stop'
 $workspace=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
 . (Join-Path $PSScriptRoot 'CMake-Configure.ps1')
+. (Join-Path $PSScriptRoot 'Msvc-CompilerLifecycle.ps1')
 $cmake=(Get-Command cmake.exe -ErrorAction Stop).Source
 $validationSource=Join-Path $workspace 'benchmarks/protocol'
 $validationBuild=Join-Path $workspace $(if($Architecture -eq 'x64'){'out/benchmark-protocol'}else{'out/benchmark-protocol-x86'})
 $measurement=Join-Path $workspace 'tools/internal/measurement-validation.cjs'
 $profileHelper=Join-Path $workspace 'tools/internal/llvm-profile-inputs.cjs'
-$llvm=$null;$profileArgs=@();$llvmEnvironment=@{}
+$llvm=$null;$profileArgs=@();$buildEnvironment=@{}
+$nodeReusePrevious=Get-Item -LiteralPath 'Env:MSBUILDDISABLENODEREUSE' -ErrorAction SilentlyContinue
+$buildEnvironment['MSBUILDDISABLENODEREUSE']=@{present=($null-ne$nodeReusePrevious);value=if($null-ne$nodeReusePrevious){[string]$nodeReusePrevious.Value}else{$null}}
 $externalPaths=@($LlvmRoot,$MsvcRoot,$WindowsSdkRoot,$NinjaExe,$WindowsCmdExe,$PowerShellExe)
 if($NativeToolchain -eq 'MSVC143'){
   if(@($externalPaths|Where-Object{$_}).Count-or$ToolchainRequest){throw 'LLVM inputs require explicit NativeToolchain LLVM22MSVC142.'}
+  . (Join-Path $PSScriptRoot 'Find-Toolchain.ps1')
+  $toolchain=Get-SouiToolchain
 }else{
   if(@($externalPaths|Where-Object{[string]::IsNullOrWhiteSpace($_)}).Count){throw 'LLVM measurement preparation requires all six explicit tool paths.'}
   . (Join-Path $PSScriptRoot 'Find-LlvmToolchain.ps1')
@@ -29,15 +34,20 @@ $llvmRemove=@('NODE_OPTIONS','NODE_PATH','NODE_REPL_EXTERNAL_MODULE','GIT_DIR','
   'LIBRARY_PATH','CCC_OVERRIDE_OPTIONS','CLANG_CONFIG_FILE_USER_DIR','CLANG_CONFIG_FILE_SYSTEM_DIR',
   'CMAKE_GENERATOR','CMAKE_GENERATOR_PLATFORM','CMAKE_GENERATOR_TOOLSET','CC','CXX','AR','RC','CFLAGS','CXXFLAGS','LDFLAGS',
   'DESTDIR','NINJA_STATUS','RCFLAGS','EXTERNAL_INCLUDE','CMAKE_BUILD_TYPE','CMAKE_TOOLCHAIN_FILE','CMAKE_PREFIX_PATH')
-if($llvm){foreach($name in @($llvmRemove)+@('ComSpec','VcpkgEnabled','VcpkgEnableManifest','MSBUILDDISABLENODEREUSE')){
+if($llvm){foreach($name in @($llvmRemove)+@('ComSpec','VcpkgEnabled','VcpkgEnableManifest')){
   $item=Get-Item -LiteralPath ('Env:'+$name) -ErrorAction SilentlyContinue
-  $llvmEnvironment[$name]=@{present=($null-ne$item);value=if($null-ne$item){[string]$item.Value}else{$null}}
+  $buildEnvironment[$name]=@{present=($null-ne$item);value=if($null-ne$item){[string]$item.Value}else{$null}}
 }}
+$compilerPhase=$null
+$primaryBuildFailure=$null
 try{
+  # Configuration also launches toolchain checks; do not leave their MSBuild
+  # nodes reusable when this script is called outside the standard observer.
+  $env:MSBUILDDISABLENODEREUSE='1'
   if($llvm){
     foreach($name in $llvmRemove){Remove-Item -LiteralPath ('Env:'+$name) -ErrorAction SilentlyContinue;if(Test-Path -LiteralPath ('Env:'+$name)){throw "Could not clear measurement provider: $name"}}
     $env:ComSpec=$llvm.NativeProcessPaths.CMD
-    $env:VcpkgEnabled='false';$env:VcpkgEnableManifest='false';$env:MSBUILDDISABLENODEREUSE='1'
+    $env:VcpkgEnabled='false';$env:VcpkgEnableManifest='false'
     New-Item -ItemType Directory -Force -Path $validationBuild | Out-Null
     $requestPath=Join-Path $validationBuild 'llvm-profile-request-Release.json'
     $toolchainPath=Join-Path $workspace 'cmake/toolchains/SouiLLVM22.cmake'
@@ -75,17 +85,26 @@ try{
     -NativeToolchain $NativeToolchain -LlvmToolchain $llvm)
   if($llvm){$arguments+='-DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=ON'}
   New-Item -ItemType Directory -Force -Path $validationBuild | Out-Null
+  if(-not$llvm){
+    $arguments+=('-DCMAKE_GENERATOR_INSTANCE:PATH='+$toolchain.Root)
+    $compilerPhase=Start-SouiMsvcCompilerPhase -Toolchain $toolchain -Architecture $Architecture -EvidenceRoot $validationBuild -Phase configure
+  }
   & $cmake @arguments *> (Join-Path $validationBuild 'configure.log')
-  if($LASTEXITCODE -ne 0){throw "Validation tools configure failed: $validationBuild/configure.log"}
-  $previousNodeReuse=$env:MSBUILDDISABLENODEREUSE
-  try{
-    $env:MSBUILDDISABLENODEREUSE='1'
-    $buildArgs=@('--build',$validationBuild,'--config','Release','--target','OwnedProcessRunner','OwnedProcessAssignmentFixture',
-      'ProcessTreeSampler','InputTrace','NativeTraceIdentity','OwnedTailProcessFixture','OwnedTailMutationFixture','OwnedTailApiFixture','DisplayCalibration','--parallel','2')
-    if($llvm){$buildArgs+='--verbose';if($FreshConfigure){$buildArgs+='--clean-first'}}else{$buildArgs+=@('--','/nr:false')}
-    & $cmake @buildArgs *> (Join-Path $validationBuild 'compile.log')
-    if($LASTEXITCODE -ne 0){throw "Validation tools build failed: $validationBuild/compile.log"}
-  }finally{if(-not$llvm){$env:MSBUILDDISABLENODEREUSE=$previousNodeReuse}}
+  $configureExitCode=$LASTEXITCODE
+  Complete-SouiMsvcCompilerPhase $compilerPhase $configureExitCode "Validation tools configure failed: $validationBuild/configure.log"
+  $buildArgs=@('--build',$validationBuild,'--config','Release','--target','OwnedProcessRunner','OwnedProcessAssignmentFixture',
+    'ProcessTreeSampler','InputTrace','NativeTraceIdentity','OwnedTailProcessFixture','OwnedTailMutationFixture','OwnedTailApiFixture','DisplayCalibration','--parallel','2')
+  if($llvm){$buildArgs+='--verbose';if($FreshConfigure){$buildArgs+='--clean-first'}}else{$buildArgs+=@('--','/nr:false')}
+  $nativeInvocation=[ordered]@{schema='soui.native-build-invocation/v1';nativeToolchain=$NativeToolchain;
+    executable=$cmake;arguments=$buildArgs;
+    environment=[ordered]@{MSBUILDDISABLENODEREUSE=$env:MSBUILDDISABLENODEREUSE};
+    compilerHelperSuppressionConfigured=$false;
+    compilerHelperLifecycle=$(if($llvm){$null}else{@{mode='owned-idle-timeout';arguments=@('-timeout:20');originalOwnedJobClosureRequired=$true}})}
+  [IO.File]::WriteAllText((Join-Path $validationBuild 'native-invocation-Release.json'),($nativeInvocation|ConvertTo-Json -Depth 5),[Text.UTF8Encoding]::new($false))
+  if(-not$llvm){$compilerPhase=Start-SouiMsvcCompilerPhase -Toolchain $toolchain -Architecture $Architecture -EvidenceRoot $validationBuild -Phase build}
+  & $cmake @buildArgs *> (Join-Path $validationBuild 'compile.log')
+  $nativeExitCode=$LASTEXITCODE
+  Complete-SouiMsvcCompilerPhase $compilerPhase $nativeExitCode "Validation tools build failed: $validationBuild/compile.log"
   if($llvm){
     foreach($read in @(@{mode='commands';name='ninja-commands-Release.log'},@{mode='deps';name='ninja-deps-Release.log'})){
       $lines=& $llvm.ToolPins.NINJA.path -C $validationBuild -f build-Release.ninja -t $read.mode
@@ -98,13 +117,22 @@ try{
   & node $measurement seal $Architecture $measurementInputs.sha256 @profileArgs | Out-Null
   if($LASTEXITCODE -ne 0){throw 'Validation tools architecture/source/output identity failed'}
   Write-Output (Join-Path $validationBuild 'Release/OwnedProcessRunner.exe')
+}catch{
+  $primaryBuildFailure=$_
+  throw
 }finally{
   $restoreErrors=[Collections.Generic.List[string]]::new()
-  foreach($name in $llvmEnvironment.Keys){try{
-    $state=$llvmEnvironment[$name]
+  try{Close-SouiMsvcCompilerPhase $compilerPhase}catch{$restoreErrors.Add('Compiler lifecycle: '+$_.Exception.Message)}
+  foreach($name in $buildEnvironment.Keys){try{
+    $state=$buildEnvironment[$name]
     if($state.present){Set-Item -LiteralPath ('Env:'+$name) -Value $state.value -ErrorAction Stop}else{Remove-Item -LiteralPath ('Env:'+$name) -ErrorAction SilentlyContinue}
     $actual=Get-Item -LiteralPath ('Env:'+$name) -ErrorAction SilentlyContinue
     if(($null-ne$actual)-ne$state.present-or($state.present-and[string]$actual.Value-cne$state.value)){throw 'Presence/value differs'}
   }catch{$restoreErrors.Add($name+': '+$_.Exception.Message)}}
-  if($restoreErrors.Count){throw ('Measurement environment restore failed: '+($restoreErrors-join'; '))}
+  if($restoreErrors.Count){
+    if($primaryBuildFailure){
+      $primaryBuildFailure.Exception.Data['cleanupFailures']=$restoreErrors.ToArray()
+      Write-Warning ('Secondary measurement cleanup failure: '+($restoreErrors-join'; '))
+    }else{throw ('Measurement environment restore failed: '+($restoreErrors-join'; '))}
+  }
 }

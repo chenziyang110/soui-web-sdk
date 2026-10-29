@@ -1,0 +1,70 @@
+{
+  "schema": "soui.kernel-import/v1",
+  "sdkVersion": "0.6.0",
+  "profile": "LLVM22MSVC142",
+  "imports": [
+    {
+      "architecture": "x64",
+      "path": "third_party/prebuilt/x64/miniblink/node.dll",
+      "bytes": 39204352,
+      "sha256": "d888637d5dd1476dde16b8c5bb28172d7b8ec3495b69c725fa3572013748139a",
+      "sourceInputSha256": "26c5b73e4915bb4539e87b987cd8e952005f0fe41d987138d8d8e3b13eb25c95",
+      "sourceIdentityMeaning": "Complete physical Source2 snapshot; x64 explicitly admits unchanged objects/PCH from this release current run2, not historical P9 main objects.",
+      "buildEvidence": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x64/summary.json",
+      "producerResult": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x64/build-result.json",
+      "importLibrary": {
+        "path": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x64/miniblink.lib",
+        "bytes": 4837106,
+        "sha256": "9c0a08762aba7e751866aede65b7ffacd5b9a20f0274c7aad3cae07ab1225381",
+        "originalBasename": "miniblink.lib",
+        "runtimeAliasIsNodeDll": true,
+        "directLinkAliasCompatibilityAsserted": false
+      },
+      "profile": "LLVM22MSVC142",
+      "nativeMainNaturalExitCode": 0,
+      "wholeJobElapsedMs": 1427036,
+      "librariesReused": 11,
+      "librariesRecompiled": false,
+      "explicitIncrementalFromRun2": true,
+      "admittedFreshRun2Objects": 1903,
+      "admittedFreshRun2Pch": true,
+      "requiredExportsStaticallyPresent": true,
+      "dllLoadedForThisRecord": false
+    },
+    {
+      "architecture": "x86",
+      "path": "third_party/prebuilt/x86/miniblink/node.dll",
+      "bytes": 28318208,
+      "sha256": "dc8c37178f4bbd9260edc973d61af876cf8460178eaf89fa2994fdffc94abc9a",
+      "sourceInputSha256": "26c5b73e4915bb4539e87b987cd8e952005f0fe41d987138d8d8e3b13eb25c95",
+      "sourceIdentityMeaning": "Complete physical Source2 snapshot; x64 explicitly admits unchanged objects/PCH from this release current run2, not historical P9 main objects.",
+      "buildEvidence": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x86/summary.json",
+      "producerResult": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x86/build-result.json",
+      "importLibrary": {
+        "path": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x86/node.lib",
+        "bytes": 4757974,
+        "sha256": "e4547a8cfa3cc72dc4c0c961b9111f1450350f249a4560d806b514238f201bb6",
+        "originalBasename": "node.lib",
+        "runtimeAliasIsNodeDll": true,
+        "directLinkAliasCompatibilityAsserted": false
+      },
+      "profile": "LLVM22MSVC142",
+      "nativeMainNaturalExitCode": 0,
+      "wholeJobElapsedMs": 3781741,
+      "librariesReused": 11,
+      "librariesRecompiled": false,
+      "explicitIncrementalFromRun2": false,
+      "admittedFreshRun2Objects": 0,
+      "admittedFreshRun2Pch": false,
+      "requiredExportsStaticallyPresent": true,
+      "dllLoadedForThisRecord": false
+    }
+  ],
+  "fullSdkApplicationValidationComplete": false,
+  "toolchainQualification": false,
+  "binaryLicenseReviewComplete": false,
+  "releaseReady": false,
+  "transitiveDependencyCompleteness": "incomplete",
+  "historicalWholeExternalProviderBytesProven": false,
+  "note": "Current natural build provenance only. Original eleven static libraries are reused with raw source alignment and actual link-input evidence. New application/VM smoke, whole-provider qualification and legal opinion are not inferred."
+}

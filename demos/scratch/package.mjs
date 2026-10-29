@@ -3,14 +3,43 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {createHash} from 'node:crypto';
 import {spawnSync} from 'node:child_process';
+import {verifySourceVendor} from './upstream/provenance.mjs';
 
 const demo = path.dirname(fileURLToPath(import.meta.url));
 const sdk = path.resolve(demo, '../..');
 const arch = process.argv[2];
 if (!['x64','x86'].includes(arch)) throw new Error('Architecture required: x64 or x86');
+const optional=process.argv.slice(3);
+if(optional.length && (optional.length!==2 || optional[0]!=='--source-vendor'))
+  throw new Error('Usage: node package.mjs ARCH [--source-vendor SOURCE_BUILD_OUTPUT]');
+const sourceVendor=optional.length ? path.resolve(optional[1]) : null;
+const sourceIdentity=sourceVendor ? await verifySourceVendor(sourceVendor) : null;
+const sourceRecord=sourceIdentity?.record;
+const hash=data=>createHash('sha256').update(data).digest('hex');
+const vendorLock=JSON.parse(await fs.readFile(path.join(demo,'web/vendor-lock.json'),'utf8'));
 const version = (await fs.readFile(path.join(sdk,'VERSION'),'utf8')).trim();
 if (!/^0\.6\.0(?:-[A-Za-z0-9.-]+)?$/.test(version)) throw new Error('Expected 0.6.0 SDK version');
 const built = path.join(sdk, `out/scratch-${arch}-package/bin/Release/SouiScratch`);
+async function verifyRuntimeSelection(resources) {
+  let record;
+  try {record=JSON.parse(await fs.readFile(path.join(resources,'scratch-legal/source-build.json'),'utf8'));}
+  catch(error){if(error.code!=='ENOENT')throw error;}
+  if(sourceIdentity) {
+    if(!record || record.schema!=='soui.scratch-runtime-source/v1' ||
+        record.fullSourceRecordSha256!==sourceIdentity.recordSha256 ||
+        record.sourceCommit!==sourceRecord.sourceCommit || record.sourceLockSha256!==sourceRecord.sourceLockSha256 ||
+        record.upstreamSourceVersion!==sourceRecord.upstreamSourceVersion ||
+        record.referenceArtifactVersion!==sourceRecord.referenceArtifactVersion ||
+        record.bundleSha256!==sourceRecord.bundleSha256 ||
+        hash(await fs.readFile(path.join(resources,'scratch-gui-standalone.js')))!==sourceRecord.bundleSha256)
+      throw new Error('Packaged runtime does not match the selected source vendor; rebuild with the same SourceVendor.');
+    const html=await fs.readFile(path.join(resources,'index.html'),'utf8');
+    if(!html.includes(`data-scratch-source-commit="${sourceRecord.sourceCommit}"`) ||
+        !html.includes(`data-scratch-source-version="${sourceRecord.upstreamSourceVersion}"`))
+      throw new Error('Packaged HTML does not identify the selected source vendor.');
+  } else if(record) throw new Error('Source-built runtime requires its explicit SourceVendor; stock packaging cannot adopt it.');
+}
+await verifyRuntimeSelection(path.join(built,'resources'));
 const deliveries = path.resolve(sdk, '../deliverables');
 await fs.mkdir(deliveries,{recursive:true});
 let folder;
@@ -20,7 +49,6 @@ for(let number=1;number<=100;number++) {
 }
 if(!folder) throw new Error('No unused package revision available');
 const name=path.basename(folder);
-const hash=data=>createHash('sha256').update(data).digest('hex');
 async function copyTree(source,destination,{sourceOnly=false}={}) {
   const info=await fs.lstat(source);
   if(info.isSymbolicLink())throw new Error('Link refused: '+source);
@@ -38,6 +66,7 @@ async function copyTree(source,destination,{sourceOnly=false}={}) {
   } else throw new Error('Unsupported file type: '+source);
 }
 await copyTree(built,folder);
+await verifyRuntimeSelection(path.join(folder,'resources'));
 const resources=JSON.parse(await fs.readFile(path.join(folder,'resources/.scratch-resources.json'),'utf8'));
 for(const entry of resources.files) {
   const file=path.resolve(folder,'resources',entry.path);
@@ -45,10 +74,20 @@ for(const entry of resources.files) {
   const data=await fs.readFile(file);
   if(data.length!==entry.bytes || hash(data)!==entry.sha256)throw new Error('Resource identity mismatch: '+entry.path);
 }
-const webview2=path.join(sdk,'out/webview2-deps/1.0.4258.31/package');
+const webview2Dependency=JSON.parse(await fs.readFile(path.join(sdk,'sdk/renderers/webview2/dependency.json'),'utf8'));
+if(!/^\d+\.\d+\.\d+\.\d+$/.test(webview2Dependency.version))throw new Error('Invalid WebView2 dependency version');
+const webview2=path.join(sdk,'out/webview2-deps',webview2Dependency.version,'package');
 for(const file of ['LICENSE.txt','NOTICE.txt'])await copyTree(path.join(webview2,file),path.join(folder,'resources/scratch-legal',`WebView2-${file}`));
 const materials=path.join(folder,'source-materials');
 await copyTree(path.join(demo,'.scratch-cache/scratch-scratch-gui-standalone-15.3.0.tgz'),path.join(materials,'scratch-gui-standalone-15.3.0.tgz'));
+if(sourceVendor) {
+  const copiedVendor=path.join(materials,'scratch-source-build');
+  await copyTree(sourceVendor,copiedVendor);
+  const copiedIdentity=await verifySourceVendor(copiedVendor);
+  const retainedIdentity=await verifySourceVendor(sourceVendor);
+  if(copiedIdentity.recordSha256!==sourceIdentity.recordSha256 || retainedIdentity.recordSha256!==sourceIdentity.recordSha256)
+    throw new Error('Source vendor identity changed during packaging.');
+}
 await copyTree(demo,path.join(materials,'soui-sdk/demos/scratch'),{sourceOnly:true});
 for(const directory of ['sdk','cmake','tools','third_party/include/json','third_party/include/miniblink','third_party/sources/zlib','third_party/manifests','third_party/licenses',`third_party/prebuilt/${arch}/runtime`])
   await copyTree(path.join(sdk,directory),path.join(materials,'soui-sdk',directory),{sourceOnly:true});
@@ -56,7 +95,8 @@ for(const file of ['VERSION','LICENSE.md','THIRD_PARTY_NOTICES.md','README.md'])
   await copyTree(path.join(sdk,file),path.join(materials,'soui-sdk',file));
 await fs.writeFile(path.join(folder,'打开演示.cmd'),'@echo off\r\nstart "" /D "%~dp0" "%~dp0SouiScratch.exe"\r\n');
 await fs.writeFile(path.join(folder,'使用说明.txt'),
-  `积木创作室 / SOUI SDK ${version} / Scratch 15.3.0\r\n\r\n`+
+  `积木创作室 / SOUI SDK ${version} / Scratch ${sourceRecord?.upstreamSourceVersion ?? vendorLock.version}\r\n`+
+  (sourceRecord ? `源码候选 ${sourceRecord.sourceCommit}；原始对照分发包 ${sourceRecord.referenceArtifactVersion}。\r\n` : '原始固定 standalone 分发包。\r\n')+'\r\n'+
   '双击“打开演示.cmd”或 SouiScratch.exe。请完整解压后运行。\r\n'+
   '需要 Windows 10/11 和已安装的 Microsoft WebView2 Runtime；运行无需 Node.js、CMake 或 Visual Studio。\r\n'+
   '使用“小猫画圆”“按键漫游”开始体验，拖动积木后点击绿色旗帜运行。\r\n'+
@@ -68,8 +108,12 @@ await fs.writeFile(path.join(folder,'使用说明.txt'),
   '声明材料在 resources/legal 和 resources/scratch-legal；原始 Scratch 包及本地接入源码在 source-materials。\r\n'+
   'Scratch 及角色商标属于 Scratch Foundation；本演示不表示官方背书。\r\n');
 await fs.writeFile(path.join(folder,'resources/scratch-legal/README.txt'),
-  'Scratch GUI 15.3.0: AGPL-3.0-only. No Scratch Foundation endorsement.\n'+
-  'Original npm package with GUI sources and bundled source maps: ../../source-materials/scratch-gui-standalone-15.3.0.tgz\n'+
+  `Scratch GUI ${sourceRecord?.upstreamSourceVersion ?? vendorLock.version}: AGPL-3.0-only. No Scratch Foundation endorsement.\n`+
+  `Reference standalone artifact: ${vendorLock.version}.\n`+
+  (sourceRecord ?
+    'Adopted patched source build, full corresponding tracked sources/configuration, lock, LICENSE, dist inventory and build record: ../../source-materials/scratch-source-build/\n'+
+    `Source commit: ${sourceRecord.sourceCommit}; source-build.json SHA256: ${sourceIdentity.recordSha256}.\n` : '')+
+  'Original reference npm package with GUI sources and bundled source maps: ../../source-materials/scratch-gui-standalone-15.3.0.tgz\n'+
   'Local application and current SDK sources: ../../source-materials/soui-sdk/\n'+
   'The npm distribution includes GUI sources and bundled source maps; rebuilding upstream Scratch itself also needs its pinned repository build configuration.\n'+
   'Pinned upstream source: https://github.com/scratchfoundation/scratch-editor/tree/b4b934aaf6641a539325a971249234f4a50a2f03\n'+
@@ -103,7 +147,13 @@ async function collect(directory) {
   }
 }
 await collect(folder);
-await fs.writeFile(path.join(folder,'package-manifest.json'),JSON.stringify({schema:'soui.scratch-local-package/v1',sdkVersion:version,scratchVersion:'15.3.0',architecture:arch,configuration:'Release',productionReady:false,files:inventory},null,2));
+await fs.writeFile(path.join(folder,'package-manifest.json'),JSON.stringify({schema:'soui.scratch-local-package/v1',sdkVersion:version,
+  scratchVersion:sourceRecord?.upstreamSourceVersion ?? vendorLock.version,
+  scratchVendor:sourceRecord ? {kind:'patched-source',upstreamSourceVersion:sourceRecord.upstreamSourceVersion,
+    referenceArtifactVersion:sourceRecord.referenceArtifactVersion,sourceCommit:sourceRecord.sourceCommit,
+    sourceBuildSha256:sourceIdentity.recordSha256,bundleSha256:sourceRecord.bundleSha256,
+    sourceMaterials:'source-materials/scratch-source-build'} : {kind:'reference-artifact',referenceArtifactVersion:vendorLock.version},
+  architecture:arch,configuration:'Release',productionReady:false,files:inventory},null,2));
 const zip=path.join(deliveries,name+'.zip');
 const compressed=spawnSync('powershell.exe',['-NoProfile','-ExecutionPolicy','Bypass','-File',path.join(demo,'Compress-Package.ps1'),'-Source',folder,'-Output',zip],{cwd:deliveries,stdio:'inherit'});
 if(compressed.status!==0)throw new Error('ZIP creation failed');

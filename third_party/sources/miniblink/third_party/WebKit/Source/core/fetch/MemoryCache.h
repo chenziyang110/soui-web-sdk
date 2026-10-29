@@ -22,6 +22,8 @@
     pages from the web. It has a memory cache for these objects.
 */
 
+// SOUI local changes retained on 2026-10-28: bounded retained-resource capacity
+// and owner-only scalar cache diagnostics. Original licensing remains above.
 #ifndef MemoryCache_h
 #define MemoryCache_h
 

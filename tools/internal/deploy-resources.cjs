@@ -37,11 +37,20 @@ function replaceGroups(groups, application, distribution, expectedProfile) {
   });
   if (new Set(checkedGroups.map(group => group.checkedProfile.profile)).size !== 1)
     throw new Error('Auto Web build profiles must match');
-  const license = id.safePath(distribution, 'LICENSE.md');
-  const notice = id.safePath(distribution, 'THIRD_PARTY_NOTICES.md');
+  const requiredNotices = ['LICENSE.md', 'THIRD_PARTY_NOTICES.md'];
+  for (const name of requiredNotices) {
+    if (!fs.statSync(id.safePath(distribution, name)).isFile()) throw new Error('SDK legal materials missing: ' + name);
+  }
+  const noticeBytes = fs.readFileSync(id.safePath(distribution, 'THIRD_PARTY_NOTICES.md'));
+  const redistributionDoc = 'docs/licenses/v0.6.0-redistribution.md';
+  const referencedDocs = noticeBytes.toString('utf8').includes(redistributionDoc) ? [redistributionDoc] : [];
+  for (const name of referencedDocs) {
+    const file = id.safePath(distribution, name);
+    if (!fs.existsSync(file) || !fs.statSync(file).isFile()) throw new Error('SDK legal materials missing: ' + name);
+  }
   const licenses = id.walk(distribution, 'third_party/licenses');
-  if (!fs.statSync(license).isFile() || !fs.statSync(notice).isFile() || !licenses.length) throw new Error('SDK legal materials missing');
-  const legal = ['LICENSE.md', 'THIRD_PARTY_NOTICES.md', ...licenses];
+  if (!licenses.length) throw new Error('SDK legal materials missing');
+  const legal = [...requiredNotices, ...licenses, ...referencedDocs];
   const suffix = crypto.randomUUID();
   const stage = id.safePath(application, `.resources-new-${suffix}`);
   const backup = id.safePath(application, `.resources-old-${suffix}`);
@@ -68,6 +77,8 @@ function replaceGroups(groups, application, distribution, expectedProfile) {
       if (id.hash(fs.readFileSync(id.safePath(distribution, name))) !==
           id.hash(fs.readFileSync(id.safePath(stage, `legal/${name}`)))) throw new Error('SDK legal material changed during deployment');
     }
+    if (!fs.readFileSync(id.safePath(stage, 'legal/THIRD_PARTY_NOTICES.md')).equals(noticeBytes))
+      throw new Error('SDK legal material changed during deployment');
     if (fs.existsSync(destination)) { fs.renameSync(destination, backup); moved = true; }
     try { publishStagedDirectory(stage, destination); }
     catch (error) {

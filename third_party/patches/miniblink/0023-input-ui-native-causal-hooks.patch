@@ -1,0 +1,240 @@
+diff --git a/third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp b/third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp
+index 46a7ecbb..e1414906 100644
+--- a/third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp
++++ b/third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp
+@@ -252,6 +252,8 @@ void WebThreadImpl::threadEntryPoint()
+     BlinkPlatformImpl::onCurrentThreadWhenWebThreadImplCreated(this);
+     if (blink::Platform::current()->currentThread() != this)
+         throw std::runtime_error("WebThread TLS initialization failed");
++    (void)input_frame_trace::register_current_thread();
++    struct TraceDetach { ~TraceDetach() { input_frame_trace::detach_current_thread(); } } traceDetach;
+     m_hadThreadInit.store(true, std::memory_order_release);
+ 
+     while (!m_willExit) {
+@@ -287,8 +289,18 @@ void WebThreadImpl::postTask(const blink::WebTraceLocation& location, blink::Web
+ 
+ void WebThreadImpl::postDelayedTaskImpl(
+     const blink::WebTraceLocation& location, blink::WebThread::Task* task, 
+-    long long delayMs, double* createTimeOnOtherThread, int priority, unsigned* heapInsertionOrder)
+-{
++    long long delayMs, double* createTimeOnOtherThread, int priority, unsigned* heapInsertionOrder, const input_frame_trace::event* trace)
++{
++    input_frame_trace::event localTrace;
++    if (!trace) {
++        (void)input_frame_trace::current_context(localTrace);
++        localTrace.thread_id = localTrace.producer_slot = 0;
++        localTrace.flags = 0; localTrace.outcome = input_frame_trace::terminal::none;
++        localTrace.frame_id = localTrace.action_first = localTrace.action_last = localTrace.value = 0;
++        localTrace.related_id = localTrace.task_id;
++        localTrace.task_id = input_frame_trace::next_task_id();
++    }
++    const auto* effectiveTrace = trace ? trace : &localTrace;
+     // Consume the posted task exactly once, including failed timer creation.
+     std::unique_ptr<blink::WebThread::Task> payload(task);
+     std::unique_ptr<WebTimerBase> timer;
+@@ -305,11 +317,21 @@ void WebThreadImpl::postDelayedTaskImpl(
+             if (grown < required + 1) grown = required + 1;
+             m_timerHeap.reserve(grown);
+         }
+-        timer.reset(WebTimerBase::create(this, location, payload.get(), priority));
++        timer.reset(WebTimerBase::create(this, location, payload.get(), priority, effectiveTrace));
+         payload.release(); // Timer now owns the task, including shutdown drain.
+         timer->startFromOtherThread((double)delayMs / 1000.0, createTimeOnOtherThread, heapInsertionOrder);
++        if (!trace) {
++            timer->m_trace.point = input_frame_trace::stage::task_posted;
++            timer->m_trace.qpc = input_frame_trace::now_qpc();
++            (void)input_frame_trace::record(timer->m_trace);
++        }
+         timer.release(); // Timer heap now owns this self-deleting timer.
+     } catch (...) {
++        if (!timer) {
++            auto cancelled = *effectiveTrace; cancelled.point = input_frame_trace::stage::task_cancelled;
++            cancelled.why = input_frame_trace::reason::cancelled; cancelled.qpc = 0;
++            (void)input_frame_trace::record(cancelled);
++        }
+         // RAII destroys whichever owner actually received the payload.
+     }
+ }
+@@ -356,6 +378,9 @@ void WebThreadImpl::postDelayedTaskWithPriorityCrossThread(
+ #if defined(SOUI_WORKER_SHUTDOWN_DIAGNOSTICS) && SOUI_WORKER_SHUTDOWN_DIAGNOSTICS
+         pair->task->diagnosticQueueCommitted(); // Actual insertion, still serialized with willExit.
+ #endif
++        pair->trace.point = input_frame_trace::stage::task_posted;
++        pair->trace.qpc = input_frame_trace::now_qpc();
++        (void)input_frame_trace::record(pair->trace);
+         pair.release();
+     } catch (...) {
+         m_pendingIndex.discardEmpty(priority);
+@@ -390,6 +415,12 @@ WebThreadImpl::TaskPair::TaskPair(const blink::WebTraceLocation& location, blink
+     this->priority = priority;
+     this->createTime = WTF::monotonicallyIncreasingTime();
+     this->heapInsertionOrder = WebThreadImpl::getNewCurrentHeapInsertionOrder();
++    (void)input_frame_trace::current_context(this->trace);
++    this->trace.thread_id = this->trace.producer_slot = 0;
++    this->trace.flags = 0; this->trace.outcome = input_frame_trace::terminal::none;
++    this->trace.frame_id = this->trace.action_first = this->trace.action_last = this->trace.value = 0;
++    this->trace.related_id = this->trace.task_id;
++    this->trace.task_id = input_frame_trace::next_task_id();
+     this->pendingPosition = 0;
+     this->scheduling.value = this;
+     this->scheduling.deadline = this->createTime + static_cast<double>(delayMs) / 1000.0;
+@@ -398,6 +429,12 @@ WebThreadImpl::TaskPair::TaskPair(const blink::WebTraceLocation& location, blink
+ 
+ WebThreadImpl::TaskPair::~TaskPair()
+ {
++    if (task) {
++        trace.point = input_frame_trace::stage::task_cancelled;
++        trace.why = input_frame_trace::reason::cancelled;
++        trace.qpc = 0;
++        (void)input_frame_trace::record(trace);
++    }
+     delete task; // Only untransferred work remains here (cancel-before-run).
+ }
+ 
+@@ -448,7 +485,7 @@ void WebThreadImpl::startTriggerTasks(unsigned* remainingAdmissions, double admi
+         std::unique_ptr<TaskPair> pair(selected);
+         blink::WebThread::Task* payload = pair->task;
+         pair->task = nullptr;
+-        postDelayedTaskImpl(pair->location, payload, pair->delayMs, &pair->createTime, pair->priority, &pair->heapInsertionOrder);
++        postDelayedTaskImpl(pair->location, payload, pair->delayMs, &pair->createTime, pair->priority, &pair->heapInsertionOrder, &pair->trace);
+         if (remainingAdmissions) --*remainingAdmissions;
+     }
+ }
+diff --git a/third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.h b/third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.h
+index 48c958b5..47c480e0 100644
+--- a/third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.h
++++ b/third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.h
+@@ -5,6 +5,7 @@
+ #include <vector>
+ #include <atomic>
+ #include "content/web_impl_win/TaskSchedulingIndex.h"
++#include "content/common/InputFrameTrace.h"
+ 
+ #include "base/compiler_specific.h"
+ #include "third_party/WebKit/public/platform/Platform.h"
+@@ -98,6 +99,7 @@ private:
+         ~TaskPair();
+         task_scheduling::DeadlinePriorityIndex::Entry scheduling;
+         std::size_t pendingPosition;
++        input_frame_trace::event trace;
+ 
+         blink::WebTraceLocation location;
+         blink::WebThread::Task* task;
+@@ -107,7 +109,7 @@ private:
+         unsigned heapInsertionOrder;
+     };
+     void postDelayedTaskImpl(
+-        const blink::WebTraceLocation& location, blink::WebThread::Task* task, long long delayMs, double* createTimeOnOtherThread, int priority, unsigned* heapInsertionOrder);
++        const blink::WebTraceLocation& location, blink::WebThread::Task* task, long long delayMs, double* createTimeOnOtherThread, int priority, unsigned* heapInsertionOrder, const input_frame_trace::event* trace = nullptr);
+     
+     static unsigned __stdcall WebThreadImplThreadEntryPoint(void* param);
+     void threadEntryPoint();
+diff --git a/third_party/sources/miniblink/content/web_impl_win/WebTimerBase.cpp b/third_party/sources/miniblink/content/web_impl_win/WebTimerBase.cpp
+index 806a5d04..7f6f21a6 100644
+--- a/third_party/sources/miniblink/content/web_impl_win/WebTimerBase.cpp
++++ b/third_party/sources/miniblink/content/web_impl_win/WebTimerBase.cpp
+@@ -195,7 +195,7 @@ const std::vector<WebTimerBase*>& WebTimerBase::timerHeap() const
+ extern ActivatingTimerCheck* gActivatingTimerCheck;
+ #endif
+ 
+-WebTimerBase::WebTimerBase(WebThreadImpl* threadTimers, const blink::WebTraceLocation& location, blink::WebThread::Task* task, int priority)
++WebTimerBase::WebTimerBase(WebThreadImpl* threadTimers, const blink::WebTraceLocation& location, blink::WebThread::Task* task, int priority, const input_frame_trace::event* trace)
+     : m_nextFireTime(0)
+     , m_threadTimers(threadTimers)
+     , m_repeatInterval(0)
+@@ -208,6 +208,15 @@ WebTimerBase::WebTimerBase(WebThreadImpl* threadTimers, const blink::WebTraceLoc
+     , m_thread(currentThread())
+ #endif
+ {
++    if (trace) m_trace = *trace;
++    else {
++        (void)input_frame_trace::current_context(m_trace);
++        m_trace.thread_id = m_trace.producer_slot = 0;
++        m_trace.flags = 0; m_trace.outcome = input_frame_trace::terminal::none;
++        m_trace.frame_id = m_trace.action_first = m_trace.action_last = m_trace.value = 0;
++        m_trace.related_id = m_trace.task_id;
++        m_trace.task_id = input_frame_trace::next_task_id();
++    }
+ //     String out = String::format(" WebTimerBase::WebTimerBase: %p %x\n", this, ::GetCurrentThreadId());
+ //     OutputDebugStringW(out.charactersWithNullTermination().data());
+ #ifndef NDEBUG
+@@ -217,6 +226,11 @@ WebTimerBase::WebTimerBase(WebThreadImpl* threadTimers, const blink::WebTraceLoc
+ 
+ WebTimerBase::~WebTimerBase()
+ {
++    if (!m_taskRan) {
++        auto trace = m_trace; trace.point = input_frame_trace::stage::task_cancelled;
++        trace.why = input_frame_trace::reason::cancelled; trace.qpc = 0;
++        (void)input_frame_trace::record(trace);
++    }
+     stop();
+     ASSERT(!inHeap());
+ 
+@@ -435,7 +449,25 @@ void WebTimerBase::fireTimersInNestedEventLoop()
+ 
+ void WebTimerBase::fired()
+ {
++    auto trace = m_trace; // Callback may delete this timer: use local data after run.
++    trace.point = input_frame_trace::stage::task_begin;
++    const auto posted = trace.qpc; trace.qpc = input_frame_trace::now_qpc();
++    if (posted && trace.qpc >= posted)
++        input_frame_trace::observe_duration(input_frame_trace::duration_metric::task_queue, trace.qpc - posted);
++    (void)input_frame_trace::record(trace);
++    input_frame_trace::context_scope taskContext(trace);
++    struct TraceEnd {
++        input_frame_trace::event value;
++        bool returned = false;
++        ~TraceEnd() {
++            value.point = input_frame_trace::stage::task_end; value.qpc = 0;
++            if (!returned) value.why = input_frame_trace::reason::cancelled;
++            (void)input_frame_trace::record(value);
++        }
++    } finished{trace};
++    m_taskRan = true;
+     m_task->run();
++    finished.returned = true; // Only local state after the potentially self-deleting run.
+ }
+ 
+ } // namespace content
+diff --git a/third_party/sources/miniblink/content/web_impl_win/WebTimerBase.h b/third_party/sources/miniblink/content/web_impl_win/WebTimerBase.h
+index f5c703c6..9d3815e7 100644
+--- a/third_party/sources/miniblink/content/web_impl_win/WebTimerBase.h
++++ b/third_party/sources/miniblink/content/web_impl_win/WebTimerBase.h
+@@ -32,6 +32,7 @@
+ #include <wtf/Vector.h>
+ #include <vector>
+ #include "content/web_impl_win/TaskSchedulingIndex.h"
++#include "content/common/InputFrameTrace.h"
+ #include "third_party/WebKit/public/platform/WebTraceLocation.h"
+ #include "third_party/WebKit/public/platform/WebThread.h"
+ 
+@@ -51,9 +52,9 @@ class WebThreadImpl;
+ class WebTimerBase {
+     WTF_MAKE_NONCOPYABLE(WebTimerBase); WTF_MAKE_FAST_ALLOCATED(WebTimerBase);
+ public:
+-    static WebTimerBase* create(WebThreadImpl* threadTimers, const blink::WebTraceLocation& location, blink::WebThread::Task* task, int priority)
++    static WebTimerBase* create(WebThreadImpl* threadTimers, const blink::WebTraceLocation& location, blink::WebThread::Task* task, int priority, const input_frame_trace::event* trace = nullptr)
+     {
+-        return new WebTimerBase(threadTimers, location, task, priority);
++        return new WebTimerBase(threadTimers, location, task, priority, trace);
+     }
+     ~WebTimerBase();
+ 
+@@ -88,7 +89,7 @@ public:
+     }
+ 
+ private:
+-    WebTimerBase(WebThreadImpl* threadTimers, const blink::WebTraceLocation& location, blink::WebThread::Task* task, int priority);
++    WebTimerBase(WebThreadImpl* threadTimers, const blink::WebTraceLocation& location, blink::WebThread::Task* task, int priority, const input_frame_trace::event* trace = nullptr);
+ 
+     void startFromOtherThread(double interval, double* createTimeOnOtherThread, unsigned* heapInsertionOrder);
+ 
+@@ -130,6 +131,8 @@ private:
+     int m_ref;
+     int m_priority;
+     task_scheduling::DeadlinePriorityIndex::Entry m_scheduling;
++    input_frame_trace::event m_trace;
++    bool m_taskRan = false;
+ };
+ 
+ inline bool WebTimerBase::isActive() const

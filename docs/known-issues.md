@@ -1,5 +1,44 @@
 # 已知限制与生产门槛
 
+0.6.0 按本次授权采用普通 GitHub Release 分类。两架构内核与必要 SDK 构建、安装消费者、默认应用八次运行及九份供应/应用 ZIP 已有实际记录；受控 GUI 代表例已记录，完整对应源码及最终发布身份见附件清单。`releaseReady=false`、`productionQualificationComplete=false`、`fullDevtoolsGoalComplete=false`。实际范围及保留失败见[发布说明](releases/0.6.0.md)和[RELEASE-FACTS](../verification/production-validation/0.6.0-release-2026-10-29/RELEASE-FACTS.json)，不从下列历史候选继承通过。
+
+## 0.6.0 后续源码候选
+
+PR127之后的工具遗留项已新增自有VCTIP自然idle生命周期、显式SDK失败stage保留/校验恢复，以及checked ZIP准备入口。当前两架构微型CMake自然收尾、实际子文件句柄EPERM恢复、候选canonical pack与实际PS5中文长路径短验已过；原失败与完整范围见[后续收尾](maintenance/windows-tooling-failure-closeout-20261029.md)。旧EPERM锁持有者及PS5原失败原因仍未知，完整构建负载与生产资格不据此关闭。
+
+当前工作分支已补 ZIP UTF-8 参数、MSVC 节点复用策略及 source SDK 发布失败诊断，
+并补充授权契约用例。64个工具逻辑用例及两架构各10个受控授权场景已有通过结果，
+MiniBlink x86 Release真实暂停后原生关闭代表例自然完成；首轮夹具/编译失败及GUI超时仍保留。
+这不修改已发布0.6.0包或关闭下表历史原失败。此段是PR127时点记录；后续新增自然收尾机制及剩余限制以上述收尾文档为准。
+范围和执行结果见[必要项收尾](maintenance/production-tools-devtools-closeout-20261029.md)。
+
+## 0.6.0 当前限制
+
+| 项目 | 事实与处置边界 |
+|---|---|
+| ZIP 的跨代码页文件名 | `Package.ps1` / `Package-Applications.ps1` 默认 ZIP 可将非 ASCII 名按本机 ACP 写入并依赖 Unicode Path `0x7075` 扩展；忽略该扩展的解压器可能改坏文件名。当前 Workbench 两包已用官方 7-Zip `-mcu=on` 重封并核对 local/central UTF-8 标志、完整闭集和原 payload；不是打包脚本本身已经修复 |
+| PowerShell 临时解压 | PS5 在长临时路径下曾出现空 stage 或不完整解压；MAX_PATH 只是候选原因，尚无确定根因。保留原失败，并在全新目录解压后逐文件验内容，不以退出 0 代替闭集核验 |
+| source SDK 发布目录 | 规范输出目录两次 rename 返回 EPERM；合法外部目录的公开 pack 成功，原失败仍保留。根因未定，不归因于 MAX_PATH 或 Defender，也不修改权限/覆盖守卫来取得成功 |
+| 非自然构建与操作期限 | 八个辅助 compiler Job 的失败及两次原 C64 GUI 操作超时/强清保留于 RELEASE-FACTS；产物已核、适用尾部接纳或后续新例不改写原监督结果 |
+| 生产及环境资格 | D07 真实租期、D13 千次、D14 八小时、完整性能和目标系统/IME/DPI/多屏资格继续待验，见[长测交接](testing/v0.6.0-long-run-handoff.md)。原期限、owner 身份、默认拒绝和资源 fence 不变 |
+
+## 历史记录
+
+以下日期及旧版本段落保留当时的原始状态，不代表 0.6.0 当前构建或运行范围。
+
+2026-10-26 新增[任务唤醒与有界接纳候选](maintenance/input-latency-20261026.md)，处理首次任务等待、就绪积压及资源受阻重试。最终源码尚未编译和运行，由 PR 验证人员接手；16 ms 兜底 timer、CPU draw interval、单回调超预算和真实输入尾延迟仍需分别评估，不能宣称已达到极致流畅度。固定二进制及生产门槛不变。
+
+2026-10-23 新增 [ACK 反馈修复候选](maintenance/scroll-ack-feedback-20261023.md)：普通合成滚动的整数回传可能误增 epoch，撤销已接纳目标。候选明确区分 ACK 与外部意图，保留真实边界；默认 fractional=false 的源码静态复核及隔离原生回归已完成：当前两架构各 25+2+19+13 项通过，旧对照各 3/10 并退出 1。完整 x86 内核已构建并获独立 build-only 验收；GUI21 的 800 请求位移误差小于 1e-6，GUI22 同值 CSS 赋值后新 epoch 保持停止。结论限定默认整数元素滚动样本，整体流畅度、完整 x64 内核与发布资格另验。[ADR 0120](adr/0120-preserve-compositor-scroll-acknowledgements.md)保持 proposed，不修改下列历史结果或固定二进制。
+
+2026-10-23 生产 Controller/Snapshot 回归确认：相同且均已接收的 `+250`、`+100` 输入，因临时光栅覆盖到达时序不同而分别停在 350、300。新的源码候选分离逻辑目标与可绘制边界，暂停时不空转，ready 场景激活后再汇总下一帧需求；两架构的两场景原始回归、十九项边界和既有十三项覆盖回归均已通过。完整内核、真实 producer 唤醒和 GUI 流畅度仍待单独验证，见 [ADR-0119](adr/0119-preserve-scroll-target-beyond-raster-coverage.md)及[维护记录](maintenance/scroll-target-retention-20261023.md)。另一个原有的同 epoch 覆盖收缩/再扩展反例在旧版和首修复版、两架构均真实失败：显示位置从 200 回放到 250；该问题保持未解决，不被上述局部通过覆盖。固定 0.5.0 二进制和发布资格不变。
+
+2026-10-23 发现独立滚动后，鼠标按下位置没有可捕获的滚动目标时，路由器仍把旧的可视采样或失败捕获的部分输出作为新屏障交给引擎；屏障同步拒绝会丢弃该次按下。当前源码只在本次捕获成功时附带屏障，失败时保留无屏障的正常按下，并增加 [十二项生产路由器回归](testing.md)。成功屏障仍须同步，抬起仍遵循原有引擎 FIFO。固定 0.5.0 SDK 尚未包含本修复；真实滚动、标题拖动、性能、两架构和最终交付仍需分别验证。
+
+2026-10-21 隔离消费者中复现了输入进入 SDK 后超过 100 ms 的排队，并与兼容内核约 50 ms 的定时消息回调重叠。当前源码候选限制正常主线程连续调度批次，见 [ADR-0118](adr/0118-main-thread-timer-batches.md)。固定 0.5.0 二进制尚未包含此候选；单个长回调、任务接纳开销、保留的 16 ms 定时等待及持续负载吞吐仍需分别核实，不能把局部批次回归视为全部输入延迟或生产性能验收。
+
+后续[两架构重编与实际短测](../verification/production-validation/input-latency-scheduling-2026-10-21/README.md)记录了输入队列长等待减少、刷新/关闭完成，也保留了有限页面消息突发变慢及主程序仍有单次长原生回调。单次固定顺序、窗口遮挡和少量点击的记录不足以完成正式性能验收；源码候选尚未导入固定 SDK 或产品交付。
+2026-10-16 [Issue 专项核验](../verification/production-validation/issue-maintenance-2026-10-16/README.md)补齐 #76 的便携默认 ALL 与私有测试注册边界证据。另对发布散列匹配的六个 0.5.0 应用 ZIP 核对每包 198 份声明材料，均与保留源码原字节一致，包含 OpenSSL/SSLeay 原文；下文 preview.15 的缺件记录保留历史含义。维护者随后明确选择首方 MIT，已在 0.5.1-preview.1 中落实许可证交付，见 [ADR-0118](adr/0118-first-party-mit-delivery.md)。当前两架构链接映射已确认 OpenSSL 实际成员，见[链接复核](../verification/production-validation/current-link-members-2026-10-16/README.md)；完整嵌套组件条款审批和适用验收仍未完成，#39 和生产门槛继续开放。
+
 2026-10-16 一次原生 UIA `mutations` 复测在焦点请求处失败，旧日志未保留 HRESULT；随后 120 次定向诊断未复现，不能据此判定已修复。当前测试已补充失败时的错误码、实际焦点和阶段时间，断言与等待上限不变。系统随后重启并升级，受影响工具与最终候选验证重新执行；旧失败保持原始环境归属。
 
 现代模板现显式启用会话续租。0.5 主线已分离普通请求、清理和专用续期容量，并完成页面策略与原生回归；此前业务填满传输导致续期容量错误的复现保留为历史证据。真实宿主双层满载、跨续期任务保留和八小时持续压力仍未验收，见 [0.5 执行清单](roadmap/0.5.0-execution.md)。

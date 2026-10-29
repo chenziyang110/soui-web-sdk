@@ -36,6 +36,7 @@ function fixture(t) {
   put('sdk/web/package.json', JSON.stringify({version: '0.6.0-preview.1'}));
   put('sdk/web/package-lock.json', JSON.stringify({version: '0.6.0-preview.1', packages: {'': {version: '0.6.0-preview.1'}}}));
   put('sdk/web/dist/index.js', 'export {};');
+  put('LICENSE.md', 'Synthetic first-party license.');
   put('THIRD_PARTY_NOTICES.md', 'Synthetic legal materials.'); put('third_party/licenses/license.txt', 'Fixture license.');
   for (const name of ['modern', 'compatibility']) put(`web/${name}/index.html`, `<main>${name}</main>`);
   const plan = targets.resolve(root);

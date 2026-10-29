@@ -32,7 +32,13 @@ void operator delete(void* p, std::size_t) noexcept { std::free(p); }
 void operator delete[](void* p, std::size_t) noexcept { std::free(p); }
 
 #define WKE_CALL_TYPE __cdecl
-using wkeWebView = void*;
+// Explicit paint-lifetime dependency fake; no Blink view or native paint runs.
+struct TestPaintView {
+    bool paint_sealed = false, paint_drained = true;
+    void quiescePaintCallbacks() { paint_sealed = true; }
+    bool paintCallbacksDrained() const { return paint_drained; }
+};
+using wkeWebView = TestPaintView*;
 #include "wke_cursor_broker.h"
 #include "content/web_impl_win/LocalResourceState.h"
 // This real resource implementation is intentionally independent of Blink.
@@ -60,7 +66,7 @@ DWORD wkeThreadId = 0;
 namespace fixture {
 using namespace wke;
 void expect(bool value, const char* reason) { if (!value) throw std::runtime_error(reason); }
-struct Environment {
+struct Environment : TestPaintView {
     std::shared_ptr<CursorBrokerControl> control;
     HMENU menu = nullptr;
     unsigned actions = 0, bodies = 0, completions = 0, cancelled = 0;
@@ -425,7 +431,16 @@ void comLedger() {
         && !e.control->comReferences && e.menuReleases == 1 && drained(*e.control),
         "actual ledger API balances without claiming a real COM object");
 }
+void paintCloseDependency() {
+    Environment e;
+    e.paint_drained = false;
+    expect(e.close() == WKE_CURSOR_BROKER_OK && e.paint_sealed && !drained(*e.control),
+        "held paint dependency must prevent actual broker drain");
+    e.paint_drained = true;
+    expect(drained(*e.control), "actual paint completion dependency admits drain");
+}
 void boundaryExhaustion() {
+    paintCloseDependency();
     Environment e; e.holdMenu(); e.addPostingAction(); unsigned wrong = WKE_CURSOR_BROKER_INVALID;
     std::thread other([&] { wrong = e.close(); }); other.join();
     expect(wrong == WKE_CURSOR_BROKER_WRONG_THREAD && !e.control->closing && e.actions == 0,

@@ -1,0 +1,98 @@
+{
+  "schema": "soui.release.public-long-run-handoff/v1",
+  "createdUtc": "2026-10-28T15:23:39.008085+00:00",
+  "originalOuterPlan": {
+    "path": "F:/work/SOUI_WEB/plans/2026-10-28-devtools-long-test-handoff.md",
+    "bytes": 16251,
+    "sha256": "d31eed95d1737e4a26b02795d6c4d4e0a40f4a6456479a22aab7a5e79ce84be6"
+  },
+  "originalOuterPlanEdited": false,
+  "publicDocuments": [
+    {
+      "path": "C:/sr06/docs/testing/v0.6.0-long-run-handoff.md",
+      "bytes": 8089,
+      "sha256": "7546055d03b28086ea24ff19b24aaad40abc9b9e6ec898df0e3e86a457256d98"
+    },
+    {
+      "path": "C:/sr06/docs/releases/0.6.0.md",
+      "bytes": 8133,
+      "sha256": "aeceb2cc6e7e43fcf37cc4f3d2b3355a7abb91bacb26ddf57923c3edb41833ad"
+    }
+  ],
+  "relativeLinks": [
+    {
+      "document": "docs/testing/v0.6.0-long-run-handoff.md",
+      "target": "../releases/0.6.0.md",
+      "exists": true
+    },
+    {
+      "document": "docs/testing/v0.6.0-long-run-handoff.md",
+      "target": "../adr/0136-0.6.0-release-scope.md",
+      "exists": true
+    },
+    {
+      "document": "docs/testing/v0.6.0-long-run-handoff.md",
+      "target": "../../sdk/src/runtime/services/permissions/permission_store.cpp",
+      "exists": true
+    },
+    {
+      "document": "docs/testing/v0.6.0-long-run-handoff.md",
+      "target": "../devtools.md",
+      "exists": true
+    },
+    {
+      "document": "docs/testing/v0.6.0-long-run-handoff.md",
+      "target": "../devtools.md",
+      "exists": true
+    },
+    {
+      "document": "docs/testing/v0.6.0-long-run-handoff.md",
+      "target": "../../tests/native/CMakeLists.txt",
+      "exists": true
+    },
+    {
+      "document": "docs/testing/v0.6.0-long-run-handoff.md",
+      "target": "../../tools/Test.ps1",
+      "exists": true
+    },
+    {
+      "document": "docs/releases/0.6.0.md",
+      "target": "../adr/0136-0.6.0-release-scope.md",
+      "exists": true
+    },
+    {
+      "document": "docs/releases/0.6.0.md",
+      "target": "../licenses/v0.6.0-redistribution.md",
+      "exists": true
+    },
+    {
+      "document": "docs/releases/0.6.0.md",
+      "target": "../versioning.md",
+      "exists": true
+    },
+    {
+      "document": "docs/releases/0.6.0.md",
+      "target": "../testing/v0.6.0-long-run-handoff.md",
+      "exists": true
+    }
+  ],
+  "requiredGates": {
+    "D07TTLMinutes": 30,
+    "D07FirstRenewalAtLeastMinutes": 25,
+    "D07RenewalWindowMinutes": 5,
+    "D13MeasuredCyclesPerBackendArchitecture": 1000,
+    "D14MeasuredMillisecondsPerBackend": 28800000,
+    "oldShortDeadlineUnchangedMs": 120000,
+    "originalSharedDrainMs": 2000
+  },
+  "auditSnapshotEvidence": {
+    "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/sbom-prep/NpmSbomValidation.actual.json",
+    "bytes": 24020,
+    "sha256": "a0fe05bb51ae2038fccd048e8bae2be299f13c91a5bf5b1fb2688ca61975b437"
+  },
+  "productExecuted": false,
+  "sourceOrFrozenHelperEdited": false,
+  "indexEdited": false,
+  "releaseReady": false,
+  "productionQualificationComplete": false
+}

@@ -39,6 +39,11 @@
 元数据、格式和工具身份、归档冲突及实际解压一致性。使用新的独立目录
 测量，不覆盖前两批证据或固定已发布 SDK 包。完成后记录真实数据和范围。
 
+`preview.1` 的真实应用[历史测量摘录](../../verification/production-validation/auto-host-pr-2026-10-23/historical-compression.md)
+保留冻结输入身份、归档大小、耗时和工具私有提交量峰值。拆分后 `preview.3`
+复验单列，不把历史收益当作新版本已测结果。默认仍为 ZIP；数据不代表业务
+安装器或目标系统认证。
+
 2026-10-23 的[本轮证据](../../verification/production-validation/compression-profiles-2026-10-23/README.md)
 包含 76 项相关测试、12 个真实归档、36 轮完整解压和 12 次非默认产物装载。
 单应用样本的两档 7z 比 ZIP 小约 33%–36%，解压私有提交量峰值明显增加。

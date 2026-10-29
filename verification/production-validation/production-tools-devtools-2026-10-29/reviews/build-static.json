@@ -1,0 +1,117 @@
+{
+  "schema": "soui.closeout-static-review/v1",
+  "reviewedAtUtc": "2026-10-29T02:09:27.9294480Z",
+  "reviewer": "devtools_auth_pause_closeout",
+  "authorLane": "build_tool_closeout",
+  "baselineCommit": "8b7b57341d78d101ebc317de6cef8ac19b4a7531",
+  "sourceRoot": "C:/sc07",
+  "result": "no-blocking-findings-static-only",
+  "blockingFindings": [],
+  "nonBlockingFindings": [],
+  "reviewedFiles": [
+    {
+      "path": "tools/Build.ps1",
+      "bytes": 15523,
+      "sha256": "7bec1b4577457c18ea30a818e60f7c1a8fa2938fd1fce4a92d34f964c58d5b81"
+    },
+    {
+      "path": "tools/internal/Build-ValidationTools.ps1",
+      "bytes": 9121,
+      "sha256": "622d0a0f10e9437625226338971d09d0bfde6be00bf4bc86b832601b76a67e28"
+    },
+    {
+      "path": "tools/internal/standard-build.cjs",
+      "bytes": 43746,
+      "sha256": "fd632d3f221dbf192038bd68e3fdd46ceceac2d845ea7a03769c8ac155f7c9ab"
+    },
+    {
+      "path": "tests/sdk/compiler-closeout-diagnostics.test.cjs",
+      "bytes": 5044,
+      "sha256": "1c00da169e516b14363ddc38c00bfda32b534cdff4a8581d5fc2ffad4bfb81e2"
+    },
+    {
+      "path": "tests/sdk/msbuild-entrypoint-policy.test.cjs",
+      "bytes": 5014,
+      "sha256": "b8cad0df8d3663ce079e801bf810eca6de3c0d6edfecafe75343a13d98641be7"
+    }
+  ],
+  "supportingReads": [
+    {
+      "path": "tools/internal/CMake-Configure.ps1",
+      "bytes": 11045,
+      "sha256": "c10a6a68510a65421568903d1d091f9a09ce0871b979f895835c31cc88155eba"
+    },
+    {
+      "path": "benchmarks/protocol/owned-process-runner.cpp",
+      "bytes": 25204,
+      "sha256": "a0ee64191247834fd64145f68f26753c5ae2ed11b20b0ebe3272a4e7fc51930a"
+    }
+  ],
+  "checks": [
+    {
+      "topic": "process-local policy scope",
+      "staticConclusion": "Both actual entrypoints capture caller presence/value before mutation, set MSBUILDDISABLENODEREUSE=1 inside the outer try before CMake configuration, and restore and verify captured state in the outer finally. LLVM reuse return also crosses that finally.",
+      "evidence": [
+        "tools/Build.ps1:62",
+        "tools/Build.ps1:78",
+        "tools/Build.ps1:239",
+        "tools/internal/Build-ValidationTools.ps1:16",
+        "tools/internal/Build-ValidationTools.ps1:38",
+        "tools/internal/Build-ValidationTools.ps1:108"
+      ]
+    },
+    {
+      "topic": "native argv backend split",
+      "staticConclusion": "The actual build argument variables are passed to CMake; /nr:false follows -- only in the MSVC branch. LLVM uses --verbose and its existing conditional --clean-first. The unchanged configure helper fixes MSVC to Visual Studio 17 2022 and LLVM to Ninja Multi-Config.",
+      "evidence": [
+        "tools/Build.ps1:213",
+        "tools/Build.ps1:220",
+        "tools/internal/Build-ValidationTools.ps1:85",
+        "tools/internal/Build-ValidationTools.ps1:94",
+        "tools/internal/CMake-Configure.ps1"
+      ]
+    },
+    {
+      "topic": "diagnostics cannot grant acceptance",
+      "staticConclusion": "compilerCloseoutDiagnostics is diagnosticOnly and never sets accepted or compilerTailAcceptance. evaluateBuild keeps verifyStream, generic natural closure and opt-in acceptCompilerTail as its acceptance path. Failure capture preserves original result booleans, exit codes and terminatedOwnedJob.",
+      "evidence": [
+        "tools/internal/standard-build.cjs:189",
+        "tools/internal/standard-build.cjs:226",
+        "tools/internal/standard-build.cjs:291",
+        "tools/internal/standard-build.cjs:489"
+      ]
+    },
+    {
+      "topic": "old post-root enumeration boundary",
+      "staticConclusion": "Only the last job-members record after root-exit is reported, its elapsedMs remains visible, and membersAtCleanupVerified is always false. Matching the terminal count does not change that flag. Unavailable and no-longer-owned observations are retained. The native producer can emit the last enumeration before its drain ends, so this output is not a cleanup-time held identity snapshot.",
+      "evidence": [
+        "tools/internal/standard-build.cjs:206",
+        "tools/internal/standard-build.cjs:211",
+        "benchmarks/protocol/owned-process-runner.cpp:419",
+        "benchmarks/protocol/owned-process-runner.cpp:445"
+      ]
+    },
+    {
+      "topic": "deadline and test boundary",
+      "staticConclusion": "The diff does not alter build timeout/drain options, native cleanup waits or acceptance checks. New tests are narrow retained-stream or AST-extracted model checks; the PowerShell test explicitly models configuration failure and does not invoke CMake or compilers.",
+      "evidence": [
+        "tests/sdk/compiler-closeout-diagnostics.test.cjs",
+        "tests/sdk/msbuild-entrypoint-policy.test.cjs"
+      ]
+    }
+  ],
+  "execution": {
+    "testsRun": false,
+    "buildsRun": false,
+    "nativeProcessesLaunched": false,
+    "vmAccessed": false,
+    "sourceFunctionsInvoked": false,
+    "note": "Read source, diffs and supporting producer/consumer contracts only. This review is not a test result or runtime behavior proof."
+  },
+  "remainingValidation": [
+    "Root must execute the selected narrow Node and PowerShell tests against these exact pins.",
+    "Actual configure/build environment inheritance and natural owned-job closure require the separately authorized focused runtime validation.",
+    "No compiler helper suppression or cleanup-time member identity guarantee is claimed."
+  ],
+  "releaseReady": false
+}

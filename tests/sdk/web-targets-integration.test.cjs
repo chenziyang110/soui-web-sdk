@@ -63,6 +63,7 @@ function fixture(t, configured = true) {
   put('web/pe/index.html', '<!doctype html><main>PE entry</main>\n');
   put('web/public/images/main.png', Buffer.from('SYNTHETIC main image\0'));
   put('web/public/images/account-key.png', Buffer.from('SYNTHETIC PE image\0'));
+  put('LICENSE.md', '# Synthetic first-party license\n');
   put('THIRD_PARTY_NOTICES.md', '# Synthetic legal notices\n');
   put('third_party/licenses/fixture-LICENSE.txt', 'Synthetic legal bytes.\n');
   put(`out/x64/bin/Release/${nativeTarget}/${nativeTarget}.exe`, Buffer.from('SYNTHETIC EXE: never executed\0'));

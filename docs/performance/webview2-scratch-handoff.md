@@ -1,22 +1,23 @@
 # WebView2 / Scratch 性能候选交接
 
-日期：2026-10-29。基线：`c17c79bdf470fae681c63324ceaa2a519151afc9`（包括原工作树的 DevTools / Scratch 源码快照）。本文件仅说明当前 lane；全局体积与 MiniBlink 集成由负责人汇总。
+日期：2026-10-29。主线集成基线：`0cdc0a9ace0cdce664ec4a9b54e5f8f71b97ba48`；移植源候选为 `ce996ac8e534c634ced4389dd06f0a8dba0f0def`。本文件仅说明当前 lane；全局体积与 MiniBlink 集成由负责人汇总。主线已有 owner 输出预序列化、trace、重入守卫与 opaque COM 身份复核均保留。
 
 ## 已实现，待专人编译与运行
 
 - `sdk/renderers/webview2/owner_work_policy.h`：Controller 成功状态去重与失败/重入失效。`webview2_host.cpp` 的首次 bounds、后续 resize/show 使用该策略；验证参数、mounted/owner STA 的检查继续执行。
 - show/resize 与首次 mount 在 COM setter 调用期间分别保留 state 与 Controller 的强所有权；mount 的资源映射和首次 Bounds 返回后还要求 phase 仍为 prepared 且 controller/core/core3 身份一致，否则直接 E_CANCELLED，不挂 Bridge/worker 或复活 closed 状态。回复使用局部 core 强引用并在可重入 COM 边界后重新核对 phase/core/document/generation。取消、导航与销毁不能沿用刚才成功的旧身份。
-- 回复批次保留最多 16 项，再受 2ms 合作式预算约束。第一项可进展；单次 JSON/COM 不可抢占。请求 lease 在 Host mutex 外释放。每输出仍检查 generation/document/source，未跨导航缓存身份。
+- 回复批次保留最多 16 项，再受 2ms 合作式预算约束。主线可选 `SOUI_WEBVIEW2_OWNER_BUDGET_US` 的更紧预算仍有效，`SOUI_WEBVIEW2_PREPARE_OUTPUT` 默认关闭与原 charged credit 不变。第一项可进展；单次 JSON/COM 不可抢占。请求 lease 在 Host mutex 外释放。每输出仍检查 generation/document/source，未跨导航缓存身份。
 - Meter 容量上限 120002，支持最长 120s×1000Hz；结束时排序一次，轮询 snapshot 不反复排序。滚动范围明确保留为诊断且不能 `validForComparison`。旧用户 JSON 不变。
 - 源码能力 `runtime.souiPerformanceCounters` 存在时按记录期间增量收集 steps/draws；原始包无能力时值为 null。目标通知是独立计数，不能替代 VM steps。计数对象只在原为 null 时由本 meter 持有；同 Runtime 的重叠 meter 共享租约，最后一位停止/重启/销毁后才释放，不清除外部 observer 持有的对象。
 - 在已有 WebGL context 中一次读取有界图形身份，不创建额外 Canvas/context。性能面板不可见时不写 DOM，可见时仅变值写入；分位数显示为结束后统计。
 - 原生策略与 JS 生命周期、高刷完整窗口、排序、截断、工作量所有权的回归源码已加入。
 - `measurementVersion:2` 的 `windowRafFps` 覆盖完整实际墙钟窗，`rafCallbacks`、`leadingGapMs`、`trailingGapMs`、`boundaryBudgetMs` 一同保留；旧 `rafFps` 仍是闭合间隔 cadence。超出开始前声明的两帧预算或零回调标 `censored`，主 P50/P95/P99 为 null，`observedFramePercentiles` 仅供诊断。可见且完成的真卡顿与零帧结果仍通过 `validForWindowRateComparison`，以低回调率保留，不能丢弃重试来美化。
 - Electron wrapper/summarizer 使用整窗 gate；采集 pass 与分位数资格独立。历史单轮基线缺少新字段时只保留参考，不补造完整时窗数据或性能通过。面板 stopped/idle 分支清除此前完成状态。
+- 显式 SourceVendor 的 Web 构建和打包复用 `verifySourceVendor`，要求完整对应源码/配置、lock、两个补丁文件、driver 与 provenance module、dist 清单匹配；打包还核对实际 runtime bundle、HTML 及 source record，完整源构建输出随 `source-materials/scratch-source-build/` 交付。实际 source 版本与 reference artifact 版本分别进入包身份，缺失来源或不匹配时拒绝，不回退为原始包。
 
 ## 静态检查
 
-已执行：`node --check demos/scratch/web/performance-meter.js`、同目录 test/app 的语法检查，以及相关路径 `git diff --check`。未运行任何测试、构建、VM 或桌面采样；这些检查不证明运行正确性或性能收益。
+本次主线集成已执行：Scratch 18 个 JS/CJS/MJS 源文件的 `node --check`、Scratch 与 raw W 共 4 个 PowerShell 脚本的 parser 检查，以及相关路径 `git diff --check`。未运行任何测试、构建、VM 或桌面采样；这些检查不证明运行正确性或性能收益。新增构建入口采用主线的 compiler phase 生命周期与进程级 node-reuse 策略，包依赖版本从主线 `dependency.json` 读取，尚待专人真实执行。
 
 ## 专人集中验证入口
 
@@ -35,6 +36,6 @@ Meter 运行中 P95/P99 为 null，结束后固定；censored 时主分位数仍
 
 ## 未采用的条件项与范围
 
-没有本候选 profile，不推断 GPU/controller、VM/纹理/GC 是主瓶颈。Composition controller、VM Worker、跨纹理重排、skin 共享和通用消息身份缓存未默认采用；仍按完整方案保留待证条件。上游 Scratch 源码 patch/build pipeline 和 E/W/S 基准由集成负责人拥有，本 lane 不直接修改缓存、dist 或打包 JS。
+没有本候选 profile，不推断 GPU/controller、VM/纹理/GC 是主瓶颈。Composition controller、VM Worker、跨纹理重排、skin 共享和通用消息身份缓存未默认采用；仍按完整方案保留待证条件。上游 Scratch 源码 patch/build pipeline、Electron 与 raw WebView2 对照工具作为源码交付，未生成缓存、dist 或打包 JS，E/W/S 对照仍待专人执行。
 
 无新增第三方运行依赖；代码改变仍可能增加产物字节。包体、进程内存、CPU 和前后 FPS 均未验收，必须通过共同零增长门禁后才能采用。当前不宣称已对齐 Electron。

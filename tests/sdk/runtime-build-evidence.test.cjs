@@ -44,6 +44,7 @@ function fixture(t, explicit = true) {
   put('sdk/web/package-lock.json', JSON.stringify({version: '0.5.0', packages: {'': {version: '0.5.0'}}}));
   put('sdk/web/dist/index.js', 'export {};');
   put('web/dist/index.html', '<!doctype html><main>runtime fixture</main>');
+  put('LICENSE.md', 'Synthetic first-party license');
   put('THIRD_PARTY_NOTICES.md', 'Synthetic notices');
   put('third_party/licenses/fixture.txt', 'Synthetic license');
   put('project.json', JSON.stringify({nativeTarget: 'RuntimeApp', runtimeProfile: 'compatibility',

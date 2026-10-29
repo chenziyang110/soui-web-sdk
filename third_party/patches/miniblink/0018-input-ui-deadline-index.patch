@@ -1,0 +1,1335 @@
+diff --git a/third_party/sources/miniblink/content/browser/SharedTimerWin.h b/third_party/sources/miniblink/content/browser/SharedTimerWin.h
+index a08d39b1..05d2b7b9 100644
+--- a/third_party/sources/miniblink/content/browser/SharedTimerWin.h
++++ b/third_party/sources/miniblink/content/browser/SharedTimerWin.h
+@@ -1,57 +1,20 @@
+-
+ #ifndef content_browser_SharedTimerWin_h
+ #define content_browser_SharedTimerWin_h
+-
+ #include "content/web_impl_win/WebThreadImpl.h"
+ #include "content/browser/CheckReEnter.h"
+-
+-#include <mmsystem.h>
+ #include <limits>
+-
+-// These aren't in winuser.h with the MSVS 2003 Platform SDK, 
+-// so use default values in that case.
+-#ifndef USER_TIMER_MINIMUM
+-#define USER_TIMER_MINIMUM 0x0000000A
+-#endif
+-
+-#ifndef USER_TIMER_MAXIMUM
+-#define USER_TIMER_MAXIMUM 0x7FFFFFFF
+-#endif
+-
+-#ifndef QS_RAWINPUT
+-#define QS_RAWINPUT         0x0400
+-#endif
+-
+-typedef HANDLE (WINAPI* PfnCreateTimerQueue)();
+-typedef BOOL (WINAPI* PfnDeleteTimerQueueTimer)(HANDLE TimerQueue, HANDLE Timer, HANDLE CompletionEvent);
+-typedef BOOL (WINAPI* PfnCreateTimerQueueTimer)(PHANDLE phNewTimer, HANDLE TimerQueue, void* Callback, PVOID Parameter, DWORD DueTime, DWORD Period, ULONG Flags);
+-
+-PfnCreateTimerQueue pCreateTimerQueue = nullptr;
+-PfnDeleteTimerQueueTimer pDeleteTimerQueueTimer = nullptr;
+-PfnCreateTimerQueueTimer pCreateTimerQueueTimer = nullptr;
+-
++#include <exception>
++#include <math.h>
+ namespace content {
+-
+ const LPCWSTR kTimerWindowClassName = L"MiniBlinkTimerWindowClass";
+- 
+-static UINT_PTR timerID;
+-static UINT_PTR nativeTimerSerial = 1001; // Above both reserved legacy timer IDs.
+-static void sharedTimerFiredFunction();
+-
+-static HANDLE timer;
+-static HWND timerWindowHandle = 0;
+-
+-static UINT timerFiredMessage = 0;
+-// A successful cross-thread admission may request a wake. The lock protects
+-// only publication/post/close, never task execution or a native window callback.
++static HWND timerWindowHandle = nullptr, continuationWindow = nullptr;
++static UINT continuationMessage = 0, timerFiredMessage = 0;
+ static SRWLOCK continuationLock = SRWLOCK_INIT;
+-static UINT continuationMessage = 0;
+-static HWND continuationWindow = nullptr;
+-static UINT_PTR continuationSerial = 0;
+-static UINT_PTR pendingContinuation = 0;
+-static bool continuationClosed = true;
+-static bool continuationDeferred = false;
+-
++static UINT_PTR continuationSerial = 0, pendingContinuation = 0;
++static UINT_PTR nativeTimerSerial = 1001, timerID = 0, deadlineTicket = 0;
++static bool continuationClosed = true, continuationDeferred = false, deadlineRetry = false;
++static HANDLE deadlineTimer = nullptr, deadlineWait = nullptr;
++static double armedDeadline = 0;
+ class SharedTimerContinuationLock {
+ public:
+     SharedTimerContinuationLock() { ::AcquireSRWLockExclusive(&continuationLock); }
+@@ -60,257 +23,203 @@ private:
+     SharedTimerContinuationLock(const SharedTimerContinuationLock&) = delete;
+     SharedTimerContinuationLock& operator=(const SharedTimerContinuationLock&) = delete;
+ };
+-static HANDLE timerQueue;
+-static bool highResTimerActive;
+-static bool processingCustomTimerMessage = false;
+-static LONG pendingTimers;
+-static double lastIntervalInMS = 0;
+-
+-const int timerResolution = 1; // To improve timer resolution, we call timeBeginPeriod/timeEndPeriod with this value to increase timer resolution to 1ms.
+-const int highResolutionThresholdMsec = 16; // Only activate high-res timer for sub-16ms timers (Windows can fire timers at 16ms intervals without changing the system resolution).
+-const int stopHighResTimerInMsec = 300; // Stop high-res timer after 0.3 seconds to lessen power consumption (we don't use a smaller time since oscillating between high and low resolution breaks timer accuracy on XP).
+-
+-enum {
+-    sharedTimerID = 1000,
+-    endHighResTimerID = 1001,
+-};
++static void initializeOffScreenTimerWindow();
++static void setSharedTimerFireDeadline(double);
++static void sharedTimerFiredFunction();
+ 
+-static void requestSharedTimerContinuation()
++// Static DLL state plus a ticket: no task/owner pointer crosses this boundary.
++static VOID CALLBACK sharedDeadlineSignaled(PVOID parameter, BOOLEAN)
+ {
++    const UINT_PTR ticket = reinterpret_cast<UINT_PTR>(parameter);
++    HWND window = nullptr;
++    UINT message = 0;
++    {
++        SharedTimerContinuationLock lock;
++        if (continuationClosed || !ticket || ticket != deadlineTicket) return;
++        window = continuationWindow; message = timerFiredMessage;
++        if (::PostMessage(window, message, ticket, 0)) return;
++        // Native SetTimer can also have failed. Retain explicit owner work
++        // rather than claiming that an unverified fallback owns the deadline.
++        continuationDeferred = true;
++    }
++    // No publication lock across a native call that may enter the owner. This
++    // callback never unregisters its own wait or closes/rearms its timer.
++    if (::GetWindowThreadProcessId(window, nullptr) != ::GetCurrentThreadId())
++        ::SendNotifyMessageW(window, message, ticket, 0);
++}
++static void cancelSharedTimerDeadline()
++{
++    HANDLE wait = nullptr;
++    {
++        SharedTimerContinuationLock lock;
++        deadlineTicket = 0; armedDeadline = 0;
++        deadlineRetry = false;
++        wait = deadlineWait; deadlineWait = nullptr;
++    }
++    // Callback takes publication lock. Wait outside it before HANDLE reuse.
++    if (wait && !::UnregisterWaitEx(wait, INVALID_HANDLE_VALUE)) std::terminate();
++    if (deadlineTimer) ::CancelWaitableTimer(deadlineTimer);
++    if (timerID) { ::KillTimer(timerWindowHandle, timerID); timerID = 0; }
++}
++static bool requestSharedTimerContinuation()
++{
++    HWND window = nullptr;
++    UINT_PTR ticket = 0;
++    {
++        SharedTimerContinuationLock lock;
++        if (continuationClosed || continuationDeferred || !continuationWindow) return false;
++        if (pendingContinuation) return true;
++        if (continuationSerial == (std::numeric_limits<UINT_PTR>::max)()) return false;
++        ticket = pendingContinuation = ++continuationSerial;
++        window = continuationWindow;
++        if (::PostMessage(window, continuationMessage, ticket, 0)) return true;
++    }
++    // Cross-thread SendNotifyMessage returns without waiting for the owner and
++    // does not depend on a free posted-message slot. Same-thread fallback stays
++    // deferred, preserving postTask's asynchronous execution contract.
++    if (::GetWindowThreadProcessId(window, nullptr) != ::GetCurrentThreadId()
++        && ::SendNotifyMessageW(window, continuationMessage, ticket, 0)) return true;
+     SharedTimerContinuationLock lock;
+-    if (continuationClosed || continuationDeferred || pendingContinuation || !continuationWindow || !continuationMessage
+-        || continuationSerial == (std::numeric_limits<UINT_PTR>::max)())
+-        return;
+-    pendingContinuation = ++continuationSerial;
+-    if (!::PostMessage(continuationWindow, continuationMessage, pendingContinuation, 0))
+-        pendingContinuation = 0; // The periodic timer remains the fallback.
++    if (pendingContinuation == ticket) pendingContinuation = 0;
++    return false;
++}
++static void armSharedTimerRecovery()
++{
++    // Only unresolved work owns this low-priority compatibility opportunity.
++    setSharedTimerFireDeadline(monotonicallyIncreasingTime() + 0.010);
+ }
+-
+ static LRESULT CALLBACK TimerWindowWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+ {
+     if (continuationMessage && message == continuationMessage) {
+         {
+             SharedTimerContinuationLock lock;
+-            // A stale delivery must not consume a newer wake, including after
+-            // window reuse. Tickets are never reset within the DLL lifetime.
+-            if (continuationClosed || hWnd != continuationWindow || !pendingContinuation
+-                || wParam != pendingContinuation)
+-                return 0;
+-            pendingContinuation = 0;
+-            // Producers must not refill posted messages while native input
+-            // is waiting. A real scheduler turn reopens the wake gate.
+-            continuationDeferred = true;
++            if (continuationClosed || hWnd != continuationWindow || !pendingContinuation || wParam != pendingContinuation) return 0;
++            pendingContinuation = 0; continuationDeferred = true;
+         }
+-        // Consume before checking reentry so a nested delivery cannot latch a
+-        // wake forever. No dependency lock is held while entering the scheduler.
+-        if (CheckReEnter::getEnterCount())
+-            return 0;
+         const UINT nativeWork = QS_INPUT | QS_PAINT | QS_TIMER | QS_HOTKEY;
+-        if (HIWORD(::GetQueueStatus(nativeWork)) & nativeWork)
+-            return 0; // Yield to native work; do not immediately repost.
+-        CheckReEnter::incrementEnterCount();
+-        sharedTimerFiredFunction();
+-        CheckReEnter::decrementEnterCount();
+-        return 0;
+-    }
+-    if (message == WM_TIMER || message == timerFiredMessage) {
+-        SharedTimerContinuationLock lock;
+-        // KillTimer does not remove a message already fetched by the owner.
+-        // Reject deliveries from a closed or replaced window before callbacks.
+-        if (continuationClosed || hWnd != continuationWindow
+-            || (message == WM_TIMER && wParam != timerID && wParam != endHighResTimerID))
+-            return 0;
+-    }
+-    if (0 != CheckReEnter::getEnterCount())
+-        return 0;
+-    CheckReEnter::incrementEnterCount();
+-
+-    LRESULT result = 0;
+-    if (message == WM_TIMER) {
+-        if (timerID && wParam == timerID) {
+-            //KillTimer(timerWindowHandle, sharedTimerID);
+-            sharedTimerFiredFunction();
+-        } else if (wParam == endHighResTimerID) {
+-            //KillTimer(timerWindowHandle, endHighResTimerID);
+-            highResTimerActive = false;
+-            timeEndPeriod(timerResolution);
++        if (CheckReEnter::getEnterCount() || (HIWORD(::GetQueueStatus(nativeWork)) & nativeWork)) {
++            armSharedTimerRecovery(); return 0;
+         }
+-    } else if (message == timerFiredMessage) {
+-        if (!InterlockedExchange(&pendingTimers, 0)) {
+-            CheckReEnter::decrementEnterCount();
+-            return 0;
++    } else if (message == timerFiredMessage || message == WM_TIMER) {
++        {
++            SharedTimerContinuationLock lock;
++            if (continuationClosed || hWnd != continuationWindow || !deadlineTicket || wParam != deadlineTicket) return 0;
+         }
+-        processingCustomTimerMessage = true;
+-        sharedTimerFiredFunction();
+-        processingCustomTimerMessage = false;
+-    } else
+-        result = DefWindowProc(hWnd, message, wParam, lParam);
+-
++        if (CheckReEnter::getEnterCount()) { armSharedTimerRecovery(); return 0; }
++        if (armedDeadline > monotonicallyIncreasingTime()) {
++            const double deadline = armedDeadline;
++            cancelSharedTimerDeadline(); setSharedTimerFireDeadline(deadline); return 0;
++        }
++    } else return DefWindowProc(hWnd, message, wParam, lParam);
++    cancelSharedTimerDeadline();
++    CheckReEnter::incrementEnterCount();
++    sharedTimerFiredFunction();
+     CheckReEnter::decrementEnterCount();
+-    return result;
++    return 0;
+ }
+-
+ static void sharedTimerFiredFunction()
+ {
+     {
+         SharedTimerContinuationLock lock;
+-        if (!continuationClosed)
+-            continuationDeferred = false;
++        if (continuationClosed) return;
++        continuationDeferred = false;
+     }
+-    content::WebThreadImpl* threadImpl = nullptr;
+-    threadImpl = (content::WebThreadImpl*)(blink::Platform::current()->currentThread());
+-    threadImpl->fire();
++    auto* thread = static_cast<WebThreadImpl*>(blink::Platform::current()->currentThread());
++    if (thread) thread->fire();
+ }
+-
+-static void NTAPI queueTimerProc(PVOID, BOOLEAN)
++static void serviceSharedTimerOwnerOpportunity()
+ {
+-    if (InterlockedIncrement(&pendingTimers) == 1)
+-        ::PostMessage(timerWindowHandle, timerFiredMessage, 0, 0);
++    bool deferred = false;
++    {
++        SharedTimerContinuationLock lock;
++        deferred = !continuationClosed && (continuationDeferred || deadlineRetry);
++    }
++    if (deferred && !CheckReEnter::getEnterCount()) {
++        cancelSharedTimerDeadline();
++        CheckReEnter::incrementEnterCount();
++        sharedTimerFiredFunction();
++        CheckReEnter::decrementEnterCount();
++    }
+ }
+-
+-static void initializeOffScreenTimerWindow();
+-
+-void setSharedTimerFireInterval(double interval)
++static void createSharedDeadlineTimer()
++{
++    if (deadlineTimer) return;
++    typedef HANDLE (WINAPI* CreateTimerEx)(LPSECURITY_ATTRIBUTES, LPCWSTR, DWORD, DWORD);
++    const auto createTimerEx = reinterpret_cast<CreateTimerEx>(::GetProcAddress(::GetModuleHandleW(L"kernel32.dll"), "CreateWaitableTimerExW"));
++    // Unsupported flag on Win7 fails, then uses its compatible waitable timer.
++    if (createTimerEx) deadlineTimer = createTimerEx(nullptr, nullptr, 0x00000002, TIMER_ALL_ACCESS);
++    if (!deadlineTimer) deadlineTimer = ::CreateWaitableTimerW(nullptr, FALSE, nullptr);
++}
++static void setSharedTimerFireDeadline(double deadline)
+ {
+-    unsigned intervalInMS;
+-    interval *= 1000;
+-    if (interval > USER_TIMER_MAXIMUM)
+-        intervalInMS = USER_TIMER_MAXIMUM;
+-    else
+-        intervalInMS = static_cast<unsigned>(interval);
+-
+-    if (lastIntervalInMS == intervalInMS)
+-        return;
+     initializeOffScreenTimerWindow();
+-    if (!timerWindowHandle)
+-        return; // Never create an unrelated thread timer on window failure.
+-    bool timerSet = false;
+-
+-    // shouldUseHighResolutionTimers begin
+-#if 0
+-    if (interval < highResolutionThresholdMsec) {
+-        if (!highResTimerActive) {
+-            highResTimerActive = true;
+-            timeBeginPeriod(timerResolution);
+-        }
+-        SetTimer(timerWindowHandle, endHighResTimerID, stopHighResTimerInMsec, 0);
+-    }
+-
+-    DWORD queueStatus = LOWORD(GetQueueStatus(QS_PAINT | QS_MOUSEBUTTON | QS_KEY | QS_RAWINPUT));
+-
+-    // Win32 has a tri-level queue with application messages > user input > WM_PAINT/WM_TIMER.
+-
+-    // If the queue doesn't contains input events, we use a higher priorty timer event posting mechanism.
+-    if (!(queueStatus & (QS_MOUSEBUTTON | QS_KEY | QS_RAWINPUT))) {
+-        if (intervalInMS < USER_TIMER_MINIMUM && !processingCustomTimerMessage && !(queueStatus & QS_PAINT)) {
+-            // Call PostMessage immediately if the timer is already expired, unless a paint is pending.
+-            // (we prioritize paints over timers)
+-            if (InterlockedIncrement(&pendingTimers) == 1)
+-                PostMessage(timerWindowHandle, timerFiredMessage, 0, 0);
+-            timerSet = true;
+-        } else {
+-            // Otherwise, delay the PostMessage via a CreateTimerQueueTimer
+-            if (!timerQueue)
+-                timerQueue = ::pCreateTimerQueue();
+-            if (timer)
+-                ::pDeleteTimerQueueTimer(timerQueue, timer, 0);
+-            timerSet = ::pCreateTimerQueueTimer(&timer, timerQueue, queueTimerProc, 0, intervalInMS, 0, WT_EXECUTEINTIMERTHREAD | WT_EXECUTEONLYONCE);
++    if (continuationClosed || !timerWindowHandle) return;
++    if (deadline > 0 && deadline == armedDeadline && deadlineTicket) return;
++    cancelSharedTimerDeadline();
++    if (!(deadline > 0) || nativeTimerSerial == (std::numeric_limits<UINT_PTR>::max)()) return;
++    const UINT_PTR ticket = ++nativeTimerSerial;
++    createSharedDeadlineTimer();
++    const double remaining = deadline - monotonicallyIncreasingTime();
++    const double milliseconds = remaining > 0 ? ceil(remaining * 1000.0) : 1.0;
++    const UINT fallback = milliseconds >= 0x7fffffff ? 0x7fffffff : static_cast<UINT>(milliseconds);
++    {
++        SharedTimerContinuationLock lock;
++        deadlineTicket = ticket; armedDeadline = deadline;
++        // Immediate signal is serialized until the registered wait is retained.
++        if (deadlineTimer) {
++            LARGE_INTEGER due;
++            const double ticks = remaining > 0 ? ceil(remaining * 10000000.0) : 1.0;
++            due.QuadPart = -static_cast<LONGLONG>(ticks < 9.0e18 ? ticks : 9.0e18);
++            if (::SetWaitableTimer(deadlineTimer, &due, 0, nullptr, nullptr, FALSE))
++                ::RegisterWaitForSingleObject(&deadlineWait, deadlineTimer, sharedDeadlineSignaled,
++                    reinterpret_cast<PVOID>(ticket), INFINITE, WT_EXECUTEONLYONCE);
+         }
+     }
+-    // shouldUseHighResolutionTimers end
+-#endif
+-    if (timerSet) {
+-        if (timerID) {
+-            ::KillTimer(timerWindowHandle, timerID);
+-            timerID = 0;
+-        }
+-    } else {
+-        // Native timer IDs also never alias a previous owner incarnation.
+-        if (!timerID && nativeTimerSerial != (std::numeric_limits<UINT_PTR>::max)())
+-            timerID = ++nativeTimerSerial;
+-        if (timerID && SetTimer(timerWindowHandle, timerID, intervalInMS, 0))
+-            lastIntervalInMS = intervalInMS;
+-        else {
+-            if (timerID)
+-                ::KillTimer(timerWindowHandle, timerID);
+-            timerID = 0;
+-            lastIntervalInMS = -1; // Failed replacement must not suppress a retry.
+-        }
+-        timer = 0;
++    // Ticketed native timer covers wait creation/registration/post failure.
++    if (::SetTimer(timerWindowHandle, ticket, fallback, nullptr)) timerID = ticket;
++    else if (!deadlineWait) {
++        SharedTimerContinuationLock lock;
++        armedDeadline = 0; deadlineTicket = 0;
++        deadlineRetry = true; // Owner opportunity must retry future-only work too.
+     }
+ }
+-
++void setSharedTimerFireInterval(double interval)
++{
++    setSharedTimerFireDeadline(interval >= 0 ? monotonicallyIncreasingTime() + interval : 0);
++}
+ void stopSharedTimer()
+ {
+     {
+         SharedTimerContinuationLock lock;
+-        continuationClosed = true;
+-        continuationWindow = nullptr;
+-        pendingContinuation = 0;
+-        continuationDeferred = false;
+-    }
+-    if (timerQueue && timer) {
+-        ::pDeleteTimerQueueTimer(timerQueue, timer, 0);
+-        timer = 0;
++        continuationClosed = true; continuationWindow = nullptr;
++        pendingContinuation = 0; continuationDeferred = false;
+     }
+-
+-    if (timerID) {
+-        ::KillTimer(timerWindowHandle, timerID);
+-        timerID = 0;
++    cancelSharedTimerDeadline();
++    if (deadlineTimer) {
++        if (!::CloseHandle(deadlineTimer)) std::terminate();
++        deadlineTimer = nullptr; // Failed close retains the only reference.
+     }
+-
+-    const HWND closedWindow = timerWindowHandle;
+-    timerWindowHandle = nullptr;
+-    lastIntervalInMS = -1; // The same interval must initialize a new owner window.
+-    InterlockedExchange(&pendingTimers, 0);
+-    processingCustomTimerMessage = false;
+-    if (closedWindow)
+-        ::DestroyWindow(closedWindow);
+-    ::UnregisterClassW(kTimerWindowClassName, NULL);
++    const HWND closed = timerWindowHandle; timerWindowHandle = nullptr;
++    if (closed) ::DestroyWindow(closed);
++    ::UnregisterClassW(kTimerWindowClassName, nullptr);
+ }
+-
+ static void initializeOffScreenTimerWindow()
+ {
+-    if (timerWindowHandle)
+-        return;
+-
+-    HMODULE hMod = GetModuleHandle(L"Kernel32.dll");
+-    pCreateTimerQueue = (PfnCreateTimerQueue)::GetProcAddress(hMod, "CreateTimerQueue");
+-    pDeleteTimerQueueTimer = (PfnDeleteTimerQueueTimer)::GetProcAddress(hMod, "DeleteTimerQueueTimer");
+-    pCreateTimerQueueTimer = (PfnCreateTimerQueueTimer)::GetProcAddress(hMod, "CreateTimerQueueTimer");
+-
+-    WNDCLASSEX wcex = { 0 };
+-    wcex.cbSize = sizeof(WNDCLASSEX);
+-    wcex.lpfnWndProc = TimerWindowWndProc;
+-    wcex.hInstance = ::GetModuleHandle(NULL);
+-    wcex.lpszClassName = kTimerWindowClassName;
+-    ::RegisterClassEx(&wcex);
+-
+-    timerWindowHandle = CreateWindowExW(
+-        0,        // window ex-style
+-        kTimerWindowClassName,    // window class name
+-        L"OffScreenTimer", // window caption
+-        WS_POPUP,         // window style
+-        1,              // initial x position
+-        1,              // initial y position
+-        1,          // initial x size
+-        1,         // initial y size
+-        NULL,         // parent window handle
+-        NULL,           // window menu handle
+-        GetModuleHandleW(NULL),           // program instance handle
+-        NULL);         // creation parameters
+-                       //::SetTimer(timerWindowHandle, (UINT_PTR)timerWindowHandle, 50, 0);
+-
+-    timerFiredMessage = RegisterWindowMessage(L"com.weolar.Miniblink.TimerFired");
+-    continuationMessage = RegisterWindowMessage(L"com.weolar.Miniblink.ReadyTaskContinuation");
+-    {
+-        SharedTimerContinuationLock lock;
+-        continuationWindow = timerWindowHandle;
+-        continuationClosed = !continuationWindow || !continuationMessage;
+-        continuationDeferred = false;
+-    }
+-}
+-
++    if (timerWindowHandle) return;
++    WNDCLASSEX windowClass = { 0 };
++    windowClass.cbSize = sizeof(windowClass);
++    windowClass.lpfnWndProc = TimerWindowWndProc;
++    windowClass.hInstance = ::GetModuleHandleW(nullptr);
++    windowClass.lpszClassName = kTimerWindowClassName;
++    ::RegisterClassExW(&windowClass);
++    timerWindowHandle = ::CreateWindowExW(0, kTimerWindowClassName, L"OffScreenTimer", WS_POPUP,
++        1, 1, 1, 1, nullptr, nullptr, windowClass.hInstance, nullptr);
++    timerFiredMessage = ::RegisterWindowMessageW(L"com.weolar.Miniblink.DeadlineReady.v1");
++    continuationMessage = ::RegisterWindowMessageW(L"com.weolar.Miniblink.ReadyTaskContinuation");
++    SharedTimerContinuationLock lock;
++    continuationWindow = timerWindowHandle;
++    continuationClosed = !continuationWindow || !continuationMessage || !timerFiredMessage;
++    continuationDeferred = false;
+ }
+-
+-#endif // SharedTimerWin_h
+\ No newline at end of file
++} // namespace content
++#endif // content_browser_SharedTimerWin_h
+diff --git a/third_party/sources/miniblink/content/web_impl_win/TaskSchedulingIndex.h b/third_party/sources/miniblink/content/web_impl_win/TaskSchedulingIndex.h
+new file mode 100644
+index 00000000..3c81215d
+--- /dev/null
++++ b/third_party/sources/miniblink/content/web_impl_win/TaskSchedulingIndex.h
+@@ -0,0 +1,214 @@
++#ifndef TaskSchedulingIndex_h
++#define TaskSchedulingIndex_h
++#include <algorithm>
++#include <cstddef>
++#include <cstdint>
++#include <limits>
++#include <memory>
++#include <stdexcept>
++#include <vector>
++namespace content { namespace task_scheduling {
++
++// Owning containers retain payload lifetime. This is an intrusive indexed view:
++// one pointer per active item. Four canonical empty buckets retain capacity;
++// other empty nodes retire. Cached statistics include retained vector capacity.
++class DeadlinePriorityIndex {
++public:
++    struct Entry {
++        void* value = nullptr;
++        double deadline = 0;
++        int priority = 0;
++        std::size_t position = absent();
++        std::uint64_t order = 0;
++        static std::size_t absent() { return (std::numeric_limits<std::size_t>::max)(); }
++    };
++    struct Statistics { std::size_t entries = 0, nodes = 0, bytes = 0; };
++    Statistics statistics() const noexcept { return m_root ? m_root->statistics : Statistics{}; }
++    void prepare(int priority, bool replacing = false)
++    {
++        if (m_order == (std::numeric_limits<std::uint64_t>::max)())
++            throw std::overflow_error("scheduler index order exhausted");
++        Node* node = find(m_root.get(), priority);
++        if (!node) {
++            auto created = std::unique_ptr<Node>(new Node(priority));
++            created->items.reserve(4);
++            m_root = ensure(std::move(m_root), std::move(created));
++            node = find(m_root.get(), priority);
++        }
++        if (!replacing && node->items.size() == node->items.capacity()) {
++            const std::size_t size = node->items.size();
++            if (size == node->items.max_size()) throw std::bad_alloc();
++            const std::size_t grown = size > node->items.max_size() / 2 ? node->items.max_size() : (size ? size * 2 : 4);
++            node->items.reserve(grown);
++        }
++        refresh(m_root.get(), priority);
++    }
++    void discardEmpty(int priority) noexcept
++    {
++        const Node* node = find(m_root.get(), priority);
++        if (node && node->items.empty() && !retained(priority)) m_root = remove(std::move(m_root), priority);
++    }
++    void insert(Entry& entry) noexcept
++    {
++        Node* node = find(m_root.get(), entry.priority);
++        entry.order = ++m_order;
++        entry.position = node->items.size();
++        node->items.push_back(&entry); // prepare() reserves before caller mutation.
++        up(node->items, entry.position);
++        refresh(m_root.get(), entry.priority);
++    }
++    void erase(Entry& entry, bool keepEmpty = false) noexcept
++    {
++        if (entry.position == Entry::absent()) return;
++        Node* node = find(m_root.get(), entry.priority);
++        auto& items = node->items;
++        const std::size_t position = entry.position;
++        if (position + 1 != items.size()) { items[position] = items.back(); items[position]->position = position; }
++        items.pop_back(); entry.position = Entry::absent();
++        if (position < items.size()) {
++            if (position && earlier(items[position], items[(position - 1) / 2])) up(items, position);
++            else down(items, position);
++        }
++        if (items.empty() && !keepEmpty && !retained(entry.priority)) m_root = remove(std::move(m_root), entry.priority);
++        else refresh(m_root.get(), entry.priority);
++    }
++    Entry* firstEligible(double now) const noexcept { return eligible(m_root.get(), now); }
++    Entry* oldest() const noexcept
++    {
++        return m_root && m_root->minimum != infinity() ? eligible(m_root.get(), m_root->minimum) : nullptr;
++    }
++    Entry* select(double now, bool draining) const noexcept
++    {
++        Entry* first = oldest();
++        if (!first) return nullptr;
++        if (!draining && first->deadline <= now - 0.050) return first;
++        return firstEligible(draining ? infinity() : now);
++    }
++    bool hasReadyAtOrAbove(int priority, double now) const noexcept
++    {
++        const Entry* entry = firstEligible(now);
++        return entry && entry->priority >= priority;
++    }
++private:
++    struct Node {
++        explicit Node(int value) : priority(value) {}
++        int priority, height = 1;
++        double minimum = infinity();
++        std::vector<Entry*> items;
++        std::unique_ptr<Node> left, right;
++        Statistics statistics;
++    };
++    static bool retained(int priority) noexcept { return priority == 0 || priority == 100 || priority == 200 || priority == 300; }
++    static double infinity() { return (std::numeric_limits<double>::infinity)(); }
++    static int height(const std::unique_ptr<Node>& node) { return node ? node->height : 0; }
++    static void update(Node* node) noexcept
++    {
++        node->height = 1 + (std::max)(height(node->left), height(node->right));
++        node->minimum = node->items.empty() ? infinity() : node->items.front()->deadline;
++        if (node->left) node->minimum = (std::min)(node->minimum, node->left->minimum);
++        if (node->right) node->minimum = (std::min)(node->minimum, node->right->minimum);
++        node->statistics = {node->items.size(), 1, sizeof(Node) + node->items.capacity() * sizeof(Entry*)};
++        for (const Node* child : {node->left.get(), node->right.get()}) if (child) {
++            node->statistics.entries += child->statistics.entries;
++            node->statistics.nodes += child->statistics.nodes;
++            node->statistics.bytes += child->statistics.bytes;
++        }
++    }
++    static std::unique_ptr<Node> rotateLeft(std::unique_ptr<Node> node) noexcept
++    {
++        auto next = std::move(node->right);
++        node->right = std::move(next->left); update(node.get());
++        next->left = std::move(node); update(next.get()); return next;
++    }
++    static std::unique_ptr<Node> rotateRight(std::unique_ptr<Node> node) noexcept
++    {
++        auto next = std::move(node->left);
++        node->left = std::move(next->right); update(node.get());
++        next->right = std::move(node); update(next.get()); return next;
++    }
++    static std::unique_ptr<Node> balance(std::unique_ptr<Node> node) noexcept
++    {
++        if (!node) return node;
++        update(node.get());
++        const int difference = height(node->left) - height(node->right);
++        if (difference > 1) {
++            if (height(node->left->left) < height(node->left->right)) node->left = rotateLeft(std::move(node->left));
++            return rotateRight(std::move(node));
++        }
++        if (difference < -1) {
++            if (height(node->right->right) < height(node->right->left)) node->right = rotateRight(std::move(node->right));
++            return rotateLeft(std::move(node));
++        }
++        return node;
++    }
++    static std::unique_ptr<Node> ensure(std::unique_ptr<Node> node, std::unique_ptr<Node> created) noexcept
++    {
++        if (!node) return created;
++        if (created->priority < node->priority) node->left = ensure(std::move(node->left), std::move(created));
++        else node->right = ensure(std::move(node->right), std::move(created));
++        return balance(std::move(node));
++    }
++    static Node* find(Node* node, int priority) noexcept
++    {
++        while (node && node->priority != priority) node = priority < node->priority ? node->left.get() : node->right.get();
++        return node;
++    }
++    static void refresh(Node* node, int priority) noexcept
++    {
++        if (!node) return;
++        if (priority < node->priority) refresh(node->left.get(), priority);
++        else if (priority > node->priority) refresh(node->right.get(), priority);
++        update(node);
++    }
++    static std::unique_ptr<Node> extractMinimum(std::unique_ptr<Node>& node) noexcept
++    {
++        if (!node->left) { auto result = std::move(node); node = std::move(result->right); return result; }
++        auto result = extractMinimum(node->left); node = balance(std::move(node)); return result;
++    }
++    static std::unique_ptr<Node> remove(std::unique_ptr<Node> node, int priority) noexcept
++    {
++        if (priority < node->priority) node->left = remove(std::move(node->left), priority);
++        else if (priority > node->priority) node->right = remove(std::move(node->right), priority);
++        else {
++            if (!node->left) return std::move(node->right);
++            if (!node->right) return std::move(node->left);
++            auto next = extractMinimum(node->right);
++            next->left = std::move(node->left); next->right = std::move(node->right); node = std::move(next);
++        }
++        return balance(std::move(node));
++    }
++    static Entry* eligible(Node* node, double now) noexcept
++    {
++        if (!node || node->minimum > now) return nullptr;
++        if (node->right && node->right->minimum <= now) return eligible(node->right.get(), now);
++        if (!node->items.empty() && node->items.front()->deadline <= now) return node->items.front();
++        return eligible(node->left.get(), now);
++    }
++    static bool earlier(const Entry* a, const Entry* b) noexcept
++    {
++        return a->deadline < b->deadline || (a->deadline == b->deadline && a->order < b->order);
++    }
++    static void swap(std::vector<Entry*>& items, std::size_t a, std::size_t b) noexcept
++    {
++        std::swap(items[a], items[b]); items[a]->position = a; items[b]->position = b;
++    }
++    static void up(std::vector<Entry*>& items, std::size_t index) noexcept
++    {
++        while (index && earlier(items[index], items[(index - 1) / 2])) { const auto parent = (index - 1) / 2; swap(items,index,parent); index=parent; }
++    }
++    static void down(std::vector<Entry*>& items, std::size_t index) noexcept
++    {
++        for (;;) {
++            std::size_t child = index * 2 + 1;
++            if (child >= items.size()) return;
++            if (child + 1 < items.size() && earlier(items[child + 1], items[child])) ++child;
++            if (!earlier(items[child], items[index])) return;
++            swap(items,index,child); index=child;
++        }
++    }
++    std::unique_ptr<Node> m_root;
++    std::uint64_t m_order = 0;
++};
++
++} } // namespace content::task_scheduling
++#endif
+diff --git a/third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp b/third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp
+index afb13590..46a7ecbb 100644
+--- a/third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp
++++ b/third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp
+@@ -103,14 +103,12 @@ WebThreadImpl::WebThreadImpl(const char* name)
+     , m_threadClosed(false)
+     , m_firingTimers(0)
+     , m_webSchedulerImpl(nullptr)
+-    , m_taskPairAdmissionCursor(0)
+     , m_isObserversDirty(false)
+     , m_name(name)
+     , m_suspendTimerQueue(false)
+     , m_hadThreadInit(false)
+     , m_threadHandle(nullptr)
+     , m_hasPlatformRegistration(false)
+-    , m_currentFrameCreateTime(0)
+     , m_isMainThread(0 == strcmp("MainThread", name))
+ {
+     std::unique_ptr<WebSchedulerImpl> scheduler(new WebSchedulerImpl(this));
+@@ -260,15 +258,16 @@ void WebThreadImpl::threadEntryPoint()
+         DWORD dReturn = ::WaitForSingleObject(m_hEvent, INFINITE);
+ 
+         startTriggerTasks();
++        retireCompletedTasksForOwner(); // A retirement-only worker wake must consume its bounded backlog.
+ 
+-        while (!m_timerHeap.empty() && !m_willExit) {
++        while ((!m_timerHeap.empty() || hasPendingTaskAdmission()) && !m_willExit) {
+             schedulerTasks();
+-            if (m_timerHeap.empty() || m_willExit)
+-                break;
++            if (m_willExit) break;
++            if (m_timerHeap.empty()) continue;
+             // Wait for the actual next deadline rather than imposing a fixed
+             // 10ms pause on raster/compositor work. A new task or shutdown
+             // signals m_hEvent and interrupts this wait immediately.
+-            double remainingMs = (m_timerHeap[0]->m_nextFireTime - currentTime()) * 1000.0;
++            double remainingMs = (m_timerHeap[0]->m_nextFireTime - monotonicallyIncreasingTime()) * 1000.0;
+             DWORD waitMs = 1;
+             if (remainingMs > 1.0)
+                 waitMs = remainingMs >= 1000.0 ? 1000 : static_cast<DWORD>(remainingMs + 0.999);
+@@ -331,10 +330,10 @@ void WebThreadImpl::postDelayedTaskWithPriorityCrossThread(
+ 
+     if (isCurrentThread()) {
+         // Without a cross-thread insertion order, startFromOtherThread calls
+-        // start(), which already samples currentTime() for every delay.
++        // start(), which already samples monotonicallyIncreasingTime() for every delay.
+         postDelayedTaskImpl(location, payload.release(), delayMs, nullptr, priority, nullptr);
+         if (m_isMainThread && !m_firingTimers && !m_willExit
+-            && !m_timerHeap.empty() && m_timerHeap[0]->m_nextFireTime <= currentTime())
++            && !m_timerHeap.empty() && m_timerHeap[0]->m_nextFireTime <= monotonicallyIncreasingTime())
+             requestSharedTimerContinuation();
+         return;
+     }
+@@ -350,12 +349,16 @@ void WebThreadImpl::postDelayedTaskWithPriorityCrossThread(
+         return; // Pair owns the rejected payload outside the critical section.
+     }
+     try {
++        m_pendingIndex.prepare(priority);
++        pair->pendingPosition = m_taskPairsToPost.size();
+         m_taskPairsToPost.push_back(pair.get());
++        m_pendingIndex.insert(pair->scheduling);
+ #if defined(SOUI_WORKER_SHUTDOWN_DIAGNOSTICS) && SOUI_WORKER_SHUTDOWN_DIAGNOSTICS
+         pair->task->diagnosticQueueCommitted(); // Actual insertion, still serialized with willExit.
+ #endif
+         pair.release();
+     } catch (...) {
++        m_pendingIndex.discardEmpty(priority);
+         ::LeaveCriticalSection(&m_taskPairsMutex);
+         return;
+     }
+@@ -373,45 +376,24 @@ void WebThreadImpl::postDelayedTask(const blink::WebTraceLocation& location, bli
+ 
+ bool WebThreadImpl::hasReadyTaskAtOrAbove(int minimumPriority)
+ {
+-    const double now = currentTime();
+-    bool hasReadyTask = false;
++    const double now = monotonicallyIncreasingTime();
+     ::EnterCriticalSection(&m_taskPairsMutex);
+-    for (size_t i = 0; i < m_taskPairsToPost.size(); ++i) {
+-        const TaskPair* pair = m_taskPairsToPost[i];
+-        if (pair->priority >= minimumPriority
+-            && pair->createTime + static_cast<double>(pair->delayMs) / 1000.0 <= now) {
+-            hasReadyTask = true;
+-            break;
+-        }
+-    }
++    const bool pending = m_pendingIndex.hasReadyAtOrAbove(minimumPriority, now);
+     ::LeaveCriticalSection(&m_taskPairsMutex);
+-    if (hasReadyTask || !isCurrentThread())
+-        return hasReadyTask;
+-
+-    for (size_t i = m_taskPairAdmissionCursor; i < m_taskPairsBeingAdmitted.size(); ++i) {
+-        const TaskPair* pair = m_taskPairsBeingAdmitted[i];
+-        if (pair->priority >= minimumPriority
+-            && pair->createTime + static_cast<double>(pair->delayMs) / 1000.0 <= now)
+-            return true;
+-    }
+-    for (size_t i = 0; i < m_timerHeap.size(); ++i) {
+-        const WebTimerBase* timer = m_timerHeap[i];
+-        if (timer->m_priority >= minimumPriority
+-            && timer->m_nextFireTime <= now) {
+-            return true;
+-        }
+-    }
+-    return false;
++    return pending || (isCurrentThread() && m_timerIndex.hasReadyAtOrAbove(minimumPriority, now));
+ }
+-
+ WebThreadImpl::TaskPair::TaskPair(const blink::WebTraceLocation& location, blink::WebThread::Task* task, long long delayMs, int priority)
+ {
+     this->location = location;
+     this->task = task;
+     this->delayMs = delayMs;
+     this->priority = priority;
+-    this->createTime = WTF::currentTime();
++    this->createTime = WTF::monotonicallyIncreasingTime();
+     this->heapInsertionOrder = WebThreadImpl::getNewCurrentHeapInsertionOrder();
++    this->pendingPosition = 0;
++    this->scheduling.value = this;
++    this->scheduling.deadline = this->createTime + static_cast<double>(delayMs) / 1000.0;
++    this->scheduling.priority = priority;
+ }
+ 
+ WebThreadImpl::TaskPair::~TaskPair()
+@@ -419,31 +401,14 @@ WebThreadImpl::TaskPair::~TaskPair()
+     delete task; // Only untransferred work remains here (cancel-before-run).
+ }
+ 
+-void WebThreadImpl::TaskPair::sortByPriority(std::vector<WebThreadImpl::TaskPair*>* tasks)
+-{
+-    for (size_t i = 0; i < tasks->size(); ++i) {
+-        for (size_t j = i + 1; j < tasks->size(); ++j) {
+-            int a = tasks->at(i)->priority;
+-            int b = tasks->at(j)->priority;
+-            if (!(a < b))
+-                continue;
+-
+-            WebThreadImpl::TaskPair* ptr = tasks->at(i);
+-            *(&tasks->at(i)) = tasks->at(j);
+-            *(&tasks->at(j)) = ptr;
+-        }
+-    }
+-}
+-
+ void WebThreadImpl::startTriggerTasks()
+ {
+-    startTriggerTasks(nullptr, 0);
++    unsigned remaining = mainThreadTaskBudget;
++    startTriggerTasks(m_willExit ? nullptr : &remaining, monotonicallyIncreasingTime() + maxDurationOfFiringTimers);
+ }
+ 
+ bool WebThreadImpl::hasPendingTaskAdmission()
+ {
+-    if (m_taskPairAdmissionCursor < m_taskPairsBeingAdmitted.size())
+-        return true;
+     ::EnterCriticalSection(&m_taskPairsMutex);
+     const bool pending = !m_taskPairsToPost.empty();
+     ::LeaveCriticalSection(&m_taskPairsMutex);
+@@ -455,29 +420,38 @@ void WebThreadImpl::startTriggerTasks(unsigned* remainingAdmissions, double admi
+ #if (defined ENABLE_WKE) && (ENABLE_WKE == 1)
+     wke::freeV8TempObejctOnOneFrameBefore();
+ #endif
+-    m_currentFrameCreateTime = WTF::currentTime();
+-    
+-    while (!remainingAdmissions || (*remainingAdmissions && currentTime() < admissionDeadline)) {
+-        if (m_taskPairAdmissionCursor == m_taskPairsBeingAdmitted.size()) {
+-            m_taskPairsBeingAdmitted.clear();
+-            m_taskPairAdmissionCursor = 0;
+-            ::EnterCriticalSection(&m_taskPairsMutex);
+-            m_taskPairsBeingAdmitted.swap(m_taskPairsToPost); // No allocation while locked.
+-            ::LeaveCriticalSection(&m_taskPairsMutex);
+-            if (m_taskPairsBeingAdmitted.empty())
+-                break;
++    unsigned workerAdmissions = mainThreadTaskBudget;
++    if (!remainingAdmissions && !m_willExit) {
++        remainingAdmissions = &workerAdmissions;
++        admissionDeadline = monotonicallyIncreasingTime() + maxDurationOfFiringTimers;
++    }
++    while (!remainingAdmissions || (*remainingAdmissions && monotonicallyIncreasingTime() < admissionDeadline)) {
++        TaskPair* selected = nullptr;
++        ::EnterCriticalSection(&m_taskPairsMutex);
++        // Three eligible priority admissions and one oldest-deadline share.
++        // A future flood cannot hide new interaction behind an owner batch;
++        // the fourth share still advances background/future registration.
++        auto* entry = (++m_admissionShare % 4) ? m_pendingIndex.select(monotonicallyIncreasingTime(), false) : nullptr;
++        if (!entry) entry = m_pendingIndex.oldest();
++        if (entry) {
++            selected = static_cast<TaskPair*>(entry->value);
++            m_pendingIndex.erase(*entry);
++            const size_t position = selected->pendingPosition;
++            if (position + 1 != m_taskPairsToPost.size()) {
++                m_taskPairsToPost[position] = m_taskPairsToPost.back();
++                m_taskPairsToPost[position]->pendingPosition = position;
++            }
++            m_taskPairsToPost.pop_back();
+         }
+-        std::unique_ptr<TaskPair> pair(m_taskPairsBeingAdmitted[m_taskPairAdmissionCursor]);
+-        m_taskPairsBeingAdmitted[m_taskPairAdmissionCursor++] = nullptr;
++        ::LeaveCriticalSection(&m_taskPairsMutex);
++        if (!selected) break;
++        std::unique_ptr<TaskPair> pair(selected);
+         blink::WebThread::Task* payload = pair->task;
+-        pair->task = nullptr; // Ownership transfers even if timer admission fails.
+-        postDelayedTaskImpl(pair->location, payload, pair->delayMs,
+-            &pair->createTime, pair->priority, &pair->heapInsertionOrder);
+-        if (remainingAdmissions)
+-            --*remainingAdmissions;
++        pair->task = nullptr;
++        postDelayedTaskImpl(pair->location, payload, pair->delayMs, &pair->createTime, pair->priority, &pair->heapInsertionOrder);
++        if (remainingAdmissions) --*remainingAdmissions;
+     }
+ }
+-
+ bool WebThreadImpl::isCurrentThread() const 
+ {
+     return threadId() == WTF::currentThread();
+@@ -517,7 +491,7 @@ void WebThreadImpl::addTaskObserver(TaskObserver* observer)
+     m_observers.push_back(observer);
+     ::LeaveCriticalSection(&m_observersMutex);
+ 
+-    double fireTime = currentTime();
++    double fireTime = monotonicallyIncreasingTime();
+     if (!m_timerHeap.empty() && (m_timerHeap[0]->m_nextFireTime <= fireTime)) {
+         if (m_hEvent)
+             ::SetEvent(m_hEvent);
+@@ -598,21 +572,29 @@ blink::WebScheduler* WebThreadImpl::scheduler() const
+ 
+ void WebThreadImpl::deleteUnusedTimers()
+ {
+-    for (size_t i = 0; i < m_unusedTimersToDelete.size(); ++i) {
+-        WebTimerBase* timer = m_unusedTimersToDelete[i];
+-
+-#if 0
+-        if (1 == timer->refCount()) {
+-            for (size_t j = 0; j < m_timerHeap.size(); ++j) {
+-                WebTimerBase* timerOther = m_timerHeap[j];
+-                if (timerOther == timer)
+-                    DebugBreak();
+-            }
+-        }
+-#endif
++    // Shutdown drains the complete retained set. Remove ownership before a
++    // destructor can reenter; no provider/producer lock spans deref().
++    while (!m_unusedTimersToDelete.empty()) {
++        WebTimerBase* timer = m_unusedTimersToDelete.back();
++        m_unusedTimersToDelete.pop_back();
+         timer->deref();
+     }
+-    m_unusedTimersToDelete.clear();
++}
++
++void WebThreadImpl::retireCompletedTasksForOwner()
++{
++    if (!isCurrentThread() || m_willExit || m_firingTimers || m_retiringCompletedTasks) return;
++    m_retiringCompletedTasks = true;
++    struct RetirementGuard { bool& active; ~RetirementGuard() { active = false; } } guard = { m_retiringCompletedTasks };
++    for (unsigned count = 0; count < 32 && !m_unusedTimersToDelete.empty(); ++count) {
++        WebTimerBase* timer = m_unusedTimersToDelete.back();
++        m_unusedTimersToDelete.pop_back();
++        timer->deref(); // Completed task only, outside callbacks and all locks.
++    }
++    if (!m_unusedTimersToDelete.empty()) {
++        if (m_hEvent) ::SetEvent(m_hEvent);
++        else if (m_isMainThread && !requestSharedTimerContinuation()) armSharedTimerRecovery();
++    }
+ }
+ 
+ void WebThreadImpl::deleteTimersOnExit()
+@@ -626,12 +608,9 @@ void WebThreadImpl::deleteTimersOnExit()
+ 
+ void WebThreadImpl::deleteTaskPairsToPostOnExit()
+ {
+-    for (size_t i = m_taskPairAdmissionCursor; i < m_taskPairsBeingAdmitted.size(); ++i)
+-        delete m_taskPairsBeingAdmitted[i];
+-    m_taskPairsBeingAdmitted.clear();
+-    m_taskPairAdmissionCursor = 0;
+     for (size_t i = 0; i < m_taskPairsToPost.size(); ++i) {
+         TaskPair* taskPair = m_taskPairsToPost[i];
++        m_pendingIndex.erase(taskPair->scheduling);
+         delete taskPair;
+     }
+     m_taskPairsToPost.clear();
+@@ -654,7 +633,9 @@ void WebThreadImpl::disableScheduler()
+ 
+ void WebThreadImpl::enableScheduler()
+ {
++    ASSERT(m_firingTimers > 0);
+     --m_firingTimers;
++    if (!m_firingTimers) updateSharedTimer(); // Reopen after a consumed nested continuation.
+ }
+ 
+ void WebThreadImpl::fire()
+@@ -703,15 +684,14 @@ void WebThreadImpl::schedulerTasks()
+ void WebThreadImpl::schedulerTasks(bool allowMainThreadBudget)
+ {
+     // Do a re-entrancy check.
+-    if (m_firingTimers > 0 /*|| m_suspendTimerQueue*/) 
++    if (m_firingTimers > 0 || m_retiringCompletedTasks /*|| m_suspendTimerQueue*/)
+         return;
++    retireCompletedTasksForOwner();
+     ++m_firingTimers;
+ 
+     ASSERT(m_threadId == WTF::currentThread());
+-    
+-    deleteUnusedTimers();
+ 
+-    double fireTime = currentTime();
++    double fireTime = monotonicallyIncreasingTime();
+     double timeToQuit = fireTime + maxDurationOfFiringTimers;
+     const double mainThreadTimeToQuit = fireTime + mainThreadTimerBudget;
+     unsigned completedTasks = 0;
+@@ -728,16 +708,14 @@ void WebThreadImpl::schedulerTasks(bool allowMainThreadBudget)
+ 
+     startTriggerTasks(boundedMainThread ? &remainingAdmissions : nullptr, mainThreadTimeToQuit); // 如果不加这句，且下面的循环在本线程不停添加定时器，则startTriggerTasks里的就没机会执行了。
+     
+-    fireTime = currentTime();
++    fireTime = monotonicallyIncreasingTime();
+     bool hasFire = false;
+     while (!m_timerHeap.empty() && (m_timerHeap[0]->m_nextFireTime <= fireTime || m_willExit)
+-        && (!boundedMainThread || currentTime() < mainThreadTimeToQuit)) {
++        && (!boundedMainThread || monotonicallyIncreasingTime() < mainThreadTimeToQuit)) {
+         hasFire = true;
+-        const size_t selectedIndex = task_scheduling::selectReadyTimer(
+-            m_timerHeap, fireTime, m_willExit, [](const WebTimerBase* value) {
+-                return task_scheduling::ReadyTask{value->m_nextFireTime, value->m_priority};
+-            });
+-        WebTimerBase* timer = m_timerHeap[selectedIndex];
++        auto* selected = m_timerIndex.select(fireTime, m_willExit);
++        ASSERT(selected);
++        WebTimerBase* timer = static_cast<WebTimerBase*>(selected->value);
+         timer->m_nextFireTime = 0;
+         timer->heapDelete();
+ 
+@@ -756,13 +734,13 @@ void WebThreadImpl::schedulerTasks(bool allowMainThreadBudget)
+         ++completedTasks;
+ 
+         startTriggerTasks(boundedMainThread ? &remainingAdmissions : nullptr, mainThreadTimeToQuit);
+-        fireTime = currentTime();
++        fireTime = monotonicallyIncreasingTime();
+ 
+         // A callback or observer may exceed this cooperative budget. Keep
+         // pending timers intact and return to the owner pump between batches.
+         const bool mainThreadBudgetReached = allowMainThreadBudget && m_isMainThread && !m_willExit
+-            && (completedTasks >= mainThreadTaskBudget || mainThreadTimeToQuit < currentTime());
+-        if (!m_firingTimers || timeToQuit < currentTime() || mainThreadBudgetReached) {
++            && (completedTasks >= mainThreadTaskBudget || mainThreadTimeToQuit < monotonicallyIncreasingTime());
++        if (!m_firingTimers || timeToQuit < monotonicallyIncreasingTime() || mainThreadBudgetReached) {
+             break;
+         }
+     }
+@@ -772,18 +750,36 @@ void WebThreadImpl::schedulerTasks(bool allowMainThreadBudget)
+     }
+     
+     --m_firingTimers;
++    retireCompletedTasksForOwner(); // Last task releases resources without another idle pulse.
+ 
+     updateSharedTimer();
+     if (boundedMainThread && !m_willExit && !m_firingTimers
+         && (hasPendingTaskAdmission()
+-            || (!m_timerHeap.empty() && m_timerHeap[0]->m_nextFireTime <= currentTime())))
++            || (!m_timerHeap.empty() && m_timerHeap[0]->m_nextFireTime <= monotonicallyIncreasingTime())))
+         requestSharedTimerContinuation();
+ }
+ 
++void WebThreadImpl::serviceOwnerOpportunity()
++{
++    if (!m_isMainThread || m_willExit || m_firingTimers || m_retiringCompletedTasks || !isCurrentThread() || CheckReEnter::getEnterCount()) return;
++    retireCompletedTasksForOwner();
++    if (hasPendingTaskAdmission() || (!m_timerHeap.empty() && m_timerHeap[0]->m_nextFireTime <= monotonicallyIncreasingTime())) {
++        CheckReEnter::incrementEnterCount();
++        sharedTimerFiredFunction();
++        CheckReEnter::decrementEnterCount();
++    } else serviceSharedTimerOwnerOpportunity();
++}
++
+ void WebThreadImpl::updateSharedTimer()
+ {
+-    if (m_isMainThread)
+-        setSharedTimerFireInterval(0.016);
++    if (!m_isMainThread || m_willExit || m_firingTimers) return;
++    initializeOffScreenTimerWindow();
++    const bool ready = !m_unusedTimersToDelete.empty() || hasPendingTaskAdmission()
++        || (!m_timerHeap.empty() && m_timerHeap[0]->m_nextFireTime <= monotonicallyIncreasingTime());
++    if (ready) {
++        cancelSharedTimerDeadline();
++        if (!requestSharedTimerContinuation()) armSharedTimerRecovery();
++    } else setSharedTimerFireDeadline(m_timerHeap.empty() ? 0 : m_timerHeap[0]->m_nextFireTime);
+ }
+ 
+ std::vector<WebTimerBase*>& WebThreadImpl::timerHeap()
+diff --git a/third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.h b/third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.h
+index 4428c351..48c958b5 100644
+--- a/third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.h
++++ b/third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.h
+@@ -4,6 +4,7 @@
+ #include <cstddef>
+ #include <vector>
+ #include <atomic>
++#include "content/web_impl_win/TaskSchedulingIndex.h"
+ 
+ #include "base/compiler_specific.h"
+ #include "third_party/WebKit/public/platform/Platform.h"
+@@ -59,6 +60,8 @@ public:
+     void schedulerTasks();
+ 
+     void fire();
++    void serviceOwnerOpportunity(); // Optional bounded SDK message-pump hook.
++    void retireCompletedTasksForOwner(); // At most32 already-completed tasks; no task execution.
+     void fireForShutdown();
+     
+     void suspendTimerQueue();
+@@ -81,6 +84,7 @@ public:
+ 
+ private:
+     friend class BlinkPlatformImpl;
++    friend class WebTimerBase;
+ 
+     void schedulerTasks(bool allowMainThreadBudget);
+     void startTriggerTasks(unsigned* remainingAdmissions, double admissionDeadline);
+@@ -92,7 +96,8 @@ private:
+     struct TaskPair {
+         TaskPair(const blink::WebTraceLocation& location, blink::WebThread::Task* task, long long delayMs, int priority);
+         ~TaskPair();
+-        static void sortByPriority(std::vector<TaskPair*>*);
++        task_scheduling::DeadlinePriorityIndex::Entry scheduling;
++        std::size_t pendingPosition;
+ 
+         blink::WebTraceLocation location;
+         blink::WebThread::Task* task;
+@@ -120,15 +125,15 @@ private:
+     std::atomic<bool> m_threadClosed;
+ 
+     int m_firingTimers; // Reentrancy guard.
++    bool m_retiringCompletedTasks = false;
+     WebSchedulerImpl* m_webSchedulerImpl;
+ 
+     // 不能用wtf的函数，否则退出后wtf被关闭了，就不能访问了
+     std::vector<WebTimerBase*> m_timerHeap;
+     std::vector<WebTimerBase*> m_unusedTimersToDelete;
+     std::vector<TaskPair*> m_taskPairsToPost;
+-    // Owner-thread batch. Entries before the cursor have transferred ownership.
+-    std::vector<TaskPair*> m_taskPairsBeingAdmitted;
+-    std::size_t m_taskPairAdmissionCursor;
++    unsigned m_admissionShare = 0;
++    task_scheduling::DeadlinePriorityIndex m_timerIndex, m_pendingIndex;
+     std::vector<TaskObserver*> m_observers;
+     bool m_isObserversDirty;
+     const char* m_name;
+@@ -141,7 +146,6 @@ private:
+     HANDLE m_threadHandle;
+     bool m_hasPlatformRegistration;
+ 
+-    double m_currentFrameCreateTime; // 当前帧全部使用这个创建时间
+     static unsigned m_currentHeapInsertionOrder;
+ 
+     bool m_isMainThread;
+diff --git a/third_party/sources/miniblink/content/web_impl_win/WebTimerBase.cpp b/third_party/sources/miniblink/content/web_impl_win/WebTimerBase.cpp
+index 46fe4c86..806a5d04 100644
+--- a/third_party/sources/miniblink/content/web_impl_win/WebTimerBase.cpp
++++ b/third_party/sources/miniblink/content/web_impl_win/WebTimerBase.cpp
+@@ -264,7 +264,7 @@ void WebTimerBase::start(double nextFireInterval, double repeatInterval)
+     ASSERT(m_thread == currentThread());
+ 
+     m_repeatInterval = repeatInterval;
+-    setNextFireTime(currentTime() + nextFireInterval, nullptr);
++    setNextFireTime(monotonicallyIncreasingTime() + nextFireInterval, nullptr);
+ }
+ 
+ void WebTimerBase::stop()
+@@ -282,7 +282,7 @@ void WebTimerBase::stop()
+ double WebTimerBase::nextFireInterval() const
+ {
+     ASSERT(isActive());
+-    double current = currentTime();
++    double current = monotonicallyIncreasingTime();
+     if (m_nextFireTime < current)
+         return 0;
+     return m_nextFireTime - current;
+@@ -323,6 +323,7 @@ void WebTimerBase::deleteLastOne()
+ 
+ void WebTimerBase::heapDelete()
+ {
++    m_threadTimers->m_timerIndex.erase(m_scheduling);
+     ASSERT(m_nextFireTime == 0);
+     heapPop();
+     deleteLastOne();
+@@ -331,6 +332,7 @@ void WebTimerBase::heapDelete()
+ 
+ void WebTimerBase::heapDeleteMin()
+ {
++    m_threadTimers->m_timerIndex.erase(m_scheduling);
+     ASSERT(m_nextFireTime == 0);
+     heapPopMin();
+     deleteLastOne();
+@@ -379,6 +381,17 @@ void WebTimerBase::setNextFireTime(double newTime, unsigned* heapInsertionOrder)
+     // Keep heap valid while changing the next-fire time.
+     double oldTime = m_nextFireTime;
+     if (oldTime != newTime) {
++        // Every allocation precedes mutation; existing active timers survive OOM.
++        if (newTime != 0) {
++            if (oldTime == 0 && timerHeap().size() == timerHeap().capacity()) {
++                const size_t size = timerHeap().size();
++                const size_t maximum = timerHeap().max_size();
++                if (size == maximum) throw std::bad_alloc();
++                timerHeap().reserve(size > maximum / 2 ? maximum : (size ? size * 2 : 16));
++            }
++            m_threadTimers->m_timerIndex.prepare(m_priority, oldTime != 0);
++            m_threadTimers->m_timerIndex.erase(m_scheduling, true);
++        }
+         m_nextFireTime = newTime;
+ 
+ //         static unsigned currentHeapInsertionOrder = 0;
+@@ -399,6 +412,12 @@ void WebTimerBase::setNextFireTime(double newTime, unsigned* heapInsertionOrder)
+         else
+             heapIncreaseKey();
+ 
++        if (newTime != 0) {
++            m_scheduling.value = this;
++            m_scheduling.deadline = newTime;
++            m_scheduling.priority = m_priority;
++            m_threadTimers->m_timerIndex.insert(m_scheduling);
++        }
+         bool isFirstTimerInHeap = m_heapIndex == 0;
+ 
+         if (wasFirstTimerInHeap || isFirstTimerInHeap)
+diff --git a/third_party/sources/miniblink/content/web_impl_win/WebTimerBase.h b/third_party/sources/miniblink/content/web_impl_win/WebTimerBase.h
+index eeedce96..f5c703c6 100644
+--- a/third_party/sources/miniblink/content/web_impl_win/WebTimerBase.h
++++ b/third_party/sources/miniblink/content/web_impl_win/WebTimerBase.h
+@@ -31,6 +31,7 @@
+ #include <wtf/FastAllocBase.h>
+ #include <wtf/Vector.h>
+ #include <vector>
++#include "content/web_impl_win/TaskSchedulingIndex.h"
+ #include "third_party/WebKit/public/platform/WebTraceLocation.h"
+ #include "third_party/WebKit/public/platform/WebThread.h"
+ 
+@@ -128,6 +129,7 @@ private:
+ 
+     int m_ref;
+     int m_priority;
++    task_scheduling::DeadlinePriorityIndex::Entry m_scheduling;
+ };
+ 
+ inline bool WebTimerBase::isActive() const
+diff --git a/third_party/sources/miniblink/wke/InputUiApi.cpp b/third_party/sources/miniblink/wke/InputUiApi.cpp
+index ccbc189a..dfde78ff 100644
+--- a/third_party/sources/miniblink/wke/InputUiApi.cpp
++++ b/third_party/sources/miniblink/wke/InputUiApi.cpp
+@@ -3,6 +3,8 @@
+ #include "wke/wkeGlobalVar.h"
+ #include "content/browser/WebPage.h"
+ #include "content/common/InputFrameTrace.h"
++#include "content/web_impl_win/WebThreadImpl.h"
++#include "third_party/WebKit/public/platform/Platform.h"
+ 
+ #include <algorithm>
+ #include <array>
+@@ -10,7 +12,7 @@
+ #include <cstring>
+ #include <mutex>
+ 
+-namespace wke { extern DWORD wkeThreadId; }
++namespace wke { bool inputUiOwnerAvailable(); }
+ 
+ namespace {
+ namespace trace = content::input_frame_trace;
+@@ -27,7 +29,7 @@ std::atomic<bool> exportLimitReached{false};
+ 
+ wke::CWebView* liveOwnerView(void* opaque)
+ {
+-    if (!wke::wkeIsInit || ::GetCurrentThreadId() != wke::wkeThreadId || !opaque)
++    if (!wke::inputUiOwnerAvailable() || !opaque)
+         return nullptr;
+     const auto view = static_cast<wkeWebView>(opaque);
+     if (wke::g_liveWebViews.find(view) == wke::g_liveWebViews.end())
+@@ -35,6 +37,16 @@ wke::CWebView* liveOwnerView(void* opaque)
+     return static_cast<wke::CWebView*>(view);
+ }
+ 
++void WKE_INPUT_UI_CALL serviceOwner()
++{
++    if (!wke::inputUiOwnerAvailable())
++        return;
++    auto* platform = blink::Platform::current();
++    if (!platform || !platform->mainThread())
++        return;
++    static_cast<content::WebThreadImpl*>(platform->mainThread())->serviceOwnerOpportunity();
++}
++
+ int WKE_INPUT_UI_CALL cancelInput(void* opaque)
+ {
+     auto* view = liveOwnerView(opaque);
+@@ -174,8 +186,8 @@ const wkeInputUiApi* WKE_CALL_TYPE wkeGetInputUiApi(unsigned requestedVersion)
+ {
+     // Fields become available only with their actual owner/view implementation.
+     static const wkeInputUiApi api = { sizeof(wkeInputUiApi), WKE_INPUT_UI_ABI_VERSION,
+-        WKE_INPUT_UI_CAP_TRACE,
++        WKE_INPUT_UI_CAP_TRACE | WKE_INPUT_UI_CAP_OWNER_OPPORTUNITY,
+         &configureTrace, &stopTrace, &snapshotTrace, &drainTrace,
+-        nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
++        &serviceOwner, nullptr, nullptr, nullptr, nullptr, nullptr };
+     return requestedVersion == WKE_INPUT_UI_ABI_VERSION ? &api : nullptr;
+ }
+diff --git a/third_party/sources/miniblink/wke/wke.cpp b/third_party/sources/miniblink/wke/wke.cpp
+index b2c4e968..392801a5 100644
+--- a/third_party/sources/miniblink/wke/wke.cpp
++++ b/third_party/sources/miniblink/wke/wke.cpp
+@@ -728,6 +728,15 @@ bool WKE_CALL_TYPE wkeIsInitialize()
+ namespace {
+ bool workerFinalizationCompleted = false;
+ }
++namespace wke {
++bool inputUiOwnerAvailable()
++{
++    // Read mutable lifecycle flags only on their actual owner.
++    return ::GetCurrentThreadId() == wkeThreadId && wkeIsInit
++        && !workerFinalizationPrepared && !workerFinalizationCompleted;
++}
++}
++
+ 
+ unsigned WKE_CALL_TYPE wkeWorkerRetirementWitnessCount()
+ {

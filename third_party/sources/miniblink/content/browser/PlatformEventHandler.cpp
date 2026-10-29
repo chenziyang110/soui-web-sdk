@@ -216,6 +216,24 @@ PlatformEventHandler::PlatformEventHandler(WebWidget* webWidget, WebViewImpl* we
     m_webViewImpl = webViewImpl;
 }
 
+void PlatformEventHandler::cancelInputState(HWND ownerWindow)
+{
+    // Clear before ReleaseCapture: its synchronous WM_CAPTURECHANGED must not
+    // manufacture a matching mouse-up (and therefore a DOM click).
+    m_isLeftMousedown = false;
+    m_isDraggableNodeMousedown = false;
+    m_isDraggableRegionNcHitTest = false;
+    m_postMouseLeave = false;
+    m_mouseInWindow = false;
+    m_lastTimeMouseDown = 0;
+    m_lastPosMouseDown = blink::IntPoint();
+    m_lastPosMouseMove = blink::IntPoint();
+    m_lastPosForDrag = blink::IntRect();
+    m_checkMouseLeaveTimer.stop();
+    if (ownerWindow && ::GetCapture() == ownerWindow)
+        ::ReleaseCapture();
+}
+
 void PlatformEventHandler::fireCaptureChangedEvent(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     if (m_isDraggableRegionNcHitTest) {

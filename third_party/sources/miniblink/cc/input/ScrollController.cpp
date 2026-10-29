@@ -27,6 +27,26 @@ double clampValue(double value, double minimum, double maximum)
     return std::max(minimum, std::min(maximum, value));
 }
 
+bool canAcceptAxis(double delta, double prediction, double base,
+    double minimum, double maximum, double coverageMinimum,
+    double coverageMaximum, double viewportLength)
+{
+    if (delta == 0.0 || viewportLength <= 0.0)
+        return false;
+
+    const double target = clampValue(prediction + delta, minimum, maximum);
+    // A temporary raster edge must not turn an already accepted target into
+    // a main-thread fallback. Require room to make producer progress from
+    // the committed base, rather than clipping the predicted target there.
+    // Use the sampling tolerance so a settled rounding remainder at a real
+    // content edge is not mistaken for pending motion forever.
+    if (target - base >= kMovementEpsilon)
+        return coverageMaximum - base >= kMovementEpsilon;
+    if (base - target >= kMovementEpsilon)
+        return base - coverageMinimum >= kMovementEpsilon;
+    return std::fabs(prediction - base) >= kMovementEpsilon;
+}
+
 struct AxisCoverage {
     double minimum;
     double maximum;
@@ -270,6 +290,11 @@ bool ScrollNodeSnapshot::isValid() const
     if (!key.isValid() || !sceneVersion || !scrollEpoch)
         return false;
     if (!isFinite(acknowledgedTotal) || !isFinite(baseOffset)
+        || !isFinite(canonicalAdjustment)
+        || !isFinite(baseOffset.x - canonicalAdjustment.x)
+        || !isFinite(baseOffset.y - canonicalAdjustment.y)
+        || !isFinite(baseOffset.x - acknowledgedTotal.x)
+        || !isFinite(baseOffset.y - acknowledgedTotal.y)
         || !isFinite(inputPrediction)
         || !isFinite(minimumOffset) || !isFinite(maximumOffset)
         || !isFinite(coverageMinimum) || !isFinite(coverageMaximum)) {
@@ -297,6 +322,7 @@ bool ScrollNodeSnapshot::compositorEligible() const
     return isValid() && coverageComplete
         && mainThreadReasons == ScrollMainThreadReasonNone
         && inputAxes != ScrollInputAxisNone
+        && viewportClip.width > 0.0 && viewportClip.height > 0.0
         && verticalScrollbar.isSupported()
         && horizontalScrollbar.isSupported();
 }
@@ -305,16 +331,16 @@ bool ScrollNodeSnapshot::canConsumeDelta(const ScrollVector& delta) const
 {
     if (!compositorEligible() || !isFinite(delta))
         return false;
-    const double minimumX = std::max(minimumOffset.x, coverageMinimum.x);
-    const double maximumX = std::min(maximumOffset.x, coverageMaximum.x);
-    const double minimumY = std::max(minimumOffset.y, coverageMinimum.y);
-    const double maximumY = std::min(maximumOffset.y, coverageMaximum.y);
     const bool canConsumeX = (inputAxes & ScrollInputAxisHorizontal)
-        && ((delta.x < 0.0 && inputPrediction.x > minimumX)
-            || (delta.x > 0.0 && inputPrediction.x < maximumX));
+        && canAcceptAxis(delta.x, inputPrediction.x,
+            baseOffset.x - canonicalAdjustment.x,
+            minimumOffset.x, maximumOffset.x, coverageMinimum.x,
+            coverageMaximum.x, viewportClip.width);
     const bool canConsumeY = (inputAxes & ScrollInputAxisVertical)
-        && ((delta.y < 0.0 && inputPrediction.y > minimumY)
-            || (delta.y > 0.0 && inputPrediction.y < maximumY));
+        && canAcceptAxis(delta.y, inputPrediction.y,
+            baseOffset.y - canonicalAdjustment.y,
+            minimumOffset.y, maximumOffset.y, coverageMinimum.y,
+            coverageMaximum.y, viewportClip.height);
     return canConsumeX || canConsumeY;
 }
 
@@ -323,29 +349,21 @@ bool ScrollNodeSnapshot::advanceInputPrediction(const ScrollVector& delta)
     if (!canConsumeDelta(delta))
         return false;
 
-    const double minimumX = std::max(minimumOffset.x, coverageMinimum.x);
-    const double maximumX = std::min(maximumOffset.x, coverageMaximum.x);
-    const double minimumY = std::max(minimumOffset.y, coverageMinimum.y);
-    const double maximumY = std::min(maximumOffset.y, coverageMaximum.y);
     if (inputAxes & ScrollInputAxisHorizontal) {
         inputPrediction.x = clampValue(inputPrediction.x + delta.x,
-            minimumX, maximumX);
+            minimumOffset.x, maximumOffset.x);
     }
     if (inputAxes & ScrollInputAxisVertical) {
         inputPrediction.y = clampValue(inputPrediction.y + delta.y,
-            minimumY, maximumY);
+            minimumOffset.y, maximumOffset.y);
     }
     return true;
 }
 
 void ScrollNodeSnapshot::setInputPrediction(const ScrollVector& offset)
 {
-    const double minimumX = std::max(minimumOffset.x, coverageMinimum.x);
-    const double maximumX = std::min(maximumOffset.x, coverageMaximum.x);
-    const double minimumY = std::max(minimumOffset.y, coverageMinimum.y);
-    const double maximumY = std::min(maximumOffset.y, coverageMaximum.y);
-    inputPrediction.x = clampValue(offset.x, minimumX, maximumX);
-    inputPrediction.y = clampValue(offset.y, minimumY, maximumY);
+    inputPrediction.x = clampValue(offset.x, minimumOffset.x, maximumOffset.x);
+    inputPrediction.y = clampValue(offset.y, minimumOffset.y, maximumOffset.y);
 }
 
 ScrollSample::ScrollSample()
@@ -372,40 +390,60 @@ ScrollController::MotionAxis::MotionAxis()
     , m_lastTime(0.0)
     , m_minimum(-std::numeric_limits<double>::max())
     , m_maximum(std::numeric_limits<double>::max())
+    , m_drawableMinimum(-std::numeric_limits<double>::max())
+    , m_drawableMaximum(std::numeric_limits<double>::max())
     , m_initialized(false)
+    , m_reanchorTime(false)
 {
 }
 
 void ScrollController::MotionAxis::reset(double position, double monotonicTime)
 {
-    m_position = clamp(position);
+    m_position = clampDrawable(position);
     m_target = m_position;
     m_velocity = 0.0;
     m_lastTime = monotonicTime;
     m_initialized = true;
+    m_reanchorTime = false;
 }
 
-void ScrollController::MotionAxis::setBounds(double minimum, double maximum)
+void ScrollController::MotionAxis::setBounds(double minimum, double maximum,
+    double drawableMinimum, double drawableMaximum)
 {
+    const bool wasParked = m_initialized && !isActive()
+        && std::fabs(m_target - m_position) >= kMovementEpsilon;
     m_minimum = std::min(minimum, maximum);
     m_maximum = std::max(minimum, maximum);
-    m_position = clamp(m_position);
+    m_drawableMinimum = std::max(m_minimum,
+        std::min(drawableMinimum, drawableMaximum));
+    m_drawableMaximum = std::min(m_maximum,
+        std::max(drawableMinimum, drawableMaximum));
+    m_position = clampDrawable(m_position);
     m_target = clamp(m_target);
-    if (m_position == m_minimum || m_position == m_maximum)
+    if (m_position == m_drawableMinimum || m_position == m_drawableMaximum)
         m_velocity = 0.0;
+    if (wasParked && isActive())
+        m_reanchorTime = true;
+}
+
+void ScrollController::MotionAxis::correctPosition(double position,
+    double monotonicTime)
+{
+    m_position = clampDrawable(position);
+    m_velocity = 0.0;
+    m_lastTime = monotonicTime;
+    m_reanchorTime = false;
 }
 
 void ScrollController::MotionAxis::addDelta(double delta,
     double monotonicTime, bool smooth)
 {
     advance(monotonicTime);
-    if (smooth) {
-        m_target = clamp(m_target + delta);
+    m_target = clamp(m_target + delta);
+    if (smooth)
         return;
-    }
 
-    m_position = clamp(m_position + delta);
-    m_target = m_position;
+    m_position = drawableTarget();
     m_velocity = 0.0;
 }
 
@@ -416,31 +454,37 @@ double ScrollController::MotionAxis::advance(double monotonicTime)
         return m_position;
     }
 
+    if (m_reanchorTime) {
+        m_lastTime = monotonicTime;
+        m_reanchorTime = false;
+        return m_position;
+    }
+
     double elapsed = monotonicTime - m_lastTime;
     if (!isFinite(elapsed) || elapsed <= 0.0)
         return m_position;
     elapsed = std::min(elapsed, kMaximumIntegrationStep);
     m_lastTime = monotonicTime;
 
-    const double displacement = m_position - m_target;
+    const double target = drawableTarget();
+    const double displacement = m_position - target;
     const double velocityTerm = m_velocity
         + kCriticalDampingFrequency * displacement;
     const double decay = std::exp(-kCriticalDampingFrequency * elapsed);
-    m_position = m_target
+    m_position = target
         + (displacement + velocityTerm * elapsed) * decay;
     m_velocity = (m_velocity
         - kCriticalDampingFrequency * velocityTerm * elapsed) * decay;
 
-    if (std::fabs(m_position - m_target) < kMovementEpsilon
+    if (std::fabs(m_position - target) < kMovementEpsilon
         && std::fabs(m_velocity) < kMovementEpsilon) {
-        m_position = m_target;
+        m_position = target;
         m_velocity = 0.0;
     }
 
-    const double clamped = clamp(m_position);
+    const double clamped = clampDrawable(m_position);
     if (clamped != m_position) {
         m_position = clamped;
-        m_target = clamped;
         m_velocity = 0.0;
     }
     return m_position;
@@ -449,13 +493,23 @@ double ScrollController::MotionAxis::advance(double monotonicTime)
 bool ScrollController::MotionAxis::isActive() const
 {
     return m_initialized
-        && (std::fabs(m_position - m_target) >= kMovementEpsilon
+        && (std::fabs(m_position - drawableTarget()) >= kMovementEpsilon
             || std::fabs(m_velocity) >= kMovementEpsilon);
 }
 
 double ScrollController::MotionAxis::clamp(double value) const
 {
     return clampValue(value, m_minimum, m_maximum);
+}
+
+double ScrollController::MotionAxis::drawableTarget() const
+{
+    return clampDrawable(m_target);
+}
+
+double ScrollController::MotionAxis::clampDrawable(double value) const
+{
+    return clampValue(value, m_drawableMinimum, m_drawableMaximum);
 }
 
 ScrollController::ScrollController()
@@ -497,9 +551,9 @@ bool ScrollController::activateScene(const ScrollNodeSnapshot& node)
     m_visualOffset.y = clampValue(node.baseOffset.y,
         std::max(node.minimumOffset.y, node.coverageMinimum.y),
         std::min(node.maximumOffset.y, node.coverageMaximum.y));
+    updateMotionBounds();
     m_motionX.reset(m_consumedTotal.x, 0.0);
     m_motionY.reset(m_consumedTotal.y, 0.0);
-    updateMotionBounds();
     return true;
 }
 
@@ -520,8 +574,10 @@ bool ScrollController::enqueueDelta(uint64_t inputSequence,
     if (eligibleDelta.x == 0.0 && eligibleDelta.y == 0.0)
         return false;
 
-    m_motionX.addDelta(eligibleDelta.x, monotonicTime, smooth);
-    m_motionY.addDelta(eligibleDelta.y, monotonicTime, smooth);
+    if (eligibleDelta.x != 0.0)
+        m_motionX.addDelta(eligibleDelta.x, monotonicTime, smooth);
+    if (eligibleDelta.y != 0.0)
+        m_motionY.addDelta(eligibleDelta.y, monotonicTime, smooth);
     m_throughInputSequence = inputSequence;
     return true;
 }
@@ -546,10 +602,14 @@ ScrollSample ScrollController::sample(double monotonicTime)
     m_consumedTotal.y += realized.y;
     m_visualOffset = nextVisual;
 
-    if (m_consumedTotal.x != desired.x)
-        m_motionX.reset(m_consumedTotal.x, monotonicTime);
-    if (m_consumedTotal.y != desired.y)
-        m_motionY.reset(m_consumedTotal.y, monotonicTime);
+    // Reconciliation adds/subtracts the nonzero base and acknowledged offsets.
+    // Its rounding error is not a real clamp and must not discard the smooth
+    // target or velocity. A material position correction must also preserve
+    // any accepted target still waiting for prepared coverage.
+    if (std::fabs(m_consumedTotal.x - desired.x) >= kMovementEpsilon)
+        m_motionX.correctPosition(m_consumedTotal.x, monotonicTime);
+    if (std::fabs(m_consumedTotal.y - desired.y) >= kMovementEpsilon)
+        m_motionY.correctPosition(m_consumedTotal.y, monotonicTime);
 
     result.valid = true;
     result.key = m_node.key;
@@ -656,10 +716,18 @@ void ScrollController::updateMotionBounds()
         m_node.coverageMaximum.y);
 
     m_motionX.setBounds(m_node.acknowledgedTotal.x
+            + m_node.minimumOffset.x - m_node.baseOffset.x,
+        m_node.acknowledgedTotal.x
+            + m_node.maximumOffset.x - m_node.baseOffset.x,
+        m_node.acknowledgedTotal.x
             + minimumX - m_node.baseOffset.x,
         m_node.acknowledgedTotal.x
             + maximumX - m_node.baseOffset.x);
     m_motionY.setBounds(m_node.acknowledgedTotal.y
+            + m_node.minimumOffset.y - m_node.baseOffset.y,
+        m_node.acknowledgedTotal.y
+            + m_node.maximumOffset.y - m_node.baseOffset.y,
+        m_node.acknowledgedTotal.y
             + minimumY - m_node.baseOffset.y,
         m_node.acknowledgedTotal.y
             + maximumY - m_node.baseOffset.y);

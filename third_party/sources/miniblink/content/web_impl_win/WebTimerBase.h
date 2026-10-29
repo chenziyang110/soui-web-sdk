@@ -31,6 +31,8 @@
 #include <wtf/FastAllocBase.h>
 #include <wtf/Vector.h>
 #include <vector>
+#include "content/web_impl_win/TaskSchedulingIndex.h"
+#include "content/common/InputFrameTrace.h"
 #include "third_party/WebKit/public/platform/WebTraceLocation.h"
 #include "third_party/WebKit/public/platform/WebThread.h"
 
@@ -50,9 +52,9 @@ class WebThreadImpl;
 class WebTimerBase {
     WTF_MAKE_NONCOPYABLE(WebTimerBase); WTF_MAKE_FAST_ALLOCATED(WebTimerBase);
 public:
-    static WebTimerBase* create(WebThreadImpl* threadTimers, const blink::WebTraceLocation& location, blink::WebThread::Task* task, int priority)
+    static WebTimerBase* create(WebThreadImpl* threadTimers, const blink::WebTraceLocation& location, blink::WebThread::Task* task, int priority, const input_frame_trace::event* trace = nullptr)
     {
-        return new WebTimerBase(threadTimers, location, task, priority);
+        return new WebTimerBase(threadTimers, location, task, priority, trace);
     }
     ~WebTimerBase();
 
@@ -87,7 +89,7 @@ public:
     }
 
 private:
-    WebTimerBase(WebThreadImpl* threadTimers, const blink::WebTraceLocation& location, blink::WebThread::Task* task, int priority);
+    WebTimerBase(WebThreadImpl* threadTimers, const blink::WebTraceLocation& location, blink::WebThread::Task* task, int priority, const input_frame_trace::event* trace = nullptr);
 
     void startFromOtherThread(double interval, double* createTimeOnOtherThread, unsigned* heapInsertionOrder);
 
@@ -128,6 +130,9 @@ private:
 
     int m_ref;
     int m_priority;
+    task_scheduling::DeadlinePriorityIndex::Entry m_scheduling;
+    input_frame_trace::event m_trace;
+    bool m_taskRan = false;
 };
 
 inline bool WebTimerBase::isActive() const

@@ -20,6 +20,15 @@ Windows 10/11 常规桌面先通过实际 Loader 探测 WebView2 Runtime，再�
 空目录表示该指定位置不存在 Runtime，可以触发 auto 的兼容选择。这个条件不等同
 整台机器未安装 WebView2。环境或注册表覆盖仍按现有 WebView2 准入契约检查。
 
+Loader 探测与准备前均校验外部 WebView2 环境变量和适用注册表覆盖；存在覆盖
+返回 `E_WEBVIEW2_LOADER_OVERRIDE`，读取无法核实返回 `E_WEBVIEW2_LOADER_POLICY`。
+存在策略但不能核实应用身份时返回 `E_POLICY_ID_UNRESOLVED`。组件不修改进程
+环境、注册表或 AppID，也不把这些配置问题转换为 MiniBlink 降级。
+
+独占初始化取消后，迟到的真实失败且无 Controller 回调可以推进失败准备清理，
+前提是没有已建立的浏览器所有权。取消完成仅回调一次；本地 COM 引用释放
+不代表浏览器退出。已经取得 Runtime 所有权时仍须满足原实际退出屏障。
+
 ## 构建、生成与验证
 
 从完整源码根运行：
@@ -61,6 +70,9 @@ auto 模板共享业务源与原生动作协议，分别生成现代与 Chrome 4
 
 诊断记录保留具体选择、真实 Runtime 探测结果和退出状态。此验证不代表整机卸载
 Runtime、Win7/PE 实机、高刷、长期稳定或生产准入通过；执行结果另存本轮证据目录。
+
+历史 `preview.2` 双架构、仓库外项目及 ZIP 解压启动结果，与拆分后 `preview.3`
+复验分别记录于 [2026-10-23 PR 验证范围](../verification/production-validation/auto-host-pr-2026-10-23/README.md)。
 
 已完成的双架构、仓库外项目及 ZIP 解压启动结果见
 [2026-10-23 验证报告](../verification/production-validation/auto-host-2026-10-23/README.md)。

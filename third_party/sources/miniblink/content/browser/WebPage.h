@@ -1,7 +1,9 @@
 
 #ifndef content_WebPage_h
 #define content_WebPage_h
+#include "content/common/PaintLifetime.h"
 
+#include "content/common/InputFrameTrace.h"
 #include "content/browser/WebPageState.h"
 
 #include "third_party/WebKit/Source/platform/geometry/IntSize.h"
@@ -111,6 +113,14 @@ public:
 
     void setDrawMinInterval(double drawMinInterval);
     void setMainFrameRate(int rate);
+    bool cancelInputState();
+    void setUiMirrorConsumerRequired(bool required);
+    bool setHostVisible(bool visible);
+    bool setViewTraceIdentity(const content::input_frame_trace::event& value);
+    void setInputTraceContext(const content::input_frame_trace::event& value);
+    bool uiMirrorConsumerRequired() const;
+    std::shared_ptr<content::PaintLifetimeState> paintLifetimeState() const;
+    void retryRejectedDrawWake();
 
     void setNeedsCommit();
     bool needsCommit() const;

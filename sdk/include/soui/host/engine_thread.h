@@ -1,6 +1,7 @@
 #pragma once
 
 #include <soui/diagnostics/runtime_metrics.h>
+#include <soui/diagnostics/input_frame_trace.h>
 #include <chrono>
 #include <condition_variable>
 #include <cstddef>
@@ -10,6 +11,7 @@
 #include <functional>
 #include <mutex>
 #include <thread>
+#include <atomic>
 
 namespace soui::sdk {
 namespace detail {
@@ -19,6 +21,7 @@ struct engine_capacity_state;
 struct engine_capacity_snapshot;
 class engine_reply_ticket;
 class engine_admission;
+class engine_input_service;
 }
 
 enum class engine_thread_state {
@@ -48,6 +51,8 @@ class engine_thread final {
   [[nodiscard]] bool invoke(task work,
                             std::chrono::milliseconds timeout = std::chrono::seconds(10));
   [[nodiscard]] bool drain_for(std::chrono::milliseconds timeout);
+  // Cold owner/startup capability hook. Clear on owner before provider unload.
+  [[nodiscard]] bool set_owner_opportunity(task callback);
   // On the engine owner this only requests stopping; an outside owner must join.
   void stop(bool drain_pending = true);
   enum class stop_result { stopped, pending, failed };
@@ -62,10 +67,17 @@ class engine_thread final {
  private:
   friend class detail::engine_admission;
   static constexpr std::size_t queue_capacity = 580;
-  detail::engine_admission_result post_internal(task&, detail::engine_lane, detail::engine_reply_ticket*,
-      const detail::engine_reply_ticket* const* guards = nullptr, std::size_t guard_count = 0);
+  detail::engine_admission_result post_internal(task, detail::engine_lane, detail::engine_reply_ticket*);
   detail::engine_admission_result reserve_reply(detail::engine_lane, detail::engine_reply_ticket&);
   detail::engine_capacity_snapshot capacity_snapshot() const;
+  bool register_input_service(const std::shared_ptr<detail::engine_input_service>&);
+  void unregister_input_service(const std::shared_ptr<detail::engine_input_service>&);
+  void notify_input_service() noexcept;
+  bool has_pending_input_locked() const noexcept;
+  void service_one_input();
+  std::uint64_t commit_input_order(std::atomic<std::uint64_t>&, std::atomic<bool>&, bool, bool);
+  std::uint64_t next_admission_order_locked() noexcept;
+  bool older_input_locked(std::uint64_t) const noexcept;
   void run(initializer initialize, task shutdown) noexcept;
   class join_claim;
   void request_stop(bool drain_pending);
@@ -79,16 +91,22 @@ class engine_thread final {
   std::condition_variable work_ready_;
   std::condition_variable state_changed_;
   std::condition_variable idle_;
-  struct queued_work { task callback; std::uint64_t enqueued_us{0}; std::size_t lane{0}; };
+  struct queued_work { task callback; std::uint64_t enqueued_us{0}; std::size_t lane{0}; diagnostics::input_frame_trace::event trace; std::uint64_t order{0}; };
   std::array<queued_work, queue_capacity> work_{};
   std::size_t head_{0}, tail_{0}, queued_{0};
   std::array<std::size_t, 4> lane_queued_{};
+  // Separate bounded Host capacity: reply, renewal and cleanup lanes are intact.
+  std::array<std::shared_ptr<detail::engine_input_service>, 32> input_services_{};
+  std::size_t next_input_service_{0};
+  std::uint64_t admission_order_{0}; // Serialized with FIFO/input head publication, never wraps.
+  task owner_opportunity_;
   std::shared_ptr<detail::engine_capacity_state> capacity_;
   std::uint64_t capacity_generation_{0};
   const diagnostics::mode metrics_mode_;
   const std::uint64_t metrics_epoch_;
   diagnostics::queue metrics_;
   bool metrics_saturated_{false};
+  const unsigned coordinated_budget_us_{0}; // Profile candidate; default preserves independent budgets.
   std::uint64_t callback_started_us_{0};
   std::thread worker_;
   std::thread::id owner_thread_{};

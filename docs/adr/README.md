@@ -1,5 +1,7 @@
 # 架构决策记录（ADR）
 
+2026-10-26：[ADR-0122 输入到可见反馈](0122-input-to-visible-feedback.md)定义分阶段实现、接口、兼容和专人验证边界，当前不代表编译、运行或性能验收。
+
 当公共 API、Bridge 协议、权限、线程与生命周期、兼容目标、SDK 包格式或核心依赖发生变化时，在本目录新增 ADR。
 
 文件命名：`NNNN-short-title.md`，编号递增。状态使用 `proposed`、`accepted`、`superseded` 或 `deprecated`。已接受 ADR 不回写历史结论；后续变化新增 ADR，并在旧记录中标明替代关系。
@@ -12,6 +14,7 @@
 
 ## 0.5 新增提案
 
+- [ADR-0118：主线程定时任务批次让出输入处理](0118-main-thread-timer-batches.md)
 - [ADR-0117：限定范围交付后的当前未验收状态](0117-current-unverified-acceptance-status.md)
 - [ADR-0095：发布汇总的编译档位与冻结输入](0095-release-collection-inputs.md)
 - [ADR-0096：SOUI 依赖构建的 LLVM 档位](0096-soui-llvm-dependency-build.md)（实施与真实回归进行中）
@@ -45,8 +48,6 @@
 
 - [ADR-0093：内存不足时仍可释放 JSON](0093-allocation-free-json-destruction.md)（定向回归通过；完整候选验收进行中）
 - [ADR-0094：应用等待真实 Runtime 关闭](0094-application-runtime-shutdown.md)（真实桌面失败已复现，修复与重验进行中）
-- [ADR-0095：发布汇总的编译档位与冻结输入](0095-release-collection-inputs.md)（实施与当前构建验证进行中）
-- [ADR-0096：SOUI 的显式 LLVM 依赖构建](0096-soui-llvm-dependency-build.md)（两架构组件通过，完整 SDK 验收进行中）
 - [ADR-0097：0.5 内核重建与公开接口验收](0097-kernel-rebuild-import.md)（两架构重建与应用验收进行中）
 - [ADR-0098：公开 Bridge 配额的可重复校准负载](0098-task-store-calibration-workload.md)（独立消费者实施中，生产默认额度未冻结）
 - [ADR-0099：安装消费者的原生构建观察](0099-installed-consumer-debug-capture.md)（x64 实际重载通过，x86 修复重验中）
@@ -68,15 +69,37 @@
 
 - [ADR-0112：有界的进程地址空间观察](0112-bounded-process-address-census.md)（双架构真实扫描及独立读取回归通过；实际负载预算待校准）
 
-- [ADR-0127：可选自动后端宿主](0127-automatic-renderer-host.md)（启动前选择、双资源部署和验证边界）
+- [ADR-0119：在临时光栅覆盖边界保留已接收的滚动目标](0119-preserve-scroll-target-beyond-raster-coverage.md)（proposed；源码候选与端到端验证分开）
+- [ADR-0120：区分合成滚动确认与外部滚动意图](0120-preserve-compositor-scroll-acknowledgements.md)（proposed；默认整数元素滚动源码候选；完整 x86 构建、限定 GUI 位移与同值 CSS 取消已验证，性能及完整配置资格未完成）
+- [ADR-0122：输入到可见反馈的实施契约](0122-input-to-visible-feedback.md)（代码交付与性能资格分开）
+- [ADR-0123：有界输入恢复与 owner 调度](0123-input-admission-and-scheduler.md)（输入源码候选，调度包持续集成）
+- [ADR-0124：帧截止、资源通知与有界画布所有权](0124-frame-resource-presentation.md)（按工作包集成，运行资格未关闭）
+- [ADR-0125：有界输入、任务与可见帧关联](0125-input-frame-trace.md)（源码候选；编译与执行未运行）
+
+- [ADR-0127：WebView2 owner 输出与重入边界](0127-webview2-owner-output.md)（proposed，候选默认关闭）
+
+- [ADR-0126：GPU输入到可见反馈独立候选](0126-gpu-input-ui-candidate.md)（proposed，未启用/待数据）
+- [ADR-0118：MiniBlink 关闭的分阶段继续状态](0118-miniblink-nonblocking-unmount.md)
+- [ADR-0119：显式离线 Web 源码诊断构建档](0119-offline-web-build-profiles.md)
+- [ADR-0124：Web 构建目标、资源清单与体积分析](0124-web-targets-and-size-analysis.md)
+- [ADR-0125：显式运行时依赖与包内内容去重](0125-runtime-manifests-and-bundles.md)
+- [ADR-0126：可选压缩档位与实测开销](0126-optional-compression-profiles.md)
+- [ADR-0127：可选自动后端宿主](0127-automatic-renderer-host.md)
+
 - [ADR-0128：受控业务窗口的 CPU 呈现](0128-controlled-cpu-presentation.md)（业务 HWND 与 Inspector 回调路径分开；真实运行待验）
 - [ADR-0129：SHostWnd 上的原生诊断菜单](0129-native-host-window-menus.md)（仅附加菜单的可信 opt-in 窗口采用系统非客户区；真实动作待验）
 * [0130: Bounded legacy source maps](0130-bounded-legacy-source-maps.md)
 * [0131: Native view lifetime observation](0131-native-view-lifetime-observation.md)
 * [0134：受控 Inspector 的键盘事件快照](0134-controlled-inspector-keyboard-snapshot.md)
 * [0135：MiniBlink 显式本地 HTTPS 资源原点](0135-owned-local-resource-origin.md)
-* [0137：MiniBlink 截止时间调度](0137-miniblink-deadline-scheduler.md)
-* [0138：MiniBlink 帧节拍与呈现](0138-miniblink-frame-presentation.md)
-* [0139：WebView2 与 Scratch 性能候选](0139-webview2-scratch-performance.md)
-* [0140：性能候选的体积与来源门禁](0140-performance-candidate-size-and-source.md)
-* [0141：输入开始前预留结束容量](0141-input-ending-capacity.md)
+
+- [ADR-0123：公共原生受控 DevTools](0123-public-devtools-candidate.md)（默认关闭与目标许可；本轮发布资格单列）
+- [ADR-0136：0.6.0 普通 Release 分类与限定范围](0136-0.6.0-release-scope.md)（用户本次授权；生产资格仍未完成）
+
+- [ADR-0137：有界 Windows 工具准备](0137-bounded-windows-tool-preparation.md)（主线工具修复保持原范围）
+- [ADR-0138：MiniBlink 帧与呈现性能候选](0138-miniblink-frame-presentation.md)（主线集成，待编译测试）
+- [ADR-0139：WebView2 与 Scratch 性能候选](0139-webview2-scratch-performance.md)（主线集成，待编译测试）
+- [ADR-0140：性能候选的体积与来源门禁](0140-performance-candidate-size-and-source.md)（三项预算尚待实际构建）
+- [ADR-0141：主线输入结束与恢复策略](0141-input-ending-capacity.md)（保留 mailbox/FIFO/ordered cancel）
+- [ADR-0142：显式本地编辑器资源策略](0142-isolated-local-editor.md)（默认 strict，原生 opt-in）
+- [ADR-0143：MiniBlink 截止唤醒与批次](0143-miniblink-deadline-scheduler.md)（主线索引保留，运行资格待验）
