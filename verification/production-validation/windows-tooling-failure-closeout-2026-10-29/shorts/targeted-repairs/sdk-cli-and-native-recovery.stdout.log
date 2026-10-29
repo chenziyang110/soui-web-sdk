@@ -1,0 +1,23 @@
+TAP version 13
+# Native publication observation: {"blockedExit":1,"recoveredExit":0,"blockedNativeError":"EPERM: operation not permitted, rename 'C:\\\\Users\\\\11034\\\\AppData\\\\Local\\\\Temp\\\\soui-publication-recovery-kY0","manifestSha256":"931afcf15b24a30da157108d2b09350caed4f478bb84941ffb0ca6070054fc68","recoveredManifestSha256":"931afcf15b24a30da157108d2b09350caed4f478bb84941ffb0ca6070054fc68"}
+# Subtest: CLI retention is explicit and supplies the exact pin accepted by recovery
+ok 1 - CLI retention is explicit and supplies the exact pin accepted by recovery
+  ---
+  duration_ms: 890.8281
+  type: 'test'
+  ...
+# Subtest: real PS5 descendant handle denial remains failure, then closes and recovers with the same bytes
+ok 2 - real PS5 descendant handle denial remains failure, then closes and recovers with the same bytes
+  ---
+  duration_ms: 2078.3697
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3057.9549

@@ -8,6 +8,7 @@ param([switch]$FreshConfigure,
 $ErrorActionPreference='Stop'
 $workspace=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
 . (Join-Path $PSScriptRoot 'CMake-Configure.ps1')
+. (Join-Path $PSScriptRoot 'Msvc-CompilerLifecycle.ps1')
 $cmake=(Get-Command cmake.exe -ErrorAction Stop).Source
 $validationSource=Join-Path $workspace 'benchmarks/protocol'
 $validationBuild=Join-Path $workspace $(if($Architecture -eq 'x64'){'out/benchmark-protocol'}else{'out/benchmark-protocol-x86'})
@@ -19,6 +20,8 @@ $buildEnvironment['MSBUILDDISABLENODEREUSE']=@{present=($null-ne$nodeReusePrevio
 $externalPaths=@($LlvmRoot,$MsvcRoot,$WindowsSdkRoot,$NinjaExe,$WindowsCmdExe,$PowerShellExe)
 if($NativeToolchain -eq 'MSVC143'){
   if(@($externalPaths|Where-Object{$_}).Count-or$ToolchainRequest){throw 'LLVM inputs require explicit NativeToolchain LLVM22MSVC142.'}
+  . (Join-Path $PSScriptRoot 'Find-Toolchain.ps1')
+  $toolchain=Get-SouiToolchain
 }else{
   if(@($externalPaths|Where-Object{[string]::IsNullOrWhiteSpace($_)}).Count){throw 'LLVM measurement preparation requires all six explicit tool paths.'}
   . (Join-Path $PSScriptRoot 'Find-LlvmToolchain.ps1')
@@ -35,6 +38,8 @@ if($llvm){foreach($name in @($llvmRemove)+@('ComSpec','VcpkgEnabled','VcpkgEnabl
   $item=Get-Item -LiteralPath ('Env:'+$name) -ErrorAction SilentlyContinue
   $buildEnvironment[$name]=@{present=($null-ne$item);value=if($null-ne$item){[string]$item.Value}else{$null}}
 }}
+$compilerPhase=$null
+$primaryBuildFailure=$null
 try{
   # Configuration also launches toolchain checks; do not leave their MSBuild
   # nodes reusable when this script is called outside the standard observer.
@@ -80,18 +85,26 @@ try{
     -NativeToolchain $NativeToolchain -LlvmToolchain $llvm)
   if($llvm){$arguments+='-DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=ON'}
   New-Item -ItemType Directory -Force -Path $validationBuild | Out-Null
+  if(-not$llvm){
+    $arguments+=('-DCMAKE_GENERATOR_INSTANCE:PATH='+$toolchain.Root)
+    $compilerPhase=Start-SouiMsvcCompilerPhase -Toolchain $toolchain -Architecture $Architecture -EvidenceRoot $validationBuild -Phase configure
+  }
   & $cmake @arguments *> (Join-Path $validationBuild 'configure.log')
-  if($LASTEXITCODE -ne 0){throw "Validation tools configure failed: $validationBuild/configure.log"}
+  $configureExitCode=$LASTEXITCODE
+  Complete-SouiMsvcCompilerPhase $compilerPhase $configureExitCode "Validation tools configure failed: $validationBuild/configure.log"
   $buildArgs=@('--build',$validationBuild,'--config','Release','--target','OwnedProcessRunner','OwnedProcessAssignmentFixture',
     'ProcessTreeSampler','InputTrace','NativeTraceIdentity','OwnedTailProcessFixture','OwnedTailMutationFixture','OwnedTailApiFixture','DisplayCalibration','--parallel','2')
   if($llvm){$buildArgs+='--verbose';if($FreshConfigure){$buildArgs+='--clean-first'}}else{$buildArgs+=@('--','/nr:false')}
   $nativeInvocation=[ordered]@{schema='soui.native-build-invocation/v1';nativeToolchain=$NativeToolchain;
     executable=$cmake;arguments=$buildArgs;
     environment=[ordered]@{MSBUILDDISABLENODEREUSE=$env:MSBUILDDISABLENODEREUSE};
-    compilerHelperSuppressionConfigured=$false}
+    compilerHelperSuppressionConfigured=$false;
+    compilerHelperLifecycle=$(if($llvm){$null}else{@{mode='owned-idle-timeout';arguments=@('-timeout:20');originalOwnedJobClosureRequired=$true}})}
   [IO.File]::WriteAllText((Join-Path $validationBuild 'native-invocation-Release.json'),($nativeInvocation|ConvertTo-Json -Depth 5),[Text.UTF8Encoding]::new($false))
+  if(-not$llvm){$compilerPhase=Start-SouiMsvcCompilerPhase -Toolchain $toolchain -Architecture $Architecture -EvidenceRoot $validationBuild -Phase build}
   & $cmake @buildArgs *> (Join-Path $validationBuild 'compile.log')
-  if($LASTEXITCODE -ne 0){throw "Validation tools build failed: $validationBuild/compile.log"}
+  $nativeExitCode=$LASTEXITCODE
+  Complete-SouiMsvcCompilerPhase $compilerPhase $nativeExitCode "Validation tools build failed: $validationBuild/compile.log"
   if($llvm){
     foreach($read in @(@{mode='commands';name='ninja-commands-Release.log'},@{mode='deps';name='ninja-deps-Release.log'})){
       $lines=& $llvm.ToolPins.NINJA.path -C $validationBuild -f build-Release.ninja -t $read.mode
@@ -104,13 +117,22 @@ try{
   & node $measurement seal $Architecture $measurementInputs.sha256 @profileArgs | Out-Null
   if($LASTEXITCODE -ne 0){throw 'Validation tools architecture/source/output identity failed'}
   Write-Output (Join-Path $validationBuild 'Release/OwnedProcessRunner.exe')
+}catch{
+  $primaryBuildFailure=$_
+  throw
 }finally{
   $restoreErrors=[Collections.Generic.List[string]]::new()
+  try{Close-SouiMsvcCompilerPhase $compilerPhase}catch{$restoreErrors.Add('Compiler lifecycle: '+$_.Exception.Message)}
   foreach($name in $buildEnvironment.Keys){try{
     $state=$buildEnvironment[$name]
     if($state.present){Set-Item -LiteralPath ('Env:'+$name) -Value $state.value -ErrorAction Stop}else{Remove-Item -LiteralPath ('Env:'+$name) -ErrorAction SilentlyContinue}
     $actual=Get-Item -LiteralPath ('Env:'+$name) -ErrorAction SilentlyContinue
     if(($null-ne$actual)-ne$state.present-or($state.present-and[string]$actual.Value-cne$state.value)){throw 'Presence/value differs'}
   }catch{$restoreErrors.Add($name+': '+$_.Exception.Message)}}
-  if($restoreErrors.Count){throw ('Measurement environment restore failed: '+($restoreErrors-join'; '))}
+  if($restoreErrors.Count){
+    if($primaryBuildFailure){
+      $primaryBuildFailure.Exception.Data['cleanupFailures']=$restoreErrors.ToArray()
+      Write-Warning ('Secondary measurement cleanup failure: '+($restoreErrors-join'; '))
+    }else{throw ('Measurement environment restore failed: '+($restoreErrors-join'; '))}
+  }
 }

@@ -1,0 +1,24 @@
+{
+  "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+  "args": [
+    "-NoProfile",
+    "-NonInteractive",
+    "-ExecutionPolicy",
+    "Bypass",
+    "-File",
+    "F:\\work\\SOUI_WEB\\out\\windows-tooling-failure-closeout-20261029\\native-short\\Invoke-NativeShort.ps1",
+    "-Architecture",
+    "x64",
+    "-CaseDirectory",
+    "F:\\work\\SOUI_WEB\\out\\windows-tooling-failure-closeout-20261029\\native-short\\attempt-23a52cfe-55c5-4758-aabc-2e6bb3b761e6\\x64",
+    "-ShortWorkspace",
+    "C:\\sct8-23a52cfe-x64",
+    "-FrozenInputs",
+    "F:\\work\\SOUI_WEB\\out\\windows-tooling-failure-closeout-20261029\\native-short\\attempt-23a52cfe-55c5-4758-aabc-2e6bb3b761e6\\inputs-before.json"
+  ],
+  "cwd": "C:/sc07",
+  "runner": "C:/sr06/out/benchmark-protocol/Release/OwnedProcessRunner.exe",
+  "timeoutMs": 120000,
+  "drainMs": 2000,
+  "shortWorkspace": "C:\\sct8-23a52cfe-x64"
+}

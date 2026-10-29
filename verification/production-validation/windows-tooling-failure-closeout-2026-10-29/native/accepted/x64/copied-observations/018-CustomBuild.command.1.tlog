@@ -1,0 +1,10 @@
+^C:\SCT8-60FCE519-X64\SOURCE\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/sct8-60fce519-x64/source -BC:/sct8-60fce519-x64/out/x64 --check-stamp-file C:/sct8-60fce519-x64/out/x64/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

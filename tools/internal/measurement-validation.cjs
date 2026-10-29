@@ -21,7 +21,8 @@ const sourceNames=['benchmarks/protocol/CMakeLists.txt','benchmarks/protocol/own
  'tests/benchmark/owned-process-assignment-fixture.cpp','benchmarks/protocol/process-tree-sampler.cpp','benchmarks/protocol/input-trace.cpp',
  'benchmarks/protocol/desktop-observer.h','benchmarks/protocol/desktop-observer.cpp',
  'benchmarks/protocol/trace-identity.h','tests/benchmark/native-trace-identity.cpp','tools/internal/CMake-Configure.ps1',
- 'cmake/SouiWindowsSdk.cmake','tools/internal/Build-ValidationTools.ps1','tools/internal/measurement-validation.cjs',
+ 'cmake/SouiWindowsSdk.cmake','tools/internal/Build-ValidationTools.ps1','tools/internal/Find-Toolchain.ps1',
+ 'tools/internal/Msvc-CompilerLifecycle.ps1','tools/internal/measurement-validation.cjs',
  'tests/benchmark/owned-tail-process-fixture.cpp','tests/benchmark/owned-tail-mutation-fixture.cpp','tests/benchmark/owned-tail-api-fixture.cpp',
  'benchmarks/protocol/display-calibration.cpp'];
 const hash=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');

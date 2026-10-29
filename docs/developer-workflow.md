@@ -1,5 +1,11 @@
 # 统一开发入口（首个有限切片）
 
+后续源码候选的MSVC构建按固定工具集管理自有VCTIP服务的自然退出：已有构建或服务会拒绝接纳，需等待其持有者完成，不自动清理。原root/drain期限保持；LLVM路径不启动该服务。具体边界见随SDK交付的[ADR-0137](adr/0137-bounded-windows-tool-preparation.md)。
+
+调查SDK发布的EPERM/EACCES时，可直接运行`node tools/sdk/soui-sdk.cjs pack --source SOURCE --output OUTPUT --version VERSION --retain-failed-publication`。原失败仍返回非零；仅完整校验过的stage会保留，stderr诊断包含stage和manifestSha256。确认争用已释放后，以`node tools/sdk/soui-sdk.cjs recover-publication --stage STAGE --output OUTPUT --manifest-sha256 SHA256`发起独立校验恢复；禁止覆盖已有目标。默认pack仍清理失败stage；保留模式不自动扩重试或结束其他进程。
+
+数据ZIP准备可运行`node tools/internal/archive-stage.cjs PLAN.json`。plan严格包含`schema: "soui.archive-extraction-plan/v1"`、`archive: {path,bytes,sha256}`、完整`files: [{path,bytes,sha256}]`、新的绝对`destination`、绝对`sevenZipPath`和有限`timeoutMs`。工具在同一总期限内验证全部成员与字节后才发布，不执行提取的代码；调用者仍须核对自己的SDK锁及业务构建身份。采用新UTF-8 ZIP生成器，不自动猜旧ACP名称或改写已校验归档。
+
 在完整源码交付根运行 `powershell.exe -File tools/Soui.ps1 <command>`。原脚本继续保留；本入口复用它们已有的功能，不改变 SDK 包身份或安装事务。当前候选的完整交付验收仍在进行。
 
 ## 参数与输出

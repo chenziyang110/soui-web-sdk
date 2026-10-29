@@ -45,6 +45,7 @@ if($WithVendorTests -and ($SdkOnly -or (Test-Path -LiteralPath (Join-Path $root 
 }
 . (Join-Path $PSScriptRoot 'internal/Find-Toolchain.ps1')
 . (Join-Path $PSScriptRoot 'internal/CMake-Configure.ps1')
+. (Join-Path $PSScriptRoot 'internal/Msvc-CompilerLifecycle.ps1')
 $llvm=$null
 $externalPaths=@($LlvmRoot,$MsvcRoot,$WindowsSdkRoot,$NinjaExe,$WindowsCmdExe,$PowerShellExe)
 if($NativeToolchain -eq 'MSVC143'){
@@ -75,6 +76,8 @@ if($llvm){
     $buildEnvironment[$name]=@{present=($null-ne$item);value=if($null-ne$item){[string]$item.Value}else{$null}}
   }
 }
+$compilerPhase=$null
+$primaryBuildFailure=$null
 try {
 $env:SOUI_WEB_BUILD_PROFILE=$WebProfile
 # Configure can also invoke MSBuild compiler checks. Cover it as well as the
@@ -208,17 +211,25 @@ if($WithDevToolsPackage){
     "-DSOUI_DEVTOOLS_APPROVAL_SHA256=$DevToolsApprovalSha256")
 }
 if($WithVendorTests){$optional+=@('-DSOUI_BUILD_TESTS=ON','-DSOUI_BUILD_VENDOR_TESTS=ON')}
+if(-not$llvm){
+  $optional+=('-DCMAKE_GENERATOR_INSTANCE:PATH='+$toolchain.Root)
+  $compilerPhase=Start-SouiMsvcCompilerPhase -Toolchain $toolchain -Architecture $Architecture -EvidenceRoot $output -Phase configure
+}
 & $cmake.Source @configure @optional
-if($LASTEXITCODE -ne 0){throw 'CMake configure failed'}
+$configureExitCode=$LASTEXITCODE
+Complete-SouiMsvcCompilerPhase $compilerPhase $configureExitCode 'CMake configure failed'
 $buildArguments=@('--build',$output,'--config',$Configuration,'--parallel','2')
 if($llvm){$buildArguments+='--verbose'}else{$buildArguments+=@('--','/nr:false')}
 $nativeInvocation=[ordered]@{schema='soui.native-build-invocation/v1';nativeToolchain=$NativeToolchain;
   executable=$cmake.Source;arguments=$buildArguments;
   environment=[ordered]@{MSBUILDDISABLENODEREUSE=$env:MSBUILDDISABLENODEREUSE};
-  compilerHelperSuppressionConfigured=$false}
+  compilerHelperSuppressionConfigured=$false;
+  compilerHelperLifecycle=$(if($llvm){$null}else{@{mode='owned-idle-timeout';arguments=@('-timeout:20');originalOwnedJobClosureRequired=$true}})}
 [IO.File]::WriteAllText((Join-Path $output "native-invocation-$Configuration.json"),($nativeInvocation|ConvertTo-Json -Depth 5),[Text.UTF8Encoding]::new($false))
+if(-not$llvm){$compilerPhase=Start-SouiMsvcCompilerPhase -Toolchain $toolchain -Architecture $Architecture -EvidenceRoot $output -Phase build}
 & $cmake.Source @buildArguments *> (Join-Path $output "native-$Configuration.log")
-if($LASTEXITCODE -ne 0){throw "Native build failed; inspect $output/native-$Configuration.log"}
+$nativeExitCode=$LASTEXITCODE
+Complete-SouiMsvcCompilerPhase $compilerPhase $nativeExitCode "Native build failed; inspect $output/native-$Configuration.log"
 if($WithWebView2){& (Join-Path $PSScriptRoot 'internal/Restore-WebView2.ps1') | Out-Null}
 if($Install){
   & $cmake.Source --install $output --config $Configuration --prefix (Join-Path $root "out/install/$Architecture")
@@ -237,8 +248,12 @@ if(-not $SdkOnly){
 & $node.Source $evidence finish @evidenceArgs
 if($LASTEXITCODE -ne 0){throw 'Build payload recording failed'}
 Write-Output "Build passed: $output / $Configuration"
+} catch {
+  $primaryBuildFailure=$_
+  throw
 } finally {
   $restoreErrors=[Collections.Generic.List[string]]::new()
+  try{Close-SouiMsvcCompilerPhase $compilerPhase}catch{$restoreErrors.Add('Compiler lifecycle: '+$_.Exception.Message)}
   try {
     if($webProfileEnvironment.present){Set-Item -LiteralPath 'Env:SOUI_WEB_BUILD_PROFILE' -Value $webProfileEnvironment.value -ErrorAction Stop}
     else {Remove-Item -LiteralPath 'Env:SOUI_WEB_BUILD_PROFILE' -ErrorAction SilentlyContinue}
@@ -254,5 +269,10 @@ Write-Output "Build passed: $output / $Configuration"
       if(($null-ne$actual)-ne$state.present-or($state.present-and([string]$actual.Value-cne$state.value))){throw 'Presence/value differs'}
     }catch{$restoreErrors.Add($name+': '+$_.Exception.Message)}
   }
-  if($restoreErrors.Count){throw ('Build environment restore failed: '+($restoreErrors-join'; '))}
+  if($restoreErrors.Count){
+    if($primaryBuildFailure){
+      $primaryBuildFailure.Exception.Data['cleanupFailures']=$restoreErrors.ToArray()
+      Write-Warning ('Secondary build cleanup failure: '+($restoreErrors-join'; '))
+    }else{throw ('Build environment restore failed: '+($restoreErrors-join'; '))}
+  }
 }

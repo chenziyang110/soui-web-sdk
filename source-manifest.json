@@ -7,8 +7,8 @@
     {
       "path": ".gitattributes",
       "normalization": "lf",
-      "bytes": 40383,
-      "sha256": "276c8c2315b264a3969d21d4468267730af7a175378d08cf2cd9275e70f6d7a7"
+      "bytes": 40617,
+      "sha256": "122f68a86b2fd243fa1f38c20308349b81f95b3da0797736266d5997e2b5c917"
     },
     {
       "path": ".github/CODEOWNERS",
@@ -67,8 +67,8 @@
     {
       "path": "CHANGELOG.md",
       "normalization": "lf",
-      "bytes": 59333,
-      "sha256": "04a605b6c3d52967c7bad0cdc455fc876fda214869db7bfa309b2b13d1b7d4ee"
+      "bytes": 59980,
+      "sha256": "bb076574324e11d2025a4846a1a28ed93ad5bb578b5c331f3f38ca69a18c254a"
     },
     {
       "path": "CMakeLists.txt",
@@ -3047,6 +3047,12 @@
       "sha256": "c9062f97e8e6570f47a73b8e33a498df0158c3655baba2c0d6d9aa9f71dacf97"
     },
     {
+      "path": "docs/adr/0137-bounded-windows-tool-preparation.md",
+      "normalization": "lf",
+      "bytes": 3394,
+      "sha256": "ab96193c9d48715f276602ea6d45002235ca0371a859cf4903b7391df3a8b46a"
+    },
+    {
       "path": "docs/adr/README.md",
       "normalization": "lf",
       "bytes": 10393,
@@ -3103,8 +3109,8 @@
     {
       "path": "docs/developer-workflow.md",
       "normalization": "lf",
-      "bytes": 8965,
-      "sha256": "3c7f31770c422cc6b86a7849e859e1c6ccb68316fc3651ca93ad8ff57ecbd784"
+      "bytes": 10363,
+      "sha256": "10040e38c812d7c36045380a5851f6121f48422117d4bc1420f925b1ec8629c7"
     },
     {
       "path": "docs/devtools.md",
@@ -3145,8 +3151,8 @@
     {
       "path": "docs/known-issues.md",
       "normalization": "lf",
-      "bytes": 30616,
-      "sha256": "45027b0cabab29325ed7ef4e5d92bf3b24dabcea2aa0857cd39fb28d5eda6319"
+      "bytes": 31127,
+      "sha256": "4bf367be67cab63e44211f78758494ef9bbce17aa3dd79cdec4221dc5a4f1176"
     },
     {
       "path": "docs/licenses/v0.6.0-redistribution.md",
@@ -3207,6 +3213,12 @@
       "normalization": "lf",
       "bytes": 13033,
       "sha256": "20df27b9e4a78c5460764e1b5dbb5884fe1103b7f8cd9546d073ff20a4a4f38c"
+    },
+    {
+      "path": "docs/maintenance/windows-tooling-failure-closeout-20261029.md",
+      "normalization": "lf",
+      "bytes": 2660,
+      "sha256": "f1a41b7798f32be5e407d6910577bba208fefeeb47005a814fc68d79067f0f1e"
     },
     {
       "path": "docs/migration/task-operation-query.md",
@@ -9319,8 +9331,8 @@
     {
       "path": "tests/benchmark/measurement-preparation-source.test.cjs",
       "normalization": "lf",
-      "bytes": 19031,
-      "sha256": "2105c90f51d2ff63a67b0b0ce93fd5fc88c7a5525aa8ab8098e074b968d70fe4"
+      "bytes": 19528,
+      "sha256": "1ee236716a2be4a32725d042624cffc141e1ddfcc55a1d9480d5e3d3165e9965"
     },
     {
       "path": "tests/benchmark/native-trace-identity.cpp",
@@ -11249,6 +11261,12 @@
       "sha256": "20c54eb4915f78af6fc4d8f65efdf72b9f7906913676565939135769c32f39d4"
     },
     {
+      "path": "tests/sdk/archive-stage.test.cjs",
+      "normalization": "lf",
+      "bytes": 23705,
+      "sha256": "fbd9cb9c0f17e2277e139bff386fad81c7b75927210311307b3d70e12754c19a"
+    },
+    {
       "path": "tests/sdk/archived-generator-inputs.test.cjs",
       "normalization": "lf",
       "bytes": 1711,
@@ -11513,6 +11531,12 @@
       "sha256": "b8cad0df8d3663ce079e801bf810eca6de3c0d6edfecafe75343a13d98641be7"
     },
     {
+      "path": "tests/sdk/msvc-compiler-lifecycle.test.cjs",
+      "normalization": "lf",
+      "bytes": 7385,
+      "sha256": "81f67c04fa843f28194b9b2b97783c75b50f778edcf8cce822b31dd82fc28efa"
+    },
+    {
       "path": "tests/sdk/profile-installation-integration.test.cjs",
       "normalization": "lf",
       "bytes": 4427,
@@ -11589,6 +11613,12 @@
       "normalization": "lf",
       "bytes": 5838,
       "sha256": "d3ee1d3dec4f36840a3ec8b748b961dfe4be0118087eb5d0c51691bccd6e14e3"
+    },
+    {
+      "path": "tests/sdk/sdk-publication-recovery.test.cjs",
+      "normalization": "lf",
+      "bytes": 7734,
+      "sha256": "d40ce74ccc50ae40a58109e29086d5cc7458a707df92834ceea95c4add0c980b"
     },
     {
       "path": "tests/sdk/sdk-version.test.cjs",
@@ -181411,8 +181441,8 @@
     {
       "path": "tools/Build.ps1",
       "normalization": "lf",
-      "bytes": 15265,
-      "sha256": "f6cd79c4d4852b7da51db0b18d2ee3fa8a0e0d3b6a7c163f8359d1954fe68180"
+      "bytes": 16392,
+      "sha256": "a6c79480e76fac05ed0f3104b9ce91c421b2a1d4e6ea7af2ca2b5b4d8d87ef95"
     },
     {
       "path": "tools/Collect-Verification.cjs",
@@ -181511,6 +181541,12 @@
       "sha256": "c52f361f2625c7d56f8ae6c14b4b44181f3bcbe16ca5279dee0ee644d4134703"
     },
     {
+      "path": "tools/internal/Archive-Members.ps1",
+      "normalization": "lf",
+      "bytes": 1503,
+      "sha256": "8860d6710039505e8a683ad615d5fbfeeb5bb96c24f53ef4eb7053842a8f56fb"
+    },
+    {
       "path": "tools/internal/Build-KernelLibraryArch.cmd",
       "normalization": "lf",
       "bytes": 5833,
@@ -181543,8 +181579,8 @@
     {
       "path": "tools/internal/Build-ValidationTools.ps1",
       "normalization": "lf",
-      "bytes": 9005,
-      "sha256": "81c3d59a5a7e0cc1408a58371fdac1b796f89a3a4936f5c420afe4cdca08cede"
+      "bytes": 10244,
+      "sha256": "8fec00cf9889b50c5168a2f460d76c87f9b4566736929aef00c8087544da1f49"
     },
     {
       "path": "tools/internal/Build-WglProbe.cmd",
@@ -181589,6 +181625,12 @@
       "sha256": "2a2f731e304f9477dde0a9aae9ee6e53880bec117c9f23622e29fc2b588b25a1"
     },
     {
+      "path": "tools/internal/Msvc-CompilerLifecycle.ps1",
+      "normalization": "lf",
+      "bytes": 8686,
+      "sha256": "e8aee4b4ad8b8f98341f89216347d84e0f01b91fef91d3e5ec6d8512500a32ef"
+    },
+    {
       "path": "tools/internal/Observe-LlvmBuild.ps1",
       "normalization": "lf",
       "bytes": 129319,
@@ -181617,6 +181659,12 @@
       "normalization": "lf",
       "bytes": 10808,
       "sha256": "a8257de8016cd65739ad3e2c59e04a090c8007ac281c144abd55280eb7961982"
+    },
+    {
+      "path": "tools/internal/archive-stage.cjs",
+      "normalization": "lf",
+      "bytes": 13729,
+      "sha256": "33360eeab2d5d5f7073e9f1a4b49737c6cb327e326b6e63229f950a990bd17b5"
     },
     {
       "path": "tools/internal/auto-smoke.cjs",
@@ -181663,8 +181711,8 @@
     {
       "path": "tools/internal/compression-profiles.cjs",
       "normalization": "lf",
-      "bytes": 6856,
-      "sha256": "5ceed26c63d996cd40560270195c1ec36defca6eae091da4f452ab83a50910f4"
+      "bytes": 8566,
+      "sha256": "b5d5d9ae702850e5d7501a5a4752f7d5b5cb04a8ef68fedd25ec4ffe867b1bf6"
     },
     {
       "path": "tools/internal/configure-log-evidence.cjs",
@@ -181679,10 +181727,16 @@
       "sha256": "d4760e97898cb27f529033032ec76721f61a056c6af1890f3b3827a32b49965d"
     },
     {
+      "path": "tools/internal/deadline-file-pin.cjs",
+      "normalization": "lf",
+      "bytes": 3308,
+      "sha256": "5a83083e437980244cb7593a01530958f795d34e3172bc5efa70e6c0d39eb20f"
+    },
+    {
       "path": "tools/internal/delivery-identity.cjs",
       "normalization": "lf",
-      "bytes": 10572,
-      "sha256": "d6bd61cd1683ff96bce0a74175a1b6b40f3896cd613cd4f2f4862c4b7b4e315e"
+      "bytes": 10861,
+      "sha256": "1dba27266a9f61a4e171b932b4bd296e56f651c69f3ba727b84531593350cb66"
     },
     {
       "path": "tools/internal/dependency-evidence.cjs",
@@ -181777,8 +181831,8 @@
     {
       "path": "tools/internal/measurement-validation.cjs",
       "normalization": "lf",
-      "bytes": 24804,
-      "sha256": "15bb990bf0dc2e62e460c4f157c24570b953600b888d666bc5ea27d9a314896f"
+      "bytes": 24886,
+      "sha256": "ddf7e04f969b671baf901d709dcbfbcff4e1f33fc1edbb02badb98401e1fb33d"
     },
     {
       "path": "tools/internal/modern-smoke.cjs",
@@ -181861,8 +181915,8 @@
     {
       "path": "tools/internal/standard-build.cjs",
       "normalization": "lf",
-      "bytes": 43746,
-      "sha256": "fd632d3f221dbf192038bd68e3fdd46ceceac2d845ea7a03769c8ac155f7c9ab"
+      "bytes": 43793,
+      "sha256": "219e9b695fbd12271afb0ffb25e729af1e92e8e0da17292b1d4dd78154eb9552"
     },
     {
       "path": "tools/internal/vendor-test-names.json",
@@ -181945,8 +181999,8 @@
     {
       "path": "tools/sdk/soui-sdk.cjs",
       "normalization": "lf",
-      "bytes": 17060,
-      "sha256": "6ec0964bc09023df4c0c8cf3b7c6c6c8f6da29fcc324513222e5e21ffb994958"
+      "bytes": 20634,
+      "sha256": "9a725b6d5ba33a9833611265c6537a04c3de31a165794241149dbf8f4518848a"
     },
     {
       "path": "tools/verification-status.cjs",
@@ -372855,6 +372909,1032 @@
       "normalization": "none",
       "bytes": 102,
       "sha256": "134aaad9ae2f11cca47e805f99b721b6bd02fbd009ef5d8e49d18356422d7ad8"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/Files.index.json",
+      "normalization": "none",
+      "bytes": 62207,
+      "sha256": "e8dfcf7a98e26ed844852f8c75e4665269b7e83de9ff822deb316be45b4ee88f"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/Final-review.json",
+      "normalization": "none",
+      "bytes": 3116,
+      "sha256": "f9b47ca771079ae98aca9e6044b6e60d8e36afa4f8665f5b5235d6d73528a765"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/README.md",
+      "normalization": "none",
+      "bytes": 3914,
+      "sha256": "d28b2c685ba4b43470d4d27aa7306c7120ebbc9ffd897ea41affe8da0d6ad6a3"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/Summary.actual.json",
+      "normalization": "none",
+      "bytes": 5228,
+      "sha256": "c86873c1fa270c62e3ec33a6e3746c76021279c3e750659e9c2567d7424cd949"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/canonical-pack/result.json",
+      "normalization": "none",
+      "bytes": 725,
+      "sha256": "9a2dce52d0cafed74f4eb6f500337480a6fe5096b1fa32dfa4a43e11baabd8b9"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/canonical-pack/sdk-manifest.json",
+      "normalization": "none",
+      "bytes": 354507,
+      "sha256": "466032c40d61cc7c816a13777bbe295b9d97c44e4d211715170f896288b10453"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/canonical-pack/stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/canonical-pack/stdout.log",
+      "normalization": "none",
+      "bytes": 131,
+      "sha256": "7b6cb7004665b518d4c0d5a035f53de636764ead60a7a6fa4a80bf1167fc9482"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/harness/Run-CanonicalPack.cjs",
+      "normalization": "none",
+      "bytes": 2020,
+      "sha256": "b512f0fbf599ae98618dad7efa140090dc234b9ccd5c32edd820f3b7b67ca685"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/harness/Run-Repairs.cjs",
+      "normalization": "none",
+      "bytes": 1912,
+      "sha256": "205d1b8e663b6f8816c1dea6d9c41bc3a434fd57360105440c6c6ffcf3310825"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/harness/Run-Shorts.cjs",
+      "normalization": "none",
+      "bytes": 2975,
+      "sha256": "7d9d419cb7ca509081837472dab69c0ce154f28a94e5d503375525e7e2862dab"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/inputs-after.json",
+      "normalization": "none",
+      "bytes": 13204,
+      "sha256": "d3af24ff717ba74bd69296ad5cabc7d857b2607400b11eab91b5d0681490a7d7"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/inputs-before.json",
+      "normalization": "none",
+      "bytes": 13554,
+      "sha256": "de0c5423fdf4ab68110cde034d05dea21a772ef75d659ff349219023c7251d52"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/original-preparation.json",
+      "normalization": "none",
+      "bytes": 6750,
+      "sha256": "0de724e35238813efe68f35c0f286f6432934d695d12e2575a8e95caa76ba629"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/summary.json",
+      "normalization": "none",
+      "bytes": 17050,
+      "sha256": "bb465d06d100becc7748f52718048d434e91e75c27d473dce66d1532c4d5ba26"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/build.log",
+      "normalization": "none",
+      "bytes": 524,
+      "sha256": "ae3e5f860540b03d14573ac4a7fcce864409a5b365cd03853e8a529e8e643566"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/build/compiler-lifecycle-build-969fda71-41d4-4953-b43f-155922df339e/returned.json",
+      "normalization": "none",
+      "bytes": 1528,
+      "sha256": "855a15c64e161f17de3a5e7b27bc4ee2d25afa493654043a609d8e0243620c39"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/build/compiler-lifecycle-build-969fda71-41d4-4953-b43f-155922df339e/started.json",
+      "normalization": "none",
+      "bytes": 1265,
+      "sha256": "6e825e3d7f7a9dc2ee2537ba7e59db9a606062e2e65f62b1eabc876859df3bd7"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/build/compiler-lifecycle-build-969fda71-41d4-4953-b43f-155922df339e/stderr.bin",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/build/compiler-lifecycle-build-969fda71-41d4-4953-b43f-155922df339e/stdout.bin",
+      "normalization": "none",
+      "bytes": 288,
+      "sha256": "ab89c5b5aaba38dee8d380e5d735d855a25cadac0954fbe07593fed159e11d07"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/case-verdict.json",
+      "normalization": "none",
+      "bytes": 7648,
+      "sha256": "f909702603930fd5fe8a4393a485c446ab754819526b26250855caaf6b69615f"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/compiled-output-pins.json",
+      "normalization": "none",
+      "bytes": 642,
+      "sha256": "9aba5c38041ef89e8cd862f1a0d74a1467660481422bf44a01251bbf27e8672f"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/configure.log",
+      "normalization": "none",
+      "bytes": 1080,
+      "sha256": "34594f8564f2437114cee74ccc6f4ed75aceba290c10c898fdea395d7a09a8f1"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/configure/compiler-lifecycle-configure-689cc2b4-7a21-49ea-b402-a4739f2dfa0b/returned.json",
+      "normalization": "none",
+      "bytes": 1531,
+      "sha256": "ee28364a2d70372ecfb2f2ccc8e3c9d4618d52f6b40347a5d8eb1c7d4199058a"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/configure/compiler-lifecycle-configure-689cc2b4-7a21-49ea-b402-a4739f2dfa0b/started.json",
+      "normalization": "none",
+      "bytes": 1269,
+      "sha256": "495e437b40666ab672b1df81e7d795b9813d4ac24e5920a5704c96312ea2c53d"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/configure/compiler-lifecycle-configure-689cc2b4-7a21-49ea-b402-a4739f2dfa0b/stderr.bin",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/configure/compiler-lifecycle-configure-689cc2b4-7a21-49ea-b402-a4739f2dfa0b/stdout.bin",
+      "normalization": "none",
+      "bytes": 288,
+      "sha256": "ab89c5b5aaba38dee8d380e5d735d855a25cadac0954fbe07593fed159e11d07"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/copied-observations/000-ALL_BUILD.vcxproj",
+      "normalization": "none",
+      "bytes": 40245,
+      "sha256": "e5d84cb2ec35ade6140bd29cf733543247eba8a3117bdc4c276d0804b0857599"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/copied-observations/001-CMakeCache.txt",
+      "normalization": "none",
+      "bytes": 13209,
+      "sha256": "3fee2a33743f579bfdd31842299c9a819f40753d54a34f54a52cd6de04258940"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/copied-observations/002-CMakeCXXCompiler.cmake",
+      "normalization": "none",
+      "bytes": 6508,
+      "sha256": "1b080885144120f43636716a60139852ad7dd840aad639de4664d4253f8a63f8"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/copied-observations/003-CompilerIdCXX.vcxproj",
+      "normalization": "none",
+      "bytes": 2806,
+      "sha256": "b5a1b5175b32b552ef789ce6058b13232255b8d1648fa4d1a1bb8f912b71f336"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/copied-observations/005-CL.command.1.tlog",
+      "normalization": "none",
+      "bytes": 812,
+      "sha256": "534a5b9ee30630d11f4cad049dc62fe39f33843d67d2f64c065e0d7d6959b16d"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/copied-observations/006-CL.read.1.tlog",
+      "normalization": "none",
+      "bytes": 560,
+      "sha256": "12e08b6d23e8dace70323b0504d7ab3b0beb0ba0ca132fb55b46df719fb27309"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/copied-observations/007-CL.write.1.tlog",
+      "normalization": "none",
+      "bytes": 352,
+      "sha256": "85b00a0ae92e0b319e5ba8aec982eac7381d1356ef14c65ade126f7cd2516262"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/copied-observations/008-Cl.items.tlog",
+      "normalization": "none",
+      "bytes": 173,
+      "sha256": "c581e260d0b37a90f75d1c1bc0b8e9c652373cdab824e6e59109990e3cacb20a"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/copied-observations/009-link.command.1.tlog",
+      "normalization": "none",
+      "bytes": 1358,
+      "sha256": "49845284cdd44bfd036155c1eac7da3f68e50e7ddfb08aa5db6bf78441871d52"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/copied-observations/010-link.read.1.tlog",
+      "normalization": "none",
+      "bytes": 4750,
+      "sha256": "997a063adfefa4cc859e762027459a5960c5150da6635b394f55779508af4f7c"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/copied-observations/011-link.secondary.1.tlog",
+      "normalization": "none",
+      "bytes": 91,
+      "sha256": "0e9aa95a7f97294ca264a51f093869ac446c8540ff881bab5e2dc05f5fe4a0d1"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/copied-observations/012-link.write.1.tlog",
+      "normalization": "none",
+      "bytes": 342,
+      "sha256": "7f390ab5266da25256cccc67b7d3ed845556c2d15694322ac827f94c82214542"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/copied-observations/013-VCTargetsPath.vcxproj",
+      "normalization": "none",
+      "bytes": 1255,
+      "sha256": "24fac7257bc0523f8eacba7408241a2b83d1a9aa96e6d481323bab364ce3ceb2"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/copied-observations/014-CL.command.1.tlog",
+      "normalization": "none",
+      "bytes": 754,
+      "sha256": "894c2e3027e16e05d6a90f01f4426cd543f22a72652e3b9affd8eaba83a6d66b"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/copied-observations/015-CL.read.1.tlog",
+      "normalization": "none",
+      "bytes": 468,
+      "sha256": "0842134be3aa38426699ff7b7886d7e870240d71a6c0b23d6cb72ae05b2dcfbc"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/copied-observations/016-CL.write.1.tlog",
+      "normalization": "none",
+      "bytes": 228,
+      "sha256": "2a2f731394e2bcb29e1cc2f179c40c93b21a241e97cf4509a24098910f482354"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/copied-observations/017-Cl.items.tlog",
+      "normalization": "none",
+      "bytes": 111,
+      "sha256": "ec62d28b418367b10951c5725f79160cf0437ca1aea7f7437c09aee843209d21"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/copied-observations/018-CustomBuild.command.1.tlog",
+      "normalization": "none",
+      "bytes": 403,
+      "sha256": "17cf301d15e576f2030265485cdb79016e34a39db41d819e8f6d4e3fb479d07b"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/copied-observations/019-CustomBuild.read.1.tlog",
+      "normalization": "none",
+      "bytes": 7554,
+      "sha256": "7a5177397a45f37e023619c7f0d82a201ba87c4315a1c2163ec5d40a225cf4ee"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/copied-observations/020-CustomBuild.write.1.tlog",
+      "normalization": "none",
+      "bytes": 101,
+      "sha256": "cd0bc61b85eb1ef0ababf033c927a1d6567f4d747fc6e978bc299661245975a3"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/copied-observations/021-link.command.1.tlog",
+      "normalization": "none",
+      "bytes": 1554,
+      "sha256": "30cc9a03f93c3f0df820594429296f9df2a5eff99aefeab0247fb11cbc0ede67"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/copied-observations/022-link.read.1.tlog",
+      "normalization": "none",
+      "bytes": 4376,
+      "sha256": "0163725362768ed83bc31d405bef9fce17c483f2ae8f6856b329cd9fdf46c377"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/copied-observations/023-link.secondary.1.tlog",
+      "normalization": "none",
+      "bytes": 75,
+      "sha256": "56064a8952a9cb6375a6a7414a0a7710782b1403727dd26f02c8f7f241a78893"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/copied-observations/024-link.write.1.tlog",
+      "normalization": "none",
+      "bytes": 282,
+      "sha256": "7cc73b60ab876f341580fbf9787337bd41ee34d938a0059e509ff50c0990c519"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/copied-observations/026-CompilerLifecycleSmoke.vcxproj",
+      "normalization": "none",
+      "bytes": 52714,
+      "sha256": "48fe950cfd96ba8c72abc84e1f71ab7c6f3ff77e07b2722b14933c3acfa934ad"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/copied-observations/028-ZERO_CHECK.vcxproj",
+      "normalization": "none",
+      "bytes": 40394,
+      "sha256": "0d326899e363d5e3a6662aaf23c4522181574288699baa8c721aee66ba932abf"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/copied-observations/029-CustomBuild.command.1.tlog",
+      "normalization": "none",
+      "bytes": 508,
+      "sha256": "dce37e8166a0ef3d31e4a54b5512229198c669a8b55b192a016ae8ea4821a07a"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/copied-observations/030-CustomBuild.read.1.tlog",
+      "normalization": "none",
+      "bytes": 7648,
+      "sha256": "6da15d00fb7958f2558bcdf1b580c34bb5c79873f94fb42390b04a4b7dc25a83"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/copied-observations/031-CustomBuild.write.1.tlog",
+      "normalization": "none",
+      "bytes": 151,
+      "sha256": "d4c640bde536e14f58fe22cb8f8fd01e13b8a20f00af289c043d8a7ff6975eaf"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/fixture-source-pins.json",
+      "normalization": "none",
+      "bytes": 383,
+      "sha256": "55de7f4829ad77ce8cf7ee1e6386612ae18035fc37f32e67f87787abafa808a4"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/invocations.json",
+      "normalization": "none",
+      "bytes": 1906,
+      "sha256": "e77ac6307c0f165d8b5c50fe4c8bbb5cbedb755ea82e74ff5d8b018d9497fde5"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/native-finished.json",
+      "normalization": "none",
+      "bytes": 1034,
+      "sha256": "9d0d01f0b664713ca10fcab2ed98099fc956e09f4a23cc1f5094bd68d540740f"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/native-ready.json",
+      "normalization": "none",
+      "bytes": 63,
+      "sha256": "2e88291b7463247f7db38bda72854d5d9d81cb31cb20c6bf36c387f6e2561e90"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/native-stderr.bin",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/native-stdout.bin",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/native.ndjson",
+      "normalization": "none",
+      "bytes": 91416,
+      "sha256": "30ac8588dec4bb400133947297db95bdac277408dd249d257acfa094e0372825"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/native.ndjson.context.json",
+      "normalization": "none",
+      "bytes": 1003,
+      "sha256": "f8ad6621044faba9fc4824c0ea1823545ea52b52dc512a7b20f7b185499f69da"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/observation-copies.json",
+      "normalization": "none",
+      "bytes": 25704,
+      "sha256": "db9a616bca1eb00a3cbf65ad75b4b3a91dee4c9b0e6d291f961f63a604b8778e"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/output-pins.json",
+      "normalization": "none",
+      "bytes": 20574,
+      "sha256": "e01ef99c395c21a5e244c7d7f99930af3d9d8997ef0de07f7f32f8a8ed348e56"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/request.json",
+      "normalization": "none",
+      "bytes": 904,
+      "sha256": "341171bafafd4a55add32e6abba97ad2df25ce354da71b8327429f8645ced606"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/root-return.json",
+      "normalization": "none",
+      "bytes": 883,
+      "sha256": "3d5ba721c156efa91a6a42f5c2fdece24eac1eff6658ab6152666dd9e8afa9cb"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/tool-pins-after.json",
+      "normalization": "none",
+      "bytes": 2265,
+      "sha256": "680bda3730a7db96e356fef776d3e635739658e4b49d07774d9276ec679a9a10"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x64/tool-pins-before.json",
+      "normalization": "none",
+      "bytes": 2265,
+      "sha256": "680bda3730a7db96e356fef776d3e635739658e4b49d07774d9276ec679a9a10"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/build.log",
+      "normalization": "none",
+      "bytes": 524,
+      "sha256": "963bf0732e6806a42ac9282f7f5359923f1c3a17cdd61f6efd0d47712d64556c"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/build/compiler-lifecycle-build-41331eab-7c82-4e23-ad9f-901f7efbcf73/returned.json",
+      "normalization": "none",
+      "bytes": 1527,
+      "sha256": "5cfefb91a4070eff9bed10cfbb85949f4ecb24fbc9bdfc80489a74635c11b777"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/build/compiler-lifecycle-build-41331eab-7c82-4e23-ad9f-901f7efbcf73/started.json",
+      "normalization": "none",
+      "bytes": 1265,
+      "sha256": "70c581f2eee863a66d11ba0d64af02b2d5451ee692cfaa724da143cfb7bbb9f3"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/build/compiler-lifecycle-build-41331eab-7c82-4e23-ad9f-901f7efbcf73/stderr.bin",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/build/compiler-lifecycle-build-41331eab-7c82-4e23-ad9f-901f7efbcf73/stdout.bin",
+      "normalization": "none",
+      "bytes": 288,
+      "sha256": "ab89c5b5aaba38dee8d380e5d735d855a25cadac0954fbe07593fed159e11d07"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/case-verdict.json",
+      "normalization": "none",
+      "bytes": 7648,
+      "sha256": "6f43dc21cfe4a7c8357a8889438a2be748f026865dc82b3c73f7333327f3eabc"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/compiled-output-pins.json",
+      "normalization": "none",
+      "bytes": 641,
+      "sha256": "b4c7fa43a1c4197f7070a366f790912b5e7dadf9ac6704d5319e524a938c73b4"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/configure.log",
+      "normalization": "none",
+      "bytes": 1080,
+      "sha256": "d7e43a000e27c783783b51dcfb47678ada605c4d6aa7a66f58392ae75cd3bf82"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/configure/compiler-lifecycle-configure-b6eb4bf7-d5f3-4492-b417-c8bf0fd54dc2/returned.json",
+      "normalization": "none",
+      "bytes": 1531,
+      "sha256": "529a85493c9c5b32406c4c37f877b2fbcf5a6a5917d43e16d9b9ba4c81af6ece"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/configure/compiler-lifecycle-configure-b6eb4bf7-d5f3-4492-b417-c8bf0fd54dc2/started.json",
+      "normalization": "none",
+      "bytes": 1269,
+      "sha256": "6007d4ee92032ae0177741b2617db8c4fd0feac4c7ed17f03d33f03f753e185b"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/configure/compiler-lifecycle-configure-b6eb4bf7-d5f3-4492-b417-c8bf0fd54dc2/stderr.bin",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/configure/compiler-lifecycle-configure-b6eb4bf7-d5f3-4492-b417-c8bf0fd54dc2/stdout.bin",
+      "normalization": "none",
+      "bytes": 288,
+      "sha256": "ab89c5b5aaba38dee8d380e5d735d855a25cadac0954fbe07593fed159e11d07"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/copied-observations/000-ALL_BUILD.vcxproj",
+      "normalization": "none",
+      "bytes": 40327,
+      "sha256": "060b9fa36d116724177ad64a2f0db7e50ed658491f33f6d08fb28f59702c4a75"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/copied-observations/001-CMakeCache.txt",
+      "normalization": "none",
+      "bytes": 13217,
+      "sha256": "191f6c62c77bcfed7ea57869adeb144067ba2872a6e7a98cb53fef7a72610fd3"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/copied-observations/002-CMakeCXXCompiler.cmake",
+      "normalization": "none",
+      "bytes": 6508,
+      "sha256": "95f10a437e276655abad1f3627373bfec2ab7c70169b0c7b9e1d57bfce28fe1d"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/copied-observations/003-CompilerIdCXX.vcxproj",
+      "normalization": "none",
+      "bytes": 2820,
+      "sha256": "1f616b32ca13cb1cb59ce61d42109ac551f5b513143affcf4d609669c8eee279"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/copied-observations/005-CL.command.1.tlog",
+      "normalization": "none",
+      "bytes": 842,
+      "sha256": "67fa058bb414e1070db72cf2d5a48274d6d5ddaa44d55252a7d588f073c381e0"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/copied-observations/006-CL.read.1.tlog",
+      "normalization": "none",
+      "bytes": 560,
+      "sha256": "233fd7cd694ccab0d6effe94a876e7700c585a4b26719bd3776728cc4df6b8de"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/copied-observations/007-CL.write.1.tlog",
+      "normalization": "none",
+      "bytes": 352,
+      "sha256": "17b0241367099c08f0572ec5e77ad50ef3a9afaeac731d8f50bae9dfb9768d68"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/copied-observations/008-Cl.items.tlog",
+      "normalization": "none",
+      "bytes": 173,
+      "sha256": "eed2aaa56cb76b25f15d2ee34165eaaf18b51a25c8dadbbe5b033f4cca9aae84"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/copied-observations/009-link.command.1.tlog",
+      "normalization": "none",
+      "bytes": 1376,
+      "sha256": "6212dee022b670dad82edf5394aae0d33854e8b2d394cd8515c10c78930bebfc"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/copied-observations/010-link.read.1.tlog",
+      "normalization": "none",
+      "bytes": 4750,
+      "sha256": "d0148c2766caa1a64c1afe30be1d481a20148b8cbd735d80ad1a6961e482fcbb"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/copied-observations/011-link.secondary.1.tlog",
+      "normalization": "none",
+      "bytes": 91,
+      "sha256": "35dd506d0840c4152b04baa9810efc16bda6f6b5934d18e94228b558477030c2"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/copied-observations/012-link.write.1.tlog",
+      "normalization": "none",
+      "bytes": 342,
+      "sha256": "fc0a36a3e92df428e24c85fc59d82c8a98acb513ebd03fb2c48af07b49e81d4c"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/copied-observations/013-VCTargetsPath.vcxproj",
+      "normalization": "none",
+      "bytes": 1261,
+      "sha256": "b392ec75b7860d7de265026986be273eb184a3fc6524ff8c71ced413f2a03aa0"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/copied-observations/014-CL.command.1.tlog",
+      "normalization": "none",
+      "bytes": 784,
+      "sha256": "319d763100854c60735c6dd94c9741990f33cd28ee71641f664a52145284f3e2"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/copied-observations/015-CL.read.1.tlog",
+      "normalization": "none",
+      "bytes": 468,
+      "sha256": "aeb1dd9b731603d331baf82b716527c47e1f83176ea70b530bbd5990f25c18fd"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/copied-observations/016-CL.write.1.tlog",
+      "normalization": "none",
+      "bytes": 228,
+      "sha256": "03060262b16c6fcee2b620895668c731d83fcf3931cf0c847217fd8b04db6aab"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/copied-observations/017-Cl.items.tlog",
+      "normalization": "none",
+      "bytes": 111,
+      "sha256": "0ce411b8e8a541df89460e258fcd10c6665649827d589b772663482241fca225"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/copied-observations/018-CustomBuild.command.1.tlog",
+      "normalization": "none",
+      "bytes": 403,
+      "sha256": "7a4139641fc94962dd63a72b9a79288fa709f0086b5eb141e42f5c0a8e888cc0"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/copied-observations/019-CustomBuild.read.1.tlog",
+      "normalization": "none",
+      "bytes": 7554,
+      "sha256": "1eb46d084033dd4ac2150e25149b181b40c692a325bca48a70ed26d227903387"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/copied-observations/020-CustomBuild.write.1.tlog",
+      "normalization": "none",
+      "bytes": 101,
+      "sha256": "eed3add83ed6377580e6d717e70c49e54b405493e1c7537794928270db401948"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/copied-observations/021-link.command.1.tlog",
+      "normalization": "none",
+      "bytes": 1554,
+      "sha256": "a56492844068f800f020bcbe07aabb8203009955d4f15f6196f449ddffd46ee0"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/copied-observations/022-link.read.1.tlog",
+      "normalization": "none",
+      "bytes": 4376,
+      "sha256": "002ec618e1f13154ab93df4cc248e4367bdd4edaf70e8e785db578ea4a3818ff"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/copied-observations/023-link.secondary.1.tlog",
+      "normalization": "none",
+      "bytes": 75,
+      "sha256": "02002d085f54eacb07a157d9e8debfb221b3fb2101c549795d197a975db54f29"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/copied-observations/024-link.write.1.tlog",
+      "normalization": "none",
+      "bytes": 282,
+      "sha256": "5ca6ea4e22373fdb08e951e59716c03957b68e401f54345b561bb37430b072a6"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/copied-observations/026-CompilerLifecycleSmoke.vcxproj",
+      "normalization": "none",
+      "bytes": 52836,
+      "sha256": "b0ac898bca7a0c8fdbec5e92147256ffe8f6352f2998a9717559aa13fde4e191"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/copied-observations/028-CustomBuild.command.1.tlog",
+      "normalization": "none",
+      "bytes": 508,
+      "sha256": "8d0e579ace3cd7a628d936ae4698f1dc46755b4804515f463bb257435a4cc948"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/copied-observations/029-CustomBuild.read.1.tlog",
+      "normalization": "none",
+      "bytes": 7648,
+      "sha256": "f0abe7b563f168375ce201c964766c658abff451ef3a14fb9e3f74592357d386"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/copied-observations/030-CustomBuild.write.1.tlog",
+      "normalization": "none",
+      "bytes": 151,
+      "sha256": "571b72574236b53e495d0718efeadd7255beb5646980b465c1579b1aeddc555b"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/copied-observations/031-ZERO_CHECK.vcxproj",
+      "normalization": "none",
+      "bytes": 40484,
+      "sha256": "bab7c4d3db03183589440c1a7c060c604f9d5455fbb44e1c38c58c0f8b1fbce3"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/fixture-source-pins.json",
+      "normalization": "none",
+      "bytes": 383,
+      "sha256": "6fd05e3e6e692e85562dbc4e7bb5178fb680e29d1edb9a2218cf874ec9f60961"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/invocations.json",
+      "normalization": "none",
+      "bytes": 1908,
+      "sha256": "567d874a8dcfe38168e9262212e0466bbb68773fc9e08376c30d0127bbe494a8"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/native-finished.json",
+      "normalization": "none",
+      "bytes": 1035,
+      "sha256": "201d4d653c7f8fef8f79ad8ee6d2fb1bb7ec25f76da6acc351da53d383caadad"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/native-ready.json",
+      "normalization": "none",
+      "bytes": 64,
+      "sha256": "3b5add4d0c9d5e386db9b0c7fd5712fa85de2bd6770136cc47bbcfd20171508c"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/native-stderr.bin",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/native-stdout.bin",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/native.ndjson",
+      "normalization": "none",
+      "bytes": 107399,
+      "sha256": "5543d2d65033b2dda8a6391f6b21ce31dfd008fa3931e06e1cd2e8bf01672cb8"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/native.ndjson.context.json",
+      "normalization": "none",
+      "bytes": 1003,
+      "sha256": "5f927dcf6a617e530bbe593706aacc113de1c767bf62bf49952454dfe6242c21"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/observation-copies.json",
+      "normalization": "none",
+      "bytes": 25695,
+      "sha256": "53c9dbe03a2a9c0fd3a34e164371baf24af45b865dbe3c8a6a368f23c15e3eec"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/output-pins.json",
+      "normalization": "none",
+      "bytes": 20541,
+      "sha256": "306b86ee0cb4b8294a83c31164c232efc4594415e74d2370b7a9b9474af966c1"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/request.json",
+      "normalization": "none",
+      "bytes": 904,
+      "sha256": "200e707b610e17bc9643c72d0ba2c0584aeba3e13c3adf897434e89d47a32a2c"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/root-return.json",
+      "normalization": "none",
+      "bytes": 884,
+      "sha256": "0c9ceab5bb1ea1d5eee6417b4e8b84f80018657a53038036db7fb3e8cede90d5"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/tool-pins-after.json",
+      "normalization": "none",
+      "bytes": 2265,
+      "sha256": "1453d28bf8930e01eaf1d1d2bb763cb47755ed123444a1007c7621d2a0a71d8e"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/accepted/x86/tool-pins-before.json",
+      "normalization": "none",
+      "bytes": 2265,
+      "sha256": "1453d28bf8930e01eaf1d1d2bb763cb47755ed123444a1007c7621d2a0a71d8e"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/harness/Invoke-NativeShort.ps1",
+      "normalization": "none",
+      "bytes": 7546,
+      "sha256": "cb4ccb0e9139d658d7aae7812e94a5c9500b53fd4458a5f4daa59eaccfe673ef"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/harness/README.md",
+      "normalization": "none",
+      "bytes": 2857,
+      "sha256": "494926763e967f432c3b08b7d6361d4dd4dbaedae986a60d9b284ac1a775ff14"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/harness/Run-NativeShort.cjs",
+      "normalization": "none",
+      "bytes": 15164,
+      "sha256": "2118eed656935cd2d1c18879eee838ddbbab25d5d5be3ad0b97f558e2debad50"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/harness/source/CMakeLists.txt",
+      "normalization": "none",
+      "bytes": 202,
+      "sha256": "8090e063c0a41fcd904f8d9acfcbb450e39fee8fad8ff561fb7ec5004ae21453"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/harness/source/main.cpp",
+      "normalization": "none",
+      "bytes": 25,
+      "sha256": "deac66ccb79f6d31c0fa7d358de48e083c15c02ff50ec1ebd4b64314b9e6e196"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/initial-preflight-rejected/inputs-after.json",
+      "normalization": "none",
+      "bytes": 13204,
+      "sha256": "d3af24ff717ba74bd69296ad5cabc7d857b2607400b11eab91b5d0681490a7d7"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/initial-preflight-rejected/inputs-before.json",
+      "normalization": "none",
+      "bytes": 13554,
+      "sha256": "de0c5423fdf4ab68110cde034d05dea21a772ef75d659ff349219023c7251d52"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/initial-preflight-rejected/original-preparation.json",
+      "normalization": "none",
+      "bytes": 6750,
+      "sha256": "0de724e35238813efe68f35c0f286f6432934d695d12e2575a8e95caa76ba629"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/initial-preflight-rejected/summary.json",
+      "normalization": "none",
+      "bytes": 1227,
+      "sha256": "7deef9dd2cbeb25a27177b28dcdc9944f1c084f2ff8a5448f1ff646d1e842f0d"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/initial-preflight-rejected/x64/fixture-source-pins.json",
+      "normalization": "none",
+      "bytes": 383,
+      "sha256": "b72b6dd569a08d118901d5ebfbe3f351cf8db139e29be0697f223c207026b2bb"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/initial-preflight-rejected/x64/invocations.json",
+      "normalization": "none",
+      "bytes": 1906,
+      "sha256": "73f2d826d7078d96d3a9f98795fd396828ffb102a23fb45c15c7d3bf2e162ede"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/initial-preflight-rejected/x64/native-finished.json",
+      "normalization": "none",
+      "bytes": 1037,
+      "sha256": "53b39bf8d5eac0b8822d3aa9a7a3f03a7800dfa4f692faccde99811743bab949"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/initial-preflight-rejected/x64/native-ready.json",
+      "normalization": "none",
+      "bytes": 64,
+      "sha256": "f7aa4e94515826afc5e137c9115d83e2795a6235273a0651d9b32d7599e7219d"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/initial-preflight-rejected/x64/native-stderr.bin",
+      "normalization": "none",
+      "bytes": 70,
+      "sha256": "3ad5d8b1e70bac007154eaf2911b9ed87ae3a27b980a977059e8836d6548dce4"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/initial-preflight-rejected/x64/native-stdout.bin",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/initial-preflight-rejected/x64/native.ndjson",
+      "normalization": "none",
+      "bytes": 3174,
+      "sha256": "8b8e4fb5295c979e808a88280f5040a984e6caa003402f8dbe5ce4817c70454b"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/initial-preflight-rejected/x64/native.ndjson.context.json",
+      "normalization": "none",
+      "bytes": 1003,
+      "sha256": "c0cd0a25b0937403e16842650763321f091590d9289865d90573d0a8c73f64c9"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/initial-preflight-rejected/x64/request.json",
+      "normalization": "none",
+      "bytes": 904,
+      "sha256": "02f906dde5854cc222bab4f6c86cc3d8942e396274d43e76d15e612fc7365d51"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/initial-preflight-rejected/x64/root-return.json",
+      "normalization": "none",
+      "bytes": 650,
+      "sha256": "53a7600474be3d2c960dbcb46a2ea9dfe67fff41daf538b0399f05b34ca56dd1"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/initial-preflight-rejected/x64/tool-pins-after.json",
+      "normalization": "none",
+      "bytes": 2265,
+      "sha256": "680bda3730a7db96e356fef776d3e635739658e4b49d07774d9276ec679a9a10"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/native/initial-preflight-rejected/x64/tool-pins-before.json",
+      "normalization": "none",
+      "bytes": 2265,
+      "sha256": "680bda3730a7db96e356fef776d3e635739658e4b49d07774d9276ec679a9a10"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/preexisting-orphan-cleanup/before.json",
+      "normalization": "none",
+      "bytes": 1514,
+      "sha256": "c38954cef73287fb01293eaabd4fc1de332ab152d5cb95d20c81c4c5882f2c46"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/preexisting-orphan-cleanup/executed.ps1",
+      "normalization": "none",
+      "bytes": 3059,
+      "sha256": "1d7882ba15d92c98c0dd68d04803a05975dea1e930dab1d2c8e3ccf86c7174d7"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/preexisting-orphan-cleanup/result.json",
+      "normalization": "none",
+      "bytes": 385,
+      "sha256": "481ba67528884f95fa8ad675c803c42cd1d57ee9ab47d6009f55dbbaf2d1de33"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/shorts/initial/Summary.actual.json",
+      "normalization": "none",
+      "bytes": 1827,
+      "sha256": "b958f9508f0ad40b73a762a113fe90559630f610c6e2d978a8256fd0d8178a82"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/shorts/initial/archive-tool-identity-compatibility.actual.json",
+      "normalization": "none",
+      "bytes": 412,
+      "sha256": "a6f4f5efd472e18fdc5aed34e4826f32b630e1efaeae65e85caf68df5f146710"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/shorts/initial/archive-tool-identity-compatibility.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/shorts/initial/archive-tool-identity-compatibility.stdout.log",
+      "normalization": "none",
+      "bytes": 570,
+      "sha256": "3e9dbe9a1a4cea3b225c9cf4e66bae4842c861e78bfc48eda5893c4d89f9807b"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/shorts/initial/changed-contracts.actual.json",
+      "normalization": "none",
+      "bytes": 555,
+      "sha256": "72f855f97d1b91cd2dbce8eda5aefcfbba466be5fcd9057e5426bd833e98dd6b"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/shorts/initial/changed-contracts.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/shorts/initial/changed-contracts.stdout.log",
+      "normalization": "none",
+      "bytes": 18836,
+      "sha256": "453a6332c2eb60829bcbc590f73f07d914c469d42a550298d28a50f0dff1261d"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/shorts/initial/changed-preparation-fingerprint.actual.json",
+      "normalization": "none",
+      "bytes": 471,
+      "sha256": "4233a334b25864a6a8ffd4e52cd00a779b233a7af5f56e3bcbfc801822853c0d"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/shorts/initial/changed-preparation-fingerprint.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/shorts/initial/changed-preparation-fingerprint.stdout.log",
+      "normalization": "none",
+      "bytes": 1591,
+      "sha256": "b00bb3acbaca044dfc9a496695f7b80faed0690f08128ec97c4b866d501ddee1"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/shorts/initial/sources-after.json",
+      "normalization": "none",
+      "bytes": 2892,
+      "sha256": "dc374acd013c894683603fd3bba3c1c2d54d078de541ef7b04e6f9ae399f0dea"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/shorts/initial/sources-before.json",
+      "normalization": "none",
+      "bytes": 2892,
+      "sha256": "dc374acd013c894683603fd3bba3c1c2d54d078de541ef7b04e6f9ae399f0dea"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/shorts/targeted-repairs/Summary.actual.json",
+      "normalization": "none",
+      "bytes": 1913,
+      "sha256": "9d702b985d9b95b099972f76bbb2a09c377b0780867d54a7532eb7ff501055a5"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/shorts/targeted-repairs/archive-affected-fixtures.actual.json",
+      "normalization": "none",
+      "bytes": 608,
+      "sha256": "15968fdcee768b051f24db1ba3ec4e2e4ee3f3cba0912f0e2bb860e2c980d56f"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/shorts/targeted-repairs/archive-affected-fixtures.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/shorts/targeted-repairs/archive-affected-fixtures.stdout.log",
+      "normalization": "none",
+      "bytes": 2031,
+      "sha256": "c4177a25e45651bf5af7dfeaea0d014635b555c9d0affc99fddc54b6e4d43ad9"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/shorts/targeted-repairs/msvc-model.actual.json",
+      "normalization": "none",
+      "bytes": 435,
+      "sha256": "22aca370bd6a74486d3bdee7d6981ee6eb2ba2a7f6f921b0df35265eef53cb96"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/shorts/targeted-repairs/msvc-model.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/shorts/targeted-repairs/msvc-model.stdout.log",
+      "normalization": "none",
+      "bytes": 399,
+      "sha256": "173a691d462b7c83f7405e45f2753557502045a0140e996ab4e838ef6cf37376"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/shorts/targeted-repairs/sdk-cli-and-native-recovery.actual.json",
+      "normalization": "none",
+      "bytes": 514,
+      "sha256": "2d596f803c5967eff534d634bd2b32add98e74386a47cb2c01a683a554414021"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/shorts/targeted-repairs/sdk-cli-and-native-recovery.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/windows-tooling-failure-closeout-2026-10-29/shorts/targeted-repairs/sdk-cli-and-native-recovery.stdout.log",
+      "normalization": "none",
+      "bytes": 989,
+      "sha256": "8eabd29172fee023634e4587ad48bd470d71c1bab4b31de3d96238121ad20f94"
     },
     {
       "path": "verification/production-validation/work-area-placement-gui-2026-09-28/Archive.cjs",

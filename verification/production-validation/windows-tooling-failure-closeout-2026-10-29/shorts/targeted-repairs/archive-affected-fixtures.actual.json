@@ -1,0 +1,20 @@
+{
+  "name": "archive-affected-fixtures",
+  "args": [
+    "--test",
+    "--test-reporter=tap",
+    "--test-concurrency=1",
+    "--test-name-pattern=archive tool runtime changes|optional tool identity|existing destinations|CLI preserves a native extraction|PS5 metadata|actual ZIP metadata",
+    "tests/sdk/archive-stage.test.cjs"
+  ],
+  "sourceSha256": "fbd9cb9c0f17e2277e139bff386fad81c7b75927210311307b3d70e12754c19a",
+  "start": "2026-10-29T03:46:20.594Z",
+  "finish": "2026-10-29T03:46:24.441Z",
+  "exitCode": 0,
+  "signal": null,
+  "error": null,
+  "tests": 9,
+  "pass": 9,
+  "fail": 0,
+  "skipped": 0
+}
