@@ -18,12 +18,12 @@ execute_process(COMMAND "${NODE_EXECUTABLE}" "${CMAKE_CURRENT_SOURCE_DIR}/genera
   COMMAND_ERROR_IS_FATAL ANY)
 add_executable(scheduler_continuation_contract fixture.cpp)
 target_compile_features(scheduler_continuation_contract PRIVATE cxx_std_17)
-target_compile_options(scheduler_continuation_contract PRIVATE /W4 /WX /EHsc
-  /source-charset:.936 /execution-charset:utf-8 /wd4505)
+target_compile_options(scheduler_continuation_contract PRIVATE /W4 /WX /EHsc /wd4505)
 target_compile_definitions(scheduler_continuation_contract PRIVATE
   NDEBUG UNICODE _UNICODE NOMINMAX WINVER=0x0601 _WIN32_WINNT=0x0601)
-target_include_directories(scheduler_continuation_contract PRIVATE
-  "${CMAKE_CURRENT_BINARY_DIR}/generated" "${CMAKE_CURRENT_SOURCE_DIR}/stubs")
+include("${SOUI_DISTRIBUTION_ROOT}/tests/native/source_projection/Cp936Projection.cmake")
+soui_cp936_source_projection(scheduler_continuation_contract "${CMAKE_CURRENT_BINARY_DIR}/generated")
+target_include_directories(scheduler_continuation_contract PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/stubs")
 set_property(TARGET scheduler_continuation_contract PROPERTY MSVC_RUNTIME_LIBRARY MultiThreaded)
 target_link_libraries(scheduler_continuation_contract PRIVATE winmm)
 enable_testing()
