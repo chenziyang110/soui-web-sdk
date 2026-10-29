@@ -67,8 +67,8 @@
     {
       "path": "CHANGELOG.md",
       "normalization": "lf",
-      "bytes": 63603,
-      "sha256": "6d9d215ed550c4bee9ba0d2ea89941656b256b91df59096e8421cae15a00d1f7"
+      "bytes": 64362,
+      "sha256": "8fc58cae02e74256aa30824925cdb35c15b7226e7b38a3b6b423734cb5222c9f"
     },
     {
       "path": "CMakeLists.txt",
@@ -3265,8 +3265,8 @@
     {
       "path": "docs/adr/0125-input-frame-trace.md",
       "normalization": "lf",
-      "bytes": 4318,
-      "sha256": "fb3ba251d518e93ad308c81d7d433b0b7ebb7777eb9109a127aa1f7ca27c4c9f"
+      "bytes": 7921,
+      "sha256": "280c494a5c87c84a9e55a748afc5cc1a657b8186b2733d82602a96d51d6a1810"
     },
     {
       "path": "docs/adr/0125-runtime-manifests-and-bundles.md",
@@ -3595,8 +3595,8 @@
     {
       "path": "docs/performance/input-deadline-refinement.md",
       "normalization": "lf",
-      "bytes": 3576,
-      "sha256": "a09ef313aab0da9aba6b0563e5318fc32ee38d0ac000d3de3c6177a1117c3d5b"
+      "bytes": 4647,
+      "sha256": "bd4eacc2715d399c7dc60b51decc99d0f32e90ebb343a13d06bee484fbc213c9"
     },
     {
       "path": "docs/performance/main-integration.md",
@@ -3621,6 +3621,12 @@
       "normalization": "lf",
       "bytes": 2687,
       "sha256": "6a47526d57fcfa13c33df11ab61ef1f96e84a4820fdebba7da3647e9e297ff7e"
+    },
+    {
+      "path": "docs/performance/so-only-diagnostic-followup.md",
+      "normalization": "lf",
+      "bytes": 2934,
+      "sha256": "3f2f07e92a58768d399a3b95f58c5ae607b377133e5106114c23a83840b2f291"
     },
     {
       "path": "docs/performance/static-review.md",
@@ -3795,6 +3801,36 @@
       "normalization": "lf",
       "bytes": 3683,
       "sha256": "7fad01f91d6628d6f99a801820eb0d6d8c92a4a4f77ed1738ec96a5b5d362782"
+    },
+    {
+      "path": "experiments/scratch-renderer-correctness/CMakeLists.txt",
+      "normalization": "lf",
+      "bytes": 2516,
+      "sha256": "43cea29c43a1e70053c4ba434a0c6f3a4162daef70102e5f4c56e42f06c946fb"
+    },
+    {
+      "path": "experiments/scratch-renderer-correctness/README.md",
+      "normalization": "lf",
+      "bytes": 5031,
+      "sha256": "ef3db4b659bb554d6ea21c436978c9dff5ea159825835e9fa58c1b53cb65736d"
+    },
+    {
+      "path": "experiments/scratch-renderer-correctness/fixture-inputs.h.in",
+      "normalization": "lf",
+      "bytes": 119,
+      "sha256": "7e03432c0fbf6aee021c4a64d3b473c2ef0c7c5fcf620fbe948e9a79cd0ea450"
+    },
+    {
+      "path": "experiments/scratch-renderer-correctness/main.cpp",
+      "normalization": "lf",
+      "bytes": 34493,
+      "sha256": "437f7f51dec443167d78a45fd45f169af7e9de6f8f29a4c43738e347d95ddf12"
+    },
+    {
+      "path": "experiments/scratch-renderer-correctness/renderer-fixture.js",
+      "normalization": "lf",
+      "bytes": 23538,
+      "sha256": "c1a088eb8eece3817dff7a04e90350c72863e5179a861575a8ee695db294c183"
     },
     {
       "path": "experiments/scratch-sdk-diagnostic/CMakeLists.txt",
@@ -8759,10 +8795,16 @@
       "sha256": "105666529bce28c6aaa30a2c9c7e17347bf8cc95933736d57e08035cc40c449b"
     },
     {
+      "path": "sdk/src/runtime/diagnostics/input_frame_duration_bucket.h",
+      "normalization": "lf",
+      "bytes": 1614,
+      "sha256": "d7e18dcf241de3e5062df16e98b5dde48d7b0aa8983786acde37d9d948e3a27c"
+    },
+    {
       "path": "sdk/src/runtime/diagnostics/input_frame_trace.cpp",
       "normalization": "lf",
-      "bytes": 27912,
-      "sha256": "3689dc207d8c68b857dc63ac455d15956ef6e172762c5cbde0a6ab6801ef5d2a"
+      "bytes": 28014,
+      "sha256": "da914648902d75c869c24e5a14e6e3fe193d6415496a60e28c318138f9dd49e2"
     },
     {
       "path": "sdk/src/runtime/diagnostics/input_frame_trace_backend_validation.h",
@@ -10735,8 +10777,8 @@
     {
       "path": "tests/native/input_frame_trace/recorder_tests.cpp",
       "normalization": "lf",
-      "bytes": 21317,
-      "sha256": "965e5ecce18f2f0dcf875e9c2bf7bd5aaf57e75261c6a188db7ae3ceb80187bf"
+      "bytes": 27096,
+      "sha256": "cdea7209316791435b4edbf781858a8d9fb3d0e0b574e7356d3d62489c7a26b6"
     },
     {
       "path": "tests/native/input_frame_trace_backend/CMakeLists.txt",

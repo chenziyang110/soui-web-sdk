@@ -27,4 +27,8 @@ SDK静态库从14196420B增至14199244B（+2824B）。静态库不能替代实�
 
 同一ES5页面、同一内核和工具链的手动MiniBlink消费者随后实际重链并部署：EXE仍为1506816B，按相同部署清单边界统计的运行目录也增加0B。新SDK库SHA为`4da09039eedde79778bd45f509be0340593350befad330af187b079f6ca32a9a`；新EXE SHA为`6454ec301b43e6f413714547902dd5de2c4bd9c0c99d9d046b0a373025d5b00e`。两份独立启动入口只给子进程配置0或1000µs，未实际启动，不构成帧率/输入或完整ZIP通过结论。
 
+随后对同一r2载荷执行一次独立、隐藏启动的真实生命周期检查，未调用上述人工入口或注入鼠标/键盘。默认共享预算0；实际Host PID55944、creationFileTime `134377455097001997`，发布与监督器一致的document-ready身份。已从该进程观察实际加载的`node.dll`为39206912B，SHA `297aa8e0224091c6b4fc5d7710719b0095236a30ebb20d4318324ab4af4c19de`。通过本次专属命名事件触发既有public Host destroy/drain路径后，Host正常退出0并输出`normal_runtime_close=true`。外部Job总计4进程在1940ms自然0/0、active=0，没有强制终止；输入载荷前后SHA不变。
+
+原始证据为`miniblink-startup-close-x64-r2/{result.json,startup-close.json,run.ndjson,inputs-before.json,inputs-after.json}`。此检查只覆盖新x64载荷的启动与正常关闭；没有物理输入、可见绘制、x86或1000µs调度性能证据。该载荷详细trace能力未确认，结果保留`trace_complete=false`和`trace_capability_confirmed=false`，不能据此宣称完整输入因果链已采集。
+
 兼容与回退：保持默认0可保留原独立输入批次策略；需要源码回退时回退本次私有deadline接线并匹配重编SDK/消费者。不得为回退性能候选撤销已有输入终态、计量真实性或关闭屏障。

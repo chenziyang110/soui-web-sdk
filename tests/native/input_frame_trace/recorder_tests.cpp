@@ -1,11 +1,13 @@
 #include <soui/diagnostics/input_frame_trace.h>
 #include "content/common/InputFrameTrace.h"
+#include "../../../sdk/src/runtime/diagnostics/input_frame_duration_bucket.h"
 
 #include <array>
 #include <atomic>
 #include <cstddef>
 #include <cstdlib>
 #include <iostream>
+#include <limits>
 #include <sstream>
 #include <streambuf>
 #include <stdexcept>
@@ -46,6 +48,9 @@ static_assert(sdk_trace::decode_injection_tag(0x53400001ULL) == 1 &&
               sdk_trace::decode_injection_tag(0x153400001ULL) == 0 &&
               sdk_trace::decode_injection_tag(0x53400000ULL) == 0,
               "Diagnostic tags must reject upper bits and zero sequence");
+static_assert(sdk_trace::duration_buckets == 64 && vendor_trace::duration_buckets == 64 &&
+              sdk_trace::duration_metric_count == 15 && vendor_trace::duration_metric_count == 15,
+              "Duration fixture must cover every v1 bucket and metric");
 
 namespace {
 void require(bool condition, const char* message) {
@@ -328,6 +333,106 @@ void concurrent_live_queue_bound() {
     if(snapshot.queued>static_cast<std::uint64_t>(snapshot.registered_threads)*sdk_trace::events_per_thread)bounded=false;}
   producer.join();consumer.join();source.stop();require(bounded,"live occupancy exceeded physical ring bound");
 }
+
+template<class Recorder, class Identity, class Mode, class Metric>
+void duration_histogram_boundaries(Identity identity) {
+  for (const auto recording_mode : {Mode::scalar, Mode::detailed}) {
+    Recorder source;
+    require(source.configure(identity, recording_mode), "duration fixture configure failed");
+    auto producer = source.attach_current_thread();
+    require(static_cast<bool>(producer), "duration fixture registration failed");
+    std::array<std::uint64_t, 64> expected{};
+    const auto observe = [&](std::uint64_t ticks, std::size_t bucket) {
+      ++expected[bucket];
+      for (unsigned metric = 0; metric < 15; ++metric)
+        producer.observe_duration(static_cast<Metric>(metric), ticks);
+    };
+    observe(0, 0);
+    observe(1, 0);
+    observe((std::numeric_limits<std::uint64_t>::max)(), 63);
+    for (unsigned bit = 0; bit < 64; ++bit) {
+      const auto power = std::uint64_t{1} << bit;
+      observe(power - 1, bit ? bit - 1 : 0);
+      observe(power, bit);
+      observe(power + 1, bit ? bit : 1);
+    }
+    const auto measured = source.snapshot();
+    for (const auto& metric : measured.durations)
+      require(metric == expected, "duration bucket boundary or metric differs");
+    require(measured.recording_mode == recording_mode && measured.attempted == 0 &&
+      measured.recorded == 0 && measured.queued == 0 && !measured.invalid_event &&
+      !measured.owner_violation && !measured.counter_saturated,
+      "duration observation changed event accounting");
+    source.stop();
+    producer.observe_duration(static_cast<Metric>(0), 4);
+    producer.observe_duration(static_cast<Metric>(15), 4);
+    const auto stopped = source.snapshot();
+    require(stopped.durations == measured.durations && !stopped.invalid_event &&
+      !source.quiescent(), "stopped duration write changed counts or released producer");
+    producer = decltype(producer){};
+    require(source.quiescent(), "duration producer did not retire after stop");
+  }
+}
+
+template<class Recorder, class Metric>
+void duration_owner_and_invalid_metric() {
+  Recorder source;
+  auto producer = source.attach_current_thread();
+  require(static_cast<bool>(producer), "duration owner fixture registration failed");
+  const auto before = source.snapshot();
+  std::thread other([&] { producer.observe_duration(static_cast<Metric>(0), 8); });
+  other.join();
+  const auto wrong_owner = source.snapshot();
+  require(wrong_owner.owner_violation && wrong_owner.dropped == before.dropped + 1 &&
+    wrong_owner.durations == before.durations && !wrong_owner.invalid_event,
+    "foreign duration owner was accepted or changed counters");
+  producer.observe_duration(static_cast<Metric>(15), 8);
+  const auto invalid = source.snapshot();
+  require(invalid.invalid_event && invalid.durations == before.durations,
+    "invalid duration metric was accepted");
+}
+
+void unregistered_duration_remains_visible() {
+  require(!sdk_trace::current_thread_registered() && !vendor_trace::current_thread_registered(),
+    "duration missing-registration fixture already attached");
+  const auto sdk_before = sdk_trace::process_recorder().snapshot();
+  const auto vendor_before = vendor_trace::process_recorder().snapshot();
+  sdk_trace::observe_duration(sdk_trace::duration_metric::engine_fifo, 8);
+  vendor_trace::observe_duration(vendor_trace::duration_metric::engine_fifo, 8);
+  const auto sdk_after = sdk_trace::process_recorder().snapshot();
+  const auto vendor_after = vendor_trace::process_recorder().snapshot();
+  require(sdk_after.unregistered_writes == sdk_before.unregistered_writes + 1 &&
+    vendor_after.unregistered_writes == vendor_before.unregistered_writes + 1 &&
+    sdk_after.durations == sdk_before.durations && vendor_after.durations == vendor_before.durations,
+    "unregistered duration was hidden or lazily registered");
+}
+
+void duration_bucket_functions_are_equivalent() {
+  const auto check = [](std::uint64_t ticks, std::size_t expected) {
+    require(sdk_trace::detail::duration_bucket_index(ticks) == expected &&
+      sdk_trace::detail::duration_bucket_portable(ticks) == expected,
+      "native or portable duration bucket differs");
+  };
+  check(0, 0);
+  check(1, 0);
+  check((std::numeric_limits<std::uint64_t>::max)(), 63);
+  for (unsigned bit = 0; bit < 64; ++bit) {
+    const auto power = std::uint64_t{1} << bit;
+    check(power - 1, bit ? bit - 1 : 0);
+    check(power, bit);
+    check(power + 1, bit ? bit : 1);
+  }
+  std::uint64_t sample = 0x123456789abcdefULL;
+  for (unsigned count = 0; count < 100000; ++count) {
+    sample ^= sample << 13;
+    sample ^= sample >> 7;
+    sample ^= sample << 17;
+    const auto ticks = sample >> (count % 64);
+    std::size_t reference = 0;
+    for (auto remaining = ticks; remaining > 1; remaining >>= 1) ++reference;
+    check(ticks, reference);
+  }
+}
 }
 
 int main() {
@@ -354,6 +459,14 @@ int main() {
     source_failure_after_begin_refuses_end();
     split_consumer_cannot_complete();
     concurrent_live_queue_bound();
+    duration_histogram_boundaries<sdk_trace::recorder, sdk_trace::identity,
+      sdk_trace::mode, sdk_trace::duration_metric>(sdk_trace::current_identity(7, 1));
+    duration_histogram_boundaries<vendor_trace::recorder, vendor_trace::identity,
+      vendor_trace::mode, vendor_trace::duration_metric>(vendor_trace::current_identity(7, 1));
+    duration_owner_and_invalid_metric<sdk_trace::recorder, sdk_trace::duration_metric>();
+    duration_owner_and_invalid_metric<vendor_trace::recorder, vendor_trace::duration_metric>();
+    unregistered_duration_remains_visible();
+    duration_bucket_functions_are_equivalent();
     return 0;
   } catch (const std::exception& error) {
     std::cerr << error.what() << '\n'; return 1;
