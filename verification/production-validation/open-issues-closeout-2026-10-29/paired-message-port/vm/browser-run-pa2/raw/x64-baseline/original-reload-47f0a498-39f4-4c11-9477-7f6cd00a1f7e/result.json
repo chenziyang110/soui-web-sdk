@@ -1,0 +1,59 @@
+{
+  "schema": "soui.acceptance-run/v1",
+  "runId": "47f0a498-39f4-4c11-9477-7f6cd00a1f7e",
+  "config": {
+    "mode": "reload",
+    "cycles": 3,
+    "warmup": 0,
+    "settleMs": 500,
+    "timeoutMs": 20000
+  },
+  "consumerBuildId": "a0477a24-7f9d-4543-b408-b264b70a4409",
+  "sourceSha256": "652a66973f09c5a90a5e06465944dd7ea8d3a3d9463411db5b07d045cb843973",
+  "payloadSha256": "7e2ff1f71a6427e656535a4fb123b284d3ebb317a75e3e5bcdd8c6417686f4c1",
+  "outcome": {
+    "pid": 936,
+    "exitCode": 1,
+    "signal": null,
+    "timedOut": false,
+    "timeoutReason": null,
+    "spawnError": null,
+    "processTimeoutMs": 214500,
+    "ownedProcess": {
+      "pid": 936,
+      "creationFileTime": "134377501651531650",
+      "exitCode": 1,
+      "supervisorExitCode": 1,
+      "signal": null,
+      "spawnError": null,
+      "reportError": null,
+      "stopRequested": false,
+      "fallbackUsed": false,
+      "closureConfirmed": true,
+      "passed": false,
+      "terminal": {
+        "event": "terminal",
+        "reason": "root-failed",
+        "elapsedMs": 32364,
+        "rootExited": true,
+        "rootExitCode": 1,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 1,
+        "limitTerminatedProcesses": 0,
+        "passed": false
+      },
+      "report": "F:\\work\\soui-issue96\\out\\acceptance\\82e96f65-8695-4546-b468-fec6c7d8a386\\reload-47f0a498-39f4-4c11-9477-7f6cd00a1f7e\\owned-process.ndjson",
+      "reportSha256": "b47cc6993d133a8f075e099beacc47f8f18dd78cc2ebddcc4b5400c877dca312",
+      "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+      "executableSha256": "1b77094fa4d67baa86d097e9cca67d301b043e666e19c467b578a342f4a31cdd"
+    },
+    "timeoutDiagnostic": null
+  },
+  "passed": false,
+  "releaseReady": false,
+  "finishedAt": "2026-10-29T12:23:17.548Z",
+  "failure": "Owned process exit, supervision or complete Job cleanup was not verified"
+}

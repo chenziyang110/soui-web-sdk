@@ -1,0 +1,26 @@
+{
+  "schema": "soui.owned-process-context/v1",
+  "runnerSha256": "f254dadd4eccad3c57d69e98f260d15ee598c0b6441b7fe68fc4ef5b3b7dea83",
+  "executableSha256": "1c84c8632c5269f24876ed9f49fa810b49f77e1e92e8918fc164c34b020f9a94",
+  "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+  "args": [
+    "-NoProfile",
+    "-NonInteractive",
+    "-STA",
+    "-ExecutionPolicy",
+    "Bypass",
+    "-File",
+    "D:\\Invoke-NativeFocusControl-a2.ps1",
+    "-ExpectedMachine",
+    "SOUI-7AEMMK5Q0T",
+    "-EvidenceDirectory",
+    "C:/issue-closeout-evidence/focusc-a2",
+    "-PreparationSha256",
+    "874fd1a9b2ff028962948d8e6f33afd8e88e0af739223affc22828142cfe3e80",
+    "-RootGate",
+    "ROOT_REVIEWED_NATIVE_FOCUS_CONTROL_V1"
+  ],
+  "cwd": "D:\\",
+  "timeoutMs": 90000,
+  "drainMs": 2000
+}

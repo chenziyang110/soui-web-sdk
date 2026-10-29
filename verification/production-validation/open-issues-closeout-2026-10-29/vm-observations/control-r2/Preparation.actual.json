@@ -1,0 +1,140 @@
+{
+  "schema": "soui.desktop-short-r2-preparation/v1",
+  "createdAtUtc": "2026-10-29T08:33:55.623Z",
+  "preparer": {
+    "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-build\\handoff-r2\\Prepare-R2.cjs",
+    "bytes": 6654,
+    "sha256": "d1ecb146ed7fe45617cf8aa333b4d9d429d45fd3a309444070a44bd232d03ac6"
+  },
+  "node": {
+    "path": "C:\\nvm4w\\nodejs\\node.exe",
+    "bytes": 91380224,
+    "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+  },
+  "argv": [
+    "C:\\nvm4w\\nodejs\\node.exe",
+    "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-build\\handoff-r2\\Prepare-R2.cjs"
+  ],
+  "cwd": "F:\\work\\SOUI_WEB",
+  "inputs": [
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-build\\handoff-6d09f9b2-1585-4187-95ba-2cd3d40cc832\\payload\\Guest-Shorts.cjs",
+      "bytes": 8503,
+      "sha256": "f3927063064d8e50c18e045b8be3dbba1411caa94ad95f741d616d0797c2671d"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-build\\handoff-6d09f9b2-1585-4187-95ba-2cd3d40cc832\\payload\\Payload.manifest.json",
+      "bytes": 285033,
+      "sha256": "c6bb34afb81252ca16dd2bec955e3a8b36bfe830041e52ba417e9c34445eb897"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-build\\handoff-r2\\Guest-Invoke.ps1",
+      "bytes": 9137,
+      "sha256": "65137a4ea595fb28af264fe1c42d2f5234f694460443c0ab2e2064855fe7c321"
+    }
+  ],
+  "sourceReferences": [
+    {
+      "path": "C:/sr06/sdk/src/host/soui_miniblink_host.cpp",
+      "bytes": 269957,
+      "sha256": "0f4de698a8d78dfb1864c7e58a8903a18f1f090577abd8786080fbf9742217e2"
+    },
+    {
+      "path": "C:/sr06/demos/workbench/app/main.cpp",
+      "bytes": 64482,
+      "sha256": "802ff91ad0e3e0a4f526dca35a5bfac81730532fc160b308376c9cd79a407f7a"
+    },
+    {
+      "path": "C:/sr06/docs/adr/0087-navigation-default-trace-removal.md",
+      "bytes": 2859,
+      "sha256": "2021f1e6d61a1834d0e3769a8bf6f26d5927781a59f5c68f5ef955a186765622"
+    }
+  ],
+  "observedHost": [
+    {
+      "case": "resident-x64",
+      "runtime": "C:/sr06/out/x64/bin/Release/SouiWorkbench",
+      "immutablePayloadFiles": 671,
+      "logObservations": [
+        {
+          "relative": "webview-smoke.log",
+          "present": false
+        },
+        {
+          "relative": "source-navigation.log",
+          "present": false
+        },
+        {
+          "relative": "resources/source-navigation.log",
+          "present": false
+        },
+        {
+          "relative": "resources/webview-smoke.log",
+          "present": false
+        }
+      ]
+    },
+    {
+      "case": "resident-x86",
+      "runtime": "C:/sr06/out/x86/bin/Release/SouiWorkbench",
+      "immutablePayloadFiles": 671,
+      "logObservations": [
+        {
+          "relative": "webview-smoke.log",
+          "present": false
+        },
+        {
+          "relative": "source-navigation.log",
+          "present": false
+        },
+        {
+          "relative": "resources/source-navigation.log",
+          "present": false
+        },
+        {
+          "relative": "resources/webview-smoke.log",
+          "present": false
+        }
+      ]
+    }
+  ],
+  "outputs": [
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-build\\handoff-r2\\payload\\Guest-Shorts.cjs",
+      "bytes": 9036,
+      "sha256": "2d40ef45483def5ebf8d5b68c0b751937e59984fa35d33aeff6c68155fce7b92"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-build\\handoff-r2\\payload\\Payload.manifest.json",
+      "bytes": 285918,
+      "sha256": "2f91cd8aa2a55e9b38e297bdd775ff376033adea8a131bca46ad01de7dea2efe"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-build\\handoff-r2\\Guest-Invoke.ps1",
+      "bytes": 9137,
+      "sha256": "65137a4ea595fb28af264fe1c42d2f5234f694460443c0ab2e2064855fe7c321"
+    }
+  ],
+  "immutableManifestRowsUnchanged": 36,
+  "immutableResidentRowsUnchanged": [
+    {
+      "case": "resident-x64",
+      "files": 671
+    },
+    {
+      "case": "resident-x86",
+      "files": 671
+    }
+  ],
+  "onlyMutableRuntimeLogs": [
+    "webview-smoke.log"
+  ],
+  "legacySourceNavigationExcluded": false,
+  "previousPayloadEdited": false,
+  "productExecuted": false,
+  "vmControlled": false,
+  "independentReviewPending": true,
+  "releaseReady": false,
+  "productionQualificationComplete": false,
+  "fullDevtoolsGoalComplete": false
+}

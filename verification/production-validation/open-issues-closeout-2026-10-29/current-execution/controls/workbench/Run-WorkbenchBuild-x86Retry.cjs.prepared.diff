@@ -1,0 +1,53 @@
+--- Run-WorkbenchBuild.cjs
++++ Run-WorkbenchBuild-x86Retry.cjs
+@@ -124,7 +124,7 @@
+   save(directory,'case-verdict.json',verdict);return verdict;
+ }
+ async function main(){
+-  need(process.platform==='win32'&&process.argv.length===3&&process.argv[2]==='ROOT_REVIEWED_CURRENT_WORKBENCH_BUILD_V1','Root reviewed Windows invocation required');
++  need(process.platform==='win32'&&process.argv.length===3&&process.argv[2]==='ROOT_REVIEWED_CURRENT_WORKBENCH_X86_RETRY_V1','Root reviewed Windows invocation required');
+   const frozenFile=path.join(__dirname,'FrozenSource.actual.json'),frozen=JSON.parse(fs.readFileSync(frozenFile));
+   const policyFile=path.join(__dirname,'PolicySource.actual.json'),policy=JSON.parse(fs.readFileSync(policyFile));
+   need(policy.schema==='soui.current-workbench-two-policy-case-source/v1'&&isDeepStrictEqual(policy.cases,['reload-pending','runtime-pending'])&&!policy.executed,'Exact unexecuted two-case policy source required');
+@@ -144,25 +144,25 @@
+   const sealedRoots=[path.join(legacy,'third_party/include'),...['x64','x86'].map(a=>path.join(legacy,'third_party/prebuilt',a,'soui/lib'))];
+   const installedRoots=['x64','x86'].map(a=>path.join(legacy,'out/release-install-'+a+'-release'));
+   const installedFileSets=[...installedRoots,...sealedRoots].map(root=>({root,files:walk(root)}));
+-  const files=[__filename,path.join(__dirname,'Invoke-WorkbenchBuild.ps1'),path.join(__dirname,'Freeze-WorkbenchInputs.cjs'),frozenFile,
++  const files=[__filename,path.join(__dirname,'Invoke-WorkbenchBuild-x86Retry.ps1'),path.join(__dirname,'Freeze-WorkbenchInputs.cjs'),frozenFile,
+     ...frozen.sourceFiles.flatMap(f=>[f.source.path,f.copy.path]),policyFile,path.join(__dirname,'Prepare-Policy.cjs'),path.join(__dirname,'PolicyTarget.cmake'),...policy.sourceFiles.flatMap(f=>[f.source.path,f.copy.path]),process.execPath,powershell,runner,preparation,readerPath,
+     path.join(legacy,'tools/internal/delivery-identity.cjs'),path.join(legacy,'tools/internal/owned-process.cjs'),
+     ...codeNames.map(name=>path.join(repository,name)),...prepared.report.source.files.map(file=>path.join(legacy,file.path)),
+     ...['cmake/SouiApplication.cmake','cmake/SouiDevTools.cmake','third_party/sources/zlib/zlib.h','third_party/sources/zlib/zconf.h'].map(p=>path.join(legacy,p)),
+     ...['x64','x86'].map(a=>path.join(legacy,'out',a,'sdk/Release/soui_zlib.lib')),...installedFileSets.flatMap(r=>r.files)];
+   const sourcePins=[...new Set(files.map(file=>path.resolve(file)))].map(pin),freeze=path.join(directory,'inputs-before.json');
+-  save(directory,'inputs-before.json',{schema:'soui.workbench-consumer-build-only-inputs/v1',repository,runnerOrigin:legacy,
++  save(directory,'inputs-before.json',{schema:'soui.workbench-consumer-x86-retry-inputs/v1',repository,runnerOrigin:legacy,
+     originalPreparedAt:prepared.report.preparedAt,originalPreparationGenericSupervisionPassed:null,sourcePins,
+-    timeoutMs:120000,drainMs:2000,architectures:['x64','x86'],oldFailuresReclassified:false});
++    timeoutMs:120000,drainMs:2000,architectures:['x86'],oldFailuresReclassified:false});
+   fs.copyFileSync(preparation,path.join(directory,'original-preparation.json'),fs.constants.COPYFILE_EXCL);
+   let failure=null;const verdicts=[];
+   try{
+     const standard=require(path.join(repository,'tools/internal/standard-build.cjs'));
+-    for(const architecture of ['x64','x86']){
++    for(const architecture of ['x86']){
+       unchanged(sourcePins);const folder=path.join(directory,architecture);fs.mkdirSync(folder);
+       const shortWorkspace='C:\\scw8-'+stamp.replace(/-/g,'').slice(0,8)+'-'+architecture;
+       need(!fs.existsSync(shortWorkspace),'Short native workspace already exists');
+-      const args=['-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',path.join(__dirname,'Invoke-WorkbenchBuild.ps1'),
++      const args=['-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',path.join(__dirname,'Invoke-WorkbenchBuild-x86Retry.ps1'),
+         '-Architecture',architecture,'-CaseDirectory',folder,'-ShortWorkspace',shortWorkspace,'-FrozenInputs',freeze];
+       save(folder,'request.json',{executable:powershell,args,cwd:repository,runner,timeoutMs:120000,drainMs:2000,shortWorkspace});
+       const env={...process.env};for(const name of Object.keys(env))if(name.toLowerCase()==='psmodulepath')delete env[name];
+@@ -175,8 +175,8 @@
+     const after=sourcePins.map(expected=>{try{return pin(expected.path);}catch(error){return {path:expected.path,error:error.message};}});
+     save(directory,'inputs-after.json',{sourcePins:after});
+     if(!isDeepStrictEqual(sourcePins,after)){failure??={message:'Frozen input bytes or metadata changed during the short smoke.'};}
+-    save(directory,'summary.json',{schema:'soui.workbench-consumer-build-only/v1',passed:failure===null&&verdicts.length===2,
+-      scope:'independent current Workbench consumer four-TU compile x64 then x86 only',originalRunnerPreparationGenericSupervisionPassed:null,
++    save(directory,'summary.json',{schema:'soui.workbench-consumer-x86-retry/v1',passed:failure===null&&verdicts.length===1,
++      scope:'independent current Workbench consumer four-TU compile x86 only; previously passed x64 not repeated',passedX64Reexecuted:false,originalRunnerPreparationGenericSupervisionPassed:null,
+       verdicts,failure,productExecuted:false,executableExecuted:false,oldFailuresReclassified:false,
+       currentFullBuildEntriesExecuted:false,productionQualified:false,releaseReady:false});
+   }

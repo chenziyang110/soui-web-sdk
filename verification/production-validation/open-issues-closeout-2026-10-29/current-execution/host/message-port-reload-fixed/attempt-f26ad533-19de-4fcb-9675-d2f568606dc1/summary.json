@@ -1,0 +1,345 @@
+{
+  "schema": "soui.message-port-reload-consumer-build-only/v1",
+  "passed": true,
+  "scope": "post-E_RELOAD_PENDING MessagePort consumer compile x64 then x86 only; no SDK/Web rebuild or unchanged Workbench/policy repetition",
+  "originalRunnerPreparationGenericSupervisionPassed": null,
+  "verdicts": [
+    {
+      "schema": "soui.message-port-consumer-build-only-case/v1",
+      "architecture": "x64",
+      "root": {
+        "pid": 3596,
+        "creationFileTime": "134377425716820973"
+      },
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 60961,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 64,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      },
+      "genericSupervisionPassed": true,
+      "wholeJobNaturallyClosed": true,
+      "helperPhases": [
+        {
+          "pid": 6068,
+          "creationFileTime": "134377425760028065",
+          "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\vctip.exe"
+        },
+        {
+          "pid": 70604,
+          "creationFileTime": "134377426037921984",
+          "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\vctip.exe"
+        }
+      ],
+      "phasePins": [
+        {
+          "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-reload-current\\attempt-f26ad533-19de-4fcb-9675-d2f568606dc1\\x64\\configure\\compiler-lifecycle-configure-3e3ea1f0-4580-427b-b0fa-b605ed7465ec\\returned.json",
+          "bytes": 1530,
+          "sha256": "057f815da7b2376a275fb70c1c9d6e61c45b08004879afcc1bbfac5306e255f6",
+          "fileId": "844424930301623",
+          "mtimeNs": "1793269003737009900",
+          "ctimeNs": "1793269003737009900"
+        },
+        {
+          "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-reload-current\\attempt-f26ad533-19de-4fcb-9675-d2f568606dc1\\x64\\configure\\compiler-lifecycle-configure-3e3ea1f0-4580-427b-b0fa-b605ed7465ec\\started.json",
+          "bytes": 1269,
+          "sha256": "194365faf31211ce34016138ef184ba4abf888bd754f64af9a60296a7579933e",
+          "fileId": "562949953591970",
+          "mtimeNs": "1793268975989690000",
+          "ctimeNs": "1793268975989690000"
+        },
+        {
+          "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-reload-current\\attempt-f26ad533-19de-4fcb-9675-d2f568606dc1\\x64\\configure\\compiler-lifecycle-configure-3e3ea1f0-4580-427b-b0fa-b605ed7465ec\\stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "fileId": "562949953591972",
+          "mtimeNs": "1793268976000677700",
+          "ctimeNs": "1793268976000677700"
+        },
+        {
+          "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-reload-current\\attempt-f26ad533-19de-4fcb-9675-d2f568606dc1\\x64\\configure\\compiler-lifecycle-configure-3e3ea1f0-4580-427b-b0fa-b605ed7465ec\\stdout.bin",
+          "bytes": 288,
+          "sha256": "ab89c5b5aaba38dee8d380e5d735d855a25cadac0954fbe07593fed159e11d07",
+          "fileId": "562949953591971",
+          "mtimeNs": "1793269003690127600",
+          "ctimeNs": "1793269003690127600"
+        },
+        {
+          "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-reload-current\\attempt-f26ad533-19de-4fcb-9675-d2f568606dc1\\x64\\build\\compiler-lifecycle-build-f1fd7b85-d9af-41cb-b797-0020a6779dad\\returned.json",
+          "bytes": 1527,
+          "sha256": "65d9c9e18ad59d3fe0cc85d175761b49c5e99a36669affc62179fecd726c1279",
+          "fileId": "562949953591983",
+          "mtimeNs": "1793269029770600500",
+          "ctimeNs": "1793269029770600500"
+        },
+        {
+          "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-reload-current\\attempt-f26ad533-19de-4fcb-9675-d2f568606dc1\\x64\\build\\compiler-lifecycle-build-f1fd7b85-d9af-41cb-b797-0020a6779dad\\started.json",
+          "bytes": 1265,
+          "sha256": "399d9770033bd4a4d791c8a432a8efe6dede99ea672abc43023985f30445d37e",
+          "fileId": "562949953591979",
+          "mtimeNs": "1793269003786511800",
+          "ctimeNs": "1793269003786511800"
+        },
+        {
+          "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-reload-current\\attempt-f26ad533-19de-4fcb-9675-d2f568606dc1\\x64\\build\\compiler-lifecycle-build-f1fd7b85-d9af-41cb-b797-0020a6779dad\\stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "fileId": "562949953591981",
+          "mtimeNs": "1793269003789509600",
+          "ctimeNs": "1793269003789509600"
+        },
+        {
+          "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-reload-current\\attempt-f26ad533-19de-4fcb-9675-d2f568606dc1\\x64\\build\\compiler-lifecycle-build-f1fd7b85-d9af-41cb-b797-0020a6779dad\\stdout.bin",
+          "bytes": 288,
+          "sha256": "ab89c5b5aaba38dee8d380e5d735d855a25cadac0954fbe07593fed159e11d07",
+          "fileId": "562949953591980",
+          "mtimeNs": "1793269029739777000",
+          "ctimeNs": "1793269029739777000"
+        }
+      ],
+      "toolPins": [
+        {
+          "path": "C:\\Program Files\\CMake\\bin\\cmake.exe",
+          "bytes": 12905544,
+          "sha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379"
+        },
+        {
+          "path": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\amd64\\MSBuild.exe",
+          "bytes": 436024,
+          "sha256": "58fbe0acac5265fe9a93acb291e1dbd50432c4ebf00ff9b9fb4c34bc0f247c73"
+        },
+        {
+          "path": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+          "bytes": 677968,
+          "sha256": "a80f5e7a24049a8f9a8931f83fc3d13ca417ad901e074c50cca71fcb12ba10be"
+        },
+        {
+          "path": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\link.exe",
+          "bytes": 3252808,
+          "sha256": "e388eb34fe4d280633609f6acec12a3e73c288f8b69ce402c3d24c0d0f5524f3"
+        },
+        {
+          "path": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\c1xx.dll",
+          "bytes": 12334112,
+          "sha256": "e71dfc23f0c6285dc7f04d77b054b5c6006b5b389314d04d5f9cf93b77b081ef"
+        },
+        {
+          "path": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\vctip.exe",
+          "bytes": 335520,
+          "sha256": "651345513aae26090c813b1ded859a5680c3823ca716a80e1d337bac0ca797ef"
+        },
+        {
+          "path": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\vctip.exe.config",
+          "bytes": 1010,
+          "sha256": "b58b1a18fc3e3c9c760f46d3d70684bbe73edab671b2d0d26a203e830ccef49d"
+        },
+        {
+          "path": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\Tools\\VsDevCmd.bat",
+          "bytes": 11526,
+          "sha256": "c004278e64444bf3524360f960511b5ce7b1d0306910f08a4ebcf1c42ff9bd6d"
+        },
+        {
+          "path": "C:\\Program Files (x86)\\Microsoft Visual Studio\\Installer\\vswhere.exe",
+          "bytes": 469456,
+          "sha256": "c54f3b7c9164ea9a0db8641e81ecdda80c2664ef5a47c4191406f848cc07c662"
+        }
+      ],
+      "compiler": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+      "selectedWindowsSdk": "10.0.19041.0",
+      "compiledExecutable": {
+        "path": "C:\\sci8-f26ad533-x64\\out\\x64\\bin\\Release\\SouiAcceptance.exe",
+        "bytes": 1145856,
+        "sha256": "038f85dddf997c7e0caab6834527d1b7e2386802723005346e5f7a778b873499",
+        "fileId": "3940649680284373",
+        "mtimeNs": "1793269008349402900",
+        "ctimeNs": "1793269008349402900"
+      },
+      "executableExecuted": false,
+      "scope": "independent current public MessagePort consumer configure/build only",
+      "installedSdkPrefix": "C:\\sr06\\out\\release-install-x64-release",
+      "oldFailuresReclassified": false,
+      "productionQualified": false,
+      "releaseReady": false
+    },
+    {
+      "schema": "soui.message-port-consumer-build-only-case/v1",
+      "architecture": "x86",
+      "root": {
+        "pid": 59300,
+        "creationFileTime": "134377426339069952"
+      },
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 60761,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 64,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      },
+      "genericSupervisionPassed": true,
+      "wholeJobNaturallyClosed": true,
+      "helperPhases": [
+        {
+          "pid": 68512,
+          "creationFileTime": "134377426380876803",
+          "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x86\\vctip.exe"
+        },
+        {
+          "pid": 66556,
+          "creationFileTime": "134377426665659659",
+          "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x86\\vctip.exe"
+        }
+      ],
+      "phasePins": [
+        {
+          "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-reload-current\\attempt-f26ad533-19de-4fcb-9675-d2f568606dc1\\x86\\configure\\compiler-lifecycle-configure-e36d5f3a-d0ff-43a5-8e84-c50ca360fea2\\returned.json",
+          "bytes": 1531,
+          "sha256": "81d0dd3d6e7cb2470a0629a57d0bcc6cb7a1a929d53a3c02e8bb752d1e13e5bb",
+          "fileId": "562949953592059",
+          "mtimeNs": "1793269066503376200",
+          "ctimeNs": "1793269066503376200"
+        },
+        {
+          "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-reload-current\\attempt-f26ad533-19de-4fcb-9675-d2f568606dc1\\x86\\configure\\compiler-lifecycle-configure-e36d5f3a-d0ff-43a5-8e84-c50ca360fea2\\started.json",
+          "bytes": 1269,
+          "sha256": "4a67850d67606f164be88824a4502ee88128cc2fe39cbc7bfac46e2b1d8de9a1",
+          "fileId": "562949953592055",
+          "mtimeNs": "1793269038070161700",
+          "ctimeNs": "1793269038070161700"
+        },
+        {
+          "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-reload-current\\attempt-f26ad533-19de-4fcb-9675-d2f568606dc1\\x86\\configure\\compiler-lifecycle-configure-e36d5f3a-d0ff-43a5-8e84-c50ca360fea2\\stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "fileId": "562949953592057",
+          "mtimeNs": "1793269038084970300",
+          "ctimeNs": "1793269038084970300"
+        },
+        {
+          "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-reload-current\\attempt-f26ad533-19de-4fcb-9675-d2f568606dc1\\x86\\configure\\compiler-lifecycle-configure-e36d5f3a-d0ff-43a5-8e84-c50ca360fea2\\stdout.bin",
+          "bytes": 288,
+          "sha256": "ab89c5b5aaba38dee8d380e5d735d855a25cadac0954fbe07593fed159e11d07",
+          "fileId": "562949953592056",
+          "mtimeNs": "1793269066464239500",
+          "ctimeNs": "1793269066464239500"
+        },
+        {
+          "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-reload-current\\attempt-f26ad533-19de-4fcb-9675-d2f568606dc1\\x86\\build\\compiler-lifecycle-build-35f0a8ff-19f1-4f46-9eb3-5ce516ba1b3a\\returned.json",
+          "bytes": 1527,
+          "sha256": "fc1021dca83b329e7a9e2b9dd519383d6d98891d383fe09a28431fc11e53dd0d",
+          "fileId": "562949953592070",
+          "mtimeNs": "1793269092701968500",
+          "ctimeNs": "1793269092701968500"
+        },
+        {
+          "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-reload-current\\attempt-f26ad533-19de-4fcb-9675-d2f568606dc1\\x86\\build\\compiler-lifecycle-build-35f0a8ff-19f1-4f46-9eb3-5ce516ba1b3a\\started.json",
+          "bytes": 1265,
+          "sha256": "8d9411697abafd089779b05d03ab4f16ff83bea9ea6cad92c4eb05b3cf757014",
+          "fileId": "562949953592062",
+          "mtimeNs": "1793269066559577600",
+          "ctimeNs": "1793269066559577600"
+        },
+        {
+          "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-reload-current\\attempt-f26ad533-19de-4fcb-9675-d2f568606dc1\\x86\\build\\compiler-lifecycle-build-35f0a8ff-19f1-4f46-9eb3-5ce516ba1b3a\\stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "fileId": "562949953592064",
+          "mtimeNs": "1793269066564121200",
+          "ctimeNs": "1793269066564121200"
+        },
+        {
+          "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-reload-current\\attempt-f26ad533-19de-4fcb-9675-d2f568606dc1\\x86\\build\\compiler-lifecycle-build-35f0a8ff-19f1-4f46-9eb3-5ce516ba1b3a\\stdout.bin",
+          "bytes": 288,
+          "sha256": "ab89c5b5aaba38dee8d380e5d735d855a25cadac0954fbe07593fed159e11d07",
+          "fileId": "562949953592063",
+          "mtimeNs": "1793269092674554800",
+          "ctimeNs": "1793269092674554800"
+        }
+      ],
+      "toolPins": [
+        {
+          "path": "C:\\Program Files\\CMake\\bin\\cmake.exe",
+          "bytes": 12905544,
+          "sha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379"
+        },
+        {
+          "path": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\amd64\\MSBuild.exe",
+          "bytes": 436024,
+          "sha256": "58fbe0acac5265fe9a93acb291e1dbd50432c4ebf00ff9b9fb4c34bc0f247c73"
+        },
+        {
+          "path": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x86\\cl.exe",
+          "bytes": 678000,
+          "sha256": "8de3c1e7af40f4a6c83188ef7cca6270223a00652e8c703022694f64add54a14"
+        },
+        {
+          "path": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x86\\link.exe",
+          "bytes": 3252840,
+          "sha256": "ee4ce2b47beb5a14cadc9dfffd3d66723342ef97045697ffe1a5727b330324b2"
+        },
+        {
+          "path": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x86\\c1xx.dll",
+          "bytes": 12412448,
+          "sha256": "51e1d6f3d110cfcab737e282e0125e0d6058170e2a16cd713d3bf5cac95e46ca"
+        },
+        {
+          "path": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x86\\vctip.exe",
+          "bytes": 335560,
+          "sha256": "1c1ca5f9c04171c02caca6863e29eca3550333219486d23e65bf01fb02951311"
+        },
+        {
+          "path": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x86\\vctip.exe.config",
+          "bytes": 1010,
+          "sha256": "b58b1a18fc3e3c9c760f46d3d70684bbe73edab671b2d0d26a203e830ccef49d"
+        },
+        {
+          "path": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\Tools\\VsDevCmd.bat",
+          "bytes": 11526,
+          "sha256": "c004278e64444bf3524360f960511b5ce7b1d0306910f08a4ebcf1c42ff9bd6d"
+        },
+        {
+          "path": "C:\\Program Files (x86)\\Microsoft Visual Studio\\Installer\\vswhere.exe",
+          "bytes": 469456,
+          "sha256": "c54f3b7c9164ea9a0db8641e81ecdda80c2664ef5a47c4191406f848cc07c662"
+        }
+      ],
+      "compiler": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x86\\cl.exe",
+      "selectedWindowsSdk": "10.0.19041.0",
+      "compiledExecutable": {
+        "path": "C:\\sci8-f26ad533-x86\\out\\x86\\bin\\Release\\SouiAcceptance.exe",
+        "bytes": 1003520,
+        "sha256": "209e99b0213a1d8c98a11be89e71f66e4c09530060d67f1cec82c8edec1867b2",
+        "fileId": "5348024563837961",
+        "mtimeNs": "1793269071020838200",
+        "ctimeNs": "1793269071020838200"
+      },
+      "executableExecuted": false,
+      "scope": "independent current public MessagePort consumer configure/build only",
+      "installedSdkPrefix": "C:\\sr06\\out\\release-install-x86-release",
+      "oldFailuresReclassified": false,
+      "productionQualified": false,
+      "releaseReady": false
+    }
+  ],
+  "failure": null,
+  "productExecuted": false,
+  "executableExecuted": false,
+  "oldFailuresReclassified": false,
+  "currentFullBuildEntriesExecuted": false,
+  "productionQualified": false,
+  "releaseReady": false
+}

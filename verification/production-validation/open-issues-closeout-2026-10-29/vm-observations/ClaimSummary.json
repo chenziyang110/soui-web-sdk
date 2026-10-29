@@ -1,0 +1,330 @@
+{
+  "schema": "soui.open-issues-vm-observations/v1",
+  "snapshotDate": "2026-10-29",
+  "meaning": "Observed historical results and current source-only repairs; no test/build/VM execution performed by this archive collector",
+  "messagePort": {
+    "sourceVersion": "0.5.1-preview.1",
+    "sourceSha256": "652a66973f09c5a90a5e06465944dd7ea8d3a3d9463411db5b07d045cb843973",
+    "candidateDifference": "Prepared pairs keep the historical EXE/Web/SDK and differ only by old versus exact current0.6.0 node.dll; current candidate arms were not executed",
+    "preflight2": {
+      "passed": true,
+      "rawFiles": 2991,
+      "rawBytes": 816132513,
+      "browserBehaviorExecuted": false
+    },
+    "run1": {
+      "attempted": [
+        "x64-baseline"
+      ],
+      "runnerLoaderExit": "0xC0000135",
+      "subjectIdentityAvailable": false,
+      "wholeJobClosureVerified": false,
+      "passed": false
+    },
+    "run2": {
+      "attempted": [
+        "x64-baseline"
+      ],
+      "nativePid": 4764,
+      "nativeCreationFileTime": "134377352938104405",
+      "documentsObserved": 4,
+      "sidecarRows": 40,
+      "finiteCasesPassObserved": 32,
+      "workerNativeJoinObserved": false,
+      "debuggerWaitObserved": false,
+      "failedStep": "runtime.shutdown",
+      "failureCode": "E_RUNTIME_SHUTDOWN_PENDING",
+      "passed": false,
+      "nativeOwnedRootExit": 1,
+      "nativeOwnedSupervisorExit": 1,
+      "activeBeforeCleanup": 0,
+      "activeAfterCleanup": 0,
+      "terminatedOwnedJob": false
+    },
+    "untouchedArmsNotRun": [
+      "x64-candidate",
+      "x86-baseline",
+      "x86-candidate"
+    ],
+    "allFourFiniteArmsPassed": false,
+    "currentSdk060Qualified": false
+  },
+  "desktop": {
+    "sourceVersion": "0.6.0",
+    "tray2": {
+      "attempted": "tray-x64",
+      "pid": 2224,
+      "creationFileTime": "134377355941319480",
+      "partial": "Tray install, native callback/menu return and explicit cleanup recorded",
+      "failureCode": "E_TRAY_FOCUS",
+      "rootExit": 1,
+      "supervisorExit": 1,
+      "activeBeforeCleanup": 0,
+      "activeAfterCleanup": 0,
+      "terminatedOwnedJob": false,
+      "x86NotRunByThisBatch": true,
+      "passed": false
+    },
+    "resident1": {
+      "preflightOnly": true,
+      "failure": "Exact runtime closed set contained additional root webview-smoke.log",
+      "productExecuted": false,
+      "x86NotRun": true,
+      "passed": false
+    },
+    "resident2": {
+      "attempted": "resident-x64",
+      "pid": 1132,
+      "creationFileTime": "134377368324407305",
+      "partial": "Three windows ready; middle close/recreate; all-window close and empty residency; final three recreated",
+      "selectedEvents": [
+        {
+          "code": "E_RELOAD_PENDING",
+          "elapsedMs": 4219,
+          "event": "host.reload-pending",
+          "generation": 1,
+          "liveWindows": 2,
+          "message": "The original reload is pending on the Miniblink owner thread.",
+          "ok": false,
+          "runId": "1132-4796687",
+          "sequence": 36,
+          "slot": 1
+        },
+        {
+          "code": "E_RELOAD_PENDING",
+          "elapsedMs": 4234,
+          "event": "host.reload-pending",
+          "generation": 1,
+          "liveWindows": 2,
+          "message": "The original reload is pending on the Miniblink owner thread.",
+          "ok": false,
+          "runId": "1132-4796687",
+          "sequence": 37,
+          "slot": 3
+        },
+        {
+          "code": "",
+          "elapsedMs": 5375,
+          "event": "host.reloaded",
+          "generation": 1,
+          "liveWindows": 3,
+          "message": "WebView reload requested on the engine thread.",
+          "ok": true,
+          "runId": "1132-4796687",
+          "sequence": 40,
+          "slot": 1
+        },
+        {
+          "code": "",
+          "elapsedMs": 5375,
+          "event": "host.reloaded",
+          "generation": 1,
+          "liveWindows": 3,
+          "message": "WebView reload requested on the engine thread.",
+          "ok": true,
+          "runId": "1132-4796687",
+          "sequence": 42,
+          "slot": 3
+        },
+        {
+          "elapsedMs": 10563,
+          "event": "smoke.final-three-recreated",
+          "liveWindows": 3,
+          "runId": "1132-4796687",
+          "sequence": 135
+        },
+        {
+          "budgetMs": 10000,
+          "elapsedMs": 10563,
+          "event": "exit.cleanup-deadline",
+          "liveWindows": 3,
+          "runId": "1132-4796687",
+          "sequence": 136
+        },
+        {
+          "elapsedMs": 10563,
+          "event": "exit.requested",
+          "exitCode": 1,
+          "liveWindows": 3,
+          "reason": "resident-smoke-complete",
+          "runId": "1132-4796687",
+          "sequence": 137,
+          "smokeIncomplete": false
+        },
+        {
+          "code": "E_RUNTIME_SHUTDOWN_PENDING",
+          "elapsedMs": 11609,
+          "event": "runtime.shutdown",
+          "liveWindows": 0,
+          "message": "Worker prepare has not completed; retry this retained shutdown generation.",
+          "ok": false,
+          "runId": "1132-4796687",
+          "sequence": 371
+        },
+        {
+          "elapsedMs": 11625,
+          "event": "resident.finished",
+          "exitCode": 1,
+          "liveWindows": 0,
+          "orderedShutdown": true,
+          "runId": "1132-4796687",
+          "sequence": 376,
+          "smokeCompleted": true
+        },
+        {
+          "code": "",
+          "elapsedMs": 11750,
+          "event": "runtime.shutdown-fallback",
+          "message": "Miniblink process runtime shutdown completed.",
+          "ok": true,
+          "runId": "1132-4796687",
+          "sequence": 377
+        }
+      ],
+      "rootExit": 1,
+      "supervisorExit": 1,
+      "activeBeforeCleanup": 0,
+      "activeAfterCleanup": 0,
+      "terminatedOwnedJob": false,
+      "x86NotRun": true,
+      "passed": false
+    },
+    "tray3X86": {
+      "evidence": [
+        "desktop/tray3",
+        "gui/tray3-x86-shortcut-menu.png",
+        "gui/tray3-x86-submenu.png"
+      ],
+      "previousSnapshotWasScreenshotOnly": true,
+      "pid": 2484,
+      "creationFileTime": "134377370890271475",
+      "partial": "Root real Ctrl+Alt+F9 gesture corresponded to one native shortcut activation; Chinese checked/disabled submenu visibly observed; native selection1 returned",
+      "shortcutCount": 1,
+      "selection": 1,
+      "failureCode": "E_TRAY_FOCUS",
+      "tooltipUpdateSucceeded": false,
+      "rootExit": 1,
+      "supervisorExit": 1,
+      "cleanupConfirmed": true,
+      "activeBeforeCleanup": 0,
+      "activeAfterCleanup": 0,
+      "terminatedOwnedJob": false,
+      "nativeFinalReceiptAvailable": true,
+      "serialTag": "ISSUESHORT832C1A66DBB049618D74D90C38D9E717",
+      "passed": false
+    }
+  },
+  "controlR2": {
+    "onlyMutableRuntimeLog": "webview-smoke.log",
+    "otherPayloadHashesUnchanged": true,
+    "sourceNavigationNotExcluded": true,
+    "originalDeadlinesRetained": true,
+    "review": "Exact scripts independently statically reviewed with zero blockers; receipt retained, not product execution"
+  },
+  "smallDataIso": {
+    "record": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/control-media-05b9ebb3-f53f-4911-ae85-57866b930ad1/SouiOpenIssues.iso",
+      "bytes": 1507328,
+      "sha256": "09c060b2f9917c39a709fe64f6c8f71911a6e6e383b1f653bf7fcc13a8575d03"
+    },
+    "archiveContainsImageBytes": false,
+    "producerNaturalExit": 0,
+    "supervisorNaturalExit": 0,
+    "activeJobAtEnd": 0,
+    "terminatedOwnedJob": false,
+    "fullGuestContentVerificationNotInferred": true,
+    "previousFailure": "E_IMAGE_CAP from caller32MiB versus exact helper1.4e9 policy; preserved as data-only failure; fixed caller restored original cap, helper/deadline unchanged"
+  },
+  "currentSourceOnlyRepairs": {
+    "status": "Static review zero blockers reported; not yet compiled or VM-retested",
+    "workbench": "Exact reload pending no longer enters generic permanent failure; Runtime pending retains controller with original10000ms latch and timer retries",
+    "messagePort": "Two Runtime shutdown steps use existing until/service/original deadline; only exact Runtime pending retried",
+    "sourcePins": [
+      {
+        "path": "C:/sc07/demos/workbench/app/resident_controller.h",
+        "bytes": 36343,
+        "sha256": "ea8f3795690e8ccc32d7674c1d6135f95a024e47bdb0591ff904282c716d1d3e",
+        "mtimeUtc": "2026-10-29T08:45:30.179Z"
+      },
+      {
+        "path": "C:/sc07/demos/workbench/app/resident_shutdown_policy.h",
+        "bytes": 2299,
+        "sha256": "c800e0222a8cca576292a2f55480e272d0f5dcd697a34f9fe6b7454d11ebabf9",
+        "mtimeUtc": "2026-10-29T08:45:30.177Z"
+      },
+      {
+        "path": "C:/sc07/tests/native/resident_shutdown/policy_tests.cpp",
+        "bytes": 7275,
+        "sha256": "8a70a321779b4015c765f0ba14801aaf0e4dc74878427e14d0ed894b916bc03e",
+        "mtimeUtc": "2026-10-29T08:46:05.915Z"
+      },
+      {
+        "path": "C:/sc07/tests/native/resident_shutdown/CMakeLists.txt",
+        "bytes": 1050,
+        "sha256": "aed6303b5ffd613038532ba6fd37f9512c2d88f3680ee6473e2dc414f5b48d22",
+        "mtimeUtc": "2026-10-29T08:45:30.182Z"
+      },
+      {
+        "path": "C:/sc07/tests/message-port-app/main.cpp",
+        "bytes": 38598,
+        "sha256": "b2cd9c33aeaac4f1d96317d6ea3fe78fcee89f954eb7057944f3d63f4e46909f",
+        "mtimeUtc": "2026-10-29T08:20:25.137Z"
+      },
+      {
+        "path": "C:/sc07/tests/message-port-app/shutdown-poll.h",
+        "bytes": 734,
+        "sha256": "cb0bbc2cd1e76eb27898550060a7a43cfdee4a5e68ceefb38ac1035ac9da4abe",
+        "mtimeUtc": "2026-10-29T01:57:40.743Z"
+      },
+      {
+        "path": "C:/sc07/tests/message-port-app/README.md",
+        "bytes": 5170,
+        "sha256": "289ef781448a9aabc9d23dec6d46d26366bfda98f413d69e1d0edae89626b7ac",
+        "mtimeUtc": "2026-10-29T08:20:25.900Z"
+      }
+    ],
+    "foreignCompilerPreflightDeferred": true,
+    "rootPackageAudit": {
+      "path": "current-source-preparation/PackageAudit.observed.json",
+      "meaning": "Root observed summary of actual two npm audit exit0/0 and zero reported vulnerabilities against pinned SDKWeb/Workbench locks; not raw stdout, no dependency installation and no runtime/production qualification"
+    },
+    "rootSourceReviewReceipt": {
+      "path": "current-source-preparation/RootSourceReviews.received.json",
+      "meaning": "Root summary of two actual independent reviewer messages received in this conversation; not raw message/tool output or test execution; binds seven exact current source files; zero blockers; build/policy/VM retests not executed"
+    }
+  },
+  "productionQualificationComplete": false,
+  "fullDevtoolsGoalComplete": false,
+  "releaseReady": false,
+  "longTestsExecuted": false,
+  "oldFailuresPreserved": true,
+  "launchers": {
+    "resident2": {
+      "nativeExitCode": 1,
+      "exitCode": 1,
+      "environmentRestored": true,
+      "leaseReleased": true,
+      "restoreErrors": [],
+      "mutex": "Local\\SouiDevKit.DesktopValidation",
+      "ownerProcessId": 664,
+      "ownerCreationFileTime": "134377368260460171",
+      "productPassClaimed": false
+    },
+    "tray3": {
+      "nativeExitCode": 1,
+      "exitCode": 1,
+      "environmentRestored": true,
+      "leaseReleased": true,
+      "restoreErrors": [],
+      "mutex": "Local\\SouiDevKit.DesktopValidation",
+      "ownerProcessId": 4020,
+      "ownerCreationFileTime": "134377370870241480",
+      "productPassClaimed": false
+    }
+  },
+  "currentVmInputStatus": "Root reports CUA readback restored; screensaver awakened with Shift. Two earlier nondispatch requests remain historical observations, not current unavailability.",
+  "licenseCrosswalkEngineeringReview": {
+    "path": "current-source-preparation/RootCrosswalkReview.actual.json",
+    "meaning": "Issue39 independent literal XML ClCompile/MASM and index engineering crosswalk review only; not Workbench/MessagePort source review and not legal/redistribution approval"
+  }
+}

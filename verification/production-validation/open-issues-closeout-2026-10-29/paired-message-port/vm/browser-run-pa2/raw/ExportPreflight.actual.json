@@ -1,0 +1,70 @@
+{
+    "actualSourceAwaitedGuestNodeExitCode":  1,
+    "phase":  "run",
+    "guestNodePidAbsenceObserved":  false,
+    "invocation":  {
+                       "path":  "C:\\issue-closeout-evidence\\mp77-run-pa2\\Invocation.actual.json",
+                       "bytes":  6956,
+                       "sha256":  "1a4f7fc4b75be41418c8cc248838ee7490cb3423565ca9f1b0ffaa35b05b5718"
+                   },
+    "allActualFailuresRetained":  true,
+    "topGuestNodeClosureBasis":  "Exact reviewed PowerShell invokes the unchanged guest Node synchronously and captures its actual native exit before finally; no standalone PID absence or whole-Job pass is inferred",
+    "actualMachine":  "SOUI-7AEMMK5Q0T",
+    "exporter":  {
+                     "path":  "C:\\issues8\\Guest-Export.ps1",
+                     "bytes":  3074,
+                     "sha256":  "f1cc23cfa6d76d35b2a6d8dd0779ceb332a42b51f74271bf097b5e9b44f1ce7c"
+                 },
+    "attemptedOuterJobClosures":  [
+                                      {
+                                          "passedAsRecorded":  false,
+                                          "ready":  {
+                                                        "path":  "C:\\issue-closeout-evidence\\mp77-run-pa2\\x64-baseline\\ready.json",
+                                                        "bytes":  62,
+                                                        "sha256":  "ec4c81ae843ac2f5ae053cfe088395e88affc50c0a3582e03e53b43c4d465f39"
+                                                    },
+                                          "forcedTerminationAsRecorded":  false,
+                                          "key":  "x64-baseline",
+                                          "raw":  {
+                                                      "path":  "C:\\issue-closeout-evidence\\mp77-run-pa2\\x64-baseline\\owned.ndjson",
+                                                      "bytes":  3064,
+                                                      "sha256":  "3506349b56434fe7b8fc123b88338f7a706245cb11e93b38d366356a3d5bad23"
+                                                  },
+                                          "limitTerminatedAsRecorded":  0,
+                                          "finished":  {
+                                                           "path":  "C:\\issue-closeout-evidence\\mp77-run-pa2\\x64-baseline\\finished.json",
+                                                           "bytes":  957,
+                                                           "sha256":  "d3780d9e85456fcbe42061239507524a9dd35865859ef59031350d2552409037"
+                                                       },
+                                          "actualSupervisorExitCode":  1,
+                                          "closureConfirmed":  true,
+                                          "actualExitCode":  1,
+                                          "context":  {
+                                                          "path":  "C:\\issue-closeout-evidence\\mp77-run-pa2\\x64-baseline\\owned.ndjson.context.json",
+                                                          "bytes":  667,
+                                                          "sha256":  "6c8c5b764f8c6c0b5192c89f3ce488f42b76dcbcde4c76cd2cce01b3947ef66f"
+                                                      }
+                                      }
+                                  ],
+    "releaseReady":  false,
+    "schema":  "soui.paired-browser-closed-export-preflight/v1",
+    "lease":  {
+                  "path":  "C:\\issue-closeout-evidence\\mp77-run-pa2\\Lease.actual.json",
+                  "bytes":  185,
+                  "sha256":  "1eb26d38d326aa03f605f267f09a77f603794420bc1482e6bbdc09cc595af836"
+              },
+    "originalSummary":  {
+                            "path":  "C:\\issue-closeout-evidence\\mp77-run-pa2\\Summary.actual.json",
+                            "bytes":  1765,
+                            "sha256":  "6fa61acfd58d4d7e54a5b1b9e9f7f9694bca12d7ffdbafbe14153bd44fbc8165"
+                        },
+    "parentPidCurrentlyReused":  false,
+    "testPassed":  null,
+    "originalParentIdentityAbsent":  true,
+    "powerShellFinished":  {
+                               "path":  "C:\\issue-closeout-evidence\\mp77-run-pa2\\PowerShell.finished.json",
+                               "bytes":  407,
+                               "sha256":  "415e4ca98791ebe6720a3fdd0c8de8da57e0588996080ab90bf951ffd56e24f9"
+                           },
+    "guestNodePidRecorded":  false
+}

@@ -1,0 +1,55 @@
+{
+    "machine":  "SOUI-7AEMMK5Q0T",
+    "exporter":  {
+                     "path":  "C:\\issues8\\Guest-Export.ps1",
+                     "bytes":  3074,
+                     "sha256":  "f1cc23cfa6d76d35b2a6d8dd0779ceb332a42b51f74271bf097b5e9b44f1ce7c"
+                 },
+    "kind":  "ord",
+    "testPassed":  null,
+    "phase":  "stage",
+    "closedLauncher":  {
+                           "lease":  {
+                                         "path":  "C:\\issue-closeout-evidence\\ordc-a1-stage\\Lease.actual.json",
+                                         "bytes":  162,
+                                         "sha256":  "d15dc6064f3513a2b7f107090c94bda960a46620c8dffa3e08f4798e6aa2df9f"
+                                     },
+                           "finished":  {
+                                            "path":  "C:\\issue-closeout-evidence\\ordc-a1-stage\\PowerShell.finished.json",
+                                            "bytes":  436,
+                                            "sha256":  "0514a65cae836db6c45ecc8f3518d56f8647bfa4422673f67b15787be2ac371e"
+                                        },
+                           "finishedValue":  {
+                                                 "oldFourArmsPassed":  false,
+                                                 "exitCode":  0,
+                                                 "restoreErrors":  [
+
+                                                                   ],
+                                                 "environmentRestored":  true,
+                                                 "releaseReady":  false,
+                                                 "leaseReleased":  true,
+                                                 "pathAfter":  "C:\\Windows\\system32;C:\\Windows;C:\\Windows\\System32\\Wbem;C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\;C:\\Windows\\System32\\OpenSSH\\;C:\\Users\\Administrator\\AppData\\Local\\Microsoft\\WindowsApps;"
+                                             },
+                           "launcherIdentity":  {
+                                                    "pid":  452,
+                                                    "creationFileTime":  "134377478260534517",
+                                                    "identityAbsent":  true,
+                                                    "pidReused":  false
+                                                },
+                           "wrapperFinished":  {
+                                                   "path":  "C:\\issue-closeout-evidence\\ordc-a1-stage\\Wrapper.finished.json",
+                                                   "bytes":  240,
+                                                   "sha256":  "344ea2a57641a0906ceb4a7fa36c329ec14e0ba119dd909453ad26d56779725a"
+                                               },
+                           "wrapperIdentity":  {
+                                                   "pid":  1032,
+                                                   "creationFileTime":  "134377478247972969",
+                                                   "identityAbsent":  true,
+                                                   "pidReused":  false
+                                               }
+                       },
+    "observedUtc":  "2026-10-29T11:44:15.0607788Z",
+    "schema":  "soui.current-closed-export-preflight/v1",
+    "scope":  "Closed exact fresh evidence files only; no whole serial, private catalog or external inputs",
+    "releaseReady":  false
+}

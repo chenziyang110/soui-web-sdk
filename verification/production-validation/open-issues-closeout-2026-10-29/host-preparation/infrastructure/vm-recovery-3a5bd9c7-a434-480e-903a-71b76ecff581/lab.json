@@ -1,0 +1,120 @@
+{
+  "schema": 1,
+  "uuid": "166925c3-9fd3-4751-9a17-c45d880af0a6",
+  "config": {
+    "qemu": "C:\\Users\\11034\\.codex\\task-tools\\qemu-ucrt64-11.1.2-e89cf96f2d1e4685bbdac347cb9eea3d\\runtime\\ucrt64\\bin\\qemu-system-x86_64.exe",
+    "qemu_img": "C:\\Users\\11034\\.codex\\task-tools\\qemu-ucrt64-11.1.2-e89cf96f2d1e4685bbdac347cb9eea3d\\runtime\\ucrt64\\bin\\qemu-img.exe",
+    "base_image": "C:\\Users\\11034\\.codex\\task-vms\\soui-devtools-qemu-stable-e89cf96f2d1e4685bbdac347cb9eea3d\\private-fe2e6175cf5a4a78b23d418330506ee3\\install.qcow2",
+    "bios": "C:\\Program Files\\qemu\\share\\bios-256k.bin",
+    "qemu_data": "C:\\Users\\11034\\.codex\\task-tools\\qemu-ucrt64-11.1.2-e89cf96f2d1e4685bbdac347cb9eea3d\\runtime\\ucrt64\\share\\qemu",
+    "novnc_dir": "C:\\Users\\11034\\.codex\\task-tools\\novnc-1.7.0-devtools-9d2f14a3182743b18b0b07d6f59db2f1\\node_modules\\@novnc\\novnc",
+    "runs_dir": "C:\\Users\\11034\\.codex\\task-vms\\soui-devtools-qemu-stable-e89cf96f2d1e4685bbdac347cb9eea3d\\private-fe2e6175cf5a4a78b23d418330506ee3\\postsettings-cpu-nehalem-3f486e90\\runs",
+    "network": "none",
+    "accel": "whpx",
+    "cpu": "Nehalem-v2",
+    "memory_mb": 4096,
+    "cpus": 4,
+    "iso": "C:\\soui-startup-data-media-p8-20261027-1\\SouiStartupData.iso",
+    "firmware_code": null,
+    "firmware_vars": null,
+    "diagnosticOnly": true,
+    "qualifiesPreparedBase": false,
+    "productPassed": false
+  },
+  "parents": [
+    {
+      "path": "C:\\Users\\11034\\.codex\\task-vms\\soui-devtools-qemu-stable-e89cf96f2d1e4685bbdac347cb9eea3d\\private-fe2e6175cf5a4a78b23d418330506ee3\\install.qcow2",
+      "format": "qcow2",
+      "bytes": 9847504896,
+      "mtime_ns": 1792478096583908000
+    }
+  ],
+  "ports": {
+    "http": 52545,
+    "websocket": 52546,
+    "qmp": 52547,
+    "vnc": 52548
+  },
+  "url": "http://127.0.0.1:52545/",
+  "argv": [
+    "C:\\Users\\11034\\.codex\\task-tools\\qemu-ucrt64-11.1.2-e89cf96f2d1e4685bbdac347cb9eea3d\\runtime\\ucrt64\\bin\\qemu-system-x86_64.exe",
+    "-name",
+    "novnc-lab-166925c3-9fd3-4751-9a17-c45d880af0a6",
+    "-uuid",
+    "166925c3-9fd3-4751-9a17-c45d880af0a6",
+    "-machine",
+    "pc",
+    "-accel",
+    "whpx",
+    "-cpu",
+    "Nehalem-v2",
+    "-m",
+    "4096",
+    "-smp",
+    "4",
+    "-display",
+    "none",
+    "-vga",
+    "std",
+    "-boot",
+    "order=c",
+    "-qmp",
+    "tcp:127.0.0.1:52547,server=on,wait=off",
+    "-vnc",
+    "127.0.0.1:46648,websocket=127.0.0.1:52546",
+    "-chardev",
+    "file,id=seriallog,path=C:\\Users\\11034\\.codex\\task-vms\\soui-devtools-qemu-stable-e89cf96f2d1e4685bbdac347cb9eea3d\\private-fe2e6175cf5a4a78b23d418330506ee3\\postsettings-cpu-nehalem-3f486e90\\runs\\166925c3-9fd3-4751-9a17-c45d880af0a6\\serial.log",
+    "-serial",
+    "chardev:seriallog",
+    "-net",
+    "none",
+    "-device",
+    "usb-ehci,id=ehci",
+    "-device",
+    "usb-tablet,bus=ehci.0",
+    "-L",
+    "C:\\Users\\11034\\.codex\\task-tools\\qemu-ucrt64-11.1.2-e89cf96f2d1e4685bbdac347cb9eea3d\\runtime\\ucrt64\\share\\qemu",
+    "-bios",
+    "C:\\Program Files\\qemu\\share\\bios-256k.bin",
+    "-blockdev",
+    "{\"driver\": \"file\", \"filename\": \"C:\\\\Users\\\\11034\\\\.codex\\\\task-vms\\\\soui-devtools-qemu-stable-e89cf96f2d1e4685bbdac347cb9eea3d\\\\private-fe2e6175cf5a4a78b23d418330506ee3\\\\install.qcow2\", \"node-name\": \"parent0file\", \"read-only\": true}",
+    "-blockdev",
+    "{\"driver\": \"qcow2\", \"file\": \"parent0file\", \"node-name\": \"parent0\", \"read-only\": true, \"backing\": null}",
+    "-blockdev",
+    "{\"driver\": \"file\", \"filename\": \"C:\\\\Users\\\\11034\\\\.codex\\\\task-vms\\\\soui-devtools-qemu-stable-e89cf96f2d1e4685bbdac347cb9eea3d\\\\private-fe2e6175cf5a4a78b23d418330506ee3\\\\postsettings-cpu-nehalem-3f486e90\\\\runs\\\\166925c3-9fd3-4751-9a17-c45d880af0a6\\\\overlay.qcow2\", \"node-name\": \"overlayfile\"}",
+    "-blockdev",
+    "{\"driver\": \"qcow2\", \"file\": \"overlayfile\", \"backing\": \"parent0\", \"node-name\": \"overlay\"}",
+    "-device",
+    "ide-hd,drive=overlay,bus=ide.0,unit=0,id=systemdisk",
+    "-blockdev",
+    "{\"driver\": \"raw\", \"node-name\": \"cd\", \"read-only\": true, \"file\": {\"driver\": \"file\", \"filename\": \"C:\\\\soui-startup-data-media-p8-20261027-1\\\\SouiStartupData.iso\", \"read-only\": true}}",
+    "-device",
+    "ide-cd,drive=cd,bus=ide.1,unit=0,id=installcd"
+  ],
+  "reuseOperator": {
+    "sourceFreeze": {
+      "path": "F:\\work\\SOUI_WEB\\experiments\\devtools-acceptance\\soak\\d14\\focused-observation-loss-recovery-1\\source-freeze.json",
+      "bytes": 26450,
+      "sha256": "fc910fea4a8a046e13307de4404a70a0b6d5e801eb1fb536f86f7ee5b1045a22"
+    },
+    "selection": {
+      "path": "C:\\Users\\11034\\AppData\\Local\\Temp\\soui-focused-normal-preparation-4e3d87dbc4b344eabd68a28cddedb936\\selection.json",
+      "bytes": 168272,
+      "sha256": "4a9d6978abfdcedfd5ab041c31aed72bd35d7632695e5d0b703a3526acc16aa1"
+    },
+    "sessionId": "83140e58364240208dad41fd1a063566",
+    "controlRoot": "F:/work/soui-dt-run/83140e58364240208dad41fd1a063566",
+    "initialIso": null,
+    "runtimeOverride": {
+      "schema": "soui.fixed-runtime-accelerator-override/v1",
+      "historicalAccelerator": "tcg",
+      "runtimeAccelerator": "whpx",
+      "fallbackAllowed": false
+    },
+    "focused": {
+      "path": "C:\\Users\\11034\\AppData\\Local\\Temp\\soui-focused-normal-preparation-4e3d87dbc4b344eabd68a28cddedb936\\admission.json",
+      "bytes": 1992,
+      "sha256": "683b19225e473e5a09464b11e9071f0a6b6c615d9655b944cac3165d6f81602a"
+    }
+  }
+}

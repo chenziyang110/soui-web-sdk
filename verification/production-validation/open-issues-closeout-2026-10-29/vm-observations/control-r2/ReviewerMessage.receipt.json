@@ -1,0 +1,18 @@
+{
+  "schema": "soui.reviewer-message-receipt/v1",
+  "observedDate": "2026-10-29",
+  "recordedBy": "/root/issues_qualification_audit",
+  "source": "Actual collaboration message delivered by /root/issues_ui_fixture_audit; this is a receiver-authored receipt, not a new reviewer execution record",
+  "reviewer": "/root/issues_ui_fixture_audit",
+  "messageVerbatim": "r2 窄范围只读独审 0 blockers。已独立核对 launcher 65137a4e / controller 2d40ef45 / manifest 2f91cd8a 的实际 bytes/SHA；36 非 controller rows 与两组 671 resident rows、case 预算均保持。仅 root webview-smoke.log 可变，所有实际 .log 前后 pin（失败亦保留），source-navigation 不再忽略；native exit、自然清场谓词和 2000ms drain 未变。Launcher 任务 VM/闭合 CRT+Node pins、同名 mutex、仅 Process 环境与 finally 恢复、PS5 LASTEXITCODE 捕获均自洽。此结论只覆盖准备工具静态正确性，未执行产品/VM，不认定 GUI pass。",
+  "pins": [
+    {"path": "Guest-Invoke.ps1", "bytes": 9137, "sha256": "65137a4ea595fb28af264fe1c42d2f5234f694460443c0ab2e2064855fe7c321"},
+    {"path": "payload/Guest-Shorts.cjs", "bytes": 9036, "sha256": "2d40ef45483def5ebf8d5b68c0b751937e59984fa35d33aeff6c68155fce7b92"},
+    {"path": "payload/Payload.manifest.json", "bytes": 285918, "sha256": "2f91cd8aa2a55e9b38e297bdd775ff376033adea8a131bca46ad01de7dea2efe"}
+  ],
+  "productExecuted": false,
+  "vmExecutionQualified": false,
+  "releaseReady": false,
+  "productionQualificationComplete": false,
+  "fullDevtoolsGoalComplete": false
+}

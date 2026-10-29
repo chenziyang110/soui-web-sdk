@@ -1,0 +1,53 @@
+{
+  "schema": "soui.ordinary-original-validator-byte-proof/v1",
+  "original": {
+    "path": "F:/work/soui-issue96/tests/acceptance/runner.cjs",
+    "bytes": 44569,
+    "sha256": "b275b928899b6c91325a7dd46adf963a455c4eb7afaf60b5c305e660fb4993c8"
+  },
+  "current": {
+    "path": "C:/sc07/tests/acceptance/runner.cjs",
+    "bytes": 44569,
+    "sha256": "b275b928899b6c91325a7dd46adf963a455c4eb7afaf60b5c305e660fb4993c8"
+  },
+  "regions": [
+    {
+      "from": "function settings(",
+      "to": "function resourceBinding(",
+      "original": {
+        "startByte": 826,
+        "endByteExclusive": 3233,
+        "bytes": 2407,
+        "sha256": "c7da8461b1f408fab252314f482bd7ca215fa3ba20feae44a6bd0063e1420580"
+      },
+      "current": {
+        "startByte": 826,
+        "endByteExclusive": 3233,
+        "bytes": 2407,
+        "sha256": "c7da8461b1f408fab252314f482bd7ca215fa3ba20feae44a6bd0063e1420580"
+      },
+      "byteEqual": true
+    },
+    {
+      "from": "function validateRecords(",
+      "to": "function directory(",
+      "original": {
+        "startByte": 19232,
+        "endByteExclusive": 21985,
+        "bytes": 2753,
+        "sha256": "34841efcf22a11ebe0124c243341d628d32e2398273d4d7f65656af087b2333b"
+      },
+      "current": {
+        "startByte": 19232,
+        "endByteExclusive": 21985,
+        "bytes": 2753,
+        "sha256": "34841efcf22a11ebe0124c243341d628d32e2398273d4d7f65656af087b2333b"
+      },
+      "byteEqual": true
+    }
+  ],
+  "invocation": "Actual unchanged original runner settings,expectedSteps,verifyNativeIdentity,validateRecords; no rewritten validator algorithm",
+  "validatorExecuted": false,
+  "productExecuted": false,
+  "releaseReady": false
+}

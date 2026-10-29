@@ -1,0 +1,193 @@
+{
+  "schema": "soui.native-focus-owned-invocation/v1",
+  "machine": "SOUI-7AEMMK5Q0T",
+  "controllerPid": 3804,
+  "controllerBirthNotCollected": true,
+  "controllerActivePidMustBeAbsentBeforeExport": true,
+  "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+  "args": [
+    "-NoProfile",
+    "-NonInteractive",
+    "-STA",
+    "-ExecutionPolicy",
+    "Bypass",
+    "-File",
+    "D:\\Invoke-NativeFocusControl-a2.ps1",
+    "-ExpectedMachine",
+    "SOUI-7AEMMK5Q0T",
+    "-EvidenceDirectory",
+    "C:/issue-closeout-evidence/focusc-a2",
+    "-PreparationSha256",
+    "874fd1a9b2ff028962948d8e6f33afd8e88e0af739223affc22828142cfe3e80",
+    "-RootGate",
+    "ROOT_REVIEWED_NATIVE_FOCUS_CONTROL_V1"
+  ],
+  "cwd": "D:\\",
+  "timeoutMs": 90000,
+  "drainMs": 2000,
+  "innerDeadlineMs": 60000,
+  "sourcePins": [
+    {
+      "path": "D:\\Focus-Owned-a2.cjs",
+      "bytes": 10534,
+      "sha256": "c68b83da0784d0b60346881879657719bc341644f5d6ce3aec41c989f4eecfea"
+    },
+    {
+      "path": "D:\\Preparation-a2.actual.json",
+      "bytes": 3191,
+      "sha256": "874fd1a9b2ff028962948d8e6f33afd8e88e0af739223affc22828142cfe3e80"
+    },
+    {
+      "path": "D:\\FocusExport-a2.ps1",
+      "bytes": 6791,
+      "sha256": "440af4243d305dedec3876e0c7f18af1a338d21da614e034719f8595e570bf04"
+    },
+    {
+      "path": "D:\\Loader-Crt.inputs.json",
+      "bytes": 3459,
+      "sha256": "1a6c1c0987af3e259aff0c2f9615dce8b893267efd4e1fdb6de4d5f625ac90ce"
+    },
+    {
+      "path": "C:/issues8/Payload.manifest.json",
+      "bytes": 285033,
+      "sha256": "c6bb34afb81252ca16dd2bec955e3a8b36bfe830041e52ba417e9c34445eb897"
+    },
+    {
+      "path": "C:/issues8/tray-x64/api-ms-win-crt-convert-l1-1-0.dll",
+      "bytes": 16952,
+      "sha256": "25fe8493624b0a0d9d00a46fb41e4356c1cd01fa80f7b1e6ab831df2ccac762a"
+    },
+    {
+      "path": "C:/issues8/tray-x64/api-ms-win-crt-environment-l1-1-0.dll",
+      "bytes": 13368,
+      "sha256": "16e8b7c5f5c806bf831c81f2124c86ed8da1d34d7c430475894f49d3007e499a"
+    },
+    {
+      "path": "C:/issues8/tray-x64/api-ms-win-crt-filesystem-l1-1-0.dll",
+      "bytes": 14888,
+      "sha256": "790495652731de7e51e4803e3ecb0c050d95749e8e84bc4bcf6f3b67d756e9ed"
+    },
+    {
+      "path": "C:/issues8/tray-x64/api-ms-win-crt-heap-l1-1-0.dll",
+      "bytes": 13880,
+      "sha256": "49f8312f15018bbf386704dd8fc62e0043ed38b98413b5a19f3776bc780d1253"
+    },
+    {
+      "path": "C:/issues8/tray-x64/api-ms-win-crt-locale-l1-1-0.dll",
+      "bytes": 13368,
+      "sha256": "880127e94c1437d94e508f8c806e24413d95d1e0b131f88bc45606e4dece23ca"
+    },
+    {
+      "path": "C:/issues8/tray-x64/api-ms-win-crt-math-l1-1-0.dll",
+      "bytes": 22072,
+      "sha256": "26effb6000a24e3c1c597009e148f48a44498bbcf4218f0119c7301f8ac5a78c"
+    },
+    {
+      "path": "C:/issues8/tray-x64/api-ms-win-crt-runtime-l1-1-0.dll",
+      "bytes": 17488,
+      "sha256": "6a95a2ea68320591a955c2930462798083a8cc7e6d79754122c21b293ba9a1a8"
+    },
+    {
+      "path": "C:/issues8/tray-x64/api-ms-win-crt-stdio-l1-1-0.dll",
+      "bytes": 18984,
+      "sha256": "18d8b00e797538bc4767c19ae1762df18c64479a54e7041b8b4da99e32cda8bd"
+    },
+    {
+      "path": "C:/issues8/tray-x64/api-ms-win-crt-string-l1-1-0.dll",
+      "bytes": 19520,
+      "sha256": "c94bb2053a6541cc065b806ea945d420eb3207c3bee1d760401a600506e99589"
+    },
+    {
+      "path": "C:/issues8/tray-x64/api-ms-win-crt-time-l1-1-0.dll",
+      "bytes": 15400,
+      "sha256": "26376455bd746d87e150e73856d0db88303e0af2533f32956999c505e29db6fb"
+    },
+    {
+      "path": "C:/issues8/tray-x64/api-ms-win-crt-utility-l1-1-0.dll",
+      "bytes": 13368,
+      "sha256": "39b254cb97f25869d3c335899c6d3bab346cd6b000f2803ca9ddc8f2540c3a32"
+    },
+    {
+      "path": "C:/issues8/tray-x64/msvcp140.dll",
+      "bytes": 557728,
+      "sha256": "0f885b509a685d2bbfa652fed26b5fb31d88fbdab0a978c641d1c7b8aa460aa9"
+    },
+    {
+      "path": "C:/issues8/tray-x64/SouiTrayConsumer.exe",
+      "bytes": 136704,
+      "sha256": "fd09d3d6f3c9cddca4702dd3feab9e0bb2ad0d5d657904b452adf4ba55761e12"
+    },
+    {
+      "path": "C:/issues8/tray-x64/ucrtbase.dll",
+      "bytes": 1036864,
+      "sha256": "0a2be4a529a46fe0579150e205af3518988a58e70000dd4053bae541e98fc3f2"
+    },
+    {
+      "path": "C:/issues8/tray-x64/vcruntime140_1.dll",
+      "bytes": 49792,
+      "sha256": "1f2d41c4aa5db0bc33ebf7b66d72943a817d7ce6cbe880502a9403823633093f"
+    },
+    {
+      "path": "C:/issues8/tray-x64/vcruntime140.dll",
+      "bytes": 124544,
+      "sha256": "d5e4d9a3e835fa679450145d6a7d94e36573a509317111904d9b3712c30d9066"
+    },
+    {
+      "path": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+      "bytes": 450560,
+      "sha256": "1c84c8632c5269f24876ed9f49fa810b49f77e1e92e8918fc164c34b020f9a94"
+    },
+    {
+      "path": "C:/issues8/tools/node.exe",
+      "bytes": 91380224,
+      "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+    },
+    {
+      "path": "C:/issues8/tools/OwnedProcessRunner.exe",
+      "bytes": 170496,
+      "sha256": "f254dadd4eccad3c57d69e98f260d15ee598c0b6441b7fe68fc4ef5b3b7dea83"
+    },
+    {
+      "path": "C:/issues8/tools/owned-process.cjs",
+      "bytes": 8386,
+      "sha256": "8ccec5802c793b45990d2d7585f2c29fb618a7b170adebd5d270a7c291757ce7"
+    },
+    {
+      "path": "D:\\NativeFocusControl.cs",
+      "bytes": 30830,
+      "sha256": "690305a4dbe13e2c3a56d269bd7c4377bd3ab8c7b5e0ba9de23bbcd00c0ea5e2"
+    },
+    {
+      "path": "D:\\Invoke-NativeFocusControl-a2.ps1",
+      "bytes": 6297,
+      "sha256": "f686d65b3e69f2e00ab23c451840c3d766b42a456cd87381e0372cdb7e2ebcf9"
+    },
+    {
+      "path": "D:\\README.md",
+      "bytes": 6127,
+      "sha256": "9b4df7135152e2ee3b351305d2c085f6e7ae2da17cf06003e5f6a7b9f78f2306"
+    }
+  ],
+  "childPathEvidence": {
+    "scope": "Only launchOwned supervisor and its PowerShell descendant inherit this PATH; parent process.env is never assigned",
+    "crtDirectory": "C:/issues8/tray-x64",
+    "inheritedPath": {
+      "present": true,
+      "utf8Bytes": 188,
+      "sha256": "e1479b5cf80853e3f5b6dcfc83d95d374edf10de19f94b577cc64de297b0a1a4"
+    },
+    "childPath": {
+      "present": true,
+      "utf8Bytes": 208,
+      "sha256": "55678f8fcbf76409253c0831e82f2aff32b087836a4ef25c4b71bd0f19b43c1a"
+    },
+    "environmentValuesPersisted": false,
+    "productExecuted": false
+  },
+  "innerDirectory": "C:/issue-closeout-evidence/focusc-a2",
+  "outerDirectory": "C:/issue-closeout-evidence/focusc-a2-run",
+  "inputInjection": false,
+  "oldTrayConsumerRerun": false,
+  "sdkExecuted": false,
+  "releaseReady": false
+}

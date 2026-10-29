@@ -1,0 +1,34 @@
+{
+  "schema": "soui.message-port-guest-four-arm-result/v1",
+  "sourceVersion": "0.5.1-preview.1",
+  "sourceSha256": "652a66973f09c5a90a5e06465944dd7ea8d3a3d9463411db5b07d045cb843973",
+  "preflight": {
+    "path": "C:\\issue-closeout-evidence\\mp77-preflight-pa2\\Preflight.actual.json",
+    "bytes": 2791,
+    "sha256": "ad83b0658f5cd767e1dffaff8e22a5ce1cd49ab6cff0777f6863ffeff2c1fe7b"
+  },
+  "manifest": {
+    "path": "D:\\Paired.browser-manifest.json",
+    "bytes": 1168269,
+    "sha256": "cd97b883789e664aa91eecf5c080158ae23e9a0812c7080e5f9684cfb455a012"
+  },
+  "results": [],
+  "failure": {
+    "message": "The expression evaluated to a falsy value:\n\n  assert(r.passed&&r.exitCode===0&&r.supervisorExitCode===0&&r.signal===null&&r.spawnError===null&&r.reportError===null&&!r.stopRequested&&!r.fallbackUsed&&r.closureConfirmed)\n",
+    "stack": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(r.passed&&r.exitCode===0&&r.supervisorExitCode===0&&r.signal===null&&r.spawnError===null&&r.reportError===null&&!r.stopRequested&&!r.fallbackUsed&&r.closureConfirmed)\n\n    at natural (F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port\\Guest-MessagePort.cjs:10:40)\n    at main (F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port\\Guest-MessagePort.cjs:68:4)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)"
+  },
+  "attemptedArms": [
+    "x64-baseline"
+  ],
+  "untouchedArmsNotRun": [
+    "x64-candidate",
+    "x86-baseline",
+    "x86-candidate"
+  ],
+  "allFourFiniteArmsPassed": false,
+  "currentSdk060Qualified": false,
+  "completeKernelToolchainQualified": false,
+  "resourcePassed": false,
+  "qualificationPassed": false,
+  "releaseReady": false
+}

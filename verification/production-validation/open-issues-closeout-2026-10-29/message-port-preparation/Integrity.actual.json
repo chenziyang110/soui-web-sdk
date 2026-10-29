@@ -1,0 +1,35 @@
+{
+  "schema": "soui.message-port-host-preparation-copy-integrity/v1",
+  "recordedUtc": "2026-10-29T08:09:49.541Z",
+  "collector": {
+    "path": "C:/sc07/verification/production-validation/open-issues-closeout-2026-10-29/message-port-preparation/Collect-HostPreparation.cjs",
+    "bytes": 11606,
+    "sha256": "1763c7b5fc5e1bc92aeee5460d4a080ecc0b7f26986eb5eb1f03636e2f20062f"
+  },
+  "argv": [
+    "C:\\nvm4w\\nodejs\\node.exe",
+    "C:\\sc07\\verification\\production-validation\\open-issues-closeout-2026-10-29\\message-port-preparation\\Collect-HostPreparation.cjs"
+  ],
+  "cwd": "C:/sc07",
+  "copiedFiles": 94,
+  "copiedBytes": 14489242,
+  "sourceBeforeAfterAndCopyBytesEqual": true,
+  "sourceEvidenceModified": false,
+  "testsOrValidationRerun": false,
+  "tokenAudit": {
+    "selectedFilesScanned": 94,
+    "mechanicalPatternClasses": [
+      "github-token",
+      "github-pat",
+      "api-key",
+      "bearer",
+      "credential-value"
+    ],
+    "findings": [],
+    "scope": "Recognizable token/key and credential-value patterns in selected preparation sources only; no lease file or raw VM result is selected."
+  },
+  "productExecuted": false,
+  "vmTouched": false,
+  "browserOutcomesIncluded": false,
+  "releaseReady": false
+}

@@ -1,0 +1,113 @@
+{
+  "schema": "soui.current-linked-members-summary/v1",
+  "sdkVersion": "0.6.0",
+  "createdUtc": "2026-10-29T06:59:31.847Z",
+  "sourceInventory": {
+    "path": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/common-provenance/source/Source2.source-after.json",
+    "bytes": 4505919,
+    "sha256": "c698985f7d46d02984a7eec46d96c1ebeac5164b816b61b560d96b657c136809"
+  },
+  "sourceIdentity": "26c5b73e4915bb4539e87b987cd8e952005f0fe41d987138d8d8e3b13eb25c95",
+  "opensslSource": {
+    "versionBasis": "Source header, not runtime detection or license approval.",
+    "version": "1.0.2h",
+    "header": {
+      "path": "third_party/sources/miniblink/node/openssl/openssl/include/openssl/opensslv.h",
+      "bytes": 4036,
+      "sha256": "ffccb27609821ab15f4338c7cb5fef27acaec6b3cde1f50db507e74319acd0bc"
+    },
+    "license": {
+      "path": "third_party/sources/miniblink/node/openssl/openssl/LICENSE",
+      "bytes": 6406,
+      "sha256": "d0047be11f613ca5afebb508c19242fdecd55b740d70ea031c00c11784f37ee7"
+    },
+    "preservedNotice": {
+      "path": "third_party/licenses/d52/openssl/LICENSE.txt",
+      "bytes": 6406,
+      "sha256": "d0047be11f613ca5afebb508c19242fdecd55b740d70ea031c00c11784f37ee7"
+    },
+    "sourceAndPreservedLicenseBytesEqual": true
+  },
+  "architectures": [
+    {
+      "architecture": "x64",
+      "record": {
+        "path": "x64.json",
+        "bytes": 156040,
+        "sha256": "b23f784b59d3cdc957700d7719402db3c9498c07a812ad1a1e2c92c79b58b024"
+      },
+      "symbolRows": 342174,
+      "openssl": {
+        "symbolRows": 9475,
+        "memberCount": 486,
+        "allSymbolAddressesMappedToExactDll": true,
+        "examples": [
+          {
+            "line": 107053,
+            "symbol": "SSL_new",
+            "member": "ssl_lib.obj",
+            "section": 1,
+            "offset": 24387648,
+            "address": 6466842688,
+            "machineCodeFirst16Hex": "41565657534883ec284885c90f849000"
+          },
+          {
+            "line": 107066,
+            "symbol": "SSL_connect",
+            "member": "ssl_lib.obj",
+            "section": 1,
+            "offset": 24391120,
+            "address": 6466846160,
+            "machineCodeFirst16Hex": "564883ec204889ce48837930007561c7"
+          }
+        ]
+      }
+    },
+    {
+      "architecture": "x86",
+      "record": {
+        "path": "x86.json",
+        "bytes": 153790,
+        "sha256": "831ad561f957842f7e3ed30ca3b92d8cc29e2f75743ffd43541de9852c9ffaa2"
+      },
+      "symbolRows": 304462,
+      "openssl": {
+        "symbolRows": 9496,
+        "memberCount": 489,
+        "allSymbolAddressesMappedToExactDll": true,
+        "examples": [
+          {
+            "line": 100711,
+            "symbol": "_SSL_new",
+            "member": "ssl_lib.obj",
+            "section": 1,
+            "offset": 18727167,
+            "address": 287166719,
+            "machineCodeFirst16Hex": "555357568b7c241485ff0f848a000000"
+          },
+          {
+            "line": 100724,
+            "symbol": "_SSL_connect",
+            "member": "ssl_lib.obj",
+            "section": 1,
+            "offset": 18729984,
+            "address": 287169536,
+            "machineCodeFirst16Hex": "568b742408837e2000750956e80a0000"
+          }
+        ]
+      }
+    }
+  ],
+  "binaryLicenseReviewComplete": false,
+  "transitiveDependencyInventoryComplete": false,
+  "productionQualificationComplete": false,
+  "fullDevtoolsGoalComplete": false,
+  "releaseReady": false,
+  "limitations": [
+    "MAP symbol-origin membership is mechanical evidence, not an exhaustive nested component/license inventory.",
+    "Direct object and unattributed rows remain separate; library inputs do not imply every archive member was retained.",
+    "Identical-code folding permits shared addresses; symbol counts are not function counts or runtime coverage.",
+    "Zero-section symbols retain their original classification and are not claimed to map into DLL sections.",
+    "No compiler, DLL, product, VM or long test was executed by this collection. Historical failures and approvals are unchanged."
+  ]
+}

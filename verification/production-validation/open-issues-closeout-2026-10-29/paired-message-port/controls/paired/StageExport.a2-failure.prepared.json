@@ -1,0 +1,52 @@
+{
+  "schema": "soui.failed-a2-copy-stage-export-source-preparation/v1",
+  "createdUtc": "2026-10-29T11:46:20.293Z",
+  "preparedOnly": true,
+  "source": {
+    "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\Export-PairedStageA2Failure.ps1",
+    "bytes": 8213,
+    "sha256": "97a9cca8c5573612e5e9565a4618836d84f8d530f7b72b7a51c60d10afe37c70"
+  },
+  "originalPositiveExporter": {
+    "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\Export-PairedStageA2.ps1",
+    "bytes": 6172,
+    "sha256": "bbbe2a8479b4174653fc09c9eb4cf2bfc62cb260d5cfaf968e3f67ecca4a05aa"
+  },
+  "diff": {
+    "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\Export-PairedStageA2Failure.prepared.diff",
+    "bytes": 8555,
+    "sha256": "3c81ebab31354f107a2cd1db748324d4a595f14cf09d5d5535715a44db6c9524"
+  },
+  "selection": {
+    "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\StageExport.a2-failure.selection.prepared.json",
+    "bytes": 291,
+    "sha256": "8647aa88c552f568d7b89e5cb00501a9e0cf6c849dd1e56f7bafe94d763a2314"
+  },
+  "scope": "Export the actual failed A2 metadata copy-stage without relabeling it or dropping any original failure/copy rows; no host raw failure has been read by this author",
+  "fixedGuestEvidenceRoot": "C:/issue-closeout-evidence/mp77p-stage-a2",
+  "requiredState": {
+    "wrapperExitCode": 1,
+    "actualNativeExitCode": 1,
+    "environmentRestored": true,
+    "mutexReleased": true,
+    "originalParentBirthAbsent": true,
+    "observedEarlierParentBirthRejected": true,
+    "actualStartNodePidAbsent": true,
+    "anyNodePidOccupantRejected": true,
+    "actualCopyRows": 1596,
+    "actualCreatedRoots": 5,
+    "exactOriginalRawFiles": 6,
+    "successfulSummaryAbsent": true,
+    "maximumCatalogFiles": 512,
+    "maximumCompleteBytes": 8388608
+  },
+  "originalSerialExporterSha256": "f1cc23cfa6d76d35b2a6d8dd0779ceb332a42b51f74271bf097b5e9b44f1ce7c",
+  "staticPowerShellParseErrors": 0,
+  "exporterExecutedByAuthor": false,
+  "vmInputSent": false,
+  "sourceA2CarrierModified": false,
+  "guestOrHostProductExecuted": false,
+  "failedStageReclassified": false,
+  "nativeWholeJobPassClaimed": false,
+  "releaseReady": false
+}

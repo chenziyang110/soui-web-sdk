@@ -1,0 +1,42 @@
+--- loader-a2-before-path-fix\Focus-Owned-a2.cjs
++++ Focus-Owned-a2.cjs
+@@ -2,7 +2,7 @@
+ // One task-VM native diagnostic only. Preparation does not execute this script.
+ const fs=require('node:fs'),path=require('node:path'),os=require('node:os'),crypto=require('node:crypto'),assert=require('node:assert/strict');
+ const machine='SOUI-7AEMMK5Q0T',outer='C:/issue-closeout-evidence/focusc-a2-run',inner='C:/issue-closeout-evidence/focusc-a2';
+-const prepSha='6b5fd304995a766913b5d6d765b7a71e4eb5755a6043a05c36865cbb27e609e6';
++const prepSha='874fd1a9b2ff028962948d8e6f33afd8e88e0af739223affc22828142cfe3e80';
+ const tools={node:{path:'C:/issues8/tools/node.exe',bytes:91380224,sha256:'63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088'},
+   runner:{path:'C:/issues8/tools/OwnedProcessRunner.exe',bytes:170496,sha256:'f254dadd4eccad3c57d69e98f260d15ee598c0b6441b7fe68fc4ef5b3b7dea83'},
+   owned:{path:'C:/issues8/tools/owned-process.cjs',bytes:8386,sha256:'8ccec5802c793b45990d2d7585f2c29fb618a7b170adebd5d270a7c291757ce7'}};
+@@ -37,12 +37,12 @@
+   const childPathEvidence={scope:'Only launchOwned supervisor and its PowerShell descendant inherit this PATH; parent process.env is never assigned',crtDirectory:crt.guestDirectory,
+     inheritedPath:environmentPin(inheritedPath),childPath:environmentPin(childEnvironment.PATH),environmentValuesPersisted:false,productExecuted:false};
+   let parentEnvironmentUnchanged=null;
+-  const prepFile=path.join(__dirname,'Preparation.actual.json'),prepPin=pin(prepFile);assert.equal(prepPin.sha256,prepSha);const prep=JSON.parse(fs.readFileSync(prepFile,'utf8'));
++  const prepFile=path.join(__dirname,'Preparation-a2.actual.json'),prepPin=pin(prepFile);assert.equal(prepPin.sha256,prepSha);const prep=JSON.parse(fs.readFileSync(prepFile,'utf8'));
+   assert.equal(prep.schema,'soui.native-tray-focus-control-preparation/v1');assert.equal(prep.expectedGuest,machine);assert.equal(prep.compiled,false);assert.equal(prep.executed,false);
+   const sourcePins=[pin(__filename),prepPin,pin(path.join(__dirname,'FocusExport-a2.ps1')),crtFilePin,crt.manifest,...crt.files,pin(powershell),...Object.values(tools).map(p=>pin(p.path))];
+   for(const f of prep.files){assert(/^[A-Za-z0-9][A-Za-z0-9_.-]+$/.test(f.relative));const p=pin(path.join(__dirname,f.relative));assert.equal(p.bytes,f.bytes);assert.equal(p.sha256,f.sha256);sourcePins.push(p);}
+   assert(!fs.existsSync(outer)&&!fs.existsSync(inner),'Preserve every previous diagnostic/evidence directory');fs.mkdirSync(outer);
+-  const args=['-NoProfile','-NonInteractive','-STA','-ExecutionPolicy','Bypass','-File',path.join(__dirname,'Invoke-NativeFocusControl.ps1'),
++  const args=['-NoProfile','-NonInteractive','-STA','-ExecutionPolicy','Bypass','-File',path.join(__dirname,'Invoke-NativeFocusControl-a2.ps1'),
+     '-ExpectedMachine',machine,'-EvidenceDirectory',inner,'-PreparationSha256',prepSha,'-RootGate','ROOT_REVIEWED_NATIVE_FOCUS_CONTROL_V1'];
+   const invocation={schema:'soui.native-focus-owned-invocation/v1',machine,controllerPid:process.pid,controllerBirthNotCollected:true,
+     controllerActivePidMustBeAbsentBeforeExport:true,executable:powershell,args,cwd:__dirname,timeoutMs:90000,drainMs:2000,innerDeadlineMs:60000,
+--- Invoke-NativeFocusControl.ps1
++++ Invoke-NativeFocusControl-a2.ps1
+@@ -8,8 +8,11 @@
+ $ErrorActionPreference='Stop'
+ if($env:COMPUTERNAME-ine'SOUI-7AEMMK5Q0T'-or$env:COMPUTERNAME-ine$ExpectedMachine-or-not[Environment]::Is64BitProcess){throw 'Named x64 task VM required; host execution forbidden'}
+ if([Threading.Thread]::CurrentThread.GetApartmentState()-ne[Threading.ApartmentState]::STA){throw 'Start Windows PowerShell with -STA'}
+-if($EvidenceDirectory-notmatch'^C:\\issue-closeout-evidence\\focusc-[a-z0-9-]+$'-or(Test-Path -LiteralPath $EvidenceDirectory)){throw 'Fresh task-VM evidence directory required'}
+-$preparationFile=Join-Path $PSScriptRoot 'Preparation.actual.json'
++$requestedEvidenceDirectory=$EvidenceDirectory
++if($requestedEvidenceDirectory-notmatch'^[cC]:[\\/]'-or$requestedEvidenceDirectory-match'(^|[\\/])\.{1,2}([\\/]|$)'){throw 'Absolute task C: evidence path without navigation required'}
++$EvidenceDirectory=[IO.Path]::GetFullPath($requestedEvidenceDirectory)
++if($EvidenceDirectory-notmatch'^C:\\issue-closeout-evidence\\focusc-[a-z0-9-]+$'-or$EvidenceDirectory-ine'C:\issue-closeout-evidence\focusc-a2'-or[IO.Path]::GetDirectoryName($EvidenceDirectory)-ine'C:\issue-closeout-evidence'-or(Test-Path -LiteralPath $EvidenceDirectory)){throw 'Fresh exact a2 task-VM evidence directory required'}
++$preparationFile=Join-Path $PSScriptRoot 'Preparation-a2.actual.json'
+ if((Get-FileHash -LiteralPath $preparationFile -Algorithm SHA256).Hash.ToLowerInvariant()-cne$PreparationSha256){throw 'Reviewed preparation identity differs'}
+ $plan=[IO.File]::ReadAllText($preparationFile,[Text.Encoding]::UTF8)|ConvertFrom-Json
+ if($plan.schema-cne'soui.native-tray-focus-control-preparation/v1'-or$plan.executed-or$plan.compiled-or$plan.preparationHost-ieq$env:COMPUTERNAME-or$plan.expectedGuest-ine$ExpectedMachine){throw 'Unexecuted current preparation identity required'}

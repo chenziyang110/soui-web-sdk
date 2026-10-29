@@ -1,5 +1,17 @@
 # 候选支持范围与设备矩阵
 
+## 0.6.0 当前交付范围，2026-10-29
+
+0.6.0 采用普通 GitHub Release 分类，完整生产资格仍未完成。当前范围以[发布说明](../releases/0.6.0.md)、[实际结果](../../verification/production-validation/0.6.0-release-2026-10-29/RELEASE-FACTS.json)及[根验收状态](../../verification/acceptance.json)为准；`releaseReady=false`、`productionQualificationComplete=false`、`fullDevtoolsGoalComplete=false`。根报告为 `version=0.6.0`、`status=unverified`、`collectionExecuted=false`，没有完整 Collector 通过结论。
+
+| 已记录组合或范围 | 可复用的限定结果 | 仍未取得的资格 |
+|---|---|---|
+| Windows `10.0.20348.587`，x86/x64 Release | 两架构 Starter、Workbench 默认/React、Modern 共八次默认运行及四个生成诊断消费者的五次自然退出阶段；Modern 实际 Runtime 为 `156.0.4314.50` | 不能外推其他 OS、架构/配置组合、Runtime 或完整 DevTools 面板与关闭矩阵 |
+| 本轮安装消费者与归档 | 两架构安装 SDK、外部 CMake 消费者及九份供应/应用 ZIP 的完整解压闭集有记录 | 当前完整源码 ZIP 的解压重建、搬移、离线、升级回退及目标机全矩阵仍须独立绑定输入验收 |
+| 发布后的工具源码收尾 | [工具收尾记录](../maintenance/windows-tooling-failure-closeout-20261029.md)覆盖两架构微型 CMake 自然收尾、实际 EPERM 保留/独立恢复与 PS5 checked ZIP 短验 | 不替换已发布 0.6.0 载荷，不证明完整构建负载、产品运行或目标平台资格 |
+
+真实租期、千次生命周期、八小时、完整性能及 OS/PE/IME/DPI/多屏等缺项按[交接](../testing/v0.6.0-long-run-handoff.md)后置，原失败保留。已通过且输入未变的短测复用原结果；新载荷或新环境不能继承旧通过。下方各节是各自日期与候选身份的历史矩阵，其中“当前”仅指当时，不授予 0.6.0 支持资格。
+
 ## 0.5.0 当前候选，2026-10-10
 
 状态：实现和验证中，尚无正式版支持组合。交付按未签名版本准备；签名证书不是本次推进条件。当前版本范围以 [0.5.0 规划](../roadmap/0.5.0.md)为准，进展见 [执行清单](../roadmap/0.5.0-execution.md)。下述历史记录保留各自输入身份，不能授予当前候选支持资格。

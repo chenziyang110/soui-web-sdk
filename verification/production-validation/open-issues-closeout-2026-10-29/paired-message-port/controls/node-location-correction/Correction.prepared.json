@@ -1,0 +1,102 @@
+{
+  "schema": "soui.paired-stage-node-location-correction-preparation/v1",
+  "createdUtc": "2026-10-29T11:04:42.477Z",
+  "recordKind": "NEW preparation record with Root-reported original failure; not a raw invocation output or stage result",
+  "originalFailure": {
+    "source": "Root received-message report",
+    "reportedMessage": "Stage failed pre-output/pre-suite line30 ENOENT originalInput.requiredExecutionNode.path = B/message-port/tools/node.exe.",
+    "rawInvocationReceiptAvailable": false,
+    "observedExitCode": null,
+    "stagingOutputCreated": false,
+    "newSuiteCreated": false,
+    "originalFailedSource": {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\node-location-correction-9e03872b-121a-4af0-a4b1-5c5e79a9805e\\Stage-PairedSuites.before.cjs",
+      "bytes": 15921,
+      "sha256": "8721b335fa36b49ffb16869ec1174e968a017c8cab7071562fde796b1d9cefaa"
+    },
+    "originalFailureReclassified": false
+  },
+  "diagnosis": {
+    "originalApprovedInput": {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port\\BrowserABInputs.approved.json",
+      "bytes": 334558,
+      "sha256": "3f8dd68bca50d567256f448a9d25026b7bacb0f3a302130c195d64ad6444f72c"
+    },
+    "originalGuestExecutionNode": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port/tools/node.exe",
+      "bytes": 91380224,
+      "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+    },
+    "guestNamedHostPathExists": false,
+    "actualHostCarrierNode": {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port\\carrier-1249be88-0f1f-4f2f-840f-bb159c691d63\\iso-tree\\F\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port\\tools\\node.exe",
+      "bytes": 91380224,
+      "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+    },
+    "originalCarrierManifest": {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port\\carrier-1249be88-0f1f-4f2f-840f-bb159c691d63\\iso-tree\\MessagePort.manifest.json",
+      "bytes": 1374350,
+      "sha256": "d1d9053b53529d5566ca71b018fa6c806579e0f574765352332f556bb088b2c1"
+    },
+    "originalCarrierMember": {
+      "source": "C:/Users/11034/AppData/Local/nvm/v24.14.0/node.exe",
+      "guestPath": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port/tools/node.exe",
+      "bytes": 91380224,
+      "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088",
+      "reason": "Exact pinned Node image relocated as an execution tool; old producer argv/logs unchanged"
+    },
+    "byteIdentityPreserved": true,
+    "oldGuestNamedHostPathFabricated": false,
+    "originalReceiptModified": false
+  },
+  "changes": {
+    "beforeSource": {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\node-location-correction-9e03872b-121a-4af0-a4b1-5c5e79a9805e\\Stage-PairedSuites.before.cjs",
+      "bytes": 15921,
+      "sha256": "8721b335fa36b49ffb16869ec1174e968a017c8cab7071562fde796b1d9cefaa"
+    },
+    "afterSource": {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\Stage-PairedSuites.cjs",
+      "bytes": 17369,
+      "sha256": "7c41580e229dec9a65e2874cbc8927900da793d5dab9933af3bc0a775ef42267"
+    },
+    "sourceDiff": {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\node-location-correction-9e03872b-121a-4af0-a4b1-5c5e79a9805e\\Stage-PairedSuites.correction.diff",
+      "bytes": 9013,
+      "sha256": "afd43afe494ffe1e5b53c0c06e31b3d17c34f9ad17fe0e9cf71fd4c2fa472707"
+    },
+    "beforeDesign": {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\node-location-correction-9e03872b-121a-4af0-a4b1-5c5e79a9805e\\PairedStage.design.before.md",
+      "bytes": 6794,
+      "sha256": "960cdf7c0a0838fe7011e6eeb821ab79f4f843161786e26ad9e6681ec4e9d0ce"
+    },
+    "afterDesign": {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\PairedStage.design.md",
+      "bytes": 7110,
+      "sha256": "a32f4b11ee6a01458ef6a997880d23752eb8cbc8d2b899cf23a3dcf4ee5f19d1"
+    },
+    "designDiff": {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\node-location-correction-9e03872b-121a-4af0-a4b1-5c5e79a9805e\\PairedStage.design.correction.diff",
+      "bytes": 3240,
+      "sha256": "e256f7912016bd3574b9a0a122f302f94bd1a22223cf3400870dcf6b4d51ce60"
+    },
+    "draftGuestRequiredExecutionNodeAndGuestPinRetained": true,
+    "hostCarrierIdentityVerifiedSeparately": true,
+    "originalStageVerifyAndBoundsUnchanged": true
+  },
+  "staticSyntaxCheck": {
+    "command": [
+      "node",
+      "--check",
+      "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port-paired-current/Stage-PairedSuites.cjs"
+    ],
+    "exitCode": 0
+  },
+  "correctedStagerExecuted": false,
+  "productExecuted": false,
+  "vmTouched": false,
+  "suiteCreatedByThisPreparation": false,
+  "currentSdk060Qualified": false,
+  "productionQualificationComplete": false,
+  "releaseReady": false
+}

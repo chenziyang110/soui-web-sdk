@@ -1,0 +1,51 @@
+'use strict';
+// NEW offline preparation producer. This does not invoke a compiler/typechecker,
+// original stage helper, product, VM or behavior controller. Old receipts stay raw.
+const fs=require('node:fs'),path=require('node:path'),os=require('node:os'),crypto=require('node:crypto'),assert=require('node:assert/strict');
+const base=__dirname,sdkRoot='F:/work/soui-issue96';
+const oldSuites={x64:sdkRoot+'/out/acceptance/bd7afa33-ea0d-4e55-b482-d2b01f64ee19',x86:sdkRoot+'/out/acceptance/5c02d217-f04f-4f32-9794-110e7fb3f734'};
+const sdkSource='652a66973f09c5a90a5e06465944dd7ea8d3a3d9463411db5b07d045cb843973',fixedMain='a7df1670caa8551c759ba2dd6c7f2c50f961705c905cf0c21d2aac90d0da9d44';
+const json=f=>JSON.parse(fs.readFileSync(f,'utf8'));
+function pin(f){const a=fs.lstatSync(f,{bigint:true});assert(a.isFile()&&!a.isSymbolicLink());const b=fs.readFileSync(f),z=fs.lstatSync(f,{bigint:true});for(const k of ['dev','ino','size','mtimeNs','ctimeNs','nlink'])assert.equal(a[k],z[k]);return {path:f,bytes:b.length,sha256:crypto.createHash('sha256').update(b).digest('hex')};}
+const write=(f,o)=>fs.writeFileSync(f,JSON.stringify(o,null,2)+'\n',{flag:'wx'});
+function equal(a,b){assert.equal(a.bytes,b.bytes);assert.equal(a.sha256,b.sha256);}
+function files(d,p=''){return fs.readdirSync(path.join(d,p),{withFileTypes:true}).flatMap(e=>{assert(!e.isSymbolicLink());const n=p?p+'/'+e.name:e.name;return e.isDirectory()?files(d,n):(assert(e.isFile()),[n]);}).sort();}
+function copy(source,target){const before=pin(source);fs.mkdirSync(path.dirname(target),{recursive:true});fs.copyFileSync(source,target,fs.constants.COPYFILE_EXCL);const after=pin(source),copied=pin(target);assert.deepEqual(after,before);equal(copied,before);return {source:before,copied,sourceAfter:after};}
+function main(){
+ const [gate,buildAttempt]=process.argv.slice(2);assert.equal(process.argv.length,4);assert.equal(gate,'ROOT_REVIEWED_PAIRED_WEB_REUSE_PROJECTION_V1');assert.equal(process.platform,'win32');assert(path.isAbsolute(buildAttempt));assert.equal(path.dirname(path.resolve(buildAttempt)),path.resolve(base));assert(/^attempt-[a-f0-9-]{36}$/.test(path.basename(buildAttempt)));
+ const summaryFile=path.join(buildAttempt,'summary.json'),summary=json(summaryFile);assert.equal(summary.schema,'soui.message-port-old-sdk-paired-consumer-build-only/v1');assert.equal(summary.passed,true);assert.equal(summary.failure,null);assert.equal(summary.sdkVersion,'0.5.1-preview.1');assert.equal(summary.sdkSourceSha256,sdkSource);assert.equal(summary.productExecuted,false);assert.equal(summary.executableExecuted,false);assert.deepEqual(summary.verdicts.map(v=>v.architecture),['x64','x86']);
+ const prepFile=path.join(base,'PairedPreparation.actual.json'),prep=json(prepFile);assert.equal(prep.sdkSourceSha256,sdkSource);assert.equal(pin(path.join(base,'source/main.cpp')).sha256,fixedMain);
+ const identityFile=sdkRoot+'/tools/internal/delivery-identity.cjs',runnerFile=sdkRoot+'/tests/acceptance/runner.cjs',identity=require(identityFile),runner=require(runnerFile);
+ const sourceRoot=path.join(base,'source'),source=identity.snapshot(sourceRoot,identity.walk(sourceRoot));assert.equal(source.files.length,8);
+ for(const row of prep.sourceFiles)equal(pin(row.copied.path),row.copied);
+ const inputPins=[pin(__filename),pin(process.execPath),pin(summaryFile),pin(prepFile),pin(identityFile),pin(runnerFile),...source.files.map(f=>pin(path.join(sourceRoot,f.path)))];
+ const output=path.join(base,'web-reuse-projection-'+crypto.randomUUID());fs.mkdirSync(output);const answers=[];
+ for(const architecture of ['x64','x86']){
+  const suite=oldSuites[architecture],baseline=runner.verify(suite);assert.equal(baseline.version,'0.5.1-preview.1');assert.equal(baseline.architecture,architecture);assert.equal(baseline.sourceSha256,sdkSource);
+  const verdict=summary.verdicts.find(v=>v.architecture===architecture);assert.equal(verdict.sdkVersion,'0.5.1-preview.1');assert.equal(verdict.executableExecuted,false);assert.equal(verdict.wholeJobNaturallyClosed,true);equal(pin(verdict.compiledExecutable.path),verdict.compiledExecutable);inputPins.push(pin(verdict.compiledExecutable.path));
+  const folder=path.join(output,architecture);fs.mkdirSync(folder);const originalFile=path.join(suite,'web-build.json'),original=json(originalFile);assert.equal(original.schema,'soui.acceptance-web/v1');assert.deepEqual(original,baseline.web);assert.equal(original.consumerSourceSha256,baseline.consumerSource.sha256);assert.equal(original.webSdkSha256,baseline.webSdk.sha256);assert.equal(original.typecheck.passed,true);assert.equal(original.typecheck.typescript,'5.9.3');
+  const packageFile=sdkRoot+'/tests/acceptance/package.json',lockFile=sdkRoot+'/tests/acceptance/package-lock.json';assert.equal(json(packageFile).devDependencies.typescript,original.typecheck.typescript);
+  const configFile=path.join(suite,'web-typecheck.tsconfig.json'),config=json(configFile),logFile=path.join(suite,'web-typecheck.log');assert.equal(pin(configFile).sha256,original.typecheck.configSha256);assert.equal(pin(logFile).sha256,original.typecheck.logSha256);
+  // Preserve the original absolute CWD and input names; never rewrite config.
+  assert.equal(path.win32.normalize(config.compilerOptions.baseUrl).toLowerCase(),path.win32.normalize(suite).toLowerCase());assert.deepEqual(config.files.map(p=>path.win32.normalize(p).toLowerCase()),[path.win32.join(suite,'consumer-source/web/main.ts').toLowerCase()]);assert.deepEqual(config.compilerOptions.paths,{'@soui-sdk':['web-sdk/dist/index.d.ts']});
+  const oldSourceRoot=path.join(suite,'consumer-source');const expectedWeb=['web/index.html','web/main.ts','web/message-port-behavior.ts','web/public/message-worker.js'];assert.deepEqual(files(path.join(sourceRoot,'web')).map(p=>'web/'+p),expectedWeb.slice().sort());assert.deepEqual(files(path.join(oldSourceRoot,'web')).map(p=>'web/'+p),expectedWeb.slice().sort());
+  const webInputPairs=expectedWeb.map(n=>{const before=pin(path.join(oldSourceRoot,n)),current=pin(path.join(sourceRoot,n));equal(current,before);return {original:before,current};});
+  const webSdkRoot=path.join(suite,'web-sdk'),webSdk=identity.snapshot(webSdkRoot,identity.walk(webSdkRoot));assert.deepEqual(webSdk,baseline.webSdk);assert(files(webSdkRoot).includes('package.json'));assert.equal(json(path.join(webSdkRoot,'package.json')).version,'0.5.1-preview.1');
+  const distNames=files(path.join(webSdkRoot,'dist'));assert.equal(distNames.length,26);const webSdkFiles=files(webSdkRoot).map(n=>pin(path.join(webSdkRoot,n)));
+  const outputRoot=path.join(suite,'web-output'),oldOutput=identity.snapshot(outputRoot,identity.walk(outputRoot));assert.deepEqual(oldOutput,original.output);assert.equal(oldOutput.files.length,6);
+  for(const f of oldOutput.files)equal(pin(path.join(base,'web-output',f.path)),f);
+  const originalInputs=[pin(originalFile),pin(path.join(suite,'build.json')),pin(configFile),pin(logFile),pin(path.join(suite,'web-build.log')),pin(packageFile),pin(lockFile),...webInputPairs.flatMap(p=>[p.original,p.current]),...webSdkFiles,...oldOutput.files.map(f=>pin(path.join(outputRoot,f.path)))];inputPins.push(...originalInputs);
+  const rawCopies=['web-build.json','web-typecheck.tsconfig.json','web-typecheck.log','web-build.log'].map(n=>copy(path.join(suite,n),path.join(folder,'original-producer',n)));
+  const projection={...original,consumerSourceSha256:source.sha256,
+   reuseProjection:{schema:'soui.paired-fresh-consumer-web-reuse-projection/v1',producer:pin(__filename),createdUtc:new Date().toISOString(),kind:'NEW explicit unchanged-Web reuse producer; not original persistent prepare/stage-candidate invocation',originalWebProducer:pin(originalFile),originalWholeConsumer:baseline.consumerSource,freshWholeConsumer:source,
+    originalCompletedAt:original.completedAt,completedAtFieldOrigin:'original Web producer, not this projection',oldSdkSourceOnlyProvenance:sdkSource,oldSdkVersion:'0.5.1-preview.1',actualFreshNativeBuildSummary:pin(summaryFile),actualFreshNativeCase:pin(path.join(buildAttempt,architecture,'case-verdict.json')),
+    fixtureWebInputClosedSet:expectedWeb,fixtureWebByteEqual:webInputPairs,oldWebSdkClosedSnapshot:webSdk,webSdkFiles,originalTypecheckConfig:pin(configFile),originalTypecheckCwd:config.compilerOptions.baseUrl,originalTypecheckRecordedFiles:config.files,originalTypecheckDeclaredAlias:config.compilerOptions.paths,originalAcceptancePackage:pin(packageFile),originalAcceptanceLock:pin(lockFile),
+    originalTypecheckRecordUnchanged:original.typecheck,originalTypecheckPassed:true,typecheckReexecuted:false,webBuildReexecuted:false,originalCompilerBinaryLoadIdentityProven:false,rawCopies,
+    unchangedProgramSourceAndConfigOnly:true,originalProducerPathsAndTimesRetained:true,freshConsumerNativeAndReadmeChanged:true,stageGuardInvoked:false,productExecuted:false,currentSdk060Qualified:false,productionQualificationComplete:false,releaseReady:false}};
+  const projectionFile=path.join(folder,'web-build.projection.json');write(projectionFile,projection);answers.push({architecture,originalSuite:suite,originalWebProducer:pin(originalFile),originalWebSdk:baseline.webSdk,newConsumerSource:source,projection:pin(projectionFile),rawCopies,stageGuardInvoked:false,originalPrepareEntryExecuted:false,typecheckReexecuted:false,productExecuted:false});
+ }
+ for(const p of inputPins)equal(pin(p.path),p);
+ const report={schema:'soui.paired-web-reuse-projection-preparation/v1',createdUtc:new Date().toISOString(),preparationHost:os.hostname(),newProducer:true,buildSummary:pin(summaryFile),freshConsumerSource:source,architectures:answers,inputs:inputPins,unchangedWebProgramAndConfig:true,originalStageVerifyStillRequired:true,stageGuardInvoked:false,originalPrepareEntryExecuted:false,typecheckReexecuted:false,webBuildReexecuted:false,productExecuted:false,vmTouched:false,currentSdk060Qualified:false,productionQualificationComplete:false,releaseReady:false};
+ const reportFile=path.join(output,'ProjectionSummary.actual.json');write(reportFile,report);console.log(JSON.stringify({output,summary:pin(reportFile),originalStageVerifyStillRequired:true,stageGuardInvoked:false,productExecuted:false}));
+}
+try{main();}catch(error){console.error(error.stack);process.exitCode=1;}

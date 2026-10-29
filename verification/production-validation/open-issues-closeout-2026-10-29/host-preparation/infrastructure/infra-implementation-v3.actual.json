@@ -1,0 +1,87 @@
+{
+  "schema": "soui.qemu-offline-recovery-implementation-review/v1",
+  "skillRoot": "C:\\Users\\11034\\.codex\\skills\\qemu-novnc-lab",
+  "beforeRoot": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/infra-before",
+  "files": [
+    {
+      "path": "scripts/lab.py",
+      "bytes": 38516,
+      "sha256": "3c1ac1689f85e78c80135897871ae1ac757a6956e76cf7b8df30112177c65f77"
+    },
+    {
+      "path": "scripts/pool.py",
+      "bytes": 20562,
+      "sha256": "1bfa2b9ec7effecc3657ccc5d7a5dcbac99c045b74902b9c9013e440810cff2a"
+    },
+    {
+      "path": "scripts/test_offline_recovery.py",
+      "bytes": 18914,
+      "sha256": "23559c0d7963de27f5d0cd1e5d41d70735e2f13e3b67b6d00e5e0593db43a034"
+    },
+    {
+      "path": "references/troubleshooting.md",
+      "bytes": 6437,
+      "sha256": "8d01b7b5333a61941f1bf5d569da9fdb9a6c44d82d3f0fc04b246ccd659063d5"
+    },
+    {
+      "path": "SKILL.md",
+      "bytes": 9635,
+      "sha256": "a3a8ac14d4fa333fe20649a51d161ca8af9c4048a68457768b896efe977f01e9"
+    }
+  ],
+  "actualVmMutation": false,
+  "actualVmRecovered": false,
+  "actualCimEnumerationExecuted": false,
+  "vmProcessTermination": false,
+  "independentReviewPending": true,
+  "tests": [
+    {
+      "command": "python -B scripts/test_offline_recovery.py",
+      "toolChunk": "462df0",
+      "exitCode": 0,
+      "tests": 14,
+      "passed": 14,
+      "elapsedSeconds": 0.89,
+      "scope": "temporary fixtures; real Win32 temporary deny-write handle; mocked VM process/QMP observations"
+    },
+    {
+      "command": "python -B -m unittest -v <7 targeted test_offline_recovery methods>",
+      "methods": [
+        "test_success_preserves_exact_originals_disks_and_unknown_outcome",
+        "test_receipt_or_archive_tamper_blocks_start",
+        "test_recovered_state_enters_existing_start_path_without_autostart",
+        "test_handle_close_uncertainty_retains_pending_and_never_publishes",
+        "test_publication_failure_with_partial_receipt_stays_pending",
+        "test_receipt_cannot_upgrade_old_exit_or_clean_shutdown",
+        "test_query_errors_and_non_utf8_output_are_not_absence"
+      ],
+      "toolChunk": "ef446f",
+      "exitCode": 0,
+      "tests": 7,
+      "passed": 7,
+      "elapsedSeconds": 1.269,
+      "scope": "3 affected success/receipt paths repeated after verifier hardening; 4 added safety cases; previous unaffected refusals not repeated"
+    },
+    {
+      "command": "python -B -m unittest -v <6 changed process-policy/receipt methods>",
+      "methods": [
+        "test_missing_controller_command_line_and_any_qemu_or_vm_reference_refused",
+        "test_uninspectable_processes_recorded_and_both_final_snapshots_hold_disk_fences",
+        "test_postarchive_snapshot_failure_rolls_back_and_keeps_pending",
+        "test_success_preserves_exact_originals_disks_and_unknown_outcome",
+        "test_receipt_or_archive_tamper_blocks_start",
+        "test_recovered_state_enters_existing_start_path_without_autostart"
+      ],
+      "toolChunk": "83981e",
+      "exitCode": 0,
+      "tests": 6,
+      "passed": 6,
+      "elapsedSeconds": 1.591,
+      "scope": "Changed process policy plus2new ordering/postarchive cases;3affected success/receipt paths. No repeat of unchanged other cases."
+    }
+  ],
+  "uniqueTestMethods": 20,
+  "productionQualificationPassed": false,
+  "receiptWriteNote": "Initial PowerShell receipt serialization used an invalid bare false token; it did not run tests or touch VM. Corrected serializer writes this new v2 record.",
+  "v3Policy": "Root observed protected nonadmin CIM records without image/commandline. Uninspectable records are counted and hashed; never identified/no-writers by CIM. First snapshot advisory;2subsequent snapshots/QMP checks require all real disk deny-write/delete handles held, including postarchive. Existing QEMU,known controllers missing commandline,oldPIDs,and visible VM references still refused."
+}

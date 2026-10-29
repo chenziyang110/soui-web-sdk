@@ -1,0 +1,172 @@
+{
+  "schema": "soui.independent-paired-browser-preflight-analysis/v1",
+  "createdUtc": "2026-10-29T12:22:52.218Z",
+  "reviewer": "focus_review_supported",
+  "scope": "Offline actual preflight export and approved A3 source/input identity review only; no VM, product, verifier, controller, test, build, producer or Git execution",
+  "blockingFindings": 0,
+  "findings": [],
+  "actualPreflight": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/mp77-preflight-pa2/raw/Preflight.actual.json",
+    "bytes": 2791,
+    "sha256": "ad83b0658f5cd767e1dffaff8e22a5ce1cd49ab6cff0777f6863ffeff2c1fe7b"
+  },
+  "decode": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/mp77-preflight-pa2/Decode.actual.json",
+    "bytes": 4921,
+    "sha256": "e9d1b0c324eb0417c15f3ecdfb57ba339da2548ec54deda30fe459a1e38235e6"
+  },
+  "index": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/mp77-preflight-pa2/Files.index.json",
+    "bytes": 2010,
+    "sha256": "82dc513a0221ac26dbd3d9f494ae94518410ee2c914339c26525d0c5227ebbb2"
+  },
+  "frame": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/mp77-preflight-pa2/Serial.frame.raw",
+    "bytes": 26591,
+    "sha256": "f4a60f7777f1f945bac1d17ed1b6e279e34b0944bcf3e9b3ab7e3f9679a5f7d2"
+  },
+  "transport": {
+    "tag": "ISSUESHORTBBAB457F2B1F4403BE0EAD9CCBADFC2F",
+    "files": 12,
+    "indexRecords": 11,
+    "rawFiles": 8,
+    "payloadFiles": 7,
+    "payloadBytes": 12480,
+    "rawBytes": 14797,
+    "allIndexFrameEnvelopeCatalogPayloadBytesReplayed": true,
+    "wholeSerialCopied": false,
+    "closedSetVerified": true
+  },
+  "approvedExecution": {
+    "preparation": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port-paired-current/execution-preparation-86f44853-8ecd-47bb-954e-530862a187cc/Preparation.actual.json",
+      "bytes": 9692,
+      "sha256": "a85a24ca7866f0674d4646ab9069761b0b7b5eeb128d530db4664065d04b1f12"
+    },
+    "producer": {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\Prepare-PairedExecutionA3.cjs",
+      "bytes": 15319,
+      "sha256": "8bc42cd98aad5145aceed5f4c142ac0b9c4c31387a95627b608ae2b398138fff"
+    },
+    "manifest": {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\execution-preparation-86f44853-8ecd-47bb-954e-530862a187cc\\payload\\Paired.browser-manifest.json",
+      "bytes": 1168269,
+      "sha256": "cd97b883789e664aa91eecf5c080158ae23e9a0812c7080e5f9684cfb455a012"
+    },
+    "enabledInput": {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\execution-preparation-86f44853-8ecd-47bb-954e-530862a187cc\\payload\\BrowserABInputs.approved.json",
+      "bytes": 888818,
+      "sha256": "ff847ca9952ccaba9875994da25a674cc46e685a4a5feabc310066f6a5fdd4cc"
+    },
+    "launcher": {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\execution-preparation-86f44853-8ecd-47bb-954e-530862a187cc\\payload\\Invoke-PairedBrowser.ps1",
+      "bytes": 8815,
+      "sha256": "b065c289af5b448156fa24c227a46d20d98eabfa232b7931553eb1f3d7fe1012"
+    },
+    "originalGuestController": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port/Guest-MessagePort.cjs",
+      "bytes": 9182,
+      "sha256": "241600aac73be5d9db28893444d396c2d038110d24947335b9a5c4fdad9482f1"
+    }
+  },
+  "observedPreflight": {
+    "passed": true,
+    "verifiedRawFiles": 4606,
+    "verifiedRawBytes": 1297096765,
+    "manifest4606RowsRecomposedFromOriginal2991Dependencies1596TargetsAndApprovedControls": true,
+    "closedReaderRoots": [
+      "F:/work/soui-issue96/benchmarks",
+      "F:/work/soui-issue96/cmake",
+      "F:/work/soui-issue96/demos",
+      "F:/work/soui-issue96/sdk",
+      "F:/work/soui-issue96/templates",
+      "F:/work/soui-issue96/tests",
+      "F:/work/soui-issue96/third_party",
+      "F:/work/soui-issue96/tools",
+      "F:/work/soui-issue96/out/acceptance/82e96f65-8695-4546-b468-fec6c7d8a386",
+      "F:/work/soui-issue96/out/acceptance/ed1c00c6-af8d-49e8-b226-590ae1c899f5",
+      "F:/work/soui-issue96/out/acceptance/87d5be4b-c0df-47b8-a737-b39ff45e1787",
+      "F:/work/soui-issue96/out/acceptance/b247541a-b25c-43f1-8eda-b1db362b910a",
+      "C:/issues8/tray-x64"
+    ],
+    "suites": [
+      {
+        "key": "x64-baseline",
+        "suite": "F:\\work\\soui-issue96\\out\\acceptance\\82e96f65-8695-4546-b468-fec6c7d8a386",
+        "consumerBuildId": "a0477a24-7f9d-4543-b408-b264b70a4409",
+        "build": {
+          "path": "F:\\work\\soui-issue96\\out\\acceptance\\82e96f65-8695-4546-b468-fec6c7d8a386/build.json",
+          "bytes": 100586,
+          "sha256": "4e2cffb6bee968496a9955f4c4e983f84e20cb17da3cc47db52c77805ffee19c"
+        }
+      },
+      {
+        "key": "x64-candidate",
+        "suite": "F:\\work\\soui-issue96\\out\\acceptance\\ed1c00c6-af8d-49e8-b226-590ae1c899f5",
+        "consumerBuildId": "5fea76f6-822f-4122-8731-54e9b8b4d2e1",
+        "build": {
+          "path": "F:\\work\\soui-issue96\\out\\acceptance\\ed1c00c6-af8d-49e8-b226-590ae1c899f5/build.json",
+          "bytes": 100596,
+          "sha256": "efc09a83ed80c7de4a3c03e52130f6906298c5b95608210364c833215cf38dfa"
+        }
+      },
+      {
+        "key": "x86-baseline",
+        "suite": "F:\\work\\soui-issue96\\out\\acceptance\\87d5be4b-c0df-47b8-a737-b39ff45e1787",
+        "consumerBuildId": "782529ca-4808-4320-92ae-e53c45bb8176",
+        "build": {
+          "path": "F:\\work\\soui-issue96\\out\\acceptance\\87d5be4b-c0df-47b8-a737-b39ff45e1787/build.json",
+          "bytes": 100599,
+          "sha256": "15cdc592a2f1b64b8542621587f07c720409c9c7d92c0ad4171f55907518b224"
+        }
+      },
+      {
+        "key": "x86-candidate",
+        "suite": "F:\\work\\soui-issue96\\out\\acceptance\\b247541a-b25c-43f1-8eda-b1db362b910a",
+        "consumerBuildId": "a5b8b020-6cd2-492f-b168-9a26903949e5",
+        "build": {
+          "path": "F:\\work\\soui-issue96\\out\\acceptance\\b247541a-b25c-43f1-8eda-b1db362b910a/build.json",
+          "bytes": 100609,
+          "sha256": "8f72978f789e978b29816ba82d615fdf914537eb11931efe1cbae3e304866013"
+        }
+      }
+    ],
+    "actualNodeCwd": "F:\\work\\soui-issue96",
+    "wrapperPid": 804,
+    "wrapperBirth": "134377500202970045",
+    "supervisorCrtPrefix": "C:\\issues8\\tray-x64",
+    "crtPrefixPinsMatched": 16,
+    "sdkSourceOnlyProvenance": "652a66973f09c5a90a5e06465944dd7ea8d3a3d9463411db5b07d045cb843973",
+    "freshConsumerSourceSha256": "3b37fd7f35cd11e20adebe055f94c1d72645c7a2c20d0b49f7cffec33c53815e"
+  },
+  "completion": {
+    "actualNativeExitCode": 0,
+    "powerShellExitCode": 0,
+    "environmentRestored": true,
+    "pathRestored": true,
+    "cwdRestored": true,
+    "leaseReleased": true,
+    "originalParentIdentityAbsent": true,
+    "guestNodePidRecorded": false,
+    "guestNodePidAbsenceClaimed": false,
+    "topNodeClosureBasis": "Pinned PowerShell source synchronously awaits actual Node native exit; no standalone PID absence or whole-Job assertion",
+    "wholeNativeJobClosureClaimed": false
+  },
+  "boundary": "Raw-file and reader-closed-set checks were observed by the pinned unchanged guest preflight. The reviewer replayed original exported bytes and recomposed manifest rows/identities from approved metadata, without re-reading guest disks. Browser behavior remains unexecuted in this preflight.",
+  "originalDisabledInputUnchanged": true,
+  "originalA2StageRemainsFailed": true,
+  "originalControllersModified": false,
+  "timeBudgetsMs": {
+    "process": 214500,
+    "owned": 394500,
+    "outer": 420000,
+    "drain": 2000
+  },
+  "browserBehaviorExecuted": false,
+  "allFourBrowserArmsStillRequired": true,
+  "testPassed": null,
+  "currentSdk060Qualified": false,
+  "resourcePassed": false,
+  "productionQualificationComplete": false,
+  "releaseReady": false
+}

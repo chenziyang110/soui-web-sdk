@@ -1,0 +1,68 @@
+{
+  "schema": "soui.pending-state-source-review-received/v1",
+  "recordedAtUtc": "2026-10-29T09:10:06.3753533Z",
+  "recordedBy": "root",
+  "evidenceType": "Root summary of actual independent reviewer messages received in this conversation; not verbatim tool output and not test execution",
+  "files": [
+    {
+      "path": "demos/workbench/app/resident_controller.h",
+      "bytes": 36343,
+      "sha256": "ea8f3795690e8ccc32d7674c1d6135f95a024e47bdb0591ff904282c716d1d3e"
+    },
+    {
+      "path": "demos/workbench/app/resident_shutdown_policy.h",
+      "bytes": 2299,
+      "sha256": "c800e0222a8cca576292a2f55480e272d0f5dcd697a34f9fe6b7454d11ebabf9"
+    },
+    {
+      "path": "tests/native/resident_shutdown/CMakeLists.txt",
+      "bytes": 1050,
+      "sha256": "aed6303b5ffd613038532ba6fd37f9512c2d88f3680ee6473e2dc414f5b48d22"
+    },
+    {
+      "path": "tests/native/resident_shutdown/policy_tests.cpp",
+      "bytes": 7275,
+      "sha256": "8a70a321779b4015c765f0ba14801aaf0e4dc74878427e14d0ed894b916bc03e"
+    },
+    {
+      "path": "tests/message-port-app/main.cpp",
+      "bytes": 38598,
+      "sha256": "b2cd9c33aeaac4f1d96317d6ea3fe78fcee89f954eb7057944f3d63f4e46909f"
+    },
+    {
+      "path": "tests/message-port-app/shutdown-poll.h",
+      "bytes": 734,
+      "sha256": "cb0bbc2cd1e76eb27898550060a7a43cfdee4a5e68ceefb38ac1035ac9da4abe"
+    },
+    {
+      "path": "tests/message-port-app/README.md",
+      "bytes": 5170,
+      "sha256": "289ef781448a9aabc9d23dec6d46d26366bfda98f413d69e1d0edae89626b7ac"
+    }
+  ],
+  "reviews": [
+    {
+      "reviewer": "/root/issues_ui_fixture_audit",
+      "author": "/root/issues_runtime_audit",
+      "scope": "MessagePort fixture pending-only shutdown polling",
+      "blockers": 0,
+      "findings": "Identical existing ordinary helper; original until/service/deadline and nine steps preserved; non-pending errors and timeout still fail; no busy wait, resource-fence bypass or original failure relabeling",
+      "rootAlsoReadActualSourceDiff": true
+    },
+    {
+      "reviewer": "/root/issues_ui_fixture_audit",
+      "author": "/root/issues_qualification_audit",
+      "scope": "Workbench local reload/runtime pending classification, controller retirement and two new policy cases",
+      "blockers": 0,
+      "findings": "Only exact operation-specific pending is retained; reload terminal errors still fail; live controller uses original first-exit10s budget and bounded50ms timer; no new deadline or resource bypass; normal cleanup-deadline begin event unchanged",
+      "rootAlsoReadActualSourceDiff": true
+    }
+  ],
+  "newNativeBuildExecuted": false,
+  "newPolicyCasesExecuted": false,
+  "modifiedConsumerVmTestsExecuted": false,
+  "licenseReviewEvidence": false,
+  "releaseReady": false,
+  "productionQualificationComplete": false,
+  "fullDevtoolsGoalComplete": false
+}

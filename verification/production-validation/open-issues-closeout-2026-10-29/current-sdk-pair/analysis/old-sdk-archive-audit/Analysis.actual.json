@@ -1,0 +1,262 @@
+{
+  "schema": "soui.independent-paired-message-port-archive-review/v1",
+  "createdUtc": "2026-10-29T12:37:16.185Z",
+  "reviewer": "focus_review_supported",
+  "scope": "Offline archive-only review: complete archive index, current selected-source bytes and recorded identity equality, selected raw evidence and preserved outcome scope. No product/controller/VM/test/build/Git execution or canonical archive writes.",
+  "blockingFindings": 0,
+  "findings": [],
+  "canonicalRoot": "C:/sc07/verification/production-validation/open-issues-closeout-2026-10-29/paired-message-port",
+  "index": {
+    "path": "C:/sc07/verification/production-validation/open-issues-closeout-2026-10-29/paired-message-port/Files.index.json",
+    "bytes": 68859,
+    "sha256": "329c15007dd1e7b453c74c860c594bddf3e6ef97ae4f552902ddd85e15dc1147"
+  },
+  "fileCount": 355,
+  "indexRecords": 354,
+  "indexedBytes": 26706079,
+  "totalArchiveBytes": 26774938,
+  "selectedSourceFiles": 349,
+  "selectedSourceBytes": 26004426,
+  "allIndexBytesAndClosedSetVerified": true,
+  "all349SelectedSourceAndArchiveBytesEqual": true,
+  "all349SourceRecordedBeforeAfterIdentityAndCurrentIdentityEqual": true,
+  "groups": [
+    {
+      "destination": "host/build-attempt-b6426db2",
+      "kind": "host-compile-only-passed",
+      "files": 116,
+      "excluded": 6
+    },
+    {
+      "destination": "source/fixed-consumer",
+      "kind": "control-source",
+      "files": 8,
+      "excluded": 0
+    },
+    {
+      "destination": "web/assets",
+      "kind": "control-source",
+      "files": 6,
+      "excluded": 0
+    },
+    {
+      "destination": "web/reuse",
+      "kind": "control-source",
+      "files": 1,
+      "excluded": 0
+    },
+    {
+      "destination": "web/projection",
+      "kind": "control-source",
+      "files": 11,
+      "excluded": 0
+    },
+    {
+      "destination": "host/staging",
+      "kind": "control-source",
+      "files": 3,
+      "excluded": 0
+    },
+    {
+      "destination": "controls/original-build-recipe",
+      "kind": "control-source",
+      "files": 5,
+      "excluded": 0
+    },
+    {
+      "destination": "controls/node-location-correction",
+      "kind": "control-source",
+      "files": 5,
+      "excluded": 0
+    },
+    {
+      "destination": "host/carrier-a1",
+      "kind": "control-source",
+      "files": 5,
+      "excluded": 23
+    },
+    {
+      "destination": "host/carrier-a2",
+      "kind": "control-source",
+      "files": 17,
+      "excluded": 11
+    },
+    {
+      "destination": "host/verify-a3-preparation",
+      "kind": "control-source",
+      "files": 5,
+      "excluded": 1
+    },
+    {
+      "destination": "host/browser-execution-preparation",
+      "kind": "control-source",
+      "files": 5,
+      "excluded": 0
+    },
+    {
+      "destination": "controls/paired",
+      "kind": "control-source",
+      "files": 68,
+      "excluded": 229
+    },
+    {
+      "destination": "media/final-browser-four-file-iso",
+      "kind": "control-source",
+      "files": 15,
+      "excluded": 5
+    },
+    {
+      "destination": "vm/a1-stage-failed",
+      "kind": "decoded-vm-observations",
+      "files": 10,
+      "excluded": 0
+    },
+    {
+      "destination": "vm/a2-stage-failed",
+      "kind": "decoded-vm-observations",
+      "files": 12,
+      "excluded": 0
+    },
+    {
+      "destination": "vm/a3-verify",
+      "kind": "decoded-vm-observations",
+      "files": 12,
+      "excluded": 0
+    },
+    {
+      "destination": "vm/browser-preflight-pa2",
+      "kind": "decoded-vm-observations",
+      "files": 12,
+      "excluded": 0
+    },
+    {
+      "destination": "vm/browser-run-pa2",
+      "kind": "decoded-vm-observations",
+      "files": 30,
+      "excluded": 0
+    },
+    {
+      "destination": "analysis/mp77p-a3-verify",
+      "kind": "derived-analysis-observations",
+      "files": 1,
+      "excluded": 0
+    },
+    {
+      "destination": "analysis/mp77-preflight-pa2",
+      "kind": "derived-analysis-observations",
+      "files": 1,
+      "excluded": 0
+    },
+    {
+      "destination": "analysis/mp77-run-pa2",
+      "kind": "derived-analysis-observations",
+      "files": 1,
+      "excluded": 0
+    }
+  ],
+  "decodedSelectedEvidence": [
+    {
+      "path": "vm/a1-stage-failed",
+      "tag": "ISSUESHORT119E7F31DF434EF9B8E52EB8A2D41B63",
+      "files": 10,
+      "indexRecords": 9,
+      "rawFiles": 6,
+      "selectedFrameSha256": "b57c43e1c57ab2e864b1336dfc18ac20e804989e4401c43171469b8d7ce1e2da",
+      "wholeSerialCopied": false,
+      "testPassed": null
+    },
+    {
+      "path": "vm/a2-stage-failed",
+      "tag": "ISSUESHORTB47053AF1293441DA713800692D6DD77",
+      "files": 12,
+      "indexRecords": 11,
+      "rawFiles": 8,
+      "selectedFrameSha256": "d54f441ca68bc8fe880a8cc9549f50de94e4a5fdd9d17778a2943941a2396b22",
+      "wholeSerialCopied": false,
+      "testPassed": null
+    },
+    {
+      "path": "vm/a3-verify",
+      "tag": "ISSUESHORTD7E056A4BA0343609013440DD1ED1916",
+      "files": 12,
+      "indexRecords": 11,
+      "rawFiles": 8,
+      "selectedFrameSha256": "ab4ab7624a2848797ea0989691cec7c2c13f41474b0913710647d0ffff94f47b",
+      "wholeSerialCopied": false,
+      "testPassed": null
+    },
+    {
+      "path": "vm/browser-preflight-pa2",
+      "tag": "ISSUESHORTBBAB457F2B1F4403BE0EAD9CCBADFC2F",
+      "files": 12,
+      "indexRecords": 11,
+      "rawFiles": 8,
+      "selectedFrameSha256": "f4a60f7777f1f945bac1d17ed1b6e279e34b0944bcf3e9b3ab7e3f9679a5f7d2",
+      "wholeSerialCopied": false,
+      "testPassed": null
+    },
+    {
+      "path": "vm/browser-run-pa2",
+      "tag": "ISSUESHORTC874CAA6DAAB4885A78281C54A2CC1A8",
+      "files": 30,
+      "indexRecords": 29,
+      "rawFiles": 26,
+      "selectedFrameSha256": "49eb9be8e602518f3e460cfabe87e266fd18b94040907a4694d87d20fef659d8",
+      "wholeSerialCopied": false,
+      "testPassed": null
+    }
+  ],
+  "binScope": {
+    "metadataCarrierJsonBlobs": 12,
+    "rawBuildStdoutStderrFiles": 12,
+    "rawBuildFilesParsedAsJson": false,
+    "metadataBlobsJsonParsedAndMzRejected": true
+  },
+  "archiveCollector": {
+    "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\paired-archive-prep\\Collect-Paired.cjs",
+    "bytes": 17450,
+    "sha256": "0979430e41cf1e8d28daa118b59d11a471005ea9e8c7dee32570ff6ba6200746"
+  },
+  "selection": {
+    "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\paired-archive-prep\\Selection.root-approved.json",
+    "bytes": 307579,
+    "sha256": "7519db7f9bc6a5afa52531c6f848707851be5c85dc25e68b66347127321f9ebf"
+  },
+  "failureScope": {
+    "oldSdk": "0.5.1-preview.1",
+    "attemptedArms": [
+      "x64-baseline"
+    ],
+    "untouchedArms": [
+      "x64-candidate",
+      "x86-baseline",
+      "x86-candidate"
+    ],
+    "oldProfileRemainsFailed": true,
+    "nativeExit": 1,
+    "outerExit": 1,
+    "browserDocuments": 4,
+    "browserCases": 32,
+    "shutdownObservedWaitMs": 20016,
+    "browserCasesAreWholeRunPass": false,
+    "a1PrestartFailurePreservedInPowerShellAndStderr": true,
+    "a1NoFailureJsonOrStartInvented": true,
+    "a1NodePidAbsenceNotClaimed": true,
+    "a2StageFailureRetained": true,
+    "a3MetadataVerificationDoesNotRelabelA2": true,
+    "currentSdkPassInferred": false,
+    "fourArmPassInferred": false
+  },
+  "privacyScope": {
+    "wholeSerialOrPrivateCatalogArchived": false,
+    "tokenAuditIsOriginalCollectorObservation": true,
+    "tokenValueReadByReviewer": false,
+    "tokenAuditScope": "Replayed original audit bytes and recorded349-file zero-match results; no new private-token discovery or scan performed"
+  },
+  "testPassed": null,
+  "fourArmBehaviorPassed": false,
+  "currentSdk060Qualified": false,
+  "resourcePassed": false,
+  "productionQualificationComplete": false,
+  "releaseReady": false
+}

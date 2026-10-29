@@ -1,0 +1,11 @@
+--- byte-exact-original-Finalize-LightPayload.cjs
++++ Finalize-ReloadPayload.cjs
+@@ -37,7 +37,7 @@
+ }
+ const payloadFiles=copies.map(c=>c.payload).sort((a,b)=>a.relative<b.relative?-1:a.relative>b.relative?1:0);
+ const manifest={schema:'soui.current-message-port-light-payload/v1',version:'0.6.0',createdUtc:new Date().toISOString(),preparationHost:os.hostname(),payloadFiles,readers,readerPins:[...modules.values()],tools,installedSdkProducers,arms,
+-  currentNativeSource:'tests/message-port-app with existing pending-only shutdown helper',webReuse:{record:'WebReuse.actual.json',executableSdkDistByteIdenticalFiles:26,fixtureWebByteIdenticalFiles:4,originalPackageVersion:'0.5.1-preview.1',currentSdkPackageVersion:'0.6.0',changedPackageKeys:['version'],webRebuilt:false,typecheckReexecuted:false},
++  currentNativeSource:'tests/message-port-app with pending-only reload consumption under one original deadline and existing pending-only shutdown helper',webReuse:{record:'WebReuse.actual.json',executableSdkDistByteIdenticalFiles:26,fixtureWebByteIdenticalFiles:4,originalPackageVersion:'0.5.1-preview.1',currentSdkPackageVersion:'0.6.0',changedPackageKeys:['version'],webRebuilt:false,typecheckReexecuted:false},
+   config:{mode:'reload',cycles:3,warmup:0,settleMs:500,timeoutMs:20000},processTimeoutMs:214500,ownedTimeoutMs:394500,drainMs:2000,
+   oldSuitesReadOnly:true,oldFourArmsPassed:false,currentSdk060Qualified:false,productionQualificationComplete:false,fullDevtoolsGoalComplete:false,productExecuted:false,vmTouched:false,releaseReady:false};
+ const manifestFile=path.join(payload,'Current.manifest.json');write(manifestFile,manifest);

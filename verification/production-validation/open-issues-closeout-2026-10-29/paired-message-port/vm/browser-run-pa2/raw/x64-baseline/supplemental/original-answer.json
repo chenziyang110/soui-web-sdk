@@ -1,0 +1,48 @@
+{
+  "passed": false,
+  "mode": "reload",
+  "runId": "47f0a498-39f4-4c11-9477-7f6cd00a1f7e",
+  "result": "out/acceptance/82e96f65-8695-4546-b468-fec6c7d8a386/reload-47f0a498-39f4-4c11-9477-7f6cd00a1f7e/result.json",
+  "failure": "Owned process exit, supervision or complete Job cleanup was not verified",
+  "outcome": {
+    "pid": 936,
+    "exitCode": 1,
+    "signal": null,
+    "timedOut": false,
+    "timeoutReason": null,
+    "spawnError": null,
+    "processTimeoutMs": 214500,
+    "ownedProcess": {
+      "pid": 936,
+      "creationFileTime": "134377501651531650",
+      "exitCode": 1,
+      "supervisorExitCode": 1,
+      "signal": null,
+      "spawnError": null,
+      "reportError": null,
+      "stopRequested": false,
+      "fallbackUsed": false,
+      "closureConfirmed": true,
+      "passed": false,
+      "terminal": {
+        "event": "terminal",
+        "reason": "root-failed",
+        "elapsedMs": 32364,
+        "rootExited": true,
+        "rootExitCode": 1,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 1,
+        "limitTerminatedProcesses": 0,
+        "passed": false
+      },
+      "report": "F:\\work\\soui-issue96\\out\\acceptance\\82e96f65-8695-4546-b468-fec6c7d8a386\\reload-47f0a498-39f4-4c11-9477-7f6cd00a1f7e\\owned-process.ndjson",
+      "reportSha256": "b47cc6993d133a8f075e099beacc47f8f18dd78cc2ebddcc4b5400c877dca312",
+      "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+      "executableSha256": "1b77094fa4d67baa86d097e9cca67d301b043e666e19c467b578a342f4a31cdd"
+    },
+    "timeoutDiagnostic": null
+  }
+}

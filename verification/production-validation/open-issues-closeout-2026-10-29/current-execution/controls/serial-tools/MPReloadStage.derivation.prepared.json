@@ -1,0 +1,37 @@
+{
+  "schema": "soui.current-mp-reload-stage-analysis-derivation/v1",
+  "preparedUtc": "2026-10-29T10:20:00.576Z",
+  "source": {
+    "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-serial-tools\\Analyze-MPStage-strict.cjs",
+    "bytes": 12223,
+    "sha256": "0a07e61bb9c53acc370088dd561187e4fe05a78683e07991b219364f7829ac9f"
+  },
+  "analyzer": {
+    "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-serial-tools\\Analyze-MPReloadStage.cjs",
+    "bytes": 12239,
+    "sha256": "bd46a5796982b0ea99c3efe742fa82fd79e967111c4c6cdecf32f469976ab650"
+  },
+  "hostedManifest": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port-reload-current/light-payload-3777b18d-61d3-4310-b70d-bc1b73057be2/payload/Current.manifest.json",
+    "bytes": 74576,
+    "sha256": "2a38ab95b705937cc35be30574e7930bce29b36d24bb3a30647bc6be3e86e0b9"
+  },
+  "changedLines": [
+    {
+      "line": 5,
+      "before": "const expectedManifest='4195e228c9d09ca92d1dba20986058feda5669929da5119d953be6bcebc025b1';",
+      "after": "const expectedManifest='2a38ab95b705937cc35be30574e7930bce29b36d24bb3a30647bc6be3e86e0b9';"
+    },
+    {
+      "line": 79,
+      "before": "    scope:'Offline validation of actual current MessagePort staging/transport/launcher only; no product or behavior execution',",
+      "after": "    scope:'Offline validation of actual post-reload-fix current MessagePort staging/transport/launcher only; no product or behavior execution',"
+    }
+  ],
+  "guardChanges": false,
+  "executed": false,
+  "vmTouched": false,
+  "independentlyReviewed": false,
+  "testPassed": null,
+  "releaseReady": false
+}
