@@ -31,7 +31,9 @@
 #ifndef cc_raster_RasterTask_h
 #define cc_raster_RasterTask_h
 
+#include <atomic>
 #include "wtf/Vector.h"
+#include "cc/raster/CompletionWaiters.h"
 #include "skia/ext/refptr.h"
 #include "third_party/skia/include/core/SkPicture.h"
 #include "third_party/WebKit/Source/platform/geometry/IntRect.h"
@@ -162,6 +164,8 @@ public:
 
     void increaseBusyCountByIndex(int index);
     void decreaseBusyCountByIndex(int index);
+    bool registerCompletionWaiter(LayerTreeHost* host);
+    void unregisterCompletionWaiter(LayerTreeHost* host);
 
 private:
     friend class RasterTaskGroup;
@@ -172,7 +176,8 @@ private:
     Vector<blink::WebThreadSupportingGC*> m_threads;
     Vector<int> m_threadBusyCount;
     bool m_willShutdown;
-    int m_pendingRasterTaskNum;
+    std::atomic<int> m_pendingRasterTaskNum;
+    CompletionWaiters<LayerTreeHost> m_completionWaiters;
 };
 
 } // namespace cc

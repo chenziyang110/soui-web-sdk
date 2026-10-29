@@ -142,17 +142,30 @@ int RasterTaskWorkerThreadPool::selectOneIdleThread()
 
 void RasterTaskWorkerThreadPool::increasePendingRasterTaskNum()
 {
-    atomicIncrement(&m_pendingRasterTaskNum);
+    m_pendingRasterTaskNum.fetch_add(1, std::memory_order_release);
 }
 
 void RasterTaskWorkerThreadPool::decreasePendingRasterTaskNum() 
 {
-    atomicDecrement(&m_pendingRasterTaskNum);
+    m_pendingRasterTaskNum.fetch_sub(1, std::memory_order_acq_rel);
+    // Membership protects raw host lifetime: a host unregisters before its
+    // destructor proceeds. This only posts a coalesced owner task.
+    m_completionWaiters.notify();
+}
+
+bool RasterTaskWorkerThreadPool::registerCompletionWaiter(LayerTreeHost* host)
+{
+    return m_completionWaiters.add(host);
+}
+
+void RasterTaskWorkerThreadPool::unregisterCompletionWaiter(LayerTreeHost* host)
+{
+    m_completionWaiters.remove(host);
 }
 
 int RasterTaskWorkerThreadPool::getPendingRasterTaskNum() const
 {
-    return m_pendingRasterTaskNum;
+    return m_pendingRasterTaskNum.load(std::memory_order_acquire);
 }
 
 void RasterTaskWorkerThreadPool::increaseBusyCountByIndex(int index)

@@ -121,6 +121,9 @@ private:
     std::vector<WebTimerBase*> m_timerHeap;
     std::vector<WebTimerBase*> m_unusedTimersToDelete;
     std::vector<TaskPair*> m_taskPairsToPost;
+    // Owner-only admission batch; no producer lock while constructing timers.
+    std::vector<TaskPair*> m_taskPairsToAdmit;
+    size_t m_nextTaskPairToAdmit;
     std::vector<TaskObserver*> m_observers;
     bool m_isObserversDirty;
     const char* m_name;
@@ -133,10 +136,10 @@ private:
     HANDLE m_threadHandle;
     bool m_hasPlatformRegistration;
 
-    double m_currentFrameCreateTime; // 当前帧全部使用这个创建时间
     static unsigned m_currentHeapInsertionOrder;
 
     bool m_isMainThread;
+    bool hasPendingTaskPairs();
 };
 
 } // namespace content

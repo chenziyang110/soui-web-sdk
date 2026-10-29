@@ -264,7 +264,7 @@ void WebTimerBase::start(double nextFireInterval, double repeatInterval)
     ASSERT(m_thread == currentThread());
 
     m_repeatInterval = repeatInterval;
-    setNextFireTime(currentTime() + nextFireInterval, nullptr);
+    setNextFireTime(WTF::monotonicallyIncreasingTime() + nextFireInterval, nullptr);
 }
 
 void WebTimerBase::stop()
@@ -282,7 +282,7 @@ void WebTimerBase::stop()
 double WebTimerBase::nextFireInterval() const
 {
     ASSERT(isActive());
-    double current = currentTime();
+    double current = WTF::monotonicallyIncreasingTime();
     if (m_nextFireTime < current)
         return 0;
     return m_nextFireTime - current;

@@ -1,6 +1,9 @@
 ﻿#ifndef LayerTreeHost_h
 #define LayerTreeHost_h
 
+#include <atomic>
+#include <memory>
+
 #include "third_party/WebKit/public/platform/WebLayerTreeView.h"
 #include "cc/trees/ScrollTreeSnapshot.h"
 #include "third_party/WebKit/public/platform/WebThread.h"
@@ -48,6 +51,8 @@ struct CompositorAnimationState;
 struct CompositorAnimationFinishedTask;
 struct CompositorScrollState;
 struct CompositorScrollInput;
+struct RecordResourcesReadyTask;
+struct UiPaintTaskLifetime;
 struct RetiredCompositorScrollState;
 
 struct CompositorScrollReceipt {
@@ -173,7 +178,9 @@ public:
     int64 frontRasteringIndex();
     void popRasteringIndex();
 
-    bool canRecordActions() const;
+    bool canRecordActions(double* retryDelaySeconds = nullptr);
+    void notifyRecordResourcesChanged();
+    const char* recordResourceWakeStatus() const;
     void beginRecordActions(bool isComefromMainframe);
     void endRecordActions();
 
@@ -206,7 +213,8 @@ public:
     static void clearCanvas(SkCanvas* canvas, const SkRect& rect, bool useLayeredBuffer);
 
     void setDrawMinInterval(double drawMinInterval);
-    void setIndependentPresentationEnabled(bool enabled);
+    void setIndependentPresentationEnabled(bool enabled, bool uiMirrorOnDemand = false);
+    bool uiMirrorOnDemand() const { return m_uiMirrorOnDemand.load(std::memory_order_relaxed); }
     
     void postPaintMessage(const SkRect& paintRect);
     void firePaintEvent(HDC hdc, const RECT* paintRect);
@@ -237,7 +245,8 @@ public:
     bool synchronizeCompositorScrollBarrier(const ScrollBarrier& barrier);
 
 private:
-    void requestPaintToMemoryCanvasToUiThread(const SkRect& r);
+    struct WrapSelfForUiThread;
+    WrapSelfForUiThread* requestPaintToMemoryCanvasToUiThread(const SkRect& r);
     void onApplyActionsInCompositeThread(bool needCheck);
     void waitForApplyActions();
     void waitForDrawFrame();
@@ -257,7 +266,7 @@ private:
         int64 firstActionId, int64 lastActionId, bool resourcesReady);
     bool hasInFlightScene() const;
     
-    bool m_isDestroying;
+    std::atomic<bool> m_isDestroying;
 
     LayerTreeHostClent* m_hostClient;
     LayerTreeHostUiThreadClient* m_uiThreadClient;
@@ -272,6 +281,7 @@ private:
     blink::WebColor m_backgroundColor;
     bool m_hasTransparentBackground;
     bool m_independentPresentationEnabled;
+    std::atomic<bool> m_uiMirrorOnDemand;
     bool m_visible;
     float m_pageScaleFactor;
     float m_minimum;
@@ -316,10 +326,14 @@ private:
     WTF::Mutex m_rootCCLayerMutex;
     SkCanvas* m_memoryCanvas;
 
-    double m_lastCompositeTime;
-    double m_lastPaintTime;
-    mutable double m_lastRecordTime;
-    double m_drawMinInterval;
+    double m_nextCompositeTime;
+    double m_nextPaintTime;
+    mutable double m_nextRecordTime;
+    mutable std::atomic<bool> m_recordWaitingForResources;
+    std::atomic<bool> m_recordNotificationFailed;
+    RecordResourcesReadyTask* m_recordResourcesReadyTask;
+    friend RecordResourcesReadyTask;
+    std::atomic<double> m_drawMinInterval;
 
     static const int m_paintMessageQueueSize = 200;
     Vector<SkRect> m_dirtyRectsForComposite;
@@ -330,19 +344,17 @@ private:
     int m_requestApplyActionsCount;
     int m_requestApplyActionsFinishCount;
 
-    struct WrapSelfForUiThread : public blink::WebThread::TaskObserver {
-        WrapSelfForUiThread(LayerTreeHost* host)
-            : m_host(host) { }
-        LayerTreeHost* m_host;
-        void paintInUiThread();
-        void endPaint();
-
+    struct WrapSelfForUiThread : public blink::WebThread::Task {
+        explicit WrapSelfForUiThread(const std::shared_ptr<UiPaintTaskLifetime>& lifetime)
+            : m_lifetime(lifetime), m_ownsSlot(true) { }
+        void post(long long delayMs);
+        virtual void run() override;
         virtual ~WrapSelfForUiThread() override;
-        virtual void willProcessTask() override;
-        virtual void didProcessTask() override;
+        std::shared_ptr<UiPaintTaskLifetime> m_lifetime;
+        bool m_ownsSlot;
     };
     friend WrapSelfForUiThread;
-    WTF::HashSet<WrapSelfForUiThread*> m_wrapSelfForUiThreads;
+    std::shared_ptr<UiPaintTaskLifetime> m_uiPaintTaskLifetime;
     friend CompositorAnimationFinishedTask;
     WTF::HashSet<CompositorAnimationFinishedTask*> m_animationFinishedTasks;
     friend CompositorScrollUpdateTask;

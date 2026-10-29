@@ -87,17 +87,26 @@ byId('save').onclick = async () => {
   } catch(error) {failed(error);} finally {busy = false; byId('save').disabled = !client;}
 };
 
+const performanceNodes=Object.fromEntries(['perf-fps','perf-p95','perf-long','perf-targets','perf-threads','perf-heap','performance-state'].map(id=>[id,byId(id)]));
+function performanceValue(id,value,property='textContent') {
+  const node=performanceNodes[id], text=String(value);
+  if(node[property]!==text)node[property]=text;
+}
 function updatePerformance(snapshot) {
-  byId('perf-fps').textContent=snapshot.rafFps==null?'—':snapshot.rafFps.toFixed(1);
-  byId('perf-p95').textContent=snapshot.frameP95Ms==null?'—':snapshot.frameP95Ms.toFixed(1)+' ms';
-  byId('perf-p95').title=snapshot.sampleCoverage==='rolling-window'?'最近 2000 个 rAF 间隔的 P95':'本轮全部 rAF 间隔的 P95';
-  byId('perf-long').textContent=snapshot.longFrames??'—';
-  byId('perf-targets').textContent=snapshot.targets==null?'—':`${snapshot.sprites} / ${snapshot.clones}`;
-  byId('perf-threads').textContent=snapshot.threads??'—';
-  byId('perf-heap').textContent=snapshot.heapBytes==null?'不支持':(snapshot.heapBytes/1048576).toFixed(1)+' MB';
-  if(snapshot.recording) byId('performance-state').textContent=`正在记录：${(snapshot.elapsedMs/1000).toFixed(0)} / 30 秒；保持窗口可见。`;
-  else if(snapshot.status==='invalid') byId('performance-state').textContent='记录无效：窗口被隐藏或最小化，请重新记录。';
-  else if(snapshot.completed) byId('performance-state').textContent=snapshot.valid?'记录完成，可导出 JSON 进行版本对比。':'记录无效，请重新记录。';
+  if(byId('performance-panel').hidden)return;
+  performanceValue('perf-fps',snapshot.windowRafFps==null?'—':snapshot.windowRafFps.toFixed(1));
+  performanceValue('perf-fps','整个实际记录时窗内收到的 rAF 回调数 / 秒；包含无回调停顿。','title');
+  performanceValue('perf-p95',snapshot.frameP95Ms==null?(snapshot.completed&&snapshot.censored?'边界缺帧':'记录后统计'):snapshot.frameP95Ms.toFixed(1)+' ms');
+  performanceValue('perf-p95',snapshot.sampleCoverage==='rolling-window'?`最近 ${snapshot.sampleCapacity} 个 rAF 间隔的 P95`:'记录结束后统计本轮全部 rAF 间隔的 P95','title');
+  performanceValue('perf-long',snapshot.longFrames??'—');
+  performanceValue('perf-targets',snapshot.targets==null?'—':`${snapshot.sprites} / ${snapshot.clones}`);
+  performanceValue('perf-threads',snapshot.threads??'—');
+  performanceValue('perf-heap',snapshot.heapBytes==null?'不支持':(snapshot.heapBytes/1048576).toFixed(1)+' MB');
+  if(snapshot.recording)performanceValue('performance-state',`正在记录：${(snapshot.elapsedMs/1000).toFixed(0)} / ${(snapshot.durationMs/1000).toFixed(0)} 秒；保持窗口可见。`);
+  else if(snapshot.status==='invalid')performanceValue('performance-state','记录无效：窗口被隐藏或最小化，请重新记录。');
+  else if(snapshot.completed)performanceValue('performance-state',!snapshot.valid?'记录无效，请重新记录。':snapshot.censored?'记录完成：首尾存在未闭合停顿，已保留低帧率结果；分位数仅作诊断。':'记录完成，可导出 JSON 进行版本对比。');
+  else if(snapshot.status==='idle')performanceValue('performance-state','尚未记录。');
+  else if(snapshot.status==='stopped')performanceValue('performance-state','记录已停止，结果可导出；完整时窗对照未完成。');
 }
 const performanceMeter=createPerformanceMeter({getVM:()=>vm,onUpdate:updatePerformance});
 function describePerformance() {
@@ -108,7 +117,7 @@ function describePerformance() {
 describePerformance();
 byId('performance-scene').onchange=describePerformance;
 byId('performance-level').onchange=describePerformance;
-byId('performance-toggle').onclick=()=>{byId('performance-panel').hidden=!byId('performance-panel').hidden;byId('performance-toggle').setAttribute('aria-expanded',String(!byId('performance-panel').hidden));};
+byId('performance-toggle').onclick=()=>{byId('performance-panel').hidden=!byId('performance-panel').hidden;byId('performance-toggle').setAttribute('aria-expanded',String(!byId('performance-panel').hidden));updatePerformance(performanceMeter.snapshot());};
 byId('performance-close').onclick=()=>{byId('performance-panel').hidden=true;byId('performance-toggle').setAttribute('aria-expanded','false');};
 byId('performance-load').onclick=async()=>{
   if(!ready||busy)return;
@@ -122,7 +131,7 @@ byId('performance-load').onclick=async()=>{
     const workloadSha256=Array.from(new Uint8Array(digest),byte=>byte.toString(16).padStart(2,'0')).join('');
     await vm.loadProject(JSON.stringify(project));
     vm.setCompatibilityMode(false);vm.greenFlag();
-    currentPerformance={sceneId,level,metadata:{sdkVersion:sdkInfo?.sdkVersion??null,buildId:sdkInfo?.buildId??null,backend:sdkInfo?.backend??null,runtimeVersion:sdkInfo?.runtimeVersion??null,workloadRecipe:project.meta.agent,workloadSha256,sceneSeed:scene.seed,configuredLoad:scene.levels[level],vmTargetStepHz:60,runtimeStepMs:vm.runtime.currentStepTime??null}};
+    currentPerformance={sceneId,level,metadata:{sdkVersion:sdkInfo?.sdkVersion??null,buildId:sdkInfo?.buildId??null,backend:sdkInfo?.backend??null,runtimeVersion:sdkInfo?.runtimeVersion??null,scratchSourceCommit:document.documentElement.dataset.scratchSourceCommit??null,scratchSourceVersion:document.documentElement.dataset.scratchSourceVersion??null,workloadRecipe:project.meta.agent,workloadSha256,sceneSeed:scene.seed,configuredLoad:scene.levels[level],vmTargetStepHz:60,runtimeStepMs:vm.runtime.currentStepTime??null}};
     byId('performance-state').textContent=`${scene.title}已运行。等待克隆/角色数量稳定后，点击“记录 30 秒”。`;
     message('性能场景正在运行；可在负载中拖动积木、切换造型或操作舞台。');
   }catch(error){failed(error);}finally{busy=false;}

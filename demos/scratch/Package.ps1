@@ -1,7 +1,7 @@
 [CmdletBinding()]
-param([ValidateSet('x86','x64')][string]$Architecture = 'x64')
+param([ValidateSet('x86','x64')][string]$Architecture = 'x64', [string]$SourceVendor = '')
 $ErrorActionPreference = 'Stop'
-& (Join-Path $PSScriptRoot 'Build.ps1') -Architecture $Architecture -Configuration Release -ForPackage
+& (Join-Path $PSScriptRoot 'Build.ps1') -Architecture $Architecture -Configuration Release -ForPackage -SourceVendor $SourceVendor
 if ($LASTEXITCODE -ne 0) { throw 'Scratch package build failed.' }
 $cmake = (Get-Command cmake.exe -CommandType Application -ErrorAction Stop).Source
 $sdkRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))

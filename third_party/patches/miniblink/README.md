@@ -60,3 +60,9 @@
 有效的原有 `FontPlatformData`/typeface 继续使用原路径。具名候选为空或不含 typeface 时，直接向当前 `SkFontMgr` 请求真实系统默认字体，要求非空且包含 glyph；保留原有效字号、粗斜体合成、方向、subpixel、`ShouldRetain` 和字体缓存所有权。不调用可能生成 `SkEmptyTypeface` 的默认包装，不伪造行高或关闭 Inspector 高亮。
 
 若 OS 字体管理器、默认 typeface 或 glyph 仍不可用，函数明确返回空值；这保留极端系统字体失败边界，不宣称所有字体资源故障已恢复。下游仍要求主字体非空，因此不保证该环境能安全退出或正常启动。此次仅完成源修复和补丁原始字节核对，尚未编译、执行或复测。已有 0013 及其历史验证说明原样保留；新内核、配对与受影响应用的统一短测需另绑定真实产物。
+## 2026-10-29 性能候选补丁
+
+- `0016-frame-presentation-and-resource-wakes.patch`：精确帧节拍、CPU按需镜像、资源就绪通知、legacy延后及dirty合并。当前字节映射：`third_party/manifests/miniblink-frame-presentation-20261029.json`；capability、失败状态与验收范围见 ADR0138、0140。
+- `0017-deadline-owner-scheduling.patch`：ready/deadline owner调度、有界批次、单调时钟、未来堆剪枝。当前字节映射：`third_party/manifests/miniblink-deadline-scheduler-20261029.json`；见 ADR0137。
+
+两者均以隔离源码快照 `c17c79bdf470fae681c63324ceaa2a519151afc9` 为前件，修改文件不重叠；不能直接套到缺少此前 DevTools/输入改动的任意历史导入。当前只是源码候选：没有新内核DLL、编译/运行、大小或性能通过结论。原历史导入清单和已产生的二进制身份保持各自含义。

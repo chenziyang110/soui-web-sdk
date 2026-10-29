@@ -46,13 +46,24 @@ engine_reply_ticket& engine_reply_ticket::operator=(engine_reply_ticket&& other)
   return *this;
 }
 engine_admission_result engine_admission::post(engine_thread& engine,engine_lane lane,engine_thread::task work) {
-  return engine.post_internal(std::move(work),lane,nullptr);
+  return engine.post_internal(work,lane,nullptr);
 }
 engine_admission_result engine_admission::reserve_reply(engine_thread& engine,engine_lane lane,engine_reply_ticket& ticket) {
   return engine.reserve_reply(lane,ticket);
 }
 engine_admission_result engine_admission::submit_reply(engine_thread& engine,engine_reply_ticket& ticket,engine_thread::task work) {
-  return engine.post_internal(std::move(work),ticket.lane_,&ticket);
+  return engine.post_internal(work,ticket.lane_,&ticket);
+}
+engine_admission_result engine_admission::try_post(engine_thread& engine,engine_lane lane,engine_thread::task& work) {
+  return engine.post_internal(work,lane,nullptr);
+}
+engine_admission_result engine_admission::try_submit_reply(engine_thread& engine,engine_reply_ticket& ticket,engine_thread::task& work) {
+  return engine.post_internal(work,ticket.lane_,&ticket);
+}
+engine_admission_result engine_admission::try_post_guarded(engine_thread& engine,engine_thread::task& work,
+    const engine_reply_ticket* const* guards,std::size_t guard_count) {
+  if (!guards || !guard_count || guard_count > 3) return engine_admission_result::invalid;
+  return engine.post_internal(work,engine_lane::ordinary,nullptr,guards,guard_count);
 }
 engine_capacity_snapshot engine_admission::observe(const engine_thread& engine) { return engine.capacity_snapshot(); }
 } // namespace detail
@@ -206,11 +217,11 @@ bool engine_thread::start(initializer initialize, task shutdown) {
 }
 
 bool engine_thread::post(task work) {
-  return post_internal(std::move(work),detail::engine_lane::ordinary,nullptr) == detail::engine_admission_result::accepted;
+  return post_internal(work,detail::engine_lane::ordinary,nullptr) == detail::engine_admission_result::accepted;
 }
 
-detail::engine_admission_result engine_thread::post_internal(task work,detail::engine_lane lane,
-                                                            detail::engine_reply_ticket* ticket) {
+detail::engine_admission_result engine_thread::post_internal(task& work,detail::engine_lane lane,
+    detail::engine_reply_ticket* ticket,const detail::engine_reply_ticket* const* guards,std::size_t guard_count) {
   using result=detail::engine_admission_result;
   const auto category=static_cast<std::size_t>(lane);
   if (!work || category >= lane_queued_.size()) return result::invalid;
@@ -219,6 +230,12 @@ detail::engine_admission_result engine_thread::post_internal(task work,detail::e
     if (state_ != engine_thread_state::running) {
       if (metrics_mode_ == diagnostics::mode::scalar) diagnostics::detail::increment(metrics_.stopped_rejections_total,metrics_saturated_);
       return result::stopped;
+    }
+    for (std::size_t i=0;i<guard_count;++i) {
+      const auto* guard=guards[i];
+      if (!guard || !guard->active_ || guard->owner_ != capacity_
+          || guard->generation_ != capacity_generation_ || guard->lane_ != detail::engine_lane::ordinary)
+        return result::invalid;
     }
     if (ticket) {
       if (!ticket->active_ || ticket->owner_ != capacity_ || ticket->generation_ != capacity_generation_ ||

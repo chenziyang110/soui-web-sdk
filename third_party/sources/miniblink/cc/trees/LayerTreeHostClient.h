@@ -13,6 +13,7 @@ public:
     virtual void onLayerTreeDirty() = 0;
     virtual void onLayerTreeInvalidateRect(const blink::IntRect&) = 0;
     virtual void onLayerTreeSetNeedsCommit() = 0;
+    virtual void onLayerTreeResourcesReady() { onLayerTreeSetNeedsCommit(); }
     virtual void enablePaint() {};
     virtual void disablePaint() {};
 };

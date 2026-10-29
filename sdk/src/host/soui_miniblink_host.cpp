@@ -5,6 +5,8 @@
 #include "bridge_pending_script.h"
 #include "bridge_request_budget.h"
 #include "engine_admission.h"
+#include "input_admission.h"
+#include "input_delivery_policy.h"
 #include "cursor_broker.h"
 #include "main_context_gate.h"
 #include "runtime_shutdown_poll.h"
@@ -1576,6 +1578,13 @@ host_result dynamic_miniblink_adapter::mount_on_engine(const host_config& config
       compositor_rate_option[0] == '1';
   configured_wake_interval_ = -1;
   configured_draw_min_interval_ = -1;
+  configured_draw_frame_rate_ = -1;
+  if (!input_admission_) input_admission_ = std::make_unique<detail::input_admission>();
+  else input_admission_->reset();
+  input_rejections_ = 0;
+  last_input_admission_ = 0;
+  resource_wake_failed_ = false;
+  resource_status_query_at_ = {};
   configured_main_frame_rate_ = -1;
 #ifdef SOUI_SOURCE_KERNEL_HOST
   char main_frame_option[2] = {};
@@ -1643,8 +1652,10 @@ host_result dynamic_miniblink_adapter::mount_on_engine(const host_config& config
     if (!cursor_broker_) { wkeDestroyWebView(view); webview_ = nullptr; }
     return failure("E_INTERACTION_ENDPOINT", "Miniblink could not create the compositor interaction endpoint.");
   }
-  if (!interaction_api->configurePresentation(interaction_endpoint_,
-          WKE_INTERACTION_PRESENT_DIRECT_HWND)) {
+  const auto presentation_flags = WKE_INTERACTION_PRESENT_DIRECT_HWND |
+      ((interaction_api->capabilities & WKE_INTERACTION_CAP_ON_DEMAND_UI_MIRROR) != 0
+          ? WKE_INTERACTION_PRESENT_UI_MIRROR_ON_DEMAND : 0U);
+  if (!interaction_api->configurePresentation(interaction_endpoint_, presentation_flags)) {
     interaction_api->releaseEndpoint(interaction_endpoint_);
     interaction_endpoint_ = nullptr;
     if (!cursor_broker_) { wkeDestroyWebView(view); webview_ = nullptr; }
@@ -2192,6 +2203,7 @@ host_result dynamic_miniblink_adapter::close_cursor_endpoint() {
 
 void dynamic_miniblink_adapter::unmount_on_engine() {
 #ifdef _WIN32
+  if (input_admission_) input_admission_->reset();
   append_host_smoke_log(resource_root_, "adapter-unmount-start");
   std::string closing_session;
   {
@@ -2489,7 +2501,7 @@ void dynamic_miniblink_adapter::pump() {
 #endif
 }
 
-bool dynamic_miniblink_adapter::update_cursor_identity_on_engine() {
+bool dynamic_miniblink_adapter::update_cursor_identity_on_engine(bool permit_geometry_race) {
 #ifdef _WIN32
   if (!cursor_broker_) return true;
   const auto receipt = execution_context_receipt();
@@ -2504,14 +2516,16 @@ bool dynamic_miniblink_adapter::update_cursor_identity_on_engine() {
     return false;
   }
   const auto latest = cursor_broker_->identity();
-  const bool current = status == WKE_CURSOR_BROKER_OK &&
-      identity.viewGeneration == latest.viewGeneration && identity.documentGeneration == latest.documentGeneration &&
-      identity.geometryGeneration == latest.geometryGeneration;
+  const bool same_document = status == WKE_CURSOR_BROKER_OK &&
+      identity.viewGeneration == latest.viewGeneration && identity.documentGeneration == latest.documentGeneration;
+  const bool current = same_document && identity.geometryGeneration == latest.geometryGeneration;
   cursor_transition_pending_ = !current;
-  // Every engine input/pump rechecks the full tuple, so a concurrent UI resize
-  // cannot lose its pending update through this diagnostic flag.
-  return current;
+  // Positional input/pump requires the full tuple. A retained document's
+  // terminal/text input may survive a geometry-only race after successful
+  // vendor update; keep pending so the next pump still synchronizes geometry.
+  return current || (permit_geometry_race && same_document);
 #else
+  (void)permit_geometry_race;
   return true;
 #endif
 }
@@ -2547,6 +2561,21 @@ void dynamic_miniblink_adapter::sync_cursor_input_generation() noexcept {
 void dynamic_miniblink_adapter::pump_on_engine() {
 #ifdef _WIN32
   if (unmount_requested_.load(std::memory_order_acquire)) return;
+  const auto* status_api = static_cast<const wkeInteractionApi*>(interaction_api_);
+  const auto status_now = std::chrono::steady_clock::now();
+  if (webview_ && !resource_wake_failed_.load(std::memory_order_acquire) && status_api &&
+      (status_api->capabilities & WKE_INTERACTION_CAP_RESOURCE_WAKE_STATUS) != 0 &&
+      status_now - resource_status_query_at_ >= std::chrono::milliseconds(250)) {
+    resource_status_query_at_ = status_now;
+    const char* status = wkeGetDebugConfig ? static_cast<const char*>(wkeGetDebugConfig(
+        static_cast<wkeWebView>(webview_), "resourceWakeStatus")) : nullptr;
+    if (!status || std::string_view(status) == "notification-failed") {
+      // A dropped final resource notification is a target failure, never
+      // ordinary readiness. Retain the target for its existing close/drain.
+      resource_wake_failed_.store(true, std::memory_order_release);
+      application_ready_.store(false, std::memory_order_release);
+    }
+  }
   if (event_lifetime_ && event_lifetime_->local_origin)
     event_lifetime_->local_origin->observe_on_engine();
   if (cursor_broker_) (void)update_cursor_identity_on_engine();
@@ -2617,10 +2646,24 @@ void dynamic_miniblink_adapter::pump_on_engine() {
                                 : ((cpu_high_refresh || rate > 60) && rate > 60
                                     ? (1000 + rate - 1) / rate
                                     : 17)));
-      if (configured_draw_min_interval_ != interval) {
+      const auto* frame_api = static_cast<const wkeInteractionApi*>(interaction_api_);
+      const bool precise_rate = frame_api &&
+          (frame_api->capabilities & WKE_INTERACTION_CAP_PRECISE_FRAME_RATE) != 0 &&
+          interval > 0 && cpu_interval_length == 0;
+      if (precise_rate) {
+        if (configured_draw_frame_rate_ != rate) {
+          const auto value = std::to_string(rate);
+          wkeSetDebugConfig(static_cast<wkeWebView>(webview_), "drawFrameRate", value.c_str());
+          configured_draw_frame_rate_ = rate;
+        }
+        // This integer remains a diagnostic approximation. The capable kernel
+        // schedules the actual fractional 1/rate interval without ceil drift.
+        configured_draw_min_interval_ = interval;
+      } else if (configured_draw_min_interval_ != interval || configured_draw_frame_rate_ != -1) {
         const auto value = std::to_string(interval);
         wkeSetDebugConfig(static_cast<wkeWebView>(webview_), "drawMinInterval", value.c_str());
         configured_draw_min_interval_ = interval;
+        configured_draw_frame_rate_ = -1;
       }
       if (bridge_adapter_ != nullptr)
         static_cast<bridge_adapter*>(bridge_adapter_)->set_draw_interval(
@@ -2752,8 +2795,16 @@ bool dynamic_miniblink_adapter::capture_scroll_barrier(
 }
 
 bool dynamic_miniblink_adapter::post_input(const input_packet& packet) {
-  return !unmount_requested_.load(std::memory_order_acquire) && engine_thread_ != nullptr
-      && engine_thread_->post([this, packet] { dispatch_input_on_engine(packet); });
+  if (unmount_requested_.load(std::memory_order_acquire) || !engine_thread_ || !input_admission_ ||
+      resource_wake_failed_.load(std::memory_order_acquire)) {
+    last_input_admission_.store(static_cast<unsigned>(detail::engine_admission_result::stopped),std::memory_order_relaxed);
+    return false;
+  }
+  const auto admission = input_admission_->post(*engine_thread_,packet,
+      [this,packet] { dispatch_input_on_engine(packet); });
+  if (admission != detail::engine_admission_result::accepted)
+    last_input_admission_.store(static_cast<unsigned>(admission),std::memory_order_relaxed);
+  return admission == detail::engine_admission_result::accepted;
 }
 
 void dynamic_miniblink_adapter::dispatch_input_on_engine(input_packet packet) {
@@ -2761,13 +2812,13 @@ void dynamic_miniblink_adapter::dispatch_input_on_engine(input_packet packet) {
   const auto context_receipt = execution_context_receipt();
   if (!accepts_execution_context_receipt(context_receipt)) return;
   if (cursor_broker_) {
-    if (!cursor_broker_->input_allowed() || !update_cursor_identity_on_engine() ||
+    if (!cursor_broker_->input_allowed() || !update_cursor_identity_on_engine(!detail::input_requires_geometry(packet.kind)) ||
         !accepts_execution_context_receipt(context_receipt) || !cursor_broker_->input_allowed()) return;
     const auto identity = cursor_broker_->identity();
-    if (!(packet.generation == interaction_generation{identity.viewGeneration,
+    if (!detail::input_matches_generation(packet, interaction_generation{identity.viewGeneration,
           identity.documentGeneration, identity.geometryGeneration})) return;
   }
-  if (webview_ == nullptr || !(packet.generation == interaction_router_.generation())) return;
+  if (webview_ == nullptr || !detail::input_matches_generation(packet, interaction_router_.generation())) return;
   const auto view = static_cast<wkeWebView>(webview_);
   switch (packet.kind) {
     case input_kind::wheel:
@@ -2891,7 +2942,9 @@ bool dynamic_miniblink_adapter::handle_native_window_message(
   if (unmount_state_ && message != detail::cursor_descriptor_message &&
       message != WM_TIMER && message != WM_CLOSE) return false;
   auto route = [this](input_packet packet) {
-    (void)interaction_router_.route(packet, *this, *this);
+    const auto routed = interaction_router_.route(packet, *this, *this);
+    if (routed.disposition == route_disposition::rejected_sink)
+      input_rejections_.fetch_add(1,std::memory_order_relaxed);
   };
   auto pointer_packet = [this, lparam](input_kind kind, WPARAM flags) {
     input_packet packet = make_input_packet(kind);
@@ -3455,6 +3508,7 @@ host_result dynamic_miniblink_adapter::finish_devtools_retirement() {
 }
 
 bool dynamic_miniblink_adapter::application_ready() {
+  if (resource_wake_failed_.load(std::memory_order_acquire)) return false;
   const auto receipt = execution_context_receipt();
   if (!accepts_execution_context_receipt(receipt)) return false;
 #if defined(SOUI_BRIDGE_BENCHMARK) || defined(SOUI_PERFORMANCE_DIAGNOSTICS)
@@ -3486,6 +3540,8 @@ bool dynamic_miniblink_adapter::application_ready() {
 }
 
 std::string dynamic_miniblink_adapter::application_diagnostics() {
+  if (resource_wake_failed_.load(std::memory_order_acquire))
+    return "document=failed,render=E_RESOURCE_WAKE,requires_target_recreation=true";
   if (event_lifetime_ && event_lifetime_->local_origin && event_lifetime_->local_origin->failed())
     return "document=failed,local_resources=" + event_lifetime_->local_origin->terminal_result().code;
   if (unmount_requested_.load(std::memory_order_acquire)) return "document=waiting,bridge=waiting";
@@ -3494,7 +3550,14 @@ std::string dynamic_miniblink_adapter::application_diagnostics() {
       application_ready_receipt_.load(std::memory_order_acquire) == receipt;
   std::string diagnostics = std::string{"document="} + (document_ready() ? "ready" : "waiting") +
          ",bridge=" + (bridge_ready ? "ready" : "waiting") +
-         ",draw_interval_ms=" + std::to_string(configured_draw_min_interval_.load());
+         ",draw_interval_ms=" + std::to_string(configured_draw_min_interval_.load()) +
+         ",draw_rate_hz=" + std::to_string(configured_draw_frame_rate_.load()) +
+         ",input_rejected=" + std::to_string(input_rejections_.load(std::memory_order_relaxed));
+  if (input_rejections_.load(std::memory_order_relaxed)) {
+    const auto admission = static_cast<detail::engine_admission_result>(last_input_admission_.load(std::memory_order_relaxed));
+    diagnostics += admission == detail::engine_admission_result::full ? ",input_admission=full" :
+        admission == detail::engine_admission_result::stopped ? ",input_admission=stopped" : ",input_admission=invalid";
+  }
   {
     std::lock_guard<std::mutex> lock(state_mutex_);
     if (!probe_report_.empty()) diagnostics += "," + probe_report_;

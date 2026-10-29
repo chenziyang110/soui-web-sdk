@@ -239,6 +239,7 @@ struct TaskReceipt {
     std::atomic<int> run{0}, disposed{0};
     std::atomic<DWORD> tid{0};
     std::atomic<bool> tlsMatches{false};
+    std::atomic<double> executedAt{0};
     HANDLE ran = nullptr;
 };
 class KnownTask final : public blink::WebThread::Task {
@@ -246,6 +247,7 @@ public:
     KnownTask(TaskReceipt& receipt, content::WebThreadImpl* owner) : receipt_(receipt), owner_(owner) { }
     ~KnownTask() override { ++receipt_.disposed; }
     void run() override {
+        receipt_.executedAt = WTF::monotonicallyIncreasingTime();
         ++receipt_.run;
         receipt_.tid = ::GetCurrentThreadId();
         receipt_.tlsMatches = platform->currentThread() == owner_;
@@ -477,18 +479,8 @@ bool mainThreadCase() {
     auto* thread = static_cast<content::WebThreadImpl*>(platform->currentThread());
     const bool mainIdentity = thread && thread->isCurrentThread() && thread->threadId() == engineThreadId
         && platform->currentThread() == thread && platform->m_threadNum == 1;
-    // Wait for an actual first timer dispatch, so the existing main-thread frame
-    // timestamp is set by the real fire()/startTriggerTasks() before posting.
-    bool firstNativeTick = false;
-    const ULONGLONG firstTickDeadline = ::GetTickCount64() + boundMs;
-    while (!firstNativeTick && ::GetTickCount64() < firstTickDeadline) {
-        ::MsgWaitForMultipleObjectsEx(0, nullptr, 50, QS_ALLINPUT, MWMO_INPUTAVAILABLE);
-        MSG message{};
-        while (::PeekMessageW(&message, nullptr, 0, 0, PM_REMOVE)) {
-            if (message.hwnd == nativeWindow && message.message == WM_TIMER) firstNativeTick = true;
-            ::TranslateMessage(&message); ::DispatchMessageW(&message);
-        }
-    }
+    // Idle owns a wake window but no periodic native timer.
+    const bool idleWithoutTick = timerAcquired == 0;
     TaskReceipt receipt; receipt.ran = makeGate();
     thread->postTask(FROM_HERE, new KnownTask(receipt, thread));
     const ULONGLONG deadline = ::GetTickCount64() + boundMs;
@@ -498,12 +490,65 @@ bool mainThreadCase() {
         while (::PeekMessageW(&message, nullptr, 0, 0, PM_REMOVE)) { ::TranslateMessage(&message); ::DispatchMessageW(&message); }
     }
     const bool taskRan = receipt.run == 1 && receipt.tid == engineThreadId && receipt.tlsMatches;
+    TaskReceipt delayed; delayed.ran = makeGate();
+    const double admittedAt = WTF::monotonicallyIncreasingTime();
+    thread->postDelayedTask(FROM_HERE, new KnownTask(delayed, thread), 25);
+    const ULONGLONG delayedLimit = ::GetTickCount64() + boundMs;
+    while (!delayed.run && ::GetTickCount64() < delayedLimit) {
+        ::MsgWaitForMultipleObjectsEx(0, nullptr, 50, QS_ALLINPUT, MWMO_INPUTAVAILABLE);
+        MSG message{};
+        while (::PeekMessageW(&message, nullptr, 0, 0, PM_REMOVE)) { ::TranslateMessage(&message); ::DispatchMessageW(&message); }
+    }
+    const bool futureRan = delayed.run == 1 && delayed.tid == engineThreadId && delayed.tlsMatches
+        && delayed.executedAt.load() - admittedAt >= .025;
+    bool deferredRecovery = true;
+    for (bool rearmFuture : {false, true}) {
+        TaskReceipt deferred, resumed;
+        deferred.ran = makeGate(); resumed.ran = makeGate();
+        content::CheckReEnter::incrementEnterCount();
+        thread->postTask(FROM_HERE, new KnownTask(deferred, thread));
+        MSG message{};
+        while (::PeekMessageW(&message, nativeWindow, content::timerFiredMessage,
+            content::timerFiredMessage, PM_REMOVE))
+            ::DispatchMessageW(&message); // Real guard must defer the accepted task.
+        const UINT_PTR retiredTicket = content::fallbackTimerID;
+        content::CheckReEnter::decrementEnterCount();
+        content::setSharedTimerDeadline(rearmFuture ? WTF::monotonicallyIncreasingTime() + .05 : 0);
+        // KillTimer leaves already posted WM_TIMER messages behind. A retired
+        // fallback ticket must not consume a new deadline or run deferred work.
+        ::PostMessageW(nativeWindow, WM_TIMER, retiredTicket, 0);
+        while (::PeekMessageW(&message, nativeWindow, WM_TIMER, WM_TIMER, PM_REMOVE))
+            ::DispatchMessageW(&message);
+        deferredRecovery = deferredRecovery && retiredTicket != 0 && deferred.run == 0;
+        thread->postTask(FROM_HERE, new KnownTask(resumed, thread));
+        const ULONGLONG recoveryLimit = ::GetTickCount64() + boundMs;
+        while ((!deferred.run || !resumed.run) && ::GetTickCount64() < recoveryLimit) {
+            ::MsgWaitForMultipleObjectsEx(0, nullptr, 50, QS_ALLINPUT, MWMO_INPUTAVAILABLE);
+            while (::PeekMessageW(&message, nullptr, 0, 0, PM_REMOVE)) { ::TranslateMessage(&message); ::DispatchMessageW(&message); }
+        }
+        thread->fire(); // Retire actual self-deleting timers before local receipts die.
+        deferredRecovery = deferredRecovery && deferred.run == 1 && resumed.run == 1
+            && deferred.disposed == 1 && resumed.disposed == 1;
+        ::CloseHandle(deferred.ran); ::CloseHandle(resumed.ran);
+    }
     const HWND window = nativeWindow;
-    const bool nativeAlive = window && ::IsWindow(window) && windowAcquired == 1 && timerAcquired >= 1;
+    const bool nativeAlive = window && ::IsWindow(window) && windowAcquired == 1;
+    TaskReceipt quitPending; quitPending.ran = makeGate();
+    thread->postTask(FROM_HERE, new KnownTask(quitPending, thread));
+    ::PostQuitMessage(0);
+    MSG quitMessage{};
+    while (::PeekMessageW(&quitMessage, nativeWindow, content::timerFiredMessage,
+        content::timerFiredMessage, PM_REMOVE))
+        ::DispatchMessageW(&quitMessage);
+    const bool quitUnstarved = quitPending.run == 0
+        && ::PeekMessageW(&quitMessage, nullptr, WM_QUIT, WM_QUIT, PM_REMOVE);
     delete thread;
-    const bool nativeReleased = windowDestroyed == 1 && !::IsWindow(window) && timerKilled >= 1 && classUnregistered == 1;
+    const bool nativeReleased = windowDestroyed == 1 && !::IsWindow(window) && classUnregistered == 1;
     ::CloseHandle(receipt.ran);
-    return mainIdentity && firstNativeTick && taskRan && receipt.disposed == 1 && nativeAlive && nativeReleased
+    ::CloseHandle(delayed.ran);
+    ::CloseHandle(quitPending.ran);
+    return mainIdentity && idleWithoutTick && taskRan && futureRan && deferredRecovery && quitUnstarved
+        && quitPending.run == 1 && quitPending.disposed == 1 && delayed.disposed == 1 && receipt.disposed == 1 && nativeAlive && nativeReleased
         && launchAttempts == 0 && eventAttempts == 0 && platform->m_threadNum == 0 && platform->m_threads.empty()
         && schedulerFrees == 1 && sectionsInitialized == 2 && sectionsDeleted == 2;
 }

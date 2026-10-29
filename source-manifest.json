@@ -1,6 +1,6 @@
 {
   "schema": "soui.full-source/v2",
-  "version": "0.5.0",
+  "version": "0.6.0-preview.9",
   "releaseReady": false,
   "identity": "Git index blob bytes; checkout CRLF tolerated for text; binaries unchanged.",
   "files": [
@@ -67,14 +67,14 @@
     {
       "path": "CHANGELOG.md",
       "normalization": "lf",
-      "bytes": 33476,
-      "sha256": "01376665f05544227913b5a27b075a1e729582c5d174c4082c557cadb50b05e7"
+      "bytes": 49366,
+      "sha256": "6aa7a17e4a5036609cb7706c8c6a90dcf883b5d4f31c44eee6e31c862bdd33dd"
     },
     {
       "path": "CMakeLists.txt",
       "normalization": "lf",
-      "bytes": 920,
-      "sha256": "db2a708529f2b66b8320cdcf5f8156d6385e0d6f90f04ba8b0e47a8b1aea34a2"
+      "bytes": 998,
+      "sha256": "e5b06c1ba65df73ebde90b2f762bc77644b94dced2f19c3c1b8b331bc918534c"
     },
     {
       "path": "CONTRIBUTING.md",
@@ -97,8 +97,8 @@
     {
       "path": "README.md",
       "normalization": "lf",
-      "bytes": 7812,
-      "sha256": "d77d50a0a35cac1024119a5e21830a265d7cc056abcadb0bd8e26debfabfe4e8"
+      "bytes": 16321,
+      "sha256": "9080a0f9f2d89eb1e0da1abffbebb9a615e635f35deab80842080f932fbe2afd"
     },
     {
       "path": "SECURITY.md",
@@ -115,14 +115,14 @@
     {
       "path": "THIRD_PARTY_NOTICES.md",
       "normalization": "lf",
-      "bytes": 3711,
-      "sha256": "f778f82d7cd64f26d4f9a0b25d56f9b26babb592723b9b1a2ac43b4869ca0ce4"
+      "bytes": 5990,
+      "sha256": "c846ced51e0ebff5a0b3fe490e8dfc873350f36435408fbc428ba513f99fc8d6"
     },
     {
       "path": "VERSION",
       "normalization": "lf",
-      "bytes": 6,
-      "sha256": "a0ad50640139a524f86591157145bf1d4674ea9c065bfea21558f0f7b04430c8"
+      "bytes": 16,
+      "sha256": "4d4de96414577e72cfefdd87b72263660775c396698686657b74e23ac471d6d2"
     },
     {
       "path": "benchmarks/README.md",
@@ -245,10 +245,16 @@
       "sha256": "d00f8ed90fc25bf2ec585dcf3afc7235fa32346d6e97c1a869dc8642f7ad376d"
     },
     {
+      "path": "benchmarks/protocol/owned-process-cohort.h",
+      "normalization": "lf",
+      "bytes": 12756,
+      "sha256": "525a3055c769acb52ee8da06644ffa5d74c90c96c2cdfa41a0c04ff21155b8b7"
+    },
+    {
       "path": "benchmarks/protocol/owned-process-runner.cpp",
       "normalization": "lf",
-      "bytes": 24220,
-      "sha256": "5a0607f791d26c887a7d67502baae520f8b8caa12b9440feb1bf16cdba398ff0"
+      "bytes": 25075,
+      "sha256": "65e3430d45c0a92bb782a7b9a3895c9710310d3222acb24d8ffd3ed8b29f51ff"
     },
     {
       "path": "benchmarks/protocol/owned-tail-evidence.cpp",
@@ -313,8 +319,14 @@
     {
       "path": "cmake/SouiApplication.cmake",
       "normalization": "lf",
-      "bytes": 3195,
-      "sha256": "7cee57b252ce92d5b4f0c623349fbe00707d17c6dc8b8fd36cb65f1be14c84e8"
+      "bytes": 3957,
+      "sha256": "ade696fb508dc613a6640b22cd6388e8036013b9d7c6f578b54f65512482a604"
+    },
+    {
+      "path": "cmake/SouiDevTools.cmake",
+      "normalization": "lf",
+      "bytes": 7416,
+      "sha256": "8f2b933271c87fabcb75c182d111adbfffd64fc379456ac787119b57aee88465"
     },
     {
       "path": "cmake/SouiReferenceSdkConfiguration.cmake",
@@ -689,28 +701,250 @@
       "sha256": "9137548c616ed6aefc57d890ff93aa8e0f9d69a450d692e7cc833dcca2f66457"
     },
     {
+      "path": "demos/scratch/.gitignore",
+      "normalization": "lf",
+      "bytes": 32,
+      "sha256": "4064daee3906cf45986987ab04e78d6eab6d0c77bcc18231fb8133fe3579af48"
+    },
+    {
+      "path": "demos/scratch/Build.ps1",
+      "normalization": "lf",
+      "bytes": 2288,
+      "sha256": "635e3ddfa0e778b36d5a3887278324c531a0c1b8712ef0db4a2da0bfb24e8d3a"
+    },
+    {
+      "path": "demos/scratch/CMakeLists.txt",
+      "normalization": "lf",
+      "bytes": 1941,
+      "sha256": "5fe668d0a41a378dc1859794b6c47deb563f0899e4addda26390d30b7a8dd024"
+    },
+    {
+      "path": "demos/scratch/Compress-Package.ps1",
+      "normalization": "lf",
+      "bytes": 671,
+      "sha256": "0817bac3c8dad470397bf2f4194a66951e4bae8671daa9a91210c9b0a4d1c484"
+    },
+    {
+      "path": "demos/scratch/Package.ps1",
+      "normalization": "lf",
+      "bytes": 996,
+      "sha256": "f30749190293f8fbcc49538332c3660ecf6186051c8fedde0c683d079d843396"
+    },
+    {
+      "path": "demos/scratch/README.md",
+      "normalization": "lf",
+      "bytes": 7870,
+      "sha256": "2dac1aace9eb5035021c23500cd4dae3670a58658f532a54530a3a713422612d"
+    },
+    {
+      "path": "demos/scratch/Start.cmd",
+      "normalization": "lf",
+      "bytes": 299,
+      "sha256": "8780827733559d3fb135db295709f212c0f69eb370ff5b1a82a1034025ef1e8c"
+    },
+    {
+      "path": "demos/scratch/app/application.manifest",
+      "normalization": "lf",
+      "bytes": 644,
+      "sha256": "6441a7e560e0f6f85eabffb9c0ad845624df096cabad134b26113f11d3615ea9"
+    },
+    {
+      "path": "demos/scratch/app/main.cpp",
+      "normalization": "lf",
+      "bytes": 16133,
+      "sha256": "abc8708597adab9e2376f94d2f03c552a29b7d99a396cd85d629e3240822163c"
+    },
+    {
+      "path": "demos/scratch/app/project_file_save.h",
+      "normalization": "lf",
+      "bytes": 9172,
+      "sha256": "29162d834db715a9ad3ba5fede78d3de07a7100dcd6fa8c6100f31fa3a098613"
+    },
+    {
+      "path": "demos/scratch/app/project_file_save_tests.cpp",
+      "normalization": "lf",
+      "bytes": 5114,
+      "sha256": "caa7d77892dc9726799994aecd91abbaf2caadb509bc729cb7e8a39b775827b6"
+    },
+    {
+      "path": "demos/scratch/deploy.mjs",
+      "normalization": "lf",
+      "bytes": 9399,
+      "sha256": "2c74fcd4e69e21f1424054df2e8eac89bad043856e50eceea1cf76037817d84b"
+    },
+    {
+      "path": "demos/scratch/electron-comparison/README.md",
+      "normalization": "lf",
+      "bytes": 2597,
+      "sha256": "24979dcdfd2c4da273840c9d7dde8eb990399dfd87d2d1bd1ee7a539fe8b3a8d"
+    },
+    {
+      "path": "demos/scratch/electron-comparison/main.cjs",
+      "normalization": "lf",
+      "bytes": 12823,
+      "sha256": "4423722680d0b6be5fc22571a3d03ba59ec26a916f180c2e62b8a6a0c3596444"
+    },
+    {
+      "path": "demos/scratch/electron-comparison/preload.cjs",
+      "normalization": "lf",
+      "bytes": 456,
+      "sha256": "aa6e75a41afc000782bb5459f576c3567acf902fedbbe5c217518e0d3ae2ca48"
+    },
+    {
+      "path": "demos/scratch/electron-comparison/summarize.cjs",
+      "normalization": "lf",
+      "bytes": 7300,
+      "sha256": "58cbe8f013279925849ed7d8e6abe55cb1ecba6b42d98fefb5d444a4166faaa8"
+    },
+    {
+      "path": "demos/scratch/package.mjs",
+      "normalization": "lf",
+      "bytes": 8222,
+      "sha256": "c267539b33b826d1ccdb0b21fe46a609f4eaf901f1dbb37a0b5e1d95e8193289"
+    },
+    {
+      "path": "demos/scratch/upstream/README.md",
+      "normalization": "lf",
+      "bytes": 2713,
+      "sha256": "7a7ffa5f15d4d77713af0fb878fd61c8b956cdcc3665e55fa3ad6af72ad6dae2"
+    },
+    {
+      "path": "demos/scratch/upstream/build.mjs",
+      "normalization": "lf",
+      "bytes": 7315,
+      "sha256": "f24b6d985bb25e33895501e31d90efb8658d00f58dbf713a31e38efc3a02ca4a"
+    },
+    {
+      "path": "demos/scratch/upstream/provenance.mjs",
+      "normalization": "lf",
+      "bytes": 856,
+      "sha256": "11b5329a45cb227c503f384ec04eae5933f3d7442756454c9e5cf6d4d7f04761"
+    },
+    {
+      "path": "demos/scratch/upstream/targets-reducer.js",
+      "normalization": "lf",
+      "bytes": 1940,
+      "sha256": "109d9542ea658d6daf93fc1bc8c4effcc0192ed4dc29aa24fe8974b7f0334d48"
+    },
+    {
+      "path": "demos/scratch/upstream/targets-reducer.test.mjs",
+      "normalization": "lf",
+      "bytes": 1509,
+      "sha256": "0e232085191dc94e69d9f9a880a3b406a314452144e89981cf23e6d2cb194086"
+    },
+    {
+      "path": "demos/scratch/verification.md",
+      "normalization": "lf",
+      "bytes": 2964,
+      "sha256": "4629fe387b7d74f9339f354008f51272182c9b4bad0ab70c0917f3677efa72a1"
+    },
+    {
+      "path": "demos/scratch/verify-performance.cjs",
+      "normalization": "lf",
+      "bytes": 4137,
+      "sha256": "43d7abf0a0904a48df1a3123270d69ad645024546ef9e35343c34da9fa97fa05"
+    },
+    {
+      "path": "demos/scratch/verify-web.cjs",
+      "normalization": "lf",
+      "bytes": 4256,
+      "sha256": "68712c4b7c24222acea75649632d0fcaa4b8ff98e6d7dbdcf4c0b91a2dc16e1c"
+    },
+    {
+      "path": "demos/scratch/web/app.css",
+      "normalization": "lf",
+      "bytes": 4505,
+      "sha256": "9c01f3db6e474b7218bb52e6f89704323954b6fc96befeff50f71b40da80bae1"
+    },
+    {
+      "path": "demos/scratch/web/app.js",
+      "normalization": "lf",
+      "bytes": 12238,
+      "sha256": "a411421d55b7e5ffca375dd17cde971d634d23d2f3d7e40c030c04c6b488fc86"
+    },
+    {
+      "path": "demos/scratch/web/build.mjs",
+      "normalization": "lf",
+      "bytes": 6698,
+      "sha256": "200f55c6bd63b4706b4a80036dbb7d4ee473b91127897718eb8fa6685a1b413d"
+    },
+    {
+      "path": "demos/scratch/web/index.html",
+      "normalization": "lf",
+      "bytes": 3880,
+      "sha256": "1420e9177af9f7c1014182952ca2ac351e8f0585c3ebf91870f2a6275c01b020"
+    },
+    {
+      "path": "demos/scratch/web/lessons.js",
+      "normalization": "lf",
+      "bytes": 2154,
+      "sha256": "aafca540f446a09e28c66db4736fff744927c006ea258385b7aa70e1f7c62fa9"
+    },
+    {
+      "path": "demos/scratch/web/offline-assets.mjs",
+      "normalization": "lf",
+      "bytes": 6967,
+      "sha256": "464a6af4413e1b5e472c74c67e0d1302ba974827bf9dec541b7dce3d1ac88bd3"
+    },
+    {
+      "path": "demos/scratch/web/package-lock.json",
+      "normalization": "lf",
+      "bytes": 211,
+      "sha256": "81d93f4b0798c8d5ec78c10d8414bf00fc733d272f98b3644e5c60d1f8de0cd6"
+    },
+    {
+      "path": "demos/scratch/web/package.json",
+      "normalization": "lf",
+      "bytes": 177,
+      "sha256": "8b5e622e622e5baf053bdfa726dec18bde208c9baeb308b1f891b906e947c098"
+    },
+    {
+      "path": "demos/scratch/web/performance-meter.js",
+      "normalization": "lf",
+      "bytes": 18931,
+      "sha256": "0810b8b43862abffc43d9dde6fb6a010f3ad09881db4d6b548906f0627c7e582"
+    },
+    {
+      "path": "demos/scratch/web/performance-meter.test.mjs",
+      "normalization": "lf",
+      "bytes": 12841,
+      "sha256": "785992c1399b891d034510268b5b29e298130466ba5051424568ed8d65498c96"
+    },
+    {
+      "path": "demos/scratch/web/performance-scenes.js",
+      "normalization": "lf",
+      "bytes": 11583,
+      "sha256": "9a82c59449c42c02b722be0f962bfd7cf6e919cfb6c8b2cf6a5ae231c6151744"
+    },
+    {
+      "path": "demos/scratch/web/vendor-lock.json",
+      "normalization": "lf",
+      "bytes": 435,
+      "sha256": "0600e5a0043c37d13588088322e14293c80f441810bd5b40e0943b939a1fa99a"
+    },
+    {
       "path": "demos/workbench/CMakeLists.txt",
       "normalization": "lf",
-      "bytes": 208,
-      "sha256": "a797a9998a660fb173e6c5d8ed32551a7caada40111e32fe640a1255e888cb01"
+      "bytes": 810,
+      "sha256": "321fed11e7fa06c2f37f1eacfeb71c46498de800c16919dcca895e8e8e1c8e4f"
     },
     {
       "path": "demos/workbench/README.md",
       "normalization": "lf",
-      "bytes": 4007,
-      "sha256": "e6434acfbfea0cf0adbc95a671f623b33eb229d6ff1fea4814718b23d20bff6a"
+      "bytes": 5589,
+      "sha256": "9bff9347a9518bfa2bb3720ff19a1aef34307e077f8a8e648c818996b39b0237"
     },
     {
       "path": "demos/workbench/app/main.cpp",
       "normalization": "lf",
-      "bytes": 49564,
-      "sha256": "0e8747961fb0b30ada200740a9ea68d87fd71fc925d2818d606a1c8c24487a5a"
+      "bytes": 64482,
+      "sha256": "802ff91ad0e3e0a4f526dca35a5bfac81730532fc160b308376c9cd79a407f7a"
     },
     {
       "path": "demos/workbench/app/resident_controller.h",
       "normalization": "lf",
-      "bytes": 33048,
-      "sha256": "68812caaae52e9eea1e08495595d246e5bc1b53a222923a721d04a37176f9835"
+      "bytes": 35384,
+      "sha256": "acec7a966cf769f2b4871ea8a8017f7c5f0f1cb955d2975d0d1a2ca16015b460"
     },
     {
       "path": "demos/workbench/app/resident_shutdown_policy.h",
@@ -733,8 +967,8 @@
     {
       "path": "demos/workbench/fixtures/README.md",
       "normalization": "lf",
-      "bytes": 914,
-      "sha256": "275292c95c56d509907e2bac252106978e1c8db48d3aa5ceaa2ae293d4300af1"
+      "bytes": 1383,
+      "sha256": "814ff21227f23f699af41d63d28aaf3d929de59f1e98333f9e162c2381628cad"
     },
     {
       "path": "demos/workbench/fixtures/fileinsight-fixture-alt/EMPTY",
@@ -865,8 +1099,8 @@
     {
       "path": "demos/workbench/integration/demo_bridge_adapter.cpp",
       "normalization": "lf",
-      "bytes": 117319,
-      "sha256": "c6c8bc96c263753b951722b9fb1405ba44fe22d1989ff33cb6e3fa2809e6b130"
+      "bytes": 117309,
+      "sha256": "6436cab867a473689e535cbff627c2075f27b76d9824cc585fbe0fb35adbf04b"
     },
     {
       "path": "demos/workbench/integration/demo_bridge_adapter.h",
@@ -1555,8 +1789,8 @@
     {
       "path": "demos/workbench/web/apps/demo/src/main.ts",
       "normalization": "lf",
-      "bytes": 19277,
-      "sha256": "a650481c9fae08b100ea9dfdf42f0d27336c15e3f02e42b6cae34083b2353e51"
+      "bytes": 19379,
+      "sha256": "1706b3d6f54e6bf46c3378a9e61065aa42225b0c6e13a50477548fca546bb19d"
     },
     {
       "path": "demos/workbench/web/apps/demo/src/media/aurora-4k-sample.mp4",
@@ -1657,8 +1891,8 @@
     {
       "path": "demos/workbench/web/apps/react/main.tsx",
       "normalization": "lf",
-      "bytes": 55166,
-      "sha256": "4452f37e6898794141a8eeae4a0f03e6c433bad794f229aa4a3fb2c2eaa40f9f"
+      "bytes": 55272,
+      "sha256": "16ff996b82543ebff8bdd30a2e82a840f07ace785928498874f2cf45deee015b"
     },
     {
       "path": "demos/workbench/web/apps/react/media-workbench.css",
@@ -1853,12 +2087,6 @@
       "sha256": "670d9743542cae3ea7ebe36af56bd53648b0a1126162e78d81a32934a711302e"
     },
     {
-      "path": "demos/workbench/web/public/media/aurora-poster.png",
-      "normalization": "none",
-      "bytes": 21227,
-      "sha256": "cb3250f293b9c4cc4fabe180b0e5e292cc93db5e3b9b03b0f0e6df1c882d1ef6"
-    },
-    {
       "path": "demos/workbench/web/react.html",
       "normalization": "lf",
       "bytes": 351,
@@ -1873,8 +2101,8 @@
     {
       "path": "demos/workbench/web/vite.config.ts",
       "normalization": "lf",
-      "bytes": 1552,
-      "sha256": "e30f2bf695ebd23301ab979da120ee3595b1a4dea198be68470fe331ea2ffd68"
+      "bytes": 2181,
+      "sha256": "d6818845fd2e53e0ee8dfefd7ae0a68ab3865586fe6612379a648a50c76818d6"
     },
     {
       "path": "docs/acceptance/0.5-compiler-tail-evidence.md",
@@ -2347,8 +2575,8 @@
     {
       "path": "docs/adr/0057-exclusive-webview2-runtime-exit-watch.md",
       "normalization": "lf",
-      "bytes": 19783,
-      "sha256": "d94e75cd97a39b5cddb605ad1b94fc2593797860ff9431989e27a8c46ee537d3"
+      "bytes": 21763,
+      "sha256": "dab70eb0e924e9f42939c6a4ab823eebf03184c68c6e189f965a57c6a13636ab"
     },
     {
       "path": "docs/adr/0058-gui-effect-owner-dispatch.md",
@@ -2705,10 +2933,154 @@
       "sha256": "9e4d7a1128ddd7defeaf659784f3a6a007fedeafaf63f5958cb5b23d7d6c4a2a"
     },
     {
+      "path": "docs/adr/0118-miniblink-nonblocking-unmount.md",
+      "normalization": "lf",
+      "bytes": 34042,
+      "sha256": "23ff4881714b7c8b8d2b50cf8afeefb1d371819e3e0a663f33ba56a0952b4372"
+    },
+    {
+      "path": "docs/adr/0119-offline-web-build-profiles.md",
+      "normalization": "lf",
+      "bytes": 5869,
+      "sha256": "09dbe5451787e38b5f25aa2e717921982cef63e2617f108703cee277b8e26f6c"
+    },
+    {
+      "path": "docs/adr/0120-miniblink-nonblocking-reload.md",
+      "normalization": "lf",
+      "bytes": 5944,
+      "sha256": "722b9f9c6f62d3b3efbe51c43dd01a2c5061e6b089f79fccbbf661e19f7941a1"
+    },
+    {
+      "path": "docs/adr/0121-webview2-invocation-correlation.md",
+      "normalization": "lf",
+      "bytes": 4731,
+      "sha256": "d448dd4f5c0f5eacf7a2c6bb1ec87b4f9d7306aebea3c38a9e502e07c2fab062"
+    },
+    {
+      "path": "docs/adr/0122-webview2-stage0-native-admission.md",
+      "normalization": "lf",
+      "bytes": 7200,
+      "sha256": "0ff581cc3b538a3894be4dc74e47f0bd7b36180290f764c1d714a0fe71d612e5"
+    },
+    {
+      "path": "docs/adr/0123-public-devtools-candidate.md",
+      "normalization": "lf",
+      "bytes": 7187,
+      "sha256": "0882dcda398988c08f0aa16f2f77bba340ce41d34fbfd0148d5eb4aaba570651"
+    },
+    {
+      "path": "docs/adr/0124-web-targets-and-size-analysis.md",
+      "normalization": "lf",
+      "bytes": 3892,
+      "sha256": "de69d13c65e6ccf2f25f5b771c5aac0ee02dd6451c0118d916f2cbff676a0b2a"
+    },
+    {
+      "path": "docs/adr/0125-runtime-manifests-and-bundles.md",
+      "normalization": "lf",
+      "bytes": 2935,
+      "sha256": "f42c72235acbeee3424b880a713ac01636d5b5bb4d80bbe2dcf5f1eb2ce6c8e5"
+    },
+    {
+      "path": "docs/adr/0126-optional-compression-profiles.md",
+      "normalization": "lf",
+      "bytes": 2700,
+      "sha256": "89051895ee9c7ecb7a7d19834173843d4dcef5d583edd41313ddb356dab63f76"
+    },
+    {
+      "path": "docs/adr/0127-automatic-renderer-host.md",
+      "normalization": "lf",
+      "bytes": 3002,
+      "sha256": "ecde1a54fb2925712b9a3d9bdff46980df7e3fcd70adb6a511738e46c92a56b6"
+    },
+    {
+      "path": "docs/adr/0128-controlled-cpu-presentation.md",
+      "normalization": "lf",
+      "bytes": 3000,
+      "sha256": "ca96be22e8ee919c3d510263894ab5d14700e9021e572a32c57c60b0893effc6"
+    },
+    {
+      "path": "docs/adr/0129-native-host-window-menus.md",
+      "normalization": "lf",
+      "bytes": 3333,
+      "sha256": "b42837d175a222b1219c8399e98e81a3e78845828030592034808373facfb7aa"
+    },
+    {
+      "path": "docs/adr/0130-bounded-legacy-source-maps.md",
+      "normalization": "lf",
+      "bytes": 3350,
+      "sha256": "013f280949f426e7b9f24b3e1d6ab18d524f55d1cfed9a895630585be38c85b0"
+    },
+    {
+      "path": "docs/adr/0131-native-view-lifetime-observation.md",
+      "normalization": "lf",
+      "bytes": 2965,
+      "sha256": "ebfc8d213046e41f7d300f5bdb7fca814271818d3f2e435b92a40dc903343d17"
+    },
+    {
+      "path": "docs/adr/0132-passive-owned-job-cohorts.md",
+      "normalization": "lf",
+      "bytes": 4466,
+      "sha256": "9a44aa9eec3b9eb4eb23a4bb8ae3d49b145a318f89faca172b46f0dff37704e6"
+    },
+    {
+      "path": "docs/adr/0133-webview2-native-resource-observation.md",
+      "normalization": "lf",
+      "bytes": 2939,
+      "sha256": "ba6bbfe86b8f119d91a9bc8c4001c954c8979cc949f729f2283257bb6557232e"
+    },
+    {
+      "path": "docs/adr/0134-controlled-inspector-keyboard-snapshot.md",
+      "normalization": "lf",
+      "bytes": 3293,
+      "sha256": "7b0665bc9cd32e082fcb4e72f3387043b394c73b9280d479648d68622f5e3f1e"
+    },
+    {
+      "path": "docs/adr/0135-owned-local-resource-origin.md",
+      "normalization": "lf",
+      "bytes": 11033,
+      "sha256": "3e91d28f763b755b4cdf400875fcb2998e15493a6d7e11f7dd3432f71971caca"
+    },
+    {
+      "path": "docs/adr/0136-local-editor-sandbox.md",
+      "normalization": "lf",
+      "bytes": 2597,
+      "sha256": "ae7e35d88e587a093ab0ab256e6ba6503dac2836ad2dc915a286644a7ab8316c"
+    },
+    {
+      "path": "docs/adr/0137-miniblink-deadline-scheduler.md",
+      "normalization": "lf",
+      "bytes": 3982,
+      "sha256": "3651f4aeedba900a120d6e6581ad210e7c2f5f28692772d3410f82c13efa843b"
+    },
+    {
+      "path": "docs/adr/0138-miniblink-frame-presentation.md",
+      "normalization": "lf",
+      "bytes": 4746,
+      "sha256": "11a4fe0f911f3de9b1186a1fa2845d4433e7c7a85efa13eca9ab2a73eddd15f7"
+    },
+    {
+      "path": "docs/adr/0139-webview2-scratch-performance.md",
+      "normalization": "lf",
+      "bytes": 3980,
+      "sha256": "73d30fd2534770a6cf26f1fb1d0c6a4446d1534f066bda83920bd3aefcbbe2d7"
+    },
+    {
+      "path": "docs/adr/0140-performance-candidate-size-and-source.md",
+      "normalization": "lf",
+      "bytes": 2431,
+      "sha256": "38dae880b37ece886b589827e14deb1b0c82d575cb34c141dc121f4142586d09"
+    },
+    {
+      "path": "docs/adr/0141-input-ending-capacity.md",
+      "normalization": "lf",
+      "bytes": 4621,
+      "sha256": "1be2e90683aca54ebe158905f684d848dc24727f1153d523055559e9304997d1"
+    },
+    {
       "path": "docs/adr/README.md",
       "normalization": "lf",
-      "bytes": 7647,
-      "sha256": "304eb3dd1750f639c80ad4a30f0ffa711167b4e1fbe455ea9bd467891cf2c444"
+      "bytes": 8859,
+      "sha256": "fd464628d4ae2e73b6e7e2f6e664d1796d592e4d03fda30f325d41d2b79307af"
     },
     {
       "path": "docs/adr/llvm-validation-profile.draft.md",
@@ -2719,26 +3091,56 @@
     {
       "path": "docs/api.md",
       "normalization": "lf",
-      "bytes": 37571,
-      "sha256": "04acb20b9005c5c6d30281922c7dbfb39749f5e30e8c2bce5d22545a6b1e0db8"
+      "bytes": 45651,
+      "sha256": "b82fcf227c6dfdac6e6bafe3490f4c46ea13e4ebf4d427343b85ea3b8574339f"
     },
     {
       "path": "docs/architecture.md",
       "normalization": "lf",
-      "bytes": 8342,
-      "sha256": "b917cdc233652b64a3318e16b63d952d8e2063e8d35f4ae0e1cf0c98e6ad90bf"
+      "bytes": 8679,
+      "sha256": "6873b86bb7395922c78de1696d6eece2dc84616657ad49e66cdc3f4a9daea024"
+    },
+    {
+      "path": "docs/assets/readme-architecture.svg",
+      "normalization": "lf",
+      "bytes": 3046,
+      "sha256": "213eef2e9ba8bb41f4f911e39d790e6331afd504b0208daf137ebacb9aa98c3f"
+    },
+    {
+      "path": "docs/assets/readme-hero.svg",
+      "normalization": "lf",
+      "bytes": 4752,
+      "sha256": "3b1638048449636d55dfab25a9ce18edb37b29355addf48a017d2c7b60ccbf75"
+    },
+    {
+      "path": "docs/auto-backend.md",
+      "normalization": "lf",
+      "bytes": 3870,
+      "sha256": "f9d540036c17c2b39a2ca7cba2c6ecf7fde2cf72bc350ea417a43986a0673729"
     },
     {
       "path": "docs/build.md",
       "normalization": "lf",
-      "bytes": 9810,
-      "sha256": "54238e7425f005b83612edea25a1e216e651693609260d02b22ab8f4c6c63751"
+      "bytes": 12968,
+      "sha256": "87ed7870a7bdaf4ed2cc74cecc1bcbf9d54b5471b78afa38b59a52e2a24ab958"
+    },
+    {
+      "path": "docs/compression-profiles.md",
+      "normalization": "lf",
+      "bytes": 5805,
+      "sha256": "e3a1547e5649e422100f719de89f0b6d6e32ea5b75a2114b842972f87899bb03"
     },
     {
       "path": "docs/developer-workflow.md",
       "normalization": "lf",
-      "bytes": 8685,
-      "sha256": "66a14fb13dcb52054691e2c710def9bb720bbc97c4aa1a9faade90c2c65bc20b"
+      "bytes": 8867,
+      "sha256": "bcb8a4f5c065be3ec70cfe2ef835baebf16a8b6779e4e6298ae35feaa15b2cdf"
+    },
+    {
+      "path": "docs/devtools.md",
+      "normalization": "lf",
+      "bytes": 23645,
+      "sha256": "13b55c0ec83f4fbca784182c43df9c71d0a201b414420f296cd9d9a3e40fde87"
     },
     {
       "path": "docs/getting-started.md",
@@ -2795,6 +3197,48 @@
       "sha256": "5f42510d0fa3111e2ef7dd181d8c519edda2c2063bdfbfa37d5977f7027f7928"
     },
     {
+      "path": "docs/performance/README.md",
+      "normalization": "lf",
+      "bytes": 3191,
+      "sha256": "0e4199eb0767708654a20e2de0430a0a68b856d82fdc4d088ee84253ce85e888"
+    },
+    {
+      "path": "docs/performance/render-handoff.md",
+      "normalization": "lf",
+      "bytes": 5426,
+      "sha256": "75ac623b1a2805fe01365b4d5a2b9e69cc2963345476a08f4f641f8a64506281"
+    },
+    {
+      "path": "docs/performance/scheduler-handoff.md",
+      "normalization": "lf",
+      "bytes": 6250,
+      "sha256": "dc8b6296cf20238398840a8fdc61fd28d12811005dd95c86f24fdb85e397c98a"
+    },
+    {
+      "path": "docs/performance/size-gate.md",
+      "normalization": "lf",
+      "bytes": 2687,
+      "sha256": "6a47526d57fcfa13c33df11ab61ef1f96e84a4820fdebba7da3647e9e297ff7e"
+    },
+    {
+      "path": "docs/performance/static-review.md",
+      "normalization": "lf",
+      "bytes": 2943,
+      "sha256": "62a6f31cc0460a7c11367109fc8ef3c70bbc0adb3c286bfaf8d4958376662891"
+    },
+    {
+      "path": "docs/performance/validation-handoff.md",
+      "normalization": "lf",
+      "bytes": 6376,
+      "sha256": "09eab29f941382c3caa89fec92eec86b97c338f1f0497aac9dc5c4ffa9c6498f"
+    },
+    {
+      "path": "docs/performance/webview2-scratch-handoff.md",
+      "normalization": "lf",
+      "bytes": 4939,
+      "sha256": "4848282d26106bf1598a719541771c99799b1a38ea28478ea01130615db8c110"
+    },
+    {
       "path": "docs/releases/0.3.0-preview.10.md",
       "normalization": "lf",
       "bytes": 6045,
@@ -2815,8 +3259,8 @@
     {
       "path": "docs/releasing.md",
       "normalization": "lf",
-      "bytes": 9062,
-      "sha256": "265acc8410bfdd946fd6f1fefc7e42e6b042640ffe1136354393ce2891ff4c61"
+      "bytes": 11780,
+      "sha256": "1337b242c272b5459f19ff3374d451e4a305d4434cd040ff09fbf56e8476afba"
     },
     {
       "path": "docs/roadmap/0.3-foundation.md",
@@ -2859,6 +3303,12 @@
       "normalization": "lf",
       "bytes": 5265,
       "sha256": "463e8a41d1b53d12f556397f42ef1dab6244495b77443b217ac99da2cd941876"
+    },
+    {
+      "path": "docs/runtime-packaging.md",
+      "normalization": "lf",
+      "bytes": 5356,
+      "sha256": "5f8bc2da19013dd8c52ebe2bc9d98f91a5aaa92ef5bf6de5c045c67e6eaa43ca"
     },
     {
       "path": "docs/standard-build.md",
@@ -2907,6 +3357,42 @@
       "normalization": "lf",
       "bytes": 10379,
       "sha256": "090f622e6d2d50b8768c1478d846077cbb2ab23b38be628bad34e4999eee44ac"
+    },
+    {
+      "path": "docs/web-targets.md",
+      "normalization": "lf",
+      "bytes": 3683,
+      "sha256": "7fad01f91d6628d6f99a801820eb0d6d8c92a4a4f77ed1738ec96a5b5d362782"
+    },
+    {
+      "path": "experiments/scratch-webview2-baseline/Build.ps1",
+      "normalization": "lf",
+      "bytes": 1162,
+      "sha256": "436b37d8207022a12dadc1ddb74c8e7935f19a178b8d3dfc78c0023a83785262"
+    },
+    {
+      "path": "experiments/scratch-webview2-baseline/CMakeLists.txt",
+      "normalization": "lf",
+      "bytes": 1947,
+      "sha256": "a34295a547d912aabe4b4639e3e809a0a24fb1b94c5958bd4568be0731e9ae6c"
+    },
+    {
+      "path": "experiments/scratch-webview2-baseline/README.md",
+      "normalization": "lf",
+      "bytes": 6617,
+      "sha256": "4ba4668dcc25d39e3348c1be8ae64beacf0de7562961b853c4b78f87a93e7820"
+    },
+    {
+      "path": "experiments/scratch-webview2-baseline/main.cpp",
+      "normalization": "lf",
+      "bytes": 33968,
+      "sha256": "c96def214d95cf101db6e7afedaaed66e668cf40c6df611e04997fdc4d26a136"
+    },
+    {
+      "path": "experiments/scratch-webview2-baseline/preload.h.in",
+      "normalization": "lf",
+      "bytes": 95,
+      "sha256": "9e279414d20ee813fbf470db86609ac2f6a224ba4839249c06327bcc7f4069c2"
     },
     {
       "path": "experiments/webview2-consumer/Build.ps1",
@@ -3007,8 +3493,8 @@
     {
       "path": "sdk/CMakeLists.txt",
       "normalization": "lf",
-      "bytes": 4688,
-      "sha256": "a86f8be14b5f9032ed7a2f6499f22c686c0531bb8c011ae8bfb433a45efdd4c3"
+      "bytes": 4998,
+      "sha256": "81dbd0bcad86b6c56a2584367bf2b15328fdbf4ef2e665353fbfabf7f7df1136"
     },
     {
       "path": "sdk/accessibility/uia/CMakeLists.txt",
@@ -3031,14 +3517,14 @@
     {
       "path": "sdk/bindings/react/package-lock.json",
       "normalization": "lf",
-      "bytes": 3286,
-      "sha256": "aee6a5e957ffb10772b949cc855d0bb0fc6f394f461feab6da88a3dc43d22d28"
+      "bytes": 3335,
+      "sha256": "ccbeded128a6f4005d97a60d2b3a5e4ab67f94bea1ad7e3fdbc9cfe83ca3c648"
     },
     {
       "path": "sdk/bindings/react/package.json",
       "normalization": "lf",
-      "bytes": 623,
-      "sha256": "28d124765fe82ceacc7eb9214cae3284827e270dd6a89a85b1cd89583db8b2d9"
+      "bytes": 652,
+      "sha256": "4849ff173a14bc38065daa3514cbc5ef2175d9a200deeffdaf293afedce97287"
     },
     {
       "path": "sdk/bindings/react/src/index.ts",
@@ -3067,14 +3553,14 @@
     {
       "path": "sdk/bindings/vue/package-lock.json",
       "normalization": "lf",
-      "bytes": 11632,
-      "sha256": "037b6fd310bc207216c98690c29eb2c1edfac67eef48799fa0e6c6d14bd73a9c"
+      "bytes": 11681,
+      "sha256": "0c1f427a96e4613ba368346e8d410aca8ef186697b5c1236f91a59a1a521d949"
     },
     {
       "path": "sdk/bindings/vue/package.json",
       "normalization": "lf",
-      "bytes": 570,
-      "sha256": "aa09cd68ef2823f0ef55fe2907817fd61c3a39d387de6357b184b5acf5aaac20"
+      "bytes": 599,
+      "sha256": "7fc7f0d5d7dc5a2f7775aa0d4538902aec3d674f6a3abd68346ff21dd7b9de09"
     },
     {
       "path": "sdk/bindings/vue/src/index.ts",
@@ -3091,14 +3577,20 @@
     {
       "path": "sdk/cmake/SouiSdkConfig.cmake.in",
       "normalization": "lf",
-      "bytes": 496,
-      "sha256": "4ade2d8f6043159876ba10a4f068faa501a03daedd90ebdcef96686ef567672b"
+      "bytes": 547,
+      "sha256": "90994b13d7caf80e82f9b6d06bbd9e1755b2df0c74780870cd72c994b8497555"
     },
     {
       "path": "sdk/include/soui/bridge_adapter.h",
       "normalization": "lf",
       "bytes": 1374,
       "sha256": "e172cdf617b5fc0b95dac51c43e2126d98607f41a23c77f00bb3f11d39142079"
+    },
+    {
+      "path": "sdk/include/soui/devtools.h",
+      "normalization": "lf",
+      "bytes": 3389,
+      "sha256": "c21289bfa9fe128f623282ec7243791536a092255fabd288f5bc0414c14baac9"
     },
     {
       "path": "sdk/include/soui/diagnostics/cache_observation.h",
@@ -3139,8 +3631,8 @@
     {
       "path": "sdk/include/soui/diagnostics/runtime_metrics.h",
       "normalization": "lf",
-      "bytes": 6876,
-      "sha256": "61f27473cdbbfa08699592d5dabdef803a5986019e83162fee7596919ac5c4c5"
+      "bytes": 8334,
+      "sha256": "762893c33dba1fd41154d8aa020da5783bc40e4d9d9f562949b06fe8b1741620"
     },
     {
       "path": "sdk/include/soui/diagnostics/storage_observation.h",
@@ -3155,16 +3647,34 @@
       "sha256": "de9dbace491c62d8470db28a66d5ed2df8cbaf3703e591dff4274df021f99266"
     },
     {
+      "path": "sdk/include/soui/diagnostics/view_observation_abi.h",
+      "normalization": "lf",
+      "bytes": 1377,
+      "sha256": "160a7e4a1584a83c67dafafa6923107888ef43a6bc055ad534b8d486cb30e400"
+    },
+    {
+      "path": "sdk/include/soui/diagnostics/view_observation_binding.h",
+      "normalization": "lf",
+      "bytes": 3972,
+      "sha256": "005a7cc975b54ddedcfe8da3a5e07a312935627119a9003333d7f9ea0eb86774"
+    },
+    {
       "path": "sdk/include/soui/host/async_result_slot.h",
       "normalization": "lf",
       "bytes": 2015,
       "sha256": "54fb76d1b8faae67cf2baf7b4c5fef1599a337b0bd60fb3cfb45c2f81ced6840"
     },
     {
+      "path": "sdk/include/soui/host/auto_webview_host.h",
+      "normalization": "lf",
+      "bytes": 3291,
+      "sha256": "d3d5755ea1ac283c5e2cc0983deaa356ad4912199b7ee693e10fb1857df1e365"
+    },
+    {
       "path": "sdk/include/soui/host/engine_thread.h",
       "normalization": "lf",
-      "bytes": 3804,
-      "sha256": "bf0c81be5a47682ed1e7e4495bf416f5ed67c8c8aa0c73afa6fd3b985fc48787"
+      "bytes": 3900,
+      "sha256": "1ab2211979d23e1cd4eaa895a68a50d658b9210e8c53b5e08410b482ccf67e94"
     },
     {
       "path": "sdk/include/soui/host/frame_pacer.h",
@@ -3193,20 +3703,20 @@
     {
       "path": "sdk/include/soui/host/soui_miniblink_host.h",
       "normalization": "lf",
-      "bytes": 12855,
-      "sha256": "38093a0d12bc8adc8485bbf54d21328c9db6cbbeddc6fbd3948e9f3f17682f90"
+      "bytes": 16236,
+      "sha256": "ccf27dc428d42fc76edab3c413b72e6f0b365222024f92a7ce15ea95a1dd4f72"
     },
     {
       "path": "sdk/include/soui/host/webview2_host.h",
       "normalization": "lf",
-      "bytes": 4640,
-      "sha256": "54a38dbe47cab5ea48b42b16ee04849cc3a809de4194336696fbb6f0a6817289"
+      "bytes": 6409,
+      "sha256": "fb343717249276caac3852547ee806987d41a52ab2b00bab62d9378250a1b336"
     },
     {
       "path": "sdk/include/soui/host/webview_host.h",
       "normalization": "lf",
-      "bytes": 5239,
-      "sha256": "f1bfc4af1fa30f90a7507bb5f61afe6d47a139caa49cf6be97c76d989413ec32"
+      "bytes": 9198,
+      "sha256": "e626bd194eae268f7cae72f88afe443745773c93917efac29d487fd5e28eec74"
     },
     {
       "path": "sdk/include/soui/host/window_chrome.h",
@@ -3361,14 +3871,26 @@
     {
       "path": "sdk/include/soui/version.h",
       "normalization": "lf",
-      "bytes": 240,
-      "sha256": "547709b24e8da2fe484d3f6f03a0c54bd7e7b26deb69e19aef3f94a2e36d9eec"
+      "bytes": 250,
+      "sha256": "b6b0cab023d8dff668474683a973b4b1a2c30e6b81c53217ab5cd4188d559890"
+    },
+    {
+      "path": "sdk/renderers/auto/auto_host_policy.h",
+      "normalization": "lf",
+      "bytes": 1780,
+      "sha256": "00f5dd0ee5c4921e569435a6976cc344056c5d0f471ac2448ca91cc57b0f8dcd"
+    },
+    {
+      "path": "sdk/renderers/auto/auto_webview_host.cpp",
+      "normalization": "lf",
+      "bytes": 16642,
+      "sha256": "3f7721c6cd840a269205f0d4ca37a29e7d659c2fd1d218b28f41a371556f1249"
     },
     {
       "path": "sdk/renderers/webview2/CMakeLists.txt",
       "normalization": "lf",
-      "bytes": 1869,
-      "sha256": "83675564863e66029344a66f080a53785fc105df0f2fe415135bd4dfd23fe15f"
+      "bytes": 2649,
+      "sha256": "d4e26327fd89a41c4b21baebe61cae963fbd8312aaa99206ab946085d90ed942"
     },
     {
       "path": "sdk/renderers/webview2/dependency.json",
@@ -3377,16 +3899,34 @@
       "sha256": "de654c9666da5e7b36eaadbaacd297c49942bc6ba8bcd9f6fee141f0308956e5"
     },
     {
+      "path": "sdk/renderers/webview2/loader_policy.h",
+      "normalization": "lf",
+      "bytes": 8988,
+      "sha256": "cb80c48b48ab965b3a5e9505e4a828d4ca9ee650360de6aa790db9173a269ed0"
+    },
+    {
       "path": "sdk/renderers/webview2/native-preload.js",
       "normalization": "lf",
-      "bytes": 3979,
-      "sha256": "b7e7b9d86af6c7b5bd089760c4b6ca78756337ca28472b2df9c45e9e825fbf39"
+      "bytes": 4406,
+      "sha256": "06d2b2715ad1352f9c88fd7be23d64876cb483aae7757e7e75fc025714826884"
+    },
+    {
+      "path": "sdk/renderers/webview2/native_observation.h",
+      "normalization": "lf",
+      "bytes": 2474,
+      "sha256": "ee2d5c80aaa68b8af4d63052e46970e6e7a981153a295b1bd1641ecce13437db"
+    },
+    {
+      "path": "sdk/renderers/webview2/owner_work_policy.h",
+      "normalization": "lf",
+      "bytes": 1914,
+      "sha256": "8bba6fe3bd5b85a3f1e817ac376479b2adbbc406c17a0e97a813cbd47d2cba28"
     },
     {
       "path": "sdk/renderers/webview2/preparation_lifetime.h",
       "normalization": "lf",
-      "bytes": 2085,
-      "sha256": "f5308dd4617cd3c5c795b17bf250ef47ac4705910b4516980d15c7b2ebb969d9"
+      "bytes": 2329,
+      "sha256": "663b0a98868501788a8971a38c19dfccf49c84888edbf03107a3703e76297568"
     },
     {
       "path": "sdk/renderers/webview2/request_capacity.h",
@@ -3395,16 +3935,76 @@
       "sha256": "69d9e8bd5f9957c16671989a7679363b1472eae95ead0ff3029d6b10559d9a42"
     },
     {
+      "path": "sdk/renderers/webview2/stage0_devtools.h",
+      "normalization": "lf",
+      "bytes": 2122,
+      "sha256": "8b896991c2789c4b495641a1fb6f2964cf3269c72898c9069bbba20eda51621a"
+    },
+    {
       "path": "sdk/renderers/webview2/webview2_host.cpp",
       "normalization": "lf",
-      "bytes": 65791,
-      "sha256": "8e0766bd4d95117518be7faa62b23867603d2ddc2f69cc65cc89765f8b7ba9e1"
+      "bytes": 114182,
+      "sha256": "d848ea9ac89e912b1eb51d9da23d10bdc9221220f7ce4e5402bad1ff74612d78"
     },
     {
       "path": "sdk/renderers/webview2/webview2_preload.h.in",
       "normalization": "lf",
       "bytes": 142,
       "sha256": "2ec8a06fce206950e8adf28f26b573d6fbe2d634413c63fc49d381621165f79b"
+    },
+    {
+      "path": "sdk/resources/devtools/miniblink/README.md",
+      "normalization": "lf",
+      "bytes": 1716,
+      "sha256": "fb98786078e704fa005d423b215b6740b2cfb658fbbf75a3b6e41ccabd13e777"
+    },
+    {
+      "path": "sdk/resources/devtools/miniblink/overrides/front_end/bindings/CompilerScriptMapping.js",
+      "normalization": "lf",
+      "bytes": 29613,
+      "sha256": "5d8b2f95d5654b5c0329268b047f8c7c4768fb186355f55ac12abb8be8d1edba"
+    },
+    {
+      "path": "sdk/resources/devtools/miniblink/overrides/front_end/devtools.js",
+      "normalization": "lf",
+      "bytes": 24045,
+      "sha256": "6902f129390a89a68fe2499a69e2f11cae9c9aa3458358a40243ce76b2be6d44"
+    },
+    {
+      "path": "sdk/resources/devtools/miniblink/overrides/front_end/host/InspectorFrontendHost.js",
+      "normalization": "lf",
+      "bytes": 13495,
+      "sha256": "d820b047f23763fef4c66236ea8190490b1ddf23047b2af821a5c79aed1c8fcd"
+    },
+    {
+      "path": "sdk/resources/devtools/miniblink/overrides/front_end/sdk/DebuggerModel.js",
+      "normalization": "lf",
+      "bytes": 49623,
+      "sha256": "e918ccdbe5d037c7bedbeb09cac159b6a1f540ee6edd1c007fdd2adf7310296f"
+    },
+    {
+      "path": "sdk/resources/devtools/miniblink/overrides/front_end/sdk/InspectorBackend.js",
+      "normalization": "lf",
+      "bytes": 34397,
+      "sha256": "b3264776a989f5c7ba5be0b771cf6b6f5ae4b5f9e9c2c28a6de1f113b9d051a6"
+    },
+    {
+      "path": "sdk/resources/devtools/miniblink/overrides/front_end/sdk/SourceMap.js",
+      "normalization": "lf",
+      "bytes": 34302,
+      "sha256": "ecdf09b65bd9cfa320c2062bc893786bf3c1863809a2225f710f3e2c5a4c589d"
+    },
+    {
+      "path": "sdk/resources/devtools/miniblink/overrides/front_end/sources/SourcesPanel.js",
+      "normalization": "lf",
+      "bytes": 56147,
+      "sha256": "3d7c77957d152269ebf413713881e1f4249c06a8aa741a9144c976c0b53e5d2b"
+    },
+    {
+      "path": "sdk/resources/devtools/miniblink/source.json",
+      "normalization": "lf",
+      "bytes": 2062,
+      "sha256": "9bd47bca3d5207f0367bf7d7affa1afeb969ea9a00f33c61d9aa868f7da7edf0"
     },
     {
       "path": "sdk/src/host/bridge_pending_script.h",
@@ -3455,6 +4055,72 @@
       "sha256": "3748809de72958d466ec01b99980b59b7ebc02d655eb001e455bb60fc52a78b8"
     },
     {
+      "path": "sdk/src/host/devtools/callback_observation.h",
+      "normalization": "lf",
+      "bytes": 1013,
+      "sha256": "04219541575d985a9eea500f37c7834426957a8d13efa071ac56c38ba6edcff7"
+    },
+    {
+      "path": "sdk/src/host/devtools/frontend_snapshot.cpp",
+      "normalization": "lf",
+      "bytes": 8669,
+      "sha256": "68619a57ded36f3079fbd78ad461944670fa2244038fb21ed37fa849a45ad8e3"
+    },
+    {
+      "path": "sdk/src/host/devtools/frontend_snapshot.h",
+      "normalization": "lf",
+      "bytes": 3700,
+      "sha256": "f4f0383beca455d16e52f27264210b387c418f7627591ed8708a8416792d296d"
+    },
+    {
+      "path": "sdk/src/host/devtools/kernel_abi.h",
+      "normalization": "lf",
+      "bytes": 4153,
+      "sha256": "e4b469276b1d5a6926be7f8277b7496b04af5fc4b3aaafb2b4c86ddd6881084f"
+    },
+    {
+      "path": "sdk/src/host/devtools/miniblink_frontend_cleanup.h",
+      "normalization": "lf",
+      "bytes": 4019,
+      "sha256": "1c4fc10056224d691c1aa327089420b099dcf0bd51b69b9c5f2c27f0094dd946"
+    },
+    {
+      "path": "sdk/src/host/devtools/miniblink_session.cpp",
+      "normalization": "lf",
+      "bytes": 35774,
+      "sha256": "5599dae17e659fa45e4080cb39d96fd9e69bc4272fc871f1290f24d48821959d"
+    },
+    {
+      "path": "sdk/src/host/devtools/miniblink_session.h",
+      "normalization": "lf",
+      "bytes": 1824,
+      "sha256": "ec33cb01e674323a55b585fb7a6f34aed7120de99eb7c3a5b1deaa8b90b7d131"
+    },
+    {
+      "path": "sdk/src/host/devtools/offline_snapshot.cpp",
+      "normalization": "lf",
+      "bytes": 23105,
+      "sha256": "7ae02af3489b396bd0cba3610d5f363b223d6d281035b1f0c26bd8af25a71264"
+    },
+    {
+      "path": "sdk/src/host/devtools/offline_snapshot.h",
+      "normalization": "lf",
+      "bytes": 3658,
+      "sha256": "9f2e50c2b47a365178985e58a79ac3d7d218216b847248e4544b0cb398b7c4e1"
+    },
+    {
+      "path": "sdk/src/host/devtools/snapshot_callback_abi.h",
+      "normalization": "lf",
+      "bytes": 1674,
+      "sha256": "5d999cbd0642b3a194120d885d8eda2e35e3edac1b5650ea590d04900fcbc172"
+    },
+    {
+      "path": "sdk/src/host/devtools_host.cpp",
+      "normalization": "lf",
+      "bytes": 22777,
+      "sha256": "f952f73f8c0e3d9b5dc4d7ded2b1057c8110b383f02df99883365c0379d4664b"
+    },
+    {
       "path": "sdk/src/host/diagnostic_result.h",
       "normalization": "lf",
       "bytes": 1007,
@@ -3463,8 +4129,8 @@
     {
       "path": "sdk/src/host/engine_admission.h",
       "normalization": "lf",
-      "bytes": 2770,
-      "sha256": "ae977004985aa410e7dafb3cbd27b7c0cd6d1e3862f77870400232e47834cc5f"
+      "bytes": 5843,
+      "sha256": "8808f8a336cae9b2410a8971be84798992d9526339412bf8db88ce73316538a5"
     },
     {
       "path": "sdk/src/host/engine_startup_test_hooks.h",
@@ -3475,8 +4141,20 @@
     {
       "path": "sdk/src/host/engine_thread.cpp",
       "normalization": "lf",
-      "bytes": 21344,
-      "sha256": "f3f9c407b08edfb97161cd2d06da0963fc9ff2d53732406969f103393ecba35d"
+      "bytes": 22348,
+      "sha256": "b3decc455978d8f5e953058dfd14228762c0603ef3534969f164b211640b2676"
+    },
+    {
+      "path": "sdk/src/host/input_admission.h",
+      "normalization": "lf",
+      "bytes": 6740,
+      "sha256": "931b74f09d26f430d3af0b165095c0edc0803ff918a5f7781d1932deff85b868"
+    },
+    {
+      "path": "sdk/src/host/input_delivery_policy.h",
+      "normalization": "lf",
+      "bytes": 989,
+      "sha256": "2f5bcdc9534cdcab55faf596aad63842d82ff38ea39bfb4cf1547953d81c628d"
     },
     {
       "path": "sdk/src/host/interaction_protocol.cpp",
@@ -3485,10 +4163,40 @@
       "sha256": "5e4fc94c99e12173ea4533fa842c73bff858584bebdd59c371c6dbeb3e040268"
     },
     {
+      "path": "sdk/src/host/local_resource_snapshot.cpp",
+      "normalization": "lf",
+      "bytes": 26875,
+      "sha256": "042c2f709254531086f2d55a716d914fa27cfd72d60e86983870aebcb403f52b"
+    },
+    {
+      "path": "sdk/src/host/local_resource_snapshot.h",
+      "normalization": "lf",
+      "bytes": 4659,
+      "sha256": "e608d8f1d0e382002fe4ab604a3a4e7e907e1bc5d428b11bea1be57e1e8da66c"
+    },
+    {
       "path": "sdk/src/host/main_context_gate.h",
       "normalization": "lf",
       "bytes": 4348,
       "sha256": "d19008ab7e414132f24c62982bb9907c81ece7734cef3cac70ffc761b8de3d2f"
+    },
+    {
+      "path": "sdk/src/host/miniblink_local_resource_abi.h",
+      "normalization": "lf",
+      "bytes": 3460,
+      "sha256": "04d3f629363dd0444e0a2137a8989df4e90baccf39737f21fc8b8885a6c83b85"
+    },
+    {
+      "path": "sdk/src/host/owned_local_resource_session.cpp",
+      "normalization": "lf",
+      "bytes": 24180,
+      "sha256": "3422ad23d09ec48a7904b130cc1b337e8dd5439bc048849023c2e3ad4d8e6f59"
+    },
+    {
+      "path": "sdk/src/host/owned_local_resource_session.h",
+      "normalization": "lf",
+      "bytes": 4540,
+      "sha256": "fc2b9cbfd70317b9dc80ac915e5d8d99fafcd7ed2259771f63ab6cce0b1b89df"
     },
     {
       "path": "sdk/src/host/runtime_profile.cpp",
@@ -3511,14 +4219,20 @@
     {
       "path": "sdk/src/host/soui_miniblink_host.cpp",
       "normalization": "lf",
-      "bytes": 200875,
-      "sha256": "aa1e2906a00ddad91af83a7eab87b8b22aead6804e3d7a532ffe0c88b74a5bb5"
+      "bytes": 249912,
+      "sha256": "6791240cbb82a708201430af2d9c89cdf1885e259593b47785f64f96a190db9e"
     },
     {
       "path": "sdk/src/host/source_kernel_api.h",
       "normalization": "lf",
-      "bytes": 2943,
-      "sha256": "cc4361a31bd69d14c55fba84959fa5d6df7827792bdd9180f8ab5f014f03c952"
+      "bytes": 3253,
+      "sha256": "45a47a8333221e5bc3c87f1f4db52fe344055244247e3ecc89dd0390eea22da2"
+    },
+    {
+      "path": "sdk/src/host/stage0_host_context.h",
+      "normalization": "lf",
+      "bytes": 899,
+      "sha256": "26e952ac80383371b70c78c0e542c89b2db8473186ff29cfc3a3b42ed79c12fb"
     },
     {
       "path": "sdk/src/json_bridge.cpp",
@@ -3685,14 +4399,14 @@
     {
       "path": "sdk/web/package-lock.json",
       "normalization": "lf",
-      "bytes": 715,
-      "sha256": "93daed232967e7a8005dc64b9217bcaba5e9f516eee92ebeec436873ff6e7295"
+      "bytes": 735,
+      "sha256": "0b4171dda75c355ccba1661204ca85569db476b711d49cf46f2156d86f70f458"
     },
     {
       "path": "sdk/web/package.json",
       "normalization": "lf",
-      "bytes": 412,
-      "sha256": "e70dfe8bca3746d189d564e5613720b1359a0f137686fc7a6a3a68afab57bb9b"
+      "bytes": 422,
+      "sha256": "2486d12f17efb674fd839c022ff44544dfdfbce026523b174883cac85de57863"
     },
     {
       "path": "sdk/web/src/action-contract-core.d.ts",
@@ -3805,8 +4519,8 @@
     {
       "path": "templates/desktop-app/app/main.cpp",
       "normalization": "lf",
-      "bytes": 8987,
-      "sha256": "c8bc903ebae52e56dd3cd466113afa891046388124262fd47cab697c90aff0fc"
+      "bytes": 16298,
+      "sha256": "4f71f9c879b141786533514f51b4204f6178cdeb357eb8021932dad2ae4ef4a1"
     },
     {
       "path": "templates/desktop-app/contracts/actions.json",
@@ -3907,14 +4621,14 @@
     {
       "path": "templates/desktop-app/web/vite.config.ts",
       "normalization": "lf",
-      "bytes": 432,
-      "sha256": "d33a84349c478c59498b7645e0768e46d7c0fcfb4cbcc8a86bafcdf329a87773"
+      "bytes": 807,
+      "sha256": "bad4c2abb9947efa9a51ea3b2fc6ab7a721be236aba464113a53314dcf35747a"
     },
     {
       "path": "templates/modern-app/CMakeLists.txt",
       "normalization": "lf",
-      "bytes": 1672,
-      "sha256": "e2b8d6873d6ca3a966b7c81e8ca329670975b58cf7aaa11ce524568c3f5f9fa7"
+      "bytes": 2364,
+      "sha256": "ede1df8e5bfb6d89bd36255b3d35fe7e27dea012e0cd15610aa4bf9df24b59e0"
     },
     {
       "path": "templates/modern-app/README.md",
@@ -3937,8 +4651,8 @@
     {
       "path": "templates/modern-app/app/main.cpp",
       "normalization": "lf",
-      "bytes": 10238,
-      "sha256": "fe570394bfda6da06eec818f88d7c4730952aad64fbcc31b30cf3bc493d6c2fb"
+      "bytes": 15110,
+      "sha256": "19c827a61ae490315d10111d079a76a7410a48d5a62ab7e7be625d5bd38a26a5"
     },
     {
       "path": "templates/modern-app/contracts/actions.json",
@@ -4009,14 +4723,14 @@
     {
       "path": "templates/modern-app/web/vite.config.ts",
       "normalization": "lf",
-      "bytes": 370,
-      "sha256": "0b4a88f26380346674e5a17cf0158bd68d1dd72eefbfd6ca2951835b581863dd"
+      "bytes": 577,
+      "sha256": "0e996228844dae293c02c5cfae8fe2163b93b758d13f356e6a7fb07520dd4c82"
     },
     {
       "path": "tests/acceptance-app/CMakeLists.txt",
       "normalization": "lf",
       "bytes": 962,
-      "sha256": "ba6bee5371c6ae76c4a556e6fc1d1959dea888d728edddb5041a2c517d59a0c1"
+      "sha256": "8ee87643452f149170844092d2c0b9bd24946681fa633dd7a7897993b1d81d73"
     },
     {
       "path": "tests/acceptance-app/README.md",
@@ -4505,6 +5219,12 @@
       "sha256": "994f5982f3d366d1d4674dd84c5a2e680b88a2d0afd894447aba9e44f30eab5d"
     },
     {
+      "path": "tests/benchmark/owned-process-cohort.test.cjs",
+      "normalization": "lf",
+      "bytes": 6584,
+      "sha256": "380862eb4fbc774949a101876131664c61233f06788c9258ed8f18e3430845d2"
+    },
+    {
       "path": "tests/benchmark/owned-process-runner.test.cjs",
       "normalization": "lf",
       "bytes": 13783,
@@ -4855,8 +5575,8 @@
     {
       "path": "tests/gui-bindings/package-lock.json",
       "normalization": "lf",
-      "bytes": 32149,
-      "sha256": "09f010bce6cb44ee17ee4d6883a04573afc535ddc6bf22be9ffdd922cd3f93ab"
+      "bytes": 32217,
+      "sha256": "8b71498692328cd2541f9de5669091977c0ed3684d4073bf4c7b92ab3c307e4a"
     },
     {
       "path": "tests/gui-bindings/package.json",
@@ -4903,8 +5623,8 @@
     {
       "path": "tests/gui-bindings/react18/package-lock.json",
       "normalization": "lf",
-      "bytes": 4301,
-      "sha256": "b421e25a74a1aef75e7ec63253f98638686d0619daa9776a33d5ae4c19427652"
+      "bytes": 4340,
+      "sha256": "3ad7112b4890505b55806eed6e0d75a6c6f0493386e0809099157b4257eb2647"
     },
     {
       "path": "tests/gui-bindings/react18/package.json",
@@ -4981,14 +5701,20 @@
     {
       "path": "tests/native/CMakeLists.txt",
       "normalization": "lf",
-      "bytes": 33213,
-      "sha256": "45fb1104ffd09b8b63af8ed9ddbdb9036c7c5fcb876c5af1b4c911a11da0d81d"
+      "bytes": 44874,
+      "sha256": "05b5ab8dfbe8e404922d43e931bee6792a1ca4ea52416e86eab5e8cc2265d5a6"
     },
     {
       "path": "tests/native/action_contract_tests.cpp",
       "normalization": "lf",
       "bytes": 17353,
       "sha256": "61013d006af589ee174c0cb6100d715a828aa4a00a32aa0dad1c0fb428f31298"
+    },
+    {
+      "path": "tests/native/auto_host_tests.cpp",
+      "normalization": "lf",
+      "bytes": 17130,
+      "sha256": "1c3a4df3afaba02517e8dc40861964674238e4eabdb2e7027c5c86ac4a919e17"
     },
     {
       "path": "tests/native/bridge_budget_tests.cpp",
@@ -5037,6 +5763,24 @@
       "normalization": "lf",
       "bytes": 13500,
       "sha256": "980c56190072d41dd329e4ab971e71257475c5491b871fc37521902a7788a8ac"
+    },
+    {
+      "path": "tests/native/devtools_frontend_cleanup_tests.cpp",
+      "normalization": "lf",
+      "bytes": 11074,
+      "sha256": "8e8bfc80bc1bf07236c078ab3b630f2b1c5d27dd8c487da61773f5f4865b61c4"
+    },
+    {
+      "path": "tests/native/devtools_host_tests.cpp",
+      "normalization": "lf",
+      "bytes": 13627,
+      "sha256": "002d7cb6ba9014b1d165f0ba686137912e3a1802a6c060a33c3e3fcce56d30af"
+    },
+    {
+      "path": "tests/native/devtools_keyboard_snapshot_tests.cpp",
+      "normalization": "lf",
+      "bytes": 7131,
+      "sha256": "0f187ce8061f7570ba50a7e06a3d485d4b45ec3a1a727e25872686be8ce6d96c"
     },
     {
       "path": "tests/native/directory_dialog_tests.cpp",
@@ -5119,8 +5863,8 @@
     {
       "path": "tests/native/host_adapter_tests.cpp",
       "normalization": "lf",
-      "bytes": 23260,
-      "sha256": "2e3d13f8454dd1d7188fa00435884417b519a8341a0eee2e62d3124df12aab0c"
+      "bytes": 26050,
+      "sha256": "09e0c57b4f4dffd9b2e6a43b8dc6d895179f21c133bd0667fd60e28bd45be843"
     },
     {
       "path": "tests/native/host_startup_fence/.gitattributes",
@@ -5183,6 +5927,18 @@
       "sha256": "730ccec0e82d6f04e8564c45aeacd4783f45697ca112a8be89b0c433c0f9dc2d"
     },
     {
+      "path": "tests/native/input_admission_tests.cpp",
+      "normalization": "lf",
+      "bytes": 11006,
+      "sha256": "d2272ccdfc0781b24f2f729bdb00f519332ef6f27552a7d79f1b072e3bb25dfc"
+    },
+    {
+      "path": "tests/native/input_delivery_policy_tests.cpp",
+      "normalization": "lf",
+      "bytes": 1326,
+      "sha256": "4f244ae6d24eec7dc7d7ba0e9b6b0e06acb2bb958b20e45aad5bdb922864a1c9"
+    },
+    {
       "path": "tests/native/json_bridge_endpoint/CMakeLists.txt",
       "normalization": "lf",
       "bytes": 1085,
@@ -5225,6 +5981,30 @@
       "sha256": "64d8255a91f42da2875c8dfa75b471f08f808becd58dd6c6922995900c912d70"
     },
     {
+      "path": "tests/native/local_editor_policy_tests.cpp",
+      "normalization": "lf",
+      "bytes": 5004,
+      "sha256": "67633125a07a9ed46f9af7c9db3969138f3f94bfbac863584f7ca652490629d8"
+    },
+    {
+      "path": "tests/native/local_resource_host_tests.cpp",
+      "normalization": "lf",
+      "bytes": 23073,
+      "sha256": "099efc8c28cc44e1aa3709066593890dd5d9a424976e9e85e500f886876e4d77"
+    },
+    {
+      "path": "tests/native/local_resource_snapshot_tests.cpp",
+      "normalization": "lf",
+      "bytes": 18041,
+      "sha256": "81edd50dbb40f43d6a57a98cb3718b9a3614ce85ed2042fda2f4747bb73d3a05"
+    },
+    {
+      "path": "tests/native/local_resource_state_tests.cpp",
+      "normalization": "lf",
+      "bytes": 19971,
+      "sha256": "1d03380bed3f11979313c21dbe67441d4c2901da8c48d966d0ab3e6ec1d359bf"
+    },
+    {
       "path": "tests/native/local_task_family_tests.cpp",
       "normalization": "lf",
       "bytes": 46204,
@@ -5243,6 +6023,12 @@
       "sha256": "1384266501dd330c9e313d8a61ac917be1a445bc14e6f571c7ff0fb7b7c94b50"
     },
     {
+      "path": "tests/native/miniblink_frame_policy_tests.cpp",
+      "normalization": "lf",
+      "bytes": 5831,
+      "sha256": "eaa79f072b266d4d47ec1601b0ebbeb46b79d52e9c16fe486931c2dcf89dfde1"
+    },
+    {
       "path": "tests/native/miniblink_header_abi.test.cjs",
       "normalization": "lf",
       "bytes": 1222,
@@ -5253,6 +6039,12 @@
       "normalization": "lf",
       "bytes": 553,
       "sha256": "45d9d2f4149ce5e8f89172f0a52c0b42efd9bab00f6470913f81b8dd7aacb700"
+    },
+    {
+      "path": "tests/native/miniblink_unmount_tests.cpp",
+      "normalization": "lf",
+      "bytes": 15893,
+      "sha256": "d210a2e9deaa824bb03c52902a2a498c32f8750d38711ff97e1d457366247eec"
     },
     {
       "path": "tests/native/native_owner_metrics_tests.cpp",
@@ -5269,8 +6061,8 @@
     {
       "path": "tests/native/renderer_consumer_tests.cpp",
       "normalization": "lf",
-      "bytes": 10592,
-      "sha256": "3915b8163fcae73ee7163135bd36a3ef23a6f4e10d582a4886b02125dcdc5015"
+      "bytes": 10594,
+      "sha256": "d4b0bc3efb64cc988c6d92d4ef84bd1363cf8008237ce4c0d464f574c9ff6182"
     },
     {
       "path": "tests/native/renderer_model_consumer_tests.cpp",
@@ -5281,20 +6073,20 @@
     {
       "path": "tests/native/request_close/CMakeLists.txt",
       "normalization": "lf",
-      "bytes": 8325,
-      "sha256": "4c74467ea0349b1a2a5efb0f8893fa5c972ad770023c8c861ee2e0d08318f1a6"
+      "bytes": 8650,
+      "sha256": "784fcc1d572a3ca3e59b3d7ebc5ded6b036e30cbb8b4e2f078de38061444aaac"
     },
     {
       "path": "tests/native/request_close/README.md",
       "normalization": "lf",
-      "bytes": 2145,
-      "sha256": "b750a75c5fe0d5242ec08b5aafc84e0b87e129c34fe7c3914e33ffcc22e9b855"
+      "bytes": 4502,
+      "sha256": "84f670ceb910b5894b500048e5502e07f25311311175a82f26dc8c7fb5ab9c8f"
     },
     {
       "path": "tests/native/request_close/request_close_tests.cpp",
       "normalization": "lf",
-      "bytes": 19488,
-      "sha256": "5e0290ba3faa55c8ee2b0b110fc7b67c0a6391e4b96e60e67cbf3b8f5029b90e"
+      "bytes": 37727,
+      "sha256": "26d61b8dab35ada56e8a0660b818e591df05053ceaade31ee50bc7a514291a35"
     },
     {
       "path": "tests/native/resident_shutdown/CMakeLists.txt",
@@ -5335,8 +6127,8 @@
     {
       "path": "tests/native/scheduler_fairness_tests.cpp",
       "normalization": "lf",
-      "bytes": 3230,
-      "sha256": "b4bddb35fc2dc19894a5669b730a87bab532db0c9929c48453d3851eea553422"
+      "bytes": 6307,
+      "sha256": "1f8c9776cdcb5fefa7129ff0e1b6f3dfc303c157a9093c0c372e0f8098c4b1b7"
     },
     {
       "path": "tests/native/scope_capacity/.gitattributes",
@@ -5383,14 +6175,14 @@
     {
       "path": "tests/native/soui_dependency_tests.cpp",
       "normalization": "lf",
-      "bytes": 2674,
-      "sha256": "3626f66d81e446f197491e53f342910307f9b51e90fa7cdcb13e69e380485874"
+      "bytes": 3113,
+      "sha256": "ec14ff97613ab7fa04493c8fff5517328274526697d59fa7ff8ff44880ba09d5"
     },
     {
       "path": "tests/native/source_kernel_api_tests.cpp",
       "normalization": "lf",
-      "bytes": 6777,
-      "sha256": "ffcda61d5b818ae51cb376ea4464d24354ccb20e0dd8b80ed41c4026834729da"
+      "bytes": 9390,
+      "sha256": "1b6eb3e5938539b6a92bdcc847dbf9566102f51197ab33711ebd61c3fb7b1bda"
     },
     {
       "path": "tests/native/task-scope-regression.md",
@@ -5522,19 +6314,19 @@
       "path": "tests/native/vendor_lifetime/ctor_shell/CMakeLists.txt",
       "normalization": "lf",
       "bytes": 5693,
-      "sha256": "0e24c787273365e5727c5b53677e81a5e13907fe2a266c711d163040242f2dde"
+      "sha256": "111479dc678ce0735bc6eb579a0d56e4c45c861932edee1309cfeccd964c0600"
     },
     {
       "path": "tests/native/vendor_lifetime/ctor_shell/README.md",
       "normalization": "lf",
-      "bytes": 2475,
-      "sha256": "87549d62f4901bca3cd08b0f0fa636926dde66fac7854739421fca13360b231d"
+      "bytes": 3731,
+      "sha256": "b617d4ddeb4a49afda91645f3e09a384389c69d423c95be7b42310adb659c8b9"
     },
     {
       "path": "tests/native/vendor_lifetime/ctor_shell/constructor_tests.cpp",
       "normalization": "lf",
-      "bytes": 14410,
-      "sha256": "158329c75739764909b1e363f9fa1986fda5e383fcecf6741b40b7af30ad61e2"
+      "bytes": 16175,
+      "sha256": "40ad93d67ff3c2ddea9dc50eded1c1e62fc602998f3251175968f9658ba36f22"
     },
     {
       "path": "tests/native/vendor_lifetime/ctor_shell/extracted/web_page.h",
@@ -5545,8 +6337,8 @@
     {
       "path": "tests/native/vendor_lifetime/ctor_shell/extracted/web_view.h",
       "normalization": "lf",
-      "bytes": 4408,
-      "sha256": "ddb34c07330d9532550349bf52600f6859906638120005349823396ec33a1bc2"
+      "bytes": 4480,
+      "sha256": "4aba247d7e7ee6574d6d2a8c057cda8bf019940250aea7d0b5cae21c01f8e3a1"
     },
     {
       "path": "tests/native/vendor_lifetime/dragdata/.gitattributes",
@@ -5558,13 +6350,13 @@
       "path": "tests/native/vendor_lifetime/dragdata/CMakeLists.txt",
       "normalization": "lf",
       "bytes": 6154,
-      "sha256": "293d74b5af845614db62a130e0e8e1aba3907d9200d07bb40d3c37954dc9d177"
+      "sha256": "7dbf9278449ee3159ab3c673a32b942a6f279821610c27d4fd8ccb44cc336442"
     },
     {
       "path": "tests/native/vendor_lifetime/dragdata/README.md",
       "normalization": "lf",
-      "bytes": 2581,
-      "sha256": "d621764f281e2cc5e3e144cb5a111fa4602678d03c6366071341beac09bbbf13"
+      "bytes": 3993,
+      "sha256": "10b698876d49751f695c351d3ca66d467707fe98635424560d2cfb68fdfacd65"
     },
     {
       "path": "tests/native/vendor_lifetime/dragdata/fixture.cpp",
@@ -5629,8 +6421,8 @@
     {
       "path": "tests/native/vendor_lifetime/worker_lifetime/README.md",
       "normalization": "lf",
-      "bytes": 4268,
-      "sha256": "c6dcd1587db82860f30e8eba0d26ca75c809cc82afada71c17b862e95ec8135e"
+      "bytes": 4961,
+      "sha256": "6a9c817db6ea4391b90c6c529691aefbbff2f1ec8fe2c088f011c8ed7e438ab4"
     },
     {
       "path": "tests/native/vendor_lifetime/worker_lifetime/expect-fail-fast.cmake",
@@ -5641,14 +6433,14 @@
     {
       "path": "tests/native/vendor_lifetime/worker_lifetime/fixture.cpp",
       "normalization": "lf",
-      "bytes": 31095,
-      "sha256": "cd87cad4c7668d43ad49c1c34f12e47adc569242b045c751b87c4d261cfd93b2"
+      "bytes": 33959,
+      "sha256": "15f126d9eaac0f3c3026342d322b3dead6f4cf0b10009778a8c98e9d9d5d8a19"
     },
     {
       "path": "tests/native/vendor_lifetime/worker_lifetime/fixture_support.h",
       "normalization": "lf",
-      "bytes": 4351,
-      "sha256": "a93a946bd18e1fdb648aaf2b2757994eade08c5794170916225ae1258fa6526b"
+      "bytes": 4421,
+      "sha256": "8d8f7357a7531b1435cfaa60310208ff884d420e6cd3f177bd62887e862cb47d"
     },
     {
       "path": "tests/native/vendor_lifetime/worker_lifetime/source-bytes.cmake",
@@ -5659,8 +6451,8 @@
     {
       "path": "tests/native/vendor_lifetime/worker_lifetime/source-map.json",
       "normalization": "lf",
-      "bytes": 10924,
-      "sha256": "3c60c2dc31efd40c1a8c714e6837c77da43451c73aaba5840e77faa2edb41bd3"
+      "bytes": 10927,
+      "sha256": "36c40f25afaf1269a0f4d9cd5dbd10140c73add5176694441bce7bd7c9720e37"
     },
     {
       "path": "tests/native/vendor_lifetime/worker_lifetime/stubs/base/compiler_specific.h",
@@ -5759,6 +6551,18 @@
       "sha256": "b59ce11fe69d0c2bcd254bcf1935ae2ef7c1e384d680e6b1856f164681b2688c"
     },
     {
+      "path": "tests/native/view_observation_tests.cpp",
+      "normalization": "lf",
+      "bytes": 7134,
+      "sha256": "152d66b53d4953f225a6519a4d88d843ac98fbcab5de98506eaff4aaab5e4edc"
+    },
+    {
+      "path": "tests/native/webview2_cancelled_controller_tests.cpp",
+      "normalization": "lf",
+      "bytes": 9749,
+      "sha256": "efdc17a0acf84888b0904cc6e25553f040685f53fb103f910c524407226c9b57"
+    },
+    {
       "path": "tests/native/webview2_capacity_host/CMakeLists.txt",
       "normalization": "lf",
       "bytes": 2656,
@@ -5777,6 +6581,12 @@
       "sha256": "f43e3790c3158edffbb76302d45c8634f3e4e7f5d4a56a9239a1a22ff7ac1b71"
     },
     {
+      "path": "tests/native/webview2_native_observation_tests.cpp",
+      "normalization": "lf",
+      "bytes": 12356,
+      "sha256": "96cecffaae3e818a626327333af2affd8a9c56c02c74741d0efa27cb95f1f1d2"
+    },
+    {
       "path": "tests/native/webview2_preparation_lifetime_tests.cpp",
       "normalization": "lf",
       "bytes": 3562,
@@ -5791,8 +6601,8 @@
     {
       "path": "tests/native/webview2_request_capacity_tests.cpp",
       "normalization": "lf",
-      "bytes": 8513,
-      "sha256": "5de857c22acf41436923ac8d5f2d801c040eb1bf682caef45e90f38506d87d5b"
+      "bytes": 10731,
+      "sha256": "ee46759401014cc76044842b72243f30903df0f8918a6c4a4f291fcba0f60f06"
     },
     {
       "path": "tests/native/windows_local_endpoint/.gitattributes",
@@ -5845,8 +6655,14 @@
     {
       "path": "tests/package-consumer/CMakeLists.txt",
       "normalization": "lf",
-      "bytes": 470,
-      "sha256": "31b2debbb00fd9752195cd8cb898e4dfd4638bd327898f02c013f82891c00ed4"
+      "bytes": 754,
+      "sha256": "a92f4bba120e21f645e9cb88a7366bde9dd8a9dbf4666f831287aaadb7659356"
+    },
+    {
+      "path": "tests/package-consumer/devtools.cpp",
+      "normalization": "lf",
+      "bytes": 1914,
+      "sha256": "7a67eeaf77c2ea65fa6579e0262417d50058dcd216c14ce7073c0f7eb2e7118a"
     },
     {
       "path": "tests/package-consumer/main.cpp",
@@ -5869,8 +6685,20 @@
     {
       "path": "tests/sdk/application-package.test.cjs",
       "normalization": "lf",
-      "bytes": 5077,
-      "sha256": "be179016d59e20fee60f3663a8b64349623fda54fbe8c54d4cbab9639afd8351"
+      "bytes": 5137,
+      "sha256": "20c54eb4915f78af6fc4d8f65efdf72b9f7906913676565939135769c32f39d4"
+    },
+    {
+      "path": "tests/sdk/auto-packaging.test.cjs",
+      "normalization": "lf",
+      "bytes": 12531,
+      "sha256": "e4c669b190dbc3300c9270b2acdf58cfb3356ead23ed6f6835ff86fe0cea49c9"
+    },
+    {
+      "path": "tests/sdk/auto-smoke.test.cjs",
+      "normalization": "lf",
+      "bytes": 2413,
+      "sha256": "48c188f65b64fa5b95ecc6b98c5a6a5223f46cf2de599d6fb726a187c08fc527"
     },
     {
       "path": "tests/sdk/build-source-manifest.test.cjs",
@@ -5885,6 +6713,30 @@
       "sha256": "160a7f0043400adb97ce49918b26c19990b4ff26e7df8e5eba4751c9570887ae"
     },
     {
+      "path": "tests/sdk/compat-polyfills.test.cjs",
+      "normalization": "lf",
+      "bytes": 15580,
+      "sha256": "782a6af7ce6435546485946772589c56fe1147cb3e90bcf013a608d0775858c0"
+    },
+    {
+      "path": "tests/sdk/compression-command.test.cjs",
+      "normalization": "lf",
+      "bytes": 4905,
+      "sha256": "11c58f898587c52cec1cf14129128a5594436fcbcc4a297632b1bf6d5b8e1a31"
+    },
+    {
+      "path": "tests/sdk/compression-measurement.test.cjs",
+      "normalization": "lf",
+      "bytes": 10482,
+      "sha256": "5d6f5748e290b05a7f6ecd64e7b24b289d85e16c6d2ae305e8c20efd156ea817"
+    },
+    {
+      "path": "tests/sdk/compression-profiles.test.cjs",
+      "normalization": "lf",
+      "bytes": 13569,
+      "sha256": "7e682b29688cd64bd21debc47db41e56cfb08c7ef2e3fec0baa265e5f08029ca"
+    },
+    {
       "path": "tests/sdk/console-json.test.cjs",
       "normalization": "lf",
       "bytes": 590,
@@ -5893,8 +6745,8 @@
     {
       "path": "tests/sdk/delivery-identity.test.cjs",
       "normalization": "lf",
-      "bytes": 22005,
-      "sha256": "37460565f7438e9c00869e0d1f0186c22ebbdae2c0e3b91f510e8d5b5978a140"
+      "bytes": 27246,
+      "sha256": "9c49da95c5e8649aa8a8c469e037110e011b8e137dec83a81b05027aa0662a86"
     },
     {
       "path": "tests/sdk/dependency-evidence.test.cjs",
@@ -5907,6 +6759,30 @@
       "normalization": "lf",
       "bytes": 5264,
       "sha256": "0c072ee7112f8979b8631c29968e7804dde7b2b444815f0cef1e622c60b3d0df"
+    },
+    {
+      "path": "tests/sdk/devtools-frontend-package.test.cjs",
+      "normalization": "lf",
+      "bytes": 11871,
+      "sha256": "c359e727326f71d7f78eb874cd7f1867f747f5ca45843f4f52d187266cf7c172"
+    },
+    {
+      "path": "tests/sdk/devtools-frontend.test.cjs",
+      "normalization": "lf",
+      "bytes": 2584,
+      "sha256": "779c35cc10768e0657803a50fed7b37cd3502ab490c5244ea854f2ff9c4edc56"
+    },
+    {
+      "path": "tests/sdk/devtools-package.test.cjs",
+      "normalization": "lf",
+      "bytes": 27787,
+      "sha256": "dc23b345092737775535616732365ba91b32068f23e3df6f89cf2c4e24c83f82"
+    },
+    {
+      "path": "tests/sdk/devtools-sdk-selection.test.cjs",
+      "normalization": "lf",
+      "bytes": 9683,
+      "sha256": "6bee7687c6e586326b40aa757ee2dd8ed3dc949414f5628ef2303147569790a6"
     },
     {
       "path": "tests/sdk/fixtures/gui-bindings-delivery-preview-legacy.cjs.txt",
@@ -5923,14 +6799,14 @@
     {
       "path": "tests/sdk/gui-bindings-delivery.test.cjs",
       "normalization": "lf",
-      "bytes": 19432,
-      "sha256": "d39228a0de431ee722d090637ebb2fbd5562c7927ac7437ccab1fe31fac4713d"
+      "bytes": 28589,
+      "sha256": "61b063ae0ba1481b6b31ee9fcdad2c09fc91bdbf5c7cfac713ba39f332c4b249"
     },
     {
       "path": "tests/sdk/gui-bindings-entrypoints.test.cjs",
       "normalization": "lf",
-      "bytes": 13964,
-      "sha256": "5a4ac10f974b7045c3a7f57d713c0c7d5fc60bfadf3e4569d8a974ea51c0d77a"
+      "bytes": 14438,
+      "sha256": "a7e2e644bc18890aa34ea008c51d1d71ecb4cd509b39d71d1811de20fcf2efed"
     },
     {
       "path": "tests/sdk/host64-build-debug-observer.test.cjs",
@@ -6053,6 +6929,18 @@
       "sha256": "deda55846c68cd091bf7331f07e92bf5a51ebb9b7fecda37d1497d04dd8ab822"
     },
     {
+      "path": "tests/sdk/performance-size-gate.test.mjs",
+      "normalization": "lf",
+      "bytes": 2689,
+      "sha256": "867e20cde81e95326970f577e057018897b248dff9a2ca037a66629aaf61cf30"
+    },
+    {
+      "path": "tests/sdk/performance-zip-inventory.test.mjs",
+      "normalization": "lf",
+      "bytes": 2834,
+      "sha256": "992626d1244956c194056ec73d1982228a1522ebe1a318a82a0ee92048cc74d2"
+    },
+    {
       "path": "tests/sdk/profile-installation-integration.test.cjs",
       "normalization": "lf",
       "bytes": 4427,
@@ -6083,6 +6971,30 @@
       "sha256": "0532a94cc2a86c0d463bd081dbb3a95f900d756bd02f5736c607067e6a716fc7"
     },
     {
+      "path": "tests/sdk/runtime-build-evidence.test.cjs",
+      "normalization": "lf",
+      "bytes": 7495,
+      "sha256": "ea99821671774fcde797714db17953c973e433097af7603441947e7a03c7ae2d"
+    },
+    {
+      "path": "tests/sdk/runtime-bundle.test.cjs",
+      "normalization": "lf",
+      "bytes": 15206,
+      "sha256": "25e031eac29058fb14a31cf8ff01a40775e9b60147bd46358d2740963e7bc725"
+    },
+    {
+      "path": "tests/sdk/runtime-deployment.test.cjs",
+      "normalization": "lf",
+      "bytes": 18960,
+      "sha256": "ae74c953c982c78dd83d96263afd667ba70337da62f079656c9d42961dda58bd"
+    },
+    {
+      "path": "tests/sdk/runtime-packaging-integration.test.cjs",
+      "normalization": "lf",
+      "bytes": 14167,
+      "sha256": "9f965b2a992d4aae3e21e50bb4243b2786813b38191bca7b50eb4385fa011c2d"
+    },
+    {
       "path": "tests/sdk/sdk-build-inputs.test.cjs",
       "normalization": "lf",
       "bytes": 1054,
@@ -6097,14 +7009,20 @@
     {
       "path": "tests/sdk/sdk-package-smoke.cjs",
       "normalization": "lf",
-      "bytes": 9459,
-      "sha256": "8f7efe85a4e618c8dfe19fa5d9a68d956fec8c45c6b392162e6523ac82f8b046"
+      "bytes": 10735,
+      "sha256": "02c38a42e411eb528b7be72890ab756123ecc84c938feb5e23c4ae2d646b8557"
     },
     {
       "path": "tests/sdk/sdk-version.test.cjs",
       "normalization": "lf",
       "bytes": 4673,
       "sha256": "eea6c7663207e403ea4e536b01ce4ff46de76b1d88371b8ed8851338333604b2"
+    },
+    {
+      "path": "tests/sdk/size-report.test.cjs",
+      "normalization": "lf",
+      "bytes": 13460,
+      "sha256": "9e4a14569f8d73878025a88fe705e26b2d9302d76c21b1144da170ebd3c46041"
     },
     {
       "path": "tests/sdk/soui-llvm-entry.Tests.ps1",
@@ -6153,6 +7071,30 @@
       "normalization": "lf",
       "bytes": 8208,
       "sha256": "9a7c2e0fa0d043d03ba859666046f2c531e07d7cdf81bb44d6390016b07a7e83"
+    },
+    {
+      "path": "tests/sdk/web-build-profile-integration.test.cjs",
+      "normalization": "lf",
+      "bytes": 17670,
+      "sha256": "1a0e202f5c30a28586ee3ecfd5143f0fcd75b763c6dc6ec0527c1fd62ae90655"
+    },
+    {
+      "path": "tests/sdk/web-build-profile.test.cjs",
+      "normalization": "lf",
+      "bytes": 26251,
+      "sha256": "8630c93cecb2d165c4153032d861ffaa6c6115a1ccbbc04ef0004a49938265d3"
+    },
+    {
+      "path": "tests/sdk/web-targets-integration.test.cjs",
+      "normalization": "lf",
+      "bytes": 12188,
+      "sha256": "42401c292f039d5ace44b3d1e070c0381bcd6a97bd1d875f03852d9db7a24cbb"
+    },
+    {
+      "path": "tests/sdk/web-targets.test.cjs",
+      "normalization": "lf",
+      "bytes": 15429,
+      "sha256": "7c7dcc1457e1890bacc34db0e240bbfa2a301fcc3720fb34316ac2cf77ecbd5c"
     },
     {
       "path": "tests/session-consumer/CMakeLists.txt",
@@ -6215,6 +7157,12 @@
       "sha256": "01d587d5a4a1b03294c4edd5b6eb2436b8c6483af932eb603209a61624045b05"
     },
     {
+      "path": "tests/tooling/devtools-inline-capacity.test.cjs",
+      "normalization": "lf",
+      "bytes": 11547,
+      "sha256": "555a1f0f8392e61819d22f3808e2f7480fe1996ce644c5868589f78d5da5baa8"
+    },
+    {
       "path": "tests/tray-consumer/CMakeLists.txt",
       "normalization": "lf",
       "bytes": 616,
@@ -6249,6 +7197,24 @@
       "normalization": "lf",
       "bytes": 1018,
       "sha256": "7693cdc592c2d5895d2c6956d9c27e2d74080d0c685ca502cbe5b67ad0b44042"
+    },
+    {
+      "path": "tests/vendor_crypto/CMakeLists.txt",
+      "normalization": "lf",
+      "bytes": 3319,
+      "sha256": "c76f4ba61b368539fbfba62f2757215af5a212ecbbfe4e8ad11349233bf674d8"
+    },
+    {
+      "path": "tests/vendor_crypto/README.md",
+      "normalization": "lf",
+      "bytes": 2043,
+      "sha256": "e4e2defd9f40660add7ce9ff48f59b0f2553c2d8e032340f0cd033871c7d45f4"
+    },
+    {
+      "path": "tests/vendor_crypto/web_crypto_digestor_tests.cpp",
+      "normalization": "lf",
+      "bytes": 8264,
+      "sha256": "175638145a161191ac0d6cc2a2818aec19c9fedf6434758c35c380ff6ddcbda7"
     },
     {
       "path": "tests/web/action-contracts.test.mjs",
@@ -6331,8 +7297,8 @@
     {
       "path": "tests/web/webview2-preload.test.mjs",
       "normalization": "lf",
-      "bytes": 9156,
-      "sha256": "ca611ced3b43d945ce3d761fa7c383721126f93a88c784f0a5a43ebe43596306"
+      "bytes": 12741,
+      "sha256": "b243b75767455f219eb64f7f7ea4cbcbb4974a925b83348d2aff974e21495b8a"
     },
     {
       "path": "third_party/include/json/json.hpp",
@@ -6343,8 +7309,8 @@
     {
       "path": "third_party/include/miniblink/wke.h",
       "normalization": "lf",
-      "bytes": 70747,
-      "sha256": "5da51e29905d1b2bdd6ae8d209da55ca4698986d166a8cf04f31c6891915102e"
+      "bytes": 70971,
+      "sha256": "935a969959c40119c9c9f82a667915c490fd4e57bd98f4afb626af922feafac3"
     },
     {
       "path": "third_party/include/miniblink/wke_cursor_broker.h",
@@ -7373,6 +8339,18 @@
       "sha256": "3db633169c636e1e6cf66d8be1880179dd1aff0f2e84d18f19f180651e449676"
     },
     {
+      "path": "third_party/licenses/core-js-3.50.0/LICENSE",
+      "normalization": "none",
+      "bytes": 1134,
+      "sha256": "b87653fff2d44426ab5cd4723cee3b1364dc8d35a0acdf098c54689543123bf8"
+    },
+    {
+      "path": "third_party/licenses/core-js-3.50.0/source.json",
+      "normalization": "none",
+      "bytes": 737,
+      "sha256": "924cd08f7c8fad83a0a15dba7c4676746f15bccd18d1704999cc4fd0e34143d6"
+    },
+    {
       "path": "third_party/licenses/d52/brotli/LICENSE.txt",
       "normalization": "none",
       "bytes": 11560,
@@ -7749,6 +8727,24 @@
       "normalization": "none",
       "bytes": 1382,
       "sha256": "6d6a65b879cd7cd249a4367c0b57cce00e78c728de45056ac2a5ca1d1f528d1a"
+    },
+    {
+      "path": "third_party/licenses/npm/babel__parser-7.29.9/LICENSE",
+      "normalization": "none",
+      "bytes": 1086,
+      "sha256": "2e97627cb278aa7556fb9e8817368302301a595b6c7582512b8d74c57b773652"
+    },
+    {
+      "path": "third_party/licenses/npm/babel__parser-7.29.9/origin.json",
+      "normalization": "none",
+      "bytes": 893,
+      "sha256": "610b26028cf1f06f498f8f5e623dc645127d2682efbc82213f0c2a0f98a1453c"
+    },
+    {
+      "path": "third_party/licenses/npm/babel__parser-7.29.9/upstream-package.json.txt",
+      "normalization": "none",
+      "bytes": 1382,
+      "sha256": "fa70cca00587bdb335e8249fa40e9356ed7b7c9a4fc92b1e74245ab1b852cda1"
     },
     {
       "path": "third_party/licenses/npm/babel__runtime-7.29.7/LICENSE",
@@ -8531,6 +9527,12 @@
       "sha256": "984523ee987f4e8b72d61df37d8f1189a7077cd4b77e41a397e35593b297a29d"
     },
     {
+      "path": "third_party/licenses/soui/license.txt",
+      "normalization": "none",
+      "bytes": 1066,
+      "sha256": "c916dfd120947435beb2ef74cb77c771ad6d4a3d724433213575c0e48183791a"
+    },
+    {
       "path": "third_party/licenses/tailwindcss-3.4.17-LICENSE.txt",
       "normalization": "none",
       "bytes": 1071,
@@ -8551,8 +9553,8 @@
     {
       "path": "third_party/manifests/dependencies.json",
       "normalization": "lf",
-      "bytes": 35751,
-      "sha256": "3212f4b1c2281405da0e8ca3a359ff88903a13dae7ecf3c9df4ee7c671fda8ed"
+      "bytes": 35809,
+      "sha256": "c5ad10092edcaf980ad960e39c731768002d10ae7d1c503ec24d78c9ad8c01d1"
     },
     {
       "path": "third_party/manifests/kernel-build-050.json",
@@ -8573,10 +9575,28 @@
       "sha256": "53c8eb9fb873642c6c3272ee356c236bd3310049d920a2755f904c58e7c363c7"
     },
     {
+      "path": "third_party/manifests/kernel-reuse-devtools-060-preview7.json",
+      "normalization": "lf",
+      "bytes": 5062,
+      "sha256": "0a3df8157331017d3616c813e5fd48e6456e7a97d55be1abe00f5cac545775a8"
+    },
+    {
       "path": "third_party/manifests/license-review.json",
       "normalization": "lf",
       "bytes": 2417,
       "sha256": "7e840ab6a4d942f455a41587711cf5dfe426f0ac9acb6c329219f3263b4b7464"
+    },
+    {
+      "path": "third_party/manifests/miniblink-deadline-scheduler-20261029.json",
+      "normalization": "lf",
+      "bytes": 1505,
+      "sha256": "014ed5bf07101de016107409596b09ae8cc40d4a168d7b74c2a4787c3d8191fe"
+    },
+    {
+      "path": "third_party/manifests/miniblink-frame-presentation-20261029.json",
+      "normalization": "lf",
+      "bytes": 3537,
+      "sha256": "88227f1a5ef142daf2d82cc6ea9a72dace3fcf0e0220bc0f5f5a47a141784249"
     },
     {
       "path": "third_party/manifests/provenance/preview14/third_party/patches/miniblink/0007-mark-utf8-source-encoding.patch",
@@ -8723,10 +9743,34 @@
       "sha256": "aeb6b37d0241512b90e7a18546ec05d344f5888de633fd6e06e435aad29e121a"
     },
     {
+      "path": "third_party/patches/miniblink/0013-webcrypto-streaming-digests.patch",
+      "normalization": "lf",
+      "bytes": 5481,
+      "sha256": "bcef3a32758555b13a1fc9d697764cde5a82b4db69ff6c28444b9bbf9e5bf8d7"
+    },
+    {
+      "path": "third_party/patches/miniblink/0014-windows-system-default-font-fallback.patch",
+      "normalization": "lf",
+      "bytes": 2058,
+      "sha256": "b264f1c7b30359e0b44f485bffb4b0005ae2b2e78a5d48e5661e7f8b6d1083f9"
+    },
+    {
+      "path": "third_party/patches/miniblink/0016-frame-presentation-and-resource-wakes.patch",
+      "normalization": "lf",
+      "bytes": 50428,
+      "sha256": "31a73e18afb2a8324d24af091bd33d771de4979e0cde342d7bde3deab3d80fbd"
+    },
+    {
+      "path": "third_party/patches/miniblink/0017-deadline-owner-scheduling.patch",
+      "normalization": "lf",
+      "bytes": 36999,
+      "sha256": "b98c2bf2f5e79c5a0c9c3b670e0e56917ed2a00d3299f6d4decea61dc9d8a117"
+    },
+    {
       "path": "third_party/patches/miniblink/README.md",
       "normalization": "lf",
-      "bytes": 10783,
-      "sha256": "9b53822d5f48da5ca2722c861c2f4cba6fcd010ca8b3b5a29671697068a5f335"
+      "bytes": 14341,
+      "sha256": "fd43a9357a2eb170a26e22c63067cddda43429d41a9807ba4f1cd4aa7c47144f"
     },
     {
       "path": "third_party/patches/soui/0001-llvm-conformance.patch",
@@ -10249,8 +11293,8 @@
     {
       "path": "third_party/sources/miniblink/build/miniblink/miniblink.vcxproj",
       "normalization": "lf",
-      "bytes": 1140769,
-      "sha256": "10414179b772caf1de85910026b63cb3447f0db42be9522814c3fe4fe5c723d8"
+      "bytes": 1141533,
+      "sha256": "537ffce973ee8c0b1f4cdc00c1baeed2d9140250794b3101cddbf53e01439dce"
     },
     {
       "path": "third_party/sources/miniblink/build/miniblink/miniblink.vcxproj.filters",
@@ -10583,6 +11627,12 @@
       "sha256": "923ce74e8d0c5cf6c13a3b0f91f01d55624642ec8eb1c883abacc749746e6c44"
     },
     {
+      "path": "third_party/sources/miniblink/cc/raster/CompletionWaiters.h",
+      "normalization": "lf",
+      "bytes": 1291,
+      "sha256": "b53486c93703fe4e656caa5c02dbd2a9c81bdbf2c6ea9fdd5b09deac3651be52"
+    },
+    {
       "path": "third_party/sources/miniblink/cc/raster/RasterFilters.cpp",
       "normalization": "lf",
       "bytes": 12055,
@@ -10609,14 +11659,14 @@
     {
       "path": "third_party/sources/miniblink/cc/raster/RasterTask.cpp",
       "normalization": "lf",
-      "bytes": 20703,
-      "sha256": "82d81eb667cc35959a094608f519b67cb988f58b8baf168534c070dcde33a91b"
+      "bytes": 21207,
+      "sha256": "36b6d8635b69c856e5a98e5751b2ba11f6260b558835d7b4ec1f196af39efe35"
     },
     {
       "path": "third_party/sources/miniblink/cc/raster/RasterTask.h",
       "normalization": "lf",
-      "bytes": 5517,
-      "sha256": "1884bef9532bbb94ab6b07958a1981605693d58a338fede6dfe5de9199fe242e"
+      "bytes": 5761,
+      "sha256": "64c27b8deb490103dad6447f90377a64308e1cfa7955948e6520ac704104c192"
     },
     {
       "path": "third_party/sources/miniblink/cc/raster/RasterTaskClient.h",
@@ -10705,8 +11755,8 @@
     {
       "path": "third_party/sources/miniblink/cc/trees/ActionsFrameGroup.cpp",
       "normalization": "lf",
-      "bytes": 8835,
-      "sha256": "4f339a05d2710439d0af96fa0b75e215758ebf80e838eac8bac4b49f95c9a9b1"
+      "bytes": 8881,
+      "sha256": "b05a4eaf15d24fa5bd43ada98dc9542755a9b4ebf5efbac769a4a5698267d024"
     },
     {
       "path": "third_party/sources/miniblink/cc/trees/ActionsFrameGroup.h",
@@ -10715,10 +11765,22 @@
       "sha256": "0417fecdd92b2fe866ca8c6651fa759f0a075df09112c6be10ca55b174ef93fb"
     },
     {
+      "path": "third_party/sources/miniblink/cc/trees/DirtyRegionPolicy.h",
+      "normalization": "lf",
+      "bytes": 1411,
+      "sha256": "32fe5bd24fa86f8bb4573cd1da5fea12d3a71118a8eefb4ce6a28f63a86abc46"
+    },
+    {
       "path": "third_party/sources/miniblink/cc/trees/DrawProperties.h",
       "normalization": "lf",
       "bytes": 4251,
       "sha256": "03dda8628f1b222cd27137fb9b070483c61f754bf667ab60bd15d4df704cafec"
+    },
+    {
+      "path": "third_party/sources/miniblink/cc/trees/FrameSchedulingPolicy.h",
+      "normalization": "lf",
+      "bytes": 974,
+      "sha256": "c37151d98f7b1fc13b754f644429684b0b71e983f1855f0b8bbc72daf6e019ce"
     },
     {
       "path": "third_party/sources/miniblink/cc/trees/GpuSkiaSurface.cpp",
@@ -10747,20 +11809,20 @@
     {
       "path": "third_party/sources/miniblink/cc/trees/LayerTreeHost.cpp",
       "normalization": "lf",
-      "bytes": 113163,
-      "sha256": "86a442496cff3160042a0633cf81cb2a0ae9f2eb030f32196d5d99f5ae795aeb"
+      "bytes": 120937,
+      "sha256": "61f5295afee17631f461749f2e45307ef044ca5cc6a5f4ab61475f59a69114d5"
     },
     {
       "path": "third_party/sources/miniblink/cc/trees/LayerTreeHost.h",
       "normalization": "lf",
-      "bytes": 13291,
-      "sha256": "3284a256e54259b86ea706c6447d2872b9a6d6ff23c8ca197a2563062fd50d20"
+      "bytes": 13989,
+      "sha256": "9fe3b8f538034f55f26a85d28ebcdf6d7952dd2812c74be144d157a736498fa3"
     },
     {
       "path": "third_party/sources/miniblink/cc/trees/LayerTreeHostClient.h",
       "normalization": "lf",
-      "bytes": 447,
-      "sha256": "c5600a2d75353902e439cc2f11ab0c0022327a6c9e27bc57dbbfedc9936b3fe7"
+      "bytes": 526,
+      "sha256": "6353b9cd20c6125b4655bde023b39ffa26139895ad3cba21d2216c1ce5378d24"
     },
     {
       "path": "third_party/sources/miniblink/cc/trees/ScrollTreeSnapshot.cpp",
@@ -10787,6 +11849,12 @@
       "sha256": "ff293865618bd7af591eeb69ef3f9714e835f59ef1edc50368d8ef694e4c03ac"
     },
     {
+      "path": "third_party/sources/miniblink/content/browser/InspectorKeyboardSnapshot.h",
+      "normalization": "lf",
+      "bytes": 3091,
+      "sha256": "c145aa982d4e8d18c68d1b4cb32b0e2fadca8e6a0225354a05fc3ba36ecb3474"
+    },
+    {
       "path": "third_party/sources/miniblink/content/browser/NavigationController.cpp",
       "normalization": "lf",
       "bytes": 7462,
@@ -10801,14 +11869,14 @@
     {
       "path": "third_party/sources/miniblink/content/browser/PlatformEventHandler.cpp",
       "normalization": "lf",
-      "bytes": 21005,
-      "sha256": "ffa37856f167e02c5425c5d8381d2f5e5877d3fe2eb78278cbf850236faa8587"
+      "bytes": 21492,
+      "sha256": "b4e7e27faad7704cbf13558cdd249cf42a46dbdb36afc6ac6dbb7b1dd6796282"
     },
     {
       "path": "third_party/sources/miniblink/content/browser/PlatformEventHandler.h",
       "normalization": "lf",
-      "bytes": 2308,
-      "sha256": "01e7769d3ee5e35c0bcecf47060edc9ca227ef9695ee30651e72741d60372362"
+      "bytes": 2534,
+      "sha256": "bc7692cde03c68ca7b5ef69fd4094178b6a925a4a3b1c50fad607b9187d30f19"
     },
     {
       "path": "third_party/sources/miniblink/content/browser/PlatformMessagePortChannel.cpp",
@@ -10825,14 +11893,14 @@
     {
       "path": "third_party/sources/miniblink/content/browser/SharedTimerWin.h",
       "normalization": "lf",
-      "bytes": 7482,
-      "sha256": "5a0bc9c26aa07db331e1d7d93adc5ea48765839871a08533701c3c22b4fd8497"
+      "bytes": 10018,
+      "sha256": "69e4fbdc62818af8f649067f6ea0853f9362efd5ed9116a7c286d63c22a3a86f"
     },
     {
       "path": "third_party/sources/miniblink/content/browser/WebFrameClientImpl.cpp",
       "normalization": "lf",
-      "bytes": 37502,
-      "sha256": "5cf06237d7832735d32b8688580319b1c4b4657301d616f7eea177f982602c76"
+      "bytes": 42271,
+      "sha256": "e7c9bf753946024250ded16a1643442223da09a41e0534dd17b7496fb030f06a"
     },
     {
       "path": "third_party/sources/miniblink/content/browser/WebFrameClientImpl.h",
@@ -10855,14 +11923,14 @@
     {
       "path": "third_party/sources/miniblink/content/browser/WebPageImpl.cpp",
       "normalization": "lf",
-      "bytes": 83505,
-      "sha256": "7db9e14e53ef76bf1c28f867ab61220b7012a6003f0c38824a1cc276feec22fa"
+      "bytes": 85167,
+      "sha256": "df7fc1ca6d891d6a2fd38e4e1da4c9f4c66fd09368bf9a4b2e10b0e439284bf6"
     },
     {
       "path": "third_party/sources/miniblink/content/browser/WebPageImpl.h",
       "normalization": "lf",
-      "bytes": 11899,
-      "sha256": "04062955168e5f9af945ec60fa21ff2d398f70a17c23624be53560078587ac49"
+      "bytes": 12546,
+      "sha256": "ff6d089aebff3de34b0932059fccb21ba9be515e9978b0b1e79caa38405ffa9b"
     },
     {
       "path": "third_party/sources/miniblink/content/browser/WebPageState.h",
@@ -10873,26 +11941,26 @@
     {
       "path": "third_party/sources/miniblink/content/devtools/DevToolsAgent.cpp",
       "normalization": "lf",
-      "bytes": 7652,
-      "sha256": "b954e9dce5e4e0a2d1511f09fdaf4baafacd3be61f26fad17fa6713f29cdc475"
+      "bytes": 12642,
+      "sha256": "9547d8062e859130be73361c95b32e3beef3623655c5269f97f1c5804053cf62"
     },
     {
       "path": "third_party/sources/miniblink/content/devtools/DevToolsAgent.h",
       "normalization": "lf",
-      "bytes": 2475,
-      "sha256": "653a989cccce25a7be1f69d7baeed3206fd469a55f8764a86df848f66ad1e43f"
+      "bytes": 3707,
+      "sha256": "b2e7423d2335ec6c27f62f5a2e3d89c32adddde666bdd7c50cc8ca8b92bf90c3"
     },
     {
       "path": "third_party/sources/miniblink/content/devtools/DevToolsClient.cpp",
       "normalization": "lf",
-      "bytes": 9183,
-      "sha256": "7015f7829edb290333b6fd61b023bed92c1043cd9dcbf7499ead945532e7a557"
+      "bytes": 13049,
+      "sha256": "1cfff2f2f887efc5301d62d91c171ce896fa4673ee08669178aef19997ae1dac"
     },
     {
       "path": "third_party/sources/miniblink/content/devtools/DevToolsClient.h",
       "normalization": "lf",
-      "bytes": 2466,
-      "sha256": "b5ff2f14b2446558a067db333006dac3b3f59bef34dc1938cc9b4fe14e0fbc4d"
+      "bytes": 3082,
+      "sha256": "bbf5dac0e7d17fa3c939c283e6219dacd059605f1147a3e1c3cf26bc0a842593"
     },
     {
       "path": "third_party/sources/miniblink/content/devtools/DevToolsMgr.cpp",
@@ -11137,14 +12205,14 @@
     {
       "path": "third_party/sources/miniblink/content/ui/PopupMenuWin.cpp",
       "normalization": "lf",
-      "bytes": 16841,
-      "sha256": "061f0e3b207daf79e20a237eef32959709ff105b93ca37aa1b2ea99e413cdc72"
+      "bytes": 17281,
+      "sha256": "45516f7b04a817368d93f37ad57ee17f0541b88f77a742d5a82103ce2d17b6b1"
     },
     {
       "path": "third_party/sources/miniblink/content/ui/PopupMenuWin.h",
       "normalization": "lf",
-      "bytes": 4390,
-      "sha256": "e378dddb94340b903c1d185e11995b457813231ada256488e8a1e568ac920d1f"
+      "bytes": 4688,
+      "sha256": "550f47ffd14f5afeafe2154cec2e5c87cadeaf4571ec75f07d099104532e0eed"
     },
     {
       "path": "third_party/sources/miniblink/content/ui/PopupMenuWinClient.h",
@@ -11231,6 +12299,60 @@
       "sha256": "53e2ce091960b2fb8e297d4433bdde49bc3a8589c67c6203e723a4227694b1fa"
     },
     {
+      "path": "third_party/sources/miniblink/content/web_impl_win/InspectorMemoryLoad.cpp",
+      "normalization": "lf",
+      "bytes": 7694,
+      "sha256": "3a42d3fef7404e83fe6819e8ba668ff6095f9cb5a651a190163358242d9e7f04"
+    },
+    {
+      "path": "third_party/sources/miniblink/content/web_impl_win/InspectorMemoryLoad.h",
+      "normalization": "lf",
+      "bytes": 1448,
+      "sha256": "50edf41700fbc606d6737c7a327f03d56abf962bc6b9a8d73dfa9fa7bc17a187"
+    },
+    {
+      "path": "third_party/sources/miniblink/content/web_impl_win/LocalResourceAdmission.cpp",
+      "normalization": "lf",
+      "bytes": 3575,
+      "sha256": "79ef58c3f7a6fca40551c48b7da1c5f090440b4fdbed4aecd4887ecf6c2c4d6b"
+    },
+    {
+      "path": "third_party/sources/miniblink/content/web_impl_win/LocalResourceAdmission.h",
+      "normalization": "lf",
+      "bytes": 1506,
+      "sha256": "831083f6537138ae22fe3a01f445c007ef980245a587c39dba140f73393820ab"
+    },
+    {
+      "path": "third_party/sources/miniblink/content/web_impl_win/LocalResourceAdmissionCell.cpp",
+      "normalization": "lf",
+      "bytes": 2035,
+      "sha256": "609ff72d6df8b95126a318be7dd4f510ba99c6dfd81d2cacbed3cdc4d35048da"
+    },
+    {
+      "path": "third_party/sources/miniblink/content/web_impl_win/LocalResourceMemoryLoad.cpp",
+      "normalization": "lf",
+      "bytes": 11512,
+      "sha256": "34d27ed92e25e18a6d105deac94c1f8ed0f90616b8ccf27e690394d8072a8e5f"
+    },
+    {
+      "path": "third_party/sources/miniblink/content/web_impl_win/LocalResourceMemoryLoad.h",
+      "normalization": "lf",
+      "bytes": 1634,
+      "sha256": "ae53f2c41fef5d5e48a44524c3fee0eb1f3846bbb8917801a5fbc41a9a167f83"
+    },
+    {
+      "path": "third_party/sources/miniblink/content/web_impl_win/LocalResourceState.cpp",
+      "normalization": "lf",
+      "bytes": 23006,
+      "sha256": "762cac3eac049bdbc1bec853a390174e4fea7c4e59203434735ab8d88ce5be65"
+    },
+    {
+      "path": "third_party/sources/miniblink/content/web_impl_win/LocalResourceState.h",
+      "normalization": "lf",
+      "bytes": 4572,
+      "sha256": "555d92dc5629c9dedc68a282a7c9f000cfbf66fa54123b7fde2b40d52cd1c5f5"
+    },
+    {
       "path": "third_party/sources/miniblink/content/web_impl_win/MissingImageData.h",
       "normalization": "lf",
       "bytes": 2955,
@@ -11239,8 +12361,8 @@
     {
       "path": "third_party/sources/miniblink/content/web_impl_win/TaskSchedulingPolicy.h",
       "normalization": "lf",
-      "bytes": 1599,
-      "sha256": "1db945b69bb97d90b0d3b9dd8b3e8cc84ff82bed6b58ab598d884866be3ceb84"
+      "bytes": 3745,
+      "sha256": "cbf017b7004c61806d9f31be925c238b74ba60a65ccb614d4f9e8c59728feb9a"
     },
     {
       "path": "third_party/sources/miniblink/content/web_impl_win/WaitableEvent.h",
@@ -11293,14 +12415,14 @@
     {
       "path": "third_party/sources/miniblink/content/web_impl_win/WebCryptoImpl.cpp",
       "normalization": "lf",
-      "bytes": 806,
-      "sha256": "a7c9430cc636416ded46fb08b4f5e6149bbe86d574a47ad79a928ad54a8421ac"
+      "bytes": 2662,
+      "sha256": "5765b82415cf74ec3b4e9da2639e83885b10cb86bd34407ff3ecebe7a49e2cad"
     },
     {
       "path": "third_party/sources/miniblink/content/web_impl_win/WebCryptoImpl.h",
       "normalization": "lf",
-      "bytes": 795,
-      "sha256": "2be23143394aa1bb80673a1e2ec67b6c771ecb1a323b0ba322d007c36aca62b5"
+      "bytes": 1203,
+      "sha256": "c1ebf9796bf35f7fa8296eb683ff68fae84d494ed8cd68fda31eb38ed764184f"
     },
     {
       "path": "third_party/sources/miniblink/content/web_impl_win/WebFileUtilitiesImpl.cpp",
@@ -11317,14 +12439,14 @@
     {
       "path": "third_party/sources/miniblink/content/web_impl_win/WebMediaPlayerImpl.cpp",
       "normalization": "lf",
-      "bytes": 24383,
-      "sha256": "f6f34fb03edde562a671f0758ea2092ef868a41e7f623fe00784a89c8aa4c340"
+      "bytes": 25112,
+      "sha256": "b7abb26b10c1ce9169ce107e6c57ef15f40bad3ad2ecc48b2b8e255c2a90c795"
     },
     {
       "path": "third_party/sources/miniblink/content/web_impl_win/WebMediaPlayerImpl.h",
       "normalization": "lf",
-      "bytes": 6646,
-      "sha256": "be0af7380ac9540566ca2aad9082c0fa208490c1d5ceeb88958305992bd20a2d"
+      "bytes": 6680,
+      "sha256": "cca587b6d3b96b042c3cdc6e08e3825c58542955e0d8bca898db3e15df18bfb4"
     },
     {
       "path": "third_party/sources/miniblink/content/web_impl_win/WebMessagePortChannelImpl.cpp",
@@ -11377,20 +12499,20 @@
     {
       "path": "third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp",
       "normalization": "lf",
-      "bytes": 24157,
-      "sha256": "95fe2fdd2d109cf3bfed4a155222d4a13642c3980b372e5ca952c4f09a9bdad2"
+      "bytes": 25583,
+      "sha256": "e4212515786b46f4bbf286fad9cd3bcd18b86b77e0bf14f1896f4b2f2a749805"
     },
     {
       "path": "third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.h",
       "normalization": "lf",
-      "bytes": 4244,
-      "sha256": "253c1b74696c717c9145e5b5b598986354a06182f4bcb9ccfc71674d76a1e358"
+      "bytes": 4369,
+      "sha256": "8d981184e7439b5ce9933a8f9df29617ddeebd5c7308c69cd988329f6b8a7012"
     },
     {
       "path": "third_party/sources/miniblink/content/web_impl_win/WebTimerBase.cpp",
       "normalization": "lf",
-      "bytes": 12967,
-      "sha256": "22eb8dca0f7d663c327346c2fd18f9d05cd302e9186bbcc572fce5b2ea6aa535"
+      "bytes": 13009,
+      "sha256": "cd40b02bf897008472b189f80ad7908ab02eb9df240dfa11025fe3102003386c"
     },
     {
       "path": "third_party/sources/miniblink/content/web_impl_win/WebTimerBase.h",
@@ -11413,14 +12535,14 @@
     {
       "path": "third_party/sources/miniblink/content/web_impl_win/WebURLLoaderImplCurl.cpp",
       "normalization": "lf",
-      "bytes": 11349,
-      "sha256": "62ccc2055a2fef291bcd464eff5c6559068faf16323dbf697cac739f3ea37294"
+      "bytes": 12333,
+      "sha256": "a49a586109e959f47db8c5fd3a17dd7be968e9a7359404ef5691824625954bc6"
     },
     {
       "path": "third_party/sources/miniblink/content/web_impl_win/WebURLLoaderImplCurl.h",
       "normalization": "lf",
-      "bytes": 2097,
-      "sha256": "a122cbb2374e924a32b58bff1daaec924edd644ac261847889063deb5c33802d"
+      "bytes": 2297,
+      "sha256": "c8332d274d81e558abc1bcb62993f90bd54032bf90e9a8da7a47d18080ab12c3"
     },
     {
       "path": "third_party/sources/miniblink/content/web_impl_win/native_theme_base.cc",
@@ -11515,8 +12637,8 @@
     {
       "path": "third_party/sources/miniblink/content/web_impl_win/npapi/PluginStream.cpp",
       "normalization": "lf",
-      "bytes": 18073,
-      "sha256": "52f01b07b55324a8270cb85cb88b98a423a211618bb85591f690abdd9303a35a"
+      "bytes": 18259,
+      "sha256": "279063e92402faf7639b08858bda6008f783a7ee9b882703c9c60a7f22840fd9"
     },
     {
       "path": "third_party/sources/miniblink/content/web_impl_win/npapi/PluginStream.h",
@@ -25249,8 +26371,8 @@
     {
       "path": "third_party/sources/miniblink/net/DataURL.cpp",
       "normalization": "lf",
-      "bytes": 5618,
-      "sha256": "1c6ef1ccdc3e294f5e8d464c466df72bb1f74b72505c3d984e9b679611e6e68c"
+      "bytes": 5634,
+      "sha256": "716d770696223fdc61229e11c9246aa5c018796f89ad1ff858b8a8db349815da"
     },
     {
       "path": "third_party/sources/miniblink/net/DataURL.h",
@@ -25417,8 +26539,8 @@
     {
       "path": "third_party/sources/miniblink/net/RequestExtraData.h",
       "normalization": "lf",
-      "bytes": 1519,
-      "sha256": "e7c67ac171367b534f7f920a1ac345bcbb2a30e39cc35c613aa9e27385a272c5"
+      "bytes": 4022,
+      "sha256": "dcf1608d948a66ee2c2bc1f7914740137626915e870f16d76aca0f202ec6cf9a"
     },
     {
       "path": "third_party/sources/miniblink/net/RequestPeer.h",
@@ -25429,8 +26551,8 @@
     {
       "path": "third_party/sources/miniblink/net/SharedMemoryDataConsumerHandle.cpp",
       "normalization": "lf",
-      "bytes": 16202,
-      "sha256": "3a61da28edfefb0550eb151c2ecd1233093e06c3024df3fd6b4bbfb00af3d989"
+      "bytes": 16349,
+      "sha256": "72f06dfb4f0ac1c4d4d853ee85c11906873b86ea201cd92740036d4144c942df"
     },
     {
       "path": "third_party/sources/miniblink/net/SharedMemoryDataConsumerHandle.h",
@@ -25501,26 +26623,26 @@
     {
       "path": "third_party/sources/miniblink/net/WebURLLoaderInternal.h",
       "normalization": "lf",
-      "bytes": 7580,
-      "sha256": "90685ca5518bca003a09a34ea1ceed65e4c5e6d6c355c38e620ef2e24e5352d4"
+      "bytes": 7956,
+      "sha256": "92deae2d5189a7462fab747c5096291e63f37546f8e44ea2af7ed2e3fc255a2d"
     },
     {
       "path": "third_party/sources/miniblink/net/WebURLLoaderManager.cpp",
       "normalization": "lf",
-      "bytes": 74771,
-      "sha256": "cc873d772f9cf8057bb501b13b2605f43d3ccda7d5ba248cbc3b28c73ac2edcb"
+      "bytes": 81534,
+      "sha256": "f2748eac3ba98aa6d7e067ffa96bb317d83d86617b9efc6247e602ee871714dd"
     },
     {
       "path": "third_party/sources/miniblink/net/WebURLLoaderManager.h",
       "normalization": "lf",
-      "bytes": 8385,
-      "sha256": "dcbfe5be049b697c1784533f82722e735091925c3fd40120d3d7b1cde624f710"
+      "bytes": 8494,
+      "sha256": "e587fdaf904a5ad3f81abf123dfe360f1a81cafd3536f9caf0cfc3755a68c714"
     },
     {
       "path": "third_party/sources/miniblink/net/WebURLLoaderManagerAsynTask.h",
       "normalization": "lf",
-      "bytes": 7345,
-      "sha256": "0828fa7a9d65fac15087d17c87a90fad238bdc41829df91e835f89270a31df6e"
+      "bytes": 7361,
+      "sha256": "5c790bd4d3ae09fe7ad5ec4a4590589bfa40a06a97258075edb88536896aedda"
     },
     {
       "path": "third_party/sources/miniblink/net/WebURLLoaderManagerMainTask.h",
@@ -54007,8 +55129,8 @@
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/core/fetch/FetchContext.h",
       "normalization": "lf",
-      "bytes": 5525,
-      "sha256": "3b27cd184b9edc38e50d70836d90b54777acea67c0ff2958d745dc3173299a2d"
+      "bytes": 5765,
+      "sha256": "2d62acf45a1521aeae99bc5c1d615b62ac595be4ac941db1da0a203f4739de76"
     },
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/core/fetch/FetchInitiatorInfo.h",
@@ -54169,14 +55291,14 @@
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/core/fetch/ResourceFetcher.cpp",
       "normalization": "lf",
-      "bytes": 44180,
-      "sha256": "4e3c4e56aa6bbcb90d40e8e917c750af5a77130c949929ad33e24021cf1c3c29"
+      "bytes": 44912,
+      "sha256": "152d043448fece48c88f4abb4dd8e5db2d92929cc2b6daa084e7f176f80ff8fc"
     },
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/core/fetch/ResourceFetcher.h",
       "normalization": "lf",
-      "bytes": 9094,
-      "sha256": "7c7a5cf004b2fe7e8bf01151741542df6ae2b7c34a079d044f6de42e6ef343cf"
+      "bytes": 9226,
+      "sha256": "43ec11a269cdc44a3c8dab2b36bf76f4049168d15636376409d3fcff1b2991c2"
     },
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/core/fetch/ResourceFetcherTest.cpp",
@@ -54199,8 +55321,8 @@
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/core/fetch/ResourceLoader.cpp",
       "normalization": "lf",
-      "bytes": 19851,
-      "sha256": "43c7e38f9fdc82ef7e7fe7bf83fc1624a299c0b93875280014366c68f31c36b7"
+      "bytes": 20581,
+      "sha256": "37ac19c3063cec5f12b1ef724886139856c24a0a729ae897f8535ec5b52ba585"
     },
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/core/fetch/ResourceLoader.h",
@@ -55861,8 +56983,8 @@
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/core/html/HTMLFrameOwnerElement.cpp",
       "normalization": "lf",
-      "bytes": 8747,
-      "sha256": "aa93f5b33eb7dd6caade048bcf9bb68eec8bff6596b2e484ad7600a8766607c1"
+      "bytes": 9179,
+      "sha256": "7b82ff536fcd1dee91975a5bbe253cd046bc59548afd852d0b0c64097a1330b9"
     },
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/core/html/HTMLFrameOwnerElement.h",
@@ -62581,8 +63703,8 @@
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/core/loader/BeaconLoader.cpp",
       "normalization": "lf",
-      "bytes": 8729,
-      "sha256": "e80da114b4cb7faf8139611d7765654d475d7a72d8bd71fbfe8933c068b8244d"
+      "bytes": 8992,
+      "sha256": "f0a14b449a1844574e59ce6930f3676fa178f0de8595cce31fd4f3e23afc3e21"
     },
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/core/loader/BeaconLoader.h",
@@ -62695,14 +63817,14 @@
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/core/loader/FrameFetchContext.cpp",
       "normalization": "lf",
-      "bytes": 30802,
-      "sha256": "ad52a8aa091aa57225f94799edf045b6d986fa8dfa9069fd634627ec632437aa"
+      "bytes": 32017,
+      "sha256": "4e751e0dce416914cf342329fd943489ed354daf2ab3b48b67e8e699ab4072d5"
     },
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/core/loader/FrameFetchContext.h",
       "normalization": "lf",
-      "bytes": 6000,
-      "sha256": "8fd8d6c3cc8c875e3b8ddf7fe1b8c0b782702c80af6bbe165733ac86adc51132"
+      "bytes": 6147,
+      "sha256": "692cca88f8e3417381f911125a5eddae76c098ed2af5f5eda73dbff0d9c4fde4"
     },
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/core/loader/FrameFetchContextTest.cpp",
@@ -62775,6 +63897,18 @@
       "normalization": "lf",
       "bytes": 7161,
       "sha256": "dd8222302ed4c658a670ba2c03c0b0cf79e8de630ef876c858c54bce41ee0ee1"
+    },
+    {
+      "path": "third_party/sources/miniblink/third_party/WebKit/Source/core/loader/InspectorResourcePolicy.cpp",
+      "normalization": "lf",
+      "bytes": 1744,
+      "sha256": "e8cf8532e82cff5405541f317cacf729a199cac061ac8f223b85f50fbad41910"
+    },
+    {
+      "path": "third_party/sources/miniblink/third_party/WebKit/Source/core/loader/InspectorResourcePolicy.h",
+      "normalization": "lf",
+      "bytes": 1349,
+      "sha256": "2f9cba19ea2e50c0b860575c36bf64417a16903df171684b84e28f1170bbf23a"
     },
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/core/loader/LinkHeader.cpp",
@@ -62869,8 +64003,8 @@
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/core/loader/PingLoader.cpp",
       "normalization": "lf",
-      "bytes": 10210,
-      "sha256": "5cb96353eed5818115f78cdc0f74023d9968c0b2d8cc6a194099cedfca805c89"
+      "bytes": 10500,
+      "sha256": "d045ba68232dcabfe851d5cc6bd6cc32e5e8195e33368372c4befb7a88f1cd7b"
     },
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/core/loader/PingLoader.h",
@@ -63193,8 +64327,8 @@
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/core/page/EventSource.cpp",
       "normalization": "lf",
-      "bytes": 15754,
-      "sha256": "9a9c800207055e877ccc7d14937a0b2baa694324570326a6b021c45eb504b81c"
+      "bytes": 15993,
+      "sha256": "e1f81613f53d7d5eb7c1f7200807270f72c3e2fa6f921c17ad178a3924027e6f"
     },
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/core/page/EventSource.h",
@@ -68917,8 +70051,8 @@
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/core/workers/SharedWorker.cpp",
       "normalization": "lf",
-      "bytes": 4185,
-      "sha256": "23f766f8ade9025858d35c77ba575813d5840905b2e2119d198b448ecaf8d621"
+      "bytes": 4693,
+      "sha256": "6c7270a4f0f4f8539e346d7ec2fb57844041ccbb382d416411320b677d47a805"
     },
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/core/workers/SharedWorker.h",
@@ -68971,8 +70105,8 @@
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/core/workers/Worker.cpp",
       "normalization": "lf",
-      "bytes": 1685,
-      "sha256": "e7b6c2c707b1189c26944e621154b745429a7b3c51ead177a3817b2961a1dca0"
+      "bytes": 2164,
+      "sha256": "84de4f32569d9506178595d5f4055447dbcf0e7ea98add74a90cf7a3ff9b3f3f"
     },
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/core/workers/Worker.h",
@@ -69643,8 +70777,8 @@
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/core/xmlhttprequest/XMLHttpRequest.cpp",
       "normalization": "lf",
-      "bytes": 59168,
-      "sha256": "da4ff3567a1011130148436068df732d8bcda47d64e648fc81b596cea7f33e9a"
+      "bytes": 60325,
+      "sha256": "d8a9b66659b83c77e0d69446e87f84ed734ebfed32553b4e8efb7519ef3ff6c3"
     },
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/core/xmlhttprequest/XMLHttpRequest.h",
@@ -75217,8 +76351,8 @@
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/modules/cachestorage/GlobalCacheStorage.cpp",
       "normalization": "lf",
-      "bytes": 3437,
-      "sha256": "3149f10e9082c486cf028722781fcfc93b841897ca6fea75960b467bee5db223"
+      "bytes": 3738,
+      "sha256": "2d768ce042b2418f975be3f560be26f0c55376744f34a1f208ef3fe562f93daa"
     },
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/modules/cachestorage/GlobalCacheStorage.h",
@@ -76591,8 +77725,8 @@
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/modules/fetch/FetchManager.cpp",
       "normalization": "lf",
-      "bytes": 18523,
-      "sha256": "c5b575490b26671f993e4a622c91dbd2ccb9a4644dfe7f94b73e5216629acc80"
+      "bytes": 18757,
+      "sha256": "e93b4044dcd3274b84853ff7cb56455f11c465025551f289839c1b67f47b1c40"
     },
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/modules/fetch/FetchManager.h",
@@ -78859,8 +79993,8 @@
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/modules/mediastream/RTCPeerConnection.cpp",
       "normalization": "lf",
-      "bytes": 30129,
-      "sha256": "f7c3d800e178921b26e98a191cf5458710dca1458e2180aeb25a475ce243e8a3"
+      "bytes": 30369,
+      "sha256": "9e92f0646e24e8d48f1eee3f1326b8317ae7c0281e330a93dc5b56a04b70c637"
     },
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/modules/mediastream/RTCPeerConnection.h",
@@ -80491,8 +81625,8 @@
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/modules/serviceworkers/NavigatorServiceWorker.cpp",
       "normalization": "lf",
-      "bytes": 3139,
-      "sha256": "771421743952fb1cafbd2471a3b005f728f05cb07b9bced7b7cc31b3803a0d2c"
+      "bytes": 3715,
+      "sha256": "6e80576f6558c45a3da6c8e23cdff133e283a4358e372f5962d747ef9bf68a06"
     },
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/modules/serviceworkers/NavigatorServiceWorker.h",
@@ -83959,8 +85093,8 @@
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/modules/websockets/DOMWebSocket.cpp",
       "normalization": "lf",
-      "bytes": 24166,
-      "sha256": "2c47bc53ef17389e46cdfe5518cc7e72d01f05dd4bfa7a8d1ffed4ba53a74b69"
+      "bytes": 24687,
+      "sha256": "076e9a9c35ff352b75f2926b659160fc0a63628712c936ef569af025ec5a3dde"
     },
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/modules/websockets/DOMWebSocket.h",
@@ -88453,8 +89587,8 @@
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/platform/fonts/skia/FontCacheSkia.cpp",
       "normalization": "lf",
-      "bytes": 11267,
-      "sha256": "a4ca82989093bf6b8284f15fd17c8931bca49fb4857891e5ec7b2a2a0d3a915f"
+      "bytes": 12465,
+      "sha256": "afe4eb0372dbff087ecfbf22208db4d84c938f1abb42a1e9fd92dee157a221dc"
     },
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/platform/fonts/win/FontCacheSkiaWin.cpp",
@@ -91103,10 +92237,28 @@
       "sha256": "ebd3b9e5ced6b1cbde7813e24e0bafa9f1f79220026aa846e791be1162847d66"
     },
     {
+      "path": "third_party/sources/miniblink/third_party/WebKit/Source/platform/network/InspectorResourceSnapshot.cpp",
+      "normalization": "lf",
+      "bytes": 15272,
+      "sha256": "6ce3fd9fd4da420e2b66517a74ee471f25452545c422930364346576d7a17931"
+    },
+    {
+      "path": "third_party/sources/miniblink/third_party/WebKit/Source/platform/network/InspectorResourceSnapshot.h",
+      "normalization": "lf",
+      "bytes": 3681,
+      "sha256": "b60097adb132340f9ce2992af31ef80e315cb30a68a3ef29b33ccd884787e52c"
+    },
+    {
+      "path": "third_party/sources/miniblink/third_party/WebKit/Source/platform/network/LocalResourceAdmission.h",
+      "normalization": "lf",
+      "bytes": 866,
+      "sha256": "94113efff4277a620efbb6af3576538fa84117be60f96ad142d8700c80f34e24"
+    },
+    {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/platform/network/NetworkHints.cpp",
       "normalization": "lf",
-      "bytes": 2351,
-      "sha256": "20fbd9998828702d81d9ebf7f4916249ffed9899ea61b041517ecfde02cd924f"
+      "bytes": 2553,
+      "sha256": "a36f2339f4bd67be4085cc63017ec3de4253a136821afe7d466efdce567dd56f"
     },
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/platform/network/NetworkHints.h",
@@ -91159,14 +92311,14 @@
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/platform/network/ResourceRequest.cpp",
       "normalization": "lf",
-      "bytes": 15476,
-      "sha256": "846e4af52621bdd406547b5ea19d7de1a3f0aca08fe74886fc78c2f1e7d06bb9"
+      "bytes": 15848,
+      "sha256": "2b09c3ab45c5746ac3192ed709a81e467c73fe4489739ef7b08f993d726964fa"
     },
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/platform/network/ResourceRequest.h",
       "normalization": "lf",
-      "bytes": 13831,
-      "sha256": "3656cb0d22e5fd9598e58a761b38e33711ef8f5ba30a960ab2df88e5a5ab7c80"
+      "bytes": 14465,
+      "sha256": "e55ea7b1ecd9de9f6a16930bf50a397eee4d81d0d43fd40a0d7a4832328a4273"
     },
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/platform/network/ResourceRequestTest.cpp",
@@ -150589,14 +151741,20 @@
     {
       "path": "third_party/sources/miniblink/wke/CursorDescriptorBroker.cpp",
       "normalization": "lf",
-      "bytes": 44020,
-      "sha256": "9bc5cee92eeb5e3b560bd31c4d367aae10b6d4c51f4187e2c257abb1c5733863"
+      "bytes": 83411,
+      "sha256": "863afd6d096c75a369576e31871a0a86d96f9b4811ab60e757430774e44d8eaf"
     },
     {
       "path": "third_party/sources/miniblink/wke/CursorDescriptorBroker.h",
       "normalization": "lf",
-      "bytes": 2811,
-      "sha256": "54dfa5a53403e9043027b63774cdc4b492818034b695a3172d9fe773a4cc0460"
+      "bytes": 2913,
+      "sha256": "89db8856e809f7a34f3cb78c0d61eb0b7847cfbb82cb09ab4b99a3c2587084e4"
+    },
+    {
+      "path": "third_party/sources/miniblink/wke/LocalResourceApi.h",
+      "normalization": "lf",
+      "bytes": 3460,
+      "sha256": "04d3f629363dd0444e0a2137a8989df4e90baccf39737f21fc8b8885a6c83b85"
     },
     {
       "path": "third_party/sources/miniblink/wke/RendererDiagnosticsState.h",
@@ -150611,10 +151769,16 @@
       "sha256": "e91e771b753bfac6868a532563d5b3a8f95ce637ca8ee0c5aef7448096d6510a"
     },
     {
+      "path": "third_party/sources/miniblink/wke/ViewDiagnosticsState.h",
+      "normalization": "lf",
+      "bytes": 4397,
+      "sha256": "6a0cd09d6bd485d7199b33157f7314fb3d90c858713cfe18713de5002c332fa9"
+    },
+    {
       "path": "third_party/sources/miniblink/wke/wke.cpp",
       "normalization": "lf",
-      "bytes": 98317,
-      "sha256": "46b92f710a9cbfc260bbbb61a2bbe3a11ed64c892df0efd31669352cfcafbdab"
+      "bytes": 101974,
+      "sha256": "e538cb7e2f28f557aba6cf3aab0d73e9bcb25174d97f748e29f6bee5fe011137"
     },
     {
       "path": "third_party/sources/miniblink/wke/wke.h",
@@ -150667,8 +151831,8 @@
     {
       "path": "third_party/sources/miniblink/wke/wkeNetHook.cpp",
       "normalization": "lf",
-      "bytes": 23158,
-      "sha256": "111005a29a3a05754d470fb0e749554e59d3f083a7bdda85bcd3a55f0b684027"
+      "bytes": 23530,
+      "sha256": "24dcd3ec1a4681d45f0f460efb18e01399d7578de68b3e647b9ea9eedfabaa58"
     },
     {
       "path": "third_party/sources/miniblink/wke/wkeNetHook.h",
@@ -150697,8 +151861,8 @@
     {
       "path": "third_party/sources/miniblink/wke/wkeWebView.cpp",
       "normalization": "lf",
-      "bytes": 44094,
-      "sha256": "612312f09b14d3a5c9566b28b1793ecf5f9a5d1bb13de11f95151a5e2128739a"
+      "bytes": 44204,
+      "sha256": "56baf71e8e9cb9ffe49b77f6bd58fda95d46d1433f238b9eb1e5b4afa54d5206"
     },
     {
       "path": "third_party/sources/miniblink/wke/wkeWebView.h",
@@ -150743,10 +151907,16 @@
       "sha256": "ea801356bb59261b8f7a8ef3b4ace1e3404778da0c1be0d39ad279f0195f059a"
     },
     {
+      "path": "third_party/sources/miniblink/wke/wke_view_diagnostics.h",
+      "normalization": "lf",
+      "bytes": 1360,
+      "sha256": "9f6c248f4dbe61f809e2715af583375a3c74fb7639c0bba206e94e6e460a73f0"
+    },
+    {
       "path": "third_party/sources/miniblink/wke/wkedefine.h",
       "normalization": "lf",
-      "bytes": 70251,
-      "sha256": "674827ef4572feb31d417b9ce14e007f95a30dd4b26ed284c9c04a96e1bf9369"
+      "bytes": 70475,
+      "sha256": "b0dea4fe395827bfe1e56eccef3ef63a65a249c0d9f92ea933c58085e1472951"
     },
     {
       "path": "third_party/sources/miniblink/wkexe/MtRender/CallMgr.cpp",
@@ -178555,8 +179725,8 @@
     {
       "path": "tools/Build.ps1",
       "normalization": "lf",
-      "bytes": 10237,
-      "sha256": "ef5b642ddc5a5b3b69c6b33e428016ae1b46b8b5432d98532dea3e54a820ada0"
+      "bytes": 14422,
+      "sha256": "c466d93494b9ddb8abdfb6e3a5eeb601fc959e90506182d5998a5ebe5eebf32b"
     },
     {
       "path": "tools/Collect-Verification.cjs",
@@ -178571,16 +179741,22 @@
       "sha256": "9eb3c8ff5b0092b06c9af6ff41b43c07ede7cc63e3220d5ff630bcb5a1593f5d"
     },
     {
+      "path": "tools/Measure-Compression.ps1",
+      "normalization": "lf",
+      "bytes": 1210,
+      "sha256": "d23579a4bed5d7444d479be9eafbbf3b15b5ffec7d25d936bfb5d68d5aec6fb2"
+    },
+    {
       "path": "tools/New-Project.ps1",
       "normalization": "lf",
-      "bytes": 4067,
-      "sha256": "4d12143207eb177d95cc0fb179ca9486aef8e8147771e59e041bcb5a21412148"
+      "bytes": 4656,
+      "sha256": "fb63795c4ff166be4b633c2b06f463f133710d0b6dbd4e2def9ee7994cd9bd78"
     },
     {
       "path": "tools/Package-Applications.ps1",
       "normalization": "lf",
-      "bytes": 2367,
-      "sha256": "439a47ea5c1eedd67a72c5f6ea9ab32259f85d05a0202595f29a6879b8728fb3"
+      "bytes": 8207,
+      "sha256": "6ba3e8fc555aa4864e52f4dfa56498fd00a6bbdbf91226083f9a552e036f9cc5"
     },
     {
       "path": "tools/Package.ps1",
@@ -178607,6 +179783,12 @@
       "sha256": "a0e92f00b994478e11b72b32f3b3f0e82756b8334350767fc4bd989a42444cb8"
     },
     {
+      "path": "tools/Test-Auto.ps1",
+      "normalization": "lf",
+      "bytes": 2210,
+      "sha256": "cd76f61ee4c05068e8941b3c5fedbd8dc2d88924f8e13e46a912a013f78ed18c"
+    },
+    {
       "path": "tools/Test-Dependencies.ps1",
       "normalization": "lf",
       "bytes": 7031,
@@ -178627,8 +179809,8 @@
     {
       "path": "tools/Test.ps1",
       "normalization": "lf",
-      "bytes": 20586,
-      "sha256": "5386852354223a7ddac0ad9995873b48f592a7adac36d7831cf52363aaba57ef"
+      "bytes": 21882,
+      "sha256": "aafcfb9c762360ed409b95c98e95cc06d09aa76d7c903cf4fb2103a10e0bd4a2"
     },
     {
       "path": "tools/Verify-Release.ps1",
@@ -178751,10 +179933,16 @@
       "sha256": "282a6089610f55b9992cab91a62eccaa86ac410a130409c60b42aab3c095d21c"
     },
     {
+      "path": "tools/internal/auto-smoke.cjs",
+      "normalization": "lf",
+      "bytes": 13810,
+      "sha256": "5319ff977bbb97ddbd1a158d880601e64a1da93ab6c32d712531db8bec73a67b"
+    },
+    {
       "path": "tools/internal/build-evidence.cjs",
       "normalization": "lf",
-      "bytes": 21552,
-      "sha256": "709d2c40f0ee82f9d5f85b4ae4047c781d2714c294ac9a45f547f507fd570a6f"
+      "bytes": 35443,
+      "sha256": "04db942c3468c662fc71b2676bc9da46a156e3786b95adb2cb37d1bceabc7ef8"
     },
     {
       "path": "tools/internal/build-source-manifest.cjs",
@@ -178763,10 +179951,34 @@
       "sha256": "0de4276d916937299f84ef052dd86baffaabb650d7aba0b3e41f96f7c3081dc9"
     },
     {
+      "path": "tools/internal/compat-polyfills.cjs",
+      "normalization": "lf",
+      "bytes": 9424,
+      "sha256": "7c81364c44cbf9e98802b6332c15c08e950aefb1e6abf8ad3fef00fdb4f19ac2"
+    },
+    {
       "path": "tools/internal/compiler-tail-policy.cjs",
       "normalization": "lf",
       "bytes": 11554,
       "sha256": "8785f1e2b7e29bce8073500bf29876c808c43dae50d8aea340c2f66dd4253511"
+    },
+    {
+      "path": "tools/internal/compression-measurement.cjs",
+      "normalization": "lf",
+      "bytes": 21225,
+      "sha256": "d4264b48caf9ef02e1d1968e18bb586c509fdbc867de372a8e547ee89dcdd3aa"
+    },
+    {
+      "path": "tools/internal/compression-process-runner.cs",
+      "normalization": "lf",
+      "bytes": 14808,
+      "sha256": "43e3cac9be5fe0f01e691e00dc5095359fbf9670a9b6d5af03863246ec703666"
+    },
+    {
+      "path": "tools/internal/compression-profiles.cjs",
+      "normalization": "lf",
+      "bytes": 6765,
+      "sha256": "f36fe9f64932cdf0f316f3057f844e8a7f3ce3415863305f622d7e81277017fe"
     },
     {
       "path": "tools/internal/configure-log-evidence.cjs",
@@ -178777,14 +179989,14 @@
     {
       "path": "tools/internal/create-miniblink-entry.mjs",
       "normalization": "lf",
-      "bytes": 3966,
-      "sha256": "1d60a1930078c0905195642b60f9fbcaf537e130c2532d916d1ae5e30f27fbfd"
+      "bytes": 5194,
+      "sha256": "d4760e97898cb27f529033032ec76721f61a056c6af1890f3b3827a32b49965d"
     },
     {
       "path": "tools/internal/delivery-identity.cjs",
       "normalization": "lf",
-      "bytes": 5972,
-      "sha256": "f4e0c71ada00946d16f58bdae4654c918d0112321f2a8e259fee8601ae042751"
+      "bytes": 10412,
+      "sha256": "de8515815ecae3d09585e1c1148a052cc58925bf6f1777f2e44ba92362bad42b"
     },
     {
       "path": "tools/internal/dependency-evidence.cjs",
@@ -178795,8 +180007,8 @@
     {
       "path": "tools/internal/deploy-resources.cjs",
       "normalization": "lf",
-      "bytes": 3478,
-      "sha256": "0b13effbee76d17c47f9d0597434463d8af9a1c4c8f5b6b2127078f31eaac7c5"
+      "bytes": 7944,
+      "sha256": "2dad44353cee1b62a8915e0ef4833731645e244a820827d6d99d2d6927179243"
     },
     {
       "path": "tools/internal/desktop-smoke.cjs",
@@ -178807,8 +180019,20 @@
     {
       "path": "tools/internal/devkit-command.cjs",
       "normalization": "lf",
-      "bytes": 38675,
-      "sha256": "878f06f41806b01008563459dbaa3020a7bc1af490ed90a9b7071fc19731b425"
+      "bytes": 39223,
+      "sha256": "0f7f53e5769d313af4e81685a968aa40901ad3569ead81b50cd229f31ac3694b"
+    },
+    {
+      "path": "tools/internal/devtools-frontend.cjs",
+      "normalization": "lf",
+      "bytes": 14154,
+      "sha256": "3b941e41efb5d3e6b56c6a6fa46ace647d0afc6dafbc4f88d88b3c82ca9c6c6f"
+    },
+    {
+      "path": "tools/internal/devtools-package.cjs",
+      "normalization": "lf",
+      "bytes": 27162,
+      "sha256": "7a4e6c6f2305bc35a52e8b050d55ac1920093f3ff9144a90920fa4c6b2c06add"
     },
     {
       "path": "tools/internal/full-source-roots.cjs",
@@ -178889,16 +180113,52 @@
       "sha256": "61bceb766ecdfae0552c26212b332c8d7dbd0c2f24833cf7d27d59932f2b23cd"
     },
     {
+      "path": "tools/internal/performance-zip-inventory.mjs",
+      "normalization": "lf",
+      "bytes": 5700,
+      "sha256": "7af2824b3ce415ded5d072989de62717f72eacea10bebb80e81e4a1430f69ffd"
+    },
+    {
+      "path": "tools/internal/polyfills/object-create.chrome49.cjs",
+      "normalization": "lf",
+      "bytes": 356,
+      "sha256": "78415ccff6be150c98035b73f8c7d2277cb6cf263b35aaa26ed1cc1dd91a7ead"
+    },
+    {
       "path": "tools/internal/release-verification.cjs",
       "normalization": "lf",
       "bytes": 35627,
       "sha256": "6f9ab7a7939ee33c9da8af8a371a9dbcd0fc69fe581b69836fba1d64a9928a59"
     },
     {
+      "path": "tools/internal/runtime-bundle.cjs",
+      "normalization": "lf",
+      "bytes": 20474,
+      "sha256": "c5c4c4993688c6e7dc7ea922d19c3467106b81e9db1235a2836210cf0f86d93b"
+    },
+    {
+      "path": "tools/internal/runtime-deployment.cjs",
+      "normalization": "lf",
+      "bytes": 18105,
+      "sha256": "044362ec6de67d5498e481c750813859287f7814197a7d440c7a8bb92a2e0c09"
+    },
+    {
+      "path": "tools/internal/runtime-files.json",
+      "normalization": "lf",
+      "bytes": 36313,
+      "sha256": "e82951970c91e87491d9e1261129ea5ffa74183fe9a816570372f572be33088d"
+    },
+    {
       "path": "tools/internal/sdk-version.cjs",
       "normalization": "lf",
       "bytes": 794,
       "sha256": "7742ee81477abd00f1ff16dbef01c4c716dce03856e91cc5e1b121f1b6cf6bc0"
+    },
+    {
+      "path": "tools/internal/size-report.cjs",
+      "normalization": "lf",
+      "bytes": 9394,
+      "sha256": "305c4120809929608684afe75317978015a7e953ffcc5c4db298477337cae158"
     },
     {
       "path": "tools/internal/soui-llvm-output.targets",
@@ -178915,8 +180175,8 @@
     {
       "path": "tools/internal/standard-build.cjs",
       "normalization": "lf",
-      "bytes": 39757,
-      "sha256": "0411e6813baae2d4134c5b1735f56c63a31579168f4f8be12c1ea189d8cb220e"
+      "bytes": 40781,
+      "sha256": "e95a23f0c5db459603513999c0cecdef34c4b64a893c7bf4fda71a01a62187f5"
     },
     {
       "path": "tools/internal/vendor-test-names.json",
@@ -178935,6 +180195,24 @@
       "normalization": "lf",
       "bytes": 2281,
       "sha256": "34d27ee8c33974295bece92be0564b21f461e44c19b21fe5cc8ae1ec2782c015"
+    },
+    {
+      "path": "tools/internal/web-build-profile.cjs",
+      "normalization": "lf",
+      "bytes": 20841,
+      "sha256": "070b92ef080e609819af39c9347838da2f3f94e7cdefc7df1e91d609dfc859d6"
+    },
+    {
+      "path": "tools/internal/web-targets.cjs",
+      "normalization": "lf",
+      "bytes": 12274,
+      "sha256": "7531e785084800262e198731a48f2bc455823b3aa29cea765e8fd9c1c607c476"
+    },
+    {
+      "path": "tools/performance-size-gate.mjs",
+      "normalization": "lf",
+      "bytes": 10106,
+      "sha256": "a968b1dad4465a654cbcd7f470bc9f98e9d05769789b6457058cda6f30738cbe"
     },
     {
       "path": "tools/runtime-doctor/CMakeLists.txt",
@@ -178975,8 +180253,8 @@
     {
       "path": "tools/sdk/gui-bindings-delivery.cjs",
       "normalization": "lf",
-      "bytes": 15012,
-      "sha256": "6accd25b2710f466ff883d72a42b9bfd74cf28de580d4f664dbdb542fd6cc6cf"
+      "bytes": 17091,
+      "sha256": "0bd0c96b685ef1074f19de4c9b9914a1c111bef76a95a3b87db529f9c10d5864"
     },
     {
       "path": "tools/sdk/install-transaction.cjs",
@@ -178987,8 +180265,8 @@
     {
       "path": "tools/sdk/soui-sdk.cjs",
       "normalization": "lf",
-      "bytes": 14123,
-      "sha256": "3df7532351d3509c266669ba69e9ef9c460e44693df63951c87519067c1f1bd8"
+      "bytes": 15446,
+      "sha256": "d62a39f82706f95bc8c73f824d7962e179a9838e40d5071b0b79bd3ab80a6cc3"
     },
     {
       "path": "tools/verification-status.cjs",

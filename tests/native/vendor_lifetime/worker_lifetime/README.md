@@ -1,5 +1,9 @@
 # Worker 生命周期真实源码回归
 
+## 2026-10-29 deadline 调度候选
+
+当前主线程改为 ready 合并消息和最近 deadline 单次 threadpool timer；空闲不再产生周期 WM_TIMER。`main-thread-compatibility` 因此改为检查初始无周期 timer、真实 immediate task、不得提前的 25ms delayed task、deferred 后取消/重 arm 的恢复、旧 WM_TIMER 票号拒绝、WM_QUIT 不受自补消息饥饿，以及实际 HWND/类/任务释放。Win32 threadpool timer 仍为真实 API，fixture 未替换它的调度。平台时间声明增加单调时钟投影；原 worker/关闭故障断言保持。源码和 harness 身份重新绑定不代表新 Native 测试已执行，旧结果不能外推本候选。
+
 ## 当前源码绑定修复（2026-10-13）
 
 0.5 Native 源码采用后，本目录的 current 输入仍绑定采用前 5 个文件及 3 个旧字节偏移，导致正常配置被 byte gate 拒绝。更新时逐项验证完整文件，并以原片段 SHA 定位相同方法；registry/TLS 的三个片段原字节不变，仅位置移动。完整 WebThreadImpl 则包含已经采用的 retirement/witness 方法，测试依赖投影从真实 WebThread.h 额外提取该接口声明，不能手写另一套关闭实现。新增第 12 个 exact fragment，严格 copies 数同步为 12；13 个 current 源输入与所有 payload/HEX 前后校验仍保留。

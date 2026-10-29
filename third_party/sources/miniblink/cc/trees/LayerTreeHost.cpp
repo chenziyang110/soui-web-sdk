@@ -4,9 +4,12 @@
 #include <cstdio>
 #include <cstdlib>
 #include <limits>
+#include <new>
 
 #include <algorithm>
 #include "cc/trees/LayerTreeHost.h"
+#include "cc/trees/FrameSchedulingPolicy.h"
+#include "cc/trees/DirtyRegionPolicy.h"
 #if defined(SOUI_GPU_COMPOSITOR)
 #include "cc/trees/GpuSkiaSurface.h"
 #endif
@@ -48,6 +51,47 @@ extern DWORD g_nowTime;
 using namespace blink;
 
 namespace cc {
+
+// A cancellation can run synchronously on a producer thread when task admission
+// fails. Keep its host borrow separate from the compositor lock so host teardown
+// can revoke every queued payload before the host storage is released.
+struct UiPaintTaskLifetime {
+    explicit UiPaintTaskLifetime(LayerTreeHost* value) : host(value) { }
+    WTF::RecursiveMutex mutex;
+    LayerTreeHost* host;
+};
+
+struct RecordResourcesReadyTask : public blink::WebThread::Task {
+    explicit RecordResourcesReadyTask(LayerTreeHost* value) : host(value) { }
+    LayerTreeHost* host;
+    virtual ~RecordResourcesReadyTask() override
+    {
+        // WebThread owns the payload even when it rejects/cancels admission.
+        // Do not leave a permanently occupied raw-pointer coalescing slot.
+        if (!host) return;
+        WTF::Locker<WTF::Mutex> locker(host->m_compositeMutex);
+        if (host->m_recordResourcesReadyTask == this)
+            host->m_recordResourcesReadyTask = nullptr;
+        if (!host->m_isDestroying) {
+            host->m_recordNotificationFailed.store(true, std::memory_order_release);
+            OutputDebugStringA("SOUI MiniBlink: resource owner notification rejected.\n");
+        }
+    }
+    virtual void run() override
+    {
+        LayerTreeHost* current = host;
+        if (!current) return;
+        bool wake = false;
+        {
+            WTF::Locker<WTF::Mutex> locker(current->m_compositeMutex);
+            current->m_recordResourcesReadyTask = nullptr;
+            host = nullptr;
+            wake = !current->m_isDestroying && current->m_recordWaitingForResources.load(std::memory_order_acquire);
+        }
+        if (wake)
+            current->m_hostClient->onLayerTreeResourcesReady();
+    }
+};
 
 struct CompositorAnimationState {
     CompositorAnimationState(int targetLayerId,
@@ -412,6 +456,7 @@ LayerTreeHost::LayerTreeHost(LayerTreeHostClent* hostClient, LayerTreeHostUiThre
     m_backgroundColor = 0xff00ffff;
     m_hasTransparentBackground = false;
     m_independentPresentationEnabled = false;
+    m_uiMirrorOnDemand.store(false, std::memory_order_relaxed);
     m_visible = true;
     m_pageScaleFactor = 1.0f;
     m_minimum = 1.0f;
@@ -431,6 +476,7 @@ LayerTreeHost::LayerTreeHost(LayerTreeHostClent* hostClient, LayerTreeHostUiThre
     
     m_memoryCanvas = nullptr;
     m_paintToMemoryCanvasInUiThreadTaskCount = 0;
+    m_uiPaintTaskLifetime.reset(new UiPaintTaskLifetime(this));
 #if defined(SOUI_GPU_COMPOSITOR)
     m_gpuSurface = nullptr;
     m_gpuInitAttempted = false;
@@ -440,9 +486,12 @@ LayerTreeHost::LayerTreeHost(LayerTreeHostClent* hostClient, LayerTreeHostUiThre
     m_drawMinInterval = configuredDrawMinInterval();
 
     m_isDrawDirty = true;
-    m_lastCompositeTime = 0.0;
-    m_lastPaintTime = 0.0;
-    m_lastRecordTime = 0.0;
+    m_nextCompositeTime = 0.0;
+    m_nextPaintTime = 0.0;
+    m_nextRecordTime = 0.0;
+    m_recordWaitingForResources.store(false, std::memory_order_relaxed);
+    m_recordNotificationFailed.store(false, std::memory_order_relaxed);
+    m_recordResourcesReadyTask = nullptr;
     m_drawFrameCount = 0;
     m_drawFrameFinishCount = 0;
     m_requestApplyActionsCount = 0;
@@ -485,15 +534,22 @@ static void shutdownCompositeThread(blink::WebThreadSupportingGC* webThread,
 LayerTreeHost::~LayerTreeHost()
 {
     m_isDestroying = true;
+    {
+        WTF::Locker<WTF::RecursiveMutex> locker(m_uiPaintTaskLifetime->mutex);
+        m_uiPaintTaskLifetime->host = nullptr;
+    }
+    // Completion may run on a raster thread. Remove its raw host entry before
+    // waiting for workers or taking the compositor lock (pool -> host order).
+    RasterTaskWorkerThreadPool::shared()->unregisterCompletionWaiter(this);
 
     while (0 != RasterTaskWorkerThreadPool::shared()->getPendingRasterTaskNum()) { ::Sleep(20); }
     requestApplyActionsToRunIntoCompositeThread(true);
 
     m_compositeMutex.lock();
-    for (auto it : m_wrapSelfForUiThreads) {
-        it->m_host = nullptr;
+    if (m_recordResourcesReadyTask) {
+        m_recordResourcesReadyTask->host = nullptr;
+        m_recordResourcesReadyTask = nullptr;
     }
-    m_wrapSelfForUiThreads.clear();
     for (auto it : m_animationFinishedTasks)
         it->host = nullptr;
     m_animationFinishedTasks.clear();
@@ -779,26 +835,65 @@ static bool compareAction(LayerChangeAction*& left, LayerChangeAction*& right)
     return left->actionId() < right->actionId();
 }
 
-bool LayerTreeHost::canRecordActions() const
+bool LayerTreeHost::canRecordActions(double* retryDelaySeconds)
 {
-    if (hasInFlightScene())
-        return false;
+    if (retryDelaySeconds) *retryDelaySeconds = 0;
+    RasterTaskWorkerThreadPool* pool = RasterTaskWorkerThreadPool::shared();
+    const auto resourcesBlocked = [this, pool]() {
+        return hasInFlightScene() || !m_actionsFrameGroup
+            || (m_actionsFrameGroup->containComefromMainframeLocked()
+                && (pool->getPendingRasterTaskNum() > 10 || m_actionsFrameGroup->getFramesSize() > 30));
+    };
+    if (resourcesBlocked()) {
+        // Subscribe then recheck: a racing completion is either notified or
+        // observed here. No recurring timer is needed for a resource wait.
+        m_recordWaitingForResources.store(true, std::memory_order_release);
+        if (!pool->registerCompletionWaiter(this)) {
+            m_recordWaitingForResources.store(false, std::memory_order_release);
+            m_recordNotificationFailed.store(true, std::memory_order_release);
+            if (retryDelaySeconds) *retryDelaySeconds = 0.05;
+            return false;
+        }
+        if (resourcesBlocked()) {
+            if (retryDelaySeconds) *retryDelaySeconds = -1;
+            return false;
+        }
+    }
+    m_recordWaitingForResources.store(false, std::memory_order_release);
+    pool->unregisterCompletionWaiter(this);
     if (!m_actionsFrameGroup->containComefromMainframeLocked())
         return true;
-
-    if (RasterTaskWorkerThreadPool::shared()->getPendingRasterTaskNum() > 10)
+    const double now = WTF::monotonicallyIncreasingTime();
+    const double interval = m_drawMinInterval.load(std::memory_order_relaxed);
+    if (interval > 0 && now < m_nextRecordTime) {
+        if (retryDelaySeconds) *retryDelaySeconds = m_nextRecordTime - now;
         return false;
-
-    if (!m_actionsFrameGroup || m_actionsFrameGroup->getFramesSize() > 30)
-        return false;
-    
-    double lastRecordTime = WTF::monotonicallyIncreasingTime();
-    double detTime = lastRecordTime - m_lastRecordTime;
-    if (detTime < m_drawMinInterval)
-        return false;
-    m_lastRecordTime = lastRecordTime;
-
+    }
+    m_nextRecordTime = frame_scheduling::advanceDeadline(m_nextRecordTime, now, interval);
     return true;
+}
+
+void LayerTreeHost::notifyRecordResourcesChanged()
+{
+    if (!m_recordWaitingForResources.load(std::memory_order_acquire))
+        return;
+    WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
+    if (m_isDestroying || m_recordResourcesReadyTask)
+        return;
+    m_recordResourcesReadyTask = new (std::nothrow) RecordResourcesReadyTask(this);
+    if (!m_recordResourcesReadyTask) {
+        m_recordNotificationFailed.store(true, std::memory_order_release);
+        OutputDebugStringA("SOUI MiniBlink: resource owner notification allocation failed.\n");
+        return;
+    }
+    Platform::current()->mainThread()->postTask(FROM_HERE, m_recordResourcesReadyTask);
+}
+
+const char* LayerTreeHost::recordResourceWakeStatus() const
+{
+    if (m_recordNotificationFailed.load(std::memory_order_acquire))
+        return "notification-failed";
+    return m_recordWaitingForResources.load(std::memory_order_acquire) ? "waiting" : "idle";
 }
 
 void LayerTreeHost::beginRecordActions(bool isComefromMainframe)
@@ -813,11 +908,19 @@ void LayerTreeHost::endRecordActions()
     if (m_isDestroying)
         return;
     m_actionsFrameGroup->endRecordActions();
+    // The final append may have been consumed before the owner seals endId.
+    // Sealing itself is therefore a producer completion and must also wake.
+    requestDrawFrameToRunIntoCompositeThread();
+    notifyRecordResourcesChanged();
 }
 
 void LayerTreeHost::appendLayerChangeAction(LayerChangeAction* action)
 {
     m_actionsFrameGroup->saveLayerChangeAction(action);
+
+    // Pair every producer completion with a coalesced draw. An incomplete
+    // action frame therefore resumes on data arrival instead of 8ms polling.
+    requestDrawFrameToRunIntoCompositeThread();
 
     setLayerTreeDirty();
 }
@@ -1406,6 +1509,7 @@ void LayerTreeHost::onActionFrameApplied(int64 throughActionId)
     }
     if (ready)
         requestDrawFrameToRunIntoCompositeThread();
+    notifyRecordResourcesChanged();
 }
 
 inline SkRect unionRect(const SkRect& a, const SkRect& b)
@@ -1476,19 +1580,13 @@ static void addAndMergeDirty(Vector<SkRect>* dirtyRects, const SkRect& r)
     // keeping the per-frame work predictable.
     const size_t kMaxDirtyRects = 8;
     if (dirtySize >= kMaxDirtyRects) {
-        SkScalar bestDelta = std::numeric_limits<SkScalar>::max();
-        size_t mergeA = 0;
-        size_t mergeB = 1;
-        for (size_t i = 0; i + 1 < dirtySize; ++i) {
-            for (size_t j = i + 1; j < dirtySize; ++j) {
-                const SkScalar delta = unionArea(dirtyRects->at(i), dirtyRects->at(j)) -
-                    rectArea(dirtyRects->at(i)) - rectArea(dirtyRects->at(j));
-                if (delta < bestDelta) {
-                    bestDelta = delta;
-                    mergeA = i;
-                    mergeB = j;
-                }
-            }
+        const dirty_region::MergeChoice choice = dirty_region::leastCostMerge(
+            dirtyRects->data(), dirtySize, r, rectArea, unionArea);
+        const size_t mergeA = choice.first;
+        const size_t mergeB = choice.second;
+        if (mergeB == dirtySize) {
+            dirtyRects->at(mergeA).join(r);
+            return;
         }
         dirtyRects->at(mergeA).join(dirtyRects->at(mergeB));
         for (size_t i = mergeB + 1; i < dirtySize; ++i)
@@ -2285,6 +2383,9 @@ bool LayerTreeHost::tickCompositorScroll(double monotonicTime,
         }
     }
 
+    if (activatedSceneTree)
+        notifyRecordResourcesChanged();
+
     ScrollTreeSnapshot* pendingTree = nullptr;
     WTF::Vector<CompositorScrollInput*> inputs;
     {
@@ -2553,6 +2654,7 @@ void LayerTreeHost::onApplyActionsInCompositeThread(bool needCheck)
 {
     atomicDecrement(&m_requestApplyActionsCount);
     applyActions(needCheck);
+    notifyRecordResourcesChanged();
     atomicDecrement(&m_requestApplyActionsFinishCount);
 }
 
@@ -2575,13 +2677,15 @@ void LayerTreeHost::clearCanvas(SkCanvas* canvas, const SkRect& rect, bool useLa
 
 void LayerTreeHost::setDrawMinInterval(double drawMinInterval)
 {
-    m_drawMinInterval = drawMinInterval;
+    if (std::isfinite(drawMinInterval) && drawMinInterval >= 0)
+        m_drawMinInterval.store(drawMinInterval, std::memory_order_relaxed);
 }
 
-void LayerTreeHost::setIndependentPresentationEnabled(bool enabled)
+void LayerTreeHost::setIndependentPresentationEnabled(bool enabled, bool uiMirrorOnDemand)
 {
     WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
     m_independentPresentationEnabled = enabled;
+    m_uiMirrorOnDemand.store(enabled && uiMirrorOnDemand, std::memory_order_relaxed);
 }
 
 void LayerTreeHost::postPaintMessage(const SkRect& paintRect)
@@ -2643,15 +2747,16 @@ void LayerTreeHost::drawFrameInCompositeThread()
     m_compositeMutex.unlock();
 
     double lastCompositeTime = WTF::monotonicallyIncreasingTime();
-    double detTime = lastCompositeTime - m_lastCompositeTime;
-    if (detTime < m_drawMinInterval && !m_isDestroying) { // 如果刷新频率太快，缓缓再画
-        const long long remainingDelayMs = static_cast<long long>(
-            std::ceil((m_drawMinInterval - detTime) * 1000.0));
+    const double drawInterval = m_drawMinInterval.load(std::memory_order_relaxed);
+    if (drawInterval > 0 && lastCompositeTime < m_nextCompositeTime && !m_isDestroying) {
+        const long long remainingDelayMs = frame_scheduling::remainingDelayMilliseconds(
+            m_nextCompositeTime, lastCompositeTime);
         requestDrawFrameAfterDelay(remainingDelayMs);
         atomicDecrement(&m_drawFrameFinishCount);
         return;
     }
-    m_lastCompositeTime = lastCompositeTime;
+    m_nextCompositeTime = frame_scheduling::advanceDeadline(
+        m_nextCompositeTime, lastCompositeTime, drawInterval);
 
 #if 0
     LARGE_INTEGER performanceCount = { 0 };
@@ -2703,11 +2808,9 @@ void LayerTreeHost::drawFrameInCompositeThread()
     if ((animationNeedsAnotherFrame || scrollNeedsAnotherFrame)
         && !m_isDestroying) {
         requestDrawFrameToRunIntoCompositeThread();
-    } else if (!frameReady && !m_isDestroying) {
-        // An incomplete transaction is waiting for producer work; do not turn
-        // that wait into a zero-delay compositor spin loop.
-        requestDrawFrameAfterDelay(8);
     }
+    // appendLayerChangeAction supplies the wake for incomplete transactions.
+    (void)frameReady;
     atomicDecrement(&m_drawFrameFinishCount);
 }
 
@@ -2728,109 +2831,147 @@ void LayerTreeHost::paintToMemoryCanvasInUiThread(const SkRect& paintRect)
     m_uiThreadClient->paintToMemoryCanvasInUiThread(m_memoryCanvas, intPaintRect);
 }
 
-void LayerTreeHost::WrapSelfForUiThread::endPaint() {
-    LayerTreeHost* host = m_host;
-    WrapSelfForUiThread* next = nullptr;
-    int* taskCount = nullptr;
-    if (host) {
-        WTF::Locker<WTF::Mutex> locker(host->m_compositeMutex);
-        host->m_wrapSelfForUiThreads.remove(this);
-        taskCount = &host->m_paintToMemoryCanvasInUiThreadTaskCount;
-        // Keep one coalesced follow-up for dirty regions that arrived while
-        // this task was painting. Do not build an unbounded UI task queue.
-        if (!host->m_isDestroying && !host->m_dirtyRectsForUi.isEmpty()) {
-            next = new WrapSelfForUiThread(host);
-            host->m_wrapSelfForUiThreads.add(next);
-            atomicIncrement(taskCount);
-        }
-    }
-
-    delete this;
-
-    if (taskCount)
-        atomicDecrement(taskCount);
-    if (next)
-        Platform::current()->mainThread()->postTask(FROM_HERE,
-            WTF::bind(&LayerTreeHost::WrapSelfForUiThread::paintInUiThread, next));
-}
-
-void LayerTreeHost::WrapSelfForUiThread::paintInUiThread()
+void LayerTreeHost::WrapSelfForUiThread::post(long long delayMs)
 {
-    if (!m_host) {
+    // WebThread takes ownership, including synchronous admission rejection.
+    // Submit outside both host locks: rejection may destroy this payload here.
+    Platform* platform = Platform::current();
+    blink::WebThread* thread = platform ? platform->mainThread() : nullptr;
+    if (!thread) {
         delete this;
         return;
     }
+    if (delayMs > 0)
+        thread->postDelayedTask(FROM_HERE, this, delayMs);
+    else
+        thread->postTask(FROM_HERE, this);
+}
 
-    double lastPaintTime = WTF::monotonicallyIncreasingTime();
-    double detTime = lastPaintTime - m_host->m_lastPaintTime;
-    if (detTime < m_host->m_drawMinInterval) {
-        m_host->requestPaintToMemoryCanvasToUiThread(IntRect());
-        endPaint();
-        return;
+void LayerTreeHost::WrapSelfForUiThread::run()
+{
+    WrapSelfForUiThread* next = nullptr;
+    long long delayMs = 0;
+    {
+        WTF::Locker<WTF::RecursiveMutex> lifetimeLocker(m_lifetime->mutex);
+        LayerTreeHost* host = m_lifetime->host;
+        if (!host) {
+            m_ownsSlot = false;
+            return;
+        }
+        if (host->m_isDestroying)
+            return; // Cancellation cleanup below performs no painting.
+
+        const double lastPaintTime = WTF::monotonicallyIncreasingTime();
+        const double drawInterval = host->m_drawMinInterval.load(std::memory_order_relaxed);
+        if (drawInterval > 0 && lastPaintTime < host->m_nextPaintTime) {
+            next = new (std::nothrow) WrapSelfForUiThread(m_lifetime);
+            if (next) {
+                // Transfer the single slot, rather than reposting a non-owning
+                // bind of this task or incrementing the queued-task count.
+                m_ownsSlot = false;
+                delayMs = frame_scheduling::remainingDelayMilliseconds(host->m_nextPaintTime, lastPaintTime);
+            }
+            // If allocation failed, our owning-task destructor retires the
+            // slot and records failure; there is no silent lost wake.
+        } else {
+            host->m_nextPaintTime = frame_scheduling::advanceDeadline(
+                host->m_nextPaintTime, lastPaintTime, drawInterval);
+            Vector<SkRect> dirtyRectsForUi;
+            {
+                WTF::Locker<WTF::Mutex> locker(host->m_compositeMutex);
+                dirtyRectsForUi.swap(host->m_dirtyRectsForUi);
+            }
+            for (size_t i = 0; i < dirtyRectsForUi.size() && m_lifetime->host == host; ++i)
+                host->paintToMemoryCanvasInUiThread(dirtyRectsForUi[i]);
+
+            // Revalidate after owner callbacks. This does not permit callers
+            // to synchronously delete a host/canvas still borrowed by the
+            // paint callback itself; that existing lifetime contract remains.
+            if (m_lifetime->host != host) {
+                m_ownsSlot = false;
+                return;
+            }
+            WTF::Locker<WTF::Mutex> locker(host->m_compositeMutex);
+            if (!host->m_isDestroying && !host->m_dirtyRectsForUi.isEmpty()) {
+                next = new (std::nothrow) WrapSelfForUiThread(m_lifetime);
+                if (next)
+                    m_ownsSlot = false; // Same slot, one coalesced follow-up.
+            } else {
+                atomicDecrement(&host->m_paintToMemoryCanvasInUiThreadTaskCount);
+                m_ownsSlot = false;
+            }
+        }
     }
-    m_host->m_lastPaintTime = lastPaintTime;
-
-    m_host->m_compositeMutex.lock();
-    Vector<SkRect> dirtyRectsForUi = m_host->m_dirtyRectsForUi;
-    m_host->m_dirtyRectsForUi.clear();
-    m_host->m_compositeMutex.unlock();
-
-    for (size_t i = 0; i < dirtyRectsForUi.size(); ++i) {
-        m_host->paintToMemoryCanvasInUiThread(dirtyRectsForUi[i]);
-    }
-
-    endPaint();
+    if (next)
+        next->post(delayMs);
 }
 
 LayerTreeHost::WrapSelfForUiThread::~WrapSelfForUiThread()
 {
-    
+    if (!m_ownsSlot)
+        return;
+    WTF::Locker<WTF::RecursiveMutex> lifetimeLocker(m_lifetime->mutex);
+    LayerTreeHost* host = m_lifetime->host;
+    if (!host)
+        return;
+    WTF::Locker<WTF::Mutex> locker(host->m_compositeMutex);
+    atomicDecrement(&host->m_paintToMemoryCanvasInUiThreadTaskCount);
+    if (!host->m_isDestroying) {
+        // Can run on a producer thread. Retire admission only; never call GDI,
+        // the UI client or a retry loop from cancellation/destruction.
+        host->m_recordNotificationFailed.store(true, std::memory_order_release);
+        OutputDebugStringA("SOUI MiniBlink: legacy UI paint notification rejected.\n");
+    }
 }
 
-void LayerTreeHost::WrapSelfForUiThread::willProcessTask()
-{
-    Platform::current()->mainThread()->removeTaskObserver(this);
-    paintInUiThread();
-}
-
-void LayerTreeHost::WrapSelfForUiThread::didProcessTask()
-{
-    Platform::current()->mainThread()->removeTaskObserver(this);
-    paintInUiThread();
-}
-
-void LayerTreeHost::requestPaintToMemoryCanvasToUiThread(const SkRect& r)
+LayerTreeHost::WrapSelfForUiThread* LayerTreeHost::requestPaintToMemoryCanvasToUiThread(const SkRect& r)
 {
 //     char* output = (char*)malloc(0x100);
 //     sprintf(output, "LayerTreeHost::requestPaintToMemoryCanvasToUiThread: %f %f\n", r.x(), r.y());
 //     OutputDebugStringA(output);
 //     free(output);
 
-    WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
+    WrapSelfForUiThread* wrap = nullptr;
+    {
+        WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
+        if (m_isDestroying)
+            return nullptr;
+        if (r.isEmpty() && m_paintToMemoryCanvasInUiThreadTaskCount > 1)
+            return nullptr;
 
-    if (r.isEmpty() && m_paintToMemoryCanvasInUiThreadTaskCount > 1)
-        return;
+        SkRect dirtyRect(r);
+        SkRect clientRect = SkRect::MakeXYWH(m_clientRect.x(), m_clientRect.y(), m_clientRect.width(), m_clientRect.height());
+        if (!dirtyRect.intersect(clientRect))
+            return nullptr;
 
-    SkRect dirtyRect(r);
-    SkRect clientRect = SkRect::MakeXYWH(m_clientRect.x(), m_clientRect.y(), m_clientRect.width(), m_clientRect.height());
-    if (!dirtyRect.intersect(clientRect))
-        return;
+        addAndMergeDirty(&m_dirtyRectsForUi, dirtyRect);
 
-    addAndMergeDirty(&m_dirtyRectsForUi, dirtyRect);
-
-    // A single task drains the merged dirty list. Additional requests while
-    // it is queued or painting are merged and scheduled by endPaint().
-    if (m_paintToMemoryCanvasInUiThreadTaskCount != 0)
-        return;
-
-    WrapSelfForUiThread* wrap = new WrapSelfForUiThread(this);
-    m_wrapSelfForUiThreads.add(wrap);
-    atomicIncrement(&m_paintToMemoryCanvasInUiThreadTaskCount);
-    Platform::current()->mainThread()->postTask(FROM_HERE, WTF::bind(&LayerTreeHost::WrapSelfForUiThread::paintInUiThread, wrap)); //addTaskObserver(wrap);
+        // One owning task drains the merged list. New dirty regions are folded
+        // into it or into its single coalesced follow-up.
+        if (m_paintToMemoryCanvasInUiThreadTaskCount != 0)
+            return nullptr;
+        wrap = new (std::nothrow) WrapSelfForUiThread(m_uiPaintTaskLifetime);
+        if (!wrap) {
+            m_recordNotificationFailed.store(true, std::memory_order_release);
+            OutputDebugStringA("SOUI MiniBlink: legacy UI paint task allocation failed.\n");
+            return nullptr;
+        }
+        atomicIncrement(&m_paintToMemoryCanvasInUiThreadTaskCount);
+    }
+    // The caller may still hold its outer composite lock. Return ownership to
+    // its after-unlock guard instead of posting from this nested lock scope.
+    return wrap;
 }
 
 void LayerTreeHost::paintToMemoryCanvasInCompositeThread(const SkRect& r)
 {
+    struct PostAfterUnlock {
+        PostAfterUnlock() : task(nullptr) { }
+        ~PostAfterUnlock() { if (task) task->post(0); }
+        WrapSelfForUiThread* task;
+    } deferredPost;
+    // Declaration order matters: every return first releases the outer canvas
+    // lock, then submits the owning task. Rejection cannot invert gate -> host.
     WTF::Locker<WTF::Mutex> locker(m_compositeMutex);
     SkRect paintRect = r;
 #if defined(SOUI_GPU_COMPOSITOR)
@@ -2908,7 +3049,7 @@ void LayerTreeHost::paintToMemoryCanvasInCompositeThread(const SkRect& r)
                 m_gpuSurface->recordPresented();
                 if (!needNotifUi)
                     return;
-                requestPaintToMemoryCanvasToUiThread(paintRect);
+                deferredPost.task = requestPaintToMemoryCanvasToUiThread(paintRect);
                 return;
             }
         }
@@ -2941,7 +3082,7 @@ void LayerTreeHost::paintToMemoryCanvasInCompositeThread(const SkRect& r)
     }
 #endif
 
-    requestPaintToMemoryCanvasToUiThread(paintRect);
+    deferredPost.task = requestPaintToMemoryCanvasToUiThread(paintRect);
 }
 
 SkCanvas* LayerTreeHost::getMemoryCanvasLocked()

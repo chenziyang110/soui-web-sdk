@@ -23,7 +23,7 @@
 
 namespace soui::sdk {
 
-namespace detail { class bridge_request_budget; class cursor_broker_endpoint; class miniblink_devtools_session; }
+namespace detail { class bridge_request_budget; class cursor_broker_endpoint; class miniblink_devtools_session; class input_admission; }
 
 inline constexpr std::uint32_t bridge_event_message = 0x84D2U;
 inline constexpr std::uint32_t ime_position_message = 0x84D3U;
@@ -164,7 +164,7 @@ class dynamic_miniblink_adapter final : public webview_host_adapter,
   [[nodiscard]] host_result unmount_pending(const char* message);
   [[nodiscard]] host_result close_cursor_endpoint();
   [[nodiscard]] bool advance_cursor_document_on_engine();
-  [[nodiscard]] bool update_cursor_identity_on_engine();
+  [[nodiscard]] bool update_cursor_identity_on_engine(bool permit_geometry_race = false);
   void sync_cursor_input_generation() noexcept;
   void pump_on_engine();
   [[nodiscard]] host_result reload_on_engine(std::uint64_t receipt);
@@ -210,6 +210,9 @@ class dynamic_miniblink_adapter final : public webview_host_adapter,
   bool bridge_com_initialized_{false};
   std::atomic<std::uint64_t> bridge_generation_{0};
   interaction_router interaction_router_;
+  std::unique_ptr<detail::input_admission> input_admission_;
+  std::atomic<std::uint64_t> input_rejections_{0};
+  std::atomic<unsigned> last_input_admission_{0};
   const void* interaction_api_{nullptr};
   void* interaction_endpoint_{nullptr};
   const void* cursor_api_{nullptr};
@@ -276,6 +279,9 @@ class dynamic_miniblink_adapter final : public webview_host_adapter,
   bool experimental_compositor_rate_{false};
   std::atomic<int> configured_wake_interval_{-1};
   std::atomic<int> configured_draw_min_interval_{-1};
+  std::atomic<int> configured_draw_frame_rate_{-1};
+  std::atomic<bool> resource_wake_failed_{false};
+  std::chrono::steady_clock::time_point resource_status_query_at_{}; // Engine owner only.
   std::atomic<int> configured_main_frame_rate_{-1};
   bool experimental_main_frame_scheduler_{false};
   bool gpu_trace_active_{false};

@@ -62,7 +62,8 @@ class engine_thread final {
  private:
   friend class detail::engine_admission;
   static constexpr std::size_t queue_capacity = 580;
-  detail::engine_admission_result post_internal(task, detail::engine_lane, detail::engine_reply_ticket*);
+  detail::engine_admission_result post_internal(task&, detail::engine_lane, detail::engine_reply_ticket*,
+      const detail::engine_reply_ticket* const* guards = nullptr, std::size_t guard_count = 0);
   detail::engine_admission_result reserve_reply(detail::engine_lane, detail::engine_reply_ticket&);
   detail::engine_capacity_snapshot capacity_snapshot() const;
   void run(initializer initialize, task shutdown) noexcept;

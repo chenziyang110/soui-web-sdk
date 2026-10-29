@@ -23,6 +23,11 @@ const requiredDevtoolsDocs = [
   'docs/adr/0131-native-view-lifetime-observation.md',
   'docs/adr/0134-controlled-inspector-keyboard-snapshot.md',
   'docs/adr/0135-owned-local-resource-origin.md',
+  'docs/adr/0137-miniblink-deadline-scheduler.md',
+  'docs/adr/0138-miniblink-frame-presentation.md',
+  'docs/adr/0139-webview2-scratch-performance.md',
+  'docs/adr/0140-performance-candidate-size-and-source.md',
+  'docs/adr/0141-input-ending-capacity.md',
 ];
 let checks = 0;
 function check(fn) { fn(); ++checks; }

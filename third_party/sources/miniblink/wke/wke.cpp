@@ -508,7 +508,17 @@ void WKE_CALL_TYPE releaseInteractionEndpointApi(wkeInteractionEndpoint opaque)
 int WKE_CALL_TYPE configureInteractionPresentation(
     wkeInteractionEndpoint opaque, unsigned int flags)
 {
-    if (flags & ~WKE_INTERACTION_PRESENT_DIRECT_HWND)
+    const unsigned int knownFlags = WKE_INTERACTION_PRESENT_DIRECT_HWND
+        | WKE_INTERACTION_PRESENT_UI_MIRROR_ON_DEMAND;
+#if defined(SOUI_GPU_COMPOSITOR)
+    // GPU direct presentation does not maintain the CPU canvas. A correct
+    // on-demand GPU readback would require its own owner-thread protocol.
+    if (flags & WKE_INTERACTION_PRESENT_UI_MIRROR_ON_DEMAND)
+        return 0;
+#endif
+    if ((flags & ~knownFlags)
+        || ((flags & WKE_INTERACTION_PRESENT_UI_MIRROR_ON_DEMAND)
+            && !(flags & WKE_INTERACTION_PRESENT_DIRECT_HWND)))
         return 0;
     InteractionEndpointImpl* endpoint =
         static_cast<InteractionEndpointImpl*>(opaque);
@@ -519,7 +529,8 @@ int WKE_CALL_TYPE configureInteractionPresentation(
     if (!endpoint->active || !endpoint->layerTreeHost)
         return 0;
     endpoint->layerTreeHost->setIndependentPresentationEnabled(
-        (flags & WKE_INTERACTION_PRESENT_DIRECT_HWND) != 0);
+        (flags & WKE_INTERACTION_PRESENT_DIRECT_HWND) != 0,
+        (flags & WKE_INTERACTION_PRESENT_UI_MIRROR_ON_DEMAND) != 0);
     return 1;
 }
 
@@ -658,7 +669,12 @@ const wkeInteractionApi* WKE_CALL_TYPE wkeGetInteractionApi(unsigned int request
         WKE_INTERACTION_ABI_VERSION,
         WKE_INTERACTION_CAP_DIRECT_WHEEL
             | WKE_INTERACTION_CAP_CLICK_BARRIER
-            | WKE_INTERACTION_CAP_DIRECT_PRESENTATION,
+            | WKE_INTERACTION_CAP_DIRECT_PRESENTATION
+            | WKE_INTERACTION_CAP_PRECISE_FRAME_RATE
+#if !defined(SOUI_GPU_COMPOSITOR)
+            | WKE_INTERACTION_CAP_ON_DEMAND_UI_MIRROR
+#endif
+            | WKE_INTERACTION_CAP_RESOURCE_WAKE_STATUS,
         &createInteractionEndpoint,
         &retainInteractionEndpoint,
         &invalidateInteractionEndpointApi,
@@ -1065,6 +1081,13 @@ void WKE_CALL_TYPE wkeSetDebugConfig(wkeWebView webview, const char* debugString
         } else if ("gpuPresent" == item) {
             if (webview)
                 webview->setGpuPresent(param && atoi(param) != 0);
+        } else if ("drawFrameRate" == item) {
+            if (webpage && param) {
+                char* end = nullptr;
+                const long rate = strtol(param, &end, 10);
+                if (end != param && *end == 0 && rate >= 30 && rate <= 1000)
+                    webpage->setDrawMinInterval(1.0 / static_cast<double>(rate));
+            }
         } else if ("drawMinInterval" == item) {
             // Public debug setting is milliseconds; the compositor expects
             // fractional seconds. An int here silently truncated 1..999ms to 0.
@@ -1102,6 +1125,14 @@ void WKE_CALL_TYPE wkeSetDebugConfig(wkeWebView webview, const char* debugString
 void* WKE_CALL_TYPE wkeGetDebugConfig(wkeWebView webview, const char* debugString)
 {
     wke::checkThreadCallIsValid(__FUNCTION__);
+
+    // This capability-gated scalar query is used by the native health check.
+    // Keep it allocation-free instead of constructing/splitting WTF strings.
+    if (debugString && strcmp(debugString, "resourceWakeStatus") == 0) {
+        content::WebPage* page = webview ? webview->getWebPage() : nullptr;
+        content::WebPageImpl* impl = page ? page->webPageImpl() : nullptr;
+        return impl ? const_cast<char*>(impl->layerTreeHost()->recordResourceWakeStatus()) : nullptr;
+    }
 
     void* ret = NULL;
     if (wke::getDebugConfig(webview, debugString, &ret))

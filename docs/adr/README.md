@@ -75,3 +75,8 @@
 * [0131: Native view lifetime observation](0131-native-view-lifetime-observation.md)
 * [0134：受控 Inspector 的键盘事件快照](0134-controlled-inspector-keyboard-snapshot.md)
 * [0135：MiniBlink 显式本地 HTTPS 资源原点](0135-owned-local-resource-origin.md)
+* [0137：MiniBlink 截止时间调度](0137-miniblink-deadline-scheduler.md)
+* [0138：MiniBlink 帧节拍与呈现](0138-miniblink-frame-presentation.md)
+* [0139：WebView2 与 Scratch 性能候选](0139-webview2-scratch-performance.md)
+* [0140：性能候选的体积与来源门禁](0140-performance-candidate-size-and-source.md)
+* [0141：输入开始前预留结束容量](0141-input-ending-capacity.md)

@@ -5,6 +5,7 @@
 #include "preparation_lifetime.h"
 #include "native_observation.h"
 #include "loader_policy.h"
+#include "owner_work_policy.h"
 #ifdef SOUI_HOST_STAGE0_DEVTOOLS_TEST_ONLY
 #include "stage0_devtools.h"
 #endif
@@ -488,6 +489,7 @@ struct webview2_adapter::state {
   std::string preload, runtime_version, script_id;
   ComPtr<ICoreWebView2Environment> environment;
   ComPtr<ICoreWebView2Controller> controller;
+  detail::controller_updates controller_updates;
   ComPtr<ICoreWebView2> core;
   ComPtr<ICoreWebView2_3> core3;
   ComPtr<ICoreWebView2_4> core4;
@@ -1451,11 +1453,25 @@ host_result webview2_adapter::mount(const sdk::host_config& config) {
          CompareStringOrdinal(profile_text.data(), static_cast<int>(resource_prefix.size()),
                               resource_prefix.data(), static_cast<int>(resource_prefix.size()), TRUE) == CSTR_EQUAL))
       throw std::runtime_error("Browser profile must be outside the served resource directory");
-    check(value->core3->SetVirtualHostNameToFolderMapping(L"soui-webview2.invalid", resources.c_str(),
-        COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND_DENY), "Map controlled resources");
+    const auto mounted_controller = value->controller;
+    const auto mounted_core = value->core;
+    const auto mounted_core3 = value->core3;
+    const auto preparation_current = [&] {
+      return value->current == state::phase::prepared &&
+          value->controller.Get() == mounted_controller.Get() && value->core.Get() == mounted_core.Get() &&
+          value->core3.Get() == mounted_core3.Get();
+    };
+    const auto mapped = mounted_core3->SetVirtualHostNameToFolderMapping(L"soui-webview2.invalid", resources.c_str(),
+        COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND_DENY);
+    if (!preparation_current()) return error("E_CANCELLED", "WebView2 mount was cancelled during resource mapping.");
+    check(mapped, "Map controlled resources");
     RECT bounds{};
     if (!GetClientRect(value->owner, &bounds)) throw std::runtime_error("Owner bounds unavailable");
-    check(value->controller->put_Bounds(bounds), "Set initial bounds");
+    const auto bounded = value->controller_updates.bounds(bounds.right, bounds.bottom, [mounted_controller](int width, int height) {
+      return mounted_controller ? mounted_controller->put_Bounds(RECT{0, 0, width, height}) : E_ABORT;
+    });
+    if (!preparation_current()) return error("E_CANCELLED", "WebView2 mount was cancelled during initial bounds.");
+    check(bounded, "Set initial bounds");
     value->bridge = config.bridge_adapter;
     value->bridge->set_owner_window(value->owner);
     const std::weak_ptr<state> weak(value);
@@ -1589,16 +1605,24 @@ host_result webview2_adapter::unmount() {
 }
 
 host_result webview2_adapter::show(bool visible) {
-  const auto active = require_mounted(state_);
+  const auto value = state_;
+  const auto active = require_mounted(value);
   if (!active.ok) return active;
-  const auto result = state_->controller->put_IsVisible(visible ? TRUE : FALSE);
+  const auto controller = value->controller;
+  const auto result = value->controller_updates.visibility(visible, [controller](bool next) {
+    return controller ? controller->put_IsVisible(next ? TRUE : FALSE) : E_ABORT;
+  });
   return SUCCEEDED(result) ? ok() : error("E_WEBVIEW2", hresult_text(result));
 }
 host_result webview2_adapter::resize(int width, int height) {
-  const auto active = require_mounted(state_);
+  const auto value = state_;
+  const auto active = require_mounted(value);
   if (!active.ok) return active;
   if (width < 0 || height < 0 || width > 32768 || height > 32768) return error("E_INVALID_PARAMS", "Invalid WebView2 bounds.");
-  const auto result = state_->controller->put_Bounds(RECT{0, 0, width, height});
+  const auto controller = value->controller;
+  const auto result = value->controller_updates.bounds(width, height, [controller](int next_width, int next_height) {
+    return controller ? controller->put_Bounds(RECT{0, 0, next_width, next_height}) : E_ABORT;
+  });
   return SUCCEEDED(result) ? ok() : error("E_WEBVIEW2", hresult_text(result));
 }
 host_result webview2_adapter::focus() {
@@ -1662,8 +1686,10 @@ void webview2_adapter::pump() {
               }).Get());
       if (FAILED(queried)) { reject_async(value, receipt); value->diagnostic_query_pending = false; }
     }
-    // Owner notification drains a bounded batch; workers never invoke WebView2 COM.
-    for (unsigned batch = 0; batch < 16; ++batch) {
+    // Both item and cooperative time limits let input/COM regain the UI STA.
+    // A single serialization/COM call is not preemptible by this budget.
+    const detail::owner_work_budget budget(clock_type::now());
+    for (unsigned batch = 0; budget.allows(batch, clock_type::now()); ++batch) {
       state::output output;
       {
         std::lock_guard<std::mutex> lock(value->mutex);
@@ -1673,16 +1699,28 @@ void webview2_adapter::pump() {
         output = std::move(*selected);
         value->outputs.erase(selected);
         value->output_slots.release(output.slot ? output.slot->category : capacity::lane::ordinary, output.raw.size());
-        // Release before notifying the page; its completion may send new work.
-        if (output.slot) output.slot->release();
-        if (output.generation != value->generation || output.document_id != value->document_id) continue;
       }
-      if (!current_source(value)) continue;
+      // Budget release takes its own mutex. Keep it outside the Host lock and
+      // before notifying the page, whose completion may admit new work.
+      if (output.slot) output.slot->release();
+      if (output.generation != value->generation || output.document_id != value->document_id) continue;
+      const auto core = value->core;
+      const auto delivery_current = [&] {
+        return value->current == state::phase::mounted && value->core.Get() == core.Get() &&
+            output.generation == value->generation && output.document_id == value->document_id;
+      };
+      // get_Source and PostWebMessageAsJson can reenter the STA. Keep the COM
+      // instance alive and revalidate the document after each native boundary.
+      if (!core || !current_source(value) || !delivery_current()) continue;
       const auto packet = output.event
           ? json{{"kind", "event"}, {"documentId", output.document_id}, {"data", parse_bounded(output.raw)}}
           : json{{"kind", "response"}, {"documentId", output.document_id}, {"requestId", output.id},
               {"invocationId", output.invocation_id}, {"raw", output.raw}};
-      check(value->core->PostWebMessageAsJson(wide(packet.dump()).c_str()), "Deliver native response");
+      const auto encoded = wide(packet.dump());
+      if (!delivery_current()) continue;
+      const auto delivered = core->PostWebMessageAsJson(encoded.c_str());
+      if (!delivery_current()) continue;
+      check(delivered, "Deliver native response");
       if (output.ready) value->application_ready = true;
     }
     {

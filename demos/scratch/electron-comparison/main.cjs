@@ -49,7 +49,10 @@ app.whenReady().then(async () => {
   const root = await fs.realpath(options.resources);
   const baselineBytes = await fs.readFile(options.baseline);
   const baseline = JSON.parse(baselineBytes);
-  if (baseline.schema !== 'soui.scratch-performance/v1' || !baseline.validForComparison ||
+  const baselineCollected = baseline.measurementVersion === 2
+    ? baseline.validForWindowRateComparison === true && Number.isFinite(baseline.windowRafFps)
+    : baseline.validForComparison === true;
+  if (baseline.schema !== 'soui.scratch-performance/v1' || !baselineCollected ||
       baseline.sceneId !== 'sprites' || baseline.level !== 'heavy' || baseline.durationMs !== 30000 ||
       !Number.isInteger(baseline.viewport?.width) || !Number.isInteger(baseline.viewport?.height))
     throw new Error('This comparison expects a completed sprites/heavy 30-second baseline.');
@@ -157,16 +160,23 @@ app.whenReady().then(async () => {
     activeRun = null;
     const file = `electron-run-${index}.json`;
     await fs.writeFile(path.join(output,file),JSON.stringify(report,null,2));
-    record.runs.push({file,rafFps:report.rafFps,p95Ms:report.frameP95Ms,p99Ms:report.frameP99Ms,
+    record.runs.push({file,windowRafFps:report.windowRafFps,rafFps:report.rafFps,
+      rafCallbacks:report.rafCallbacks,censored:report.censored,p95Ms:report.frameP95Ms,p99Ms:report.frameP99Ms,
+      validForWindowRateComparison:report.validForWindowRateComparison,
       validForComparison:report.validForComparison,windowEvents:failures.filter(entry => entry.run === index)});
     await save();
-    if (!report.validForComparison || report.targets !== 241 || report.threads !== 240 ||
+    if (report.measurementVersion !== 2 || !report.validForWindowRateComparison ||
+        !Number.isFinite(report.windowRafFps) || report.targets !== 241 || report.threads !== 240 ||
         failures.some(entry => entry.run === index)) throw new Error(`Run ${index} was invalid.`);
-    console.log(`RESULT ${index}: ${report.rafFps} FPS; P95 ${report.frameP95Ms} ms; P99 ${report.frameP99Ms} ms`);
+    // Censored/zero-frame windows are retained poor results, never retried as
+    // environment failures. Their closed-interval percentiles cannot qualify.
+    console.log(`RESULT ${index}: window ${report.windowRafFps} callbacks/s; observed cadence ${report.rafFps}; censored=${report.censored}; P95 ${report.frameP95Ms} ms`);
   }
   await evaluate(() => window.souiScratch.vm.stopAll());
   record.completedUtc = new Date().toISOString();
   record.pass = failures.length === 0 && blockedRequests.length === 0 && record.runs.length === runs;
+  record.passKind = 'collection-only; does not imply performance or percentile qualification';
+  record.percentilesQualified = record.runs.every(run => run.validForComparison);
   await save();
   console.log(`COMPLETE: ${output}; pass=${record.pass}. Window remains open; scripts stopped.`);
   if (!record.pass) process.exitCode = 1;

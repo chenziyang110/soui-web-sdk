@@ -491,7 +491,7 @@ public:
             if (m_page->m_mainFrameInterval <= 0 || m_lastFrameTimeMonotonic >= m_page->m_nextMainFrameTime) {
                 WebBeginFrameArgs frameArgs(m_lastFrameTimeMonotonic, 0, m_lastFrameTimeMonotonic - m_page->m_lastFrameTimeMonotonic);
                 if (m_page->m_mainFrameInterval > 0) {
-                    double& deadline = m_page->m_nextMainFrameTime;
+                    double deadline = m_page->m_nextMainFrameTime.load(std::memory_order_relaxed);
                     const double interval = m_page->m_mainFrameInterval;
                     if (deadline <= 0) deadline = m_lastFrameTimeMonotonic + interval;
                     else {
@@ -502,6 +502,7 @@ public:
                             deadline += (missed + 1) * interval;
                         }
                     }
+                    m_page->m_nextMainFrameTime.store(deadline, std::memory_order_relaxed);
                 }
                 if (m_page->m_mainFrameInterval > 0)
                     m_page->m_lastFrameTimeMonotonic = m_lastFrameTimeMonotonic;
@@ -824,18 +825,19 @@ private:
     WebPageImpl* m_client;
 };
 
-void WebPageImpl::setNeedsCommitAndNotLayout()
+void WebPageImpl::setNeedsCommitAndNotLayout(double minimumDelaySeconds)
 {
 //     if (0 != m_needsCommit)
 //         return;
 //     atomicIncrement(&m_needsCommit);
 
-    if (0 == m_commitCount) {
-        atomicIncrement(&m_commitCount);
+    if (0 == InterlockedCompareExchange(reinterpret_cast<long volatile*>(&m_commitCount), 1, 0)) {
         blink::Platform* platfrom = blink::Platform::current();
         WebThreadImpl* threadImpl = (WebThreadImpl*)platfrom->mainThread();
-        const double remainingMs = (m_nextMainFrameTime - WTF::monotonicallyIncreasingTime()) * 1000.0;
-        if (m_mainFrameInterval > 0 && remainingMs > 0) {
+        double remainingMs = minimumDelaySeconds * 1000.0;
+        if (m_mainFrameInterval > 0)
+            remainingMs = std::max(remainingMs, (m_nextMainFrameTime.load(std::memory_order_relaxed) - WTF::monotonicallyIncreasingTime()) * 1000.0);
+        if (remainingMs > 0) {
             const long long delayMs = remainingMs >= 34 ? 34 : static_cast<long long>(remainingMs + 0.999);
             threadImpl->postDelayedTask(FROM_HERE, new CommitTask(this), delayMs > 0 ? delayMs : 1);
         } else {
@@ -873,8 +875,10 @@ void WebPageImpl::executeMainFrame()
 
     //double lastFrameTimeMonotonic = WTF::monotonicallyIncreasingTime();
 
-    if (!m_layerTreeHost->canRecordActions()) {
-        setNeedsCommitAndNotLayout();
+    double retryDelaySeconds = 0;
+    if (!m_layerTreeHost->canRecordActions(&retryDelaySeconds)) {
+        if (retryDelaySeconds >= 0)
+            setNeedsCommitAndNotLayout(retryDelaySeconds);
         atomicDecrement(&m_executeMainFrameCount);
         return;
     }
@@ -1002,10 +1006,15 @@ void WebPageImpl::firePaintEvent(HDC hdc, const RECT* paintRect)
 
 HDC WebPageImpl::viewDC()
 {
+    // A direct presenter can avoid the mirror until a real DC consumer asks
+    // for it. Copy the current compositor canvas before exposing that DC.
+    if (m_layerTreeHost->uiMirrorOnDemand() || cpuUiMirrorDisabled())
+        copyToMemoryCanvasForUi(IntRect(), true);
     bool useLayeredBuffer = m_layerTreeHost->getHasTransparentBackground();
     if (!m_memoryCanvasForUi && !m_viewportSize.isEmpty()) {
         m_memoryCanvasForUi = skia::CreatePlatformCanvas(m_viewportSize.width(), m_viewportSize.height(), !useLayeredBuffer);
-        cc::LayerTreeHost::clearCanvas(m_memoryCanvasForUi, IntRect(0, 0, m_viewportSize.width(), m_viewportSize.height()), useLayeredBuffer);
+        if (m_memoryCanvasForUi)
+            cc::LayerTreeHost::clearCanvas(m_memoryCanvasForUi, IntRect(0, 0, m_viewportSize.width(), m_viewportSize.height()), useLayeredBuffer);
     }
     if (!m_memoryCanvasForUi)
         return nullptr;
@@ -1017,9 +1026,9 @@ HDC WebPageImpl::viewDC()
     return hDC;
 }
 
-void WebPageImpl::copyToMemoryCanvasForUi(const IntRect& paintRect)
+void WebPageImpl::copyToMemoryCanvasForUi(const IntRect& paintRect, bool forceSnapshot)
 {
-    if (cpuUiMirrorDisabled())
+    if (!forceSnapshot && (m_layerTreeHost->uiMirrorOnDemand() || cpuUiMirrorDisabled()))
         return;
 
     bool useLayeredBuffer = m_layerTreeHost->getHasTransparentBackground();
@@ -1040,11 +1049,13 @@ void WebPageImpl::copyToMemoryCanvasForUi(const IntRect& paintRect)
     int height = memoryCanvas->imageInfo().height();
     if (0 != width && 0 != height) {
         if ((!m_memoryCanvasForUi && 0 != width * height) || 
-            (m_memoryCanvasForUi && (width != m_memoryCanvasForUi->imageInfo().width() || height != m_memoryCanvasForUi->imageInfo().height()))) {
+            (m_memoryCanvasForUi && (width != m_memoryCanvasForUi->imageInfo().width() || height != m_memoryCanvasForUi->imageInfo().height()
+                || m_memoryCanvasForUi->imageInfo().isOpaque() != !useLayeredBuffer))) {
             if (m_memoryCanvasForUi)
                 delete m_memoryCanvasForUi;
             m_memoryCanvasForUi = skia::CreatePlatformCanvas(width, height, !useLayeredBuffer);
-            cc::LayerTreeHost::clearCanvas(m_memoryCanvasForUi, IntRect(0, 0, width, height), useLayeredBuffer);
+            if (m_memoryCanvasForUi)
+                cc::LayerTreeHost::clearCanvas(m_memoryCanvasForUi, IntRect(0, 0, width, height), useLayeredBuffer);
             isCreatedThisTime = true;
         }
     } else if (m_memoryCanvasForUi) {

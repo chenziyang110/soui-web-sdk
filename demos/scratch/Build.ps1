@@ -2,10 +2,12 @@
 param(
   [ValidateSet('x86','x64')][string]$Architecture = 'x64',
   [ValidateSet('Debug','Release')][string]$Configuration = 'Release',
+  [string]$SourceVendor = '',
   [switch]$SkipWeb,
   [switch]$ForPackage
 )
 $ErrorActionPreference = 'Stop'
+if ($SkipWeb -and $SourceVendor) { throw 'SourceVendor requires a fresh Web build; do not reuse another vendor output.' }
 $sdkRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
 $version = ([IO.File]::ReadAllText((Join-Path $sdkRoot 'VERSION'))).Trim()
 if ($version -notmatch '^0\.6\.0($|-)') { throw 'This demo requires SOUI SDK 0.6.0.' }
@@ -15,7 +17,9 @@ New-Item -ItemType Directory -Force -Path $output | Out-Null
 if (!$SkipWeb) {
   & npm.cmd --prefix (Join-Path $PSScriptRoot 'web') ci --no-audit --no-fund
   if ($LASTEXITCODE -ne 0) { throw 'Scratch Web dependency installation failed.' }
-  & npm.cmd --prefix (Join-Path $PSScriptRoot 'web') run build
+  $webBuildArguments = @('--prefix', (Join-Path $PSScriptRoot 'web'), 'run', 'build')
+  if ($SourceVendor) { $webBuildArguments += @('--', '--source-vendor', [IO.Path]::GetFullPath($SourceVendor)) }
+  & npm.cmd @webBuildArguments
   if ($LASTEXITCODE -ne 0) { throw 'Scratch Web build failed.' }
 }
 if (!(Test-Path -LiteralPath (Join-Path $PSScriptRoot 'web/dist/index.html') -PathType Leaf)) {

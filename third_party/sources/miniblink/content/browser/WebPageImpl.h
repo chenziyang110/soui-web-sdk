@@ -1,6 +1,8 @@
 ﻿#ifndef WebPageImpl_h
 #define WebPageImpl_h
 
+#include <atomic>
+
 #include "content/browser/WebPageState.h"
 #include "content/ui/PopupMenuWinClient.h"
 #include "content/ui/WinCursorResources.h"
@@ -178,7 +180,8 @@ public:
     //bool needsCommit() const { return m_needsCommit; }
     bool needsCommit() const { return m_commitCount > 0; }
     void setNeedsCommit();
-    void setNeedsCommitAndNotLayout();
+    void setNeedsCommitAndNotLayout(double minimumDelaySeconds = 0);
+    virtual void onLayerTreeResourcesReady() override { setNeedsCommitAndNotLayout(); }
     //void clearNeedsCommit();
     bool isDrawDirty();
 
@@ -237,7 +240,7 @@ public:
     int m_autoRecordActionsCount;
     bool m_runningInMouseMessage;
 
-    void copyToMemoryCanvasForUi(const blink::IntRect& paintRect);
+    void copyToMemoryCanvasForUi(const blink::IntRect& paintRect, bool forceSnapshot = false);
 
     void handleMouseWhenDraging(UINT message);
     void onEnterDragSimulate();
@@ -311,8 +314,8 @@ public:
     int m_layerDirty;
     int m_executeMainFrameCount;
     double m_lastFrameTimeMonotonic;
-    double m_mainFrameInterval;
-    double m_nextMainFrameTime;
+    std::atomic<double> m_mainFrameInterval;
+    std::atomic<double> m_nextMainFrameTime;
 
     SkCanvas* m_memoryCanvasForUi;
     bool m_disablePaint;
