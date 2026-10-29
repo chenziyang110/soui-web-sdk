@@ -132,18 +132,47 @@ function readLock(directory) {
   return readInstalledLock(directory);
 }
 
+function failureDetails(error) {
+  return {message: error.message, code: error.code ?? null, errno: error.errno ?? null,
+    syscall: error.syscall ?? null};
+}
+
+function publicationPathState(file) {
+  try {
+    const state = fs.lstatSync(file);
+    return {kind: state.isSymbolicLink() ? 'link' : state.isDirectory() ? 'directory' :
+      state.isFile() ? 'file' : 'other'};
+  } catch (error) {
+    return error.code === 'ENOENT' ? {kind: 'missing'} : {kind: 'unreadable', error: failureDetails(error)};
+  }
+}
+
 function publishStagedDirectory(stage, output) {
   const delay = new Int32Array(new SharedArrayBuffer(4));
+  const attempts = [];
+  let totalRetryDelayMs = 0;
   for (let attempt = 0; ; ++attempt) {
     try {
       fs.renameSync(stage, output);
       return;
     } catch (error) {
+      attempts.push({attempt: attempt + 1, ...failureDetails(error)});
       // Windows can briefly deny a directory rename after the staged files
       // have been read. Retry only that transient publication boundary.
       if (process.platform !== 'win32' || !['EPERM', 'EACCES'].includes(error.code) ||
-          attempt >= 5 || !fs.existsSync(stage) || fs.existsSync(output)) throw error;
-      Atomics.wait(delay, 0, 0, 30 * (attempt + 1));
+          attempt >= 5 || !fs.existsSync(stage) || fs.existsSync(output)) {
+        // Observe before cleanup, without attributing EPERM to a particular
+        // lock owner or changing the original native error or retry policy.
+        try {
+          error.publication = {schema: 'soui.sdk-publication-failure/v1', stage, output,
+            attempts, totalRetryDelayMs, stageState: publicationPathState(stage),
+            outputState: publicationPathState(output), lockOwnerKnown: false};
+        } catch (_) { /* Diagnostics must never hide the original failure. */ }
+        throw error;
+      }
+      const retryDelayMs = 30 * (attempt + 1);
+      Atomics.wait(delay, 0, 0, retryDelayMs);
+      totalRetryDelayMs += retryDelayMs;
     }
   }
 }
@@ -170,6 +199,7 @@ function pack(source, output, version, options = {}) {
       return {path: relative, bytes: data.length, sha256: hash(data), sourceNormalization};
     })});
   const stage = `${output}.staging-${crypto.randomUUID()}`;
+  let failure;
   try {
     for (const file of manifest.files) {
       const target = safePath(stage, `payload/${file.path}`);
@@ -179,8 +209,17 @@ function pack(source, output, version, options = {}) {
     fs.writeFileSync(safePath(stage, 'sdk-manifest.json'), encoded(manifest), {flag: 'wx'});
     readPackage(stage);
     publishStagedDirectory(stage, output);
+  } catch (error) {
+    failure = error;
+    throw error;
   } finally {
-    if (fs.existsSync(stage)) fs.rmSync(stage, {recursive: true});
+    try {
+      if (fs.existsSync(stage)) fs.rmSync(stage, {recursive: true});
+    } catch (cleanupError) {
+      if (!failure) throw cleanupError;
+      // Preserve the first error and any stage contents left by failed cleanup.
+      try { failure.cleanupFailure = {stage, ...failureDetails(cleanupError)}; } catch (_) {}
+    }
   }
   return {status: 'packed', version, files: files.length, output, releaseReady: false};
 }
@@ -284,5 +323,12 @@ function main(argv) {
 module.exports = {pack, install, recover: transaction.recover, readPackage, readLock, managedRoots, managedFiles, requireProfile};
 if (require.main === module) {
   try { process.stdout.write(encoded(main(process.argv.slice(2)))); }
-  catch (error) { process.stderr.write(`SDK: ${error.message}\n`); process.exitCode = 1; }
+  catch (error) {
+    process.stderr.write(`SDK: ${error.message}\n`);
+    if (error.publication || error.cleanupFailure) {
+      process.stderr.write(`SDK diagnostics: ${JSON.stringify({publication: error.publication,
+        cleanupFailure: error.cleanupFailure})}\n`);
+    }
+    process.exitCode = 1;
+  }
 }

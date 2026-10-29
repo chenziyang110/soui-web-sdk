@@ -1,0 +1,127 @@
+{
+  "architecture": "x86",
+  "configuration": "Release",
+  "compile": {
+    "pid": 82884,
+    "creationFileTime": "134377140611048075",
+    "exitCode": 0,
+    "supervisorExitCode": 0,
+    "signal": null,
+    "spawnError": null,
+    "reportError": null,
+    "stopRequested": false,
+    "fallbackUsed": false,
+    "closureConfirmed": true,
+    "passed": true,
+    "terminal": {
+      "event": "terminal",
+      "reason": "completed",
+      "elapsedMs": 11137,
+      "rootExited": true,
+      "rootExitCode": 0,
+      "activeBeforeCleanup": 0,
+      "terminatedOwnedJob": false,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "totalProcesses": 58,
+      "limitTerminatedProcesses": 0,
+      "passed": true
+    },
+    "report": "F:\\work\\SOUI_WEB\\out\\production-tools-devtools-closeout-20261029\\native-short\\attempt2\\x86\\compile.ndjson",
+    "reportSha256": "237a560a7b256c842dff257509f178ba68c896d3fe51274bd5186184cb7b32ff",
+    "runnerSha256": "6b5714225b60f8c06f33804478166e35d6da1c21aa099a03026e91f0462e7704",
+    "executableSha256": "60c9b29843624dd8af6b6a7b26147753be6aeef65098b9a503cc50850afe410f"
+  },
+  "compileInvocation": {
+    "schema": "soui.native-closeout-compile/v1",
+    "architecture": "x86",
+    "configuration": "Release",
+    "source": "C:\\s06-closeout-native-397a064f5e1248389f3f2e0bef66ecdc",
+    "build": "C:\\s06-closeout-native-397a064f5e1248389f3f2e0bef66ecdc\\build-x86",
+    "installPrefix": "C:/sr06/out/release-install-x86-release",
+    "executable": "C:/Program Files/CMake/bin/cmake.exe",
+    "configureArguments": [
+      "-S",
+      "C:\\s06-closeout-native-397a064f5e1248389f3f2e0bef66ecdc",
+      "-B",
+      "C:\\s06-closeout-native-397a064f5e1248389f3f2e0bef66ecdc\\build-x86",
+      "-G",
+      "Visual Studio 17 2022",
+      "-A",
+      "Win32,version=10.0.19041.0",
+      "-T",
+      "v143,host=x64,version=14.44.35207",
+      "-DCMAKE_SYSTEM_VERSION=10.0.19041.0",
+      "-DCMAKE_PREFIX_PATH=C:/sr06/out/release-install-x86-release",
+      "-DCMAKE_CONFIGURATION_TYPES=Release"
+    ],
+    "buildArguments": [
+      "--build",
+      "C:\\s06-closeout-native-397a064f5e1248389f3f2e0bef66ecdc\\build-x86",
+      "--config",
+      "Release",
+      "--target",
+      "soui_devtools_host_tests",
+      "--parallel",
+      "2",
+      "--",
+      "/nr:false"
+    ],
+    "configureExitCode": 0,
+    "buildExitCode": 0,
+    "environment": {
+      "MSBUILDDISABLENODEREUSE": "1"
+    },
+    "callerEnvironment": {
+      "present": true,
+      "value": "1"
+    },
+    "callerEnvironmentRestored": true,
+    "compilerHelperSuppressionConfigured": false
+  },
+  "console": {
+    "pid": 61184,
+    "creationFileTime": "134377140723702977",
+    "exitCode": 0,
+    "supervisorExitCode": 0,
+    "signal": null,
+    "spawnError": null,
+    "reportError": null,
+    "stopRequested": false,
+    "fallbackUsed": false,
+    "closureConfirmed": true,
+    "passed": true,
+    "terminal": {
+      "event": "terminal",
+      "reason": "completed",
+      "elapsedMs": 84,
+      "rootExited": true,
+      "rootExitCode": 0,
+      "activeBeforeCleanup": 0,
+      "terminatedOwnedJob": false,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "totalProcesses": 2,
+      "limitTerminatedProcesses": 0,
+      "passed": true
+    },
+    "report": "F:\\work\\SOUI_WEB\\out\\production-tools-devtools-closeout-20261029\\native-short\\attempt2\\x86\\console.ndjson",
+    "reportSha256": "81c17a26bb30a6d009a911e19eb62236fa929142f075a7a621985df412e40e63",
+    "runnerSha256": "6b5714225b60f8c06f33804478166e35d6da1c21aa099a03026e91f0462e7704",
+    "executableSha256": "84b4ac33ea98b5c9518225a06bb4e1a9b82fd5ceda1e047658957afeda134c45"
+  },
+  "output": "Public DevTools facade contract: 10 scenarios passed; backend behavior untested.\r\n",
+  "executable": {
+    "path": "C:\\s06-closeout-native-397a064f5e1248389f3f2e0bef66ecdc\\build-x86\\Release\\soui_devtools_host_tests.exe",
+    "bytes": 208384,
+    "sha256": "84b4ac33ea98b5c9518225a06bb4e1a9b82fd5ceda1e047658957afeda134c45"
+  },
+  "coffMachine": 332,
+  "stderr": "",
+  "tenControlledScenariosPassed": true,
+  "archivedExecutable": {
+    "path": "F:\\work\\SOUI_WEB\\out\\production-tools-devtools-closeout-20261029\\native-short\\attempt2\\x86\\soui_devtools_host_tests.exe",
+    "bytes": 208384,
+    "sha256": "84b4ac33ea98b5c9518225a06bb4e1a9b82fd5ceda1e047658957afeda134c45"
+  }
+}

@@ -183,6 +183,42 @@ function verifyStream(raw,context,ready,result) {
   return {start,terminal};
 }
 
+// Diagnostic observations never grant the compiler-tail exception. In
+// particular, the last generic enumeration is not a held identity snapshot at
+// cleanup time; its timestamp and unavailable members must remain visible.
+function compilerCloseoutDiagnostics(raw,result) {
+  const answer={schema:'soui.compiler-closeout-diagnostics/v1',diagnosticOnly:true,
+    rawReportMatchesResult:false,membersAtCleanupVerified:false,
+    rootExitCode:result?.exitCode??null,supervisorExitCode:result?.supervisorExitCode??null,
+    reason:result?.terminal?.reason??null,clientGenericSupervisionPassed:result?.passed===true,
+    terminatedOwnedJob:result?.terminal?.terminatedOwnedJob===true,
+    lastPostRootJobObservation:null,memberObservations:[],failure:null};
+  try {
+    need(Buffer.isBuffer(raw)&&raw.length>0&&raw.length<=16777216&&isUtf8(raw)&&raw.at(-1)===10,'Missing/truncated native diagnostic report');
+    const lines=raw.toString('utf8').slice(0,-1).split('\n');
+    need(lines.length<=100000,'Excessive native diagnostic records');
+    const rows=lines.map(parseStrictJson);
+    need(rows.every(row=>row&&typeof row==='object'&&!Array.isArray(row)),'Invalid native diagnostic record');
+    const terminal=rows.at(-1),rootExits=rows.filter(row=>row.event==='root-exit');
+    need(terminal.event==='terminal'&&rows.filter(row=>row.event==='terminal').length===1&&rootExits.length===1&&
+      isDeepStrictEqual(terminal,result?.terminal)&&sha(raw)===result?.reportSha256,'Diagnostic raw report differs from the observed result');
+    answer.rawReportMatchesResult=true;
+    const rootIndex=rows.indexOf(rootExits[0]),last=rows.findLastIndex(row=>row.event==='job-members');
+    if(last>rootIndex) {
+      const row=rows[last];
+      answer.lastPostRootJobObservation={elapsedMs:row.elapsedMs,activeProcesses:row.activeProcesses,
+        totalProcesses:row.totalProcesses,limitTerminatedProcesses:row.limitTerminatedProcesses,
+        matchesCleanupCount:row.activeProcesses===terminal.activeBeforeCleanup};
+      answer.memberObservations=rows.slice(last+1,-1)
+        .filter(row=>['owned-member','member-unavailable','member-no-longer-owned'].includes(row.event))
+        .map(row=>({...row}));
+    }
+    if(terminal.activeBeforeCleanup>0&&answer.lastPostRootJobObservation===null)
+      answer.failure='No post-root member enumeration is available; residual identities are unknown';
+  } catch(error) {answer.failure=error.message;}
+  return answer;
+}
+
 // The public pure boundary below consumes explicitly supplied observations for
 // regression fixtures. runBuild obtains every observation directly from disk.
 // Neither this function nor SHA consistency authenticates a same-user rewrite.
@@ -190,7 +226,8 @@ function evaluateBuild({frozen,ready,result,contextBytes,rawReport,buildReportBy
   const answer={schema:'soui.standard-build-result/v1',compilationCompleted:false,genericSupervisionPassed:false,
     closureConfirmed:result?.closureConfirmed===true,compilerTailAcceptance:false,accepted:false,releaseReady:false,
     rootExitCode:result?.exitCode??null,supervisorExitCode:result?.supervisorExitCode??null,
-    clientGenericSupervisionPassed:result?.passed===true,failure:null};
+    clientGenericSupervisionPassed:result?.passed===true,
+    closeoutDiagnostics:compilerCloseoutDiagnostics(rawReport,result),failure:null};
   try {
     const debugMode=frozen?.schema==='soui.standard-build-inputs/v2';
     if(debugMode)answer.schema='soui.standard-build-result/v2';
@@ -304,7 +341,9 @@ async function capture(folder,name,executable,args,config) {
     const errors=[];const read=fileName=>{try{return fs.readFileSync(fileName);}catch(error){errors.push({path:fileName,error:error.message});return null;}};
     const contextBytes=read(report+'.context.json'),rawReport=read(report);
     if(errors.length)write(folder,name+'-observation-errors.json',errors);
-    return {ready,readyError,result:finished,report,contextBytes,rawReport};
+    const closeoutDiagnostics=name==='build'?compilerCloseoutDiagnostics(rawReport,finished):undefined;
+    if(closeoutDiagnostics)write(folder,name+'-closeout.json',closeoutDiagnostics);
+    return {ready,readyError,result:finished,report,contextBytes,rawReport,...(closeoutDiagnostics?{closeoutDiagnostics}:{})};
   } finally {if(run&&!finished){run.stop();await run.finished;}if(out!==undefined)fs.closeSync(out);if(err!==undefined)fs.closeSync(err);}
 }
 const probeSource=String.raw`param([string]$Root,[string]$Architecture,[string]$Output)
@@ -354,7 +393,8 @@ function compilerObservation(root,v,toolPaths,rawReport) {
     const toolsets=[...text.matchAll(/<PlatformToolset>([^<]+)<\/PlatformToolset>/g)].map(m=>m[1]);
     need(sdks.length>0&&sdks.every(sdk=>sdk==='10.0.19041.0')&&toolsets.length>0&&toolsets.every(tool=>tool==='v143'),'Actual vcxproj SDK/toolset differs: '+name);
   }
-  return {compilerVerified:true,files:[file(path.join(buildDir,'CMakeCache.txt')),file(compilerFile),...names.map(name=>file(identity.safePath(buildDir,name)))]};
+  return {compilerVerified:true,files:[file(path.join(buildDir,'CMakeCache.txt')),file(compilerFile),
+    file(path.join(buildDir,`native-invocation-${v.configuration}.json`)),...names.map(name=>file(identity.safePath(buildDir,name)))]};
 }
 function archiveOutput(folder,root,v,compiler) {
   const directory=identity.safePath(root,`out/${v.sdkOnly?'sdk-':''}${v.architecture}`);
@@ -446,11 +486,12 @@ async function runBuild(value) {
   } catch(error) {answer={schema:'soui.standard-build-result/v1',compilationCompleted:false,genericSupervisionPassed:false,
     clientGenericSupervisionPassed:launched?.result.passed===true,closureConfirmed:launched?.result.closureConfirmed===true,
     rootExitCode:launched?.result.exitCode??null,supervisorExitCode:launched?.result.supervisorExitCode??null,
-    compilerTailAcceptance:false,accepted:false,releaseReady:false,failure:error.message};}
+    compilerTailAcceptance:false,accepted:false,releaseReady:false,
+    ...(launched?.closeoutDiagnostics?{closeoutDiagnostics:launched.closeoutDiagnostics}:{}),failure:error.message};}
   finally {if(lease){try{lease.release();}catch(error){answer={...answer,accepted:false,failure:(answer?.failure?answer.failure+'; ':'')+error.message};}}}
   write(folder,'result.json',answer);evidenceIndex(folder);return {...answer,evidenceDirectory:folder};
 }
-module.exports={parseArgs,buildArguments,llvmPaths,evaluateBuild,acquireLease,inspectTool,verifyTool,verifyStream,runBuild,capture};
+module.exports={parseArgs,buildArguments,llvmPaths,evaluateBuild,compilerCloseoutDiagnostics,acquireLease,inspectTool,verifyTool,verifyStream,runBuild,capture};
 if(require.main===module)runBuild(parseArgs(process.argv.slice(2))).then(answer=>{
   console.log(JSON.stringify(answer));process.exitCode=answer.accepted?0:answer.supervisorExitCode===124?124:1;
 }).catch(error=>{console.error(error.message);process.exitCode=1;});

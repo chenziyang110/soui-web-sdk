@@ -1,0 +1,79 @@
+{
+  "schema": "soui.static-review/v1",
+  "review": "packaging-auth-static",
+  "reviewedAt": "2026-10-29T02:09:30.8127448Z",
+  "reviewer": "build_tool_closeout",
+  "workspace": "C:/sc07",
+  "baseline": "8b7b57341d78d101ebc317de6cef8ac19b4a7531",
+  "result": "no_blockers_found_in_static_scope",
+  "blockerCount": 0,
+  "findings": [],
+  "files": [
+    {
+      "path": "tools/Package.ps1",
+      "absolutePath": "C:\\sc07\\tools\\Package.ps1",
+      "bytes": 4444,
+      "sha256": "fda405be566a3655b1f2e77051dc68d32ed6159b1cf26e7a45764618d40e8ce0"
+    },
+    {
+      "path": "tools/internal/compression-profiles.cjs",
+      "absolutePath": "C:\\sc07\\tools\\internal\\compression-profiles.cjs",
+      "bytes": 6856,
+      "sha256": "5ceed26c63d996cd40560270195c1ec36defca6eae091da4f452ab83a50910f4"
+    },
+    {
+      "path": "tests/sdk/compression-profiles.test.cjs",
+      "absolutePath": "C:\\sc07\\tests\\sdk\\compression-profiles.test.cjs",
+      "bytes": 19990,
+      "sha256": "f3119baee770a86e8dba8030bcc7ed67a40a771a8e4ba4a9b2ba451c0bdb964d"
+    },
+    {
+      "path": "tests/native/devtools_host_tests.cpp",
+      "absolutePath": "C:\\sc07\\tests\\native\\devtools_host_tests.cpp",
+      "bytes": 18373,
+      "sha256": "fc435bd1d3d7c3f7196997348fa3d810d946b96784f5187530114cab894fbc88"
+    },
+    {
+      "path": "tools/Package-Applications.ps1",
+      "absolutePath": "C:\\sc07\\tools\\Package-Applications.ps1",
+      "bytes": 8318,
+      "sha256": "d0db48afdd4e8fa90350b4e877d669f6a075a6cb9e6899afa800ed78cc48c2e8"
+    },
+    {
+      "path": "sdk/src/host/devtools_host.cpp",
+      "absolutePath": "C:\\sc07\\sdk\\src\\host\\devtools_host.cpp",
+      "bytes": 22777,
+      "sha256": "f952f73f8c0e3d9b5dc4d7ded2b1057c8110b383f02df99883365c0379d4664b"
+    },
+    {
+      "path": "sdk/include/soui/devtools.h",
+      "absolutePath": "C:\\sc07\\sdk\\include\\soui\\devtools.h",
+      "bytes": 3389,
+      "sha256": "c21289bfa9fe128f623282ec7243791536a092255fabd288f5bc0414c14baac9"
+    },
+    {
+      "path": "sdk/include/soui/host/webview_host.h",
+      "absolutePath": "C:\\sc07\\sdk\\include\\soui\\host\\webview_host.h",
+      "bytes": 8669,
+      "sha256": "6f2fee4e1bbe3e039bf99787279de86b0168185cb45863aeb0cdb0512e55f323"
+    }
+  ],
+  "scope": [
+    "Package.ps1 and compression-profiles.cjs UTF-8 ZIP filename option propagation; existing compression level/thread/profile behavior preserved",
+    "Physical ZIP local and central filename bytes, UTF-8 language flags, complete staged file-name set, source SHA256 sidecar",
+    "PowerShell 5.1 ZipFile reader with explicit CP437 and CP1252; complete payload snapshot/file-byte equality",
+    "Default source packaging and explicit SourceRootsBinding/PackageWorkspace entry branches; source-stage boundary is intentionally stubbed",
+    "Three new DevTools public facade cases: replacement and native generation/document receipt, unopened steady-clock expiry before pump, unused revoke and fresh reissue operation history",
+    "No busy-wait loop in new authorization cases; stale grants rejected before native adapter open counter advances; closed Host lifecycle denial checked"
+  ],
+  "limitations": [
+    "Static review only; no tests, compiler, packaging command, product, VM or native executable was run by this reviewer",
+    "ZIP fixtures intentionally replace upstream staging; they validate real packaging/7-Zip/readback wiring, not actual SDK source manifest or source-root binding validation",
+    "Two explicit legacy reader encodings are exercised by the test source; host ACP is not modified",
+    "Controlled native adapter proves Host authorization contract only; real MiniBlink/WebView2 inspector windows, pause/step, callback drain and acceptance remain unverified",
+    "Existing compiler-tail-policy module is unchanged and was not rerun as part of this review"
+  ],
+  "references": [
+    "https://learn.microsoft.com/en-us/dotnet/api/system.io.compression.zipfile.open?view=netframework-4.8.1"
+  ]
+}

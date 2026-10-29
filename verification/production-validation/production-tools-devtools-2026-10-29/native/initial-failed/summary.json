@@ -1,0 +1,187 @@
+{
+  "schema": "soui.devtools-native-short-result/v1",
+  "finishedAtUtc": "2026-10-29T02:19:15.385Z",
+  "test": {
+    "path": "C:/sc07/tests/native/devtools_host_tests.cpp",
+    "bytes": 18373,
+    "sha256": "fc435bd1d3d7c3f7196997348fa3d810d946b96784f5187530114cab894fbc88"
+  },
+  "externalProject": "C:/s06-closeout-native-940cee1533ee4474a3f5a985cb9a9f73",
+  "results": [
+    {
+      "architecture": "x64",
+      "configuration": "Release",
+      "compile": {
+        "pid": 74100,
+        "creationFileTime": "134377139351424995",
+        "exitCode": 1,
+        "supervisorExitCode": 1,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": false,
+        "terminal": {
+          "event": "terminal",
+          "reason": "root-failed",
+          "elapsedMs": 9998,
+          "rootExited": true,
+          "rootExitCode": 1,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 48,
+          "limitTerminatedProcesses": 0,
+          "passed": false
+        },
+        "report": "F:\\work\\SOUI_WEB\\out\\production-tools-devtools-closeout-20261029\\native-short\\x64\\compile.ndjson",
+        "reportSha256": "40f1deead814c7b55bbcc1a225515f18b3c00dbb5b42ff18b504a3bf14942802",
+        "runnerSha256": "f254dadd4eccad3c57d69e98f260d15ee598c0b6441b7fe68fc4ef5b3b7dea83",
+        "executableSha256": "60c9b29843624dd8af6b6a7b26147753be6aeef65098b9a503cc50850afe410f"
+      },
+      "compileInvocation": {
+        "schema": "soui.native-closeout-compile/v1",
+        "architecture": "x64",
+        "configuration": "Release",
+        "source": "C:\\s06-closeout-native-940cee1533ee4474a3f5a985cb9a9f73",
+        "build": "C:\\s06-closeout-native-940cee1533ee4474a3f5a985cb9a9f73\\build-x64",
+        "installPrefix": "C:/sr06/out/release-install-x64-release",
+        "executable": "C:/Program Files/CMake/bin/cmake.exe",
+        "configureArguments": [
+          "-S",
+          "C:\\s06-closeout-native-940cee1533ee4474a3f5a985cb9a9f73",
+          "-B",
+          "C:\\s06-closeout-native-940cee1533ee4474a3f5a985cb9a9f73\\build-x64",
+          "-G",
+          "Visual Studio 17 2022",
+          "-A",
+          "x64,version=10.0.19041.0",
+          "-T",
+          "v143,host=x64,version=14.44.35207",
+          "-DCMAKE_SYSTEM_VERSION=10.0.19041.0",
+          "-DCMAKE_PREFIX_PATH=C:/sr06/out/release-install-x64-release",
+          "-DCMAKE_CONFIGURATION_TYPES=Release"
+        ],
+        "buildArguments": [
+          "--build",
+          "C:\\s06-closeout-native-940cee1533ee4474a3f5a985cb9a9f73\\build-x64",
+          "--config",
+          "Release",
+          "--target",
+          "soui_devtools_host_tests",
+          "--parallel",
+          "2",
+          "--",
+          "/nr:false"
+        ],
+        "configureExitCode": 0,
+        "buildExitCode": 1,
+        "environment": {
+          "MSBUILDDISABLENODEREUSE": "1"
+        },
+        "callerEnvironment": {
+          "present": true,
+          "value": "1"
+        },
+        "callerEnvironmentRestored": true,
+        "compilerHelperSuppressionConfigured": false
+      },
+      "console": null,
+      "output": null
+    },
+    {
+      "architecture": "x86",
+      "configuration": "Release",
+      "compile": {
+        "pid": 61340,
+        "creationFileTime": "134377139452670118",
+        "exitCode": 1,
+        "supervisorExitCode": 1,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": false,
+        "terminal": {
+          "event": "terminal",
+          "reason": "root-failed",
+          "elapsedMs": 9774,
+          "rootExited": true,
+          "rootExitCode": 1,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 48,
+          "limitTerminatedProcesses": 0,
+          "passed": false
+        },
+        "report": "F:\\work\\SOUI_WEB\\out\\production-tools-devtools-closeout-20261029\\native-short\\x86\\compile.ndjson",
+        "reportSha256": "d7edb9fffae437608ffe12c97cd0909ff42f1bd9ae41abe87891fda64c7875ec",
+        "runnerSha256": "6b5714225b60f8c06f33804478166e35d6da1c21aa099a03026e91f0462e7704",
+        "executableSha256": "60c9b29843624dd8af6b6a7b26147753be6aeef65098b9a503cc50850afe410f"
+      },
+      "compileInvocation": {
+        "schema": "soui.native-closeout-compile/v1",
+        "architecture": "x86",
+        "configuration": "Release",
+        "source": "C:\\s06-closeout-native-940cee1533ee4474a3f5a985cb9a9f73",
+        "build": "C:\\s06-closeout-native-940cee1533ee4474a3f5a985cb9a9f73\\build-x86",
+        "installPrefix": "C:/sr06/out/release-install-x86-release",
+        "executable": "C:/Program Files/CMake/bin/cmake.exe",
+        "configureArguments": [
+          "-S",
+          "C:\\s06-closeout-native-940cee1533ee4474a3f5a985cb9a9f73",
+          "-B",
+          "C:\\s06-closeout-native-940cee1533ee4474a3f5a985cb9a9f73\\build-x86",
+          "-G",
+          "Visual Studio 17 2022",
+          "-A",
+          "Win32,version=10.0.19041.0",
+          "-T",
+          "v143,host=x64,version=14.44.35207",
+          "-DCMAKE_SYSTEM_VERSION=10.0.19041.0",
+          "-DCMAKE_PREFIX_PATH=C:/sr06/out/release-install-x86-release",
+          "-DCMAKE_CONFIGURATION_TYPES=Release"
+        ],
+        "buildArguments": [
+          "--build",
+          "C:\\s06-closeout-native-940cee1533ee4474a3f5a985cb9a9f73\\build-x86",
+          "--config",
+          "Release",
+          "--target",
+          "soui_devtools_host_tests",
+          "--parallel",
+          "2",
+          "--",
+          "/nr:false"
+        ],
+        "configureExitCode": 0,
+        "buildExitCode": 1,
+        "environment": {
+          "MSBUILDDISABLENODEREUSE": "1"
+        },
+        "callerEnvironment": {
+          "present": true,
+          "value": "1"
+        },
+        "callerEnvironmentRestored": true,
+        "compilerHelperSuppressionConfigured": false
+      },
+      "console": null,
+      "output": null
+    }
+  ],
+  "installationPinsUnchanged": true,
+  "testAndHarnessPinsUnchanged": true,
+  "toolAndRunnerPinsUnchanged": true,
+  "bothArchitecturesTenControlledScenariosPassed": false,
+  "allCompileJobsNaturallyClosed": false,
+  "releaseReady": false,
+  "scope": "Two Release native facade console tests only. No browser, real inspector, Engine, GUI, VM or native renderer drain proof."
+}

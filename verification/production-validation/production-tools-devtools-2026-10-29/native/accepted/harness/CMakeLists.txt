@@ -1,0 +1,8 @@
+cmake_minimum_required(VERSION 3.24)
+project(SouiDevToolsCloseoutContract LANGUAGES CXX)
+find_package(SouiSdk 0.6.0 EXACT CONFIG REQUIRED)
+add_executable(soui_devtools_host_tests C:/sc07/tests/native/devtools_host_tests.cpp)
+target_link_libraries(soui_devtools_host_tests PRIVATE Soui::Sdk)
+target_compile_features(soui_devtools_host_tests PRIVATE cxx_std_17)
+target_compile_options(soui_devtools_host_tests PRIVATE /utf-8 /W4 /U_DEBUG /EHsc)
+set_property(TARGET soui_devtools_host_tests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
