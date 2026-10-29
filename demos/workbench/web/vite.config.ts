@@ -4,9 +4,19 @@ import vue from '@vitejs/plugin-vue';
 import legacy from '@vitejs/plugin-legacy';
 import react from '@vitejs/plugin-react';
 import { vueMiniblinkCompat } from './build/vue-miniblink-compat';
+import {createRequire} from 'node:module';
+const require = createRequire(import.meta.url);
+const profiles = require('../../../tools/internal/web-build-profile.cjs');
+const compatibility = require('../../../tools/internal/compat-polyfills.cjs').prepareCompatibilityPolyfills(__dirname);
+const webProfile = profiles.buildProfile(undefined, {appSourceDirectories: [
+  'apps/demo/src', 'apps/react', 'apps/fileinsight/src', 'packages/sdk',
+  'benchmarks/electron-smoothness',
+]});
 
 export default defineConfig(({ mode }) => ({
   base: './',
+  // Native FileInsight samples in public/fixtures are not HTTP assets.
+  publicDir: 'http-public',
   plugins: [
     vueMiniblinkCompat(),
     vue(),
@@ -20,6 +30,8 @@ export default defineConfig(({ mode }) => ({
       modernPolyfills: true,
       renderLegacyChunks: true,
     }),
+    compatibility.plugin,
+    webProfile.plugin,
   ],
   build: {
     outDir: mode === 'legacy' ? 'dist-legacy' : 'dist',
@@ -28,7 +40,7 @@ export default defineConfig(({ mode }) => ({
     cssCodeSplit: true,
     // plugin-legacy owns the legacy target; setting build.target here causes
     // Vite to emit a warning that the unified validation entry treats as a failure.
-    sourcemap: false,
+    ...webProfile.build,
     rollupOptions: {
       input: {
         index: path.resolve(__dirname, 'index.html'),

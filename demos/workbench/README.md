@@ -1,5 +1,21 @@
 # Workbench Demo
 
+## 原生 SOUI 控件覆盖 WebView
+
+构建当前 Workbench 后，从 SDK 根执行 `powershell -File demos/workbench/Start-NativeControls.ps1`。
+独立窗口左侧为真正的 SOUI `edit`、`check`、`sliderbar`、`button` 控件，右侧为本地 HTML 输入框和计数按钮。
+可分别输入中文、点击计数、勾选、拖动滑块和滚动网页，体验原生与 Web 焦点切换。
+
+此入口使用 `--native-controls` 与独立本地资源目录；不改变默认 Workbench 页面。
+原生面板是 WebView 子窗口上方的同级 SOUI 子窗口，固定在客户区左侧，不参与 DOM 排版或页面滚动。
+这是 MiniBlink 宿主的不透明原生浮层演示，不代表 WebView2、透明合成、DOM 锚定、跨屏 DPI 或完整键盘导航已验收。
+启动脚本需源码中的 `native-controls/index.html`，不是可脱离源码独立发布的安装包。
+
+当前演示状态（2026-10-28）：x64 Release 编译通过；已实际观察原生面板与完整网页同时显示，原生计数、滑块、网页计数和网页输入焦点反馈。
+空白原因是旧内核的公共 broker endpoint 关闭了 CPU AutoDraw。演示内核从保留的链接输入和 broker 源码重编，显式区分业务窗口绘制与 Inspector callback-only；不覆盖发布依赖。
+本机启动器优先使用 `out/native-controls/x64/node.dll` 的演示候选，也可用 `-Miniblink <匹配内核路径>` 显式选择。
+可双击 `demos/workbench/Start-NativeControls.cmd`。演示结果不等同于当前完整 SDK 内核、DevTools 或发布矩阵验收。
+
 展示媒体、文件扫描、组件与桌面能力。integration/ 中的方法是 Demo 业务适配器，不属于通用 SDK API 保证。
 
 Workbench 前端从 0.4.0-preview.3 起要求 Node.js 22.12 以上进行构建，原因是 Element Plus 2.14.7 使用 VueUse 15。基础 SDK 和兼容生成项目仍可按原要求使用 Node.js 20.19；Windows 应用运行时不需要安装 Node.js。最低系统和 Chrome 49 兼容构建目标不变，新依赖仍须按目标环境独立验收。

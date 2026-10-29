@@ -28,6 +28,7 @@
  */
 
 #include "config.h"
+#include "platform/network/LocalResourceAdmission.h"
 #include "core/fetch/ResourceLoader.h"
 
 #include "core/fetch/CSSStyleSheetResource.h"
@@ -95,6 +96,8 @@ void ResourceLoader::releaseResources()
     ASSERT(m_state != Terminated);
 
     m_state = Terminated;
+    cancelLocalResourceLoaderReservation(m_request);
+    cancelLocalResourceLoaderReservation(m_deferredRequest);
     if (m_loader) {
         m_loader->cancel();
         m_loader.clear();
@@ -111,6 +114,7 @@ void ResourceLoader::init(const ResourceRequest& passedRequest)
     ASSERT(m_state != Terminated);
     ASSERT(!request.isNull());
     m_originalRequest = m_request = applyOptions(request);
+    claimLocalResourceLoaderReservation(m_request);
     m_resource->updateRequest(request);
     ASSERT(m_state != Terminated);
     m_fetcher->didInitializeResourceLoader(this);
@@ -118,6 +122,7 @@ void ResourceLoader::init(const ResourceRequest& passedRequest)
 
 void ResourceLoader::start()
 {
+    InspectorResourceCallbackBorrow nativeStack(m_fetcher ? m_fetcher->inspectorResourceState() : nullptr);
     ASSERT(!m_loader);
     ASSERT(!m_request.isNull());
     ASSERT(m_deferredRequest.isNull());
@@ -332,6 +337,10 @@ void ResourceLoader::didReceiveResponse(WebURLLoader*, const WebURLResponse& res
         if (response.wasFetchedViaServiceWorker()) {
             if (response.wasFallbackRequiredByServiceWorker()) {
                 ASSERT(m_fallbackRequestForServiceWorker);
+                if (isLocalResourceNamespace(m_request.url()) || m_request.localResourceAdmission()) {
+                    cancel(ResourceError::cancelledDueToAccessCheckError(m_request.url()));
+                    return; // A transferred reservation is never consumed twice.
+                }
                 m_loader->cancel();
                 m_loader.clear();
                 m_connectionState = ConnectionStateStarted;
@@ -490,6 +499,7 @@ bool ResourceLoader::isLoadedBy(ResourceFetcher* loader) const
 
 void ResourceLoader::requestSynchronously()
 {
+    InspectorResourceCallbackBorrow nativeStack(m_fetcher ? m_fetcher->inspectorResourceState() : nullptr);
     OwnPtr<WebURLLoader> loader = adoptPtr(Platform::current()->createURLLoader());
     ASSERT(loader);
 

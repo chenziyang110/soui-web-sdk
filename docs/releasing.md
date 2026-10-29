@@ -2,6 +2,8 @@
 
 0.5.0 按下面限定范围进行预发布交付，实际结果见[发布说明](releases/0.5.0.md)。完整生产验收未关闭，机器可读结果保持 `releaseReady: false`。
 
+新增DevTools使用独立本地候选`0.6.0-preview.1`，不覆盖上述固定包或现有安装。候选先收口代码与必要编译，再集中运行验收；其千轮生命周期和每后端8小时负载仍按新功能验收要求保留，不能套用下面0.5.0历史发布的限定范围。[DevTools说明](devtools.md)区分源码SDK与二进制CMake安装目录。
+
 ## 0.5.0 本次发布范围
 
 按维护者 2026-10-16 的要求，发布前采用最小充分验证集合：最终两架构四配置构建、每架构 Release 一次关键回归、SDK 外部消费者、交付包解压启动、现代后端本机 100 Hz 实测和交付清单检查。单次完整原生回归已经覆盖的用例，不再经另一个入口重复全量执行；断言、超时与失败判定保持不变。底层二进制导入仍须核对架构、来源、导出和清单。
@@ -20,6 +22,12 @@ node tools/Collect-Verification.cjs --record-unverified --evidence-reference ver
 
 ## 交付组成
 
+未发布候选新增[可选运行时去重 Bundle](runtime-packaging.md)：原单应用 ZIP
+保持默认，新格式需要先恢复为完整独立应用目录，不能直接当作既有安装器使用。
+
+应用及 Bundle 可显式选择[压缩档位](compression-profiles.md)。省略参数时 ZIP
+格式、原参数和文件名不变；7z 档位的接收方需要相应解压工具。
+
 - 完整源码包：SDK、模板、Demo、工具、文档、测试、第三方源码与固定运行依赖。
 - SDK 安装包：通过 `tools/sdk/soui-sdk.cjs pack` 生成，包含逐文件身份清单。
 - 可运行程序：分别暂存、验证和压缩的最小模板与 Workbench；诊断日志、PDB 和未知用户文件不进入运行包。
@@ -32,6 +40,20 @@ node tools/Collect-Verification.cjs --record-unverified --evidence-reference ver
 源码维护者先将审查过的源码加入 Git 暂存区，再执行 `node tools/internal/source-archive.cjs create` 和 `node tools/internal/source-archive.cjs verify`。除清单自身外存在未暂存修改时生成器会失败。v2 清单从 Git index blob 的原始字节生成；验证先比较原字节，再允许文本 checkout 的 CRLF 转换，保留 Git 中原有的特殊混合换行。二进制不转换；上游导入清单中的历史缓存不决定发布内容。
 
 使用 `powershell.exe -File tools/Package.ps1` 生成源码归档及 SHA-256。它先校验当前清单，将固定内容复制到新的 `out/package/source-*`，再次校验再压缩；不会隐式刷新已失效清单。解压后无须 Git 也可执行 `node tools/internal/source-archive.cjs verify`。源码改变后回到维护者 checkout 更新清单，不能在解压目录中无依据重建发布集合。编译工具和 npm 包需要另行准备。
+
+共享工作区或需要组合独立源码根时，另有显式入口，无须改变真实Git暂存区：
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools/Package.ps1 `
+  -SourceRootsBinding C:/candidate/source-roots-binding.json `
+  -PackageWorkspace C:/candidate/fresh-full-source-package
+```
+
+`PackageWorkspace`必须是全新的外部绝对路径；可选`OutputFile`只能位于其`dist/`中。绑定JSON使用`soui.full-source-roots/v1`，恰有`sdk`、`miniblink`、`publicSource`三项，每项为`{root, manifest:{path, bytes, sha256}}`，路径为本地绝对路径。SDK与MiniBlink的原始根可以使用`soui.raw-source/v1`清单：`sourceOnly:true`、实际`root`及完整逐文件`files:[{path,bytes,sha256}]`。原始根不能含私有缓存或额外文件，SDK根不能重复嵌入完整SOUI/MiniBlink；清单pin应放在原始根外。
+
+`publicSource`选择同版本`soui.full-source/v2`清单中的四个固定子树：`third_party/sources/soui`、`.github`、`experiments/webview2-consumer`和`third_party/patches/miniblink`。其清单版本须与SDK raw根的`VERSION`完全相同；旧0.5.0清单不能直接绑定新0.6.0候选。工具按这些明确输入合成新v2清单，复制前后核对外部pin、闭集和逐文件内容，再压缩并执行归档完整性检查；不会刷新旧清单或覆盖既有包。
+
+显式归档的`sourceComposition.sourceOnly=true`、`currentBinaryProvenance=null`及`historicalPrebuiltBinaries=true`保持原义。归档包含完整指定MiniBlink源码，但本身不认证历史预编译二进制与当前源码对应，也不等于当前DevTools内核构建或运行通过；对应关系须另由固定源码输入、真实编译记录和产物散列证明。该路径的数据验证入口为`tests/sdk/full-source-roots.test.cjs`、`delivery-identity.test.cjs`及独立`source-package.test.ps1`；不能把它们称为标准Test已自动全部执行。
 
 通过 Release 启动测试后，运行 `powershell.exe -File tools/Package-Applications.ps1 -Architecture x64` 分别生成 `SouiStarter-<版本>-windows-x64.zip` 和 `SouiWorkbench-<版本>-windows-x64.zip`；x86 同理。它检查源码、构建 ID、完整运行载荷与所有启动场景，再从校验后的独立暂存目录打包。每个包伴随 SHA-256 和 `.zip.json` 大小报告，包含逐文件散列、原生程序/内核/其他运行库/Web 分类大小和压缩参数。不执行代码签名。
 

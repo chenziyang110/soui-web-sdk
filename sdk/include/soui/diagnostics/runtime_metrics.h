@@ -7,6 +7,7 @@
 #include <string>
 #include <soui/diagnostics/renderer_observation_abi.h>
 #include <soui/diagnostics/renderer_model_abi.h>
+#include <soui/diagnostics/view_observation_abi.h>
 
 namespace soui::sdk::diagnostics {
 
@@ -151,6 +152,33 @@ struct renderer_model_observation final {
   std::string module_path;
   bool module_matches{false}, identity_bound{false}, terminal_snapshot{false};
   wkeRendererModelSnapshot native{};
+};
+
+// Complete CWebView wrapper lifetimes in one loaded DLL. Other resource domains
+// (compositors, callbacks, internal Blink objects and child processes) are separate.
+struct view_observation final {
+  static constexpr std::uint32_t schema_version{1};
+  renderer_status state{renderer_status::unknown};
+  std::string module_path;
+  bool module_matches{false}, identity_bound{false}, terminal_snapshot{false};
+  wkeViewLifetimeSnapshot native{};
+};
+
+// One adapter's SDK-held WebView2 Controller references and explicitly scoped
+// native callback domains. Not Chromium/Inspector-window or all Engine counts.
+// Read-only scalar copy; an unavailable sample must never be treated as zero.
+struct webview2_resources final {
+  static constexpr std::uint32_t schema_version{1};
+  sample observation;
+  std::uint32_t process_id{}, owner_thread_id{};
+  std::uint64_t process_creation_file_time{};
+  std::uint64_t controllers_acquired_total{}, controllers_released_total{};
+  std::uint64_t controllers_closed_total{}, controllers_live{};
+  std::uint64_t preparation_pending{}, preparation_active{};
+  std::uint64_t asynchronous_pending{}, asynchronous_active{};
+  std::uint64_t policy_events_active{}, runtime_exit_events_active{};
+  bool runtime_exit_pending{}, runtime_exit_registered{}, runtime_exit_finished{}, runtime_exit_fault{};
+  bool controller_close_succeeded{}, terminal_snapshot{}, counter_fault{};
 };
 
 } // namespace soui::sdk::diagnostics

@@ -31,6 +31,7 @@
  */
 
 #include "config.h"
+#include "platform/network/LocalResourceAdmission.h"
 #include "core/page/EventSource.h"
 
 #include "bindings/core/v8/ExceptionState.h"
@@ -91,6 +92,11 @@ EventSource* EventSource::create(ExecutionContext* context, const String& url, c
     if (!ContentSecurityPolicy::shouldBypassMainWorld(context) && !context->contentSecurityPolicy()->allowConnectToSource(fullURL)) {
         // We can safely expose the URL to JavaScript, as this exception is generate synchronously before any redirects take place.
         exceptionState.throwSecurityError("Refused to connect to '" + fullURL.elidedString() + "' because it violates the document's Content Security Policy.");
+        return nullptr;
+    }
+
+    if (isLocalResourceNamespace(fullURL)) {
+        exceptionState.throwSecurityError("The owned local resource namespace has no EventSource endpoint.");
         return nullptr;
     }
 

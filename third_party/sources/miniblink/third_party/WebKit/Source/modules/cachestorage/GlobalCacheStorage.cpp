@@ -5,9 +5,11 @@
 #include "config.h"
 #include "modules/cachestorage/GlobalCacheStorage.h"
 
+#include "bindings/core/v8/ExceptionState.h"
 #include "core/dom/ExecutionContext.h"
 #include "core/frame/LocalDOMWindow.h"
 #include "core/frame/UseCounter.h"
+#include "core/loader/InspectorResourcePolicy.h"
 #include "core/workers/WorkerGlobalScope.h"
 #include "modules/cachestorage/CacheStorage.h"
 #include "platform/Supplementable.h"
@@ -42,6 +44,11 @@ public:
     CacheStorage* caches(T& fetchingScope, ExceptionState& exceptionState)
     {
         ExecutionContext* context = fetchingScope.executionContext();
+        if (InspectorResourcePolicy::isControlled(context)) {
+            exceptionState.throwSecurityError("This operation is disabled in the controlled inspector.");
+            return nullptr;
+        }
+
         if (!context->securityOrigin()->canAccessCacheStorage()) {
             if (context->securityContext().isSandboxed(SandboxOrigin))
                 exceptionState.throwSecurityError("Cache storage is disabled because the context is sandboxed and lacks the 'allow-same-origin' flag.");

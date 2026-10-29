@@ -8,12 +8,15 @@
 #include "third_party/WebKit/public/web/WebDevToolsFrontendClient.h"
 #include "third_party/WebKit/Source/wtf/Vector.h"
 #include <string>
+#include <memory>
+#include <vector>
 
 namespace blink {
 class WebDevToolsFrontend;
 class WebString;
 class WebLocalFrame;
 class LocalFrame;
+class Page;
 }
 
 namespace base {
@@ -26,6 +29,7 @@ namespace content {
 class DevToolsAgent;
 class DevToolsProtocolDispatcher;
 class WebPage;
+class ControlledDevToolsSession;
 
 // Developer tools UI end of communication channel between the render process of
 // the page being inspected and tools UI renderer process. All messages will
@@ -39,6 +43,7 @@ public:
     ~DevToolsClient() override;
 
     void setDevToolsAgent(DevToolsAgent* devToolsAgent);
+    void setControlledSession(const std::shared_ptr<ControlledDevToolsSession>& session) { m_controlledSession = session; }
     void onMessageReceivedFromEmbedder(int callId, const std::string* response, const std::string* state);
 
     int getId() const { return m_id; }
@@ -70,7 +75,15 @@ private:
     DevToolsProtocolDispatcher* m_devToolsProtocolDispatcher;
     WebPage* m_page;
     int m_id;
-    Vector<blink::LocalFrame*> m_defersLoadingframes;
+    struct LoadingDeferralState {
+        Vector<blink::LocalFrame*> frames;
+        bool controlled = false;
+        blink::Page* controlledPage = nullptr; // Borrowed while the retained session's pause pins are held.
+        bool pageWasDeferred = false;
+        std::shared_ptr<ControlledDevToolsSession> retainedSession;
+    };
+    std::vector<LoadingDeferralState> m_defersLoadingFrameStack;
+    std::shared_ptr<ControlledDevToolsSession> m_controlledSession;
 };
 
 }  // namespace content

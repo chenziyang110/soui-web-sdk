@@ -39,6 +39,7 @@ bool resident_write(resident_run_context& context, const char* event,
 
 struct resident_settings {
   soui::sdk::host_config host;
+  std::filesystem::path application_root;
   int width{1100};
   int height{720};
   bool background_pacing{false};
@@ -61,6 +62,8 @@ class resident_controller final {
     std::uint32_t generation{0};
     unsigned ready_revision{0};
     bool ready{false};
+    bool reload_pending{false};
+    bool reload_waiting_ready{false};
     ULONGLONG awaiting_since{0};
     std::unique_ptr<soui::demo::demo_bridge_adapter> bridge;
     std::unique_ptr<soui::sdk::soui_miniblink_host> host;
@@ -70,7 +73,7 @@ class resident_controller final {
       if (window) window->stop_for_resident_close();
       // run() must retain this whole bundle until the actual Host drain has
       // finished. Destruction is not a substitute for that recoverable pump.
-      if (host && !host->destroy().ok) std::terminate();
+      if (host && !host->destroy().ok && !diagnostic_target_retired_with_failure(*host)) std::terminate();
       if (window && hwnd && ::IsWindow(hwnd)) window->DestroyWindow();
       // A live HWND still refers to this SOUI object and its Host/adapter.
       // On an unrecoverable DestroyWindow failure keep that bundle alive until
@@ -313,7 +316,11 @@ class resident_controller final {
     owned->generation = ++generations_[index];
     if (!owned->generation) throw std::runtime_error("Resident slot generation exhausted");
     owned->bridge = std::make_unique<soui::demo::demo_bridge_adapter>();
-    owned->host = std::make_unique<soui::sdk::soui_miniblink_host>(std::make_unique<soui::sdk::dynamic_miniblink_adapter>());
+    auto adapter = use_local_resource_origin
+        ? std::make_unique<soui::sdk::dynamic_miniblink_adapter>(
+            soui::sdk::diagnostics::mode::disabled, soui::sdk::miniblink_local_resource_options{})
+        : std::make_unique<soui::sdk::dynamic_miniblink_adapter>();
+    owned->host = std::make_unique<soui::sdk::soui_miniblink_host>(std::move(adapter));
     owned->window = std::make_unique<demo_soui_window>(*owned->host, *owned->bridge, false,
         std::filesystem::path{}, settings_.background_pacing, settings_.prefer_high_resolution, settings_.auto_high_refresh);
     owned->window->configure_resident(controller_, index + 1, owned->generation);
@@ -328,6 +335,7 @@ class resident_controller final {
     auto config = settings_.host;
     config.owner_window = slot.hwnd;
     config.bridge_adapter = slot.bridge.get();
+    slot.window->configure_native_devtools(application_.GetMsgLoop(), settings_.application_root);
     const auto started = slot.host->start(config);
     host_result("host.started", index, started);
     if (!started.ok) throw std::runtime_error("A resident business Host failed to start");
@@ -357,12 +365,18 @@ class resident_controller final {
     emit("window.close-start", {{"slot", index + 1}, {"generation", generation}});
     slot.window->stop_for_resident_close();
     const auto closed = slot.host->destroy();
-    host_result("host.destroyed", index, closed);
+    emit("host.destroyed", {{"slot", index + 1}, {"generation", slot.generation},
+        {"ok", closed.ok}, {"code", closed.code}, {"message", closed.message}});
     require_shutdown_budget();
-    if (!closed.ok) {
+    const bool failed_but_retired = !closed.ok && diagnostic_target_retired_with_failure(*slot.host);
+    if (failed_but_retired) {
+      fail(1);
+      emit("host.failed-retired", {{"slot", index + 1}, {"generation", slot.generation}, {"code", closed.code}});
+    } else if (!closed.ok) {
       deferred_closes_[index] = generation;
       emit("window.close-pending", {{"slot", index + 1}, {"generation", generation}, {"code", closed.code}});
-      if (resident_classify_host_close(closed.ok, closed.code) == resident_host_close::fail_stop)
+      const bool diagnostic_pending = closed.code == "E_DEVTOOLS_PENDING" || closed.code == "E_INPUT_WINDOW_CLOSE_PENDING";
+      if (!diagnostic_pending && resident_classify_host_close(closed.ok, closed.code) == resident_host_close::fail_stop)
         cleanup_fail_stop("Host destruction returned a non-retryable error with its owner retained");
       return;
     }
@@ -388,11 +402,17 @@ class resident_controller final {
   void reload_slot(unsigned index) {
     operation_scope operation(*this);
     auto& slot = *slots_.at(index);
+    const bool polling_reload = slot.reload_pending;
+    if (!polling_reload) {
+      slot.ready = false;
+      slot.awaiting_since = GetTickCount64();
+      slot.reload_waiting_ready = true;
+    }
     const auto reloaded = slot.host->reload();
-    host_result("host.reloaded", index, reloaded);
-    if (!reloaded.ok) throw std::runtime_error("Resident smoke reload failed");
-    slot.ready = false;
-    slot.awaiting_since = GetTickCount64();
+    slot.reload_pending = !reloaded.ok && reloaded.code == "E_RELOAD_PENDING";
+    if (!polling_reload || !slot.reload_pending)
+      host_result(slot.reload_pending ? "host.reload-pending" : "host.reloaded", index, reloaded);
+    if (!reloaded.ok && !slot.reload_pending) throw std::runtime_error("Resident smoke reload failed");
   }
   bool all_ready() const {
     return std::all_of(slots_.begin(), slots_.end(), [](const auto& slot) { return slot && slot->ready; });
@@ -406,7 +426,10 @@ class resident_controller final {
     if (context_.log_failed) request_exit("evidence-write-failed", 1);
     if (settings_.smoke && GetTickCount64() - context_.started > smoke_timeout)
       request_exit("resident-smoke-timeout", 3);
-    if (exiting_) { schedule_shutdown(); return; }
+    if (exiting_) {
+      for (auto& slot : slots_) if (slot && slot->window) slot->window->cancel_native_devtools_prompt();
+      schedule_shutdown(); return;
+    }
     if (operation_depth_ || menu_active_ || business_dispatch_active()) return;
     for (unsigned index = 0; index < slots_.size(); ++index) {
       if (deferred_closes_[index]) {
@@ -420,12 +443,21 @@ class resident_controller final {
     for (unsigned index = 0; index < slots_.size(); ++index) {
       if (!slots_[index] || slots_[index]->ready) continue;
       auto& slot = *slots_[index];
-      if (slot.host->application_ready()) {
+      if (slot.reload_pending) reload_slot(index);
+      const bool application_ready = !slot.reload_pending && slot.host->application_ready();
+      const auto observed_at = GetTickCount64();
+      if (settings_.smoke && observed_at - context_.started > smoke_timeout) {
+        request_exit("resident-smoke-timeout", 3); return;
+      }
+      const auto waiting_elapsed = observed_at - slot.awaiting_since;
+      const bool reload_in_time = !slot.reload_waiting_ready || waiting_elapsed <= ready_timeout;
+      if (application_ready && reload_in_time) {
+        slot.reload_waiting_ready = false;
         slot.ready = true;
         ++slot.ready_revision;
         emit("window.ready", {{"slot", index + 1}, {"generation", slot.generation},
             {"revision", slot.ready_revision}, {"hostLifecycleSession", slot.host->session()->session_id()}});
-      } else if (GetTickCount64() - slot.awaiting_since > ready_timeout) {
+      } else if (waiting_elapsed > ready_timeout) {
         emit("window.ready-timeout", {{"slot", index + 1}, {"generation", slot.generation},
             {"diagnostics", slot.host->application_diagnostics()}});
         request_exit("window-ready-timeout", 3); return;
@@ -492,6 +524,10 @@ class resident_controller final {
     if (!exiting_ && selected.has_selection) queue_action(selected.command_id);
   }
   void request_exit(const char* reason, int code) {
+    // Consent/error prompts run a native nested loop. Cancel only this
+    // application's prompt, then preserve the controller's original deadline
+    // and wait until its message-filter/member stack has actually returned.
+    for (auto& slot : slots_) if (slot && slot->window) slot->window->cancel_native_devtools_prompt();
     if (settings_.smoke && smoke_phase_ != 6 && code == 0) code = 3;
     fail(code);
     if (!exiting_) { begin_shutdown(); emit("exit.requested", {{"reason", reason}, {"exitCode", exit_code_},

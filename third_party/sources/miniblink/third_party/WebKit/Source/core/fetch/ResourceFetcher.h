@@ -27,6 +27,7 @@
 #define ResourceFetcher_h
 
 #include "core/CoreExport.h"
+#include "platform/network/InspectorResourceSnapshot.h"
 #include "core/fetch/CachePolicy.h"
 #include "core/fetch/FetchContext.h"
 #include "core/fetch/FetchInitiatorInfo.h"
@@ -70,6 +71,7 @@ class CORE_EXPORT ResourceFetcher : public GarbageCollectedFinalized<ResourceFet
     WTF_MAKE_NONCOPYABLE(ResourceFetcher);
 public:
     static ResourceFetcher* create(FetchContext* context) { return new ResourceFetcher(context); }
+    std::shared_ptr<InspectorResourceState> inspectorResourceState() const;
     virtual ~ResourceFetcher();
     DECLARE_VIRTUAL_TRACE();
 

@@ -1,0 +1,150 @@
+diff --git a/third_party/sources/miniblink/content/web_impl_win/WebCryptoImpl.cpp b/third_party/sources/miniblink/content/web_impl_win/WebCryptoImpl.cpp
+--- a/third_party/sources/miniblink/content/web_impl_win/WebCryptoImpl.cpp
++++ b/third_party/sources/miniblink/content/web_impl_win/WebCryptoImpl.cpp
+@@ -1,20 +1,80 @@
+ 
+ #include "content/web_impl_win/WebCryptoImpl.h"
+ 
++#include <new>
++#include <openssl/evp.h>
++#include <windows.h>
++
+ namespace content {
+ 
+-WebCryptoDigestorImpl::~WebCryptoDigestorImpl() {
++namespace {
++
++const EVP_MD* digestAlgorithm(blink::WebCryptoAlgorithmId algorithmId) {
++    switch (algorithmId) {
++    case blink::WebCryptoAlgorithmIdSha1:
++        return EVP_sha1();
++    case blink::WebCryptoAlgorithmIdSha256:
++        return EVP_sha256();
++    case blink::WebCryptoAlgorithmIdSha384:
++        return EVP_sha384();
++    case blink::WebCryptoAlgorithmIdSha512:
++        return EVP_sha512();
++    default:
++        return nullptr;
++    }
++}
+ 
+ }
+ 
++WebCryptoDigestorImpl::WebCryptoDigestorImpl(blink::WebCryptoAlgorithmId algorithmId)
++    : m_context(nullptr)
++    , m_expectedSize(0)
++    , m_result()
++    , m_failed(true)
++    , m_finished(false) {
++    const EVP_MD* algorithm = digestAlgorithm(algorithmId);
++    if (!algorithm)
++        return;
++    const int digestSize = EVP_MD_size(algorithm);
++    if (digestSize <= 0 || static_cast<unsigned>(digestSize) > sizeof(m_result))
++        return;
++    m_context = EVP_MD_CTX_create();
++    if (!m_context || EVP_DigestInit_ex(m_context, algorithm, nullptr) != 1)
++        return;
++    m_expectedSize = static_cast<unsigned>(digestSize);
++    m_failed = false;
++}
++
++WebCryptoDigestorImpl::~WebCryptoDigestorImpl() {
++    if (m_context)
++        EVP_MD_CTX_destroy(m_context);
++}
++
+ bool WebCryptoDigestorImpl::consume(const unsigned char* data, unsigned dataSize) {
+-    m_data.append(data, dataSize);
++    if (m_failed || m_finished)
++        return false;
++    if (!dataSize)
++        return true;
++    if (!data || EVP_DigestUpdate(m_context, data, dataSize) != 1) {
++        m_failed = true;
++        return false;
++    }
+     return true;
+ }
+ 
+ bool WebCryptoDigestorImpl::finish(unsigned char*& resultData, unsigned& resultDataSize) {
+-    resultData = m_data.data();
+-    resultDataSize = m_data.size();
++    resultData = nullptr;
++    resultDataSize = 0;
++    if (m_failed || m_finished)
++        return false;
++    m_finished = true;
++    unsigned size = 0;
++    if (EVP_DigestFinal_ex(m_context, m_result, &size) != 1 || size != m_expectedSize) {
++        m_failed = true;
++        return false;
++    }
++    resultData = m_result;
++    resultDataSize = size;
+     return true;
+ }
+     
+@@ -23,7 +83,12 @@
+ }
+ 
+ blink::WebCryptoDigestor* WebCryptoImpl::createDigestor(blink::WebCryptoAlgorithmId algorithmId) {
+-    return new WebCryptoDigestorImpl();
++    WebCryptoDigestorImpl* digestor = new (std::nothrow) WebCryptoDigestorImpl(algorithmId);
++    if (!digestor || !digestor->isValid()) {
++        delete digestor;
++        return nullptr;
++    }
++    return digestor;
+ }
+ 
+ }
+diff --git a/third_party/sources/miniblink/content/web_impl_win/WebCryptoImpl.h b/third_party/sources/miniblink/content/web_impl_win/WebCryptoImpl.h
+--- a/third_party/sources/miniblink/content/web_impl_win/WebCryptoImpl.h
++++ b/third_party/sources/miniblink/content/web_impl_win/WebCryptoImpl.h
+@@ -2,18 +2,28 @@
+ #define COMPONENTS_WEBCRYPTO_WEBCRYPTO_IMPL_H_
+ 
+ #include "third_party/WebKit/public/platform/WebCrypto.h"
+-#include "wtf/Vector.h"
++
++struct env_md_ctx_st;
+ 
+ namespace content {
+ 
+ class WebCryptoDigestorImpl : public blink::WebCryptoDigestor {
+ public:
++    explicit WebCryptoDigestorImpl(blink::WebCryptoAlgorithmId algorithmId);
+     virtual ~WebCryptoDigestorImpl() override;
+     virtual bool consume(const unsigned char* data, unsigned dataSize) override;
+     virtual bool finish(unsigned char*& resultData, unsigned& resultDataSize) override;
++    bool isValid() const { return !m_failed; }
+ 
+ private:
+-    Vector<unsigned char> m_data;
++    WebCryptoDigestorImpl(const WebCryptoDigestorImpl&) = delete;
++    WebCryptoDigestorImpl& operator=(const WebCryptoDigestorImpl&) = delete;
++
++    env_md_ctx_st* m_context;
++    unsigned m_expectedSize;
++    unsigned char m_result[64]; // SHA-512 is the largest supported digest.
++    bool m_failed;
++    bool m_finished;
+ };
+     
+ class WebCryptoImpl : public blink::WebCrypto {
+diff --git a/third_party/sources/miniblink/build/miniblink/miniblink.vcxproj b/third_party/sources/miniblink/build/miniblink/miniblink.vcxproj
+--- a/third_party/sources/miniblink/build/miniblink/miniblink.vcxproj
++++ b/third_party/sources/miniblink/build/miniblink/miniblink.vcxproj
+@@ -528,7 +528,9 @@
+     <ClCompile Include="..\..\content\ui\PopupMenuWin.cpp" />
+     <ClCompile Include="..\..\content\ui\WCDataObject.cpp" />
+     <ClCompile Include="..\..\content\ui\WebDropSource.cpp" />
+-    <ClCompile Include="..\..\content\web_impl_win\WebCryptoImpl.cpp" />
++    <ClCompile Include="..\..\content\web_impl_win\WebCryptoImpl.cpp">
++      <AdditionalIncludeDirectories>../../node/openssl/openssl/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
++    </ClCompile>
+     <ClCompile Include="..\..\content\web_impl_win\WebMessagePortChannelImpl.cpp" />
+     <ClCompile Include="..\..\gen\blink\bindings\core\v8\USVStringOrURLSearchParams.cpp" />
+     <ClCompile Include="..\..\gen\blink\bindings\core\v8\V8DevToolsHost.cpp" />

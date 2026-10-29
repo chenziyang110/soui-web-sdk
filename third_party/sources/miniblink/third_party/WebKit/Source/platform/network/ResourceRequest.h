@@ -37,6 +37,7 @@
 #include "platform/weborigin/SecurityOrigin.h"
 #include "public/platform/WebURLRequest.h"
 #include "wtf/OwnPtr.h"
+#include "platform/network/LocalResourceAdmission.h"
 
 namespace blink {
 
@@ -195,6 +196,10 @@ public:
     void setShouldResetAppCache(bool shouldResetAppCache) { m_shouldResetAppCache = shouldResetAppCache; }
 
     // Extra data associated with this request.
+    std::shared_ptr<LocalResourceAdmission> localResourceAdmission() const { return m_localResourceAdmission; }
+    void setLocalResourceAdmission(std::shared_ptr<LocalResourceAdmission> value) { m_localResourceAdmission = value; }
+    bool localResourceAdmissionBlocked() const { return m_localResourceAdmissionBlocked; }
+    void setLocalResourceAdmissionBlocked() { m_localResourceAdmissionBlocked = true; }
     ExtraData* extraData() const { return m_extraData.get(); }
     void setExtraData(PassRefPtr<ExtraData> extraData) { m_extraData = extraData; }
 
@@ -258,6 +263,8 @@ private:
     int m_requestorProcessID;
     int m_appCacheHostID;
     RefPtr<ExtraData> m_extraData;
+    std::shared_ptr<LocalResourceAdmission> m_localResourceAdmission;
+    bool m_localResourceAdmissionBlocked = false;
     WebURLRequest::RequestContext m_requestContext;
     WebURLRequest::FrameType m_frameType;
     WebURLRequest::FetchRequestMode m_fetchRequestMode;
@@ -285,6 +292,7 @@ struct CrossThreadResourceRequestData {
     WTF_MAKE_NONCOPYABLE(CrossThreadResourceRequestData); WTF_MAKE_FAST_ALLOCATED(CrossThreadResourceRequestData);
 public:
     CrossThreadResourceRequestData() { }
+    bool m_localResourceAdmissionBlocked = false;
     KURL m_url;
 
     ResourceRequestCachePolicy m_cachePolicy;

@@ -528,7 +528,9 @@
     <ClCompile Include="..\..\content\ui\PopupMenuWin.cpp" />
     <ClCompile Include="..\..\content\ui\WCDataObject.cpp" />
     <ClCompile Include="..\..\content\ui\WebDropSource.cpp" />
-    <ClCompile Include="..\..\content\web_impl_win\WebCryptoImpl.cpp" />
+    <ClCompile Include="..\..\content\web_impl_win\WebCryptoImpl.cpp">
+      <AdditionalIncludeDirectories>../../node/openssl/openssl/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
     <ClCompile Include="..\..\content\web_impl_win\WebMessagePortChannelImpl.cpp" />
     <ClCompile Include="..\..\gen\blink\bindings\core\v8\USVStringOrURLSearchParams.cpp" />
     <ClCompile Include="..\..\gen\blink\bindings\core\v8\V8DevToolsHost.cpp" />
@@ -785,6 +787,13 @@
     <ClCompile Include="..\..\content\web_impl_win\WebTimerBase.cpp" />
     <ClCompile Include="..\..\content\web_impl_win\WebURLLoaderImpl.cpp" />
     <ClCompile Include="..\..\content\web_impl_win\WebURLLoaderImplCurl.cpp" />
+    <ClCompile Include="..\..\content\web_impl_win\LocalResourceAdmission.cpp" />
+    <ClCompile Include="..\..\content\web_impl_win\LocalResourceAdmissionCell.cpp" />
+    <ClCompile Include="..\..\content\web_impl_win\LocalResourceState.cpp" />
+    <ClCompile Include="..\..\content\web_impl_win\LocalResourceMemoryLoad.cpp" />
+    <ClCompile Include="..\..\content\web_impl_win\InspectorMemoryLoad.cpp" />
+    <ClCompile Include="..\..\third_party\WebKit\Source\platform\network\InspectorResourceSnapshot.cpp" />
+    <ClCompile Include="..\..\third_party\WebKit\Source\core\loader\InspectorResourcePolicy.cpp" />
     <ClCompile Include="..\..\gen\blink\bindings\core\v8\UnionTypesCore.cpp" />
     <ClCompile Include="..\..\gen\blink\bindings\core\v8\V8Animation.cpp" />
     <ClCompile Include="..\..\gen\blink\bindings\core\v8\V8AnimationEffectReadOnly.cpp" />

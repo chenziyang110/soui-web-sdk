@@ -41,6 +41,7 @@
 #include "core/html/VoidCallback.h"
 #include "core/loader/FrameLoader.h"
 #include "core/loader/FrameLoaderClient.h"
+#include "core/loader/InspectorResourcePolicy.h"
 #include "modules/mediastream/MediaConstraintsImpl.h"
 #include "modules/mediastream/MediaStreamEvent.h"
 #include "modules/mediastream/RTCDTMFSender.h"
@@ -235,6 +236,11 @@ RTCOfferOptions* RTCPeerConnection::parseOfferOptions(const Dictionary& options,
 
 RTCPeerConnection* RTCPeerConnection::create(ExecutionContext* context, const Dictionary& rtcConfiguration, const Dictionary& mediaConstraints, ExceptionState& exceptionState)
 {
+    if (InspectorResourcePolicy::isControlled(context)) {
+        exceptionState.throwSecurityError("This operation is disabled in the controlled inspector.");
+        return nullptr;
+    }
+
     RTCConfiguration* configuration = parseConfiguration(rtcConfiguration, exceptionState);
     if (exceptionState.hadException())
         return 0;

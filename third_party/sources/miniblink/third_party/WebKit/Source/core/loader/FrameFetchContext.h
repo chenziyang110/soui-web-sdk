@@ -89,6 +89,8 @@ public:
     bool allowImage(bool imagesEnabled, const KURL&) const override;
     bool canRequest(Resource::Type, const ResourceRequest&, const KURL&, const ResourceLoaderOptions&, bool forPreload, FetchRequest::OriginRestriction) const override;
 
+    std::shared_ptr<InspectorResourceState> inspectorResourceState() const override;
+    String inspectorResourceCacheIdentifier() const override;
     bool isControlledByServiceWorker() const override;
     int64_t serviceWorkerID() const override;
 

@@ -157,6 +157,31 @@ PassRefPtr<SimpleFontData> FontCache::getLastResortFallbackFont(const FontDescri
         DEFINE_STATIC_LOCAL(const FontFaceCreationParams, mssansserifCreationParams, (AtomicString("Microsoft Sans Serif", AtomicString::ConstructFromLiteral)));
         fontPlatformData = getFontPlatformData(description, mssansserifCreationParams);
     }
+
+    // Named lookup can reject a valid Windows substitute. At the last resort,
+    // use the real system default without claiming a requested-family match.
+    if (!fontPlatformData || !fontPlatformData->typeface()) {
+        if (!m_fontManager)
+            return nullptr;
+
+        int style = SkTypeface::kNormal;
+        if (description.weight() >= FontWeight600)
+            style |= SkTypeface::kBold;
+        if (description.style() == FontStyleItalic)
+            style |= SkTypeface::kItalic;
+
+        RefPtr<SkTypeface> typeface = adoptRef(m_fontManager->legacyCreateTypeface(nullptr, style));
+        if (!typeface || typeface->countGlyphs() <= 0)
+            return nullptr;
+
+        FontPlatformData systemDefaultPlatformData(typeface, nullptr,
+            description.effectiveFontSize(),
+            (description.weight() >= FontWeight600 && !typeface->isBold()) || description.isSyntheticBold(),
+            (description.style() == FontStyleItalic && !typeface->isItalic()) || description.isSyntheticItalic(),
+            description.orientation(),
+            s_useSubpixelPositioning);
+        return fontDataFromFontPlatformData(&systemDefaultPlatformData, shouldRetain);
+    }
 #endif
 
     ASSERT(fontPlatformData);

@@ -10,6 +10,7 @@
 #include "wke/wke2.h"
 #include "wke/RendererDiagnosticsState.h"
 #include "wke/RendererModelState.h"
+#include "wke/ViewDiagnosticsState.h"
 #include "core/fetch/MemoryCache.h"
 #include "third_party/skia/src/core/SkCacheObservation.h"
 #include "third_party/skia/src/core/SkResourceCache.h"
@@ -84,6 +85,7 @@ namespace {
 SRWLOCK renderer_cache_lock = SRWLOCK_INIT;
 renderer_process_state renderer_cache;
 renderer_backend_model_state renderer_model_cache;
+view_lifetime_state view_cache;
 
 class renderer_write_lock final {
 public:
@@ -142,6 +144,27 @@ const wkeRendererDiagnosticsApi renderer_api = {
     WKE_RENDER_DIAGNOSTICS_CAP_PROCESS_CACHE
         | WKE_RENDER_DIAGNOSTICS_CAP_COMPLETED_DRAW_CALLS,
     &read_renderer_process_snapshot
+};
+
+uint32_t WKE_RENDER_DIAGNOSTICS_CALL read_view_lifetimes(wkeViewLifetimeSnapshot* output)
+{
+    if (!output || output->structSize != sizeof(wkeViewLifetimeSnapshot))
+        return WKE_RENDER_DIAGNOSTICS_INVALID_ARGUMENT;
+    wkeViewLifetimeSnapshot snapshot{};
+    snapshot.structSize = sizeof(snapshot);
+    snapshot.abiVersion = WKE_VIEW_DIAGNOSTICS_ABI_VERSION;
+    snapshot.status = WKE_RENDER_DIAGNOSTICS_BUSY;
+    if (TryAcquireSRWLockShared(&renderer_cache_lock)) {
+        renderer_read_lock held(renderer_cache_lock);
+        snapshot = view_cache.snapshot();
+    }
+    *output = snapshot;
+    return snapshot.status;
+}
+
+const wkeViewDiagnosticsApi view_api = {
+    sizeof(wkeViewDiagnosticsApi), WKE_VIEW_DIAGNOSTICS_ABI_VERSION,
+    WKE_VIEW_DIAGNOSTICS_CAP_DLL_LIFETIMES, &read_view_lifetimes
 };
 
 } // namespace
@@ -255,6 +278,8 @@ void renderer_initialized() noexcept
         && initialized_qpc != 0;
     renderer_cache.initialized(GetCurrentProcessId(), creation, GetCurrentThreadId(),
         hz, initialized_qpc, identity_valid, clock_valid && initialized_clock_valid);
+    view_cache.initialized(GetCurrentProcessId(), creation, GetCurrentThreadId(),
+        hz, initialized_qpc, identity_valid, clock_valid && initialized_clock_valid);
 #ifdef SOUI_GPU_COMPOSITOR
     renderer_model_cache.compilation_observed(true);
 #else
@@ -277,6 +302,22 @@ void renderer_closed() noexcept
     renderer_cache.renderer_closed(qpc, clock_valid);
 }
 
+void view_created() noexcept
+{
+    renderer_write_lock held(renderer_cache_lock);
+    uint64_t qpc = 0;
+    const bool valid = renderer_qpc(qpc);
+    view_cache.created(GetCurrentThreadId(), qpc, valid);
+}
+
+void view_destroyed() noexcept
+{
+    renderer_write_lock held(renderer_cache_lock);
+    uint64_t qpc = 0;
+    const bool valid = renderer_qpc(qpc);
+    view_cache.destroyed(GetCurrentThreadId(), qpc, valid);
+}
+
 void renderer_draw_completed(uint32_t kind) noexcept
 {
     renderer_write_lock held(renderer_cache_lock);
@@ -292,6 +333,7 @@ void renderer_finalized() noexcept
     uint64_t qpc = 0;
     const bool clock_valid = renderer_qpc(qpc);
     renderer_cache.finalized(qpc, clock_valid);
+    view_cache.finalized(GetCurrentThreadId(), qpc, clock_valid);
 }
 
 const wkeRendererDiagnosticsApi* renderer_api_for_version(unsigned int version) noexcept
@@ -301,6 +343,13 @@ const wkeRendererDiagnosticsApi* renderer_api_for_version(unsigned int version) 
 
 } // namespace diagnostics
 } // namespace wke
+
+// Optional read-only export. Existing generated WKE tables and ABIs stay exact.
+extern "C" __declspec(dllexport) const wkeViewDiagnosticsApi* WKE_RENDER_DIAGNOSTICS_CALL
+wkeGetViewDiagnosticsApi(unsigned int version)
+{
+    return version == WKE_VIEW_DIAGNOSTICS_ABI_VERSION ? &wke::diagnostics::view_api : nullptr;
+}
 
 const wkeRendererModelDiagnosticsApi* WKE_CALL_TYPE wkeGetRendererModelDiagnosticsApi(unsigned int version)
 {
@@ -625,6 +674,12 @@ const wkeInteractionApi* WKE_CALL_TYPE wkeGetInteractionApi(unsigned int request
 const wkeCursorBrokerApi* WKE_CALL_TYPE wkeGetCursorBrokerApi(unsigned int requestedVersion)
 {
     return wke::cursorBrokerApi(requestedVersion);
+}
+
+extern "C" __declspec(dllexport) const SouiLocalResourceApi* SOUI_LOCAL_RESOURCE_CALL
+wkeGetLocalResourceApi(uint32_t requestedVersion)
+{
+    return wke::localResourceApi(requestedVersion);
 }
 
 void WKE_CALL_TYPE wkeInitialize()

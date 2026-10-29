@@ -1,5 +1,29 @@
 # 拖出数据有限所有权回归
 
+## Preview.8 source binding refresh (2026-10-27)
+
+The owned-local-origin guard changed the full wkeNetHook source and moved the
+existing 511-byte buffer ownership body from byte offset 10219 to 10495.
+That complete body still equals the unchanged fixture bytes at 4446; all ten
+source/fixture bodies were checked as exact unique matches. Only this source
+pin and offset are rebound. The other source/fixture pins, mandatory configure
+and pre-build gates, 11 assertions and original 10-second limits are unchanged.
+This is a source-binding update, not a new test run or transferred old pass.
+
+## Current source binding refresh (2026-10-26)
+
+The current WebPageImpl source includes the previously adopted debug-loop
+frontend guard and the controlled keyboard-snapshot overloads. The complete
+source pin and the two dragdata byte offsets now bind that actual source.
+All ten extracted bodies and both fixture payloads remain byte-for-byte equal
+to their prior contents. Other source pins retain their exact LF-bound inputs.
+The byte gate still checks every full source, payload and source/fixture range.
+
+Unified validation uses target soui_vendor_dragdata_ownership_tests and the
+kernel.native.lifetime.dragdata- CTest prefix: the original 11 names and their
+10-second limits are unchanged. This refresh has not been compiled or executed;
+the historical results below keep their original source/build identities.
+
 一个测试 EXE，11 项 CTest，每项 TIMEOUT 10。正常与故障路径均要求测试进程返回 0；不使用 WILL_FAIL。构建前强制检查七个 live 源文件的完整 bytes/SHA256、fixture hash 和十个 source/fixture 精确字节区间，禁止以失效的复制算法继续通过。
 
 复用实际 WebVector、WKE 类型及 buffer 创建/释放、BrokerDragPayload、数据转换器/释放器、startDragging、callback scope、拖动标记与 CheckReEnter 计数。array new、UTF8 返回 std::string 和下游 make_shared 使用真实 C++ allocator 故障；已持有的 2/4 个真实 malloc block 必须由实际释放器归零，heap/buffer delta 同时为零。检查受控 257 项走实际 invalid/NONE 完成分支、legacy/custom 257 项继续传递、callback 与参数异常恢复局部计数，以及混合/空数据正常释放。

@@ -81,7 +81,7 @@ void handleDataURL(blink::WebURLLoader* handle, blink::WebURLLoaderClient* clien
         client->didReceiveResponse(handle, response);
         client->didReceiveData(handle, out.data(), out.size(), 0);
     }
-    client->didFinishLoading(handle, currentTime(), out.size());
+    client->didFinishLoading(handle, monotonicallyIncreasingTime(), out.size());
 }
 
 bool parseDataURL(const blink::KURL& kurl, String& mimeType, String& charset, Vector<char>& out)

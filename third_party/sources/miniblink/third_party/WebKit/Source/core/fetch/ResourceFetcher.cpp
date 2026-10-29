@@ -25,6 +25,7 @@
 */
 
 #include "config.h"
+#include "platform/network/LocalResourceAdmission.h"
 #include "core/fetch/ResourceFetcher.h"
 
 #include "bindings/core/v8/V8DOMActivityLogger.h"
@@ -306,6 +307,12 @@ ResourcePtr<Resource> ResourceFetcher::requestResource(FetchRequest& request, co
     ResourcePtr<Resource> resource = memoryCache()->resourceForURL(url, getCacheIdentifier());
 
     const RevalidationPolicy policy = determineRevalidationPolicy(factory.type(), request, resource.get());
+    struct LocalAdmissionGuard {
+        ResourceRequest& request;
+        ~LocalAdmissionGuard() { abandonLocalResourceRequest(request); }
+    } localAdmissionGuard{request.mutableResourceRequest()};
+    if (policy == Use) abandonLocalResourceRequest(request.mutableResourceRequest());
+    else if (!admitLocalResourceRequest(request.mutableResourceRequest())) return nullptr;
     switch (policy) {
     case Reload:
         memoryCache()->remove(resource.get());
@@ -1033,8 +1040,16 @@ const ResourceLoaderOptions& ResourceFetcher::defaultResourceOptions()
     return options;
 }
 
+std::shared_ptr<InspectorResourceState> ResourceFetcher::inspectorResourceState() const
+{
+    return context().inspectorResourceState();
+}
+
 String ResourceFetcher::getCacheIdentifier() const
 {
+    const String inspectorIdentifier = context().inspectorResourceCacheIdentifier();
+    if (!inspectorIdentifier.isEmpty())
+        return inspectorIdentifier;
     if (context().isControlledByServiceWorker())
         return String::number(context().serviceWorkerID());
     return MemoryCache::defaultCacheIdentifier();

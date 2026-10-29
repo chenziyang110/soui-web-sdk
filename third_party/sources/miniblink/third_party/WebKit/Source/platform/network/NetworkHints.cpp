@@ -26,6 +26,7 @@
 
 #include "config.h"
 #include "platform/network/NetworkHints.h"
+#include "platform/network/LocalResourceAdmission.h"
 
 #include "public/platform/Platform.h"
 #include "public/platform/WebPrescientNetworking.h"
@@ -34,12 +35,14 @@ namespace blink {
 
 void prefetchDNS(const String& hostname)
 {
+    if (isLocalResourceNamespace(KURL(ParsedURLString, String("https://") + hostname + "/"))) return;
     if (WebPrescientNetworking* prescientNetworking = Platform::current()->prescientNetworking())
         prescientNetworking->prefetchDNS(hostname);
 }
 
 void preconnect(const KURL& url, const CrossOriginAttributeValue crossOrigin)
 {
+    if (isLocalResourceNamespace(url)) return;
     if (WebPrescientNetworking* prescientNetworking = Platform::current()->prescientNetworking()) {
         bool allowCredentials = (crossOrigin != CrossOriginAttributeAnonymous);
         // TODO(yoav): Call only the crossorigin interface once everything is hooked up.

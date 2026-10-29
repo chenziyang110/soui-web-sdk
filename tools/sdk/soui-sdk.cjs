@@ -16,8 +16,14 @@ const LOCK = 'soui.sdk-lock/v1';
 const sdkId = 'soui-desktop-sdk';
 const managedRoots = ['sdk', 'cmake', 'third_party/include', 'third_party/prebuilt',
   'third_party/sources/zlib', 'third_party/licenses', 'third_party/manifests', 'tools/sdk', 'tools/internal'];
-const managedFiles = ['THIRD_PARTY_NOTICES.md', 'tools/Build.ps1', 'tools/Test-Modern.ps1',
+const managedFiles = ['LICENSE.md', 'THIRD_PARTY_NOTICES.md', 'tools/Build.ps1', 'tools/Test-Modern.ps1', 'tools/Test-Auto.ps1',
   'tools/Soui.ps1', 'tools/Doctor.ps1', 'docs/developer-workflow.md',
+  'docs/devtools.md', 'docs/adr/0123-public-devtools-candidate.md',
+  'docs/adr/0128-controlled-cpu-presentation.md',
+  'docs/adr/0130-bounded-legacy-source-maps.md',
+  'docs/adr/0131-native-view-lifetime-observation.md',
+  'docs/adr/0134-controlled-inspector-keyboard-snapshot.md',
+  'docs/adr/0135-owned-local-resource-origin.md',
   'benchmarks/protocol/host64-build-debug-observer.cpp',
   'benchmarks/protocol/host64-build-debug-observer/CMakeLists.txt'];
 const hash = data => crypto.createHash('sha256').update(data).digest('hex');
@@ -179,13 +185,23 @@ function pack(source, output, version, options = {}) {
 }
 
 function requireProfile(manifest, profile = 'compatibility') {
-  if (!['compatibility', 'modern'].includes(profile)) throw new Error('Unknown application runtime profile');
-  if (profile === 'modern') {
+  if (!['compatibility', 'modern', 'auto'].includes(profile)) throw new Error('Unknown application runtime profile');
+  if (['modern', 'auto'].includes(profile)) {
     const paths = new Set(manifest.files.map(file => file.path));
     for (const required of ['sdk/include/soui/host/webview2_host.h',
       'sdk/renderers/webview2/CMakeLists.txt', 'tools/internal/Restore-WebView2.ps1']) {
       if (!paths.has(required)) throw new Error(`SDK does not provide the modern profile: ${required}`);
     }
+  }
+  if (profile === 'auto') {
+    const paths = new Set(manifest.files.map(file => file.path));
+    for (const required of ['sdk/include/soui/host/auto_webview_host.h',
+      'sdk/renderers/auto/auto_webview_host.cpp', 'sdk/include/soui/host/soui_miniblink_host.h',
+      'tools/internal/runtime-files.json', 'tools/internal/auto-smoke.cjs', 'tools/Test-Auto.ps1']) {
+      if (!paths.has(required)) throw new Error(`SDK does not provide the auto profile: ${required}`);
+    }
+    for (const arch of ['x86', 'x64']) if (!paths.has(`third_party/prebuilt/${arch}/miniblink/node.dll`))
+      throw new Error(`SDK does not provide the auto fallback runtime: ${arch}`);
   }
 }
 
@@ -241,7 +257,7 @@ function main(argv) {
     'verify-source': ['--package', '--source'], 'verify-profile': ['--package', '--profile']};
   const keys = surfaces[command];
   if (!keys || keys.some(key => !options[key]) || Object.keys(options).some(key => !keys.includes(key) && !(command === 'pack' && key === '--with-gui-bindings'))) {
-    throw new Error('Commands: pack --source DIR --output DIR --version X.Y.Z[-preview.N|-rc.N] [--with-gui-bindings] | verify --package DIR | install --package DIR --project DIR | recover --project DIR | verify-project --project DIR | verify-source --package DIR --source DIR | verify-profile --package DIR --profile compatibility|modern');
+    throw new Error('Commands: pack --source DIR --output DIR --version X.Y.Z[-preview.N|-rc.N] [--with-gui-bindings] | verify --package DIR | install --package DIR --project DIR | recover --project DIR | verify-project --project DIR | verify-source --package DIR --source DIR | verify-profile --package DIR --profile compatibility|modern|auto');
   }
   if (command === 'pack') return pack(options['--source'], options['--output'], options['--version'], {withGuiBindings: options['--with-gui-bindings'] === true});
   if (command === 'install') return install(options['--package'], options['--project']);

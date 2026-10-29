@@ -12,10 +12,14 @@ class WebWidget;
 
 namespace content {
 
+struct InspectorKeyboardSnapshot;
+
 class PlatformEventHandler {
 public:
     PlatformEventHandler(blink::WebWidget* webWidget, blink::WebViewImpl* webViewImpl);
     static blink::WebKeyboardEvent buildKeyboardEvent(blink::WebInputEvent::Type type, UINT message, WPARAM wParam, LPARAM lParam);
+    static blink::WebKeyboardEvent buildKeyboardEvent(blink::WebInputEvent::Type type, UINT message, WPARAM wParam, LPARAM lParam,
+        const InspectorKeyboardSnapshot* keyboardSnapshot);
 
     struct MouseEvtInfo {
         bool isNeedSetFocus;

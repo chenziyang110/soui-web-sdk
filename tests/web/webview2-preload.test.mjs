@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 
 const source = fs.readFileSync(new URL('../../sdk/renderers/webview2/native-preload.js', import.meta.url), 'utf8');
-function fixture(t, documentId = 'document:A') {
+function fixture(t, documentId = 'document:A', initialInvocationId) {
   const timers = new Map(), listeners = new Map(), messages = new Set(), posted = [];
   let nextTimer = 1, now = 0, postError;
   const window = {
@@ -20,7 +20,13 @@ function fixture(t, documentId = 'document:A') {
   };
   window.top = window;
   const close = type => { for (const callback of listeners.get(type || 'pagehide') || []) callback(); };
-  vm.runInNewContext(source.replace('__SOUI_DOCUMENT_ID__', JSON.stringify(documentId)), {
+  let preload = source.replace('__SOUI_DOCUMENT_ID__', JSON.stringify(documentId));
+  if (initialInvocationId !== undefined) {
+    // Exercise the actual exhaustion branch without sending quadrillions of requests.
+    assert.equal(preload.split('var nextInvocationId = 1;').length, 2);
+    preload = preload.replace('var nextInvocationId = 1;', `var nextInvocationId = ${initialInvocationId};`);
+  }
+  vm.runInNewContext(preload, {
     window, TextEncoder,
     setTimeout(callback, delay) { const id = nextTimer++; timers.set(id, { callback, at: now + delay }); return id; },
     clearTimeout(id) { timers.delete(id); },
@@ -33,12 +39,21 @@ function fixture(t, documentId = 'document:A') {
     promise.catch(() => {}); // Closing a fixture rejects its intentionally unfinished requests.
     return promise;
   };
+  const reply = (envelope, raw = '{}', identity = documentId) => {
+    const id = JSON.parse(envelope.request).requestId;
+    for (const callback of messages) callback({ data: {
+      kind: 'response', documentId: identity, requestId: id, invocationId: envelope.invocationId, raw,
+    } });
+  };
   t.after(() => { close(); assert.equal(timers.size, 0); assert.equal(messages.size, 0); });
   return {
-    send, close, timers, posted, window,
+    send, close, timers, posted, window, reply,
+    emit(data) { for (const callback of messages) callback({ data }); },
     setPostError(error) { postError = error; },
     complete(id, raw = '{}', identity = documentId) {
-      for (const callback of messages) callback({ data: { kind: 'response', documentId: identity, requestId: id, raw } });
+      const envelope = [...posted].reverse().find(value => JSON.parse(value.request).requestId === id);
+      assert.ok(envelope, 'A response must echo a submitted invocation.');
+      reply(envelope, raw, identity);
     },
     advance(delay) {
       now += delay;
@@ -96,6 +111,61 @@ test('a timeout returns only its lane and does not cancel the native operation',
   f.complete('renew:retry', 'recovered'); assert.equal(await next, 'recovered');
   await assert.rejects(f.send('ordinary:still-full'), /capacity/);
   f.complete('cleanup:waiting', 'cancel-requested'); assert.equal(await cleanup, 'cancel-requested');
+});
+
+test('a late response cannot settle a later invocation reusing the same requestId', async t => {
+  const f = fixture(t);
+  const first = f.send('work:reused', 'app.work', {}, { timeoutMs: 1 });
+  const firstEnvelope = f.posted[0];
+  f.advance(1);
+  await assert.rejects(first, /timed out.*not cancelled/);
+  const second = f.send('work:reused');
+  const secondEnvelope = f.posted[1];
+  assert.notEqual(firstEnvelope.invocationId, secondEnvelope.invocationId);
+  f.reply(firstEnvelope, 'obsolete');
+  assert.equal(f.timers.size, 1, 'The stale reply must leave the new invocation pending.');
+  f.reply(secondEnvelope, 'current');
+  assert.equal(await second, 'current');
+});
+
+test('responses require the exact document, requestId and invocationId with no legacy fallback', async t => {
+  const f = fixture(t);
+  const first = f.send('work:first'), second = f.send('work:second');
+  const firstEnvelope = f.posted[0], secondEnvelope = f.posted[1];
+  const base = {kind: 'response', documentId: 'document:A', requestId: 'work:first', raw: 'unmatched'};
+  for (const changed of [
+    {}, // An old host response has no invocationId.
+    {invocationId: Number(firstEnvelope.invocationId)},
+    {invocationId: '0'},
+    {invocationId: firstEnvelope.invocationId, requestId: 'work:second'},
+    {invocationId: firstEnvelope.invocationId, documentId: 'document:old'},
+  ]) {
+    f.emit({...base, ...changed});
+    assert.equal(f.timers.size, 2, 'Unmatched metadata must not release either current wait.');
+  }
+  f.reply(firstEnvelope, 'first'); f.reply(secondEnvelope, 'second');
+  assert.equal(await first, 'first'); assert.equal(await second, 'second');
+});
+
+test('a completed requestId can be reused without reusing its invocationId', async t => {
+  const f = fixture(t);
+  const first = f.send('work:reusable');
+  const firstEnvelope = f.posted[0];
+  f.reply(firstEnvelope, 'first'); assert.equal(await first, 'first');
+  const second = f.send('work:reusable');
+  assert.notEqual(f.posted[1].invocationId, firstEnvelope.invocationId);
+  f.reply(firstEnvelope, 'duplicate'); assert.equal(f.timers.size, 1);
+  f.reply(f.posted[1], 'second'); assert.equal(await second, 'second');
+});
+
+test('invocation counter exhaustion refuses new sends without wrapping or dropping a pending reply', async t => {
+  const f = fixture(t, 'document:A', Number.MAX_SAFE_INTEGER);
+  const last = f.send('work:last');
+  assert.equal(f.posted[0].invocationId, '9007199254740991');
+  await assert.rejects(f.send('work:exhausted'), /Invocation identity exhausted/);
+  assert.equal(f.posted.length, 1); assert.equal(f.timers.size, 1);
+  f.reply(f.posted[0], 'last'); assert.equal(await last, 'last');
+  await assert.rejects(f.send('work:last'), /Invocation identity exhausted/);
 });
 
 test('synchronous post failure returns renewal and cleanup slots and removes their timers', async t => {

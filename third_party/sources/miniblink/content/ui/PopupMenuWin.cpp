@@ -151,9 +151,15 @@ LRESULT PopupMenuWin::fireWheelEvent(UINT message, WPARAM wParam, LPARAM lParam)
 
 bool PopupMenuWin::fireKeyUpEvent(UINT message, WPARAM wParam, LPARAM lParam)
 {
+    return fireKeyUpEvent(message, wParam, lParam, nullptr);
+}
+
+bool PopupMenuWin::fireKeyUpEvent(UINT message, WPARAM wParam, LPARAM lParam,
+    const InspectorKeyboardSnapshot* keyboardSnapshot)
+{
     if (!m_hPopup)
         return false;
-    wndProc(m_hPopup, message, wParam, lParam);
+    wndProc(m_hPopup, message, wParam, lParam, keyboardSnapshot);
     return true;
 }
 
@@ -178,6 +184,12 @@ LRESULT CALLBACK PopupMenuWin::PopupMenuWndProc(HWND hWnd, UINT message, WPARAM 
 }
 
 LRESULT PopupMenuWin::wndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+    return wndProc(hWnd, message, wParam, lParam, nullptr);
+}
+
+LRESULT PopupMenuWin::wndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam,
+    const InspectorKeyboardSnapshot* keyboardSnapshot)
 {
     LRESULT lResult = 0;
     BOOL bHandle = FALSE;
@@ -224,7 +236,7 @@ LRESULT PopupMenuWin::wndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
         if (!m_initialize)
             break;
         unsigned int virtualKeyCode = wParam;
-        WebKeyboardEvent keyEvent = PlatformEventHandler::buildKeyboardEvent(WebInputEvent::RawKeyDown, message, wParam, lParam);
+        WebKeyboardEvent keyEvent = PlatformEventHandler::buildKeyboardEvent(WebInputEvent::RawKeyDown, message, wParam, lParam, keyboardSnapshot);
 
         bool handled = m_popupImpl->handleInputEvent(keyEvent);
         if (handled)

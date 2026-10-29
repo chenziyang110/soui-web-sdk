@@ -41,6 +41,8 @@ class LayerTreeHost;
 
 namespace content {
 
+struct InspectorKeyboardSnapshot;
+
 class PlatformEventHandler;
 class PopupMenuWinClient;
 
@@ -69,6 +71,8 @@ public:
 
     LRESULT fireWheelEvent(UINT message, WPARAM wParam, LPARAM lParam);
     bool fireKeyUpEvent(UINT message, WPARAM wParam, LPARAM lParam);
+    bool fireKeyUpEvent(UINT message, WPARAM wParam, LPARAM lParam,
+        const InspectorKeyboardSnapshot* keyboardSnapshot);
 
     bool isVisible() const { return m_isVisible; }
 
@@ -88,6 +92,8 @@ protected:
     static LRESULT CALLBACK PopupMenuWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
     static LRESULT CALLBACK mouseHookProc(int nCode, WPARAM wParam, LPARAM lParam);
     LRESULT wndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+    LRESULT wndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam,
+        const InspectorKeyboardSnapshot* keyboardSnapshot);
     void asynStartCreateWnd(blink::Timer<PopupMenuWin>*);
     
     DECLARE_TRACE();

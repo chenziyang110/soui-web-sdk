@@ -24,6 +24,7 @@
 #include "bindings/core/v8/ExceptionMessages.h"
 #include "bindings/core/v8/ExceptionState.h"
 #include "core/dom/AXObjectCache.h"
+#include "core/dom/Document.h"
 #include "core/dom/ExceptionCode.h"
 #include "core/events/Event.h"
 #include "core/frame/FrameHost.h"
@@ -33,6 +34,7 @@
 #include "core/loader/FrameLoadRequest.h"
 #include "core/loader/FrameLoader.h"
 #include "core/loader/FrameLoaderClient.h"
+#include "core/loader/InspectorResourcePolicy.h"
 #include "core/plugins/PluginView.h"
 #include "platform/weborigin/SecurityOrigin.h"
 
@@ -244,6 +246,14 @@ Widget* HTMLFrameOwnerElement::ownedWidget() const
 
 bool HTMLFrameOwnerElement::loadOrRedirectSubframe(const KURL& url, const AtomicString& frameName, bool lockBackForwardList)
 {
+    if (auto* policy = InspectorResourcePolicy::from(document().page())) {
+        ++policy->state()->unsupported;
+        InspectorResourceCallbackBorrow nativeCallout(policy->state());
+        // No child context is created; terminate this rejected load once.
+        dispatchEvent(Event::create(EventTypeNames::error));
+        return false;
+    }
+
     RefPtrWillBeRawPtr<LocalFrame> parentFrame = document().frame();
     if (contentFrame()) {
         contentFrame()->navigate(document(), url, lockBackForwardList, UserGestureStatus::None);
