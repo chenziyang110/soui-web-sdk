@@ -1,0 +1,78 @@
+{
+  "schema": "soui.published-060-installed-notice-field-diff/prepared-v1",
+  "executionApproved": false,
+  "preparedFromSmallTextIntakeOnly": true,
+  "fullPhysicalCompositionExecuted": false,
+  "mainNotice": {
+    "source": {
+      "path": "C:/sr06/THIRD_PARTY_NOTICES.md",
+      "bytes": 7723,
+      "sha256": "596c59983489409d09430531fea1d6b887636847a68e2dc9cdfe2aa39aded0bd"
+    },
+    "installed": [
+      {
+        "path": "C:/sr06/out/release-install-x64-release/share/SouiSdk/THIRD_PARTY_NOTICES.md",
+        "bytes": 7710,
+        "sha256": "fe634a71c15ed74660e385b0d9024269677a0ce23050c5702a444b3b5e41e2fc"
+      },
+      {
+        "path": "C:/sr06/out/release-install-x86-release/share/SouiSdk/THIRD_PARTY_NOTICES.md",
+        "bytes": 7710,
+        "sha256": "fe634a71c15ed74660e385b0d9024269677a0ce23050c5702a444b3b5e41e2fc"
+      }
+    ],
+    "rawEqual": false,
+    "exactChangedLinesAfterLfNormalization": [
+      {
+        "line": 9,
+        "source": "| SOUI 2.9.0.3 lineage | Sources, headers, x86/x64 DLLs and import libraries | [Original SOUI source license](third_party/licenses/soui/license.txt) and retained notices |",
+        "installed": "| SOUI 2.9.0.3 lineage | Sources, headers, x86/x64 DLLs and import libraries | [Original SOUI source license](licenses/soui/license.txt) and retained notices |"
+      },
+      {
+        "line": 22,
+        "source": "The preserved historical third_party/manifests/license-review.json binds only the exact 0.5.0 candidate x86/x64 Miniblink binaries, with status=unverified and releaseReady=false pending complete redistribution review. Its sdkVersion and scope are unchanged; it is not a preview.7 binary review or legal approval. The [kernel material index](third_party/licenses/KERNEL-NOTICES.md) locates original declarations for the twelve D52 source/build components and identifies archived preview evidence. These files are review materials, not approval of any new DLL. First-party licensing status is recorded in LICENSE.md; third-party terms apply independently.",
+        "installed": "The preserved historical third_party/manifests/license-review.json binds only the exact 0.5.0 candidate x86/x64 Miniblink binaries, with status=unverified and releaseReady=false pending complete redistribution review. Its sdkVersion and scope are unchanged; it is not a preview.7 binary review or legal approval. The [kernel material index](licenses/KERNEL-NOTICES.md) locates original declarations for the twelve D52 source/build components and identifies archived preview evidence. These files are review materials, not approval of any new DLL. First-party licensing status is recorded in LICENSE.md; third-party terms apply independently."
+      },
+      {
+        "line": 24,
+        "source": "The [frontend package material index](third_party/licenses/npm/README.md) retains original notices and package declarations from 68 exact runtime dependency versions in the five application lockfiles. Each registry archive was verified against its locked integrity before extraction. lodash-unified 1.0.3 declares MIT but omits a full license text in its archive; its declaration and that gap are retained explicitly. This material inventory does not approve complete binary redistribution.",
+        "installed": "The [frontend package material index](licenses/npm/README.md) retains original notices and package declarations from 68 exact runtime dependency versions in the five application lockfiles. Each registry archive was verified against its locked integrity before extraction. lodash-unified 1.0.3 declares MIT but omits a full license text in its archive; its declaration and that gap are retained explicitly. This material inventory does not approve complete binary redistribution."
+      },
+      {
+        "line": 26,
+        "source": "Source-tooling supplemental material for @babel/parser 7.29.9 is retained separately in [its material directory](third_party/licenses/npm/babel__parser-7.29.9/), including the original LICENSE, package declaration and exact origin/integrity record. This source-tooling supplement is not part of the historical 68-runtime-version inventory above. Its distributedMembershipReviewed, applicableTermsReviewed and legalApproval fields remain false; inclusion in a source package does not approve binary redistribution.",
+        "installed": "Source-tooling supplemental material for @babel/parser 7.29.9 is retained separately in [its material directory](licenses/npm/babel__parser-7.29.9/), including the original LICENSE, package declaration and exact origin/integrity record. This source-tooling supplement is not part of the historical 68-runtime-version inventory above. Its distributedMembershipReviewed, applicableTermsReviewed and legalApproval fields remain false; inclusion in a source package does not approve binary redistribution."
+      },
+      {
+        "line": 30,
+        "source": "[Supplemental kernel source materials](third_party/licenses/kernel-source/README.md) preserve previously omitted named license/copyright texts from the fixed source tree, with exact source-to-copy hashes. Build/test materials are explicitly included as a source inventory; final binary applicability and redistribution review remain separate.",
+        "installed": "[Supplemental kernel source materials](licenses/kernel-source/README.md) preserve previously omitted named license/copyright texts from the fixed source tree, with exact source-to-copy hashes. Build/test materials are explicitly included as a source inventory; final binary applicability and redistribution review remain separate."
+      }
+    ],
+    "sourceEol": "LF",
+    "installedEol": "CRLF",
+    "eolOriginClaimed": false
+  },
+  "webviewLicense": {
+    "source": {
+      "path": "C:/sr06/third_party/licenses/webview2-sdk-1.0.4258.31-LICENSE.txt",
+      "bytes": 1488,
+      "sha256": "324083bf015092054be9d5851dafa1b79cbfab3331ff983476d502839515d8bb"
+    },
+    "installed": [
+      {
+        "path": "C:/sr06/out/release-install-x64-release/share/SouiSdk/webview2/LICENSE.txt",
+        "bytes": 1487,
+        "sha256": "0af8f1b807512aae39c2ac1aa4d0cae65cabecb6fd554b8439a5162a0d6eca55"
+      },
+      {
+        "path": "C:/sr06/out/release-install-x86-release/share/SouiSdk/webview2/LICENSE.txt",
+        "bytes": 1487,
+        "sha256": "0af8f1b807512aae39c2ac1aa4d0cae65cabecb6fd554b8439a5162a0d6eca55"
+      }
+    ],
+    "rawEqual": false,
+    "preparedRelation": "Installed bytes equal source bytes excluding exactly one final 0A byte; no other trim or normalization permitted"
+  },
+  "legalApproval": false
+}

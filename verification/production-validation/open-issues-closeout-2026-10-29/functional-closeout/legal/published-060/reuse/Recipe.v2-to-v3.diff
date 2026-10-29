@@ -1,0 +1,20 @@
+--- Run-ReuseComposition.cjs (preserved v2)
++++ Run-ReuseComposition-v3.cjs (prepared only)
+@@ line 10 @@
+-const PLAN = `${BASE}/Plan.v2.prepared.json`;
++const PLAN = `${BASE}/Plan.v3.prepared.json`;
+@@ line 11 @@
+-const PLAN_SHA = 'f36644214df785062d6f936e5b5bb0a3200437dca423a5e9bfef7bcec8bc5bd4';
++const PLAN_SHA = '4ad52d1643061eede40a7f3ba51b61f1f590153df4017607ddcd5c0c3c4284da';
+@@ line 127 @@
+-  assert.equal(key(__filename), key(`${BASE}/Run-ReuseComposition.cjs`));
++  assert.equal(key(__filename), key(`${BASE}/Run-ReuseComposition-v3.cjs`));
+@@ line 131 @@
+-  plan = json({ path: PLAN, bytes: 49957, sha256: PLAN_SHA }, 'reviewed-plan');
++  plan = json({ path: PLAN, bytes: 49968, sha256: PLAN_SHA }, 'reviewed-plan');
+@@ line 132 @@
+-  assert.equal(plan.schema, 'soui.published-060-legal-delivery-reuse-plan/v2');
++  assert.equal(plan.schema, 'soui.published-060-legal-delivery-reuse-plan/v3');
+@@ line 133 @@
+-  assert.deepEqual(plan.roots, { sealed: 'C:/sr06', sourceSdk: 'C:/s06sdk' });
++  assert.deepEqual(plan.roots, { sealed: 'C:/sr06', sourceSdk: 'C:/s06sdk/payload' });

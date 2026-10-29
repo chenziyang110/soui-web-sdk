@@ -1,0 +1,136 @@
+--- F:/work/SOUI_WEB/out/open-issues-closeout-20261029/tray-build/Run-TrayBuild.cjs
++++ F:/work/SOUI_WEB/out/open-issues-closeout-20261029/tray-recovery-current/Run-TrayRecoveryBuild.cjs
+@@ -54,8 +54,8 @@
+   need(samePath(receipt.installedSdkPrefix,path.join(legacy,'out/release-install-'+architecture+'-release')),'Installed SDK prefix differs');
+   const compiler=path.win32.join(invocations.toolchain.MsvcRoot,'bin','Hostx64',architecture,'cl.exe');
+   const copiedSource=JSON.parse(fs.readFileSync(path.join(directory,'fixture-source-pins.json')));
+-  need(copiedSource.length===2,'Tray source fixture is incomplete');
+-  for(const copy of copiedSource){const original=pin(path.join(__dirname,'source',path.win32.basename(copy.path)));need(original.bytes===copy.bytes&&original.sha256===copy.sha256,'Copied tray source differs');}
++  need(copiedSource.length===3,'Tray recovery source fixture is incomplete');
++  for(const copy of copiedSource){const original=pin(path.join(__dirname,'source',path.win32.basename(copy.path)));need(original.bytes===copy.bytes&&original.sha256===copy.sha256,'Copied tray recovery source differs');}
+   const expectedMembers=[];const phasePins=[];
+   for(const phase of ['configure','build']){
+     const folder=path.join(directory,phase),children=fs.readdirSync(folder);
+@@ -96,14 +96,22 @@
+   const selected=outputs.filter(file=>/\.(?:obj|tlog|vcxproj)$/i.test(file.path)||samePath(file.path,receipt.cache)||samePath(file.path,receipt.compilerDeclaration)||samePath(file.path,receipt.executable));
+   const copies=selected.map((source,index)=>{const destination=path.join(observationDir,String(index).padStart(3,'0')+'-'+path.win32.basename(source.path));fs.copyFileSync(source.path,destination,fs.constants.COPYFILE_EXCL);const copied=pin(destination);need(copied.sha256===source.sha256&&copied.bytes===source.bytes,'Copied observation differs');return {source,copied};});
+   save(directory,'output-pins.json',outputs);save(directory,'observation-copies.json',copies);
+-  const verdict={schema:'soui.tray-consumer-build-only-case/v1',architecture,root:capture.ready,terminal:capture.result.terminal,
++  const verdict={schema:'soui.tray-recovery-consumer-build-only-case/v1',architecture,root:capture.ready,terminal:capture.result.terminal,
+     genericSupervisionPassed:true,wholeJobNaturallyClosed:true,helperPhases:expectedMembers,phasePins,toolPins:before,
+     compiler,selectedWindowsSdk:'10.0.19041.0',compiledExecutable:pin(receipt.executable),executableExecuted:false,
+-    scope:'independent current public tray consumer configure/build only',installedSdkPrefix:receipt.installedSdkPrefix,oldFailuresReclassified:false,productionQualified:false,releaseReady:false};
++    scope:'independent current public tray recovery consumer configure/build only',installedSdkPrefix:receipt.installedSdkPrefix,oldFailuresReclassified:false,productionQualified:false,releaseReady:false};
+   save(directory,'case-verdict.json',verdict);return verdict;
+ }
+ async function main(){
+-  need(process.platform==='win32'&&process.argv.length===2,'Windows no-argument invocation only');
++  need(process.platform==='win32'&&process.argv.length===3&&process.argv[2]==='ROOT_REVIEWED_TRAY_RECOVERY_BUILD_V1','Explicit Root-reviewed Windows invocation only');
++  const expectedSourceFreeze='a46936a09f0e1ec53816c084ac1b290d59cc91c256c35e75273607dc7bfa70a6'; // Exact author-frozen sources and unchanged compiler helpers.
++  need(typeof expectedSourceFreeze==='string'&&/^[a-f0-9]{64}$/.test(expectedSourceFreeze),'Source author freeze is still pending; no compiler may start');
++  const sourceFreezeFile=path.join(__dirname,'SourceInputs.frozen.json');need(pin(sourceFreezeFile).sha256===expectedSourceFreeze,'Reviewed source freeze changed');
++  const sourceFreeze=JSON.parse(fs.readFileSync(sourceFreezeFile,'utf8'));
++  need(sourceFreeze.schema==='soui.tray-recovery-three-source-freeze/v1'&&sourceFreeze.files.length===3,'Exact source freeze required');
++  need(isDeepStrictEqual(sourceFreeze.files.map(r=>r.name).sort(),['CMakeLists.txt','README.md','main.cpp']),'Source roster differs');
++  for(const row of sourceFreeze.files){need(samePath(row.original.path,path.join(repository,'tests/tray-recovery-consumer',row.name))&&samePath(row.copy.path,path.join(__dirname,'source',row.name)),'Frozen source path differs');const original=pin(row.original.path),copy=pin(row.copy.path);need(original.bytes===row.bytes&&original.sha256===row.sha256&&copy.bytes===row.bytes&&copy.sha256===row.sha256,'Source author freeze changed');}
++  for(const expected of sourceFreeze.helperPins){const actual=pin(expected.path);need(actual.bytes===expected.bytes&&actual.sha256===expected.sha256,'Reviewed unchanged build helper changed');}
+   need(pin(runner).sha256===expectedRunner&&pin(preparation).sha256===expectedPreparation,'Original sealed runner/preparation changed');
+   const readerPath=path.join(legacy,'tools/internal/measurement-validation.cjs');need(pin(readerPath).sha256===expectedLegacyReader,'Original preparation reader changed');
+   const prepared=require(readerPath).preparedAt(legacy,'x64');
+@@ -114,11 +122,11 @@
+     'tools/internal/Find-Toolchain.ps1','tools/internal/CMake-Configure.ps1','cmake/SouiWindowsSdk.cmake',
+     'tools/internal/standard-build.cjs','tools/internal/owned-process.cjs','tools/internal/owned-tail-evidence.cjs',
+     'tools/internal/compiler-tail-policy.cjs','tools/internal/sdk-version.cjs','tools/internal/build-evidence.cjs','tools/internal/delivery-identity.cjs'];
+-  const files=[__filename,path.join(__dirname,'Invoke-TrayBuild.ps1'),path.join(__dirname,'source/CMakeLists.txt'),path.join(__dirname,'source/main.cpp'),
++  const files=[__filename,path.join(__dirname,'Invoke-TrayRecoveryBuild.ps1'),sourceFreezeFile,path.join(__dirname,'BuildPreparation.prepared.json'),path.join(__dirname,'source/CMakeLists.txt'),path.join(__dirname,'source/main.cpp'),path.join(__dirname,'source/README.md'),
+     process.execPath,powershell,runner,preparation,readerPath,path.join(legacy,'tools/internal/delivery-identity.cjs'),path.join(legacy,'tools/internal/owned-process.cjs'),
+     ...codeNames.map(name=>path.join(repository,name)),...prepared.report.source.files.map(file=>path.join(legacy,file.path))];
+-  const installedRoots=['x64','x86'].map(a=>path.join(legacy,'out/release-install-'+a+'-release')); const installedFileSets=installedRoots.map(root=>({root,files:walk(root)})); for(const root of installedRoots)files.push(...walk(root)); files.push(...['CMakeLists.txt','main.cpp'].map(n=>path.join(repository,'tests/tray-consumer',n))); const sourcePins=[...new Set(files.map(file=>path.resolve(file)))].map(pin),freeze=path.join(directory,'inputs-before.json');
+-  save(directory,'inputs-before.json',{schema:'soui.tray-consumer-build-only-inputs/v1',repository,runnerOrigin:legacy,
++  const installedRoots=['x64','x86'].map(a=>path.join(legacy,'out/release-install-'+a+'-release')); const installedFileSets=installedRoots.map(root=>({root,files:walk(root)})); for(const root of installedRoots)files.push(...walk(root)); files.push(...['CMakeLists.txt','main.cpp','README.md'].map(n=>path.join(repository,'tests/tray-recovery-consumer',n))); const sourcePins=[...new Set(files.map(file=>path.resolve(file)))].map(pin),freeze=path.join(directory,'inputs-before.json');
++  save(directory,'inputs-before.json',{schema:'soui.tray-recovery-consumer-build-only-inputs/v1',repository,runnerOrigin:legacy,
+     originalPreparedAt:prepared.report.preparedAt,originalPreparationGenericSupervisionPassed:null,sourcePins,
+     timeoutMs:120000,drainMs:2000,architectures:['x64','x86'],oldFailuresReclassified:false});
+   fs.copyFileSync(preparation,path.join(directory,'original-preparation.json'),fs.constants.COPYFILE_EXCL);
+@@ -127,9 +135,9 @@
+     const standard=require(path.join(repository,'tools/internal/standard-build.cjs'));
+     for(const architecture of ['x64','x86']){
+       unchanged(sourcePins);const folder=path.join(directory,architecture);fs.mkdirSync(folder);
+-      const shortWorkspace='C:\\sci8-'+stamp.replace(/-/g,'').slice(0,8)+'-'+architecture;
++      const shortWorkspace='C:\\sctr-'+stamp.replace(/-/g,'').slice(0,8)+'-'+architecture;
+       need(!fs.existsSync(shortWorkspace),'Short native workspace already exists');
+-      const args=['-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',path.join(__dirname,'Invoke-TrayBuild.ps1'),
++      const args=['-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',path.join(__dirname,'Invoke-TrayRecoveryBuild.ps1'),
+         '-Architecture',architecture,'-CaseDirectory',folder,'-ShortWorkspace',shortWorkspace,'-FrozenInputs',freeze];
+       save(folder,'request.json',{executable:powershell,args,cwd:repository,runner,timeoutMs:120000,drainMs:2000,shortWorkspace});
+       const env={...process.env};for(const name of Object.keys(env))if(name.toLowerCase()==='psmodulepath')delete env[name];
+@@ -142,8 +150,8 @@
+     const after=sourcePins.map(expected=>{try{return pin(expected.path);}catch(error){return {path:expected.path,error:error.message};}});
+     save(directory,'inputs-after.json',{sourcePins:after});
+     if(!isDeepStrictEqual(sourcePins,after)){failure??={message:'Frozen input bytes or metadata changed during the short smoke.'};}
+-    save(directory,'summary.json',{schema:'soui.tray-consumer-build-only/v1',passed:failure===null&&verdicts.length===2,
+-      scope:'independent public tray consumer compile x64 then x86 only',originalRunnerPreparationGenericSupervisionPassed:null,
++    save(directory,'summary.json',{schema:'soui.tray-recovery-consumer-build-only/v1',passed:failure===null&&verdicts.length===2,
++      scope:'independent public tray recovery consumer compile x64 then x86 only; no SDK/kernel/Web rebuild',originalRunnerPreparationGenericSupervisionPassed:null,
+       verdicts,failure,productExecuted:false,executableExecuted:false,oldFailuresReclassified:false,
+       currentFullBuildEntriesExecuted:false,productionQualified:false,releaseReady:false});
+   }
+--- F:/work/SOUI_WEB/out/open-issues-closeout-20261029/tray-build/Invoke-TrayBuild.ps1
++++ F:/work/SOUI_WEB/out/open-issues-closeout-20261029/tray-recovery-current/Invoke-TrayRecoveryBuild.ps1
+@@ -7,7 +7,7 @@
+ $repository='C:\sc07'
+ $phase=$null;$failure=$null;$cleanupFailures=[Collections.Generic.List[string]]::new()
+ $previous=Get-Item -LiteralPath Env:MSBUILDDISABLENODEREUSE -ErrorAction SilentlyContinue
+-$receipt=[ordered]@{schema='soui.tray-consumer-build-only-root/v1';architecture=$Architecture;rootPid=$PID;
++$receipt=[ordered]@{schema='soui.tray-recovery-consumer-build-only-root/v1';architecture=$Architecture;rootPid=$PID;
+   beganUtc=[DateTime]::UtcNow.ToString('o');completed=$false;productExecuted=$false;executableExecuted=$false;
+   originalTimeoutMs=120000;originalDrainMs=2000;wholeJobProofRequired=$true;oldFailureReclassified=$false}
+ function Pin-File([string]$Path){
+@@ -47,24 +47,24 @@
+   $toolPins=@($toolPaths|ForEach-Object{Pin-File $_})
+   Save-New 'tool-pins-before.json' $toolPins
+   $workspace=[IO.Path]::GetFullPath($ShortWorkspace)
+-  if($workspace-cnotmatch('^C:\\sci8-[a-f0-9]{8}-'+$Architecture+'$')-or(Test-Path -LiteralPath $workspace)){
++  if($workspace-cnotmatch('^C:\\sctr-[a-f0-9]{8}-'+$Architecture+'$')-or(Test-Path -LiteralPath $workspace)){
+     throw 'The explicitly owned short workspace must be fresh and match this architecture.'
+   }
+   [void](New-Item -ItemType Directory -Path $workspace)
+   $receipt.workspace=$workspace
+-  [IO.File]::WriteAllText((Join-Path $workspace 'ownership.json'),(@{schema='soui.independent-tray-workspace/v1';
++  [IO.File]::WriteAllText((Join-Path $workspace 'ownership.json'),(@{schema='soui.independent-tray-recovery-workspace/v1';
+     caseDirectory=$CaseDirectory;architecture=$Architecture;rootPid=$PID;createdUtc=[DateTime]::UtcNow.ToString('o')}|ConvertTo-Json),[Text.UTF8Encoding]::new($false))
+   $source=Join-Path $workspace 'source';$build=Join-Path $workspace ('out/'+$Architecture)
+   [void](New-Item -ItemType Directory -Path $source -Force)
+   [void](New-Item -ItemType Directory -Path $build -Force)
+-  foreach($name in @('CMakeLists.txt','main.cpp')){Copy-Item -LiteralPath (Join-Path $PSScriptRoot ('source/'+$name)) -Destination (Join-Path $source $name)}
+-  Save-New 'fixture-source-pins.json' @(@('CMakeLists.txt','main.cpp')|ForEach-Object{Pin-File (Join-Path $source $_)})
++  foreach($name in @('CMakeLists.txt','main.cpp','README.md')){Copy-Item -LiteralPath (Join-Path $PSScriptRoot ('source/'+$name)) -Destination (Join-Path $source $name)}
++  Save-New 'fixture-source-pins.json' @(@('CMakeLists.txt','main.cpp','README.md')|ForEach-Object{Pin-File (Join-Path $source $_)})
+   $configure=@(Get-SouiCMakeConfigureArguments -CMake $cmake -WorkspaceRoot $workspace -SourceDirectory $source `
+     -BuildDirectory $build -Architecture $Architecture -FreshConfigure -NativeToolchain MSVC143)
+   $prefix='C:\sr06\out\release-install-'+$Architecture+'-release'
+   $receipt.installedSdkPrefix=$prefix
+   $configure+=('-DCMAKE_GENERATOR_INSTANCE:PATH='+$toolchain.Root),('-DSouiSdk_DIR:PATH='+(Join-Path $prefix 'lib/cmake/SouiSdk'))
+-  $buildArguments=@('--build',$build,'--config','Release','--target','SouiTrayConsumer','--parallel','2','--','/nr:false')
++  $buildArguments=@('--build',$build,'--config','Release','--target','SouiTrayRecoveryConsumer','--parallel','2','--','/nr:false')
+   Save-New 'invocations.json' @{toolchain=$toolchain;cmake=$cmake;configure=$configure;build=$buildArguments;
+     environment=@{MSBUILDDISABLENODEREUSE=$env:MSBUILDDISABLENODEREUSE};compilerHelperSuppressionConfigured=$false}
+   foreach($phaseName in @('configure','build')){
+@@ -74,7 +74,7 @@
+     if($phaseName-eq'configure'){& $cmake @configure *> (Join-Path $CaseDirectory 'configure.log')}
+     else{& $cmake @buildArguments *> (Join-Path $CaseDirectory 'build.log')}
+     $nativeExit=$LASTEXITCODE
+-    Complete-SouiMsvcCompilerPhase $phase $nativeExit ('Independent tray CMake '+$phaseName+' failed')
++    Complete-SouiMsvcCompilerPhase $phase $nativeExit ('Independent tray recovery CMake '+$phaseName+' failed')
+   }
+   $cache=Join-Path $build 'CMakeCache.txt'
+   $cacheLines=Get-Content -LiteralPath $cache
+@@ -84,7 +84,7 @@
+     if($line.Count-ne1){throw 'Ambiguous CMake cache version.'};($line[0]-split'=',2)[1]
+   }
+   $compilerDeclaration=Join-Path $build ('CMakeFiles/'+($cmakeVersion-join'.')+'/CMakeCXXCompiler.cmake')
+-  $exe=Join-Path $build 'bin/Release/SouiTrayConsumer.exe'
++  $exe=Join-Path $build 'bin/Release/SouiTrayRecoveryConsumer.exe'
+   Save-New 'compiled-output-pins.json' @((Pin-File $exe),(Pin-File $cache),(Pin-File $compilerDeclaration))
+   $receipt.workspace=$workspace;$receipt.buildDirectory=$build;$receipt.compilerDeclaration=$compilerDeclaration;$receipt.cache=$cache;$receipt.executable=$exe
+   $receipt.completed=$true

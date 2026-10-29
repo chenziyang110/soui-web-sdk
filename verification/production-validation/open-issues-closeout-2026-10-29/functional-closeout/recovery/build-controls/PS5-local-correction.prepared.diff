@@ -1,0 +1,27 @@
+--- F:/work/SOUI_WEB/out/open-issues-closeout-20261029/tray-recovery-current/prepared-r1-unexecuted/Invoke-TrayRecoveryBuild.ps1
++++ F:/work/SOUI_WEB/out/open-issues-closeout-20261029/tray-recovery-current/Invoke-TrayRecoveryBuild.ps1
+@@ -70,11 +70,21 @@
+   foreach($phaseName in @('configure','build')){
+     $phaseEvidence=Join-Path $CaseDirectory $phaseName
+     [void](New-Item -ItemType Directory -Path $phaseEvidence)
+     $phase=Start-SouiMsvcCompilerPhase -Toolchain $toolchain -Architecture $Architecture -EvidenceRoot $phaseEvidence -Phase $phaseName
+-    if($phaseName-eq'configure'){& $cmake @configure *> (Join-Path $CaseDirectory 'configure.log')}
+-    else{& $cmake @buildArguments *> (Join-Path $CaseDirectory 'build.log')}
+-    $nativeExit=$LASTEXITCODE
++    # Windows PowerShell 5 must preserve native stderr warnings without turning
++    # a successful CMake invocation into a PowerShell terminating error.
++    # The actual native status still goes through the unchanged lifecycle guard.
++    $nativePreference=$ErrorActionPreference
++    $nativeExit=$null
++    try{
++      $ErrorActionPreference='Continue'
++      $global:LASTEXITCODE=$null
++      if($phaseName-eq'configure'){& $cmake @configure *> (Join-Path $CaseDirectory 'configure.log')}
++      else{& $cmake @buildArguments *> (Join-Path $CaseDirectory 'build.log')}
++      $nativeExit=$LASTEXITCODE
++    }finally{$ErrorActionPreference=$nativePreference}
++    if($null-eq$nativeExit){throw 'CMake invocation did not produce a native exit code.'}
+     Complete-SouiMsvcCompilerPhase $phase $nativeExit ('Independent tray recovery CMake '+$phaseName+' failed')
+   }
+   $cache=Join-Path $build 'CMakeCache.txt'
+   $cacheLines=Get-Content -LiteralPath $cache

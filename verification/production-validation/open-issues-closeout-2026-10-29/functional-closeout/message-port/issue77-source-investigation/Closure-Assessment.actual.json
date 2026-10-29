@@ -1,0 +1,121 @@
+{
+  "schema": "soui.independent-issue77-existing-closure-criteria-assessment/v1",
+  "createdUtc": "2026-10-29T13:01:29.452141+00:00",
+  "reviewer": "paired_review_supported",
+  "scope": "Read-only original issue/body/comments, ADR, persistent fixture contract and unchanged readers/controllers. No new test, producer, VM, Git or remote mutation.",
+  "issueSource": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/github-current/issue77.json",
+    "bytes": 2060,
+    "sha256": "3de626d9f267a9b2136b89755dabda88eb50fa7fd1323425a4ce2b24b0986a44"
+  },
+  "commentsSource": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/github-current/issue77-comments.json",
+    "bytes": 7706,
+    "sha256": "3d2ca7ad5fb9fa2512cb2659e3fecd224f6e4f61a03a3e89d27fb75509afc1f1"
+  },
+  "decision": {
+    "existingCriteriaSatisfied": false,
+    "mayCloseAsOriginalFourArmAcceptancePassed": false,
+    "wouldFourArmsWithExplicitBaselineNegativeResultsSatisfyOriginalCriteria": false,
+    "reason": "The original persisted contract requires each original native/lifecycle run to pass unchanged validation before supplementary32-case behavior. Strict natural Job closure here explicitly includes native/supervisor/root exit0, not merely activeProcesses0. Current baseline x64 native1 and6steps6samples fails that contract. An x86 negative control would complete diagnostic coverage but could not convert these failed criteria into acceptance.",
+    "schemaFixItselfComplete": true,
+    "sourceBugAndQualificationAreSeparateFacts": true,
+    "minimumRecommendation": "Keep #77 acceptance qualification open, report schema fix and candidate x64/x86 passes, preserve baseline failure and link the kernel liveness defect to #96 or its explicit follow-up. Do not execute a missing arm only to chase closure when the existing x64 control already makes all-four-pass unattainable.",
+    "alternativeRequiresExplicitMaintainerScopeDecision": "Maintainer may explicitly resolve #77 as schema-only with the unresolved baseline acceptance obligation superseded/transferred to a named kernel-maintenance issue. Such a close must say the prior acceptance criterion was not met and not claim four-arm pass. This is a scope change, not an inference that existing criteria allowed negative baseline.",
+    "testsPreparedOrExecutedForThisAssessment": false
+  },
+  "originalText": {
+    "issueBody": "The real MessagePort browser acceptance fixture fails before browser creation on both x64 and x86 with both baseline and candidate kernels: `Cannot register real browser observation action`.\n\nThe `acceptance.message-port.report` contract declares `caseId` and `status` as bounded-enum strings but omits the required `maxLength`. The existing SDK schema validator requires a maximum for every string, including strings with enums, and correctly rejects the fixture.\n\nAdd the missing limits based on the longest admitted enum values (24 for `worker-cooperative-close`, 11 for `unavailable`). Preserve the SDK validator, authorization, actual browser assertions, process cleanup predicates, and historical failed runs. Rebuild the real acceptance consumer for both architectures and rerun paired browser behavior checks before qualifying the fixture.\n",
+    "comments": [
+      {
+        "id": 6211422385,
+        "url": "https://github.com/chenziyang110/soui-web-sdk/issues/77#issuecomment-6211422385",
+        "body": "2026-10-16 分流结论：schema 修复已随 #97 进入 main，真实双架构配对浏览器验收仍需证据，保持开放。\n\n已核对 [当前真实 MessagePort 夹具](https://github.com/chenziyang110/soui-web-sdk/blob/406eef9733736f6d610e8cba64b25ad579224d60/tests/message-port-app/main.cpp)：caseId 的 maxLength=24，status 的 maxLength=11，原 enum 和授权合同保留。该代码事实可以确认缺失上限已补上，但不能替代实际浏览器运行。\n\n后续关闭需把基线/候选两臂分别绑定到 x86/x64 的同一真实消费者、Web/CRT/安装 SDK，归档原始报错与新的浏览器行为、关闭及进程组结果。#97 公布的应用启动和 208 项原生测试没有单独声明这组 MessagePort A/B 已完成，不将其算作本 Issue 通过。"
+      },
+      {
+        "id": 6212119981,
+        "url": "https://github.com/chenziyang110/soui-web-sdk/issues/77#issuecomment-6212119981",
+        "body": "2026-10-16 继续核验：实际 prepare 的文件系统回归共 13 项通过，覆盖默认 ordinary、显式 message-port 的完整 Worker 输入复制、缺目录不回退、非法选择及链接拒绝；原 SDK validator 和权限合同未改动。当前 caseId/status 上限仍为 24/11。\n\n这只补充持久入口的准备行为证据，不是浏览器四臂通过。ADR-0065 / tests/message-port-app/README.md 明确：历史私有 fixture 的四臂结果不能继承为当前持久目录。仍需在实际准备后冻结新 x64/x86 baseline/candidate 输入，复验每臂 4 文档 / 32 行为案例 / 40 sidecar 行及严格自有进程组关闭。因此继续开放，不用普通应用启动或 208 项原生回归替代。"
+      },
+      {
+        "id": 6212864478,
+        "url": "https://github.com/chenziyang110/soui-web-sdk/issues/77#issuecomment-6212864478",
+        "body": "PR #101 已完成当前 0.5.1-preview.1 的真实独立 MessagePort 消费者双架构 Release 准备。x64 套件 bd7afa33-ea0d-4e55-b482-d2b01f64ee19、x86 套件 5c02d217-f04f-4f32-9794-110e7fb3f734；源码身份均为 652a66973f09c5a90a5e06465944dd7ea8d3a3d9463411db5b07d045cb843973。构建全进程自然闭合，原始日志和载荷身份已归档。\n\n这只是 PrepareOnly，尚未执行新的四臂浏览器行为检查。按维护者要求，已安排 Luna 会话在外部 QEMU 空闲后继续；原授权、行为断言和进程闭合条件不变。本 Issue 暂不关闭。"
+      }
+    ],
+    "narrowBodyReading": "The body does not literally write all native exits must equal0. It explicitly preserves process cleanup predicates and requires rebuilt dual-architecture paired checks before qualification. The durable fixture README, ADR and controllers define those preserved predicates precisely.",
+    "readmeStrictExcerpt": "四臂使用每架构同一实际 EXE、Web、CRT 和安装 SDK；唯一 runtime 差异是 node.dll。新 candidate suite 必须调用持久的 tests/acceptance/message-port-stage-candidate.cjs；它向共享 runner.prepare 明确传入第五参数 message-port，再按原 stage 验证创建，不在已有 build 身份中替换 DLL。A/B 控制器先原 runner 验证 3 reload cycles、0 warmup、settle500、timeout20000，9 lifecycle steps /7 samples、实际 root PID/string FILETIME 和整个 Job 自然闭合，再用 message-port-report-reader 验证每臂4文档/32 browser cases/40 sidecar rows。原 native processTimeout214500 / Owned394500 / drain2000 与 outer strict 0/0 保持。普通软件资源套件不能使用这个 observer Web 来冒充原负载。",
+    "adrVerificationExcerpt": "新持久入口仍需每架构实际准备/链接/资源部署及四臂 strict Owned 验证：3 reload cycles、0 warmup、settle500、timeout20000，原9步骤/7样本以及每臂4文档/32行为案例/40 sidecar 行，原 processTimeout214500、Owned394500、drain2000。历史私有四臂已完成的有限范围不能继承为新路径通过。Worker native join、debugger wait/kill、polyfill scheduler、完整内核工具链、资源增长、目标系统和发布资格仍未验证。",
+    "originalControllerNativeExcerpt": "    insist(owned?.passed===true&&owned.exitCode===0&&owned.supervisorExitCode===0&&\n      !owned.signal&&!owned.spawnError&&!owned.reportError&&!owned.stopRequested&&!owned.fallbackUsed&&\n      owned.closureConfirmed===true&&terminal?.reason==='completed'&&terminal.rootExited===true&&\n      terminal.rootExitCode===0&&terminal.activeBeforeCleanup===0&&terminal.activeProcesses===0&&\n      terminal.terminatedOwnedJob===false&&terminal.limitTerminatedProcesses===0&&\n      terminal.closureConfirmed===true&&terminal.passed===true,'Whole Native Job was not naturally closed');\n",
+    "originalControllerLifecycleExcerpt": "    insist(lifecycle.completedSteps===9&&lifecycle.measuredCycles===3&&lifecycle.samples.length===7,'Original finite lifecycle differs');"
+  },
+  "sourcePins": [
+    {
+      "path": "C:/sr06/docs/adr/0065-independent-message-port-behavior-fixture.md",
+      "bytes": 3664,
+      "sha256": "9ec8c77f268d03ad49f41703253fc67c1b4bbf582090edb5a229191a02da0ebb"
+    },
+    {
+      "path": "C:/sr06/tests/message-port-app/README.md",
+      "bytes": 4126,
+      "sha256": "2783fab7dd27da800cc5a088217bdbbbd20737a0e18517ebd8ff2fa6563c8c97"
+    },
+    {
+      "path": "F:/work/soui-issue96/tests/message-port-app/README.md",
+      "bytes": 4126,
+      "sha256": "2783fab7dd27da800cc5a088217bdbbbd20737a0e18517ebd8ff2fa6563c8c97"
+    },
+    {
+      "path": "F:/work/soui-issue96/tests/acceptance/message-port-ab-controller.cjs",
+      "bytes": 9694,
+      "sha256": "98517dc0d6a1bbb32e03d20cf1c9c99cfa470c680b8edba6fb6ebfe308ac9b01"
+    },
+    {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port-baseline-current/payload/Guest-Current.cjs",
+      "bytes": 10711,
+      "sha256": "b3fffc2bb1dd7cd08afe42055774c7bb2003cea081cfcfe432cf982824fb48b9"
+    },
+    {
+      "path": "C:/sr06/tests/message-port-app/main.cpp",
+      "bytes": 38377,
+      "sha256": "2795cdb2ae28ede1343c2150c123f5552a302a387c0b597805af70731ab2feef"
+    }
+  ],
+  "currentEvidence": {
+    "currentBaselineAnalysis": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-analysis/mp-b1-run/Analysis.actual.json",
+      "bytes": 6676,
+      "sha256": "fd6dd63d66fd6f611ba63d966bfcdaf524691339c9360b1c3e93e3dfdec7396e"
+    },
+    "currentCandidateSummaryReused": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/mp-a2-run/raw/Summary.actual.json",
+      "bytes": 15100,
+      "sha256": "fcde58053b4b09473e5960cfc08a118aa59fb0b5ad52ca241186dc02309ef90e"
+    },
+    "nativeExitCode": 1,
+    "supervisorExitCode": 1,
+    "wholeJobClosed": true,
+    "activeProcesses": 0,
+    "forcedTermination": false,
+    "completedSteps": 6,
+    "samples": 6,
+    "browserDocuments": 4,
+    "browserCases": 32,
+    "expectedCompletedSteps": 9,
+    "expectedSamples": 7,
+    "expectedNaturalExitCode": 0,
+    "candidateX64PassReused": true,
+    "candidateX86PassReused": true,
+    "baselineX64FailurePreserved": true,
+    "baselineX86Unrun": true,
+    "fourArmComplete": false,
+    "fourArmPassed": false
+  },
+  "limits": {
+    "noCriterionRewriting": true,
+    "noReferenceBaselinePatch": true,
+    "noFenceOrDeadlineChange": true,
+    "noSourceFixProposedToForceControlPass": true,
+    "noCurrentQualificationOrProductionClaim": true
+  }
+}

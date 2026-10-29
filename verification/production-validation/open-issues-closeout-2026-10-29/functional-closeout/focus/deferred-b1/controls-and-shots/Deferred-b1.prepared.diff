@@ -1,0 +1,217 @@
+--- F:/work/SOUI_WEB/out/open-issues-closeout-20261029/focus-control-current/NativeFocusControl.cs
++++ F:/work/SOUI_WEB/out/open-issues-closeout-20261029/tray-focus-deferred-current/payload/NativeFocusControl.cs
+@@ -1,5 +1,5 @@
+ // Output-only preparation. Compile and execute only in the explicitly named task VM.
++// One real tray interaction; only its one focus call is deferred past callback return.
+-// One real tray context-menu interaction, one ordinary foreground attempt, one focus call.
+ using System;
+ using System.Collections.Generic;
+ using System.Diagnostics;
+@@ -12,6 +12,7 @@
+ namespace SouiIssueFocusControl {
+   public sealed class Probe {
+     private const uint Callback = 0x8000 + 19, IconId = 19, TimerId = 1;
++    private const uint CompleteFocus = 0x8000 + 20;
+     private const uint DeadlineMs = 60000, Style = 0x00CF0000;
+     private const string WindowClass = "SouiIndependentNativeFocusControl";
+     private readonly Stopwatch clock = Stopwatch.StartNew();
+@@ -25,6 +26,10 @@
+     private bool invalid, deadlineReached, cleanupConfirmed = true;
+     private int exitCode = 2, foregroundCalls, focusCalls, sequence;
+     private uint taskbarMessage;
++    private int contextCallbackDepth, nullDispatches, completionDispatches;
++    private long dequeueOrder, nullDispatchOrder;
++    private bool callbackReturnBoundaryReached, completionPosted, completionPending, callbackUnwindConfirmed;
++    private bool queuedDispatch; private uint queuedMessage; private IntPtr queuedWindow;
+ 
+     private Dictionary<string, object> Fields(params object[] pairs) {
+       var value = new Dictionary<string, object>();
+@@ -180,20 +185,66 @@
+       Emit("menu.returned", Fields("command", command, "lastErrorAfterClear", menuError,
+         "noSelection", command == 0, "escapeEstablishedByController", false, "snapshot", Snapshot()));
+       Native.SetLastError(0); postNullSucceeded = Native.PostMessageW(owner, 0, UIntPtr.Zero, IntPtr.Zero); int postError = Marshal.GetLastWin32Error();
++      Emit("menu.post-null", Fields("accepted", postNullSucceeded, "lastErrorAfterClear", postError,
++        "contextCallbackDepth", contextCallbackDepth, "inSendMessageEx", Native.InSendMessageEx(IntPtr.Zero)));
+-      Emit("menu.post-null", Fields("accepted", postNullSucceeded, "lastErrorAfterClear", postError));
+       bool destroyed = DestroyPopup();
+       if (invalid || deadlineReached || clock.ElapsedMilliseconds >= DeadlineMs) { Invalidate("Deadline/abort occurred before focus; no focus call made."); return; }
+       if (command != 0 || menuError != 0 || !postNullSucceeded || !destroyed) { Invalidate("Expected unselected/error-free menu return and exact finish/cleanup were not confirmed."); return; }
++      completionPending = true;
++      Native.SetLastError(0); completionPosted = Native.PostMessageW(owner, CompleteFocus, UIntPtr.Zero, IntPtr.Zero); int completionError = Marshal.GetLastWin32Error();
++      Emit("focus.completion.posted", Fields("accepted", completionPosted, "lastErrorAfterClear", completionError,
++        "message", CompleteFocus, "contextCallbackDepth", contextCallbackDepth,
++        "inSendMessageEx", Native.InSendMessageEx(IntPtr.Zero)));
++      if (!completionPosted) Invalidate("The single deferred focus completion could not be posted.");
++    }
++    private void CompleteDeferredFocus(IntPtr window, UIntPtr first, IntPtr second) {
++      ++completionDispatches;
++      uint sent = Native.InSendMessageEx(IntPtr.Zero);
++      Emit("focus.completion.dispatched", Fields("dispatches", completionDispatches, "dequeueOrder", dequeueOrder,
++        "nullDispatches", nullDispatches, "nullDispatchOrder", nullDispatchOrder,
++        "contextCallbackDepth", contextCallbackDepth, "callbackReturnBoundaryReached", callbackReturnBoundaryReached,
++        "queuedDispatch", queuedDispatch, "inSendMessageEx", sent));
++      if (!completionPosted || !completionPending || completionDispatches != 1 || focusCalled || tracking ||
++          window != owner || first != UIntPtr.Zero || second != IntPtr.Zero || !queuedDispatch ||
++          queuedWindow != owner || queuedMessage != CompleteFocus || sent != 0 || contextCallbackDepth != 0 ||
++          !callbackReturnBoundaryReached || nullDispatches != 1 || nullDispatchOrder <= 0 || nullDispatchOrder >= dequeueOrder) {
++        Invalidate("Deferred completion did not follow one queued WM_NULL after the original tray callback returned."); return;
++      }
++      completionPending = false;
++      if (invalid || deadlineReached || clock.ElapsedMilliseconds >= DeadlineMs) { Invalidate("Original deadline/abort occurred before deferred focus; no focus call made."); return; }
++      uint process; uint thread = Native.GetWindowThreadProcessId(owner, out process);
++      if (!added || !versionSet || !postNullSucceeded || !menuDestroyed || menu != IntPtr.Zero ||
++          !Native.IsWindow(owner) || Native.GetAncestor(owner, 2) != owner || Native.GetParent(owner) != IntPtr.Zero ||
++          thread != Native.GetCurrentThreadId() || process != Native.GetCurrentProcessId() || Native.GetForegroundWindow() != owner) {
++        Invalidate("Original owner/foreground/menu/registration preconditions changed before deferred focus; no retry permitted."); return;
++      }
++      callbackUnwindConfirmed = true;
++      Emit("focus.callback-unwind.confirmed", Fields("dequeueOrder", dequeueOrder, "nullDispatchOrder", nullDispatchOrder,
++        "contextCallbackDepth", contextCallbackDepth, "inSendMessageEx", sent));
++      Emit("focus.before", Fields("snapshot", Snapshot(), "inSendMessageEx", Native.InSendMessageEx(IntPtr.Zero)));
+-      Emit("focus.before", Fields("snapshot", Snapshot()));
+       if (focusCalled) throw new InvalidOperationException("Focus call duplication refused.");
+       focusCalled = true; ++focusCalls;
+       focusSucceeded = Notify(3, "tray.focus", Data());
++      Emit("focus.after", Fields("snapshot", Snapshot(), "accepted", focusSucceeded, "calls", focusCalls,
++        "inSendMessageEx", Native.InSendMessageEx(IntPtr.Zero)));
+-      Emit("focus.after", Fields("snapshot", Snapshot(), "accepted", focusSucceeded, "calls", focusCalls));
+       exitCode = focusSucceeded ? 0 : 1; // FALSE remains failure, including error=0.
+       Native.PostQuitMessage(exitCode);
+     }
+     private IntPtr Dispatch(IntPtr window, uint message, UIntPtr first, IntPtr second) {
+       try {
++        if (window == owner && message == 0 && postNullSucceeded && !focusCalled && !invalid) {
++          ++nullDispatches; uint sent = Native.InSendMessageEx(IntPtr.Zero);
++          Emit("menu.null.dispatched", Fields("dispatches", nullDispatches, "dequeueOrder", dequeueOrder,
++            "contextCallbackDepth", contextCallbackDepth, "callbackReturnBoundaryReached", callbackReturnBoundaryReached,
++            "queuedDispatch", queuedDispatch, "inSendMessageEx", sent));
++          if (nullDispatches != 1 || !queuedDispatch || queuedWindow != owner || queuedMessage != 0 || sent != 0 ||
++              first != UIntPtr.Zero || second != IntPtr.Zero || contextCallbackDepth != 0 || !callbackReturnBoundaryReached) {
++            Invalidate("Expected one queued WM_NULL after callback return was not observed."); return IntPtr.Zero;
++          }
++          nullDispatchOrder = dequeueOrder;
++          return IntPtr.Zero;
++        }
++        if (message == CompleteFocus) { CompleteDeferredFocus(window, first, second); return IntPtr.Zero; }
+         if (taskbarMessage != 0 && message == taskbarMessage) { Invalidate("TaskbarCreated occurred; control does not restart Shell/reinstall/retry."); return IntPtr.Zero; }
+         if (message == 0x10) { Invalidate("Owner closed before control completed."); return IntPtr.Zero; }
+         if (message == 0x113 && first.ToUInt64() == TimerId && clock.ElapsedMilliseconds >= DeadlineMs) {
+@@ -202,10 +253,20 @@
+         if (message == Callback && added && versionSet) {
+           uint packed = unchecked((uint)second.ToInt64()); uint id = packed >> 16; uint notification = packed & 0xffff;
+           if (id == IconId && notification == 0x7b) {
++            ++contextCallbackDepth;
++            try {
++              Emit("tray.context-menu", Fields("iconId", id, "notification", notification,
++                "coordinatesDefinedForNotification", false, "trustedGesture", false,
++                "contextCallbackDepth", contextCallbackDepth, "inSendMessageEx", Native.InSendMessageEx(IntPtr.Zero)));
++              if (!tracking && !focusCalled && !invalid) ShowMenu();
++              else if (!focusCalled && !invalid) Invalidate("Nested context menu invalidates single-interaction control.");
++            } finally {
++              --contextCallbackDepth;
++              callbackReturnBoundaryReached = contextCallbackDepth == 0 && completionPosted;
++              Emit("tray.callback.returning", Fields("contextCallbackDepth", contextCallbackDepth,
++                "completionPosted", completionPosted, "callbackReturnBoundaryReached", callbackReturnBoundaryReached,
++                "inSendMessageEx", Native.InSendMessageEx(IntPtr.Zero), "actualUnwindNotYetClaimed", true));
++            }
+-            Emit("tray.context-menu", Fields("iconId", id, "notification", notification,
+-              "coordinatesDefinedForNotification", false, "trustedGesture", false));
+-            if (!tracking && !focusCalled && !invalid) ShowMenu();
+-            else if (!focusCalled && !invalid) Invalidate("Nested context menu invalidates single-interaction control.");
+           }
+           return IntPtr.Zero;
+         }
+@@ -299,7 +360,15 @@
+         if (Native.SetTimer(owner, new UIntPtr(TimerId), 100, IntPtr.Zero) == UIntPtr.Zero) throw new InvalidOperationException("SetTimer failed.");
+         Emit("interactive.ready", Fields("instructions", "Right-click this control's tray icon once; when the menu is visible press Escape once. Do not select an item. Root must retain external gesture evidence.", "timeoutMs", DeadlineMs));
+         Native.MSG message; int received;
++        while ((received = Native.GetMessageW(out message, IntPtr.Zero, 0, 0)) > 0) {
++          ++dequeueOrder; queuedDispatch = true; queuedMessage = message.message; queuedWindow = message.hwnd;
++          if (message.hwnd == owner && (message.message == CompleteFocus || (message.message == 0 && postNullSucceeded)))
++            Emit("queue.dequeued", Fields("message", message.message, "dequeueOrder", dequeueOrder,
++              "contextCallbackDepth", contextCallbackDepth, "callbackReturnBoundaryReached", callbackReturnBoundaryReached,
++              "inSendMessageEx", Native.InSendMessageEx(IntPtr.Zero)));
++          try { Native.TranslateMessage(ref message); Native.DispatchMessageW(ref message); }
++          finally { queuedDispatch = false; queuedMessage = 0; queuedWindow = IntPtr.Zero; }
++        }
+-        while ((received = Native.GetMessageW(out message, IntPtr.Zero, 0, 0)) > 0) { Native.TranslateMessage(ref message); Native.DispatchMessageW(ref message); }
+         if (received < 0) Invalidate("GetMessageW failed.");
+         if (!focusCalled && !invalid) Invalidate("Message loop ended without the single focus observation.");
+       } catch (Exception error) {
+@@ -307,11 +376,14 @@
+         Emit("run.error", Fields("type", error.GetType().FullName, "message", error.Message));
+       } finally {
+         try { Cleanup(); } catch (Exception error) { cleanupConfirmed = false; invalid = true; exitCode = 2; Emit("cleanup.error", Fields("type", error.GetType().FullName, "message", error.Message)); }
++        bool valid = !invalid && !deadlineReached && foregroundSatisfied && postNullSucceeded && menuDestroyed && focusCalls == 1 &&
++          completionPosted && !completionPending && completionDispatches == 1 && nullDispatches == 1 && callbackUnwindConfirmed;
+-        bool valid = !invalid && !deadlineReached && foregroundSatisfied && postNullSucceeded && menuDestroyed && focusCalls == 1;
+         bool accepted = valid && focusSucceeded && cleanupConfirmed && exitCode == 0;
+         Emit("run.finished", Fields("exitCode", exitCode, "controlValid", valid, "focusAccepted", focusSucceeded,
+           "controlSucceeded", accepted, "foregroundCalls", foregroundCalls, "focusCalls", focusCalls,
+           "cleanupConfirmed", cleanupConfirmed, "deadlineReached", deadlineReached,
++          "deferredCompletionPosted", completionPosted, "completionDispatches", completionDispatches,
++          "nullDispatches", nullDispatches, "callbackUnwindConfirmed", callbackUnwindConfirmed,
+           "escapeEstablishedByController", false, "externalGestureEvidenceRequired", true,
+           "sdkFixed", false, "x86Qualified", false, "productionQualificationComplete", false, "releaseReady", false));
+         log.Dispose(); GC.KeepAlive(callback);
+@@ -364,6 +436,7 @@
+     [DllImport("user32.dll", ExactSpelling = true)] public static extern IntPtr GetWindowLongPtrW(IntPtr window, int index);
+     [DllImport("user32.dll", ExactSpelling = true)] public static extern uint GetWindowThreadProcessId(IntPtr window, out uint process);
+     [DllImport("user32.dll", ExactSpelling = true)] public static extern IntPtr GetForegroundWindow();
++    [DllImport("user32.dll", ExactSpelling = true)] public static extern uint InSendMessageEx(IntPtr reserved);
+     [DllImport("user32.dll", ExactSpelling = true, SetLastError = true)] [return: MarshalAs(UnmanagedType.Bool)] public static extern bool GetGUIThreadInfo(uint thread, ref GUITHREADINFO info);
+     [DllImport("user32.dll", ExactSpelling = true, SetLastError = true)] [return: MarshalAs(UnmanagedType.Bool)] public static extern bool SetForegroundWindow(IntPtr window);
+     [DllImport("user32.dll", ExactSpelling = true, SetLastError = true)] [return: MarshalAs(UnmanagedType.Bool)] public static extern bool GetCursorPos(out POINT point);
+--- F:/work/SOUI_WEB/out/open-issues-closeout-20261029/focus-control-current/Invoke-NativeFocusControl-a2.ps1
++++ F:/work/SOUI_WEB/out/open-issues-closeout-20261029/tray-focus-deferred-current/payload/Invoke-NativeFocusControl-b1.ps1
+@@ -11,8 +11,8 @@
+ $requestedEvidenceDirectory=$EvidenceDirectory
+ if($requestedEvidenceDirectory-notmatch'^[cC]:[\\/]'-or$requestedEvidenceDirectory-match'(^|[\\/])\.{1,2}([\\/]|$)'){throw 'Absolute task C: evidence path without navigation required'}
+ $EvidenceDirectory=[IO.Path]::GetFullPath($requestedEvidenceDirectory)
++if($EvidenceDirectory-notmatch'^C:\\issue-closeout-evidence\\focusc-[a-z0-9-]+$'-or$EvidenceDirectory-ine'C:\issue-closeout-evidence\focusc-b1'-or[IO.Path]::GetDirectoryName($EvidenceDirectory)-ine'C:\issue-closeout-evidence'-or(Test-Path -LiteralPath $EvidenceDirectory)){throw 'Fresh exact b1 task-VM evidence directory required'}
++$preparationFile=Join-Path $PSScriptRoot 'Preparation-b1.actual.json'
+-if($EvidenceDirectory-notmatch'^C:\\issue-closeout-evidence\\focusc-[a-z0-9-]+$'-or$EvidenceDirectory-ine'C:\issue-closeout-evidence\focusc-a2'-or[IO.Path]::GetDirectoryName($EvidenceDirectory)-ine'C:\issue-closeout-evidence'-or(Test-Path -LiteralPath $EvidenceDirectory)){throw 'Fresh exact a2 task-VM evidence directory required'}
+-$preparationFile=Join-Path $PSScriptRoot 'Preparation-a2.actual.json'
+ if((Get-FileHash -LiteralPath $preparationFile -Algorithm SHA256).Hash.ToLowerInvariant()-cne$PreparationSha256){throw 'Reviewed preparation identity differs'}
+ $plan=[IO.File]::ReadAllText($preparationFile,[Text.Encoding]::UTF8)|ConvertFrom-Json
+ if($plan.schema-cne'soui.native-tray-focus-control-preparation/v1'-or$plan.executed-or$plan.compiled-or$plan.preparationHost-ieq$env:COMPUTERNAME-or$plan.expectedGuest-ine$ExpectedMachine){throw 'Unexecuted current preparation identity required'}
+--- F:/work/SOUI_WEB/out/open-issues-closeout-20261029/focus-control-current/Focus-Owned-a2.cjs
++++ F:/work/SOUI_WEB/out/open-issues-closeout-20261029/tray-focus-deferred-current/payload/Focus-Owned-b1.cjs
+@@ -1,8 +1,8 @@
+ 'use strict';
+ // One task-VM native diagnostic only. Preparation does not execute this script.
+ const fs=require('node:fs'),path=require('node:path'),os=require('node:os'),crypto=require('node:crypto'),assert=require('node:assert/strict');
++const machine='SOUI-7AEMMK5Q0T',outer='C:/issue-closeout-evidence/focusc-b1-run',inner='C:/issue-closeout-evidence/focusc-b1';
++const prepSha='dfee96241c9da94c16a1e4dc2fe2f75c7339d87270372b4eee94a88ea19c4b3c';
+-const machine='SOUI-7AEMMK5Q0T',outer='C:/issue-closeout-evidence/focusc-a2-run',inner='C:/issue-closeout-evidence/focusc-a2';
+-const prepSha='874fd1a9b2ff028962948d8e6f33afd8e88e0af739223affc22828142cfe3e80';
+ const tools={node:{path:'C:/issues8/tools/node.exe',bytes:91380224,sha256:'63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088'},
+   runner:{path:'C:/issues8/tools/OwnedProcessRunner.exe',bytes:170496,sha256:'f254dadd4eccad3c57d69e98f260d15ee598c0b6441b7fe68fc4ef5b3b7dea83'},
+   owned:{path:'C:/issues8/tools/owned-process.cjs',bytes:8386,sha256:'8ccec5802c793b45990d2d7585f2c29fb618a7b170adebd5d270a7c291757ce7'}};
+@@ -37,12 +37,12 @@
+   const childPathEvidence={scope:'Only launchOwned supervisor and its PowerShell descendant inherit this PATH; parent process.env is never assigned',crtDirectory:crt.guestDirectory,
+     inheritedPath:environmentPin(inheritedPath),childPath:environmentPin(childEnvironment.PATH),environmentValuesPersisted:false,productExecuted:false};
+   let parentEnvironmentUnchanged=null;
++  const prepFile=path.join(__dirname,'Preparation-b1.actual.json'),prepPin=pin(prepFile);assert.equal(prepPin.sha256,prepSha);const prep=JSON.parse(fs.readFileSync(prepFile,'utf8'));
+-  const prepFile=path.join(__dirname,'Preparation-a2.actual.json'),prepPin=pin(prepFile);assert.equal(prepPin.sha256,prepSha);const prep=JSON.parse(fs.readFileSync(prepFile,'utf8'));
+   assert.equal(prep.schema,'soui.native-tray-focus-control-preparation/v1');assert.equal(prep.expectedGuest,machine);assert.equal(prep.compiled,false);assert.equal(prep.executed,false);
++  const sourcePins=[pin(__filename),prepPin,pin(path.join(__dirname,'FocusExport-b1.ps1')),crtFilePin,crt.manifest,...crt.files,pin(powershell),...Object.values(tools).map(p=>pin(p.path))];
+-  const sourcePins=[pin(__filename),prepPin,pin(path.join(__dirname,'FocusExport-a2.ps1')),crtFilePin,crt.manifest,...crt.files,pin(powershell),...Object.values(tools).map(p=>pin(p.path))];
+   for(const f of prep.files){assert(/^[A-Za-z0-9][A-Za-z0-9_.-]+$/.test(f.relative));const p=pin(path.join(__dirname,f.relative));assert.equal(p.bytes,f.bytes);assert.equal(p.sha256,f.sha256);sourcePins.push(p);}
+   assert(!fs.existsSync(outer)&&!fs.existsSync(inner),'Preserve every previous diagnostic/evidence directory');fs.mkdirSync(outer);
++  const args=['-NoProfile','-NonInteractive','-STA','-ExecutionPolicy','Bypass','-File',path.join(__dirname,'Invoke-NativeFocusControl-b1.ps1'),
+-  const args=['-NoProfile','-NonInteractive','-STA','-ExecutionPolicy','Bypass','-File',path.join(__dirname,'Invoke-NativeFocusControl-a2.ps1'),
+     '-ExpectedMachine',machine,'-EvidenceDirectory',inner,'-PreparationSha256',prepSha,'-RootGate','ROOT_REVIEWED_NATIVE_FOCUS_CONTROL_V1'];
+   const invocation={schema:'soui.native-focus-owned-invocation/v1',machine,controllerPid:process.pid,controllerBirthNotCollected:true,
+     controllerActivePidMustBeAbsentBeforeExport:true,executable:powershell,args,cwd:__dirname,timeoutMs:90000,drainMs:2000,innerDeadlineMs:60000,
+--- F:/work/SOUI_WEB/out/open-issues-closeout-20261029/focus-control-current/FocusExport-a2.ps1
++++ F:/work/SOUI_WEB/out/open-issues-closeout-20261029/tray-focus-deferred-current/payload/FocusExport-b1.ps1
+@@ -2,7 +2,7 @@
+ param()
+ $ErrorActionPreference='Stop'
+ if($env:COMPUTERNAME-ine'SOUI-7AEMMK5Q0T'-or-not[Environment]::Is64BitProcess-or[IO.Path]::GetFullPath($PSScriptRoot).TrimEnd('\')-ine'D:'){throw 'Reviewed named x64 task VM and D: control ISO only'}
++$folder='C:\issue-closeout-evidence\focusc-b1-run'
+-$folder='C:\issue-closeout-evidence\focusc-a2-run'
+ function FocusPin([string]$File){$item=Get-Item -LiteralPath $File -Force;if($item.PSIsContainer-or($item.Attributes-band[IO.FileAttributes]::ReparsePoint)){throw 'Plain focus evidence file required'};return @{path=$item.FullName;bytes=$item.Length;sha256=(Get-FileHash -LiteralPath $File -Algorithm SHA256).Hash.ToLowerInvariant()}}
+ function CheckFocusPin($Pin){$actual=FocusPin $Pin.path;if($actual.bytes-ne$Pin.bytes-or$actual.sha256-cne$Pin.sha256){throw ('Changed focus evidence: '+$Pin.path)}}
+ function FocusFiles([string]$Directory){$item=Get-Item -LiteralPath $Directory -Force;if(-not$item.PSIsContainer-or($item.Attributes-band[IO.FileAttributes]::ReparsePoint)){throw 'Plain focus directory required'};foreach($child in Get-ChildItem -LiteralPath $item.FullName -Force){if($child.Attributes-band[IO.FileAttributes]::ReparsePoint){throw 'Linked focus evidence forbidden'};if($child.PSIsContainer){FocusFiles $child.FullName}else{$child.FullName}}}

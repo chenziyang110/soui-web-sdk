@@ -1,0 +1,130 @@
+{
+  "schema": "soui.native-focus-owned-result/v1",
+  "machine": "SOUI-7AEMMK5Q0T",
+  "controllerPid": 2816,
+  "controllerBirthNotCollected": true,
+  "invocation": {
+    "path": "C:\\issue-closeout-evidence\\focusc-b1-run\\Invocation.actual.json",
+    "bytes": 6436,
+    "sha256": "69920bbae407cfdd982018103f254ee805ddab366c77c5b2c5b259df08b58344"
+  },
+  "ready": {
+    "pid": 3424,
+    "creationFileTime": "134377530706253534"
+  },
+  "readyError": null,
+  "result": {
+    "pid": 3424,
+    "creationFileTime": "134377530706253534",
+    "exitCode": 1,
+    "supervisorExitCode": 1,
+    "signal": null,
+    "spawnError": null,
+    "reportError": null,
+    "stopRequested": false,
+    "fallbackUsed": false,
+    "closureConfirmed": true,
+    "passed": false,
+    "terminal": {
+      "event": "terminal",
+      "reason": "root-failed",
+      "elapsedMs": 58601,
+      "rootExited": true,
+      "rootExitCode": 1,
+      "activeBeforeCleanup": 0,
+      "terminatedOwnedJob": false,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "totalProcesses": 4,
+      "limitTerminatedProcesses": 0,
+      "passed": false
+    },
+    "report": "C:\\issue-closeout-evidence\\focusc-b1-run\\owned.ndjson",
+    "reportSha256": "4bdc87c4ce924a724b870b04d7f4419a19fc74fd2361629b621f105d336f7d2b",
+    "runnerSha256": "f254dadd4eccad3c57d69e98f260d15ee598c0b6441b7fe68fc4ef5b3b7dea83",
+    "executableSha256": "1c84c8632c5269f24876ed9f49fa810b49f77e1e92e8918fc164c34b020f9a94"
+  },
+  "nativeRootExitCode": 1,
+  "innerLauncherExitCode": 1,
+  "observedProbeExitCode": 1,
+  "wholeJobClosedWithoutForce": true,
+  "jobClosureDoesNotEstablishSuccess": true,
+  "probeExitMeaning": "0 accepted native control;1 nativeFALSE;2 invalid. Job closure is separate from that outcome. Setup may fail before a probe exit exists; never infer API FALSE from root exit alone.",
+  "childPathEvidence": {
+    "scope": "Only launchOwned supervisor and its PowerShell descendant inherit this PATH; parent process.env is never assigned",
+    "crtDirectory": "C:/issues8/tray-x64",
+    "inheritedPath": {
+      "present": true,
+      "utf8Bytes": 188,
+      "sha256": "e1479b5cf80853e3f5b6dcfc83d95d374edf10de19f94b577cc64de297b0a1a4"
+    },
+    "childPath": {
+      "present": true,
+      "utf8Bytes": 208,
+      "sha256": "55678f8fcbf76409253c0831e82f2aff32b087836a4ef25c4b71bd0f19b43c1a"
+    },
+    "environmentValuesPersisted": false,
+    "productExecuted": false
+  },
+  "parentEnvironmentUnchanged": true,
+  "copies": [
+    {
+      "source": {
+        "path": "C:\\issue-closeout-evidence\\focusc-b1\\Invocation.actual.json",
+        "bytes": 649,
+        "sha256": "03de65c4259bf912b2eba85ac1e3e0e8da93ff9efd464b4ecd5718e3a9bd64f8"
+      },
+      "copy": {
+        "path": "C:\\issue-closeout-evidence\\focusc-b1-run\\native\\Invocation.actual.json",
+        "bytes": 649,
+        "sha256": "03de65c4259bf912b2eba85ac1e3e0e8da93ff9efd464b4ecd5718e3a9bd64f8"
+      }
+    },
+    {
+      "source": {
+        "path": "C:\\issue-closeout-evidence\\focusc-b1\\Compilation.actual.json",
+        "bytes": 541,
+        "sha256": "852b89edbf3b508e02356e4ee79d6403c850cb32b9bd408ecd07ca35bbfb5dd9"
+      },
+      "copy": {
+        "path": "C:\\issue-closeout-evidence\\focusc-b1-run\\native\\Compilation.actual.json",
+        "bytes": 541,
+        "sha256": "852b89edbf3b508e02356e4ee79d6403c850cb32b9bd408ecd07ca35bbfb5dd9"
+      }
+    },
+    {
+      "source": {
+        "path": "C:\\issue-closeout-evidence\\focusc-b1\\Native.events.ndjson",
+        "bytes": 16745,
+        "sha256": "f27256aeddc5c330212a310100c112423c6e57d1ae7a6843b106366d0bfbd68d"
+      },
+      "copy": {
+        "path": "C:\\issue-closeout-evidence\\focusc-b1-run\\native\\Native.events.ndjson",
+        "bytes": 16745,
+        "sha256": "f27256aeddc5c330212a310100c112423c6e57d1ae7a6843b106366d0bfbd68d"
+      }
+    },
+    {
+      "source": {
+        "path": "C:\\issue-closeout-evidence\\focusc-b1\\PowerShell.finished.json",
+        "bytes": 416,
+        "sha256": "38d70cbf3a8011166c943cb5ea8e4392f3198cf334c060d3cb0613b447a40a60"
+      },
+      "copy": {
+        "path": "C:\\issue-closeout-evidence\\focusc-b1-run\\native\\PowerShell.finished.json",
+        "bytes": 416,
+        "sha256": "38d70cbf3a8011166c943cb5ea8e4392f3198cf334c060d3cb0613b447a40a60"
+      }
+    }
+  ],
+  "missingKnownRecords": [
+    "PowerShell.error.json"
+  ],
+  "failure": null,
+  "inputInjection": false,
+  "sdkFixed": false,
+  "sdkSupervisionQualified": false,
+  "testPassed": null,
+  "productionQualificationComplete": false,
+  "releaseReady": false
+}

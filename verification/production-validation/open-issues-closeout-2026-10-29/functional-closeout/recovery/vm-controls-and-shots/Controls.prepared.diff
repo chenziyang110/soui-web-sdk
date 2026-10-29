@@ -1,0 +1,386 @@
+--- ordinary-reload-current/Ordinary-Lib.ps1
++++ tray-recovery-vm-current/payload/TrayRecovery-Lib.ps1
+@@ -32,20 +32,20 @@
+     if($child.PSIsContainer){Get-CurrentFiles $child.FullName}else{$child.FullName}
+   }
+ }
+-function Get-CurrentPaths([string]$Kind,[string]$Stamp) {
+-  if($Kind-cne'ord'-or$Stamp-cnotmatch'^[a-z0-9][a-z0-9-]{0,23}$'){throw 'Use ord and a fresh short lowercase stamp'}
+-  return [pscustomobject]@{kind=$Kind;stamp=$Stamp;root=('C:\ordc-'+$Stamp);
+-    manifestName='Ordinary.manifest.json';schema='soui.current-ordinary-acceptance-light-payload/v1';
+-    controller='Guest-Ordinary.ps1';nativeRootGate='ROOT_REVIEWED_CURRENT_ORDINARY_STAGE_V1';
+-    stage=('C:\issue-closeout-evidence\ordc-'+$Stamp+'-stage');
+-    run=('C:\issue-closeout-evidence\ordc-'+$Stamp+'-run')}
++function Get-CurrentPaths([string]$Architecture='stage') {
++  if($Architecture-cnotmatch'^(stage|x64|x86)$'){throw 'One exact stage/x64/x86 command required'}
++  return [pscustomobject]@{kind='tray-recovery';stamp='a1';architecture=$Architecture;root='C:\trayrc-a1';
++    manifestName='TrayRecovery.manifest.json';schema='soui.current-tray-recovery-light-payload/v1';
++    controller='Guest-TrayRecovery.ps1';nativeRootGate='ROOT_REVIEWED_TRAY_RECOVERY_STAGE_V1';
++    stage='C:\issue-closeout-evidence\trayrc-a1-stage';
++    run=('C:\issue-closeout-evidence\trayrc-a1-'+$Architecture)}
+ }
+ function Read-CurrentManifest($Paths,[string]$Root,[string]$Sha256) {
+   if($Sha256-cnotmatch'^[a-f0-9]{64}$'){throw 'Exact reviewed manifest SHA256 required'}
+   $file=Join-Path $Root $Paths.manifestName;$pin=Get-CurrentPin $file
+   if($pin.sha256-cne$Sha256){throw 'Current manifest identity differs'}
+   $plan=[IO.File]::ReadAllText($file,[Text.Encoding]::UTF8)|ConvertFrom-Json
+-  if($plan.schema-cne$Paths.schema-or$plan.version-cne'0.6.0'-or$plan.preparationHost-ieq$env:COMPUTERNAME-or@($plan.payloadFiles).Count-ne19){throw 'Exact ordinary 20-file control payload required'}
++  if($plan.schema-cne$Paths.schema-or$plan.version-cne'0.6.0'-or$plan.preparationHost-ieq$env:COMPUTERNAME-or@($plan.payloadFiles).Count-ne8){throw 'Exact tray recovery nine-file control payload required'}
+   $names=[Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+   $selection=[Collections.Generic.List[object]]::new()
+   foreach($entry in $plan.payloadFiles){
+@@ -68,7 +68,7 @@
+   $evidence=if($Mode-ceq'stage'){$Paths.stage}else{$Paths.run}
+   if(Test-Path -LiteralPath $evidence){throw 'Preserve prior current evidence'}
+   $arguments=@('-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',(Join-Path $Paths.root $Paths.controller),
+-    '-Mode',$Mode,'-Manifest',(Join-Path $Paths.root $Paths.manifestName),'-ManifestSha256',$ManifestSha256,
++    '-Mode',$Mode,'-Architecture',$Paths.architecture,'-Manifest',(Join-Path $Paths.root $Paths.manifestName),'-ManifestSha256',$ManifestSha256,
+     '-ExpectedMachine',$script:CurrentMachine,'-EvidenceDirectory',$evidence)
+   if($Mode-ceq'run'){$arguments+=@('-RootGate',$Paths.nativeRootGate,'-StageFile',(Join-Path $Paths.stage 'Stage.actual.json'),'-StageSha256',$StageSha256)}
+   $process=[Diagnostics.Process]::GetCurrentProcess()
+@@ -117,6 +117,15 @@
+   if(-not(Test-Path -LiteralPath $wrapperFile -PathType Leaf)){throw 'Current wrapper finished record required'}
+   $wrapper=[IO.File]::ReadAllText($wrapperFile,[Text.Encoding]::UTF8)|ConvertFrom-Json
+   $wrapperEnded=Assert-CurrentProcessEnded $wrapper.wrapperPid ([string]$wrapper.wrapperCreationFileTime)
+-  return [pscustomobject]@{lease=(Get-CurrentPin $leaseFile);finished=(Get-CurrentPin $finishedFile);finishedValue=$finished;
++  $inputsFile=Join-Path $Evidence 'Inputs.actual.json'
++  $inputs=[IO.File]::ReadAllText($inputsFile,[Text.Encoding]::UTF8)|ConvertFrom-Json
++  $controllerId=[long]$inputs.controllerPid
++  if($controllerId-le0-or$controllerId-gt[int]::MaxValue){throw 'Recorded actual top Node controller PID required'}
++  if($inputs.controllerParentPid-ne$lease.ownerProcessId){throw 'Recorded Node parent differs from the actual PowerShell lease owner'}
++  $nodeProcess=$null
++  try{$nodeProcess=[Diagnostics.Process]::GetProcessById([int]$controllerId)}catch [ArgumentException]{}
++  if($null-ne$nodeProcess){$nodeProcess.Dispose();throw 'Recorded Node PID still exists; no birth was collected and PID reuse cannot be assumed'}
++  $nodeEnded=@{record=(Get-CurrentPin $inputsFile);controllerPid=$controllerId;pidAbsentObserved=$true;birthNotCollected=$true;pidReuseAssumed=$false}
++  return [pscustomobject]@{nodeController=$nodeEnded;lease=(Get-CurrentPin $leaseFile);finished=(Get-CurrentPin $finishedFile);finishedValue=$finished;
+     launcherIdentity=$ended;wrapperFinished=(Get-CurrentPin $wrapperFile);wrapperIdentity=$wrapperEnded}
+ }
+--- ordinary-reload-current/Guest-Ordinary.ps1
++++ tray-recovery-vm-current/payload/Guest-TrayRecovery.ps1
+@@ -1,5 +1,6 @@
+ [CmdletBinding()]
+ param([Parameter(Mandatory=$true)][ValidateSet('stage','run')][string]$Mode,
++ [Parameter(Mandatory=$true)][ValidateSet('stage','x64','x86')][string]$Architecture,
+  [Parameter(Mandatory=$true)][string]$Manifest,[Parameter(Mandatory=$true)][string]$ManifestSha256,
+  [Parameter(Mandatory=$true)][string]$ExpectedMachine,[Parameter(Mandatory=$true)][string]$EvidenceDirectory,
+  [string]$RootGate,[string]$StageFile,[string]$StageSha256)
+@@ -7,8 +8,12 @@
+ if($ManifestSha256-notmatch'^[a-f0-9]{64}$'-or(Get-FileHash -LiteralPath $Manifest -Algorithm SHA256).Hash.ToLowerInvariant()-cne$ManifestSha256){throw 'Frozen current manifest required'}
+ $plan=[IO.File]::ReadAllText($Manifest,[Text.Encoding]::UTF8)|ConvertFrom-Json
+ if($env:COMPUTERNAME-ieq$plan.preparationHost-or$env:COMPUTERNAME-ine$ExpectedMachine){throw 'Task VM identity required; host execution forbidden'}
+-if($EvidenceDirectory-notmatch'^C:\\issue-closeout-evidence\\ordc-[a-z0-9-]+$'-or(Test-Path -LiteralPath $EvidenceDirectory)){throw 'Fresh current evidence directory required'}
+-if($Mode-eq'run'-and($RootGate-cne'ROOT_REVIEWED_CURRENT_ORDINARY_STAGE_V1'-or$StageSha256-notmatch'^[a-f0-9]{64}$')){throw 'Root stage review required'}
++$requestedEvidence=$EvidenceDirectory
++if($requestedEvidence-notmatch'^[cC]:[\\/]'-or$requestedEvidence-match'(^|[\\/])\.{1,2}([\\/]|$)'){throw 'Absolute fresh evidence path without navigation required'}
++$EvidenceDirectory=[IO.Path]::GetFullPath($requestedEvidence)
++$expectedEvidence='C:\issue-closeout-evidence\trayrc-a1-'+$(if($Mode-eq'stage'){'stage'}else{$Architecture})
++if($EvidenceDirectory-ine$expectedEvidence-or(Test-Path -LiteralPath $EvidenceDirectory)-or($Mode-eq'stage'-and$Architecture-ne'stage')-or($Mode-eq'run'-and$Architecture-eq'stage')){throw 'Fresh exact tray recovery evidence directory required'}
++if($Mode-eq'run'-and($RootGate-cne'ROOT_REVIEWED_TRAY_RECOVERY_STAGE_V1'-or$StageSha256-notmatch'^[a-f0-9]{64}$')){throw 'Root stage review required'}
+ $saved=@{};$names=@('PATH','NODE_OPTIONS','NODE_PATH','NODE_REPL_EXTERNAL_MODULE','SOUI_DIAGNOSTIC_SCRIPT','SOUI_BRIDGE_TRACE','SOUI_OWNED_PROCESS_RUNNER')
+ $lease=[Threading.Mutex]::new($false,'Local\SouiDevKit.DesktopValidation');$acquired=$false;$exitCode=1
+ try{
+@@ -19,11 +24,11 @@
+   [IO.File]::WriteAllText((Join-Path $EvidenceDirectory 'Lease.actual.json'),(@{name='Local\SouiDevKit.DesktopValidation';acquired=$true;ownerProcessId=$PID;ownerCreationFileTime=$process.StartTime.ToUniversalTime().ToFileTimeUtc().ToString()}|ConvertTo-Json),[Text.UTF8Encoding]::new($false))
+   foreach($name in $names){$entry=Get-Item -LiteralPath ('Env:'+$name) -ErrorAction SilentlyContinue;$saved[$name]=@{present=($null-ne$entry);value=if($null-ne$entry){[string]$entry.Value}else{$null}};if($name-ne'PATH'){Remove-Item -LiteralPath ('Env:'+$name) -ErrorAction SilentlyContinue}}
+   $root=[IO.Path]::GetDirectoryName([IO.Path]::GetFullPath($Manifest))
+-  if($Mode-eq'run'){$env:PATH=(Join-Path $root 'runtime-x64')+';'+$saved.PATH.value}
++  $env:PATH=$(if($Mode-eq'run'){Join-Path $root 'runtime-x64'}else{'C:\issues8\tray-x64'})+';'+$saved.PATH.value
+   [IO.File]::WriteAllText((Join-Path $EvidenceDirectory 'Environment.before-and-active.json'),(@{pathBefore=$saved.PATH;activePath=$env:PATH;cleared=$names|Where-Object{$_-ne'PATH'};mode=$Mode;version='0.6.0'}|ConvertTo-Json -Depth 5),[Text.UTF8Encoding]::new($false))
+-  $arguments=@((Join-Path $root 'Guest-Ordinary.cjs'),$Mode,$Manifest,$ManifestSha256,$ExpectedMachine,$EvidenceDirectory)
++  $arguments=@((Join-Path $root 'Guest-TrayRecovery.cjs'),$Mode,$Architecture,$Manifest,$ManifestSha256,$ExpectedMachine,$EvidenceDirectory)
+   if($Mode-eq'run'){$arguments+=@($RootGate,$StageFile,$StageSha256)}
+-  [IO.File]::WriteAllText((Join-Path $EvidenceDirectory 'Invocation.actual.json'),(@{executable=$plan.tools.node;args=$arguments;mode=$Mode;version='0.6.0';oldFourArms=$false}|ConvertTo-Json -Depth 6),[Text.UTF8Encoding]::new($false))
++  [IO.File]::WriteAllText((Join-Path $EvidenceDirectory 'Invocation.actual.json'),(@{executable=$plan.tools.node;args=$arguments;mode=$Mode;version='0.6.0';oneArchitecturePerRun=$true}|ConvertTo-Json -Depth 6),[Text.UTF8Encoding]::new($false))
+   $previousPreference=$ErrorActionPreference
+   $nativeExitCode=$null
+   try{
+@@ -40,6 +45,6 @@
+   foreach($name in $saved.Keys){try{if($saved[$name].present){Set-Item -LiteralPath ('Env:'+$name) -Value $saved[$name].value}else{Remove-Item -LiteralPath ('Env:'+$name) -ErrorAction SilentlyContinue};$actual=Get-Item -LiteralPath ('Env:'+$name) -ErrorAction SilentlyContinue;if(($null-ne$actual)-ne$saved[$name].present-or($saved[$name].present-and[string]$actual.Value-cne$saved[$name].value)){throw 'Environment restore mismatch'}}catch{$errors.Add($name)}}
+   try{if($acquired){$lease.ReleaseMutex()}}finally{$lease.Dispose()}
+   if($errors.Count){$exitCode=1}
+-  if(Test-Path -LiteralPath $EvidenceDirectory){[IO.File]::WriteAllText((Join-Path $EvidenceDirectory 'PowerShell.finished.json'),(@{exitCode=$exitCode;leaseReleased=$acquired;environmentRestored=($errors.Count-eq0);restoreErrors=@($errors.ToArray());pathAfter=$env:PATH;oldFourArmsPassed=$false;releaseReady=$false}|ConvertTo-Json -Depth 5),[Text.UTF8Encoding]::new($false))}
++  if(Test-Path -LiteralPath $EvidenceDirectory){[IO.File]::WriteAllText((Join-Path $EvidenceDirectory 'PowerShell.finished.json'),(@{exitCode=$exitCode;leaseReleased=$acquired;environmentRestored=($errors.Count-eq0);restoreErrors=@($errors.ToArray());pathAfter=$env:PATH;explorerRestartQualified=$false;releaseReady=$false}|ConvertTo-Json -Depth 5),[Text.UTF8Encoding]::new($false))}
+ }
+ exit $exitCode
+--- ordinary-reload-current/Stage-Ordinary.ps1
++++ tray-recovery-vm-current/payload/Stage-TrayRecovery.ps1
+@@ -1,13 +1,12 @@
+ [CmdletBinding()]
+-param([Parameter(Mandatory=$true,Position=0)][ValidateSet('ord')][string]$Kind,
+-  [Parameter(Mandatory=$true,Position=1)][ValidatePattern('^[a-f0-9]{64}$')][string]$ManifestSha256,
+-  [Parameter(Mandatory=$true,Position=2)][ValidatePattern('^[a-z0-9][a-z0-9-]{0,23}$')][string]$Stamp)
+-. (Join-Path $PSScriptRoot 'Ordinary-Lib.ps1')
++param([Parameter(Mandatory=$true,Position=0)][ValidatePattern('^[a-f0-9]{64}$')][string]$ManifestSha256)
++. (Join-Path $PSScriptRoot 'TrayRecovery-Lib.ps1')
+ Assert-CurrentGuest
+-$paths=Get-CurrentPaths $Kind $Stamp
+-if(Test-Path -LiteralPath $paths.root){throw 'Fresh current root required; preserve all old roots'}
+-if((Test-Path -LiteralPath $paths.stage)-or(Test-Path -LiteralPath $paths.run)){throw 'Fresh stage/run evidence names required'}
++$paths=Get-CurrentPaths 'stage'
++if((Test-Path -LiteralPath $paths.root)-or(Test-Path -LiteralPath $paths.stage)-or(Test-Path -LiteralPath 'C:\issue-closeout-evidence\trayrc-a1-x64')-or(Test-Path -LiteralPath 'C:\issue-closeout-evidence\trayrc-a1-x86')){throw 'Fresh exact tray recovery namespace required; preserve old roots'}
+ $payload=Read-CurrentManifest $paths 'D:\' $ManifestSha256
++$sourceClosed=@(Get-CurrentFiles 'D:\'|ForEach-Object{[IO.Path]::GetFileName($_)}|Sort-Object)
++if(($sourceClosed-join"`n")-cne(@($payload.selection.relative|Sort-Object)-join"`n")){throw 'Read-only source ISO membership differs'}
+ New-Item -ItemType Directory -Path $paths.root|Out-Null
+ $copies=[Collections.Generic.List[object]]::new();$code=1
+ try{
+@@ -20,15 +19,17 @@
+     Assert-CurrentPin $source
+     $copies.Add(@{source=$source;copy=$copied})
+   }
+-  $expected=@($payload.selection.relative|Sort-Object);$actual=@(Get-ChildItem -LiteralPath $paths.root -Force|ForEach-Object{if($_.PSIsContainer-or($_.Attributes-band[IO.FileAttributes]::ReparsePoint)){throw 'Flat current copy required'};$_.Name}|Sort-Object)
++  $expected=@($payload.selection.relative|Sort-Object)
++  $actual=@(Get-ChildItem -LiteralPath $paths.root -Force|ForEach-Object{if($_.PSIsContainer-or($_.Attributes-band[IO.FileAttributes]::ReparsePoint)){throw 'Flat current copy required'};$_.Name}|Sort-Object)
+   if(($expected-join"`n")-cne($actual-join"`n")){throw 'Copied payload closed set differs'}
+   foreach($source in $payload.selection){Assert-CurrentPin $source}
+-  Write-NewCurrentJson (Join-Path $paths.root 'InputCopy.actual.json') @{schema='soui.current-flat-payload-copy/v1';kind=$Kind;stamp=$Stamp;source='D:\';manifestSha256=$ManifestSha256;copies=@($copies.ToArray());files=20;oldRootsChanged=$false;productExecuted=$false;releaseReady=$false}
++  $sourceAfter=@(Get-CurrentFiles 'D:\'|ForEach-Object{[IO.Path]::GetFileName($_)}|Sort-Object)
++  if(($sourceAfter-join"`n")-cne($sourceClosed-join"`n")){throw 'Source ISO membership changed'}
++  Write-NewCurrentJson (Join-Path $paths.root 'InputCopy.actual.json') @{schema='soui.current-flat-payload-copy/v1';kind='tray-recovery';stamp='a1';source='D:\';manifestSha256=$ManifestSha256;copies=@($copies.ToArray());files=9;oldRootsChanged=$false;productExecuted=$false;releaseReady=$false}
+   $code=Invoke-CurrentController $paths 'stage' $ManifestSha256 ''
+   if(Test-Path -LiteralPath $paths.stage){[IO.File]::Copy((Join-Path $paths.root 'InputCopy.actual.json'),(Join-Path $paths.stage 'InputCopy.actual.json'),$false)}
+ }catch{
+-  $failure=@{message=$_.Exception.Message;kind=$Kind;stamp=$Stamp;copies=@($copies.ToArray());productExecutedByWrapper=$false;releaseReady=$false}
+-  Write-NewCurrentJson (Join-Path $paths.root 'CopyOrStage.error.json') $failure
++  Write-NewCurrentJson (Join-Path $paths.root 'CopyOrStage.error.json') @{message=$_.Exception.Message;copies=@($copies.ToArray());productExecutedByWrapper=$false;releaseReady=$false}
+   throw
+ }
+ Write-Output ('Stage only: '+$paths.stage+'; controllerExit='+$code)
+--- ordinary-reload-current/Run-Ordinary.ps1
++++ tray-recovery-vm-current/payload/Run-TrayRecovery.ps1
+@@ -1,22 +1,20 @@
+ [CmdletBinding()]
+-param([Parameter(Mandatory=$true,Position=0)][ValidateSet('ord')][string]$Kind,
+-  [Parameter(Mandatory=$true,Position=1)][ValidatePattern('^[a-z0-9][a-z0-9-]{0,23}$')][string]$Stamp,
+-  [Parameter(Mandatory=$true,Position=2)][ValidatePattern('^[a-f0-9]{64}$')][string]$ManifestSha256,
+-  [Parameter(Mandatory=$true,Position=3)][ValidatePattern('^[a-f0-9]{64}$')][string]$StageSha256,
+-  [Parameter(Mandatory=$true,Position=4)][ValidateSet('ROOT_REVIEWED_CURRENT_STAGE_V1')][string]$RootGate)
+-. (Join-Path $PSScriptRoot 'Ordinary-Lib.ps1')
++param([Parameter(Mandatory=$true,Position=0)][ValidateSet('x64','x86')][string]$Architecture,
++ [Parameter(Mandatory=$true,Position=1)][ValidatePattern('^[a-f0-9]{64}$')][string]$ManifestSha256,
++ [Parameter(Mandatory=$true,Position=2)][ValidatePattern('^[a-f0-9]{64}$')][string]$StageSha256,
++ [Parameter(Mandatory=$true,Position=3)][ValidateSet('ROOT_REVIEWED_TRAY_RECOVERY_STAGE_V1')][string]$RootGate)
++. (Join-Path $PSScriptRoot 'TrayRecovery-Lib.ps1')
+ Assert-CurrentGuest
+-$paths=Get-CurrentPaths $Kind $Stamp
++$paths=Get-CurrentPaths $Architecture
+ $payload=Read-CurrentManifest $paths $paths.root $ManifestSha256
+-if(Test-Path -LiteralPath $paths.run){throw 'Preserve prior current run'}
++if(Test-Path -LiteralPath $paths.run){throw 'Preserve prior architecture run'}
+ $closed=Read-CurrentClosedLauncher $paths.stage
+ if($closed.finishedValue.exitCode-ne0-or-not$closed.finishedValue.leaseReleased-or-not$closed.finishedValue.environmentRestored-or@($closed.finishedValue.restoreErrors).Count-ne0){throw 'Reviewed stage launcher did not finish cleanly'}
+ $stageFile=Join-Path $paths.stage 'Stage.actual.json';$stagePin=Get-CurrentPin $stageFile
+ if($stagePin.sha256-cne$StageSha256){throw 'Exact independently reviewed actual stage SHA required'}
+ $stage=[IO.File]::ReadAllText($stageFile,[Text.Encoding]::UTF8)|ConvertFrom-Json
+ if(-not$stage.passed-or$stage.productExecuted-or$stage.manifest.sha256-cne$ManifestSha256-or$stage.machine-ine$script:CurrentMachine){throw 'Stage identity or scope differs'}
+-# This explicit separate invocation is Root's review marker. It maps to the
+-# existing kind-specific gate; no automatic stage-to-run path is present.
++# Separate explicit Root-reviewed invocation: one architecture, never a matrix.
+ $code=Invoke-CurrentController $paths 'run' $ManifestSha256 $StageSha256
+ Write-Output ('Run evidence: '+$paths.run+'; controllerExit='+$code)
+ exit $code
+--- ordinary-reload-current/Export-Ordinary.ps1
++++ tray-recovery-vm-current/payload/Export-TrayRecovery.ps1
+@@ -1,18 +1,26 @@
+ [CmdletBinding()]
+-param([Parameter(Mandatory=$true,Position=0)][ValidateSet('ord')][string]$Kind,
+-  [Parameter(Mandatory=$true,Position=1)][ValidatePattern('^[a-z0-9][a-z0-9-]{0,23}$')][string]$Stamp,
+-  [Parameter(Mandatory=$true,Position=2)][ValidateSet('stage','run')][string]$Phase)
+-. (Join-Path $PSScriptRoot 'Ordinary-Lib.ps1')
++param([Parameter(Mandatory=$true,Position=0)][ValidateSet('stage','x64','x86')][string]$Phase,
++ [Parameter(Mandatory=$true,Position=1)][ValidatePattern('^[a-f0-9]{64}$')][string]$ManifestSha256)
++. (Join-Path $PSScriptRoot 'TrayRecovery-Lib.ps1')
+ Assert-CurrentGuest
+-$paths=Get-CurrentPaths $Kind $Stamp
++$paths=Get-CurrentPaths $Phase
+ $folder=if($Phase-ceq'stage'){$paths.stage}else{$paths.run}
+ $folderItem=Get-Item -LiteralPath $folder -Force
+ if(-not$folderItem.PSIsContainer-or($folderItem.Attributes-band[IO.FileAttributes]::ReparsePoint)){throw 'Plain current evidence root required'}
++$payload=Read-CurrentManifest $paths $paths.root $ManifestSha256
++$iso=Read-CurrentManifest $paths 'D:\' $ManifestSha256
+ $closed=Read-CurrentClosedLauncher $folder
++if($Phase-cne'stage'){
++  $ready=[IO.File]::ReadAllText((Join-Path $folder 'ready.json'),[Text.Encoding]::UTF8)|ConvertFrom-Json
++  $result=[IO.File]::ReadAllText((Join-Path $folder 'finished.json'),[Text.Encoding]::UTF8)|ConvertFrom-Json
++  $context=[IO.File]::ReadAllText((Join-Path $folder 'owned.ndjson.context.json'),[Text.Encoding]::UTF8)|ConvertFrom-Json
++  if(-not$result.closureConfirmed-or-not$result.terminal.rootExited-or$result.terminal.activeProcesses-ne0-or$context.timeoutMs-ne100000-or$context.drainMs-ne2000-or$ready.pid-ne$result.pid-or$ready.creationFileTime-cne$result.creationFileTime-or$result.reportSha256-cne(Get-CurrentPin (Join-Path $folder 'owned.ndjson')).sha256){throw 'Actual native Owned closure/context differs; preserve pending evidence'}
++  $nativeEnded=Assert-CurrentProcessEnded $ready.pid ([string]$ready.creationFileTime)
++}else{$nativeEnded=$null}
+ foreach($name in @('ExportFiles.actual.json','SerialExport.actual.json','ExportPreflight.actual.json')){if(Test-Path -LiteralPath (Join-Path $folder $name)){throw 'One fresh export only; preserve earlier catalogs and serial markers'}}
+ $exporter=Get-CurrentPin 'C:\issues8\Guest-Export.ps1'
+ if($exporter.sha256-cne'f1cc23cfa6d76d35b2a6d8dd0779ceb332a42b51f74271bf097b5e9b44f1ce7c'){throw 'Existing unchanged serial exporter identity differs'}
+-Write-NewCurrentJson (Join-Path $folder 'ExportPreflight.actual.json') @{schema='soui.current-closed-export-preflight/v1';kind=$Kind;phase=$Phase;machine=$script:CurrentMachine;observedUtc=[DateTime]::UtcNow.ToString('o');closedLauncher=$closed;exporter=$exporter;scope='Closed exact fresh evidence files only; no whole serial, private catalog or external inputs';testPassed=$null;releaseReady=$false}
++Write-NewCurrentJson (Join-Path $folder 'ExportPreflight.actual.json') @{schema='soui.current-closed-export-preflight/v1';kind='tray-recovery';phase=$Phase;nativeRoot=$nativeEnded;machine=$script:CurrentMachine;observedUtc=[DateTime]::UtcNow.ToString('o');closedLauncher=$closed;exporter=$exporter;scope='Closed exact fresh evidence files only; no whole serial, private catalog or external inputs';testPassed=$null;releaseReady=$false}
+ $files=@(Get-CurrentFiles $folder|Sort-Object)
+ if($files.Count-gt512){throw 'More than512 files; preserve full tree and prepare explicit complete batches'}
+ $pins=@();$bytes=[long]0
+--- ordinary-reload-current/Guest-Ordinary.cjs
++++ tray-recovery-vm-current/payload/Guest-TrayRecovery.cjs
+@@ -1,7 +1,7 @@
+ 'use strict';
+-// Current0.6 installed consumer only. Old0.5.1 suites/readers remain read-only.
++// Task-VM only. One architecture per explicit command; no Shell restart or input injection.
+ const fs=require('node:fs'),path=require('node:path'),os=require('node:os'),crypto=require('node:crypto'),assert=require('node:assert/strict');
+-const {StringDecoder}=require('node:string_decoder');
++const {TextDecoder}=require('node:util');
+ const root=__dirname,hash=b=>crypto.createHash('sha256').update(b).digest('hex');
+ function pin(f){const s=fs.lstatSync(f);assert(s.isFile()&&!s.isSymbolicLink());const b=fs.readFileSync(f);return {path:f,bytes:b.length,sha256:hash(b)};}
+ function check(p){const a=pin(p.path);assert.equal(a.bytes,p.bytes);assert.equal(a.sha256,p.sha256);}
+@@ -9,68 +9,98 @@
+ function write(f,o){fs.writeFileSync(f,JSON.stringify(o,null,2)+'\n',{flag:'wx'});}
+ function names(d,p=''){return fs.readdirSync(path.join(d,p),{withFileTypes:true}).flatMap(e=>{assert(!e.isSymbolicLink());const n=p?p+'/'+e.name:e.name;return e.isDirectory()?names(d,n):(assert(e.isFile()),[n]);}).sort();}
+ function relative(p){assert(typeof p==='string'&&!path.isAbsolute(p)&&!p.includes('\\')&&p.split('/').every(s=>s&&s!=='.'&&s!=='..'&&!s.includes(':')));return p;}
+-function records(f){const b=fs.readFileSync(f);assert(b.length&&b.at(-1)===10,'Missing/truncated NDJSON');return b.toString('utf8').trimEnd().split('\n').map(JSON.parse);}
+ function natural(r){const t=r.terminal;assert(r.passed&&r.exitCode===0&&r.supervisorExitCode===0&&r.signal===null&&r.spawnError===null&&r.reportError===null&&!r.stopRequested&&!r.fallbackUsed&&r.closureConfirmed);assert(t&&t.reason==='completed'&&t.rootExited&&t.rootExitCode===0&&t.activeBeforeCleanup===0&&t.activeProcesses===0&&!t.terminatedOwnedJob&&t.limitTerminatedProcesses===0&&t.closureConfirmed&&t.passed);}
+ function verifyRuntime(arm){
+   assert.equal(arm.runtimeDirectory,'runtime-'+arm.architecture);
+-  const d=path.join(root,arm.runtimeDirectory),expected=arm.files.map(p=>relative(p.relative)).sort();assert.deepEqual(names(d).filter(n=>n!=='resources/source-navigation.log'),expected);
++  const d=path.join(root,arm.runtimeDirectory);assert.deepEqual(names(d),arm.files.map(p=>relative(p.relative)).sort());
+   for(const p of arm.files)check({...p,path:path.join(d,relative(p.relative))});
+ }
++function validateNative(file,architecture,ready){
++  const raw=fs.readFileSync(file);assert(raw.length>0&&raw.length<=8388608&&raw.at(-1)===10,'Complete bounded native NDJSON required');
++  const text=new TextDecoder('utf-8',{fatal:true}).decode(raw);assert(Buffer.from(text,'utf8').equals(raw));
++  const rows=text.trimEnd().split('\n').map(JSON.parse);assert(rows.length>0&&rows.length<=128);
++  const first=rows[0],last=rows.at(-1);assert.equal(first.event,'run.started');assert.equal(last.event,'run.finished');
++  let elapsed=-1;
++  for(const [i,r]of rows.entries()){
++    assert.equal(r.sequence,i+1);assert(Number.isInteger(r.elapsedMs)&&r.elapsedMs>=elapsed&&r.elapsedMs<90000);elapsed=r.elapsedMs;
++    assert.equal(r.sdkVersion,'0.6.0');assert.equal(r.architecture,architecture);assert.equal(r.pid,ready.pid);
++    assert.equal(r.birthFileTime,ready.creationFileTime);assert.equal(r.runId,`${ready.pid}-${ready.creationFileTime}`);
++    assert(/^[0-9]{10,20}$/.test(r.utcFileTime));
++    assert(!['run.error','stage.error','cleanup.error','log.limit-reached','owner.userdata-failed'].includes(r.event));
++  }
++  assert.equal(first.wholeDeadlineMs,90000);assert.equal(first.timerMs,50);assert.equal(first.iconId,73);assert.equal(first.messageSourceVerified,false);
++  const one=event=>{const a=rows.filter(r=>r.event===event);assert.equal(a.length,1,event);return a[0];};
++  const all=event=>rows.filter(r=>r.event===event);
++  const resident=r=>assert(r.installed===true&&r.desired===true&&r.cleanupPending===false);
++  const clean=r=>assert(r.installed===false&&r.desired===false&&r.cleanupPending===false);
++  const before=(a,b)=>assert(rows.indexOf(a)<rows.indexOf(b),`${a.event} must precede ${b.event}`);
++  assert.equal(one('owner.created').visible,true);const installed=one('tray.install');assert(installed.ok);resident(installed);
++  const notifications=all('taskbar.received');assert.equal(notifications.length,2);assert.deepEqual(notifications.map(r=>r.count),[1,2]);assert(notifications.every(r=>r.sourceVerified===false));
++  const dispatched=all('tray.taskbar-dispatched');assert.equal(dispatched.length,2);assert.deepEqual(dispatched.map(r=>r.stage),[1,2]);assert(dispatched.every(r=>r.handled&&r.ok&&r.sourceVerified===false));resident(dispatched[0]);clean(dispatched[1]);
++  const recovered=one('stage.recovery-confirmed');resident(recovered);assert.equal(recovered.removeEnabled,true);
++  const removed=one('tray.remove');assert(removed.ok&&removed.call===1);clean(removed);assert.equal(all('tray.cleanup-remove').length,0);
++  const noResurrection=one('stage.no-resurrection');clean(noResurrection);assert.equal(noResurrection.settleMs,500);assert.equal(noResurrection.finishEnabled,false);
++  const settled=one('stage.settled');clean(settled);assert.equal(settled.finishEnabled,true);assert(settled.elapsedMs-noResurrection.elapsedMs>=500);
++  const snapshots=all('explorer.snapshot');assert.equal(snapshots.length,6);
++  assert.deepEqual(snapshots.map(r=>r.step),['initial.before-install','first-restart.before-dispatch','remove.before-call','second-restart.before-dispatch','settle.before-finish-enable','finish.before-close']);
++  for(const r of snapshots)assert(r.explorerPid>0&&/^[0-9]{10,20}$/.test(r.explorerBirthFileTime)&&/\\explorer\.exe$/i.test(r.imagePath)&&r.waitResult===258&&r.waitError===0&&r.sourceVerified===false);
++  const same=(a,b)=>a.explorerPid===b.explorerPid&&a.explorerBirthFileTime===b.explorerBirthFileTime&&a.imagePath.toLowerCase()===b.imagePath.toLowerCase();
++  assert(!same(snapshots[0],snapshots[1]));assert(same(snapshots[1],snapshots[2]));assert(!same(snapshots[1],snapshots[3]));assert(same(snapshots[3],snapshots[4])&&same(snapshots[3],snapshots[5]));
++  const restarts=all('explorer.restart-observed');assert.equal(restarts.length,2);
++  for(const [i,r]of restarts.entries()){const old=snapshots[i===0?0:1];assert(r.oldPid===old.explorerPid&&r.oldBirthFileTime===old.explorerBirthFileTime&&r.oldWaitResult===0&&r.oldWaitError===0&&r.oldExited&&r.differentIdentity&&r.sameImagePath&&r.sourceVerified===false&&r.externalRestartProofRequired);}
++  assert.equal(all('explorer.continuity').length,3);assert(all('explorer.continuity').every(r=>r.sameIdentity));
++  const handles=all('explorer.handle-closed');assert.equal(handles.length,6);assert(handles.every(r=>r.ok&&r.win32Error===0));assert.equal(handles.filter(r=>r.step==='final-cleanup').length,3);
++  const exit=one('exit.requested');assert(exit.successRequested&&!exit.failureLatched&&exit.requestedQuitCode===0&&exit.finalExitPendingCleanup);
++  const cleanup=one('tray.cleanup-state');clean(cleanup);assert(cleanup.confirmed);
++  const service=one('service.destroyed'),owner=one('owner.destroyed');assert(service.beforeOwnerDestruction&&owner.ok&&one('timer.stopped').ok&&one('owner.class-unregistered').ok);
++  const stages=[installed,one('stage.await-first-restart'),notifications[0],restarts[0],dispatched[0],recovered,removed,one('stage.await-second-restart'),notifications[1],restarts[1],dispatched[1],noResurrection,settled,exit,cleanup,service,owner,last];
++  for(let i=1;i<stages.length;i++)before(stages[i-1],stages[i]);
++  assert(last.exitCode===0&&last.allStagesComplete&&last.cleanupConfirmed&&last.taskbarCreatedCount===2&&last.removeCalls===1&&last.messageSourceVerified===false&&last.externalRestartProofRequired&&last.focusVerified===false);
++  return {records:rows.length,runId:first.runId,pid:first.pid,birthFileTime:first.birthFileTime,elapsedMs:last.elapsedMs,explorerSnapshots:snapshots,observedRestarts:restarts,removeCalls:1,taskbarCreatedCount:2,nativeProtocolPassed:true,externalRestartProofRequired:true,explorerRestartIndependentlyQualified:false,focusQualified:false,win7Qualified:false};
++}
+ async function main(){
+-  const [mode,manifestFile,manifestSha,machine,output,gate,stageFile,stageSha]=process.argv.slice(2);
+-  assert(['stage','run'].includes(mode));assert.equal(process.platform,'win32');assert.equal(process.arch,'x64');assert(/^C:\\ordc-[a-z0-9-]*$/i.test(root));
++  const [mode,architecture,manifestFile,manifestSha,machine,output,gate,stageFile,stageSha]=process.argv.slice(2);
++  assert.equal(process.argv.length,mode==='stage'?8:11);assert(['stage','run'].includes(mode));assert.equal(process.platform,'win32');assert.equal(process.arch,'x64');assert.equal(root.toLowerCase(),'c:\\trayrc-a1');
+   assert(/^[a-f0-9]{64}$/.test(manifestSha));assert.equal(pin(manifestFile).sha256,manifestSha);const manifest=json(manifestFile);
+-  assert.equal(manifest.schema,'soui.current-ordinary-acceptance-light-payload/v1');assert.equal(manifest.version,'0.6.0');assert.deepEqual(manifest.arms.map(a=>a.architecture),['x64','x86']);assert.equal(os.hostname().toLowerCase(),machine.toLowerCase());assert.notEqual(os.hostname().toLowerCase(),manifest.preparationHost.toLowerCase());
+-  assert(/^C:\\issue-closeout-evidence\\ordc-[a-z0-9-]+$/i.test(output));assert(fs.statSync(output).isDirectory());
++  assert.equal(manifest.schema,'soui.current-tray-recovery-light-payload/v1');assert.equal(manifest.version,'0.6.0');assert.deepEqual(manifest.arms.map(a=>a.architecture),['x64','x86']);
++  assert.equal(machine,'SOUI-7AEMMK5Q0T');assert.equal(os.hostname().toLowerCase(),machine.toLowerCase());assert.notEqual(os.hostname().toLowerCase(),manifest.preparationHost.toLowerCase());
++  assert.equal(path.resolve(output).toLowerCase(),`c:\\issue-closeout-evidence\\trayrc-a1-${mode==='stage'?'stage':architecture}`);assert(fs.statSync(output).isDirectory());
++  assert(mode==='stage'?architecture==='stage':['x64','x86'].includes(architecture));
+   for(const name of ['NODE_OPTIONS','NODE_PATH','NODE_REPL_EXTERNAL_MODULE','SOUI_DIAGNOSTIC_SCRIPT','SOUI_BRIDGE_TRACE','SOUI_OWNED_PROCESS_RUNNER'])assert(!process.env[name]);
+-  const verifyInputs=()=>{assert.equal(pin(manifestFile).sha256,manifestSha);for(const p of manifest.payloadFiles)check({...p,path:path.join(root,relative(p.relative))});for(const p of manifest.readerPins)check(p);for(const p of Object.values(manifest.tools))check(p);};
++  const verifyInputs=()=>{assert.equal(pin(manifestFile).sha256,manifestSha);assert.equal(manifest.payloadFiles.length,8);for(const p of manifest.payloadFiles)check({...p,path:path.join(root,relative(p.relative))});for(const p of Object.values(manifest.tools))check(p);};
+   assert.equal(path.resolve(process.execPath).toLowerCase(),path.resolve(manifest.tools.node.path).toLowerCase());verifyInputs();
+   const lease=json(output+'/Lease.actual.json');assert(lease.acquired&&lease.ownerProcessId===process.ppid&&lease.name==='Local\\SouiDevKit.DesktopValidation');
++  write(output+'/Inputs.actual.json',{schema:'soui.current-tray-recovery-inputs/v1',controllerPid:process.pid,controllerParentPid:process.ppid,controllerBirthNotCollected:true,manifest:pin(manifestFile),controller:pin(__filename),tools:manifest.tools,architecture,mode,inputInjection:false,externalRestartProofRequired:true,releaseReady:false});
+   if(mode==='stage'){
+-    const copies=[];
+-    for(const arm of manifest.arms){
+-      assert.equal(arm.runtimeDirectory,'runtime-'+arm.architecture);
+-      const d=path.join(root,arm.runtimeDirectory);assert(!fs.existsSync(d),'Preserve prior current runtime');fs.mkdirSync(d);
+-      for(const f of arm.files){const source=f.fromPayload?path.join(root,relative(f.source)):f.source;assert(path.isAbsolute(source));check({...f,path:source});const target=path.join(d,relative(f.relative));fs.mkdirSync(path.dirname(target),{recursive:true});fs.copyFileSync(source,target,fs.constants.COPYFILE_EXCL);check({...f,path:target});check({...f,path:source});copies.push({source:pin(source),copy:pin(target)});}
++    const copies=[];let failure=null;
++    try{for(const arm of manifest.arms){
++      assert.equal(arm.runtimeDirectory,'runtime-'+arm.architecture);const d=path.join(root,arm.runtimeDirectory);assert(!fs.existsSync(d),'Preserve prior runtime');fs.mkdirSync(d);
++      for(const f of arm.files){const source=f.fromPayload?path.join(root,relative(f.source)):f.source;assert(path.isAbsolute(source));check({...f,path:source});const target=path.join(d,relative(f.relative));fs.copyFileSync(source,target,fs.constants.COPYFILE_EXCL);check({...f,path:target});check({...f,path:source});copies.push({source:pin(source),copy:pin(target)});}
+       verifyRuntime(arm);
+-    }
+-    verifyInputs();write(output+'/Stage.actual.json',{schema:'soui.current-ordinary-acceptance-stage/v1',passed:true,machine:os.hostname(),manifest:pin(manifestFile),copies,oldSuitesChanged:false,version:'0.6.0',productExecuted:false,messagePortBehaviorAsserted:false,releaseReady:false});
+-    console.log(JSON.stringify({stage:pin(output+'/Stage.actual.json'),productExecuted:false}));return;
++    }verifyInputs();}catch(error){failure={message:error.message,stack:error.stack};}
++    write(output+'/Stage.actual.json',{schema:'soui.current-tray-recovery-stage/v1',passed:!failure,machine:os.hostname(),controllerPid:process.pid,manifest:pin(manifestFile),copies,failure,version:'0.6.0',productExecuted:false,oldRuntimeChanged:false,releaseReady:false});
++    if(failure)throw Error(failure.message);console.log(JSON.stringify({stage:pin(output+'/Stage.actual.json'),productExecuted:false}));return;
+   }
+-  assert.equal(gate,'ROOT_REVIEWED_CURRENT_ORDINARY_STAGE_V1');assert(/^[a-f0-9]{64}$/.test(stageSha));assert.equal(pin(stageFile).sha256,stageSha);const staged=json(stageFile);assert(staged.passed&&!staged.productExecuted&&staged.manifest.sha256===manifestSha&&staged.machine===os.hostname());
+-  const reader=require(manifest.readers.runner),{createSupervisor}=require(manifest.readers.supervisor),{launchOwned}=require(manifest.tools.ownedModule.path);
+-  const config=reader.settings('reload',3,0,500,20000);assert.equal(reader.expectedSteps(config).length,9);
+-  const results=[],attempted=[];let failure=null;
+-  try{for(const arm of manifest.arms){
+-    verifyInputs();verifyRuntime(arm);attempted.push(arm.architecture);const d=path.join(output,arm.architecture);fs.mkdirSync(d);
+-    const runtime=path.join(root,arm.runtimeDirectory),executable=path.join(runtime,'SouiAcceptance.exe'),log=path.join(d,'events.ndjson'),ownedLog=path.join(d,'owned.ndjson');
+-    const args=['--mode=reload','--cycles=3','--warmup=0','--settle-ms=500','--timeout-ms=20000','--report='+log];
+-    const out=fs.openSync(path.join(d,'stdout.raw'),'wx'),err=fs.openSync(path.join(d,'stderr.raw'),'wx');let child=null,result=null,ready=null,timeoutReason=null,timer=null,monitor=null;
+-    let observedBytes=0,partial='',supervisor=null;const decoder=new StringDecoder('utf8');
+-    const expire=reason=>{if(timeoutReason!==null)return;timeoutReason=reason;write(path.join(d,'Timeout.actual.json'),{reason,observedBytes,partialBytes:Buffer.byteLength(partial),...supervisor.snapshot()});child.stop();};
+-    try{
+-      write(path.join(d,'Invocation.actual.json'),{version:'0.6.0',architecture:arm.architecture,executable:pin(executable),args,cwd:runtime,processTimeoutMs:214500,ownedTimeoutMs:394500,drainMs:2000,config,installedSdkProducer:manifest.installedSdkProducers[arm.architecture],webRebuilt:false,messagePortBehaviorAsserted:false});
+-      child=launchOwned(executable,args,{runner:manifest.tools.runner.path,cwd:runtime,report:ownedLog,timeoutMs:394500,drainMs:2000,stdout:out,stderr:err});
+-      ready=await child.ready;write(path.join(d,'ready.json'),ready);console.log(JSON.stringify({architecture:arm.architecture,event:'native-subject-ready',...ready}));
+-      supervisor=createSupervisor(config);timer=setTimeout(()=>expire('process-deadline'),214500);
+-      monitor=setInterval(()=>{try{
+-        if(fs.existsSync(log)){const size=fs.statSync(log).size;if(size<observedBytes)return expire('native-log-truncated');if(size>observedBytes){const fd=fs.openSync(log,'r'),b=Buffer.alloc(size-observedBytes);let n;try{n=fs.readSync(fd,b,0,b.length,observedBytes);}finally{fs.closeSync(fd);}observedBytes+=n;const lines=(partial+decoder.write(b.subarray(0,n))).split('\n');partial=lines.pop();for(const line of lines)supervisor.observe(JSON.parse(line));}}
+-        const reason=supervisor.deadlineReason();if(reason)expire(reason);
+-      }catch(error){expire('native-observation-failed:'+error.message);}},250);
+-      result=await child.finished;write(path.join(d,'finished.json'),result);
+-    }finally{clearTimeout(timer);clearInterval(monitor);if(child&&!result){child.stop();result=await child.finished;write(path.join(d,'unfinished-cleanup.json'),result);}fs.closeSync(out);fs.closeSync(err);}
+-    natural(result);assert.equal(timeoutReason,null);verifyRuntime(arm);verifyInputs();
+-    const raw=records(log),outcome={pid:result.pid,exitCode:result.exitCode,signal:result.signal,timedOut:false,timeoutReason:null,spawnError:result.spawnError,processTimeoutMs:214500,ownedProcess:result};
+-    const actual=reader.verifyNativeIdentity(raw,outcome),lifecycle=reader.validateRecords(raw,config,outcome);assert.equal(lifecycle.completedSteps,9);assert.equal(lifecycle.measuredCycles,3);assert.equal(lifecycle.samples.length,7);
+-    assert.equal(raw.length,27); // Original nine step pairs, seven actual samples, run begin/end.
+-    const mutable=[];for(const name of ['resources/source-navigation.log'])if(fs.existsSync(path.join(runtime,name))){const source=pin(path.join(runtime,name)),target=path.join(d,'source-navigation.log.raw');fs.copyFileSync(source.path,target,fs.constants.COPYFILE_EXCL);const copied=pin(target);assert.equal(source.sha256,copied.sha256);assert.equal(source.bytes,copied.bytes);mutable.push({source,copied});}
+-    const answer={architecture:arm.architecture,ready,result,lifecycle,nativeEvents:pin(log),browserBehaviorQualified:false,messagePortBehaviorAsserted:false,mutableRuntimeObservations:mutable,passed:true,wholeJobNatural:true,version:'0.6.0',currentSdk060Qualified:false,productionQualificationComplete:false,releaseReady:false};
+-    write(path.join(d,'Analysis.actual.json'),answer);results.push(answer);
+-  }}catch(error){failure={message:error.message,stack:error.stack};}
++  assert.equal(gate,'ROOT_REVIEWED_TRAY_RECOVERY_STAGE_V1');assert(/^[a-f0-9]{64}$/.test(stageSha));assert.equal(pin(stageFile).sha256,stageSha);const staged=json(stageFile);assert(staged.passed&&!staged.productExecuted&&staged.manifest.sha256===manifestSha&&staged.machine===os.hostname());
++  const arm=manifest.arms.find(a=>a.architecture===architecture);assert(arm);const {launchOwned}=require(manifest.tools.ownedModule.path);
++  let child=null,result=null,ready=null,protocol=null,failure=null;
++  const runtime=path.join(root,arm.runtimeDirectory),executable=path.join(runtime,'SouiTrayRecoveryConsumer.exe'),ownedLog=path.join(output,'owned.ndjson');
++  const stdout=fs.openSync(path.join(output,'stdout.bin'),'wx'),stderr=fs.openSync(path.join(output,'stderr.bin'),'wx');
++  try{
++    verifyRuntime(arm);verifyInputs();
++    write(output+'/Native.Invocation.actual.json',{version:'0.6.0',architecture,executable:pin(executable),args:[],cwd:runtime,timeoutMs:100000,drainMs:2000,innerDeadlineMs:90000,stage:pin(stageFile),sourcePins:manifest.sourcePins,inputInjection:false,explorerRestartPerformedByController:false,externalRestartProofRequired:true});
++    child=launchOwned(executable,[],{runner:manifest.tools.runner.path,cwd:runtime,report:ownedLog,timeoutMs:100000,drainMs:2000,stdout,stderr});
++    try{ready=await child.ready;write(output+'/ready.json',ready);console.log(JSON.stringify({architecture,event:'native-subject-ready',...ready,applicationReadyEstablished:false}));}catch(error){write(output+'/ready-error.json',{message:error.message});}
++    result=await child.finished;write(output+'/finished.json',result);natural(result);
++    const context=json(ownedLog+'.context.json');assert.deepEqual(context.args,[]);assert.equal(context.timeoutMs,100000);assert.equal(context.drainMs,2000);assert.equal(context.runnerSha256,manifest.tools.runner.sha256);assert.equal(context.executableSha256,pin(executable).sha256);assert(ready&&ready.pid===result.pid&&ready.creationFileTime===result.creationFileTime);
++    protocol=validateNative(path.join(output,'stdout.bin'),architecture,ready);assert.equal(fs.statSync(path.join(output,'stderr.bin')).size,0);
++  }catch(error){failure={message:error.message,stack:error.stack};}
+   finally{
+-    try{verifyInputs();for(const arm of manifest.arms)verifyRuntime(arm);}catch(error){failure||={message:error.message};}
+-    write(output+'/Summary.actual.json',{schema:'soui.current-ordinary-acceptance-finite-result/v1',version:'0.6.0',manifest:pin(manifestFile),stage:pin(stageFile),results,failure,attempted,remaining:manifest.arms.filter(a=>!attempted.includes(a.architecture)).map(a=>a.architecture),bothCurrentArchitectureFiniteCasesPassed:!failure&&results.length===2,messagePortBehaviorAsserted:false,currentSdk060Qualified:false,resourcePassed:false,productionQualificationComplete:false,fullDevtoolsGoalComplete:false,releaseReady:false});
++    if(child&&!result){child.stop();result=await child.finished;write(output+'/unfinished-cleanup.json',result);failure||={message:'Owned cleanup required after incomplete result; never a pass'};}
++    fs.closeSync(stdout);fs.closeSync(stderr);
++    try{verifyInputs();for(const a of manifest.arms)verifyRuntime(a);}catch(error){failure||={message:error.message};}
++    write(output+'/Summary.actual.json',{schema:'soui.current-tray-recovery-finite-result/v1',version:'0.6.0',machine:os.hostname(),controllerPid:process.pid,architecture,manifest:pin(manifestFile),stage:pin(stageFile),ready,result,protocol,failure,nativeRecoveryStateMachinePassed:!failure&&!!protocol,wholeOwnedJobNatural:!failure&&!!protocol,oneArchitectureOnly:true,automaticOtherArchitecture:false,externalRestartProofRequired:true,explorerRestartIndependentlyQualified:false,focusQualified:false,win7Qualified:false,productionQualificationComplete:false,releaseReady:false});
+   }
+-  if(failure)throw Error(failure.message);console.log(JSON.stringify({summary:pin(output+'/Summary.actual.json'),bothCurrentArchitectureFiniteCasesPassed:true,messagePortBehaviorAsserted:false,releaseReady:false}));
++  if(failure)throw Error(failure.message);console.log(JSON.stringify({summary:pin(output+'/Summary.actual.json'),architecture,nativeRecoveryStateMachinePassed:true,explorerRestartIndependentlyQualified:false}));
+ }
+ main().catch(error=>{console.error(error.stack);process.exitCode=1;});
+--- current-serial-tools/Decode-FocusExport.cjs
++++ tray-recovery-vm-current/Decode-TrayRecoveryExport.cjs
+@@ -20,7 +20,7 @@
+   need(typeof p==='string'&&p.length<1024,'Invalid original path');
+   const match=/^C:\\issue-closeout-evidence\\([a-z0-9-]{1,80})\\(.+)$/i.exec(p);
+   need(match,'Original path outside task evidence root');
+-  need(/^(?:mp77c|wb31c|focusc)-[a-z0-9][a-z0-9-]{0,23}-(?:stage|run)$/.test(match[1]),'Not a current stage/run evidence root');
++  need(/^trayrc-a1-(?:stage|x64|x86)$/.test(match[1]),'Not a current stage/run evidence root');
+   need(!expectedRun||match[1]===expectedRun,'Multiple original evidence roots');
+   need(path.win32.normalize(p)===p,'Original path has noncanonical navigation');
+   const segments=match[2].split('\\');
