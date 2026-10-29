@@ -471,7 +471,7 @@ function validationBindingFixture(t, architecture = 'x64') {
     if (!fs.existsSync(path.join(f.toolsRoot, relative))) put(relative, '// inert canonical source fixture: ' + relative + '\n');
   const source = profile.pin(path.join(f.toolsRoot, sourcePath));
   const executables = ['OwnedProcessRunner', 'OwnedProcessAssignmentFixture', 'ProcessTreeSampler', 'InputTrace', 'NativeTraceIdentity',
-    'OwnedTailProcessFixture', 'OwnedTailMutationFixture', 'OwnedTailApiFixture', 'DisplayCalibration'].map(name => {
+    'OwnedTailProcessFixture', 'OwnedTailMutationFixture', 'OwnedTailApiFixture', 'DisplayCalibration', 'BurstInput'].map(name => {
     const relative = 'out/' + (architecture === 'x64' ? 'benchmark-protocol' : 'benchmark-protocol-x86') + '/Release/' + name + '.exe';
     const bytes = Buffer.alloc(128); bytes.writeUInt16LE(0x5a4d, 0); bytes.writeUInt32LE(64, 60);
     bytes.writeUInt32LE(0x4550, 64); bytes.writeUInt16LE(architecture === 'x64' ? 34404 : 332, 68);
@@ -500,7 +500,7 @@ function validationBindingFixture(t, architecture = 'x64') {
     Object.entries(values).map(([name, value]) => `set(CMAKE_CXX_${name} "${value}")`).join('\n') + '\n');
   const configured = profile.inspectCache(request, build, path.join(f.toolsRoot, 'benchmarks/protocol'), 'Release');
   const record = put(path.relative(f.toolsRoot, path.join(build, 'inert-observation.log')), 'inert log; no actual compile\n');
-  const bindings = Array.from({length: 13}, (_, index) => ({source,
+  const bindings = Array.from({length: 15}, (_, index) => ({source,
     object: put(path.relative(f.toolsRoot, path.join(build, 'fixture-' + index + '.obj')), 'inert object bytes\n')}));
   const ninja = put(path.relative(f.toolsRoot, path.join(build, 'CMakeFiles/impl-Release.ninja')), 'include CMakeFiles/common.ninja\n');
   const workdir = cmake(build).replaceAll('$', () => '$$').replaceAll(':', '$:').replaceAll(' ', '$ ') + '/';
@@ -512,7 +512,7 @@ function validationBindingFixture(t, architecture = 'x64') {
   const observation = {schema: 'soui.llvm-measurement-observation/v1', ...configured,
     records: {fixture: record, ninja, common, rules}, ninjaWorkdirBinding, bindings,
     links: executables.map(row => ({executable: profile.pin(path.join(f.toolsRoot, row.path))})), dependencyPins: [source],
-    compileObjects: 13, executableTargets: 9, compilerVerified: false, nativeClosureVerified: false, qualificationPassed: false};
+    compileObjects: 15, executableTargets: 10, compilerVerified: false, nativeClosureVerified: false, qualificationPassed: false};
   const report = {schema: 'soui.measurement-tool-preparation/v2', prepared: true, architecture, configuration: 'Release', buildExitCode: 0,
     source: measurement.fingerprint({toolchainRequest: f.requestFile}, f.toolsRoot), executables,
     nativeToolchain: {profile: 'LLVM22MSVC142', inputIdentity: request.inputIdentity, bridgeIdentity: request.bridgeIdentity,

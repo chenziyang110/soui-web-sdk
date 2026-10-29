@@ -129,7 +129,15 @@ namespace blink {class Platform {public:content::WebThreadImpl*owner=nullptr;sta
 #define CloseThreadpoolTimer fixture::closePoolTimer
 #define timeBeginPeriod fixture::beginPrecision
 #define timeEndPeriod fixture::endPrecision
+#ifdef __clang__
+#pragma clang diagnostic push
+// The byte-verified legacy fragment uses Win32 aggregate zero initialization.
+#pragma clang diagnostic ignored "-Wmissing-field-initializers"
+#endif
 #include "SharedTimerWin.h"
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
 namespace content {
 #include "scheduler.inc"
 #include "enable.inc"

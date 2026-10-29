@@ -14,7 +14,7 @@ const tailRuntimeInputs=['tools/internal/owned-tail-evidence.cjs','tools/interna
  'tools/internal/standard-build.cjs','tools/internal/build-evidence.cjs','tools/internal/delivery-identity.cjs',
  'tests/benchmark/tail-evidence-fixtures.cjs'];
 const names=['OwnedProcessRunner','OwnedProcessAssignmentFixture','ProcessTreeSampler','InputTrace','NativeTraceIdentity',
- 'OwnedTailProcessFixture','OwnedTailMutationFixture','OwnedTailApiFixture','DisplayCalibration'];
+ 'OwnedTailProcessFixture','OwnedTailMutationFixture','OwnedTailApiFixture','DisplayCalibration','BurstInput'];
 const sourceNames=['benchmarks/protocol/CMakeLists.txt','benchmarks/protocol/owned-process-runner.cpp',
  'benchmarks/protocol/owned-process-cohort.h',
  'benchmarks/protocol/owned-tail-evidence.cpp','benchmarks/protocol/owned-tail-evidence.h',
@@ -24,7 +24,8 @@ const sourceNames=['benchmarks/protocol/CMakeLists.txt','benchmarks/protocol/own
  'cmake/SouiWindowsSdk.cmake','tools/internal/Build-ValidationTools.ps1','tools/internal/Find-Toolchain.ps1',
  'tools/internal/Msvc-CompilerLifecycle.ps1','tools/internal/measurement-validation.cjs',
  'tests/benchmark/owned-tail-process-fixture.cpp','tests/benchmark/owned-tail-mutation-fixture.cpp','tests/benchmark/owned-tail-api-fixture.cpp',
- 'benchmarks/protocol/display-calibration.cpp'];
+ 'benchmarks/protocol/display-calibration.cpp','benchmarks/protocol/burst-input.cpp',
+ 'benchmarks/protocol/burst-desktop-observer.cpp','benchmarks/protocol/burst-desktop-observer.h'];
 const hash=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
 const encoded=value=>JSON.stringify(value,null,2)+'\n';
 function need(condition,message){if(!condition)throw new Error(message);}
