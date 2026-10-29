@@ -1,5 +1,10 @@
 # 变更记录
 
+## 未发布：MiniBlink稳定时钟路径
+
+- QPC可用且已同步时跳过未使用的GetSystemTime/mktime转换；UTC回退、首次同步精度窗口、原时钟域与倒退保护保持，不新增锁或依赖。
+- 原始源码字节补丁与两架构实际函数体观测夹具已提供并验证；完整内核/消费者重建与实际性能仍待执行。这项不作为WebView2 Scratch人工69FPS的改善证据。
+
 ## 未发布：Scratch 角色列表共享订阅候选
 
 - 新增显式源码配方 `local-hull-cache-gui-shared-v1`，角色列表共享全局 Redux 状态订阅；保留原角色资产 500ms 节流、默认 connected 用法、特殊 store/context 隔离及操作回调语义，不改变角色数、VM 通知或脚本工作量。

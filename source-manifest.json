@@ -7,8 +7,8 @@
     {
       "path": ".gitattributes",
       "normalization": "lf",
-      "bytes": 41002,
-      "sha256": "7efaaeb972ebf7e4140bd7f01282d0caccd01c9506e94bb400b1ac2c893fea3d"
+      "bytes": 41141,
+      "sha256": "ffc691716b4293a894ac4eba287a5cb02a960b51175ed9e87cd8e98388e57037"
     },
     {
       "path": ".github/CODEOWNERS",
@@ -67,8 +67,8 @@
     {
       "path": "CHANGELOG.md",
       "normalization": "lf",
-      "bytes": 65147,
-      "sha256": "308b72eab42411b2a9dc9902cedc9ec057814e412eb77e7ceb0f1434dcb9ecd6"
+      "bytes": 65570,
+      "sha256": "0e03c8b7dd4ff07f01f80f0f3a15e4a71fef3fc35793077a974d08b0c47ff717"
     },
     {
       "path": "CMakeLists.txt",
@@ -3441,6 +3441,12 @@
       "normalization": "lf",
       "bytes": 5696,
       "sha256": "0c13554ab604fd802cf752460485930928db863aed7ebbf8bd32509e10f7a205"
+    },
+    {
+      "path": "docs/adr/0145-miniblink-steady-clock-utc-read.md",
+      "normalization": "lf",
+      "bytes": 4542,
+      "sha256": "53ba3d307ee7d5908acdedda207008788a01d871cdb391401bb666c34a61c98f"
     },
     {
       "path": "docs/adr/README.md",
@@ -10459,8 +10465,8 @@
     {
       "path": "tests/native/CMakeLists.txt",
       "normalization": "lf",
-      "bytes": 46060,
-      "sha256": "e0c0686e1c295994fb022daecf3ae44532e45765b44c28d046666f85af9dd8c4"
+      "bytes": 46102,
+      "sha256": "e71f5b231ef04ef7e24cf3ad3737a1e7a9e17558b80c50b5f3085e170ef9c6a4"
     },
     {
       "path": "tests/native/action_contract_tests.cpp",
@@ -10485,6 +10491,42 @@
       "normalization": "lf",
       "bytes": 5834,
       "sha256": "a0692b312dd909e5e30af9eb12ad1fa37d62ff918014219ce25e36d8fbfdb385"
+    },
+    {
+      "path": "tests/native/current_time_hot_path/CMakeLists.txt",
+      "normalization": "lf",
+      "bytes": 1922,
+      "sha256": "f0299418300550491941cb0497291098e7b0f88c84f7758184b582ef8f4f72b5"
+    },
+    {
+      "path": "tests/native/current_time_hot_path/CurrentTimeImpl.original.cpp.hex",
+      "normalization": "lf",
+      "bytes": 15144,
+      "sha256": "743b75896b66ae74190b13b779c3dd31ecde3f8dddb2bc169d987f0aa8683b44"
+    },
+    {
+      "path": "tests/native/current_time_hot_path/LICENSE.original.txt",
+      "normalization": "lf",
+      "bytes": 1669,
+      "sha256": "e0890bbe4ac70f6118abf2119decc1768b4351012fa987e9eb23f7ac7932082a"
+    },
+    {
+      "path": "tests/native/current_time_hot_path/Project-Source.ps1",
+      "normalization": "lf",
+      "bytes": 4917,
+      "sha256": "ab7669494767e30bd7b9c27cd43cb8a7590598465d3db418f3309940694344c5"
+    },
+    {
+      "path": "tests/native/current_time_hot_path/README.md",
+      "normalization": "lf",
+      "bytes": 4683,
+      "sha256": "716eda46c5279dd5a4949e8e760996e46bd521ac7abc294998b4c45cc29e5081"
+    },
+    {
+      "path": "tests/native/current_time_hot_path/fixture.cpp",
+      "normalization": "lf",
+      "bytes": 13655,
+      "sha256": "c2b4ef76aa8f6843fbf2a421d8d024a80d8b127f3651f68a996d1b3393d50e02"
     },
     {
       "path": "tests/native/cursor_broker_scope_tests.cpp",
@@ -14951,6 +14993,12 @@
       "sha256": "eb14caa3da893b4a08deacce0b044ba3fd7ce87b9b1b4bb1a98fbbe0012ded48"
     },
     {
+      "path": "third_party/manifests/miniblink-steady-clock-20261029.json",
+      "normalization": "lf",
+      "bytes": 2339,
+      "sha256": "df1108f1fa4496f9c10d8a0b8ab375d9c9ab3a1e59a73b944cf05419157c51cf"
+    },
+    {
       "path": "third_party/manifests/provenance/preview14/third_party/patches/miniblink/0007-mark-utf8-source-encoding.patch",
       "normalization": "none",
       "bytes": 2293,
@@ -15185,10 +15233,16 @@
       "sha256": "41ae4a9ba8911a4a716d702e9d766df2c0df7ef263d7ba500ca3ab56d32b6ef1"
     },
     {
+      "path": "third_party/patches/miniblink/0026-steady-qpc-utc-read.patch",
+      "normalization": "none",
+      "bytes": 1020,
+      "sha256": "7a8c80fbc0b4beb20c7301ce7d35baeb0fcf5b2c2980c975c9fc5b10f4237f1d"
+    },
+    {
       "path": "third_party/patches/miniblink/README.md",
       "normalization": "lf",
-      "bytes": 16755,
-      "sha256": "eb6ba015a88624684faae325d34912369945688085c60b1cb0ba9cf8a64dbc71"
+      "bytes": 17736,
+      "sha256": "4c58c359d4a302f26f3607fb5c9af9308da1cdebef3f2281ac0d396a62283a60"
     },
     {
       "path": "third_party/patches/soui/0001-llvm-conformance.patch",
@@ -17803,8 +17857,8 @@
     {
       "path": "third_party/sources/miniblink/content/web_impl_win/CurrentTimeImpl.cpp",
       "normalization": "none",
-      "bytes": 7513,
-      "sha256": "83de811fe28ef57f6b0e0a73614ef81925c08097288be9f4de4c8eddc06c8d96"
+      "bytes": 7463,
+      "sha256": "28e65698db58df2261a054bce73b67b86c692e21ddcaa948e9d611e72fe58495"
     },
     {
       "path": "third_party/sources/miniblink/content/web_impl_win/CurrentTimeImpl.h",

@@ -1,0 +1,64 @@
+{
+  "schema": "soui.miniblink-source-candidate/v1",
+  "baselineCommit": "a00652824c176d586abe45c66f4dec93a74623c3",
+  "status": "source-and-bound-namespace-fixture",
+  "hashScope": "raw-file-bytes",
+  "binaryRebuilt": false,
+  "testsExecuted": true,
+  "testScope": "x86/x64 five actual source-namespace scenarios with deterministic Win32/CRT shims; not full production translation units or real clock APIs",
+  "performanceVerified": false,
+  "packageSizeVerified": false,
+  "patch": {
+    "path": "third_party/patches/miniblink/0026-steady-qpc-utc-read.patch",
+    "bytes": 1020,
+    "sha256": "7a8c80fbc0b4beb20c7301ce7d35baeb0fcf5b2c2980c975c9fc5b10f4237f1d"
+  },
+  "files": [
+    {
+      "path": "third_party/sources/miniblink/content/web_impl_win/CurrentTimeImpl.cpp",
+      "beforeBytes": 7513,
+      "beforeSha256": "83de811fe28ef57f6b0e0a73614ef81925c08097288be9f4de4c8eddc06c8d96",
+      "bytes": 7463,
+      "sha256": "28e65698db58df2261a054bce73b67b86c692e21ddcaa948e9d611e72fe58495"
+    }
+  ],
+  "preserved": {
+    "outsideActiveFunctionBytes": true,
+    "legacyFunctionBytes": true,
+    "sourceEncodingAndLineEndings": true,
+    "wkeAndProviderAbi": true
+  },
+  "replay": {
+    "currentTreeReverseCheck": true,
+    "originalReference": "tests/native/current_time_hot_path/CurrentTimeImpl.original.cpp.hex"
+  },
+  "fixture": {
+    "path": "tests/native/current_time_hot_path",
+    "architectures": [
+      "x86",
+      "x64"
+    ],
+    "scenariosPerArchitecture": 5,
+    "baselineRed": "candidate stable-QPC UTC calls: expected 0, got 4",
+    "result": "all five candidate cases passed on both architectures"
+  },
+  "limits": [
+    "Current default toolchain qualification and full production kernel/consumer rebuild remain pending.",
+    "No claim about WebView2 Scratch FPS, real clock timing, timezone, DST or shared static races."
+  ],
+  "evidence": {
+    "rootRole": "external-task-evidence",
+    "receipts": [
+      {
+        "path": "native/current-time-hot-path-baseline-qualified-r1/result.json",
+        "bytes": 4148,
+        "sha256": "98253568c4c4cc36eeaac568ff61192d35165886d0947ee58133780b21bbc2fc"
+      },
+      {
+        "path": "native/current-time-hot-path-green-r1/result.json",
+        "bytes": 6306,
+        "sha256": "63103276b863ed6a2b672ccd7419364939ba547fd6efad7dcc68651dda339ca7"
+      }
+    ]
+  }
+}

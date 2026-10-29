@@ -82,3 +82,9 @@
 当前完整文件字节、来源和补丁散列分别记录于 `third_party/manifests/miniblink-frame-presentation-20261029.json`、`third_party/manifests/miniblink-deadline-scheduler-20261029.json`。第三方文件采用原始字节定点改写，保留混合行尾与编码；新头纳入补丁和完整源清单。设计取舍见 ADR-0138 / ADR-0143 及 `docs/performance/main-integration.md`。
 
 当前仅源码集成与静态身份检查；没有新内核 DLL、构建/测试、体积或性能通过结论。历史补丁、原导入清单、二进制及已发布 0.6.0 证据保持各自原始角色。
+
+## 稳定QPC路径UTC读取：0026
+
+`0026-steady-qpc-utc-read.patch` 以a00652824为前件，仅重排在用 `CurrentTimeImpl.cpp::currentTimeImpl()` 的UTC采样位置。稳定QPC路径原先每次读取但不使用低分辨率UTC；初次同步还会覆盖第一次读取。候选仅在QPC不可用和原首次精度窗口内读取，保留原elapsed/锚、返回单位、倒退保护和未调用旧函数，不改变WKE/provider ABI或时钟域。
+
+原字节前后SHA、源码减少50字节及补丁身份见 `third_party/manifests/miniblink-steady-clock-20261029.json`。保留旧编码/行尾，当前树反向非写入检查通过。x86/x64各实际复现一次稳定UTC冗余的RED，候选各5项函数体加Win32/CRT观测shim场景通过；旧union初始化样式告警仅在测试导入区局部处理。完整生产TU、DLL/消费者、真实时钟/并发和FPS尚未据此验证，原二进制导入与历史清单不重写。设计及独立既有风险见ADR0145。
