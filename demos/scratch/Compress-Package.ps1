@@ -1,5 +1,6 @@
 param([Parameter(Mandatory=$true)][string]$Source,[Parameter(Mandatory=$true)][string]$Output)
 $ErrorActionPreference = 'Stop'
+Add-Type -AssemblyName System.IO.Compression
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 $sourcePath = (Resolve-Path -LiteralPath $Source).Path
 $outputPath = [IO.Path]::GetFullPath($Output)
