@@ -1,0 +1,10 @@
+^C:\SCW8-55FAF327-X86\OUT\X86\CMAKEFILES\DB8E73FB20D7ED9AB8ADDFEA8C6F3059\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/scw8-55faf327-x86/source -BC:/scw8-55faf327-x86/out/x86 --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/scw8-55faf327-x86/out/x86/SouiWorkbenchCurrentConsumer.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

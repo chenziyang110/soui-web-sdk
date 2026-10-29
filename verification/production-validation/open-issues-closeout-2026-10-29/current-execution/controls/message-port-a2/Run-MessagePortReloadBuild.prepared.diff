@@ -1,0 +1,22 @@
+--- byte-exact-original-Run-MessagePortBuild.cjs
++++ Run-MessagePortReloadBuild.cjs
+@@ -125,7 +125,7 @@
+     process.execPath,powershell,runner,preparation,readerPath,path.join(legacy,'tools/internal/delivery-identity.cjs'),path.join(legacy,'tools/internal/owned-process.cjs'),
+     ...codeNames.map(name=>path.join(repository,name)),...prepared.report.source.files.map(file=>path.join(legacy,file.path))];
+   const reuseFile=path.join(__dirname,'web-reuse/Reuse.actual.json'),reuse=JSON.parse(fs.readFileSync(reuseFile)); files.push(reuseFile,...reuse.sourcePins.map(p=>p.path),...reuse.copies.map(c=>c.copied.path));
+-  const installedRoots=['x64','x86'].map(a=>path.join(legacy,'out/release-install-'+a+'-release')); const installedFileSets=installedRoots.map(root=>({root,files:walk(root)})); for(const root of installedRoots)files.push(...walk(root)); files.push(...['CMakeLists.txt','main.cpp','shutdown-poll.h'].map(n=>path.join(repository,'tests/message-port-app',n))); const sourcePins=[...new Set(files.map(file=>path.resolve(file)))].map(pin),freeze=path.join(directory,'inputs-before.json');
++  files.push(path.join(__dirname,'ReloadPreparation.actual.json'),path.join(__dirname,'Run-MessagePortBuild.cjs'),path.join(__dirname,'source/README.md'),...walk(path.join(__dirname,'web-output'))); const installedRoots=['x64','x86'].map(a=>path.join(legacy,'out/release-install-'+a+'-release')); const installedFileSets=installedRoots.map(root=>({root,files:walk(root)})); for(const root of installedRoots)files.push(...walk(root)); files.push(...['CMakeLists.txt','main.cpp','shutdown-poll.h'].map(n=>path.join(repository,'tests/message-port-app',n))); const sourcePins=[...new Set(files.map(file=>path.resolve(file)))].map(pin),freeze=path.join(directory,'inputs-before.json');
+   save(directory,'inputs-before.json',{schema:'soui.message-port-consumer-build-only-inputs/v1',repository,runnerOrigin:legacy,
+     originalPreparedAt:prepared.report.preparedAt,originalPreparationGenericSupervisionPassed:null,sourcePins,
+     timeoutMs:120000,drainMs:2000,architectures:['x64','x86'],oldFailuresReclassified:false});
+@@ -150,8 +150,8 @@
+     const after=sourcePins.map(expected=>{try{return pin(expected.path);}catch(error){return {path:expected.path,error:error.message};}});
+     save(directory,'inputs-after.json',{sourcePins:after});
+     if(!isDeepStrictEqual(sourcePins,after)){failure??={message:'Frozen input bytes or metadata changed during the short smoke.'};}
+-    save(directory,'summary.json',{schema:'soui.message-port-consumer-build-only/v1',passed:failure===null&&verdicts.length===2,
+-      scope:'independent public MessagePort consumer compile x64 then x86 only',originalRunnerPreparationGenericSupervisionPassed:null,
++    save(directory,'summary.json',{schema:'soui.message-port-reload-consumer-build-only/v1',passed:failure===null&&verdicts.length===2,
++      scope:'post-E_RELOAD_PENDING MessagePort consumer compile x64 then x86 only; no SDK/Web rebuild or unchanged Workbench/policy repetition',originalRunnerPreparationGenericSupervisionPassed:null,
+       verdicts,failure,productExecuted:false,executableExecuted:false,oldFailuresReclassified:false,
+       currentFullBuildEntriesExecuted:false,productionQualified:false,releaseReady:false});
+   }

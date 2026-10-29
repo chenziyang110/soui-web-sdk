@@ -1,0 +1,467 @@
+{
+  "schema": "soui.current-message-port-finite-result/v1",
+  "version": "0.6.0",
+  "manifest": {
+    "path": "C:\\issue77ca2\\Current.manifest.json",
+    "bytes": 74576,
+    "sha256": "2a38ab95b705937cc35be30574e7930bce29b36d24bb3a30647bc6be3e86e0b9"
+  },
+  "stage": {
+    "path": "C:\\issue-closeout-evidence\\mp77c-a2-stage\\Stage.actual.json",
+    "bytes": 72780,
+    "sha256": "b119a40d2a463034eec929e462ad7125b514d1c3cbdd6996db5b8bd40b876935"
+  },
+  "results": [
+    {
+      "architecture": "x64",
+      "ready": {
+        "pid": 3592,
+        "creationFileTime": "134377432991630236"
+      },
+      "result": {
+        "pid": 3592,
+        "creationFileTime": "134377432991630236",
+        "exitCode": 0,
+        "supervisorExitCode": 0,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": true,
+        "terminal": {
+          "event": "terminal",
+          "reason": "completed",
+          "elapsedMs": 11002,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 1,
+          "limitTerminatedProcesses": 0,
+          "passed": true
+        },
+        "report": "C:\\issue-closeout-evidence\\mp77c-a2-run\\x64\\owned.ndjson",
+        "reportSha256": "5c2def6b5251977edc88899968ef94b1dcaf2715ed4cebc7424e792c66864556",
+        "runnerSha256": "f254dadd4eccad3c57d69e98f260d15ee598c0b6441b7fe68fc4ef5b3b7dea83",
+        "executableSha256": "038f85dddf997c7e0caab6834527d1b7e2386802723005346e5f7a778b873499"
+      },
+      "lifecycle": {
+        "completedSteps": 9,
+        "measuredCycles": 3,
+        "samples": [
+          {
+            "event": "sample",
+            "elapsedMs": 4,
+            "phase": "process",
+            "cycle": 0,
+            "privateBytes": 1245184,
+            "workingSetBytes": 5984256,
+            "handles": 95,
+            "threads": 3,
+            "gdiObjects": 0,
+            "userObjects": 2,
+            "windowClasses": {
+              "OleMainThreadWndClass": 1
+            }
+          },
+          {
+            "event": "sample",
+            "elapsedMs": 2767,
+            "phase": "mounted",
+            "cycle": 0,
+            "privateBytes": 37801984,
+            "workingSetBytes": 50462720,
+            "handles": 316,
+            "threads": 16,
+            "gdiObjects": 55,
+            "userObjects": 25,
+            "windowClasses": {
+              "CicMarshalWndClass": 1,
+              "IME": 2,
+              "MSCTFIME UI": 1,
+              "MbToolTip": 2,
+              "MiniBlinkTimerWindowClass": 1,
+              "OleMainThreadWndClass": 1,
+              "SouiMiniblinkInteractionWindowV1": 1,
+              "SouiPublicSdkAcceptanceV1": 1,
+              "SystemUserAdapterWindowClass": 1
+            }
+          },
+          {
+            "event": "sample",
+            "elapsedMs": 5148,
+            "phase": "cycle",
+            "cycle": 1,
+            "privateBytes": 46616576,
+            "workingSetBytes": 58720256,
+            "handles": 319,
+            "threads": 16,
+            "gdiObjects": 55,
+            "userObjects": 26,
+            "windowClasses": {
+              "CicMarshalWndClass": 1,
+              "IME": 2,
+              "MSCTFIME UI": 1,
+              "MbToolTip": 2,
+              "MiniBlinkTimerWindowClass": 1,
+              "OleMainThreadWndClass": 1,
+              "SouiMiniblinkInteractionWindowV1": 1,
+              "SouiPublicSdkAcceptanceV1": 1,
+              "SystemUserAdapterWindowClass": 1
+            }
+          },
+          {
+            "event": "sample",
+            "elapsedMs": 7601,
+            "phase": "cycle",
+            "cycle": 2,
+            "privateBytes": 57548800,
+            "workingSetBytes": 66555904,
+            "handles": 321,
+            "threads": 17,
+            "gdiObjects": 55,
+            "userObjects": 27,
+            "windowClasses": {
+              "CicMarshalWndClass": 1,
+              "IME": 2,
+              "MSCTFIME UI": 1,
+              "MbToolTip": 2,
+              "MiniBlinkTimerWindowClass": 1,
+              "OleMainThreadWndClass": 1,
+              "SouiMiniblinkInteractionWindowV1": 1,
+              "SouiPublicSdkAcceptanceV1": 1,
+              "SystemUserAdapterWindowClass": 1
+            }
+          },
+          {
+            "event": "sample",
+            "elapsedMs": 9938,
+            "phase": "cycle",
+            "cycle": 3,
+            "privateBytes": 61067264,
+            "workingSetBytes": 73830400,
+            "handles": 321,
+            "threads": 17,
+            "gdiObjects": 55,
+            "userObjects": 27,
+            "windowClasses": {
+              "CicMarshalWndClass": 1,
+              "IME": 2,
+              "MSCTFIME UI": 1,
+              "MbToolTip": 2,
+              "MiniBlinkTimerWindowClass": 1,
+              "OleMainThreadWndClass": 1,
+              "SouiMiniblinkInteractionWindowV1": 1,
+              "SouiPublicSdkAcceptanceV1": 1,
+              "SystemUserAdapterWindowClass": 1
+            }
+          },
+          {
+            "event": "sample",
+            "elapsedMs": 10787,
+            "phase": "closed",
+            "cycle": 4,
+            "privateBytes": 57946112,
+            "workingSetBytes": 69668864,
+            "handles": 300,
+            "threads": 15,
+            "gdiObjects": 51,
+            "userObjects": 16,
+            "windowClasses": {
+              "IME": 1,
+              "MiniBlinkTimerWindowClass": 1,
+              "OleMainThreadWndClass": 1,
+              "SystemUserAdapterWindowClass": 1
+            }
+          },
+          {
+            "event": "sample",
+            "elapsedMs": 10899,
+            "phase": "runtime-closed",
+            "cycle": 4,
+            "privateBytes": 8728576,
+            "workingSetBytes": 34959360,
+            "handles": 262,
+            "threads": 11,
+            "gdiObjects": 11,
+            "userObjects": 9,
+            "windowClasses": {
+              "OleMainThreadWndClass": 1,
+              "SystemUserAdapterWindowClass": 1
+            }
+          }
+        ],
+        "resourceGate": "not-evaluated",
+        "releaseReady": false
+      },
+      "observations": {
+        "schema": "soui.message-port-browser-behavior/v1",
+        "observedDocuments": 4,
+        "observedCases": 32,
+        "messageChannelBehaviorObserved": true,
+        "dedicatedWorkerMessagingObserved": true,
+        "boundedWorkerMessageSuppressionObserved": true,
+        "workerNativeJoinObserved": false,
+        "genericDebuggerWaitKillQualified": false,
+        "polyfillSchedulerBranchObserved": false,
+        "resourcePassed": false,
+        "osQualified": false,
+        "releaseReady": false
+      },
+      "nativeEvents": {
+        "path": "C:\\issue-closeout-evidence\\mp77c-a2-run\\x64\\events.ndjson",
+        "bytes": 4162,
+        "sha256": "5120cc8ccb5fa6bd2c96481cda9a7a6007132631bb9897ce1e83a1691ba14dfe"
+      },
+      "sidecar": {
+        "path": "C:\\issue-closeout-evidence\\mp77c-a2-run\\x64\\events.ndjson.message-port.ndjson",
+        "bytes": 14292,
+        "sha256": "78bdac8cd163019d618f08774f0ac02ff6c422de7eaa6fccf0d6fc295945ba57"
+      },
+      "mutableRuntimeObservations": [],
+      "passed": true,
+      "wholeJobNatural": true,
+      "version": "0.6.0",
+      "oldFourArmsPassed": false,
+      "currentSdk060Qualified": false,
+      "productionQualificationComplete": false,
+      "releaseReady": false
+    },
+    {
+      "architecture": "x86",
+      "ready": {
+        "pid": 4744,
+        "creationFileTime": "134377433108723942"
+      },
+      "result": {
+        "pid": 4744,
+        "creationFileTime": "134377433108723942",
+        "exitCode": 0,
+        "supervisorExitCode": 0,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": true,
+        "terminal": {
+          "event": "terminal",
+          "reason": "completed",
+          "elapsedMs": 10944,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 1,
+          "limitTerminatedProcesses": 0,
+          "passed": true
+        },
+        "report": "C:\\issue-closeout-evidence\\mp77c-a2-run\\x86\\owned.ndjson",
+        "reportSha256": "bcce9c9052283b6f96c1195f3b627be032717d49ed8e8b3f46fe8f0a7f9d6975",
+        "runnerSha256": "f254dadd4eccad3c57d69e98f260d15ee598c0b6441b7fe68fc4ef5b3b7dea83",
+        "executableSha256": "209e99b0213a1d8c98a11be89e71f66e4c09530060d67f1cec82c8edec1867b2"
+      },
+      "lifecycle": {
+        "completedSteps": 9,
+        "measuredCycles": 3,
+        "samples": [
+          {
+            "event": "sample",
+            "elapsedMs": 6,
+            "phase": "process",
+            "cycle": 0,
+            "privateBytes": 1372160,
+            "workingSetBytes": 6537216,
+            "handles": 115,
+            "threads": 3,
+            "gdiObjects": 0,
+            "userObjects": 2,
+            "windowClasses": {
+              "OleMainThreadWndClass": 1
+            }
+          },
+          {
+            "event": "sample",
+            "elapsedMs": 2769,
+            "phase": "mounted",
+            "cycle": 0,
+            "privateBytes": 30793728,
+            "workingSetBytes": 44314624,
+            "handles": 333,
+            "threads": 15,
+            "gdiObjects": 55,
+            "userObjects": 25,
+            "windowClasses": {
+              "CicMarshalWndClass": 1,
+              "IME": 2,
+              "MSCTFIME UI": 1,
+              "MbToolTip": 2,
+              "MiniBlinkTimerWindowClass": 1,
+              "OleMainThreadWndClass": 1,
+              "SouiMiniblinkInteractionWindowV1": 1,
+              "SouiPublicSdkAcceptanceV1": 1,
+              "SystemUserAdapterWindowClass": 1
+            }
+          },
+          {
+            "event": "sample",
+            "elapsedMs": 5117,
+            "phase": "cycle",
+            "cycle": 1,
+            "privateBytes": 39292928,
+            "workingSetBytes": 50098176,
+            "handles": 336,
+            "threads": 15,
+            "gdiObjects": 55,
+            "userObjects": 26,
+            "windowClasses": {
+              "CicMarshalWndClass": 1,
+              "IME": 2,
+              "MSCTFIME UI": 1,
+              "MbToolTip": 2,
+              "MiniBlinkTimerWindowClass": 1,
+              "OleMainThreadWndClass": 1,
+              "SouiMiniblinkInteractionWindowV1": 1,
+              "SouiPublicSdkAcceptanceV1": 1,
+              "SystemUserAdapterWindowClass": 1
+            }
+          },
+          {
+            "event": "sample",
+            "elapsedMs": 7473,
+            "phase": "cycle",
+            "cycle": 2,
+            "privateBytes": 46133248,
+            "workingSetBytes": 55697408,
+            "handles": 336,
+            "threads": 15,
+            "gdiObjects": 55,
+            "userObjects": 26,
+            "windowClasses": {
+              "CicMarshalWndClass": 1,
+              "IME": 2,
+              "MSCTFIME UI": 1,
+              "MbToolTip": 2,
+              "MiniBlinkTimerWindowClass": 1,
+              "OleMainThreadWndClass": 1,
+              "SouiMiniblinkInteractionWindowV1": 1,
+              "SouiPublicSdkAcceptanceV1": 1,
+              "SystemUserAdapterWindowClass": 1
+            }
+          },
+          {
+            "event": "sample",
+            "elapsedMs": 9840,
+            "phase": "cycle",
+            "cycle": 3,
+            "privateBytes": 51744768,
+            "workingSetBytes": 61788160,
+            "handles": 336,
+            "threads": 15,
+            "gdiObjects": 55,
+            "userObjects": 26,
+            "windowClasses": {
+              "CicMarshalWndClass": 1,
+              "IME": 2,
+              "MSCTFIME UI": 1,
+              "MbToolTip": 2,
+              "MiniBlinkTimerWindowClass": 1,
+              "OleMainThreadWndClass": 1,
+              "SouiMiniblinkInteractionWindowV1": 1,
+              "SouiPublicSdkAcceptanceV1": 1,
+              "SystemUserAdapterWindowClass": 1
+            }
+          },
+          {
+            "event": "sample",
+            "elapsedMs": 10693,
+            "phase": "closed",
+            "cycle": 4,
+            "privateBytes": 47624192,
+            "workingSetBytes": 57057280,
+            "handles": 315,
+            "threads": 13,
+            "gdiObjects": 51,
+            "userObjects": 15,
+            "windowClasses": {
+              "IME": 1,
+              "MiniBlinkTimerWindowClass": 1,
+              "OleMainThreadWndClass": 1,
+              "SystemUserAdapterWindowClass": 1
+            }
+          },
+          {
+            "event": "sample",
+            "elapsedMs": 10786,
+            "phase": "runtime-closed",
+            "cycle": 4,
+            "privateBytes": 7200768,
+            "workingSetBytes": 29974528,
+            "handles": 277,
+            "threads": 10,
+            "gdiObjects": 11,
+            "userObjects": 8,
+            "windowClasses": {
+              "OleMainThreadWndClass": 1,
+              "SystemUserAdapterWindowClass": 1
+            }
+          }
+        ],
+        "resourceGate": "not-evaluated",
+        "releaseReady": false
+      },
+      "observations": {
+        "schema": "soui.message-port-browser-behavior/v1",
+        "observedDocuments": 4,
+        "observedCases": 32,
+        "messageChannelBehaviorObserved": true,
+        "dedicatedWorkerMessagingObserved": true,
+        "boundedWorkerMessageSuppressionObserved": true,
+        "workerNativeJoinObserved": false,
+        "genericDebuggerWaitKillQualified": false,
+        "polyfillSchedulerBranchObserved": false,
+        "resourcePassed": false,
+        "osQualified": false,
+        "releaseReady": false
+      },
+      "nativeEvents": {
+        "path": "C:\\issue-closeout-evidence\\mp77c-a2-run\\x86\\events.ndjson",
+        "bytes": 4163,
+        "sha256": "ead18dcd3f078667cfdac768dcad60e3b3422a1cc415a552b8037b3e4f5d4fa3"
+      },
+      "sidecar": {
+        "path": "C:\\issue-closeout-evidence\\mp77c-a2-run\\x86\\events.ndjson.message-port.ndjson",
+        "bytes": 14292,
+        "sha256": "2ffcb18e940403231cc8be231d6e184278ef456b6d879c30c4b87d006ed2a85b"
+      },
+      "mutableRuntimeObservations": [],
+      "passed": true,
+      "wholeJobNatural": true,
+      "version": "0.6.0",
+      "oldFourArmsPassed": false,
+      "currentSdk060Qualified": false,
+      "productionQualificationComplete": false,
+      "releaseReady": false
+    }
+  ],
+  "failure": null,
+  "attempted": [
+    "x64",
+    "x86"
+  ],
+  "remaining": [],
+  "bothCurrentArchitectureFiniteCasesPassed": true,
+  "oldFourArmsPassed": false,
+  "currentSdk060Qualified": false,
+  "resourcePassed": false,
+  "productionQualificationComplete": false,
+  "fullDevtoolsGoalComplete": false,
+  "releaseReady": false
+}

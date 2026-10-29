@@ -1,0 +1,10 @@
+{"event":"run.begin","elapsedMs":0,"mode":"reload","cycles":3,"warmup":0,"settleMs":500,"timeoutMs":20000,"pid":4308,"creationFileTime":"134377420686953568"}
+{"event":"sample","elapsedMs":3,"phase":"process","cycle":0,"privateBytes":1261568,"workingSetBytes":5996544,"handles":95,"threads":4,"gdiObjects":0,"userObjects":2,"windowClasses":{"OleMainThreadWndClass":1}}
+{"event":"step.begin","elapsedMs":3,"action":"mount","window":1,"cycle":0}
+{"event":"step.complete","elapsedMs":2104,"action":"mount","window":1,"cycle":0}
+{"event":"step.begin","elapsedMs":2104,"action":"runtime.reject-busy","window":0,"cycle":0}
+{"event":"step.complete","elapsedMs":2104,"action":"runtime.reject-busy","window":0,"cycle":0}
+{"event":"sample","elapsedMs":2608,"phase":"mounted","cycle":0,"privateBytes":36667392,"workingSetBytes":50274304,"handles":318,"threads":15,"gdiObjects":55,"userObjects":25,"windowClasses":{"CicMarshalWndClass":1,"IME":2,"MSCTFIME UI":1,"MbToolTip":2,"MiniBlinkTimerWindowClass":1,"OleMainThreadWndClass":1,"SouiMiniblinkInteractionWindowV1":1,"SouiPublicSdkAcceptanceV1":1,"SystemUserAdapterWindowClass":1}}
+{"event":"step.begin","elapsedMs":2608,"action":"reload","window":1,"cycle":1}
+{"event":"step.failed","elapsedMs":2608,"action":"reload","window":1,"cycle":1,"code":"E_RELOAD_PENDING","message":"The original reload is pending on the Miniblink owner thread."}
+{"event":"cleanup.failed","elapsedMs":2609,"code":"E_CURSOR_CLOSE_PENDING"}

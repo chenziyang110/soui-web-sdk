@@ -657,8 +657,18 @@ class runner final {
     step("reload", id, cycle, [&] {
       auto& window = windows_.at(id - 1);
       const auto expected = window->ready_count() + 1;
-      const auto result = window->reload();
-      if (result.ok) until([&] { return window->ready(expected); });
+      soui::sdk::host_result result{false, "", ""};
+      bool accepted = false;
+      // Poll the same pending reload, then wait for its document within one
+      // original deadline. Never request a successor after reload succeeds.
+      until([&] {
+        if (!accepted) {
+          result = window->reload();
+          if (!result.ok) return result.code != "E_RELOAD_PENDING";
+          accepted = true;
+        }
+        return window->ready(expected);
+      });
       return result;
     });
   }
