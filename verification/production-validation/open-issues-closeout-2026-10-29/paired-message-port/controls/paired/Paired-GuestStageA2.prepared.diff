@@ -1,0 +1,22 @@
+diff --git a/F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port-paired-current/Paired-GuestStage.cjs b/F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port-paired-current/Paired-GuestStageA2.cjs
+index c342ac8..a080599 100644
+--- a/F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port-paired-current/Paired-GuestStage.cjs
++++ b/F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port-paired-current/Paired-GuestStageA2.cjs
+@@ -16,7 +16,7 @@ function main(){
+  const planPin=pin(planFile);assert.equal(planPin.sha256,planSha);const plan=json(planFile);stagePlan=plan;
+  assert.equal(plan.schema,'soui.fresh-paired-minimal-guest-stage-inputs/v1');assert(plan.executionEnabled===false&&plan.productExecuted===false&&plan.newProducer===true);
+  assert.equal(os.hostname().toLowerCase(),plan.guestMachine.toLowerCase());assert.notEqual(os.hostname().toLowerCase(),plan.preparationHost.toLowerCase(),'No host staging');
+- assert.equal(plan.guestBackingRoot,'C:/SOUI_Issue77_Drive');assert.equal(plan.sourceRoot,'F:/work/soui-issue96');assert.equal(plan.guestControlRoot,'C:/issue77pa1');assert.equal(plan.guestEvidenceRoot,'C:/issue-closeout-evidence/mp77p-stage-a1');assert.equal(plan.guestDisabledInput,plan.guestControlRoot+'/BrowserABInputs.draft.json');
++ assert.equal(plan.guestBackingRoot,'C:/SOUI_Issue77_Drive');assert.equal(plan.sourceRoot,'F:/work/soui-issue96');assert.equal(plan.guestControlRoot,'C:/issue77pa2');assert.equal(plan.guestEvidenceRoot,'C:/issue-closeout-evidence/mp77p-stage-a2');assert.equal(plan.guestDisabledInput,plan.guestControlRoot+'/BrowserABInputs.draft.json');
+  assert.deepEqual(plan.bounds,{maximumTargets:4096,maximumDependencies:4096,maximumCopiedBytes:1073741824,maximumCarrierBytes:33554432,maximumFileBytes:134217728,metadataStageTimeoutMs:120000});
+  assert(plan.targets.length===1596&&plan.targets.length<=plan.bounds.maximumTargets&&plan.dependencyPins.length===2991&&plan.dependencyPins.length<=plan.bounds.maximumDependencies&&plan.carrierBlobs.length<=24);
+  assert.equal(plan.targets.reduce((n,r)=>n+r.bytes,0),plan.logicalCopiedBytes);assert(plan.logicalCopiedBytes<=plan.bounds.maximumCopiedBytes);
+@@ -35,7 +35,7 @@ function main(){
+  const identity=require(plan.sourceRoot+'/tools/internal/delivery-identity.cjs');assert.deepEqual(identity.sourceInventory(plan.sourceRoot).names.slice().sort(),plan.sourceInventoryMembers);
+  const generatedBefore=[];function closedReuseRoots(){for(const r of plan.immutableReuseRoots){const actual=files(r.root),expected=r.members.slice();for(const n of r.allowedGenerated){if(fs.existsSync(path.join(r.root,n))){assert(!expected.includes(n));expected.push(n);}}assert.deepEqual(actual,expected.sort(),'Existing immutable reuse subtree membership changed');}}
+  closedReuseRoots();for(const r of plan.immutableReuseRoots)for(const n of r.allowedGenerated){const f=path.join(r.root,n);generatedBefore.push({path:f,pin:fs.existsSync(f)?pin(f):null});}
+- equal(pin(plan.laterLaunchContract.crtManifest.guest.path),plan.laterLaunchContract.crtManifest.guest);for(const p of plan.laterLaunchContract.crtPrefixPins)equal(pin(p.path),p);
++ assert.equal(plan.stageAttempt,'a2');assert.equal(plan.laterLaunchContract.crtManifest.guest.bytes,285033);assert.equal(plan.laterLaunchContract.crtManifest.guest.sha256,'c6bb34afb81252ca16dd2bec955e3a8b36bfe830041e52ba417e9c34445eb897');assert.equal(plan.laterLaunchContract.crtManifestBinding.all16CrtRowsIdenticalToR2,true);equal(pin(plan.laterLaunchContract.crtManifest.guest.path),plan.laterLaunchContract.crtManifest.guest);for(const p of plan.laterLaunchContract.crtPrefixPins)equal(pin(p.path),p);
+  assert.deepEqual(files(plan.laterLaunchContract.processLocalCrtPrefix),plan.laterLaunchContract.crtPrefixPins.map(p=>path.win32.basename(p.path)).sort(),'Existing CRT search prefix closed set differs');
+  const dependencySet=new Set(plan.dependencyPins.map(p=>normal(p.path))),destinationSet=new Set();
+  for(const s of plan.suites){assert.equal(normal(path.dirname(s.suite)),normal(plan.sourceRoot+'/out/acceptance'));assert(/^[a-f0-9-]{36}$/.test(path.basename(s.suite)));assert(!fs.existsSync(s.suite),'Never overwrite an existing suite');const a=cfg.arms.find(a=>a.key===s.key);assert.equal(a.suite,s.suite);assert.equal(a.consumerBuildId,s.consumerBuildId);assert.deepEqual(plan.targets.filter(t=>under(s.suite,t.destination)).map(t=>path.relative(s.suite,t.destination).replaceAll('\\','/')).sort(),s.members);}

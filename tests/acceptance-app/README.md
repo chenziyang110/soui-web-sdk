@@ -62,3 +62,9 @@ powershell.exe -File tools/Test-Acceptance.ps1 -Architecture x86 -Scenario sessi
 会话观察协议的 `generation` 按阶段解释：每次确认真实任务仍为 running、进度继续及原生 scope 未变化后，只读取一次当前 `sessionLease.generation`，用这个固定值发送 `renewed`（如推进）和随后 `heartbeat`。报告等待期间完成的下一次自动续期留待下一次实际 running 观察，不能重读 lease 并拼接到先前观察。收到 finish 命令后仍先发布最后一组 running 观察，再请求取消；`finished.generation` 引用最后这组观察，不能被解释为取消、终态查询、unsubscribe 或 scope 检查之后的当前 lease 值。取消后发生的续期不增加保留任务的续期计数。`finished.state/subscriptions/pendingRequests` 则分别观察已确认 cancelled、已注销订阅及零未决请求，实际 handler 返回与原生 scope 清理另有记录。
 
 上述单元入口还用已固定的 acceptance TypeScript 编译器读取并转译真实 `runAnchor` 源函数，在模拟客户端中安排 report 等待和取消清理期间的 generation 推进，检查快照配对及最终阶段含义；不复制另一套运行算法。这些模拟交错仍只验证测试记录逻辑，不证明真实续租、生产时钟、资源或 8 小时结果。真实场景不暂停自动续期，不缩短租期，不重载或重放任务。所有场景的原生 `run.begin` 继续发出实际字符串 creation FILETIME；本修订不改 V3 的统一身份行。
+
+## 2026-10-29 有界 reload 消费修复
+
+reload 现在只继续精确的 `E_RELOAD_PENDING`；首次成功后仅等待同一文档 ready，不再发起后继 reload。操作和 ready 共用原一次 `until`，其他错误、超时和关闭 fence 保持。
+
+当前安装 SDK 消费者的两架构编译及 [三次 reload 短测](../../verification/production-validation/open-issues-closeout-2026-10-29/ordinary-reload/vm/run/raw/Summary.actual.json)已通过：x64 3,958ms、x86 3,850ms，各九步、七份采样、27 条原生事件，自然退出 0、Job 清空，没有强杀。本次显式配置 20 秒 step timeout；不宣称 Session、资源、长期或完整 Collector 通过。旧 Web 资产按原 producer 身份复用，未声称当前工具链重建；此后仅补本文档说明，原件继续绑定实际运行时的源码和 EXE 身份。

@@ -1,0 +1,183 @@
+{
+  "schema": "soui.independent-old-sdk-message-port-failure-analysis/v1",
+  "createdUtc": "2026-10-29T12:32:15.096Z",
+  "reviewer": "paired_review_supported",
+  "scope": "Read-only exact decoded-byte and actual first-arm failure review, original pure report readers and bounded live source comparison; no product/controller/VM/build or new test execution",
+  "blockersForAnyPassClaim": [
+    "Actual x64 baseline Native root exited1 during Runtime shutdown; all-four result remains failed; other three arms untouched"
+  ],
+  "input": {
+    "decode": {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\mp77-run-pa2\\Decode.actual.json",
+      "bytes": 10528,
+      "sha256": "cbe1f98e43aea0a16e30d7888894050730f90ab9ff192f86e71618cc3800cf72"
+    },
+    "index": {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\mp77-run-pa2\\Files.index.json",
+      "bytes": 5486,
+      "sha256": "cbc7d2199e2e729633919a9636fbcfe79c1d2a8fc714aa59c4eef0bcb4fb649b"
+    },
+    "allIndexedBytesVerified": true,
+    "indexRecords": 29,
+    "closedDecodedFiles": 30,
+    "summary": {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\mp77-run-pa2\\raw\\Summary.actual.json",
+      "bytes": 1765,
+      "sha256": "6fa61acfd58d4d7e54a5b1b9e9f7f9694bca12d7ffdbafbe14153bd44fbc8165"
+    },
+    "executionInput": {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\execution-preparation-86f44853-8ecd-47bb-954e-530862a187cc\\payload\\BrowserABInputs.approved.json",
+      "bytes": 888818,
+      "sha256": "ff847ca9952ccaba9875994da25a674cc46e685a4a5feabc310066f6a5fdd4cc"
+    },
+    "manifest": {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\execution-preparation-86f44853-8ecd-47bb-954e-530862a187cc\\payload\\Paired.browser-manifest.json",
+      "bytes": 1168269,
+      "sha256": "cd97b883789e664aa91eecf5c080158ae23e9a0812c7080e5f9684cfb455a012"
+    }
+  },
+  "identity": {
+    "sdkVersion": "0.5.1-preview.1",
+    "sdkSourceSha256": "652a66973f09c5a90a5e06465944dd7ea8d3a3d9463411db5b07d045cb843973",
+    "consumerBuildId": "a0477a24-7f9d-4543-b408-b264b70a4409",
+    "compiledExecutable": {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\82e96f65-8695-4546-b468-fec6c7d8a386\\runtime\\SouiAcceptance.exe",
+      "bytes": 879616,
+      "sha256": "1b77094fa4d67baa86d097e9cca67d301b043e666e19c467b578a342f4a31cdd"
+    },
+    "kernel": {
+      "path": "node.dll",
+      "bytes": 38959616,
+      "sha256": "f552226e00c16c9df1ef6cb94081c69b37185c44741197d5a337a4ed70d1fdef"
+    },
+    "native": {
+      "pid": 936,
+      "creationFileTime": "134377501651531650"
+    },
+    "outer": {
+      "pid": 5104,
+      "creationFileTime": "134377501580875279"
+    }
+  },
+  "actual": {
+    "nativeResult": {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\mp77-run-pa2\\raw\\x64-baseline\\original-reload-47f0a498-39f4-4c11-9477-7f6cd00a1f7e\\result.json",
+      "bytes": 2007,
+      "sha256": "4f3199bab76a6c55f282f35ebee3b9a733b987de803c02262da44ca2b83e758a"
+    },
+    "nativeEvents": {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\mp77-run-pa2\\raw\\x64-baseline\\original-reload-47f0a498-39f4-4c11-9477-7f6cd00a1f7e\\events.ndjson",
+      "bytes": 3455,
+      "sha256": "3f24a4606a387501f971242635b6a586819bbf76433d8ab922f59ddbf309d508"
+    },
+    "sidecar": {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\mp77-run-pa2\\raw\\x64-baseline\\original-reload-47f0a498-39f4-4c11-9477-7f6cd00a1f7e\\events.ndjson.message-port.ndjson",
+      "bytes": 14257,
+      "sha256": "91666eb8bde3325e7f7ca1836ae2ae9302e34a5168232a32865899703199ae7a"
+    },
+    "nativeOwned": {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\mp77-run-pa2\\raw\\x64-baseline\\original-reload-47f0a498-39f4-4c11-9477-7f6cd00a1f7e\\owned-process.ndjson",
+      "bytes": 825,
+      "sha256": "b47cc6993d133a8f075e099beacc47f8f18dd78cc2ebddcc4b5400c877dca312"
+    },
+    "nativeContext": {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\mp77-run-pa2\\raw\\x64-baseline\\original-reload-47f0a498-39f4-4c11-9477-7f6cd00a1f7e\\owned-process.ndjson.context.json",
+      "bytes": 767,
+      "sha256": "1f2890ba5a0fa446e87a609ae13584124c125880ef903fb05f40a4f7b7e46a19"
+    },
+    "outerResult": {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\mp77-run-pa2\\raw\\x64-baseline\\finished.json",
+      "bytes": 957,
+      "sha256": "d3780d9e85456fcbe42061239507524a9dd35865859ef59031350d2552409037"
+    },
+    "outerRaw": {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\mp77-run-pa2\\raw\\x64-baseline\\owned.ndjson",
+      "bytes": 3064,
+      "sha256": "3506349b56434fe7b8fc123b88338f7a706245cb11e93b38d366356a3d5bad23"
+    },
+    "outerContext": {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\mp77-run-pa2\\raw\\x64-baseline\\owned.ndjson.context.json",
+      "bytes": 667,
+      "sha256": "6c8c5b764f8c6c0b5192c89f3ce488f42b76dcbcde4c76cd2cce01b3947ef66f"
+    },
+    "nativeExit": 1,
+    "nativeElapsedMs": 32364,
+    "outerExit": 1,
+    "outerElapsedMs": 40719,
+    "nativeAndOuterJobsClosed": true,
+    "forcedTermination": false,
+    "fallbackUsed": false,
+    "nativeEventsCount": 21,
+    "completedStepCount": 6,
+    "samples": 6,
+    "mountThreeReloadsAndWindowCloseCompleted": true,
+    "shutdownBeganAtMs": 12305,
+    "runFailedAtMs": 32321,
+    "observedShutdownWaitMs": 20016,
+    "originalStepBudgetMs": 20000,
+    "failedMessage": "Page/bridge readiness timed out",
+    "browserBehavior": {
+      "schema": "soui.message-port-browser-behavior/v1",
+      "observedDocuments": 4,
+      "observedCases": 32,
+      "messageChannelBehaviorObserved": true,
+      "dedicatedWorkerMessagingObserved": true,
+      "boundedWorkerMessageSuppressionObserved": true,
+      "workerNativeJoinObserved": false,
+      "genericDebuggerWaitKillQualified": false,
+      "polyfillSchedulerBranchObserved": false,
+      "resourcePassed": false,
+      "osQualified": false,
+      "releaseReady": false
+    },
+    "sidecarRows": 40,
+    "attemptedArms": [
+      "x64-baseline"
+    ],
+    "untouchedArms": [
+      "x64-candidate",
+      "x86-baseline",
+      "x86-candidate"
+    ],
+    "allFourFiniteArmsPassed": false
+  },
+  "sourceAttribution": {
+    "fixtureSource": {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\source\\main.cpp",
+      "bytes": 38955,
+      "sha256": "a7df1670caa8551c759ba2dd6c7f2c50f961705c905cf0c21d2aac90d0da9d44"
+    },
+    "pendingOnlyHelper": {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\source\\shutdown-poll.h",
+      "bytes": 734,
+      "sha256": "cb0bbc2cd1e76eb27898550060a7a43cfdee4a5e68ceefb38ac1035ac9da4abe"
+    },
+    "oldRuntimeSource": {
+      "path": "F:\\work\\soui-issue96\\sdk\\src\\host\\soui_miniblink_host.cpp",
+      "bytes": 200875,
+      "sha256": "aa1e2906a00ddad91af83a7eab87b8b22aead6804e3d7a532ffe0c88b74a5bb5"
+    },
+    "sealedCurrentRuntimeSource": {
+      "path": "C:\\sr06\\sdk\\src\\host\\soui_miniblink_host.cpp",
+      "bytes": 269957,
+      "sha256": "0f4de698a8d78dfb1864c7e58a8903a18f1f090577abd8786080fbf9742217e2"
+    },
+    "normalizedShutdownFunctionTextEqual": true,
+    "oldFunctionSha256": "ff22f66a93929722d33a660a310716e5101925c70530200a6fe29df79455544d",
+    "currentFunctionSha256": "ff22f66a93929722d33a660a310716e5101925c70530200a6fe29df79455544d",
+    "observedLimit": "Failure occurred inside the pending-only shutdown poll at the original deadline. Exact per-call status/messages were not recorded; raw data does not distinguish cursor realm end, worker preparation, engine finalization or native exit phases.",
+    "sdkUpgradeAloneProvenToFix": false,
+    "otherCurrentSdkDifference": "Current SDK installs optional Input/UI owner-opportunity servicing in engine startup and loop; old SDK lacks it. Other teardown changes may matter. The baseline DLL lacks this optional export; no causation or successful current-baseline outcome inferred.",
+    "recommendedMinimalNext": "Do not rerun this old-SDK profile. Reuse the already-passed unchanged current0.6 x64/x86 candidate cases; if issue77 needs a coherent current profile, only its two missing baseline cases use the same passed current EXE/Web/SDK/77 other runtime members with exact original baseline node.dll."
+  },
+  "limits": {
+    "oldSdkFailureReclassified": false,
+    "browser32CasesAreWholeRunPass": false,
+    "currentSdk060Qualified": false,
+    "resourcePassed": false,
+    "workerNativeJoinQualified": false,
+    "genericDebuggerQualified": false,
+    "qualificationPassed": false,
+    "releaseReady": false
+  }
+}

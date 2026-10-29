@@ -1,0 +1,268 @@
+{
+  "schema": "soui.independent-paired-existing-copy-verification-analysis/v1",
+  "createdUtc": "2026-10-29T12:13:30.872Z",
+  "reviewer": "focus_review_supported",
+  "scope": "Offline selected-frame, closed-byte-set, recorded target-identity and execution-producer source review; no VM/product/build/controller/verifier or producer execution by reviewer",
+  "findings": [],
+  "blockingFindings": 0,
+  "actualA3": {
+    "decode": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/mp77p-a3-verify/Decode.actual.json",
+      "bytes": 4849,
+      "sha256": "3decd03384c031201640770df8a1b67a555d3d9ca0fadc7ef3e116856739ff91"
+    },
+    "index": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/mp77p-a3-verify/Files.index.json",
+      "bytes": 1988,
+      "sha256": "f5cb7454d338ede637f4ae2fb58de8f8e84ffb115695f1f158adf00cc8054466"
+    },
+    "fileCount": 12,
+    "indexRecords": 11,
+    "payloadFiles": 7,
+    "payloadBytes": 1038124,
+    "rawFiles": 8,
+    "rawBytes": 1040424,
+    "tag": "ISSUESHORTD7E056A4BA0343609013440DD1ED1916",
+    "frame": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/mp77p-a3-verify/Serial.frame.raw",
+      "bytes": 1849919,
+      "sha256": "ab4ab7624a2848797ea0989691cec7c2c13f41474b0913710647d0ffff94f47b"
+    },
+    "allIndexedBytesVerified": true,
+    "closedSetVerified": true,
+    "frameEnvelopeCatalogPayloadReplayed": true,
+    "wholeSerialCopied": false
+  },
+  "actualA2": {
+    "decode": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/mp77p-a2-stage-failed/Decode.actual.json",
+      "bytes": 4844,
+      "sha256": "2b6e745dfd9033fc458299d98d10891acac7897d1f10d4bca4a8833f4fbb3a8b"
+    },
+    "index": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/mp77p-a2-stage-failed/Files.index.json",
+      "bytes": 1989,
+      "sha256": "09ee05e69f72bfbde495fa5041f2bd0eca1de681057a73e8ba42d806f751b6f6"
+    },
+    "fileCount": 12,
+    "indexRecords": 11,
+    "payloadFiles": 7,
+    "payloadBytes": 2414123,
+    "rawFiles": 8,
+    "rawBytes": 2416381,
+    "tag": "ISSUESHORTB47053AF1293441DA713800692D6DD77",
+    "frame": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/mp77p-a2-stage-failed/Serial.frame.raw",
+      "bytes": 4296063,
+      "sha256": "d54f441ca68bc8fe880a8cc9549f50de94e4a5fdd9d17778a2943941a2396b22"
+    },
+    "allIndexedBytesVerified": true,
+    "closedSetVerified": true,
+    "frameEnvelopeCatalogPayloadReplayed": true,
+    "wholeSerialCopied": false
+  },
+  "actualSummary": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/mp77p-a3-verify/raw/Summary.actual.json",
+    "bytes": 1033254,
+    "sha256": "277be4d9d643d0407c0382be5a0d023de320fa1b5140350611bd50fc5eae69ca"
+  },
+  "actualPowerShell": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/mp77p-a3-verify/raw/PowerShell.finished.json",
+    "bytes": 384,
+    "sha256": "607a3560f1788d7c8d519fcdff709d18f5c9b951cfcb13eef7a7482516c27e6e"
+  },
+  "originalA2Failure": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/mp77p-a2-stage-failed/raw/Failure.actual.json",
+    "bytes": 2407922,
+    "sha256": "789e0d20753dd137ff40190c9f9a46f09cc9d2648e2c3cf138ce01d4a7a39d5a"
+  },
+  "transportPlan": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port-paired-current/minimal-carrier-6164bdf8-f132-4b2e-8ef1-97a27cb96721/payload/Paired.transport.json",
+    "bytes": 2018371,
+    "sha256": "8210135890765852ca89e5e90d4076f09718ee0ac58c8dcdba4b247b18fdc576"
+  },
+  "originalDisabledInput": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port-paired-current/minimal-carrier-6164bdf8-f132-4b2e-8ef1-97a27cb96721/payload/BrowserABInputs.draft.json",
+    "bytes": 883426,
+    "sha256": "dbb967095b13d4af0f2f920bf5d11e66c098bf7cf5f89a2b32a037c5adbfc060"
+  },
+  "verificationInput": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port-paired-current/verify-existing-preparation-ff5dee61-819e-43e2-9ad3-1b6b60642bfc/payload/Verify.inputs.json",
+    "bytes": 3414,
+    "sha256": "283b014ce7495c530b7b56b1b569f44ffd628bcc390289106f23b8e3774225d7"
+  },
+  "composition": {
+    "originalA2StageRemainsFailed": true,
+    "originalA2FailureMessage": "Linked path: C:\\Users\\Administrator\\templates",
+    "stagingCompleted": false,
+    "freshA3MetadataVerificationCompleted": true,
+    "copyExecutedByVerification": false,
+    "productExecuted": false,
+    "originalA2ReceiptsReplayed": 8,
+    "all1596TargetsMatchedPlanAndOriginalCopiedIdentity": true,
+    "all1596IdentityBeforeAfterUnchanged": true,
+    "logicalTargetBytes": 477696666
+  },
+  "actualMetadata": {
+    "actualMachine": "SOUI-7AEMMK5Q0T",
+    "actualCwd": "F:\\work\\soui-issue96",
+    "nodePid": 960,
+    "parentPid": 1756,
+    "parentBirth": "134377487492892231",
+    "actualPowerShellNativeExitCode": 0,
+    "powerShellExitCode": 0,
+    "environmentRestored": true,
+    "cwdRestored": true,
+    "desktopLeaseReleased": true,
+    "pathChangedByVerification": false,
+    "recordedNodePidAbsent": true,
+    "originalParentIdentityAbsent": true,
+    "nodeBirthRecorded": false,
+    "wholeNativeJobClosureClaimed": false,
+    "stderrBytes": 0
+  },
+  "suites": [
+    {
+      "key": "x64-baseline",
+      "suite": "F:\\work\\soui-issue96\\out\\acceptance\\82e96f65-8695-4546-b468-fec6c7d8a386",
+      "consumerBuildId": "a0477a24-7f9d-4543-b408-b264b70a4409",
+      "build": {
+        "bytes": 100586,
+        "sha256": "4e2cffb6bee968496a9955f4c4e983f84e20cb17da3cc47db52c77805ffee19c"
+      },
+      "payloadSha256": "7e2ff1f71a6427e656535a4fb123b284d3ebb317a75e3e5bcdd8c6417686f4c1",
+      "verifiedTargetCount": 399
+    },
+    {
+      "key": "x64-candidate",
+      "suite": "F:\\work\\soui-issue96\\out\\acceptance\\ed1c00c6-af8d-49e8-b226-590ae1c899f5",
+      "consumerBuildId": "5fea76f6-822f-4122-8731-54e9b8b4d2e1",
+      "build": {
+        "bytes": 100596,
+        "sha256": "efc09a83ed80c7de4a3c03e52130f6906298c5b95608210364c833215cf38dfa"
+      },
+      "payloadSha256": "afa28a4ef6d4670942ed978658c5e6728497826c131b38b79609c5ad35ede065",
+      "verifiedTargetCount": 399
+    },
+    {
+      "key": "x86-baseline",
+      "suite": "F:\\work\\soui-issue96\\out\\acceptance\\87d5be4b-c0df-47b8-a737-b39ff45e1787",
+      "consumerBuildId": "782529ca-4808-4320-92ae-e53c45bb8176",
+      "build": {
+        "bytes": 100599,
+        "sha256": "15cdc592a2f1b64b8542621587f07c720409c9c7d92c0ad4171f55907518b224"
+      },
+      "payloadSha256": "842fa6320539e8a4eddfea55ff9b648ff488f6e6872b4983e3e0dc44d0849c45",
+      "verifiedTargetCount": 399
+    },
+    {
+      "key": "x86-candidate",
+      "suite": "F:\\work\\soui-issue96\\out\\acceptance\\b247541a-b25c-43f1-8eda-b1db362b910a",
+      "consumerBuildId": "a5b8b020-6cd2-492f-b168-9a26903949e5",
+      "build": {
+        "bytes": 100609,
+        "sha256": "8f72978f789e978b29816ba82d615fdf914537eb11931efe1cbae3e304866013"
+      },
+      "payloadSha256": "6138e4d585d1aa648aeb7fcc3f1553651215b420e103b0dceeaccc22b76078e9",
+      "verifiedTargetCount": 399
+    }
+  ],
+  "observedByPinnedGuestVerifier": {
+    "dependencyFilesVerified": 2991,
+    "dependenciesBeforeAfterIdentical": true,
+    "sourceInventoryClosedSet": true,
+    "sourceInventoryMemberCount": 1460,
+    "immutableReuseRootCount": 20,
+    "freshSuiteClosedSets": true,
+    "originalRunnerVerifyInvokedForFourSuites": true,
+    "observationBoundary": "The reviewer replayed exported original bytes, all 1596 recorded target identities and source/plan pins. These dependency/closed-tree observations were made by the pinned guest metadata verifier; the reviewer did not re-read guest disks or execute the verifier."
+  },
+  "sourceReview": {
+    "files": [
+      {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port-paired-current/Prepare-PairedExecutionA3.cjs",
+        "bytes": 15319,
+        "sha256": "8bc42cd98aad5145aceed5f4c142ac0b9c4c31387a95627b608ae2b398138fff"
+      },
+      {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port-paired-current/Prepare-VerifyExistingPairedA3.cjs",
+        "bytes": 9451,
+        "sha256": "e557b7e8b4b3e1e5ae9fd676a0d3305413da0897c7d01d54e8071b276f748b84"
+      },
+      {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port-paired-current/Verify-ExistingPairedA3.cjs",
+        "bytes": 12171,
+        "sha256": "fd664485e44e1fa10f3407b07900ac09ce6c9b3153a90371247d43c103472c5d"
+      },
+      {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port-paired-current/Invoke-PairedBrowserA2.ps1",
+        "bytes": 8815,
+        "sha256": "b065c289af5b448156fa24c227a46d20d98eabfa232b7931553eb1f3d7fe1012"
+      },
+      {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port-paired-current/Decode-PairedExportA3.cjs",
+        "bytes": 11479,
+        "sha256": "0cfada52ebfeee8236de2dceac4ffa3b75448bbc49c50a7dab5e578c4900eb33"
+      }
+    ],
+    "executionProducerDiff": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port-paired-current/Prepare-PairedExecutionA3.prepared.diff",
+      "bytes": 16775,
+      "sha256": "3344fb9541eaa92662b3ff1b267a5ea841b594003e687c93d2e28204b3f61f29"
+    },
+    "originalGuestController": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port/Guest-MessagePort.cjs",
+      "bytes": 9182,
+      "sha256": "241600aac73be5d9db28893444d396c2d038110d24947335b9a5c4fdad9482f1"
+    },
+    "originalABController": {
+      "path": "F:/work/soui-issue96/tests/acceptance/message-port-ab-controller.cjs",
+      "bytes": 9694,
+      "sha256": "98517dc0d6a1bbb32e03d20cf1c9c99cfa470c680b8edba6fb6ebfe308ac9b01"
+    },
+    "originalRunner": {
+      "path": "F:/work/soui-issue96/tests/acceptance/runner.cjs",
+      "bytes": 44569,
+      "sha256": "b275b928899b6c91325a7dd46adf963a455c4eb7afaf60b5c305e660fb4993c8"
+    },
+    "separateExplicitRootGateRequired": true,
+    "failedA2CopyRetained": true,
+    "freshVerificationAdoptionOnly": true,
+    "originalDisabledSourceNotChanged": true,
+    "freshThreeFileExecutionPayloadOnly": true,
+    "originalControllersNotModified": true,
+    "originalNamespaceGuardPreserved": true,
+    "explicitCwd": "F:/work/soui-issue96",
+    "crtManifest": {
+      "path": "C:/issues8/Payload.manifest.json",
+      "bytes": 285033,
+      "sha256": "c6bb34afb81252ca16dd2bec955e3a8b36bfe830041e52ba417e9c34445eb897"
+    },
+    "crtPrefixPinCount": 16,
+    "sourceOnlySdkProvenance": "652a66973f09c5a90a5e06465944dd7ea8d3a3d9463411db5b07d045cb843973",
+    "freshConsumerSourceSha256": "3b37fd7f35cd11e20adebe055f94c1d72645c7a2c20d0b49f7cffec33c53815e",
+    "protocol": {
+      "mode": "reload",
+      "cycles": 3,
+      "warmup": 0,
+      "settleMs": 500,
+      "timeoutMs": 20000
+    },
+    "timeBudgetsMs": {
+      "process": 214500,
+      "owned": 394500,
+      "outer": 420000,
+      "drain": 2000
+    },
+    "firstFailureStopsArms": true,
+    "fullSuiteClosureAtPreflightOnly": true,
+    "exactRuntimeFenceRetained": true
+  },
+  "allFourBrowserArmsStillRequired": true,
+  "testPassed": null,
+  "fourArmBehaviorPassed": false,
+  "currentSdk060Qualified": false,
+  "resourcePassed": false,
+  "productionQualificationComplete": false,
+  "releaseReady": false
+}

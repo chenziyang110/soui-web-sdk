@@ -1,0 +1,15 @@
+diff --git a/F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port-paired-current/Invoke-PairedBrowser.ps1 b/F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port-paired-current/Invoke-PairedBrowserA2.ps1
+index ae2fef6..e5ce672 100644
+--- a/F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port-paired-current/Invoke-PairedBrowser.ps1
++++ b/F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port-paired-current/Invoke-PairedBrowserA2.ps1
+@@ -29,8 +29,8 @@ $crt='C:\issues8\tray-x64';$crtPolicy=$m.supervisorCrtPolicy
+ if($crtPolicy.prefix-cne'C:/issues8/tray-x64'){throw 'Original process-local CRT prefix differs'}
+ Match-Pin (Pin $crtPolicy.payloadManifest.path) $crtPolicy.payloadManifest
+ $crtManifest=[IO.File]::ReadAllText($crtPolicy.payloadManifest.path,[Text.Encoding]::UTF8)|ConvertFrom-Json
+-if($crtManifest.revision-ne2-or$crtManifest.launcher.crtPrefixRelative-cne'tray-x64'){throw 'Exact prior r2 CRT source required'}
+-$crtRows=@($crtManifest.files|Where-Object {$_.path.StartsWith('tray-x64/',[StringComparison]::Ordinal)})
++if($crtManifest.schema-cne'soui.current-public-tray-vm-payload-manifest/v1'-or$crtPolicy.payloadManifest.bytes-ne285033-or$crtPolicy.payloadManifest.sha256-cne'c6bb34afb81252ca16dd2bec955e3a8b36bfe830041e52ba417e9c34445eb897'-or-not$crtPolicy.actualManifestBinding.all16CrtRowsIdenticalToR2){throw 'Exact actual Cissues8 original-r1 manifest and matched CRT rows required'}
++$crtRows=@($crtManifest.files|Where-Object {$_.path.StartsWith('tray-x64/',[StringComparison]::Ordinal)});if($crtRows.Count-ne16){throw 'Exact sixteen-file CRT prefix required'}
+ $actualNames=@(Get-ChildItem -LiteralPath $crt -Force|ForEach-Object{if($_.PSIsContainer-or($_.Attributes-band[IO.FileAttributes]::ReparsePoint)){throw 'Flat plain CRT prefix required'};$_.Name}|Sort-Object)
+ $expectedNames=@($crtRows|ForEach-Object{$_.path.Substring(9)}|Sort-Object)
+ if(($actualNames-join"`n")-cne($expectedNames-join"`n")){throw 'CRT prefix closed set differs'}

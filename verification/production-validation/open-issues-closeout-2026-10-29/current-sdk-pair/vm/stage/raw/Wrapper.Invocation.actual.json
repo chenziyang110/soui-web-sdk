@@ -1,0 +1,37 @@
+{
+    "schema":  "soui.current-guest-wrapper-invocation/v1",
+    "mode":  "stage",
+    "kind":  "mp",
+    "wrapperPid":  3048,
+    "wrapperCreationFileTime":  "134377507140556888",
+    "executable":  "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+    "arguments":  [
+                      "-NoProfile",
+                      "-NonInteractive",
+                      "-ExecutionPolicy",
+                      "Bypass",
+                      "-File",
+                      "C:\\issue77cb1\\Guest-Current.ps1",
+                      "-Mode",
+                      "stage",
+                      "-Manifest",
+                      "C:\\issue77cb1\\Current.manifest.json",
+                      "-ManifestSha256",
+                      "0e9d9bc5f42041c6d928ec00d33b389bc17d527a1bb6605acc7e4568bcc80055",
+                      "-ExpectedMachine",
+                      "SOUI-7AEMMK5Q0T",
+                      "-EvidenceDirectory",
+                      "C:\\issue-closeout-evidence\\mp77c-b1-stage"
+                  ],
+    "manifestSha256":  "0e9d9bc5f42041c6d928ec00d33b389bc17d527a1bb6605acc7e4568bcc80055",
+    "stageSha256":  "",
+    "controller":  {
+                       "path":  "C:\\issue77cb1\\Guest-Current.ps1",
+                       "bytes":  4805,
+                       "sha256":  "b867b0b4dbddc7299a473e8a68a67181f246045eb2f150ae3b2cc863838eb776"
+                   },
+    "deadlineChanged":  false,
+    "automaticStageToRun":  false,
+    "productExecutedByWrapper":  false,
+    "releaseReady":  false
+}

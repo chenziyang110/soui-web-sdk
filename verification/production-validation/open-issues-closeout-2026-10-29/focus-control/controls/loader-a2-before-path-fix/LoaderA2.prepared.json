@@ -1,0 +1,106 @@
+{
+  "schema": "soui.native-focus-loader-a2-preparation/v1",
+  "preparedUtc": "2026-10-29T11:15:26.585Z",
+  "previousOwned": {
+    "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\Focus-Owned.cjs",
+    "bytes": 8224,
+    "sha256": "29fac428862351d58d28cb3841f34fd4fe5082aed94499e7a684eee5fb5bc1d1"
+  },
+  "previousExport": {
+    "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\FocusExport.ps1",
+    "bytes": 6791,
+    "sha256": "5cc5469a02c12b9db4372d14f6cbab71db2acd70e9f7c1ebcfd58604ed04db89"
+  },
+  "sourceInputs": [
+    {
+      "name": "NativeFocusControl.cs",
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\NativeFocusControl.cs",
+      "bytes": 30830,
+      "sha256": "690305a4dbe13e2c3a56d269bd7c4377bd3ab8c7b5e0ba9de23bbcd00c0ea5e2"
+    },
+    {
+      "name": "Invoke-NativeFocusControl.ps1",
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\Invoke-NativeFocusControl.ps1",
+      "bytes": 5837,
+      "sha256": "9227597e840ddf12317ae3940c7f78db69faa601adc62347715f4b23500814c2"
+    },
+    {
+      "name": "README.md",
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\README.md",
+      "bytes": 6127,
+      "sha256": "9b4df7135152e2ee3b351305d2c085f6e7ae2da17cf06003e5f6a7b9f78f2306"
+    },
+    {
+      "name": "Preparation.actual.json",
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\Preparation.actual.json",
+      "bytes": 2446,
+      "sha256": "6b5fd304995a766913b5d6d765b7a71e4eb5755a6043a05c36865cbb27e609e6"
+    },
+    {
+      "name": "Focus-Owned-a2.cjs",
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\Focus-Owned-a2.cjs",
+      "bytes": 10528,
+      "sha256": "df95b018b2545479d29dec803b856c8072fb69064915b07dfcbb67c3664ac8f2"
+    },
+    {
+      "name": "FocusExport-a2.ps1",
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\FocusExport-a2.ps1",
+      "bytes": 6791,
+      "sha256": "440af4243d305dedec3876e0c7f18af1a338d21da614e034719f8595e570bf04"
+    },
+    {
+      "name": "Loader-Crt.inputs.json",
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\Loader-Crt.inputs.json",
+      "bytes": 3459,
+      "sha256": "1a6c1c0987af3e259aff0c2f9615dce8b893267efd4e1fdb6de4d5f625ac90ce"
+    }
+  ],
+  "existingTransportedPrefix": {
+    "hostManifest": {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-build\\handoff-6d09f9b2-1585-4187-95ba-2cd3d40cc832\\payload\\Payload.manifest.json",
+      "bytes": 285033,
+      "sha256": "c6bb34afb81252ca16dd2bec955e3a8b36bfe830041e52ba417e9c34445eb897"
+    },
+    "guestManifest": {
+      "path": "C:/issues8/Payload.manifest.json",
+      "bytes": 285033,
+      "sha256": "c6bb34afb81252ca16dd2bec955e3a8b36bfe830041e52ba417e9c34445eb897"
+    },
+    "guestDirectory": "C:/issues8/tray-x64",
+    "closedFiles": 16
+  },
+  "frozenBudgets": {
+    "outerTimeoutMs": 90000,
+    "drainMs": 2000,
+    "innerDeadlineMs": 60000,
+    "changed": false
+  },
+  "freshOuter": "C:/issue-closeout-evidence/focusc-a2-run",
+  "freshInner": "C:/issue-closeout-evidence/focusc-a2",
+  "changes": [
+    "Fresh a2 evidence leaves and a2 export name only",
+    "Exact existing x64 prefix pinned and closed-set checked before and after",
+    "launchOwned env supplies only its supervisor/PowerShell descendant PATH; parent environment is checked unchanged",
+    "All original native/control code, closure guards and diagnostic result semantics unchanged"
+  ],
+  "startCommand": "C:\\issues8\\tools\\node.exe D:\\Focus-Owned-a2.cjs",
+  "exportAfterControllerEnded": "powershell -NoProfile -File D:\\FocusExport-a2.ps1",
+  "a1": {
+    "observationSource": "Root UI observation only; raw files remain in task VM",
+    "supervisorExitCodeReported": 3221225781,
+    "nativeRootExitReported": null,
+    "readyRootIdentityReported": null,
+    "terminalReported": null,
+    "closureConfirmedReported": false,
+    "originalPreserved": true,
+    "newExportPrepared": false,
+    "reason": "No supervisor birth or Job receipt exists. PID absence and a loader code do not independently establish Job closure; existing exporter remains fail-closed. Keep a1 originals and screenshot evidence; do not claim a native control or natural closure."
+  },
+  "compiled": false,
+  "executed": false,
+  "vmTouched": false,
+  "productExecuted": false,
+  "sdkFixed": false,
+  "testPassed": null,
+  "releaseReady": false
+}

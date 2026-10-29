@@ -1,0 +1,53 @@
+{
+  "schema": "soui.ordinary-acceptance-reload-patch-preparation/v1",
+  "scope": "Only tests/acceptance-app/main.cpp reload consumer changes; no SDK/runtime/tooling or other source edited",
+  "sourceBefore": {
+    "path": "C:/sc07/tests/acceptance-app/main.cpp",
+    "bytes": 42015,
+    "sha256": "02bc1ff85205acec289b2489896d107c4c34fcad5a28f91577f3bf72754c734b"
+  },
+  "sourceAfter": {
+    "path": "C:/sc07/tests/acceptance-app/main.cpp",
+    "bytes": 42218,
+    "sha256": "4d58281549806425f097ee0ca9bc04160f43ca112c027b46b4dfc199a8173be4"
+  },
+  "savedBefore": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/ordinary-reload-current/source-before/main.cpp",
+    "bytes": 42015,
+    "sha256": "02bc1ff85205acec289b2489896d107c4c34fcad5a28f91577f3bf72754c734b"
+  },
+  "frozenAfter": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/ordinary-reload-current/source/main.cpp",
+    "bytes": 42218,
+    "sha256": "4d58281549806425f097ee0ca9bc04160f43ca112c027b46b4dfc199a8173be4"
+  },
+  "diff": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/ordinary-reload-current/SourceChange.actual.diff",
+    "bytes": 534,
+    "sha256": "254507aa88bfae73ac66f35d832db45a839f3cdce56ae3c9208d6e7d2137670e"
+  },
+  "originalEol": "LF",
+  "firstChangedLine": 686,
+  "unchangedPrefixBytes": 35581,
+  "unchangedSuffixBytes": 6322,
+  "sameAsCurrentMessagePortCodeIgnoringItsTwoComments": true,
+  "contract": {
+    "readyExpectationCapturedOnce": true,
+    "onlyExactPendingRetried": "E_RELOAD_PENDING",
+    "firstOkStopsFurtherReloadCalls": true,
+    "operationAndReadyShareOneOriginalUntil": true,
+    "originalTimeoutDefaultMs": 20000,
+    "timeoutFieldUnchanged": "settings_.timeout_ms",
+    "untilServiceAnd10msMessageWaitUnchanged": true,
+    "otherTerminalErrorsReturnOriginalResult": true,
+    "exceptionsStillPropagate": true,
+    "noSuccessorReloadWhilePending": true,
+    "noClockDeadlineQueueResourceOrOwnershipChange": true
+  },
+  "rootReviewPending": true,
+  "buildExecuted": false,
+  "testExecuted": false,
+  "vmControlled": false,
+  "releaseReady": false,
+  "productionQualificationComplete": false
+}

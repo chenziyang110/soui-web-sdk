@@ -1,0 +1,179 @@
+{
+  "schema": "soui.native-focus-loader-a2-preparation/v1",
+  "preparedUtc": "2026-10-29T11:18:37.734Z",
+  "previousOwned": {
+    "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\Focus-Owned.cjs",
+    "bytes": 8224,
+    "sha256": "29fac428862351d58d28cb3841f34fd4fe5082aed94499e7a684eee5fb5bc1d1"
+  },
+  "previousExport": {
+    "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\FocusExport.ps1",
+    "bytes": 6791,
+    "sha256": "5cc5469a02c12b9db4372d14f6cbab71db2acd70e9f7c1ebcfd58604ed04db89"
+  },
+  "sourceInputs": [
+    {
+      "name": "NativeFocusControl.cs",
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\NativeFocusControl.cs",
+      "bytes": 30830,
+      "sha256": "690305a4dbe13e2c3a56d269bd7c4377bd3ab8c7b5e0ba9de23bbcd00c0ea5e2"
+    },
+    {
+      "name": "Invoke-NativeFocusControl-a2.ps1",
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\Invoke-NativeFocusControl-a2.ps1",
+      "bytes": 6297,
+      "sha256": "f686d65b3e69f2e00ab23c451840c3d766b42a456cd87381e0372cdb7e2ebcf9"
+    },
+    {
+      "name": "README.md",
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\README.md",
+      "bytes": 6127,
+      "sha256": "9b4df7135152e2ee3b351305d2c085f6e7ae2da17cf06003e5f6a7b9f78f2306"
+    },
+    {
+      "name": "Preparation-a2.actual.json",
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\Preparation-a2.actual.json",
+      "bytes": 3191,
+      "sha256": "874fd1a9b2ff028962948d8e6f33afd8e88e0af739223affc22828142cfe3e80"
+    },
+    {
+      "name": "Focus-Owned-a2.cjs",
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\Focus-Owned-a2.cjs",
+      "bytes": 10534,
+      "sha256": "c68b83da0784d0b60346881879657719bc341644f5d6ce3aec41c989f4eecfea"
+    },
+    {
+      "name": "FocusExport-a2.ps1",
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\FocusExport-a2.ps1",
+      "bytes": 6791,
+      "sha256": "440af4243d305dedec3876e0c7f18af1a338d21da614e034719f8595e570bf04"
+    },
+    {
+      "name": "Loader-Crt.inputs.json",
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\Loader-Crt.inputs.json",
+      "bytes": 3459,
+      "sha256": "1a6c1c0987af3e259aff0c2f9615dce8b893267efd4e1fdb6de4d5f625ac90ce"
+    }
+  ],
+  "existingTransportedPrefix": {
+    "hostManifest": {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-build\\handoff-6d09f9b2-1585-4187-95ba-2cd3d40cc832\\payload\\Payload.manifest.json",
+      "bytes": 285033,
+      "sha256": "c6bb34afb81252ca16dd2bec955e3a8b36bfe830041e52ba417e9c34445eb897"
+    },
+    "guestManifest": {
+      "path": "C:/issues8/Payload.manifest.json",
+      "bytes": 285033,
+      "sha256": "c6bb34afb81252ca16dd2bec955e3a8b36bfe830041e52ba417e9c34445eb897"
+    },
+    "guestDirectory": "C:/issues8/tray-x64",
+    "closedFiles": 16
+  },
+  "frozenBudgets": {
+    "outerTimeoutMs": 90000,
+    "drainMs": 2000,
+    "innerDeadlineMs": 60000,
+    "changed": false
+  },
+  "freshOuter": "C:/issue-closeout-evidence/focusc-a2-run",
+  "freshInner": "C:/issue-closeout-evidence/focusc-a2",
+  "changes": [
+    "Fresh a2 evidence leaves and a2 export name only",
+    "Exact existing x64 prefix pinned and closed-set checked before and after",
+    "launchOwned env supplies only its supervisor/PowerShell descendant PATH; parent environment is checked unchanged",
+    "All original native/control code, closure guards and diagnostic result semantics unchanged",
+    "a2-specific PowerShell/preparation normalize slash form and confine the raw absolute path to the exact fresh a2 leaf; raw dot navigation rejected"
+  ],
+  "startCommand": "C:\\issues8\\tools\\node.exe D:\\Focus-Owned-a2.cjs",
+  "exportAfterControllerEnded": "powershell -NoProfile -File D:\\FocusExport-a2.ps1",
+  "a1": {
+    "observationSource": "Root UI observation only; raw files remain in task VM",
+    "supervisorExitCodeReported": 3221225781,
+    "nativeRootExitReported": null,
+    "readyRootIdentityReported": null,
+    "terminalReported": null,
+    "closureConfirmedReported": false,
+    "originalPreserved": true,
+    "newExportPrepared": false,
+    "reason": "No supervisor birth or Job receipt exists. PID absence and a loader code do not independently establish Job closure; existing exporter remains fail-closed. Keep a1 originals and screenshot evidence; do not claim a native control or natural closure."
+  },
+  "compiled": false,
+  "executed": false,
+  "vmTouched": false,
+  "productExecuted": false,
+  "sdkFixed": false,
+  "testPassed": null,
+  "releaseReady": false,
+  "pathCorrection": "LoaderA2.PathCorrection.prepared.json",
+  "previousUnexecutedPreparation": {
+    "directory": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\loader-a2-before-path-fix",
+    "files": [
+      {
+        "name": "NativeFocusControl.cs",
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\loader-a2-before-path-fix\\NativeFocusControl.cs",
+        "bytes": 30830,
+        "sha256": "690305a4dbe13e2c3a56d269bd7c4377bd3ab8c7b5e0ba9de23bbcd00c0ea5e2"
+      },
+      {
+        "name": "Invoke-NativeFocusControl.ps1",
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\loader-a2-before-path-fix\\Invoke-NativeFocusControl.ps1",
+        "bytes": 5837,
+        "sha256": "9227597e840ddf12317ae3940c7f78db69faa601adc62347715f4b23500814c2"
+      },
+      {
+        "name": "README.md",
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\loader-a2-before-path-fix\\README.md",
+        "bytes": 6127,
+        "sha256": "9b4df7135152e2ee3b351305d2c085f6e7ae2da17cf06003e5f6a7b9f78f2306"
+      },
+      {
+        "name": "Preparation.actual.json",
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\loader-a2-before-path-fix\\Preparation.actual.json",
+        "bytes": 2446,
+        "sha256": "6b5fd304995a766913b5d6d765b7a71e4eb5755a6043a05c36865cbb27e609e6"
+      },
+      {
+        "name": "Focus-Owned-a2.cjs",
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\loader-a2-before-path-fix\\Focus-Owned-a2.cjs",
+        "bytes": 10528,
+        "sha256": "df95b018b2545479d29dec803b856c8072fb69064915b07dfcbb67c3664ac8f2"
+      },
+      {
+        "name": "FocusExport-a2.ps1",
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\loader-a2-before-path-fix\\FocusExport-a2.ps1",
+        "bytes": 6791,
+        "sha256": "440af4243d305dedec3876e0c7f18af1a338d21da614e034719f8595e570bf04"
+      },
+      {
+        "name": "Loader-Crt.inputs.json",
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\loader-a2-before-path-fix\\Loader-Crt.inputs.json",
+        "bytes": 3459,
+        "sha256": "1a6c1c0987af3e259aff0c2f9615dce8b893267efd4e1fdb6de4d5f625ac90ce"
+      },
+      {
+        "name": "LoaderA2.selection.prepared.json",
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\loader-a2-before-path-fix\\LoaderA2.selection.prepared.json",
+        "bytes": 1825,
+        "sha256": "3ff7e060c6da3fda7c61adcbf51dee9b164a1f235f214073a13674cf6a31df87"
+      },
+      {
+        "name": "LoaderA2.prepared.json",
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\loader-a2-before-path-fix\\LoaderA2.prepared.json",
+        "bytes": 4647,
+        "sha256": "233fa8f41ebb64b158ea28926dfbacadc2e0fc5dc234008dc92ceb3ce18c01bb"
+      },
+      {
+        "name": "LoaderA2.review.diff",
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\loader-a2-before-path-fix\\LoaderA2.review.diff",
+        "bytes": 9990,
+        "sha256": "3fdc4fd638c0f42b9889f0b1f2864067f7f2475e8ea5e02caf4a1d372528c295"
+      },
+      {
+        "name": "Prepare-LoaderA2.cjs",
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\loader-a2-before-path-fix\\Prepare-LoaderA2.cjs",
+        "bytes": 8812,
+        "sha256": "920bcbb666bc2f31e72b6c7df6a3905adb3f1e5e3c7e5b91f7ca7374e40bf1d7"
+      }
+    ]
+  }
+}
