@@ -1,0 +1,46 @@
+TAP version 13
+# Subtest: x86: compiler lifecycle input drift invalidates preparation: tools/internal/Find-Toolchain.ps1
+ok 1 - x86: compiler lifecycle input drift invalidates preparation: tools/internal/Find-Toolchain.ps1
+  ---
+  duration_ms: 120.0273
+  type: 'test'
+  ...
+# Subtest: x86: compiler lifecycle input drift invalidates preparation: tools/internal/Msvc-CompilerLifecycle.ps1
+ok 2 - x86: compiler lifecycle input drift invalidates preparation: tools/internal/Msvc-CompilerLifecycle.ps1
+  ---
+  duration_ms: 114.8373
+  type: 'test'
+  ...
+# Subtest: x86: unchanged source and matching tool identities remain prepared
+ok 3 - x86: unchanged source and matching tool identities remain prepared
+  ---
+  duration_ms: 103.3519
+  type: 'test'
+  ...
+# Subtest: x64: compiler lifecycle input drift invalidates preparation: tools/internal/Find-Toolchain.ps1
+ok 4 - x64: compiler lifecycle input drift invalidates preparation: tools/internal/Find-Toolchain.ps1
+  ---
+  duration_ms: 113.4809
+  type: 'test'
+  ...
+# Subtest: x64: compiler lifecycle input drift invalidates preparation: tools/internal/Msvc-CompilerLifecycle.ps1
+ok 5 - x64: compiler lifecycle input drift invalidates preparation: tools/internal/Msvc-CompilerLifecycle.ps1
+  ---
+  duration_ms: 102.8081
+  type: 'test'
+  ...
+# Subtest: x64: unchanged source and matching tool identities remain prepared
+ok 6 - x64: unchanged source and matching tool identities remain prepared
+  ---
+  duration_ms: 103.3051
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 760.8711

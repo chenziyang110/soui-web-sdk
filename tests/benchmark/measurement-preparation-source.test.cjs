@@ -86,6 +86,15 @@ function fixture(t, architecture) {
 }
 
 for (const architecture of ['x86', 'x64']) {
+  for (const name of ['tools/internal/Find-Toolchain.ps1', 'tools/internal/Msvc-CompilerLifecycle.ps1']) {
+    test(`${architecture}: compiler lifecycle input drift invalidates preparation: ${name}`, t => {
+      const f = fixture(t, architecture);
+      f.validation.prepared(architecture);
+      fs.appendFileSync(path.join(f.workspace, name), '\n# changed lifecycle input\n');
+      assert.throws(() => f.validation.prepared(architecture));
+      assert.equal(f.launches.count, 0);
+    });
+  }
   test(`${architecture}: unchanged source and matching tool identities remain prepared`, t => {
     const f = fixture(t, architecture), prepared = f.validation.prepared(architecture);
     assert.equal(prepared.report.prepared, true);

@@ -4,6 +4,7 @@ const path = require('node:path');
 const crypto = require('node:crypto');
 const childProcess = require('node:child_process');
 const id = require('./delivery-identity.cjs');
+const deadlineFile = require('./deadline-file-pin.cjs');
 
 // These are transport settings, not application memory limits. In particular,
 // requestedDictionaryBytes does not describe encoder/decoder peak memory.
@@ -23,7 +24,11 @@ function resolve(profile = 'zip') {
   if (typeof profile !== 'string' || !Object.hasOwn(definitions, profile)) throw new Error('Unknown compression profile');
   return {profile, ...definitions[profile], arguments: [...definitions[profile].arguments]};
 }
-function executableSnapshot(executable) {
+function executableSnapshot(executable, deadline) {
+  if (deadline !== undefined) {
+    const observed = deadlineFile.pin(executable, {deadline, minBytes: 1, maxBytes: 128 * 1024 * 1024});
+    return {file: path.basename(observed.path), bytes: observed.bytes, sha256: observed.sha256};
+  }
   executable = id.safePath(executable);
   const before = fs.lstatSync(executable);
   if (!before.isFile() || before.nlink !== 1 || before.size < 1 || before.size > 128 * 1024 * 1024)
@@ -47,52 +52,66 @@ function executableSnapshot(executable) {
     return {file: path.basename(executable), bytes, sha256: hash.digest('hex')};
   } finally { fs.closeSync(descriptor); }
 }
-function observeTool(executable) {
+function observeTool(executable, deadline) {
+  // Optional absolute monotonic milliseconds, shared with the owning operation.
+  const timeout = deadline === undefined ? 15000 : Math.min(15000, Math.ceil(deadlineFile.check(deadline)));
+  if (!(timeout > 0)) throw new Error('Aggregate archive tool deadline exceeded');
   const observed = childProcess.spawnSync(executable, ['i'], {encoding: 'utf8', windowsHide: true,
-    timeout: 15000, maxBuffer: 1024 * 1024});
-  if (observed.error || observed.status !== 0) throw new Error('Cannot identify archive tool version');
+    timeout, maxBuffer: 1024 * 1024});
+  if (observed.error || observed.status !== 0 || observed.signal) {
+    if (deadline === undefined) throw new Error('Cannot identify archive tool version');
+    const failure = observed.error || new Error('Cannot identify archive tool version');
+    failure.archiveToolObservation = {executable, arguments: ['i'], timeoutMs: timeout, exitCode: observed.status,
+      signal: observed.signal || null, stdout: observed.stdout || '', stderr: observed.stderr || ''};
+    throw failure;
+  }
+  if (deadline !== undefined) deadlineFile.check(deadline);
   const version = /^7-Zip(?:\s+\([^)]*\))?\s+(\d+\.\d+(?:\.\d+)?)(?:\s|$)/m.exec(observed.stdout || '')?.[1];
   if (!version) throw new Error('Archive tool did not report a supported 7-Zip version');
   const libraries = new Map();
   let inLibraries = false;
   for (const line of (observed.stdout || '').split(/\r?\n/)) {
+    if (deadline !== undefined) deadlineFile.check(deadline);
     if (line.trim() === 'Libs:') { inLibraries = true; continue; }
     if (!inLibraries) continue;
     if (!line.trim()) { if (libraries.size) break; continue; }
     if (/^\S.*:\s*$/.test(line)) break;
     const match = /^\s*\d+\s*:\s*[^:\r\n]+\s*:\s*(.+?)\s*$/.exec(line);
     if (!match) throw new Error('Cannot identify archive runtime library');
-    const full = id.safePath(path.resolve(path.dirname(executable), match[1]));
+    const full = id.safePath(path.resolve(path.dirname(executable), match[1]), '', deadline === undefined ? undefined : () => deadlineFile.check(deadline));
     libraries.set(process.platform === 'win32' ? full.toLowerCase() : full, full);
     if (libraries.size > 32) throw new Error('Archive runtime library count exceeds budget');
   }
   // Older output and standalone tools can omit Libs. If the standard companion
   // is present, include it conservatively instead of recording only the loader.
   if (!libraries.size) {
-    const companion = id.safePath(path.dirname(executable), '7z.dll');
-    if (fs.existsSync(companion)) libraries.set(process.platform === 'win32' ? companion.toLowerCase() : companion, companion);
+    const companion = id.safePath(path.dirname(executable), '7z.dll', deadline === undefined ? undefined : () => deadlineFile.check(deadline));
+    const exists = deadline === undefined ? fs.existsSync(companion) : deadlineFile.io(deadline, () => fs.existsSync(companion));
+    if (exists) libraries.set(process.platform === 'win32' ? companion.toLowerCase() : companion, companion);
   }
   return {version, libraries: [...libraries.values()].sort((a, b) => a.localeCompare(b, 'en'))};
 }
-function runtimeSnapshots(executable, libraries) {
+function runtimeSnapshots(executable, libraries, deadline) {
   let bytes = 0;
   return libraries.map(file => {
-    const identity = executableSnapshot(file);
+    const identity = executableSnapshot(file, deadline);
     bytes += identity.bytes;
     if (bytes > 512 * 1024 * 1024) throw new Error('Archive runtime libraries exceed byte budget');
     return {...identity, file: path.relative(path.dirname(executable), file).split(path.sep).join('/')};
   });
 }
-function toolIdentity(executable) {
+function toolIdentity(executable, {deadline} = {}) {
   if (typeof executable !== 'string' || !executable) throw new Error('Archive tool path is required');
-  executable = id.safePath(executable);
-  const before = executableSnapshot(executable), observed = observeTool(executable);
-  const runtimeFiles = runtimeSnapshots(executable, observed.libraries), repeated = observeTool(executable);
+  if (deadline !== undefined && (!Number.isFinite(deadline) || deadline <= 0)) throw new Error('Invalid archive tool deadline');
+  executable = id.safePath(executable, '', deadline === undefined ? undefined : () => deadlineFile.check(deadline));
+  const before = executableSnapshot(executable, deadline), observed = observeTool(executable, deadline);
+  const runtimeFiles = runtimeSnapshots(executable, observed.libraries, deadline), repeated = observeTool(executable, deadline);
   if (observed.version !== repeated.version || JSON.stringify(observed.libraries) !== JSON.stringify(repeated.libraries) ||
-      JSON.stringify(runtimeFiles) !== JSON.stringify(runtimeSnapshots(executable, repeated.libraries)))
+      JSON.stringify(runtimeFiles) !== JSON.stringify(runtimeSnapshots(executable, repeated.libraries, deadline)))
     throw new Error('Archive runtime libraries changed during version observation');
-  const after = executableSnapshot(executable);
+  const after = executableSnapshot(executable, deadline);
   if (JSON.stringify(before) !== JSON.stringify(after)) throw new Error('Archive tool changed during version observation');
+  if (deadline !== undefined) deadlineFile.check(deadline);
   return {...after, version: observed.version, runtimeFiles};
 }
 module.exports = {resolve, toolIdentity};

@@ -4,10 +4,12 @@
 
 ## 0.6.0 后续源码候选
 
+PR127之后的工具遗留项已新增自有VCTIP自然idle生命周期、显式SDK失败stage保留/校验恢复，以及checked ZIP准备入口。当前两架构微型CMake自然收尾、实际子文件句柄EPERM恢复、候选canonical pack与实际PS5中文长路径短验已过；原失败与完整范围见[后续收尾](maintenance/windows-tooling-failure-closeout-20261029.md)。旧EPERM锁持有者及PS5原失败原因仍未知，完整构建负载与生产资格不据此关闭。
+
 当前工作分支已补 ZIP UTF-8 参数、MSVC 节点复用策略及 source SDK 发布失败诊断，
 并补充授权契约用例。64个工具逻辑用例及两架构各10个受控授权场景已有通过结果，
 MiniBlink x86 Release真实暂停后原生关闭代表例自然完成；首轮夹具/编译失败及GUI超时仍保留。
-这不修改已发布0.6.0包或关闭下表历史原失败。VCTIP自然收尾、EPERM锁持有者及PS5长临时stage的具体原因仍未确定。
+这不修改已发布0.6.0包或关闭下表历史原失败。此段是PR127时点记录；后续新增自然收尾机制及剩余限制以上述收尾文档为准。
 范围和执行结果见[必要项收尾](maintenance/production-tools-devtools-closeout-20261029.md)。
 
 ## 0.6.0 当前限制

@@ -322,7 +322,8 @@ function acquireLease(root,architecture) {
 }
 const scriptNames=['tools/Build.ps1','tools/internal/standard-build.cjs','tools/internal/owned-process.cjs',
   'tools/internal/sdk-version.cjs','tools/internal/owned-tail-evidence.cjs','tools/internal/compiler-tail-policy.cjs','tools/internal/build-evidence.cjs',
-  'tools/internal/delivery-identity.cjs','tools/internal/Find-Toolchain.ps1','tools/internal/CMake-Configure.ps1','cmake/SouiWindowsSdk.cmake',
+  'tools/internal/delivery-identity.cjs','tools/internal/Find-Toolchain.ps1','tools/internal/CMake-Configure.ps1',
+  'tools/internal/Msvc-CompilerLifecycle.ps1','cmake/SouiWindowsSdk.cmake',
   'tools/internal/measurement-validation.cjs'];
 function scripts(root,v={}){return [...new Set([...scriptNames,...(v.nativeToolchain==='LLVM22MSVC142'?
   require('./llvm-build-observer.cjs').codeNames:[])])].map(name=>({...file(identity.safePath(root,name)),path:name}));}
