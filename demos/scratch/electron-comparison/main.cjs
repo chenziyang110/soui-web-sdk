@@ -9,13 +9,14 @@ const {setTimeout: delay} = require('node:timers/promises');
 const options = {};
 for (let index = 2; index < process.argv.length; index += 2) {
   const key = process.argv[index];
-  if (!['--resources', '--baseline', '--output', '--runs'].includes(key) || !process.argv[index + 1])
+  if (!['--resources', '--baseline', '--output', '--runs', '--diagnostic'].includes(key) || !process.argv[index + 1])
     throw new Error('Expected --resources DIR --baseline JSON --output NEW-DIR [--runs 3].');
   options[key.slice(2)] = process.argv[index + 1];
 }
 if (!options.resources || !options.baseline || !options.output) throw new Error('Required paths are missing.');
 const runs = Number(options.runs ?? 3);
 if (!Number.isInteger(runs) || runs < 1 || runs > 3) throw new Error('Run count must be 1–3.');
+if (options.diagnostic !== undefined && options.diagnostic !== 'profile') throw new Error('Only --diagnostic profile is supported.');
 const output = path.resolve(options.output);
 // Create before Chromium initializes userData, while refusing existing evidence.
 require('node:fs').mkdirSync(output);
@@ -135,6 +136,39 @@ app.whenReady().then(async () => {
   record.environment.page = await evaluate(() => ({url:location.href,width:innerWidth,height:innerHeight,
     devicePixelRatio,visibility:document.visibilityState,hardwareConcurrency:navigator.hardwareConcurrency}));
   await save();
+  if (options.diagnostic === 'profile') {
+    const {runDiagnostic} = require('./diagnostic-driver.cjs');
+    const debuggerApi = window.webContents.debugger;
+    if (debuggerApi.isAttached()) throw new Error('The diagnostic consumer already has a debugger attached.');
+    debuggerApi.attach('1.3');
+    activeRun = 'diagnostic';
+    try {
+      record.diagnostic = await runDiagnostic({
+        send: (method, params) => debuggerApi.sendCommand(method, params),
+        evaluate: source => window.webContents.executeJavaScript(source),
+        subscribe: callback => {
+          const handler = (_event, method, params) => callback(method, params);
+          debuggerApi.on('message', handler);
+          return () => debuggerApi.removeListener('message', handler);
+        },
+        nativeGuard: async () => ({focused: window.isFocused(), visible: window.isVisible(), minimized: window.isMinimized(),
+          bounds: window.getContentBounds(), nativeHandleHex: window.getNativeWindowHandle().toString('hex')})
+      }, {output: path.join(output, 'diagnostic'), width: baseline.viewport.width, height: baseline.viewport.height,
+        metadata: {runtime: record.environment, resourceRoot: root, resourceHashes: record.resourceHashes,
+          harnessHashes: record.harnessHashes, hostPid: process.pid, gpuInfo: record.gpuInfo, gpuFeatures: record.gpuFeatures}});
+    } finally {activeRun = null; if (debuggerApi.isAttached()) debuggerApi.detach();}
+    record.completedUtc = new Date().toISOString();
+    record.pass = record.diagnostic.collectionCompleted && record.diagnostic.pageGuardsQualified && failures.length === 0 && blockedRequests.length === 0;
+    record.passKind = 'diagnostic collection only; profiler overhead, trace capability and native occlusion qualification are separate';
+    record.formalPerformancePassed = null;
+    await save();
+    console.log(`DIAGNOSTIC COMPLETE: ${output}; CPU=${record.diagnostic.cpuProfileQualified}; trace=${record.diagnostic.traceQualified}; collection=${record.pass}.`);
+    if (!record.pass) process.exitCode = 1;
+    // This newly created diagnostic target owns its profile. Normal window/app
+    // teardown is observed by the external owner; debugger detach is not proof.
+    window.close();
+    return;
+  }
   console.log('READY: use 性能实验 → 重负载 → 载入并运行 → 继续. Samples start automatically after the scene is ready.');
   await waitFor(() => evaluate(() => window.souiScratchPerformance?.configuration?.sceneId === 'sprites' &&
     window.souiScratchPerformance.configuration.level === 'heavy' && window.souiScratch.vm.runtime.targets.length === 241 &&

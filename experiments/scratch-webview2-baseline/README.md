@@ -43,3 +43,15 @@ Build 只通过当前 SDK 的 `Restore-WebView2.ps1` 取已固定/校验的包�
 正常关闭保留消息泵，等待初始化回调、关闭 Controller，再等待已接纳 `ExecuteScript` 的实际原生完成回调排空及本工具独占 profile 的 browser 进程句柄实际 signaled；`nativeCallbacksPending` 分别记录初始化与脚本剩余数。脚本中异步页面工作不冒充原生回调，关闭采样中窗口会使该次采集失败。初始化中取消没有完整 browser 身份时明确保留未通过/未知清理范围；超过十秒写失败并以退出码 3 终止工具，不把强退当清理成功。正式 SDK 的完整 callback/环境退出观察与恢复契约不由这个实验替代。
 
 工具启动前的资源枚举与 SHA 读取会改变文件缓存，不能拿该 W 启动时间直接证明正式 SDK 冷启动增量。这里首先支持同载荷的稳态 rAF 对照；屏幕呈现与物理输入延迟需要另有证据。
+
+## 固定诊断模式
+
+新消费者可加 `--diagnostic profile`，自动通过同页既有场景选择、载入按钮和确认框加载 sprites/heavy；不修改产品页面、VM 频率或资源，不接触已打开的手动 S/E 窗口。该模式只执行一次 10 秒预热 + 10 秒 instrumented profile，不执行 F6 的正式 30 秒采集。
+
+共同输入是本目录 `diagnostic-protocol.json`、`diagnostic-page-scripts.json`、`diagnostic-probe.js`。CMake 将其固定嵌入 W；S 独立诊断消费者与 E 驱动使用同配方，需核实际嵌入/读取字节 SHA。固定 CDP allowlist 仅包含 Profiler enable/setSamplingInterval/start/stop/disable 与 Tracing getCategories/start/end；没有 remote debugging port、任意网页 Evaluate 或 browser flags。原 loader/sandbox/resource 策略保持。
+
+原始证据在新输出的 `diagnostic/`：`cpu-profile.cpuprofile`、`trace-events.ndjson`、`trace.json`、`page-diagnostic.json`、`capture.json`。CPU、trace、页面/原生守卫的资格分别记录，缺 category、buffer overflow、dataLoss 或缺 complete 事件不能写成已测零成本。输出含 profiler 本身和采集端点的少量开销；分析需用共同 page marks 截取实际窗，不能拿诊断 rAF 作为正式分数。整段前台/遮挡/资源进程证据仍需外部被动 WindowGuard/OS trace，不由端点 DOM checks 代替。
+
+诊断会增加一个相同的 16ms probe timer，只保留有限间隔数组，lateness 定义为观测间隔减请求的 16ms。它不是浏览器内部 deadline 或屏幕 present。最后保留 meter 的自然完成/真实 stopped 状态，不伪造完成；结束清理 probe 并停止本诊断消费者的工作负载。退出前关闭 Controller 后继续等原生 CDP/script 回调与独占 browser 实际退休。工具/JSON 的纯 Node 测试不是原生编译或实际 profile 证据。
+
+仅该新诊断模式在收集/stop/订阅清理完成后自动投递本窗口的 WM_CLOSE，沿原 owner 的 10 秒原生关闭与 browser watch 退出；正常 F6 模式仍保留窗口。自动关闭请求或预算超时不等于退休证明，外部 Owned 记录仍须验证自然退出与进程组闭合。

@@ -1,0 +1,12 @@
+{
+  "schema": "soui.scratch-diagnostic-protocol/v1",
+  "warmupMs": 10000,
+  "captureMs": 10000,
+  "samplingIntervalUs": 1000,
+  "timerProbeIntervalMs": 16,
+  "traceCategories": "devtools.timeline,v8,blink.user_timing,cc,gpu,viz,toplevel,renderer.scheduler",
+  "traceOptions": "record-until-full",
+  "maxTraceBytes": 67108864,
+  "maxResponseBytes": 16777216,
+  "qualification": "diagnostic-only; instrumented timing is not formal performance evidence"
+}

@@ -67,8 +67,8 @@
     {
       "path": "CHANGELOG.md",
       "normalization": "lf",
-      "bytes": 61828,
-      "sha256": "bf515528f0e9e31667fbe360d8ca92f6f512f23ef4bdca719bde31db2010735f"
+      "bytes": 62438,
+      "sha256": "c5b4b4b74821f9f51d0f179b831337bdbd0d89a677c7189520129fad730805db"
     },
     {
       "path": "CMakeLists.txt",
@@ -877,14 +877,26 @@
     {
       "path": "demos/scratch/electron-comparison/README.md",
       "normalization": "lf",
-      "bytes": 2597,
-      "sha256": "24979dcdfd2c4da273840c9d7dde8eb990399dfd87d2d1bd1ee7a539fe8b3a8d"
+      "bytes": 4119,
+      "sha256": "c5d70bdb9fe2a04a73f437bffd419ecb62840d47e599f118aadbffbd95de9665"
+    },
+    {
+      "path": "demos/scratch/electron-comparison/diagnostic-driver.cjs",
+      "normalization": "lf",
+      "bytes": 11795,
+      "sha256": "1a13d5f2a557a4f70b45ca9f7728afa572d334d5339b1ce9db169ba5371115f4"
+    },
+    {
+      "path": "demos/scratch/electron-comparison/diagnostic-driver.test.cjs",
+      "normalization": "lf",
+      "bytes": 8912,
+      "sha256": "f9834caf762a84b04dd3ffd6f5891eaad1bf3be4aed6e5bf72ca70670702c764"
     },
     {
       "path": "demos/scratch/electron-comparison/main.cjs",
       "normalization": "lf",
-      "bytes": 12823,
-      "sha256": "4423722680d0b6be5fc22571a3d03ba59ec26a916f180c2e62b8a6a0c3596444"
+      "bytes": 15243,
+      "sha256": "a2be4660673ce2a2ad0c8aa6f5632167941800058ecfef96187bcd37d8ea1690"
     },
     {
       "path": "demos/scratch/electron-comparison/preload.cjs",
@@ -3293,6 +3305,12 @@
       "sha256": "5e53abe7b00dc2127b4fd206a69678f3eee4240d7d852c53e61b599643a7f067"
     },
     {
+      "path": "docs/adr/0140-bounded-webview2-profile-experiment.md",
+      "normalization": "lf",
+      "bytes": 3028,
+      "sha256": "04eeb0079ed3d1c11fb9682548f50b318d0f41e59d25abffced8867ee2304a8a"
+    },
+    {
       "path": "docs/adr/0140-performance-candidate-size-and-source.md",
       "normalization": "lf",
       "bytes": 2720,
@@ -3707,6 +3725,30 @@
       "sha256": "7fad01f91d6628d6f99a801820eb0d6d8c92a4a4f77ed1738ec96a5b5d362782"
     },
     {
+      "path": "experiments/scratch-sdk-diagnostic/CMakeLists.txt",
+      "normalization": "lf",
+      "bytes": 2573,
+      "sha256": "fb8784cceb66284daacdfba225f4a80d667fe0ee20ebfe002bd7e27ce7fae727"
+    },
+    {
+      "path": "experiments/scratch-sdk-diagnostic/main.cpp",
+      "normalization": "lf",
+      "bytes": 18930,
+      "sha256": "e857d6fbf7fa8fd386f165910b09c8b0e0dddd0f8cf86079a55bbb6b508e166d"
+    },
+    {
+      "path": "experiments/scratch-sdk-diagnostic/recipe.h.in",
+      "normalization": "lf",
+      "bytes": 295,
+      "sha256": "8ea26680ac48ff138421e13968cdc393cc9a02853bd35a4f4ffcd3121e2555ff"
+    },
+    {
+      "path": "experiments/scratch-sdk-diagnostic/sdk-access.cpp",
+      "normalization": "lf",
+      "bytes": 9886,
+      "sha256": "d02146fdc82ba2068b6265c2b1dfb04f983a163c134a3183632de013dc89c851"
+    },
+    {
       "path": "experiments/scratch-webview2-baseline/Build.ps1",
       "normalization": "lf",
       "bytes": 2787,
@@ -3715,20 +3757,56 @@
     {
       "path": "experiments/scratch-webview2-baseline/CMakeLists.txt",
       "normalization": "lf",
-      "bytes": 1947,
-      "sha256": "a34295a547d912aabe4b4639e3e809a0a24fb1b94c5958bd4568be0731e9ae6c"
+      "bytes": 2794,
+      "sha256": "d87a4af8f223f40974aae858607ec7fc8b379deb4e4c73b7b4f0808c6c805fc4"
     },
     {
       "path": "experiments/scratch-webview2-baseline/README.md",
       "normalization": "lf",
-      "bytes": 6617,
-      "sha256": "4ba4668dcc25d39e3348c1be8ae64beacf0de7562961b853c4b78f87a93e7820"
+      "bytes": 8814,
+      "sha256": "7bbfc93e60c45aa198c5083d0c6a401fa1509204fb63d9fb7decb52d509174e0"
+    },
+    {
+      "path": "experiments/scratch-webview2-baseline/diagnostic-capture-policy.h",
+      "normalization": "lf",
+      "bytes": 4516,
+      "sha256": "64c02ea3cf6a7d240c589f0ce15a2ec8e3ab335e16650f8f5b74b56f1431bfbf"
+    },
+    {
+      "path": "experiments/scratch-webview2-baseline/diagnostic-inputs.h.in",
+      "normalization": "lf",
+      "bytes": 294,
+      "sha256": "cb868fe3dfb8dc2ff5f1f380cc02127dcf5e7bedc47485f41d007a7ac2288896"
+    },
+    {
+      "path": "experiments/scratch-webview2-baseline/diagnostic-page-scripts.json",
+      "normalization": "lf",
+      "bytes": 1835,
+      "sha256": "78482cec9cd8df4052b6d1b8e674b7fb39c6c9c030683693bb552af54a7b968d"
+    },
+    {
+      "path": "experiments/scratch-webview2-baseline/diagnostic-probe.js",
+      "normalization": "lf",
+      "bytes": 5623,
+      "sha256": "121f7ff75653fea983ac48e63d628f1f6c626f540cf118f7cb9750be466c618f"
+    },
+    {
+      "path": "experiments/scratch-webview2-baseline/diagnostic-protocol.json",
+      "normalization": "lf",
+      "bytes": 453,
+      "sha256": "a03187c3536b75f22ab7f7e6545408b0d351110df792e3463cb9b6d255fa2296"
+    },
+    {
+      "path": "experiments/scratch-webview2-baseline/diagnostic-webview2-session.h",
+      "normalization": "lf",
+      "bytes": 22598,
+      "sha256": "316ee73a841c87513f9f5033300e81f0781b6c4630240988ea7d576cdd3eec55"
     },
     {
       "path": "experiments/scratch-webview2-baseline/main.cpp",
       "normalization": "lf",
-      "bytes": 33968,
-      "sha256": "c96def214d95cf101db6e7afedaaed66e668cf40c6df611e04997fdc4d26a136"
+      "bytes": 37852,
+      "sha256": "41595d3b362e429004b6c7f5628feacbfa9ea34b3b9cd375d5d218437a64257c"
     },
     {
       "path": "experiments/scratch-webview2-baseline/preload.h.in",
@@ -4303,8 +4381,8 @@
     {
       "path": "sdk/renderers/webview2/stage0_devtools.h",
       "normalization": "lf",
-      "bytes": 2122,
-      "sha256": "8b896991c2789c4b495641a1fb6f2964cf3269c72898c9069bbba20eda51621a"
+      "bytes": 3449,
+      "sha256": "f0f603aecd4ccfb6073675a93e3c3a8b2f6e6c2830129dd335b9534869f36b5a"
     },
     {
       "path": "sdk/renderers/webview2/webview2_host.cpp",

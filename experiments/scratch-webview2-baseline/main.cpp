@@ -8,6 +8,7 @@
 #include <soui/version.h>
 #include "loader_policy.h"
 #include "preload.h"
+#include "diagnostic-webview2-session.h"
 #include <algorithm>
 #include <chrono>
 #include <cmath>
@@ -123,6 +124,8 @@ struct application : std::enable_shared_from_this<application> {
   ComPtr<ICoreWebView2Environment> environment;
   ComPtr<ICoreWebView2Controller> controller;
   ComPtr<ICoreWebView2> core;
+  bool diagnosticMode{},diagnosticPublished{};
+  std::shared_ptr<soui::scratch_diagnostic::webview2_capture> diagnostic;
   json failures=json::array(),windowEvents=json::array();
   json record{{"schema","soui.scratch-raw-webview2-session/v1"},{"backend","W: raw WebView2 HWND"},
     {"productionSdk",false},{"performanceVerified",false},{"pass",false}};
@@ -153,13 +156,15 @@ struct application : std::enable_shared_from_this<application> {
     windowEvents.push_back({{"kind",kind},{"tickMs",std::to_string(GetTickCount64())}});
   }
   void close() {
-    if(!closing){closing=true;closeAt=GetTickCount64();if(active)failed("Closed during sample");}
-    record["nativeCallbacksPending"]={{"initialization",preparing},{"script",scriptCallbacks},{"active",activeCallbacks}};
+    if(!closing){closing=true;closeAt=GetTickCount64();if(diagnostic)diagnostic->cancel();if(active)failed("Closed during sample");}
+    if(diagnostic)diagnostic->cancel();
+    record["nativeCallbacksPending"]={{"initialization",preparing},{"script",scriptCallbacks},{"active",activeCallbacks},
+      {"diagnostic",diagnostic?diagnostic->pending():0},{"diagnosticActive",diagnostic?diagnostic->active_callbacks():0}};
     if(!SetTimer(window,1,20,nullptr)){
       try{record["cleanup"]="close-watchdog-unavailable-not-passed";record["pass"]=false;save();}catch(...){}
       ExitProcess(3);
     }
-    if(preparing || activeCallbacks || controllerCloseActive)return;
+    if(preparing || activeCallbacks || controllerCloseActive || (diagnostic && diagnostic->active_callbacks()))return;
     if(controller && !controllerClosed){
       const auto current=controller;
       // Close may synchronously reenter the owner message pump. Publish the
@@ -177,15 +182,23 @@ struct application : std::enable_shared_from_this<application> {
     }
     // Close can release a paused/blocked ExecuteScript; keep its native
     // completion owner alive until the real callback arrives.
-    if(scriptCallbacks)return;
+    if(scriptCallbacks || (diagnostic && (diagnostic->pending() || diagnostic->active_callbacks() || !diagnostic->events_retired())))return;
     if(browser && WaitForSingleObject(browser,0)!=WAIT_OBJECT_0)return;
     environment.Reset();
+    // This original 10s deadline covers native target/callback retirement. Large
+    // evidence exports begin only after the actual closure proof, as pure I/O.
+    const auto nativeCloseElapsed=GetTickCount64()-closeAt;
+    if(nativeCloseElapsed>=10000){record["cleanup"]="deadline-failed-before-export";record["pass"]=false;save();ExitProcess(3);}
+    record["nativeRetiredBeforeExport"]=browser?json(true):json(nullptr);record["nativeCloseElapsedMs"]=nativeCloseElapsed;
+    KillTimer(window,1);
+    if(diagnostic)diagnostic->export_cancelled_after_retirement();
     record["cleanup"]=browser ? "owned-browser-signaled" : "no-browser-identity";
     record["failures"]=failures;record["windowEvents"]=windowEvents;record["blockedResources"]=blockedResources;
     record["pass"]=sampleTaken && exitCode==0 && failures.empty() && windowEvents.empty() && blockedResources==0;save();
-    KillTimer(window,1);DestroyWindow(window);
+    DestroyWindow(window);
   }
   void sample() {
+    if(diagnosticMode)return;
     if(!ready || active || closing || !core || record.value("samples",0)>=3 || IsIconic(window) || GetForegroundWindow()!=window)return;
     if(blockedResources){failed("Blocked external requests invalidate this comparison cohort");return;}
     active=true;sampleId=guid();measureAt=GetTickCount64();windowEvents=json::array();
@@ -246,7 +259,10 @@ struct application : std::enable_shared_from_this<application> {
     else if(request.value("sessionId",std::string{})!=sessionId || request.value("token",std::string{})!=token || request.value("origin",std::string{})!="app://scratch-studio")
       response={{"requestId",id},{"ok",false},{"error",{{"code","E_SESSION"},{"message","Invalid comparison session"}}}};
     else if(method=="app.info")response["result"]={{"sdkVersion",SOUI_SDK_VERSION_STRING},{"buildId","raw WebView2 comparison W"},{"backend","WebView2 raw W"},{"runtimeVersion",record.value("runtimeVersion",std::string{})}};
-    else if(method=="bridge.probe.report"){ready=true;KillTimer(window,3);response["result"]={{"ready",true}};}
+    else if(method=="bridge.probe.report"){
+      ready=true;KillTimer(window,3);response["result"]={{"ready",true}};
+      if(diagnosticMode && !diagnostic && !SetTimer(window,4,500,nullptr))throw std::runtime_error("Diagnostic owner timer unavailable");
+    }
     else response={{"requestId",id},{"ok",false},{"error",{{"code","E_UNSUPPORTED"},{"message","Rendering comparison only; native business actions are unavailable"}}}};
     const auto envelope=json{{"kind","response"},{"documentId",documentId},{"requestId",id},{"invocationId",invocation},{"raw",response.dump()}}.dump();
     const auto posted=currentCore->PostWebMessageAsJson(wide(envelope).c_str());
@@ -302,6 +318,29 @@ struct application : std::enable_shared_from_this<application> {
         if(FAILED(accepted)){--s->preparing;check(accepted,"Controller admission");}});}).Get());
     if(FAILED(admittedEnvironment)){--preparing;check(admittedEnvironment,"Environment admission");}
   }
+  void diagnosticTick() {
+    if(!diagnosticMode || !ready || closing)return;
+    if(!diagnostic) {
+      const auto weak=weak_from_this();
+      diagnostic=std::make_shared<soui::scratch_diagnostic::webview2_capture>(core.Get(),output/L"diagnostic",[weak]{
+        const auto s=weak.lock();if(!s)return json::object();RECT bounds{};const bool geometry=GetClientRect(s->window,&bounds)!=FALSE;
+        return json{{"focused",GetForegroundWindow()==s->window},{"visible",IsWindowVisible(s->window)!=FALSE},
+          {"minimized",IsIconic(s->window)!=FALSE},{"geometryQualified",geometry&&bounds.right==s->width&&bounds.bottom==s->height},
+          {"width",bounds.right},{"height",bounds.bottom}};
+      },width,height);
+      active=true;measureAt=GetTickCount64();windowEvents=json::array();diagnostic->start();
+    } else diagnostic->tick();
+    if(diagnostic->done() && !diagnosticPublished) {
+      diagnosticPublished=true;active=false;KillTimer(window,4);const auto& captured=diagnostic->result();
+      record["diagnostic"]=captured;record["formalPerformancePassed"]=nullptr;
+      sampleTaken=captured.value("collectionCompleted",false);record["windowEvents"]=windowEvents;
+      record["pass"]=sampleTaken && captured.value("pageGuardsQualified",false) && windowEvents.empty() && failures.empty() && !blockedResources;
+      if(!record["pass"].get<bool>())exitCode=2;save();
+      SetWindowTextW(window,L"Raw WebView2 W — diagnostic saved (instrumented; not a score)");
+      if(diagnostic->timed_out())failed("Diagnostic timeout requires owned Controller shutdown");
+      else if(!PostMessageW(window,WM_CLOSE,0,0))failed("Diagnostic normal close request failed");
+    }
+  }
   static LRESULT CALLBACK procedure(HWND window,UINT message,WPARAM wparam,LPARAM lparam) {
     auto self=reinterpret_cast<application*>(GetWindowLongPtrW(window,GWLP_USERDATA));
     if(message==WM_NCCREATE){self=static_cast<application*>(reinterpret_cast<CREATESTRUCTW*>(lparam)->lpCreateParams);SetWindowLongPtrW(window,GWLP_USERDATA,reinterpret_cast<LONG_PTR>(self));self->window=window;}
@@ -316,6 +355,7 @@ struct application : std::enable_shared_from_this<application> {
       if(message==WM_TIMER && wparam==1){if(GetTickCount64()-self->closeAt>10000){try{self->record["cleanup"]="deadline-failed-not-passed";self->record["pass"]=false;self->save();}catch(...){}ExitProcess(3);}self->close();return 0;}
       if(message==WM_TIMER && wparam==2){KillTimer(window,2);if(self->active)self->failed("Sample deadline exceeded");return 0;}
       if(message==WM_TIMER && wparam==3){KillTimer(window,3);if(!self->ready)self->failed("Scratch startup deadline exceeded");return 0;}
+      if(message==WM_TIMER && wparam==4){self->boundary([&]{self->diagnosticTick();});return 0;}
       if(message==WM_DESTROY){PostQuitMessage(self->exitCode);return 0;}
       if(message==WM_NCDESTROY){SetWindowLongPtrW(window,GWLP_USERDATA,0);self->window=nullptr;}
     }catch(const std::exception& error){self->failed(error.what());return 0;}
@@ -334,6 +374,7 @@ int WINAPI wWinMain(HINSTANCE instance,HINSTANCE,LPWSTR,int show) {
     for(int i=1;i<argc;i+=2){if(i+1>=argc)throw std::runtime_error("Option requires value");const std::wstring name=argv[i],value=argv[i+1];
       if(name==L"--resources")app->resources=std::filesystem::canonical(value);
       else if(name==L"--output")app->output=std::filesystem::absolute(value).lexically_normal();
+      else if(name==L"--diagnostic"){if(value!=L"profile")throw std::runtime_error("Only --diagnostic profile is supported");app->diagnosticMode=true;}
       else if(name==L"--width"||name==L"--height"){if(value.empty()||value.find_first_not_of(L"0123456789")!=std::wstring::npos)throw std::runtime_error("Invalid dimensions");const auto size=std::stoul(value);if(size<200||size>8192)throw std::runtime_error("Dimension range");if(name==L"--width")app->width=static_cast<int>(size);else app->height=static_cast<int>(size);}
       else throw std::runtime_error("Unknown option");}
     if(app->resources.empty()||app->output.empty()||app->output.filename().empty())throw std::runtime_error("Required: --resources DIR --output NEW_DIRECTORY [--width 1424 --height 861]");
@@ -368,7 +409,15 @@ int WINAPI wWinMain(HINSTANCE instance,HINSTANCE,LPWSTR,int show) {
       {"fileCount",resourceInventory["fileCount"]},{"totalBytes",resourceInventory["totalBytes"]}};
     wchar_t executable[32768]{};const auto length=GetModuleFileNameW(nullptr,executable,32768);if(!length||length==32768)throw std::runtime_error("Executable identity");app->record["executableSha256"]=fileHash(executable);
     app->record["passScope"]="Collection guards only; no E/W/S parity or production security qualification";
-    app->record["warmupMs"]=10000;app->record["durationMs"]=30000;app->save();
+    app->record["warmupMs"]=10000;app->record["durationMs"]=app->diagnosticMode?10000:30000;
+    if(app->diagnosticMode)for(const auto& input:std::vector<std::pair<std::wstring,std::string>>{
+        {L"diagnostic-protocol.json",diagnostic_recipe_json},{L"diagnostic-page-scripts.json",diagnostic_scripts_json},
+        {L"diagnostic-probe.js",diagnostic_probe_source}}) {
+      const auto file=app->output/input.first;
+      {std::ofstream stream(file,std::ios::binary);stream<<input.second;if(!stream)throw std::runtime_error("Diagnostic input export failed");}
+      app->record["diagnosticSourceInputs"].push_back({{"name",utf8(input.first)},{"bytes",input.second.size()},{"sha256",fileHash(file)}});
+    }
+    app->record["diagnosticOnly"]=app->diagnosticMode;app->save();
     const auto dpi=reinterpret_cast<BOOL(WINAPI*)(HANDLE)>(GetProcAddress(GetModuleHandleW(L"user32.dll"),"SetProcessDpiAwarenessContext"));if(dpi)dpi(reinterpret_cast<HANDLE>(-4));
     WNDCLASSW type{};type.hInstance=instance;type.lpfnWndProc=&application::procedure;type.lpszClassName=L"ScratchRawWebView2Baseline";type.hCursor=LoadCursorW(nullptr,IDC_ARROW);if(!RegisterClassW(&type))throw std::runtime_error("Window class");
     RECT bounds{0,0,app->width,app->height};if(!AdjustWindowRectEx(&bounds,WS_OVERLAPPEDWINDOW,FALSE,0))throw std::runtime_error("Window dimensions");

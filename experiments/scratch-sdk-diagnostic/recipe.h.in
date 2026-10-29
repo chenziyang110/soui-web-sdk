@@ -1,0 +1,6 @@
+#pragma once
+namespace soui::scratch_diagnostic::recipe_input {
+inline constexpr char protocol[] = R"SOUIDIAG(@DIAGNOSTIC_PROTOCOL@)SOUIDIAG";
+inline constexpr char scripts[] = R"SOUIDIAG(@DIAGNOSTIC_SCRIPTS@)SOUIDIAG";
+inline constexpr char probe[] = R"SOUIDIAG(@DIAGNOSTIC_PROBE@)SOUIDIAG";
+}

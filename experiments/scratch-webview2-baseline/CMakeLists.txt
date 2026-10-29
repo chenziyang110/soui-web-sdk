@@ -16,6 +16,20 @@ find_library(BASELINE_WEBVIEW2_LOADER WebView2LoaderStatic
   PATHS "${SOUI_WEBVIEW2_SDK_ROOT}/build/native/${baseline_arch}" NO_DEFAULT_PATH REQUIRED)
 file(READ "${SOUI_BASELINE_SDK_ROOT}/sdk/renderers/webview2/native-preload.js" W_PRELOAD_TEMPLATE)
 configure_file(preload.h.in "${CMAKE_CURRENT_BINARY_DIR}/preload.h" @ONLY)
+file(READ "${CMAKE_CURRENT_SOURCE_DIR}/diagnostic-protocol.json" DIAGNOSTIC_RECIPE)
+file(READ "${CMAKE_CURRENT_SOURCE_DIR}/diagnostic-page-scripts.json" DIAGNOSTIC_SCRIPTS)
+file(READ "${CMAKE_CURRENT_SOURCE_DIR}/diagnostic-probe.js" DIAGNOSTIC_PROBE)
+foreach(input IN ITEMS DIAGNOSTIC_RECIPE DIAGNOSTIC_SCRIPTS DIAGNOSTIC_PROBE)
+  string(FIND "${${input}}" ")SOUI_DIAG\"" delimiter)
+  if(NOT delimiter EQUAL -1)
+    message(FATAL_ERROR "Diagnostic input contains its C++ raw-literal delimiter")
+  endif()
+endforeach()
+set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
+  "${CMAKE_CURRENT_SOURCE_DIR}/diagnostic-protocol.json"
+  "${CMAKE_CURRENT_SOURCE_DIR}/diagnostic-page-scripts.json"
+  "${CMAKE_CURRENT_SOURCE_DIR}/diagnostic-probe.js")
+configure_file(diagnostic-inputs.h.in "${CMAKE_CURRENT_BINARY_DIR}/diagnostic-inputs.h" @ONLY)
 add_executable(ScratchRawWebView2Baseline WIN32 main.cpp)
 target_compile_features(ScratchRawWebView2Baseline PRIVATE cxx_std_17)
 target_compile_definitions(ScratchRawWebView2Baseline PRIVATE UNICODE _UNICODE NOMINMAX WINVER=0x0601 _WIN32_WINNT=0x0601)
