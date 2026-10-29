@@ -21,6 +21,7 @@
 #include <windows.h>
 #include <process.h>
 #include <memory>
+#include <cmath>
 #include <exception>
 #include <stdexcept>
 #include <mmsystem.h>
@@ -280,7 +281,7 @@ void WebThreadImpl::postTask(const blink::WebTraceLocation& location, blink::Web
 
 void WebThreadImpl::postDelayedTaskImpl(
     const blink::WebTraceLocation& location, blink::WebThread::Task* task, 
-    long long delayMs, double* createTimeOnOtherThread, int priority, unsigned* heapInsertionOrder, const input_frame_trace::event* trace)
+    long long delayMs, double* createTimeOnOtherThread, int priority, unsigned* heapInsertionOrder, const input_frame_trace::event* trace, const double* absoluteDeadline)
 {
     input_frame_trace::event localTrace;
     if (!trace) {
@@ -310,7 +311,10 @@ void WebThreadImpl::postDelayedTaskImpl(
         }
         timer.reset(WebTimerBase::create(this, location, payload.get(), priority, effectiveTrace));
         payload.release(); // Timer now owns the task, including shutdown drain.
-        timer->startFromOtherThread((double)delayMs / 1000.0, createTimeOnOtherThread, heapInsertionOrder);
+        if (absoluteDeadline)
+            timer->startAt(*absoluteDeadline, heapInsertionOrder);
+        else
+            timer->startFromOtherThread((double)delayMs / 1000.0, createTimeOnOtherThread, heapInsertionOrder);
         if (!trace) {
             timer->m_trace.point = input_frame_trace::stage::task_posted;
             timer->m_trace.qpc = input_frame_trace::now_qpc();
@@ -333,6 +337,26 @@ void WebThreadImpl::postDelayedTaskWithPriorityCrossThread(
     long long delayMs,
     int priority)
 {
+    postTaskWithPriorityCrossThread(location, task, delayMs, priority, nullptr);
+}
+
+void WebThreadImpl::postTaskAtWithPriorityCrossThread(const blink::WebTraceLocation& location,
+    blink::WebThread::Task* task, double deadline, int priority)
+{
+    if (!(deadline > 0)) {
+        postDelayedTaskWithPriorityCrossThread(location, task, 0, priority);
+        return;
+    }
+    if (!std::isfinite(deadline)) {
+        std::unique_ptr<blink::WebThread::Task> cancelled(task);
+        return; // Positive infinity is consumed outside every producer lock.
+    }
+    postTaskWithPriorityCrossThread(location, task, 0, priority, &deadline);
+}
+
+void WebThreadImpl::postTaskWithPriorityCrossThread(const blink::WebTraceLocation& location,
+    blink::WebThread::Task* task, long long delayMs, int priority, const double* absoluteDeadline)
+{
     // WebThread's public contract transfers ownership at post, not at run.
     std::unique_ptr<blink::WebThread::Task> payload(task);
     if (m_willExit) {
@@ -342,9 +366,8 @@ void WebThreadImpl::postDelayedTaskWithPriorityCrossThread(
     }
 
     if (isCurrentThread()) {
-        // Without a cross-thread insertion order, startFromOtherThread calls
-        // start(), which already samples monotonicallyIncreasingTime() for every delay.
-        postDelayedTaskImpl(location, payload.release(), delayMs, nullptr, priority, nullptr);
+        // Relative start still samples its own clock; absolute start retains D.
+        postDelayedTaskImpl(location, payload.release(), delayMs, nullptr, priority, nullptr, nullptr, absoluteDeadline);
         if (m_isMainThread && !m_firingTimers && !m_willExit
             && !m_timerHeap.empty() && m_timerHeap[0]->m_nextFireTime <= monotonicallyIncreasingTime())
             requestSharedTimerContinuation();
@@ -353,7 +376,7 @@ void WebThreadImpl::postDelayedTaskWithPriorityCrossThread(
 
     std::unique_ptr<TaskPair> pair;
     try {
-        pair.reset(new TaskPair(location, payload.get(), delayMs, priority));
+        pair.reset(new TaskPair(location, payload.get(), delayMs, priority, absoluteDeadline));
         payload.release();
     } catch (...) { return; }
     ::EnterCriticalSection(&m_taskPairsMutex);
@@ -398,11 +421,12 @@ bool WebThreadImpl::hasReadyTaskAtOrAbove(int minimumPriority)
     ::LeaveCriticalSection(&m_taskPairsMutex);
     return pending || (isCurrentThread() && m_timerIndex.hasReadyAtOrAbove(minimumPriority, now));
 }
-WebThreadImpl::TaskPair::TaskPair(const blink::WebTraceLocation& location, blink::WebThread::Task* task, long long delayMs, int priority)
+WebThreadImpl::TaskPair::TaskPair(const blink::WebTraceLocation& location, blink::WebThread::Task* task, long long delayMs, int priority, const double* absoluteDeadline)
 {
     this->location = location;
     this->task = task;
     this->delayMs = delayMs;
+    this->hasAbsoluteDeadline = absoluteDeadline != nullptr;
     this->priority = priority;
     this->createTime = WTF::monotonicallyIncreasingTime();
     this->heapInsertionOrder = WebThreadImpl::getNewCurrentHeapInsertionOrder();
@@ -414,7 +438,8 @@ WebThreadImpl::TaskPair::TaskPair(const blink::WebTraceLocation& location, blink
     this->trace.task_id = input_frame_trace::next_task_id();
     this->pendingPosition = 0;
     this->scheduling.value = this;
-    this->scheduling.deadline = this->createTime + static_cast<double>(delayMs) / 1000.0;
+    this->scheduling.deadline = absoluteDeadline ? *absoluteDeadline
+        : this->createTime + static_cast<double>(delayMs) / 1000.0;
     this->scheduling.priority = priority;
 }
 
@@ -476,7 +501,8 @@ void WebThreadImpl::startTriggerTasks(unsigned* remainingAdmissions, double admi
         std::unique_ptr<TaskPair> pair(selected);
         blink::WebThread::Task* payload = pair->task;
         pair->task = nullptr;
-        postDelayedTaskImpl(pair->location, payload, pair->delayMs, &pair->createTime, pair->priority, &pair->heapInsertionOrder, &pair->trace);
+        postDelayedTaskImpl(pair->location, payload, pair->delayMs, &pair->createTime, pair->priority, &pair->heapInsertionOrder, &pair->trace,
+            pair->hasAbsoluteDeadline ? &pair->scheduling.deadline : nullptr);
         if (remainingAdmissions) --*remainingAdmissions;
     }
 }

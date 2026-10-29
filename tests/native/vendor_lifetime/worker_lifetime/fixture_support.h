@@ -5,7 +5,9 @@
 #include <mmsystem.h>
 #include <atomic>
 #include <algorithm>
+#include <cmath>
 #include <iterator>
+#include <limits>
 #include <cstdint>
 #include <cstdlib>
 #include <cstdio>
@@ -76,6 +78,7 @@ class WebSchedulerImpl : public blink::WebScheduler {
 public:
     explicit WebSchedulerImpl(WebThreadImpl*);
     ~WebSchedulerImpl() override;
+    void postTimerTaskAt(const blink::WebTraceLocation&, blink::WebThread::Task*, double monotonicTime);
     static void* operator new(std::size_t size) { return fixture::allocateScheduler(size); }
     static void operator delete(void* pointer) noexcept { ::operator delete(pointer); }
 private:

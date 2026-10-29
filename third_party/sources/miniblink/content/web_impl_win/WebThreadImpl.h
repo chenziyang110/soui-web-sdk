@@ -44,6 +44,8 @@ public:
         blink::WebThread::Task* task,
         long long delayMs,
         int priority);
+    void postTaskAtWithPriorityCrossThread(const blink::WebTraceLocation& location,
+        blink::WebThread::Task* task, double deadline, int priority);
     bool hasReadyTaskAtOrAbove(int minimumPriority);
 
     virtual bool isCurrentThread() const override;
@@ -95,7 +97,7 @@ private:
     void fireTimeOnExit();
 
     struct TaskPair {
-        TaskPair(const blink::WebTraceLocation& location, blink::WebThread::Task* task, long long delayMs, int priority);
+        TaskPair(const blink::WebTraceLocation& location, blink::WebThread::Task* task, long long delayMs, int priority, const double* absoluteDeadline);
         ~TaskPair();
         task_scheduling::DeadlinePriorityIndex::Entry scheduling;
         std::size_t pendingPosition;
@@ -104,12 +106,15 @@ private:
         blink::WebTraceLocation location;
         blink::WebThread::Task* task;
         long long delayMs;
+        bool hasAbsoluteDeadline;
         int priority;
         double createTime;
         unsigned heapInsertionOrder;
     };
+    void postTaskWithPriorityCrossThread(const blink::WebTraceLocation& location,
+        blink::WebThread::Task* task, long long delayMs, int priority, const double* absoluteDeadline);
     void postDelayedTaskImpl(
-        const blink::WebTraceLocation& location, blink::WebThread::Task* task, long long delayMs, double* createTimeOnOtherThread, int priority, unsigned* heapInsertionOrder, const input_frame_trace::event* trace = nullptr);
+        const blink::WebTraceLocation& location, blink::WebThread::Task* task, long long delayMs, double* createTimeOnOtherThread, int priority, unsigned* heapInsertionOrder, const input_frame_trace::event* trace = nullptr, const double* absoluteDeadline = nullptr);
     
     static unsigned __stdcall WebThreadImplThreadEntryPoint(void* param);
     void threadEntryPoint();

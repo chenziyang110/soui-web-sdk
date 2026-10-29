@@ -1,0 +1,165 @@
+{
+  "schema": "soui.miniblink-source-candidate/v1",
+  "baselineCommit": "d393f88f31d1da67583fde55f63cc1ea12c20d0e",
+  "status": "source-and-bound-scheduling-contracts",
+  "hashScope": "raw-file-bytes",
+  "binaryRebuilt": false,
+  "testsExecuted": true,
+  "testScope": "x86/x64 LLVM22/MSVC142 actual source-projected adapter/thread/admission/timer + Commit/AutoRecordActions contracts; controlled clock and explicit dependency fakes, not complete production translation units, default toolchain or FPS qualification",
+  "performanceVerified": false,
+  "packageSizeVerified": false,
+  "patch": {
+    "path": "third_party/patches/miniblink/0027-retain-absolute-task-deadlines.patch",
+    "bytes": 13109,
+    "sha256": "db6dcae45c7571bb2281e8aa2f9907cad5bb1b6f9e5286d3858bcc0844c46ef6"
+  },
+  "files": [
+    {
+      "path": "third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.h",
+      "beforeBytes": 4986,
+      "beforeSha256": "a886ed6f388ccd94aba8d238ae9e9963c6da2c02c5ec345b4cd503d8a649d058",
+      "bytes": 5434,
+      "sha256": "85b5a51bc7ab68c43e68f93b89ac3a832ac70d300a2a391f3f9c7ec4408bb266"
+    },
+    {
+      "path": "third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp",
+      "beforeBytes": 30525,
+      "beforeSha256": "a7c20cad2ebada70f83eb68121f719a34f597faa8eaf739751d49662e3362e4f",
+      "bytes": 31696,
+      "sha256": "829f558fa74e3d36425118e89b8d36aa860a476f016fd197f342ae6e37c86eea"
+    },
+    {
+      "path": "third_party/sources/miniblink/content/web_impl_win/WebTimerBase.h",
+      "beforeBytes": 4787,
+      "beforeSha256": "2f53eb00f4ba3e316775db516f8f188dd503a957cd19cb6ca4c1ccf1629b6d51",
+      "bytes": 4852,
+      "sha256": "096a5ad30d2c71d2c1de28ed3c7a8961ec1781d5ecad6fe6579d79bf6055a1b9"
+    },
+    {
+      "path": "third_party/sources/miniblink/content/web_impl_win/WebTimerBase.cpp",
+      "beforeBytes": 15627,
+      "beforeSha256": "f902f45a4512b98ff1ad3663798188247272383ff9d80cc725188dd97b2fb28d",
+      "bytes": 15850,
+      "sha256": "78246d2d90237d2279a122e3da5457a3c0fdfd4ef3410cb07067b029f126eddb"
+    },
+    {
+      "path": "third_party/sources/miniblink/content/web_impl_win/WebSchedulerImpl.cpp",
+      "beforeBytes": 3651,
+      "beforeSha256": "4a444a58d081d23999c7bd1b04eb44904bf6eb9d71dd02c1fac763485ce43b33",
+      "bytes": 3345,
+      "sha256": "67f1813aa60b88fa536beb70b3f8c1f983cf8b31a65c950bb936dba9a8c55711"
+    },
+    {
+      "path": "third_party/sources/miniblink/content/browser/WebPageImpl.cpp",
+      "beforeBytes": 94066,
+      "beforeSha256": "f7e5795562105d5fbfc66a6594823530d86d971963a4d8df5f82dd8799ee1264",
+      "bytes": 94094,
+      "sha256": "34b1d519010ee9200026f258f0a04806d47e5721dcaf85757ad1a235b1537850"
+    }
+  ],
+  "preserved": {
+    "outsideReviewedAsciiReplacements": true,
+    "sourceEncodingAndLineEndings": true,
+    "wkeAndProviderAbi": true,
+    "relativeSamplingBoundary": true,
+    "priorityAndBudgets": true,
+    "shutdownFutureDrain": true
+  },
+  "replay": {
+    "currentTreeReverseCheck": true,
+    "baselineAndApplicationEvidence": true
+  },
+  "baseline": {
+    "architectures": [
+      "x86",
+      "x64"
+    ],
+    "actualFailures": 8,
+    "selectedSourceImmutable": true,
+    "workerCasesPerArchitecture": 3,
+    "commitScenariosPerArchitecture": 13,
+    "result": "All expected retained-D failures observed with natural nonzero roots and closed owned groups; original failed results retained"
+  },
+  "candidate": {
+    "architectures": [
+      "x86",
+      "x64"
+    ],
+    "lanes": {
+      "x64-worker": {
+        "registeredTests": 34,
+        "buildPassed": true,
+        "testsPassed": true,
+        "buildElapsedMs": 20864,
+        "testElapsedMs": 3431
+      },
+      "x64-commit": {
+        "registeredTests": 1,
+        "buildPassed": true,
+        "testsPassed": true,
+        "buildElapsedMs": 20050,
+        "testElapsedMs": 205
+      },
+      "x86-worker": {
+        "registeredTests": 34,
+        "buildPassed": true,
+        "testsPassed": true,
+        "buildElapsedMs": 20362,
+        "testElapsedMs": 3492
+      },
+      "x86-commit": {
+        "registeredTests": 1,
+        "buildPassed": true,
+        "testsPassed": true,
+        "buildElapsedMs": 19403,
+        "testElapsedMs": 197
+      }
+    },
+    "selectedSourceImmutable": true,
+    "nativeTestsRerun": false
+  },
+  "limits": [
+    "Controlled clock/source projections and explicit dependency fakes do not qualify full production translation units, default MSVC143 toolchain, loaded kernel or physical input timing.",
+    "No MiniBlink FPS, WebView2 Scratch FPS or binary/runtime/ZIP size claim; full kernel and consumer rebuild remain pending.",
+    "The explicit shutdown drain can execute future tasks by its existing contract; normal dispatch remains asynchronous and does not run early.",
+    "Observer authored raw-recipe contracts passed; existing LLVM generated-utf8 projection paths remain unsupported by that observer and are not qualified by the source-only report."
+  ],
+  "evidence": {
+    "rootRole": "external-task-evidence",
+    "receipts": [
+      {
+        "path": "native/absolute-deadline-baseline-r1/result.json",
+        "bytes": 17667,
+        "sha256": "2509134352d4b24f4553663e8c0639138f065a48635cf7da6a41e5b6c49d0b39"
+      },
+      {
+        "path": "native/absolute-deadline-preparation-r1/application.json",
+        "bytes": 2729,
+        "sha256": "ecc470e49e65cc5ad643e861bc1a1bd74965d470e3ef073808445932e3ffd7ac"
+      },
+      {
+        "path": "native/absolute-deadline-green-r1/result.json",
+        "bytes": 29054,
+        "sha256": "3d169613e9f8d899fdb539ddec1c75e46322a5055ed6e3d38ef56fccee6e9bbb"
+      },
+      {
+        "path": "native/absolute-deadline-source-gate-r2/result.json",
+        "bytes": 30835,
+        "sha256": "8aa80de9277f8f8fe370037f72c6876bf52bc816eee361a0eb455dc3f9e2af70"
+      }
+    ]
+  },
+  "observerSourceContracts": {
+    "passed": true,
+    "counts": {
+      "derived": 47,
+      "failed": 0,
+      "selectedObjects": 8,
+      "workerDerived": 17,
+      "workerSelectedObjects": 1,
+      "total": 70
+    },
+    "actualCompilationQualified": false
+  },
+  "preservedFailure": "The first combined GREEN receipt remains passed=false because an existing scheduler-continuation writer pin was stale; native tests all passed. Only non-compiled tooling source contracts were repaired and rerun; original results and frozen native artifacts remain unchanged."
+}

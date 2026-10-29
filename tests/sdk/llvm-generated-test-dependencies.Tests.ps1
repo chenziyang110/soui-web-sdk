@@ -8,7 +8,7 @@ function Declarations([string]$path,[string[]]$names){
  $tokens=$null;$errors=$null;$ast=[Management.Automation.Language.Parser]::ParseFile($path,[ref]$tokens,[ref]$errors);Need ($errors.Count-eq0) 'PowerShell syntax'
  foreach($name in $names){$nodes=@($ast.FindAll({param($node)$node-is[Management.Automation.Language.FunctionDefinitionAst]-and$node.Name-ceq$name},$true));Need ($nodes.Count-eq1) ('Unique pure declaration: '+$name);$nodes[0].Extent.Text}
 }
-$names=@('GeneratedTestHash','GeneratedTestRelative','GeneratedTestFrozen','GeneratedTestWriter','GeneratedTestInterval','GeneratedTestMarker','GeneratedTestActual','GeneratedTestRecipes','GeneratedTestRecipeMarker','GeneratedTestRecipeDependencies','GeneratedTestDependencies','NinjaDependencyBlocks','DependencyBindings')
+$names=@('GeneratedTestHash','GeneratedTestRelative','GeneratedTestFrozen','GeneratedTestWriter','GeneratedTestInterval','GeneratedTestMarker','GeneratedTestActual','GeneratedTestWorkerShutdown','GeneratedTestRecipes','GeneratedTestRecipeMarker','GeneratedTestRecipeDependencies','GeneratedTestDependencies','NinjaDependencyBlocks','DependencyBindings')
 foreach($declaration in @(Declarations $CandidatePath $names)){. ([scriptblock]::Create($declaration))}
 if($RecipeRoot){
  # New recipe SOURCE contracts use authored graph/dependency records and actual
@@ -16,7 +16,7 @@ if($RecipeRoot){
  # generator, compiler or observer entry point is used. Delivered unexecuted.
  $root=[IO.Path]::GetFullPath($RecipeRoot);$build=Join-Path $root 'out/authored-observer-recipe';$configuration='Release'
  $recipes=@(GeneratedTestRecipes);$pins=@{};$physical=@{};$records=@();$pairs=@();$cases=[Collections.Generic.List[object]]::new();$failed=0
- $expectedCounts=@{'scheduler-continuation'=7;'scheduler-index'=0;'window-close-lifetime'=8;'independent-wheel'=18;'host-visibility'=10;'render-diagnostic'=3}
+ $expectedCounts=@{'scheduler-continuation'=7;'scheduler-index'=0;'window-close-lifetime'=8;'independent-wheel'=18;'host-visibility'=11;'render-diagnostic'=3}
  function FreezeRecipeInput([string]$path){$key=Norm $path;if($pins.ContainsKey($key)){return};$bytes=[IO.File]::ReadAllBytes($path);$pins[$key]=@{path=$path;bytes=$bytes.Length;sha256=(GeneratedTestHash $bytes)};$physical[$key]=$bytes}
  foreach($role in $recipes){
   FreezeRecipeInput (Join-Path $root ($role.directory+'/CMakeLists.txt'))
@@ -38,8 +38,8 @@ if($RecipeRoot){
  function CloneRecipe($value){$value|ConvertTo-Json -Depth 100 -Compress|ConvertFrom-Json -AsHashtable}
  function RecipeRows($selected=$records,$bindings=$pairs,$frozen=$pins,[scriptblock]$read=$reader){@(GeneratedTestDependencies $root $build $configuration $frozen $selected $read $bindings)}
  $derived=@()
- CheckRecipe 'Six frozen roles cover 46 exact paths and both standalone compiler sources' {
-  $script:derived=RecipeRows;Need ($recipes.Count-eq6-and$derived.Count-eq46-and$records.Count-eq8) 'Frozen new-role dimensions'
+ CheckRecipe 'Six frozen roles cover 47 exact paths and both standalone compiler sources' {
+  $script:derived=RecipeRows;Need ($recipes.Count-eq6-and$derived.Count-eq47-and$records.Count-eq8) 'Frozen new-role dimensions'
   foreach($family in $expectedCounts.Keys){Need (@($derived|Where-Object{$_.writerFamily-ceq$family}).Count-eq$expectedCounts[$family]) ('Recipe output extent: '+$family)}
   foreach($suffix in @('/generated/cc/input/ScrollController.cpp','/generated/cc/trees/ScrollTreeSnapshot.cpp')){
    $row=@($derived|Where-Object{(Norm $_.pin.path).EndsWith((Norm $suffix),[StringComparison]::Ordinal)})
@@ -79,7 +79,7 @@ if($RecipeRoot){
  CheckRecipe 'Known generated source cannot authorize a second unrecognized compiler object' {$next=CloneRecipe $pairs;$copy=CloneRecipe ($pairs|Where-Object{(Norm $_.object)-ceq(Norm $cppObject)});$copy.object=Join-Path $build 'unknown/generated.cpp.obj';$next+=@($copy);RejectRecipe {RecipeRows $records $next} 'cannot authorize another object'}
  CheckRecipe 'Shared generated header records both actual compiler users once' {
   $next=CloneRecipe $records;$header=Join-Path $build ($wheel.directory+'/generated/cc/input/ScrollController.h');($next|Where-Object{(Norm $_.object)-ceq(Norm $cppObject)}).headers+=@{resolved=$header}
-  $rows=RecipeRows $next;$proof=@($rows|Where-Object{(Norm $_.pin.path)-ceq(Norm $header)});Need ($rows.Count-eq46-and$proof.Count-eq1-and$proof[0].selectedObjects.Count-eq2) 'Per-object usage is retained without duplicate path permission'
+  $rows=RecipeRows $next;$proof=@($rows|Where-Object{(Norm $_.pin.path)-ceq(Norm $header)});Need ($rows.Count-eq47-and$proof.Count-eq1-and$proof[0].selectedObjects.Count-eq2) 'Per-object usage is retained without duplicate path permission'
  }
  CheckRecipe 'First following end marker matches writer semantics and preserves raw encoding bytes' {
   $raw=[byte[]](66,10,65,13,10,0,129,10,90,10,90,10);$range=GeneratedTestRecipeMarker $raw 'A' 'Z'
@@ -87,7 +87,57 @@ if($RecipeRoot){
   RejectRecipe {GeneratedTestRecipeMarker ([Text.Encoding]::ASCII.GetBytes('A A Z')) 'A' 'Z'} 'one unique begin marker'
   RejectRecipe {GeneratedTestRecipeMarker ([Text.Encoding]::ASCII.GetBytes('Z A')) 'A' 'Z'} 'following end marker'
  }
- $report=[ordered]@{schema='soui.generated-test-recipe-source-tests/1';sourceOnly=$true;graph='authored dependency/source-object contracts, not captured compilation';passed=($failed-eq0);counts=@{total=$cases.Count;failed=$failed;derived=$derived.Count;selectedObjects=$records.Count};cases=$cases.ToArray();actorsInvoked=0;qualificationPassed=$false;releaseReady=$false}
+ # The current worker graph is distinct from the historical 26/12 capture below.
+ # Its shutdown macro is a checked writer transform, never an exact source slice.
+ $workerDirectory='tests/native/vendor_lifetime/worker_lifetime'
+ foreach($relative in @('CMakeLists.txt','source-bytes.cmake','source-map.json')){FreezeRecipeInput (Join-Path $root ($workerDirectory+'/'+$relative))}
+ $workerMap=[Text.UTF8Encoding]::new($false,$true).GetString($physical[(Norm (Join-Path $root ($workerDirectory+'/source-map.json')))])|ConvertFrom-Json
+ foreach($workerInput in $workerMap.sources){FreezeRecipeInput (Join-Path $root $workerInput.path)}
+ foreach($workerInput in $workerMap.payloads){FreezeRecipeInput (Join-Path $root ($workerDirectory+'/'+$workerInput.path))}
+ $workerBase=Join-Path $build ($workerDirectory+'/generated')
+ $macroPath=Join-Path $workerBase 'fragments/shutdown_fire_entrypoint.inc'
+ $workerHeaders=@($workerMap.copies|ForEach-Object{@{resolved=(Join-Path $workerBase $_.output)}})+@(@{resolved=$macroPath})
+ $workerRecords=@(@{object=(Join-Path $build ($workerDirectory+'/CMakeFiles/soui_worker_lifetime_regressions.dir/'+$configuration+'/fixture.cpp.obj'));status='VALID';headers=$workerHeaders})
+ function WorkerRows($selected=$workerRecords,$frozen=$pins,[scriptblock]$read=$reader){@(GeneratedTestDependencies $root $build $configuration $frozen $selected $read)}
+ $workerDerived=@();$macroProof=$null
+ CheckRecipe 'Current worker admits 16 source slices and one separately identified shutdown macro' {
+  $script:workerDerived=WorkerRows
+  $macros=@($workerDerived|Where-Object{$_.derivationSchema-ceq'soui.worker-shutdown-entrypoint-macro/1'})
+  Need ($workerDerived.Count-eq17-and$macros.Count-eq1-and@($workerDerived|Where-Object{$_.derivationSchema-ceq'soui.generated-test-source-bytes/1'}).Count-eq16) 'Current worker source and transform extents'
+  $script:macroProof=$macros[0]
+  Need ($null-eq$macroProof.startByte-and$null-eq$macroProof.endByteExclusive-and-not$macroProof.exactWholeFile-and-not$macroProof.preBuildFrozen) 'Macro must not masquerade as a production source range'
+  Need ($macroProof.sourceProof.startByte-eq$workerMap.shutdownProof.startByte-and$macroProof.sourceProof.endByteExclusive-eq$workerMap.shutdownProof.endByteExclusive-and$macroProof.sourceProof.sha256-ceq$workerMap.shutdownProof.sha256) 'Original owner source proof remains separately bound'
+  Need ($macroProof.sourceProof.entrypoint-ceq'fireForShutdown'-and[Text.Encoding]::ASCII.GetString($macroProof.expectedBytes)-ceq('#define FIXTURE_PRE_SHUTDOWN_FIRE_ENTRYPOINT fireForShutdown'+[char]10)) 'Current actual owner routes select the shutdown drain'
+ }
+ CheckRecipe 'Current worker missing macro cannot inherit whole-source permission' {$next=@(CloneRecipe $workerRecords);$next[0].headers=@($next[0].headers|Where-Object{(Norm $_.resolved)-cne(Norm $macroPath)});RejectRecipe {WorkerRows $next} 'Complete selected generated test dependency set required'}
+ CheckRecipe 'Current worker duplicate macro remains rejected' {$next=@(CloneRecipe $workerRecords);$next[0].headers+=@{resolved=$macroPath};RejectRecipe {WorkerRows $next} 'Duplicate selected generated test dependency'}
+ CheckRecipe 'Current worker unknown generated dependency remains rejected' {$next=@(CloneRecipe $workerRecords);$next[0].headers+=@{resolved=(Join-Path $workerBase 'fragments/unknown.inc')};RejectRecipe {WorkerRows $next} 'Unknown generated test dependency'}
+ CheckRecipe 'Current worker macro cannot masquerade as a frozen input' {Need ($null-ne$macroProof) 'Current macro proof';$next=$pins.Clone();$next[(Norm $macroPath)]=$macroProof.pin;RejectRecipe {WorkerRows $workerRecords $next} 'Generated test output cannot masquerade'}
+ CheckRecipe 'Current worker exact derived macro bytes are verified' {Need ($null-ne$macroProof) 'Current macro proof';[void](GeneratedTestActual $macroProof $macroProof.pin $macroProof.expectedBytes)}
+ CheckRecipe 'Current worker forged macro pin cannot bless changed bytes' {Need ($null-ne$macroProof) 'Current macro proof';$raw=[byte[]]$macroProof.expectedBytes.Clone();$raw[0]=$raw[0]-bxor1;$pin=CloneRecipe $macroProof.pin;$pin.sha256=GeneratedTestHash $raw;RejectRecipe {GeneratedTestActual $macroProof $pin $raw} 'differs from frozen derived macro bytes'}
+ function ShutdownTransform([string]$body){
+  $raw=[Text.Encoding]::ASCII.GetBytes($body);$proof=@{source='third_party/sources/miniblink/content/web_impl_win/BlinkPlatformImpl.cpp';output='fragments/platform_shutdown.proof.cpp';startByte=0;endByteExclusive=$raw.Length;bytes=$raw.Length;sha256=(GeneratedTestHash $raw)}
+  GeneratedTestWorkerShutdown $raw $proof
+ }
+ $shutdownRoute='((WebThreadImpl*)currentThread())->fireForShutdown();'+[char]10
+ $shutdownCommit='((WebThreadImpl*)m_mainThread)->shutdown();'+[char]10
+ $shutdownHead='void BlinkPlatformImpl::shutdown()'+[char]10+'{'+[char]10
+ $shutdownTail='}'+[char]10
+ CheckRecipe 'Shutdown transform mirrors both permitted writer route spellings' {
+  foreach($entrypoint in @('fire','fireForShutdown')){
+   $route=$shutdownRoute.Replace('fireForShutdown',$entrypoint);$token=ShutdownTransform ($shutdownHead+$route+$route+$route+$shutdownCommit+$shutdownTail)
+   Need ([Text.Encoding]::ASCII.GetString($token.bytes)-ceq('#define FIXTURE_PRE_SHUTDOWN_FIRE_ENTRYPOINT '+$entrypoint+[char]10)) 'Exact writer macro bytes'
+  }
+ }
+ CheckRecipe 'Shutdown transform rejects a route after shutdown commit' {RejectRecipe {ShutdownTransform ($shutdownHead+$shutdownRoute+$shutdownRoute+$shutdownCommit+$shutdownRoute+$shutdownTail)} 'exactly three pre-shutdown fire routes'}
+ CheckRecipe 'Shutdown transform rejects a fourth route' {RejectRecipe {ShutdownTransform ($shutdownHead+$shutdownRoute+$shutdownRoute+$shutdownRoute+$shutdownRoute+$shutdownCommit+$shutdownTail)} 'exactly three pre-shutdown fire routes'}
+ CheckRecipe 'Shutdown transform rejects disagreeing routes' {RejectRecipe {ShutdownTransform ($shutdownHead+$shutdownRoute+$shutdownRoute+$shutdownRoute.Replace('fireForShutdown','fire')+$shutdownCommit+$shutdownTail)} 'fire routes disagree'}
+ CheckRecipe 'Shutdown transform rejects another lifecycle function' {RejectRecipe {ShutdownTransform ($shutdownHead.Replace('::shutdown()','::other()')+$shutdownRoute+$shutdownRoute+$shutdownRoute+$shutdownCommit+$shutdownTail)} 'actual lifecycle function'}
+ CheckRecipe 'Shutdown proof cannot bless changed raw owner bytes' {
+  $proof=$workerMap.shutdownProof;$source=$physical[(Norm (Join-Path $root $proof.source))];$changed=[byte[]]$source.Clone();$changed[$proof.startByte]=$changed[$proof.startByte]-bxor1
+  RejectRecipe {GeneratedTestWorkerShutdown $changed $proof} 'source range differs from map'
+ }
+ $report=[ordered]@{schema='soui.generated-test-recipe-source-tests/1';sourceOnly=$true;graph='authored dependency/source-object contracts, not captured compilation';passed=($failed-eq0);counts=@{total=$cases.Count;failed=$failed;derived=$derived.Count;selectedObjects=$records.Count;workerDerived=$workerDerived.Count;workerSelectedObjects=$workerRecords.Count};cases=$cases.ToArray();actorsInvoked=0;qualificationPassed=$false;releaseReady=$false}
  $report|ConvertTo-Json -Depth 100
  if($failed){exit 1};return
 }

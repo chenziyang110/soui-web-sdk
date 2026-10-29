@@ -1,5 +1,21 @@
 # Worker 生命周期真实源码回归
 
+## 绝对截止时间 GREEN 候选（2026-10-29）
+
+当前保留原 23 项与上述 RED 准备的 3 项精度回归，另增 8 项边界回归，共 34 项。此状态仅表示候选已准备；两架构 RED 实测由父任务保存，本目录未自行配置、构建或执行 GREEN。
+
+`scheduler-absolute-inputs-same-thread` / `scheduler-absolute-inputs-cross-thread` 将 past、等于 now、0、负数、负无穷、NaN、正无穷逐项同时送入真实 adapter 与内部 absolute 入口，核对前六类异步执行、正无穷消费并取消、active timer 不使用 0，以及恰好一次析构。`scheduler-absolute-huge-cancel` 保留超出整数毫秒范围的有限 D，确认真实 native arm 已调用、正常 fire 不提前，再通过真实 timer `stop()` 与 owner retirement 取消。
+
+`scheduler-absolute-oom-owner` 覆盖 reserve / timer / timer index 分配失败；`scheduler-absolute-oom-producer` 覆盖 TaskPair / pending index node / node vector / pending vector，且核对失败后真实队列可继续接纳；`scheduler-absolute-oom-admission` 覆盖跨线程 TaskPair 接纳转交后的 owner 分配失败。分配故障只扩展原全局 new 的受控 seam，Task 先分配再武装故障。Enter/Leave 包装只观察实际源锁深度，任务析构必须在其外。`scheduler-absolute-exit-rejection` 与 `scheduler-absolute-future-shutdown` 使用真实 worker/native join，分别核对已退出拒绝及 shutdown 允许 future Task 在 D 前执行的既有契约。所有 receipt 均存活到真实 owner 完成销毁。
+
+## 绝对截止时间 RED 准备（2026-10-29）
+
+保留原 23 项，新增 `scheduler-absolute-same-thread`、`scheduler-absolute-cross-thread`、`scheduler-absolute-late-admission`。从当前真实 `WebSchedulerImpl::postTimerTaskAt` 精确字节片段进入真实 `WebThreadImpl` / pending index / admission / `WebTimerBase`；仅增加依赖声明，不手写 adapter。当前固定 16 个 live inputs、16 个 exact copies 和 22 个 payloads，保留完整源文件 SHA 与逐字节 HEX 门禁。
+
+三个案例均投递相同小数目标 D=100.00025，并在两次 post 之间推进 producer clock。跨线程案例使用真实 CRT 原生 producer；late admission 在 D 之后、旧 ceil 目标之前才交给 owner 接纳。通过实际 timer 的 `nextFireInterval()` 检查保留 D（过期目标余量应为零），再检查异步、正常调度不提前、到期执行、等 D 顺序及任务恰好一次析构。RED 预期原因是 `absolute-deadline-retained-D-assertion-failed`，不是新 API 缺失；收尾先销毁真实 owner，使其 future shutdown drain 完成后才释放任务 receipt。
+
+本轮仅准备，未配置、构建或执行。后续采用 ADR-0146 生产变更时，必须先人工审查六文件 delta，逐项核对原始字节与本映射当前 SHA；本夹具固定其中 WebThreadImpl.h/.cpp、WebTimerBase.h/.cpp、WebSchedulerImpl.cpp，WebPageImpl.cpp 由其专属夹具绑定。只对已审查文件更新 whole-source pin 与 whole-file copy 的长度/SHA；scheduler adapter 必须重新定位完整函数区间并计算精确片段 SHA，ctor/dtor 片段原 SHA 应保持。其他 source pins/片段只允许确认未变，不能批量接纳未知 producer 字节；payload pin 仅更新本目录实际改动文件。
+
 ## 主线性能集成（2026-10-29）
 
 当前保留 23 项注册及生命周期/trace 来源，`worker-scheduler-no-count-cap` 改为 `worker-scheduler-task-budget`：正常 worker admission 与 callback 共用 2ms/32 项合作预算，已就绪工作批次之间不额外等待 1ms；显式关闭仍为原有 50ms drain 且没有 32 项上限。主线程 owner 让步、FIFO、AVL 和原失败包装保留。当前映射固定 16 个 live inputs、15 个 exact copies 和 22 个 payloads；下文旧数量及实际结果仅对应各自日期，不继承为当前通过。本轮未执行构建或测试。

@@ -911,14 +911,14 @@ void WebPageImpl::scheduleCommit(long long minimumDelayMs)
         atomicIncrement(&m_commitCount);
         blink::Platform* platfrom = blink::Platform::current();
         WebThreadImpl* threadImpl = (WebThreadImpl*)platfrom->mainThread();
-        const double remainingMs = (m_nextMainFrameTime - WTF::monotonicallyIncreasingTime()) * 1000.0;
-        long long delayMs = minimumDelayMs;
-        if (m_mainFrameInterval > 0 && remainingMs > 0) {
-            const long long frameDelayMs = remainingMs >= 34 ? 34 : static_cast<long long>(remainingMs + 0.999);
-            delayMs = (std::max)(delayMs, frameDelayMs > 0 ? frameDelayMs : 1);
-        }
-        if (delayMs > 0) {
-            threadImpl->postDelayedTask(FROM_HERE, new CommitTask(this), delayMs);
+        const double now = WTF::monotonicallyIncreasingTime();
+        const double minimumDue = now + static_cast<double>((std::max)(minimumDelayMs, 0LL)) / 1000.0;
+        double commitDue = minimumDue;
+        if (m_mainFrameInterval > 0 && m_nextMainFrameTime > now)
+            commitDue = (std::max)(commitDue, (std::min)(m_nextMainFrameTime, now + 0.034));
+        if (commitDue > now) {
+            threadImpl->postTaskAtWithPriorityCrossThread(FROM_HERE, new CommitTask(this), commitDue,
+                WebThreadImpl::kDefaultPriority);
         } else {
             threadImpl->postTask(FROM_HERE, new CommitTask(this));
         }

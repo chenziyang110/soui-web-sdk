@@ -91,6 +91,7 @@ public:
 private:
     WebTimerBase(WebThreadImpl* threadTimers, const blink::WebTraceLocation& location, blink::WebThread::Task* task, int priority, const input_frame_trace::event* trace = nullptr);
 
+    void startAt(double deadline, unsigned* heapInsertionOrder);
     void startFromOtherThread(double interval, double* createTimeOnOtherThread, unsigned* heapInsertionOrder);
 
     void checkConsistency() const;

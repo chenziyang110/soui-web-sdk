@@ -81,14 +81,8 @@ void WebSchedulerImpl::postTimerTask(const blink::WebTraceLocation& location, bl
 void WebSchedulerImpl::postTimerTaskAt(const blink::WebTraceLocation& location,
     blink::WebThread::Task* task, double monotonicTime)
 {
-    const double delay = std::max(0.0,
-        monotonicTime - WTF::monotonicallyIncreasingTime());
-    const double delayMilliseconds = delay * 1000.0;
-    const double maximumDelay = static_cast<double>(
-        std::numeric_limits<long long>::max());
-    const long long delayMs = static_cast<long long>(
-        std::ceil(std::min(delayMilliseconds, maximumDelay)));
-    m_thread->postDelayedTask(location, task, delayMs);
+    m_thread->postTaskAtWithPriorityCrossThread(location, task, monotonicTime,
+        WebThreadImpl::kDefaultPriority);
 }
 
 void WebSchedulerImpl::suspendTimerQueue() 

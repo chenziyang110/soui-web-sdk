@@ -1,5 +1,10 @@
 # 变更记录
 
+## 未发布：MiniBlink内部绝对截止时间
+
+- 定时任务和帧提交沿内部 WebThread/TaskPair/timer 链保留原始 WTF 绝对时间，消除转成整数毫秒后再取时间重建目标的偏移；相对 API、异步执行、优先级、预算和显式退出排空保持。
+- Commit 保留 minimum delay、frame 部分 34ms 提前 flush 上限与真实 beginFrame gate。无效目标、任务所有权、取消和分配失败由受影响的源码链回归覆盖；两架构旧实现已复现指定失败，候选验证结果见 ADR-0146。完整内核、实际性能及体积仍待验证。
+
 ## 未发布：MiniBlink稳定时钟路径
 
 - QPC可用且已同步时跳过未使用的GetSystemTime/mktime转换；UTC回退、首次同步精度窗口、原时钟域与倒退保护保持，不新增锁或依赖。

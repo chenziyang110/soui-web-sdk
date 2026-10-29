@@ -13,12 +13,36 @@
 #include <vector>
 #include <functional>
 
-namespace fixture { int failures = 0; bool fail_nothrow = false; double now = 10; }
+namespace fixture {
+int failures = 0, assertions = 0, scenarios = 0, passed = 0;
+bool fail_nothrow = false;
+double now = 10;
+unsigned clock_reads = 0;
+const char* case_name = "outside scenario";
+}
 void* operator new(std::size_t bytes, const std::nothrow_t&) noexcept
 { if (fixture::fail_nothrow) return nullptr; try { return ::operator new(bytes); } catch (...) { return nullptr; } }
 void operator delete(void* value, const std::nothrow_t&) noexcept { ::operator delete(value); }
 namespace fixture {
-void require(bool value) { if (!value) { ++failures; std::fputs("host visibility source failure\n", stderr); } }
+void require(bool value)
+{
+    ++assertions;
+    if (!value) { ++failures; std::fprintf(stderr, "host visibility source failure: %s\n", case_name); }
+}
+struct Scenario {
+    const char* name;
+    int initial_failures;
+    explicit Scenario(const char* value) : name(value), initial_failures(failures)
+    { case_name = value; ++scenarios; }
+    ~Scenario()
+    {
+        const bool success = failures == initial_failures;
+        if (success) ++passed;
+        std::printf("%s %s\n", success ? "PASS" : "FAIL", name);
+        case_name = "outside scenario";
+    }
+};
+void resetClock(double value) { now = value; clock_reads = 0; }
 }
 inline void atomicIncrement(int* value) { ++*value; }
 inline void atomicDecrement(int* value) { --*value; }
@@ -30,21 +54,42 @@ template<class T> class Locker {
 public: explicit Locker(T& value) : m_value(value) { value.lock(); } ~Locker() { m_value.unlock(); }
 private: T& m_value;
 };
-double monotonicallyIncreasingTime() { return fixture::now; }
+double monotonicallyIncreasingTime() { ++fixture::clock_reads; return fixture::now; }
 }
 namespace blink {
 struct WebTraceLocation { };
 class WebThread {
 public:
     class Task { public: virtual ~Task() = default; virtual void run() = 0; };
-    struct Entry { long long delay; std::unique_ptr<Task> task; };
+    static const int kDefaultPriority = 200;
+    enum class Kind { Immediate, Relative, Absolute };
+    struct Entry {
+        long long delay;
+        double postedAt, due;
+        Kind kind;
+        int priority;
+        std::unique_ptr<Task> task;
+    };
     bool reject = false, owner = true;
+    // The receiver samples after this controlled producer-to-post interval.
+    // This is an observable API boundary, not the real WebThread/TaskPair chain.
+    double postClockAdvance = 0;
     std::vector<Entry> tasks;
     bool isCurrentThread() const { return owner; }
-    void postTask(WebTraceLocation, Task* task) { post(task, 0); }
-    void postDelayedTask(WebTraceLocation, Task* task, long long delay) { post(task, delay); }
-    void post(Task* task, long long delay)
-    { std::unique_ptr<Task> owned(task); if (!reject) tasks.push_back({delay, std::move(owned)}); }
+    void postTask(WebTraceLocation, Task* task) { post(task, 0, Kind::Immediate, 0, kDefaultPriority); }
+    void postDelayedTask(WebTraceLocation, Task* task, long long delay)
+    { post(task, delay, Kind::Relative, 0, kDefaultPriority); }
+    void postTaskAtWithPriorityCrossThread(const WebTraceLocation&, Task* task, double due, int priority)
+    { post(task, 0, Kind::Absolute, due, priority); }
+    void post(Task* task, long long delay, Kind kind, double due, int priority)
+    {
+        std::unique_ptr<Task> owned(task);
+        fixture::now += postClockAdvance;
+        const double postedAt = fixture::now;
+        if (kind != Kind::Absolute) due = postedAt + static_cast<double>(delay) / 1000.0;
+        if (!reject) tasks.push_back({delay, postedAt, due, kind, priority, std::move(owned)});
+    }
+    void cancelAt(size_t index) { tasks.erase(tasks.begin() + index); }
     void runAt(size_t index)
     { auto task = std::move(tasks.at(index).task); tasks.erase(tasks.begin() + index); task->run(); }
 };
@@ -132,6 +177,7 @@ public:
 #include "auto_record.inc"
 #include "commit_task.inc"
 #include "visibility_owner.inc"
+#include "schedule_commit.inc"
 #include "main_frame.inc"
 WebPageImpl::WebPageImpl() : m_hostVisibility(std::make_shared<HostVisibilityWakeState>(this)) { host.client.page = this; }
 void WebPageImpl::close()
@@ -151,10 +197,11 @@ int main()
     blink::Platform platform; blink::Platform::instance = &platform;
     using fixture::require;
     {
+        fixture::Scenario scenario("visibility: fresh restore overtakes retained commit");
         content::WebPageImpl page;
         page.m_mainFrameInterval = .5; page.m_nextMainFrameTime = fixture::now + .5;
         page.setNeedsCommit(); require(page.m_commitCount == 1 && platform.owner.tasks.size() == 1);
-        require(platform.owner.tasks[0].delay > 0);
+        require(platform.owner.tasks[0].due > platform.owner.tasks[0].postedAt);
         page.host.m_dirtyRectsForUi.push_back({}); // Retained legacy damage, not a new independent copy.
         require(page.setHostVisible(false));
         for (int n = 0; n != 5; ++n) { page.setNeedsCommit(); page.beginMainFrame(); }
@@ -162,7 +209,8 @@ int main()
         page.setNeedsCommit(); // Real completion eligibility while hidden adds no owner work.
         require(platform.owner.tasks.size() == 1 && page.host.records == 0 && page.m_needsLayout);
         require(page.setHostVisible(true));
-        require(platform.owner.tasks.size() == 2 && platform.owner.tasks[1].delay == 0);
+        require(platform.owner.tasks.size() == 2 && platform.owner.tasks[1].delay == 0
+            && platform.owner.tasks[1].kind == blink::WebThread::Kind::Immediate);
         require(page.m_nextMainFrameTime == 0 && page.host.m_nextCompositeFrameTime == 0);
         platform.owner.runAt(1); // Fresh wake overtakes old delayed commit.
         require(page.host.records == 1 && page.web.layouts == 1 && page.m_commitCount == 1);
@@ -172,6 +220,7 @@ int main()
         platform.owner.runAt(0); require(page.m_commitCount == 0);
     }
     {
+        fixture::Scenario scenario("visibility: rejection, retry and resource completion");
         content::WebPageImpl page; platform.owner.reject = true;
         require(!page.setHostVisible(true) && page.hasVisibilityOwnerRetry());
         platform.owner.reject = false; fixture::fail_nothrow = true;
@@ -187,6 +236,7 @@ int main()
         require(page.m_commitCount == 0); platform.owner.reject = false;
     }
     {
+        fixture::Scenario scenario("visibility: layout hide and deferred close");
         content::WebPageImpl page;
         page.web.duringLayout = [&] { require(page.setHostVisible(false)); };
         require(page.setHostVisible(true)); platform.owner.runAt(0);
@@ -206,6 +256,7 @@ int main()
         page.host.activity->policy.finish(content::PaintCloseKind::view);
     }
     {
+        fixture::Scenario scenario("visibility: owner-only updates and canceled receipt");
         content::WebPageImpl page;
         platform.owner.owner = false;
         require(!page.setHostVisible(false) && page.m_hostVisibility->policy.visible());
@@ -217,10 +268,168 @@ int main()
         require(!state->page && !state->policy.retry());
     }
     {
+        fixture::Scenario scenario("visibility: stale restore after page destruction");
         auto page = std::make_unique<content::WebPageImpl>();
         require(page->setHostVisible(true)); auto state = page->m_hostVisibility;
         page.reset(); platform.owner.runAt(0);
         require(!state->page && !state->policy.visible() && !state->policy.retry());
     }
+    {
+        fixture::Scenario scenario("commit: fractional frame target survives receiver gap");
+        fixture::resetClock(100.125);
+        content::WebPageImpl page;
+        page.m_mainFrameInterval = .02;
+        const double target = page.m_nextMainFrameTime = 100.13225;
+        platform.owner.postClockAdvance = .0004;
+        page.scheduleCommit(0);
+        require(page.m_commitCount == 1 && platform.owner.tasks.size() == 1);
+        require(fixture::clock_reads == 1);
+        require(page.web.frames == 0 && page.web.layouts == 0 && page.host.records == 0);
+        const auto& task = platform.owner.tasks.at(0);
+        std::printf("fractional target=%.17g observed=%.17g receiver=%.17g kind=%d\n",
+            target, task.due, task.postedAt, static_cast<int>(task.kind));
+        require(task.kind == blink::WebThread::Kind::Absolute && task.due == target);
+        require(task.priority == blink::WebThread::kDefaultPriority);
+        require(task.postedAt == 100.125 + .0004 && page.m_nextMainFrameTime == target);
+        page.scheduleCommit(27); // An existing receipt continues to own the commit.
+        require(page.m_commitCount == 1 && platform.owner.tasks.size() == 1);
+        platform.owner.cancelAt(0);
+        require(page.m_commitCount == 0 && page.notices.empty());
+        fixture::resetClock(101.125);
+        const double submillisecondTarget = page.m_nextMainFrameTime = fixture::now + .00025;
+        page.scheduleCommit(0); // The target becomes overdue before the receiver sample.
+        require(platform.owner.tasks.size() == 1 && page.m_commitCount == 1);
+        require(fixture::clock_reads == 1);
+        require(platform.owner.tasks[0].kind == blink::WebThread::Kind::Absolute);
+        require(platform.owner.tasks[0].due == submillisecondTarget
+            && platform.owner.tasks[0].due < platform.owner.tasks[0].postedAt);
+        require(page.web.frames == 0 && page.web.layouts == 0);
+        platform.owner.cancelAt(0); require(page.m_commitCount == 0 && page.notices.empty());
+        platform.owner.postClockAdvance = 0;
+    }
+    {
+        fixture::Scenario scenario("commit: equal frame target is independent of producer sample");
+        fixture::resetClock(110.125);
+        content::WebPageImpl first, second;
+        first.m_mainFrameInterval = second.m_mainFrameInterval = .02;
+        const double target = first.m_nextMainFrameTime = second.m_nextMainFrameTime = 110.13225;
+        platform.owner.postClockAdvance = .0004;
+        first.scheduleCommit(0);
+        fixture::now = 110.1261;
+        platform.owner.postClockAdvance = .0001;
+        second.scheduleCommit(0);
+        require(platform.owner.tasks.size() == 2 && first.m_commitCount == 1 && second.m_commitCount == 1);
+        require(platform.owner.tasks[0].due == target && platform.owner.tasks[1].due == target);
+        require(platform.owner.tasks[0].due == platform.owner.tasks[1].due);
+        require(first.web.frames == 0 && second.web.frames == 0);
+        platform.owner.cancelAt(1); platform.owner.cancelAt(0);
+        require(first.m_commitCount == 0 && second.m_commitCount == 0);
+        require(first.notices.empty() && second.notices.empty());
+        platform.owner.postClockAdvance = 0;
+    }
+    {
+        fixture::Scenario scenario("commit: minimum delay retains its producer deadline");
+        fixture::resetClock(120.625);
+        content::WebPageImpl page;
+        page.m_mainFrameInterval = .02; page.m_nextMainFrameTime = fixture::now + .00725;
+        const double target = fixture::now + .017;
+        platform.owner.postClockAdvance = .0007;
+        page.scheduleCommit(17);
+        require(platform.owner.tasks.size() == 1 && page.m_commitCount == 1);
+        require(fixture::clock_reads == 1 && platform.owner.tasks[0].due == target);
+        require(platform.owner.tasks[0].kind == blink::WebThread::Kind::Absolute);
+        require(page.web.layouts == 0 && page.host.records == 0);
+        platform.owner.cancelAt(0); require(page.m_commitCount == 0);
+        platform.owner.postClockAdvance = 0;
+    }
+    {
+        fixture::Scenario scenario("commit: frame cap keeps the exact 34 ms target");
+        fixture::resetClock(130.625);
+        content::WebPageImpl page;
+        page.m_mainFrameInterval = .5; page.m_nextMainFrameTime = fixture::now + .5;
+        const double target = fixture::now + .034;
+        platform.owner.postClockAdvance = .0003;
+        page.scheduleCommit(0);
+        require(platform.owner.tasks.size() == 1 && page.m_commitCount == 1);
+        require(fixture::clock_reads == 1 && platform.owner.tasks[0].due == target);
+        require(platform.owner.tasks[0].kind == blink::WebThread::Kind::Absolute);
+        require(page.m_nextMainFrameTime == 130.625 + .5);
+        platform.owner.cancelAt(0); require(page.m_commitCount == 0);
+        platform.owner.postClockAdvance = 0;
+    }
+    {
+        fixture::Scenario scenario("commit: minimum delay above 34 ms is never capped");
+        fixture::resetClock(140.625);
+        content::WebPageImpl page;
+        page.m_mainFrameInterval = .5; page.m_nextMainFrameTime = fixture::now + .5;
+        const double target = fixture::now + .080;
+        platform.owner.postClockAdvance = .0006;
+        page.scheduleCommit(80);
+        require(platform.owner.tasks.size() == 1 && page.m_commitCount == 1);
+        require(platform.owner.tasks[0].kind == blink::WebThread::Kind::Absolute);
+        require(platform.owner.tasks[0].due == target && platform.owner.tasks[0].due > 140.625 + .034);
+        platform.owner.cancelAt(0); require(page.m_commitCount == 0 && page.notices.empty());
+        platform.owner.postClockAdvance = 0;
+    }
+    {
+        fixture::Scenario scenario("commit: disabled pacing and negative minimum stay asynchronous");
+        fixture::resetClock(150.625);
+        content::WebPageImpl page;
+        page.m_mainFrameInterval = 0; page.m_nextMainFrameTime = fixture::now + .5;
+        page.scheduleCommit(-9);
+        require(platform.owner.tasks.size() == 1 && page.m_commitCount == 1);
+        require(platform.owner.tasks[0].kind == blink::WebThread::Kind::Immediate);
+        require(platform.owner.tasks[0].due == fixture::now);
+        require(page.web.frames == 0 && page.web.layouts == 0 && page.host.records == 0);
+        platform.owner.cancelAt(0); require(page.m_commitCount == 0 && page.notices.empty());
+        page.scheduleCommit(0);
+        require(page.web.frames == 0 && platform.owner.tasks.size() == 1);
+        platform.owner.runAt(0);
+        require(page.web.frames == 1 && page.web.layouts == 1 && page.host.records == 1);
+        require(page.m_commitCount == 0 && platform.owner.tasks.empty());
+    }
+    {
+        fixture::Scenario scenario("commit: overdue target uses async post and rejected disposal decrements once");
+        fixture::resetClock(160.625);
+        content::WebPageImpl page;
+        page.m_mainFrameInterval = .02; page.m_nextMainFrameTime = fixture::now - .001;
+        page.scheduleCommit(0);
+        require(platform.owner.tasks.size() == 1 && page.m_commitCount == 1 && page.web.frames == 0);
+        require(platform.owner.tasks[0].kind == blink::WebThread::Kind::Immediate);
+        platform.owner.runAt(0);
+        require(page.web.frames == 1 && page.m_commitCount == 0 && page.notices.empty());
+        require(platform.owner.tasks.empty());
+        platform.owner.reject = true;
+        page.scheduleCommit(90); // Disposal of an unrun real CommitTask restores the count.
+        require(platform.owner.tasks.empty() && page.m_commitCount == 0 && page.notices.empty());
+        require(page.web.frames == 1);
+        platform.owner.reject = false;
+    }
+    {
+        fixture::Scenario scenario("commit: capped wake flushes layout and paint before beginFrame gate");
+        fixture::resetClock(170.625);
+        content::WebPageImpl page;
+        page.m_mainFrameInterval = .05;
+        const double frameTarget = page.m_nextMainFrameTime = fixture::now + .05;
+        const double cappedTarget = fixture::now + .034;
+        page.scheduleCommit(0);
+        require(platform.owner.tasks.size() == 1 && page.m_commitCount == 1);
+        require(platform.owner.tasks[0].due == cappedTarget && cappedTarget < frameTarget);
+        fixture::now = cappedTarget;
+        platform.owner.runAt(0);
+        require(page.web.frames == 0 && page.web.layouts == 1 && page.host.records == 1);
+        require(page.host.transactions == 0 && page.m_executeMainFrameCount == 0);
+        require(page.m_nextMainFrameTime == frameTarget);
+        require(page.m_commitCount == 1 && platform.owner.tasks.size() == 1);
+        require(platform.owner.tasks[0].due == frameTarget);
+        fixture::now = frameTarget;
+        platform.owner.runAt(0);
+        require(page.web.frames == 1 && page.web.layouts == 2 && page.host.records == 2);
+        require(page.m_commitCount == 0 && platform.owner.tasks.empty() && page.notices.empty());
+        require(page.m_nextMainFrameTime > frameTarget);
+    }
+    require(fixture::scenarios == 13 && platform.owner.tasks.empty());
+    std::printf("host visibility source: %d/%d scenarios passed, %d assertions, %d failures\n",
+        fixture::passed, fixture::scenarios, fixture::assertions, fixture::failures);
     return fixture::failures ? 1 : 0;
 }
