@@ -40,7 +40,7 @@ foreach(case IN ITEMS scheduler-new-bad-alloc event-null native-launch-zero regi
     worker-self-delete normal-worker-close concurrent-registry-close registry-live-fence main-thread-compatibility
     main-scheduler-task-budget main-scheduler-clock-budget main-scheduler-continuation
     main-scheduler-first-task-wake main-scheduler-admission-budget main-scheduler-admission-shutdown
-    worker-scheduler-no-count-cap
+    worker-scheduler-task-budget
     worker-scheduler-clock-budget main-scheduler-shutdown-drain main-scheduler-pre-shutdown-drain)
   if(case STREQUAL "native-wait-fails" OR case STREQUAL "worker-self-delete"
       OR case STREQUAL "concurrent-registry-close" OR case STREQUAL "registry-live-fence")

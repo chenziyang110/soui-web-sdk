@@ -29,6 +29,8 @@ inline bool initialize_source_kernel(HMODULE module) {
   BIND_SOURCE_API(wkeSetZoomFactor); BIND_SOURCE_API(wkeShowWindow); BIND_SOURCE_API(wkeShutdown);
   BIND_SOURCE_API(wkeUpdate); BIND_SOURCE_API(wkeWake);
 #undef BIND_SOURCE_API
+  wkeGetDebugConfig = reinterpret_cast<decltype(wkeGetDebugConfig)>(
+      GetProcAddress(module, "wkeGetDebugConfig")); // optional, capability-gated diagnostics
   wkeGetWebviewId = reinterpret_cast<decltype(wkeGetWebviewId)>(
       GetProcAddress(module, "wkeGetWebviewId")); // optional diagnostic identity; never invent an ID
   wkeLoadURL = reinterpret_cast<FN_wkeLoadURL>(

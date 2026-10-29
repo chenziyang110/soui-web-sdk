@@ -93,7 +93,7 @@ try{
   $configureExitCode=$LASTEXITCODE
   Complete-SouiMsvcCompilerPhase $compilerPhase $configureExitCode "Validation tools configure failed: $validationBuild/configure.log"
   $buildArgs=@('--build',$validationBuild,'--config','Release','--target','OwnedProcessRunner','OwnedProcessAssignmentFixture',
-    'ProcessTreeSampler','InputTrace','NativeTraceIdentity','OwnedTailProcessFixture','OwnedTailMutationFixture','OwnedTailApiFixture','DisplayCalibration','--parallel','2')
+    'ProcessTreeSampler','InputTrace','NativeTraceIdentity','OwnedTailProcessFixture','OwnedTailMutationFixture','OwnedTailApiFixture','DisplayCalibration','BurstInput','--parallel','2')
   if($llvm){$buildArgs+='--verbose';if($FreshConfigure){$buildArgs+='--clean-first'}}else{$buildArgs+=@('--','/nr:false')}
   $nativeInvocation=[ordered]@{schema='soui.native-build-invocation/v1';nativeToolchain=$NativeToolchain;
     executable=$cmake;arguments=$buildArgs;

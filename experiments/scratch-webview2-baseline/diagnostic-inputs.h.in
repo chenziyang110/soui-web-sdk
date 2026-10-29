@@ -1,0 +1,4 @@
+#pragma once
+inline constexpr char diagnostic_recipe_json[] = R"SOUI_DIAG(@DIAGNOSTIC_RECIPE@)SOUI_DIAG";
+inline constexpr char diagnostic_scripts_json[] = R"SOUI_DIAG(@DIAGNOSTIC_SCRIPTS@)SOUI_DIAG";
+inline constexpr char diagnostic_probe_source[] = R"SOUI_DIAG(@DIAGNOSTIC_PROBE@)SOUI_DIAG";

@@ -1,0 +1,487 @@
+diff --git a/third_party/include/miniblink/wke.h b/third_party/include/miniblink/wke.h
+index af82f1a2da682f62c79ddc9eb31ae03cf18dbf0b..1436098b25fe6788f377b5bc3477dacb215ef2da 100644
+--- a/third_party/include/miniblink/wke.h
++++ b/third_party/include/miniblink/wke.h
+@@ -182,7 +182,11 @@ typedef struct _wkeInteractionApi {
+ #define WKE_INTERACTION_CAP_DIRECT_WHEEL 0x1ULL
+ #define WKE_INTERACTION_CAP_CLICK_BARRIER 0x2ULL
+ #define WKE_INTERACTION_CAP_DIRECT_PRESENTATION 0x4ULL
++#define WKE_INTERACTION_CAP_PRECISE_FRAME_RATE 0x8ULL
++#define WKE_INTERACTION_CAP_ON_DEMAND_UI_MIRROR 0x10ULL
++#define WKE_INTERACTION_CAP_RESOURCE_WAKE_STATUS 0x20ULL
+ #define WKE_INTERACTION_PRESENT_DIRECT_HWND 0x1U
++#define WKE_INTERACTION_PRESENT_UI_MIRROR_ON_DEMAND 0x2U
+ 
+ #if defined(__cplusplus)
+ namespace wke { class WkeMediaPlayer; };
+diff --git a/third_party/sources/miniblink/cc/raster/CompletionWaiters.h b/third_party/sources/miniblink/cc/raster/CompletionWaiters.h
+new file mode 100644
+index 0000000000000000000000000000000000000000..378bfdb656b26a2457918edec491567eb5cb7def
+--- /dev/null
++++ b/third_party/sources/miniblink/cc/raster/CompletionWaiters.h
+@@ -0,0 +1,46 @@
++#ifndef CompletionWaiters_h
++#define CompletionWaiters_h
++
++#include <algorithm>
++#include <mutex>
++#include <new>
++#include <vector>
++
++namespace cc {
++
++// A live host owns at most one registration. remove() joins any in-progress
++// notification before its raw pointer can be destroyed. A notification may
++// only enqueue owner work; it must not invoke external/page callbacks here.
++template<typename Host, typename Allocator = std::allocator<Host*> >
++class CompletionWaiters {
++public:
++    bool add(Host* host)
++    {
++        std::lock_guard<std::mutex> lock(m_mutex);
++        if (std::find(m_hosts.begin(), m_hosts.end(), host) == m_hosts.end()) {
++            try { m_hosts.push_back(host); }
++            catch (const std::bad_alloc&) { return false; }
++        }
++        return true;
++    }
++    void remove(Host* host)
++    {
++        std::lock_guard<std::mutex> lock(m_mutex);
++        const auto found = std::find(m_hosts.begin(), m_hosts.end(), host);
++        if (found != m_hosts.end())
++            m_hosts.erase(found);
++    }
++    void notify()
++    {
++        std::lock_guard<std::mutex> lock(m_mutex);
++        for (Host* host : m_hosts)
++            host->notifyRecordResourcesChanged();
++    }
++private:
++    std::mutex m_mutex;
++    std::vector<Host*, Allocator> m_hosts;
++};
++
++} // namespace cc
++
++#endif
+diff --git a/third_party/sources/miniblink/cc/raster/RasterTask.cpp b/third_party/sources/miniblink/cc/raster/RasterTask.cpp
+index 8029d4e283736b826b49e24ee3d47c19bd38862d..9d0984d5b8260315afc6b421d9a7d2349c92303d 100644
+--- a/third_party/sources/miniblink/cc/raster/RasterTask.cpp
++++ b/third_party/sources/miniblink/cc/raster/RasterTask.cpp
+@@ -194,7 +194,21 @@ void RasterTaskWorkerThreadPool::increasePendingRasterTaskNum()
+ 
+ void RasterTaskWorkerThreadPool::decreasePendingRasterTaskNum() 
+ {
+-    m_pendingRasterTaskNum.fetch_sub(1, std::memory_order_release);
++    const int previous = m_pendingRasterTaskNum.fetch_sub(1, std::memory_order_release);
++    // recordBlockReason admits at <= 10. Only crossing that threshold can
++    // release another view; avoid a membership mutex on every tile completion.
++    if (previous == 11)
++        m_completionWaiters.notify();
++}
++
++bool RasterTaskWorkerThreadPool::registerCompletionWaiter(LayerTreeHost* host)
++{
++    return m_completionWaiters.add(host);
++}
++
++void RasterTaskWorkerThreadPool::unregisterCompletionWaiter(LayerTreeHost* host)
++{
++    m_completionWaiters.remove(host);
+ }
+ 
+ int RasterTaskWorkerThreadPool::getPendingRasterTaskNum() const
+diff --git a/third_party/sources/miniblink/cc/raster/RasterTask.h b/third_party/sources/miniblink/cc/raster/RasterTask.h
+index a611b25684b7f314ea2f5c24f427a48086371225..55de676e6908c62158829aba0ac543d92fe37ea1 100644
+--- a/third_party/sources/miniblink/cc/raster/RasterTask.h
++++ b/third_party/sources/miniblink/cc/raster/RasterTask.h
+@@ -38,6 +38,7 @@
+ #include <mutex>
+ #include "cc/raster/RasterSchedulingPolicy.h"
+ #include "cc/raster/RasterCandidateBudget.h"
++#include "cc/raster/CompletionWaiters.h"
+ #include "skia/ext/refptr.h"
+ #include "third_party/skia/include/core/SkPicture.h"
+ #include "third_party/WebKit/Source/platform/geometry/IntRect.h"
+@@ -181,6 +182,8 @@ public:
+ 
+     void increaseBusyCountByIndex(int index);
+     void decreaseBusyCountByIndex(int index);
++    bool registerCompletionWaiter(LayerTreeHost* host);
++    void unregisterCompletionWaiter(LayerTreeHost* host);
+ 
+ private:
+     friend class RasterTaskGroup;
+@@ -197,6 +200,7 @@ private:
+     std::atomic<unsigned> m_lastCandidateReason{0};
+     std::atomic<bool> m_willShutdown;
+     std::atomic<int> m_pendingRasterTaskNum;
++    CompletionWaiters<LayerTreeHost> m_completionWaiters;
+ };
+ 
+ } // namespace cc
+diff --git a/third_party/sources/miniblink/cc/trees/DirtyRegionPolicy.h b/third_party/sources/miniblink/cc/trees/DirtyRegionPolicy.h
+new file mode 100644
+index 0000000000000000000000000000000000000000..c478a9ba7ec27804ea03b32726dfeed342a469e3
+--- /dev/null
++++ b/third_party/sources/miniblink/cc/trees/DirtyRegionPolicy.h
+@@ -0,0 +1,46 @@
++#ifndef DirtyRegionPolicy_h
++#define DirtyRegionPolicy_h
++
++#include <cstddef>
++#include <limits>
++
++namespace cc {
++namespace dirty_region {
++
++struct MergeChoice {
++    size_t first;
++    size_t second; // count denotes the incoming rectangle.
++};
++
++// At the region cap, include the incoming rectangle in the least-cost choice.
++// Merging two old distant regions before considering a nearby incoming region
++// can inflate raster/paint work by almost a viewport.
++template<typename Rect, typename Area, typename UnionArea>
++inline MergeChoice leastCostMerge(const Rect* regions, size_t count,
++    const Rect& incoming, Area area, UnionArea unionArea)
++{
++    MergeChoice result = { 0, count };
++    double best = std::numeric_limits<double>::max();
++    for (size_t i = 0; i < count; ++i) {
++        const double incomingCost = unionArea(regions[i], incoming) - area(regions[i]) - area(incoming);
++        if (incomingCost < best) {
++            best = incomingCost;
++            result.first = i;
++            result.second = count;
++        }
++        for (size_t j = i + 1; j < count; ++j) {
++            const double cost = unionArea(regions[i], regions[j]) - area(regions[i]) - area(regions[j]);
++            if (cost < best) {
++                best = cost;
++                result.first = i;
++                result.second = j;
++            }
++        }
++    }
++    return result;
++}
++
++} // namespace dirty_region
++} // namespace cc
++
++#endif
+diff --git a/third_party/sources/miniblink/cc/trees/LayerTreeHost.cpp b/third_party/sources/miniblink/cc/trees/LayerTreeHost.cpp
+index e1c194037991be059e87545e10c2c9509036d7eb..7caf3c37a301dba251e940abd7118b7f622b7706 100644
+--- a/third_party/sources/miniblink/cc/trees/LayerTreeHost.cpp
++++ b/third_party/sources/miniblink/cc/trees/LayerTreeHost.cpp
+@@ -12,6 +12,7 @@
+ #include "cc/trees/LayerTreeHost.h"
+ #include "cc/trees/RenderDiagnosticTrace.h"
+ #include "cc/trees/FrameDeadlinePolicy.h"
++#include "cc/trees/DirtyRegionPolicy.h"
+ #include "cc/trees/ResourceNotificationPolicy.h"
+ #include "cc/trees/RenderTrace.h"
+ #if defined(SOUI_GPU_COMPOSITOR)
+@@ -68,6 +69,7 @@ struct UiPaintRetryState {
+     bool recordWaiting = false;
+     bool rerasterRequired = false;
+     bool drawWaiting = false;
++    bool notificationFailed = false;
+ };
+ 
+ // The queue owns this object. Rejection/cancellation disposes only its ticket;
+@@ -80,10 +82,13 @@ public:
+     ~UiPaintRetryTask() override
+     {
+         std::lock_guard<std::mutex> lock(m_state->mutex);
++        if (!m_ran && m_state->host && m_state->policy.accepts(m_ticket))
++            m_state->notificationFailed = true;
+         m_state->policy.dispose(m_ticket);
+     }
+     void run() override
+     {
++        m_ran = true;
+         LayerTreeHost* host;
+         {
+             std::lock_guard<std::mutex> lock(m_state->mutex);
+@@ -97,6 +102,7 @@ public:
+ private:
+     std::shared_ptr<UiPaintRetryState> m_state;
+     LegacyPaintRetryPolicy::Ticket m_ticket;
++    bool m_ran = false;
+ };
+ 
+ class DrawFrameTask final : public blink::WebThread::Task {
+@@ -152,8 +158,11 @@ public:
+         bool retry = false;
+         {
+             std::lock_guard<std::mutex> lock(m_state->mutex);
+-            if (m_state->resource.dispose(m_ticket))
++            if (m_state->resource.dispose(m_ticket)) {
+                 retry = !m_ran && !m_failureRetry && m_state->host;
++                if (!m_ran && m_failureRetry && m_state->host)
++                    m_state->notificationFailed = true;
++            }
+         }
+         // One exceptional 100ms fallback after a rejected/cancelled post.
+         // A second rejection retains intent for the next owner service call.
+@@ -199,6 +208,7 @@ static void queueResourceProgress(const std::shared_ptr<UiPaintRetryState>& stat
+     if (!task) {
+         std::lock_guard<std::mutex> lock(state->mutex);
+         state->resource.dispose(ticket);
++        if (state->host) state->notificationFailed = true;
+         return;
+     }
+     if (!Platform::current() || !Platform::current()->mainThread()) {
+@@ -572,6 +582,8 @@ static void shutdownCompositeThread(blink::WebThreadSupportingGC* webThread,
+ LayerTreeHost::~LayerTreeHost()
+ {
+     m_isDestroying = true;
++    // Join any pool notification before the shared host state is withdrawn.
++    RasterTaskWorkerThreadPool::shared()->unregisterCompletionWaiter(this);
+ 
+     while (0 != RasterTaskWorkerThreadPool::shared()->getPendingRasterTaskNum()) { ::Sleep(20); }
+     requestApplyActionsToRunIntoCompositeThread(true);
+@@ -914,13 +926,21 @@ bool LayerTreeHost::canRecordActions() const
+ 
+ void LayerTreeHost::registerResourceWait()
+ {
+-    std::lock_guard<std::mutex> lock(m_uiPaintRetry->mutex);
+-    m_uiPaintRetry->recordWaiting = true;
+-    m_uiPaintRetry->resource.wait();
++    {
++        std::lock_guard<std::mutex> lock(m_uiPaintRetry->mutex);
++        m_uiPaintRetry->recordWaiting = true;
++        m_uiPaintRetry->resource.wait();
++    }
++    // The pool threshold is global: another view may own every pending task.
++    if (!RasterTaskWorkerThreadPool::shared()->registerCompletionWaiter(this)) {
++        std::lock_guard<std::mutex> lock(m_uiPaintRetry->mutex);
++        m_uiPaintRetry->notificationFailed = true;
++    }
+ }
+ 
+ void LayerTreeHost::clearResourceWait()
+ {
++    RasterTaskWorkerThreadPool::shared()->unregisterCompletionWaiter(this);
+     std::lock_guard<std::mutex> lock(m_uiPaintRetry->mutex);
+     m_uiPaintRetry->recordWaiting = false;
+     m_uiPaintRetry->resource.clearWait();
+@@ -928,6 +948,19 @@ void LayerTreeHost::clearResourceWait()
+         m_uiPaintRetry->resource.wait();
+ }
+ 
++void LayerTreeHost::notifyRecordResourcesChanged()
++{
++    // Called under the pool membership guard: only enqueue retained owner work.
++    queueResourceProgress(m_uiPaintRetry);
++}
++
++const char* LayerTreeHost::recordResourceWakeStatus() const
++{
++    std::lock_guard<std::mutex> lock(m_uiPaintRetry->mutex);
++    if (m_uiPaintRetry->notificationFailed) return "notification-failed";
++    return m_uiPaintRetry->recordWaiting || m_uiPaintRetry->drawWaiting ? "waiting" : "idle";
++}
++
+ void LayerTreeHost::notifyResourceProgress(bool actionDirty)
+ {
+     {
+@@ -996,6 +1029,8 @@ void LayerTreeHost::runResourceProgress(uint64_t ticket, uint64_t generation)
+             m_uiPaintRetry->rerasterRequired = false;
+         }
+     }
++    if (!stale && waiting)
++        RasterTaskWorkerThreadPool::shared()->unregisterCompletionWaiter(this);
+     trace::add(trace::counter::resource_notifications);
+     if (stale) {
+         queueResourceProgress(m_uiPaintRetry);
+@@ -1052,6 +1087,9 @@ void LayerTreeHost::endRecordActions()
+         return;
+     m_actionsFrameGroup->endRecordActions();
+     requestApplyActionsToRunIntoCompositeThread(false);
++    // A final append may have been consumed before endId was sealed.
++    requestDrawFrameToRunIntoCompositeThread();
++    notifyResourceProgress();
+ }
+ 
+ void LayerTreeHost::appendLayerChangeAction(LayerChangeAction* action)
+@@ -1830,22 +1868,14 @@ static void addAndMergeDirty(Vector<SkRect>* dirtyRects, const SkRect& r)
+     // keeping the per-frame work predictable.
+     const size_t kMaxDirtyRects = 8;
+     if (dirtySize >= kMaxDirtyRects) {
+-        SkScalar bestDelta = std::numeric_limits<SkScalar>::max();
+-        size_t mergeA = 0;
+-        size_t mergeB = 1;
+-        for (size_t i = 0; i + 1 < dirtySize; ++i) {
+-            for (size_t j = i + 1; j < dirtySize; ++j) {
+-                const SkScalar delta = unionArea(dirtyRects->at(i), dirtyRects->at(j)) -
+-                    rectArea(dirtyRects->at(i)) - rectArea(dirtyRects->at(j));
+-                if (delta < bestDelta) {
+-                    bestDelta = delta;
+-                    mergeA = i;
+-                    mergeB = j;
+-                }
+-            }
++        const dirty_region::MergeChoice choice = dirty_region::leastCostMerge(
++            dirtyRects->data(), dirtySize, r, rectArea, unionArea);
++        if (choice.second == dirtySize) {
++            dirtyRects->at(choice.first).join(r);
++            return;
+         }
+-        dirtyRects->at(mergeA).join(dirtyRects->at(mergeB));
+-        for (size_t i = mergeB + 1; i < dirtySize; ++i)
++        dirtyRects->at(choice.first).join(dirtyRects->at(choice.second));
++        for (size_t i = choice.second + 1; i < dirtySize; ++i)
+             dirtyRects->at(i - 1) = dirtyRects->at(i);
+         dirtyRects->removeLast();
+         dirtySize = dirtyRects->size();
+@@ -3341,6 +3371,7 @@ void LayerTreeHost::queueLegacyPaintLocked()
+     if (!task) {
+         std::lock_guard<std::mutex> retryLock(m_uiPaintRetry->mutex);
+         m_uiPaintRetry->policy.dispose(ticket);
++        m_uiPaintRetry->notificationFailed = true;
+         return;
+     }
+     const long long delay = LegacyPaintRetryPolicy::delayMilliseconds(now, ticket.deadline);
+diff --git a/third_party/sources/miniblink/cc/trees/LayerTreeHost.h b/third_party/sources/miniblink/cc/trees/LayerTreeHost.h
+index 4b1c69ab76c2e6415987d3b40a6fea53cb67f0a6..d48f3a3af32041a507485fae8e9e56c3c68de874 100644
+--- a/third_party/sources/miniblink/cc/trees/LayerTreeHost.h
++++ b/third_party/sources/miniblink/cc/trees/LayerTreeHost.h
+@@ -195,6 +195,8 @@ public:
+     bool canRecordActions() const;
+     void registerResourceWait();
+     void clearResourceWait();
++    void notifyRecordResourcesChanged();
++    const char* recordResourceWakeStatus() const;
+     void notifyResourceProgress(bool actionDirty = false);
+     RasterCandidateBudget inspectRasterCandidateScene(uint64_t* generation);
+     bool matchesRasterCandidateGeneration(uint64_t generation);
+diff --git a/third_party/sources/miniblink/content/browser/WebPageImpl.cpp b/third_party/sources/miniblink/content/browser/WebPageImpl.cpp
+index a4596d42b94e60bc79a59b204188497875bd4fa8..5a07f40c09d0f27c3cd5b3ceea2c1864ed4ca2fb 100644
+--- a/third_party/sources/miniblink/content/browser/WebPageImpl.cpp
++++ b/third_party/sources/miniblink/content/browser/WebPageImpl.cpp
+@@ -1123,7 +1123,8 @@ HDC WebPageImpl::viewDC()
+     bool useLayeredBuffer = m_layerTreeHost->getHasTransparentBackground();
+     if (!m_memoryCanvasForUi && !m_viewportSize.isEmpty()) {
+         m_memoryCanvasForUi = skia::CreatePlatformCanvas(m_viewportSize.width(), m_viewportSize.height(), !useLayeredBuffer);
+-        cc::LayerTreeHost::clearCanvas(m_memoryCanvasForUi, IntRect(0, 0, m_viewportSize.width(), m_viewportSize.height()), useLayeredBuffer);
++        if (m_memoryCanvasForUi)
++            cc::LayerTreeHost::clearCanvas(m_memoryCanvasForUi, IntRect(0, 0, m_viewportSize.width(), m_viewportSize.height()), useLayeredBuffer);
+     }
+     if (!m_memoryCanvasForUi)
+         return nullptr;
+@@ -1213,11 +1214,13 @@ void WebPageImpl::copyToMemoryCanvasForUi(const IntRect& paintRect, SkCanvas* so
+     int height = memoryCanvas->imageInfo().height();
+     if (0 != width && 0 != height) {
+         if ((!m_memoryCanvasForUi && 0 != width * height) || 
+-            (m_memoryCanvasForUi && (width != m_memoryCanvasForUi->imageInfo().width() || height != m_memoryCanvasForUi->imageInfo().height()))) {
++            (m_memoryCanvasForUi && (width != m_memoryCanvasForUi->imageInfo().width() || height != m_memoryCanvasForUi->imageInfo().height()
++                || m_memoryCanvasForUi->imageInfo().isOpaque() != !useLayeredBuffer))) {
+             if (m_memoryCanvasForUi)
+                 delete m_memoryCanvasForUi;
+             m_memoryCanvasForUi = skia::CreatePlatformCanvas(width, height, !useLayeredBuffer);
+-            cc::LayerTreeHost::clearCanvas(m_memoryCanvasForUi, IntRect(0, 0, width, height), useLayeredBuffer);
++            if (m_memoryCanvasForUi)
++                cc::LayerTreeHost::clearCanvas(m_memoryCanvasForUi, IntRect(0, 0, width, height), useLayeredBuffer);
+             isCreatedThisTime = true;
+         }
+     } else if (m_memoryCanvasForUi) {
+diff --git a/third_party/sources/miniblink/wke/wke.cpp b/third_party/sources/miniblink/wke/wke.cpp
+index c2da4d2845321c04c5a3bd11698bff02be0f1d1a..33928204216a4769c00362d82968749a1a6cc96e 100644
+--- a/third_party/sources/miniblink/wke/wke.cpp
++++ b/third_party/sources/miniblink/wke/wke.cpp
+@@ -515,7 +515,15 @@ void WKE_CALL_TYPE releaseInteractionEndpointApi(wkeInteractionEndpoint opaque)
+ int WKE_CALL_TYPE configureInteractionPresentation(
+     wkeInteractionEndpoint opaque, unsigned int flags)
+ {
+-    if (flags & ~WKE_INTERACTION_PRESENT_DIRECT_HWND)
++    const unsigned int knownFlags = WKE_INTERACTION_PRESENT_DIRECT_HWND
++        | WKE_INTERACTION_PRESENT_UI_MIRROR_ON_DEMAND;
++#if defined(SOUI_GPU_COMPOSITOR)
++    if (flags & WKE_INTERACTION_PRESENT_UI_MIRROR_ON_DEMAND)
++        return 0;
++#endif
++    if ((flags & ~knownFlags)
++        || ((flags & WKE_INTERACTION_PRESENT_UI_MIRROR_ON_DEMAND)
++            && !(flags & WKE_INTERACTION_PRESENT_DIRECT_HWND)))
+         return 0;
+     InteractionEndpointImpl* endpoint =
+         static_cast<InteractionEndpointImpl*>(opaque);
+@@ -523,10 +531,14 @@ int WKE_CALL_TYPE configureInteractionPresentation(
+         return 0;
+ 
+     std::lock_guard<std::mutex> lock(endpoint->mutex);
+-    if (!endpoint->active || !endpoint->layerTreeHost)
++    if (!endpoint->active || !endpoint->layerTreeHost || !endpoint->webView
++        || !endpoint->webView->webPage())
+         return 0;
+     endpoint->layerTreeHost->setIndependentPresentationEnabled(
+         (flags & WKE_INTERACTION_PRESENT_DIRECT_HWND) != 0);
++    // Reuse the sticky DC/transparent consumer policy; never revoke a DC lease.
++    endpoint->webView->webPage()->setUiMirrorConsumerRequired(
++        !(flags & WKE_INTERACTION_PRESENT_UI_MIRROR_ON_DEMAND));
+     return 1;
+ }
+ 
+@@ -678,7 +690,12 @@ const wkeInteractionApi* WKE_CALL_TYPE wkeGetInteractionApi(unsigned int request
+         WKE_INTERACTION_ABI_VERSION,
+         WKE_INTERACTION_CAP_DIRECT_WHEEL
+             | WKE_INTERACTION_CAP_CLICK_BARRIER
+-            | WKE_INTERACTION_CAP_DIRECT_PRESENTATION,
++            | WKE_INTERACTION_CAP_DIRECT_PRESENTATION
++            | WKE_INTERACTION_CAP_PRECISE_FRAME_RATE
++#if !defined(SOUI_GPU_COMPOSITOR)
++            | WKE_INTERACTION_CAP_ON_DEMAND_UI_MIRROR
++#endif
++            | WKE_INTERACTION_CAP_RESOURCE_WAKE_STATUS,
+         &createInteractionEndpoint,
+         &retainInteractionEndpoint,
+         &invalidateInteractionEndpointApi,
+@@ -1108,6 +1125,13 @@ void WKE_CALL_TYPE wkeSetDebugConfig(wkeWebView webview, const char* debugString
+         } else if ("gpuPresent" == item) {
+             if (webview)
+                 webview->setGpuPresent(param && atoi(param) != 0);
++        } else if ("drawFrameRate" == item) {
++            if (webpage && param) {
++                char* end = nullptr;
++                const long rate = strtol(param, &end, 10);
++                if (end != param && *end == 0 && rate >= 30 && rate <= 1000)
++                    webpage->setDrawMinInterval(1.0 / static_cast<double>(rate));
++            }
+         } else if ("drawMinInterval" == item) {
+             // Public debug setting is milliseconds; the compositor expects
+             // fractional seconds. An int here silently truncated 1..999ms to 0.
+@@ -1146,6 +1170,12 @@ void* WKE_CALL_TYPE wkeGetDebugConfig(wkeWebView webview, const char* debugStrin
+ {
+     wke::checkThreadCallIsValid(__FUNCTION__);
+ 
++    if (debugString && strcmp(debugString, "resourceWakeStatus") == 0) {
++        content::WebPage* page = webview ? webview->getWebPage() : nullptr;
++        content::WebPageImpl* impl = page ? page->webPageImpl() : nullptr;
++        return impl ? const_cast<char*>(impl->layerTreeHost()->recordResourceWakeStatus()) : nullptr;
++    }
++
+     void* ret = NULL;
+     if (wke::getDebugConfig(webview, debugString, &ret))
+         return ret;
+diff --git a/third_party/sources/miniblink/wke/wkedefine.h b/third_party/sources/miniblink/wke/wkedefine.h
+index ff3aa24852fa1a3266e5da97e683c7de77d84b04..0caf90866193e5ca36ce4e61823f94e35e4b5fe1 100644
+--- a/third_party/sources/miniblink/wke/wkedefine.h
++++ b/third_party/sources/miniblink/wke/wkedefine.h
+@@ -186,7 +186,11 @@ typedef struct _wkeInteractionApi {
+ #define WKE_INTERACTION_CAP_DIRECT_WHEEL 0x1ULL
+ #define WKE_INTERACTION_CAP_CLICK_BARRIER 0x2ULL
+ #define WKE_INTERACTION_CAP_DIRECT_PRESENTATION 0x4ULL
++#define WKE_INTERACTION_CAP_PRECISE_FRAME_RATE 0x8ULL
++#define WKE_INTERACTION_CAP_ON_DEMAND_UI_MIRROR 0x10ULL
++#define WKE_INTERACTION_CAP_RESOURCE_WAKE_STATUS 0x20ULL
+ #define WKE_INTERACTION_PRESENT_DIRECT_HWND 0x1U
++#define WKE_INTERACTION_PRESENT_UI_MIRROR_ON_DEMAND 0x2U
+ 
+ #if defined(__cplusplus)
+ namespace wke { class WkeMediaPlayer; };

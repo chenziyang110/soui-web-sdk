@@ -194,7 +194,21 @@ void RasterTaskWorkerThreadPool::increasePendingRasterTaskNum()
 
 void RasterTaskWorkerThreadPool::decreasePendingRasterTaskNum() 
 {
-    m_pendingRasterTaskNum.fetch_sub(1, std::memory_order_release);
+    const int previous = m_pendingRasterTaskNum.fetch_sub(1, std::memory_order_release);
+    // recordBlockReason admits at <= 10. Only crossing that threshold can
+    // release another view; avoid a membership mutex on every tile completion.
+    if (previous == 11)
+        m_completionWaiters.notify();
+}
+
+bool RasterTaskWorkerThreadPool::registerCompletionWaiter(LayerTreeHost* host)
+{
+    return m_completionWaiters.add(host);
+}
+
+void RasterTaskWorkerThreadPool::unregisterCompletionWaiter(LayerTreeHost* host)
+{
+    m_completionWaiters.remove(host);
 }
 
 int RasterTaskWorkerThreadPool::getPendingRasterTaskNum() const

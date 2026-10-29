@@ -2,6 +2,21 @@
 
 本页描述 0.6.0 集成后的源码接口。新发布的构建、消费者与 Runtime 结果正在收口，见[发布说明](releases/0.6.0.md)；带 preview 标识的旧记录仍保留各自身份。
 
+## 本地编辑器资源模式（后续源码候选）
+
+`host_config.resource_policy` 默认是 `local_resource_policy::strict`。
+经应用方审核的本地编辑器可在原生配置中选择 `isolated_local_editor`；目前仅
+WebView2 声明支持，MiniBlink 和未声明支持的适配器会拒绝。应用与 SDK 必须一起重编。
+该模式保留目录、入口、文件可读性检查，使用现代后端的运行时来源控制，跳过静态
+JS 中框架与远程表达式的启发式扫描。WebView2 允许 `about:blank`、`about:srcdoc`
+子框架，顶层入口与远程请求限制继续执行，原生 preload 仍只装在顶层。
+
+此模式信任封装的应用代码；SDK 不检查 DOM 的 sandbox 属性，也不承诺任意 srcdoc
+安全。Scratch Demo 使用上游 `sandbox="allow-scripts"` 的不透明绘图沙盒。
+它不授予第三方内容原生权限，也不启用 DevTools。公共配置和 adapter 虚表已扩展，
+须配套重编，不能混用已发布 0.6.0 二进制。主线集成未编译或运行，详见
+[ADR 0142](adr/0142-isolated-local-editor.md)。
+
 ## 可选自动后端宿主
 
 `Soui::AutoHost` 导出 `<soui/host/auto_webview_host.h>`。`auto_host_config` 指定

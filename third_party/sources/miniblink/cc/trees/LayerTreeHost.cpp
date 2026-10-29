@@ -12,6 +12,7 @@
 #include "cc/trees/LayerTreeHost.h"
 #include "cc/trees/RenderDiagnosticTrace.h"
 #include "cc/trees/FrameDeadlinePolicy.h"
+#include "cc/trees/DirtyRegionPolicy.h"
 #include "cc/trees/ResourceNotificationPolicy.h"
 #include "cc/trees/RenderTrace.h"
 #if defined(SOUI_GPU_COMPOSITOR)
@@ -68,6 +69,7 @@ struct UiPaintRetryState {
     bool recordWaiting = false;
     bool rerasterRequired = false;
     bool drawWaiting = false;
+    bool notificationFailed = false;
 };
 
 // The queue owns this object. Rejection/cancellation disposes only its ticket;
@@ -80,10 +82,13 @@ public:
     ~UiPaintRetryTask() override
     {
         std::lock_guard<std::mutex> lock(m_state->mutex);
+        if (!m_ran && m_state->host && m_state->policy.accepts(m_ticket))
+            m_state->notificationFailed = true;
         m_state->policy.dispose(m_ticket);
     }
     void run() override
     {
+        m_ran = true;
         LayerTreeHost* host;
         {
             std::lock_guard<std::mutex> lock(m_state->mutex);
@@ -97,6 +102,7 @@ public:
 private:
     std::shared_ptr<UiPaintRetryState> m_state;
     LegacyPaintRetryPolicy::Ticket m_ticket;
+    bool m_ran = false;
 };
 
 class DrawFrameTask final : public blink::WebThread::Task {
@@ -152,8 +158,11 @@ public:
         bool retry = false;
         {
             std::lock_guard<std::mutex> lock(m_state->mutex);
-            if (m_state->resource.dispose(m_ticket))
+            if (m_state->resource.dispose(m_ticket)) {
                 retry = !m_ran && !m_failureRetry && m_state->host;
+                if (!m_ran && m_failureRetry && m_state->host)
+                    m_state->notificationFailed = true;
+            }
         }
         // One exceptional 100ms fallback after a rejected/cancelled post.
         // A second rejection retains intent for the next owner service call.
@@ -199,6 +208,7 @@ static void queueResourceProgress(const std::shared_ptr<UiPaintRetryState>& stat
     if (!task) {
         std::lock_guard<std::mutex> lock(state->mutex);
         state->resource.dispose(ticket);
+        if (state->host) state->notificationFailed = true;
         return;
     }
     if (!Platform::current() || !Platform::current()->mainThread()) {
@@ -572,6 +582,8 @@ static void shutdownCompositeThread(blink::WebThreadSupportingGC* webThread,
 LayerTreeHost::~LayerTreeHost()
 {
     m_isDestroying = true;
+    // Join any pool notification before the shared host state is withdrawn.
+    RasterTaskWorkerThreadPool::shared()->unregisterCompletionWaiter(this);
 
     while (0 != RasterTaskWorkerThreadPool::shared()->getPendingRasterTaskNum()) { ::Sleep(20); }
     requestApplyActionsToRunIntoCompositeThread(true);
@@ -914,18 +926,39 @@ bool LayerTreeHost::canRecordActions() const
 
 void LayerTreeHost::registerResourceWait()
 {
-    std::lock_guard<std::mutex> lock(m_uiPaintRetry->mutex);
-    m_uiPaintRetry->recordWaiting = true;
-    m_uiPaintRetry->resource.wait();
+    {
+        std::lock_guard<std::mutex> lock(m_uiPaintRetry->mutex);
+        m_uiPaintRetry->recordWaiting = true;
+        m_uiPaintRetry->resource.wait();
+    }
+    // The pool threshold is global: another view may own every pending task.
+    if (!RasterTaskWorkerThreadPool::shared()->registerCompletionWaiter(this)) {
+        std::lock_guard<std::mutex> lock(m_uiPaintRetry->mutex);
+        m_uiPaintRetry->notificationFailed = true;
+    }
 }
 
 void LayerTreeHost::clearResourceWait()
 {
+    RasterTaskWorkerThreadPool::shared()->unregisterCompletionWaiter(this);
     std::lock_guard<std::mutex> lock(m_uiPaintRetry->mutex);
     m_uiPaintRetry->recordWaiting = false;
     m_uiPaintRetry->resource.clearWait();
     if (m_uiPaintRetry->drawWaiting)
         m_uiPaintRetry->resource.wait();
+}
+
+void LayerTreeHost::notifyRecordResourcesChanged()
+{
+    // Called under the pool membership guard: only enqueue retained owner work.
+    queueResourceProgress(m_uiPaintRetry);
+}
+
+const char* LayerTreeHost::recordResourceWakeStatus() const
+{
+    std::lock_guard<std::mutex> lock(m_uiPaintRetry->mutex);
+    if (m_uiPaintRetry->notificationFailed) return "notification-failed";
+    return m_uiPaintRetry->recordWaiting || m_uiPaintRetry->drawWaiting ? "waiting" : "idle";
 }
 
 void LayerTreeHost::notifyResourceProgress(bool actionDirty)
@@ -996,6 +1029,8 @@ void LayerTreeHost::runResourceProgress(uint64_t ticket, uint64_t generation)
             m_uiPaintRetry->rerasterRequired = false;
         }
     }
+    if (!stale && waiting)
+        RasterTaskWorkerThreadPool::shared()->unregisterCompletionWaiter(this);
     trace::add(trace::counter::resource_notifications);
     if (stale) {
         queueResourceProgress(m_uiPaintRetry);
@@ -1052,6 +1087,9 @@ void LayerTreeHost::endRecordActions()
         return;
     m_actionsFrameGroup->endRecordActions();
     requestApplyActionsToRunIntoCompositeThread(false);
+    // A final append may have been consumed before endId was sealed.
+    requestDrawFrameToRunIntoCompositeThread();
+    notifyResourceProgress();
 }
 
 void LayerTreeHost::appendLayerChangeAction(LayerChangeAction* action)
@@ -1830,22 +1868,14 @@ static void addAndMergeDirty(Vector<SkRect>* dirtyRects, const SkRect& r)
     // keeping the per-frame work predictable.
     const size_t kMaxDirtyRects = 8;
     if (dirtySize >= kMaxDirtyRects) {
-        SkScalar bestDelta = std::numeric_limits<SkScalar>::max();
-        size_t mergeA = 0;
-        size_t mergeB = 1;
-        for (size_t i = 0; i + 1 < dirtySize; ++i) {
-            for (size_t j = i + 1; j < dirtySize; ++j) {
-                const SkScalar delta = unionArea(dirtyRects->at(i), dirtyRects->at(j)) -
-                    rectArea(dirtyRects->at(i)) - rectArea(dirtyRects->at(j));
-                if (delta < bestDelta) {
-                    bestDelta = delta;
-                    mergeA = i;
-                    mergeB = j;
-                }
-            }
+        const dirty_region::MergeChoice choice = dirty_region::leastCostMerge(
+            dirtyRects->data(), dirtySize, r, rectArea, unionArea);
+        if (choice.second == dirtySize) {
+            dirtyRects->at(choice.first).join(r);
+            return;
         }
-        dirtyRects->at(mergeA).join(dirtyRects->at(mergeB));
-        for (size_t i = mergeB + 1; i < dirtySize; ++i)
+        dirtyRects->at(choice.first).join(dirtyRects->at(choice.second));
+        for (size_t i = choice.second + 1; i < dirtySize; ++i)
             dirtyRects->at(i - 1) = dirtyRects->at(i);
         dirtyRects->removeLast();
         dirtySize = dirtyRects->size();
@@ -3341,6 +3371,7 @@ void LayerTreeHost::queueLegacyPaintLocked()
     if (!task) {
         std::lock_guard<std::mutex> retryLock(m_uiPaintRetry->mutex);
         m_uiPaintRetry->policy.dispose(ticket);
+        m_uiPaintRetry->notificationFailed = true;
         return;
     }
     const long long delay = LegacyPaintRetryPolicy::delayMilliseconds(now, ticket.deadline);

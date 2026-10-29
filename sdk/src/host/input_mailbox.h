@@ -3,6 +3,7 @@
 #include "engine_input_service.h"
 #include "input_trace_hooks.h"
 #include <soui/host/interaction_protocol.h>
+#include <algorithm>
 #include <array>
 #include <atomic>
 #include <chrono>
@@ -82,7 +83,14 @@ class input_mailbox final : public engine_input_service {
   void quiesce() noexcept override { std::lock_guard<std::mutex> lock(mutex_); quiescing_ = true; }
   void service() noexcept override { service_before(0); }
   void service_before(std::uint64_t exclusive_order) noexcept override {
-    const auto deadline = std::chrono::steady_clock::now() + std::chrono::milliseconds(1);
+    service_before_until(exclusive_order, (std::chrono::steady_clock::time_point::max)());
+  }
+  void service_before_until(std::uint64_t exclusive_order,
+      std::chrono::steady_clock::time_point shared_deadline) noexcept override {
+    const auto deadline = (std::min)(shared_deadline,
+        std::chrono::steady_clock::now() + std::chrono::milliseconds(1));
+    // Give the selected Host one eligible item even if its turn has expired.
+    // Check time after dispatch so progress never bypasses the ordinal fence.
     for (unsigned count = 0; count < 8; ++count) {
       input_packet packet;
       std::shared_ptr<handler> dispatch; // Cold-owned callable pin; copying it never allocates.

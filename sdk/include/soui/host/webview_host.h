@@ -11,6 +11,10 @@
 
 namespace soui::sdk {
 
+// Native application choice for reviewed packaged code. The editor mode does
+// not verify iframe sandbox attributes and must not host untrusted documents.
+enum class local_resource_policy { strict, isolated_local_editor };
+
 struct host_config {
   std::string architecture;
   // Retained for existing Miniblink consumers; other adapters may ignore it.
@@ -20,6 +24,7 @@ struct host_config {
   soui::sdk::bridge_adapter* bridge_adapter{nullptr}; // borrowed for the mounted lifetime
   bool self_test{false};
   bool managed_frame_timing{true};
+  local_resource_policy resource_policy{local_resource_policy::strict};
 #ifdef SOUI_BRIDGE_BENCHMARK
   std::filesystem::path benchmark_dataset;
   std::filesystem::path benchmark_output_directory;
@@ -43,6 +48,9 @@ inline constexpr std::uint32_t devtools_request_message = 0x84D5U;
 class webview_host_adapter {
  public:
   virtual ~webview_host_adapter() = default;
+  [[nodiscard]] virtual bool supports_local_resource_policy(local_resource_policy policy) const noexcept {
+    return policy == local_resource_policy::strict;
+  }
   [[nodiscard]] virtual host_result mount(const host_config& config) = 0;
   [[nodiscard]] virtual host_result unmount() = 0;
   [[nodiscard]] virtual host_result show(bool) {
@@ -152,7 +160,8 @@ class soui_miniblink_host {
  private:
   [[nodiscard]] bool running() const noexcept;
   [[nodiscard]] host_result require_running() const;
-  [[nodiscard]] static host_result validate_local_resources(const std::filesystem::path& root);
+  [[nodiscard]] static host_result validate_local_resources(const std::filesystem::path& root,
+      local_resource_policy policy = local_resource_policy::strict);
   [[nodiscard]] static host_result validate_architecture(const host_config& config);
   [[nodiscard]] host_result require_devtools_owner() const;
   [[nodiscard]] host_result retire_devtools_before_unmount();

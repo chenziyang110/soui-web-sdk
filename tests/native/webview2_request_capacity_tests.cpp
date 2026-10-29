@@ -1,4 +1,5 @@
 #include "request_capacity.h"
+#include "owner_work_policy.h"
 #include <deque>
 #include <iostream>
 #include <stdexcept>
@@ -122,6 +123,43 @@ void reply_reserves_survive_business_events_and_rejections() {
   require(output.reserve(capacity::lane::renewal, 1), "Reply delivery did not release its byte/count budget");
   require(!output.reserve(capacity::lane::ordinary, 0), "Reply release affected another lane");
 }
+void controller_updates_retry_failures_and_invalidate_reentry() {
+  soui::sdk::detail::controller_updates updates;
+  unsigned bounds_calls = 0, visibility_calls = 0;
+  const auto bounds = [&](int, int) { ++bounds_calls; return 0L; };
+  require(updates.bounds(800, 600, bounds) == 0, "Initial bounds failed");
+  updates.bounds(800, 600, bounds);
+  require(bounds_calls == 1, "Identical successful bounds resubmitted");
+  require(updates.bounds(900, 600, [&](int, int) { ++bounds_calls; return -1L; }) < 0,
+      "Bounds failure disappeared");
+  updates.bounds(900, 600, bounds);
+  require(bounds_calls == 3, "Failed bounds poisoned the retry cache");
+  updates.bounds(1000, 600, [&](int, int) {
+    updates.bounds(1100, 600, bounds); return 0L;
+  });
+  updates.bounds(1000, 600, bounds);
+  require(bounds_calls == 5, "Reentered update incorrectly cached outer state");
+  const auto visible = [&](bool) { ++visibility_calls; return 0L; };
+  updates.visibility(true, visible); updates.visibility(true, visible);
+  require(visibility_calls == 1, "Identical successful visibility resubmitted");
+  updates.visibility(false, [&](bool) { ++visibility_calls; return -1L; });
+  updates.visibility(false, visible);
+  require(visibility_calls == 3, "Failed visibility poisoned the retry cache");
+  updates.visibility(true, [&](bool) {
+    updates.visibility(false, visible); return 0L;
+  });
+  updates.visibility(true, visible);
+  require(visibility_calls == 5, "Reentered visibility incorrectly cached outer state");
+}
+void owner_batch_has_both_count_and_cooperative_time_limits() {
+  using budget = soui::sdk::detail::owner_work_budget;
+  const budget::clock::time_point start{};
+  const budget work(start);
+  require(work.allows(0, start + std::chrono::seconds(1)), "First reply made no progress");
+  require(work.allows(15, start + std::chrono::microseconds(1999)), "Early batch lost capacity");
+  require(!work.allows(16, start), "Owner item limit disappeared");
+  require(!work.allows(1, start + std::chrono::milliseconds(2)), "Expired owner batch did not yield");
+}
 }  // namespace
 
 int main() {
@@ -129,6 +167,8 @@ int main() {
     classification_is_independent_of_claims(); independent_budgets_and_release();
     old_document_release_is_isolated(); priority_is_bounded_and_fair(); navigation_barrier_precedes_new_control_work();
     reply_reserves_survive_business_events_and_rejections();
-    std::cout << "WebView2 capacity policy: 6 cases passed\n"; return 0;
+    controller_updates_retry_failures_and_invalidate_reentry();
+    owner_batch_has_both_count_and_cooperative_time_limits();
+    std::cout << "WebView2 capacity policy: 8 cases passed\n"; return 0;
   } catch (const std::exception& error) { std::cerr << error.what() << '\n'; return 1; }
 }

@@ -16,7 +16,8 @@ const targets = {
   OwnedTailMutationFixture: ['tests/benchmark/owned-tail-mutation-fixture.cpp', 'benchmarks/protocol/owned-tail-evidence.cpp'],
   OwnedTailApiFixture: ['tests/benchmark/owned-tail-api-fixture.cpp'],
   NativeTraceIdentity: ['tests/benchmark/native-trace-identity.cpp'],
-  DisplayCalibration: ['benchmarks/protocol/display-calibration.cpp']
+  DisplayCalibration: ['benchmarks/protocol/display-calibration.cpp'],
+  BurstInput: ['benchmarks/protocol/burst-input.cpp', 'benchmarks/protocol/burst-desktop-observer.cpp']
 };
 function text(filename) {
   const pin = profile.pin(filename); need(pin.bytes <= 16777216, 'Measurement observation exceeds 16 MiB');
@@ -239,7 +240,7 @@ function observe(request, build, root) {
     verbose: text(path.join(build, 'compile.log'))};
   const commands = JSON.parse(records.database.value).filter(row => /(?:^|[\\/])Release[\\/]/.test(row.output || ''));
   const wanted = Object.entries(targets).flatMap(([target, files]) => files.map(relative => ({target, source: path.join(root, relative)})));
-  need(commands.length === wanted.length && commands.length === 13, 'All nine measurement targets require exactly 13 Release compile records');
+  need(commands.length === wanted.length && commands.length === 15, 'All ten measurement targets require exactly 15 Release compile records');
   const ninjaWorkdirBinding = ninjaWorkdirScope(records.ninja.value, records.common.value, records.rules.value, build);
   const observedEdges = edges(records.ninja.value, build, ninjaWorkdirBinding.value);
   const compileEdges = observedEdges.filter(edge => /^CXX_COMPILER(?:_|$)/.test(edge.rule));
@@ -279,11 +280,12 @@ function observe(request, build, root) {
       compiler, command: command.command, commandEvidence, edge: edge[0], dependencies: {count: deps.count, mtime: deps.mtime, status: deps.status, headers}});
   }
   need(sourceSeen.size === wanted.length, 'Measurement target/source membership is incomplete');
+  const linkEdges = observedEdges.filter(edge => /^CXX_EXECUTABLE_LINKER(?:_|$)/.test(edge.rule));
+  need(linkEdges.length === Object.keys(targets).length, 'Measurement Release linker edge count differs');
   const links = [], d = request.value.discovery;
   for (const target of Object.keys(targets)) {
     const output = path.join(build, 'Release', target + '.exe');
-    const matches = observedEdges.filter(edge => /^CXX_EXECUTABLE_LINKER(?:_|$)/.test(edge.rule) &&
-      edge.outputs.length === 1 && norm(path.resolve(build, edge.outputs[0])) === norm(output));
+    const matches = linkEdges.filter(edge => edge.outputs.length === 1 && norm(path.resolve(build, edge.outputs[0])) === norm(output));
     need(matches.length === 1 && bindings.filter(item => item.target === target).every(item =>
       matches[0].inputs.some(input => norm(path.resolve(build, input)) === norm(item.object.path))), 'Measurement linker edge omits its own actual objects');
     const actual = records.commands.value.split(/\r?\n/).filter(line => {
@@ -300,12 +302,12 @@ function observe(request, build, root) {
   Object.values(records).forEach(record => profile.verifyPin(record.pin));
   return {schema: 'soui.llvm-measurement-observation/v1', ninjaWorkdirBinding, ...configured, records: Object.fromEntries(Object.entries(records).map(([key, value]) => [key, value.pin])),
     bindings, links, dependencyPins: [...dependencyPins.values()].sort((a, b) => a.path < b.path ? -1 : a.path > b.path ? 1 : 0),
-    compileObjects: 13, executableTargets: 9, compiledObjectsVerified: true,
+    compileObjects: 15, executableTargets: 10, compiledObjectsVerified: true,
     compilerVerified: false, nativeClosureVerified: false, genericSupervisionPassed: null, qualificationPassed: false};
 }
 function verify(observation) {
-  need(observation?.schema === 'soui.llvm-measurement-observation/v1' && observation.compileObjects === 13 &&
-    observation.executableTargets === 9 && observation.bindings?.length === 13 && observation.links?.length === 9 && observation.compilerVerified === false &&
+  need(observation?.schema === 'soui.llvm-measurement-observation/v1' && observation.compileObjects === 15 &&
+    observation.executableTargets === 10 && observation.bindings?.length === 15 && observation.links?.length === 10 && observation.compilerVerified === false &&
     observation.nativeClosureVerified === false && observation.qualificationPassed === false, 'Invalid measurement observation scope');
   need(observation.records?.ninja, 'Pinned Ninja impl/common/rules and workdir binding are required');
   const build = path.dirname(path.dirname(observation.records.ninja.path));

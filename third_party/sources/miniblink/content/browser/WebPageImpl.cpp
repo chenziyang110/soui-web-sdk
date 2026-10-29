@@ -1123,7 +1123,8 @@ HDC WebPageImpl::viewDC()
     bool useLayeredBuffer = m_layerTreeHost->getHasTransparentBackground();
     if (!m_memoryCanvasForUi && !m_viewportSize.isEmpty()) {
         m_memoryCanvasForUi = skia::CreatePlatformCanvas(m_viewportSize.width(), m_viewportSize.height(), !useLayeredBuffer);
-        cc::LayerTreeHost::clearCanvas(m_memoryCanvasForUi, IntRect(0, 0, m_viewportSize.width(), m_viewportSize.height()), useLayeredBuffer);
+        if (m_memoryCanvasForUi)
+            cc::LayerTreeHost::clearCanvas(m_memoryCanvasForUi, IntRect(0, 0, m_viewportSize.width(), m_viewportSize.height()), useLayeredBuffer);
     }
     if (!m_memoryCanvasForUi)
         return nullptr;
@@ -1213,11 +1214,13 @@ void WebPageImpl::copyToMemoryCanvasForUi(const IntRect& paintRect, SkCanvas* so
     int height = memoryCanvas->imageInfo().height();
     if (0 != width && 0 != height) {
         if ((!m_memoryCanvasForUi && 0 != width * height) || 
-            (m_memoryCanvasForUi && (width != m_memoryCanvasForUi->imageInfo().width() || height != m_memoryCanvasForUi->imageInfo().height()))) {
+            (m_memoryCanvasForUi && (width != m_memoryCanvasForUi->imageInfo().width() || height != m_memoryCanvasForUi->imageInfo().height()
+                || m_memoryCanvasForUi->imageInfo().isOpaque() != !useLayeredBuffer))) {
             if (m_memoryCanvasForUi)
                 delete m_memoryCanvasForUi;
             m_memoryCanvasForUi = skia::CreatePlatformCanvas(width, height, !useLayeredBuffer);
-            cc::LayerTreeHost::clearCanvas(m_memoryCanvasForUi, IntRect(0, 0, width, height), useLayeredBuffer);
+            if (m_memoryCanvasForUi)
+                cc::LayerTreeHost::clearCanvas(m_memoryCanvasForUi, IntRect(0, 0, width, height), useLayeredBuffer);
             isCreatedThisTime = true;
         }
     } else if (m_memoryCanvasForUi) {

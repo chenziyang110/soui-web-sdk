@@ -27,9 +27,9 @@
 
 namespace content {
 
-// Workers retain their existing throughput budget. The main thread must also
-// return to its owner message pump so queued host input can be dispatched.
-static const double maxDurationOfFiringTimers = 0.050;
+// Cooperative normal turns return after 2ms or32 callbacks; a running JS/GC
+// callback cannot be preempted. Explicit platform shutdown keeps its drain path.
+static const double maxDurationOfFiringTimers = 0.002;
 static const double mainThreadTimerBudget = 0.002;
 static const unsigned mainThreadTaskBudget = 32;
 
@@ -257,25 +257,16 @@ void WebThreadImpl::threadEntryPoint()
     m_hadThreadInit.store(true, std::memory_order_release);
 
     while (!m_willExit) {
-        DWORD dReturn = ::WaitForSingleObject(m_hEvent, INFINITE);
-
-        startTriggerTasks();
-        retireCompletedTasksForOwner(); // A retirement-only worker wake must consume its bounded backlog.
-
-        while ((!m_timerHeap.empty() || hasPendingTaskAdmission()) && !m_willExit) {
-            schedulerTasks();
-            if (m_willExit) break;
-            if (m_timerHeap.empty()) continue;
-            // Wait for the actual next deadline rather than imposing a fixed
-            // 10ms pause on raster/compositor work. A new task or shutdown
-            // signals m_hEvent and interrupts this wait immediately.
-            double remainingMs = (m_timerHeap[0]->m_nextFireTime - monotonicallyIncreasingTime()) * 1000.0;
-            DWORD waitMs = 1;
-            if (remainingMs > 1.0)
-                waitMs = remainingMs >= 1000.0 ? 1000 : static_cast<DWORD>(remainingMs + 0.999);
-            ::WaitForSingleObject(m_hEvent, waitMs);
-            startTriggerTasks();
+        schedulerTasks();
+        if (m_willExit) break;
+        DWORD waitMs = INFINITE;
+        if (hasPendingTaskAdmission() || !m_unusedTimersToDelete.empty()) waitMs = 0;
+        else if (!m_timerHeap.empty()) {
+            const double remainingMs = (m_timerHeap[0]->m_nextFireTime - monotonicallyIncreasingTime()) * 1000.0;
+            waitMs = remainingMs <= 0 ? 0 : remainingMs >= 1000.0 ? 1000
+                : static_cast<DWORD>(ceil(remainingMs));
         }
+        ::WaitForSingleObject(m_hEvent, waitMs);
     }
 
     fireOnExit();
@@ -729,11 +720,12 @@ void WebThreadImpl::schedulerTasks(bool allowMainThreadBudget)
     ASSERT(m_threadId == WTF::currentThread());
 
     double fireTime = monotonicallyIncreasingTime();
-    double timeToQuit = fireTime + maxDurationOfFiringTimers;
+    double timeToQuit = fireTime + (allowMainThreadBudget ? maxDurationOfFiringTimers : 0.050);
     const double mainThreadTimeToQuit = fireTime + mainThreadTimerBudget;
     unsigned completedTasks = 0;
     unsigned remainingAdmissions = mainThreadTaskBudget;
-    const bool boundedMainThread = allowMainThreadBudget && m_isMainThread && !m_willExit;
+    const bool boundedTurn = allowMainThreadBudget && !m_willExit;
+    const bool boundedMainThread = boundedTurn && m_isMainThread;
 
 #ifdef _DEBUG
     std::vector<WebTimerBase*> dumpTimerHeap = m_timerHeap;
@@ -743,12 +735,12 @@ void WebThreadImpl::schedulerTasks(bool allowMainThreadBudget)
     }
 #endif
 
-    startTriggerTasks(boundedMainThread ? &remainingAdmissions : nullptr, mainThreadTimeToQuit); // 如果不加这句，且下面的循环在本线程不停添加定时器，则startTriggerTasks里的就没机会执行了。
+    startTriggerTasks(boundedTurn ? &remainingAdmissions : nullptr, mainThreadTimeToQuit); // 如果不加这句，且下面的循环在本线程不停添加定时器，则startTriggerTasks里的就没机会执行了。
     
     fireTime = monotonicallyIncreasingTime();
     bool hasFire = false;
     while (!m_timerHeap.empty() && (m_timerHeap[0]->m_nextFireTime <= fireTime || m_willExit)
-        && (!boundedMainThread || monotonicallyIncreasingTime() < mainThreadTimeToQuit)) {
+        && (!boundedTurn || monotonicallyIncreasingTime() < mainThreadTimeToQuit)) {
         hasFire = true;
         auto* selected = m_timerIndex.select(fireTime, m_willExit);
         ASSERT(selected);
@@ -770,14 +762,15 @@ void WebThreadImpl::schedulerTasks(bool allowMainThreadBudget)
         didProcessTasks();
         ++completedTasks;
 
-        startTriggerTasks(boundedMainThread ? &remainingAdmissions : nullptr, mainThreadTimeToQuit);
+        startTriggerTasks(boundedTurn ? &remainingAdmissions : nullptr, mainThreadTimeToQuit);
         fireTime = monotonicallyIncreasingTime();
 
         // A callback or observer may exceed this cooperative budget. Keep
         // pending timers intact and return to the owner pump between batches.
         const bool mainThreadBudgetReached = allowMainThreadBudget && m_isMainThread && !m_willExit
             && (completedTasks >= mainThreadTaskBudget || mainThreadTimeToQuit < monotonicallyIncreasingTime());
-        if (!m_firingTimers || timeToQuit < monotonicallyIncreasingTime() || mainThreadBudgetReached) {
+        if (!m_firingTimers || timeToQuit < monotonicallyIncreasingTime() || mainThreadBudgetReached
+            || (allowMainThreadBudget && !m_willExit && completedTasks >= mainThreadTaskBudget)) {
             break;
         }
     }

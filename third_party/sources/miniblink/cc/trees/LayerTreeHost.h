@@ -195,6 +195,8 @@ public:
     bool canRecordActions() const;
     void registerResourceWait();
     void clearResourceWait();
+    void notifyRecordResourcesChanged();
+    const char* recordResourceWakeStatus() const;
     void notifyResourceProgress(bool actionDirty = false);
     RasterCandidateBudget inspectRasterCandidateScene(uint64_t* generation);
     bool matchesRasterCandidateGeneration(uint64_t generation);

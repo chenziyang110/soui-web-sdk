@@ -5,6 +5,7 @@
 #include "wake_cases.h"
 #include "applied_identity_cases.h"
 #include "visibility_cases.h"
+#include "deadline_cases.h"
 #include "../../../sdk/src/host/cooperative_turn_budget.h"
 #include <atomic>
 #include <cstdlib>
@@ -96,6 +97,7 @@ int main() {
     drain(limited);
     input_terminal_cases::run(fail_next_allocation);
     host_visibility_cases::run();
+    input_deadline_cases::run_mailbox();
 
     struct mock_service final : detail::engine_input_service {
       std::atomic<bool> ready{false}; std::atomic<unsigned> calls{0};
@@ -134,6 +136,7 @@ int main() {
     for (const auto& host : hosts) require(host->calls == 1, "a Host was starved or serviced twice");
     require(engine.invoke([&] { for (const auto& host : hosts) detail::engine_admission::unregister_input(engine, host); }), "owner unregister");
     engine.stop();
+    input_deadline_cases::run_engine();
     const detail::cooperative_turn_budget::clock::time_point start{};
     const detail::cooperative_turn_budget shared(1000, start), legacy(0, start);
     const auto local = start + std::chrono::milliseconds(2);

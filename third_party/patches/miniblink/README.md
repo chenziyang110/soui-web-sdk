@@ -74,3 +74,11 @@
 有效的原有 `FontPlatformData`/typeface 继续使用原路径。具名候选为空或不含 typeface 时，直接向当前 `SkFontMgr` 请求真实系统默认字体，要求非空且包含 glyph；保留原有效字号、粗斜体合成、方向、subpixel、`ShouldRetain` 和字体缓存所有权。不调用可能生成 `SkEmptyTypeface` 的默认包装，不伪造行高或关闭 Inspector 高亮。
 
 若 OS 字体管理器、默认 typeface 或 glyph 仍不可用，函数明确返回空值；这保留极端系统字体失败边界，不宣称所有字体资源故障已恢复。下游仍要求主字体非空，因此不保证该环境能安全退出或正常启动。此次仅完成源修复和补丁原始字节核对，尚未编译、执行或复测。已有 0013 及其历史验证说明原样保留；新内核、配对与受影响应用的统一短测需另绑定真实产物。
+
+## 2026-10-29 主线性能增量：0024 / 0025
+
+`0024-main-integrated-frame-presentation.patch` 与 `0025-main-integrated-deadline-scheduling.patch` 均以主线 `0cdc0a9ace0cdce664ec4a9b54e5f8f71b97ba48` 为前件，覆盖的文件互不重叠；保留主线原有 0015–0023 输入、调度、资源、画布与 trace 实现。旧冻结候选中的 0016/0017 性能补丁不用于当前树，以免覆盖同号主线补丁。
+
+当前完整文件字节、来源和补丁散列分别记录于 `third_party/manifests/miniblink-frame-presentation-20261029.json`、`third_party/manifests/miniblink-deadline-scheduler-20261029.json`。第三方文件采用原始字节定点改写，保留混合行尾与编码；新头纳入补丁和完整源清单。设计取舍见 ADR-0138 / ADR-0143 及 `docs/performance/main-integration.md`。
+
+当前仅源码集成与静态身份检查；没有新内核 DLL、构建/测试、体积或性能通过结论。历史补丁、原导入清单、二进制及已发布 0.6.0 证据保持各自原始角色。

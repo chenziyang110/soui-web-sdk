@@ -1379,6 +1379,8 @@ dynamic_miniblink_adapter::~dynamic_miniblink_adapter() {
 }
 
 host_result dynamic_miniblink_adapter::mount(const host_config& config) {
+  if (config.resource_policy != local_resource_policy::strict)
+    return failure("E_RESOURCE_POLICY_UNSUPPORTED", "Miniblink requires the strict local resource policy.");
 #ifdef _WIN32
   if (config.owner_window == nullptr)
     return failure("E_HOST_WINDOW_MISSING", "A SOUI host window is required for the child WebView.");
@@ -1628,6 +1630,9 @@ host_result dynamic_miniblink_adapter::mount_on_engine(const host_config& config
       compositor_rate_option[0] == '1';
   configured_wake_interval_ = -1;
   configured_draw_min_interval_ = -1;
+  configured_draw_frame_rate_ = -1;
+  resource_wake_failed_ = false;
+  resource_status_query_at_ = {};
   configured_main_frame_rate_ = -1;
 #ifdef SOUI_SOURCE_KERNEL_HOST
   char main_frame_option[2] = {};
@@ -1696,8 +1701,12 @@ host_result dynamic_miniblink_adapter::mount_on_engine(const host_config& config
     if (!cursor_broker_) { wkeDestroyWebView(view); webview_ = nullptr; }
     return failure("E_INTERACTION_ENDPOINT", "Miniblink could not create the compositor interaction endpoint.");
   }
-  if (!interaction_api->configurePresentation(interaction_endpoint_,
-          WKE_INTERACTION_PRESENT_DIRECT_HWND)) {
+  auto presentation_flags = WKE_INTERACTION_PRESENT_DIRECT_HWND;
+#if !defined(SOUI_BRIDGE_BENCHMARK)
+  if (interaction_api->capabilities & WKE_INTERACTION_CAP_ON_DEMAND_UI_MIRROR)
+    presentation_flags |= WKE_INTERACTION_PRESENT_UI_MIRROR_ON_DEMAND;
+#endif
+  if (!interaction_api->configurePresentation(interaction_endpoint_, presentation_flags)) {
     interaction_api->releaseEndpoint(interaction_endpoint_);
     interaction_endpoint_ = nullptr;
     if (!cursor_broker_) { wkeDestroyWebView(view); webview_ = nullptr; }
@@ -2733,6 +2742,19 @@ void dynamic_miniblink_adapter::sync_cursor_input_generation() noexcept {
 void dynamic_miniblink_adapter::pump_on_engine() {
 #ifdef _WIN32
   if (unmount_requested_.load(std::memory_order_acquire)) return;
+  const auto* status_api = static_cast<const wkeInteractionApi*>(interaction_api_);
+  const auto status_now = std::chrono::steady_clock::now();
+  if (webview_ && !resource_wake_failed_.load(std::memory_order_acquire) && status_api &&
+      (status_api->capabilities & WKE_INTERACTION_CAP_RESOURCE_WAKE_STATUS) != 0 &&
+      status_now - resource_status_query_at_ >= std::chrono::milliseconds(250)) {
+    resource_status_query_at_ = status_now;
+    const char* status = wkeGetDebugConfig ? static_cast<const char*>(wkeGetDebugConfig(
+        static_cast<wkeWebView>(webview_), "resourceWakeStatus")) : nullptr;
+    if (!status || std::string_view(status) == "notification-failed") {
+      resource_wake_failed_.store(true, std::memory_order_release);
+      application_ready_.store(false, std::memory_order_release);
+    }
+  }
   apply_host_visibility_on_engine();
   if (event_lifetime_ && event_lifetime_->local_origin)
     event_lifetime_->local_origin->observe_on_engine();
@@ -2776,6 +2798,7 @@ void dynamic_miniblink_adapter::pump_on_engine() {
         // Fractional mode may have cached this number without sending it.
         // Reapply the actual legacy gate after a controller transition.
         configured_draw_min_interval_ = -1;
+        configured_draw_frame_rate_ = -1;
       }
     }
 #endif
@@ -2807,11 +2830,23 @@ void dynamic_miniblink_adapter::pump_on_engine() {
                                 : ((cpu_high_refresh || rate > 60) && rate > 60
                                     ? detail::host_frame_policy::rounded_interval(rate)
                                     : 17)));
-      if (configured_draw_min_interval_ != interval) {
+      const auto* frame_api = static_cast<const wkeInteractionApi*>(interaction_api_);
+      const bool precise_rate = !fractional_cpu_cadence && !gpu_active && frame_api &&
+          (frame_api->capabilities & WKE_INTERACTION_CAP_PRECISE_FRAME_RATE) != 0 &&
+          interval > 0 && !has_cpu_interval_override;
+      if (precise_rate) {
+        if (configured_draw_frame_rate_ != rate) {
+          const auto value = std::to_string(rate);
+          wkeSetDebugConfig(static_cast<wkeWebView>(webview_), "drawFrameRate", value.c_str());
+          configured_draw_frame_rate_ = rate;
+        }
+        configured_draw_min_interval_ = interval; // Diagnostic approximation of the fractional phase.
+      } else if (configured_draw_min_interval_ != interval || configured_draw_frame_rate_ != -1) {
         const auto value = std::to_string(interval);
         if (!fractional_cpu_cadence)
           wkeSetDebugConfig(static_cast<wkeWebView>(webview_), "drawMinInterval", value.c_str());
         configured_draw_min_interval_ = interval;
+        configured_draw_frame_rate_ = -1;
       }
       if (bridge_adapter_ != nullptr)
         static_cast<bridge_adapter*>(bridge_adapter_)->set_draw_interval(
@@ -2961,6 +2996,8 @@ bool dynamic_miniblink_adapter::post_input(const input_packet& packet) {
 
 input_admission_result dynamic_miniblink_adapter::post_input_typed(const input_packet& packet) {
   if (unmount_requested_.load(std::memory_order_acquire) || !engine_thread_ || !input_mailbox_)
+    return input_admission_result::stopped;
+  if (packet.kind != input_kind::cancel && resource_wake_failed_.load(std::memory_order_acquire))
     return input_admission_result::stopped;
   const auto mailbox = std::static_pointer_cast<detail::input_mailbox>(input_mailbox_);
   const auto result = mailbox->post(packet);
@@ -3839,6 +3876,7 @@ host_result dynamic_miniblink_adapter::finish_devtools_retirement() {
 }
 
 bool dynamic_miniblink_adapter::application_ready() {
+  if (resource_wake_failed_.load(std::memory_order_acquire)) return false;
   const auto receipt = execution_context_receipt();
   if (!accepts_execution_context_receipt(receipt)) return false;
 #if defined(SOUI_BRIDGE_BENCHMARK) || defined(SOUI_PERFORMANCE_DIAGNOSTICS)
@@ -3870,6 +3908,8 @@ bool dynamic_miniblink_adapter::application_ready() {
 }
 
 std::string dynamic_miniblink_adapter::application_diagnostics() {
+  if (resource_wake_failed_.load(std::memory_order_acquire))
+    return "document=failed,render=E_RESOURCE_WAKE,requires_target_recreation=true";
   if (event_lifetime_ && event_lifetime_->local_origin && event_lifetime_->local_origin->failed())
     return "document=failed,local_resources=" + event_lifetime_->local_origin->terminal_result().code;
   if (unmount_requested_.load(std::memory_order_acquire)) return "document=waiting,bridge=waiting";
@@ -3879,6 +3919,7 @@ std::string dynamic_miniblink_adapter::application_diagnostics() {
   std::string diagnostics = std::string{"document="} + (document_ready() ? "ready" : "waiting") +
          ",bridge=" + (bridge_ready ? "ready" : "waiting") +
          ",draw_interval_ms=" + std::to_string(configured_draw_min_interval_.load()) +
+         ",draw_rate_hz=" + std::to_string(configured_draw_frame_rate_.load()) +
          ",input_recovery_limited=" + (input_recovery_limited_.load(std::memory_order_acquire) ? "true" : "false");
   {
     std::lock_guard<std::mutex> lock(state_mutex_);
@@ -4947,12 +4988,16 @@ host_result soui_miniblink_host::start(const host_config& config) {
   if (session_ != nullptr && !session_->terminal()) return failure("E_ALREADY_STARTED", "Host is already running.");
   if (adapter_cleanup_pending_) return failure("E_CLEANUP_PENDING", "Release the previous mount attempt before starting again.");
   if (!adapter_) return failure("E_HOST_ADAPTER_MISSING", "A renderer host adapter is required.");
+  if ((config.resource_policy != local_resource_policy::strict &&
+       config.resource_policy != local_resource_policy::isolated_local_editor) ||
+      !adapter_->supports_local_resource_policy(config.resource_policy))
+    return failure("E_RESOURCE_POLICY_UNSUPPORTED", "The renderer does not support the selected local resource policy.");
   const auto architecture = validate_architecture(config);
   if (!architecture.ok) return architecture;
   const auto* mini = dynamic_cast<const dynamic_miniblink_adapter*>(adapter_.get());
   const bool owned_local = mini && mini->event_lifetime_ && mini->event_lifetime_->owned_local_resources;
   if (!owned_local) {
-    const auto resources = validate_local_resources(config.resource_root);
+    const auto resources = validate_local_resources(config.resource_root, config.resource_policy);
     if (!resources.ok) return resources;
   } // Explicit Mini mode validates the same content policy on its bounded publication worker.
   const auto diagnostic_mount = reset_devtools_for_mount();
@@ -5145,7 +5190,8 @@ host_result soui_miniblink_host::request_memory_recovery() {
 
 const soui::runtime::webview_session* soui_miniblink_host::session() const noexcept { return session_.get(); }
 
-host_result soui_miniblink_host::validate_local_resources(const std::filesystem::path& root) {
+host_result soui_miniblink_host::validate_local_resources(const std::filesystem::path& root,
+    local_resource_policy policy) {
   std::error_code error;
   auto readable_root = root;
 #ifdef _WIN32
@@ -5173,6 +5219,10 @@ host_result soui_miniblink_host::validate_local_resources(const std::filesystem:
     if (!file.is_regular_file(error)) continue;
     std::ifstream input(file.path(), std::ios::binary);
     if (!input) return failure("E_RESOURCE_READ", "A local Web resource could not be read.");
+    // This native-only mode is for reviewed application code. Its renderer
+    // enforces runtime request/navigation policy; bundled fallback text is not
+    // evidence that its remote expression executes.
+    if (policy == local_resource_policy::isolated_local_editor) continue;
     const std::string content((std::istreambuf_iterator<char>(input)), std::istreambuf_iterator<char>());
     if (contains_untrusted_frame_surface(file.path(), content)) {
       return failure("E_UNTRUSTED_FRAME", "Embedded frame surfaces are forbidden in local Web resources.");

@@ -299,6 +299,9 @@ class dynamic_miniblink_adapter final : public webview_host_adapter,
   bool experimental_compositor_rate_{false};
   std::atomic<int> configured_wake_interval_{-1};
   std::atomic<int> configured_draw_min_interval_{-1};
+  std::atomic<int> configured_draw_frame_rate_{-1};
+  std::atomic<bool> resource_wake_failed_{false};
+  std::chrono::steady_clock::time_point resource_status_query_at_{}; // Engine owner only.
   std::atomic<int> configured_main_frame_rate_{-1};
   bool experimental_main_frame_scheduler_{false};
 #ifdef SOUI_BRIDGE_BENCHMARK

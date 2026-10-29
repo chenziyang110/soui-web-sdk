@@ -74,7 +74,7 @@ class engine_thread final {
   void unregister_input_service(const std::shared_ptr<detail::engine_input_service>&);
   void notify_input_service() noexcept;
   bool has_pending_input_locked() const noexcept;
-  void service_one_input();
+  void service_one_input(std::chrono::steady_clock::time_point deadline);
   std::uint64_t commit_input_order(std::atomic<std::uint64_t>&, std::atomic<bool>&, bool, bool);
   std::uint64_t next_admission_order_locked() noexcept;
   bool older_input_locked(std::uint64_t) const noexcept;

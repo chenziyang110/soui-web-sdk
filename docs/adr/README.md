@@ -95,3 +95,11 @@
 
 - [ADR-0123：公共原生受控 DevTools](0123-public-devtools-candidate.md)（默认关闭与目标许可；本轮发布资格单列）
 - [ADR-0136：0.6.0 普通 Release 分类与限定范围](0136-0.6.0-release-scope.md)（用户本次授权；生产资格仍未完成）
+
+- [ADR-0137：有界 Windows 工具准备](0137-bounded-windows-tool-preparation.md)（主线工具修复保持原范围）
+- [ADR-0138：MiniBlink 帧与呈现性能候选](0138-miniblink-frame-presentation.md)（主线集成，待编译测试）
+- [ADR-0139：WebView2 与 Scratch 性能候选](0139-webview2-scratch-performance.md)（主线集成，待编译测试）
+- [ADR-0140：性能候选的体积与来源门禁](0140-performance-candidate-size-and-source.md)（三项预算尚待实际构建）
+- [ADR-0141：主线输入结束与恢复策略](0141-input-ending-capacity.md)（保留 mailbox/FIFO/ordered cancel）
+- [ADR-0142：显式本地编辑器资源策略](0142-isolated-local-editor.md)（默认 strict，原生 opt-in）
+- [ADR-0143：MiniBlink 截止唤醒与批次](0143-miniblink-deadline-scheduler.md)（主线索引保留，运行资格待验）

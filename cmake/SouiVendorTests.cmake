@@ -16,8 +16,10 @@ endif()
 set(_soui_vendor_required
   "third_party/sources/miniblink/cc/input/ScrollController.cpp"
   "third_party/sources/miniblink/cc/input/ScrollController.h"
+  "third_party/sources/miniblink/cc/raster/CompletionWaiters.h"
   "third_party/sources/miniblink/cc/raster/RasterCandidateBudget.h"
   "third_party/sources/miniblink/cc/raster/RasterSchedulingPolicy.h"
+  "third_party/sources/miniblink/cc/trees/DirtyRegionPolicy.h"
   "third_party/sources/miniblink/cc/trees/DrawFrameWakePolicy.h"
   "third_party/sources/miniblink/cc/trees/FrameBufferLeasePolicy.h"
   "third_party/sources/miniblink/cc/trees/FrameDeadlinePolicy.h"

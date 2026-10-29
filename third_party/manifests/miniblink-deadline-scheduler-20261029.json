@@ -1,0 +1,27 @@
+{
+  "schema": "soui.miniblink-source-candidate/v1",
+  "baselineCommit": "0cdc0a9ace0cdce664ec4a9b54e5f8f71b97ba48",
+  "portedFromCommit": "ce996ac8e534c634ced4389dd06f0a8dba0f0def",
+  "status": "source-only",
+  "hashScope": "raw-file-bytes",
+  "binaryRebuilt": false,
+  "testsExecuted": false,
+  "performanceVerified": false,
+  "packageSizeVerified": false,
+  "patch": {
+    "path": "third_party/patches/miniblink/0025-main-integrated-deadline-scheduling.patch",
+    "sha256": "41ae4a9ba8911a4a716d702e9d766df2c0df7ef263d7ba500ca3ab56d32b6ef1"
+  },
+  "files": [
+    {
+      "path": "third_party/sources/miniblink/content/browser/SharedTimerWin.h",
+      "bytes": 12716,
+      "sha256": "2cdb88ed22ddcf5486b921fd35fe0de1ad2ba901a1eb6466a82e81e79bcb1356"
+    },
+    {
+      "path": "third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp",
+      "bytes": 30525,
+      "sha256": "a7c20cad2ebada70f83eb68121f719a34f597faa8eaf739751d49662e3362e4f"
+    }
+  ]
+}

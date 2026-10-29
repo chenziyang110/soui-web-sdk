@@ -38,6 +38,7 @@
 #include <mutex>
 #include "cc/raster/RasterSchedulingPolicy.h"
 #include "cc/raster/RasterCandidateBudget.h"
+#include "cc/raster/CompletionWaiters.h"
 #include "skia/ext/refptr.h"
 #include "third_party/skia/include/core/SkPicture.h"
 #include "third_party/WebKit/Source/platform/geometry/IntRect.h"
@@ -181,6 +182,8 @@ public:
 
     void increaseBusyCountByIndex(int index);
     void decreaseBusyCountByIndex(int index);
+    bool registerCompletionWaiter(LayerTreeHost* host);
+    void unregisterCompletionWaiter(LayerTreeHost* host);
 
 private:
     friend class RasterTaskGroup;
@@ -197,6 +200,7 @@ private:
     std::atomic<unsigned> m_lastCandidateReason{0};
     std::atomic<bool> m_willShutdown;
     std::atomic<int> m_pendingRasterTaskNum;
+    CompletionWaiters<LayerTreeHost> m_completionWaiters;
 };
 
 } // namespace cc

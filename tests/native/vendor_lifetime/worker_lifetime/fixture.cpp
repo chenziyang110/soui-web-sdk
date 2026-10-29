@@ -23,6 +23,7 @@ std::atomic<int> sectionsInitialized{0}, sectionsDeleted{0}, tlsAttempts{0}, tls
 std::atomic<int> observedJoins{0}, exitQueries{0}, injectedWaitFailures{0}, injectedExitFailures{0};
 std::atomic<int> debugBreaks{0}, closeInspections{0}, inspectedCount{-1}, inspectedReady{-1};
 std::atomic<int> windowAcquired{0}, windowDestroyed{0}, timerAcquired{0}, timerKilled{0}, classUnregistered{0};
+std::atomic<int> poolTimerAcquired{0}, poolTimerArmed{0}, poolTimerCancelled{0}, poolTimerDrained{0}, poolTimerClosed{0};
 std::atomic<bool> failEvent{false}, failLaunch{false}, failTls{false}, failJoin{false};
 std::atomic<bool> holdStartup{false}, holdNativeReturn{false};
 std::atomic<bool> constructorReturned{false};
@@ -178,6 +179,23 @@ UINT_PTR WINAPI sourceSetTimer(HWND window, UINT_PTR id, UINT interval, TIMERPRO
     return result;
 }
 BOOL WINAPI sourceKillTimer(HWND window, UINT_PTR id) { const BOOL result = ::KillTimer(window, id); if (result) ++timerKilled; return result; }
+PTP_TIMER WINAPI sourceCreatePoolTimer(PTP_TIMER_CALLBACK callback, PVOID context, PTP_CALLBACK_ENVIRON environment) {
+    const PTP_TIMER result = ::CreateThreadpoolTimer(callback, context, environment);
+    if (result) ++poolTimerAcquired;
+    return result;
+}
+VOID WINAPI sourceSetPoolTimer(PTP_TIMER timer, PFILETIME due, DWORD period, DWORD window) {
+    ::SetThreadpoolTimer(timer, due, period, window);
+    if (due) ++poolTimerArmed; else ++poolTimerCancelled;
+}
+VOID WINAPI sourceDrainPoolTimer(PTP_TIMER timer, BOOL cancelPending) {
+    ::WaitForThreadpoolTimerCallbacks(timer, cancelPending);
+    ++poolTimerDrained;
+}
+VOID WINAPI sourceClosePoolTimer(PTP_TIMER timer) {
+    ::CloseThreadpoolTimer(timer);
+    ++poolTimerClosed;
+}
 BOOL WINAPI sourceDestroyWindow(HWND window) { const BOOL result = ::DestroyWindow(window); if (result) ++windowDestroyed; return result; }
 BOOL WINAPI sourceUnregisterClass(LPCWSTR name, HINSTANCE instance) { const BOOL result = ::UnregisterClassW(name, instance); if (result) ++classUnregistered; return result; }
 LRESULT WINAPI sourceDefWindowProc(HWND window, UINT message, WPARAM first, LPARAM second) {
@@ -233,6 +251,10 @@ void operator delete[](void* pointer, std::size_t) noexcept { ::operator delete(
 #define CreateWindowExW fixture::sourceCreateWindow
 #define SetTimer fixture::sourceSetTimer
 #define KillTimer fixture::sourceKillTimer
+#define CreateThreadpoolTimer fixture::sourceCreatePoolTimer
+#define SetThreadpoolTimer fixture::sourceSetPoolTimer
+#define WaitForThreadpoolTimerCallbacks fixture::sourceDrainPoolTimer
+#define CloseThreadpoolTimer fixture::sourceClosePoolTimer
 #define DestroyWindow fixture::sourceDestroyWindow
 #define UnregisterClassW fixture::sourceUnregisterClass
 #undef DefWindowProc
@@ -264,6 +286,10 @@ int CheckReEnter::s_kEnterCount = 0;
 #undef CreateWindowExW
 #undef SetTimer
 #undef KillTimer
+#undef CreateThreadpoolTimer
+#undef SetThreadpoolTimer
+#undef WaitForThreadpoolTimerCallbacks
+#undef CloseThreadpoolTimer
 #undef DestroyWindow
 #undef UnregisterClassW
 #undef DefWindowProc
@@ -571,7 +597,7 @@ bool mainThreadCase() {
     const HWND window = nativeWindow;
     const bool nativeAlive = window && ::IsWindow(window) && windowAcquired == 1 && content::armedDeadline == 0;
     delete thread;
-    const bool nativeReleased = windowDestroyed == 1 && !::IsWindow(window) && !content::deadlineWait && !content::deadlineTimer && classUnregistered == 1;
+    const bool nativeReleased = windowDestroyed == 1 && !::IsWindow(window) && !content::deadlineTimer && !content::retryTimer && classUnregistered == 1;
     ::CloseHandle(receipt.ran);
     return mainIdentity && firstNativeTick && taskRan && receipt.disposed == 1 && nativeAlive && nativeReleased
         && launchAttempts == 0 && eventAttempts == 0 && platform->m_threadNum == 0 && platform->m_threads.empty()
@@ -630,7 +656,7 @@ bool mainSchedulerBudgetCase(bool clockBudget) {
     delete thread;
     ::CloseHandle(future.ran);
     return yielded && nativeTurn && futureNotEarly && futureCompleted && future.disposed == 1
-        && schedulerTasksExactlyOnce(receipt) && windowDestroyed == 1 && timerKilled >= 1
+        && schedulerTasksExactlyOnce(receipt) && windowDestroyed == 1 && !content::deadlineTimer && !content::retryTimer
         && platform->m_threadNum == 0 && platform->m_threads.empty();
 }
 bool mainSchedulerContinuationCase() {
@@ -763,10 +789,11 @@ bool workerSchedulerBudgetCase(bool clockBudget) {
     ::CloseHandle(receipt.completed);
     ::CloseHandle(receipt.retired);
     note("worker-first-yield-ready-tasks", workerFirstYieldRuns);
-    const bool originalBudget = clockBudget
-        ? workerFirstYieldRuns > 32 && workerFirstYieldRuns < SchedulerReceipt::taskCount
-        : workerMidChainWaits == 0;
-    return completed && retired_while_idle && originalBudget && schedulerTasksExactlyOnce(receipt) && cleanWorkerReceipt();
+    const bool cooperativeBudget = clockBudget
+        ? workerFirstYieldRuns >= 2 && workerFirstYieldRuns <= 3
+        : workerFirstYieldRuns > 0 && workerFirstYieldRuns <= 32;
+    return completed && retired_while_idle && cooperativeBudget && workerMidChainWaits > 0
+        && schedulerTasksExactlyOnce(receipt) && cleanWorkerReceipt();
 }
 bool mainSchedulerShutdownCase() {
     SchedulerReceipt receipt;
@@ -776,8 +803,21 @@ bool mainSchedulerShutdownCase() {
     const bool notRunEarly = schedulerTaskRuns == 0;
     delete thread;
     note("shutdown-drained-ready-tasks", schedulerTaskRuns);
+    note("shutdown-pool-timers-acquired", poolTimerAcquired);
+    note("shutdown-pool-timers-armed", poolTimerArmed);
+    note("shutdown-pool-timers-cancelled", poolTimerCancelled);
+    note("shutdown-pool-timers-drained", poolTimerDrained);
+    note("shutdown-pool-timers-closed", poolTimerClosed);
+    const bool nativeTimersClosed = poolTimerAcquired == 2 && poolTimerArmed >= 1
+        && poolTimerCancelled >= 2 && poolTimerDrained == poolTimerAcquired
+        && poolTimerClosed == poolTimerAcquired && timerKilled == timerAcquired;
+    const bool publicationRetired = content::continuationClosed && !content::continuationWindow
+        && !content::timerWindowHandle && !content::deadlineTimer && !content::retryTimer
+        && !content::deadlineTicket && !content::pendingContinuation && !content::timerID
+        && content::armedDeadline == 0 && !content::sharedHighResolution;
     return notRunEarly && schedulerTaskRuns == SchedulerReceipt::taskCount
-        && schedulerTasksExactlyOnce(receipt) && windowDestroyed == 1 && timerKilled >= 1
+        && schedulerTasksExactlyOnce(receipt) && windowDestroyed == 1 && classUnregistered == 1
+        && nativeTimersClosed && publicationRetired
         && platform->m_threadNum == 0 && platform->m_threads.empty();
 }
 bool mainSchedulerPreShutdownCase() {
@@ -820,7 +860,7 @@ bool dispatch() {
     if (isCase("main-scheduler-first-task-wake")) return mainSchedulerFirstWakeCase();
     if (isCase("main-scheduler-admission-budget")) return mainSchedulerAdmissionCase(false);
     if (isCase("main-scheduler-admission-shutdown")) return mainSchedulerAdmissionCase(true);
-    if (isCase("worker-scheduler-no-count-cap")) return workerSchedulerBudgetCase(false);
+    if (isCase("worker-scheduler-task-budget")) return workerSchedulerBudgetCase(false);
     if (isCase("worker-scheduler-clock-budget")) return workerSchedulerBudgetCase(true);
     if (isCase("main-scheduler-shutdown-drain")) return mainSchedulerShutdownCase();
     if (isCase("main-scheduler-pre-shutdown-drain")) return mainSchedulerPreShutdownCase();

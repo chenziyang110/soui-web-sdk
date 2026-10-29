@@ -5,6 +5,7 @@
 #include "preparation_lifetime.h"
 #include "owner_output_policy.h"
 #include "owner_callout_policy.h"
+#include "owner_work_policy.h"
 #include "../../src/host/input_trace_hooks.h"
 #include <soui/diagnostics/input_frame_trace.h>
 #include "loader_policy.h"
@@ -496,6 +497,7 @@ struct webview2_adapter::state {
   std::string preload, runtime_version, script_id;
   ComPtr<ICoreWebView2Environment> environment;
   ComPtr<ICoreWebView2Controller> controller;
+  detail::controller_updates controller_updates;
   ComPtr<ICoreWebView2> core;
   ComPtr<ICoreWebView2_3> core3;
   ComPtr<ICoreWebView2_4> core4;
@@ -503,10 +505,11 @@ struct webview2_adapter::state {
   phase current{phase::created};
   host_result failure;
   bool allow_navigation{false}, document_ready{false}, application_ready{false};
+  local_resource_policy resource_policy{local_resource_policy::strict};
   bool reload_preparing{false};
   bool diagnostic_query_pending{false};
   bool pump_running{false}; // Actual UI owner; COM reentry cannot start a second drain batch.
-  unsigned owner_budget_us{0}; // Candidate: zero preserves the existing16-item policy.
+  unsigned owner_budget_us{0}; // Optional tighter profile budget; the fixed 2ms/16-item cap still applies.
   bool prepare_output{false}; // Candidate: disabled until paired profile selects it.
   std::unique_ptr<detail::trace_thread_registration> trace_owner;
   // Actual ExecuteScript/protocol completions, including those delivered after
@@ -997,7 +1000,14 @@ void install_policy(const std::shared_ptr<state>& value) {
   check(value->core->add_FrameNavigationStarting(Callback<ICoreWebView2NavigationStartingEventHandler>(
       [weak](ICoreWebView2*, ICoreWebView2NavigationStartingEventArgs* args) -> HRESULT {
         native_policy_borrow observation{weak};
-        return args->put_Cancel(TRUE);
+        return boundary(weak, [&](const auto& current) {
+          task_string uri;
+          check(args->get_Uri(&uri.value), "Frame navigation URI");
+          const bool allowed = current->resource_policy == local_resource_policy::isolated_local_editor &&
+              current->current == state::phase::mounted && !current->retirement_required && uri.value &&
+              (std::wstring{uri.value} == L"about:blank" || std::wstring{uri.value} == L"about:srcdoc");
+          check(args->put_Cancel(allowed ? FALSE : TRUE), "Frame navigation policy");
+        });
       }
       ).Get(), &token), "Frame policy registration");
   check(value->core->add_NavigationCompleted(Callback<ICoreWebView2NavigationCompletedEventHandler>(
@@ -1483,7 +1493,10 @@ host_result webview2_adapter::mount(const sdk::host_config& config) {
   if (GetCurrentThreadId() != value->ui_thread || value->current != state::phase::prepared ||
       config.owner_window != value->owner || !config.bridge_adapter)
     return error("E_INVALID_STATE", "Mount requires the prepared owner and a live Bridge.");
+  if (!supports_local_resource_policy(config.resource_policy))
+    return error("E_RESOURCE_POLICY_UNSUPPORTED", "WebView2 does not support the selected local resource policy.");
   try {
+    value->resource_policy = config.resource_policy;
     const auto resources = std::filesystem::canonical(config.resource_root);
     const auto profile = std::filesystem::weakly_canonical(value->profile);
     auto resource_prefix = resources.native();
@@ -1494,11 +1507,25 @@ host_result webview2_adapter::mount(const sdk::host_config& config) {
          CompareStringOrdinal(profile_text.data(), static_cast<int>(resource_prefix.size()),
                               resource_prefix.data(), static_cast<int>(resource_prefix.size()), TRUE) == CSTR_EQUAL))
       throw std::runtime_error("Browser profile must be outside the served resource directory");
-    check(value->core3->SetVirtualHostNameToFolderMapping(L"soui-webview2.invalid", resources.c_str(),
-        COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND_DENY), "Map controlled resources");
+    const auto mounted_controller = value->controller;
+    const auto mounted_core = value->core;
+    const auto mounted_core3 = value->core3;
+    const auto preparation_current = [&] {
+      return value->current == state::phase::prepared &&
+          value->controller.Get() == mounted_controller.Get() && value->core.Get() == mounted_core.Get() &&
+          value->core3.Get() == mounted_core3.Get();
+    };
+    const auto mapped = mounted_core3->SetVirtualHostNameToFolderMapping(L"soui-webview2.invalid", resources.c_str(),
+        COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND_DENY);
+    if (!preparation_current()) return error("E_CANCELLED", "WebView2 mount was cancelled during resource mapping.");
+    check(mapped, "Map controlled resources");
     RECT bounds{};
     if (!GetClientRect(value->owner, &bounds)) throw std::runtime_error("Owner bounds unavailable");
-    check(value->controller->put_Bounds(bounds), "Set initial bounds");
+    const auto bounded = value->controller_updates.bounds(bounds.right, bounds.bottom, [mounted_controller](int width, int height) {
+      return mounted_controller ? mounted_controller->put_Bounds(RECT{0, 0, width, height}) : E_ABORT;
+    });
+    if (!preparation_current()) return error("E_CANCELLED", "WebView2 mount was cancelled during initial bounds.");
+    check(bounded, "Set initial bounds");
     value->bridge = config.bridge_adapter;
     value->bridge->set_owner_window(value->owner);
     const std::weak_ptr<state> weak(value);
@@ -1633,16 +1660,24 @@ host_result webview2_adapter::unmount() {
 }
 
 host_result webview2_adapter::show(bool visible) {
-  const auto active = require_mounted(state_);
+  const auto value = state_;
+  const auto active = require_mounted(value);
   if (!active.ok) return active;
-  const auto result = state_->controller->put_IsVisible(visible ? TRUE : FALSE);
+  const auto controller = value->controller;
+  const auto result = value->controller_updates.visibility(visible, [controller](bool next) {
+    return controller ? controller->put_IsVisible(next ? TRUE : FALSE) : E_ABORT;
+  });
   return SUCCEEDED(result) ? ok() : error("E_WEBVIEW2", hresult_text(result));
 }
 host_result webview2_adapter::resize(int width, int height) {
-  const auto active = require_mounted(state_);
+  const auto value = state_;
+  const auto active = require_mounted(value);
   if (!active.ok) return active;
   if (width < 0 || height < 0 || width > 32768 || height > 32768) return error("E_INVALID_PARAMS", "Invalid WebView2 bounds.");
-  const auto result = state_->controller->put_Bounds(RECT{0, 0, width, height});
+  const auto controller = value->controller;
+  const auto result = value->controller_updates.bounds(width, height, [controller](int next_width, int next_height) {
+    return controller ? controller->put_Bounds(RECT{0, 0, next_width, next_height}) : E_ABORT;
+  });
   return SUCCEEDED(result) ? ok() : error("E_WEBVIEW2", hresult_text(result));
 }
 host_result webview2_adapter::focus() {
@@ -1720,9 +1755,11 @@ void webview2_adapter::pump() {
       }
       }
     }
-    // Owner notification drains a bounded batch; workers never invoke WebView2 COM.
+    // Always cap cooperative owner work at 2ms. Preserve the existing optional
+    // profile budget as an additional limit, including a tighter value.
+    const detail::owner_work_budget work_budget(clock_type::now());
     const detail::owner_output_budget output_budget(value->owner_budget_us);
-    for (unsigned batch = 0; output_budget.allows_next(batch); ++batch) {
+    for (unsigned batch = 0; work_budget.allows(batch, clock_type::now()) && output_budget.allows_next(batch); ++batch) {
       state::output output;
       {
         std::lock_guard<std::mutex> lock(value->mutex);
@@ -1732,18 +1769,22 @@ void webview2_adapter::pump() {
         output = std::move(*selected);
         value->outputs.erase(selected);
         value->output_slots.release(output.slot ? output.slot->category : capacity::lane::ordinary, output.charged_bytes);
-        // Release before notifying the page; its completion may send new work.
-        if (output.slot) output.slot->release();
-        if (output.generation != value->generation || output.document_id != value->document_id) continue;
       }
-      if (!current_source(value)) continue;
+      // Request-budget release takes its own lock. Do it outside the Host lock
+      // and before page delivery can reenter and admit new work.
+      if (output.slot) output.slot->release();
+      if (output.generation != value->generation || output.document_id != value->document_id) continue;
+      const auto target = value->core; // Pin the target across get_Source and Post.
+      const auto delivery_current = [&] {
+        return value->current == state::phase::mounted && value->core.Get() == target.Get() &&
+            output.generation == value->generation && output.document_id == value->document_id;
+      };
+      if (!target || !current_source(value) || !delivery_current()) continue;
       {
         std::lock_guard<std::mutex> lock(value->mutex);
         if (value->stop_requested || value->current != state::phase::mounted
             || output.generation != value->generation || output.document_id != value->document_id) continue;
       }
-      const auto target = value->core; // Keep the actual STA target alive until Post returns.
-      if (!target) continue;
       input_trace::event delivered;
       delivered.point = input_trace::stage::bridge_response;
       delivered.task_id = output.trace_task;
@@ -1758,7 +1799,10 @@ void webview2_adapter::pump() {
         const detail::trace_duration serialization_cost(input_trace::duration_metric::serialization);
         wire = wide(serialize_output(output));
       }
-      check(target->PostWebMessageAsJson(wire.c_str()), "Deliver native response");
+      if (!delivery_current()) continue;
+      const auto posted = target->PostWebMessageAsJson(wire.c_str());
+      if (!delivery_current()) continue;
+      check(posted, "Deliver native response");
       {
         std::lock_guard<std::mutex> lock(value->mutex);
         if (output.ready && !value->stop_requested && value->current == state::phase::mounted

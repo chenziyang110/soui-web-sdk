@@ -1,4 +1,5 @@
 #include <soui/diagnostics/input_frame_trace.h>
+#include "input_frame_duration_bucket.h"
 
 #include <windows.h>
 #include <algorithm>
@@ -215,8 +216,8 @@ void writer::observe_duration(duration_metric metric, std::uint64_t ticks) noexc
   if (!actual_owner(slot, state) || state.stopped.load(std::memory_order_acquire)) return;
   const auto index = static_cast<std::size_t>(metric);
   if (index >= duration_metric_count) { state.invalid_event.store(true, std::memory_order_relaxed); return; }
-  std::size_t bucket = 0;
-  while (ticks > 1 && bucket + 1 < duration_buckets) { ticks >>= 1; ++bucket; }
+  static_assert(duration_buckets == 64, "Duration bucket calculation requires the v1 64-bucket contract");
+  const auto bucket = detail::duration_bucket_index(ticks);
   add_single(slot.durations[index][bucket], 1, state);
 }
 
