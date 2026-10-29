@@ -1,0 +1,24 @@
+{
+    "args":  [
+                 "convert",
+                 "-f",
+                 "vmdk",
+                 "-O",
+                 "qcow2",
+                 "F:/vm/Windows 7 x64 Sp1-000008.vmdk",
+                 "C:/SOUI-SDK-QEMU-Win7/base-win7-sp1-x64.qcow2"
+             ],
+    "executable":  {
+                       "path":  "C:/Users/11034/.codex/task-tools/qemu-ucrt64-11.1.2-e89cf96f2d1e4685bbdac347cb9eea3d/runtime/ucrt64/bin/qemu-img.exe",
+                       "bytes":  1966340,
+                       "sha256":  "b4ef313ad2bd5070e44a5cccb50d8c2529dd68303c44ef8926b4c5a38ca219ff"
+                   },
+    "drainMs":  2000,
+    "rootPid":  27764,
+    "actualCFreeBytes":  205291573248,
+    "vmStarted":  false,
+    "forceShareUsed":  false,
+    "timeoutMs":  600000,
+    "fullImageHashPerformed":  false,
+    "heldSourceCount":  102
+}

@@ -1,0 +1,1057 @@
+{
+  "schema": "soui.current-execution-archive-selection/v1",
+  "preparedUtc": "2026-10-29T15:17:46.496Z",
+  "executionApproved": true,
+  "pendingGroups": [],
+  "destination": "C:/sc07/verification/production-validation/open-issues-closeout-2026-10-29/remaining-handoff",
+  "description": "Completed remaining-issue handoff observations only; exact existing passed identities retained, no new short/long product test, full issues/Win7/production remain unqualified",
+  "collector": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/remaining-handoff-archive-prep/Collect-RemainingHandoff.cjs",
+    "bytes": 17474,
+    "sha256": "2640935c72c241db5062d057256d86416feef1598bdb86ea7f0ad63c07a6a787"
+  },
+  "groups": [
+    {
+      "id": "prior-references",
+      "sourceRoot": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/remaining-handoff-archive-prep/references",
+      "destination": "references",
+      "kind": "data-only-observations",
+      "description": "Exact old immutable index/three existing Win7 report references and narrowly qualified snapshot observations; no duplicate old archive contents",
+      "allSourceMembers": [
+        "ObservationScope.prepared.json",
+        "PriorEvidence.references.prepared.json"
+      ],
+      "members": [
+        "ObservationScope.prepared.json",
+        "PriorEvidence.references.prepared.json"
+      ]
+    },
+    {
+      "id": "collector-derivation",
+      "sourceRoot": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/remaining-handoff-archive-prep/collector-derivation",
+      "destination": "preparation/collector-derivation",
+      "kind": "control-source",
+      "description": "Exact original collector and five-line derivative provenance, without execution approval",
+      "allSourceMembers": [
+        "Collector.original.cjs",
+        "Collector.prepared.diff",
+        "Derivation.prepared.json"
+      ],
+      "members": [
+        "Collector.original.cjs",
+        "Collector.prepared.diff",
+        "Derivation.prepared.json"
+      ]
+    },
+    {
+      "id": "issue31-assessment",
+      "sourceRoot": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/issue31-short-assessment",
+      "destination": "issue31/assessment",
+      "kind": "data-only-observations",
+      "description": "Read-only necessary-short assessment; zero new low-value shorts; real mixed-resource renewal requires future fixture/reader package and deferred real-time batch",
+      "allSourceMembers": [
+        "Report.json",
+        "Report.md"
+      ],
+      "members": [
+        "Report.json",
+        "Report.md"
+      ]
+    },
+    {
+      "id": "win7-current-payload-map",
+      "sourceRoot": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-current-payload-map",
+      "destination": "win7/current-payload-map",
+      "kind": "data-only-observations",
+      "description": "Read-only exact current fixed0.6 Workbench x86 payload map; Server pass identity is not Win7 qualification",
+      "allSourceMembers": [
+        "Report.json",
+        "Report.md"
+      ],
+      "members": [
+        "Report.json",
+        "Report.md"
+      ]
+    },
+    {
+      "id": "conversion-r1-controls",
+      "sourceRoot": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current",
+      "destination": "win7/conversion/r1/controls",
+      "kind": "control-source",
+      "description": "Original first revision conversion controls; later failed preflight records remain failed",
+      "allSourceMembers": [
+        "Conversion.plan.prepared.json",
+        "Invoke-ConvertWin7.ps1",
+        "Preparation.actual.json",
+        "Run-ConvertWin7.cjs",
+        "attempt-2568bb01-7ce7-4efb-96be-aa1ee97bd468/Occupancy.controller.actual.json",
+        "attempt-2568bb01-7ce7-4efb-96be-aa1ee97bd468/Source.node-held.after.actual.json",
+        "attempt-2568bb01-7ce7-4efb-96be-aa1ee97bd468/Summary.actual.json",
+        "attempt-7dcbbaea-23ce-44a6-b1d5-c6a75d4869f2/Occupancy.controller.actual.json",
+        "attempt-7dcbbaea-23ce-44a6-b1d5-c6a75d4869f2/Source.node-held.after.actual.json",
+        "attempt-7dcbbaea-23ce-44a6-b1d5-c6a75d4869f2/Summary.actual.json",
+        "r2/Conversion.plan.prepared.json",
+        "r2/Invoke-ConvertWin7.ps1",
+        "r2/Preparation.actual.json",
+        "r2/R1-to-R2.prepared.diff",
+        "r2/Read-TargetVmOccupancy.py",
+        "r2/Read-VmOccupancy.ps1",
+        "r2/Run-ConvertWin7.cjs",
+        "r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/Conversion.invocation.actual.json",
+        "r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/Held.after.actual.json",
+        "r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/Held.before.actual.json",
+        "r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/Invocation.actual.json",
+        "r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/Occupancy.actual.json",
+        "r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/Occupancy.controller.actual.json",
+        "r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/Root.finished.actual.json",
+        "r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/Source.node-held.after.actual.json",
+        "r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/Source.node-held.before.actual.json",
+        "r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/Summary.actual.json",
+        "r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/finished.json",
+        "r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/owned.ndjson",
+        "r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/owned.ndjson.context.json",
+        "r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/qemu.stderr.log",
+        "r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/qemu.stdout.log",
+        "r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/ready.json",
+        "r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/stderr.raw",
+        "r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/stdout.raw"
+      ],
+      "members": [
+        "Conversion.plan.prepared.json",
+        "Invoke-ConvertWin7.ps1",
+        "Preparation.actual.json",
+        "Run-ConvertWin7.cjs"
+      ]
+    },
+    {
+      "id": "conversion-r1-attempt-2568bb01-7ce7-4efb-96be-aa1ee97bd468",
+      "sourceRoot": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/attempt-2568bb01-7ce7-4efb-96be-aa1ee97bd468",
+      "destination": "win7/conversion/r1/attempt-2568bb01-7ce7-4efb-96be-aa1ee97bd468",
+      "kind": "data-only-observations",
+      "description": "Original failed preflight, no native conversion/VM/product success inferred",
+      "allSourceMembers": [
+        "Occupancy.controller.actual.json",
+        "Source.node-held.after.actual.json",
+        "Summary.actual.json"
+      ],
+      "members": [
+        "Occupancy.controller.actual.json",
+        "Source.node-held.after.actual.json",
+        "Summary.actual.json"
+      ]
+    },
+    {
+      "id": "conversion-r1-attempt-7dcbbaea-23ce-44a6-b1d5-c6a75d4869f2",
+      "sourceRoot": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/attempt-7dcbbaea-23ce-44a6-b1d5-c6a75d4869f2",
+      "destination": "win7/conversion/r1/attempt-7dcbbaea-23ce-44a6-b1d5-c6a75d4869f2",
+      "kind": "data-only-observations",
+      "description": "Original failed preflight, no native conversion/VM/product success inferred",
+      "allSourceMembers": [
+        "Occupancy.controller.actual.json",
+        "Source.node-held.after.actual.json",
+        "Summary.actual.json"
+      ],
+      "members": [
+        "Occupancy.controller.actual.json",
+        "Source.node-held.after.actual.json",
+        "Summary.actual.json"
+      ]
+    },
+    {
+      "id": "conversion-r1-review",
+      "sourceRoot": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-analysis/win7-conversion-control",
+      "destination": "win7/conversion/r1/independent-control-review",
+      "kind": "data-only-observations",
+      "description": "Independent static source/control review observations, separate from execution",
+      "allSourceMembers": [
+        "Review.actual.json"
+      ],
+      "members": [
+        "Review.actual.json"
+      ]
+    },
+    {
+      "id": "conversion-r2-controls",
+      "sourceRoot": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2",
+      "destination": "win7/conversion/r2/controls",
+      "kind": "control-source",
+      "description": "Frozen revised exact occupancy/read-only-source conversion controls and minimal r1-to-r2 diff",
+      "allSourceMembers": [
+        "Conversion.plan.prepared.json",
+        "Invoke-ConvertWin7.ps1",
+        "Preparation.actual.json",
+        "R1-to-R2.prepared.diff",
+        "Read-TargetVmOccupancy.py",
+        "Read-VmOccupancy.ps1",
+        "Run-ConvertWin7.cjs",
+        "attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/Conversion.invocation.actual.json",
+        "attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/Held.after.actual.json",
+        "attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/Held.before.actual.json",
+        "attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/Invocation.actual.json",
+        "attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/Occupancy.actual.json",
+        "attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/Occupancy.controller.actual.json",
+        "attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/Root.finished.actual.json",
+        "attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/Source.node-held.after.actual.json",
+        "attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/Source.node-held.before.actual.json",
+        "attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/Summary.actual.json",
+        "attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/finished.json",
+        "attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/owned.ndjson",
+        "attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/owned.ndjson.context.json",
+        "attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/qemu.stderr.log",
+        "attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/qemu.stdout.log",
+        "attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/ready.json",
+        "attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/stderr.raw",
+        "attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/stdout.raw"
+      ],
+      "members": [
+        "Conversion.plan.prepared.json",
+        "Invoke-ConvertWin7.ps1",
+        "Preparation.actual.json",
+        "R1-to-R2.prepared.diff",
+        "Read-TargetVmOccupancy.py",
+        "Read-VmOccupancy.ps1",
+        "Run-ConvertWin7.cjs"
+      ]
+    },
+    {
+      "id": "conversion-r2-actual",
+      "sourceRoot": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4",
+      "destination": "win7/conversion/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4",
+      "kind": "data-only-observations",
+      "description": "Actual one bounded conversion passed declared host/Owned scope,102 source holds/releases; no VM/OS/SP1/desktop/product qualification",
+      "allSourceMembers": [
+        "Conversion.invocation.actual.json",
+        "Held.after.actual.json",
+        "Held.before.actual.json",
+        "Invocation.actual.json",
+        "Occupancy.actual.json",
+        "Occupancy.controller.actual.json",
+        "Root.finished.actual.json",
+        "Source.node-held.after.actual.json",
+        "Source.node-held.before.actual.json",
+        "Summary.actual.json",
+        "finished.json",
+        "owned.ndjson",
+        "owned.ndjson.context.json",
+        "qemu.stderr.log",
+        "qemu.stdout.log",
+        "ready.json",
+        "stderr.raw",
+        "stdout.raw"
+      ],
+      "members": [
+        "Conversion.invocation.actual.json",
+        "Held.after.actual.json",
+        "Held.before.actual.json",
+        "Invocation.actual.json",
+        "Occupancy.actual.json",
+        "Occupancy.controller.actual.json",
+        "Root.finished.actual.json",
+        "Source.node-held.after.actual.json",
+        "Source.node-held.before.actual.json",
+        "Summary.actual.json",
+        "finished.json",
+        "owned.ndjson",
+        "owned.ndjson.context.json",
+        "qemu.stderr.log",
+        "qemu.stdout.log",
+        "ready.json",
+        "stderr.raw",
+        "stdout.raw"
+      ]
+    },
+    {
+      "id": "conversion-r2-control-review",
+      "sourceRoot": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-analysis/win7-conversion-r2-control",
+      "destination": "win7/conversion/r2/independent-control-review",
+      "kind": "data-only-observations",
+      "description": "Independent revised control review, retained without invented product verdict",
+      "allSourceMembers": [
+        "Review.actual.json"
+      ],
+      "members": [
+        "Review.actual.json"
+      ]
+    },
+    {
+      "id": "conversion-r2-actual-review",
+      "sourceRoot": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-analysis/win7-conversion-r2-actual",
+      "destination": "win7/conversion/r2/independent-actual-review",
+      "kind": "data-only-observations",
+      "description": "Independent exact18-record conversion/Owned/source identity data review; no execution repeated",
+      "allSourceMembers": [
+        "Analysis.actual.json"
+      ],
+      "members": [
+        "Analysis.actual.json"
+      ]
+    },
+    {
+      "id": "boot-observations",
+      "sourceRoot": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-boot-investigation",
+      "destination": "win7/boot-investigation",
+      "kind": "data-only-observations",
+      "description": "Only05 full visible OS-not-found proof;01-04 UNKNOWN partial/black;06 black after UI reset; exact paused QMP operator stop is not guest clean or product pass",
+      "allSourceMembers": [
+        "01-first-boot-not-found.actual.png",
+        "02-wake-state.actual.png",
+        "03-full-boot-failure-after-reconnect.actual.png",
+        "04-confirmed-boot-not-found.actual.png",
+        "05-standalone-screenshot.actual.png",
+        "06-after-menu-key.actual.png",
+        "Media.actual.json",
+        "PausedStop.actual.json",
+        "Report.md"
+      ],
+      "members": [
+        "01-first-boot-not-found.actual.png",
+        "02-wake-state.actual.png",
+        "03-full-boot-failure-after-reconnect.actual.png",
+        "04-confirmed-boot-not-found.actual.png",
+        "05-standalone-screenshot.actual.png",
+        "06-after-menu-key.actual.png",
+        "Media.actual.json",
+        "PausedStop.actual.json",
+        "Report.md"
+      ]
+    },
+    {
+      "id": "stopped-vm-metadata",
+      "sourceRoot": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/remaining-handoff-archive-prep/vm-metadata",
+      "destination": "win7/stopped-vm-metadata",
+      "kind": "data-only-observations",
+      "description": "Root-staged six small closed stopped-VM metadata records/copy receipt; no catalog/token/whole serial/disk image",
+      "allSourceMembers": [
+        "Copy.actual.json",
+        "active-session.json",
+        "lab.json",
+        "qemu.stderr.log",
+        "started.json",
+        "stopped.json"
+      ],
+      "members": [
+        "Copy.actual.json",
+        "active-session.json",
+        "lab.json",
+        "qemu.stderr.log",
+        "started.json",
+        "stopped.json"
+      ]
+    },
+    {
+      "id": "standalone-readonly-control",
+      "sourceRoot": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-standalone-investigation",
+      "destination": "win7/second-standalone/control",
+      "kind": "control-source",
+      "description": "Exact bounded readonly17-handle512-byte MBR control; no conversion/newVM scheduled",
+      "allSourceMembers": [
+        "Mbr.analysis.actual.json",
+        "Occupancy.actual.json",
+        "Read-StandaloneMbr.ps1",
+        "Read.finished.actual.json",
+        "Read.invocation.actual.json",
+        "Receipt.index.actual.json",
+        "Report.md",
+        "VmxMetadata.actual.json",
+        "qemu-io.stderr.log",
+        "qemu-io.stdout.log"
+      ],
+      "members": [
+        "Read-StandaloneMbr.ps1"
+      ]
+    },
+    {
+      "id": "standalone-readonly-records",
+      "sourceRoot": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-standalone-investigation",
+      "destination": "win7/second-standalone/observations",
+      "kind": "data-only-observations",
+      "description": "Nine actual readonly records: plausible active NTFS MBR only; OS/SP1/desktop unproven; no VM conversion or startup",
+      "allSourceMembers": [
+        "Mbr.analysis.actual.json",
+        "Occupancy.actual.json",
+        "Read-StandaloneMbr.ps1",
+        "Read.finished.actual.json",
+        "Read.invocation.actual.json",
+        "Receipt.index.actual.json",
+        "Report.md",
+        "VmxMetadata.actual.json",
+        "qemu-io.stderr.log",
+        "qemu-io.stdout.log"
+      ],
+      "members": [
+        "Mbr.analysis.actual.json",
+        "Occupancy.actual.json",
+        "Read.finished.actual.json",
+        "Read.invocation.actual.json",
+        "Receipt.index.actual.json",
+        "Report.md",
+        "VmxMetadata.actual.json",
+        "qemu-io.stderr.log",
+        "qemu-io.stdout.log"
+      ]
+    }
+  ],
+  "rows": [
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/issue31-short-assessment/Report.json",
+      "destination": "issue31/assessment/Report.json",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/issue31-short-assessment/Report.json",
+        "bytes": 37438,
+        "sha256": "d16b5258a34795661565676161d4b47f481e6a56d76c43f53f57cc272ab3881b"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/issue31-short-assessment/Report.md",
+      "destination": "issue31/assessment/Report.md",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/issue31-short-assessment/Report.md",
+        "bytes": 9181,
+        "sha256": "980be4b92625c8ee7b1683d887257443c8d8ab9fa2171d7ce7f0491e3171410d"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/remaining-handoff-archive-prep/collector-derivation/Collector.original.cjs",
+      "destination": "preparation/collector-derivation/Collector.original.cjs",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/remaining-handoff-archive-prep/collector-derivation/Collector.original.cjs",
+        "bytes": 17441,
+        "sha256": "a0a415586d9243a41b35e1671f5a394e11aaff08564a677349eba25078ee85d1"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/remaining-handoff-archive-prep/collector-derivation/Collector.prepared.diff",
+      "destination": "preparation/collector-derivation/Collector.prepared.diff",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/remaining-handoff-archive-prep/collector-derivation/Collector.prepared.diff",
+        "bytes": 3217,
+        "sha256": "aa61c44910d32d38e70847197ad9660bff2f7e22e7173855c1fe6e1fbdeda69a"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/remaining-handoff-archive-prep/collector-derivation/Derivation.prepared.json",
+      "destination": "preparation/collector-derivation/Derivation.prepared.json",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/remaining-handoff-archive-prep/collector-derivation/Derivation.prepared.json",
+        "bytes": 2101,
+        "sha256": "8c3ccecdbd72e99b84794195df7e5ff72e42a1a2f5dcf774a093fee3401cb50f"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/remaining-handoff-archive-prep/references/ObservationScope.prepared.json",
+      "destination": "references/ObservationScope.prepared.json",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/remaining-handoff-archive-prep/references/ObservationScope.prepared.json",
+        "bytes": 2400,
+        "sha256": "afde95491e5cea2c875eb59f6175cb080c44698b1108e6f9e2c84ec576533418"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/remaining-handoff-archive-prep/references/PriorEvidence.references.prepared.json",
+      "destination": "references/PriorEvidence.references.prepared.json",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/remaining-handoff-archive-prep/references/PriorEvidence.references.prepared.json",
+        "bytes": 1374,
+        "sha256": "9474a95f7627ced6673eef8a9ff312db84902d72d8f4e929a57d415c245bf33c"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-boot-investigation/01-first-boot-not-found.actual.png",
+      "destination": "win7/boot-investigation/01-first-boot-not-found.actual.png",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-boot-investigation/01-first-boot-not-found.actual.png",
+        "bytes": 41663,
+        "sha256": "d7b5161e463ced9eadbd140a5ea32e74afd2e49da139dfd520f293a5e44b0acc"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-boot-investigation/02-wake-state.actual.png",
+      "destination": "win7/boot-investigation/02-wake-state.actual.png",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-boot-investigation/02-wake-state.actual.png",
+        "bytes": 41759,
+        "sha256": "e367a693f4f7d467dd95667e3b2cfe709919c21c038ebf4e9f4cdb96bbf626a3"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-boot-investigation/03-full-boot-failure-after-reconnect.actual.png",
+      "destination": "win7/boot-investigation/03-full-boot-failure-after-reconnect.actual.png",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-boot-investigation/03-full-boot-failure-after-reconnect.actual.png",
+        "bytes": 41663,
+        "sha256": "d7b5161e463ced9eadbd140a5ea32e74afd2e49da139dfd520f293a5e44b0acc"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-boot-investigation/04-confirmed-boot-not-found.actual.png",
+      "destination": "win7/boot-investigation/04-confirmed-boot-not-found.actual.png",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-boot-investigation/04-confirmed-boot-not-found.actual.png",
+        "bytes": 41663,
+        "sha256": "d7b5161e463ced9eadbd140a5ea32e74afd2e49da139dfd520f293a5e44b0acc"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-boot-investigation/05-standalone-screenshot.actual.png",
+      "destination": "win7/boot-investigation/05-standalone-screenshot.actual.png",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-boot-investigation/05-standalone-screenshot.actual.png",
+        "bytes": 41759,
+        "sha256": "e367a693f4f7d467dd95667e3b2cfe709919c21c038ebf4e9f4cdb96bbf626a3"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-boot-investigation/06-after-menu-key.actual.png",
+      "destination": "win7/boot-investigation/06-after-menu-key.actual.png",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-boot-investigation/06-after-menu-key.actual.png",
+        "bytes": 41768,
+        "sha256": "bca6c85fb7035ab6d2b85718f6061d63a73e604ae806df4503acd553ede84614"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-boot-investigation/Media.actual.json",
+      "destination": "win7/boot-investigation/Media.actual.json",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-boot-investigation/Media.actual.json",
+        "bytes": 8789,
+        "sha256": "482ab40af8c74bb4d0128afd926060a496acd3cfa2c20fba3ddc87bc8cbfa34d"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-boot-investigation/PausedStop.actual.json",
+      "destination": "win7/boot-investigation/PausedStop.actual.json",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-boot-investigation/PausedStop.actual.json",
+        "bytes": 495,
+        "sha256": "8ad80cf4bbd3d649cc3e0877c345e9ce444d0ebe87509786fd107df864095e9e"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-boot-investigation/Report.md",
+      "destination": "win7/boot-investigation/Report.md",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-boot-investigation/Report.md",
+        "bytes": 2067,
+        "sha256": "45157548f28f194b3e36957f0f8a5a14d8da28b59daa69fc74d30fb560298c6b"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/attempt-2568bb01-7ce7-4efb-96be-aa1ee97bd468/Occupancy.controller.actual.json",
+      "destination": "win7/conversion/r1/attempt-2568bb01-7ce7-4efb-96be-aa1ee97bd468/Occupancy.controller.actual.json",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/attempt-2568bb01-7ce7-4efb-96be-aa1ee97bd468/Occupancy.controller.actual.json",
+        "bytes": 597,
+        "sha256": "1b8a74d90c02d08339448f31baf41884ab6cef7d6f3fd7d95a2779d5c5d0578e"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/attempt-2568bb01-7ce7-4efb-96be-aa1ee97bd468/Source.node-held.after.actual.json",
+      "destination": "win7/conversion/r1/attempt-2568bb01-7ce7-4efb-96be-aa1ee97bd468/Source.node-held.after.actual.json",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/attempt-2568bb01-7ce7-4efb-96be-aa1ee97bd468/Source.node-held.after.actual.json",
+        "bytes": 62,
+        "sha256": "40aac96e2869db023b2492af41d1e8cb397a8c9be04a526f1ea3060a03f18105"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/attempt-2568bb01-7ce7-4efb-96be-aa1ee97bd468/Summary.actual.json",
+      "destination": "win7/conversion/r1/attempt-2568bb01-7ce7-4efb-96be-aa1ee97bd468/Summary.actual.json",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/attempt-2568bb01-7ce7-4efb-96be-aa1ee97bd468/Summary.actual.json",
+        "bytes": 1582,
+        "sha256": "91a764a505089d6559d04c4cf19c58660eb24ba825bd74ac7991930807e329ad"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/attempt-7dcbbaea-23ce-44a6-b1d5-c6a75d4869f2/Occupancy.controller.actual.json",
+      "destination": "win7/conversion/r1/attempt-7dcbbaea-23ce-44a6-b1d5-c6a75d4869f2/Occupancy.controller.actual.json",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/attempt-7dcbbaea-23ce-44a6-b1d5-c6a75d4869f2/Occupancy.controller.actual.json",
+        "bytes": 597,
+        "sha256": "1b8a74d90c02d08339448f31baf41884ab6cef7d6f3fd7d95a2779d5c5d0578e"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/attempt-7dcbbaea-23ce-44a6-b1d5-c6a75d4869f2/Source.node-held.after.actual.json",
+      "destination": "win7/conversion/r1/attempt-7dcbbaea-23ce-44a6-b1d5-c6a75d4869f2/Source.node-held.after.actual.json",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/attempt-7dcbbaea-23ce-44a6-b1d5-c6a75d4869f2/Source.node-held.after.actual.json",
+        "bytes": 62,
+        "sha256": "40aac96e2869db023b2492af41d1e8cb397a8c9be04a526f1ea3060a03f18105"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/attempt-7dcbbaea-23ce-44a6-b1d5-c6a75d4869f2/Summary.actual.json",
+      "destination": "win7/conversion/r1/attempt-7dcbbaea-23ce-44a6-b1d5-c6a75d4869f2/Summary.actual.json",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/attempt-7dcbbaea-23ce-44a6-b1d5-c6a75d4869f2/Summary.actual.json",
+        "bytes": 1582,
+        "sha256": "91a764a505089d6559d04c4cf19c58660eb24ba825bd74ac7991930807e329ad"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/Conversion.plan.prepared.json",
+      "destination": "win7/conversion/r1/controls/Conversion.plan.prepared.json",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/Conversion.plan.prepared.json",
+        "bytes": 36688,
+        "sha256": "cd92919eb7e46122b66080ac5e962ddf2527118d86727f2dc7ca47fbe3124737"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/Invoke-ConvertWin7.ps1",
+      "destination": "win7/conversion/r1/controls/Invoke-ConvertWin7.ps1",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/Invoke-ConvertWin7.ps1",
+        "bytes": 11021,
+        "sha256": "41f16c0d923aadd19d1f6f8406163034f6a4588214e8d101dc6e763304aa10f3"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/Preparation.actual.json",
+      "destination": "win7/conversion/r1/controls/Preparation.actual.json",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/Preparation.actual.json",
+        "bytes": 2875,
+        "sha256": "6c0dbe4ce0711c12a5e650507eec14b55eba46ec1bc43e9b46d7aac2568c2c44"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/Run-ConvertWin7.cjs",
+      "destination": "win7/conversion/r1/controls/Run-ConvertWin7.cjs",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/Run-ConvertWin7.cjs",
+        "bytes": 11815,
+        "sha256": "59a0724a48d2aa2115f400e633c68ab0e09862a36a9f9d90eb6c8207fccf54a0"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-analysis/win7-conversion-control/Review.actual.json",
+      "destination": "win7/conversion/r1/independent-control-review/Review.actual.json",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-analysis/win7-conversion-control/Review.actual.json",
+        "bytes": 5526,
+        "sha256": "c6be2fd1a0c082829b799be8dccc43145c3b79b9882656d132f3d0d0f67fb3c6"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/Conversion.invocation.actual.json",
+      "destination": "win7/conversion/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/Conversion.invocation.actual.json",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/Conversion.invocation.actual.json",
+        "bytes": 873,
+        "sha256": "a15367cfb65fb5ace8d60f3a865672a7bfa175edebe54b7ee16cb519ab375242"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/Held.after.actual.json",
+      "destination": "win7/conversion/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/Held.after.actual.json",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/Held.after.actual.json",
+        "bytes": 47243,
+        "sha256": "1b8b7e9700ce09739c94763aa417db3d4f517d797065a0f843a9b60d8a641bb7"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/Held.before.actual.json",
+      "destination": "win7/conversion/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/Held.before.actual.json",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/Held.before.actual.json",
+        "bytes": 47283,
+        "sha256": "67ac526e1834948c49afb6b26aad447cc0dbd6fe9faea10c6e7fe738108bde09"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/Invocation.actual.json",
+      "destination": "win7/conversion/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/Invocation.actual.json",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/Invocation.actual.json",
+        "bytes": 5096,
+        "sha256": "b62d9f5cc442ac062a1ed24e9baef870d6b6477a88f2dd4211bf234774992bcc"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/Occupancy.actual.json",
+      "destination": "win7/conversion/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/Occupancy.actual.json",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/Occupancy.actual.json",
+        "bytes": 2790,
+        "sha256": "d4628d53ab6c8f6c1b38f39d4d2fca6d8f7b0c1dd7fb6e962cbf59540eeca3e7"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/Occupancy.controller.actual.json",
+      "destination": "win7/conversion/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/Occupancy.controller.actual.json",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/Occupancy.controller.actual.json",
+        "bytes": 1221,
+        "sha256": "97832692a52d80da59bbcaaa23762bfea9b5bf04baec025deb25b556135e59de"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/Root.finished.actual.json",
+      "destination": "win7/conversion/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/Root.finished.actual.json",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/Root.finished.actual.json",
+        "bytes": 1120,
+        "sha256": "f9b7f59f6820bc0154dfb94aa1b5bb8d493332b4009432f4712fc6796bdf60f7"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/Source.node-held.after.actual.json",
+      "destination": "win7/conversion/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/Source.node-held.after.actual.json",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/Source.node-held.after.actual.json",
+        "bytes": 32464,
+        "sha256": "abcfcd2f5260297e5e9fed1c241222debe76a987a18962e319376ef5017cfeef"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/Source.node-held.before.actual.json",
+      "destination": "win7/conversion/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/Source.node-held.before.actual.json",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/Source.node-held.before.actual.json",
+        "bytes": 32540,
+        "sha256": "483f752f6c1fde8fb535de3fb417fd9b4d0e8c5a250b5b4b6329a22a351ab32d"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/Summary.actual.json",
+      "destination": "win7/conversion/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/Summary.actual.json",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/Summary.actual.json",
+        "bytes": 3380,
+        "sha256": "7ab5ba1d57b54b85f13cf8715b9fc5835853b37c29dfbc9cca22c6dc97d26622"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/finished.json",
+      "destination": "win7/conversion/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/finished.json",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/finished.json",
+        "bytes": 1030,
+        "sha256": "e331d025932f41f5fde2c9c5b655eb3846066d6d7a6fd2183ce01e50c53e492f"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/owned.ndjson",
+      "destination": "win7/conversion/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/owned.ndjson",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/owned.ndjson",
+        "bytes": 3007,
+        "sha256": "a1cd0b93a5bfe06b2c6ce365d79b329b187d7ef4c6711b38dde25ddafeab1f1d"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/owned.ndjson.context.json",
+      "destination": "win7/conversion/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/owned.ndjson.context.json",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/owned.ndjson.context.json",
+        "bytes": 1118,
+        "sha256": "d4fa1c3c054f15f101332463ea518cf00f74063096c1e3385a6cd0c65bed9a36"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/qemu.stderr.log",
+      "destination": "win7/conversion/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/qemu.stderr.log",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/qemu.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/qemu.stdout.log",
+      "destination": "win7/conversion/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/qemu.stdout.log",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/qemu.stdout.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/ready.json",
+      "destination": "win7/conversion/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/ready.json",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/ready.json",
+        "bytes": 63,
+        "sha256": "42d25f5d0c61f7572ce1ea2a74257f55e2db3266dcb7681feb793bf36d95b18e"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/stderr.raw",
+      "destination": "win7/conversion/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/stderr.raw",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/stdout.raw",
+      "destination": "win7/conversion/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/stdout.raw",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/attempt-2d326e8e-e3fa-4b6d-862f-b618ec1be6f4/stdout.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/Conversion.plan.prepared.json",
+      "destination": "win7/conversion/r2/controls/Conversion.plan.prepared.json",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/Conversion.plan.prepared.json",
+        "bytes": 41447,
+        "sha256": "de0b8c132efa2d691579d7da43bdc5d07beb35fd030ab47fe142160d0180ca97"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/Invoke-ConvertWin7.ps1",
+      "destination": "win7/conversion/r2/controls/Invoke-ConvertWin7.ps1",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/Invoke-ConvertWin7.ps1",
+        "bytes": 10529,
+        "sha256": "f6ec97742b98f1d2c1d1f31d2c3024357de02a770feb0933dccdbb83e82b9d75"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/Preparation.actual.json",
+      "destination": "win7/conversion/r2/controls/Preparation.actual.json",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/Preparation.actual.json",
+        "bytes": 4745,
+        "sha256": "c207645557e3160dd20b3eb478fdc0029197b54c37fe6e8974bf470c291f3774"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/R1-to-R2.prepared.diff",
+      "destination": "win7/conversion/r2/controls/R1-to-R2.prepared.diff",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/R1-to-R2.prepared.diff",
+        "bytes": 13333,
+        "sha256": "3b1baa8006a9a096798bc2612d77b2ca61934963a40475c55b123f54bc747d71"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/Read-TargetVmOccupancy.py",
+      "destination": "win7/conversion/r2/controls/Read-TargetVmOccupancy.py",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/Read-TargetVmOccupancy.py",
+        "bytes": 5437,
+        "sha256": "9ac4eba65391facad4dbbe7ee7cbc13599ed24bdc5605d9ffeadf653be68af88"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/Read-VmOccupancy.ps1",
+      "destination": "win7/conversion/r2/controls/Read-VmOccupancy.ps1",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/Read-VmOccupancy.ps1",
+        "bytes": 3969,
+        "sha256": "2ec5ce861879912f1cc01dad560dff770e5cc2226757b7217314c026c9dde297"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/Run-ConvertWin7.cjs",
+      "destination": "win7/conversion/r2/controls/Run-ConvertWin7.cjs",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/Run-ConvertWin7.cjs",
+        "bytes": 11358,
+        "sha256": "b5f26bbf962d020c74464647e9eeeaec679d8c975a4660f7f54a989360a7c79c"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-analysis/win7-conversion-r2-actual/Analysis.actual.json",
+      "destination": "win7/conversion/r2/independent-actual-review/Analysis.actual.json",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-analysis/win7-conversion-r2-actual/Analysis.actual.json",
+        "bytes": 15995,
+        "sha256": "ced71a6522e5058301c73b0ada1cf53f102d8d13d875f83f6156026f996380d2"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-analysis/win7-conversion-r2-control/Review.actual.json",
+      "destination": "win7/conversion/r2/independent-control-review/Review.actual.json",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-analysis/win7-conversion-r2-control/Review.actual.json",
+        "bytes": 9241,
+        "sha256": "8cefea2c288d6399d276c56b8df4251ce0f73e10d3eb0b27a185f58cdc405395"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-current-payload-map/Report.json",
+      "destination": "win7/current-payload-map/Report.json",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-current-payload-map/Report.json",
+        "bytes": 18647,
+        "sha256": "04baf30b7ca0b999184909d015c29573f1ccd250cf60e11f1aef0d0eb1f8286f"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-current-payload-map/Report.md",
+      "destination": "win7/current-payload-map/Report.md",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-current-payload-map/Report.md",
+        "bytes": 6840,
+        "sha256": "d16d14ec1f65601a0d3876c8da91a2695c0922fcd5f2b794a62cf3bf4aae3497"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-standalone-investigation/Read-StandaloneMbr.ps1",
+      "destination": "win7/second-standalone/control/Read-StandaloneMbr.ps1",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-standalone-investigation/Read-StandaloneMbr.ps1",
+        "bytes": 6306,
+        "sha256": "a9c25f92684070c2e3ed03256325db30aad44dd0a5a71a8b33634d8378d74a69"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-standalone-investigation/Mbr.analysis.actual.json",
+      "destination": "win7/second-standalone/observations/Mbr.analysis.actual.json",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-standalone-investigation/Mbr.analysis.actual.json",
+        "bytes": 1023,
+        "sha256": "30b385535e073f520f2bba3baf4d37088c2cbe6a22c37dfd4d4ee5dc36bc832d"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-standalone-investigation/Occupancy.actual.json",
+      "destination": "win7/second-standalone/observations/Occupancy.actual.json",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-standalone-investigation/Occupancy.actual.json",
+        "bytes": 2790,
+        "sha256": "d52c325a8657983175d9d4237cad07872d0c12f10c40e9dfe8a0cf5ccf9fe73b"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-standalone-investigation/Read.finished.actual.json",
+      "destination": "win7/second-standalone/observations/Read.finished.actual.json",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-standalone-investigation/Read.finished.actual.json",
+        "bytes": 8727,
+        "sha256": "e8811c4b94a972689c3a2b96b77f50aad19659bf8bf9896d9e0b47009abb2573"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-standalone-investigation/Read.invocation.actual.json",
+      "destination": "win7/second-standalone/observations/Read.invocation.actual.json",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-standalone-investigation/Read.invocation.actual.json",
+        "bytes": 4715,
+        "sha256": "fa4419851cd4c4aa26054460807faa23c25bb51c0a36f010d9680b447921fe6d"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-standalone-investigation/Receipt.index.actual.json",
+      "destination": "win7/second-standalone/observations/Receipt.index.actual.json",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-standalone-investigation/Receipt.index.actual.json",
+        "bytes": 2457,
+        "sha256": "3332d8f37a515516b934ba2e1337515e15ab194770a83aa090d3b7ade4923833"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-standalone-investigation/Report.md",
+      "destination": "win7/second-standalone/observations/Report.md",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-standalone-investigation/Report.md",
+        "bytes": 1800,
+        "sha256": "7016b364b293e99bce4b3f0089e49e5e27b43bef968b3d0230fef134559641ed"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-standalone-investigation/VmxMetadata.actual.json",
+      "destination": "win7/second-standalone/observations/VmxMetadata.actual.json",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-standalone-investigation/VmxMetadata.actual.json",
+        "bytes": 2999,
+        "sha256": "770e8ef9c43a002743d7d6dde23841e8b0455a7acc528afdf454c2e98de310c1"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-standalone-investigation/qemu-io.stderr.log",
+      "destination": "win7/second-standalone/observations/qemu-io.stderr.log",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-standalone-investigation/qemu-io.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-standalone-investigation/qemu-io.stdout.log",
+      "destination": "win7/second-standalone/observations/qemu-io.stdout.log",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-standalone-investigation/qemu-io.stdout.log",
+        "bytes": 5196,
+        "sha256": "97af931a4308a80628f623302efb0baa7f237e7a7e9a2ee36486883f38ca9628"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/remaining-handoff-archive-prep/vm-metadata/Copy.actual.json",
+      "destination": "win7/stopped-vm-metadata/Copy.actual.json",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/remaining-handoff-archive-prep/vm-metadata/Copy.actual.json",
+        "bytes": 2323,
+        "sha256": "2804ce2071a40fb6d5c2037cd97cd9b765e3afe5f40070c68988f8e867c8016b"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/remaining-handoff-archive-prep/vm-metadata/active-session.json",
+      "destination": "win7/stopped-vm-metadata/active-session.json",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/remaining-handoff-archive-prep/vm-metadata/active-session.json",
+        "bytes": 105,
+        "sha256": "2c21fc7c1100a5f51d51e47b3936e7e3a47bc8d7c40c1e34522b8289b60bdad5"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/remaining-handoff-archive-prep/vm-metadata/lab.json",
+      "destination": "win7/stopped-vm-metadata/lab.json",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/remaining-handoff-archive-prep/vm-metadata/lab.json",
+        "bytes": 3331,
+        "sha256": "6c49e39367fee69fe57a4d9de2a44afe9a8adbe39da7e1190d52d381ae7cceab"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/remaining-handoff-archive-prep/vm-metadata/qemu.stderr.log",
+      "destination": "win7/stopped-vm-metadata/qemu.stderr.log",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/remaining-handoff-archive-prep/vm-metadata/qemu.stderr.log",
+        "bytes": 948,
+        "sha256": "4648ce444a65b6b34c352938b3e96efed048a9b9503e6a83b5e9fedc4375fce8"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/remaining-handoff-archive-prep/vm-metadata/started.json",
+      "destination": "win7/stopped-vm-metadata/started.json",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/remaining-handoff-archive-prep/vm-metadata/started.json",
+        "bytes": 107,
+        "sha256": "39439a247715a74bc876110a0eb140386a18b24e379139ff4ac9bd794c4108cf"
+      }
+    },
+    {
+      "source": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/remaining-handoff-archive-prep/vm-metadata/stopped.json",
+      "destination": "win7/stopped-vm-metadata/stopped.json",
+      "pin": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/remaining-handoff-archive-prep/vm-metadata/stopped.json",
+        "bytes": 119,
+        "sha256": "1ff47125682ca9b5acba6b2b5423df094f28e44dd74aaecaaa98a1c89805fea4"
+      }
+    }
+  ],
+  "selectedSourceFiles": 72,
+  "selectedSourceBytes": 770900,
+  "exclusions": [
+    "No EXE/DLL/LIB/OBJ/PDB/ISO/ZIP/VM-disk/archive bytes; PNG observations only",
+    "No private catalog/credential/lease token or whole serial; actual lease RAM-only scan is deferred to Root collector execution",
+    "No duplicate prior275-file functional archive or its three Win7 search reports; exact index/entry references only",
+    "No partial/black screenshot promoted to visible OS-failure proof; only05 supports full visible boot-error text",
+    "No operator-controlled paused QMP stop promoted to guest clean shutdown/product pass",
+    "No source media bytes or secondary UNC/physical device values/fullVMX",
+    "No second asset conversion/newVM or current Win7 product short; OS/SP1/desktop remain unproven",
+    "No new capacity-only early-renew diagnostic, fake clock/TTL/reserved RPC bypass, or long batch",
+    "No all-eight-issues/full-production/release qualification claims"
+  ]
+}

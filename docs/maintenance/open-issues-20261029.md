@@ -53,6 +53,14 @@ MessagePort 历史安装消费者的实际运行完成了挂载、三次重载�
 
 已定位[现有 Win7 x64 VMDK](../../verification/production-validation/open-issues-closeout-2026-10-29/functional-closeout/win7/investigation/MediaRecovery.actual.md)，但本轮尚无该客体绑定当前载荷的实际 Win7 短测结果。找到磁盘不等于 Win7 已启动或兼容通过；历史 V11 缩放继续绑定原 x86 输入。
 
+后续两次 CIM 预检失败仍保留；[r2 一次转换的独立复核](../../verification/production-validation/open-issues-closeout-2026-10-29/remaining-handoff/win7/conversion/r2/independent-actual-review/Analysis.actual.json)仅确认转换通过：Node 与 PowerShell 各持有并释放 102 个源句柄，受检源身份未变、未写入源磁盘，受监督阶段 50,792 毫秒，宿主原生与监督器均退出 0、Job 清空。首个 x64 测试 VM 的[完整截图 05](../../verification/production-validation/open-issues-closeout-2026-10-29/remaining-handoff/win7/boot-investigation/05-standalone-screenshot.actual.png)显示未找到操作系统；01–04 仍记为局部/未知，06 只对应界面 warm reset 后的黑屏及 WHPX 暂停。原 VMware 主盘使用 LSI SAS，而该 QEMU 配置使用 IDE，只是已知差异，根因未定。ACPI 请求后按准确 UUID 执行[受控 QMP quit](../../verification/production-validation/open-issues-closeout-2026-10-29/remaining-handoff/win7/boot-investigation/PausedStop.actual.json)，随后[宿主退出 0](../../verification/production-validation/open-issues-closeout-2026-10-29/remaining-handoff/win7/stopped-vm-metadata/stopped.json)，不代表来宾正常关机或产品通过；原盘、只读 base 和可写 overlay 均保留。
+
+[第二份现有 x64 磁盘](../../verification/production-validation/open-issues-closeout-2026-10-29/remaining-handoff/win7/second-standalone/observations/Report.md)仅核对 17 个主盘文件的元数据并只读采集 512 字节 MBR；没有新增转换或 VM，不能据此确认实际 OS、SP1、桌面或兼容资格。原 Win7 SP1 x86 环境仍缺，本轮 Win7 SDK 短测尚未运行。
+
+[当前 x86 载荷图](../../verification/production-validation/open-issues-closeout-2026-10-29/remaining-handoff/win7/current-payload-map/Report.md)明确 671 文件、46,604,959 字节的完整映射，使用已通过 Server 短测的新修复 EXE `f3da178e…`，其余 670 项复用封存来源；尚未组装或搬入 Win7，已发布默认 EXE 和历史 V11 不替代该输入。Server 缓存、Node 24 和 PS5 控制脚本在新 Win7 环境中的可用性尚无证明。续期长测夹具缺口见 [#31 评估](../../verification/production-validation/open-issues-closeout-2026-10-29/remaining-handoff/issue31/assessment/Report.md)和 [D07 三步夹具交接](../testing/v0.6.0-long-run-handoff.md)：先补目录/媒体混合资源夹具、配套报告与分析器，再纳入统一真实长批次；现有 session 入口只覆盖任务/订阅。已通过且输入未变的短测继续复用。
+
+其余环境与续期交接数据见[闭集索引](../../verification/production-validation/open-issues-closeout-2026-10-29/remaining-handoff/Files.index.json)及[独立完整性审计](../../verification/production-validation/open-issues-closeout-2026-10-29/remaining-handoff-review.json)。
+
 本次功能补充、保留失败与只读分析收于[功能收尾闭集](../../verification/production-validation/open-issues-closeout-2026-10-29/functional-closeout/Files.index.json)。归档过程不改变各项实际测试结论。[独立完整性审计](../../verification/production-validation/open-issues-closeout-2026-10-29/functional-closeout-review.json)核对了 275 个闭集文件和 269 份源副本；首次因 Node 符号链接路径被拒的归档副本另行保留，改用实际 Node 路径后只重做了数据复制。
 
 八个 Issue 均保持开放，原有完整关闭条件仍有效。仍缺真实交互、目标系统或授权证据的项目继续单列。D07 真实租期、D13 千次、D14 八小时和其它长时资源/性能要求见 [统一长测交接](../testing/v0.6.0-long-run-handoff.md)，本轮不运行这些长测。

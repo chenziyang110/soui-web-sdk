@@ -1,0 +1,102 @@
+--- r1/Run-ConvertWin7.cjs
++++ r2/Run-ConvertWin7.cjs
+@@ -2,9 +2,9 @@
+ // Preparation only. Root must review this exact file, plan and PS root before the explicit invocation.
+ const fs=require('node:fs'),path=require('node:path'),os=require('node:os'),crypto=require('node:crypto'),assert=require('node:assert/strict');
+ const {spawnSync}=require('node:child_process');
+-const BASE='F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current';
+-const PLAN_SHA='cd92919eb7e46122b66080ac5e962ddf2527118d86727f2dc7ca47fbe3124737';
+-const GATE='ROOT_REVIEWED_ONE_WIN7_BASE_CONVERSION_V1';
++const BASE='F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2';
++const PLAN_SHA='de0b8c132efa2d691579d7da43bdc5d07beb35fd030ab47fe142160d0180ca97';
++const GATE='ROOT_REVIEWED_ONE_WIN7_BASE_CONVERSION_R2_V1';
+ const sha=b=>crypto.createHash('sha256').update(b).digest('hex');
+ const samePath=(a,b)=>path.win32.normalize(a).toLowerCase()===path.win32.normalize(b).toLowerCase();
+ const identity=s=>({dev:String(s.dev),fileId:String(s.ino),bytes:Number(s.size),mtimeNs:String(s.mtimeNs),ctimeNs:String(s.ctimeNs),nlink:String(s.nlink)});
+@@ -12,7 +12,6 @@
+ function pin(file){plain(file);const before=fs.lstatSync(file,{bigint:true});assert(before.isFile()&&before.size<8388608n);const b=fs.readFileSync(file);assert.deepEqual(identity(fs.lstatSync(file,{bigint:true})),identity(before));return {path:file,bytes:b.length,sha256:sha(b)};}
+ function check(p){const a=pin(p.path);assert.equal(a.bytes,p.bytes);assert.equal(a.sha256,p.sha256);}
+ function write(dir,name,value){fs.writeFileSync(path.join(dir,name),JSON.stringify(value,null,2)+'\n',{flag:'wx'});}
+-const occupancyScript=String.raw`$ErrorActionPreference='Stop';$names=@('vmware-vmx.exe','vmware.exe','qemu-system-x86_64.exe','qemu-system-i386.exe','VirtualBoxVM.exe','VBoxHeadless.exe');$rows=@(Get-CimInstance Win32_Process|Where-Object{$_.Name-in$names}|ForEach-Object{$line=[string]$_.CommandLine;[pscustomobject]@{pid=$_.ProcessId;name=$_.Name;commandLineAvailable=($line.Length-gt0);referencesExactFvmRoot=$line.Replace('\','/').ToLowerInvariant().Contains('f:/vm/')}});$locks=@(Get-ChildItem -LiteralPath 'F:\vm' -Force|Where-Object{$_.Name-match'(?i)\.(lck|lock)$'}|Select-Object -ExpandProperty Name);[pscustomobject]@{observedUtc=[DateTime]::UtcNow.ToString('o');vmProcesses=$rows;sourceLocks=$locks;rawCommandLinesOmitted=$true}|ConvertTo-Json -Depth 4`;
+ function sourceNow(held){
+   return held.map(x=>{const actual=identity(fs.fstatSync(x.fd,{bigint:true}));assert.deepEqual(actual,x.identity,'Held source identity changed');assert.deepEqual(identity(fs.lstatSync(x.row.path,{bigint:true})),actual,'Source path identity changed');if(x.row.kind==='descriptor'){const b=Buffer.alloc(x.row.bytes);assert.equal(fs.readSync(x.fd,b,0,b.length,0),b.length);assert.equal(sha(b),x.row.sha256);}return {path:x.row.path,kind:x.row.kind,identity:actual};});
+ }
+@@ -21,22 +20,22 @@
+   assert.equal(process.platform,'win32');assert.equal(process.arch,'x64');assert(samePath(__dirname,BASE));
+   assert.deepEqual(process.argv.slice(2),[GATE,'--plan-sha256',PLAN_SHA]);
+   const planFile=path.join(BASE,'Conversion.plan.prepared.json');assert.equal(pin(planFile).sha256,PLAN_SHA);
+-  const plan=JSON.parse(fs.readFileSync(planFile,'utf8'));assert.equal(plan.schema,'soui.one-win7-immutable-base-conversion-plan/v1');assert.equal(plan.executionApproved,false);assert.equal(os.hostname().toLowerCase(),plan.hostName.toLowerCase());
++  const plan=JSON.parse(fs.readFileSync(planFile,'utf8'));assert.equal(plan.schema,'soui.one-win7-immutable-base-conversion-plan/v2');assert.equal(plan.executionApproved,false);assert.equal(os.hostname().toLowerCase(),plan.hostName.toLowerCase());
+   assert.equal(plan.timeoutMs,600000);assert.equal(plan.drainMs,2000);assert.equal(plan.requiredFreeBytes,90194313216);
+   assert.equal(plan.sourceLeaf,'F:/vm/Windows 7 x64 Sp1-000008.vmdk');assert.equal(plan.destinationRoot,'C:/SOUI-SDK-QEMU-Win7');assert.equal(plan.destination,plan.destinationRoot+'/base-win7-sp1-x64.qcow2');
+   assert.deepEqual(plan.qemuArguments,['convert','-f','vmdk','-O','qcow2',plan.sourceLeaf,plan.destination]);
+   assert.equal(plan.sources.length,102);assert.equal(plan.sources.filter(x=>x.kind==='descriptor').length,6);assert.equal(plan.sources.filter(x=>x.kind==='extent').length,96);assert.equal(new Set(plan.sources.map(x=>x.path.toLowerCase())).size,102);
+   assert.equal(plan.tools.ownedModule.sha256,'8ccec5802c793b45990d2d7585f2c29fb618a7b170adebd5d270a7c291757ce7');assert.equal(plan.tools.ownedRunner.sha256,'f254dadd4eccad3c57d69e98f260d15ee598c0b6441b7fe68fc4ef5b3b7dea83');
+-  const controlPins=[pin(__filename),pin(planFile),plan.sourceReport,...Object.values(plan.tools)];for(const p of controlPins)check(p);
++  const controlPins=[pin(__filename),pin(planFile),plan.sourceReport,...Object.values(plan.tools),...plan.occupancyDependencies];for(const p of controlPins)check(p);
+   assert(!fs.existsSync(plan.destinationRoot),'Fresh C: destination only; preserve every existing/partial output');
+   const free=fs.statfsSync('C:/',{bigint:true});const freeBytes=free.bavail*free.bsize;assert(freeBytes>=BigInt(plan.requiredFreeBytes),'C: conservative budget unavailable');
+   const dir=path.join(BASE,'attempt-'+crypto.randomUUID());fs.mkdirSync(dir);const held=[];
+   let run=null,ready=null,readyError=null,result=null,failure=null,root=null,sourceAfter=null,outputMetadata=null,out=null,err=null;
+   try{
+     const env={...process.env};for(const n of Object.keys(env))if(n.toLowerCase()==='psmodulepath')delete env[n];
+-    const observed=spawnSync(plan.tools.powershell.path,['-NoProfile','-NonInteractive','-Command',occupancyScript],{encoding:'utf8',windowsHide:true,env,timeout:15000,maxBuffer:1048576});
++    const observed=spawnSync(plan.tools.powershell.path,['-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',plan.tools.occupancyPs.path,'-PlanFile',planFile,'-PlanSha256',PLAN_SHA],{encoding:'utf8',windowsHide:true,env,timeout:15000,maxBuffer:1048576});
+     write(dir,'Occupancy.controller.actual.json',{exitCode:observed.status,signal:observed.signal,error:observed.error?.message||null,stdout:observed.stdout,stderr:observed.stderr,readOnly:true});
+-    assert.equal(observed.status,0);const occupancy=JSON.parse(observed.stdout);assert.deepEqual(occupancy.sourceLocks,[]);assert(occupancy.vmProcesses.every(p=>p.commandLineAvailable&&!p.referencesExactFvmRoot),'Source occupancy unknown/active');
++    assert.equal(observed.status,0);const occupancy=JSON.parse(observed.stdout);assert.equal(occupancy.schema,'soui.native-ps-targeted-psutil-vm-occupancy/v1');assert.equal(occupancy.WmiOrCimUsed,false);assert.equal(occupancy.unknownNamesAdmitted,false);assert.deepEqual(occupancy.sourceLocks,[]);assert(occupancy.vmProcesses.every(p=>p.commandLineAvailable&&!p.referencesExactFvmRoot),'Source occupancy unknown/active');
+     for(const row of plan.sources){
+       assert(samePath(path.win32.dirname(row.path),'F:/vm'));plain(row.path);const fd=fs.openSync(row.path,'r');const actual=identity(fs.fstatSync(fd,{bigint:true}));held.push({fd,row,identity:actual});
+       assert.equal(actual.fileId,row.fileId);assert.equal(actual.bytes,row.bytes);assert.equal(actual.mtimeNs,row.mtimeNs);assert.equal(actual.nlink,'1');
+@@ -69,7 +68,7 @@
+     write(dir,'Source.node-held.after.actual.json',{heldSources:held.length,sources:sourceAfter,unchanged:sourceAfter!==null&&held.length===102});
+     let released=0;for(const x of held){try{fs.closeSync(x.fd);released++;}catch(error){failure??={message:error.message};}}
+     const passed=failure===null&&readyError===null&&root!==null&&result?.passed===true&&sourceAfter!==null&&held.length===102&&released===102;
+-    const summary={schema:'soui.one-win7-immutable-base-conversion-result/v1',passed,planSha256:PLAN_SHA,ready,readyError,result,rootResult:root,failure,actualNodeHeldSourceCount:held.length,nodeReleasedSourceCount:released,sourceIdentityAfterVerified:sourceAfter!==null,outputMetadata,partialOutputExists:fs.existsSync(plan.destination),preserveEveryPartialOutput:true,noRetryOverwriteDeleteRename:true,fullImageHashPerformed:false,vmStarted:false,poolChanged:false,productOrCompilerExecuted:false,releaseReady:false,productionQualificationComplete:false};
++    const summary={schema:'soui.one-win7-immutable-base-conversion-result/v1',passed,planSha256:PLAN_SHA,ready,readyError,result,rootResult:root,failure,actualNodeHeldSourceCount:held.length,nodeReleasedSourceCount:released,sourceIdentityAfterVerified:sourceAfter!==null&&held.length===102,outputMetadata,partialOutputExists:fs.existsSync(plan.destination),preserveEveryPartialOutput:true,noRetryOverwriteDeleteRename:true,fullImageHashPerformed:false,vmStarted:false,poolChanged:false,productOrCompilerExecuted:false,releaseReady:false,productionQualificationComplete:false};
+     write(dir,'Summary.actual.json',summary);console.log(JSON.stringify({directory:dir,passed,failure:failure?.message||null,output:outputMetadata?.path||null,partialOutputPreserved:fs.existsSync(plan.destination),vmStarted:false}));
+     if(!passed)process.exitCode=1;
+   }
+--- r1/Invoke-ConvertWin7.ps1
++++ r2/Invoke-ConvertWin7.ps1
+@@ -3,7 +3,7 @@
+   [Parameter(Mandatory=$true)][string]$PlanFile,
+   [Parameter(Mandatory=$true)][ValidatePattern('^[a-f0-9]{64}$')][string]$PlanSha256,
+   [Parameter(Mandatory=$true)][string]$EvidenceDirectory,
+-  [Parameter(Mandatory=$true)][ValidateSet('ROOT_REVIEWED_ONE_WIN7_BASE_CONVERSION_V1')][string]$RootGate
++  [Parameter(Mandatory=$true)][ValidateSet('ROOT_REVIEWED_ONE_WIN7_BASE_CONVERSION_R2_V1')][string]$RootGate
+ )
+ $ErrorActionPreference='Stop'
+ Set-StrictMode -Version Latest
+@@ -55,25 +55,21 @@
+ function Read-Big64([byte[]]$Bytes,[int]$Offset){$part=New-Object byte[] 8;[Array]::Copy($Bytes,$Offset,$part,0,8);[Array]::Reverse($part);return [BitConverter]::ToUInt64($part,0)}
+ function Read-Big32([byte[]]$Bytes,[int]$Offset){$part=New-Object byte[] 4;[Array]::Copy($Bytes,$Offset,$part,0,4);[Array]::Reverse($part);return [BitConverter]::ToUInt32($part,0)}
+ try{
+-  if(-not[Environment]::Is64BitProcess-or$RootGate-cne'ROOT_REVIEWED_ONE_WIN7_BASE_CONVERSION_V1'){throw 'Reviewed x64 Windows PowerShell root required'}
++  if(-not[Environment]::Is64BitProcess-or$RootGate-cne'ROOT_REVIEWED_ONE_WIN7_BASE_CONVERSION_R2_V1'){throw 'Reviewed x64 Windows PowerShell root required'}
+   Assert-Plain $PlanFile
+   if((File-Hash $PlanFile)-cne$PlanSha256){throw 'Reviewed conversion plan changed'}
+   $plan=[IO.File]::ReadAllText($PlanFile,[Text.Encoding]::UTF8)|ConvertFrom-Json
+-  if($plan.schema-cne'soui.one-win7-immutable-base-conversion-plan/v1'-or$plan.executionApproved-or$env:COMPUTERNAME-ine$plan.hostName){throw 'Exact unexecuted host plan required'}
++  if($plan.schema-cne'soui.one-win7-immutable-base-conversion-plan/v2'-or$plan.executionApproved-or$env:COMPUTERNAME-ine$plan.hostName){throw 'Exact unexecuted host plan required'}
+   if([IO.Path]::GetDirectoryName([IO.Path]::GetFullPath($EvidenceDirectory))-ine[IO.Path]::GetFullPath($PSScriptRoot)-or-not[IO.Directory]::Exists($EvidenceDirectory)){throw 'Fresh controller-owned evidence directory required'}
+   if($plan.sources.Count-ne102-or@($plan.sources|Where-Object{$_.kind-eq'descriptor'}).Count-ne6-or@($plan.sources|Where-Object{$_.kind-eq'extent'}).Count-ne96){throw 'Exact6/96 source roster required'}
+   foreach($tool in @($plan.tools.qemuImg,$plan.tools.powershell)){
+     Assert-Plain $tool.path;$item=Get-Item -LiteralPath $tool.path -Force
+     if($item.Length-ne$tool.bytes-or(File-Hash $tool.path)-cne$tool.sha256){throw 'Pinned conversion tool changed'}
+   }
+-  $names=@('vmware-vmx.exe','vmware.exe','qemu-system-x86_64.exe','qemu-system-i386.exe','VirtualBoxVM.exe','VBoxHeadless.exe')
+-  $processes=@(Get-CimInstance Win32_Process|Where-Object{$_.Name-in$names}|ForEach-Object{
+-    $line=[string]$_.CommandLine
+-    [pscustomobject]@{pid=$_.ProcessId;name=$_.Name;commandLineAvailable=($line.Length-gt0);referencesExactFvmRoot=$line.Replace('\','/').ToLowerInvariant().Contains('f:/vm/')}
+-  })
+-  $locks=@(Get-ChildItem -LiteralPath 'F:\vm' -Force|Where-Object{$_.Name-match'(?i)\.(lck|lock)$'}|Select-Object -ExpandProperty Name)
+-  Save-New 'Occupancy.actual.json' @{observedUtc=[DateTime]::UtcNow.ToString('o');vmProcesses=$processes;sourceLocks=$locks;rawCommandLinesOmitted=$true}
+-  if(@($processes|Where-Object{-not$_.commandLineAvailable-or$_.referencesExactFvmRoot}).Count-or$locks.Count){throw 'Source VM occupancy unknown/active or lock metadata present'}
++  $occupancyJson=& $plan.tools.occupancyPs.path -PlanFile $PlanFile -PlanSha256 $PlanSha256
++  $occupancy=($occupancyJson-join"`n")|ConvertFrom-Json
++  if($occupancy.schema-cne'soui.native-ps-targeted-psutil-vm-occupancy/v1'-or$occupancy.WmiOrCimUsed-or$occupancy.unknownNamesAdmitted){throw 'Exact native-name/targeted command-line occupancy evidence required'}
++  Save-New 'Occupancy.actual.json' $occupancy
+   foreach($row in $plan.sources){
+     if(-not$row.path.StartsWith('F:/vm/',[StringComparison]::OrdinalIgnoreCase)-or[IO.Path]::GetDirectoryName([IO.Path]::GetFullPath($row.path))-ine'F:\vm'){throw 'Source path outside exact selected system-disk directory'}
+     Assert-Plain $row.path

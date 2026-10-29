@@ -1,0 +1,60 @@
+{
+  "schema": "soui.win7-conversion-source-preparation/v1",
+  "preparedUtc": "2026-10-29T14:16:26.8008506Z",
+  "executionPerformed": false,
+  "conversionPerformed": false,
+  "vmStarted": false,
+  "compilePerformed": false,
+  "rootReviewRequired": true,
+  "independentReviewRequested": true,
+  "controls": [
+    {
+      "sha256": "59a0724a48d2aa2115f400e633c68ab0e09862a36a9f9d90eb6c8207fccf54a0",
+      "bytes": 11815,
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\win7-conversion-current\\Run-ConvertWin7.cjs"
+    },
+    {
+      "sha256": "41f16c0d923aadd19d1f6f8406163034f6a4588214e8d101dc6e763304aa10f3",
+      "bytes": 11021,
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\win7-conversion-current\\Invoke-ConvertWin7.ps1"
+    },
+    {
+      "sha256": "cd92919eb7e46122b66080ac5e962ddf2527118d86727f2dc7ca47fbe3124737",
+      "bytes": 36688,
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\win7-conversion-current\\Conversion.plan.prepared.json"
+    }
+  ],
+  "staticVerification": {
+    "powerShell5ParserErrors": 0,
+    "nodeCheckExitCode": 0,
+    "preparedSourcesExecuted": false
+  },
+  "futureCommand": "node F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/Run-ConvertWin7.cjs ROOT_REVIEWED_ONE_WIN7_BASE_CONVERSION_V1 --plan-sha256 cd92919eb7e46122b66080ac5e962ddf2527118d86727f2dc7ca47fbe3124737",
+  "scope": {
+    "immutableStandaloneBase": "base-win7-sp1-x64.qcow2",
+    "requiredFreeBytes": 90194313216,
+    "sourceSourceKind": "existing six-descriptor VMware splitSparse chain",
+    "originalMediaChanged": false,
+    "sourceVirtualBytes": 64424509440,
+    "destinationMustBeFresh": "C:/SOUI-SDK-QEMU-Win7",
+    "timeoutMs": 600000,
+    "denySourceWriteDelete": "PowerShell FileStream FileAccess.Read/FileShare.Read held through conversion and after proof",
+    "wholeDiskHash": false,
+    "inputFirmwareProof": "not established by conversion; no firmware choice or VM boot in these controls",
+    "descriptorCount": 6,
+    "extentCount": 96,
+    "noRetryOverwriteDeleteRename": true,
+    "drainMs": 2000,
+    "sourceFileIds": "Node held fstat ID/length/mtime, before and after; PS does not claim ID API",
+    "neverAttachFullVMXOrSecondary": true,
+    "sourcesHeld": 102
+  },
+  "acceptance": [
+    "actual converter native0 and PS root0",
+    "original Owned terminal completed/root0/supervisor0/Job active0, no force/stop/fallback/tail",
+    "one observed unique converter PID/birth; raw repeated observations retained",
+    "all102 FileStream locks released, source held metadata and six descriptor byte hashes unchanged",
+    "new standalone qcow2 header virtual60GiB/no backing filename, read-only base attribute set",
+    "all control pins unchanged; preserve partial output on every failure"
+  ]
+}

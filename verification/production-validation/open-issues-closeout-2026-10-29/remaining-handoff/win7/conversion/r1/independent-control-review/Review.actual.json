@@ -1,0 +1,133 @@
+{
+  "schema": "soui.independent-win7-conversion-control-review/v1",
+  "reviewedUtc": "2026-10-29T14:19:52.627Z",
+  "reviewer": "focus_review_supported",
+  "scope": "Read-only full source/plan/provenance review before Root-only execution. Only this review receipt written; no conversion, source image scan/hash, lock acquisition, VM, build, product, Git or source changes.",
+  "blockingFindings": [],
+  "dataReviewBlockingFindings": 0,
+  "reviewedControls": [
+    {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/Run-ConvertWin7.cjs",
+      "bytes": 11815,
+      "sha256": "59a0724a48d2aa2115f400e633c68ab0e09862a36a9f9d90eb6c8207fccf54a0"
+    },
+    {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/Invoke-ConvertWin7.ps1",
+      "bytes": 11021,
+      "sha256": "41f16c0d923aadd19d1f6f8406163034f6a4588214e8d101dc6e763304aa10f3"
+    },
+    {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/Conversion.plan.prepared.json",
+      "bytes": 36688,
+      "sha256": "cd92919eb7e46122b66080ac5e962ddf2527118d86727f2dc7ca47fbe3124737"
+    }
+  ],
+  "sourceReport": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-short-investigation/MediaRecovery.actual.json",
+    "bytes": 112600,
+    "sha256": "ee511b1b87b17839c470786ca6bac62ef90b52c6125fdb7c9bbe1bf901af3eef"
+  },
+  "provenance": {
+    "exactSelectedOfflineVmdkLeaf": "F:/vm/Windows 7 x64 Sp1-000008.vmdk",
+    "descriptors": 6,
+    "extents": 96,
+    "uniqueSourceFiles": 102,
+    "allDescriptorHashesCidParentHintsAndExtentRostersMatchReviewedReport": true,
+    "all96ExtentLengthsIdsMtimesAndSectorsMatchReviewedReport": true,
+    "allLastWriteFileTimeConversionsExact": true,
+    "sourceVirtualBytes": 64424509440,
+    "secondaryRawPhysicalDeviceOrUncPathsExcluded": true,
+    "fullOriginalVmxNotImported": true,
+    "sourceImageBytesReadByReviewer": false
+  },
+  "guards": {
+    "oneExactConvertCommand": [
+      "convert",
+      "-f",
+      "vmdk",
+      "-O",
+      "qcow2",
+      "F:/vm/Windows 7 x64 Sp1-000008.vmdk",
+      "C:/SOUI-SDK-QEMU-Win7/base-win7-sp1-x64.qcow2"
+    ],
+    "oneExplicitGateAndPinnedPlan": true,
+    "freshExactDestinationOnly": "C:/SOUI-SDK-QEMU-Win7/base-win7-sp1-x64.qcow2",
+    "freshDestinationRootAtomicCreationRequired": true,
+    "noOverwriteRetryDeleteRename": true,
+    "preserveAllPartialOutputs": true,
+    "conservativeCFreeBudgetBytes": 90194313216,
+    "nodeAndPowerShellBothRecheckCFreeSpace": true,
+    "freshSanitizedOccupancyAndLockChecksInNodeAndPowerShell": true,
+    "unknownCommandLinesRefuse": true,
+    "allSourceAncestorsRejectLinks": true,
+    "nodeHolds102ReadDescriptorsWithActualIdentityBeforeAfter": true,
+    "nodeReadHandlesDoNotClaimWriteExclusion": true,
+    "powerShellHolds102FileAccessReadFileShareReadStreamsThroughConversionAndPostChecks": true,
+    "trackedIdentityChecks": [
+      "fileId",
+      "bytes",
+      "mtimeNs",
+      "ctimeNs",
+      "dev",
+      "nlink"
+    ],
+    "descriptorCidAndHashBeforeAfter": true,
+    "extentHeaderAndCapacityBeforeAfter": true,
+    "smallDescriptorAndHeaderReadsOnly": true,
+    "noWholeImageGigabyteHash": true,
+    "planAndControlToolsRechecked": true
+  },
+  "process": {
+    "outerTimeoutMs": 600000,
+    "drainMs": 2000,
+    "noBudgetRenewal": true,
+    "actualPs5NativeExitCapturedDespiteStderr": true,
+    "oneUniqueActualQemuImgPidBirthRequired": true,
+    "repeatedOwnedMemberObservationsPreserved": true,
+    "nativeAndSupervisorZeroRequired": true,
+    "wholeJobZeroAndNaturalClosureRequired": true,
+    "forceFallbackStopOrLimitTerminationCannotPass": true,
+    "readyContextReportHashesAndTerminalMustAgree": true,
+    "ps102DisposedHandlesMustReportIsClosed": true,
+    "node102CloseSyncSuccessesRequired": true,
+    "releaseCountsAndAnyReleaseFailureGateOutcome": true,
+    "environmentMutationIsChildLocalOnly": true
+  },
+  "outputProof": {
+    "qemuConvertZeroRequired": true,
+    "standaloneQcow2MagicVersionVirtualSizeAndZeroBackingFieldsRequired": true,
+    "readOnlyAttributeSetAfterSuccess": true,
+    "exactOwnedOutputDirectoryMembersRequired": true,
+    "outputBytewiseOrFilesystemSemanticEqualityClaimed": false,
+    "bootFirmwareAndGuestOsStillUnobserved": true
+  },
+  "primaryReferences": [
+    {
+      "title": "Microsoft FileShare enum",
+      "url": "https://learn.microsoft.com/en-us/dotnet/api/system.io.fileshare?view=netframework-4.8.1",
+      "supports": "Read sharing permits other readers; write and delete sharing are separate flags. The reviewed code selects Read only."
+    },
+    {
+      "title": "QEMU disk image utility",
+      "url": "https://www.qemu.org/docs/master/tools/qemu-img.html",
+      "supports": "qemu-img handles offline conversion; fixed explicit source/output format argv is used, with no force-share, backing, repair or salvage switches."
+    }
+  ],
+  "authorSyntaxParseResultReceived": true,
+  "syntaxParseRerunByReviewer": false,
+  "executionObservations": {
+    "conversionExecutedByReviewer": false,
+    "actualConversionOutcome": null,
+    "actualRuntimeHandleReleaseNotYetObservedByReviewer": true,
+    "sourceMutationObservedByReviewer": null,
+    "vmStartedByReviewer": false,
+    "productTestsExecuted": false
+  },
+  "claims": {
+    "controlsSuitableForOneRootReviewedConversion": true,
+    "conversionSucceededClaimed": false,
+    "win7CompatibilityQualified": false,
+    "productionQualificationComplete": false,
+    "releaseReady": false
+  }
+}

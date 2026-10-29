@@ -1,0 +1,27 @@
+--- Collector.original.cjs
++++ Collect-RemainingHandoff.cjs
+@@ -5,3 +5,3 @@
+ const base=path.resolve('F:/work/SOUI_WEB/out/open-issues-closeout-20261029');
+-const canonical=path.resolve('C:/sc07/verification/production-validation/open-issues-closeout-2026-10-29/functional-closeout');
++const canonical=path.resolve('C:/sc07/verification/production-validation/open-issues-closeout-2026-10-29/remaining-handoff');
+ const catalog='C:/Users/11034/.qemu-novnc-lab/catalog.json';
+@@ -14,3 +14,3 @@
+ const forbidden=/\.(?:exe|dll|lib|pdb|obj|iso|qcow2|vhd|vhdx|wim|zip|7z|cab|msi)$/i;
+-const allowed=/\.(?:json|ndjson|bin|raw|log|txt|tlog|vcxproj|cmake|cjs|ps1|md|png|cpp|h|diff|js|html|cs)$/i;
++const allowed=/\.(?:json|ndjson|bin|raw|log|txt|tlog|vcxproj|cmake|cjs|ps1|md|png|cpp|h|diff|js|html|cs|py)$/i;
+ function ancestors(p){let current=path.resolve(p);const items=[];while(true){items.push(current);const parent=path.dirname(current);if(parent===current)break;current=parent;}for(const item of items.reverse()){if(!fs.existsSync(item))continue;const st=fs.lstatSync(item);assert(!st.isSymbolicLink(),'Linked source/destination ancestor rejected: '+item);}}
+@@ -64,3 +64,3 @@
+   for(const result of summary.results){assert(result.passed===true&&result.naturallyClosed===true&&result.consoleOnly===true,'Console case scope differs');verifyNatural(result.result);verifyNatural(load(result.name+'/policy-finished.json'));}
+- }else if(group.kind==='console-policy-observations'||group.kind==='decoded-vm-observations'||group.kind==='task-vm-screenshots'||group.kind==='control-source'||group.kind==='derived-analysis-observations'){
++ }else if(group.kind==='console-policy-observations'||group.kind==='decoded-vm-observations'||group.kind==='task-vm-screenshots'||group.kind==='control-source'||group.kind==='derived-analysis-observations'||group.kind==='data-only-observations'){
+   // Selection records the actual evidence source. This collector deliberately
+@@ -70,3 +70,3 @@
+ function main(){
+- assert(process.platform==='win32'&&process.argv.length===5&&process.argv[2]==='ROOT_REVIEWED_FUNCTIONAL_CLOSEOUT_ARCHIVE_V1','Explicit reviewed Windows invocation required');
++ assert(process.platform==='win32'&&process.argv.length===5&&process.argv[2]==='ROOT_REVIEWED_REMAINING_HANDOFF_ARCHIVE_V1','Explicit reviewed Windows invocation required');
+  const planFile=path.resolve(process.argv[3]),expectedPlanSha=process.argv[4];assert(inside(base,planFile)&&/^[0-9a-f]{64}$/.test(expectedPlanSha),'Pinned output-only selection required');
+@@ -81,3 +81,3 @@
+  assert(destinations.every(d=>!reserved.some(r=>r.toLowerCase()===d.toLowerCase()||d.toLowerCase().startsWith(r.toLowerCase()+'/'))),'Reserved output collision');
+- const token=json(fs.readFileSync(catalog)).vms['soui-devtools-windows'].lease.token;assert(typeof token==='string'&&token.length>=16,'Current actual task lease token unavailable');
++ const token=json(fs.readFileSync(catalog)).vms['soui-win7-compat'].lease.token;assert(typeof token==='string'&&token.length>=16,'Current actual task lease token unavailable');
+  const needles=[Buffer.from(token,'utf8'),Buffer.from(token,'utf16le'),Buffer.from(Buffer.from(token,'utf8').toString('base64'),'ascii')];
