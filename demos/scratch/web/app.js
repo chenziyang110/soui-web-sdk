@@ -144,8 +144,8 @@ byId('performance-measure').onclick=()=>{
 byId('performance-export').onclick=async()=>{
   if(!client||busy)return;
   const report=performanceMeter.collectReport();
-  if(!report.metrics?.intervalsObserved && !report.intervalsObserved)return message('请先记录一轮性能数据。');
   if(performanceMeter.snapshot().recording)return message('请等待记录完成，或先停止记录。');
+  if(!report.startedUtc || !['completed','stopped','invalid'].includes(report.status))return message('请先记录一轮性能数据。');
   try {busy=true;const result=await client.call('app.saveMetrics',{report:JSON.stringify(report)});if(result.error)throw new Error(result.error);message(result.saved?'性能报告已保存。':'已取消保存报告。');}catch(error){failed(error);}finally{busy=false;}
 };
 window.addEventListener('pagehide',()=>performanceMeter.dispose(),{once:true});
