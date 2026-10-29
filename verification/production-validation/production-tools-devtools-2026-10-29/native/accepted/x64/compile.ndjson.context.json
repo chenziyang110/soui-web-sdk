@@ -1,0 +1,25 @@
+{
+  "schema": "soui.owned-process-context/v1",
+  "runnerSha256": "f254dadd4eccad3c57d69e98f260d15ee598c0b6441b7fe68fc4ef5b3b7dea83",
+  "executableSha256": "60c9b29843624dd8af6b6a7b26147753be6aeef65098b9a503cc50850afe410f",
+  "executable": "C:/WINDOWS/System32/WindowsPowerShell/v1.0/powershell.exe",
+  "args": [
+    "-NoProfile",
+    "-NonInteractive",
+    "-ExecutionPolicy",
+    "Bypass",
+    "-File",
+    "C:/s06-closeout-native-397a064f5e1248389f3f2e0bef66ecdc/build-one.ps1",
+    "-Architecture",
+    "x64",
+    "-InstallPrefix",
+    "C:/sr06/out/release-install-x64-release",
+    "-EvidenceDirectory",
+    "F:\\work\\SOUI_WEB\\out\\production-tools-devtools-closeout-20261029\\native-short\\attempt2\\x64",
+    "-CMakeExe",
+    "C:/Program Files/CMake/bin/cmake.exe"
+  ],
+  "cwd": "C:/s06-closeout-native-397a064f5e1248389f3f2e0bef66ecdc",
+  "timeoutMs": 900000,
+  "drainMs": 30000
+}

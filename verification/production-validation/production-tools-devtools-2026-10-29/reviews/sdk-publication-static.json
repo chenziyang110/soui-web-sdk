@@ -1,0 +1,72 @@
+{
+  "schema": "soui.static-review/v1",
+  "reviewer": "packaging_tool_closeout",
+  "authorRelationship": "non-author",
+  "reviewDate": "2026-10-29",
+  "workspace": "C:/sc07",
+  "decision": "no_static_blockers",
+  "sourceOnly": true,
+  "testsRun": false,
+  "buildsRun": false,
+  "runtimeResult": null,
+  "qualificationResult": null,
+  "files": [
+    {
+      "path": "C:/sc07/tools/sdk/soui-sdk.cjs",
+      "bytes": 17060,
+      "sha256": "6ec0964bc09023df4c0c8cf3b7c6c6c8f6da29fcc324513222e5e21ffb994958",
+      "pinUpdate": {
+        "previousSha256": "8c9ebd661904215a48dd9f9c9f96c53ee9d9a41d723b29d80e65574becd06689",
+        "change": "One comment at line 220 now says: Preserve the first error and any stage contents left by failed cleanup.",
+        "functionalDiff": false,
+        "verification": "Replacing only this comment with its previously reviewed wording reconstructs the previous SHA-256. No test or build was run."
+      },
+      "reviewedRanges": [
+        {"start": 134, "end": 177, "purpose": "Native rename attempts, bounded retry policy and pre-cleanup path observations"},
+        {"start": 180, "end": 225, "purpose": "SDK staging validation, original error preservation and cleanup failure attachment"},
+        {"start": 323, "end": 334, "purpose": "CLI original stderr line, structured diagnostics and nonzero exit"}
+      ]
+    },
+    {
+      "path": "C:/sc07/tests/sdk/sdk-publication-diagnostics.test.cjs",
+      "bytes": 5838,
+      "sha256": "d3ee1d3dec4f36840a3ec8b748b961dfe4be0118087eb5d0c51691bccd6e14e3",
+      "reviewedRanges": [
+        {"start": 1, "end": 114, "purpose": "Complete synthetic staging fixture and four failure diagnostics test declarations"}
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "contract": "Original rename Error identity and native fields",
+      "staticConclusion": "Terminal rename failure rethrows the same Error instance. The added publication property does not overwrite message, code, errno or syscall. The original Error is saved before finally cleanup."
+    },
+    {
+      "contract": "Bounded retry compatibility",
+      "staticConclusion": "Windows EPERM/EACCES still permit six total attempts with five delays of 30, 60, 90, 120 and 150 ms, totaling 450 ms. Other native codes, missing stage or existing output terminate under the prior conditions."
+    },
+    {
+      "contract": "Diagnostics precede cleanup and cannot create a successful result",
+      "staticConclusion": "Terminal failure records native attempt snapshots and lstat-derived path kinds before pack cleanup. Path-observation failure is represented as unreadable; diagnostic attachment is guarded and the original error is still thrown. No lock-owner attribution is claimed."
+    },
+    {
+      "contract": "Cleanup failure preserves first failure",
+      "staticConclusion": "When cleanup also throws, pack attaches cleanupFailure and preserves the original Error. It does not retry removal. Cleanup-only failure still throws."
+    },
+    {
+      "contract": "CLI stderr and status",
+      "staticConclusion": "Native diagnostics consist of ordinary serializable fields. The existing SDK error line is emitted before structured diagnostics and exitCode is set to 1; no packed success value is emitted on this path."
+    },
+    {
+      "contract": "Mock activation boundary",
+      "staticConclusion": "Rename mocks trigger only for the exact fixture output. The lstat diagnostic-denial mock remains inactive until the publication rename fails, so source enumeration, safePath and readPackage complete before injection. Filesystem mocks are restored in finally blocks."
+    }
+  ],
+  "blockers": [],
+  "limitations": [
+    "This is a static review only. The four declared tests and CLI child process were not executed by this reviewer.",
+    "A real recursive removal can delete some stage members before throwing. The implementation retains the original error and any remaining stage; it does not guarantee a byte-complete immutable failed-stage snapshot. The cleanup-denied test injects failure before deletion.",
+    "The source of historical Windows EPERM directory rename failures remains unknown. Diagnostics and first-error preservation do not establish a lock owner or close that root-cause issue.",
+    "The pins and reviewed line ranges apply only to the exact file bytes listed above. Later source or test edits require a fresh review or explicit scope update."
+  ]
+}

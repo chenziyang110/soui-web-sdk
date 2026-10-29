@@ -1,0 +1,32 @@
+{
+  "schema": "soui.production-closeout-targeted-repairs/v1",
+  "startedAt": "2026-10-29T02:16:12.150Z",
+  "root": "C:/sc07",
+  "repeatsOnlyPreviouslyFailedCases": true,
+  "tests": [
+    {
+      "name": "ps5-zip-readback-repaired",
+      "args": [
+        "--test",
+        "--test-name-pattern=implicit ZIP|public source ZIP",
+        "tests/sdk/compression-profiles.test.cjs"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "elapsedMs": 13625
+    },
+    {
+      "name": "fresh-checkout-fixture-repaired",
+      "args": [
+        "--test",
+        "--test-name-pattern=^(workspace lease excludes both architectures and refuses foreign release|legacy architecture lease is retained and prevents a workspace build|real private junction resolves tools but source and evidence rules still refuse links|junction retarget to identical bytes cannot preserve frozen tool identity|canonical tool replacement and missing junction target fail closed|real temporary SDK library drift fails the existing build evidence verification)$",
+        "tests/sdk/standard-build.test.cjs"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "elapsedMs": 232
+    }
+  ],
+  "finishedAt": "2026-10-29T02:16:26.010Z",
+  "allPassed": true
+}

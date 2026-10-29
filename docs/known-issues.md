@@ -2,6 +2,14 @@
 
 0.6.0 按本次授权采用普通 GitHub Release 分类。两架构内核与必要 SDK 构建、安装消费者、默认应用八次运行及九份供应/应用 ZIP 已有实际记录；受控 GUI 代表例已记录，完整对应源码及最终发布身份见附件清单。`releaseReady=false`、`productionQualificationComplete=false`、`fullDevtoolsGoalComplete=false`。实际范围及保留失败见[发布说明](releases/0.6.0.md)和[RELEASE-FACTS](../verification/production-validation/0.6.0-release-2026-10-29/RELEASE-FACTS.json)，不从下列历史候选继承通过。
 
+## 0.6.0 后续源码候选
+
+当前工作分支已补 ZIP UTF-8 参数、MSVC 节点复用策略及 source SDK 发布失败诊断，
+并补充授权契约用例。64个工具逻辑用例及两架构各10个受控授权场景已有通过结果，
+MiniBlink x86 Release真实暂停后原生关闭代表例自然完成；首轮夹具/编译失败及GUI超时仍保留。
+这不修改已发布0.6.0包或关闭下表历史原失败。VCTIP自然收尾、EPERM锁持有者及PS5长临时stage的具体原因仍未确定。
+范围和执行结果见[必要项收尾](maintenance/production-tools-devtools-closeout-20261029.md)。
+
 ## 0.6.0 当前限制
 
 | 项目 | 事实与处置边界 |

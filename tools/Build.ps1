@@ -58,8 +58,10 @@ if($NativeToolchain -eq 'MSVC143'){
     -ToolIdentityBridge (Join-Path $PSScriptRoot 'internal/Invoke-ToolFileIdentity.ps1') `
     -ToolIdentityHelper (Join-Path $PSScriptRoot 'internal/Tool-FileIdentity.ps1')
 }
-# The LLVM branch owns process-local provider cleanup; it never changes host registry or global environment.
-$llvmEnvironment=@{}
+# Build policy is process-local and restored even when configuration fails.
+$buildEnvironment=@{}
+$nodeReusePrevious=Get-Item -LiteralPath 'Env:MSBUILDDISABLENODEREUSE' -ErrorAction SilentlyContinue
+$buildEnvironment['MSBUILDDISABLENODEREUSE']=@{present=($null-ne$nodeReusePrevious);value=if($null-ne$nodeReusePrevious){[string]$nodeReusePrevious.Value}else{$null}}
 $webProfilePrevious=Get-Item -LiteralPath 'Env:SOUI_WEB_BUILD_PROFILE' -ErrorAction SilentlyContinue
 $webProfileEnvironment=@{present=($null-ne$webProfilePrevious);value=if($null-ne$webProfilePrevious){[string]$webProfilePrevious.Value}else{$null}}
 $llvmRemove=@('NODE_OPTIONS','NODE_PATH','NODE_REPL_EXTERNAL_MODULE','GIT_DIR','GIT_WORK_TREE','GIT_INDEX_FILE',
@@ -68,17 +70,20 @@ $llvmRemove=@('NODE_OPTIONS','NODE_PATH','NODE_REPL_EXTERNAL_MODULE','GIT_DIR','
   'CMAKE_GENERATOR','CMAKE_GENERATOR_PLATFORM','CMAKE_GENERATOR_TOOLSET','CC','CXX','AR','RC','CFLAGS','CXXFLAGS','LDFLAGS',
   'DESTDIR','NINJA_STATUS','RCFLAGS','EXTERNAL_INCLUDE','CMAKE_BUILD_TYPE','CMAKE_TOOLCHAIN_FILE','CMAKE_PREFIX_PATH')
 if($llvm){
-  foreach($name in @($llvmRemove)+@('ComSpec','VcpkgEnabled','VcpkgEnableManifest','MSBUILDDISABLENODEREUSE')){
+  foreach($name in @($llvmRemove)+@('ComSpec','VcpkgEnabled','VcpkgEnableManifest')){
     $item=Get-Item -LiteralPath ('Env:'+$name) -ErrorAction SilentlyContinue
-    $llvmEnvironment[$name]=@{present=($null-ne$item);value=if($null-ne$item){[string]$item.Value}else{$null}}
+    $buildEnvironment[$name]=@{present=($null-ne$item);value=if($null-ne$item){[string]$item.Value}else{$null}}
   }
 }
 try {
 $env:SOUI_WEB_BUILD_PROFILE=$WebProfile
+# Configure can also invoke MSBuild compiler checks. Cover it as well as the
+# final build, including callers which do not use standard-build.cjs.
+$env:MSBUILDDISABLENODEREUSE='1'
 if($llvm){
   foreach($name in $llvmRemove){Remove-Item -LiteralPath ('Env:'+$name) -ErrorAction SilentlyContinue;if(Test-Path -LiteralPath ('Env:'+$name)){throw "Could not clear LLVM provider: $name"}}
   $env:ComSpec=$llvm.NativeProcessPaths.CMD
-  $env:VcpkgEnabled='false';$env:VcpkgEnableManifest='false';$env:MSBUILDDISABLENODEREUSE='1'
+  $env:VcpkgEnabled='false';$env:VcpkgEnableManifest='false'
 }
 if($llvm){
   $cmake=@(Get-Command cmake.exe -CommandType Application -ErrorAction Stop)[0]
@@ -206,7 +211,12 @@ if($WithVendorTests){$optional+=@('-DSOUI_BUILD_TESTS=ON','-DSOUI_BUILD_VENDOR_T
 & $cmake.Source @configure @optional
 if($LASTEXITCODE -ne 0){throw 'CMake configure failed'}
 $buildArguments=@('--build',$output,'--config',$Configuration,'--parallel','2')
-if($llvm){$buildArguments+='--verbose'}
+if($llvm){$buildArguments+='--verbose'}else{$buildArguments+=@('--','/nr:false')}
+$nativeInvocation=[ordered]@{schema='soui.native-build-invocation/v1';nativeToolchain=$NativeToolchain;
+  executable=$cmake.Source;arguments=$buildArguments;
+  environment=[ordered]@{MSBUILDDISABLENODEREUSE=$env:MSBUILDDISABLENODEREUSE};
+  compilerHelperSuppressionConfigured=$false}
+[IO.File]::WriteAllText((Join-Path $output "native-invocation-$Configuration.json"),($nativeInvocation|ConvertTo-Json -Depth 5),[Text.UTF8Encoding]::new($false))
 & $cmake.Source @buildArguments *> (Join-Path $output "native-$Configuration.log")
 if($LASTEXITCODE -ne 0){throw "Native build failed; inspect $output/native-$Configuration.log"}
 if($WithWebView2){& (Join-Path $PSScriptRoot 'internal/Restore-WebView2.ps1') | Out-Null}
@@ -236,13 +246,13 @@ Write-Output "Build passed: $output / $Configuration"
     if(($null-ne$actualWebProfile)-ne$webProfileEnvironment.present-or
        ($webProfileEnvironment.present-and([string]$actualWebProfile.Value-cne$webProfileEnvironment.value))){throw 'Presence/value differs'}
   }catch{$restoreErrors.Add('SOUI_WEB_BUILD_PROFILE: '+$_.Exception.Message)}
-  foreach($name in $llvmEnvironment.Keys){
+  foreach($name in $buildEnvironment.Keys){
     try {
-      $state=$llvmEnvironment[$name]
+      $state=$buildEnvironment[$name]
       if($state.present){Set-Item -LiteralPath ('Env:'+$name) -Value $state.value -ErrorAction Stop}else{Remove-Item -LiteralPath ('Env:'+$name) -ErrorAction SilentlyContinue}
       $actual=Get-Item -LiteralPath ('Env:'+$name) -ErrorAction SilentlyContinue
       if(($null-ne$actual)-ne$state.present-or($state.present-and([string]$actual.Value-cne$state.value))){throw 'Presence/value differs'}
     }catch{$restoreErrors.Add($name+': '+$_.Exception.Message)}
   }
-  if($restoreErrors.Count){throw ('LLVM build environment restore failed: '+($restoreErrors-join'; '))}
+  if($restoreErrors.Count){throw ('Build environment restore failed: '+($restoreErrors-join'; '))}
 }

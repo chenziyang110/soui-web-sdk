@@ -7,6 +7,7 @@
 #include <iostream>
 #include <memory>
 #include <stdexcept>
+#include <string>
 #include <thread>
 
 // These tests exercise the real public facade with a controlled adapter. They
@@ -41,6 +42,7 @@ struct resources {
 struct state {
   bool mounted{},exposed{},pending{},unmount_pending{},finish_failure{};
   unsigned opens{},reloads{},unmounts{},generation{1};
+  std::string document;
   std::function<void()> on_revoke;
 };
 class legacy_adapter : public webview_host_adapter {
@@ -66,7 +68,8 @@ class native_adapter final : public webview_host_adapter {
     target=devtools_target_native();return {true,{},{}};
   }
   dt::target_identity devtools_target_native() const override {
-    return {value_->generation,"fixture-document-"+std::to_string(value_->generation),value_->mounted};
+    return {value_->generation,value_->document.empty()?"fixture-document-"+std::to_string(value_->generation):
+        value_->document,value_->mounted};
   }
   host_result open_devtools_native() override {
     ++value_->opens;value_->exposed=true;return {true,{},{}};
@@ -132,6 +135,72 @@ void authority_and_documents(const resources& files) {
   require(!rejected_reload.ok&&rejected_reload.code=="E_TARGET_RETIREMENT_REQUIRED"&&
       first->reloads==reloads,"exposed target reload reached the adapter before retirement");
   require(a.destroy().ok&&b.destroy().ok,"cleanup failed");
+}
+void replacement_and_native_document(const resources& files) {
+  auto value=std::make_shared<state>();webview_host host(std::make_unique<native_adapter>(value));rescue clean{value};
+  require(host.configure_devtools(controlled()).ok&&host.start(files.config()).ok,"mount failed");
+  dt::grant original,replacement;
+  require(host.authorize_devtools(original).ok&&host.authorize_devtools(replacement).ok,"replacement issuance failed");
+  require(host.open_devtools(original).code=="E_UNAUTHORIZED"&&value->opens==0,
+      "replacement issuance kept the old grant usable");
+  // Native document changes must be rejected even without Host::reload(),
+  // whose explicit grant invalidation would hide a missing receipt check.
+  ++value->generation;
+  require(host.open_devtools(replacement).code=="E_UNAUTHORIZED"&&value->opens==0,
+      "native generation change admitted an old grant");
+  dt::grant previous_document;
+  require(host.authorize_devtools(previous_document).ok,"document issuance failed");
+  value->document="another-native-document"; // Same numeric generation, distinct native identity.
+  require(host.open_devtools(previous_document).code=="E_UNAUTHORIZED"&&!host.observe_devtools().grant_valid&&
+      value->opens==0,"native document change admitted an old grant with the same generation");
+  dt::grant current;
+  require(host.authorize_devtools(current).ok&&host.open_devtools(current).accepted()&&value->opens==1,
+      "fresh authority for the current native document was rejected");
+  require(!host.open_devtools(original).accepted()&&!host.open_devtools(replacement).accepted()&&
+      !host.open_devtools(previous_document).accepted()&&value->opens==1,"fresh authority revived an old grant");
+  require(host.destroy().ok,"cleanup failed");
+  dt::grant after_close;
+  require(host.authorize_devtools(after_close).code=="E_INVALID_LIFECYCLE"&&
+      host.open_devtools(current).code=="E_INVALID_LIFECYCLE"&&value->opens==1,
+      "a closed Host admitted its former grant");
+}
+void unopened_grant_expiry(const resources& files) {
+  auto value=std::make_shared<state>();webview_host host(std::make_unique<native_adapter>(value));rescue clean{value};
+  require(host.configure_devtools(controlled()).ok&&host.start(files.config()).ok,"mount failed");
+  dt::grant expired;
+  require(host.authorize_devtools(expired,std::chrono::milliseconds{1}).ok,"finite issuance failed");
+  // Do not dispatch WM_TIMER or call pump before open: admission must check
+  // the real steady-clock deadline independently of a cleanup wake.
+  std::this_thread::sleep_for(std::chrono::milliseconds{10});
+  require(host.open_devtools(expired).code=="E_UNAUTHORIZED"&&!host.observe_devtools().grant_valid&&
+      value->opens==0,"an expired grant opened before the next native timer dispatch");
+  host.pump();
+  require(host.session()&&!host.session()->terminal()&&value->unmounts==0,
+      "unused grant expiry closed the business Host");
+  dt::grant current;
+  require(host.authorize_devtools(current,std::chrono::milliseconds::zero()).ok&&
+      !host.open_devtools(expired).accepted()&&host.open_devtools(current).accepted()&&value->opens==1,
+      "fresh authority failed to replace the expired grant");
+  require(host.destroy().ok,"cleanup failed");
+}
+void unopened_revoke_and_reissue(const resources& files) {
+  auto value=std::make_shared<state>();webview_host host(std::make_unique<native_adapter>(value));rescue clean{value};
+  require(host.configure_devtools(controlled()).ok&&host.start(files.config()).ok,"mount failed");
+  dt::grant revoked;
+  require(host.authorize_devtools(revoked).ok,"issuance failed");
+  const auto ended=host.revoke_devtools();
+  require(ended.status==dt::operation_status::completed&&host.session()&&!host.session()->terminal()&&value->unmounts==0&&
+      !host.observe_devtools().grant_valid,"unused grant revocation did not preserve the live business Host");
+  require(host.open_devtools(revoked).code=="E_UNAUTHORIZED"&&value->opens==0,"revoked grant remained usable");
+  dt::grant current;
+  require(host.authorize_devtools(current).ok,"issuance after unused grant revocation failed");
+  require(!host.open_devtools(revoked).accepted()&&value->opens==0,"reissuance revived the revoked grant");
+  const auto opened=host.open_devtools(current);
+  require(opened.accepted()&&opened.id!=ended.id&&value->opens==1,
+      "reissued grant did not create its own native open operation");
+  require(host.devtools_operation(ended.id).status==dt::operation_status::completed,
+      "reissuance lost the completed revocation operation");
+  require(host.destroy().ok,"cleanup failed");
 }
 void pending_retirement(const resources& files) {
   auto value=std::make_shared<state>();webview_host host(std::make_unique<native_adapter>(value));rescue clean{value};
@@ -219,10 +288,11 @@ void detached_target_close_pending(const resources& files) {
 }
 int main() {
   try {resources files;legacy_defaults(files);authority_and_documents(files);
+    replacement_and_native_document(files);unopened_grant_expiry(files);unopened_revoke_and_reissue(files);
     pending_retirement(files);failed_retirement(files);
     unopened_close_pending(files,dt::termination::destroy_target);
     unopened_close_pending(files,dt::termination::detach);
     detached_target_close_pending(files);
-    std::cout<<"Public DevTools facade contract: 7 scenarios passed; backend behavior untested.\n";return 0;
+    std::cout<<"Public DevTools facade contract: 10 scenarios passed; backend behavior untested.\n";return 0;
   }catch(const std::exception& error){std::cerr<<error.what()<<'\n';return 1;}
 }

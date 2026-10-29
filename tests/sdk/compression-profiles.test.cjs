@@ -5,6 +5,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const childProcess = require('node:child_process');
+const {isUtf8} = require('node:buffer');
 const profiles = require('../../tools/internal/compression-profiles.cjs');
 const bundle = require('../../tools/internal/runtime-bundle.cjs');
 const id = require('../../tools/internal/delivery-identity.cjs');
@@ -26,7 +27,7 @@ function fixture(t) {
     fs.mkdirSync(path.dirname(file), {recursive: true}); fs.writeFileSync(file, content); return file;
   };
   put('VERSION', '0.5.0\n');
-  for (const relative of ['tools/Package-Applications.ps1', 'tools/internal/compression-profiles.cjs',
+  for (const relative of ['tools/Package.ps1', 'tools/Package-Applications.ps1', 'tools/internal/compression-profiles.cjs',
     'tools/internal/runtime-bundle.cjs', 'tools/internal/delivery-identity.cjs', 'tools/internal/sdk-version.cjs', 'tools/internal/size-report.cjs']) {
     const target = id.safePath(root, relative);
     fs.mkdirSync(path.dirname(target), {recursive: true});
@@ -40,26 +41,96 @@ function fixture(t) {
     fs.writeFileSync(path.join(stage,target+'.exe'),'test executable '+target);
     fs.writeFileSync(path.join(stage,'node.dll'),Buffer.from('repeated runtime bytes '.repeat(8192)));
     fs.writeFileSync(path.join(stage,'resources/index.html'),'<html>same fixture</html>');
+    fs.mkdirSync(path.join(stage,'resources/\\u4e2d\\u6587'),{recursive:true});
+    fs.writeFileSync(path.join(stage,'resources/\\u4e2d\\u6587/\\u8bf4\\u660e.txt'),'Unicode filename payload');
     const payload=id.snapshot(stage,id.walk(stage));
-    console.log(id.encoded({schema:'soui.application-size/v1',version:'0.5.0',target,architecture,configuration,
+    const report={schema:'soui.application-size/v1',version:'0.5.0',target,architecture,configuration,
       rendererBackend:'miniblink',webTarget:null,buildId:'fixture-'+target,sourceSha256:'a'.repeat(64),
-      payload,categories:{kernel:188416},releaseReady:false}));
+      payload,categories:{kernel:188416},releaseReady:false};
+    console.log(id.encoded(report).replace(/[\\u0080-\\uffff]/g,value=>'\\\\u'+value.charCodeAt(0).toString(16).padStart(4,'0')));
   `);
-  return {root, put, run: extra => childProcess.spawnSync(powershell,
-    ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', path.join(root, 'tools/Package-Applications.ps1'), ...extra],
+  // Replace only the upstream source staging boundary. The real Package entry
+  // still chooses the version/path, invokes 7-Zip, checks it and writes SHA256.
+  put('tools/internal/source-archive.cjs', `
+    const fs=require('node:fs'),path=require('node:path');
+    const [command,stage]=process.argv.slice(2);
+    if(command!=='stage')throw Error('unexpected fixture command');
+    fs.mkdirSync(path.join(stage,'third_party/\\u4e2d\\u6587'),{recursive:true});
+    fs.writeFileSync(path.join(stage,'VERSION'),'0.5.0\\n');
+    fs.writeFileSync(path.join(stage,'third_party/\\u4e2d\\u6587/\\u8bf4\\u660e.md'),'source fixture bytes');
+    console.log(JSON.stringify({version:'0.5.0'}));
+  `);
+  const readback = put('zip-readback.ps1', `
+    param([string]$Archive,[string]$Destination,[int]$CodePage)
+    $ErrorActionPreference='Stop'
+    Add-Type -AssemblyName System.IO.Compression
+    Add-Type -AssemblyName System.IO.Compression.FileSystem
+    $base=[IO.Path]::GetFullPath($Destination)
+    if([IO.Directory]::Exists($base)){throw 'Readback destination already exists'}
+    [IO.Directory]::CreateDirectory($base)|Out-Null
+    $zip=[IO.Compression.ZipFile]::Open($Archive,[IO.Compression.ZipArchiveMode]::Read,[Text.Encoding]::GetEncoding($CodePage))
+    try {
+      foreach($entry in $zip.Entries){
+        $target=[IO.Path]::GetFullPath((Join-Path $base $entry.FullName))
+        if(-not $target.StartsWith($base+'\\',[StringComparison]::OrdinalIgnoreCase)){throw 'Readback path escaped destination'}
+        if($entry.FullName.EndsWith('/')){[IO.Directory]::CreateDirectory($target)|Out-Null;continue}
+        [IO.Directory]::CreateDirectory([IO.Path]::GetDirectoryName($target))|Out-Null
+        [IO.Compression.ZipFileExtensions]::ExtractToFile($entry,$target,$false)
+      }
+    } finally {$zip.Dispose()}
+  `);
+  const run = (script, extra) => childProcess.spawnSync(powershell,
+    ['-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass', '-File', script, ...extra],
     {encoding: 'utf8', timeout: 120000, windowsHide: true, env: {...process.env,
       PATH: `${path.dirname(executable || '.')}${path.delimiter}${process.env.PATH}`,
       ...(process.platform === 'win32' ? {PSModulePath: path.join(process.env.SystemRoot || 'C:/Windows',
-        'System32/WindowsPowerShell/v1.0/Modules')} : {})}})};
+        'System32/WindowsPowerShell/v1.0/Modules')} : {})}});
+  return {root, put, run: extra => run(path.join(root, 'tools/Package-Applications.ps1'), extra),
+    runSource: extra => run(path.join(root, 'tools/Package.ps1'), extra),
+    readback: (archive, destination, codePage) => {
+      const result = run(readback, ['-Archive', archive, '-Destination', destination, '-CodePage', String(codePage)]);
+      assert.equal(result.status, 0, result.stderr || result.stdout);
+    }};
 }
 function extract(archive, destination) {
   const result = childProcess.spawnSync(executable, ['x', archive, `-o${destination}`, '-y'], {encoding: 'utf8', timeout: 60000, windowsHide: true});
   assert.equal(result.status, 0, result.stderr || result.stdout);
 }
 
-test('default ZIP definition preserves the exact original arguments, extension and compression text', () => {
+// Parse the physical ZIP headers: 7-Zip readback alone can hide the ACP bug by
+// honoring Unicode Path extra fields even when ordinary filename bytes are not UTF-8.
+function assertUtf8Zip(archive, expectedNames) {
+  const body = fs.readFileSync(archive), end = body.lastIndexOf(Buffer.from([0x50, 0x4b, 0x05, 0x06]));
+  assert.ok(end >= 0, 'ZIP end of central directory is missing');
+  assert.equal(end + 22 + body.readUInt16LE(end + 20), body.length);
+  assert.equal(body.readUInt16LE(end + 4), 0, 'fixture ZIP must be single-disk');
+  assert.equal(body.readUInt16LE(end + 6), 0);
+  const count = body.readUInt16LE(end + 10), names = [];
+  assert.equal(body.readUInt16LE(end + 8), count);
+  const directory = body.readUInt32LE(end + 16);
+  let cursor = directory;
+  for (let index = 0; index < count; ++index) {
+    assert.equal(body.readUInt32LE(cursor), 0x02014b50);
+    const flags = body.readUInt16LE(cursor + 8), length = body.readUInt16LE(cursor + 28);
+    const name = body.subarray(cursor + 46, cursor + 46 + length);
+    assert.ok(isUtf8(name), 'central filename must contain valid UTF-8 bytes');
+    const decoded = name.toString('utf8');
+    if (/[^\x00-\x7f]/.test(decoded)) assert.equal(flags & 0x0800, 0x0800, 'central UTF-8 flag is missing');
+    const local = body.readUInt32LE(cursor + 42);
+    assert.equal(body.readUInt32LE(local), 0x04034b50);
+    assert.equal(body.readUInt16LE(local + 6) & 0x0800, flags & 0x0800, 'local UTF-8 flag differs');
+    assert.equal(body.readUInt16LE(local + 26), name.length);
+    assert.deepEqual(body.subarray(local + 30, local + 30 + name.length), name, 'local filename differs');
+    if (!decoded.endsWith('/')) names.push(decoded);
+    cursor += 46 + length + body.readUInt16LE(cursor + 30) + body.readUInt16LE(cursor + 32);
+  }
+  assert.equal(cursor, directory + body.readUInt32LE(end + 12));
+  assert.deepEqual(names.sort(), [...expectedNames].sort(), 'ZIP file set differs from staged payload');
+}
+
+test('default ZIP preserves compression settings and selects UTF-8 filenames explicitly', () => {
   assert.deepEqual(profiles.resolve(), {profile: 'zip', format: 'zip', requestedDictionaryBytes: null, solid: false,
-    arguments: ['-tzip', '-mx=5', '-mmt=2'], extension: '.zip', suffix: '', compression: '7-Zip ZIP -mx=5 -mmt=2'});
+    arguments: ['-tzip', '-mx=5', '-mmt=2', '-mcu=on'], extension: '.zip', suffix: '', compression: '7-Zip ZIP -mx=5 -mmt=2'});
   assert.deepEqual(profiles.resolve(), profiles.resolve('zip'));
 });
 test('7z profiles explicitly select LZMA2, dictionary, solid mode and two threads', () => {
@@ -147,10 +218,39 @@ for (const selection of [null, 'zip', '7z-balanced', '7z-small']) {
       const destination = path.join(f.root, `decoded-${target}`);
       extract(archive, destination);
       assert.deepEqual(id.snapshot(destination, id.walk(destination)), report.payload);
+      if (expected.format === 'zip') assertUtf8Zip(archive, report.payload.files.map(file => file.path));
+      if (!selection) {
+        // A reader using an unrelated legacy code page must obey ZIP bit 11.
+        for (const codePage of [437, 1252]) {
+          const readback = path.join(f.root, `ps5-${codePage}-${target}`);
+          f.readback(archive, readback, codePage);
+          assert.deepEqual(id.snapshot(readback, id.walk(readback)), report.payload);
+        }
+      }
       const listing = childProcess.spawnSync(executable, ['l', '-slt', archive], {encoding: 'utf8'});
       assert.equal(listing.status, 0, listing.stderr);
       assert.match(listing.stdout, new RegExp(`Type = ${expected.format}`));
       assert.equal(report.releaseReady, false);
+    }
+  });
+}
+
+for (const mode of ['default', 'explicit-source-roots']) {
+  test(`public source ZIP ${mode} preserves Unicode names through PS5 legacy-code-page readback`, {skip: !executable || process.platform !== 'win32'}, t => {
+    const f = fixture(t), workspace = path.join(f.root, 'external');
+    const extra = mode === 'default' ? [] : ['-SourceRootsBinding', f.put('binding.json', '{}'), '-PackageWorkspace', workspace];
+    if (mode !== 'default') f.put('VERSION', 'tool-host-other\n');
+    const result = f.runSource(extra);
+    assert.equal(result.status, 0, result.stderr || result.stdout);
+    const archive = path.join(mode === 'default' ? f.root : workspace, 'dist/soui-sdk-0.5.0-full-source.zip');
+    const expected = [{path: 'VERSION', body: '0.5.0\n'}, {path: 'third_party/\u4e2d\u6587/\u8bf4\u660e.md', body: 'source fixture bytes'}];
+    assertUtf8Zip(archive, expected.map(file => file.path));
+    assert.equal(fs.readFileSync(archive + '.sha256', 'utf8'), `${id.hash(fs.readFileSync(archive))}  ${path.basename(archive)}${os.EOL}`);
+    for (const codePage of [437, 1252]) {
+      const destination = path.join(f.root, `source-ps5-${codePage}`);
+      f.readback(archive, destination, codePage);
+      assert.deepEqual(id.walk(destination), expected.map(file => file.path).sort());
+      for (const file of expected) assert.deepEqual(fs.readFileSync(id.safePath(destination, file.path)), Buffer.from(file.body));
     }
   });
 }

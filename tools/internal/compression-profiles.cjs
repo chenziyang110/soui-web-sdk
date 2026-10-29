@@ -9,7 +9,8 @@ const id = require('./delivery-identity.cjs');
 // requestedDictionaryBytes does not describe encoder/decoder peak memory.
 const definitions = Object.freeze({
   zip: {format: 'zip', requestedDictionaryBytes: null, solid: false,
-    arguments: ['-tzip', '-mx=5', '-mmt=2'], extension: '.zip', suffix: '',
+    // Write filename bytes and ZIP bit 11 explicitly, independent of host ACP.
+    arguments: ['-tzip', '-mx=5', '-mmt=2', '-mcu=on'], extension: '.zip', suffix: '',
     compression: '7-Zip ZIP -mx=5 -mmt=2'},
   '7z-balanced': {format: '7z', requestedDictionaryBytes: 32 * 1024 * 1024, solid: true,
     arguments: ['-t7z', '-m0=LZMA2', '-mx=7', '-md=32m', '-ms=on', '-mmt=2'], extension: '.7z', suffix: '-7z-balanced',
