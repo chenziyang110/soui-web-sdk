@@ -1,0 +1,87 @@
+{
+  "schema": "soui.win7-vmx-static-metadata-projection/v1",
+  "createdUtc": "2026-10-29T15:06:40.868Z",
+  "vmxSource": {
+    "path": "F:\\vm\\Windows 7 x64\\Windows 7 x64.vmx",
+    "bytes": 3657,
+    "dev": "34490321",
+    "fileId": "1125899906883920",
+    "mtimeNs": "1768889179057343800",
+    "ctimeNs": "1768889179059392600",
+    "declaredEncoding": "GBK",
+    "sha256": "d692bd0f239328e42b5fb4f7743f5e44a9e2b5582d61a47173e8c92dcd5542dd",
+    "beforeAfterIdentityEqual": true
+  },
+  "nvramSource": {
+    "path": "F:\\vm\\Windows 7 x64\\Windows 7 x64.nvram",
+    "bytes": 8684,
+    "dev": "34490321",
+    "fileId": "2251799813693650",
+    "mtimeNs": "1757901414280357300",
+    "ctimeNs": "1757901414280357300",
+    "headerBytesRead": 32,
+    "headerSha256": "86fc699374f6797e4b2e1eeb5c6fc602462442f36ad10240da73d44b673a9dd3",
+    "rawHeaderOmitted": true,
+    "wholeContentRead": false,
+    "beforeAfterIdentityEqual": true
+  },
+  "primary": {
+    "descriptor": "F:/vm/Windows 7 x64/Windows 7 x64.vmdk",
+    "device": "scsi0:0",
+    "present": "TRUE",
+    "deviceType": null,
+    "controller": "scsi0",
+    "controllerPresent": "TRUE",
+    "controllerVirtualDevice": "lsisas1068"
+  },
+  "explicitFirmware": null,
+  "explicitBootOrder": {},
+  "guestOS": "windows7-64",
+  "historicalGuestInfo": {
+    "values": {},
+    "historicalOnly": true,
+    "actualServicePackProven": false,
+    "actualGuestBootOrStartupProven": false,
+    "fieldPresent": false
+  },
+  "secondaryBackingDetection": {
+    "secondaryDeviceCount": 1,
+    "anyDeclaredPhysicalOrUncBackingDetected": true,
+    "anyPhysicalOrRawDeviceBackingDetected": false,
+    "anyUncBackingDetected": true,
+    "physicalBackingAbsenceProven": false,
+    "rawPhysicalBackingAssessment": "No direct physical backing detected in VMX; UNC backing was not opened or classified",
+    "relativeSmallDescriptorsRead": 0,
+    "secondaryPathsAndValuesOmitted": true,
+    "physicalOrExtentBackingRead": false,
+    "uncPathOpened": false,
+    "secondaryDescriptorPins": []
+  },
+  "limits": {
+    "secondaryDescriptorMaximumBytes": 65536,
+    "nvramHeaderMaximumBytes": 32,
+    "primaryDiskOrMbrRead": false,
+    "osFilesOrMftRead": false,
+    "credentialsRead": false,
+    "vmOrProcessLaunched": false,
+    "networkUsed": false,
+    "existingVmSourcesModified": false
+  },
+  "productionQualificationComplete": false,
+  "releaseReady": false,
+  "assessment": {
+    "legacyWindows7X64PrimaryPlausible": true,
+    "basis": "VMX guestOS windows7-64 and explicit local primary SCSI controller; metadata only",
+    "actualSP1OrBuild7601Proven": false,
+    "historicalSP1EvidencePresent": false,
+    "actualBootOrNativeTestsPassed": false,
+    "existingFullVmxMustNotBeImportedOrLaunchedWithItsSecondaryBacking": true,
+    "primaryOnlyIsolatedCopyWouldRequireSeparateRootGate": true
+  },
+  "privacy": {
+    "fullVmxPersisted": false,
+    "rawNvramHeaderPersisted": false,
+    "secondaryDeviceValuesPersisted": false,
+    "guestNamesOrUuidsPersisted": false
+  }
+}

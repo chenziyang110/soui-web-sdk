@@ -1,0 +1,205 @@
+{
+  "schema": "soui.win7-boot-repair-media-readonly-investigation/v1",
+  "observedUtc": "2026-10-29T14:52:16.504050+00:00",
+  "scope": "Existing SOUI-owned official Microsoft installer candidate and exact original primary VMX controller/boot fields only",
+  "iso": {
+    "path": "C:/Users/11034/.codex/task-tools/qemu-ucrt64-11.1.2-e89cf96f2d1e4685bbdac347cb9eea3d/SERVER_EVAL_x64FRE_en-us.iso",
+    "exists": true,
+    "bytes": 5044094976,
+    "fileId": "844424931157262",
+    "mtimeNs": "1792437411999183600",
+    "historicalFullEofSha256": "3e4fa6d8507b554856fc9ca6079cc402df11a8b79344871669f0251535255325",
+    "freshWholeIsoHashPerformed": false,
+    "currentBytesNotClaimedFromMetadataOnly": true,
+    "currentPathAndLengthMatchPriorReceipts": true
+  },
+  "officialSourceProvenance": {
+    "urlProjections": [
+      {
+        "source": "D:/soui-devtools-qemu-rebuild-660e8b55fec145f4b83e7972491a1625/download-start.json",
+        "originAndPath": "https://go.microsoft.com/fwlink/p/",
+        "queryOmitted": true
+      },
+      {
+        "source": "D:/soui-devtools-qemu-rebuild-660e8b55fec145f4b83e7972491a1625/download-start.json",
+        "originAndPath": "https://www.microsoft.com/en-us/evalcenter/download-windows-server-2022",
+        "queryOmitted": false
+      },
+      {
+        "source": "D:/soui-devtools-qemu-rebuild-660e8b55fec145f4b83e7972491a1625/download-return.json",
+        "originAndPath": "https://software-static.download.prss.microsoft.com/sg/download/888969d5-f34g-4e03-ac9d-1f9786c66749/SERVER_EVAL_x64FRE_en-us.iso",
+        "queryOmitted": false
+      },
+      {
+        "source": "D:/soui-devtools-qemu-rebuild-660e8b55fec145f4b83e7972491a1625/Download-Official-Iso.ps1",
+        "originAndPath": "https://go.microsoft.com/fwlink/p/",
+        "queryOmitted": true
+      },
+      {
+        "source": "D:/soui-devtools-qemu-rebuild-660e8b55fec145f4b83e7972491a1625/Download-Official-Iso.ps1",
+        "originAndPath": "https://www.microsoft.com/en-us/evalcenter/download-windows-server-2022",
+        "queryOmitted": false
+      }
+    ],
+    "records": [
+      {
+        "path": "D:/soui-devtools-qemu-rebuild-660e8b55fec145f4b83e7972491a1625/download-start.json",
+        "bytes": 971,
+        "sha256": "587a2c1e3fdf45ea648e602bb8860ebcb0208a71b2b2e7c7564da4d18bf9b784"
+      },
+      {
+        "path": "D:/soui-devtools-qemu-rebuild-660e8b55fec145f4b83e7972491a1625/download-return.json",
+        "bytes": 853,
+        "sha256": "594f97a5867907ef824e963a553ceca006643b382e208256e4812feff1f4ac44"
+      },
+      {
+        "path": "D:/soui-devtools-qemu-rebuild-660e8b55fec145f4b83e7972491a1625/Download-Official-Iso.ps1",
+        "bytes": 3197,
+        "sha256": "e20eda1d8036dcb373e1e629ab5fa245b5423677789d3500433037ec7632b5fc"
+      }
+    ],
+    "queryStringsNotPersisted": true,
+    "downloadReceipt": {
+      "path": "D:/soui-devtools-qemu-rebuild-660e8b55fec145f4b83e7972491a1625/resume-6bd781e4ce7d4e32afe0da4c2ad8ce90/resume-result.json",
+      "bytes": 909,
+      "sha256": "9b7a020323caa8e48ac3deb88dd940c25656d8ef23b43b5ed73be94eabb0e07b"
+    },
+    "transferExitCode": 0,
+    "contentRangeVerified": true,
+    "fullEofHashRecorded": true,
+    "matchesPriorRootDownload": true,
+    "vendorPublishedDigestClaimed": false,
+    "vendorSignatureClaimed": false,
+    "earlierPartialFailurePreserved": true
+  },
+  "priorTaskOwnedIsoInputReceipts": [
+    {
+      "path": "C:/Users/11034/.codex/task-vms/soui-devtools-qemu-stable-e89cf96f2d1e4685bbdac347cb9eea3d/private-73cf7a7af94e4c42ac42884a9b9c807e/iso-before-inspection.json",
+      "bytes": 679,
+      "sha256": "ee688e360385267cd3b95ddcc30006c60c77e47fd7df6592561df0977f5dd1e6"
+    },
+    {
+      "path": "C:/Users/11034/.codex/task-vms/soui-devtools-qemu-stable-e89cf96f2d1e4685bbdac347cb9eea3d/private-8c1c59e5b694436daaac6bb2afd4d47e/iso-before-inspection.json",
+      "bytes": 679,
+      "sha256": "74dde84e006dbca6c4095fd12ce818ff771a4e654721425c4a8d01570af3b666"
+    },
+    {
+      "path": "C:/Users/11034/.codex/task-vms/soui-devtools-qemu-stable-e89cf96f2d1e4685bbdac347cb9eea3d/private-93874c4ab9f34b12942a78202a0a842d/iso-before-inspection.json",
+      "bytes": 679,
+      "sha256": "dabc34f8a132d54c5abd49a25aac551f15797d7e62e0ab4d36ce2975ca75ff0d"
+    },
+    {
+      "path": "C:/Users/11034/.codex/task-vms/soui-devtools-qemu-stable-e89cf96f2d1e4685bbdac347cb9eea3d/private-f0f683da114e42eca570eb94c857f717/iso-before-inspection.json",
+      "bytes": 679,
+      "sha256": "30eb64ae58c02207f7f39e53890adf1c54f9c3712d5c7cd7eb04240b1f907c33"
+    }
+  ],
+  "historicalWimMetadata": {
+    "pin": {
+      "path": "C:/Users/11034/.codex/task-vms/soui-devtools-qemu-stable-e89cf96f2d1e4685bbdac347cb9eea3d/private-73cf7a7af94e4c42ac42884a9b9c807e/wim-metadata.json",
+      "bytes": 19572,
+      "sha256": "2e34052da49e4fe0c7f632858bb8854c5a10e77186170cf8352b088fd21dd618"
+    },
+    "images": [
+      {
+        "imageIndex": 1,
+        "imageName": "Windows Server 2022 SERVERSTANDARDCORE",
+        "imageDescription": "Windows Server 2022 SERVERSTANDARDCORE",
+        "architecture": "9",
+        "version": "10.0.20348.587",
+        "installationType": "Server Core",
+        "editionId": "ServerStandardEval",
+        "productType": "ServerNT"
+      },
+      {
+        "imageIndex": 2,
+        "imageName": "Windows Server 2022 SERVERSTANDARD",
+        "imageDescription": "Windows Server 2022 SERVERSTANDARD",
+        "architecture": "9",
+        "version": "10.0.20348.587",
+        "installationType": "Server",
+        "editionId": "ServerStandardEval",
+        "productType": "ServerNT"
+      },
+      {
+        "imageIndex": 3,
+        "imageName": "Windows Server 2022 SERVERDATACENTERCORE",
+        "imageDescription": "Windows Server 2022 SERVERDATACENTERCORE",
+        "architecture": "9",
+        "version": "10.0.20348.587",
+        "installationType": "Server Core",
+        "editionId": "ServerDatacenterEval",
+        "productType": "ServerNT"
+      },
+      {
+        "imageIndex": 4,
+        "imageName": "Windows Server 2022 SERVERDATACENTER",
+        "imageDescription": "Windows Server 2022 SERVERDATACENTER",
+        "architecture": "9",
+        "version": "10.0.20348.587",
+        "installationType": "Server",
+        "editionId": "ServerDatacenterEval",
+        "productType": "ServerNT"
+      }
+    ],
+    "metadataMethod": "standard-wim-header-uncompressed-xml-v1",
+    "actualImageSelection": null,
+    "productPassed": false,
+    "rawHeaderXmlNotRepublished": true,
+    "mountedByThisInvestigation": false
+  },
+  "priorTaskInstallerBootConfiguration": {
+    "pin": {
+      "path": "C:/Users/11034/.codex/task-vms/soui-devtools-qemu-stable-e89cf96f2d1e4685bbdac347cb9eea3d/private-73cf7a7af94e4c42ac42884a9b9c807e/qemu-install-start.json",
+      "bytes": 1976,
+      "sha256": "bc9ceaec9b3a619a598af9c0a42b5cd06cd05a78d8e0bcdeb3c339b2ea62c960"
+    },
+    "projection": {
+      "-machine": "pc,accel=tcg",
+      "-bios": "C:\\Program Files\\qemu\\share\\bios-256k.bin",
+      "-boot": "order=cd,once=d"
+    },
+    "fullArgvNotRepublished": true,
+    "notNewBootProof": true
+  },
+  "sourceVmx": {
+    "pin": {
+      "path": "F:/vm/Windows 7 x64 Sp1.vmx",
+      "bytes": 4897,
+      "sha256": "ee04d451475e71377513cba05473d5fc04814f71614b398934f8e5e391664ab5"
+    },
+    "exactPrimaryProjection": {
+      "scsi0:0.fileName": "Windows 7 x64 Sp1-000008.vmdk",
+      "scsi0:0.present": "TRUE",
+      "scsi0.present": "TRUE",
+      "scsi0.virtualDev": "lsisas1068"
+    },
+    "firmwarePropertyPresent": false,
+    "explicitBootOrderPropertiesPresent": [],
+    "secondaryPhysicalUncAndOtherDeviceValuesNotRepublished": true,
+    "fullVmxNotRepublished": true,
+    "causeOfNoOperatingSystemNotProven": true
+  },
+  "boundedSearch": {
+    "knownTaskOwnedOriginalInstallDirectories": true,
+    "taskOwnedLabConfigSessionDirectoriesExcluded": true,
+    "downloadsTopLevelIsoImgCandidates": 0,
+    "otherProjectsPeAndActiveVmsExcluded": true,
+    "allHostDrivesExhaustivelySearched": false,
+    "noFurtherSearchNeededAfterCandidateLocated": true
+  },
+  "sideEffects": {
+    "download": false,
+    "install": false,
+    "conversion": false,
+    "newVm": false,
+    "vmInputOrMediaChange": false,
+    "isoMountOrCopyOrExtraction": false,
+    "qemuIoGuestUserdataRead": false,
+    "sourceMediaOrVmxWrite": false,
+    "physicalSecondaryAttach": false,
+    "credentialsOrSecurityChanges": false,
+    "Git": false
+  },
+  "recommendation": "Root may use this existing Microsoft Server2022 setup/WinPE ISO to inspect only the newly writable Win7 overlay. Confirm actual Windows OS files and selected boot partition before any repair; never attach the original physical secondary or modify base/source. This report does not choose a repair command or claim the guest recovered."
+}

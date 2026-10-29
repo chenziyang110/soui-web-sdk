@@ -1,0 +1,217 @@
+{
+  "schema": "soui.independent-win7-conversion-r2-control-review/v1",
+  "reviewedUtc": "2026-10-29T14:39:01.378Z",
+  "reviewer": "focus_review_supported",
+  "scope": "Read-only full occupancy helper/actual r1-to-r2 source delta, pinned plan/tool/provenance review. Only this fresh receipt written. No control/helper invocation, source hold, conversion, VM, product test, build, Git, Csc07 mutation or image hashing by reviewer.",
+  "blockingFindings": [],
+  "dataReviewBlockingFindings": 0,
+  "controls": [
+    {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/Run-ConvertWin7.cjs",
+      "bytes": 11358,
+      "sha256": "b5f26bbf962d020c74464647e9eeeaec679d8c975a4660f7f54a989360a7c79c"
+    },
+    {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/Invoke-ConvertWin7.ps1",
+      "bytes": 10529,
+      "sha256": "f6ec97742b98f1d2c1d1f31d2c3024357de02a770feb0933dccdbb83e82b9d75"
+    },
+    {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/Read-VmOccupancy.ps1",
+      "bytes": 3969,
+      "sha256": "2ec5ce861879912f1cc01dad560dff770e5cc2226757b7217314c026c9dde297"
+    },
+    {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/Read-TargetVmOccupancy.py",
+      "bytes": 5437,
+      "sha256": "9ac4eba65391facad4dbbe7ee7cbc13599ed24bdc5605d9ffeadf653be68af88"
+    },
+    {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-conversion-current/r2/Conversion.plan.prepared.json",
+      "bytes": 41447,
+      "sha256": "de0b8c132efa2d691579d7da43bdc5d07beb35fd030ab47fe142160d0180ca97"
+    }
+  ],
+  "priorReviewedUnchangedConversion": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-analysis/win7-conversion-control/Review.actual.json",
+    "bytes": 5526,
+    "sha256": "c6be2fd1a0c082829b799be8dccc43145c3b79b9882656d132f3d0d0f67fb3c6"
+  },
+  "sourceDelta": {
+    "all102SourceRowsByteForByteUnchanged": true,
+    "sourceCidAndIdentityRelationsReused": true,
+    "powerShellCompleteHoldConvertPostcheckReleaseTailByteIdentical": true,
+    "nodeTailOnlyCorrectsZeroHeldSourceIdentityBoolean": true,
+    "sourceLeafAndExactQemuArgvUnchanged": true,
+    "freshDestinationNoOverwriteRetryDeleteRenameUnchanged": true,
+    "conservativeCFreeBudgetBytes": 90194313216,
+    "ownedTimeoutMs": 600000,
+    "drainMs": 2000,
+    "naturalZeroJobZeroNoForceAcceptanceUnchanged": true
+  },
+  "occupancy": {
+    "nativeGetProcessAllNameSnapshotsBeforeAfter": true,
+    "nativeNonemptyKnownOwnPowerShellPidRequired": true,
+    "unreadableEmptyOrOversizeNamesRefuse": true,
+    "onlySixAllowedVmNamesSelected": true,
+    "maximumSelectedProcesses": 64,
+    "exactSelectedPidNameStartFileTimeBeforeAfter": true,
+    "pythonOnlySelectedPsutilQueries": true,
+    "noPythonProcessIter": true,
+    "queryLimitedHandleHeldAcrossExactGetProcessTimesBirthBeforeAfter": true,
+    "commandLineUnavailableDeniedEmptyDriftOrSourceReferenceReject": true,
+    "rawCommandLinesNotWritten": true,
+    "exceptionsPersistTypeOnly": true,
+    "pythonIsolatedNoSiteNoBytecodeFlags": [
+      "-I",
+      "-S",
+      "-B"
+    ],
+    "pinnedInterpreterAndRuntimeDependencies": true,
+    "exactFiveImportedPsutilModulesRequired": true,
+    "helperAndDependenciesRecheckedBeforeAfter": true,
+    "sharedSameProviderForNodePreflightAndPowerShellRoot": true,
+    "cimWmiOrServiceMutationUsed": false,
+    "sourceLockMetadataMustBeEmpty": true
+  },
+  "dependencyPins": {
+    "tools": {
+      "qemuImg": {
+        "path": "C:/Users/11034/.codex/task-tools/qemu-ucrt64-11.1.2-e89cf96f2d1e4685bbdac347cb9eea3d/runtime/ucrt64/bin/qemu-img.exe",
+        "bytes": 1966340,
+        "sha256": "b4ef313ad2bd5070e44a5cccb50d8c2529dd68303c44ef8926b4c5a38ca219ff"
+      },
+      "ownedRunner": {
+        "path": "C:/sr06/out/benchmark-protocol/Release/OwnedProcessRunner.exe",
+        "bytes": 170496,
+        "sha256": "f254dadd4eccad3c57d69e98f260d15ee598c0b6441b7fe68fc4ef5b3b7dea83"
+      },
+      "ownedModule": {
+        "path": "C:/sr06/tools/internal/owned-process.cjs",
+        "bytes": 8386,
+        "sha256": "8ccec5802c793b45990d2d7585f2c29fb618a7b170adebd5d270a7c291757ce7"
+      },
+      "powershell": {
+        "path": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+        "bytes": 495616,
+        "sha256": "60c9b29843624dd8af6b6a7b26147753be6aeef65098b9a503cc50850afe410f"
+      },
+      "powershellRoot": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\win7-conversion-current\\r2\\Invoke-ConvertWin7.ps1",
+        "bytes": 10529,
+        "sha256": "f6ec97742b98f1d2c1d1f31d2c3024357de02a770feb0933dccdbb83e82b9d75"
+      },
+      "python": {
+        "path": "C:/Users/11034/miniconda3/python.exe",
+        "bytes": 104264,
+        "sha256": "ec0ea8d6907787b76dcf8524aaa93e52e167ceee62fa8778e182ea637a3dbc1d"
+      },
+      "occupancyPs": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\win7-conversion-current\\r2\\Read-VmOccupancy.ps1",
+        "bytes": 3969,
+        "sha256": "2ec5ce861879912f1cc01dad560dff770e5cc2226757b7217314c026c9dde297"
+      },
+      "occupancyPython": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\win7-conversion-current\\r2\\Read-TargetVmOccupancy.py",
+        "bytes": 5437,
+        "sha256": "9ac4eba65391facad4dbbe7ee7cbc13599ed24bdc5605d9ffeadf653be68af88"
+      }
+    },
+    "runtimeFiles": [
+      {
+        "path": "C:/Users/11034/miniconda3/python3.dll",
+        "bytes": 70472,
+        "sha256": "fa84ea1a7e8ff6cd41ab04376557d635dfb3241c53e6cbabfcc0ba7b21a3b586"
+      },
+      {
+        "path": "C:/Users/11034/miniconda3/python313.dll",
+        "bytes": 7120200,
+        "sha256": "7adfac2c4909e911aefe3b1eecd11cbb06057597e684f30b576e0773f112757d"
+      },
+      {
+        "path": "C:/Users/11034/miniconda3/Lib/site-packages/psutil/__init__.py",
+        "bytes": 92363,
+        "sha256": "7b6a0675824eb1fa2ff0cb1eb36e358dc454703e51dfa4e9a0e6ccd26a159f0c"
+      },
+      {
+        "path": "C:/Users/11034/miniconda3/Lib/site-packages/psutil/_common.py",
+        "bytes": 26115,
+        "sha256": "6fc6bf5f86491ba962521374472570238929003cebea8e9b6c55224084b52bb0"
+      },
+      {
+        "path": "C:/Users/11034/miniconda3/Lib/site-packages/psutil/_ntuples.py",
+        "bytes": 11399,
+        "sha256": "96f42bc24549636b5707a949b7cc92e89c87f7cea7d343a6d17821ac670dfcd2"
+      },
+      {
+        "path": "C:/Users/11034/miniconda3/Lib/site-packages/psutil/_pswindows.py",
+        "bytes": 36466,
+        "sha256": "0bbd52dcb214735be4168d11a2ae192d5bc7265c8cf72c611179476479687f54"
+      },
+      {
+        "path": "C:/Users/11034/miniconda3/Lib/site-packages/psutil/_psutil_windows.pyd",
+        "bytes": 70656,
+        "sha256": "0035450801bd7d938e9e146c5ec28e619cb5a5f4a18cdc53ac7e9734c7f94f78"
+      }
+    ],
+    "allCurrentBytesAndSha256Match": true
+  },
+  "preservedFailedR1Preflights": [
+    {
+      "summary": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\win7-conversion-current\\attempt-2568bb01-7ce7-4efb-96be-aa1ee97bd468\\Summary.actual.json",
+        "bytes": 1582,
+        "sha256": "91a764a505089d6559d04c4cf19c58660eb24ba825bd74ac7991930807e329ad"
+      },
+      "passed": false,
+      "heldSources": 0,
+      "nativeOwnedResult": null,
+      "outputMetadata": null,
+      "sourceIdentityAfterVerifiedOldVacuousValue": true,
+      "identityProofClaimAccepted": false
+    },
+    {
+      "summary": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\win7-conversion-current\\attempt-7dcbbaea-23ce-44a6-b1d5-c6a75d4869f2\\Summary.actual.json",
+        "bytes": 1582,
+        "sha256": "91a764a505089d6559d04c4cf19c58660eb24ba825bd74ac7991930807e329ad"
+      },
+      "passed": false,
+      "heldSources": 0,
+      "nativeOwnedResult": null,
+      "outputMetadata": null,
+      "sourceIdentityAfterVerifiedOldVacuousValue": true,
+      "identityProofClaimAccepted": false
+    }
+  ],
+  "r2ZeroHeldSourceIdentityProofFalseByConstruction": true,
+  "executionBoundary": {
+    "controllerExecutedByReviewer": false,
+    "helperExecutedByReviewer": false,
+    "sourceHandlesAcquiredByReviewer": false,
+    "conversionOutcomeObservedByReviewer": null,
+    "actual102HandleReleaseStillRequiresFutureRawEvidence": true
+  },
+  "rootReportedReadOnlySmoke": {
+    "source": "Received Root observation only; raw smoke files not independently audited in this static review.",
+    "reportedUtc": "2026-10-29T14:36:28Z",
+    "nativeExitCode": 0,
+    "processRosterBefore": 640,
+    "processRosterAfter": 638,
+    "selectedVmIdentitiesUnchanged": 2,
+    "selectedCommandLinesAvailable": true,
+    "selectedSourceReferences": 0,
+    "sourceLocks": 0,
+    "sourceHoldsOrConversionStarted": false,
+    "wholeControllerMustFreshlyRecheck": true
+  },
+  "claims": {
+    "latestR2SuitableForOneExplicitRootControlledConversion": true,
+    "previousFailuresPromoted": false,
+    "conversionSucceededClaimed": false,
+    "win7CompatibilityQualified": false,
+    "productionQualificationComplete": false,
+    "releaseReady": false,
+    "productOrPassedTestsRerun": false
+  }
+}

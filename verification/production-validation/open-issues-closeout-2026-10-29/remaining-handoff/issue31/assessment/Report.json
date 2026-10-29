@@ -1,0 +1,921 @@
+{
+  "schema": "soui.issue31-remaining-short-assessment/read-only-v1",
+  "completedUtc": "2026-10-29T14:36:24.887Z",
+  "issue": {
+    "number": 31,
+    "url": "https://github.com/chenziyang110/soui-web-sdk/issues/31",
+    "title": "V01-06: same-document session renewal for long-running SDK applications",
+    "snapshot": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/GitHub-open-issues.snapshot.json",
+      "bytes": 88285,
+      "sha256": "08be3dc90c8feb4093c77b061770f404f82b41365a72e37c03b32469096112e9"
+    },
+    "commentId": 6211425167
+  },
+  "report": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/issue31-short-assessment/Report.md",
+    "bytes": 9181,
+    "sha256": "980be4b92625c8ee7b1683d887257443c8d8ab9fa2171d7ce7f0491e3171410d"
+  },
+  "scope": {
+    "sourceEdits": false,
+    "builds": false,
+    "productOrTestRuns": false,
+    "vmActions": false,
+    "gitActions": false,
+    "wholeCacheHashed": false,
+    "canonicalWrites": false,
+    "outputsOnly": [
+      "Report.md",
+      "Report.json"
+    ]
+  },
+  "projectContext": {
+    "learningStart": {
+      "command": "learning start --command issue31-short-assessment --format json",
+      "status": "ok",
+      "readOnly": true,
+      "matchingItems": 0
+    },
+    "cognition": "Existing task-tree missing_graph_store boundary reused; no graph generation or sp workflow entry"
+  },
+  "decision": {
+    "newNecessaryShortsRecommendedNow": 0,
+    "newShortPerArchitecture": null,
+    "currentProductRuntimeBugLocated": false,
+    "newSdkPatchJustified": false,
+    "earlyRenewCapacityOnlyDiagnosticNotScheduled": true,
+    "reservedRpcBypassOrFakeTimeApproved": false,
+    "missingLongHarnessCode": true,
+    "realClockLongRunDeferred": true,
+    "issueCanClose": false,
+    "productionQualificationComplete": false,
+    "releaseReady": false
+  },
+  "currentFixtureFacts": [
+    {
+      "path": "tests/acceptance-app/main.cpp",
+      "lines": [
+        232,
+        282,
+        323,
+        559,
+        671
+      ],
+      "fact": "Only session opts renewal in; minimum session3120000ms; ordinaryreload bridgeChecks=false; session preserves running task/subscription but noDIR/media"
+    },
+    {
+      "path": "tests/acceptance-app/web/main.ts",
+      "lines": [
+        23,
+        134,
+        151,
+        158,
+        178,
+        225
+      ],
+      "fact": "Bridge probe256reflect+onecancel, no128cleanup/384resolver renewal pressure; sessionReport has noDIR/media"
+    },
+    {
+      "path": "sdk/web/src/client.ts",
+      "lines": [
+        91,
+        103
+      ],
+      "fact": "Direct call(bridge.session.renew) rejects E_RESERVED_METHOD"
+    },
+    {
+      "path": "sdk/web/src/session-renewal.ts",
+      "lines": [
+        72,
+        80
+      ],
+      "fact": "PublicrenewSession returns existing lease before actualrenewAt; no native request"
+    },
+    {
+      "path": "sdk/src/host/bridge_request_budget.h",
+      "lines": [
+        16,
+        17,
+        18
+      ],
+      "fact": "NativeHost ordinary256/control128/renewal1"
+    },
+    {
+      "path": "sdk/src/host/bridge_pending_script.h",
+      "lines": [
+        29,
+        31
+      ],
+      "fact": "Actualdocument resolver ordinary+cleanup384/renewal1"
+    },
+    {
+      "path": "tests/native/demo_session_renewal_tests.cpp",
+      "lines": [
+        17,
+        29,
+        164,
+        190,
+        203,
+        204,
+        369
+      ],
+      "fact": "Real smallscan/cursor withcontrolledclock; media recordsseeded; no realdecoder/encoder/HWND/dialog"
+    }
+  ],
+  "sourceInputComparisons": [
+    {
+      "relative": "tests/native/session_renewal_tests.cpp",
+      "current": {
+        "path": "C:/sc07/tests/native/session_renewal_tests.cpp",
+        "bytes": 26876,
+        "sha256": "67e3f532128f627c0222923552cf4403777641908762d870a5acaa315a1a4591"
+      },
+      "normalizedLfBytes": 26876,
+      "normalizedLfSha256": "67e3f532128f627c0222923552cf4403777641908762d870a5acaa315a1a4591",
+      "historicalDeclaredInput": {
+        "path": "tests/native/session_renewal_tests.cpp",
+        "bytes": 26876,
+        "sha256": "67e3f532128f627c0222923552cf4403777641908762d870a5acaa315a1a4591",
+        "normalization": "lf"
+      },
+      "historicalSourceBodyEqual": true,
+      "published060SourceBody": {
+        "pin": {
+          "path": "C:/sr06/tests/native/session_renewal_tests.cpp",
+          "bytes": 26876,
+          "sha256": "67e3f532128f627c0222923552cf4403777641908762d870a5acaa315a1a4591"
+        },
+        "normalizedLfBytes": 26876,
+        "normalizedLfSha256": "67e3f532128f627c0222923552cf4403777641908762d870a5acaa315a1a4591",
+        "sameNormalizedBodyAsCurrent": true
+      },
+      "fullHistoricalExecutionIdentityPromoted": false
+    },
+    {
+      "relative": "tests/native/demo_session_renewal_tests.cpp",
+      "current": {
+        "path": "C:/sc07/tests/native/demo_session_renewal_tests.cpp",
+        "bytes": 22820,
+        "sha256": "d330f651a56fc28abc40681df64f49bf3db43567c35d989e5cb5033c11dd5383"
+      },
+      "normalizedLfBytes": 22820,
+      "normalizedLfSha256": "d330f651a56fc28abc40681df64f49bf3db43567c35d989e5cb5033c11dd5383",
+      "historicalDeclaredInput": {
+        "path": "tests/native/demo_session_renewal_tests.cpp",
+        "bytes": 22820,
+        "sha256": "d330f651a56fc28abc40681df64f49bf3db43567c35d989e5cb5033c11dd5383",
+        "normalization": "lf"
+      },
+      "historicalSourceBodyEqual": true,
+      "published060SourceBody": {
+        "pin": {
+          "path": "C:/sr06/tests/native/demo_session_renewal_tests.cpp",
+          "bytes": 22820,
+          "sha256": "d330f651a56fc28abc40681df64f49bf3db43567c35d989e5cb5033c11dd5383"
+        },
+        "normalizedLfBytes": 22820,
+        "normalizedLfSha256": "d330f651a56fc28abc40681df64f49bf3db43567c35d989e5cb5033c11dd5383",
+        "sameNormalizedBodyAsCurrent": true
+      },
+      "fullHistoricalExecutionIdentityPromoted": false
+    },
+    {
+      "relative": "tests/native/task_service_tests.cpp",
+      "current": {
+        "path": "C:/sc07/tests/native/task_service_tests.cpp",
+        "bytes": 27534,
+        "sha256": "df347fbab32c495d2a157010d01323a40d5e7916f6d6a52067e7ea8772fefa4a"
+      },
+      "normalizedLfBytes": 27534,
+      "normalizedLfSha256": "df347fbab32c495d2a157010d01323a40d5e7916f6d6a52067e7ea8772fefa4a",
+      "historicalDeclaredInput": {
+        "path": "tests/native/task_service_tests.cpp",
+        "bytes": 21505,
+        "sha256": "5a94239f832c723dcfc8fc6cd574b6663aa9fb98ef5b3e5de4e5ae2c00740efa",
+        "normalization": "lf"
+      },
+      "historicalSourceBodyEqual": false,
+      "published060SourceBody": {
+        "pin": {
+          "path": "C:/sr06/tests/native/task_service_tests.cpp",
+          "bytes": 27534,
+          "sha256": "df347fbab32c495d2a157010d01323a40d5e7916f6d6a52067e7ea8772fefa4a"
+        },
+        "normalizedLfBytes": 27534,
+        "normalizedLfSha256": "df347fbab32c495d2a157010d01323a40d5e7916f6d6a52067e7ea8772fefa4a",
+        "sameNormalizedBodyAsCurrent": true
+      },
+      "fullHistoricalExecutionIdentityPromoted": false
+    },
+    {
+      "relative": "tests/native/bridge_budget_tests.cpp",
+      "current": {
+        "path": "C:/sc07/tests/native/bridge_budget_tests.cpp",
+        "bytes": 4641,
+        "sha256": "8db19a923b938a3877256cb8114ad64a0d0c56bc79b82909aa7b94f59b30415a"
+      },
+      "normalizedLfBytes": 4641,
+      "normalizedLfSha256": "8db19a923b938a3877256cb8114ad64a0d0c56bc79b82909aa7b94f59b30415a",
+      "historicalDeclaredInput": {
+        "path": "tests/native/bridge_budget_tests.cpp",
+        "bytes": 4641,
+        "sha256": "8db19a923b938a3877256cb8114ad64a0d0c56bc79b82909aa7b94f59b30415a",
+        "normalization": "lf"
+      },
+      "historicalSourceBodyEqual": true,
+      "published060SourceBody": {
+        "pin": {
+          "path": "C:/sr06/tests/native/bridge_budget_tests.cpp",
+          "bytes": 4641,
+          "sha256": "8db19a923b938a3877256cb8114ad64a0d0c56bc79b82909aa7b94f59b30415a"
+        },
+        "normalizedLfBytes": 4641,
+        "normalizedLfSha256": "8db19a923b938a3877256cb8114ad64a0d0c56bc79b82909aa7b94f59b30415a",
+        "sameNormalizedBodyAsCurrent": true
+      },
+      "fullHistoricalExecutionIdentityPromoted": false
+    },
+    {
+      "relative": "tests/session-consumer/main.cpp",
+      "current": {
+        "path": "C:/sc07/tests/session-consumer/main.cpp",
+        "bytes": 5331,
+        "sha256": "9c96a6aaf3ea0bc0b805b4b6697424173d75369be7779ff739774062dea131a4"
+      },
+      "normalizedLfBytes": 5331,
+      "normalizedLfSha256": "9c96a6aaf3ea0bc0b805b4b6697424173d75369be7779ff739774062dea131a4",
+      "historicalDeclaredInput": {
+        "path": "tests/session-consumer/main.cpp",
+        "bytes": 5331,
+        "sha256": "9c96a6aaf3ea0bc0b805b4b6697424173d75369be7779ff739774062dea131a4",
+        "normalization": "lf"
+      },
+      "historicalSourceBodyEqual": true,
+      "published060SourceBody": {
+        "pin": {
+          "path": "C:/sr06/tests/session-consumer/main.cpp",
+          "bytes": 5331,
+          "sha256": "9c96a6aaf3ea0bc0b805b4b6697424173d75369be7779ff739774062dea131a4"
+        },
+        "normalizedLfBytes": 5331,
+        "normalizedLfSha256": "9c96a6aaf3ea0bc0b805b4b6697424173d75369be7779ff739774062dea131a4",
+        "sameNormalizedBodyAsCurrent": true
+      },
+      "fullHistoricalExecutionIdentityPromoted": false
+    },
+    {
+      "relative": "sdk/src/runtime/services/permissions/permission_store.cpp",
+      "current": {
+        "path": "C:/sc07/sdk/src/runtime/services/permissions/permission_store.cpp",
+        "bytes": 24201,
+        "sha256": "3cc763d1f428239af4ee052bd0ee159ccf9741177cbc68b2b587ec719c8aff8c"
+      },
+      "normalizedLfBytes": 24201,
+      "normalizedLfSha256": "3cc763d1f428239af4ee052bd0ee159ccf9741177cbc68b2b587ec719c8aff8c",
+      "historicalDeclaredInput": {
+        "path": "sdk/src/runtime/services/permissions/permission_store.cpp",
+        "bytes": 9554,
+        "sha256": "e2140e6ccb1bd7e0a91275ac72adb23eaf69384265b748ea5ef53a93a3b5406a",
+        "normalization": "lf"
+      },
+      "historicalSourceBodyEqual": false,
+      "published060SourceBody": {
+        "pin": {
+          "path": "C:/sr06/sdk/src/runtime/services/permissions/permission_store.cpp",
+          "bytes": 24201,
+          "sha256": "3cc763d1f428239af4ee052bd0ee159ccf9741177cbc68b2b587ec719c8aff8c"
+        },
+        "normalizedLfBytes": 24201,
+        "normalizedLfSha256": "3cc763d1f428239af4ee052bd0ee159ccf9741177cbc68b2b587ec719c8aff8c",
+        "sameNormalizedBodyAsCurrent": true
+      },
+      "fullHistoricalExecutionIdentityPromoted": false
+    },
+    {
+      "relative": "sdk/include/soui/runtime/services/permissions/permission_store.h",
+      "current": {
+        "path": "C:/sc07/sdk/include/soui/runtime/services/permissions/permission_store.h",
+        "bytes": 9308,
+        "sha256": "d4e8014eac9394d2e09ee7eb40b6f5f57319eb89e13ce95cc3ec4a9bbfa3e4df"
+      },
+      "normalizedLfBytes": 9308,
+      "normalizedLfSha256": "d4e8014eac9394d2e09ee7eb40b6f5f57319eb89e13ce95cc3ec4a9bbfa3e4df",
+      "historicalDeclaredInput": {
+        "path": "sdk/include/soui/runtime/services/permissions/permission_store.h",
+        "bytes": 3627,
+        "sha256": "63980c76c70f500c9a7d0cf52600c21b2ff70eb7a6d40b36a106a281ab3299ee",
+        "normalization": "lf"
+      },
+      "historicalSourceBodyEqual": false,
+      "published060SourceBody": {
+        "pin": {
+          "path": "C:/sr06/sdk/include/soui/runtime/services/permissions/permission_store.h",
+          "bytes": 9308,
+          "sha256": "d4e8014eac9394d2e09ee7eb40b6f5f57319eb89e13ce95cc3ec4a9bbfa3e4df"
+        },
+        "normalizedLfBytes": 9308,
+        "normalizedLfSha256": "d4e8014eac9394d2e09ee7eb40b6f5f57319eb89e13ce95cc3ec4a9bbfa3e4df",
+        "sameNormalizedBodyAsCurrent": true
+      },
+      "fullHistoricalExecutionIdentityPromoted": false
+    },
+    {
+      "relative": "sdk/src/runtime/services/task/task_service.cpp",
+      "current": {
+        "path": "C:/sc07/sdk/src/runtime/services/task/task_service.cpp",
+        "bytes": 56348,
+        "sha256": "d97a4ce2bc21c6fe1ee97954a19dc259ae3f9bcafbc90de6074775dc0a7f9769"
+      },
+      "normalizedLfBytes": 56348,
+      "normalizedLfSha256": "d97a4ce2bc21c6fe1ee97954a19dc259ae3f9bcafbc90de6074775dc0a7f9769",
+      "historicalDeclaredInput": {
+        "path": "sdk/src/runtime/services/task/task_service.cpp",
+        "bytes": 18239,
+        "sha256": "8c20f308e11e5043bc5c131510551672148d5648db854bc4b42909f7e4febaae",
+        "normalization": "lf"
+      },
+      "historicalSourceBodyEqual": false,
+      "published060SourceBody": {
+        "pin": {
+          "path": "C:/sr06/sdk/src/runtime/services/task/task_service.cpp",
+          "bytes": 56348,
+          "sha256": "d97a4ce2bc21c6fe1ee97954a19dc259ae3f9bcafbc90de6074775dc0a7f9769"
+        },
+        "normalizedLfBytes": 56348,
+        "normalizedLfSha256": "d97a4ce2bc21c6fe1ee97954a19dc259ae3f9bcafbc90de6074775dc0a7f9769",
+        "sameNormalizedBodyAsCurrent": true
+      },
+      "fullHistoricalExecutionIdentityPromoted": false
+    },
+    {
+      "relative": "sdk/web/src/client.ts",
+      "current": {
+        "path": "C:/sc07/sdk/web/src/client.ts",
+        "bytes": 14055,
+        "sha256": "fb058bd5babcb2b358479107fa914a1cff52cce17e8d9d9b80955ca0671ef5d0"
+      },
+      "normalizedLfBytes": 14055,
+      "normalizedLfSha256": "fb058bd5babcb2b358479107fa914a1cff52cce17e8d9d9b80955ca0671ef5d0",
+      "historicalDeclaredInput": {
+        "path": "sdk/web/src/client.ts",
+        "bytes": 11867,
+        "sha256": "b60b531b867669fd9ee1fc8eee5e4f39b44de776bdd2ba8162b521d944d3ec28",
+        "normalization": "lf"
+      },
+      "historicalSourceBodyEqual": false,
+      "published060SourceBody": {
+        "pin": {
+          "path": "C:/sr06/sdk/web/src/client.ts",
+          "bytes": 14055,
+          "sha256": "fb058bd5babcb2b358479107fa914a1cff52cce17e8d9d9b80955ca0671ef5d0"
+        },
+        "normalizedLfBytes": 14055,
+        "normalizedLfSha256": "fb058bd5babcb2b358479107fa914a1cff52cce17e8d9d9b80955ca0671ef5d0",
+        "sameNormalizedBodyAsCurrent": true
+      },
+      "fullHistoricalExecutionIdentityPromoted": false
+    },
+    {
+      "relative": "sdk/web/src/session-renewal.ts",
+      "current": {
+        "path": "C:/sc07/sdk/web/src/session-renewal.ts",
+        "bytes": 10876,
+        "sha256": "99923a5088b8b2df93b8c6f138a1f4ab092821fb175cf2de79a60ef17a3b263a"
+      },
+      "normalizedLfBytes": 10876,
+      "normalizedLfSha256": "99923a5088b8b2df93b8c6f138a1f4ab092821fb175cf2de79a60ef17a3b263a",
+      "historicalDeclaredInput": {
+        "path": "sdk/web/src/session-renewal.ts",
+        "bytes": 10876,
+        "sha256": "99923a5088b8b2df93b8c6f138a1f4ab092821fb175cf2de79a60ef17a3b263a",
+        "normalization": "lf"
+      },
+      "historicalSourceBodyEqual": true,
+      "published060SourceBody": {
+        "pin": {
+          "path": "C:/sr06/sdk/web/src/session-renewal.ts",
+          "bytes": 10876,
+          "sha256": "99923a5088b8b2df93b8c6f138a1f4ab092821fb175cf2de79a60ef17a3b263a"
+        },
+        "normalizedLfBytes": 10876,
+        "normalizedLfSha256": "99923a5088b8b2df93b8c6f138a1f4ab092821fb175cf2de79a60ef17a3b263a",
+        "sameNormalizedBodyAsCurrent": true
+      },
+      "fullHistoricalExecutionIdentityPromoted": false
+    },
+    {
+      "relative": "sdk/src/host/bridge_request_budget.h",
+      "current": {
+        "path": "C:/sc07/sdk/src/host/bridge_request_budget.h",
+        "bytes": 6673,
+        "sha256": "aa2d8de3e8ffb3a015d0cbd17b9bfbcf7a0f1d36281a92dfa10882ba9c7382be"
+      },
+      "normalizedLfBytes": 6673,
+      "normalizedLfSha256": "aa2d8de3e8ffb3a015d0cbd17b9bfbcf7a0f1d36281a92dfa10882ba9c7382be",
+      "historicalDeclaredInput": {
+        "path": "sdk/src/host/bridge_request_budget.h",
+        "bytes": 2703,
+        "sha256": "811516ee0541190362a96a9987c78ffe1dac9b53c8f0c723fd9289b794899592",
+        "normalization": "lf"
+      },
+      "historicalSourceBodyEqual": false,
+      "published060SourceBody": {
+        "pin": {
+          "path": "C:/sr06/sdk/src/host/bridge_request_budget.h",
+          "bytes": 6673,
+          "sha256": "aa2d8de3e8ffb3a015d0cbd17b9bfbcf7a0f1d36281a92dfa10882ba9c7382be"
+        },
+        "normalizedLfBytes": 6673,
+        "normalizedLfSha256": "aa2d8de3e8ffb3a015d0cbd17b9bfbcf7a0f1d36281a92dfa10882ba9c7382be",
+        "sameNormalizedBodyAsCurrent": true
+      },
+      "fullHistoricalExecutionIdentityPromoted": false
+    },
+    {
+      "relative": "sdk/src/host/bridge_pending_script.h",
+      "current": {
+        "path": "C:/sc07/sdk/src/host/bridge_pending_script.h",
+        "bytes": 2166,
+        "sha256": "9672b98ffc6de2e4a0287b4c414ad43764c89fa00fed5f5721ee0e98aec02213"
+      },
+      "normalizedLfBytes": 2166,
+      "normalizedLfSha256": "9672b98ffc6de2e4a0287b4c414ad43764c89fa00fed5f5721ee0e98aec02213",
+      "historicalDeclaredInput": {
+        "path": "sdk/src/host/bridge_pending_script.h",
+        "bytes": 2166,
+        "sha256": "9672b98ffc6de2e4a0287b4c414ad43764c89fa00fed5f5721ee0e98aec02213",
+        "normalization": "lf"
+      },
+      "historicalSourceBodyEqual": true,
+      "published060SourceBody": {
+        "pin": {
+          "path": "C:/sr06/sdk/src/host/bridge_pending_script.h",
+          "bytes": 2166,
+          "sha256": "9672b98ffc6de2e4a0287b4c414ad43764c89fa00fed5f5721ee0e98aec02213"
+        },
+        "normalizedLfBytes": 2166,
+        "normalizedLfSha256": "9672b98ffc6de2e4a0287b4c414ad43764c89fa00fed5f5721ee0e98aec02213",
+        "sameNormalizedBodyAsCurrent": true
+      },
+      "fullHistoricalExecutionIdentityPromoted": false
+    },
+    {
+      "relative": "tests/web/native-resolvers.test.mjs",
+      "current": {
+        "path": "C:/sc07/tests/web/native-resolvers.test.mjs",
+        "bytes": 5415,
+        "sha256": "8a8d2dbf4fe4c73d7d0a59f9915fedc0c42a3d16e69d610a2256b44579d04dc8"
+      },
+      "normalizedLfBytes": 5415,
+      "normalizedLfSha256": "8a8d2dbf4fe4c73d7d0a59f9915fedc0c42a3d16e69d610a2256b44579d04dc8",
+      "historicalDeclaredInput": {
+        "path": "tests/web/native-resolvers.test.mjs",
+        "bytes": 5415,
+        "sha256": "8a8d2dbf4fe4c73d7d0a59f9915fedc0c42a3d16e69d610a2256b44579d04dc8",
+        "normalization": "lf"
+      },
+      "historicalSourceBodyEqual": true,
+      "published060SourceBody": {
+        "pin": {
+          "path": "C:/sr06/tests/web/native-resolvers.test.mjs",
+          "bytes": 5415,
+          "sha256": "8a8d2dbf4fe4c73d7d0a59f9915fedc0c42a3d16e69d610a2256b44579d04dc8"
+        },
+        "normalizedLfBytes": 5415,
+        "normalizedLfSha256": "8a8d2dbf4fe4c73d7d0a59f9915fedc0c42a3d16e69d610a2256b44579d04dc8",
+        "sameNormalizedBodyAsCurrent": true
+      },
+      "fullHistoricalExecutionIdentityPromoted": false
+    },
+    {
+      "relative": "tests/web/session-renewal.test.mjs",
+      "current": {
+        "path": "C:/sc07/tests/web/session-renewal.test.mjs",
+        "bytes": 27879,
+        "sha256": "5735090383f88316feb2e53044874b4856ed58c9930336c1fe45825aa350e43f"
+      },
+      "normalizedLfBytes": 27879,
+      "normalizedLfSha256": "5735090383f88316feb2e53044874b4856ed58c9930336c1fe45825aa350e43f",
+      "historicalDeclaredInput": {
+        "path": "tests/web/session-renewal.test.mjs",
+        "bytes": 27879,
+        "sha256": "5735090383f88316feb2e53044874b4856ed58c9930336c1fe45825aa350e43f",
+        "normalization": "lf"
+      },
+      "historicalSourceBodyEqual": true,
+      "published060SourceBody": {
+        "pin": {
+          "path": "C:/sr06/tests/web/session-renewal.test.mjs",
+          "bytes": 27879,
+          "sha256": "5735090383f88316feb2e53044874b4856ed58c9930336c1fe45825aa350e43f"
+        },
+        "normalizedLfBytes": 27879,
+        "normalizedLfSha256": "5735090383f88316feb2e53044874b4856ed58c9930336c1fe45825aa350e43f",
+        "sameNormalizedBodyAsCurrent": true
+      },
+      "fullHistoricalExecutionIdentityPromoted": false
+    },
+    {
+      "relative": "tests/acceptance-app/main.cpp",
+      "current": {
+        "path": "C:/sc07/tests/acceptance-app/main.cpp",
+        "bytes": 42218,
+        "sha256": "4d58281549806425f097ee0ca9bc04160f43ca112c027b46b4dfc199a8173be4"
+      },
+      "normalizedLfBytes": 42218,
+      "normalizedLfSha256": "4d58281549806425f097ee0ca9bc04160f43ca112c027b46b4dfc199a8173be4",
+      "historicalDeclaredInput": {
+        "path": "tests/acceptance-app/main.cpp",
+        "bytes": 23191,
+        "sha256": "88ada57b698a057c5f351690ceae3592effcaa0bd5c99a0b69ad96854db24bf2",
+        "normalization": "lf"
+      },
+      "historicalSourceBodyEqual": false,
+      "published060SourceBody": {
+        "pin": {
+          "path": "C:/sr06/tests/acceptance-app/main.cpp",
+          "bytes": 42015,
+          "sha256": "02bc1ff85205acec289b2489896d107c4c34fcad5a28f91577f3bf72754c734b"
+        },
+        "normalizedLfBytes": 42015,
+        "normalizedLfSha256": "02bc1ff85205acec289b2489896d107c4c34fcad5a28f91577f3bf72754c734b",
+        "sameNormalizedBodyAsCurrent": false
+      },
+      "fullHistoricalExecutionIdentityPromoted": false
+    },
+    {
+      "relative": "tests/acceptance-app/web/main.ts",
+      "current": {
+        "path": "C:/sc07/tests/acceptance-app/web/main.ts",
+        "bytes": 15381,
+        "sha256": "9cd2ef85494181497b06c044a6858965a10d71811cedcc06835d491a4b5ac891"
+      },
+      "normalizedLfBytes": 15381,
+      "normalizedLfSha256": "9cd2ef85494181497b06c044a6858965a10d71811cedcc06835d491a4b5ac891",
+      "historicalDeclaredInput": {
+        "path": "tests/acceptance-app/web/main.ts",
+        "bytes": 6949,
+        "sha256": "cf30b85da890b38c8c52e95e7ca2c73a3f2750d55a2c2593f3767bd542446eb1",
+        "normalization": "lf"
+      },
+      "historicalSourceBodyEqual": false,
+      "published060SourceBody": {
+        "pin": {
+          "path": "C:/sr06/tests/acceptance-app/web/main.ts",
+          "bytes": 15381,
+          "sha256": "9cd2ef85494181497b06c044a6858965a10d71811cedcc06835d491a4b5ac891"
+        },
+        "normalizedLfBytes": 15381,
+        "normalizedLfSha256": "9cd2ef85494181497b06c044a6858965a10d71811cedcc06835d491a4b5ac891",
+        "sameNormalizedBodyAsCurrent": true
+      },
+      "fullHistoricalExecutionIdentityPromoted": false
+    },
+    {
+      "relative": "tests/acceptance/session-validation.cjs",
+      "current": {
+        "path": "C:/sc07/tests/acceptance/session-validation.cjs",
+        "bytes": 13177,
+        "sha256": "774f82e0011b3b835c9b92f60ef4bbb7f9e3c45f21ef719ae66f1d844af2218a"
+      },
+      "normalizedLfBytes": 13177,
+      "normalizedLfSha256": "774f82e0011b3b835c9b92f60ef4bbb7f9e3c45f21ef719ae66f1d844af2218a",
+      "historicalDeclaredInput": null,
+      "historicalSourceBodyEqual": false,
+      "published060SourceBody": {
+        "pin": {
+          "path": "C:/sr06/tests/acceptance/session-validation.cjs",
+          "bytes": 13177,
+          "sha256": "774f82e0011b3b835c9b92f60ef4bbb7f9e3c45f21ef719ae66f1d844af2218a"
+        },
+        "normalizedLfBytes": 13177,
+        "normalizedLfSha256": "774f82e0011b3b835c9b92f60ef4bbb7f9e3c45f21ef719ae66f1d844af2218a",
+        "sameNormalizedBodyAsCurrent": true
+      },
+      "fullHistoricalExecutionIdentityPromoted": false
+    },
+    {
+      "relative": "tools/Test-Acceptance.ps1",
+      "current": {
+        "path": "C:/sc07/tools/Test-Acceptance.ps1",
+        "bytes": 16190,
+        "sha256": "333dd11b9a692d0992002bb6886290f0f7c6cffcfdb8bc8a360275597884fb67"
+      },
+      "normalizedLfBytes": 15952,
+      "normalizedLfSha256": "a0e92f00b994478e11b72b32f3b3f0e82756b8334350767fc4bd989a42444cb8",
+      "historicalDeclaredInput": {
+        "path": "tools/Test-Acceptance.ps1",
+        "bytes": 4285,
+        "sha256": "a1dd3d75e295c79ed23f500857fc422c91f7cd654500195ab110da917be0663b",
+        "normalization": "lf"
+      },
+      "historicalSourceBodyEqual": false,
+      "published060SourceBody": {
+        "pin": {
+          "path": "C:/sr06/tools/Test-Acceptance.ps1",
+          "bytes": 16190,
+          "sha256": "333dd11b9a692d0992002bb6886290f0f7c6cffcfdb8bc8a360275597884fb67"
+        },
+        "normalizedLfBytes": 15952,
+        "normalizedLfSha256": "a0e92f00b994478e11b72b32f3b3f0e82756b8334350767fc4bd989a42444cb8",
+        "sameNormalizedBodyAsCurrent": true
+      },
+      "fullHistoricalExecutionIdentityPromoted": false
+    }
+  ],
+  "additionalSourcePins": [
+    {
+      "path": "C:/sc07/docs/adr/0014-same-document-session-renewal.md",
+      "bytes": 7836,
+      "sha256": "65a0eb5cc61145db203cfabb4b0433864b22e9e24b6fc60396c37f3d2ccc082d"
+    },
+    {
+      "path": "C:/sc07/docs/maintenance/open-issues-20261029.md",
+      "bytes": 16519,
+      "sha256": "654527013661648d7db0e69ac0d79b840a97a77b7a101aa29b4580def54ff4d8"
+    },
+    {
+      "path": "C:/sc07/docs/testing/v0.6.0-long-run-handoff.md",
+      "bytes": 8089,
+      "sha256": "7546055d03b28086ea24ff19b24aaad40abc9b9e6ec898df0e3e86a457256d98"
+    },
+    {
+      "path": "C:/sc07/tests/acceptance-app/README.md",
+      "bytes": 13188,
+      "sha256": "2eac6487c38d12c17a173885a7dde1cdef5ac6d6bd24352fc4c2a53403d415aa"
+    },
+    {
+      "path": "C:/sc07/sdk/include/soui/json_bridge.h",
+      "bytes": 6002,
+      "sha256": "e379813b1c3d0493d5a81eccb5e97642869324c71fbc8e3b2bff7f8968148b3e"
+    },
+    {
+      "path": "C:/sc07/sdk/include/soui/bridge_adapter.h",
+      "bytes": 1374,
+      "sha256": "e172cdf617b5fc0b95dac51c43e2126d98607f41a23c77f00bb3f11d39142079"
+    },
+    {
+      "path": "C:/sc07/sdk/web/src/connection.ts",
+      "bytes": 7243,
+      "sha256": "cd66287b6152189f7f4f45b6091a0f38b47adde1b83747ef8a1bffb3b6f6cb03"
+    },
+    {
+      "path": "C:/sc07/sdk/web/src/protocol.ts",
+      "bytes": 7132,
+      "sha256": "b31f4afba9b09eb31683377b90f667c4f9265f60c99a1ac9a9848c601af3e632"
+    },
+    {
+      "path": "C:/sc07/demos/workbench/integration/demo_bridge_adapter.h",
+      "bytes": 9539,
+      "sha256": "50cf4964fabb94829d59dd6adbc8159caf8313217ab32fdd721594f9bde50583"
+    },
+    {
+      "path": "C:/sc07/demos/workbench/integration/demo_bridge_adapter.cpp",
+      "bytes": 117309,
+      "sha256": "6436cab867a473689e535cbff627c2075f27b76d9824cc585fbe0fb35adbf04b"
+    },
+    {
+      "path": "C:/sc07/sdk/src/runtime/services/filesystem-readonly/directory_scanner.cpp",
+      "bytes": 30071,
+      "sha256": "713bc211743282e4b8793d244fc8cd5dca0cbb28dd7e8d27e53564ac8f107914"
+    }
+  ],
+  "evidencePins": [
+    {
+      "path": "C:/sc07/verification/production-validation/preview11-session-renewal-preflight-2026-09-26/README.md",
+      "bytes": 5797,
+      "sha256": "e52dd75e537179b7e12d23b8aff55fb0d80b979969cc48c6ad040eed4b900dc3"
+    },
+    {
+      "path": "C:/sc07/verification/production-validation/preview11-session-renewal-preflight-2026-09-26/raw/source-inputs.json",
+      "bytes": 155182,
+      "sha256": "9e7357276f88583e93f574852d217f179eed85d53b4effa36efb844a778ff104"
+    },
+    {
+      "path": "C:/sc07/verification/production-validation/preview11-session-renewal-preflight-2026-09-26/raw/summary.json",
+      "bytes": 141965,
+      "sha256": "452205179bc2f07ecaf2bb07bf60a105545994972b624a0f05e5092d75509e2d"
+    },
+    {
+      "path": "C:/sc07/verification/production-validation/0.5-current-native-and-ole-2026-10-09-c59d2104/README.md",
+      "bytes": 4554,
+      "sha256": "f5f2dc3af5c9d8254e4899f9dd14e88ef000c15c178a80a5f5847958dce0ca15"
+    },
+    {
+      "path": "C:/sc07/verification/production-validation/0.5-runtime-capacity-2026-10-10/README.md",
+      "bytes": 4331,
+      "sha256": "5a6f548a473902401b7e6815ac9e379d6f558aa46f1c64397f0b2d1ba61ac6ff"
+    },
+    {
+      "path": "C:/sc07/verification/production-validation/0.5-runtime-capacity-consumer-2026-10-10/README.md",
+      "bytes": 3099,
+      "sha256": "54aeb9107e2b2d9a865fd9c2c1a4ace03944f37d5f42afd5c3cf55d9cf529be6"
+    },
+    {
+      "path": "C:/sc07/verification/production-validation/win7-sp1-x86-qemu-preview8-public-task-2026-09-25/README.md",
+      "bytes": 3127,
+      "sha256": "5323d87cc23e3ce6f0e656a04b62959e8a0eb797d148e709387ae6a2947ee760"
+    },
+    {
+      "path": "C:/sc07/verification/production-validation/win7-sp1-x86-qemu-preview8-public-task-2026-09-25/build.json",
+      "bytes": 24835,
+      "sha256": "06d656a0b7649ab614c1288ccf3eae273a47ac025ed6df3fafdc96bab0b0509b"
+    },
+    {
+      "path": "C:/sc07/verification/production-validation/preview11-real-renewal-v2-smoke-2026-09-26/README.md",
+      "bytes": 2384,
+      "sha256": "4d26e5ffe66ae34b5b523e4a1c8cfc8afa1da67037ba13b7314d04b162c633b1"
+    },
+    {
+      "path": "C:/sc07/verification/production-validation/preview15-real-renewal-preparation-2026-09-27/README.md",
+      "bytes": 3248,
+      "sha256": "f5afb4311114e1b1bd4219663289792fc2b368cca1b4e3cae95945b15802f8b2"
+    },
+    {
+      "path": "C:/sc07/verification/production-validation/0.6.0-release-2026-10-29/RELEASE-FACTS.json",
+      "bytes": 119391,
+      "sha256": "46cb4ce199ca591c0c8c1d47e3318af2e99b7154c0ca84447553e8db5eff4b0d"
+    },
+    {
+      "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/native-x64-integration-tests-1.log",
+      "bytes": 1098,
+      "sha256": "82f2f1829d7f59243962102cc60607220c3a33248fb81a8149d84812b05fe84f"
+    },
+    {
+      "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/sdk-build-prep/x86-release-ctest.stdout.log",
+      "bytes": 1662,
+      "sha256": "1f29f275a31aab51812639a6a1b2ee1fa5b460014fdb5a556d005786c4c81d3a"
+    },
+    {
+      "path": "C:/sc07/verification/production-validation/open-issues-closeout-2026-10-29/ordinary-reload/vm/run/raw/Summary.actual.json",
+      "bytes": 173451,
+      "sha256": "a81005bed426455e9584075bffd74b7cd5cea88bbc71b42b4de22eafc17d3ab5"
+    }
+  ],
+  "reusePolicy": {
+    "unchangedFixtureOrFunctionBytesRetainedWithoutRetest": [
+      "tests/native/session_renewal_tests.cpp",
+      "tests/native/demo_session_renewal_tests.cpp",
+      "tests/native/bridge_budget_tests.cpp",
+      "tests/session-consumer/main.cpp",
+      "sdk/web/src/session-renewal.ts",
+      "sdk/src/host/bridge_pending_script.h",
+      "tests/web/native-resolvers.test.mjs",
+      "tests/web/session-renewal.test.mjs"
+    ],
+    "historicalSubjectChanged": [
+      "tests/native/task_service_tests.cpp",
+      "sdk/src/runtime/services/permissions/permission_store.cpp",
+      "sdk/include/soui/runtime/services/permissions/permission_store.h",
+      "sdk/src/runtime/services/task/task_service.cpp",
+      "sdk/web/src/client.ts",
+      "sdk/src/host/bridge_request_budget.h",
+      "tests/acceptance-app/main.cpp",
+      "tests/acceptance-app/web/main.ts",
+      "tools/Test-Acceptance.ps1"
+    ],
+    "entireOldSubjectInputsNotProvenIdentical": true,
+    "oldResultsKeepOriginalSdkKernelOsToolchainIdentity": true,
+    "ordinaryReloadDoesNotProveCapacity": true,
+    "releaseScopedCtestsDoNotIncludeRenewalSubset": true,
+    "failedRealRenewalV2NotRerunOrRelabeled": true
+  },
+  "futureLongPackage": {
+    "notImplementedOrExecutedByThisAssessment": true,
+    "entryPointStatus": "Existing Test-Acceptance -Scenario session is task/subscription only; no complete DIR/media mixed-resource CLI currently registered",
+    "architectures": [
+      "x64",
+      "x86"
+    ],
+    "realLeaseMs": 1800000,
+    "legalFirstRenewalAfterMs": 1500000,
+    "minimumExistingSessionDurationMs": 3120000,
+    "formalMixedDurationMs": 28800000,
+    "resourceFixture": "Production Workbench adapter-backed opt-in sibling; leave SDK independent of Demo",
+    "requiredSurfaces": [
+      "desktop.dialog.pickDirectory",
+      "demo.scan.start",
+      "demo.scan.page",
+      "desktop.media.pickFile",
+      "media.convert.start",
+      "media.convert.query",
+      "desktop.media.preview.start",
+      "desktop.media.preview.query",
+      "task.start",
+      "task.query",
+      "task.cancel",
+      "task.subscribe",
+      "task.unsubscribe"
+    ],
+    "resourceAssertions": [
+      "Same document/session/origin/nativeauthorization_scope and capabilityset",
+      "Original actual task/taskId and native subscriptionId/sequence through at least2 realgenerationadvances",
+      "Original directory root/scan/cursor usable under renewed actualauthorization",
+      "Original real media file binding/task/result reusable and realdecoder/preview exercised; no seeded substitute",
+      "One defined full-batch at first actualrenewal: Host256+128+1 anddocument384+1, actual occupancy/allresponses, no fabricatedpendingentries",
+      "Final explicitcancel/unsubscribe/revoke andSDKshutdown fence, naturalnative0Job0"
+    ],
+    "boundedRecordWork": [
+      "Extend TS/native SessionReport and reader together; existing additionalProperties=false requires schema changes",
+      "Capture generationonce per actualrunning observation; preserve currentterminal snapshot semantics",
+      "Observe actualsubscribe reply throughpass-throughpublicport, do not recreate subscriptions orrewritecredentials",
+      "Resource correlations/assertions fromnative verifiedscope; no bearer/root/file accesscredentials inlogs"
+    ],
+    "handoffDocumentProposal": "Add #31/V01-06 real mixed-resource renewal (notimplemented/unrun) afterD07 in docs/testing/v0.6.0-long-run-handoff.md; bind resource fixture/producer/OS/arch/duration/actualreceipts and keep currenttask/subsession scope explicit",
+    "caseBudgets": "Keep originalchosenfixture step/operation/runtime/cleanup fences, monotonicwholelongplan andoriginal2000msdrain; no refreshedshortbudget"
+  },
+  "current060ReusableInputMetadata": {
+    "manifest": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/ordinary-reload-current/light-payload-082fc18e-2d24-45e1-8f87-5a725bf76760/payload/Ordinary.manifest.json",
+      "bytes": 72145,
+      "sha256": "3adf77fc6c299568f20db6d8f5f7d6fae0b8198f0c36b0ff92b6b5372d6deab2"
+    },
+    "binaryBytesRehashedHere": false,
+    "installedSdkProducers": {
+      "x64": {
+        "version": "0.6.0",
+        "prefix": "C:/sr06/out/release-install-x64-release",
+        "library": {
+          "path": "C:/sr06/out/release-install-x64-release/lib/Release/soui_sdk.lib",
+          "bytes": 57039658,
+          "sha256": "ab67927611d8eb330a7ffc7d54331645230509552859863eea9eedb888ab2b49"
+        },
+        "versionHeader": {
+          "path": "C:/sr06/out/release-install-x64-release/include/soui/version.h",
+          "bytes": 240,
+          "sha256": "74e0b9639567ae187c236628bec3b0a30e7ad113ee15f78b0cbd4283258f2cc0"
+        },
+        "compileVerdict": {
+          "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\ordinary-reload-current\\attempt-bdeb6e02-7baf-4384-a5ea-c0b79a26b892\\x64\\case-verdict.json",
+          "bytes": 7747,
+          "sha256": "9c06f66f67af9b27a89824b7b2abd5bf66fb66c32865a02685f46d71405c6f19"
+        },
+        "selectedCurrentApplicationBuild": {
+          "path": "C:/sr06/out/x64/build-Release.json",
+          "bytes": 814721,
+          "sha256": "1b753456ae547ce0cd939fe02674025e3dfca34ffba3ec3f3d13fb8271dc6c05"
+        },
+        "sdkRebuilt": false
+      },
+      "x86": {
+        "version": "0.6.0",
+        "prefix": "C:/sr06/out/release-install-x86-release",
+        "library": {
+          "path": "C:/sr06/out/release-install-x86-release/lib/Release/soui_sdk.lib",
+          "bytes": 37409002,
+          "sha256": "d4ec7df4957d4110f0ffbd339ff840770e81860faceda18be09e19fc099afafd"
+        },
+        "versionHeader": {
+          "path": "C:/sr06/out/release-install-x86-release/include/soui/version.h",
+          "bytes": 240,
+          "sha256": "74e0b9639567ae187c236628bec3b0a30e7ad113ee15f78b0cbd4283258f2cc0"
+        },
+        "compileVerdict": {
+          "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\ordinary-reload-current\\attempt-bdeb6e02-7baf-4384-a5ea-c0b79a26b892\\x86\\case-verdict.json",
+          "bytes": 7747,
+          "sha256": "9f0eb992213f6cc4901f20ce19e21ddba339d79c116fde1d2fa138400dc85065"
+        },
+        "selectedCurrentApplicationBuild": {
+          "path": "C:/sr06/out/x86/build-Release.json",
+          "bytes": 814760,
+          "sha256": "bba72443655141c695b0287d3ce0b271a66860795b4f5abf77af54c320ebe5ec"
+        },
+        "sdkRebuilt": false
+      }
+    },
+    "runtimeArms": [
+      {
+        "architecture": "x64",
+        "runtimeMembers": 75,
+        "kernel": [
+          {
+            "relative": "node.dll",
+            "source": "C:/sr06/out/x64/bin/Release/SouiStarter/node.dll",
+            "bytes": 39204352,
+            "sha256": "d888637d5dd1476dde16b8c5bb28172d7b8ec3495b69c725fa3572013748139a",
+            "fromPayload": false,
+            "kind": "current0.6.0-runtime-DLL"
+          }
+        ],
+        "oldAcceptanceExecutableNotReusedForNewHarness": true
+      },
+      {
+        "architecture": "x86",
+        "runtimeMembers": 75,
+        "kernel": [
+          {
+            "relative": "node.dll",
+            "source": "C:/sr06/out/x86/bin/Release/SouiStarter/node.dll",
+            "bytes": 28318208,
+            "sha256": "dc8c37178f4bbd9260edc973d61af876cf8460178eaf89fa2994fdffc94abc9a",
+            "fromPayload": false,
+            "kind": "current0.6.0-runtime-DLL"
+          }
+        ],
+        "oldAcceptanceExecutableNotReusedForNewHarness": true
+      }
+    ],
+    "meaning": "Existing sealed/current metadata mayseed laterinput freeze onlyafter exactmatching; this read-onlyassessment doesnotrunorqualifya newconsumer"
+  }
+}
