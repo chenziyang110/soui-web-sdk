@@ -1,5 +1,10 @@
 # 变更记录
 
+## 未发布：MiniBlink 高精度截止唤醒修复
+
+- future deadline 优先复用高精度 waitable timer 与 threadpool wait，修复普通 pool timer 在不可见 Windows 11 场景中的唤醒精度退化；保持绝对截止复核、票号、默认预算和旧系统回退。
+- 关闭时先停止发布，再在锁外排空 wait callback 并依次关闭 wait/handle；重设不再逐次注册或同步排空。限定测试与真实内核短测结果见 ADR-0148，不构成完整性能或发布验收。
+
 ## 未发布：MiniBlink 显式 provider 共享截止
 
 - 显式共享预算沿内部 callback 和私有 ABI 尾扩展传入 scheduler 与关闭/重试扫描；保留旧无参入口、默认预算 0 与 shutdown 排空。

@@ -1,5 +1,5 @@
 // Exact production scheduler/window sources, deterministic Win32 dependencies.
-// This fixture source is delivered unexecuted.
+// Real timer precision still requires a native runtime measurement.
 #include <windows.h>
 #include <mmsystem.h>
 #include <algorithm>
@@ -23,11 +23,20 @@ bool quitPending = false;
 unsigned notifyAttempts = 0, closeAttempts = 0, drainAttempts = 0, precisionReferences = 0;
 bool drainOutsideLock = true, closeAfterDrain = true, noLatePublication = true;
 unsigned postAttempts = 0, timerCalls = 0, registrations = 0, unregistrations = 0, runs = 0, destroyed = 0;
+unsigned preciseCreateAttempts = 0, preciseWaitCreates = 0, preciseArms = 0, preciseHandleCloses = 0;
+bool preciseApiAvailable = true, failPreciseCreate = false, failPreciseWait = false, failPreciseArm = false;
+bool preciseHandleAfterWait = true, windowAfterResources = true;
 LONGLONG dueTicks = 0;
 HWND window = reinterpret_cast<HWND>(static_cast<UINT_PTR>(1));
 struct Timer { PTP_TIMER_CALLBACK callback; PVOID parameter; bool armed=false, drained=false; };
 std::vector<Timer*> timers;
+struct PreciseTimer { bool armed=false; };
+struct Wait { PTP_WAIT_CALLBACK callback; PVOID parameter; HANDLE target=nullptr, bound=nullptr; bool drained=false; };
+std::vector<PreciseTimer*> preciseTimers;
+std::vector<Wait*> waits;
 Timer* timer(PTP_TIMER value){return reinterpret_cast<Timer*>(value); }
+PreciseTimer* preciseTimer(HANDLE value){return reinterpret_cast<PreciseTimer*>(value);}
+Wait* wait(PTP_WAIT value){return reinterpret_cast<Wait*>(value);}
 BOOL WINAPI post(HWND w, UINT id, WPARAM a, LPARAM b) { ++postAttempts; if (failPost) return FALSE; messages.push_back({w,id,a,b}); return TRUE; }
 DWORD WINAPI windowThread(HWND, LPDWORD) { return ::GetCurrentThreadId() + (crossThread ? 1 : 0); }
 BOOL WINAPI notify(HWND w, UINT id, WPARAM a, LPARAM b) { ++notifyAttempts; if (failNotify) return FALSE; messages.push_back({w,id,a,b}); return TRUE; }
@@ -35,10 +44,42 @@ DWORD WINAPI status(UINT flags) { return queueStatus & (flags | (flags << 16)); 
 LRESULT WINAPI defaultProc(HWND, UINT, WPARAM, LPARAM) { return 0; }
 UINT_PTR WINAPI setTimer(HWND, UINT_PTR id, UINT, TIMERPROC) { ++timerCalls; return failTimer ? 0 : id; }
 BOOL WINAPI killTimer(HWND, UINT_PTR) { return TRUE; }
-BOOL WINAPI destroyWindow(HWND) { return TRUE; }
+BOOL WINAPI destroyWindow(HWND) { windowAfterResources=windowAfterResources&&timers.empty()&&waits.empty()&&preciseTimers.empty();return TRUE; }
 BOOL WINAPI unregisterClass(LPCWSTR, HINSTANCE) { return TRUE; }
 HMODULE WINAPI module(LPCWSTR) { return nullptr; }
-FARPROC WINAPI proc(HMODULE, LPCSTR) { return nullptr; } // Win7 compatible path.
+HANDLE WINAPI createPreciseTimer(LPSECURITY_ATTRIBUTES, LPCWSTR, DWORD flags, DWORD) {
+    ++preciseCreateAttempts;
+    if (flags != 0x00000002) ++failures;
+    if(failPreciseCreate)return nullptr;
+    auto* value=new PreciseTimer;preciseTimers.push_back(value);return reinterpret_cast<HANDLE>(value);
+}
+FARPROC WINAPI proc(HMODULE, LPCSTR name) {
+    return preciseApiAvailable&&std::strcmp(name,"CreateWaitableTimerExW")==0
+        ? reinterpret_cast<FARPROC>(createPreciseTimer) : nullptr;
+}
+BOOL WINAPI armPreciseTimer(HANDLE value,const LARGE_INTEGER* due,LONG,PTIMERAPCROUTINE,LPVOID,BOOL){
+    ++preciseArms;if(failPreciseArm)return FALSE;
+    preciseTimer(value)->armed=true;dueTicks=due->QuadPart;return TRUE;
+}
+BOOL WINAPI cancelPreciseTimer(HANDLE value){preciseTimer(value)->armed=false;return TRUE;}
+BOOL WINAPI closePreciseTimer(HANDLE value){
+    ++preciseHandleCloses;
+    for(auto* item:waits)if(item->bound==value)preciseHandleAfterWait=false;
+    auto* item=preciseTimer(value);preciseTimers.erase(std::find(preciseTimers.begin(),preciseTimers.end(),item));delete item;return TRUE;
+}
+PTP_WAIT WINAPI createPoolWait(PTP_WAIT_CALLBACK callback,PVOID parameter,PTP_CALLBACK_ENVIRON){
+    ++preciseWaitCreates;if(failPreciseWait)return nullptr;
+    auto* value=new Wait{callback,parameter};waits.push_back(value);return reinterpret_cast<PTP_WAIT>(value);
+}
+VOID WINAPI setPoolWait(PTP_WAIT value,HANDLE target,PFILETIME){
+    auto* item=wait(value);item->target=target;
+    if(target){item->bound=target;item->drained=false;}
+}
+VOID WINAPI waitPoolWait(PTP_WAIT,BOOL);
+VOID WINAPI closePoolWait(PTP_WAIT value){
+    ++closeAttempts;auto* item=wait(value);closeAfterDrain=closeAfterDrain&&item->drained;
+    waits.erase(std::find(waits.begin(),waits.end(),item));delete item;
+}
 ATOM WINAPI registerClass(const WNDCLASSEXW*) { return 1; }
 HWND WINAPI createWindow(DWORD,LPCWSTR,LPCWSTR,DWORD,int,int,int,int,HWND,HMENU,HINSTANCE,LPVOID) { return window; }
 UINT WINAPI registerMessage(LPCWSTR name) { return std::wstring(name).find(L"DeadlineReady") != std::wstring::npos ? WM_APP+101 : WM_APP+102; }
@@ -128,6 +169,13 @@ namespace blink {class Platform {public:content::WebThreadImpl*owner=nullptr;sta
 #define SetThreadpoolTimer fixture::setPoolTimer
 #define WaitForThreadpoolTimerCallbacks fixture::waitPoolTimer
 #define CloseThreadpoolTimer fixture::closePoolTimer
+#define SetWaitableTimer fixture::armPreciseTimer
+#define CancelWaitableTimer fixture::cancelPreciseTimer
+#define CloseHandle fixture::closePreciseTimer
+#define CreateThreadpoolWait fixture::createPoolWait
+#define SetThreadpoolWait fixture::setPoolWait
+#define WaitForThreadpoolWaitCallbacks fixture::waitPoolWait
+#define CloseThreadpoolWait fixture::closePoolWait
 #define timeBeginPeriod fixture::beginPrecision
 #define timeEndPeriod fixture::endPrecision
 #ifdef __clang__
@@ -146,6 +194,13 @@ namespace content {
 #include "retire.inc"
 }
 namespace fixture {
+VOID WINAPI waitPoolWait(PTP_WAIT value,BOOL){
+    ++drainAttempts;auto* item=wait(value);
+    const bool lockFree=::TryAcquireSRWLockExclusive(&content::continuationLock)!=FALSE;
+    drainOutsideLock=drainOutsideLock&&lockFree;if(lockFree)::ReleaseSRWLockExclusive(&content::continuationLock);
+    const auto before=messages.size();item->callback(nullptr,item->parameter,value,WAIT_OBJECT_0);
+    noLatePublication=noLatePublication&&messages.size()==before;item->target=nullptr;item->drained=true;
+}
 VOID WINAPI waitPoolTimer(PTP_TIMER value,BOOL){
     ++drainAttempts;auto*item=timer(value);
     const bool lockFree=::TryAcquireSRWLockExclusive(&content::continuationLock)!=FALSE;
@@ -153,12 +208,21 @@ VOID WINAPI waitPoolTimer(PTP_TIMER value,BOOL){
     const auto before=messages.size();item->callback(nullptr,item->parameter,value);
     noLatePublication=noLatePublication&&messages.size()==before;item->armed=false;item->drained=true;
 }
+void signalDeadline(){
+    if(content::preciseDeadlineWait&&wait(content::preciseDeadlineWait)->target){
+        auto* item=wait(content::preciseDeadlineWait);
+        preciseTimer(item->target)->armed=false;item->target=nullptr;
+        item->callback(nullptr,item->parameter,content::preciseDeadlineWait,WAIT_OBJECT_0);
+    }else signal(content::deadlineTimer);
+}
 bool dispatchOne(){if(messages.empty())return false;auto m=messages.front();messages.pop_front();content::TimerWindowWndProc(m.window,m.id,m.first,m.second);return true;}
 void drainMessages(){for(unsigned i=0;i<1024&&!messages.empty();++i)dispatchOne();expect(messages.empty(),"finite continuation chain");}
 void reset(content::WebThreadImpl&thread){
     thread.clear();content::cancelSharedTimerDeadline();messages.clear();
     {content::SharedTimerContinuationLock lock;content::pendingContinuation=0;content::continuationDeferred=false;}
-    now=100;step=0;queueStatus=0;enters=0;failPost=failTimer=failCreateTimer=failNotify=crossThread=quitPending=false;runs=destroyed=postAttempts=notifyAttempts=0;content::readyRetry=false;
+    now=100;step=0;queueStatus=0;enters=0;failPost=failTimer=failCreateTimer=failNotify=crossThread=quitPending=false;
+    failPreciseCreate=failPreciseWait=failPreciseArm=false;preciseApiAvailable=true;
+    runs=destroyed=postAttempts=notifyAttempts=0;content::readyRetry=false;
 }
 int run(){
     content::WebThreadImpl thread;blink::Platform::current()->owner=&thread;
@@ -173,35 +237,70 @@ int run(){
     thread.retireCompletedTasksForOwner();expect(destroyed==32&&thread.m_unusedTimersToDelete.size()==8&&!messages.empty(),"retirement is bounded and schedules remainder");
     drainMessages();expect(destroyed==40&&thread.m_unusedTimersToDelete.empty(),"retirement remainder progresses");
     reset(thread);thread.add(now+1.0/30.0);thread.schedulerTasks();
-    expect(content::sharedHighResolution&&precisionReferences==1,"30Hz deadline requests balanced timer precision");
+    expect(preciseCreateAttempts>0,"future deadline first probes high-resolution waitable timer support");
+    expect(content::preciseDeadlineTimer&&content::preciseDeadlineWait&&!content::sharedHighResolution&&precisionReferences==0,
+        "supported high-resolution deadline does not rely on process timer precision");
+    const auto reusableHandle=content::preciseDeadlineTimer;
+    const auto reusableWait=content::preciseDeadlineWait;
+    const auto createsBeforeRearm=preciseCreateAttempts,waitCreatesBeforeRearm=preciseWaitCreates,drainsBeforeRearm=drainAttempts;
     reset(thread);thread.add(now+1.0/60.0);thread.schedulerTasks();
-    expect(content::sharedHighResolution&&precisionReferences==1,"60Hz deadline requests balanced timer precision");
+    expect(content::preciseDeadlineTimer==reusableHandle&&content::preciseDeadlineWait==reusableWait,
+        "60Hz deadline reuses high-resolution timer and wait");
     reset(thread);thread.add(now+1.0/1000.0);thread.schedulerTasks();
-    expect(content::sharedHighResolution&&precisionReferences==1,"1000Hz deadline requests balanced timer precision");
+    expect(preciseTimer(content::preciseDeadlineTimer)->armed&&wait(content::preciseDeadlineWait)->target==content::preciseDeadlineTimer,
+        "1000Hz deadline arms the high-resolution waitable path");
+    expect(preciseCreateAttempts==createsBeforeRearm&&preciseWaitCreates==waitCreatesBeforeRearm&&drainAttempts==drainsBeforeRearm,
+        "rearming does not create resources or synchronously drain callbacks");
     reset(thread);thread.add(now+1.0);thread.schedulerTasks();
     expect(!content::sharedHighResolution&&precisionReferences==0,"distant deadline releases short-frame timer precision");
     reset(thread);
     thread.add(100.050);thread.schedulerTasks();
     expect(runs==0&&content::deadlineTicket&&dueTicks<0,"future arms relative one-shot");
-    expect(content::deadlineTimer&&!content::timerID,"reusable pool timer avoids native fallback per arm");
+    expect(content::preciseDeadlineWait&&!timer(content::deadlineTimer)->armed&&!content::timerID,
+        "high-resolution path is preferred over ordinary pool and native timers");
     const auto oldTicket=content::deadlineTicket;
-    signal(content::deadlineTimer);dispatchOne();
+    signalDeadline();dispatchOne();
     expect(runs==0&&content::deadlineTicket!=oldTicket,"early callback rearms without running future work");
     content::TimerWindowWndProc(window,content::timerFiredMessage,oldTicket,0);
     expect(runs==0&&messages.empty(),"old queued ticket cannot consume rearm");
-    now=100.051;signal(content::deadlineTimer);drainMessages();
+    wait(content::preciseDeadlineWait)->callback(nullptr,nullptr,content::preciseDeadlineWait,WAIT_OBJECT_0);
+    dispatchOne();expect(runs==0&&content::armedDeadline==100.050,
+        "late callback from a cancelled precise wait cannot run the current future deadline early");
+    now=100.051;signalDeadline();drainMessages();
     expect(runs==1&&content::armedDeadline==0,"deadline runs once then cancels timer");
+    expect(!preciseTimer(content::preciseDeadlineTimer)->armed&&!wait(content::preciseDeadlineWait)->target,
+        "completed deadline disarms both retained precise resources");
     reset(thread);failTimer=true;thread.add(101);thread.schedulerTasks();
-    expect(content::deadlineTimer&&!content::timerID,"pool timer remains armed while native timer fails");
-    failPost=true;crossThread=true;now=101;signal(content::deadlineTimer);
+    expect(wait(content::preciseDeadlineWait)->target==content::preciseDeadlineTimer&&!content::timerID,
+        "precise deadline remains armed while native timer fails");
+    failPost=true;crossThread=true;now=101;signalDeadline();
     expect(notifyAttempts==1&&content::continuationDeferred&&!messages.empty(),"failed deadline post uses cross-thread notify with deferred receipt");
     failPost=false;drainMessages();expect(runs==1,"timer/native/post combination retains exactly-once progress");
     reset(thread);failTimer=failPost=failNotify=crossThread=true;thread.add(101);thread.schedulerTasks();now=101;
-    signal(content::deadlineTimer);expect(messages.empty()&&content::continuationDeferred,"all delivery failures retain owner intent");
+    signalDeadline();expect(messages.empty()&&content::continuationDeferred,"all delivery failures retain owner intent");
     failPost=failTimer=failNotify=crossThread=false;thread.serviceOwnerOpportunity();expect(runs==1,"owner opportunity recovers retained deadline intent");
-    reset(thread);content::stopSharedTimer();failCreateTimer=true;thread.add(101);thread.schedulerTasks();
+    reset(thread);content::stopSharedTimer();failPreciseCreate=failCreateTimer=true;thread.add(101);thread.schedulerTasks();
     expect(content::timerID>1001&&!content::deadlineTimer,"pool creation failure preserves ticketed native fallback");
     now=101;content::TimerWindowWndProc(window,WM_TIMER,content::timerID,0);expect(runs==1,"pool creation failure does not lose future task");
+    reset(thread);content::stopSharedTimer();thread.updateSharedTimer();
+    reset(thread);failPreciseArm=true;thread.add(now+1.0/60.0);thread.schedulerTasks();
+    expect(content::preciseDeadlineTimer&&content::preciseDeadlineWait&&!wait(content::preciseDeadlineWait)->target
+        &&timer(content::deadlineTimer)->armed&&!content::timerID&&content::sharedHighResolution&&precisionReferences==1,
+        "failed precise arm uses retained pool timer with balanced compatibility precision");
+    now+=1.0/60.0;signalDeadline();drainMessages();expect(runs==1&&precisionReferences==0,"failed precise arm fallback progresses and releases precision");
+    reset(thread);content::stopSharedTimer();failPreciseWait=true;thread.add(101);thread.schedulerTasks();
+    expect(!content::preciseDeadlineTimer&&!content::preciseDeadlineWait&&preciseTimers.empty()&&waits.empty()
+        &&timer(content::deadlineTimer)->armed,"failed wait creation closes unused precise timer and falls back to pool timer");
+    now=101;signalDeadline();drainMessages();expect(runs==1,"wait creation fallback does not lose future task");
+    reset(thread);content::stopSharedTimer();failPreciseArm=failCreateTimer=true;thread.add(101);thread.schedulerTasks();
+    expect(content::preciseDeadlineWait&&!wait(content::preciseDeadlineWait)->target&&!content::deadlineTimer&&content::timerID>1001,
+        "failed precise arm and pool creation keep ticketed native timer fallback");
+    now=101;content::TimerWindowWndProc(window,WM_TIMER,content::timerID,0);
+    expect(runs==1,"precise arm plus pool creation failure does not lose future task");
+    reset(thread);content::stopSharedTimer();preciseApiAvailable=false;const auto attemptsBeforeUnavailable=preciseCreateAttempts;
+    thread.add(now+1.0/30.0);thread.schedulerTasks();
+    expect(preciseCreateAttempts==attemptsBeforeUnavailable&&!content::preciseDeadlineTimer&&timer(content::deadlineTimer)->armed
+        &&content::sharedHighResolution&&precisionReferences==1,"unavailable precise API keeps Win7-compatible pool timer and short-deadline precision");
     reset(thread);content::stopSharedTimer();thread.updateSharedTimer();
     reset(thread);
     for(unsigned i=0;i<64;++i)thread.add();
@@ -233,16 +332,18 @@ int run(){
         "ready retry progresses now while retaining future deadline");
     reset(thread);thread.add(101);thread.schedulerTasks();const auto stale=content::deadlineTicket;
     content::stopSharedTimer();content::TimerWindowWndProc(window,WM_TIMER,stale,0);
-    expect(runs==0&&!content::deadlineTimer&&!content::retryTimer&&drainOutsideLock&&closeAfterDrain&&noLatePublication,"stop drains callbacks outside publication lock before closing timers");
+    expect(runs==0&&!content::preciseDeadlineTimer&&!content::preciseDeadlineWait&&!content::deadlineTimer&&!content::retryTimer
+        &&drainOutsideLock&&closeAfterDrain&&noLatePublication&&preciseHandleAfterWait&&windowAfterResources,
+        "stop drains callbacks outside publication lock before closing wait, handle, timers and window");
     content::initializeOffScreenTimerWindow();thread.updateSharedTimer();
     content::TimerWindowWndProc(window,WM_TIMER,stale,0);expect(runs==0,"same reused HWND rejects old native ticket");
-    reset(thread);content::stopSharedTimer();failCreateTimer=failTimer=true;thread.add(101);thread.schedulerTasks();
+    reset(thread);content::stopSharedTimer();failPreciseCreate=failCreateTimer=failTimer=true;thread.add(101);thread.schedulerTasks();
     expect(content::deadlineTicket==0&&content::deadlineRetry,"total native scheduling failure retains truthful retry intent");
-    failCreateTimer=failTimer=false;thread.serviceOwnerOpportunity();expect(content::deadlineTicket!=0&&runs==0,"actual owner opportunity retries future deadline without early execution");
+    failPreciseCreate=failCreateTimer=failTimer=false;thread.serviceOwnerOpportunity();expect(content::deadlineTicket!=0&&runs==0,"actual owner opportunity retries future deadline without early execution");
     reset(thread);content::continuationSerial=(std::numeric_limits<UINT_PTR>::max)();
     expect(!content::requestSharedTimerContinuation(),"continuation serial never wraps");
     content::stopSharedTimer();
-    expect(precisionReferences==0&&timers.empty(),"stop balances timer precision and releases both timer objects");
+    expect(precisionReferences==0&&timers.empty()&&waits.empty()&&preciseTimers.empty(),"stop balances timer precision and releases all timer and wait objects");
     std::printf("assertions=%d failures=%d source-only-delivery=true\n",assertions,failures);return failures?1:0;
 }
 }
@@ -251,7 +352,9 @@ int main(int argc,char**argv){
         if(std::strcmp(argv[1],"--close-order")&&std::strcmp(argv[1],"--callback-drain"))return 2;
         content::WebThreadImpl thread;blink::Platform::current()->owner=&thread;thread.add(101);thread.schedulerTasks();
         content::stopSharedTimer();
-        fixture::expect(fixture::closeAfterDrain&&fixture::drainAttempts==2&&fixture::closeAttempts==2,"both timer closes follow callback drain");
+        fixture::expect(fixture::closeAfterDrain&&fixture::drainAttempts==3&&fixture::closeAttempts==3
+            &&fixture::preciseHandleCloses==1&&fixture::preciseHandleAfterWait&&fixture::windowAfterResources,
+            "timer and wait closes follow callback drain before precise handle and window close");
         fixture::expect(fixture::drainOutsideLock&&fixture::noLatePublication,"late callbacks run outside publication lock and cannot publish after stop");
         thread.clear();return fixture::failures?1:0;
     }

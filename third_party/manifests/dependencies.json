@@ -4,6 +4,22 @@
   "releaseReady": false,
   "dependencies": [
     {
+      "id": "miniblink-precise-deadline-patch",
+      "source": "third_party/patches/miniblink/0029-retain-precise-shared-timer-wait.patch",
+      "version": "PR129 precise deadline repair candidate; frozen prebuilt unchanged",
+      "license": "same terms as Miniblink source",
+      "sourceNormalization": "lf",
+      "sha256": "ecb417d6ef481861fa9de1b27843e3a6adf62435340b4297c5e7d05b0621f24a"
+    },
+    {
+      "id": "miniblink-precise-deadline-source",
+      "source": "third_party/manifests/miniblink-precise-deadline-20261030.json",
+      "version": "PR129 precise deadline repair candidate; frozen prebuilt unchanged",
+      "license": "source identity record",
+      "sourceNormalization": "lf",
+      "sha256": "0536424b0056e080ae4122cf6adfab521b5c8a2360b9cb9ab6591a6b2fe58999"
+    },
+    {
       "id": "soui-source",
       "source": "third_party/sources/soui/SOURCE-MANIFEST.json",
       "version": "SOUI 2.9.0.3 historical import snapshot",

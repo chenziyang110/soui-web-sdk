@@ -1,0 +1,116 @@
+diff --git a/third_party/sources/miniblink/content/browser/SharedTimerWin.h b/third_party/sources/miniblink/content/browser/SharedTimerWin.h
+index d082568c7..3e2d2c7b9 100644
+--- a/third_party/sources/miniblink/content/browser/SharedTimerWin.h
++++ b/third_party/sources/miniblink/content/browser/SharedTimerWin.h
+@@ -15,6 +15,8 @@ static UINT_PTR continuationSerial = 0, pendingContinuation = 0;
+ static UINT_PTR nativeTimerSerial = 1001, timerID = 0, deadlineTicket = 0;
+ static bool continuationClosed = true, continuationDeferred = false, deadlineRetry = false, readyRetry = false;
+ static PTP_TIMER deadlineTimer = nullptr, retryTimer = nullptr;
++static HANDLE preciseDeadlineTimer = nullptr;
++static PTP_WAIT preciseDeadlineWait = nullptr;
+ static double armedDeadline = 0;
+ static bool sharedHighResolution = false;
+ class SharedTimerContinuationLock {
+@@ -74,6 +76,12 @@ static VOID CALLBACK sharedDeadlineSignaled(PTP_CALLBACK_INSTANCE, PVOID, PTP_TI
+     if (::GetWindowThreadProcessId(window, nullptr) != ::GetCurrentThreadId())
+         ::SendNotifyMessageW(window, message, ticket, 0);
+ }
++static VOID CALLBACK sharedPreciseDeadlineSignaled(PTP_CALLBACK_INSTANCE, PVOID, PTP_WAIT, TP_WAIT_RESULT)
++{
++    // A retired arm may signal after rearm. Publish only the current ticket;
++    // the owner rechecks its absolute deadline before running Blink work.
++    sharedDeadlineSignaled(nullptr, nullptr, nullptr);
++}
+ static VOID CALLBACK sharedPublicationRetry(PTP_CALLBACK_INSTANCE, PVOID, PTP_TIMER)
+ {
+     HWND window = nullptr;
+@@ -105,6 +113,8 @@ static void cancelSharedTimerDeadline()
+         SharedTimerContinuationLock lock;
+         deadlineTicket = 0; armedDeadline = 0;
+         deadlineRetry = false;
++        if (preciseDeadlineWait) ::SetThreadpoolWait(preciseDeadlineWait, nullptr, nullptr);
++        if (preciseDeadlineTimer) ::CancelWaitableTimer(preciseDeadlineTimer);
+         if (deadlineTimer) ::SetThreadpoolTimer(deadlineTimer, nullptr, 0, 0);
+     }
+     // Static publication state survives rearm; no per-deadline callback drain.
+@@ -200,6 +210,21 @@ static void serviceSharedTimerOwnerOpportunity(unsigned long long deadlineQpc =
+ }
+ static void createSharedDeadlineTimer()
+ {
++    // Threadpool timers do not expose the high-resolution waitable-timer flag.
++    // timeBeginPeriod alone can be ignored for invisible Windows 11 windows.
++    if (!preciseDeadlineTimer) {
++        typedef HANDLE (WINAPI* CreateTimerEx)(LPSECURITY_ATTRIBUTES, LPCWSTR, DWORD, DWORD);
++        const auto createTimerEx = reinterpret_cast<CreateTimerEx>(::GetProcAddress(
++            ::GetModuleHandleW(L"kernel32.dll"), "CreateWaitableTimerExW"));
++        if (createTimerEx) preciseDeadlineTimer = createTimerEx(nullptr, nullptr, 0x00000002, TIMER_ALL_ACCESS);
++        if (preciseDeadlineTimer) {
++            preciseDeadlineWait = ::CreateThreadpoolWait(sharedPreciseDeadlineSignaled, nullptr, nullptr);
++            if (!preciseDeadlineWait) {
++                ::CloseHandle(preciseDeadlineTimer);
++                preciseDeadlineTimer = nullptr;
++            }
++        }
++    }
+     if (!deadlineTimer) deadlineTimer = ::CreateThreadpoolTimer(sharedDeadlineSignaled, nullptr, nullptr);
+     if (!retryTimer) retryTimer = ::CreateThreadpoolTimer(sharedPublicationRetry, nullptr, nullptr);
+ }
+@@ -215,22 +240,33 @@ static void setSharedTimerFireDeadline(double deadline)
+     const double remaining = deadline - monotonicallyIncreasingTime();
+     const double milliseconds = remaining > 0 ? ceil(remaining * 1000.0) : 1.0;
+     const UINT fallback = milliseconds >= 0x7fffffff ? 0x7fffffff : static_cast<UINT>(milliseconds);
+-    // Include30/60Hz frame deadlines; a16ms threshold would miss both and
+-    // regress the former high-resolution waitable-timer path on modern Windows.
+-    setSharedTimerPrecision(remaining > 0 && remaining <= 0.050);
++    bool preciseArmed = false;
+     {
+         SharedTimerContinuationLock lock;
+         deadlineTicket = ticket; armedDeadline = deadline;
+-        // Immediate signal is serialized until the timer's deadline is retained.
+-        if (deadlineTimer) {
+-            FILETIME due = sharedTimerDue(remaining);
+-            ::SetThreadpoolTimer(deadlineTimer, &due, 0, 0);
++        // Reuse both handles without waiting for callbacks on every rearm.
++        if (preciseDeadlineWait) {
++            LARGE_INTEGER due;
++            const double ticks = remaining > 0 ? ceil(remaining * 10000000.0) : 1.0;
++            due.QuadPart = -static_cast<LONGLONG>(ticks < 9.0e18 ? ticks : 9.0e18);
++            if (::SetWaitableTimer(preciseDeadlineTimer, &due, 0, nullptr, nullptr, FALSE)) {
++                ::SetThreadpoolWait(preciseDeadlineWait, preciseDeadlineTimer, nullptr);
++                preciseArmed = true;
++            }
++        }
++        // Win7/unsupported flags and failed precise arms keep the old fallback.
++        if (!preciseArmed) {
++            setSharedTimerPrecision(remaining > 0 && remaining <= 0.050);
++            if (deadlineTimer) {
++                FILETIME due = sharedTimerDue(remaining);
++                ::SetThreadpoolTimer(deadlineTimer, &due, 0, 0);
++            }
+         }
+     }
+     // Native fallback is needed only when the reusable timer cannot be created.
+     // Deadline callback posting failure owns a separate reusable retry timer.
+-    if (!deadlineTimer && ::SetTimer(timerWindowHandle, ticket, fallback, nullptr)) timerID = ticket;
+-    else if (!deadlineTimer) {
++    if (!preciseArmed && !deadlineTimer && ::SetTimer(timerWindowHandle, ticket, fallback, nullptr)) timerID = ticket;
++    else if (!preciseArmed && !deadlineTimer) {
+         SharedTimerContinuationLock lock;
+         armedDeadline = 0; deadlineTicket = 0;
+         deadlineRetry = true; // Owner opportunity must retry future-only work too.
+@@ -250,6 +286,15 @@ void stopSharedTimer()
+     cancelSharedTimerDeadline();
+     // Closed publication state prevents callbacks from scheduling more work.
+     // Draining takes no publication lock and happens before window destruction.
++    if (preciseDeadlineWait) {
++        ::WaitForThreadpoolWaitCallbacks(preciseDeadlineWait, TRUE);
++        ::CloseThreadpoolWait(preciseDeadlineWait);
++        preciseDeadlineWait = nullptr;
++    }
++    if (preciseDeadlineTimer) {
++        ::CloseHandle(preciseDeadlineTimer);
++        preciseDeadlineTimer = nullptr;
++    }
+     if (deadlineTimer) {
+         ::WaitForThreadpoolTimerCallbacks(deadlineTimer, TRUE);
+         ::CloseThreadpoolTimer(deadlineTimer);

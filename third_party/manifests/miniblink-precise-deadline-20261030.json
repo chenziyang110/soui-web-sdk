@@ -1,0 +1,70 @@
+{
+  "schema": "soui.miniblink-precise-deadline-candidate/v1",
+  "baselineCommit": "07def067b30c286866d20458c3a06630a0e5c4d0",
+  "hashScope": "raw-file-bytes",
+  "status": "source-and-limited-regression-verification",
+  "prebuiltReplaced": false,
+  "publicBuildVerified": false,
+  "performanceVerified": false,
+  "packageSizeVerified": false,
+  "patch": {
+    "path": "third_party/patches/miniblink/0029-retain-precise-shared-timer-wait.patch",
+    "bytes": 6541,
+    "sha256": "ecb417d6ef481861fa9de1b27843e3a6adf62435340b4297c5e7d05b0621f24a"
+  },
+  "files": [
+    {
+      "path": "third_party/sources/miniblink/content/browser/SharedTimerWin.h",
+      "before": {
+        "bytes": 12971,
+        "sha256": "c65bb354abab8b0a9524e80466071be6b8e409618e577e9189e9b6c1657b4643"
+      },
+      "after": {
+        "bytes": 15275,
+        "sha256": "845814c88d48d33ed90fdf19db2029403a396947b2309c25d535809246730a51"
+      }
+    }
+  ],
+  "verification": {
+    "schedulerContinuation": {
+      "architectures": [
+        "x64",
+        "x86"
+      ],
+      "ctestPassedPerArchitecture": 3,
+      "mainAssertionsPerArchitecture": 64,
+      "failures": 0,
+      "dependencies": "deterministic Win32 replacements; no physical timing proof"
+    },
+    "syntheticRegression": {
+      "scope": "x64 hidden desktop fixed CPU/DOM/Bridge fixture; not physical presentation or input latency",
+      "rounds": 8,
+      "defaultBudgetBaselineBatches": [
+        1685,
+        1693
+      ],
+      "defaultBudgetOriginalBatches": [
+        1163,
+        1162
+      ],
+      "defaultBudgetRepairedBatches": [
+        1718,
+        1709
+      ],
+      "budget1000OriginalBatches": 1157,
+      "budget1000RepairedBatches": 1706,
+      "resolved": true
+    },
+    "kernelBuild": {
+      "mode": "recompile affected real TU and relink immutable frozen objects; not public Build qualification",
+      "architectures": [
+        "x64",
+        "x86"
+      ],
+      "sourceAndFrozenInputsUnchanged": true,
+      "x86RepairedRuntimeShortSmoke": true
+    }
+  },
+  "historicalImportUnchanged": true,
+  "design": "docs/adr/0148-retain-precise-shared-timer-wait.md"
+}
