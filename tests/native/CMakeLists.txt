@@ -592,6 +592,7 @@ add_subdirectory(host_frame_policy)
 add_subdirectory(native_trace_ui_lease)
 
 add_subdirectory(webview2_owner_policy)
+add_subdirectory(provider_deadline)
 # Pure checks of the production WebView2 owner counters and preparation getter.
 add_executable(soui_webview2_native_observation_tests webview2_native_observation_tests.cpp)
 target_include_directories(soui_webview2_native_observation_tests PRIVATE

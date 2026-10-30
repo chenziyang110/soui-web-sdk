@@ -62,8 +62,9 @@ public:
     void startTriggerTasks();
     void schedulerTasks();
 
-    void fire();
-    void serviceOwnerOpportunity(); // Optional bounded SDK message-pump hook.
+    void fire(unsigned long long deadlineQpc = 0, unsigned long long qpcFrequency = 0);
+    // A nonzero frequency enables the provider cutoff; zero deadline is valid.
+    bool serviceOwnerOpportunity(unsigned long long deadlineQpc = 0, unsigned long long qpcFrequency = 0);
     void retireCompletedTasksForOwner(); // At most32 already-completed tasks; no task execution.
     void fireForShutdown();
     
@@ -89,8 +90,9 @@ private:
     friend class BlinkPlatformImpl;
     friend class WebTimerBase;
 
-    void schedulerTasks(bool allowMainThreadBudget);
-    void startTriggerTasks(unsigned* remainingAdmissions, double admissionDeadline);
+    void schedulerTasks(bool allowMainThreadBudget, unsigned long long deadlineQpc = 0, unsigned long long qpcFrequency = 0);
+    void startTriggerTasks(unsigned* remainingAdmissions, double admissionDeadline,
+        unsigned long long deadlineQpc = 0, unsigned long long qpcFrequency = 0, bool minimumAdmission = false);
     bool hasPendingTaskAdmission();
     void fireOnExit();
     void waitForExit();

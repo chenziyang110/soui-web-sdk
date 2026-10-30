@@ -20,6 +20,7 @@
 #define WKE_INPUT_UI_CAP_SCENE_INPUT_IDENTITY 0x80ULL
 #define WKE_INPUT_UI_CAP_VISIBILITY 0x100ULL
 #define WKE_INPUT_UI_CAP_EXTERNAL_TRACE_PRODUCER 0x200ULL
+#define WKE_INPUT_UI_CAP_OWNER_DEADLINE 0x400ULL
 
 #define WKE_INPUT_UI_OK 0
 #define WKE_INPUT_UI_INVALID 1
@@ -116,6 +117,10 @@ typedef struct _wkeInputUiApi {
        Borrowed internal writers require their loop to outlive the borrow. */
     int (WKE_INPUT_UI_CALL* retainTraceProducer)(void);
     void (WKE_INPUT_UI_CALL* releaseTraceProducer)(void);
+    /* Optional owner deadline in this process's QPC timebase. OK reports only
+       immediately resumable work; UNAVAILABLE guarantees no provider work ran. */
+    int (WKE_INPUT_UI_CALL* serviceOwnerOpportunityUntil)(unsigned long long deadlineQpc,
+        unsigned long long qpcFrequency, unsigned int* workRemaining);
 } wkeInputUiApi;
 #pragma pack(pop)
 

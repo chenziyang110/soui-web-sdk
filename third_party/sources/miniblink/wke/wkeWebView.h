@@ -145,7 +145,7 @@ public:
     virtual bool prepareNativeWindowClose();
     void quiescePaintCallbacks();
     bool paintCallbacksDrained() const;
-    static void serviceDeferredPaintCloses();
+    static bool serviceDeferredPaintCloses(unsigned long long deadlineQpc = 0, unsigned long long qpcFrequency = 0);
     static bool preparePaintShutdown();
     static bool resumePaintRuntime();
 

@@ -27,7 +27,7 @@ private:
 };
 static void initializeOffScreenTimerWindow();
 static void setSharedTimerFireDeadline(double);
-static void sharedTimerFiredFunction();
+static void sharedTimerFiredFunction(unsigned long long deadlineQpc = 0, unsigned long long qpcFrequency = 0);
 static void setSharedTimerPrecision(bool required)
 {
     if (required == sharedHighResolution) return;
@@ -173,7 +173,7 @@ static LRESULT CALLBACK TimerWindowWndProc(HWND hWnd, UINT message, WPARAM wPara
     CheckReEnter::decrementEnterCount();
     return 0;
 }
-static void sharedTimerFiredFunction()
+static void sharedTimerFiredFunction(unsigned long long deadlineQpc, unsigned long long qpcFrequency)
 {
     {
         SharedTimerContinuationLock lock;
@@ -182,9 +182,9 @@ static void sharedTimerFiredFunction()
         readyRetry = false;
     }
     auto* thread = static_cast<WebThreadImpl*>(blink::Platform::current()->currentThread());
-    if (thread) thread->fire();
+    if (thread) thread->fire(deadlineQpc, qpcFrequency);
 }
-static void serviceSharedTimerOwnerOpportunity()
+static void serviceSharedTimerOwnerOpportunity(unsigned long long deadlineQpc = 0, unsigned long long qpcFrequency = 0)
 {
     bool deferred = false;
     {
@@ -194,7 +194,7 @@ static void serviceSharedTimerOwnerOpportunity()
     if (deferred && !CheckReEnter::getEnterCount()) {
         cancelSharedTimerDeadline();
         CheckReEnter::incrementEnterCount();
-        sharedTimerFiredFunction();
+        sharedTimerFiredFunction(deadlineQpc, qpcFrequency);
         CheckReEnter::decrementEnterCount();
     }
 }

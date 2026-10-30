@@ -1,5 +1,11 @@
 # 导入之后的 Miniblink 修补
 
+## 2026-10-30 显式 provider 共享截止：0028
+
+`0028-provider-shared-deadline.patch` 以 `5dab3c948fbe35e725789c0b061af0a50358ae91` 为前件，记录 SDK/provider 两份私有 ABI 头及六个内核文件的原始字节差异。保留 v1 prefix，无参入口和默认预算 0；新尾能力为显式共享预算传入同一个 QPC 截止，scheduler 与关闭扫描各保最低进展，有限 sweep 结束后停止立即续接。
+
+八文件正反向原字节重放和当前树反向非写入检查通过；两架构相关源夹具、x64 SDK 编译通过，细节及保留失败见 ADR-0147 与 `third_party/manifests/miniblink-provider-deadline-20261030.json`。源码增加 5821B，不是 DLL/运行目录/ZIP 增量。用户要求减少耗时测试，本轮不启动完整内核重建，不替换 prebuilt 或用户安装；真实载荷、输入和性能另验。
+
 基线为本 SDK 的 `2d09a2ff` 中 `third_party/sources/miniblink`，其上游来源仍由 `SOURCE-MANIFEST.json` 和原有 `LOCAL-CHANGES.patch` 记录。历史导入清单不改写成后续补丁的验证结果。这里按顺序保存导入之后的源码和动态绑定头补丁；当前交付已经包含这些补丁，重新导入时先恢复原有本地改动，再依次应用。
 
 | 补丁 | 原因 | 当前验证状态 |

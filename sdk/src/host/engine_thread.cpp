@@ -83,6 +83,18 @@ void engine_admission::unregister_input(engine_thread& engine, const std::shared
   engine.unregister_input_service(service);
 }
 void engine_admission::notify_input(engine_thread& engine) noexcept { engine.notify_input_service(); }
+bool engine_admission::install_owner_opportunity(engine_thread& engine, engine_thread::task legacy,
+    std::function<bool(std::chrono::steady_clock::time_point)> bounded) {
+  {
+    std::lock_guard<std::mutex> lock(engine.mutex_);
+    if (engine.state_ != engine_thread_state::stopped
+        && engine.owner_thread_ != std::this_thread::get_id()) return false;
+    if (engine.owner_opportunity_in_flight_) engine.owner_opportunity_replaced_ = true;
+    engine.owner_opportunity_.swap(legacy);
+    engine.owner_opportunity_until_.swap(bounded);
+  }
+  return true;
+}
 std::uint64_t engine_admission::commit_input(engine_thread& engine, std::atomic<std::uint64_t>& head,
     std::atomic<bool>& pending, bool publish_head, bool recovery) { return engine.commit_input_order(head, pending, publish_head, recovery); }
 std::uint64_t engine_admission::input_cutoff(const engine_thread& engine) {
@@ -245,10 +257,13 @@ bool engine_thread::post(task work) {
 }
 
 bool engine_thread::set_owner_opportunity(task callback) {
+  std::function<bool(std::chrono::steady_clock::time_point)> retired_bounded;
   {
     std::lock_guard<std::mutex> lock(mutex_);
     if (state_ != engine_thread_state::stopped && owner_thread_ != std::this_thread::get_id()) return false;
+    if (owner_opportunity_in_flight_) owner_opportunity_replaced_ = true;
     owner_opportunity_.swap(callback);
+    owner_opportunity_until_.swap(retired_bounded);
   }
   return true; // Previous callback/captures retire outside mutex_.
 }
@@ -646,9 +661,30 @@ void engine_thread::run(initializer initialize, task shutdown) noexcept {
       }
     }
 #endif
-    if (owner_opportunity_) {
+    if (owner_opportunity_ || owner_opportunity_until_) {
       const detail::trace_duration provider_cost(input_trace::duration_metric::engine_provider);
-      try { owner_opportunity_(); } catch (...) { /* Cooperative provider boundary. */ }
+      // Swap, rather than copy, keeps the active captures alive if provider
+      // code reenters either setter. No allocation occurs on the normal turn.
+      task active_legacy;
+      std::function<bool(std::chrono::steady_clock::time_point)> active_bounded;
+      active_legacy.swap(owner_opportunity_);
+      active_bounded.swap(owner_opportunity_until_);
+      owner_opportunity_in_flight_ = true;
+      owner_opportunity_replaced_ = false;
+      bool more = false;
+      try {
+        const auto deadline = turn_budget.limit((std::chrono::steady_clock::time_point::max)());
+        if (deadline != (std::chrono::steady_clock::time_point::max)() && active_bounded) {
+          more = active_bounded(deadline);
+        } else if (active_legacy) active_legacy();
+      } catch (...) { /* Cooperative provider boundary. */ }
+      owner_opportunity_in_flight_ = false;
+      if (!owner_opportunity_replaced_) {
+        active_legacy.swap(owner_opportunity_);
+        active_bounded.swap(owner_opportunity_until_);
+        if (more) notify_input_service();
+      }
+      // Replaced captures retire here, outside mutex_, after their invocation.
     }
     { const detail::trace_duration input_cost(input_trace::duration_metric::engine_input);
       service_one_input(turn_budget.limit((std::chrono::steady_clock::time_point::max)())); }

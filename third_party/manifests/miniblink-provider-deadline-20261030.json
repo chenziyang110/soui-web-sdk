@@ -1,0 +1,274 @@
+{
+  "schema": "soui.miniblink-provider-source-candidate/v1",
+  "baselineCommit": "5dab3c948fbe35e725789c0b061af0a50358ae91",
+  "status": "source-and-related-native-contracts",
+  "hashScope": "raw-file-bytes",
+  "binaryKernelRebuilt": false,
+  "performanceVerified": false,
+  "packageSizeVerified": false,
+  "defaultSharedTurnBudgetUs": 0,
+  "patch": {
+    "path": "third_party/patches/miniblink/0028-provider-shared-deadline.patch",
+    "bytes": 20082,
+    "sha256": "19efdf2075f655a3cbb5e29bf3216672f1d5312a4c466591468871e17d58f425"
+  },
+  "files": [
+    {
+      "path": "third_party/include/miniblink/input_ui_api.h",
+      "before": {
+        "bytes": 5596,
+        "sha256": "7a3452976cb96e523f4c46475394498e0555387f0da324c3a31e1e6e53c8fec3"
+      },
+      "after": {
+        "bytes": 5968,
+        "sha256": "e5a19a80863dd33b2900b48a79204e4d82fb7e33be186bcd050a50c3bab28401"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/wke/InputUiApi.h",
+      "before": {
+        "bytes": 5596,
+        "sha256": "7a3452976cb96e523f4c46475394498e0555387f0da324c3a31e1e6e53c8fec3"
+      },
+      "after": {
+        "bytes": 5968,
+        "sha256": "e5a19a80863dd33b2900b48a79204e4d82fb7e33be186bcd050a50c3bab28401"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/wke/InputUiApi.cpp",
+      "before": {
+        "bytes": 13593,
+        "sha256": "bd309b1b9ef601da2d94b1ba164d0a06aeb27331cbbf90af65d9be2d2d38e1b9"
+      },
+      "after": {
+        "bytes": 15573,
+        "sha256": "3c6ffc5b7ef73d4766047bfee38f735ed84b0a1ca97d97a0891751712b1bf876"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/wke/wkeWebView.h",
+      "before": {
+        "bytes": 14384,
+        "sha256": "120586be7f967c453c7f8e8261937d64b03c28429c79da659a9efcb03c5e24eb"
+      },
+      "after": {
+        "bytes": 14455,
+        "sha256": "caa6dd34dea59ffdab650b26f5db5a80a8369b09f5361ee45609d5b530cdafe4"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/wke/wkeWebView.cpp",
+      "before": {
+        "bytes": 50847,
+        "sha256": "e90ca4401a2110978490040601418f6f9a90654bae56ed8279c2f03688096e32"
+      },
+      "after": {
+        "bytes": 51529,
+        "sha256": "ceaa4ac4ac1b53a585927ec1fc77a7d49fe75807ded6c70e4285d13a05ea2179"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/content/browser/SharedTimerWin.h",
+      "before": {
+        "bytes": 12716,
+        "sha256": "2cdb88ed22ddcf5486b921fd35fe0de1ad2ba901a1eb6466a82e81e79bcb1356"
+      },
+      "after": {
+        "bytes": 12971,
+        "sha256": "c65bb354abab8b0a9524e80466071be6b8e409618e577e9189e9b6c1657b4643"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.h",
+      "before": {
+        "bytes": 5434,
+        "sha256": "85b5a51bc7ab68c43e68f93b89ac3a832ac70d300a2a391f3f9c7ec4408bb266"
+      },
+      "after": {
+        "bytes": 5798,
+        "sha256": "62bad7aad629a91d4348bcffb4b68fe60f6a9685d186fa24208ee034b6b3f03c"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp",
+      "before": {
+        "bytes": 31696,
+        "sha256": "829f558fa74e3d36425118e89b8d36aa860a476f016fd197f342ae6e37c86eea"
+      },
+      "after": {
+        "bytes": 33421,
+        "sha256": "bd0d3f79292bf880979895f5f314b88ce0a6bd901a2e5ac9a0eacea918a370b5"
+      }
+    }
+  ],
+  "sourceDeltaBytes": 5821,
+  "sdkFiles": [
+    {
+      "path": "sdk/include/soui/host/engine_thread.h",
+      "bytes": 5252,
+      "sha256": "e3daeecdda136ea185dd24f1ecef237361f4d94a3d341a8bfc45ea059cf62413"
+    },
+    {
+      "path": "sdk/src/host/engine_admission.h",
+      "bytes": 6064,
+      "sha256": "683f851d3785d02dd27f2732df3b0137771d2175bcc09096f1ad21abd6606cb2"
+    },
+    {
+      "path": "sdk/src/host/engine_thread.cpp",
+      "bytes": 32384,
+      "sha256": "c93b4dfb814bc339e96e48f76dc3a7754918f8c086c8845f46eb25db1f00841f"
+    },
+    {
+      "path": "sdk/src/host/soui_miniblink_host.cpp",
+      "bytes": 274671,
+      "sha256": "14ce56df6a47a145005c8796613b43e8d8a1eb2a8b615351fadf01bb4614ab98"
+    },
+    {
+      "path": "sdk/src/host/provider_owner_deadline.h",
+      "bytes": 4285,
+      "sha256": "d2f3bb00385528823e5d6b5cb862e4c7c911d8fd89ecc5bd42222ea528348583"
+    }
+  ],
+  "verification": {
+    "architectures": [
+      "x64",
+      "x86"
+    ],
+    "workerTestsPerArchitecture": 43,
+    "sharedTimerContinuationTestsPerArchitecture": 3,
+    "providerCloseTestsPerArchitecture": 9,
+    "providerCloseAssertionsPerArchitecture": 166,
+    "actualEngineMailboxTestsPerArchitecture": 1,
+    "actualEngineSelectedSourceCount": 143,
+    "x64ActualSdk": {
+      "buildPassed": true,
+      "testsPassed": true,
+      "buildElapsedMs": 28252,
+      "testElapsedMs": 232,
+      "selectedSourceImmutable": true,
+      "selectedSources": 143
+    },
+    "authoredSourceGate": {
+      "passed": true,
+      "counts": {
+        "failed": 0,
+        "derived": 53,
+        "selectedObjects": 9,
+        "total": 80,
+        "workerSelectedObjects": 1,
+        "workerDerived": 17
+      },
+      "actualCompilationQualified": false
+    },
+    "writerRebinding": {
+      "generatedComparisons": 10,
+      "nativeTestsRerun": false
+    },
+    "rawReplay": {
+      "forward": true,
+      "reverse": true,
+      "currentTreeNonwritingReverseCheck": true
+    }
+  },
+  "preservedFailures": [
+    "Initial worker shutdown assertion ran before final capture retirement; corrected fixture check timing, production unchanged.",
+    "Actual SDK r1 failed before compile at stale dragdata source pin from ADR0146. r2 failed before compile at ctor_shell source pin shifted by this patch. Both exact original fixture slices were proven unchanged and unique, only full-file pins/offsets refreshed; original mandatory HEX checks retained.",
+    "Standalone setup and link attempts remain in external evidence; current r4 includes the callback reentry lifetime correction."
+  ],
+  "limits": [
+    "Controlled-clock source projections and explicit platform/view dependencies do not qualify complete production TUs, actual loaded kernel, physical input timing or FPS.",
+    "Only x64 actual SDK library compiled here; x86 tests compile actual Engine/mailbox source in a standalone fixture.",
+    "User requested reduced time-consuming tests; full fresh kernel and matched consumer builds deferred. No claim of binary/runtime/ZIP size improvement.",
+    "Default budget remains0, older private provider tables take legacy fallback. No Electron or desktop automation.",
+    "Existing SOURCE observer generated-UTF8 support gap remains; authored graph report is source-only, not compilation qualification."
+  ],
+  "evidence": {
+    "rootRole": "external-task-evidence",
+    "receipts": [
+      {
+        "path": "native/provider-worker-r1/result.json",
+        "bytes": 10867,
+        "sha256": "98299234a1e2ce93e215a4f540a775b751e93526fbf5c4a01867e0106e2ba260"
+      },
+      {
+        "path": "native/provider-worker-r2/result.json",
+        "bytes": 5586,
+        "sha256": "212e098cb351093296514353c725073cb9b3951afaef1319e7efba5261571fbe"
+      },
+      {
+        "path": "native/provider-sdk-r1/result.json",
+        "bytes": 1443,
+        "sha256": "205cdb49f9b68c3c71df30433a141b2d5769006203677669cbe35713c70ae5d3"
+      },
+      {
+        "path": "native/provider-sdk-r2/result.json",
+        "bytes": 1443,
+        "sha256": "f71e2cc921e7dadf7f316a1a747e9d355aeeee81bca3c0952d9a142186089a79"
+      },
+      {
+        "path": "native/provider-sdk-r3/result.json",
+        "bytes": 2620,
+        "sha256": "f0427bf1c1b410108b45156093be2f3c041b447be779972decaedf5f0902ad5d"
+      },
+      {
+        "path": "native/provider-sdk-standalone-r4/result.json",
+        "bytes": 5636,
+        "sha256": "37f1e133b0e4b3655f61c1a473cb74957b8bd6327fc2eab11c327413cd8e4b4a"
+      },
+      {
+        "path": "native/provider-close-r1/result.json",
+        "bytes": 7117,
+        "sha256": "9e0723c7a1c7b32ece01ceea7c735b0811abe0c67c92d4da358df41272906b06"
+      },
+      {
+        "path": "native/provider-source-gate-r1/report.json",
+        "bytes": 9435,
+        "sha256": "a46b387637fcd1897cb28b526d719132c4c1e375fdb6ea300d51f8852014868e"
+      },
+      {
+        "path": "native/provider-source-gate-r1/provider-rebinding.json",
+        "bytes": 5224,
+        "sha256": "1bd48cc4c87c2489f38c3245ffcb6cdb78d2e4c52ce21733ede9fc9a82aaec99"
+      },
+      {
+        "path": "native/provider-patch-replay-r1/result.json",
+        "bytes": 3354,
+        "sha256": "efb9156f80d01262ff0c379edb1beb76cf9e205f1a027d973f53fc4c3b2fae38"
+      },
+      {
+        "path": "native/provider-kernel-preparation-audit-r1/result.json",
+        "bytes": 25113,
+        "sha256": "6a74641d71cd3a34453f3c72b5df512b100dac7b976211ccd72e42ad6993be7f"
+      },
+      {
+        "path": "native/provider-kernel-preparation-audit-r1/provenance.json",
+        "bytes": 656561,
+        "sha256": "86d39923a0b05a6c117ab7d5539ea2f8ae65ce47f389dd5737291e5a317a399f"
+      },
+      {
+        "path": "native/provider-independent-review-r1/review.json",
+        "bytes": 10120,
+        "sha256": "36f981d0a94af4d6c065040a30e2e1287a0f65b2564d83cd5b10720e1e9e8edb"
+      },
+      {
+        "path": "native/provider-independent-review-r1/review.md",
+        "bytes": 4347,
+        "sha256": "535969e73cdc9f2b9f37f6d3307bcd9e5d6964f2c5e4e7aabed8069e6756defe"
+      },
+      {
+        "path": "native/provider-independent-review-r1/evidence-checks.json",
+        "bytes": 63953,
+        "sha256": "d8f0e0f899b61799c54805b0c8af1f2a1960c4b76e4ad76f6692af04e4d3b8cb"
+      }
+    ]
+  },
+  "releaseReady": false,
+  "independentReview": {
+    "status": "complete-for-recorded-source-and-targeted-evidence",
+    "unresolvedP1P2": 0,
+    "evidenceChecksPassed": 127,
+    "evidenceChecksTotal": 127,
+    "resolvedFinding": "Active callable could be destroyed during same-owner replacement; now retained by local swap until invocation return."
+  }
+}

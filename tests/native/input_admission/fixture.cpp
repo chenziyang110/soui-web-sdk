@@ -6,6 +6,7 @@
 #include "applied_identity_cases.h"
 #include "visibility_cases.h"
 #include "deadline_cases.h"
+#include "provider_cases.h"
 #include "../../../sdk/src/host/cooperative_turn_budget.h"
 #include <atomic>
 #include <cstdlib>
@@ -98,6 +99,7 @@ int main() {
     input_terminal_cases::run(fail_next_allocation);
     host_visibility_cases::run();
     input_deadline_cases::run_mailbox();
+    provider_deadline_cases::run();
 
     struct mock_service final : detail::engine_input_service {
       std::atomic<bool> ready{false}; std::atomic<unsigned> calls{0};

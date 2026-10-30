@@ -36,6 +36,16 @@ static const unsigned mainThreadTaskBudget = 32;
 
 namespace {
 
+// Only an explicitly bounded provider call samples QPC. WTF remains the task
+// due-time clock; its epoch is never compared with this execution cutoff.
+bool providerDeadlineReached(unsigned long long deadlineQpc, unsigned long long qpcFrequency)
+{
+    if (!qpcFrequency) return false;
+    LARGE_INTEGER now;
+    return !::QueryPerformanceCounter(&now) || now.QuadPart < 0
+        || static_cast<unsigned long long>(now.QuadPart) >= deadlineQpc;
+}
+
 class WebThreadCriticalSectionOwner {
 public:
     explicit WebThreadCriticalSectionOwner(CRITICAL_SECTION* section) : m_section(section)
@@ -468,7 +478,8 @@ bool WebThreadImpl::hasPendingTaskAdmission()
     return pending;
 }
 
-void WebThreadImpl::startTriggerTasks(unsigned* remainingAdmissions, double admissionDeadline)
+void WebThreadImpl::startTriggerTasks(unsigned* remainingAdmissions, double admissionDeadline,
+    unsigned long long deadlineQpc, unsigned long long qpcFrequency, bool minimumAdmission)
 {
 #if (defined ENABLE_WKE) && (ENABLE_WKE == 1)
     wke::freeV8TempObejctOnOneFrameBefore();
@@ -478,7 +489,10 @@ void WebThreadImpl::startTriggerTasks(unsigned* remainingAdmissions, double admi
         remainingAdmissions = &workerAdmissions;
         admissionDeadline = monotonicallyIncreasingTime() + maxDurationOfFiringTimers;
     }
-    while (!remainingAdmissions || (*remainingAdmissions && monotonicallyIncreasingTime() < admissionDeadline)) {
+    unsigned admitted = 0;
+    while (!remainingAdmissions || (*remainingAdmissions
+        && ((minimumAdmission && !admitted)
+            || (monotonicallyIncreasingTime() < admissionDeadline && !providerDeadlineReached(deadlineQpc, qpcFrequency))))) {
         TaskPair* selected = nullptr;
         ::EnterCriticalSection(&m_taskPairsMutex);
         // Three eligible priority admissions and one oldest-deadline share.
@@ -504,6 +518,7 @@ void WebThreadImpl::startTriggerTasks(unsigned* remainingAdmissions, double admi
         postDelayedTaskImpl(pair->location, payload, pair->delayMs, &pair->createTime, pair->priority, &pair->heapInsertionOrder, &pair->trace,
             pair->hasAbsoluteDeadline ? &pair->scheduling.deadline : nullptr);
         if (remainingAdmissions) --*remainingAdmissions;
+        ++admitted;
     }
 }
 bool WebThreadImpl::isCurrentThread() const 
@@ -692,12 +707,12 @@ void WebThreadImpl::enableScheduler()
     if (!m_firingTimers) updateSharedTimer(); // Reopen after a consumed nested continuation.
 }
 
-void WebThreadImpl::fire()
+void WebThreadImpl::fire(unsigned long long deadlineQpc, unsigned long long qpcFrequency)
 {
     // Normal main-thread admission belongs to the same cooperative budget.
     if (!m_isMainThread)
         startTriggerTasks();
-    schedulerTasks();
+    schedulerTasks(true, deadlineQpc, qpcFrequency);
 }
 
 void WebThreadImpl::fireForShutdown()
@@ -735,7 +750,7 @@ void WebThreadImpl::schedulerTasks()
     schedulerTasks(true);
 }
 
-void WebThreadImpl::schedulerTasks(bool allowMainThreadBudget)
+void WebThreadImpl::schedulerTasks(bool allowMainThreadBudget, unsigned long long deadlineQpc, unsigned long long qpcFrequency)
 {
     // Do a re-entrancy check.
     if (m_firingTimers > 0 || m_retiringCompletedTasks /*|| m_suspendTimerQueue*/)
@@ -752,6 +767,9 @@ void WebThreadImpl::schedulerTasks(bool allowMainThreadBudget)
     unsigned remainingAdmissions = mainThreadTaskBudget;
     const bool boundedTurn = allowMainThreadBudget && !m_willExit;
     const bool boundedMainThread = boundedTurn && m_isMainThread;
+    const bool boundedProvider = boundedMainThread && qpcFrequency;
+    if (!boundedProvider) qpcFrequency = 0; // Shutdown and worker drains retain their old contract.
+    const bool readyBeforeAdmission = !m_timerHeap.empty() && m_timerHeap[0]->m_nextFireTime <= fireTime;
 
 #ifdef _DEBUG
     std::vector<WebTimerBase*> dumpTimerHeap = m_timerHeap;
@@ -761,12 +779,14 @@ void WebThreadImpl::schedulerTasks(bool allowMainThreadBudget)
     }
 #endif
 
-    startTriggerTasks(boundedTurn ? &remainingAdmissions : nullptr, mainThreadTimeToQuit); // 如果不加这句，且下面的循环在本线程不停添加定时器，则startTriggerTasks里的就没机会执行了。
+    startTriggerTasks(boundedTurn ? &remainingAdmissions : nullptr, mainThreadTimeToQuit,
+        deadlineQpc, qpcFrequency, boundedProvider && !readyBeforeAdmission); // 如果不加这句，且下面的循环在本线程不停添加定时器，则startTriggerTasks里的就没机会执行了。
     
     fireTime = monotonicallyIncreasingTime();
     bool hasFire = false;
     while (!m_timerHeap.empty() && (m_timerHeap[0]->m_nextFireTime <= fireTime || m_willExit)
-        && (!boundedTurn || monotonicallyIncreasingTime() < mainThreadTimeToQuit)) {
+        && (!boundedTurn || monotonicallyIncreasingTime() < mainThreadTimeToQuit || (boundedProvider && !completedTasks))
+        && (!boundedProvider || !completedTasks || !providerDeadlineReached(deadlineQpc, qpcFrequency))) {
         hasFire = true;
         auto* selected = m_timerIndex.select(fireTime, m_willExit);
         ASSERT(selected);
@@ -788,7 +808,7 @@ void WebThreadImpl::schedulerTasks(bool allowMainThreadBudget)
         didProcessTasks();
         ++completedTasks;
 
-        startTriggerTasks(boundedTurn ? &remainingAdmissions : nullptr, mainThreadTimeToQuit);
+        startTriggerTasks(boundedTurn ? &remainingAdmissions : nullptr, mainThreadTimeToQuit, deadlineQpc, qpcFrequency);
         fireTime = monotonicallyIncreasingTime();
 
         // A callback or observer may exceed this cooperative budget. Keep
@@ -796,7 +816,8 @@ void WebThreadImpl::schedulerTasks(bool allowMainThreadBudget)
         const bool mainThreadBudgetReached = allowMainThreadBudget && m_isMainThread && !m_willExit
             && (completedTasks >= mainThreadTaskBudget || mainThreadTimeToQuit < monotonicallyIncreasingTime());
         if (!m_firingTimers || timeToQuit < monotonicallyIncreasingTime() || mainThreadBudgetReached
-            || (allowMainThreadBudget && !m_willExit && completedTasks >= mainThreadTaskBudget)) {
+            || (allowMainThreadBudget && !m_willExit && completedTasks >= mainThreadTaskBudget)
+            || providerDeadlineReached(deadlineQpc, qpcFrequency)) {
             break;
         }
     }
@@ -815,15 +836,17 @@ void WebThreadImpl::schedulerTasks(bool allowMainThreadBudget)
         requestSharedTimerContinuation();
 }
 
-void WebThreadImpl::serviceOwnerOpportunity()
+bool WebThreadImpl::serviceOwnerOpportunity(unsigned long long deadlineQpc, unsigned long long qpcFrequency)
 {
-    if (!m_isMainThread || m_willExit || m_firingTimers || m_retiringCompletedTasks || !isCurrentThread() || CheckReEnter::getEnterCount()) return;
+    if (!m_isMainThread || m_willExit || m_firingTimers || m_retiringCompletedTasks || !isCurrentThread() || CheckReEnter::getEnterCount()) return false;
     retireCompletedTasksForOwner();
     if (hasPendingTaskAdmission() || (!m_timerHeap.empty() && m_timerHeap[0]->m_nextFireTime <= monotonicallyIncreasingTime())) {
         CheckReEnter::incrementEnterCount();
-        sharedTimerFiredFunction();
+        sharedTimerFiredFunction(deadlineQpc, qpcFrequency);
         CheckReEnter::decrementEnterCount();
-    } else serviceSharedTimerOwnerOpportunity();
+    } else serviceSharedTimerOwnerOpportunity(deadlineQpc, qpcFrequency);
+    return !m_willExit && (hasPendingTaskAdmission()
+        || (!m_timerHeap.empty() && m_timerHeap[0]->m_nextFireTime <= monotonicallyIncreasingTime()));
 }
 
 void WebThreadImpl::updateSharedTimer()

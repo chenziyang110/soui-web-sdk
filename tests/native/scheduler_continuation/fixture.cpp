@@ -87,9 +87,10 @@ public:
     std::vector<WebTimerBase*> m_timerHeap;
     std::vector<WebTimerBase*> m_unusedTimersToDelete;
     task_scheduling::DeadlinePriorityIndex m_timerIndex;
-    void schedulerTasks();void schedulerTasks(bool);void updateSharedTimer();void serviceOwnerOpportunity();void enableScheduler();void retireCompletedTasksForOwner();
-    void fire(){schedulerTasks();} bool isCurrentThread()const{return true;}
-    void deleteUnusedTimers(){} void startTriggerTasks(unsigned*,double){}
+    void schedulerTasks();void schedulerTasks(bool, unsigned long long = 0, unsigned long long = 0);void updateSharedTimer();
+    bool serviceOwnerOpportunity(unsigned long long = 0, unsigned long long = 0);void enableScheduler();void retireCompletedTasksForOwner();
+    void fire(unsigned long long deadlineQpc = 0, unsigned long long qpcFrequency = 0){schedulerTasks(true, deadlineQpc, qpcFrequency);} bool isCurrentThread()const{return true;}
+    void deleteUnusedTimers(){} void startTriggerTasks(unsigned*,double,unsigned long long = 0,unsigned long long = 0,bool = false){}
     bool hasPendingTaskAdmission(){return false;}void willProcessTasks(){}void didProcessTasks(){}
     void add(double deadline=fixture::now,std::function<void()> callback={}){
         auto* timer = new WebTimerBase{this,deadline,200,std::move(callback),{}};
@@ -139,6 +140,7 @@ namespace blink {class Platform {public:content::WebThreadImpl*owner=nullptr;sta
 #pragma clang diagnostic pop
 #endif
 namespace content {
+#include "provider-cutoff.inc"
 #include "scheduler.inc"
 #include "enable.inc"
 #include "retire.inc"

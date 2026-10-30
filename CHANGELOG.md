@@ -1,5 +1,10 @@
 # 变更记录
 
+## 未发布：MiniBlink 显式 provider 共享截止
+
+- 显式共享预算沿内部 callback 和私有 ABI 尾扩展传入 scheduler 与关闭/重试扫描；保留旧无参入口、默认预算 0 与 shutdown 排空。
+- 补齐过期截止的最低进展和有限扫描续接，采用保守的剩余 duration/QPC 桥，避免混用时钟 epoch 或 idle 自激唤醒；callback 重入替换保活到调用返回。两架构相关 Engine/调度/provider 回归及 x64 SDK 编译通过，完整新内核、消费者、实际性能和载荷尺寸另验。
+
 ## 未发布：MiniBlink内部绝对截止时间
 
 - 定时任务和帧提交沿内部 WebThread/TaskPair/timer 链保留原始 WTF 绝对时间，消除转成整数毫秒后再取时间重建目标的偏移；相对 API、异步执行、优先级、预算和显式退出排空保持。

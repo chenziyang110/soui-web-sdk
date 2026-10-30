@@ -45,7 +45,10 @@ foreach(case IN ITEMS scheduler-new-bad-alloc event-null native-launch-zero regi
     scheduler-absolute-same-thread scheduler-absolute-cross-thread scheduler-absolute-late-admission
     scheduler-absolute-inputs-same-thread scheduler-absolute-inputs-cross-thread scheduler-absolute-huge-cancel
     scheduler-absolute-oom-owner scheduler-absolute-oom-producer scheduler-absolute-oom-admission
-    scheduler-absolute-exit-rejection scheduler-absolute-future-shutdown)
+    scheduler-absolute-exit-rejection scheduler-absolute-future-shutdown
+    provider-deadline-expired-ready provider-deadline-callback-crosses provider-deadline-clock-failure
+    provider-deadline-shared-recovery provider-deadline-legacy-no-qpc provider-deadline-pending-minimum
+    provider-deadline-ready-before-admission provider-deadline-future-no-spin provider-deadline-shutdown-drain)
   if(case STREQUAL "native-wait-fails" OR case STREQUAL "worker-self-delete"
       OR case STREQUAL "concurrent-registry-close" OR case STREQUAL "registry-live-fence")
     add_test(NAME kernel.native.worker-lifetime.${case} COMMAND "${CMAKE_COMMAND}"

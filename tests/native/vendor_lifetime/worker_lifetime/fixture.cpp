@@ -42,6 +42,15 @@ content::WebThreadImpl* committed = nullptr;
 constexpr UINT schedulerProbeMessage = WM_APP + 0x31;
 std::atomic<bool> controlledSchedulerClock{false}, workerSchedulerProbe{false};
 std::atomic<double> schedulerSeconds{100.0};
+std::atomic<bool> controlledProviderClock{false}, failProviderClock{false};
+std::atomic<unsigned long long> providerQpc{1000}, providerClockReads{0};
+BOOL WINAPI sourceQueryPerformanceCounter(LARGE_INTEGER* value) {
+    if (!controlledProviderClock) return ::QueryPerformanceCounter(value);
+    ++providerClockReads;
+    if (failProviderClock) return FALSE;
+    value->QuadPart = static_cast<LONGLONG>(providerQpc.load());
+    return TRUE;
+}
 std::atomic<unsigned> schedulerTaskRuns{0}, nativeProbeRuns{0}, nativeProbeSeen{0};
 std::atomic<unsigned> workerFirstYieldRuns{0}, workerMidChainWaits{0};
 
@@ -272,6 +281,7 @@ void operator delete[](void* pointer, std::size_t) noexcept { ::operator delete(
 #define UnregisterClassW fixture::sourceUnregisterClass
 #undef DefWindowProc
 #define DefWindowProc fixture::sourceDefWindowProc
+#define QueryPerformanceCounter fixture::sourceQueryPerformanceCounter
 #define currentTime fixtureSchedulerTime
 #define monotonicallyIncreasingTime fixtureSchedulerTime
 #include "content/web_impl_win/WebThreadImpl.cpp"
@@ -308,6 +318,7 @@ int CheckReEnter::s_kEnterCount = 0;
 #undef DestroyWindow
 #undef UnregisterClassW
 #undef DefWindowProc
+#undef QueryPerformanceCounter
 #undef currentTime
 #undef monotonicallyIncreasingTime
 
@@ -1162,7 +1173,126 @@ bool schedulerAbsoluteExitCase(bool futureDrain) {
         && absoluteValueReleased(receipts[0], futureDrain ? 1 : 0)
         && absoluteValueReleased(receipts[1], futureDrain ? 1 : 0) && cleanWorkerReceipt();
 }
+struct ProviderReceipt {
+    std::atomic<unsigned> runs{0}, disposed{0};
+    std::atomic<DWORD> runTid{0};
+};
+class ProviderTask final : public blink::WebThread::Task {
+public:
+    ProviderTask(ProviderReceipt& receipt, unsigned qpcCost = 0) : receipt_(receipt), qpcCost_(qpcCost) {}
+    ~ProviderTask() override { ++receipt_.disposed; }
+    void run() override { ++receipt_.runs; receipt_.runTid = ::GetCurrentThreadId(); providerQpc += qpcCost_; }
+private:
+    ProviderReceipt& receipt_;
+    unsigned qpcCost_;
+};
+bool providerReceiptComplete(const ProviderReceipt& receipt) {
+    return receipt.runs == 1 && receipt.disposed == 1 && receipt.runTid == engineThreadId;
+}
+bool providerReadyCase(bool legacy, bool crossCutoff, bool qpcFailure, bool recovery) {
+    std::array<ProviderReceipt, 4> receipts{};
+    auto* thread = schedulerMainThread();
+    if (!thread || !nativeWindow) return false;
+    controlledProviderClock = true;
+    failProviderClock = qpcFailure;
+    for (unsigned i = 0; i < 3; ++i) thread->postTask(FROM_HERE, new ProviderTask(receipts[i], crossCutoff ? 2 : 0));
+    thread->postDelayedTask(FROM_HERE, new ProviderTask(receipts[3]), 1000);
+    const auto before = providerClockReads.load();
+    bool more = false;
+    if (recovery) {
+        content::continuationDeferred = true;
+        content::readyRetry = true;
+        content::serviceSharedTimerOwnerOpportunity(0, 1000);
+        more = true; // This entry has no result; observe remaining work below.
+    } else more = thread->serviceOwnerOpportunity(crossCutoff ? 1001 : 0, legacy ? 0 : 1000);
+    const bool first = receipts[0].runs == 1 && receipts[1].runs == (legacy ? 1u : 0u)
+        && receipts[2].runs == (legacy ? 1u : 0u) && receipts[3].runs == 0
+        && more == !legacy && (!recovery || (!content::continuationDeferred && !content::readyRetry));
+    bool drained = true;
+    if (!legacy) {
+        drained = thread->serviceOwnerOpportunity(0, 1000) && receipts[1].runs == 1 && receipts[2].runs == 0;
+        drained = !thread->serviceOwnerOpportunity(0, 1000) && receipts[2].runs == 1 && drained;
+    }
+    const bool noFutureWake = !thread->serviceOwnerOpportunity(0, 1000) && receipts[3].runs == 0;
+    const bool bridgeClockUsed = legacy ? providerClockReads == before : providerClockReads > before;
+    const bool exactlyReady = providerReceiptComplete(receipts[0]) && providerReceiptComplete(receipts[1])
+        && providerReceiptComplete(receipts[2]);
+    failProviderClock = false;
+    delete thread; // The unchanged explicit drain owns the future task.
+    return first && drained && noFutureWake && bridgeClockUsed && exactlyReady
+        && providerReceiptComplete(receipts[3]) && absoluteMainOwnerReleased();
+}
+struct ProviderBatch {
+    content::WebThreadImpl* thread;
+    ProviderReceipt* receipts;
+    unsigned count;
+    long long delay;
+};
+unsigned __stdcall postProviderBatch(void* value) {
+    auto& batch = *static_cast<ProviderBatch*>(value);
+    for (unsigned i = 0; i < batch.count; ++i)
+        batch.thread->postDelayedTask(FROM_HERE, new ProviderTask(batch.receipts[i]), batch.delay);
+    return 0;
+}
+bool providerAdmissionCase(bool readyFirst, bool futureOnly) {
+    std::array<ProviderReceipt, 6> receipts{};
+    auto* thread = schedulerMainThread();
+    if (!thread || !nativeWindow) return false;
+    controlledProviderClock = true;
+    if (readyFirst) for (unsigned i = 0; i < 2; ++i) thread->postTask(FROM_HERE, new ProviderTask(receipts[i]));
+    ProviderBatch batch{thread, receipts.data() + 2, 4, futureOnly ? 1000 : 0};
+    HANDLE producer = reinterpret_cast<HANDLE>(::_beginthreadex(nullptr, 0, postProviderBatch, &batch, 0, nullptr));
+    if (!producer || ::WaitForSingleObject(producer, boundMs) != WAIT_OBJECT_0) ::ExitProcess(98);
+    DWORD code = STILL_ACTIVE;
+    bool passed = ::GetExitCodeThread(producer, &code) && code == 0 && ::CloseHandle(producer);
+    if (readyFirst) {
+        passed = thread->serviceOwnerOpportunity(0, 1000) && receipts[0].runs == 1 && receipts[1].runs == 0
+            && thread->timerHeap().size() == 1 && passed;
+        passed = thread->serviceOwnerOpportunity(0, 1000) && receipts[1].runs == 1
+            && thread->timerHeap().empty() && passed;
+    }
+    for (unsigned i = 0; i < 4; ++i) {
+        const bool more = thread->serviceOwnerOpportunity(0, 1000);
+        passed = more == (i < 3) && receipts[i + 2].runs == (futureOnly ? 0u : 1u) && passed;
+        if (futureOnly) passed = thread->timerHeap().size() == i + 1 && passed;
+        else for (unsigned j = i + 1; j < 4; ++j) passed = receipts[j + 2].runs == 0 && passed;
+    }
+    passed = !thread->serviceOwnerOpportunity(0, 1000) && passed;
+    delete thread;
+    for (unsigned i = readyFirst ? 0 : 2; i < receipts.size(); ++i)
+        passed = providerReceiptComplete(receipts[i]) && passed;
+    return passed && absoluteMainOwnerReleased();
+}
+bool providerShutdownCase() {
+    std::array<ProviderReceipt, 96> receipts{};
+    auto* thread = schedulerMainThread();
+    if (!thread || !nativeWindow) return false;
+    controlledProviderClock = true;
+    for (auto& receipt : receipts) thread->postTask(FROM_HERE, new ProviderTask(receipt));
+    bool passed = thread->serviceOwnerOpportunity(0, 1000) && receipts[0].runs == 1 && receipts[1].runs == 0;
+    const auto reads = providerClockReads.load();
+    thread->fireForShutdown();
+    passed = providerClockReads == reads && passed;
+    unsigned completed = 0;
+    for (const auto& receipt : receipts) {
+        completed += receipt.runs.load();
+        passed = receipt.runs == 1 && receipt.runTid == engineThreadId && passed;
+    }
+    note("provider-shutdown-callbacks-drained", completed);
+    delete thread;
+    for (const auto& receipt : receipts) passed = providerReceiptComplete(receipt) && passed;
+    return passed && absoluteMainOwnerReleased();
+}
 bool dispatch() {
+    if (isCase("provider-deadline-expired-ready")) return providerReadyCase(false, false, false, false);
+    if (isCase("provider-deadline-callback-crosses")) return providerReadyCase(false, true, false, false);
+    if (isCase("provider-deadline-clock-failure")) return providerReadyCase(false, false, true, false);
+    if (isCase("provider-deadline-shared-recovery")) return providerReadyCase(false, false, false, true);
+    if (isCase("provider-deadline-legacy-no-qpc")) return providerReadyCase(true, false, false, false);
+    if (isCase("provider-deadline-pending-minimum")) return providerAdmissionCase(false, false);
+    if (isCase("provider-deadline-ready-before-admission")) return providerAdmissionCase(true, false);
+    if (isCase("provider-deadline-future-no-spin")) return providerAdmissionCase(false, true);
+    if (isCase("provider-deadline-shutdown-drain")) return providerShutdownCase();
     if (isCase("scheduler-new-bad-alloc") || isCase("event-null") || isCase("native-launch-zero")
         || isCase("registry-reserve-bad-alloc") || isCase("startup-tls-failure")) return startupFailureCase();
     if (isCase("normal-worker-close")) return normalCase();

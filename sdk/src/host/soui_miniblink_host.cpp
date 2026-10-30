@@ -5,6 +5,7 @@
 #include "bridge_pending_script.h"
 #include "bridge_request_budget.h"
 #include "engine_admission.h"
+#include "provider_owner_deadline.h"
 #include "input_mailbox.h"
 #include "input_sequence.h"
 #include "applied_input_identity.h"
@@ -752,11 +753,32 @@ host_result acquire_runtime(const host_config& config, engine_thread*& thread, v
 #ifdef WKE_INPUT_UI_ABI_VERSION
       if (wkeGetInputUiApi) {
         const auto* scheduling = wkeGetInputUiApi(WKE_INPUT_UI_ABI_VERSION);
-        if (scheduling && scheduling->abiVersion == WKE_INPUT_UI_ABI_VERSION
-            && scheduling->structSize >= offsetof(wkeInputUiApi, serviceOwnerOpportunity) + sizeof(scheduling->serviceOwnerOpportunity)
-            && (scheduling->capabilities & WKE_INPUT_UI_CAP_OWNER_OPPORTUNITY) && scheduling->serviceOwnerOpportunity) {
-          const auto opportunity = scheduling->serviceOwnerOpportunity;
-          if (!engine_owner->set_owner_opportunity([opportunity] { opportunity(); })) return false;
+        const auto callbacks = detail::select_provider_owner_callbacks(scheduling);
+        if (callbacks.legacy) {
+          std::function<bool(std::chrono::steady_clock::time_point)> bounded;
+          if (callbacks.bounded) {
+            bounded = [callbacks, fallback_reported = false](std::chrono::steady_clock::time_point deadline) mutable {
+              const auto serviced = detail::service_provider_owner_until(callbacks, deadline,
+                  [](std::uint64_t& qpc_before, std::uint64_t& frequency,
+                      std::chrono::steady_clock::time_point& steady_after) noexcept {
+                    LARGE_INTEGER qpc{}, qpc_frequency{};
+                    if (!QueryPerformanceFrequency(&qpc_frequency) || qpc_frequency.QuadPart <= 0
+                        || !QueryPerformanceCounter(&qpc) || qpc.QuadPart < 0) return false;
+                    steady_after = std::chrono::steady_clock::now();
+                    qpc_before = static_cast<std::uint64_t>(qpc.QuadPart);
+                    frequency = static_cast<std::uint64_t>(qpc_frequency.QuadPart);
+                    return true;
+                  });
+              if (!fallback_reported && (serviced.status == detail::provider_owner_service_status::bridge_fallback
+                  || serviced.status == detail::provider_owner_service_status::provider_fallback)) {
+                OutputDebugStringA("SOUI: provider shared deadline unavailable; legacy owner opportunity used.\n");
+                fallback_reported = true;
+              }
+              return serviced.work_remaining;
+            };
+          } else OutputDebugStringA("SOUI: loaded kernel has no provider shared deadline; legacy owner opportunity retained.\n");
+          if (!detail::engine_admission::install_owner_opportunity(*engine_owner,
+              [opportunity = callbacks.legacy] { opportunity(); }, std::move(bounded))) return false;
         }
       }
 #endif

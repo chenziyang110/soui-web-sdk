@@ -12,7 +12,7 @@ set(public_ctor_shell_fixture_pins
   "extracted/paint_lifetime.h|1282|5de48a8f43527374883d44a00b6d95c315b607955b405e8c4c4c27dc68396f20"
 )
 set(public_ctor_shell_source_pins
-  "third_party/sources/miniblink/wke/wkeWebView.cpp|50847|e90ca4401a2110978490040601418f6f9a90654bae56ed8279c2f03688096e32"
+  "third_party/sources/miniblink/wke/wkeWebView.cpp|51529|ceaa4ac4ac1b53a585927ec1fc77a7d49fe75807ded6c70e4285d13a05ea2179"
   "third_party/sources/miniblink/content/browser/WebPage.cpp|15670|76ba0665b50fd423c71cd81edee73942971b2c01358efb64709c8e94ef41c5f6"
   "third_party/sources/miniblink/net/ActivatingObjCheck.cpp|3100|e2f04bfb9fb0e8ddcf9a7a8bbd9ca5598ce21dccd5f035863f8630702a64842b"
   "third_party/sources/miniblink/net/ActivatingObjCheck.h|660|6e85aca76332bc4fc2e5465501c97d76a240b9bee3021b0d24a88a8cedbe28f6"
@@ -20,12 +20,12 @@ set(public_ctor_shell_source_pins
 )
 # source|source-byte-offset|fixture|fixture-byte-offset|exact-byte-length
 set(public_ctor_shell_ranges
-  "third_party/sources/miniblink/wke/wkeWebView.cpp|7420|extracted/web_view.h|76|1303"
-  "third_party/sources/miniblink/wke/wkeWebView.cpp|8724|extracted/web_view.h|1456|298"
-  "third_party/sources/miniblink/wke/wkeWebView.cpp|9023|extracted/web_view.h|1831|159"
-  "third_party/sources/miniblink/wke/wkeWebView.cpp|37953|extracted/web_view.h|2067|2173"
-  "third_party/sources/miniblink/wke/wkeWebView.cpp|37711|extracted/web_view.h|4317|241"
-  "third_party/sources/miniblink/wke/wkeWebView.cpp|40127|extracted/web_view.h|4635|84"
+  "third_party/sources/miniblink/wke/wkeWebView.cpp|8102|extracted/web_view.h|76|1303"
+  "third_party/sources/miniblink/wke/wkeWebView.cpp|9406|extracted/web_view.h|1456|298"
+  "third_party/sources/miniblink/wke/wkeWebView.cpp|9705|extracted/web_view.h|1831|159"
+  "third_party/sources/miniblink/wke/wkeWebView.cpp|38635|extracted/web_view.h|2067|2173"
+  "third_party/sources/miniblink/wke/wkeWebView.cpp|38393|extracted/web_view.h|4317|241"
+  "third_party/sources/miniblink/wke/wkeWebView.cpp|40809|extracted/web_view.h|4635|84"
   "third_party/sources/miniblink/content/browser/WebPage.cpp|1179|extracted/web_page.h|85|632"
   "third_party/sources/miniblink/content/browser/WebPage.cpp|1812|extracted/web_page.h|803|246"
   "third_party/sources/miniblink/wke/wkeWebView.cpp|4017|extracted/paint_lifetime.h|76|326"

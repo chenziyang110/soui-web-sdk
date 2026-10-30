@@ -1,0 +1,392 @@
+diff --git a/third_party/include/miniblink/input_ui_api.h b/third_party/include/miniblink/input_ui_api.h
+index bf9097e60..ab34262c9 100644
+--- a/third_party/include/miniblink/input_ui_api.h
++++ b/third_party/include/miniblink/input_ui_api.h
+@@ -20,6 +20,7 @@
+ #define WKE_INPUT_UI_CAP_SCENE_INPUT_IDENTITY 0x80ULL
+ #define WKE_INPUT_UI_CAP_VISIBILITY 0x100ULL
+ #define WKE_INPUT_UI_CAP_EXTERNAL_TRACE_PRODUCER 0x200ULL
++#define WKE_INPUT_UI_CAP_OWNER_DEADLINE 0x400ULL
+ 
+ #define WKE_INPUT_UI_OK 0
+ #define WKE_INPUT_UI_INVALID 1
+@@ -116,6 +117,10 @@ typedef struct _wkeInputUiApi {
+        Borrowed internal writers require their loop to outlive the borrow. */
+     int (WKE_INPUT_UI_CALL* retainTraceProducer)(void);
+     void (WKE_INPUT_UI_CALL* releaseTraceProducer)(void);
++    /* Optional owner deadline in this process's QPC timebase. OK reports only
++       immediately resumable work; UNAVAILABLE guarantees no provider work ran. */
++    int (WKE_INPUT_UI_CALL* serviceOwnerOpportunityUntil)(unsigned long long deadlineQpc,
++        unsigned long long qpcFrequency, unsigned int* workRemaining);
+ } wkeInputUiApi;
+ #pragma pack(pop)
+ 
+diff --git a/third_party/sources/miniblink/content/browser/SharedTimerWin.h b/third_party/sources/miniblink/content/browser/SharedTimerWin.h
+index 9dc976dbf..d082568c7 100644
+--- a/third_party/sources/miniblink/content/browser/SharedTimerWin.h
++++ b/third_party/sources/miniblink/content/browser/SharedTimerWin.h
+@@ -27,7 +27,7 @@ private:
+ };
+ static void initializeOffScreenTimerWindow();
+ static void setSharedTimerFireDeadline(double);
+-static void sharedTimerFiredFunction();
++static void sharedTimerFiredFunction(unsigned long long deadlineQpc = 0, unsigned long long qpcFrequency = 0);
+ static void setSharedTimerPrecision(bool required)
+ {
+     if (required == sharedHighResolution) return;
+@@ -173,7 +173,7 @@ static LRESULT CALLBACK TimerWindowWndProc(HWND hWnd, UINT message, WPARAM wPara
+     CheckReEnter::decrementEnterCount();
+     return 0;
+ }
+-static void sharedTimerFiredFunction()
++static void sharedTimerFiredFunction(unsigned long long deadlineQpc, unsigned long long qpcFrequency)
+ {
+     {
+         SharedTimerContinuationLock lock;
+@@ -182,9 +182,9 @@ static void sharedTimerFiredFunction()
+         readyRetry = false;
+     }
+     auto* thread = static_cast<WebThreadImpl*>(blink::Platform::current()->currentThread());
+-    if (thread) thread->fire();
++    if (thread) thread->fire(deadlineQpc, qpcFrequency);
+ }
+-static void serviceSharedTimerOwnerOpportunity()
++static void serviceSharedTimerOwnerOpportunity(unsigned long long deadlineQpc = 0, unsigned long long qpcFrequency = 0)
+ {
+     bool deferred = false;
+     {
+@@ -194,7 +194,7 @@ static void serviceSharedTimerOwnerOpportunity()
+     if (deferred && !CheckReEnter::getEnterCount()) {
+         cancelSharedTimerDeadline();
+         CheckReEnter::incrementEnterCount();
+-        sharedTimerFiredFunction();
++        sharedTimerFiredFunction(deadlineQpc, qpcFrequency);
+         CheckReEnter::decrementEnterCount();
+     }
+ }
+diff --git a/third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp b/third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp
+index fc7b41e21..307d70e14 100644
+--- a/third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp
++++ b/third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp
+@@ -36,6 +36,16 @@ static const unsigned mainThreadTaskBudget = 32;
+ 
+ namespace {
+ 
++// Only an explicitly bounded provider call samples QPC. WTF remains the task
++// due-time clock; its epoch is never compared with this execution cutoff.
++bool providerDeadlineReached(unsigned long long deadlineQpc, unsigned long long qpcFrequency)
++{
++    if (!qpcFrequency) return false;
++    LARGE_INTEGER now;
++    return !::QueryPerformanceCounter(&now) || now.QuadPart < 0
++        || static_cast<unsigned long long>(now.QuadPart) >= deadlineQpc;
++}
++
+ class WebThreadCriticalSectionOwner {
+ public:
+     explicit WebThreadCriticalSectionOwner(CRITICAL_SECTION* section) : m_section(section)
+@@ -468,7 +478,8 @@ bool WebThreadImpl::hasPendingTaskAdmission()
+     return pending;
+ }
+ 
+-void WebThreadImpl::startTriggerTasks(unsigned* remainingAdmissions, double admissionDeadline)
++void WebThreadImpl::startTriggerTasks(unsigned* remainingAdmissions, double admissionDeadline,
++    unsigned long long deadlineQpc, unsigned long long qpcFrequency, bool minimumAdmission)
+ {
+ #if (defined ENABLE_WKE) && (ENABLE_WKE == 1)
+     wke::freeV8TempObejctOnOneFrameBefore();
+@@ -478,7 +489,10 @@ void WebThreadImpl::startTriggerTasks(unsigned* remainingAdmissions, double admi
+         remainingAdmissions = &workerAdmissions;
+         admissionDeadline = monotonicallyIncreasingTime() + maxDurationOfFiringTimers;
+     }
+-    while (!remainingAdmissions || (*remainingAdmissions && monotonicallyIncreasingTime() < admissionDeadline)) {
++    unsigned admitted = 0;
++    while (!remainingAdmissions || (*remainingAdmissions
++        && ((minimumAdmission && !admitted)
++            || (monotonicallyIncreasingTime() < admissionDeadline && !providerDeadlineReached(deadlineQpc, qpcFrequency))))) {
+         TaskPair* selected = nullptr;
+         ::EnterCriticalSection(&m_taskPairsMutex);
+         // Three eligible priority admissions and one oldest-deadline share.
+@@ -504,6 +518,7 @@ void WebThreadImpl::startTriggerTasks(unsigned* remainingAdmissions, double admi
+         postDelayedTaskImpl(pair->location, payload, pair->delayMs, &pair->createTime, pair->priority, &pair->heapInsertionOrder, &pair->trace,
+             pair->hasAbsoluteDeadline ? &pair->scheduling.deadline : nullptr);
+         if (remainingAdmissions) --*remainingAdmissions;
++        ++admitted;
+     }
+ }
+ bool WebThreadImpl::isCurrentThread() const 
+@@ -692,12 +707,12 @@ void WebThreadImpl::enableScheduler()
+     if (!m_firingTimers) updateSharedTimer(); // Reopen after a consumed nested continuation.
+ }
+ 
+-void WebThreadImpl::fire()
++void WebThreadImpl::fire(unsigned long long deadlineQpc, unsigned long long qpcFrequency)
+ {
+     // Normal main-thread admission belongs to the same cooperative budget.
+     if (!m_isMainThread)
+         startTriggerTasks();
+-    schedulerTasks();
++    schedulerTasks(true, deadlineQpc, qpcFrequency);
+ }
+ 
+ void WebThreadImpl::fireForShutdown()
+@@ -735,7 +750,7 @@ void WebThreadImpl::schedulerTasks()
+     schedulerTasks(true);
+ }
+ 
+-void WebThreadImpl::schedulerTasks(bool allowMainThreadBudget)
++void WebThreadImpl::schedulerTasks(bool allowMainThreadBudget, unsigned long long deadlineQpc, unsigned long long qpcFrequency)
+ {
+     // Do a re-entrancy check.
+     if (m_firingTimers > 0 || m_retiringCompletedTasks /*|| m_suspendTimerQueue*/)
+@@ -752,6 +767,9 @@ void WebThreadImpl::schedulerTasks(bool allowMainThreadBudget)
+     unsigned remainingAdmissions = mainThreadTaskBudget;
+     const bool boundedTurn = allowMainThreadBudget && !m_willExit;
+     const bool boundedMainThread = boundedTurn && m_isMainThread;
++    const bool boundedProvider = boundedMainThread && qpcFrequency;
++    if (!boundedProvider) qpcFrequency = 0; // Shutdown and worker drains retain their old contract.
++    const bool readyBeforeAdmission = !m_timerHeap.empty() && m_timerHeap[0]->m_nextFireTime <= fireTime;
+ 
+ #ifdef _DEBUG
+     std::vector<WebTimerBase*> dumpTimerHeap = m_timerHeap;
+@@ -761,12 +779,14 @@ void WebThreadImpl::schedulerTasks(bool allowMainThreadBudget)
+     }
+ #endif
+ 
+-    startTriggerTasks(boundedTurn ? &remainingAdmissions : nullptr, mainThreadTimeToQuit); // 如果不加这句，且下面的循环在本线程不停添加定时器，则startTriggerTasks里的就没机会执行了。
++    startTriggerTasks(boundedTurn ? &remainingAdmissions : nullptr, mainThreadTimeToQuit,
++        deadlineQpc, qpcFrequency, boundedProvider && !readyBeforeAdmission); // 如果不加这句，且下面的循环在本线程不停添加定时器，则startTriggerTasks里的就没机会执行了。
+     
+     fireTime = monotonicallyIncreasingTime();
+     bool hasFire = false;
+     while (!m_timerHeap.empty() && (m_timerHeap[0]->m_nextFireTime <= fireTime || m_willExit)
+-        && (!boundedTurn || monotonicallyIncreasingTime() < mainThreadTimeToQuit)) {
++        && (!boundedTurn || monotonicallyIncreasingTime() < mainThreadTimeToQuit || (boundedProvider && !completedTasks))
++        && (!boundedProvider || !completedTasks || !providerDeadlineReached(deadlineQpc, qpcFrequency))) {
+         hasFire = true;
+         auto* selected = m_timerIndex.select(fireTime, m_willExit);
+         ASSERT(selected);
+@@ -788,7 +808,7 @@ void WebThreadImpl::schedulerTasks(bool allowMainThreadBudget)
+         didProcessTasks();
+         ++completedTasks;
+ 
+-        startTriggerTasks(boundedTurn ? &remainingAdmissions : nullptr, mainThreadTimeToQuit);
++        startTriggerTasks(boundedTurn ? &remainingAdmissions : nullptr, mainThreadTimeToQuit, deadlineQpc, qpcFrequency);
+         fireTime = monotonicallyIncreasingTime();
+ 
+         // A callback or observer may exceed this cooperative budget. Keep
+@@ -796,7 +816,8 @@ void WebThreadImpl::schedulerTasks(bool allowMainThreadBudget)
+         const bool mainThreadBudgetReached = allowMainThreadBudget && m_isMainThread && !m_willExit
+             && (completedTasks >= mainThreadTaskBudget || mainThreadTimeToQuit < monotonicallyIncreasingTime());
+         if (!m_firingTimers || timeToQuit < monotonicallyIncreasingTime() || mainThreadBudgetReached
+-            || (allowMainThreadBudget && !m_willExit && completedTasks >= mainThreadTaskBudget)) {
++            || (allowMainThreadBudget && !m_willExit && completedTasks >= mainThreadTaskBudget)
++            || providerDeadlineReached(deadlineQpc, qpcFrequency)) {
+             break;
+         }
+     }
+@@ -815,15 +836,17 @@ void WebThreadImpl::schedulerTasks(bool allowMainThreadBudget)
+         requestSharedTimerContinuation();
+ }
+ 
+-void WebThreadImpl::serviceOwnerOpportunity()
++bool WebThreadImpl::serviceOwnerOpportunity(unsigned long long deadlineQpc, unsigned long long qpcFrequency)
+ {
+-    if (!m_isMainThread || m_willExit || m_firingTimers || m_retiringCompletedTasks || !isCurrentThread() || CheckReEnter::getEnterCount()) return;
++    if (!m_isMainThread || m_willExit || m_firingTimers || m_retiringCompletedTasks || !isCurrentThread() || CheckReEnter::getEnterCount()) return false;
+     retireCompletedTasksForOwner();
+     if (hasPendingTaskAdmission() || (!m_timerHeap.empty() && m_timerHeap[0]->m_nextFireTime <= monotonicallyIncreasingTime())) {
+         CheckReEnter::incrementEnterCount();
+-        sharedTimerFiredFunction();
++        sharedTimerFiredFunction(deadlineQpc, qpcFrequency);
+         CheckReEnter::decrementEnterCount();
+-    } else serviceSharedTimerOwnerOpportunity();
++    } else serviceSharedTimerOwnerOpportunity(deadlineQpc, qpcFrequency);
++    return !m_willExit && (hasPendingTaskAdmission()
++        || (!m_timerHeap.empty() && m_timerHeap[0]->m_nextFireTime <= monotonicallyIncreasingTime()));
+ }
+ 
+ void WebThreadImpl::updateSharedTimer()
+diff --git a/third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.h b/third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.h
+index ac3b96c54..332dafb72 100644
+--- a/third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.h
++++ b/third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.h
+@@ -62,8 +62,9 @@ public:
+     void startTriggerTasks();
+     void schedulerTasks();
+ 
+-    void fire();
+-    void serviceOwnerOpportunity(); // Optional bounded SDK message-pump hook.
++    void fire(unsigned long long deadlineQpc = 0, unsigned long long qpcFrequency = 0);
++    // A nonzero frequency enables the provider cutoff; zero deadline is valid.
++    bool serviceOwnerOpportunity(unsigned long long deadlineQpc = 0, unsigned long long qpcFrequency = 0);
+     void retireCompletedTasksForOwner(); // At most32 already-completed tasks; no task execution.
+     void fireForShutdown();
+     
+@@ -89,8 +90,9 @@ private:
+     friend class BlinkPlatformImpl;
+     friend class WebTimerBase;
+ 
+-    void schedulerTasks(bool allowMainThreadBudget);
+-    void startTriggerTasks(unsigned* remainingAdmissions, double admissionDeadline);
++    void schedulerTasks(bool allowMainThreadBudget, unsigned long long deadlineQpc = 0, unsigned long long qpcFrequency = 0);
++    void startTriggerTasks(unsigned* remainingAdmissions, double admissionDeadline,
++        unsigned long long deadlineQpc = 0, unsigned long long qpcFrequency = 0, bool minimumAdmission = false);
+     bool hasPendingTaskAdmission();
+     void fireOnExit();
+     void waitForExit();
+diff --git a/third_party/sources/miniblink/wke/InputUiApi.cpp b/third_party/sources/miniblink/wke/InputUiApi.cpp
+index fb14ad833..68f515395 100644
+--- a/third_party/sources/miniblink/wke/InputUiApi.cpp
++++ b/third_party/sources/miniblink/wke/InputUiApi.cpp
+@@ -51,6 +51,50 @@ void WKE_INPUT_UI_CALL serviceOwner()
+         wke::CWebView::serviceDeferredPaintCloses();
+ }
+ 
++int WKE_INPUT_UI_CALL serviceOwnerUntil(unsigned long long deadlineQpc,
++    unsigned long long qpcFrequency, unsigned int* workRemaining)
++{
++    if (!workRemaining)
++        return WKE_INPUT_UI_INVALID;
++    *workRemaining = 0;
++    if (!qpcFrequency)
++        return WKE_INPUT_UI_INVALID;
++    if (!wke::inputUiOwnerAvailable())
++        return WKE_INPUT_UI_UNAVAILABLE;
++    if (content::CheckReEnter::getEnterCount())
++        return WKE_INPUT_UI_BUSY;
++    static bool servicing = false; // Owner-only, guarded before all callback work.
++    if (servicing)
++        return WKE_INPUT_UI_BUSY;
++    auto* platform = blink::Platform::current();
++    if (!platform || !platform->mainThread())
++        return WKE_INPUT_UI_UNAVAILABLE;
++    LARGE_INTEGER frequency, now;
++    if (!QueryPerformanceFrequency(&frequency) || frequency.QuadPart <= 0
++        || !QueryPerformanceCounter(&now) || now.QuadPart < 0)
++        return WKE_INPUT_UI_UNAVAILABLE; // No provider work has run; legacy fallback is safe.
++    if (static_cast<unsigned long long>(frequency.QuadPart) != qpcFrequency)
++        return WKE_INPUT_UI_INVALID;
++    struct ServiceExit {
++        bool& servicing;
++        ~ServiceExit() { servicing = false; }
++    } serviceExit{servicing};
++    servicing = true;
++    try {
++        bool more = static_cast<content::WebThreadImpl*>(platform->mainThread())
++            ->serviceOwnerOpportunity(deadlineQpc, qpcFrequency);
++        if (wke::inputUiOwnerAvailable() && !content::CheckReEnter::getEnterCount()) {
++            const bool closes = wke::CWebView::serviceDeferredPaintCloses(deadlineQpc, qpcFrequency);
++            more = more || closes; // Scheduler cost never skips the close lane's minimum visit.
++        }
++        *workRemaining = more ? 1U : 0U;
++        return WKE_INPUT_UI_OK;
++    } catch (...) {
++        // Partial work must not be replayed through the old entrypoint.
++        return WKE_INPUT_UI_REJECTED;
++    }
++}
++
+ int WKE_INPUT_UI_CALL cancelInput(void* opaque)
+ {
+     auto* view = liveOwnerView(opaque);
+@@ -288,9 +332,10 @@ const wkeInputUiApi* WKE_CALL_TYPE wkeGetInputUiApi(unsigned requestedVersion)
+             | WKE_INPUT_UI_CAP_FRACTIONAL_FRAME_POLICY | WKE_INPUT_UI_CAP_MIRROR_CONSUMER
+             | WKE_INPUT_UI_CAP_INPUT_CONTEXT | WKE_INPUT_UI_CAP_CANCEL_INPUT
+             | WKE_INPUT_UI_CAP_VIEW_CONTEXT | WKE_INPUT_UI_CAP_SCENE_INPUT_IDENTITY
+-            | WKE_INPUT_UI_CAP_VISIBILITY | WKE_INPUT_UI_CAP_EXTERNAL_TRACE_PRODUCER,
++            | WKE_INPUT_UI_CAP_VISIBILITY | WKE_INPUT_UI_CAP_EXTERNAL_TRACE_PRODUCER
++            | WKE_INPUT_UI_CAP_OWNER_DEADLINE,
+         &configureTrace, &stopTrace, &snapshotTrace, &drainTrace,
+         &serviceOwner, &setMirror, &queryMirror, &setInputContext, &cancelInput, &setViewContext,
+-        &setVisibility, &retainTraceProducer, &releaseTraceProducer };
++        &setVisibility, &retainTraceProducer, &releaseTraceProducer, &serviceOwnerUntil };
+     return requestedVersion == WKE_INPUT_UI_ABI_VERSION ? &api : nullptr;
+ }
+diff --git a/third_party/sources/miniblink/wke/InputUiApi.h b/third_party/sources/miniblink/wke/InputUiApi.h
+index bf9097e60..ab34262c9 100644
+--- a/third_party/sources/miniblink/wke/InputUiApi.h
++++ b/third_party/sources/miniblink/wke/InputUiApi.h
+@@ -20,6 +20,7 @@
+ #define WKE_INPUT_UI_CAP_SCENE_INPUT_IDENTITY 0x80ULL
+ #define WKE_INPUT_UI_CAP_VISIBILITY 0x100ULL
+ #define WKE_INPUT_UI_CAP_EXTERNAL_TRACE_PRODUCER 0x200ULL
++#define WKE_INPUT_UI_CAP_OWNER_DEADLINE 0x400ULL
+ 
+ #define WKE_INPUT_UI_OK 0
+ #define WKE_INPUT_UI_INVALID 1
+@@ -116,6 +117,10 @@ typedef struct _wkeInputUiApi {
+        Borrowed internal writers require their loop to outlive the borrow. */
+     int (WKE_INPUT_UI_CALL* retainTraceProducer)(void);
+     void (WKE_INPUT_UI_CALL* releaseTraceProducer)(void);
++    /* Optional owner deadline in this process's QPC timebase. OK reports only
++       immediately resumable work; UNAVAILABLE guarantees no provider work ran. */
++    int (WKE_INPUT_UI_CALL* serviceOwnerOpportunityUntil)(unsigned long long deadlineQpc,
++        unsigned long long qpcFrequency, unsigned int* workRemaining);
+ } wkeInputUiApi;
+ #pragma pack(pop)
+ 
+diff --git a/third_party/sources/miniblink/wke/wkeWebView.cpp b/third_party/sources/miniblink/wke/wkeWebView.cpp
+index 14d39e855..3628b883a 100644
+--- a/third_party/sources/miniblink/wke/wkeWebView.cpp
++++ b/third_party/sources/miniblink/wke/wkeWebView.cpp
+@@ -161,20 +161,24 @@ bool CWebView::paintCallbacksDrained() const
+     std::lock_guard<std::mutex> lock(runtime.mutex);
+     return m_paintLifetime->policy.active == 0;
+ }
+-void CWebView::serviceDeferredPaintCloses()
++bool CWebView::serviceDeferredPaintCloses(unsigned long long deadlineQpc, unsigned long long qpcFrequency)
+ {
+     if (!paintOwner())
+-        return;
++        return false;
+     static content::PaintCloseServiceCursor<wkeWebView> cursor;
++    static size_t remaining = 0; // The interrupted finite sweep, not a count of live work.
+     if (!cursor.enterService())
+-        return;
++        return false;
+     struct ServiceExit {
+         content::PaintCloseServiceCursor<wkeWebView>& cursor;
+         ~ServiceExit() { cursor.leaveService(); }
+     } serviceExit{cursor};
+-    const size_t budget = (std::min)(size_t(32), g_liveWebViews.size());
+-    for (size_t count = 0; count < budget && !g_liveWebViews.empty(); ++count) {
++    const bool bounded = qpcFrequency != 0;
++    if (!bounded || !remaining)
++        remaining = (std::min)(size_t(32), g_liveWebViews.size());
++    while (remaining && !g_liveWebViews.empty()) {
+         CWebView* const target = cursor.next(g_liveWebViews);
++        --remaining; // Retire this visit before any deleting or reentrant callout.
+         const auto state = target->m_paintLifetime;
+         PaintKind kind = PaintKind::none;
+         {
+@@ -187,7 +191,16 @@ void CWebView::serviceDeferredPaintCloses()
+             invokePaintClose(target, kind);
+         else
+             target->webPage()->retryRejectedDrawWake();
++        if (bounded) {
++            LARGE_INTEGER now;
++            if (!QueryPerformanceCounter(&now) || now.QuadPart < 0
++                || static_cast<unsigned long long>(now.QuadPart) >= deadlineQpc)
++                break; // One live visit remains possible even at an expired cutoff.
++        }
+     }
++    if (g_liveWebViews.empty() || !bounded)
++        remaining = 0;
++    return remaining != 0;
+ }
+ bool CWebView::preparePaintShutdown()
+ {
+diff --git a/third_party/sources/miniblink/wke/wkeWebView.h b/third_party/sources/miniblink/wke/wkeWebView.h
+index ab3b286dc..bb45c23ce 100644
+--- a/third_party/sources/miniblink/wke/wkeWebView.h
++++ b/third_party/sources/miniblink/wke/wkeWebView.h
+@@ -145,7 +145,7 @@ public:
+     virtual bool prepareNativeWindowClose();
+     void quiescePaintCallbacks();
+     bool paintCallbacksDrained() const;
+-    static void serviceDeferredPaintCloses();
++    static bool serviceDeferredPaintCloses(unsigned long long deadlineQpc = 0, unsigned long long qpcFrequency = 0);
+     static bool preparePaintShutdown();
+     static bool resumePaintRuntime();
+ 

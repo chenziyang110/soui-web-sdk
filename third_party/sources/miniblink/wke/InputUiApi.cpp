@@ -51,6 +51,50 @@ void WKE_INPUT_UI_CALL serviceOwner()
         wke::CWebView::serviceDeferredPaintCloses();
 }
 
+int WKE_INPUT_UI_CALL serviceOwnerUntil(unsigned long long deadlineQpc,
+    unsigned long long qpcFrequency, unsigned int* workRemaining)
+{
+    if (!workRemaining)
+        return WKE_INPUT_UI_INVALID;
+    *workRemaining = 0;
+    if (!qpcFrequency)
+        return WKE_INPUT_UI_INVALID;
+    if (!wke::inputUiOwnerAvailable())
+        return WKE_INPUT_UI_UNAVAILABLE;
+    if (content::CheckReEnter::getEnterCount())
+        return WKE_INPUT_UI_BUSY;
+    static bool servicing = false; // Owner-only, guarded before all callback work.
+    if (servicing)
+        return WKE_INPUT_UI_BUSY;
+    auto* platform = blink::Platform::current();
+    if (!platform || !platform->mainThread())
+        return WKE_INPUT_UI_UNAVAILABLE;
+    LARGE_INTEGER frequency, now;
+    if (!QueryPerformanceFrequency(&frequency) || frequency.QuadPart <= 0
+        || !QueryPerformanceCounter(&now) || now.QuadPart < 0)
+        return WKE_INPUT_UI_UNAVAILABLE; // No provider work has run; legacy fallback is safe.
+    if (static_cast<unsigned long long>(frequency.QuadPart) != qpcFrequency)
+        return WKE_INPUT_UI_INVALID;
+    struct ServiceExit {
+        bool& servicing;
+        ~ServiceExit() { servicing = false; }
+    } serviceExit{servicing};
+    servicing = true;
+    try {
+        bool more = static_cast<content::WebThreadImpl*>(platform->mainThread())
+            ->serviceOwnerOpportunity(deadlineQpc, qpcFrequency);
+        if (wke::inputUiOwnerAvailable() && !content::CheckReEnter::getEnterCount()) {
+            const bool closes = wke::CWebView::serviceDeferredPaintCloses(deadlineQpc, qpcFrequency);
+            more = more || closes; // Scheduler cost never skips the close lane's minimum visit.
+        }
+        *workRemaining = more ? 1U : 0U;
+        return WKE_INPUT_UI_OK;
+    } catch (...) {
+        // Partial work must not be replayed through the old entrypoint.
+        return WKE_INPUT_UI_REJECTED;
+    }
+}
+
 int WKE_INPUT_UI_CALL cancelInput(void* opaque)
 {
     auto* view = liveOwnerView(opaque);
@@ -288,9 +332,10 @@ const wkeInputUiApi* WKE_CALL_TYPE wkeGetInputUiApi(unsigned requestedVersion)
             | WKE_INPUT_UI_CAP_FRACTIONAL_FRAME_POLICY | WKE_INPUT_UI_CAP_MIRROR_CONSUMER
             | WKE_INPUT_UI_CAP_INPUT_CONTEXT | WKE_INPUT_UI_CAP_CANCEL_INPUT
             | WKE_INPUT_UI_CAP_VIEW_CONTEXT | WKE_INPUT_UI_CAP_SCENE_INPUT_IDENTITY
-            | WKE_INPUT_UI_CAP_VISIBILITY | WKE_INPUT_UI_CAP_EXTERNAL_TRACE_PRODUCER,
+            | WKE_INPUT_UI_CAP_VISIBILITY | WKE_INPUT_UI_CAP_EXTERNAL_TRACE_PRODUCER
+            | WKE_INPUT_UI_CAP_OWNER_DEADLINE,
         &configureTrace, &stopTrace, &snapshotTrace, &drainTrace,
         &serviceOwner, &setMirror, &queryMirror, &setInputContext, &cancelInput, &setViewContext,
-        &setVisibility, &retainTraceProducer, &releaseTraceProducer };
+        &setVisibility, &retainTraceProducer, &releaseTraceProducer, &serviceOwnerUntil };
     return requestedVersion == WKE_INPUT_UI_ABI_VERSION ? &api : nullptr;
 }

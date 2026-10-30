@@ -1,5 +1,7 @@
 # 架构决策记录（ADR）
 
+- [ADR-0147：显式共享预算的 provider 截止与有限续接](0147-provider-shared-deadline.md)（proposed；源码与限定回归通过，默认预算保持 0，完整内核/性能另验）
+
 2026-10-26：[ADR-0122 输入到可见反馈](0122-input-to-visible-feedback.md)定义分阶段实现、接口、兼容和专人验证边界，当前不代表编译、运行或性能验收。
 
 当公共 API、Bridge 协议、权限、线程与生命周期、兼容目标、SDK 包格式或核心依赖发生变化时，在本目录新增 ADR。

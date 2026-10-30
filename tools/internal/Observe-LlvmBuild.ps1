@@ -301,11 +301,12 @@ function GeneratedTestRecipes {
  # These are literal recipes for the hash-locked writers below, never commands
  # or post-build source-binding manifests. Whole files preserve every raw byte.
  @(
-  [ordered]@{kind='scheduler-continuation';directory='tests/native/scheduler_continuation';target='scheduler_continuation_contract';units=@('fixture.cpp');cmake='96d2887b5a5acd718863c56a6200a4fbbcb79492a7d092edf73d24e97bf03744';writer='8d679c914c63ab5237d2ff724933414ace82b7e02be7c0b48d1f6f2e49599de6';whole=[ordered]@{
+  [ordered]@{kind='scheduler-continuation';directory='tests/native/scheduler_continuation';target='scheduler_continuation_contract';units=@('fixture.cpp');cmake='96d2887b5a5acd718863c56a6200a4fbbcb79492a7d092edf73d24e97bf03744';writer='22aafe3f326a458c0d55ab42c780035f189a50879bd47f31da0c3d872ec1bf49';whole=[ordered]@{
    'content/browser/SharedTimerWin.h'='SharedTimerWin.h';'content/web_impl_win/TaskSchedulingPolicy.h'='TaskSchedulingPolicy.h';'content/web_impl_win/TaskSchedulingIndex.h'='TaskSchedulingIndex.h'};fragments=@(
    @('content/web_impl_win/WebThreadImpl.cpp','budgets.inc','static const double maxDurationOfFiringTimers','namespace {'),
    @('content/web_impl_win/WebThreadImpl.cpp','scheduler.inc','void WebThreadImpl::schedulerTasks()','std::vector<WebTimerBase*>& WebThreadImpl::timerHeap()'),
-   @('content/web_impl_win/WebThreadImpl.cpp','enable.inc','void WebThreadImpl::enableScheduler()','void WebThreadImpl::fire()'),
+   @('content/web_impl_win/WebThreadImpl.cpp','provider-cutoff.inc','bool providerDeadlineReached(','class WebThreadCriticalSectionOwner'),
+   @('content/web_impl_win/WebThreadImpl.cpp','enable.inc','void WebThreadImpl::enableScheduler()','void WebThreadImpl::fire('),
    @('content/web_impl_win/WebThreadImpl.cpp','retire.inc','void WebThreadImpl::retireCompletedTasksForOwner()','void WebThreadImpl::deleteTimersOnExit()'))},
   [ordered]@{kind='scheduler-index';directory='tests/native/scheduler_index';target='scheduler_index_contract';units=@('fixture.cpp');cmake='c3c0b9d272a043930f3e6b427cfbd3f883bca948267deef8a51352c57adae570';writer=$null;whole=[ordered]@{};fragments=@()},
   [ordered]@{kind='window-close-lifetime';directory='tests/native/window_close_lifetime';target='soui_window_close_lifetime_source_tests';units=@('fixture.cpp');cmake='2955af9895fc0da4efea067b77bbb3b10d12eb3d22dc7f5b4392cb95bd1ce12b';writer='fda11eda8a53a34d7eb12abf7fcb597a50ac2a557dd36cd8095ab6030227c16c';whole=[ordered]@{'content/common/PaintLifetime.h'='PaintLifetime.h'};fragments=@(
@@ -341,7 +342,13 @@ function GeneratedTestRecipes {
    @('cc/trees/LayerTreeHost.cpp','host_visible.inc','void LayerTreeHost::setVisible(bool visible)','// Sets the current page scale factor'))},
   [ordered]@{kind='render-diagnostic';directory='tests/native/render_diagnostic_source';target='soui_render_diagnostic_source_tests';units=@('fixture.cpp');cmake='2f6a02940e8954f3f2512cf2ba74692723f0a3d6e2cc7cc547e2e97367cf00d6';writer='174e6b972f02be0f14d8921630e8c81e3f1b6a6e579380bb326d34b690cbce3f';whole=[ordered]@{
    'content/common/InputFrameTrace.h'='content/common/InputFrameTrace.h';'cc/trees/RenderDiagnosticTrace.h'='cc/trees/RenderDiagnosticTrace.h'};fragments=@(
-   ,@('cc/trees/GpuSkiaSurface.cpp','gpu_present.inc','bool GpuSkiaSurface::present()','void GpuSkiaSurface::recordPresented()'))}
+   ,@('cc/trees/GpuSkiaSurface.cpp','gpu_present.inc','bool GpuSkiaSurface::present()','void GpuSkiaSurface::recordPresented()'))},
+  [ordered]@{kind='provider-deadline';directory='tests/native/provider_deadline';target='provider_deadline_contract';units=@('fixture.cpp');cmake='722e7540731d3f7166c24c40a0f30a3afbcbbf8c07713b7550a18401e2415bb6';writer='e8feabb132b3f65a98a8c0d31389b0931a864fb748a98e995e186c3b76a0d39c';whole=[ordered]@{
+   'wke/InputUiApi.h'='input_ui_api.h'};fragments=@(
+   @('content/common/PaintLifetime.h','cursor.inc','template<class Key> class PaintCloseServiceCursor {','inline PaintLifetimeRuntime& paintLifetimeRuntime()'),
+   @('wke/wkeWebView.cpp','sweep.inc','bool CWebView::serviceDeferredPaintCloses(','bool CWebView::resumePaintRuntime()'),
+   @('wke/InputUiApi.cpp','provider.inc','void WKE_INPUT_UI_CALL serviceOwner()','int WKE_INPUT_UI_CALL cancelInput(void* opaque)'),
+   @('wke/InputUiApi.cpp','api.inc','const wkeInputUiApi* WKE_CALL_TYPE wkeGetInputUiApi(unsigned requestedVersion)',''))}
  )
 }
 function GeneratedTestRecipeMarker([byte[]]$source,[string]$begin,[string]$end){
@@ -349,8 +356,11 @@ function GeneratedTestRecipeMarker([byte[]]$source,[string]$begin,[string]$end){
  # Slice bytes directly: unlike the older CMake writers, these accept raw GBK,
  # CRLF and NUL bytes without decoding or normalizing a generated fragment.
  $hex=[BitConverter]::ToString($source).Replace('-','').ToLowerInvariant();$a=[BitConverter]::ToString([Text.Encoding]::UTF8.GetBytes($begin)).Replace('-','').ToLowerInvariant();$b=[BitConverter]::ToString([Text.Encoding]::UTF8.GetBytes($end)).Replace('-','').ToLowerInvariant()
- Need ($a.Length-gt0-and$b.Length-gt0-and[regex]::Matches($hex,$a).Count-eq1) 'Generated recipe requires one unique begin marker'
- $start=$hex.IndexOf($a,[StringComparison]::Ordinal);$stop=$hex.IndexOf($b,$start+$a.Length,[StringComparison]::Ordinal)
+ Need ($a.Length-gt0-and[regex]::Matches($hex,$a).Count-eq1) 'Generated recipe requires one unique begin marker'
+ $start=$hex.IndexOf($a,[StringComparison]::Ordinal)
+ # The provider writer has one declared suffix ending at EOF. Its unique begin
+ # and full frozen source identity bind the range just like a following marker.
+ $stop=$(if($end.Length-eq0){$hex.Length}else{$hex.IndexOf($b,$start+$a.Length,[StringComparison]::Ordinal)})
  Need ($start%2-eq0-and$stop-gt$start-and$stop%2-eq0) 'Generated recipe following end marker/alignment'
  $first=[int]($start/2);$last=[int]($stop/2);$bytes=[byte[]]::new($last-$first);[Array]::Copy($source,$first,$bytes,0,$bytes.Length)
  return [ordered]@{startByte=$first;endByteExclusive=$last;bytes=$bytes}
@@ -416,9 +426,9 @@ function GeneratedTestDependencies([string]$root,[string]$build,[string]$configu
    $sourcePath=Join-Path $root 'third_party/sources/miniblink/wke/wke.cpp';$sourceBytes=GeneratedTestFrozen $sourcePath $allowed $readBytes;$range=GeneratedTestMarker $sourceBytes 'struct InteractionEndpointImpl {' 'void WKE_CALL_TYPE retainInteractionEndpoint('
    $candidates[(Norm (Join-Path $base 'interaction_endpoint_source.inc'))]=[ordered]@{source=$allowed[(Norm $sourcePath)];range=$range;output='interaction_endpoint_source.inc'}
   }elseif($role.kind-ceq'worker'){
-   [void](GeneratedTestWriter $root ($role.directory+'/CMakeLists.txt') '0dd95de1a6bffd869f3fb83090e966fb1f2133f55224350fc1c64bef31fc8a96' $allowed $readBytes)
+   [void](GeneratedTestWriter $root ($role.directory+'/CMakeLists.txt') '44fa4315f2a244841e578e83171e09e085de704ca2141639b68ba40eb284c3f4' $allowed $readBytes)
    [void](GeneratedTestWriter $root ($role.directory+'/source-bytes.cmake') '12febdd96416c86b2d79da9ff41472f5c84b4c0f7cef3f7b82393a37948fa0ad' $allowed $readBytes)
-   $mapText=GeneratedTestWriter $root ($role.directory+'/source-map.json') '43a77af4039795798c81ca43ac359096038f76db378c9a150c1829062bcc0280' $allowed $readBytes;$map=$mapText|ConvertFrom-Json
+   $mapText=GeneratedTestWriter $root ($role.directory+'/source-map.json') 'db02d34745240ef9d7a837b893db716549745618ef81642d559f62ce146884a2' $allowed $readBytes;$map=$mapText|ConvertFrom-Json
    Need ($map.schema-ceq'worker-lifetime-source-map/1'-and$map.sources.Count-eq16-and$map.copies.Count-eq16-and$map.payloads.Count-eq22) 'Exact frozen worker source map'
    foreach($relative in @('CMakeLists.txt','source-bytes.cmake','source-map.json')){$support.Add($allowed[(Norm (Join-Path $root ($role.directory+'/'+$relative)))])}
    $sources=@{};foreach($p in $map.sources){$relative=GeneratedTestRelative $p.path;$value=Join-Path $root $relative;Need (-not$sources.ContainsKey((Norm $value))) 'Unique frozen worker source';$raw=GeneratedTestFrozen $value $allowed $readBytes;Need ($raw.Length-eq$p.bytes-and(GeneratedTestHash $raw)-ceq$p.sha256) 'Worker map whole-source pin differs';$sources[(Norm $value)]=$raw;$support.Add($allowed[(Norm $value)])}
