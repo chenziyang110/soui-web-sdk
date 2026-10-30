@@ -42,6 +42,20 @@ node benchmarks/protocol/input-frame-trace.cjs <trace-sdk.ndjson> <trace-vendor.
 
 NEW burst marker 将20-bit delivered_units 放入 byte14/15 与 flags高4位，CRC同时覆盖这些位；旧 marker/reader 完全不改。指针计数只在严格递增、合法唯一坐标时加一，重复/倒序使 marker 失效；滚轮计数是实际累计120单位。只有冻结受控页面、单 injector、内容像素、完整图像历史，以及 delivered_units==ACK 的共同证据，才能把未单独呈现的范围记为 visual-coalesced。缺任一证据仍为 unknown，不能仅凭 ACK 跳号分类。终态各类与 unknown 总数必须等于注入数；coalesced 不是新 T7 样本。
 
+### CRC 拒绝的诊断原件
+
+BurstInput 在已就绪后的像素解码失败时仍拒绝该轮，并额外保存
+`<NEW_DESKTOP>.reject.bgra`（64×36、紧密排列 BGRA8，9216 字节）和
+`desktop.reject` 行。行内记录失败原因、原始 marker、计算/存储 CRC、
+模糊采样数、时间戳及 sidecar 文件名；文件使用 CREATE_NEW，禁止覆盖。
+诊断写入失败另记 `desktop.reject-capture-error`，仍传播原始解码错误。
+预热期间暂态拒绝策略不变；构造器的独立超时不保证留下坏帧原件。
+sidecar 只用于取证，不是有效显示样本，也不放宽 reader 的失败判定。
+
+构建 `RejectedFrameTests` 后，运行 `RejectedFrameTests.exe ABS_NEW_DIRECTORY`
+验证损坏 CRC、模糊像素、带填充 RowPitch、原件回读和禁止覆盖等边界。
+此合成 fixture 不替代真实桌面采集或完整性能校准。
+
 ## 同产品两个提交的证据目录
 
 每轮保存 `input-ui-run.json`（`soui.same-product-input-run/v1`）、`payload-manifest.json`、`environment.json`、`configuration.json`、`workload.json`、`calibration.json`、两份 burst 原件、`trace-sdk.ndjson`/`trace-vendor.ndjson`（现代后端单列）、原样冻结的 `page-bundle/burst-page.html` 与 `.js`，及原生 host/input OwnedProcessRunner 的 report/context/stdout/stderr。`owned.verifyOwnedProcess` 重新核对自然退出、Job、PID/FILETIME、原件散列、真实 executable/runner 散列与 launch context；不能用 STOP 转自然完成。

@@ -4,6 +4,7 @@
 #define NOMINMAX
 #include "burst-desktop-observer.h"
 #include "trace-identity.h"
+#include "rejected-frame-evidence.h"
 #include <d3d11.h>
 #include <dxgi1_2.h>
 #include <array>
@@ -174,13 +175,29 @@ struct burst_desktop_observer::state {
         const D3D11_BOX box{static_cast<UINT>(x),static_cast<UINT>(y),0,static_cast<UINT>(x+64),static_cast<UINT>(y+36),1};context.p->CopySubresourceRegion(staging.p,0,0,0,0,texture.p,0,&box);context.p->Flush();
         D3D11_MAPPED_SUBRESOURCE map{};HRESULT mapped{};const auto map_deadline=GetTickCount64()+100;
         do {mapped=context.p->Map(staging.p,0,D3D11_MAP_READ,D3D11_MAP_FLAG_DO_NOT_WAIT,&map);if(mapped!=DXGI_ERROR_WAS_STILL_DRAWING)break;require(GetTickCount64()<map_deadline,"Desktop GPU read timeout");Sleep(1);}while(true);ok(mapped,"Desktop GPU read failed");
+        struct mapped_release {
+          ID3D11DeviceContext* context; ID3D11Texture2D* texture; bool active{true};
+          ~mapped_release(){if(active)context->Unmap(texture,0);}
+          void unmap(){if(active){context->Unmap(texture,0);active=false;}}
+        } mapped_scope{context.p,staging.p};
         marker value;
-        try{value=decode(map);}catch(...){
-          context.p->Unmap(staging.p,0);
-          if(!ready&&tick()-started<frequency*5){line(file.p,"{\"event\":\"desktop.baseline-reject\",\"lastPresentQpc\":"+quoted(present)+"}");release.release();continue;}
+        try{value=decode(map);}catch(const std::exception& error){
+          if(!ready&&tick()-started<frequency*5){mapped_scope.unmap();line(file.p,"{\"event\":\"desktop.baseline-reject\",\"lastPresentQpc\":"+quoted(present)+"}");release.release();continue;}
+          // Diagnostic sidecar only: never accept, retry, or replace a rejected observation.
+          // Persist before unmapping, and retain the original decode exception on I/O failure.
+          try {
+            const auto rejected_observed=tick();
+            const auto rejected=rejected_frame::inspect(map.pData,map.RowPitch);
+            auto raw_path=output;raw_path+=L".reject.bgra";
+            rejected_frame::save_new(raw_path,rejected.bgra);
+            line(file.p,rejected_frame::metadata(rejected,raw_path.filename().u8string(),error.what(),present,rejected_observed,ready));
+            require(FlushFileBuffers(file.p),"Rejected frame metadata flush failed");
+          }catch(const std::exception& capture_error){
+            try{line(file.p,"{\"event\":\"desktop.reject-capture-error\",\"reason\":"+rejected_frame::json_string(error.what())+",\"captureError\":"+rejected_frame::json_string(capture_error.what())+"}");FlushFileBuffers(file.p);}catch(...){}
+          }
           throw;
         }
-        context.p->Unmap(staging.p,0);
+        mapped_scope.unmap();
         require(value.nonce==expected_nonce,"Burst marker does not bind the requested run");
         require(value.content_sequence==value.ack,"Burst content pixel differs from marker ACK");
         if(!ready)line(file.p,"{\"event\":\"desktop.ready\",\"lastPresentQpc\":"+quoted(present)+",\"nonce\":"+std::to_string(value.nonce)+",\"ack\":"+std::to_string(value.ack)+"}");
