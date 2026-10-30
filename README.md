@@ -1,39 +1,46 @@
 <p align="center">
-  <img src="docs/assets/readme-hero.svg" alt="SOUI Web SDK — Web 的表达力，C++ 的掌控力。面向 Windows 的 C++ / TypeScript 桌面 SDK。" width="100%">
+  <img src="docs/assets/readme-hero.svg" alt="SOUI Web SDK — Web 的表达力，C++ 的掌控力。" width="100%">
 </p>
 
-<h1 align="center">SOUI Web SDK</h1>
+<h1 align="center">SOUI Web SDK 0.6.0</h1>
 
 <p align="center">
-  <strong>用熟悉的 Web 技术构建界面，用 C++ 接住真正的桌面能力。</strong><br>
-  Windows 桌面 SDK · 类型化桥接 · 双后端路径 · 可独立构建的源码交付
-</p>
-
-<p align="center">
-  <a href="docs/known-issues.md"><img src="https://img.shields.io/badge/status-preview-EFC779?style=flat-square&amp;labelColor=18232D" alt="状态：Preview"></a>
-  <a href="docs/build.md"><img src="https://img.shields.io/badge/Windows-x86%20%7C%20x64-79E6D2?style=flat-square&amp;labelColor=18232D" alt="Windows，x86 / x64 构建"></a>
-  <a href="docs/api.md"><img src="https://img.shields.io/badge/C%2B%2B-17-79E6D2?style=flat-square&amp;labelColor=18232D" alt="C++17"></a>
-  <a href="sdk/web"><img src="https://img.shields.io/badge/Web-TypeScript-79E6D2?style=flat-square&amp;labelColor=18232D" alt="TypeScript Web SDK"></a>
+  <strong>用 Web 构建界面，用 C++ 掌握桌面业务、权限与生命周期。</strong><br>
+  Windows x86 / x64 · C++17 / TypeScript · 显式后端选择 · 原生受控 DevTools
 </p>
 
 <p align="center">
-  <a href="#quick-start"><strong>快速上手</strong></a> ·
-  <a href="#capabilities">核心能力</a> ·
-  <a href="#preview">界面预览</a> ·
-  <a href="#docs">文档</a> ·
-  <a href="https://github.com/chenziyang110/soui-web-sdk/releases/tag/v0.5.0">下载 0.5.0</a> ·
-  <a href="https://github.com/chenziyang110/soui-web-sdk/issues">反馈建议</a>
+  <a href="docs/releases/0.6.0.md">0.6.0 发布说明</a> ·
+  <a href="https://github.com/chenziyang110/soui-web-sdk/releases/tag/v0.6.0">发布与下载入口</a> ·
+  <a href="#quick-start">开始开发</a> ·
+  <a href="docs/devtools.md">DevTools</a> ·
+  <a href="docs/known-issues.md">已知限制</a>
 </p>
 
----
+SOUI Web SDK 把业务页面、类型化桥接、原生宿主、运行依赖与交付工具放在一套可独立构建的源码工程中。前端编写界面，C++ 注册业务动作和任务，应用决定允许谁调用、何时取消，以及如何结束当前窗口与 Runtime。
 
-让前端负责界面与交互，让 C++ 负责本地业务与系统集成。SOUI Web SDK 将两者连接为一套 Windows 桌面开发工具：公共 SDK、应用模板、Workbench 演示、固定依赖，以及从构建到升级回退的配套工具。
+> 本地集成候选（未发布）：固定 PR 9e4e9c1f 与固定 main 0cdc0a9a 的合并采用 main 的 VERSION=0.6.0，原 PR 身份为 0.6.0-preview.3。当前候选未编译、运行或发布；下列发布与历史验证仅对各自原始身份有效。本地内容不等同已发布的 0.6.0 资产，发布前须协调新内容的版本身份。
 
-适合已有 C++ 业务需要 Web 界面的团队，也适合需要本地任务、文件处理或原生桌面集成的前端开发者。
+**0.6.0 采用普通 GitHub Release 分类；完整资格保持 `releaseReady=false`、`productionQualificationComplete=false`、`fullDevtoolsGoalComplete=false`。** 两架构内核与必要 SDK 构建、安装消费者、默认应用八次启动/自然关闭及九份供应/应用 ZIP 已有实际记录。双后端、双架构的受控 DevTools 代表例及 MiniBlink x86 原始 TSX 断点/单步观察已完成，具体范围见[发布说明](docs/releases/0.6.0.md)；普通 Release 分类不代表生产、目标系统或性能资格。
 
-> **开发版本：`0.6.0-preview.3`（尚未发布）**，以 [VERSION](VERSION) 为准。已发布的 0.5.0 下载与验证范围见 [0.5.0 发布说明](docs/releases/0.5.0.md)。完整生产验收尚未完成，`releaseReady=false`；详情见[已知限制](docs/known-issues.md)，首方代码采用 [MIT 许可](LICENSE.md)。
+## 获取 0.6.0
 
-开发分支新增显式 [跨平台 Runtime](docs/cross-platform.md)：无窗口的任务、权限、
+[v0.6.0 发布页](https://github.com/chenziyang110/soui-web-sdk/releases/tag/v0.6.0)是附件、完整对应源码与 SHA-256 的固定入口；最终发布身份以其清单为准。
+
+| 用途 | 资产 |
+|---|---|
+| 创建独立项目 | `SouiSdk-0.6.0-source-sdk.zip`，逐文件锁定的 source SDK |
+| 运行示例 | `SouiStarter`、`SouiModernStarter`、`SouiWorkbench` 的 `-0.6.0-windows-x64.zip` / `-x86.zip`，六包及侧车已核完整内容 |
+| MiniBlink 离线调试材料 | `SouiDevTools-0.6.0-windows-x64.zip` / `-x86.zip`，仍需应用显式配置和原生授权 |
+| 完整对应源码 | `soui-sdk-0.6.0-full-source.zip`，按当前 Git 源清单与显式 UTF-8 文件名封存 |
+
+source SDK 与两份 DevTools 组件包已核逐文件闭集。两架构默认应用的八次运行在 Windows `10.0.20348.587` 完成；Modern 使用 WebView2 Runtime `156.0.4314.50`。这组短测不覆盖全部目标系统、AutoHost 双启动路径或长期稳定性。最终资产名、散列和实际范围以[发布说明](docs/releases/0.6.0.md)及[机器事实记录](verification/production-validation/0.6.0-release-2026-10-29/RELEASE-FACTS.json)为准，下载以发布页实际附件为准。
+
+## 未发布本地集成：跨平台 Runtime 与统一桌面
+
+以下跨平台功能及限定记录来自固定 PR 9e4e9c1f（版本 0.6.0-preview.3），尚未在本地集成候选重新编译或运行。
+
+固定 PR 新增显式 [跨平台 Runtime](docs/cross-platform.md)：无窗口的任务、权限、
 Bridge 协议和文件扫描可独立构建为 `Soui::Runtime`，覆盖 Windows/Linux
 x86/x64/ARM32/ARM64 与 macOS x64/ARM64/universal2 的目标策略。
 另新增 [统一桌面入口](docs/unified-desktop.md) `Soui::Desktop`：同一份 C++ 与 Web
@@ -49,103 +56,65 @@ Windows x64 Release 的安装 SDK、独立消费者交付及真实 WebView2 Brid
 
 <a id="capabilities"></a>
 
-## 从一个界面，到一整个桌面应用
+## 0.6 带来了什么
 
-| 你想做的事 | SDK 提供的起点 |
-| :--- | :--- |
-| **用 Web 写界面** | TypeScript 客户端与 React 应用模板；可选 React / Vue GUI 语义绑定。按运行档位选择前端构建目标。 |
-| **调用已有 C++ 业务** | 通过 JSON Bridge 注册方法，类型化调用、事件订阅与能力发现沿用同一条连接。 |
-| **处理耗时工作** | 公共任务服务提供启动、进度、查询与协作式取消，让耗时工作进入后台任务。 |
-| **连接 Windows 桌面** | 按需接入窗口控制、目录选择、剪贴板、托盘、菜单与全局快捷键。 |
-| **让动作有明确契约** | 从动作 schema 生成 C++ / TypeScript、工具描述与文档；原生端检查授权、输入和结果。 |
-| **接入自动化与辅助功能** | 显式启用本地 Agent 端点与可选 Windows UIA；由应用控制能力开放、业务授权与公开界面投影。 |
-| **把工程带走继续开发** | 生成独立业务项目，以 `sdk-lock.json` 固定 SDK；配套构建、安装、升级、回退与恢复工具。 |
+| 方向 | 可以接入的能力 | 应用需要明确的边界 |
+|---|---|---|
+| 原生调试 | 公共 Host 的配置、不透明 grant、异步打开/撤销及状态观察；兼容与现代模板、Workbench 的原生入口 | 默认 disabled；每次许可由可信原生处理器发放；结束诊断可关闭当前业务目标 |
+| 后端选择 | compatibility、modern，以及启动前选择后端的可选 AutoHost | 业务启动后的错误不会自动换后端或重放操作；WebView2 Runtime 不随应用自动下载 |
+| Web 构建与资源 | 显式构建目标、资源清单、发行档与离线源码诊断档 | 发行档默认不带业务 source map；源码诊断可能暴露源码与数据 |
+| 输入与呈现 | 有界输入接纳/恢复、调度、帧和资源通知、可选数值诊断的源码接线 | 具体能力取决于匹配内核；源码机制不构成帧率、尾延迟或 GPU 性能保证 |
+| 交付与恢复 | 固定 SDK 锁、运行时组件清单、失败恢复、可选去重 Bundle 与压缩档位 | 原 ZIP 仍可使用；Bundle 须先恢复完整应用目录；应用数据不能放入受管资源目录 |
 
-功能范围与前置条件见 [API 文档](docs/api.md)。Workbench 中的媒体、扫描等业务适配器属于演示层；公共 SDK 与 Demo 分层维护。
+公共 SDK 与 Demo 分层维护。Workbench 的文件扫描、媒体界面等业务适配器属于演示层；它们不自动成为公共 SDK 的 API 或权限。
 
-<p align="center">
-  <img src="docs/assets/readme-architecture.svg" alt="业务 Web 页面通过 TypeScript SDK 和授权 Bridge 连接 C++；宿主选择 SOUI + Miniblink 兼容路径或 WebView2 现代路径。" width="100%">
-</p>
+## 选择运行路径
 
-## 一套 SDK，两条运行路径
+| | compatibility | modern | auto |
+|---|---|---|---|
+| 宿主 | SOUI + MiniBlink | `Soui::WebView2` | 可选 `Soui::AutoHost` |
+| 模板 | `desktop-app` | `modern-app` | `auto-app` |
+| 页面 | Chrome 49 兼容构建 | 现代 Web 构建 | 分别构建现代与兼容页面 |
+| Runtime | 随应用部署固定 DLL 与资源 | 系统或调用方准备 WebView2 Runtime | 可用时选 WebView2，明确不可用时选随包 MiniBlink |
+| 创建参数 | 默认或 `-Profile compatibility` | `-Profile modern` | `-Profile auto` |
 
-| | 兼容路径 | 现代路径 |
-| :--- | :--- | :--- |
-| **宿主 / 渲染** | SOUI + Miniblink | 可选 `Soui::WebView2` |
-| **应用模板** | [`desktop-app`](templates/desktop-app) | [`modern-app`](templates/modern-app) |
-| **前端构建目标** | Chrome 49，包含兼容转换 | Chrome 120，启动时检查所需能力 |
-| **使用方向** | 需要保留旧系统目标的 Windows 应用 | 面向受支持 Windows 10 / 11 环境的现代 Web 界面 |
-| **运行依赖** | 随应用部署固定 DLL 与资源 | WebView2 Runtime 与应用资源 |
-| **创建选项** | 默认，或 `-Profile compatibility` | `-Profile modern` |
+AutoHost 只在启动前决定后端。配置、权限、页面和异步准备失败仍是失败，不能借“降级”掩盖。它不安装 Runtime，也不在页面已经挂载后切换后端。完整规则见[自动后端](docs/auto-backend.md)与[现代后端](docs/modern-backend.md)。
 
-两条路径共享公共 Host / Bridge 接口，前端分别构建。最终用户运行应用无需安装 Node.js。具体系统、驱动、输入法及 PE 环境仍需独立验收；现代路径需要实际可用的 WebView2 Runtime。详见[现代后端与运行档位](docs/modern-backend.md)。
+最终用户运行已打包应用无需安装 Node.js。SDK 不捆绑 Fixed WebView2 Runtime 或 Windows 字体文件。具体 Windows、PE、IME、DPI、多屏与驱动环境仍须分别认证；兼容前端的 Chrome 49 目标也不等于任意旧系统已通过。
 
 <a id="quick-start"></a>
 
-## 开始构建你的桌面应用
+## 开始开发
 
-想先体验？[0.5.0 Release](https://github.com/chenziyang110/soui-web-sdk/releases/tag/v0.5.0) 提供兼容模板、Modern 模板和 Workbench 的 x86 / x64 应用 ZIP，以及源码包与 SHA-256；Modern 应用需要 WebView2 Runtime。
+开发机需要 Windows x64、Visual Studio 2022 C++ 桌面开发组件及 ATL、Windows SDK `10.0.19041.0`、CMake `3.24+`。完整源码工程、现代/Auto 模板和 Workbench 使用 Node.js `22.12+`；基础 SDK 与兼容生成项目保留 Node.js `20.19` 范围。依赖按锁文件安装，首次构建需要网络或预备缓存。
 
-0.5 的公共 C++ 布局与关闭接口有变化。源码接入请使用整套 SDK、对应内核并重新编译应用；缺少关闭接口的历史 DLL 会在初始化前返回依赖错误。升级方式见[版本文档](docs/versioning.md)，显式 LLVM 构建见[构建文档](docs/build.md)。
-
-**开发环境**：Windows x64、Visual Studio 2022 C++ 桌面开发组件及 ATL、Windows SDK `10.0.19041.0`、CMake `3.24+`。完整仓库与现代模板使用 Node.js `22.12+`；基础 SDK 和兼容生成项目保留 Node.js `20.19` 支持。先取得本仓库源码，以下命令从 **SDK 仓库根目录**执行。
-
-### 1. 检查环境，构建 SDK 与演示
+从完整源码根检查环境并构建：
 
 ```powershell
-powershell.exe -NoProfile -ExecutionPolicy Bypass `
-  -File tools/Doctor.ps1
-powershell.exe -NoProfile -ExecutionPolicy Bypass `
-  -File tools/Build.ps1 -Architecture x64 -Configuration Release -Install
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools/Doctor.ps1
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools/Build.ps1 `
+  -Architecture x64 -Configuration Release -Install
 ```
 
-构建会安装锁文件约束的 Web 依赖、编译 SDK / 模板 / Workbench，并部署运行文件。首次获取依赖需要网络或预备缓存。
+从兼容模板创建 SDK 目录外的新项目：
 
 ```powershell
-# 启动 Workbench
-.\out\x64\bin\Release\SouiWorkbench\SouiWorkbench.exe
-```
-
-### 2. 从模板创建独立项目
-
-```powershell
-powershell.exe -NoProfile -ExecutionPolicy Bypass `
-  -File tools/New-Project.ps1 -Name MyDesktopApp `
-  -OutputRoot ..\MyDesktopApp
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools/New-Project.ps1 `
+  -Name MyDesktopApp -OutputRoot ..\MyDesktopApp
 Push-Location ..\MyDesktopApp
-powershell.exe -NoProfile -ExecutionPolicy Bypass `
-  -File tools/Build.ps1 -Architecture x64
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools/Build.ps1 `
+  -Architecture x64 -Configuration Release
 .\out\x64\bin\Release\MyDesktopApp\MyDesktopApp.exe
 Pop-Location
 ```
 
-`OutputRoot` 必须是 SDK 目录外的新目录。接下来主要编辑 `app/`、`web/`、`contracts/` 和 `resources/`；固定 SDK 内容由 `sdk-lock.json` 管理。完整流程见[接入与业务开发](docs/getting-started.md)。
+主要编辑 `app/`、`web/`、`contracts/` 和应用资源；SDK 所有的文件由 `sdk-lock.json` 固定。安装器会拒绝同版本不同内容和被修改的受管文件。升级先备份业务工程，再安装整套新 SDK、重新编译并核对实际退出；见[版本与迁移](docs/versioning.md)。
 
-<details>
-<summary><strong>使用 WebView2 现代模板</strong></summary>
+现代与 Auto 项目分别使用 `-Profile modern`、`-Profile auto`。构建完整源码时，用 `-WithWebView2`、`-WithAutoHost` 显式选择对应组件；生成项目再由自己的 `project.json` 选择档位。WebView2 Runtime 由系统或应用部署者另行准备，SDK 包内的 Loader 不等于 Runtime。
 
-先在开发机安装受支持的 WebView2 Runtime，然后从 SDK 仓库根目录执行：
+## 从页面调用 C++
 
-```powershell
-powershell.exe -NoProfile -ExecutionPolicy Bypass `
-  -File tools/Build.ps1 -Architecture x64 -WithWebView2 -Install
-powershell.exe -NoProfile -ExecutionPolicy Bypass `
-  -File tools/New-Project.ps1 -Name MyModernApp `
-  -OutputRoot ..\MyModernApp -Profile modern
-Push-Location ..\MyModernApp
-powershell.exe -NoProfile -ExecutionPolicy Bypass `
-  -File tools/Build.ps1 -Architecture x64
-.\out\x64\bin\Release\MyModernApp\MyModernApp.exe
-Pop-Location
-```
-
-WebView2 SDK 由构建工具按固定身份恢复；最终用户机器上的 WebView2 Runtime 需要单独准备。离线部署、Fixed Runtime 和初始化契约见[现代后端文档](docs/modern-backend.md)。
-
-</details>
-
-## 让页面真正调用 C++
-
-下面的片段使用模板已经注册的 `app.greet` 动作。在生成项目的 `web/src/` 中调用：
+模板已经注册 `app.greet` 动作；在生成项目的页面中调用：
 
 ```ts
 import { connectNative } from './native';
@@ -155,146 +124,89 @@ async function greet() {
   const client = await connectNative();
   const result = await callAction(client, 'app.greet', { name: 'Developer' });
   console.log(result.message);
-  // Hello, Developer. This response came from C++.
 }
-
 void greet();
 ```
 
-在模板的 C++ 初始化代码中，对应处理器通过生成的类型注册：
+原生处理器使用生成的输入与结果类型，注册动作契约并由原生端检查授权和数据。`contracts/actions.json` 是定义来源；构建检查生成的 C++、TypeScript 和描述是否过期。耗时工作使用任务服务的进度、查询和协作式取消；本地超时不代表业务写入已撤销。
 
-```cpp
-app_actions::register_Greet(bridge,
-    [](const app_actions::GreetInput& input,
-       const soui::runtime::bridge_request&) {
-        return app_actions::GreetOutput{
-            "Hello, " + input.name + ". This response came from C++."
-        };
-    });
+React/Vue GUI 绑定帮助组件显式提供 `snapshot`、`perform` 和 `waitFor` 语义。它们借用应用的 SDK 实例，不自动开放本地 Agent 或 Windows UIA。相应入口需要应用单独决定主体、能力和授权。详见 [API](docs/api.md)和 [GUI 绑定](docs/gui-bindings.md)。
+
+## 原生受控 DevTools
+
+DevTools 在 Debug 与 Release 中使用相同的许可规则。模板的 `allow_native_devtools` 默认 `false`，普通 Bridge、CLI、网页、UIA 和环境变量不能把它打开。应用在启动/准备前配置策略，在可信原生菜单处理器中检查自己的身份与策略，并通过默认 No 的确认后发放不透明 grant。
+
+F12 与 Ctrl+Shift+I 只作为当前窗口及其子窗口的原生请求入口，仍经过同一个授权处理器。部署 Inspector、按下快捷键或选择诊断构建档都不等于获得许可。
+
+- MiniBlink 使用经过审查、固定散列且彼此匹配的内核与离线 frontend。ABI 相符不能替代完整配对校验；不要只替换 `node.dll` 或对待验目录现算一个散列再作为信任 pin。
+- WebView2 使用其实际 Runtime 的 DevTools。公开 API 无法可靠观察的 `attached`、`paused`、`visible` 保持 unknown；窗口截图不能把原生未知值改成已知。
+- 当前内置结束策略为 `destroy_target`。撤销/结束诊断可能关闭当前业务窗口；应用先处理未保存状态，再保留 Host、Bridge、adapter、HWND 与消息循环，直到实际退休及 Runtime 屏障完成。
+- `request.accepted()` 表示接纳，不表示附加或退出已完成。超时、失败或未知观察必须保留；资源回收后也不能把旧失败改写成正常完成。
+
+源码 SDK、CMake 安装目录与离线供应材料有不同职责。传统 `Soui::Sdk` 的 CMake prefix 提供编译库和头文件，不会自动包含模板、Node 部署工具或 MiniBlink Inspector。未发布候选中的 `Soui::Desktop` 另安装 `share/SouiDesktop` 下的应用模板、Node 交付工具和前端适配，见[统一桌面入口](docs/unified-desktop.md)。MiniBlink 配对材料的准备、六个显式构建输入和原生接入示例见 [DevTools 文档](docs/devtools.md)。
+
+### 离线源码诊断
+
+```powershell
+powershell.exe -File tools/Build.ps1 -Architecture x64 -Configuration Release `
+  -WebProfile source-diagnostic
 ```
 
-`contracts/actions.json` 是动作定义的来源；生成器产出两端代码和描述，构建会检查生成结果是否过期。页面需要从桌面宿主启动才能连接原生服务。完整上下文见[模板](templates/desktop-app/README.md)与 [API](docs/api.md)。
+默认 `distribution` 不带业务源码；`source-diagnostic` 在资产中携带 inline map 与 `sourcesContent`，并保留独立构建/资源身份。MiniBlink 的兼容映射采用有限的 inline map、相对 source 标签和内容身份规则；外置/在线 map 不作为该路径的加载来源。它不是任意文件或网络读取器，也不承诺完整现代 Source Map 功能。
 
-### 为可发现、可校验的动作而设计
+诊断档不提供自动脱敏，不授权 Console。Console 可以使用目标页面原有业务能力；Network、Storage 和源码可能含敏感数据。DevTools 使用、source map 发布边界与真实断点结果按后端、架构、Runtime 和载荷身份分别记录，见[本版范围](docs/releases/0.6.0.md)。
 
-`discover()` 读取当前会话获授权的能力；动作 schema 定义输入与结果；GUI 语义接口为应用显式注册的控件提供 `snapshot`、`perform` 和 `waitFor`。可选 [React / Vue 绑定](docs/gui-bindings.md)帮助把这些语义接入组件。
+## 性能机制与测量边界
 
-0.5 提供显式启用的 Windows 本地 Agent 端点与可选 `Soui::Uia` 组件。应用配置允许的调用主体、能力与动作，分别处理页面、本地 Agent 和辅助功能授权；页面 GUI 注册不会自动开放这些入口。接口与生命周期见 [API 文档](docs/api.md)，实际验收边界见 [0.5 执行清单](docs/roadmap/0.5.0-execution.md)。
+0.6 源码整合有界输入恢复、owner 调度、帧/资源通知及输入到可见反馈的数值关联。可选 WebView2 owner 时间预算、预序列化与 GPU 路径有各自开关和资格边界，默认设置及后端能力检查仍适用。
 
-<a id="preview"></a>
+这些机制用于减少无效工作并支持定位问题。它们没有赋予本版统一的帧率、输入尾延迟、内存峰值或长期稳定性承诺；旧候选的局部数字不迁移为新 SDK 的结果。实际测试方法、原始样本与保留失败见[测试文档](docs/testing.md)和[已知限制](docs/known-issues.md)。
 
-## 看看界面，也看看连接背后的能力
+## 构建、打包与退出
 
-[Workbench](demos/workbench/README.md) 包含媒体工具界面、文件扫描、组件展示，以及万行列表与后台任务的交互场景。构建后可直接打开数据演示页：
+```powershell
+# 仅编译并安装 C++ SDK
+powershell.exe -File tools/Build.ps1 -SdkOnly -Architecture x64 -Install
+
+# 显式选择 AutoHost；验证两个实际启动分支后才能打包 auto 应用
+powershell.exe -File tools/Build.ps1 -Architecture x64 -WithAutoHost
+powershell.exe -File tools/Test-Auto.ps1 -Architecture x64
+```
+
+32 位使用 `-Architecture x86`；Debug 使用 `-Configuration Debug`。模板与 Demo 位于 `out/<架构>/bin/<配置>/`，CMake 安装目录位于 `out/install/<架构>/`。分发时保留完整应用、DLL、`resources/` 与 legal 材料。应用数据放在独立用户目录，部署工具拥有的 `resources/` 会整体替换。
+
+应用 ZIP 保留默认格式；可选 Bundle 按内容去重，须先恢复为完整独立目录。Modern 不包含 WebView2 Runtime；Auto 要求同时保留兼容内核和两份页面资源才能声明离线兼容选择。完整规则见[运行时与打包](docs/runtime-packaging.md)。
+
+最后一个 Host 退出后，应用仍须在原总期限内完成进程级 Runtime 关闭，之后才能清理 COM 等借用者。pending 要继续处理消息，窗口隐藏、进程退出事件或首次提交都不能单独替代实际结束屏障。
+
+## Workbench 与目录
 
 ```powershell
 .\out\x64\bin\Release\SouiWorkbench\SouiWorkbench.exe --react --page=data
 ```
 
-<details>
-<summary><strong>展开真实 Workbench 窗口截图</strong> · 历史界面记录</summary>
-
-<p align="center">
-  <img src="verification/production-validation/scrollbar-style-modern-2026-09-29/raw/x64-visual/window.png" alt="历史 Workbench x64 窗口截图：媒体工具演示中的万行文件索引与滚动列表。" width="850">
-</p>
-
-截图来自 [2026-09-29 的 x64 Release 窗口记录](verification/production-validation/scrollbar-style-modern-2026-09-29/README.md)，用于展示历史 Demo 外观。图中文字与示例品牌属于演示页面，不能作为当前版本的性能、兼容性或品牌背书。
-
-</details>
-
-## 从源码到交付，都有入口
+Workbench 展示文件扫描、后台任务、媒体界面和组件交互。演示页、历史截图与实验日志分别保留各自版本，不能作为当前发布性能或品牌背书。
 
 ```text
-soui-sdk/
-├─ sdk/                       C++ / TypeScript 公共 SDK
-├─ templates/
-│  ├─ desktop-app/            兼容应用模板
-│  └─ modern-app/             WebView2 现代模板
-├─ demos/workbench/           完整场景演示与业务适配器
-├─ third_party/               固定依赖、底层源码与授权材料
-├─ cmake/                     应用接入与运行资源部署
-├─ tools/                     检查、生成、构建、测试、打包
-├─ tests/                     协议、安装与独立接入测试
-├─ docs/                      接入、架构、API 与维护文档
-└─ verification/              按版本和构建保存的验收记录
+sdk/                        公共 C++ / TypeScript SDK 与受控调试实现
+templates/desktop-app/      兼容模板
+templates/modern-app/       WebView2 模板
+templates/auto-app/         可选自动后端模板
+demos/workbench/            演示场景与业务适配器
+third_party/                固定依赖、源码、声明及来源
+tools/                      生成、构建、验证、安装与打包
+docs/                       API、迁移、调试与维护合同
+verification/               按实际版本和载荷保存的证据
 ```
 
-<details>
-<summary><strong>更多构建与验证命令</strong></summary>
+## 文档与当前资格
 
-从 SDK 仓库根目录执行，按需要选择入口：
+| 开发 | 接入与诊断 | 交付 |
+|---|---|---|
+| [开始接入](docs/getting-started.md) | [C++ / Web API](docs/api.md) | [版本与迁移](docs/versioning.md) |
+| [构建与工具链](docs/build.md) | [DevTools](docs/devtools.md) | [发布流程](docs/releasing.md) |
+| [AutoHost](docs/auto-backend.md) | [React / Vue 绑定](docs/gui-bindings.md) | [0.6 发布说明](docs/releases/0.6.0.md) |
 
-```powershell
-# 只编译并安装 SDK
-powershell.exe -File tools/Build.ps1 -SdkOnly -Architecture x64 -Install
+本次授权将低收益长测与重复演练后置。D13 千次生命周期、D14 八小时、完整性能对比及未完成的平台/输入环境资格仍保持待验；D01–D12 的未关闭范围也不因发版自动关闭。正常发布分类不表示这些项目已经通过。签名状态、当前构建和资产 SHA-256 以发布记录为准；本项目打包工具不会制造代码签名。
 
-# 执行适用的本机验证
-powershell.exe -File tools/Test.ps1 -Architecture x64 -Configuration Release
-
-# 使用随包源码重新编译底层依赖（耗时和空间需求较大）
-powershell.exe -File tools/Build-Dependencies.ps1 -Architecture x64 -Component All
-```
-
-32 位构建使用 `-Architecture x86`；Debug 使用 `-Configuration Debug`。模板与 Demo 默认位于 `out/<架构>/bin/<配置>/`，安装后的 C++ SDK 位于 `out/install/<架构>/`。分发应用时复制完整应用目录及 DLL / `resources`，不能仅复制 EXE。参见[完整构建](docs/build.md)、[测试与验收](docs/testing.md)、[版本升级与回退](docs/versioning.md)。
-
-</details>
-
-<a id="docs"></a>
-
-## 继续探索
-
-| 开始开发 | 深入 SDK | 交付与维护 |
-| :--- | :--- | :--- |
-| [接入与业务开发](docs/getting-started.md) | [C++ / Web API](docs/api.md) | [测试与验收](docs/testing.md) |
-| [现代后端与运行档位](docs/modern-backend.md) | [架构与目录所有权](docs/architecture.md) | [版本、升级与回退](docs/versioning.md) |
-| [构建与底层源码](docs/build.md) | [React / Vue GUI 绑定](docs/gui-bindings.md) | [发布与打包](docs/releasing.md) |
-| [Workbench 演示](demos/workbench/README.md) | [GUI 与 Agent 路线](docs/roadmap/agent-gui-framework.md) | [故障排查](docs/troubleshooting.md) |
-
-<details>
-<summary><strong>维护、历史验收与高级构建入口</strong></summary>
-
-- [私有存储请求的独立读端解释（ADR-0082）](docs/adr/0082-task-store-private-storage-readers.md)：Source 与纯 JS；真实长期采集和完整缓存预算仍待验证。
-- [TaskStore 空存储清理的退款记账（ADR-0081）](docs/adr/0081-task-store-empty-deallocation-accounting.md)：独立 x86 fault 回归已通过；完整 SDK 与 x64 回归仍待验证。
-- [生产验证记录](docs/acceptance/progress.md) · [0.4 执行清单](docs/roadmap/0.4.0.md) · [0.3 迭代计划](docs/roadmap/0.3.0.md)
-- [0.3 基础切片](docs/roadmap/0.3-foundation.md) · [0.3 生产验证方案](docs/roadmap/0.3-sdk-validation.md) · [WebView2 独立消费者](experiments/webview2-consumer/README.md)
-
-### Explicit host AMD64 build observation
-
-The standard LLVM caller has an opt-in `--host64-build-observer` mode described
-in [ADR-0083](docs/adr/0083-host64-build-debug-observer.md). It preserves the
-original build and semantic gates and keeps the original polling diagnostics.
-The observer is a separate host AMD64/Windows 8+ helper; it does not change the
-SDK output architecture or establish Windows 7 compatibility.
-
-`tools/internal/Prepare-Host64BuildObserver.ps1` defaults to a read-only plan.
-It requires explicit `ProfileRequestFile` (prepared host x64 LLVM request),
-`DevkitRoot`, `CMakeExe`, `NodeExe` and a fresh `OutputDirectory`. A separate
-explicit `-Prepare` operation creates the actual producer receipt. Standard
-build requires `--host64-observer-prepared` with that receipt's absolute path
-and `--host64-observer-sha256` with its actual SHA, as well as the existing six
-explicit LLVM paths. It never automatically compiles or replaces the helper.
-
-This portable integration currently has Source/pure verification only. Real
-producer, normal x86/x64 builds, installed consumers and runtime checks remain
-pending; the earlier isolated SDKOnly experiment is not their acceptance.
-
-</details>
-
-### 当前边界
-
-当前开发版本为 `0.6.0-preview.3`，完整生产验收尚未完成。长期资源收敛、完整目标系统与 PE 矩阵、真实输入交互、性能对标及发布条件尚未全部验收。兼容模板与 Workbench 默认软件呈现，GPU 路径仍为实验。完整状态见[已知限制](docs/known-issues.md)和[验收记录](verification/acceptance.json)；历史版本的成功记录不覆盖当前版本。
-
-首方 SDK、模板与 Demo 采用 [MIT 许可](LICENSE.md)。第三方组件保留各自许可，见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
-
----
-
-<p align="center">
-  <strong>把 Web 创意，做成 Windows 桌面体验。</strong><br><br>
-  <a href="https://github.com/chenziyang110/soui-web-sdk">关注项目 / Star</a> ·
-  <a href="https://github.com/chenziyang110/soui-web-sdk/issues">报告问题</a> ·
-  <a href="CONTRIBUTING.md">参与贡献</a> ·
-  <a href="CHANGELOG.md">查看更新</a>
-</p>
-
-<p align="center"><sub>开发与自动化协作请先阅读 <a href="AGENTS.md">AGENTS.md</a>。安全问题请遵循 <a href="SECURITY.md">SECURITY.md</a>。</sub></p>
-
+首方 SDK、模板、Demo 和维护工具采用 [MIT](LICENSE.md)。第三方许可独立保留，见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)与[0.6.0 对应源码及再分发说明](docs/licenses/v0.6.0-redistribution.md)。完整对应源码资产名为 [`soui-sdk-0.6.0-full-source.zip`](https://github.com/chenziyang110/soui-web-sdk/releases/download/v0.6.0/soui-sdk-0.6.0-full-source.zip)，最终封存与下载状态见发布说明和实际附件；配对 Inspector 与内核还需保留其原始来源和批准材料。问题反馈见 [Issues](https://github.com/chenziyang110/soui-web-sdk/issues)，安全问题遵循 [SECURITY.md](SECURITY.md)。

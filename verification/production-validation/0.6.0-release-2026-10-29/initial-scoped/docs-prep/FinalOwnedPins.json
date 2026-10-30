@@ -1,0 +1,213 @@
+{
+  "root": "C:/sr06",
+  "parents": {
+    "main": "a6302624f4087f4771ebb80339408589273f1184",
+    "p9": "58129523a45aedfd18650070490be83bca2a7cdf"
+  },
+  "createdAt": "2026-10-28T14:32:07.841Z",
+  "scope": "Documentation, current stable version/peers and their focused tests only. Physical worktree files; root owns the unresolved merge index.",
+  "conflicts": [],
+  "duplicateAdrLinks": [],
+  "metadataDrift": [],
+  "diffCheckExitCode": 0,
+  "tests": {
+    "result": "metadata-tests.result.json",
+    "stdout": "metadata-tests.stdout.log",
+    "passed": 35,
+    "failed": 0,
+    "skipped": 0,
+    "exitCode": 0
+  },
+  "notRunByThisLane": [
+    "native build",
+    "product/GUI",
+    "real npm peer installation test (awaiting built SDK)",
+    "full acceptance/source-manifest refresh",
+    "release publication/signing"
+  ],
+  "releaseEvidence": "Current 0.6.0 binary/package/runtime evidence is being collected; historical passing records are not transferred.",
+  "pins": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 11071,
+      "sha256": "b07fbab501bab3ba3f4b1f1fa2a82ee121c4402f81ccb96e15c3171af7480a12"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "bytes": 57386,
+      "sha256": "2d2565d3070ad51d3b10f9b55181e40c7b5f43af3a36dbaa22abcf63feaae7d0"
+    },
+    {
+      "path": "README.md",
+      "bytes": 13274,
+      "sha256": "79a85444988b80ba2d4ed30a47ff4419d785b2fa3e1b1a2becf1066a18b9974b"
+    },
+    {
+      "path": "VERSION",
+      "bytes": 6,
+      "sha256": "97a5d6e540a6120d09c39ddb667e0e8e2bac7fcc2ffef813b82e08fd60365bce"
+    },
+    {
+      "path": "docs/adr/0118-miniblink-nonblocking-unmount.md",
+      "bytes": 37209,
+      "sha256": "2b04d13fd149122fc551425b87e123f367d943f70bd2fa74d479ae3d5cd0e452"
+    },
+    {
+      "path": "docs/adr/0119-offline-web-build-profiles.md",
+      "bytes": 6663,
+      "sha256": "67268e4ba8febe776bd25d1dc155d7de8a194b1f5c9cb30ba758888fa0dc8bae"
+    },
+    {
+      "path": "docs/adr/0124-web-targets-and-size-analysis.md",
+      "bytes": 4267,
+      "sha256": "9ead9bd101eb8bf29ecde9f518348b48fb30acd1bf83954e64dfa782d5b6fd33"
+    },
+    {
+      "path": "docs/adr/0125-runtime-manifests-and-bundles.md",
+      "bytes": 3294,
+      "sha256": "f9a225e52a64fa7eee45cfebfc4bd2d98b49b641542093ac6208286bfd10fb9a"
+    },
+    {
+      "path": "docs/adr/0126-optional-compression-profiles.md",
+      "bytes": 3082,
+      "sha256": "d8f591c19c7d6a599f39de4b6e6a42295902849e19cd9f6bda98312333120535"
+    },
+    {
+      "path": "docs/adr/0127-automatic-renderer-host.md",
+      "bytes": 3261,
+      "sha256": "907c943fbda459dc743f4ac74fd4e73642967f334eec4d187f665830a2df5050"
+    },
+    {
+      "path": "docs/adr/0136-0.6.0-release-scope.md",
+      "bytes": 3703,
+      "sha256": "c9062f97e8e6570f47a73b8e33a498df0158c3655baba2c0d6d9aa9f71dacf97"
+    },
+    {
+      "path": "docs/adr/README.md",
+      "bytes": 10393,
+      "sha256": "38d4a042434d04671ef2c193cb3b30e0adf083c211cf46eb01bb2765478a0103"
+    },
+    {
+      "path": "docs/api.md",
+      "bytes": 45542,
+      "sha256": "afcc1d132f476317cf939dc28d00061d554ecf639335f77ea0639d974487a00d"
+    },
+    {
+      "path": "docs/auto-backend.md",
+      "bytes": 4785,
+      "sha256": "c528fbfe3b76723164df8ad22713553c96d29a28e76d158fe6835319444902bb"
+    },
+    {
+      "path": "docs/build.md",
+      "bytes": 13289,
+      "sha256": "1782257eeac6c5f9b2137df1ad3ad3abebd6da1ea7cb18f24ec3ec2660943f98"
+    },
+    {
+      "path": "docs/compression-profiles.md",
+      "bytes": 6180,
+      "sha256": "4c9bc930a631dce135795a3f4d836b301ef9508eea7681352d1e8c35bd0c1802"
+    },
+    {
+      "path": "docs/developer-workflow.md",
+      "bytes": 8965,
+      "sha256": "3c7f31770c422cc6b86a7849e859e1c6ccb68316fc3651ca93ad8ff57ecbd784"
+    },
+    {
+      "path": "docs/devtools.md",
+      "bytes": 23944,
+      "sha256": "f67207f680fc1e727e37d9ad7cf18b4f0416f595c48b8564c58e7249fd9764e5"
+    },
+    {
+      "path": "docs/gui-bindings.md",
+      "bytes": 10231,
+      "sha256": "ca7431fb22e31b3c6f3c559e50c0a5734e8c02528c659cfebf7e79fcc773993a"
+    },
+    {
+      "path": "docs/releases/0.6.0.md",
+      "bytes": 7214,
+      "sha256": "8fd4c5def50c42a4e72372cb9c733309a1558ba9ef35f8e4bb80fa14788ee150"
+    },
+    {
+      "path": "docs/releasing.md",
+      "bytes": 16593,
+      "sha256": "c10977d520eedd1e9723041a3228136dc28cde67f2f5ae25b32cddb0a473c1b9"
+    },
+    {
+      "path": "docs/runtime-packaging.md",
+      "bytes": 5374,
+      "sha256": "34d65f8edd6074a63932590ef3160aaca7e30ea368ba2379547d434a981f02d2"
+    },
+    {
+      "path": "docs/versioning.md",
+      "bytes": 16711,
+      "sha256": "06b6bbadcfa641d0eeaca8399e8deef355fa8ff472a70db4a89acbbeb917fd7d"
+    },
+    {
+      "path": "sdk/bindings/react/package-lock.json",
+      "bytes": 3382,
+      "sha256": "931e8f8ba1f9438f435ab2d031a0fd7cab1568626cc2fe555305a2166be7a6a8"
+    },
+    {
+      "path": "sdk/bindings/react/package.json",
+      "bytes": 691,
+      "sha256": "2021e6bbb16db04841f18b203ae622f50b902d57b84a47bcd7efde77959d9d9c"
+    },
+    {
+      "path": "sdk/bindings/vue/package-lock.json",
+      "bytes": 11728,
+      "sha256": "51bf8081be82ff490e046fd1960604fab5ddb71923356b7175ec9aa4392413c5"
+    },
+    {
+      "path": "sdk/bindings/vue/package.json",
+      "bytes": 638,
+      "sha256": "63f60b12579142304599fc1ede9b5518ff5c23930a67b1572c8a2450ebb2bc6c"
+    },
+    {
+      "path": "sdk/include/soui/version.h",
+      "bytes": 240,
+      "sha256": "74e0b9639567ae187c236628bec3b0a30e7ad113ee15f78b0cbd4283258f2cc0"
+    },
+    {
+      "path": "sdk/web/package-lock.json",
+      "bytes": 739,
+      "sha256": "93cb42bd9f11a9bcb9059f6ec505de87c520dac76cb2ac0c769779add37e5195"
+    },
+    {
+      "path": "sdk/web/package.json",
+      "bytes": 432,
+      "sha256": "12868625c16f7c0e556712aabeb0c2ec1f82ff14a9a18bdf773abca9c896f947"
+    },
+    {
+      "path": "tests/gui-bindings/package-lock.json",
+      "bytes": 32317,
+      "sha256": "a1d767e7758303a6ecf704d0fc80f17cb0cb03dbd06c676c343c039be00649cd"
+    },
+    {
+      "path": "tests/gui-bindings/packages.test.mjs",
+      "bytes": 11318,
+      "sha256": "797bb2293e6ca9a2ca8793b0baef0a5407fd05fa748b546bd0ceefcfba390ff4"
+    },
+    {
+      "path": "tests/gui-bindings/react18/package-lock.json",
+      "bytes": 4397,
+      "sha256": "33e6e814241516fc9e37e30a2581728b01bb4d6736e9fef143848a7bee370e95"
+    },
+    {
+      "path": "tests/sdk/gui-bindings-delivery.test.cjs",
+      "bytes": 27200,
+      "sha256": "dd5afa9e138f638c3af859c4d06aeae9c70acbc08fc2042e6605eed13d2d745a"
+    },
+    {
+      "path": "tests/sdk/gui-bindings-entrypoints.test.cjs",
+      "bytes": 15291,
+      "sha256": "58a7a8f4fe4a4f84c89b352525e58b178f47af202945bf5b37908cedb2ad1d20"
+    },
+    {
+      "path": "tools/sdk/gui-bindings-delivery.cjs",
+      "bytes": 17682,
+      "sha256": "0712dd0ae54f4ad6be6c40cef5cb1b3f68acc31f7a05d98e8a3fc4e1305bb8e6"
+    }
+  ],
+  "indexTouched": false,
+  "remoteChanged": false
+}

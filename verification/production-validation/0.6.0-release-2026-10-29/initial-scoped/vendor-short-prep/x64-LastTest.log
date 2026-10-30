@@ -1,0 +1,83 @@
+Start testing: Oct 28 23:30 中国标准时间
+----------------------------------------------------------
+31/239 Testing: sdk.native.local-resource-state
+31/239 Test: sdk.native.local-resource-state
+Command: "C:/sr06/out/release-vendor-x64-1/tests/native/Release/soui_local_resource_state_tests.exe"
+Directory: C:/sr06/out/release-vendor-x64-1/tests/native
+"sdk.native.local-resource-state" start time: Oct 28 23:30 中国标准时间
+Output:
+----------------------------------------------------------
+native local resource state behavior passed (not browser/runtime qualification)
+<end of output>
+Test time =   0.21 sec
+----------------------------------------------------------
+Test Passed.
+"sdk.native.local-resource-state" end time: Oct 28 23:30 中国标准时间
+"sdk.native.local-resource-state" time elapsed: 00:00:00
+----------------------------------------------------------
+
+32/239 Testing: sdk.native.devtools-keyboard-snapshot
+32/239 Test: sdk.native.devtools-keyboard-snapshot
+Command: "C:/sr06/out/release-vendor-x64-1/tests/native/Release/soui_devtools_keyboard_snapshot_tests.exe"
+Directory: C:/sr06/out/release-vendor-x64-1/tests/native
+"sdk.native.devtools-keyboard-snapshot" start time: Oct 28 23:30 中国标准时间
+Output:
+----------------------------------------------------------
+Controlled Inspector keyboard record checks passed.
+<end of output>
+Test time =   0.09 sec
+----------------------------------------------------------
+Test Passed.
+"sdk.native.devtools-keyboard-snapshot" end time: Oct 28 23:30 中国标准时间
+"sdk.native.devtools-keyboard-snapshot" time elapsed: 00:00:00
+----------------------------------------------------------
+
+139/239 Testing: kernel.native.lifetime.ctor_shell-view-success
+139/239 Test: kernel.native.lifetime.ctor_shell-view-success
+Command: "C:/sr06/out/release-vendor-x64-1/tests/native/vendor_lifetime/ctor_shell/Release/soui_vendor_ctor_shell_tests.exe" "view-success"
+Directory: C:/sr06/out/release-vendor-x64-1/tests/native/vendor_lifetime/ctor_shell
+"kernel.native.lifetime.ctor_shell-view-success" start time: Oct 28 23:30 中国标准时间
+Output:
+----------------------------------------------------------
+{"case":"view-success","sourceBodyPassed":true,"injected":0,"partialCloseCalled":false,"fullEngineQualified":false}
+<end of output>
+Test time =   0.09 sec
+----------------------------------------------------------
+Test Passed.
+"kernel.native.lifetime.ctor_shell-view-success" end time: Oct 28 23:30 中国标准时间
+"kernel.native.lifetime.ctor_shell-view-success" time elapsed: 00:00:00
+----------------------------------------------------------
+
+141/239 Testing: kernel.native.lifetime.ctor_shell-view-handler-rollback
+141/239 Test: kernel.native.lifetime.ctor_shell-view-handler-rollback
+Command: "C:/sr06/out/release-vendor-x64-1/tests/native/vendor_lifetime/ctor_shell/Release/soui_vendor_ctor_shell_tests.exe" "view-handler-rollback"
+Directory: C:/sr06/out/release-vendor-x64-1/tests/native/vendor_lifetime/ctor_shell
+"kernel.native.lifetime.ctor_shell-view-handler-rollback" start time: Oct 28 23:30 中国标准时间
+Output:
+----------------------------------------------------------
+{"case":"view-handler-rollback","sourceBodyPassed":true,"injected":1,"partialCloseCalled":false,"fullEngineQualified":false}
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"kernel.native.lifetime.ctor_shell-view-handler-rollback" end time: Oct 28 23:30 中国标准时间
+"kernel.native.lifetime.ctor_shell-view-handler-rollback" time elapsed: 00:00:00
+----------------------------------------------------------
+
+158/239 Testing: kernel.native.request-close.native-local-owner-fence
+158/239 Test: kernel.native.request-close.native-local-owner-fence
+Command: "C:/sr06/out/release-vendor-x64-1/tests/native/request_close/Release/soui_request_close_regressions.exe" "native-local-owner-fence"
+Directory: C:/sr06/out/release-vendor-x64-1/tests/native/request_close
+"kernel.native.request-close.native-local-owner-fence" start time: Oct 28 23:30 中国标准时间
+Output:
+----------------------------------------------------------
+{"case":"native-local-owner-fence","localOwnerRetains":1,"localOwnerReleases":1,"localOwnerDestroys":1,"reentrantDrainFenced":true,"stickyFailurePreserved":true,"realStateImplementation":true,"realHmenuUsed":false,"rendererExecuted":false,"fullQualification":false}
+<end of output>
+Test time =   0.12 sec
+----------------------------------------------------------
+Test Passed.
+"kernel.native.request-close.native-local-owner-fence" end time: Oct 28 23:30 中国标准时间
+"kernel.native.request-close.native-local-owner-fence" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Oct 28 23:30 中国标准时间

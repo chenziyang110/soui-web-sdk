@@ -1,0 +1,578 @@
+{
+  "schema": "soui.release.vendor-finite-short-verification/v1",
+  "createdUtc": "2026-10-28T15:32:23.717Z",
+  "root": "C:/sr06",
+  "selectionMeaning": "Five unique finite cases, repeated for actual x64/x86 Release only. Not ten unique behaviors and not an all-158 or old-93 rerun.",
+  "sourceObservation": {
+    "earlyBuild": {
+      "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vendor-short-prep/SourceInputs.early-build.json",
+      "bytes": 60922,
+      "sha256": "6f631bea837557521454ea55a5bbc7d041a6a3bbb99ac782b8249141fbb129e7"
+    },
+    "after": {
+      "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vendor-short-prep/SourceInputs.after.json",
+      "bytes": 60781,
+      "sha256": "f37bb1abb723e70aae0f05775a3974e27dbf69cb63e450daca2cc254f0f56132"
+    },
+    "files": 332,
+    "drift": [],
+    "limitation": "After x64 build start; initial inventory attempts with nonexistent optional-header names failed before writing. Not a before-build snapshot."
+  },
+  "cases": [
+    {
+      "arch": "x64",
+      "build": "C:/sr06/out/release-vendor-x64-1",
+      "phases": [
+        {
+          "record": {
+            "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vendor-short-prep/x64-configure-1.json",
+            "bytes": 1965,
+            "sha256": "836fe290398112bd4be3ee9bf6e159bebcc0a92f468a411eb27bc53f039a2687"
+          },
+          "phase": "configure",
+          "arch": "x64",
+          "attempt": "1",
+          "executable": {
+            "path": "C:/Program Files/CMake/bin/cmake.exe",
+            "bytes": 12905544,
+            "sha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379"
+          },
+          "args": [
+            "-S",
+            "C:/sr06",
+            "-B",
+            "C:/sr06/out/release-vendor-x64-1",
+            "-G",
+            "Visual Studio 17 2022",
+            "-A",
+            "x64,version=10.0.19041.0",
+            "-T",
+            "v143,host=x64,version=14.44.35207",
+            "-DSOUI_BUILD_TEMPLATE=OFF",
+            "-DSOUI_BUILD_DEMOS=OFF",
+            "-DSOUI_BUILD_TESTS=ON",
+            "-DSOUI_BUILD_VENDOR_TESTS=ON",
+            "-DSOUI_BUILD_WEBVIEW2=ON",
+            "-DSOUI_BUILD_AUTO_HOST=ON",
+            "-DSOUI_BUILD_UIA=OFF",
+            "-DSOUI_DEVTOOLS_PACKAGE_ENABLED=OFF",
+            "-DSOUI_WEBVIEW2_SDK_ROOT=C:/sr06/out/webview2-deps/1.0.4258.31/package"
+          ],
+          "cwd": "C:/sr06",
+          "build": "C:/sr06/out/release-vendor-x64-1",
+          "runner": {
+            "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vendor-short-prep/Run-Phase.cjs",
+            "bytes": 3451,
+            "sha256": "a7bf2f0005d3a0581a885b00fc83e7cb78d2af74a599354269e60edb60acc82d"
+          },
+          "startedUtc": "2026-10-28T15:27:11.066Z",
+          "environment": {
+            "MSBUILDDISABLENODEREUSE": "1"
+          },
+          "concurrency": "Root explicitly authorizes finite /m1 lane alongside existing kernel; not a global-idle claim",
+          "productHostStarted": false,
+          "guiStarted": false,
+          "result": "NATURAL_ZERO",
+          "pid": 71092,
+          "exitCode": 0,
+          "signal": null,
+          "finishedUtc": "2026-10-28T15:27:27.044Z",
+          "elapsedMs": 15978,
+          "stdout": {
+            "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vendor-short-prep/x64-configure-1.stdout.log",
+            "bytes": 3001,
+            "sha256": "d63b50210710f178e6cc9592b488b000888ceae833f7fe0ed34887b683065ba3"
+          },
+          "stderr": {
+            "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vendor-short-prep/x64-configure-1.stderr.log",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "forced": false
+        },
+        {
+          "record": {
+            "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vendor-short-prep/x64-build-1.json",
+            "bytes": 1731,
+            "sha256": "27cfa4960da6e78ff64e0d7a7b3dab545c585114415f51939551b2c18e18b663"
+          },
+          "phase": "build",
+          "arch": "x64",
+          "attempt": "1",
+          "executable": {
+            "path": "C:/Program Files/CMake/bin/cmake.exe",
+            "bytes": 12905544,
+            "sha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379"
+          },
+          "args": [
+            "--build",
+            "C:/sr06/out/release-vendor-x64-1",
+            "--config",
+            "Release",
+            "--target",
+            "soui_devtools_keyboard_snapshot_tests",
+            "soui_local_resource_state_tests",
+            "soui_request_close_regressions",
+            "soui_vendor_ctor_shell_tests",
+            "--parallel",
+            "1",
+            "--",
+            "/m:1",
+            "/nr:false"
+          ],
+          "cwd": "C:/sr06",
+          "build": "C:/sr06/out/release-vendor-x64-1",
+          "runner": {
+            "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vendor-short-prep/Run-Phase.cjs",
+            "bytes": 3451,
+            "sha256": "a7bf2f0005d3a0581a885b00fc83e7cb78d2af74a599354269e60edb60acc82d"
+          },
+          "startedUtc": "2026-10-28T15:28:55.158Z",
+          "environment": {
+            "MSBUILDDISABLENODEREUSE": "1"
+          },
+          "concurrency": "Root explicitly authorizes finite /m1 lane alongside existing kernel; not a global-idle claim",
+          "productHostStarted": false,
+          "guiStarted": false,
+          "result": "NATURAL_ZERO",
+          "pid": 86284,
+          "exitCode": 0,
+          "signal": null,
+          "finishedUtc": "2026-10-28T15:29:55.939Z",
+          "elapsedMs": 60781,
+          "stdout": {
+            "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vendor-short-prep/x64-build-1.stdout.log",
+            "bytes": 12048,
+            "sha256": "652725c404e491ea3fa0c7b1eee95f86b08dbce6502ddcc0f9552d185d0a3abf"
+          },
+          "stderr": {
+            "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vendor-short-prep/x64-build-1.stderr.log",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "forced": false
+        },
+        {
+          "record": {
+            "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vendor-short-prep/x64-test-1.json",
+            "bytes": 1900,
+            "sha256": "afa84304bbefd294f271753f65e101c81d33a8d8c1ab1d954e0a6ee458bafafd"
+          },
+          "phase": "test",
+          "arch": "x64",
+          "attempt": "1",
+          "executable": {
+            "path": "C:/Program Files/CMake/bin/ctest.exe",
+            "bytes": 13829192,
+            "sha256": "0befb42121d9baf862ae21165788c08d45ca06c6ce12b9e68101a31542dd572c"
+          },
+          "args": [
+            "--test-dir",
+            "C:/sr06/out/release-vendor-x64-1",
+            "-C",
+            "Release",
+            "--output-on-failure",
+            "--no-tests=error",
+            "--parallel",
+            "1",
+            "--output-junit",
+            "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\vendor-short-prep\\x64-test-1.junit.xml",
+            "-R",
+            "^(sdk\\.native\\.(devtools-keyboard-snapshot|local-resource-state)|kernel\\.native\\.request-close\\.native-local-owner-fence|kernel\\.native\\.lifetime\\.ctor_shell-(view-success|view-handler-rollback))$"
+          ],
+          "cwd": "C:/sr06",
+          "build": "C:/sr06/out/release-vendor-x64-1",
+          "runner": {
+            "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vendor-short-prep/Run-Phase.cjs",
+            "bytes": 3451,
+            "sha256": "a7bf2f0005d3a0581a885b00fc83e7cb78d2af74a599354269e60edb60acc82d"
+          },
+          "startedUtc": "2026-10-28T15:30:00.527Z",
+          "environment": {
+            "MSBUILDDISABLENODEREUSE": "1"
+          },
+          "concurrency": "Root explicitly authorizes finite /m1 lane alongside existing kernel; not a global-idle claim",
+          "productHostStarted": false,
+          "guiStarted": false,
+          "result": "NATURAL_ZERO",
+          "pid": 91840,
+          "exitCode": 0,
+          "signal": null,
+          "finishedUtc": "2026-10-28T15:30:01.172Z",
+          "elapsedMs": 645,
+          "stdout": {
+            "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vendor-short-prep/x64-test-1.stdout.log",
+            "bytes": 908,
+            "sha256": "eb5844e3fff34e3a5c35602a0e360b195dbe33e560a499a6ed38f1514ddf0d40"
+          },
+          "stderr": {
+            "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vendor-short-prep/x64-test-1.stderr.log",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "forced": false
+        }
+      ],
+      "cache": {
+        "path": "C:/sr06/out/release-vendor-x64-1/CMakeCache.txt",
+        "bytes": 18032,
+        "sha256": "cf4203474b066a4340594a7ab116df016ea36914beb257aedb45ae057cc0a9f5"
+      },
+      "compilerDeclaration": {
+        "path": "C:/sr06/out/release-vendor-x64-1/CMakeFiles/4.2.3/CMakeCXXCompiler.cmake",
+        "bytes": 6508,
+        "sha256": "1b080885144120f43636716a60139852ad7dd840aad639de4664d4253f8a63f8"
+      },
+      "compiler": {
+        "path": "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe",
+        "bytes": 677968,
+        "sha256": "a80f5e7a24049a8f9a8931f83fc3d13ca417ad901e074c50cca71fcb12ba10be"
+      },
+      "strictVendorConfigureGatePassed": true,
+      "metadataRepairNeeded": false,
+      "tests": [
+        "sdk.native.local-resource-state",
+        "sdk.native.devtools-keyboard-snapshot",
+        "kernel.native.lifetime.ctor_shell-view-success",
+        "kernel.native.lifetime.ctor_shell-view-handler-rollback",
+        "kernel.native.request-close.native-local-owner-fence"
+      ],
+      "uniqueFiniteCaseCount": 5,
+      "executables": [
+        {
+          "path": "C:/sr06/out/release-vendor-x64-1/tests/native/Release/soui_devtools_keyboard_snapshot_tests.exe",
+          "bytes": 15872,
+          "sha256": "2432517cc16079c8f65eadd1c1dd27db8305a432c2cb15d5243b5559292a1df5",
+          "peMachine": "0x8664"
+        },
+        {
+          "path": "C:/sr06/out/release-vendor-x64-1/tests/native/Release/soui_local_resource_state_tests.exe",
+          "bytes": 99840,
+          "sha256": "6e93246bfc2b26d68d86fcece372f32dcaf629e0f5bf9a394e69920e55a8af4a",
+          "peMachine": "0x8664"
+        },
+        {
+          "path": "C:/sr06/out/release-vendor-x64-1/tests/native/request_close/Release/soui_request_close_regressions.exe",
+          "bytes": 121344,
+          "sha256": "a0d92554d1e2859cb06461bbca7615e3126e7bf9f1fefc5c9f10ede399c4d8f8",
+          "peMachine": "0x8664"
+        },
+        {
+          "path": "C:/sr06/out/release-vendor-x64-1/tests/native/vendor_lifetime/ctor_shell/Release/soui_vendor_ctor_shell_tests.exe",
+          "bytes": 36352,
+          "sha256": "d9818d945bb4b1a538ef04debdd3610c72e14619397161da0c107ce3f186e6ce",
+          "peMachine": "0x8664"
+        }
+      ],
+      "artifactPins": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vendor-short-prep/x64-ArtifactPins.json",
+        "bytes": 46022,
+        "sha256": "1dc93d9f40beef51d38c24389bbc8853cf8aaa6fdf77fa5209ef44df9bd04d47"
+      },
+      "objects": 41,
+      "tlogs": 63,
+      "generatedFiles": 73,
+      "actualCompilerReadInputs": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vendor-short-prep/x64-ActualCompilerReadInputs.json",
+        "bytes": 119405,
+        "sha256": "1ae55295b066d8f9a7f6e0b27efae5ae98e709475001316133ec5046244c980e"
+      },
+      "currentReadbackFiles": 559,
+      "lastTestLog": {
+        "path": "C:/sr06/out/release-vendor-x64-1/Testing/Temporary/LastTest.log",
+        "bytes": 4838,
+        "sha256": "28d223a616b5618857bc0e91fef009697c4f8fb46c8f0e633329a2f3f3bff8fd"
+      }
+    },
+    {
+      "arch": "x86",
+      "build": "C:/sr06/out/release-vendor-x86-1",
+      "phases": [
+        {
+          "record": {
+            "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vendor-short-prep/x86-configure-1.json",
+            "bytes": 1967,
+            "sha256": "e5abb19f669c05b16c59bd0a731d5f9fbe43929f9f47c6e0613190b06f9c654b"
+          },
+          "phase": "configure",
+          "arch": "x86",
+          "attempt": "1",
+          "executable": {
+            "path": "C:/Program Files/CMake/bin/cmake.exe",
+            "bytes": 12905544,
+            "sha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379"
+          },
+          "args": [
+            "-S",
+            "C:/sr06",
+            "-B",
+            "C:/sr06/out/release-vendor-x86-1",
+            "-G",
+            "Visual Studio 17 2022",
+            "-A",
+            "Win32,version=10.0.19041.0",
+            "-T",
+            "v143,host=x64,version=14.44.35207",
+            "-DSOUI_BUILD_TEMPLATE=OFF",
+            "-DSOUI_BUILD_DEMOS=OFF",
+            "-DSOUI_BUILD_TESTS=ON",
+            "-DSOUI_BUILD_VENDOR_TESTS=ON",
+            "-DSOUI_BUILD_WEBVIEW2=ON",
+            "-DSOUI_BUILD_AUTO_HOST=ON",
+            "-DSOUI_BUILD_UIA=OFF",
+            "-DSOUI_DEVTOOLS_PACKAGE_ENABLED=OFF",
+            "-DSOUI_WEBVIEW2_SDK_ROOT=C:/sr06/out/webview2-deps/1.0.4258.31/package"
+          ],
+          "cwd": "C:/sr06",
+          "build": "C:/sr06/out/release-vendor-x86-1",
+          "runner": {
+            "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vendor-short-prep/Run-Phase.cjs",
+            "bytes": 3451,
+            "sha256": "a7bf2f0005d3a0581a885b00fc83e7cb78d2af74a599354269e60edb60acc82d"
+          },
+          "startedUtc": "2026-10-28T15:27:47.885Z",
+          "environment": {
+            "MSBUILDDISABLENODEREUSE": "1"
+          },
+          "concurrency": "Root explicitly authorizes finite /m1 lane alongside existing kernel; not a global-idle claim",
+          "productHostStarted": false,
+          "guiStarted": false,
+          "result": "NATURAL_ZERO",
+          "pid": 71556,
+          "exitCode": 0,
+          "signal": null,
+          "finishedUtc": "2026-10-28T15:28:03.198Z",
+          "elapsedMs": 15313,
+          "stdout": {
+            "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vendor-short-prep/x86-configure-1.stdout.log",
+            "bytes": 3001,
+            "sha256": "1344df5984ba564b86fd678e799673e735deebcdcb7f1fa24249f07657b5a35c"
+          },
+          "stderr": {
+            "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vendor-short-prep/x86-configure-1.stderr.log",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "forced": false
+        },
+        {
+          "record": {
+            "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vendor-short-prep/x86-build-1.json",
+            "bytes": 1731,
+            "sha256": "b6ffa1aaebb0117ab287906cb2dd7a65714ff6563c71ab1ff72883132e1fb391"
+          },
+          "phase": "build",
+          "arch": "x86",
+          "attempt": "1",
+          "executable": {
+            "path": "C:/Program Files/CMake/bin/cmake.exe",
+            "bytes": 12905544,
+            "sha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379"
+          },
+          "args": [
+            "--build",
+            "C:/sr06/out/release-vendor-x86-1",
+            "--config",
+            "Release",
+            "--target",
+            "soui_devtools_keyboard_snapshot_tests",
+            "soui_local_resource_state_tests",
+            "soui_request_close_regressions",
+            "soui_vendor_ctor_shell_tests",
+            "--parallel",
+            "1",
+            "--",
+            "/m:1",
+            "/nr:false"
+          ],
+          "cwd": "C:/sr06",
+          "build": "C:/sr06/out/release-vendor-x86-1",
+          "runner": {
+            "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vendor-short-prep/Run-Phase.cjs",
+            "bytes": 3451,
+            "sha256": "a7bf2f0005d3a0581a885b00fc83e7cb78d2af74a599354269e60edb60acc82d"
+          },
+          "startedUtc": "2026-10-28T15:30:14.155Z",
+          "environment": {
+            "MSBUILDDISABLENODEREUSE": "1"
+          },
+          "concurrency": "Root explicitly authorizes finite /m1 lane alongside existing kernel; not a global-idle claim",
+          "productHostStarted": false,
+          "guiStarted": false,
+          "result": "NATURAL_ZERO",
+          "pid": 68636,
+          "exitCode": 0,
+          "signal": null,
+          "finishedUtc": "2026-10-28T15:31:10.976Z",
+          "elapsedMs": 56821,
+          "stdout": {
+            "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vendor-short-prep/x86-build-1.stdout.log",
+            "bytes": 11774,
+            "sha256": "b39f4069b34706742c94630eb4e8d45f3b9b13ab8c53d0063651d9a12f9ba984"
+          },
+          "stderr": {
+            "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vendor-short-prep/x86-build-1.stderr.log",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "forced": false
+        },
+        {
+          "record": {
+            "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vendor-short-prep/x86-test-1.json",
+            "bytes": 1900,
+            "sha256": "b28974a3ca063fa8e87ea8638f7671a5099a6fd7e7cd7ae75896fb5b313e2142"
+          },
+          "phase": "test",
+          "arch": "x86",
+          "attempt": "1",
+          "executable": {
+            "path": "C:/Program Files/CMake/bin/ctest.exe",
+            "bytes": 13829192,
+            "sha256": "0befb42121d9baf862ae21165788c08d45ca06c6ce12b9e68101a31542dd572c"
+          },
+          "args": [
+            "--test-dir",
+            "C:/sr06/out/release-vendor-x86-1",
+            "-C",
+            "Release",
+            "--output-on-failure",
+            "--no-tests=error",
+            "--parallel",
+            "1",
+            "--output-junit",
+            "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\vendor-short-prep\\x86-test-1.junit.xml",
+            "-R",
+            "^(sdk\\.native\\.(devtools-keyboard-snapshot|local-resource-state)|kernel\\.native\\.request-close\\.native-local-owner-fence|kernel\\.native\\.lifetime\\.ctor_shell-(view-success|view-handler-rollback))$"
+          ],
+          "cwd": "C:/sr06",
+          "build": "C:/sr06/out/release-vendor-x86-1",
+          "runner": {
+            "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vendor-short-prep/Run-Phase.cjs",
+            "bytes": 3451,
+            "sha256": "a7bf2f0005d3a0581a885b00fc83e7cb78d2af74a599354269e60edb60acc82d"
+          },
+          "startedUtc": "2026-10-28T15:32:19.096Z",
+          "environment": {
+            "MSBUILDDISABLENODEREUSE": "1"
+          },
+          "concurrency": "Root explicitly authorizes finite /m1 lane alongside existing kernel; not a global-idle claim",
+          "productHostStarted": false,
+          "guiStarted": false,
+          "result": "NATURAL_ZERO",
+          "pid": 65144,
+          "exitCode": 0,
+          "signal": null,
+          "finishedUtc": "2026-10-28T15:32:19.773Z",
+          "elapsedMs": 677,
+          "stdout": {
+            "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vendor-short-prep/x86-test-1.stdout.log",
+            "bytes": 908,
+            "sha256": "e6559a52e7dde177a79890619c63734105aa2e527bab9577cc5147fac7ea21c3"
+          },
+          "stderr": {
+            "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vendor-short-prep/x86-test-1.stderr.log",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "forced": false
+        }
+      ],
+      "cache": {
+        "path": "C:/sr06/out/release-vendor-x86-1/CMakeCache.txt",
+        "bytes": 18040,
+        "sha256": "e7e7b14e332d0e9a2eea06a0a11c49b5b79465df2bee73cdd276ea498b9425d9"
+      },
+      "compilerDeclaration": {
+        "path": "C:/sr06/out/release-vendor-x86-1/CMakeFiles/4.2.3/CMakeCXXCompiler.cmake",
+        "bytes": 6508,
+        "sha256": "95f10a437e276655abad1f3627373bfec2ab7c70169b0c7b9e1d57bfce28fe1d"
+      },
+      "compiler": {
+        "path": "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x86/cl.exe",
+        "bytes": 678000,
+        "sha256": "8de3c1e7af40f4a6c83188ef7cca6270223a00652e8c703022694f64add54a14"
+      },
+      "strictVendorConfigureGatePassed": true,
+      "metadataRepairNeeded": false,
+      "tests": [
+        "sdk.native.local-resource-state",
+        "sdk.native.devtools-keyboard-snapshot",
+        "kernel.native.lifetime.ctor_shell-view-success",
+        "kernel.native.lifetime.ctor_shell-view-handler-rollback",
+        "kernel.native.request-close.native-local-owner-fence"
+      ],
+      "uniqueFiniteCaseCount": 5,
+      "executables": [
+        {
+          "path": "C:/sr06/out/release-vendor-x86-1/tests/native/Release/soui_devtools_keyboard_snapshot_tests.exe",
+          "bytes": 15360,
+          "sha256": "9d67846d3bc6e04dfffa42e6e965ae3e2e4d4c501b0af70d22476bda027091bb",
+          "peMachine": "0x14c"
+        },
+        {
+          "path": "C:/sr06/out/release-vendor-x86-1/tests/native/Release/soui_local_resource_state_tests.exe",
+          "bytes": 86528,
+          "sha256": "6eacfbc242daa104849f448feb02e6ae0fd4a9f3c773a83fdbb37229e213d66a",
+          "peMachine": "0x14c"
+        },
+        {
+          "path": "C:/sr06/out/release-vendor-x86-1/tests/native/request_close/Release/soui_request_close_regressions.exe",
+          "bytes": 107008,
+          "sha256": "b3fa59dc579bd0ab529a951e3d22d3e2995b1121a7b0c3898c2520a3231e740e",
+          "peMachine": "0x14c"
+        },
+        {
+          "path": "C:/sr06/out/release-vendor-x86-1/tests/native/vendor_lifetime/ctor_shell/Release/soui_vendor_ctor_shell_tests.exe",
+          "bytes": 31744,
+          "sha256": "eaa6f9318276258b5bdc6d3ff87761fe7e7aa9712ebeac4a56b4bac9a03507ea",
+          "peMachine": "0x14c"
+        }
+      ],
+      "artifactPins": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vendor-short-prep/x86-ArtifactPins.json",
+        "bytes": 46033,
+        "sha256": "a86dd953c7591ac4794d23c917e6c3f525dba6a11061ee4c787deabaab0311f2"
+      },
+      "objects": 41,
+      "tlogs": 63,
+      "generatedFiles": 73,
+      "actualCompilerReadInputs": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vendor-short-prep/x86-ActualCompilerReadInputs.json",
+        "bytes": 119639,
+        "sha256": "a9d00d6570be2f26b8ee4f1c876893e140c8294375ce9265b6c7a90d10349939"
+      },
+      "currentReadbackFiles": 560,
+      "lastTestLog": {
+        "path": "C:/sr06/out/release-vendor-x86-1/Testing/Temporary/LastTest.log",
+        "bytes": 4838,
+        "sha256": "7accf764470f8e54ef9fb2f35f1fa53d2ea2779a11985cc5aedd9b4b900d4818"
+      }
+    }
+  ],
+  "uniqueCases": 5,
+  "architectureCaseExecutions": 10,
+  "metadataEdits": [],
+  "fixtureEdits": [],
+  "vendorOrFrozenHelperEdits": [],
+  "sourceGateWeakened": false,
+  "compilerCensus": {
+    "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vendor-short-prep/Compilers.after.json",
+    "bytes": 713,
+    "sha256": "6ea556b565033f557482150a1460efc53a05da910ccf804b49b8e7606ddb556a"
+  },
+  "ownedCompilerHelpersRemaining": [],
+  "naturalClosureMeaning": "Direct CMake and CTest processes returned naturally; no Job supervisor was used, so no Job0 claim. Global kernel compiler activity is unrelated and remains preserved.",
+  "result": "PASS_SELECTED_FINITE_SOURCE_CASES",
+  "errors": [],
+  "exclusions": [
+    "Product Host/DLL or GUI execution",
+    "Final new kernel runtime qualification",
+    "Whole vendor test suite or unchanged 93 CTests",
+    "Production, long-run, OS/IME/DPI qualification",
+    "Official SDK build-evidence/source SDK pack or install acceptance"
+  ],
+  "releaseReady": false,
+  "productionQualificationComplete": false,
+  "indexEdited": false
+}

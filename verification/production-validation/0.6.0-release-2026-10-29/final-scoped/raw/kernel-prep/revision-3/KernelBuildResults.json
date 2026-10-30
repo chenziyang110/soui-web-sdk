@@ -1,0 +1,137 @@
+{
+  "schema": "soui.release.source2-two-architecture-kernel-results/v1",
+  "createdUtc": "2026-10-28T17:26:29.464Z",
+  "sourceIdentity": "26c5b73e4915bb4539e87b987cd8e952005f0fe41d987138d8d8e3b13eb25c95",
+  "sourceFiles": 23064,
+  "sourceBytes": 305373649,
+  "driverInputs": {
+    "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/kernel-prep/revision-3/DriverInputs.json",
+    "bytes": 4096,
+    "sha256": "d985280d5c1113d021d1cf6f28ffde5a4ead1fe6ed85a2eb8a11a574f43265da"
+  },
+  "architectures": [
+    {
+      "architecture": "x64",
+      "summary": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/kernel-prep/revision-3/execution-x64/summary.json",
+        "bytes": 8876,
+        "sha256": "cda6745f15ad20b021f0757d76b2634d52f5f5304830d53569791c6c3493efd0"
+      },
+      "sourceIdentity": "26c5b73e4915bb4539e87b987cd8e952005f0fe41d987138d8d8e3b13eb25c95",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "activeProcesses": 0,
+      "noForce": true,
+      "elapsedMs": 1427036,
+      "dll": {
+        "path": "C:\\sr06\\out\\release-kernel-x64-2\\miniblink\\bin\\miniblink.dll",
+        "bytes": 39204352,
+        "sha256": "d888637d5dd1476dde16b8c5bb28172d7b8ec3495b69c725fa3572013748139a"
+      },
+      "map": {
+        "path": "C:\\sr06\\out\\release-kernel-x64-2\\miniblink\\bin\\miniblink.map",
+        "bytes": 55750825,
+        "sha256": "8371457a88c231c98df0b8caeacef2cb29e4aa0351ec5334646973b8c5407d18"
+      },
+      "importLibrary": {
+        "path": "C:\\sr06\\out\\release-kernel-x64-2\\miniblink\\bin\\miniblink.lib",
+        "bytes": 4837106,
+        "sha256": "9c0a08762aba7e751866aede65b7ffacd5b9a20f0274c7aad3cae07ab1225381"
+      },
+      "staticPE": {
+        "machine": 34404,
+        "exportCount": 9663,
+        "required": [
+          "wkeStage0GetDevToolsApi",
+          "wkeGetLocalResourceApi",
+          "wkeGetCursorBrokerApi",
+          "wkeGetViewDiagnosticsApi",
+          "wkeGetRendererDiagnosticsApi",
+          "wkeGetRendererModelDiagnosticsApi",
+          "wkeGetInteractionApi",
+          "wkeGetCacheDiagnosticsApi",
+          "wkeGetInputUiApi"
+        ],
+        "requiredPresent": true,
+        "imageExecuted": false
+      },
+      "explicitIncrementalFromRun2": true,
+      "admittedFreshRun2ObjectCount": 1903,
+      "admittedFreshRun2Pch": true,
+      "admittedObjectChangeCount": 0,
+      "expectedGpuOff": true,
+      "lexicalClCompileItems": 2986,
+      "actualClangReadSourceCount": 2985,
+      "lexicalOnlyInactiveGpuItem": "cc/trees/GpuSkiaSurface.cpp",
+      "inactiveReason": "vcxproj ItemGroup Condition=GpuExperiment==true; actual build explicitly GpuExperiment=false"
+    },
+    {
+      "architecture": "x86",
+      "summary": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/kernel-prep/revision-3/execution-x86/summary.json",
+        "bytes": 8175,
+        "sha256": "e886d7fc94e575eda3bb4d98af999e8eff82abb7d1839b5e7b08725a706d60c2"
+      },
+      "sourceIdentity": "26c5b73e4915bb4539e87b987cd8e952005f0fe41d987138d8d8e3b13eb25c95",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "activeProcesses": 0,
+      "noForce": true,
+      "elapsedMs": 3781741,
+      "dll": {
+        "path": "C:\\sr06\\out\\release-kernel-x86-3\\miniblink\\bin\\node.dll",
+        "bytes": 28318208,
+        "sha256": "dc8c37178f4bbd9260edc973d61af876cf8460178eaf89fa2994fdffc94abc9a"
+      },
+      "map": {
+        "path": "C:\\sr06\\out\\release-kernel-x86-3\\miniblink\\bin\\node.map",
+        "bytes": 49159759,
+        "sha256": "361a9b2a784bc3bbf55c18dd39421efcc513b1ea1a0dfdd614264241b7e4114d"
+      },
+      "importLibrary": {
+        "path": "C:\\sr06\\out\\release-kernel-x86-3\\miniblink\\bin\\node.lib",
+        "bytes": 4757974,
+        "sha256": "e4547a8cfa3cc72dc4c0c961b9111f1450350f249a4560d806b514238f201bb6"
+      },
+      "staticPE": {
+        "machine": 332,
+        "exportCount": 9875,
+        "required": [
+          "wkeStage0GetDevToolsApi",
+          "wkeGetLocalResourceApi",
+          "wkeGetCursorBrokerApi",
+          "wkeGetViewDiagnosticsApi",
+          "wkeGetRendererDiagnosticsApi",
+          "wkeGetRendererModelDiagnosticsApi",
+          "wkeGetInteractionApi",
+          "wkeGetCacheDiagnosticsApi",
+          "wkeGetInputUiApi"
+        ],
+        "requiredPresent": true,
+        "imageExecuted": false
+      },
+      "explicitIncrementalFromRun2": false,
+      "admittedFreshRun2ObjectCount": 0,
+      "admittedFreshRun2Pch": false,
+      "admittedObjectChangeCount": 0,
+      "expectedGpuOff": true,
+      "lexicalClCompileItems": 2985,
+      "actualClangReadSourceCount": 2984,
+      "lexicalOnlyInactiveGpuItem": "cc/trees/GpuSkiaSurface.cpp",
+      "inactiveReason": "vcxproj ItemGroup Condition=GpuExperiment==true; actual build explicitly GpuExperiment=false"
+    }
+  ],
+  "bothNodeDriverFinalExitCode": 0,
+  "bothJobsAndPostchecksComplete": true,
+  "fourteenControlsMayUnfreeze": true,
+  "originalFailuresPreserved": true,
+  "historicalP9MainObjectsOrPchReused": false,
+  "elevenMatchingStaticLibrariesReusedPerArchitecture": true,
+  "sourceNormalizationRelaxedForReuse": false,
+  "libraryRawAlignmentApproval": "4815c46088536743e2d8e149f58d3ccc2e2eb139205929e77e6c2e4ba20c73d5",
+  "noKernelDllLoadedOnHost": true,
+  "productExecuted": false,
+  "vmTouched": false,
+  "longTestsExecuted": false,
+  "releaseReady": false
+}

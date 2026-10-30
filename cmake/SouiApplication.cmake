@@ -1,5 +1,6 @@
 include_guard(GLOBAL)
 include("${CMAKE_CURRENT_LIST_DIR}/SouiPlatform.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/SouiDevTools.cmake")
 function(soui_add_application target)
   soui_detect_platform()
   soui_require_capability(desktop_host)
@@ -48,15 +49,19 @@ function(soui_add_application target)
   set_target_properties(${target} PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/$<CONFIG>/${target}")
   target_link_options(${target} PRIVATE /SUBSYSTEM:WINDOWS,6.01)
+  set_property(TARGET ${target} PROPERTY SOUI_DEVTOOLS_KERNEL_DEPLOY_SOURCE "${dep}/prebuilt/${arch}/miniblink/node.dll")
   # Deployment also runs when only Web assets changed and no native relink is needed.
   add_custom_target(${target}_runtime ALL
     COMMAND "${SOUI_NODE_EXECUTABLE}" "${SOUI_DISTRIBUTION_ROOT}/tools/internal/runtime-deployment.cjs" deploy
       --sdk-root "${SOUI_DISTRIBUTION_ROOT}" --application "$<TARGET_FILE_DIR:${target}>"
       --architecture "${arch}" --backend miniblink --project-root "${APP_ROOT}" --adopt-legacy
+      --kernel-source "$<TARGET_PROPERTY:${target},SOUI_DEVTOOLS_KERNEL_DEPLOY_SOURCE>"
+      --kernel-sha256 "$<IF:$<BOOL:${SOUI_DEVTOOLS_PACKAGE_ENABLED}>,${SOUI_DEVTOOLS_KERNEL_SHA256},>"
     COMMAND "${SOUI_NODE_EXECUTABLE}" "${SOUI_DISTRIBUTION_ROOT}/tools/internal/deploy-resources.cjs"
       "${APP_WEB_ROOT}" "$<TARGET_FILE_DIR:${target}>" "${SOUI_DISTRIBUTION_ROOT}" "${APP_ROOT}"
     COMMAND "${SOUI_MT_EXECUTABLE}" -nologo -manifest "${APP_ROOT}/resources/app.manifest" "-outputresource:$<TARGET_FILE:${target}>;#1"
     DEPENDS ${target}
     VERBATIM)
+  soui_deploy_devtools(${target} RUNTIME_TARGET ${target}_runtime)
 endfunction()
 

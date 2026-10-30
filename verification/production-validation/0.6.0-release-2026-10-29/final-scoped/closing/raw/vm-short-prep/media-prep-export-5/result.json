@@ -1,0 +1,130 @@
+{
+  "schema": "soui.release06-preparation-export-data-media/v1",
+  "iso": {
+    "path": "C:/s06prepexportmedia/SouiRelease06PreparationExport.iso",
+    "bytes": 71680,
+    "sha256": "e79d5add55463fbcf96e557214245e37bd9c57477c1ab69a94af0218a7248d07"
+  },
+  "files": [
+    {
+      "path": "EXPORT.PS1",
+      "bytes": 4230,
+      "sha256": "4086d69675c24f04bd76a4e775f0b66ed834299eebeadfdc5d683faf24a3da0b"
+    },
+    {
+      "path": "README.TXT",
+      "bytes": 1051,
+      "sha256": "82d2150b6a75307d24f43d6217c09d6129f0955ea584b361e3fe8579976c21d1"
+    },
+    {
+      "path": "RUN.PS1",
+      "bytes": 1287,
+      "sha256": "b72b0dcad53843321af9ebacd12fcc1cfd673958e6b9a933302036c371e31dd3"
+    },
+    {
+      "path": "SCOPE.JSON",
+      "bytes": 1528,
+      "sha256": "e0f496ca95b62b39bb75fcc6cfaac41c6de9ceb63daa7f730c8f8612d981437d"
+    },
+    {
+      "path": "collect-preparation.cjs",
+      "bytes": 7564,
+      "sha256": "94e08a8b3e315e569939ba95eb53542eafcb2b2fc0251f939dff4e561750bb53"
+    }
+  ],
+  "controls": {
+    "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vm-short-prep/media-prep-export-5/Controls.actual.json",
+    "bytes": 1060,
+    "sha256": "4a20dc7e8bca0c7892b77f48701508803cf0f92cfcce0a0cbbd0057d6bf5106c"
+  },
+  "scope": {
+    "path": "C:/s06prepexportmedia/iso-tree/SCOPE.JSON",
+    "bytes": 1528,
+    "sha256": "e0f496ca95b62b39bb75fcc6cfaac41c6de9ceb63daa7f730c8f8612d981437d"
+  },
+  "steps": [
+    {
+      "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+      "args": [
+        "-NoProfile",
+        "-NonInteractive",
+        "-Command",
+        "$ErrorActionPreference=\"Stop\";foreach($p in @(\"C:\\s06prepexportmedia\\iso-tree\\RUN.PS1\",\"C:\\s06prepexportmedia\\iso-tree\\EXPORT.PS1\")){$t=$null;$e=$null;$null=[Management.Automation.Language.Parser]::ParseFile($p,[ref]$t,[ref]$e);if($e.Count){throw ($e|Out-String)}}"
+      ],
+      "cwd": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\vm-short-prep\\media-prep-export-5",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 742.5863
+    },
+    {
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "--check",
+        "C:\\s06prepexportmedia\\iso-tree\\collect-preparation.cjs"
+      ],
+      "cwd": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\vm-short-prep\\media-prep-export-5",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 93.6723
+    },
+    {
+      "executable": "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/pwsh.exe",
+      "args": [
+        "-NoLogo",
+        "-NoProfile",
+        "-NonInteractive",
+        "-Sta",
+        "-File",
+        "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vm-short-prep/media-prep-export-5/Write-Iso.ps1",
+        "-Plan",
+        "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vm-short-prep/media-prep-export-5/plan.json",
+        "-PlanSha256",
+        "65104c3ac9b444eec926c03b6d200072900fd0387d882a9c613390cce437477e"
+      ],
+      "cwd": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\vm-short-prep\\media-prep-export-5",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 996.0259
+    },
+    {
+      "executable": "C:/Program Files/7-Zip/7z.exe",
+      "args": [
+        "l",
+        "-slt",
+        "-ba",
+        "-sccUTF-8",
+        "C:\\s06prepexportmedia\\SouiRelease06PreparationExport.iso"
+      ],
+      "cwd": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\vm-short-prep\\media-prep-export-5",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 28.9544
+    },
+    {
+      "executable": "C:/Program Files/7-Zip/7z.exe",
+      "args": [
+        "x",
+        "-sccUTF-8",
+        "-y",
+        "-oC:\\s06prepexportmedia\\iso-readback",
+        "C:\\s06prepexportmedia\\SouiRelease06PreparationExport.iso"
+      ],
+      "cwd": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\vm-short-prep\\media-prep-export-5",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 37.1159
+    }
+  ],
+  "allIsoMembersRawReadbackExact": true,
+  "originalExporterRawUnchanged": true,
+  "sourceOrIndexOrOldMediaChanged": false,
+  "guestCollectionExecuted": false,
+  "productStarted": false,
+  "vmTouched": false,
+  "releaseReady": false
+}

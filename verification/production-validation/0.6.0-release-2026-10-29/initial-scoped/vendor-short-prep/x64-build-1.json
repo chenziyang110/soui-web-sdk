@@ -1,0 +1,57 @@
+{
+  "phase": "build",
+  "arch": "x64",
+  "attempt": "1",
+  "executable": {
+    "path": "C:/Program Files/CMake/bin/cmake.exe",
+    "bytes": 12905544,
+    "sha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379"
+  },
+  "args": [
+    "--build",
+    "C:/sr06/out/release-vendor-x64-1",
+    "--config",
+    "Release",
+    "--target",
+    "soui_devtools_keyboard_snapshot_tests",
+    "soui_local_resource_state_tests",
+    "soui_request_close_regressions",
+    "soui_vendor_ctor_shell_tests",
+    "--parallel",
+    "1",
+    "--",
+    "/m:1",
+    "/nr:false"
+  ],
+  "cwd": "C:/sr06",
+  "build": "C:/sr06/out/release-vendor-x64-1",
+  "runner": {
+    "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vendor-short-prep/Run-Phase.cjs",
+    "bytes": 3451,
+    "sha256": "a7bf2f0005d3a0581a885b00fc83e7cb78d2af74a599354269e60edb60acc82d"
+  },
+  "startedUtc": "2026-10-28T15:28:55.158Z",
+  "environment": {
+    "MSBUILDDISABLENODEREUSE": "1"
+  },
+  "concurrency": "Root explicitly authorizes finite /m1 lane alongside existing kernel; not a global-idle claim",
+  "productHostStarted": false,
+  "guiStarted": false,
+  "result": "NATURAL_ZERO",
+  "pid": 86284,
+  "exitCode": 0,
+  "signal": null,
+  "finishedUtc": "2026-10-28T15:29:55.939Z",
+  "elapsedMs": 60781,
+  "stdout": {
+    "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vendor-short-prep/x64-build-1.stdout.log",
+    "bytes": 12048,
+    "sha256": "652725c404e491ea3fa0c7b1eee95f86b08dbce6502ddcc0f9552d185d0a3abf"
+  },
+  "stderr": {
+    "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vendor-short-prep/x64-build-1.stderr.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "forced": false
+}

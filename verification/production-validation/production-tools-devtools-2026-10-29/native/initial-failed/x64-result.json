@@ -1,0 +1,84 @@
+{
+  "architecture": "x64",
+  "configuration": "Release",
+  "compile": {
+    "pid": 74100,
+    "creationFileTime": "134377139351424995",
+    "exitCode": 1,
+    "supervisorExitCode": 1,
+    "signal": null,
+    "spawnError": null,
+    "reportError": null,
+    "stopRequested": false,
+    "fallbackUsed": false,
+    "closureConfirmed": true,
+    "passed": false,
+    "terminal": {
+      "event": "terminal",
+      "reason": "root-failed",
+      "elapsedMs": 9998,
+      "rootExited": true,
+      "rootExitCode": 1,
+      "activeBeforeCleanup": 0,
+      "terminatedOwnedJob": false,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "totalProcesses": 48,
+      "limitTerminatedProcesses": 0,
+      "passed": false
+    },
+    "report": "F:\\work\\SOUI_WEB\\out\\production-tools-devtools-closeout-20261029\\native-short\\x64\\compile.ndjson",
+    "reportSha256": "40f1deead814c7b55bbcc1a225515f18b3c00dbb5b42ff18b504a3bf14942802",
+    "runnerSha256": "f254dadd4eccad3c57d69e98f260d15ee598c0b6441b7fe68fc4ef5b3b7dea83",
+    "executableSha256": "60c9b29843624dd8af6b6a7b26147753be6aeef65098b9a503cc50850afe410f"
+  },
+  "compileInvocation": {
+    "schema": "soui.native-closeout-compile/v1",
+    "architecture": "x64",
+    "configuration": "Release",
+    "source": "C:\\s06-closeout-native-940cee1533ee4474a3f5a985cb9a9f73",
+    "build": "C:\\s06-closeout-native-940cee1533ee4474a3f5a985cb9a9f73\\build-x64",
+    "installPrefix": "C:/sr06/out/release-install-x64-release",
+    "executable": "C:/Program Files/CMake/bin/cmake.exe",
+    "configureArguments": [
+      "-S",
+      "C:\\s06-closeout-native-940cee1533ee4474a3f5a985cb9a9f73",
+      "-B",
+      "C:\\s06-closeout-native-940cee1533ee4474a3f5a985cb9a9f73\\build-x64",
+      "-G",
+      "Visual Studio 17 2022",
+      "-A",
+      "x64,version=10.0.19041.0",
+      "-T",
+      "v143,host=x64,version=14.44.35207",
+      "-DCMAKE_SYSTEM_VERSION=10.0.19041.0",
+      "-DCMAKE_PREFIX_PATH=C:/sr06/out/release-install-x64-release",
+      "-DCMAKE_CONFIGURATION_TYPES=Release"
+    ],
+    "buildArguments": [
+      "--build",
+      "C:\\s06-closeout-native-940cee1533ee4474a3f5a985cb9a9f73\\build-x64",
+      "--config",
+      "Release",
+      "--target",
+      "soui_devtools_host_tests",
+      "--parallel",
+      "2",
+      "--",
+      "/nr:false"
+    ],
+    "configureExitCode": 0,
+    "buildExitCode": 1,
+    "environment": {
+      "MSBUILDDISABLENODEREUSE": "1"
+    },
+    "callerEnvironment": {
+      "present": true,
+      "value": "1"
+    },
+    "callerEnvironmentRestored": true,
+    "compilerHelperSuppressionConfigured": false
+  },
+  "console": null,
+  "output": null
+}

@@ -1,5 +1,66 @@
 # 版本与升级
 
+## 迁移到 0.6.0
+
+`0.6.0` 是本次稳定格式的交付身份，GitHub 使用普通 Release 分类；生产验收仍为 `releaseReady=false`。当前版本只以本轮最终源码、SDK manifest、应用 payload 和原始运行记录证明其实际范围，不能继承本地 preview 或旧 Release 的完整通过。
+
+### 选择正确的交付入口
+
+- 完整源码包包含 SDK、模板、Workbench、工具、第三方源码与来源材料，适合重建与维护。
+- source SDK 由公开 pack/install 流程交付，使用 `sdk-lock.json` 管理 SDK 所有的文件；它不等同于完整第三方源码归档。
+- CMake 安装 prefix 提供编译库、公共头和导出目标。它不自动带模板、Node 部署工具或 MiniBlink Inspector 供应输入；二进制安装消费者编译通过不能证明这些资源已部署。
+
+源码对应关系、第三方再分发材料和完整源码资产见[本版对应源码](licenses/v0.6.0-redistribution.md)及[发布说明](releases/0.6.0.md)。最终 DLL 必须绑定本轮实际源码和构建记录；旧固定 DLL 的历史通过不改写为新内核通过。
+
+### 安装与回退
+
+1. 关闭应用和旧构建进程，提交或备份业务工程与旧 SDK 包。
+2. 从本轮固定 source SDK 包安装，保留业务工程自己的 `VERSION`；不要手改包内清单或已安装 SDK 的锁定散列。
+3. 重新配置并完整编译原生应用，确认 `SOUI_SDK_VERSION_STRING`、Web 包/锁与 `sdk-lock.json` 均指向 `0.6.0`。
+4. 核对实际依赖、frontend、许可成员和资源闭集，再做业务往返、关闭与进程自然退出短验。
+5. 回退时重新安装保留的旧包并重新编译。业务 `app/` 不自动覆盖，新增功能所需的应用代码由维护者按旧 API 明确迁移。
+
+SDK 安装器拒绝同版本不同内容、本地修改过的受管文件、未知事务持有者和不完整恢复。保留失败现场，不通过删除事务目录或覆盖单个 DLL 强行继续。新增 Host/adapter 虚方法及私有布局要求原生消费者重编译；不同版本或工具集之间没有稳定二进制 ABI 承诺。
+
+### DevTools 的新责任
+
+默认策略仍 disabled，Debug 与 Release 相同。应用在首次 `start` 前配置；WebView2 须在 `prepare_async` 前配置。构建/复制离线 Inspector 不改变策略，也不发 grant。
+
+应用在可信原生入口完成身份、策略和默认 No 的确认后，才签发绑定目标的不透明 grant。网页、Bridge JSON、UIA、CLI 和环境变量不能伪造许可。文档变化、撤销、到期和新授权替换使旧许可失效；新的业务目标需要新的授权。
+
+内置 `destroy_target` 结束策略会关闭当前业务 Host。处理未保存状态由应用负责；返回 pending 后继续保留 Host、adapter、Bridge、HWND 与消息循环，按同一总期限重试实际清理。不能把排队、隐藏、资源计数为零或浏览器退出事件单独当作完成。失败即使随后安全回收也仍为失败。
+
+MiniBlink 必须使用同架构、完整 pin 匹配的内核/frontend/外部批准与许可成员。ABI 3 相符不能替代资源身份校验；不要仅换 `node.dll`、把 prepared 清单冒充 delivery 清单，或现算待验目录的 SHA 充作信任 pin。生成的应用头由实际部署元数据绑定，具体字段沿公开部署工具的读端契约核对。
+
+WebView2 使用外部 Runtime；SDK 的受控独占模式自己持有 Runtime exit watch，不能再给该同一 owner 额外取得第二个 watch。未启用 DevTools 的旧 watch 接法继续按原契约使用。公开不能观察的 attached/paused/visible 保持 unknown。
+
+### 页面资源与 source map
+
+原构造继续采用既有 file 模式。需要同原点 XHR/fetch 时，可在原生初始化显式选择 MiniBlink 本地 HTTPS 资源模式；它独立于调试许可，要求匹配的 business-resource 能力，缺能力明确失败，不静默回退。
+
+发行档默认 `distribution`；离线源码诊断用 `-WebProfile source-diagnostic`，可能包含业务源码和数据。它不授予 Console 权限，也不自动生成任意 source map。MiniBlink 的离线映射为有界 inline map/相对 source 标签/明确 sourcesContent 路径，不支持任意外置或在线 map 读取。断点与映射结果按实际后端、架构和载荷分别验收。
+
+### AutoHost 与性能接线
+
+compatibility 和 modern 的现有默认不变。`auto` 由创建参数显式选择，保留现代与兼容两份页面及 MiniBlink 依赖。Runtime 明确不可用时可在启动前选择兼容路径；配置、策略或业务错误不换后端、不重放，挂载后选择不变。WebView2 Runtime、Fixed Runtime 与 Windows 字体文件不随此功能自动下载或捆绑。
+
+输入恢复、调度、帧/资源通知与数值关联的源码接线有独立能力检查和开关。旧 DLL 按声明的 fallback 或不支持结果处理，不能因链接通过就认定新内核机制已生效。高刷、尾延迟、GPU、内存及长稳结论必须来自同设备、同负载和本轮真实产物。
+
+### GUI peer 兼容
+
+0.6.0 首方 GUI 包对 SDK 的新声明精确覆盖已承诺的 0.4/0.5 稳定线、0.4.0/0.5.0/0.5.1 预发行，保留主线 `0.6.0-preview.3` 的接受范围并加入稳定 `0.6.0`；不自动加入任意后续 0.6 prerelease。
+
+校验器保留历史 0.5 旧范围、0.5.1 MIT 范围、主线 preview.3 的 MIT 范围，以及本地 preview.1–preview.9 各自原范围/最小锁形状。旧包仍保持它自己的声明和散列。新 stable 包必须含与 package.json 完全一致的 root lock peer，不接受 broad peer、错版本本地 SDK、改写旧包或另一 preview 的声明。
+
+### 验证后置与签名
+
+本次授权后置 D13/D14、完整性能和平台资格、低收益长测与重复演练。各项保留待验；完整 `Verify-Release.ps1` 六阶段若未执行，发布说明不能把它写成通过。新包安装/生成、公开消费者、资源与权限门、真实关闭和必要短验仍须完成。
+
+打包工具不执行代码签名。最终应用签名状态按原件核对并披露；没有证书时不伪造签名或安装器。首次普通 Release 的分类不改变第三方许可、配对材料批准或生产资格状态。
+
+
+## 历史版本与升级合同
+
 0.4.0-preview.2 整合两条功能分支，SDK 内容发生变化，因此使用新版本。已发布的 v0.4.0-preview.1 标签和固定包不覆盖；整合验证不继承旧版完整交付通过状态。
 
 0.4.0-preview.3 更新 Workbench 依赖和 SDK 内的依赖清单、授权材料，因此再次使用新身份。Workbench 构建要求 Node.js 22.12 以上；基础 SDK 和兼容生成项目仍保留 Node.js 20.19 范围。详见 [ADR-0018](adr/0018-workbench-build-node22.md)。
@@ -13,7 +74,7 @@
 ## 升级
 
 1. 修改 SDK 后更新 VERSION，记录兼容性变化并完成验证。
-2. 按当前 VERSION 生成新包，例如 `node tools/sdk/soui-sdk.cjs pack --source . --output dist/sdk/0.5.0 --version 0.5.0`；开发中应在验证收敛后生成，已生成的同版本包不允许覆盖。先前内部 `0.5.0-preview.1` 包保留原字节。
+2. 按当前 VERSION 生成新包，例如 `node tools/sdk/soui-sdk.cjs pack --source . --output dist/sdk/0.6.0 --version 0.6.0`；开发中应在验证收敛后生成，已生成的同版本包不允许覆盖。先前内部 `0.5.0-preview.1` 包保留原字节。
 3. 在业务项目中提交或备份修改。
 4. 执行 `node tools/sdk/soui-sdk.cjs install --package <新SDK包目录> --project <业务项目目录>`。
 5. 重新编译、回归业务，保留旧包用于回退。

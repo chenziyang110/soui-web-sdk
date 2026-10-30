@@ -1,0 +1,178 @@
+{
+  "schema": "soui.release06-default-vm-media-independent-review/v1",
+  "reviewedAt": "2026-10-28T18:31:35.276Z",
+  "reviewer": "/root/remaining_policy_fault",
+  "decision": "ACCEPT_STATIC_DEFAULT_VM_MEDIA_FOR_OPERATOR_EXECUTION",
+  "blockingFindings": [],
+  "scope": "Independent static control review and actual existing data/readback identity checks only. No VM, application, DLL, compiler, or transport-fixture execution.",
+  "reviewed": [
+    {
+      "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vm-short-prep/media-default-1/result.json",
+      "bytes": 9031,
+      "sha256": "343326a740adff0a38777cde43523e02046a6fcf2cf5eba2a9a65a6c584e9c44"
+    },
+    {
+      "path": "C:/s06media/iso-tree/RUN.PS1",
+      "bytes": 3460,
+      "sha256": "5bfc6256f32da5eb5a41e6d379e09c4ab4d837296a65707b5e4c854487930de3"
+    },
+    {
+      "path": "C:/s06media/iso-tree/EXPORT.PS1",
+      "bytes": 4230,
+      "sha256": "4086d69675c24f04bd76a4e775f0b66ed834299eebeadfdc5d683faf24a3da0b"
+    },
+    {
+      "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vm-short-prep/media-default-1/Extract-Serial.cjs",
+      "bytes": 4585,
+      "sha256": "c6d78a814a041ec57bdb1a363cd2c7f677f901c460d0267805d95052e184b5a3"
+    },
+    {
+      "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vm-short-prep/Guest-Owned-Smokes.cjs",
+      "bytes": 8865,
+      "sha256": "1d96606d39ef755482bd1a1b23dbdaf2b3297811bac8d3405aa7487338ff4c61"
+    }
+  ],
+  "actualDataChecks": {
+    "resultPinsRecomputed": [
+      "iso",
+      "zip",
+      "carrier",
+      "run",
+      "export",
+      "inputPlan",
+      "payloadFiles",
+      "hostExtractor"
+    ],
+    "allMatched": true,
+    "zipReadback": {
+      "actualRawFiles": 4815,
+      "actualRawBytes": 501420627,
+      "everyRawLengthAndSha256Matched": true,
+      "exactMembership": true
+    },
+    "isoExistingReadback": {
+      "flatFiles": 5,
+      "everyRawLengthAndSha256Matched": true,
+      "exactMembership": true
+    },
+    "runAndExportReadbackSame": true,
+    "controllerPreparationPayloadAndZipReadbackSame": true,
+    "underlyingEightPublicControlScriptsPayloadAndReadbackSame": true,
+    "recordedSourceSha256": "67a8c649a1a08e96e76dd4d0f7782b53f229e1f26ad65e6a2738bc7173555264",
+    "publicReadersNotReexecutedByReviewer": true
+  },
+  "builds": [
+    {
+      "architecture": "x86",
+      "receipt": {
+        "path": "C:/s06media/zip-readback/sr06/out/x86/build-Release.json",
+        "bytes": 814760,
+        "sha256": "bba72443655141c695b0287d3ce0b271a66860795b4f5abf77af54c320ebe5ec"
+      },
+      "buildId": "6d3166b8-5989-4356-8970-1ab5c879db00",
+      "sourceSha256": "67a8c649a1a08e96e76dd4d0f7782b53f229e1f26ad65e6a2738bc7173555264",
+      "version": "0.6.0",
+      "applicationExecutables": [
+        {
+          "target": "SouiStarter",
+          "path": "SouiStarter.exe",
+          "bytes": 994304,
+          "sha256": "fe890df250267c485e8557981aba6bca9003a5a358d033cacea96769e64ec884"
+        },
+        {
+          "target": "SouiWorkbench",
+          "path": "SouiWorkbench.exe",
+          "bytes": 1507328,
+          "sha256": "59216d2fb2a4c747a89d78923dd47015438ebc7c582092780c6afdc3bc35e6aa"
+        },
+        {
+          "target": "SouiModernStarter",
+          "path": "SouiModernStarter.exe",
+          "bytes": 721920,
+          "sha256": "96017aa741c98bd72367de350bb60037a796d8dbaf97f954cd9d73db41cc0938"
+        }
+      ]
+    },
+    {
+      "architecture": "x64",
+      "receipt": {
+        "path": "C:/s06media/zip-readback/sr06/out/x64/build-Release.json",
+        "bytes": 814721,
+        "sha256": "1b753456ae547ce0cd939fe02674025e3dfca34ffba3ec3f3d13fb8271dc6c05"
+      },
+      "buildId": "7ecb5a92-de8e-4ab1-8b24-19606f889f03",
+      "sourceSha256": "67a8c649a1a08e96e76dd4d0f7782b53f229e1f26ad65e6a2738bc7173555264",
+      "version": "0.6.0",
+      "applicationExecutables": [
+        {
+          "target": "SouiStarter",
+          "path": "SouiStarter.exe",
+          "bytes": 1137152,
+          "sha256": "eacdd6d8b2fc8f9f5b1e6186757c76f452b7224059c682e10782c2cfab6c4ad9"
+        },
+        {
+          "target": "SouiWorkbench",
+          "path": "SouiWorkbench.exe",
+          "bytes": 1716224,
+          "sha256": "86a5c72be186b9f83f4c9e8fdde80e37556123955452a86b43b56357fe70da8e"
+        },
+        {
+          "target": "SouiModernStarter",
+          "path": "SouiModernStarter.exe",
+          "bytes": 835072,
+          "sha256": "ad15990629805436da128858a30b9a5c5678d70ff68305891ad6a48b3616ebe6"
+        }
+      ]
+    }
+  ],
+  "executionContract": {
+    "run": "RUN.PS1:8-29 refuses existing three roots, verifies pinned carrier/ZIP and exact 4815-member regular-file extraction before moving fresh roots; :31-45 uses a fresh evidence folder, invokes the shipped controller, and preserves its original exit.",
+    "cohort": "Default omitted selection is x86:desktop,x86:modern,x64:desktop,x64:modern. Current root has no project.json; desktop resolves SouiStarter/default plus SouiWorkbench/default and react, modern resolves SouiModernStarter/default. This is eight application runs from six current executable identities, not eight distinct EXE files.",
+    "publicEntries": "Guest-Owned-Smokes.cjs:43-85 validates both current MSVC143 build reports and prepared Runner, then invokes public Test.ps1 -NativeOnly / Test-Modern.ps1 serially. NativeOnly bypasses unit/build stages; no guest compiler or package installer is requested.",
+    "budgets": {
+      "desktopApplication": {
+        "timeoutMs": 45000,
+        "drainMs": 2000
+      },
+      "modernApplication": {
+        "timeoutMs": 40000,
+        "drainMs": 2000
+      },
+      "desktopOuter": {
+        "timeoutMs": 180000,
+        "drainMs": 2000
+      },
+      "modernOuter": {
+        "timeoutMs": 90000,
+        "drainMs": 2000
+      },
+      "unchanged": true
+    },
+    "acceptance": "Both inner application and outer stage readers require current exact argv/cwd/EXE/Runner/context/PID/birth identity and natural root0/supervisor0, completed closure, zero active-before-cleanup, no STOP/fallback/timeout/terminated Job. A compiler-tail policy cannot qualify these runtime stages.",
+    "failureRetention": "Controller:88-115 retains failure, collects complete new smoke-owned/modern-owned attempts and attempted smoke receipts, writes failed Summary and raw export catalog, then exits1. Public inner reader preserves previous app logs before replacing only its owned diagnostic; current raw stdout/stderr/ndjson/context/finished/app bytes remain. Fresh roots/evidence and wx/CreateNew prevent overwriting prior failed attempts."
+  },
+  "serialContract": {
+    "rawFilesIncludingCatalogMax": 512,
+    "rawBytesMax": 8388608,
+    "envelopeAndGzipBytesMax": 12582912,
+    "chunkChars": 2048,
+    "serialInputBytesMax": 33554432,
+    "export": "EXPORT.PS1:9-38 verifies original complete-file lengths and SHA256, rejects excess rather than truncating, carries base64 original bytes inside gzip; :42-51 writes COM1 with a 900000ms loop guard and individual 15000ms WriteTimeout. This is a separate transport budget, not an extension of any application budget, and is not represented as a strict <=900000ms total wall deadline.",
+    "extract": "Extract-Serial.cjs:5-42 requires a new host output, unique selected complete BEGIN/META/ordered DATA/END frame, strict base64, compressed/envelope/catalog/per-file hashes and exact sizes, bounded decompression, exact payload keys, guest path bounds and exclusive writes. Partial serial prefix cannot qualify as a complete export.",
+    "noTestPass": "Exporter meta and extractor result use testPassed:null. Transport completion proves raw transfer only."
+  },
+  "operationalBoundaries": [
+    "RUN returns the controller original exit even when EXPORT fails; read CONTROLLER_EXIT and EXPORT_EXIT separately and require a complete hash-verified host extraction before accepting exported evidence. RUN0 alone proves neither export nor GUI success.",
+    "If preparation/controller aborts before an export catalog, RUN says to preserve original guest files and exits1; this review does not substitute for missing raw evidence.",
+    "A partial stage selection is explicitly partial. Only all four actual successful stages qualify the full eight-run cohort.",
+    "Existing result steps are data preparation only. This review makes no GUI observation, runtime pass, DevTools-open, network, performance, long-test, or production qualification claim."
+  ],
+  "productExecuted": false,
+  "vmTouched": false,
+  "compilerStarted": false,
+  "transportFixturesReexecuted": false,
+  "guiPassed": null,
+  "testPassed": null,
+  "releaseReady": false,
+  "productionQualificationComplete": false
+}

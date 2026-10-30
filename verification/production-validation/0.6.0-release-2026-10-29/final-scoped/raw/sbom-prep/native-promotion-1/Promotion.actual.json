@@ -1,0 +1,128 @@
+{
+  "schema": "soui.release.native-sbom-and-common-provenance-promotion/v1",
+  "createdUtc": "2026-10-28T17:44:58.300Z",
+  "actualCommands": {
+    "generator": [
+      "Prepare-Source2Native.cjs",
+      "--sbom",
+      "--sha256",
+      "53074ed9623f2a2a73647237516b84b2fee14c5dedb11b8275bd1c3fa2f92a06"
+    ],
+    "generatorExitCode": 0,
+    "validator": [
+      "Validate-NativeSbom.py",
+      "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/sbom-prep/source2-native-candidate-1/sbom-native-060.cdx.json"
+    ],
+    "validatorExitCode": 0
+  },
+  "assembly": {
+    "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/sbom-prep/source2-native-candidate-1/SbomAssembly.json",
+    "bytes": 1300,
+    "sha256": "fff95ed03ace19ce8be99e907b2bb6333f14a8e26905befaca2197a9c2fc55d0"
+  },
+  "promoted": [
+    {
+      "source": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/sbom-prep/source2-native-candidate-1/sbom-native-060.cdx.json",
+        "bytes": 173894,
+        "sha256": "6602c1bee082530e17f69bf642b9bb7817347560b69c9f6b3a4f30cc3031f45e"
+      },
+      "destination": {
+        "path": "C:/sr06/verification/sbom-native.cdx.json",
+        "bytes": 173894,
+        "sha256": "6602c1bee082530e17f69bf642b9bb7817347560b69c9f6b3a4f30cc3031f45e"
+      }
+    },
+    {
+      "source": {
+        "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/sbom-prep/source2-native-candidate-1/sbom-native-060.cdx.json.validation.json",
+        "bytes": 1739,
+        "sha256": "a108a9bff076f1336e88a14305388e1f4f93b4a4b1b0225fb6d3509c94de612b"
+      },
+      "destination": {
+        "path": "C:/sr06/verification/sbom-native.validation.json",
+        "bytes": 1739,
+        "sha256": "a108a9bff076f1336e88a14305388e1f4f93b4a4b1b0225fb6d3509c94de612b"
+      }
+    }
+  ],
+  "backupAndCommon": {
+    "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/sbom-prep/native-promotion-1/BeforeAndCommon.actual.json",
+    "bytes": 7763,
+    "sha256": "ccfe8ec6de8724c32c10bfba078f29759ae63bc90b529dd3247685872520a5fb"
+  },
+  "common": {
+    "root": "C:/sr06/verification/production-validation/0.6.0-source2-kernel-2026-10-29/common-provenance",
+    "files": 32,
+    "bytes": 28005291,
+    "index": {
+      "path": "C:/sr06/verification/production-validation/0.6.0-source2-kernel-2026-10-29/common-provenance/index.json",
+      "bytes": 14653,
+      "sha256": "e4cd4b2406c526b68835100246705174d4c46da1d07fb8adce8b6214f9b84912"
+    },
+    "completeRawTreeEqual": true
+  },
+  "nativeScope": {
+    "deliveredFiles": 136,
+    "actualLinkArchives": 22,
+    "componentTotal": 158,
+    "counts": {
+      "x64/sdk-native-payload": 68,
+      "x86/sdk-native-payload": 68,
+      "x64/build-input-only": 11,
+      "x86/build-input-only": 11
+    },
+    "kernels": [
+      {
+        "name": "third_party/prebuilt/x64/miniblink/node.dll",
+        "sha256": "d888637d5dd1476dde16b8c5bb28172d7b8ec3495b69c725fa3572013748139a",
+        "sourceInputSha256": "26c5b73e4915bb4539e87b987cd8e952005f0fe41d987138d8d8e3b13eb25c95",
+        "buildEvidence": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x64/summary.json"
+      },
+      {
+        "name": "third_party/prebuilt/x86/miniblink/node.dll",
+        "sha256": "dc8c37178f4bbd9260edc973d61af876cf8460178eaf89fa2994fdffc94abc9a",
+        "sourceInputSha256": "26c5b73e4915bb4539e87b987cd8e952005f0fe41d987138d8d8e3b13eb25c95",
+        "buildEvidence": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x86/summary.json"
+      }
+    ],
+    "staticLibrariesRecompiled": false,
+    "transitiveComposition": "incomplete",
+    "historicalWholeExternalProviderBytesProven": false
+  },
+  "sourceScope": {
+    "snapshot": {
+      "path": "C:/sr06/verification/production-validation/0.6.0-source2-kernel-2026-10-29/common-provenance/source/Source2.source-after.json",
+      "bytes": 4505919,
+      "sha256": "c698985f7d46d02984a7eec46d96c1ebeac5164b816b61b560d96b657c136809"
+    },
+    "identity": "26c5b73e4915bb4539e87b987cd8e952005f0fe41d987138d8d8e3b13eb25c95",
+    "fileCount": 23064,
+    "directoryCount": 1323,
+    "totalBytes": 305373649
+  },
+  "validation": {
+    "schemaValidated": true,
+    "errors": [],
+    "bomRawPinMatchesPromoted": true,
+    "originalValidationStageFieldsUnchanged": true
+  },
+  "unownedMetadataPreserved": {
+    "dependencies": {
+      "path": "C:/sr06/third_party/manifests/dependencies.json",
+      "bytes": 36563,
+      "sha256": "a168eab98eda4a879204e833d01eaae5110fdd80c43730612a54c4fdd7a15a90"
+    },
+    "runtime": {
+      "path": "C:/sr06/tools/internal/runtime-files.json",
+      "bytes": 36433,
+      "sha256": "1a49f2e24a8385b6702c461fdf6c888ffcf1fa81c3b88d6e907fced171f994a2"
+    }
+  },
+  "noIndexOrProductOrCompilerOrVmAction": true,
+  "historical05EvidenceEdited": false,
+  "runtimeQualificationInferred": false,
+  "fullGoalComplete": false,
+  "releaseReady": false,
+  "productionQualificationComplete": false
+}

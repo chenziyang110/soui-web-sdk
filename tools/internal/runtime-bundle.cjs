@@ -119,8 +119,15 @@ function validateReport(report) {
       typeof report.target !== 'string' || !/^[A-Za-z][A-Za-z0-9_]{1,63}$/.test(report.target) ||
       typeof report.buildId !== 'string' || !report.buildId || report.buildId.length > 128 ||
       !sha(report.sourceSha256) || report.releaseReady !== false) fail('Invalid application report identity');
-  keys(report.payload, ['sha256', 'bytes', 'files'], 'source payload');
+  const payloadKeys = ['sha256', 'bytes', 'files'];
+  if (report.payload && Object.prototype.hasOwnProperty.call(report.payload, 'applicationFiles')) payloadKeys.push('applicationFiles');
+  keys(report.payload, payloadKeys, 'source payload');
   validatePaths(report.payload.files);
+  if (Object.prototype.hasOwnProperty.call(report.payload, 'applicationFiles')) {
+    const applicationFiles = id.validateApplicationFiles(report.payload.applicationFiles, report.payload.files);
+    if (!applicationFiles.length || JSON.stringify(applicationFiles) !== JSON.stringify(report.payload.applicationFiles))
+      fail('Noncanonical application file descriptor');
+  }
   const bytes = report.payload.files.reduce((sum, file) => total(sum, file.bytes), 0);
   if (report.payload.bytes !== bytes || !sha(report.payload.sha256) ||
       id.hash(id.encoded(report.payload.files)) !== report.payload.sha256) fail('Source payload snapshot differs');

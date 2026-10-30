@@ -1,0 +1,20 @@
+✔ 128 business requests leave independent bounded renewal and cleanup capacity (18.8997ms)
+✔ claimed priority and malformed control envelopes cannot consume reserved capacity (2.692ms)
+✔ a timeout returns only its lane and does not cancel the native operation (2.7547ms)
+✔ a late response cannot settle a later invocation reusing the same requestId (0.8481ms)
+✔ responses require the exact document, requestId and invocationId with no legacy fallback (0.6467ms)
+✔ a completed requestId can be reused without reusing its invocationId (0.5453ms)
+✔ invocation counter exhaustion refuses new sends without wrapping or dropping a pending reply (0.847ms)
+✔ synchronous post failure returns renewal and cleanup slots and removes their timers (1.9859ms)
+✔ business and cleanup timeout return their own slots while renewal remains pending (3.7477ms)
+✔ invalid timeouts and UTF-8 request identities consume no timers or control capacity (0.7247ms)
+✔ old document responses cannot settle current waits; close rejects every lane and blocks sends (0.7858ms)
+✔ transport enforces UTF-8 bytes rather than only UTF-16 length (0.8832ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 122.4976

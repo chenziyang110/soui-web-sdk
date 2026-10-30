@@ -1,0 +1,174 @@
+适用于 .NET Framework MSBuild 版本 17.14.40+3e7442088
+
+  Checking File Globs
+  1>Checking Build System
+  Building Custom Rule C:/sr06/sdk/CMakeLists.txt
+  cursor_broker.cpp
+  cursor_queue.cpp
+  cursor_resources.cpp
+  frontend_snapshot.cpp
+  miniblink_session.cpp
+  offline_snapshot.cpp
+  devtools_host.cpp
+  engine_thread.cpp
+  interaction_protocol.cpp
+  local_resource_snapshot.cpp
+  owned_local_resource_session.cpp
+  runtime_profile.cpp
+  soui_miniblink_host.cpp
+C:\sr06\sdk\src\host\soui_miniblink_host.cpp(1730,82): warning C4100: 'config': 未引用的参数 [C:\sr06\out\release-sdk-x86-release\sdk\soui_sdk.vcxproj]
+  json_bridge.cpp
+  windows_local_endpoint.cpp
+  windows_peer_identity.cpp
+  action_contract.cpp
+  bridge_transport.cpp
+  event_bus.cpp
+  result.cpp
+  正在生成代码...
+  正在编译...
+  task_store.cpp
+  input_frame_trace.cpp
+  miniblink_trace_source.cpp
+  webview_session.cpp
+  desktop_services.cpp
+  global_shortcut.cpp
+  menu_service.cpp
+  tray_service.cpp
+  fileinsight-service.cpp
+  directory_scanner.cpp
+  gui_commands.cpp
+  permission_store.cpp
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244: “初始化”: 从“_Ty”转换到“_Ty”，可能丢失数据 [C:\sr06\out\release-sdk-x86-release\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         with [C:\sr06\out\release-sdk-x86-release\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         [ [C:\sr06\out\release-sdk-x86-release\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:             _Ty=int [C:\sr06\out\release-sdk-x86-release\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         ] [C:\sr06\out\release-sdk-x86-release\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         and [C:\sr06\out\release-sdk-x86-release\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         [ [C:\sr06\out\release-sdk-x86-release\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:             _Ty=unsigned char [C:\sr06\out\release-sdk-x86-release\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         ] [C:\sr06\out\release-sdk-x86-release\sdk\soui_sdk.vcxproj]
+  (编译源文件“../../../sdk/src/runtime/services/permissions/permission_store.cpp”)
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61):
+      模板实例化上下文(最早的实例化上下文)为
+          C:\sr06\sdk\include\soui\runtime\services\permissions\permission_store.h(174,56):
+          查看对正在编译的函数 模板 实例化“std::shared_ptr<const unsigned char> std::make_shared<const unsigned char,int>(int &&)”的引用
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(2913,46):
+          查看对正在编译的函数 模板 实例化“std::_Ref_count_obj2<_Ty>::_Ref_count_obj2<int>(int &&)”的引用
+          with
+          [
+              _Ty=const unsigned char
+          ]
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(2100,18):
+          查看对正在编译的函数 模板 实例化“void std::_Construct_in_place<_Ty,int>(_Ty &,int &&) noexcept”的引用
+          with
+          [
+              _Ty=unsigned char
+          ]
+  
+  task_service.cpp
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244: “初始化”: 从“_Ty”转换到“_Ty”，可能丢失数据 [C:\sr06\out\release-sdk-x86-release\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         with [C:\sr06\out\release-sdk-x86-release\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         [ [C:\sr06\out\release-sdk-x86-release\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:             _Ty=int [C:\sr06\out\release-sdk-x86-release\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         ] [C:\sr06\out\release-sdk-x86-release\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         and [C:\sr06\out\release-sdk-x86-release\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         [ [C:\sr06\out\release-sdk-x86-release\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:             _Ty=unsigned char [C:\sr06\out\release-sdk-x86-release\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         ] [C:\sr06\out\release-sdk-x86-release\sdk\soui_sdk.vcxproj]
+  (编译源文件“../../../sdk/src/runtime/services/task/task_service.cpp”)
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61):
+      模板实例化上下文(最早的实例化上下文)为
+          C:\sr06\sdk\include\soui\runtime\services\permissions\permission_store.h(174,56):
+          查看对正在编译的函数 模板 实例化“std::shared_ptr<const unsigned char> std::make_shared<const unsigned char,int>(int &&)”的引用
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(2913,46):
+          查看对正在编译的函数 模板 实例化“std::_Ref_count_obj2<_Ty>::_Ref_count_obj2<int>(int &&)”的引用
+          with
+          [
+              _Ty=const unsigned char
+          ]
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(2100,18):
+          查看对正在编译的函数 模板 实例化“void std::_Construct_in_place<_Ty,int>(_Ty &,int &&) noexcept”的引用
+          with
+          [
+              _Ty=unsigned char
+          ]
+  
+  正在生成代码...
+  soui_sdk.vcxproj -> C:\sr06\out\release-sdk-x86-release\sdk\Release\soui_sdk.lib
+适用于 .NET Framework MSBuild 版本 17.14.40+3e7442088
+
+  Checking File Globs
+  soui_sdk.vcxproj -> C:\sr06\out\release-sdk-x86-release\sdk\Release\soui_sdk.lib
+  Building Custom Rule C:/sr06/sdk/renderers/webview2/CMakeLists.txt
+  webview2_host.cpp
+  soui_webview2.vcxproj -> C:\sr06\out\release-sdk-x86-release\sdk\renderers\webview2\Release\soui_webview2.lib
+适用于 .NET Framework MSBuild 版本 17.14.40+3e7442088
+
+  Checking File Globs
+  soui_sdk.vcxproj -> C:\sr06\out\release-sdk-x86-release\sdk\Release\soui_sdk.lib
+  soui_webview2.vcxproj -> C:\sr06\out\release-sdk-x86-release\sdk\renderers\webview2\Release\soui_webview2.lib
+  Building Custom Rule C:/sr06/sdk/renderers/webview2/CMakeLists.txt
+  auto_webview_host.cpp
+  soui_auto_host.vcxproj -> C:\sr06\out\release-sdk-x86-release\sdk\renderers\webview2\Release\soui_auto_host.lib
+适用于 .NET Framework MSBuild 版本 17.14.40+3e7442088
+
+  Checking File Globs
+  soui_sdk.vcxproj -> C:\sr06\out\release-sdk-x86-release\sdk\Release\soui_sdk.lib
+  Building Custom Rule C:/sr06/tests/native/CMakeLists.txt
+  devtools_host_tests.cpp
+  soui_devtools_host_tests.vcxproj -> C:\sr06\out\release-sdk-x86-release\tests\native\Release\soui_devtools_host_tests.exe
+适用于 .NET Framework MSBuild 版本 17.14.40+3e7442088
+
+  Checking File Globs
+  soui_sdk.vcxproj -> C:\sr06\out\release-sdk-x86-release\sdk\Release\soui_sdk.lib
+  Building Custom Rule C:/sr06/tests/native/CMakeLists.txt
+  local_resource_snapshot_tests.cpp
+  soui_local_resource_snapshot_tests.vcxproj -> C:\sr06\out\release-sdk-x86-release\tests\native\Release\soui_local_resource_snapshot_tests.exe
+适用于 .NET Framework MSBuild 版本 17.14.40+3e7442088
+
+  Checking File Globs
+  soui_sdk.vcxproj -> C:\sr06\out\release-sdk-x86-release\sdk\Release\soui_sdk.lib
+  Building Custom Rule C:/sr06/tests/native/CMakeLists.txt
+  local_resource_host_tests.cpp
+  owned_local_resource_session.cpp
+  正在生成代码...
+  soui_local_resource_host_tests.vcxproj -> C:\sr06\out\release-sdk-x86-release\tests\native\Release\soui_local_resource_host_tests.exe
+适用于 .NET Framework MSBuild 版本 17.14.40+3e7442088
+
+  Checking File Globs
+  soui_sdk.vcxproj -> C:\sr06\out\release-sdk-x86-release\sdk\Release\soui_sdk.lib
+  Building Custom Rule C:/sr06/tests/native/CMakeLists.txt
+  miniblink_unmount_tests.cpp
+  soui_miniblink_host.cpp
+C:\sr06\sdk\src\host\soui_miniblink_host.cpp(1730,82): warning C4100: 'config': 未引用的参数 [C:\sr06\out\release-sdk-x86-release\tests\native\soui_miniblink_unmount_tests.vcxproj]
+  正在生成代码...
+  soui_miniblink_unmount_tests.vcxproj -> C:\sr06\out\release-sdk-x86-release\tests\native\Release\soui_miniblink_unmount_tests.exe
+适用于 .NET Framework MSBuild 版本 17.14.40+3e7442088
+
+  Checking File Globs
+  Building Custom Rule C:/sr06/tests/native/CMakeLists.txt
+cl : 命令行  warning D9025: 正在重写“/DNDEBUG”(用“/UNDEBUG”) [C:\sr06\out\release-sdk-x86-release\tests\native\soui_webview2_native_observation_tests.vcxproj]
+  webview2_native_observation_tests.cpp
+  soui_webview2_native_observation_tests.vcxproj -> C:\sr06\out\release-sdk-x86-release\tests\native\Release\soui_webview2_native_observation_tests.exe
+适用于 .NET Framework MSBuild 版本 17.14.40+3e7442088
+
+  Checking File Globs
+  soui_sdk.vcxproj -> C:\sr06\out\release-sdk-x86-release\sdk\Release\soui_sdk.lib
+  Building Custom Rule C:/sr06/tests/native/CMakeLists.txt
+  devtools_frontend_cleanup_tests.cpp
+  soui_devtools_frontend_cleanup_tests.vcxproj -> C:\sr06\out\release-sdk-x86-release\tests\native\Release\soui_devtools_frontend_cleanup_tests.exe
+适用于 .NET Framework MSBuild 版本 17.14.40+3e7442088
+
+  Checking File Globs
+  Building Custom Rule C:/sr06/tests/native/CMakeLists.txt
+  source_kernel_api_tests.cpp
+  input_frame_trace.cpp
+  正在生成代码...
+  soui_source_kernel_api_tests.vcxproj -> C:\sr06\out\release-sdk-x86-release\tests\native\Release\soui_source_kernel_api_tests.exe
+适用于 .NET Framework MSBuild 版本 17.14.40+3e7442088
+
+  Checking File Globs
+  Building Custom Rule C:/sr06/tests/native/CMakeLists.txt
+cl : 命令行  warning D9025: 正在重写“/DNDEBUG”(用“/UNDEBUG”) [C:\sr06\out\release-sdk-x86-release\tests\native\soui_view_observation_tests.vcxproj]
+  view_observation_tests.cpp
+  soui_view_observation_tests.vcxproj -> C:\sr06\out\release-sdk-x86-release\tests\native\Release\soui_view_observation_tests.exe

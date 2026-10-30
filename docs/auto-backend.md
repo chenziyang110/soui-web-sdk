@@ -73,3 +73,6 @@ Runtime、Win7/PE 实机、高刷、长期稳定或生产准入通过；执行�
 
 历史 `preview.2` 双架构、仓库外项目及 ZIP 解压启动结果，与拆分后 `preview.3`
 复验分别记录于 [2026-10-23 PR 验证范围](../verification/production-validation/auto-host-pr-2026-10-23/README.md)。
+
+已完成的双架构、仓库外项目及 ZIP 解压启动结果见
+[2026-10-23 验证报告](../verification/production-validation/auto-host-2026-10-23/README.md)。

@@ -101,6 +101,7 @@ install(FILES
   include/soui/diagnostics/runtime_metrics.h
   include/soui/diagnostics/renderer_observation_abi.h
   include/soui/diagnostics/renderer_model_abi.h
+  include/soui/diagnostics/view_observation_abi.h
   include/soui/diagnostics/storage_observation.h
   include/soui/diagnostics/task_store_private_storage.h
   DESTINATION include/soui/diagnostics)

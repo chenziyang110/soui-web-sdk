@@ -29,7 +29,9 @@
  */
 
 #include "config.h"
+#include "platform/network/LocalResourceAdmission.h"
 #include "core/loader/FrameFetchContext.h"
+#include "core/loader/InspectorResourcePolicy.h"
 
 #include "bindings/core/v8/ScriptController.h"
 #include "core/dom/Document.h"
@@ -296,6 +298,8 @@ bool FrameFetchContext::shouldLoadNewResource(Resource::Type type) const
 void FrameFetchContext::dispatchWillRequestResource(FetchRequest* request)
 {
     frame()->loader().client()->dispatchWillRequestResource(request);
+    identifyLocalResourceRequest(frame()->page(), m_document ? m_document->url() : KURL(),
+        !frame()->tree().parent(), request->mutableResourceRequest());
 }
 
 void FrameFetchContext::willStartLoadingResource(ResourceRequest& request)
@@ -339,9 +343,30 @@ void FrameFetchContext::printAccessDeniedMessage(const KURL& url) const
     frame()->document()->addConsoleMessage(ConsoleMessage::create(SecurityMessageSource, ErrorMessageLevel, message));
 }
 
+std::shared_ptr<InspectorResourceState> FrameFetchContext::inspectorResourceState() const
+{
+    auto* policy = InspectorResourcePolicy::from(frame()->page());
+    return policy ? policy->state() : nullptr;
+}
+
+String FrameFetchContext::inspectorResourceCacheIdentifier() const
+{
+    auto* policy = InspectorResourcePolicy::from(frame()->page());
+    return policy ? String::fromUTF8(policy->state()->base().c_str()) : String();
+}
+
 bool FrameFetchContext::canRequest(Resource::Type type, const ResourceRequest& resourceRequest, const KURL& url, const ResourceLoaderOptions& options, bool forPreload, FetchRequest::OriginRestriction originRestriction) const
 {
-    return true; // weolar
+    auto* policy = InspectorResourcePolicy::from(frame()->page());
+    if (!policy)
+        return true; // Preserve the existing compatibility path for ordinary views.
+    if (type == Resource::SVGDocument) {
+        ++policy->state()->unsupported;
+        return false;
+    }
+    if (resourceRequest.httpMethod() != "GET"
+        || !policy->permits(url, type == Resource::MainResource && frame()->isMainFrame()))
+        return false;
 
     SecurityOrigin* securityOrigin = options.securityOrigin.get();
     if (!securityOrigin && m_document)
@@ -372,7 +397,7 @@ bool FrameFetchContext::canRequest(Resource::Type type, const ResourceRequest& r
     case Resource::Media:
         // By default these types of resources can be loaded from any origin.
         // FIXME: Are we sure about Resource::Font?
-        if (originRestriction == FetchRequest::RestrictToSameOrigin && !securityOrigin->canRequest(url)) {
+        if (originRestriction == FetchRequest::RestrictToSameOrigin && (!securityOrigin || !securityOrigin->canRequest(url))) {
             printAccessDeniedMessage(url);
             return false;
         }
@@ -380,7 +405,7 @@ bool FrameFetchContext::canRequest(Resource::Type type, const ResourceRequest& r
     case Resource::XSLStyleSheet:
         ASSERT(RuntimeEnabledFeatures::xsltEnabled());
     case Resource::SVGDocument:
-        if (!securityOrigin->canRequest(url)) {
+        if (!securityOrigin || !securityOrigin->canRequest(url)) {
             printAccessDeniedMessage(url);
             return false;
         }
@@ -410,13 +435,13 @@ bool FrameFetchContext::canRequest(Resource::Type type, const ResourceRequest& r
     case Resource::XSLStyleSheet:
         ASSERT(RuntimeEnabledFeatures::xsltEnabled());
         ASSERT(ContentSecurityPolicy::isScriptResource(resourceRequest));
-        if (!shouldBypassMainWorldCSP && !csp->allowScriptFromSource(url, redirectStatus, cspReporting))
+        if (!shouldBypassMainWorldCSP && (!csp || !csp->allowScriptFromSource(url, redirectStatus, cspReporting)))
             return false;
         break;
     case Resource::Script:
     case Resource::ImportResource:
         ASSERT(ContentSecurityPolicy::isScriptResource(resourceRequest));
-        if (!shouldBypassMainWorldCSP && !csp->allowScriptFromSource(url, redirectStatus, cspReporting))
+        if (!shouldBypassMainWorldCSP && (!csp || !csp->allowScriptFromSource(url, redirectStatus, cspReporting)))
             return false;
 
         if (!frame()->loader().client()->allowScriptFromSource(!frame()->settings() || frame()->settings()->scriptEnabled(), url)) {
@@ -426,18 +451,18 @@ bool FrameFetchContext::canRequest(Resource::Type type, const ResourceRequest& r
         break;
     case Resource::CSSStyleSheet:
         ASSERT(ContentSecurityPolicy::isStyleResource(resourceRequest));
-        if (!shouldBypassMainWorldCSP && !csp->allowStyleFromSource(url, redirectStatus, cspReporting))
+        if (!shouldBypassMainWorldCSP && (!csp || !csp->allowStyleFromSource(url, redirectStatus, cspReporting)))
             return false;
         break;
     case Resource::SVGDocument:
     case Resource::Image:
         ASSERT(ContentSecurityPolicy::isImageResource(resourceRequest));
-        if (!shouldBypassMainWorldCSP && !csp->allowImageFromSource(url, redirectStatus, cspReporting))
+        if (!shouldBypassMainWorldCSP && (!csp || !csp->allowImageFromSource(url, redirectStatus, cspReporting)))
             return false;
         break;
     case Resource::Font: {
         ASSERT(ContentSecurityPolicy::isFontResource(resourceRequest));
-        if (!shouldBypassMainWorldCSP && !csp->allowFontFromSource(url, redirectStatus, cspReporting))
+        if (!shouldBypassMainWorldCSP && (!csp || !csp->allowFontFromSource(url, redirectStatus, cspReporting)))
             return false;
         break;
     }
@@ -450,7 +475,7 @@ bool FrameFetchContext::canRequest(Resource::Type type, const ResourceRequest& r
     case Resource::Media:
     case Resource::TextTrack:
         ASSERT(ContentSecurityPolicy::isMediaResource(resourceRequest));
-        if (!shouldBypassMainWorldCSP && !csp->allowMediaFromSource(url, redirectStatus, cspReporting))
+        if (!shouldBypassMainWorldCSP && (!csp || !csp->allowMediaFromSource(url, redirectStatus, cspReporting)))
             return false;
 
         if (!frame()->loader().client()->allowMedia(url))
@@ -465,7 +490,7 @@ bool FrameFetchContext::canRequest(Resource::Type type, const ResourceRequest& r
 
     // FIXME: Once we use RequestContext for CSP (http://crbug.com/390497), remove this extra check.
     if (resourceRequest.requestContext() == WebURLRequest::RequestContextManifest) {
-        if (!shouldBypassMainWorldCSP && !csp->allowManifestFromSource(url, redirectStatus, cspReporting))
+        if (!shouldBypassMainWorldCSP && (!csp || !csp->allowManifestFromSource(url, redirectStatus, cspReporting)))
             return false;
     }
 

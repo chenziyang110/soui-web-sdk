@@ -1,0 +1,139 @@
+{
+  "schema": "soui.windows-tooling-failure-closeout/v1",
+  "baseline": "b9d53f9e182bfd335c9bd6fb23690b40718999ef",
+  "recordedAt": "2026-10-29T03:53:33.665Z",
+  "scope": "Necessary code and short verification only; not full product or production qualification",
+  "tools": {
+    "uniqueLogicalCases": 66,
+    "initial": {
+      "passed": 58,
+      "failed": 8
+    },
+    "targetedRepair": {
+      "passed": 12,
+      "failed": 0
+    },
+    "originalFailuresRetained": true,
+    "initialUnsafeZipPassesWereNotValidNativeEvidence": 2,
+    "repairs": "One actual CLI parser bug: digit in manifest-sha256. Test-only nested mock leakage and PowerShell iterator alias fixed. Nine archive cases include five failures, two leak triggers and two previously false-positive native refusals; one aggregate MSVC model case and two failed recovery cases also rerun.",
+    "unaffectedPassedInputsNotRepeated": true
+  },
+  "native": {
+    "architectures": [
+      {
+        "architecture": "x64",
+        "root": {
+          "pid": 60820,
+          "creationFileTime": "134377193591860325"
+        },
+        "terminal": {
+          "event": "terminal",
+          "reason": "completed",
+          "elapsedMs": 50590,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 64,
+          "limitTerminatedProcesses": 0,
+          "passed": true
+        },
+        "helperPhases": [
+          {
+            "pid": 14748,
+            "creationFileTime": "134377193608975766",
+            "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\vctip.exe"
+          },
+          {
+            "pid": 100324,
+            "creationFileTime": "134377193869338696",
+            "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\vctip.exe"
+          }
+        ]
+      },
+      {
+        "architecture": "x86",
+        "root": {
+          "pid": 104376,
+          "creationFileTime": "134377194101284534"
+        },
+        "terminal": {
+          "event": "terminal",
+          "reason": "completed",
+          "elapsedMs": 54085,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 64,
+          "limitTerminatedProcesses": 0,
+          "passed": true
+        },
+        "helperPhases": [
+          {
+            "pid": 53736,
+            "creationFileTime": "134377194118686681",
+            "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x86\\vctip.exe"
+          },
+          {
+            "pid": 47972,
+            "creationFileTime": "134377194385806721",
+            "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x86\\vctip.exe"
+          }
+        ]
+      }
+    ],
+    "timeoutMs": 120000,
+    "drainMs": 2000,
+    "currentHelperActuallyExecuted": true,
+    "fullBuildEntriesExecuted": false,
+    "generatedConsoleExecuted": false,
+    "originalRunnerPreparationGenericSupervisionPassed": null,
+    "initialPreflightRejection": "Foreign existing VCTIP ready event; root1/supervisor1, active0, no force. Separate old orphan cleanup followed prior user rules, then one new forward attempt; not relabeled success."
+  },
+  "canonicalSdkPack": {
+    "schema": "soui.canonical-candidate-sdk-pack/v1",
+    "args": [
+      "tools/sdk/soui-sdk.cjs",
+      "pack",
+      "--source",
+      "C:/sc07",
+      "--output",
+      "C:\\sc07\\dist\\sdk\\0.6.0",
+      "--version",
+      "0.6.0",
+      "--retain-failed-publication"
+    ],
+    "started": "2026-10-29T03:50:53.818Z",
+    "finished": "2026-10-29T03:50:58.022Z",
+    "exitCode": 0,
+    "signal": null,
+    "error": null,
+    "output": "C:\\sc07\\dist\\sdk\\0.6.0",
+    "sourceCandidateOnly": true,
+    "publishedReleaseModified": false,
+    "productionQualified": false,
+    "manifest": {
+      "bytes": 354507,
+      "sha256": "466032c40d61cc7c816a13777bbe295b9d97c44e4d211715170f896288b10453"
+    },
+    "files": 1501,
+    "payloadBytes": 112873502,
+    "verified": true
+  },
+  "remaining": {
+    "historicalEpermOwner": "unknown; controlled open-descendant EPERM and same-byte recovery demonstrated, new worktree canonical pack successful, sealed C:/sr06 original target unchanged",
+    "historicalPs5Cause": "unknown; actual system PS5 member enumeration and official7z Chinese long-path case now proved with exact bytes; original5846-file archive not rerun",
+    "compilerLimits": "Fixed MSVC/VCTIP images only; not every workload shape. Eight old compiler failures retained, one had multiple residual members.",
+    "long": "D07/D13/D14 and full performance/environment/security/licensing/signing qualification remain deferred"
+  },
+  "qualification": {
+    "releaseReady": false,
+    "productionQualificationComplete": false,
+    "fullDevtoolsGoalComplete": false
+  }
+}

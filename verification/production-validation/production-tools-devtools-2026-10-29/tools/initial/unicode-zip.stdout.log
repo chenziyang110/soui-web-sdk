@@ -1,0 +1,106 @@
+✔ default ZIP preserves compression settings and selects UTF-8 filenames explicitly (0.9284ms)
+✖ actual PowerShell packaging implicit ZIP keeps application bytes and reports exact arguments (3525.8667ms)
+✔ actual PowerShell packaging zip keeps application bytes and reports exact arguments (2270.7186ms)
+✖ public source ZIP default preserves Unicode names through PS5 legacy-code-page readback (2301.7769ms)
+✖ public source ZIP explicit-source-roots preserves Unicode names through PS5 legacy-code-page readback (2384.6071ms)
+✔ actual PowerShell Bundle zip remains verifiable and restores complete independent applications (2478.6242ms)
+✔ legacy positional architecture/profile/baseline/budget arguments retain their original bindings (3980.868ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 4
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 17200.765
+
+✖ failing tests:
+
+test at tests\sdk\compression-profiles.test.cjs:201:3
+✖ actual PowerShell packaging implicit ZIP keeps application bytes and reports exact arguments (3525.8667ms)
+  AssertionError [ERR_ASSERTION]: �Ҳ������� [IO.Compression.ZipArchiveMode]��
+  ����λ�� C:\Users\11034\AppData\Local\Temp\soui-compression-test-IqYRKt\zip-readback.ps1:8 �ַ�: 50
+  + ... ssion.ZipFile]::Open($Archive,[IO.Compression.ZipArchiveMode]::Read,[ ...
+  +                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      + CategoryInfo          : InvalidOperation: (IO.Compression.ZipArchiveMode:TypeName) []��ParentContainsErrorRecordE
+      xception
+      + FullyQualifiedErrorId : TypeNotFound
+   
+  
+  
+  1 !== 0
+  
+      at Object.readback (C:\sc07\tests\sdk\compression-profiles.test.cjs:91:14)
+      at TestContext.<anonymous> (C:\sc07\tests\sdk\compression-profiles.test.cjs:225:13)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at node:internal/test_runner/test:1052:31
+      at node:internal/process/task_queues:150:7
+      at AsyncResource.runInAsyncScope (node:async_hooks:228:14)
+      at AsyncResource.runMicrotask (node:internal/process/task_queues:147:8) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests\sdk\compression-profiles.test.cjs:238:3
+✖ public source ZIP default preserves Unicode names through PS5 legacy-code-page readback (2301.7769ms)
+  AssertionError [ERR_ASSERTION]: �Ҳ������� [IO.Compression.ZipArchiveMode]��
+  ����λ�� C:\Users\11034\AppData\Local\Temp\soui-compression-test-ndDOZH\zip-readback.ps1:8 �ַ�: 50
+  + ... ssion.ZipFile]::Open($Archive,[IO.Compression.ZipArchiveMode]::Read,[ ...
+  +                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      + CategoryInfo          : InvalidOperation: (IO.Compression.ZipArchiveMode:TypeName) []��ParentContainsErrorRecordE
+      xception
+      + FullyQualifiedErrorId : TypeNotFound
+   
+  
+  
+  1 !== 0
+  
+      at Object.readback (C:\sc07\tests\sdk\compression-profiles.test.cjs:91:14)
+      at TestContext.<anonymous> (C:\sc07\tests\sdk\compression-profiles.test.cjs:250:9)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests\sdk\compression-profiles.test.cjs:238:3
+✖ public source ZIP explicit-source-roots preserves Unicode names through PS5 legacy-code-page readback (2384.6071ms)
+  AssertionError [ERR_ASSERTION]: �Ҳ������� [IO.Compression.ZipArchiveMode]��
+  ����λ�� C:\Users\11034\AppData\Local\Temp\soui-compression-test-5Llqjv\zip-readback.ps1:8 �ַ�: 50
+  + ... ssion.ZipFile]::Open($Archive,[IO.Compression.ZipArchiveMode]::Read,[ ...
+  +                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      + CategoryInfo          : InvalidOperation: (IO.Compression.ZipArchiveMode:TypeName) []��ParentContainsErrorRecordE
+      xception
+      + FullyQualifiedErrorId : TypeNotFound
+   
+  
+  
+  1 !== 0
+  
+      at Object.readback (C:\sc07\tests\sdk\compression-profiles.test.cjs:91:14)
+      at TestContext.<anonymous> (C:\sc07\tests\sdk\compression-profiles.test.cjs:250:9)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

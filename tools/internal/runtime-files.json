@@ -47,9 +47,24 @@
       ]
     },
     "auto": {
-      "default": ["crt", "soui-core", "soui-gdi", "soui-resources", "miniblink"],
-      "required": ["soui-core", "miniblink"],
-      "allowed": ["crt", "soui-core", "soui-gdi", "soui-resources", "miniblink"]
+      "default": [
+        "crt",
+        "soui-core",
+        "soui-gdi",
+        "soui-resources",
+        "miniblink"
+      ],
+      "required": [
+        "soui-core",
+        "miniblink"
+      ],
+      "allowed": [
+        "crt",
+        "soui-core",
+        "soui-gdi",
+        "soui-resources",
+        "miniblink"
+      ]
     },
     "webview2": {
       "default": [
@@ -411,8 +426,8 @@
       {
         "source": "third_party/prebuilt/x86/miniblink/node.dll",
         "path": "node.dll",
-        "bytes": 28115968,
-        "sha256": "90a214ca2d416eda8e980cab7aacb80fffef777ace20c06179f41e584dae093b",
+        "bytes": 28318208,
+        "sha256": "dc8c37178f4bbd9260edc973d61af876cf8460178eaf89fa2994fdffc94abc9a",
         "component": "miniblink"
       },
       {
@@ -819,8 +834,8 @@
       {
         "source": "third_party/prebuilt/x64/miniblink/node.dll",
         "path": "node.dll",
-        "bytes": 38959616,
-        "sha256": "f552226e00c16c9df1ef6cb94081c69b37185c44741197d5a337a4ed70d1fdef",
+        "bytes": 39204352,
+        "sha256": "d888637d5dd1476dde16b8c5bb28172d7b8ec3495b69c725fa3572013748139a",
         "component": "miniblink"
       },
       {

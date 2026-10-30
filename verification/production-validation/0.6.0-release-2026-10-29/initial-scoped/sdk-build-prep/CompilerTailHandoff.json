@@ -1,0 +1,33 @@
+{
+  "observedAtUtc": "2026-10-28T15:04:15.6972526Z",
+  "ownedSdkRootsNaturallyClosed": true,
+  "foreignBuildParentStillObserved": true,
+  "processes": [
+    {
+      "pid": 55744,
+      "parentPid": 90652,
+      "name": "vctip.exe",
+      "path": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x86\\VCTIP.EXE",
+      "birthUtc": "2026-10-28T14:57:45.3386160Z",
+      "commandLine": "\"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x86\\VCTIP.EXE\""
+    },
+    {
+      "pid": 92460,
+      "parentPid": 97340,
+      "name": "cmake.exe",
+      "path": "C:\\Program Files\\CMake\\bin\\cmake.exe",
+      "birthUtc": "2026-10-28T14:59:45.5766470Z",
+      "commandLine": "\"C:/Program Files/CMake/bin/cmake.exe\" --build C:\\Users\\11034\\Documents\\Codex\\2026-10-28\\task\\pr103-nf-app-build --config Release --target Pr103Notice --parallel 2 -- /nr:false /v:minimal /flp:LogFile=C:\\Users\\11034\\Documents\\Codex\\2026-10-28\\task\\pr103-nf-evidence\\template-build-msbuild.log;Verbosity=diagnostic;Encoding=UTF-8 /p:VCPkgLocalAppDataDisabled=true /p:VcpkgEnabled=false /p:VcpkgApplocalDeps=false /p:VcpkgEnableManifest=false /p:VcpkgManifestInstall=false /p:VcpkgAutoLink=false"
+    },
+    {
+      "pid": 96024,
+      "parentPid": 92460,
+      "name": "MSBuild.exe",
+      "path": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\amd64\\MSBuild.exe",
+      "birthUtc": "2026-10-28T14:59:45.6790830Z",
+      "commandLine": "\"C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe\" Pr103Notice.vcxproj /p:Configuration=Release /p:Platform=x64 /p:VisualStudioVersion=17.0 /m:2 /v:m /nr:false /v:minimal /flp:LogFile=C:\\Users\\11034\\Documents\\Codex\\2026-10-28\\task\\pr103-nf-evidence\\template-build-msbuild.log;Verbosity=diagnostic;Encoding=UTF-8 /p:VCPkgLocalAppDataDisabled=true /p:VcpkgEnabled=false /p:VcpkgApplocalDeps=false /p:VcpkgEnableManifest=false /p:VcpkgManifestInstall=false /p:VcpkgAutoLink=false"
+    }
+  ],
+  "noProcessControl": true,
+  "classification": "foreign active build; do not treat as an orphan; Root handles any later qualified helper cleanup"
+}

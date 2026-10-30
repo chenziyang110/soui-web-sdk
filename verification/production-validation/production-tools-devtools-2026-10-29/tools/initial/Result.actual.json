@@ -1,0 +1,56 @@
+{
+  "schema": "soui.production-closeout-tool-shorts/v1",
+  "startedAt": "2026-10-29T02:12:35.475Z",
+  "root": "C:/sc07",
+  "scope": "Only changed ZIP writer, new failure/env/closeout regressions and affected standard-build contract. No products/VM/compiler/full collector.",
+  "tests": [
+    {
+      "name": "unicode-zip",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "--test",
+        "--test-name-pattern=default ZIP|actual PowerShell packaging (implicit ZIP|zip) |public source ZIP|actual PowerShell Bundle zip |legacy positional",
+        "tests/sdk/compression-profiles.test.cjs"
+      ],
+      "exitCode": 1,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 17287,
+      "stdoutSha256": "8ee35a836187bd22d8e3e1b12360fdaa88b1900cf48bbe32697a6fb9f43abb58",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "failure-and-environment",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "--test",
+        "--test-concurrency=1",
+        "tests/sdk/sdk-publication-diagnostics.test.cjs",
+        "tests/sdk/compiler-closeout-diagnostics.test.cjs",
+        "tests/sdk/msbuild-entrypoint-policy.test.cjs"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2391,
+      "stdoutSha256": "cc40f1f88253e29c5e7f72800c13b921b7a7d24b36147552f57d27494b526c60",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "affected-standard-build-contract",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "--test",
+        "tests/sdk/standard-build.test.cjs"
+      ],
+      "exitCode": 1,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 390,
+      "stdoutSha256": "f89155a0fabd9d2047611f1f4b3e933aed69d2baf4ca5d049ebd3e0b983d0b35",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "finishedAt": "2026-10-29T02:12:55.554Z",
+  "allPassed": false
+}

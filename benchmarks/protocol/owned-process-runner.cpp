@@ -7,10 +7,12 @@
 #include <cstdint>
 #include <iostream>
 #include <memory>
+#include <optional>
 #include <stdexcept>
 #include <string>
 #include <vector>
 #include "owned-tail-evidence.h"
+#include "owned-process-cohort.h"
 
 namespace {
 class handle final {
@@ -131,6 +133,7 @@ struct options {
     std::wstring pinTailImage;
     std::wstring pinTailSha256;
     std::wstring snapshotNonce;
+    std::uint64_t cohortInterval = 0; // Explicit passive observation only; default path is unchanged.
 };
 
 options parse(int count, wchar_t** args) {
@@ -161,6 +164,12 @@ options parse(int count, wchar_t** args) {
             config.snapshotNonce = value;
             if (config.snapshotNonce.size() != 32 || config.snapshotNonce.find_first_not_of(L"0123456789abcdef") != std::wstring::npos)
                 throw std::runtime_error("Invalid snapshot nonce");
+        }
+        else if (flag == L"--cohort-interval-ms") {
+            if (config.cohortInterval) throw std::runtime_error("Duplicate cohort interval");
+            const auto interval = number(value, 1000);
+            if (interval < 20) throw std::runtime_error("Cohort interval must be 20..1000 ms");
+            config.cohortInterval = interval;
         }
         else throw std::runtime_error("Unknown option");
     }
@@ -393,6 +402,9 @@ int run(const options& config) {
     members(job.get(), report);
     auto lastTotal = state.TotalProcesses;
     auto lastActive = state.ActiveProcesses;
+    std::optional<soui::benchmark::owned_job_cohort_observer> cohort;
+    if (config.cohortInterval) cohort.emplace(
+        job.get(), info.dwProcessId, creation, config.cohortInterval);
     while (true) {
         const auto waited = WaitForSingleObject(process.get(), 20);
         if (waited == WAIT_FAILED) fail("Wait owned child");
@@ -423,6 +435,10 @@ int run(const options& config) {
         if (rootExited && elapsed() - rootExitedAt >= config.drain) {
             reason = rootCode == 0 ? "owned-descendants-remain" : "root-failed";
             break;
+        }
+        if (cohort) {
+            const auto observation = cohort->poll(elapsed);
+            if (!observation.empty()) report.write(observation);
         }
         if (rootExited) Sleep(20); // The root handle remains signaled during bounded descendant drain.
     }

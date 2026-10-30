@@ -7,6 +7,7 @@
 
 #include "third_party/WebKit/public/platform/WebURLLoader.h"
 #include "third_party/WebKit/Source/platform/Timer.h"
+#include <memory>
 
 namespace blink {
 class WebURLRequest;
@@ -21,6 +22,8 @@ class BlobResourceLoader;
 using namespace blink;
 
 namespace content {
+class InspectorMemoryLoad;
+class LocalResourceMemoryLoad;
 
 class WebURLLoaderImplCurl : public blink::WebURLLoader {
 public:
@@ -57,6 +60,8 @@ public:
     //net::WebURLLoaderInternal* loaderInterna() { return m_webURLLoaderInternal; }
 
 private:
+    std::shared_ptr<LocalResourceMemoryLoad> m_localResourceLoad;
+    std::shared_ptr<InspectorMemoryLoad> m_inspectorLoad;
     bool* m_hadDestroied;
     int m_jobIds;
 

@@ -75,8 +75,10 @@ webview2_runtime_discovery inspect_webview2_runtime(const std::filesystem::path&
     LPWSTR value{};
     ~task_string() { CoTaskMemFree(value); }
   } version;
+  auto native_runtime = fixed_runtime;
+  native_runtime.make_preferred();
   const auto result = GetAvailableCoreWebView2BrowserVersionString(
-      fixed_runtime.empty() ? nullptr : fixed_runtime.c_str(), &version.value);
+      native_runtime.empty() ? nullptr : native_runtime.c_str(), &version.value);
   std::string text;
   if (result == S_OK && version.value) {
     const auto length = wcsnlen_s(version.value, 512);

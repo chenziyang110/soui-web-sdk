@@ -1,0 +1,66 @@
+{
+  "schema": "soui.targeted-repair-short/v1",
+  "results": [
+    {
+      "name": "archive-affected-fixtures",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=archive tool runtime changes|optional tool identity|existing destinations|CLI preserves a native extraction|PS5 metadata|actual ZIP metadata",
+        "tests/sdk/archive-stage.test.cjs"
+      ],
+      "sourceSha256": "fbd9cb9c0f17e2277e139bff386fad81c7b75927210311307b3d70e12754c19a",
+      "start": "2026-10-29T03:46:20.594Z",
+      "finish": "2026-10-29T03:46:24.441Z",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "tests": 9,
+      "pass": 9,
+      "fail": 0,
+      "skipped": 0
+    },
+    {
+      "name": "msvc-model",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "tests/sdk/msvc-compiler-lifecycle.test.cjs"
+      ],
+      "sourceSha256": "81f67c04fa843f28194b9b2b97783c75b50f778edcf8cce822b31dd82fc28efa",
+      "start": "2026-10-29T03:46:24.443Z",
+      "finish": "2026-10-29T03:46:26.047Z",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "tests": 1,
+      "pass": 1,
+      "fail": 0,
+      "skipped": 0
+    },
+    {
+      "name": "sdk-cli-and-native-recovery",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "--test-name-pattern=CLI retention|real PS5 descendant",
+        "tests/sdk/sdk-publication-recovery.test.cjs"
+      ],
+      "sourceSha256": "d40ce74ccc50ae40a58109e29086d5cc7458a707df92834ceea95c4add0c980b",
+      "start": "2026-10-29T03:46:26.048Z",
+      "finish": "2026-10-29T03:46:29.200Z",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "tests": 2,
+      "pass": 2,
+      "fail": 0,
+      "skipped": 0
+    }
+  ],
+  "passed": true,
+  "qualificationPassed": false
+}

@@ -7,6 +7,8 @@
 
 #include "third_party/WebKit/public/web/WebDevToolsAgentClient.h"
 #include <string>
+#include <memory>
+#include <vector>
 
 namespace blink {
 class WebDevToolsFrontend;
@@ -21,10 +23,32 @@ class Value;
 class DictionaryValue;
 }
 
+namespace wke {
+// Private kernel-only proof of the existing Engine owner; no export or new owner.
+bool controlledDevToolsEngineThread();
+}
+
 namespace content {
 
 class DevToolsClient;
 class WebPage;
+
+// Private stage-0 contract; broker owns endpoint lifetime.
+class ControlledDevToolsSession {
+public:
+    virtual ~ControlledDevToolsSession() {}
+    virtual bool enqueueToAgent(const std::string&) = 0;
+    virtual bool enqueueToClient(int, const std::string&, const std::string&) = 0;
+    virtual bool enqueueAttach(int) = 0;
+    virtual void attached() = 0;
+    virtual void detached() = 0;
+    virtual void enterPause() = 0;
+    virtual void exitPause() = 0;
+    virtual void pausedMicrotaskCheckpoint() = 0;
+    virtual bool reserveInterrupt(size_t bytes) = 0;
+    virtual void interruptDisposed(size_t bytes) = 0;
+    virtual bool acceptsInterrupt() = 0;
+};
 
 // 被调试网页使用
 // Developer tools UI end of communication channel between the render process of
@@ -44,6 +68,9 @@ public:
     int getId() const { return m_id; }
     void onAttach(const std::string& hostId);
     void onDetach();
+    void discardControlledInterrupts();
+    void setControlledSession(const std::shared_ptr<ControlledDevToolsSession>& session) { m_controlledSession = session; }
+    std::shared_ptr<ControlledDevToolsSession> controlledSession() const { return m_controlledSession; }
 
     void inspectElementAt(int x, int y);
 
@@ -78,6 +105,8 @@ private:
     int m_id;
     WebPage* m_page;
     blink::WebLocalFrame* m_frame;
+    std::shared_ptr<ControlledDevToolsSession> m_controlledSession;
+    std::vector<bool> m_debugLoopRestoreCheckReEnter;
 };
 
 }  // namespace content

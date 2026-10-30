@@ -31,6 +31,8 @@ inline bool initialize_source_kernel(HMODULE module) {
 #undef BIND_SOURCE_API
   wkeGetWebviewId = reinterpret_cast<decltype(wkeGetWebviewId)>(
       GetProcAddress(module, "wkeGetWebviewId")); // optional diagnostic identity; never invent an ID
+  wkeLoadURL = reinterpret_cast<FN_wkeLoadURL>(
+      GetProcAddress(module, "wkeLoadURL")); // optional, required by owned local HTTPS navigation
   wkeOnDocumentReady2 = reinterpret_cast<FN_wkeOnDocumentReady2>(
       GetProcAddress(module, "wkeOnDocumentReady2")); // required when the controlled broker is enabled
   wkeGetCursorBrokerApi = reinterpret_cast<FN_wkeGetCursorBrokerApi>(

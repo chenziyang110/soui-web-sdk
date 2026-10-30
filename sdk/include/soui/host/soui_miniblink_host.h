@@ -23,7 +23,7 @@
 
 namespace soui::sdk {
 
-namespace detail { class bridge_request_budget; class cursor_broker_endpoint; class trace_thread_registration; class native_trace_ui_lease; }
+namespace detail { class bridge_request_budget; class cursor_broker_endpoint; class trace_thread_registration; class native_trace_ui_lease; class miniblink_devtools_session; }
 
 inline constexpr std::uint32_t bridge_event_message = 0x84D2U;
 inline constexpr std::uint32_t ime_position_message = 0x84D3U;
@@ -51,6 +51,8 @@ inline constexpr std::uint32_t ime_position_message = 0x84D3U;
 // Existing owner metrics DTO layout and queue getter remain unchanged.
 [[nodiscard]] diagnostics::renderer_status read_miniblink_renderer_metrics(
     diagnostics::renderer_observation&) noexcept;
+[[nodiscard]] diagnostics::renderer_status read_miniblink_view_metrics(
+    diagnostics::view_observation&) noexcept;
 [[nodiscard]] diagnostics::renderer_status read_miniblink_renderer_model_metrics(
     diagnostics::renderer_model_observation&) noexcept;
 // Explicit, single-flight asynchronous Engine ordinary-lane request. No wait.
@@ -61,6 +63,11 @@ inline constexpr std::uint32_t ime_position_message = 0x84D3U;
 
 [[nodiscard]] bool binary_matches_architecture(const std::filesystem::path& binary,
                                                 std::string_view architecture);
+
+// Native application opt-in to an immutable, Host-owned HTTPS resource origin.
+// This does not grant DevTools access. Existing constructors retain file URLs;
+// the opted-in constructor requires a matching local-resource-capable kernel.
+struct miniblink_local_resource_options final {};
 
 class dynamic_miniblink_adapter final : public webview_host_adapter,
                                         private independent_input_sink,
@@ -73,11 +80,14 @@ class dynamic_miniblink_adapter final : public webview_host_adapter,
   dynamic_miniblink_adapter();
   // Diagnostics mode is immutable; construct on the retained lifecycle owner.
   explicit dynamic_miniblink_adapter(diagnostics::mode metrics);
+  dynamic_miniblink_adapter(diagnostics::mode metrics, miniblink_local_resource_options);
   [[nodiscard]] diagnostics::status read_runtime_metrics(diagnostics::software_host_runtime&) const noexcept;
   ~dynamic_miniblink_adapter() override;
   [[nodiscard]] host_result mount(const host_config& config) override;
   [[nodiscard]] host_result unmount() override;
   [[nodiscard]] host_result show(bool visible) override;
+  // E_RELOAD_PENDING retains one original operation. Poll on the same UI
+  // owner until its final result; pump does not consume that result.
   [[nodiscard]] host_result reload() override;
   [[nodiscard]] host_result resize(int width, int height) override;
   [[nodiscard]] host_result focus() override;
@@ -115,6 +125,10 @@ class dynamic_miniblink_adapter final : public webview_host_adapter,
                                              std::uint64_t context_receipt) const noexcept;
   [[nodiscard]] bool update_window_chrome(void* execution_state, std::string_view json);
   void dispatch_event_now(const std::string& event_json);
+  // The adapter's interaction child calls this for its own messages. Do not
+  // forward owner-window messages here: child hit testing queries that owner
+  // synchronously and would reenter the same handler. Owners deliver posted
+  // bridge events separately through webview_host::deliver_posted_event.
   [[nodiscard]] bool handle_native_window_message(unsigned int message,
                                                   std::uintptr_t wparam,
                                                   std::intptr_t lparam,
@@ -128,8 +142,19 @@ class dynamic_miniblink_adapter final : public webview_host_adapter,
   [[nodiscard]] int configured_wake_interval() const noexcept { return configured_wake_interval_; }
 #endif
 
+ protected:
+  [[nodiscard]] host_result configure_devtools_native(const devtools::configuration&) override;
+  [[nodiscard]] devtools::capabilities devtools_capabilities_native() const override;
+  [[nodiscard]] host_result prepare_devtools_grant(devtools::target_identity&) override;
+  [[nodiscard]] devtools::target_identity devtools_target_native() const override;
+  [[nodiscard]] host_result open_devtools_native() override;
+  [[nodiscard]] host_result revoke_devtools_native(devtools::revoke_reason) override;
+  [[nodiscard]] devtools::observation observe_devtools_native() const override;
+  [[nodiscard]] host_result finish_devtools_retirement() override;
+
  private:
   friend class detail::engine_admission;
+  friend class soui_miniblink_host;
   [[nodiscard]] host_result mount_on_engine(const host_config& config, int width, int height);
   [[nodiscard]] host_result finish_mount_on_engine(const host_config& config, int width, int height);
   [[nodiscard]] host_result wait_for_cursor_registration();
@@ -146,6 +171,7 @@ class dynamic_miniblink_adapter final : public webview_host_adapter,
   void pump_on_engine();
   void sample_host_visibility() noexcept;
   void apply_host_visibility_on_engine() noexcept;
+  [[nodiscard]] host_result reload_on_engine(std::uint64_t receipt);
   [[nodiscard]] bool create_input_window();
   [[nodiscard]] bool destroy_input_window();
   void refresh_wheel_settings() noexcept;
@@ -168,6 +194,7 @@ class dynamic_miniblink_adapter final : public webview_host_adapter,
   [[nodiscard]] bool install_bridge_event_sink(std::uint64_t context_receipt);
   void dispatch_event_now(const std::string& event_json, std::uint64_t context_receipt);
   [[nodiscard]] std::uint64_t invalidate_main_context() noexcept;
+  void fence_devtools_business_scope() noexcept;
 #ifdef SOUI_TEST_KIT
   [[nodiscard]] soui::test_kit::json test_kit_request(const soui::test_kit::json& request);
   std::unique_ptr<soui::test_kit::pipe_agent> test_agent_;
@@ -210,6 +237,10 @@ class dynamic_miniblink_adapter final : public webview_host_adapter,
   // Odd = unique pending context, even = completed; zero is legacy/inactive.
   // Only the corresponding main-context callback can complete its receipt.
   std::atomic<std::uint64_t> cursor_context_receipt_{0};
+#ifdef SOUI_HOST_STAGE0_DEVTOOLS_TEST_ONLY
+  // Passive lifetime milestones for the private experiment, never admission.
+  std::atomic<std::uint64_t> stage0_startup_events_{0};
+#endif
   bool startup_window_protected_{false}; // UI owner; retained after failed mount until actual cleanup.
   std::atomic<bool> startup_cancelled_{false};
   bool startup_dispatch_refused_{false}; // UI owner; permanently retains a rejected timer attempt.
@@ -223,9 +254,18 @@ class dynamic_miniblink_adapter final : public webview_host_adapter,
     bool retained{false};
   } startup_refused_message_; // One actual removed MSG, never dispatched or reposted.
   bool unmount_running_{false}; // UI owner only
-  std::atomic<bool> unmount_requested_{false}; // Engine/Bridge callbacks reject the closing generation.
+  std::atomic<bool> unmount_requested_{false}; // Engine/Bridge callbacks also reject the closing generation.
+  devtools::configuration devtools_config_;
+  devtools::target_identity devtools_grant_target_;
+  std::shared_ptr<detail::miniblink_devtools_session> devtools_session_;
+  // Once a destroy-target session is requested, no navigation/reload may
+  // expose a new document in that target. Only final target teardown clears it.
+  std::atomic<bool> devtools_document_fenced_{false};
+  bool devtools_scope_revoked_{false}; // UI owner, before requestClose.
   struct unmount_state;
   std::shared_ptr<unmount_state> unmount_state_; // Retained until actual cleanup, never a timeout cancellation.
+  struct reload_state;
+  std::shared_ptr<reload_state> reload_state_; // UI-owned; callback retains its result through actual return.
   bool cursor_close_pending_{false};
   bool cursor_vendor_destroyed_{false};
   interaction_generation interaction_generation_;

@@ -1,0 +1,269 @@
+{
+  "schema": "soui.release06-owned-smoke-data-media/v1",
+  "startedAt": "2026-10-28T18:24:07.597Z",
+  "finishedAt": "2026-10-28T18:25:08.389Z",
+  "iso": {
+    "path": "C:/s06media/SouiRelease06OwnedSmokes.iso",
+    "bytes": 184559616,
+    "sha256": "82cde07d7d9eb8d1ad4f1b8e83199eece5b7d2810179ab0503063e706ab73582"
+  },
+  "zip": {
+    "path": "C:/s06media/iso-tree/PAYLOAD.ZIP",
+    "bytes": 183456525,
+    "sha256": "693590a6e3ea44f3f735d1a2c8255bc83945f8e52d2576a30da9949e95ac7eed"
+  },
+  "carrier": {
+    "path": "C:/s06media/iso-tree/CARRIER.JSON",
+    "bytes": 1037218,
+    "sha256": "826c8b819562d1c989cc62b048f5ef608255b1c73670adcb2dfa8075a1f121cc"
+  },
+  "run": {
+    "path": "C:/s06media/iso-tree/RUN.PS1",
+    "bytes": 3460,
+    "sha256": "5bfc6256f32da5eb5a41e6d379e09c4ab4d837296a65707b5e4c854487930de3"
+  },
+  "export": {
+    "path": "C:/s06media/iso-tree/EXPORT.PS1",
+    "bytes": 4230,
+    "sha256": "4086d69675c24f04bd76a4e775f0b66ed834299eebeadfdc5d683faf24a3da0b"
+  },
+  "inputPlan": {
+    "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vm-short-prep/SmokeCopyPlan.final.json",
+    "bytes": 1368985,
+    "sha256": "120cb0a47f8e710f697acf2dfc946470f650d4d49a413c42e326453a7cca41d4"
+  },
+  "sourceFiles": 2353,
+  "sourceRawBytes": 177902149,
+  "normalizedSourceSha256": "67a8c649a1a08e96e76dd4d0f7782b53f229e1f26ad65e6a2738bc7173555264",
+  "sr06Files": 4812,
+  "sr06RawBytes": 410028190,
+  "totalPayloadFiles": 4815,
+  "totalPayloadBytes": 501420627,
+  "payloadFiles": {
+    "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vm-short-prep/media-default-1/PayloadFiles.actual.json",
+    "bytes": 988487,
+    "sha256": "51eb8323acb76be3f5f0e9da711ba9a7e9e98eae56369b6d36c8ec97f2b12d98"
+  },
+  "flatIsoFiles": [
+    {
+      "path": "CARRIER.JSON",
+      "bytes": 1037218,
+      "sha256": "826c8b819562d1c989cc62b048f5ef608255b1c73670adcb2dfa8075a1f121cc"
+    },
+    {
+      "path": "EXPORT.PS1",
+      "bytes": 4230,
+      "sha256": "4086d69675c24f04bd76a4e775f0b66ed834299eebeadfdc5d683faf24a3da0b"
+    },
+    {
+      "path": "PAYLOAD.ZIP",
+      "bytes": 183456525,
+      "sha256": "693590a6e3ea44f3f735d1a2c8255bc83945f8e52d2576a30da9949e95ac7eed"
+    },
+    {
+      "path": "README.TXT",
+      "bytes": 1028,
+      "sha256": "15c14d98668fcaf9eb7de056cac5f9bc3f1498bcd39a0be9d651fa9cdc597587"
+    },
+    {
+      "path": "RUN.PS1",
+      "bytes": 3460,
+      "sha256": "5bfc6256f32da5eb5a41e6d379e09c4ab4d837296a65707b5e4c854487930de3"
+    }
+  ],
+  "steps": [
+    {
+      "name": "01-zip-create",
+      "executable": "C:/Program Files/7-Zip/7z.exe",
+      "args": [
+        "a",
+        "-tzip",
+        "-mx5",
+        "-mmt2",
+        "-scsUTF-8",
+        "-sccUTF-8",
+        "-y",
+        "C:\\s06media\\iso-tree\\PAYLOAD.ZIP",
+        "@F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\vm-short-prep\\media-default-1\\PayloadMembers.list"
+      ],
+      "cwd": "C:\\s06media\\payload",
+      "startedAt": "2026-10-28T18:24:19.906Z",
+      "finishedAt": "2026-10-28T18:24:35.131Z",
+      "elapsedMs": 15225.5597,
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "timeoutMs": 120000,
+      "product": false,
+      "vm": false
+    },
+    {
+      "name": "02-zip-test",
+      "executable": "C:/Program Files/7-Zip/7z.exe",
+      "args": [
+        "t",
+        "-sccUTF-8",
+        "C:\\s06media\\iso-tree\\PAYLOAD.ZIP"
+      ],
+      "cwd": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\vm-short-prep\\media-default-1",
+      "startedAt": "2026-10-28T18:24:35.134Z",
+      "finishedAt": "2026-10-28T18:24:36.674Z",
+      "elapsedMs": 1540.6091,
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "timeoutMs": 120000,
+      "product": false,
+      "vm": false
+    },
+    {
+      "name": "03-zip-extract",
+      "executable": "C:/Program Files/7-Zip/7z.exe",
+      "args": [
+        "x",
+        "-sccUTF-8",
+        "-y",
+        "-oC:\\s06media\\zip-readback",
+        "C:\\s06media\\iso-tree\\PAYLOAD.ZIP"
+      ],
+      "cwd": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\vm-short-prep\\media-default-1",
+      "startedAt": "2026-10-28T18:24:36.675Z",
+      "finishedAt": "2026-10-28T18:24:44.428Z",
+      "elapsedMs": 7752.6935,
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "timeoutMs": 120000,
+      "product": false,
+      "vm": false
+    },
+    {
+      "name": "04-parse-powershell",
+      "executable": "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/pwsh.exe",
+      "args": [
+        "-NoLogo",
+        "-NoProfile",
+        "-NonInteractive",
+        "-Command",
+        "$ErrorActionPreference=\"Stop\"; foreach($p in @('C:\\s06media\\iso-tree\\RUN.PS1','C:\\s06media\\iso-tree\\EXPORT.PS1','F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\vm-short-prep\\media-default-1\\Write-Iso.ps1')){$t=$null;$e=$null;$null=[Management.Automation.Language.Parser]::ParseFile($p,[ref]$t,[ref]$e);if($e.Count){$e|Out-String|Write-Error};Write-Output ($p+\":parse0\")}"
+      ],
+      "cwd": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\vm-short-prep\\media-default-1",
+      "startedAt": "2026-10-28T18:25:01.633Z",
+      "finishedAt": "2026-10-28T18:25:01.998Z",
+      "elapsedMs": 365.085,
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "timeoutMs": 120000,
+      "product": false,
+      "vm": false
+    },
+    {
+      "name": "05-iso-write",
+      "executable": "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/pwsh.exe",
+      "args": [
+        "-NoLogo",
+        "-NoProfile",
+        "-NonInteractive",
+        "-Sta",
+        "-File",
+        "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\vm-short-prep\\media-default-1\\Write-Iso.ps1",
+        "-Plan",
+        "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vm-short-prep/media-default-1/plan.json",
+        "-PlanSha256",
+        "1accbffc9bb3703e0486713e195502e0aea6de41b856c0b67e3c85baadece08c"
+      ],
+      "cwd": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\vm-short-prep\\media-default-1",
+      "startedAt": "2026-10-28T18:25:02.003Z",
+      "finishedAt": "2026-10-28T18:25:03.663Z",
+      "elapsedMs": 1659.8452,
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "timeoutMs": 120000,
+      "product": false,
+      "vm": false
+    },
+    {
+      "name": "06-iso-list",
+      "executable": "C:/Program Files/7-Zip/7z.exe",
+      "args": [
+        "l",
+        "-slt",
+        "-ba",
+        "-sccUTF-8",
+        "C:\\s06media\\SouiRelease06OwnedSmokes.iso"
+      ],
+      "cwd": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\vm-short-prep\\media-default-1",
+      "startedAt": "2026-10-28T18:25:03.664Z",
+      "finishedAt": "2026-10-28T18:25:03.704Z",
+      "elapsedMs": 40.085,
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "timeoutMs": 120000,
+      "product": false,
+      "vm": false
+    },
+    {
+      "name": "07-iso-extract",
+      "executable": "C:/Program Files/7-Zip/7z.exe",
+      "args": [
+        "x",
+        "-sccUTF-8",
+        "-y",
+        "-oC:\\s06media\\iso-readback",
+        "C:\\s06media\\SouiRelease06OwnedSmokes.iso"
+      ],
+      "cwd": "F:\\work\\SOUI_WEB\\out\\release-v0.6.0-20261028\\vm-short-prep\\media-default-1",
+      "startedAt": "2026-10-28T18:25:03.705Z",
+      "finishedAt": "2026-10-28T18:25:03.821Z",
+      "elapsedMs": 116.0516,
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "timeoutMs": 120000,
+      "product": false,
+      "vm": false
+    }
+  ],
+  "zipFullRawClosedSet": true,
+  "extractedPublicReaders": {
+    "root": "C:\\s06media\\zip-readback\\sr06",
+    "normalizedSourceSha256": "67a8c649a1a08e96e76dd4d0f7782b53f229e1f26ad65e6a2738bc7173555264",
+    "publicBuildAndMeasurementReaders": [
+      {
+        "architecture": "x86",
+        "buildId": "6d3166b8-5989-4356-8970-1ab5c879db00",
+        "sourceSha256": "67a8c649a1a08e96e76dd4d0f7782b53f229e1f26ad65e6a2738bc7173555264",
+        "prepared": true,
+        "executables": 9
+      },
+      {
+        "architecture": "x64",
+        "buildId": "7ecb5a92-de8e-4ab1-8b24-19606f889f03",
+        "sourceSha256": "67a8c649a1a08e96e76dd4d0f7782b53f229e1f26ad65e6a2738bc7173555264",
+        "prepared": true,
+        "executables": 9
+      }
+    ],
+    "filesystemOnly": true,
+    "productExecuted": false
+  },
+  "isoFiveFlatReadbackRawExact": true,
+  "originalStreamHelperUnchanged": true,
+  "guestRunCommand": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File D:\\RUN.PS1",
+  "hostExtractor": {
+    "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vm-short-prep/media-default-1/Extract-Serial.cjs",
+    "bytes": 4585,
+    "sha256": "c6d78a814a041ec57bdb1a363cd2c7f677f901c460d0267805d95052e184b5a3"
+  },
+  "applicationBudgetsUnchanged": true,
+  "serialIoBudgetMs": 900000,
+  "productStarted": false,
+  "compilerStarted": false,
+  "vmTouched": false,
+  "hostDiskMounted": false,
+  "releaseReady": false,
+  "productionQualificationComplete": false
+}

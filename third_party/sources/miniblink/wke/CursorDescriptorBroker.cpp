@@ -3,6 +3,13 @@
 #include "wke/wkeGlobalVar.h"
 #include "content/browser/WebPage.h"
 #include "content/browser/WebPageImpl.h"
+#include "content/browser/InspectorKeyboardSnapshot.h"
+#include "content/devtools/DevToolsAgent.h"
+#include "content/devtools/DevToolsClient.h"
+#include "content/web_impl_win/LocalResourceState.h"
+#include "third_party/WebKit/Source/core/loader/InspectorResourcePolicy.h"
+#include "third_party/WebKit/Source/core/frame/Settings.h"
+#include "third_party/WebKit/Source/web/WebViewImpl.h"
 #include "content/web_impl_win/BlinkPlatformImpl.h"
 #include "content/web_impl_win/WebThreadImpl.h"
 #include "third_party/WebKit/public/platform/WebCursorInfo.h"
@@ -23,6 +30,12 @@
 #include <memory>
 #include <vector>
 
+namespace blink {
+// Private command defined only in InspectorResourceSnapshot.cpp; no WKE export.
+bool finishAndRetireInspectorResourceOwner(const std::shared_ptr<InspectorResourceState>&,
+    bool& finished);
+}
+
 namespace wke {
 extern DWORD wkeThreadId;
 using BrokerActionOwner = std::shared_ptr<const std::function<void()>>;
@@ -41,6 +54,11 @@ struct CursorBrokerControl {
     std::atomic<unsigned int> running{0};
     std::atomic<unsigned int> scopes{0};
     std::atomic<unsigned int> engineCallbacks{0};
+    std::atomic<unsigned int> devToolsBorrows{0}; // Private stage-0 session pin.
+    std::shared_ptr<content::LocalResourceState> localResources;
+    bool localResourceBinding = false; // Engine-only callout/reentrancy fence.
+    std::shared_ptr<blink::InspectorResourceState> inspectorResources;
+    unsigned int inspectorDocuments = 0; // Engine-only; a frontend cannot be promoted after use.
     std::atomic<unsigned int> comReferences{0};
     std::atomic<unsigned int> nativeResources{0};
     std::atomic<bool> nativeResourceAdmissionFault{false};
@@ -57,6 +75,7 @@ struct CursorBrokerControl {
     unsigned __int64 pendingDocumentGeneration = 0;
 };
 namespace {
+void stage0DocumentCommitted(wkeWebView, bool);
 struct UiTask {
     std::shared_ptr<CursorBrokerControl> control;
     wkeCursorBrokerNativeReceipt receipt = {};
@@ -216,7 +235,10 @@ bool actualOwner(const CursorBrokerControl& control)
 bool drained(const CursorBrokerControl& control)
 {
     return !control.queued && !control.running
-        && !control.scopes && !control.engineCallbacks && !control.oleRegistered
+        && (!control.localResources || control.localResources->retired())
+        && (!control.inspectorResources || (!control.inspectorResources->active()
+            && !control.inspectorResources->queued() && !control.inspectorResources->dispatcherAlive()))
+        && !control.scopes && !control.engineCallbacks && !control.devToolsBorrows && !control.oleRegistered
         && !control.comReferences && !control.nativeResources
         && !control.nativeResourceAdmissionFault
         && (!control.view || control.view->paintCallbacksDrained());
@@ -228,7 +250,13 @@ void receipt(const CursorBrokerControl& control, wkeCursorBrokerDrainReceipt* ou
     out->queuedUiTasks = control.queued;
     out->runningUiTasks = control.running;
     out->nativeScopes = control.scopes;
-    out->engineCallbacks = control.engineCallbacks;
+    out->engineCallbacks = control.engineCallbacks.load() + control.devToolsBorrows.load()
+        + (control.inspectorResources ? control.inspectorResources->active() + control.inspectorResources->queued() : 0);
+    if (control.localResources) {
+        SouiLocalResourceDrain local = {}; local.structSize = sizeof(local);
+        control.localResources->snapshot(local);
+        out->engineCallbacks += local.activeOperations + local.callbackBorrows + local.queuedOperations;
+    }
     out->oleRegistered = control.oleRegistered ? 1 : 0;
     out->drained = control.closing && drained(control) ? 1 : 0;
     out->closeSequence = control.closeSequence;
@@ -313,7 +341,11 @@ unsigned int WKE_CALL_TYPE beginRealm(const wkeCursorBrokerRealmConfig* config, 
     out->realmGeneration = 1;
     return WKE_CURSOR_BROKER_OK;
 }
-unsigned int WKE_CALL_TYPE createEndpoint(wkeCursorBrokerRealm realm, const wkeCursorBrokerEndpointConfig* config, wkeCursorBrokerEndpointReceipt* out)
+enum class EndpointPresentation { NativeWindow, CallbackOnly };
+
+unsigned int createEndpointImpl(wkeCursorBrokerRealm realm, const wkeCursorBrokerEndpointConfig* config,
+    wkeCursorBrokerEndpointReceipt* out, EndpointPresentation presentation,
+    std::shared_ptr<CursorBrokerControl>* retainedControl)
 {
     if (!ownerEngine()) return WKE_CURSOR_BROKER_WRONG_THREAD;
     if (!equalToken(realm, s_realm) || s_realmEnded) return WKE_CURSOR_BROKER_STALE;
@@ -339,6 +371,9 @@ unsigned int WKE_CALL_TYPE createEndpoint(wkeCursorBrokerRealm realm, const wkeC
     control->hooks = config->hooks;
     control->window = config->ownerWindow;
     control->ownerThread = tid;
+    // Private factory cleanup obtains its strong owner before registration or
+    // handoff can expose a token. This assignment does not allocate or lock.
+    if (retainedControl) *retainedControl = control;
     {
         std::lock_guard<std::mutex> lock(s_mutex);
         if (s_endpoints.size() >= s_maxEndpoints) return WKE_CURSOR_BROKER_LIMIT;
@@ -358,7 +393,9 @@ unsigned int WKE_CALL_TYPE createEndpoint(wkeCursorBrokerRealm realm, const wkeC
         control->view = CWebView::createForCursorBroker(cc::s_kBgColor);
         s_ownedCreate = false;
         if (!control->view) throw std::bad_alloc();
-        control->view->webPage()->setNeedAutoDrawToHwnd(false);
+        // Business endpoints use the engine's HWND presentation. Inspector
+        // endpoints retain their callback-owned pixel buffer and WM_PAINT.
+        control->view->webPage()->setNeedAutoDrawToHwnd(presentation == EndpointPresentation::NativeWindow);
         control->view->setHandle(config->ownerWindow);
     } catch (...) {
         s_ownedCreate = false;
@@ -379,6 +416,11 @@ unsigned int WKE_CALL_TYPE createEndpoint(wkeCursorBrokerRealm realm, const wkeC
     out->webView = control->view;
     out->identity = control->identity;
     return control->failed ? WKE_CURSOR_BROKER_FAILED : WKE_CURSOR_BROKER_OK;
+}
+unsigned int WKE_CALL_TYPE createEndpoint(wkeCursorBrokerRealm realm, const wkeCursorBrokerEndpointConfig* config,
+    wkeCursorBrokerEndpointReceipt* out)
+{
+    return createEndpointImpl(realm, config, out, EndpointPresentation::NativeWindow, nullptr);
 }
 unsigned int WKE_CALL_TYPE updateIdentity(wkeCursorBrokerEndpoint endpoint, const wkeCursorBrokerIdentity* identity)
 {
@@ -434,12 +476,30 @@ unsigned int WKE_CALL_TYPE requestClose(wkeCursorBrokerEndpoint endpoint)
     if (control->destroying) return WKE_CURSOR_BROKER_CLOSING;
     if (control->view) control->view->quiescePaintCallbacks();
     const bool alreadyClosing = control->closing.exchange(true);
+    // Publish the original first-close sequence before the new external release
+    // boundary, including when its counted admission has to return BUSY.
     if (!alreadyClosing) {
         if (control->publishSequence == (std::numeric_limits<unsigned __int64>::max)())
             control->failed = true;
         else
             control->closeSequence = ++control->publishSequence;
-    } else {
+    }
+    if (control->localResources) {
+        control->localResources->close();
+        ActionCalloutLease resourceLease(control);
+        if (!resourceLease.entered()) return WKE_CURSOR_BROKER_BUSY;
+        control->localResources->finishClose();
+        if (control->localResources->failed()) control->failed = true;
+    }
+    if (control->inspectorResources) {
+        control->inspectorResources->close();
+        ActionCalloutLease resourceLease(control);
+        if (!resourceLease.entered()) return WKE_CURSOR_BROKER_BUSY;
+        bool finished = false;
+        if (!blink::finishAndRetireInspectorResourceOwner(control->inspectorResources, finished))
+            return WKE_CURSOR_BROKER_BUSY;
+    }
+    if (alreadyClosing) {
         // Observe queue transitions under the same admission lock. Completed
         // drain and an active callout never admit another cleanup invocation.
         // Hidden native/COM ledgers still permit a genuine empty-queue retry.
@@ -463,6 +523,24 @@ unsigned int WKE_CALL_TYPE inspectDrain(wkeCursorBrokerEndpoint endpoint, wkeCur
     auto control = findToken(endpoint);
     if (!control) return WKE_CURSOR_BROKER_STALE;
     if (!out || out->structSize != sizeof(*out)) return WKE_CURSOR_BROKER_INVALID;
+    bool finished = true;
+    if (control->closing && control->inspectorResources) {
+        ActionCalloutLease resourceLease(control);
+        if (!resourceLease.entered()) return WKE_CURSOR_BROKER_BUSY;
+        finished = false;
+        if (!blink::finishAndRetireInspectorResourceOwner(control->inspectorResources, finished))
+            return WKE_CURSOR_BROKER_BUSY;
+    }
+    if (control->closing && control->localResources) {
+        ActionCalloutLease resourceLease(control);
+        if (!resourceLease.entered()) return WKE_CURSOR_BROKER_BUSY;
+        if (!control->localResources->finishClose()) finished = false;
+        if (control->localResources->failed()) control->failed = true;
+    }
+    // No drained receipt may stand in for a callback owner that has not retired.
+    if (!finished) return WKE_CURSOR_BROKER_BUSY;
+    // The callout count must be gone before publishing this receipt. Recursive
+    // destroy during release instead sees the outer live count and stays BUSY.
     receipt(*control, out);
     return control->failed ? WKE_CURSOR_BROKER_FAILED : WKE_CURSOR_BROKER_OK;
 }
@@ -557,6 +635,85 @@ unsigned int WKE_CALL_TYPE safeEndRealm(wkeCursorBrokerRealm realm)
 { return boundary([&] { return endRealm(realm); }); }
 } // namespace
 
+namespace {
+uint64_t localResourceSequence = 0; // Engine owner only; never reused.
+wkeCursorBrokerEndpoint localEndpoint(SouiLocalResourceEndpoint token) {
+    wkeCursorBrokerEndpoint result = {}; result.low = token.low; result.high = token.high; return result;
+}
+unsigned int SOUI_LOCAL_RESOURCE_CALL bindLocalResources(SouiLocalResourceEndpoint token,
+    uint64_t viewGeneration, uint64_t brokerDocumentGeneration,
+    const SouiLocalResourceConfig* config, SouiLocalResourceReceipt* output) {
+    if (!ownerEngine()) return SouiLocalWrongThread;
+    if (!config || !output || output->structSize != sizeof(*output)) return SouiLocalInvalid;
+    *output = {}; output->structSize = sizeof(*output); output->abiVersion = SOUI_LOCAL_RESOURCE_ABI;
+    auto control = findToken(localEndpoint(token));
+    if (!control || !control->view || control->identity.viewGeneration != viewGeneration
+        || control->identity.documentGeneration != brokerDocumentGeneration) return SouiLocalStale;
+    if (control->closing || control->destroying || control->failed || control->inspectorResources) return SouiLocalFailed;
+    if (control->localResourceBinding || (control->localResources && !control->localResources->retired())) return SouiLocalPending;
+    if (control->localResources && control->localResources->failed()) return SouiLocalFailed;
+    if (localResourceSequence == (std::numeric_limits<uint64_t>::max)()) return SouiLocalLimit;
+    ActionCalloutLease resourceLease(control);
+    if (!resourceLease.entered()) return SouiLocalPending;
+    control->localResourceBinding = true;
+    struct Binding { CursorBrokerControl& control;
+        ~Binding() { control.localResourceBinding = false; } } binding{*control};
+    try {
+        unsigned char random[16]; base::RandBytes(random, sizeof(random));
+        const char* hex = "0123456789abcdef"; char nonce[33] = {};
+        for (unsigned int i = 0; i < sizeof(random); ++i) { nonce[2 * i] = hex[random[i] >> 4]; nonce[2 * i + 1] = hex[random[i] & 15]; }
+        unsigned int creationStatus = SouiLocalFailed;
+        auto resources = content::LocalResourceState::create(*config, nonce, viewGeneration,
+            brokerDocumentGeneration, ++localResourceSequence, &creationStatus);
+        if (!resources) return creationStatus;
+        // Publish the physical owner before any later failure or callout can
+        // lose it. The returned nonzero receipt always names this exact state.
+        control->localResources = resources;
+        resources->receipt(*output);
+        auto* view = control->view ? control->view->webPage()->webViewImpl() : nullptr;
+        auto* page = view ? view->page() : nullptr;
+        if (control->closing || control->destroying || control->failed || !page || !resources->install(page)) {
+            control->failed = true; resources->fault(); resources->finishClose(); return SouiLocalFailed;
+        }
+        return SouiLocalOk;
+    } catch (...) { control->failed = true; return SouiLocalFailed; }
+}
+unsigned int localResourceDrain(SouiLocalResourceEndpoint token, uint64_t documentReceipt,
+    SouiLocalResourceDrain* output, bool close) {
+    if (!ownerEngine()) return SouiLocalWrongThread;
+    if (!output || output->structSize != sizeof(*output) || !documentReceipt) return SouiLocalInvalid;
+    auto control = findToken(localEndpoint(token));
+    if (!control || !control->localResources || control->localResources->id() != documentReceipt) return SouiLocalStale;
+    auto resources = control->localResources;
+    ActionCalloutLease resourceLease(control);
+    if (!resourceLease.entered()) { resources->snapshot(*output); return SouiLocalPending; }
+    if (close) resources->close();
+    if (resources->closed()) resources->finishClose();
+    resources->snapshot(*output);
+    if (resources->failed()) { control->failed = true; return SouiLocalFailed; }
+    return resources->retired() ? SouiLocalOk : SouiLocalPending;
+}
+unsigned int SOUI_LOCAL_RESOURCE_CALL closeLocalResources(SouiLocalResourceEndpoint token,
+    uint64_t documentReceipt, SouiLocalResourceDrain* output) {
+    try { return localResourceDrain(token, documentReceipt, output, true); } catch (...) { return SouiLocalFailed; }
+}
+unsigned int SOUI_LOCAL_RESOURCE_CALL queryLocalResources(SouiLocalResourceEndpoint token,
+    uint64_t documentReceipt, SouiLocalResourceDrain* output) {
+    try { return localResourceDrain(token, documentReceipt, output, false); } catch (...) { return SouiLocalFailed; }
+}
+unsigned int SOUI_LOCAL_RESOURCE_CALL safeBindLocalResources(SouiLocalResourceEndpoint token,
+    uint64_t viewGeneration, uint64_t brokerDocumentGeneration,
+    const SouiLocalResourceConfig* config, SouiLocalResourceReceipt* output) {
+    try { return bindLocalResources(token, viewGeneration, brokerDocumentGeneration, config, output); }
+    catch (...) { return SouiLocalFailed; }
+}
+}
+const SouiLocalResourceApi* localResourceApi(unsigned int version) {
+    static const SouiLocalResourceApi api = { sizeof(api), SOUI_LOCAL_RESOURCE_ABI, 7,
+        safeBindLocalResources, closeLocalResources, queryLocalResources };
+    return version == SOUI_LOCAL_RESOURCE_ABI ? &api : nullptr;
+}
+
 const wkeCursorBrokerApi* cursorBrokerApi(unsigned int version)
 {
     static const wkeCursorBrokerApi api = { sizeof(api), WKE_CURSOR_BROKER_ABI_VERSION,
@@ -587,6 +744,8 @@ bool brokerMaySetHandle(wkeWebView view, HWND window)
     return control && !control->closing && window == control->window;
 }
 bool brokerOwnedFactoryPermission() { return s_mode && s_ownedCreate && ownerEngine(); }
+
+bool controlledDevToolsEngineThread() { return ownerEngine(); }
 bool brokerNoteViewCreated()
 {
     if (s_mode && !brokerOwnedFactoryPermission()) return false;
@@ -915,6 +1074,11 @@ void brokerDocumentCommitted(wkeWebView view, bool mainDocument)
 {
     auto c = findView(view);
     if (!c || !ownerEngine() || c->closing || c->failed) return;
+    if (mainDocument && c->inspectorResources) {
+        ++c->inspectorDocuments;
+        c->inspectorResources->documentCommitted();
+    }
+    stage0DocumentCommitted(view, mainDocument);
     ActionCalloutLease lease(c);
     if (!lease.entered()) return;
     std::array<BrokerActionOwner, kIdentityActionsPerEndpoint> actions = {};
@@ -970,4 +1134,548 @@ BrokerNativeScope::~BrokerNativeScope()
     catch (...) { m_control->failed = true; }
     m_control->scopes.fetch_sub(1);
 }
+// Private stage-0 ABI mirror. Keep in step with the experiment header; never
+// add these declarations to the portable public wke/SDK headers.
+enum Stage0Status { Stage0Ok, Stage0Invalid, Stage0WrongThread, Stage0Stale,
+    Stage0Busy, Stage0Closing, Stage0Failed, Stage0Limit };
+struct Stage0Input {
+    unsigned int structSize, kind, message, flags;
+    int x, y, delta, key;
+};
+struct Stage0Snapshot {
+    unsigned int structSize, abiVersion;
+    unsigned __int64 session;
+    unsigned int attached, closing, detached, failed;
+    unsigned int pauseDepth, dispatchDepth, queued, pinsHeld, pendingCallbacks;
+    unsigned __int64 pauseEntries, pauseExits, microtaskCheckpoints;
+    unsigned __int64 posted, delivered, discarded, closeRequests;
+    unsigned int resourceActive, resourceQueued, resourceClosing, resourceDispatcherAlive;
+    unsigned __int64 resourceHits, resourceDenied, resourceBytes, resourceManagerEscapes, resourceUnsupported;
+};
+struct Stage0Api {
+    unsigned int structSize, abiVersion;
+    unsigned int (WKE_CALL_TYPE* open)(wkeCursorBrokerEndpoint, const wkeCursorBrokerIdentity*,
+        wkeCursorBrokerEndpoint, const wkeCursorBrokerIdentity*, unsigned __int64*);
+    unsigned int (WKE_CALL_TYPE* snapshot)(unsigned __int64, Stage0Snapshot*);
+    unsigned int (WKE_CALL_TYPE* input)(unsigned __int64, const Stage0Input*);
+    unsigned int (WKE_CALL_TYPE* command)(unsigned __int64, unsigned int);
+    unsigned int (WKE_CALL_TYPE* requestClose)(unsigned __int64);
+    unsigned int (WKE_CALL_TYPE* detach)(unsigned __int64);
+    unsigned int (WKE_CALL_TYPE* release)(unsigned __int64);
+    unsigned int (WKE_CALL_TYPE* createFrontendResources)(wkeCursorBrokerRealm,
+        const wkeCursorBrokerEndpointConfig*, const blink::InspectorSnapshotConfig*,
+        wkeCursorBrokerEndpointReceipt*, blink::InspectorSnapshotReceipt*);
+};
+namespace {
+constexpr UINT kStage0Wake = WM_APP + 0x33A;
+constexpr size_t kStage0QueueCapacity = 256;
+constexpr size_t kStage0MessageBytes = 1024 * 1024;
+constexpr size_t kStage0QueueBytes = 8 * 1024 * 1024;
+class Stage0Session;
+std::mutex s_stage0Mutex;
+std::shared_ptr<Stage0Session> s_stage0Session;
+
+class Stage0Session final : public content::ControlledDevToolsSession,
+    public std::enable_shared_from_this<Stage0Session> {
+public:
+    enum Kind { ToAgent, ToClient, Attach, Input, Command };
+    struct Entry {
+        Kind kind;
+        int number = 0;
+        std::string message, state;
+        Stage0Input input = {};
+        size_t bytes() const { return message.size() + state.size(); }
+    };
+    Stage0Session(std::shared_ptr<CursorBrokerControl> target,
+        std::shared_ptr<CursorBrokerControl> frontend)
+        : m_target(target), m_frontend(frontend), m_targetIdentity(target->identity),
+          m_frontendIdentity(frontend->identity) {
+        do { base::RandBytes(&m_id, sizeof(m_id)); } while (!m_id);
+    }
+    ~Stage0Session() override {
+        // Explicit release owns HWND destruction and pin retirement. An
+        // unfinished session must remain in the process-lifetime registry.
+        RELEASE_ASSERT(!m_window && !m_pinsHeld);
+    }
+    bool initialize() {
+        WNDCLASSW type = {};
+        type.lpfnWndProc = windowProc;
+        type.hInstance = GetModuleHandleW(nullptr);
+        type.lpszClassName = L"SOUI.MiniBlink.Stage0.Control";
+        if (!RegisterClassW(&type) && GetLastError() != ERROR_CLASS_ALREADY_EXISTS) return false;
+        m_window = CreateWindowExW(0, type.lpszClassName, L"", 0, 0, 0, 0, 0,
+            HWND_MESSAGE, nullptr, type.hInstance, this);
+        if (!m_window) return false;
+        m_target->devToolsBorrows.fetch_add(1);
+        m_frontend->devToolsBorrows.fetch_add(1);
+        m_pinsHeld = true;
+        return true;
+    }
+    void bind() {
+        m_agent = m_target->view->webPage()->webPageImpl()->createOrGetDevToolsAgent();
+        m_client = m_frontend->view->webPage()->webPageImpl()->createOrGetDevToolsClient();
+        const auto session = shared_from_this();
+        m_agent->setControlledSession(session);
+        m_client->setControlledSession(session);
+        m_agent->setDevToolsClient(m_client);
+        m_client->setDevToolsAgent(m_agent);
+    }
+    unsigned __int64 id() const { return m_id; }
+    bool enqueueToAgent(const std::string& message) override {
+        if (message.size() > kStage0MessageBytes) { m_failed = true; requestClose(); return false; }
+        Entry entry; entry.kind = ToAgent; entry.message = message;
+        return enqueue(std::move(entry)) == Stage0Ok;
+    }
+    bool enqueueToClient(int callId, const std::string& response, const std::string& state) override {
+        if (response.size() > kStage0MessageBytes || state.size() > kStage0MessageBytes
+            || response.size() + state.size() > kStage0MessageBytes) {
+            m_failed = true; requestClose(); return false;
+        }
+        Entry entry; entry.kind = ToClient; entry.number = callId;
+        entry.message = response; entry.state = state;
+        return enqueue(std::move(entry)) == Stage0Ok;
+    }
+    bool enqueueAttach(int clientId) override {
+        Entry entry; entry.kind = Attach; entry.number = clientId;
+        return enqueue(std::move(entry)) == Stage0Ok;
+    }
+    void attached() override { m_attached = true; }
+    void detached() override { m_attached = false; }
+    void enterPause() override {
+        m_pauseDepth.fetch_add(1); m_pauseEntries.fetch_add(1);
+        if (m_closing) wake();
+    }
+    void exitPause() override {
+        if (!m_pauseDepth) { m_failed = true; return; }
+        m_pauseDepth.fetch_sub(1); m_pauseExits.fetch_add(1);
+        // Do not detach or release: WebKit and the original JS invocation
+        // still borrow both sides after returning from this callback.
+    }
+    void pausedMicrotaskCheckpoint() override { m_microtasks.fetch_add(1); }
+    bool reserveInterrupt(size_t bytes) override {
+        std::lock_guard<std::mutex> lock(m_queueMutex);
+        if (m_closing || m_detached) return false;
+        if (m_pendingInterrupts >= kStage0QueueCapacity || bytes > kStage0MessageBytes
+            || bytes > kStage0QueueBytes - m_interruptBytes) {
+            m_failed = true; m_closing = true; wake(); return false;
+        }
+        m_interruptBytes += bytes; m_pendingInterrupts.fetch_add(1); return true;
+    }
+    void interruptDisposed(size_t bytes) override {
+        std::lock_guard<std::mutex> lock(m_queueMutex);
+        RELEASE_ASSERT(m_pendingInterrupts && bytes <= m_interruptBytes);
+        m_interruptBytes -= bytes; m_pendingInterrupts.fetch_sub(1);
+    }
+    bool acceptsInterrupt() override { return !m_closing && !m_detached && current(); }
+    unsigned int input(const Stage0Input* input) {
+        if (!input || input->structSize != sizeof(*input) || input->kind < 1 || input->kind > 7)
+            return Stage0Invalid;
+        if (input->kind == 1 && input->message != WM_MOUSEMOVE && input->message != WM_LBUTTONDOWN
+            && input->message != WM_LBUTTONUP && input->message != WM_LBUTTONDBLCLK
+            && input->message != WM_RBUTTONDOWN && input->message != WM_RBUTTONUP
+            && input->message != WM_MBUTTONDOWN && input->message != WM_MBUTTONUP)
+            return Stage0Invalid;
+        if (input->kind == 6 && (input->x < 0 || input->y < 0 || input->x > 16384 || input->y > 16384))
+            return Stage0Invalid;
+        if (input->kind >= 3 && input->kind <= 5
+            && (!content::inspectorKeyboardRecordValid(input->kind, input->message, input->x, input->y, input->delta)
+                || input->key < 0 || input->key > 0xffff))
+            return Stage0Invalid;
+        Entry entry; entry.kind = Input; entry.input = *input;
+        return enqueue(std::move(entry));
+    }
+    unsigned int command(unsigned int command) {
+        if (command < 1 || command > 8) return Stage0Invalid;
+        Entry entry; entry.kind = Command; entry.number = static_cast<int>(command);
+        return enqueue(std::move(entry));
+    }
+    unsigned int requestClose() {
+        if (m_detached) return Stage0Closing;
+        m_closeRequests.fetch_add(1);
+        m_closing = true;
+        if (m_frontend->inspectorResources) m_frontend->inspectorResources->close();
+        // Dedicated coalesced close flag has no ordinary-queue capacity cost.
+        // Every pause entry posts a wake too, so a racing pause cannot hide it.
+        return wake() ? Stage0Ok : Stage0Failed;
+    }
+    void documentCommitted(wkeWebView view, bool mainDocument) {
+        if (!mainDocument) return;
+        if (view == m_target->view) requestClose();
+        // Binding must precede the trusted frontend's first resource load.
+        // Any later frontend navigation invalidates this experimental session.
+        if (view == m_frontend->view) {
+            if (m_frontendDocuments.fetch_add(1)) requestClose();
+        }
+    }
+    void snapshot(Stage0Snapshot* out) {
+        out->abiVersion = content::InspectorControlledApiVersion; out->session = m_id;
+        out->attached = m_attached ? 1U : 0U; out->closing = m_closing ? 1U : 0U;
+        out->detached = m_detached ? 1U : 0U; out->failed = m_failed ? 1U : 0U;
+        out->pauseDepth = m_pauseDepth; out->dispatchDepth = m_dispatchDepth;
+        out->pinsHeld = m_pinsHeld ? 1U : 0U;
+        out->pendingCallbacks = m_pendingInterrupts;
+        { std::lock_guard<std::mutex> lock(m_queueMutex); out->queued = static_cast<unsigned int>(m_queue.size()); }
+        out->pauseEntries = m_pauseEntries; out->pauseExits = m_pauseExits;
+        out->microtaskCheckpoints = m_microtasks;
+        out->posted = m_posted; out->delivered = m_delivered;
+        out->discarded = m_discarded; out->closeRequests = m_closeRequests;
+        const auto resources = m_frontend->inspectorResources;
+        out->resourceActive = resources->active(); out->resourceQueued = resources->queued();
+        out->resourceClosing = resources->closed(); out->resourceDispatcherAlive = resources->dispatcherAlive();
+        out->resourceHits = resources->hits; out->resourceDenied = resources->denied;
+        out->resourceBytes = resources->deliveredBytes; out->resourceManagerEscapes = resources->managerEscapes;
+        out->resourceUnsupported = resources->unsupported;
+    }
+    unsigned int detach() {
+        if (!ownerEngine()) return Stage0WrongThread;
+        if (!m_closing) return Stage0Invalid;
+        if (m_pauseDepth || m_dispatchDepth) return Stage0Busy;
+        if (m_pendingInterrupts && m_agent) m_agent->discardControlledInterrupts();
+        if (m_pendingInterrupts) return Stage0Busy;
+        const auto resources = m_frontend->inspectorResources;
+        bool finished = false;
+        {
+            ActionCalloutLease resourceLease(m_frontend);
+            if (!resourceLease.entered()) return Stage0Busy;
+            if (!blink::finishAndRetireInspectorResourceOwner(resources, finished)) return Stage0Busy;
+        }
+        if (!finished) return Stage0Busy;
+        if (m_detached) return Stage0Ok;
+        discardQueue();
+        // Root invokes this only from the outer engine dispatch after its
+        // original JS/native invocation has returned, not from a pause hook.
+        if (m_agent) m_agent->onDetach();
+        if (m_agent) { m_agent->setDevToolsClient(nullptr); m_agent->setControlledSession(nullptr); }
+        if (m_client) { m_client->setDevToolsAgent(nullptr); m_client->setControlledSession(nullptr); }
+        m_agent = nullptr; m_client = nullptr;
+        m_attached = false; m_detached = true;
+        return Stage0Ok;
+    }
+    unsigned int release() {
+        if (!ownerEngine()) return Stage0WrongThread;
+        if (!m_detached || m_pauseDepth || m_dispatchDepth || m_pendingInterrupts) return Stage0Busy;
+        discardQueue();
+        if (m_window) {
+            if (!DestroyWindow(m_window)) { m_failed = true; return Stage0Failed; }
+            m_window = nullptr;
+        }
+        if (m_pinsHeld) {
+            m_frontend->devToolsBorrows.fetch_sub(1);
+            m_target->devToolsBorrows.fetch_sub(1);
+            m_pinsHeld = false;
+        }
+        return Stage0Ok;
+    }
+private:
+    bool current() {
+        std::lock_guard<std::mutex> lock(s_mutex);
+        return !m_target->closing && !m_target->failed && !m_frontend->closing && !m_frontend->failed
+            && m_frontend->inspectorResources && !m_frontend->inspectorResources->closed()
+            && !m_target->documentPending
+            && m_target->view && m_frontend->view
+            && m_target->identity.viewGeneration == m_targetIdentity.viewGeneration
+            && m_target->identity.documentGeneration == m_targetIdentity.documentGeneration
+            && m_frontend->identity.viewGeneration == m_frontendIdentity.viewGeneration
+            && m_frontend->identity.documentGeneration == m_frontendIdentity.documentGeneration;
+    }
+    unsigned int enqueue(Entry&& entry) {
+        if (m_closing || m_detached) return Stage0Closing;
+        if (m_failed) return Stage0Failed;
+        const auto bytes = entry.bytes();
+        if (bytes > kStage0MessageBytes) { m_failed = true; return Stage0Limit; }
+        try {
+            std::lock_guard<std::mutex> lock(m_queueMutex);
+            if (m_closing || m_detached) return Stage0Closing;
+            if (m_queue.size() >= kStage0QueueCapacity || bytes > kStage0QueueBytes - m_queueBytes) {
+                m_failed = true; m_closing = true; wake();
+                return Stage0Limit;
+            }
+            m_queue.push_back(std::move(entry)); m_queueBytes += bytes; m_posted.fetch_add(1);
+        } catch (...) { m_failed = true; return Stage0Failed; }
+        return wake() ? Stage0Ok : Stage0Failed;
+    }
+    bool wake() {
+        bool expected = false;
+        if (!m_wakePending.compare_exchange_strong(expected, true)) return true;
+        if (!m_window || !PostMessageW(m_window, kStage0Wake, 0, 0)) {
+            m_wakePending = false; m_failed = true; return false;
+        }
+        return true;
+    }
+    void discardQueue() {
+        std::lock_guard<std::mutex> lock(m_queueMutex);
+        m_discarded.fetch_add(m_queue.size()); m_queue.clear(); m_queueBytes = 0;
+    }
+    static const char* commandText(int command) {
+        switch (command) {
+        case 1: return "{\"id\":2000000000,\"method\":\"Debugger.enable\"}";
+        case 2: return "{\"id\":2000000000,\"method\":\"Debugger.pause\"}";
+        case 3: return "{\"id\":2000000000,\"method\":\"Debugger.resume\"}";
+        case 4: return "{\"id\":2000000000,\"method\":\"Debugger.stepOver\"}";
+        case 5: return "{\"id\":2000000000,\"method\":\"Debugger.stepInto\"}";
+        case 6: return "{\"id\":2000000000,\"method\":\"Debugger.stepOut\"}";
+        case 7: return "{\"id\":2000000000,\"method\":\"Debugger.setPauseOnExceptions\",\"params\":{\"state\":\"all\"}}";
+        case 8: return "{\"id\":2000000000,\"method\":\"Debugger.setPauseOnExceptions\",\"params\":{\"state\":\"none\"}}";
+        default: return nullptr;
+        }
+    }
+    void dispatch(const Entry& entry) {
+        if (!m_agent || !m_client) { m_failed = true; return; }
+        switch (entry.kind) {
+        case ToAgent: m_agent->onMessageReceivedFromFronEnd(&entry.message); break;
+        case ToClient: m_client->onMessageReceivedFromEmbedder(entry.number, &entry.message, &entry.state); break;
+        case Attach: m_agent->onAttach(std::to_string(entry.number)); break;
+        case Command: {
+            const char* text = commandText(entry.number);
+            if (text) { const std::string message(text); m_agent->onMessageReceivedFromFronEnd(&message); }
+            break;
+        }
+        case Input: {
+            const auto& input = entry.input; const auto view = m_frontend->view;
+            switch (input.kind) {
+            case 1: wkeFireMouseEvent(view, input.message, input.x, input.y, input.flags); break;
+            case 2: wkeFireMouseWheelEvent(view, input.x, input.y, input.delta, input.flags); break;
+            case 3: case 4: case 5: {
+                const content::InspectorKeyboardSnapshot keyboard = {
+                    static_cast<unsigned int>(input.x), input.flags };
+                auto* page = view->webPage()->webPageImpl();
+                const LPARAM keyData = static_cast<LPARAM>(static_cast<LONG>(input.flags));
+                if (input.kind == 3)
+                    page->fireKeyDownEvent(m_frontend->window, input.message, input.key, keyData, &keyboard);
+                else if (input.kind == 4)
+                    page->fireKeyUpEvent(m_frontend->window, input.message, input.key, keyData, &keyboard);
+                else
+                    page->fireKeyPressEvent(m_frontend->window, input.message, input.key, keyData, &keyboard);
+                break;
+            }
+
+
+            case 6: wkeResize(view, input.x, input.y); break;
+            case 7: wkeSetFocus(view); break;
+            }
+            break;
+        }
+        }
+    }
+    void pump() {
+        const auto keepAlive = shared_from_this();
+        if (!ownerEngine()) { m_failed = true; return; }
+        // Nested debugger loops must be able to consume resume/step messages.
+        // The counter is a retirement guard, not a ban on this reentrancy.
+        m_dispatchDepth.fetch_add(1);
+        struct Exit { Stage0Session* session; ~Exit() { session->m_dispatchDepth.fetch_sub(1); } } exit{this};
+        if (m_closing) {
+            discardQueue();
+            if (m_pauseDepth && m_agent) {
+                const std::string resume(commandText(3));
+                m_agent->onMessageReceivedFromFronEnd(&resume);
+            }
+            return;
+        }
+        for (unsigned count = 0; count < 32; ++count) {
+            Entry entry;
+            {
+                std::lock_guard<std::mutex> lock(m_queueMutex);
+                if (m_queue.empty()) break;
+                entry = std::move(m_queue.front()); m_queue.pop_front(); m_queueBytes -= entry.bytes();
+            }
+            if (m_closing || !current()) { m_discarded.fetch_add(1); requestClose(); break; }
+            try { dispatch(entry); m_delivered.fetch_add(1); }
+            catch (...) { m_failed = true; requestClose(); break; }
+        }
+        bool pending;
+        { std::lock_guard<std::mutex> lock(m_queueMutex); pending = !m_queue.empty(); }
+        if (pending || m_closing) wake();
+    }
+    static LRESULT CALLBACK windowProc(HWND window, UINT message, WPARAM wparam, LPARAM lparam) {
+        auto* session = reinterpret_cast<Stage0Session*>(GetWindowLongPtrW(window, GWLP_USERDATA));
+        if (message == WM_NCCREATE) {
+            const auto* create = reinterpret_cast<const CREATESTRUCTW*>(lparam);
+            session = static_cast<Stage0Session*>(create->lpCreateParams);
+            SetWindowLongPtrW(window, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(session));
+        }
+        if (message == kStage0Wake && session) {
+            session->m_wakePending = false;
+            try { session->pump(); } catch (...) { session->m_failed = true; }
+            return 0;
+        }
+        if (message == WM_NCDESTROY) SetWindowLongPtrW(window, GWLP_USERDATA, 0);
+        return DefWindowProcW(window, message, wparam, lparam);
+    }
+    std::shared_ptr<CursorBrokerControl> m_target, m_frontend;
+    wkeCursorBrokerIdentity m_targetIdentity, m_frontendIdentity;
+    content::DevToolsAgent* m_agent = nullptr;
+    content::DevToolsClient* m_client = nullptr;
+    unsigned __int64 m_id = 0;
+    std::atomic<HWND> m_window{nullptr}; // UI wake may race owner-side release.
+    std::mutex m_queueMutex;
+    std::deque<Entry> m_queue;
+    size_t m_queueBytes = 0;
+    size_t m_interruptBytes = 0;
+    std::atomic<bool> m_attached{false}, m_closing{false}, m_detached{false}, m_failed{false}, m_pinsHeld{false};
+    std::atomic<bool> m_wakePending{false};
+    std::atomic<unsigned int> m_pauseDepth{0}, m_dispatchDepth{0};
+    std::atomic<unsigned int> m_frontendDocuments{0};
+    std::atomic<unsigned int> m_pendingInterrupts{0};
+    std::atomic<unsigned __int64> m_pauseEntries{0}, m_pauseExits{0}, m_microtasks{0};
+    std::atomic<unsigned __int64> m_posted{0}, m_delivered{0}, m_discarded{0}, m_closeRequests{0};
+};
+void stage0DocumentCommitted(wkeWebView view, bool mainDocument) {
+    std::shared_ptr<Stage0Session> session;
+    { std::lock_guard<std::mutex> lock(s_stage0Mutex); session = s_stage0Session; }
+    if (session) session->documentCommitted(view, mainDocument);
+}
+std::shared_ptr<Stage0Session> findStage0(unsigned __int64 id) {
+    std::lock_guard<std::mutex> lock(s_stage0Mutex);
+    return s_stage0Session && s_stage0Session->id() == id ? s_stage0Session : nullptr;
+}
+// Failure receipts remain cleanup-only owned endpoints. Never erase a token,
+// destroy a view, invoke close actions, wait, or allocate while unwinding.
+void failFrontendResources(const std::shared_ptr<CursorBrokerControl>& control,
+    const std::shared_ptr<blink::InspectorResourceState>& resources) noexcept {
+    if (control) {
+        control->failed = true;
+        // Keep the tombstone/dispatcher owner even when construction threw
+        // before the factory's normal state assignment.
+        if (!control->inspectorResources) control->inspectorResources = resources;
+    }
+    if (!resources) return;
+    resources->close(); // Atomic admission close; callbacks cannot reopen it.
+    try {
+        if (control) {
+            ActionCalloutLease resourceLease(control);
+            if (!resourceLease.entered()) return; // Already failed/closed; retain for normal drain retry.
+            bool finished = false;
+            blink::finishAndRetireInspectorResourceOwner(resources, finished);
+        } else {
+            // No registered control can count a release callout. Keep the old
+            // dispatcher-only cleanup; the final State owns its fallback.
+            resources->finishCloseOnOwner();
+        }
+    }
+    catch (...) { /* Remain closed/owned; normal broker drain can retry. */ }
+}
+struct FrontendResourceFactoryGuard {
+    std::shared_ptr<CursorBrokerControl> control;
+    std::shared_ptr<blink::InspectorResourceState> resources;
+    blink::InspectorSnapshotReceipt* receipt;
+    bool committed = false;
+    explicit FrontendResourceFactoryGuard(blink::InspectorSnapshotReceipt* value) noexcept : receipt(value) { }
+    ~FrontendResourceFactoryGuard() noexcept {
+        if (committed) return;
+        failFrontendResources(control, resources);
+        std::memset(receipt->virtualBase, 0, sizeof(receipt->virtualBase));
+    }
+};
+unsigned int WKE_CALL_TYPE stage0CreateFrontendResources(wkeCursorBrokerRealm realm,
+    const wkeCursorBrokerEndpointConfig* endpointConfig, const blink::InspectorSnapshotConfig* snapshotConfig,
+    wkeCursorBrokerEndpointReceipt* endpointReceipt, blink::InspectorSnapshotReceipt* snapshotReceipt) {
+    if (!ownerEngine()) return Stage0WrongThread;
+    if (!endpointConfig || endpointConfig->structSize != sizeof(*endpointConfig)
+        || !endpointReceipt || endpointReceipt->structSize != sizeof(*endpointReceipt)
+        || !snapshotConfig || !snapshotReceipt || snapshotReceipt->structSize != sizeof(*snapshotReceipt)) return Stage0Invalid;
+    // Even an early broker failure must not leave caller-supplied stale tokens
+    // that could be mistaken for a newly created endpoint by this factory.
+    endpointReceipt->endpoint = {}; endpointReceipt->webView = nullptr;
+    snapshotReceipt->abiVersion = 2; std::memset(snapshotReceipt->virtualBase, 0, sizeof(snapshotReceipt->virtualBase));
+    FrontendResourceFactoryGuard factory(snapshotReceipt);
+    try {
+        unsigned char random[16]; base::RandBytes(random, sizeof(random));
+        const char* hex = "0123456789abcdef"; char nonce[33] = {};
+        for (unsigned int i = 0; i < sizeof(random); ++i) {
+            nonce[2 * i] = hex[random[i] >> 4]; nonce[2 * i + 1] = hex[random[i] & 15];
+        }
+        factory.resources = blink::InspectorResourceState::create(*snapshotConfig, nonce);
+        if (!factory.resources) return Stage0Invalid;
+        // Capture the owner before registration/handoff, so exception cleanup
+        // never depends on a second registry lookup or lock succeeding.
+        const auto created = createEndpointImpl(realm, endpointConfig, endpointReceipt,
+            EndpointPresentation::CallbackOnly, &factory.control);
+        if (created != WKE_CURSOR_BROKER_OK || !factory.control || !factory.control->view) return Stage0Failed;
+        factory.control->inspectorResources = factory.resources;
+        auto* view = factory.control->view->webPage()->webViewImpl();
+        auto* page = view ? view->page() : nullptr;
+        if (!page || !blink::InspectorResourcePolicy::install(*page, factory.resources)) return Stage0Failed;
+        page->settings().setPluginsEnabled(false);
+        const auto& base = factory.resources->base();
+        if (base.size() >= sizeof(snapshotReceipt->virtualBase)) return Stage0Failed;
+        std::memcpy(snapshotReceipt->virtualBase, base.c_str(), base.size() + 1);
+        factory.committed = true;
+        return Stage0Ok;
+    } catch (...) { return Stage0Failed; }
+}
+unsigned int WKE_CALL_TYPE stage0Open(wkeCursorBrokerEndpoint target, const wkeCursorBrokerIdentity* targetIdentity,
+    wkeCursorBrokerEndpoint frontend, const wkeCursorBrokerIdentity* frontendIdentity, unsigned __int64* id) {
+    if (!ownerEngine()) return Stage0WrongThread;
+    if (!id || !targetIdentity || !frontendIdentity || !validIdentity(*targetIdentity) || !validIdentity(*frontendIdentity))
+        return Stage0Invalid;
+    *id = 0;
+    { std::lock_guard<std::mutex> lock(s_stage0Mutex); if (s_stage0Session) return Stage0Busy; }
+    const auto targetControl = findToken(target), frontendControl = findToken(frontend);
+    if (!targetControl || !frontendControl || targetControl == frontendControl) return Stage0Stale;
+    if (targetControl->inspectorResources || !frontendControl->inspectorResources
+        || frontendControl->inspectorDocuments || frontendControl->inspectorResources->closed()
+        || frontendControl->inspectorResources->started) return Stage0Invalid;
+    if (targetControl->closing || targetControl->failed || frontendControl->closing || frontendControl->failed
+        || targetControl->documentPending
+        || !targetControl->view || !frontendControl->view || !sameIdentity(targetControl->identity, *targetIdentity)
+        || !sameIdentity(frontendControl->identity, *frontendIdentity)) return Stage0Stale;
+    const auto oldAgent = targetControl->view->webPage()->webPageImpl()->m_devToolsAgent;
+    if (oldAgent && oldAgent->isDevToolsClientConnet()) return Stage0Busy;
+    try {
+        auto* frontendView = frontendControl->view->webPage()->webViewImpl();
+        auto* frontendPage = frontendView ? frontendView->page() : nullptr;
+        auto* actualPolicy = blink::InspectorResourcePolicy::from(frontendPage);
+        if (!actualPolicy || actualPolicy->state() != frontendControl->inspectorResources) {
+            failFrontendResources(frontendControl, frontendControl->inspectorResources);
+            return Stage0Failed;
+        }
+        if (!frontendControl->inspectorResources->arm()) return Stage0Invalid;
+        auto session = std::make_shared<Stage0Session>(targetControl, frontendControl);
+        if (!session->initialize()) {
+            failFrontendResources(frontendControl, frontendControl->inspectorResources);
+            return Stage0Failed;
+        }
+        { std::lock_guard<std::mutex> lock(s_stage0Mutex); s_stage0Session = session; }
+        *id = session->id(); // Once handed off, failure still owns these pins.
+        session->bind();
+        return Stage0Ok;
+    } catch (...) {
+        failFrontendResources(frontendControl, frontendControl->inspectorResources);
+        return Stage0Failed;
+    }
+}
+unsigned int WKE_CALL_TYPE stage0Snapshot(unsigned __int64 id, Stage0Snapshot* out) {
+    if (!out || out->structSize != sizeof(*out)) return Stage0Invalid;
+    auto session = findStage0(id); if (!session) return Stage0Stale;
+    session->snapshot(out); return Stage0Ok;
+}
+unsigned int WKE_CALL_TYPE stage0Input(unsigned __int64 id, const Stage0Input* input) {
+    auto session = findStage0(id); if (!session) return Stage0Stale;
+    return session->input(input);
+}
+unsigned int WKE_CALL_TYPE stage0Command(unsigned __int64 id, unsigned int command) {
+    auto session = findStage0(id); if (!session) return Stage0Stale;
+    return session->command(command);
+}
+unsigned int WKE_CALL_TYPE stage0Close(unsigned __int64 id) {
+    auto session = findStage0(id); return session ? session->requestClose() : Stage0Stale;
+}
+unsigned int WKE_CALL_TYPE stage0Detach(unsigned __int64 id) {
+    auto session = findStage0(id); return session ? session->detach() : Stage0Stale;
+}
+unsigned int WKE_CALL_TYPE stage0Release(unsigned __int64 id) {
+    auto session = findStage0(id); if (!session) return Stage0Stale;
+    const auto result = session->release();
+    if (result == Stage0Ok) { std::lock_guard<std::mutex> lock(s_stage0Mutex); s_stage0Session.reset(); }
+    return result;
+}
+} // namespace
 } // namespace wke
+
+extern "C" __declspec(dllexport) const wke::Stage0Api* WKE_CALL_TYPE wkeStage0GetDevToolsApi(unsigned int version) {
+    static const wke::Stage0Api api = { sizeof(api), content::InspectorControlledApiVersion, wke::stage0Open, wke::stage0Snapshot,
+        wke::stage0Input, wke::stage0Command, wke::stage0Close, wke::stage0Detach, wke::stage0Release,
+        wke::stage0CreateFrontendResources };
+    return version == content::InspectorControlledApiVersion ? &api : nullptr;
+}

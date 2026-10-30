@@ -1,5 +1,33 @@
 # 已知限制与生产门槛
 
+> 本地集成候选说明：固定 PR 9e4e9c1f 与 main 0cdc0a9a 合并后采用 VERSION=0.6.0（原 PR 为 0.6.0-preview.3），尚未编译、运行或发布。以下 main 的 0.6.0 发布/后续候选与 PR 的跨平台记录保留各自身份；所有成功、失败及未知状态均不自动转授此候选。本地内容不等同已发布资产，发布前版本身份仍待协调。
+
+0.6.0 按本次授权采用普通 GitHub Release 分类。两架构内核与必要 SDK 构建、安装消费者、默认应用八次运行及九份供应/应用 ZIP 已有实际记录；受控 GUI 代表例已记录，完整对应源码及最终发布身份见附件清单。`releaseReady=false`、`productionQualificationComplete=false`、`fullDevtoolsGoalComplete=false`。实际范围及保留失败见[发布说明](releases/0.6.0.md)和[RELEASE-FACTS](../verification/production-validation/0.6.0-release-2026-10-29/RELEASE-FACTS.json)，不从下列历史候选继承通过。
+
+## 0.6.0 后续源码候选
+
+PR127之后的工具遗留项已新增自有VCTIP自然idle生命周期、显式SDK失败stage保留/校验恢复，以及checked ZIP准备入口。当前两架构微型CMake自然收尾、实际子文件句柄EPERM恢复、候选canonical pack与实际PS5中文长路径短验已过；原失败与完整范围见[后续收尾](maintenance/windows-tooling-failure-closeout-20261029.md)。旧EPERM锁持有者及PS5原失败原因仍未知，完整构建负载与生产资格不据此关闭。
+
+当前工作分支已补 ZIP UTF-8 参数、MSVC 节点复用策略及 source SDK 发布失败诊断，
+并补充授权契约用例。64个工具逻辑用例及两架构各10个受控授权场景已有通过结果，
+MiniBlink x86 Release真实暂停后原生关闭代表例自然完成；首轮夹具/编译失败及GUI超时仍保留。
+这不修改已发布0.6.0包或关闭下表历史原失败。此段是PR127时点记录；后续新增自然收尾机制及剩余限制以上述收尾文档为准。
+范围和执行结果见[必要项收尾](maintenance/production-tools-devtools-closeout-20261029.md)。
+
+## 0.6.0 当前限制
+
+| 项目 | 事实与处置边界 |
+|---|---|
+| ZIP 的跨代码页文件名 | `Package.ps1` / `Package-Applications.ps1` 默认 ZIP 可将非 ASCII 名按本机 ACP 写入并依赖 Unicode Path `0x7075` 扩展；忽略该扩展的解压器可能改坏文件名。当前 Workbench 两包已用官方 7-Zip `-mcu=on` 重封并核对 local/central UTF-8 标志、完整闭集和原 payload；不是打包脚本本身已经修复 |
+| PowerShell 临时解压 | PS5 在长临时路径下曾出现空 stage 或不完整解压；MAX_PATH 只是候选原因，尚无确定根因。保留原失败，并在全新目录解压后逐文件验内容，不以退出 0 代替闭集核验 |
+| source SDK 发布目录 | 规范输出目录两次 rename 返回 EPERM；合法外部目录的公开 pack 成功，原失败仍保留。根因未定，不归因于 MAX_PATH 或 Defender，也不修改权限/覆盖守卫来取得成功 |
+| 非自然构建与操作期限 | 八个辅助 compiler Job 的失败及两次原 C64 GUI 操作超时/强清保留于 RELEASE-FACTS；产物已核、适用尾部接纳或后续新例不改写原监督结果 |
+| 生产及环境资格 | D07 真实租期、D13 千次、D14 八小时、完整性能和目标系统/IME/DPI/多屏资格继续待验，见[长测交接](testing/v0.6.0-long-run-handoff.md)。原期限、owner 身份、默认拒绝和资源 fence 不变 |
+
+## 历史记录
+
+以下日期及旧版本段落保留当时的原始状态，不代表 0.6.0 当前构建或运行范围。
+
 2026-10-26 新增[任务唤醒与有界接纳候选](maintenance/input-latency-20261026.md)，处理首次任务等待、就绪积压及资源受阻重试。最终源码尚未编译和运行，由 PR 验证人员接手；16 ms 兜底 timer、CPU draw interval、单回调超预算和真实输入尾延迟仍需分别评估，不能宣称已达到极致流畅度。固定二进制及生产门槛不变。
 
 2026-10-23 新增 [ACK 反馈修复候选](maintenance/scroll-ack-feedback-20261023.md)：普通合成滚动的整数回传可能误增 epoch，撤销已接纳目标。候选明确区分 ACK 与外部意图，保留真实边界；默认 fractional=false 的源码静态复核及隔离原生回归已完成：当前两架构各 25+2+19+13 项通过，旧对照各 3/10 并退出 1。完整 x86 内核已构建并获独立 build-only 验收；GUI21 的 800 请求位移误差小于 1e-6，GUI22 同值 CSS 赋值后新 epoch 保持停止。结论限定默认整数元素滚动样本，整体流畅度、完整 x64 内核与发布资格另验。[ADR 0120](adr/0120-preserve-compositor-scroll-acknowledgements.md)保持 proposed，不修改下列历史结果或固定二进制。
@@ -88,6 +116,8 @@ preview.11 Win7 SP1 x86 [第三轮客体](../verification/production-validation/
 [V10 只读时序诊断](../verification/production-validation/win7-sp1-x86-v02-window-visibility-v10-2026-09-29/README.md)在同一官方 x86 构建及 Win7 SP1 x86 快照中，10–40 秒的七次窗口探针未检出窗口，客体单调计时 46.933 秒首次检出，之后至 105 秒保持可见。该轮应用和客体均原生退出 0，但关闭由夹具请求，未执行缩放、滚动、真实中文 IME 或公共任务并行；V9 的真实失败和 Issue 42 均保持开放。尚不能判断可见性波动原因或放行 Win7 工作区定位。
 
 ## 跨平台开发状态
+
+以下保留固定 PR 9e4e9c1f（0.6.0-preview.3）的限定记录；本地集成候选的跨平台编译和运行尚未执行。
 
 `Soui::Runtime` 提供无窗口跨平台构建路径；另有独立 `Soui::Desktop` 系统 WebView
 后端和统一示例。截至 2026-10-26，Linux x64 已有真实头库编译链接、独立安装消费

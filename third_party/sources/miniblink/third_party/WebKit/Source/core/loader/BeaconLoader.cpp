@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 #include "config.h"
+#include "platform/network/LocalResourceAdmission.h"
 #include "core/loader/BeaconLoader.h"
 
 #include "core/dom/DOMArrayBufferView.h"
@@ -15,6 +16,7 @@
 #include "core/frame/LocalFrame.h"
 #include "core/html/DOMFormData.h"
 #include "core/inspector/ConsoleMessage.h"
+#include "core/loader/InspectorResourcePolicy.h"
 #include "core/loader/MixedContentChecker.h"
 #include "platform/exported/WrappedResourceRequest.h"
 #include "platform/exported/WrappedResourceResponse.h"
@@ -75,6 +77,11 @@ public:
     {
         if (!frame->document())
             return false;
+
+        if (InspectorResourcePolicy::isControlled(frame->document()))
+            return false;
+
+        if (isLocalResourceNamespace(beaconURL)) return false;
 
         unsigned long long entitySize = beacon.size();
         if (allowance > 0 && static_cast<unsigned long long>(allowance) < entitySize)

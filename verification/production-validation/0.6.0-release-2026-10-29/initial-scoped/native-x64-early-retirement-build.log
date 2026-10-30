@@ -1,0 +1,27 @@
+CMake is re-running because C:/sr06/out/release-build/x64/tests/native/CMakeFiles/generate.stamp is out-of-date.
+  the file 'C:/sr06/tests/native/CMakeLists.txt'
+  is newer than 'C:/sr06/out/release-build/x64/tests/native/CMakeFiles/generate.stamp.depend'
+  result='-1'
+-- Selecting Windows SDK version 10.0.19041.0 to target Windows 10.0.26200.
+-- Private vendor source regressions NOT registered (SOUI_BUILD_VENDOR_TESTS=OFF); vendor regression gate not evaluated
+-- Configuring done (0.1s)
+-- Generating done (0.8s)
+-- Build files have been written to: C:/sr06/out/release-build/x64
+适用于 .NET Framework MSBuild 版本 17.14.40+3e7442088
+
+  Checking File Globs
+  miniblink_session.cpp
+  engine_thread.cpp
+  soui_miniblink_host.cpp
+C:\sr06\sdk\src\host\soui_miniblink_host.cpp(1730,82): warning C4100: 'config': 未引用的参数 [C:\sr06\out\release-build\x64\sdk\soui_sdk.vcxproj]
+  正在生成代码...
+  soui_sdk.vcxproj -> C:\sr06\out\release-build\x64\sdk\Release\soui_sdk.lib
+适用于 .NET Framework MSBuild 版本 17.14.40+3e7442088
+
+  Checking File Globs
+  soui_sdk.vcxproj -> C:\sr06\out\release-build\x64\sdk\Release\soui_sdk.lib
+  soui_miniblink_host.cpp
+C:\sr06\sdk\src\host\soui_miniblink_host.cpp(1730,82): warning C4100: 'config': 未引用的参数 [C:\sr06\out\release-build\x64\tests\native\soui_miniblink_unmount_tests.vcxproj]
+  miniblink_unmount_tests.cpp
+  正在生成代码...
+  soui_miniblink_unmount_tests.vcxproj -> C:\sr06\out\release-build\x64\tests\native\Release\soui_miniblink_unmount_tests.exe

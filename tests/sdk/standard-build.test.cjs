@@ -9,6 +9,8 @@ const {fixture} = require('../benchmark/tail-evidence-fixtures.cjs');
 const caller = require('../../tools/internal/standard-build.cjs');
 const encode = value => Buffer.from(JSON.stringify(value, null, 2) + '\n');
 const sha = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
+// A fresh checkout has no ignored output directory for the filesystem fixtures.
+fs.mkdirSync(path.resolve(__dirname,'../../out'),{recursive:true});
 
 const llvmArguments=['--native-toolchain','LLVM22MSVC142','--llvm-root','F:\\llvm','--msvc-root','F:\\msvc',
   '--windows-sdk-root','F:\\winsdk','--ninja-exe','F:\\ninja.exe','--windows-cmd-exe','C:\\Windows\\System32\\cmd.exe',

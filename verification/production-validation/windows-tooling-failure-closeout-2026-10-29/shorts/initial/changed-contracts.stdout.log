@@ -1,0 +1,510 @@
+TAP version 13
+# Subtest: verified staging publishes a complete exact file set and records actual native results
+ok 1 - verified staging publishes a complete exact file set and records actual native results
+  ---
+  duration_ms: 51.5814
+  type: 'test'
+  ...
+# Subtest: exit zero cannot publish empty extraction
+ok 2 - exit zero cannot publish empty extraction
+  ---
+  duration_ms: 24.6363
+  type: 'test'
+  ...
+# Subtest: exit zero cannot publish partial extraction
+ok 3 - exit zero cannot publish partial extraction
+  ---
+  duration_ms: 28.4049
+  type: 'test'
+  ...
+# Subtest: exit zero cannot publish extra extraction
+ok 4 - exit zero cannot publish extra extraction
+  ---
+  duration_ms: 31.0792
+  type: 'test'
+  ...
+# Subtest: exit zero cannot publish changed extraction
+ok 5 - exit zero cannot publish changed extraction
+  ---
+  duration_ms: 38.0298
+  type: 'test'
+  ...
+# Subtest: native failure 1 preserves streams and removes only its own partial stage
+ok 6 - native failure 1 preserves streams and removes only its own partial stage
+  ---
+  duration_ms: 19.3593
+  type: 'test'
+  ...
+# Subtest: native failure 2 preserves streams and removes only its own partial stage
+ok 7 - native failure 2 preserves streams and removes only its own partial stage
+  ---
+  duration_ms: 18.3593
+  type: 'test'
+  ...
+# Subtest: native failure null preserves streams and removes only its own partial stage
+ok 8 - native failure null preserves streams and removes only its own partial stage
+  ---
+  duration_ms: 21.7628
+  type: 'test'
+  ...
+# Subtest: preflight refuses unsafe archive member "../escape.txt"
+ok 9 - preflight refuses unsafe archive member "../escape.txt"
+  ---
+  duration_ms: 16.216
+  type: 'test'
+  ...
+# Subtest: preflight refuses unsafe archive member "/absolute.txt"
+ok 10 - preflight refuses unsafe archive member "/absolute.txt"
+  ---
+  duration_ms: 15.9316
+  type: 'test'
+  ...
+# Subtest: preflight refuses unsafe archive member "C:/absolute.txt"
+ok 11 - preflight refuses unsafe archive member "C:/absolute.txt"
+  ---
+  duration_ms: 13.1832
+  type: 'test'
+  ...
+# Subtest: preflight refuses unsafe archive member "data\\\\escape.txt"
+ok 12 - preflight refuses unsafe archive member "data\\\\escape.txt"
+  ---
+  duration_ms: 9.5494
+  type: 'test'
+  ...
+# Subtest: preflight refuses unsafe archive member "data/stream:ads"
+ok 13 - preflight refuses unsafe archive member "data/stream:ads"
+  ---
+  duration_ms: 13.4764
+  type: 'test'
+  ...
+# Subtest: preflight refuses unsafe archive member "data/NUL.txt"
+ok 14 - preflight refuses unsafe archive member "data/NUL.txt"
+  ---
+  duration_ms: 10.1713
+  type: 'test'
+  ...
+# Subtest: preflight refuses unsafe archive member "data/trailing."
+ok 15 - preflight refuses unsafe archive member "data/trailing."
+  ---
+  duration_ms: 17.7388
+  type: 'test'
+  ...
+# Subtest: preflight refuses unsafe archive member "data/a\\nb.txt"
+ok 16 - preflight refuses unsafe archive member "data/a\\nb.txt"
+  ---
+  duration_ms: 16.8293
+  type: 'test'
+  ...
+# Subtest: preflight refuses unsafe archive member "data//empty.txt"
+ok 17 - preflight refuses unsafe archive member "data//empty.txt"
+  ---
+  duration_ms: 16.8017
+  type: 'test'
+  ...
+# Subtest: preflight rejects case-collision before extraction starts
+ok 18 - preflight rejects case-collision before extraction starts
+  ---
+  duration_ms: 16.8407
+  type: 'test'
+  ...
+# Subtest: preflight rejects symbolic-link before extraction starts
+ok 19 - preflight rejects symbolic-link before extraction starts
+  ---
+  duration_ms: 14.8504
+  type: 'test'
+  ...
+# Subtest: preflight rejects reparse before extraction starts
+ok 20 - preflight rejects reparse before extraction starts
+  ---
+  duration_ms: 13.0644
+  type: 'test'
+  ...
+# Subtest: preflight rejects directory-conflict before extraction starts
+ok 21 - preflight rejects directory-conflict before extraction starts
+  ---
+  duration_ms: 14.9471
+  type: 'test'
+  ...
+# Subtest: preflight rejects size-mismatch before extraction starts
+ok 22 - preflight rejects size-mismatch before extraction starts
+  ---
+  duration_ms: 14.8056
+  type: 'test'
+  ...
+# Subtest: preflight rejects unlisted-directory before extraction starts
+ok 23 - preflight rejects unlisted-directory before extraction starts
+  ---
+  duration_ms: 15.6924
+  type: 'test'
+  ...
+# Subtest: an archive identity change during metadata read blocks every extraction command
+ok 24 - an archive identity change during metadata read blocks every extraction command
+  ---
+  duration_ms: 17.4798
+  type: 'test'
+  ...
+# Subtest: archive drift during extraction refuses publication after native success
+ok 25 - archive drift during extraction refuses publication after native success
+  ---
+  duration_ms: 25.4024
+  type: 'test'
+  ...
+# Subtest: archive tool runtime changes cannot authorize publication
+ok 26 - archive tool runtime changes cannot authorize publication
+  ---
+  duration_ms: 41.8293
+  type: 'test'
+  ...
+# Subtest: one aggregate deadline shrinks across native steps and never resets
+ok 27 - one aggregate deadline shrinks across native steps and never resets
+  ---
+  duration_ms: 54.566
+  type: 'test'
+  ...
+# Subtest: an exhausted deadline stops before starting another native step
+ok 28 - an exhausted deadline stops before starting another native step
+  ---
+  duration_ms: 37.5868
+  type: 'test'
+  ...
+# Subtest: streamed archive hashing stops at the same deadline between tiny chunks and closes its descriptor
+ok 29 - streamed archive hashing stops at the same deadline between tiny chunks and closes its descriptor
+  ---
+  duration_ms: 6.2673
+  type: 'test'
+  ...
+# Subtest: a file changed between tiny hash chunks cannot produce a stable pin
+ok 30 - a file changed between tiny hash chunks cannot produce a stable pin
+  ---
+  duration_ms: 9.4106
+  type: 'test'
+  ...
+# Subtest: ancestor traversal stops before another lstat once its deadline expires
+ok 31 - ancestor traversal stops before another lstat once its deadline expires
+  ---
+  duration_ms: 4.7698
+  type: 'test'
+  ...
+# Subtest: payload hash deadline expiry refuses publication after native success
+ok 32 - payload hash deadline expiry refuses publication after native success
+  ---
+  duration_ms: 36.9665
+  type: 'test'
+  ...
+# Subtest: optional tool identity deadline covers streamed executable and runtime hashing
+not ok 33 - optional tool identity deadline covers streamed executable and runtime hashing
+  ---
+  duration_ms: 5.8422
+  type: 'test'
+  location: 'C:\\sc07\\tests\\sdk\\archive-stage.test.cjs:185:1'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    TestContext.<anonymous> (C:\sc07\tests\sdk\archive-stage.test.cjs:192:10)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: optional tool identity failure preserves native status and streams 2
+not ok 34 - optional tool identity failure preserves native status and streams 2
+  ---
+  duration_ms: 4.815
+  type: 'test'
+  location: 'C:\\sc07\\tests\\sdk\\archive-stage.test.cjs:196:33'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    TestContext.<anonymous> (C:\sc07\tests\sdk\archive-stage.test.cjs:201:10)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: optional tool identity failure preserves native status and streams null
+not ok 35 - optional tool identity failure preserves native status and streams null
+  ---
+  duration_ms: 6.0766
+  type: 'test'
+  location: 'C:\\sc07\\tests\\sdk\\archive-stage.test.cjs:196:33'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    TestContext.<anonymous> (C:\sc07\tests\sdk\archive-stage.test.cjs:201:10)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: relative tool paths and invalid budgets fail before any native command
+ok 36 - relative tool paths and invalid budgets fail before any native command
+  ---
+  duration_ms: 3.9083
+  type: 'test'
+  ...
+# Subtest: absolute Windows path aliases cannot bypass destination name validation
+ok 37 - absolute Windows path aliases cannot bypass destination name validation
+  ---
+  duration_ms: 5.7217
+  type: 'test'
+  ...
+# Subtest: existing destinations and a publication race are never merged or overwritten
+ok 38 - existing destinations and a publication race are never merged or overwritten
+  ---
+  duration_ms: 49.4025
+  type: 'test'
+  ...
+# Subtest: cleanup denial is attached without replacing the original native error
+ok 39 - cleanup denial is attached without replacing the original native error
+  ---
+  duration_ms: 17.3977
+  type: 'test'
+  ...
+# Subtest: extracted hard links cannot be published
+ok 40 - extracted hard links cannot be published
+  ---
+  duration_ms: 29.3643
+  type: 'test'
+  ...
+# Subtest: directory links in extracted content cannot escape or delete external data
+ok 41 - directory links in extracted content cannot escape or delete external data
+  ---
+  duration_ms: 57.8254
+  type: 'test'
+  ...
+# Subtest: a linked destination ancestor is rejected before any native command
+ok 42 - a linked destination ancestor is rejected before any native command
+  ---
+  duration_ms: 14.3292
+  type: 'test'
+  ...
+# Subtest: CLI preserves a native extraction failure in diagnostics and returns nonzero
+not ok 43 - CLI preserves a native extraction failure in diagnostics and returns nonzero
+  ---
+  duration_ms: 9.6069
+  type: 'test'
+  location: 'C:\\sc07\\tests\\sdk\\archive-stage.test.cjs:265:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (C:\sc07\tests\sdk\archive-stage.test.cjs:278:10)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: PS5 metadata plus actual 7z preserves Chinese names and paths beyond 260 characters
+not ok 44 - PS5 metadata plus actual 7z preserves Chinese names and paths beyond 260 characters
+  ---
+  duration_ms: 15.0967
+  type: 'test'
+  location: 'C:\\sc07\\tests\\sdk\\archive-stage.test.cjs:306:1'
+  failureType: 'testCodeFailure'
+  error: 'No number after minus sign in JSON at position 1 (line 1 column 2)'
+  code: 'ERR_TEST_FAILURE'
+  name: 'SyntaxError'
+  stack: |-
+    JSON.parse (<anonymous>)
+    C:\sc07\tools\internal\archive-stage.cjs:158:86
+    Object.io (C:\sc07\tools\internal\deadline-file-pin.cjs:14:67)
+    Object.extract (C:\sc07\tools\internal\archive-stage.cjs:158:62)
+    TestContext.<anonymous> (C:\sc07\tests\sdk\archive-stage.test.cjs:311:32)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+  ...
+# Subtest: actual ZIP metadata refuses ../outside.txt before any native extraction
+ok 45 - actual ZIP metadata refuses ../outside.txt before any native extraction
+  ---
+  duration_ms: 14.7677
+  type: 'test'
+  ...
+# Subtest: actual ZIP metadata refuses link before any native extraction
+ok 46 - actual ZIP metadata refuses link before any native extraction
+  ---
+  duration_ms: 17.9563
+  type: 'test'
+  ...
+# Subtest: actual PowerShell build policy covers configuration and restores absent or existing caller values on failure
+ok 47 - actual PowerShell build policy covers configuration and restores absent or existing caller values on failure
+  ---
+  duration_ms: 1413.6331
+  type: 'test'
+  ...
+# Subtest: MSVC lifecycle preserves native errors, rejects foreign services, and requires bounded natural retirement
+not ok 48 - MSVC lifecycle preserves native errors, rejects foreign services, and requires bounded natural retirement
+  ---
+  duration_ms: 1576.8096
+  type: 'test'
+  location: 'C:\\sc07\\tests\\sdk\\msvc-compiler-lifecycle.test.cjs:11:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    
+    Failure was accepted: normal
+    ����λ�� C:\Users\11034\AppData\Local\Temp\soui-msvc-lifecycle-xjET1I\lifecycle.ps1:8 �ַ�: 61
+    + ... n Need([bool]$Value,[string]$Message){if(-not$Value){throw $Message}}
+    +                                                          ~~~~~~~~~~~~~~
+        + CategoryInfo          : OperationStopped: (Failure was accepted: normal:String) [], RuntimeException
+        + FullyQualifiedErrorId : Failure was accepted: normal
+     
+    
+    
+    
+    1 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 1
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (C:\sc07\tests\sdk\msvc-compiler-lifecycle.test.cjs:107:10)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.start (node:internal/test_runner/test:1015:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17)
+  ...
+# Subtest: persistent SDK publication denial preserves the native error and final path observations
+ok 49 - persistent SDK publication denial preserves the native error and final path observations
+  ---
+  duration_ms: 727.48
+  type: 'test'
+  ...
+# Subtest: SDK staging cleanup failure cannot replace the first publication error
+ok 50 - SDK staging cleanup failure cannot replace the first publication error
+  ---
+  duration_ms: 259.1929
+  type: 'test'
+  ...
+# Subtest: unreadable publication diagnostics never mask the original rename failure
+ok 51 - unreadable publication diagnostics never mask the original rename failure
+  ---
+  duration_ms: 298.5532
+  type: 'test'
+  ...
+# Subtest: SDK CLI emits structured publication failure diagnostics and still exits nonzero
+ok 52 - SDK CLI emits structured publication failure diagnostics and still exits nonzero
+  ---
+  duration_ms: 484.736
+  type: 'test'
+  ...
+# Subtest: explicit retention preserves the verified stage and original denial, then independently recovers
+ok 53 - explicit retention preserves the verified stage and original denial, then independently recovers
+  ---
+  duration_ms: 890.7734
+  type: 'test'
+  ...
+# Subtest: recovery rejects changed manifests, changed bytes, extra files and mismatched sibling targets
+ok 54 - recovery rejects changed manifests, changed bytes, extra files and mismatched sibling targets
+  ---
+  duration_ms: 1377.4113
+  type: 'test'
+  ...
+# Subtest: recovery does not overwrite a completed output and leaves its retained input intact
+ok 55 - recovery does not overwrite a completed output and leaves its retained input intact
+  ---
+  duration_ms: 308.7464
+  type: 'test'
+  ...
+# Subtest: recovery denial keeps the stage and each operation retains its own original retry budget
+ok 56 - recovery denial keeps the stage and each operation retains its own original retry budget
+  ---
+  duration_ms: 949.8986
+  type: 'test'
+  ...
+# Subtest: CLI retention is explicit and supplies the exact pin accepted by recovery
+not ok 57 - CLI retention is explicit and supplies the exact pin accepted by recovery
+  ---
+  duration_ms: 1062.2742
+  type: 'test'
+  location: 'C:\\sc07\\tests\\sdk\\sdk-publication-recovery.test.cjs:57:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    SDK: Expected unique --name value arguments
+    
+    
+    1 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 1
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (C:\sc07\tests\sdk\sdk-publication-recovery.test.cjs:68:9)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: real PS5 descendant handle denial remains failure, then closes and recovers with the same bytes
+not ok 58 - real PS5 descendant handle denial remains failure, then closes and recovers with the same bytes
+  ---
+  duration_ms: 1789.2843
+  type: 'test'
+  location: 'C:\\sc07\\tests\\sdk\\sdk-publication-recovery.test.cjs:70:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    
+    
+    Recovery after the actual handle closed failed
+    ����λ�� C:\Users\11034\AppData\Local\Temp\soui-publication-recovery-nATXiQ\hold-and-recover.ps1:15 �ַ�: 20
+    + ... ecovered-ne0){throw 'Recovery after the actual handle closed failed'}
+    +                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        + CategoryInfo          : OperationStopped: (Recovery after ...e closed failed:String) [], RuntimeException
+        + FullyQualifiedErrorId : Recovery after the actual handle closed failed
+     
+    
+    
+    1 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 1
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (C:\sc07\tests\sdk\sdk-publication-recovery.test.cjs:94:9)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+1..58
+# tests 58
+# suites 0
+# pass 50
+# fail 8
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 12830.3691

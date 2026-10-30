@@ -18,6 +18,14 @@ const managedRoots = ['sdk', 'cmake', 'third_party/include', 'third_party/prebui
   'third_party/sources/zlib', 'third_party/licenses', 'third_party/manifests', 'tools/sdk', 'tools/internal'];
 const managedFiles = ['LICENSE.md', 'THIRD_PARTY_NOTICES.md', 'tools/Build.ps1', 'tools/Test-Modern.ps1', 'tools/Test-Auto.ps1',
   'tools/Soui.ps1', 'tools/Doctor.ps1', 'docs/developer-workflow.md',
+  'docs/devtools.md', 'docs/licenses/v0.6.0-redistribution.md', 'docs/testing/v0.6.0-long-run-handoff.md',
+  'docs/adr/0123-public-devtools-candidate.md',
+  'docs/adr/0128-controlled-cpu-presentation.md',
+  'docs/adr/0130-bounded-legacy-source-maps.md',
+  'docs/adr/0131-native-view-lifetime-observation.md',
+  'docs/adr/0134-controlled-inspector-keyboard-snapshot.md',
+  'docs/adr/0135-owned-local-resource-origin.md',
+  'docs/adr/0137-bounded-windows-tool-preparation.md',
   'benchmarks/protocol/host64-build-debug-observer.cpp',
   'benchmarks/protocol/host64-build-debug-observer/CMakeLists.txt'];
 const hash = data => crypto.createHash('sha256').update(data).digest('hex');
@@ -125,18 +133,47 @@ function readLock(directory) {
   return readInstalledLock(directory);
 }
 
+function failureDetails(error) {
+  return {message: error.message, code: error.code ?? null, errno: error.errno ?? null,
+    syscall: error.syscall ?? null};
+}
+
+function publicationPathState(file) {
+  try {
+    const state = fs.lstatSync(file);
+    return {kind: state.isSymbolicLink() ? 'link' : state.isDirectory() ? 'directory' :
+      state.isFile() ? 'file' : 'other'};
+  } catch (error) {
+    return error.code === 'ENOENT' ? {kind: 'missing'} : {kind: 'unreadable', error: failureDetails(error)};
+  }
+}
+
 function publishStagedDirectory(stage, output) {
   const delay = new Int32Array(new SharedArrayBuffer(4));
+  const attempts = [];
+  let totalRetryDelayMs = 0;
   for (let attempt = 0; ; ++attempt) {
     try {
       fs.renameSync(stage, output);
       return;
     } catch (error) {
+      attempts.push({attempt: attempt + 1, ...failureDetails(error)});
       // Windows can briefly deny a directory rename after the staged files
       // have been read. Retry only that transient publication boundary.
       if (process.platform !== 'win32' || !['EPERM', 'EACCES'].includes(error.code) ||
-          attempt >= 5 || !fs.existsSync(stage) || fs.existsSync(output)) throw error;
-      Atomics.wait(delay, 0, 0, 30 * (attempt + 1));
+          attempt >= 5 || !fs.existsSync(stage) || fs.existsSync(output)) {
+        // Observe before cleanup, without attributing EPERM to a particular
+        // lock owner or changing the original native error or retry policy.
+        try {
+          error.publication = {schema: 'soui.sdk-publication-failure/v1', stage, output,
+            attempts, totalRetryDelayMs, stageState: publicationPathState(stage),
+            outputState: publicationPathState(output), lockOwnerKnown: false};
+        } catch (_) { /* Diagnostics must never hide the original failure. */ }
+        throw error;
+      }
+      const retryDelayMs = 30 * (attempt + 1);
+      Atomics.wait(delay, 0, 0, retryDelayMs);
+      totalRetryDelayMs += retryDelayMs;
     }
   }
 }
@@ -163,6 +200,10 @@ function pack(source, output, version, options = {}) {
       return {path: relative, bytes: data.length, sha256: hash(data), sourceNormalization};
     })});
   const stage = `${output}.staging-${crypto.randomUUID()}`;
+  if (options.retainFailedPublication !== undefined && typeof options.retainFailedPublication !== 'boolean') {
+    throw new Error('retainFailedPublication must be boolean');
+  }
+  let failure, retainedStage = false;
   try {
     for (const file of manifest.files) {
       const target = safePath(stage, `payload/${file.path}`);
@@ -172,10 +213,65 @@ function pack(source, output, version, options = {}) {
     fs.writeFileSync(safePath(stage, 'sdk-manifest.json'), encoded(manifest), {flag: 'wx'});
     readPackage(stage);
     publishStagedDirectory(stage, output);
+  } catch (error) {
+    failure = error;
+    // Opt-in investigation/recovery keeps only a fully verified package whose
+    // publication was denied. Other errors retain the existing cleanup path.
+    // The original failed call still throws and never becomes a successful pack.
+    if (options.retainFailedPublication && error.publication && ['EPERM', 'EACCES'].includes(error.code)) {
+      try {
+        const bytes = fs.readFileSync(safePath(stage, 'sdk-manifest.json'));
+        error.publication.recovery = {command: 'recover-publication', stage, output,
+          manifestSha256: hash(bytes), stageRetained: true};
+        retainedStage = true;
+      } catch (_) { /* A failed observation must not replace the native error. */ }
+    }
+    throw error;
   } finally {
-    if (fs.existsSync(stage)) fs.rmSync(stage, {recursive: true});
+    try {
+      if (!retainedStage && fs.existsSync(stage)) fs.rmSync(stage, {recursive: true});
+    } catch (cleanupError) {
+      if (!failure) throw cleanupError;
+      // Preserve the first error and any stage contents left by failed cleanup.
+      try { failure.cleanupFailure = {stage, ...failureDetails(cleanupError)}; } catch (_) {}
+    }
   }
   return {status: 'packed', version, files: files.length, output, releaseReady: false};
+}
+
+// This is a new explicit operation after contention is removed, not an
+// extension of the failed call's six attempts / 450ms retry budget.
+function recoverPublication(stage, output, manifestSha256) {
+  stage = safePath(stage); output = safePath(output);
+  if (typeof manifestSha256 !== 'string' || !/^[a-f0-9]{64}$/.test(manifestSha256)) {
+    throw new Error('Expected retained manifest SHA256');
+  }
+  const prefix = path.basename(output) + '.staging-';
+  const suffix = path.basename(stage).slice(prefix.length);
+  if (comparable(path.dirname(stage)) !== comparable(path.dirname(output)) ||
+      comparable(path.basename(stage).slice(0, prefix.length)) !== comparable(prefix) ||
+      !/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i.test(suffix)) {
+    throw new Error('Recovery requires the original sibling staging directory');
+  }
+  if (fs.existsSync(output)) throw new Error('Publication output already exists');
+  const manifestFile = safePath(stage, 'sdk-manifest.json'), info = fs.lstatSync(manifestFile);
+  if (!info.isFile() || info.nlink !== 1 || info.size > 16 * 1024 * 1024) throw new Error('Invalid retained SDK manifest');
+  const raw = fs.readFileSync(manifestFile);
+  if (hash(raw) !== manifestSha256) throw new Error('Retained SDK manifest identity changed');
+  const manifest = readPackage(stage);
+  const expected = ['sdk-manifest.json', ...manifest.files.map(file => 'payload/' + file.path)].sort();
+  if (JSON.stringify(identity.walk(stage).sort()) !== JSON.stringify(expected)) {
+    throw new Error('Retained SDK file set differs from manifest');
+  }
+  if (!fs.readFileSync(manifestFile).equals(raw)) throw new Error('Retained SDK manifest identity changed');
+  try { publishStagedDirectory(stage, output); }
+  catch (error) {
+    if (error.publication) error.publication.recovery = {command: 'recover-publication', stage, output,
+      manifestSha256, stageRetained: true};
+    throw error;
+  }
+  return {status: 'publication-recovered', version: manifest.version, files: manifest.files.length,
+    output, manifestSha256, releaseReady: false};
 }
 
 function requireProfile(manifest, profile = 'compatibility') {
@@ -237,23 +333,26 @@ function main(argv) {
   const [command, ...rest] = argv;
   const options = {};
   for (let i = 0; i < rest.length; ++i) {
-    if (rest[i] === '--with-gui-bindings') {
-      if (command !== 'pack' || options[rest[i]]) throw new Error('GUI bindings flag is unique and only valid for pack');
+    if (['--with-gui-bindings', '--retain-failed-publication'].includes(rest[i])) {
+      if (command !== 'pack' || options[rest[i]]) throw new Error('Pack flags are unique and only valid for pack');
       options[rest[i]] = true; continue;
     }
-    if (!/^--[a-z-]+$/.test(rest[i]) || !rest[i + 1] || rest[i + 1].startsWith('--') || options[rest[i]]) {
+    if (!/^--[a-z][a-z0-9-]*$/.test(rest[i]) || !rest[i + 1] || rest[i + 1].startsWith('--') || options[rest[i]]) {
       throw new Error('Expected unique --name value arguments');
     }
     options[rest[i]] = rest[++i];
   }
   const surfaces = {pack: ['--source', '--output', '--version'], verify: ['--package'],
+    'recover-publication': ['--stage', '--output', '--manifest-sha256'],
     install: ['--package', '--project'], recover: ['--project'], 'verify-project': ['--project'],
     'verify-source': ['--package', '--source'], 'verify-profile': ['--package', '--profile']};
   const keys = surfaces[command];
-  if (!keys || keys.some(key => !options[key]) || Object.keys(options).some(key => !keys.includes(key) && !(command === 'pack' && key === '--with-gui-bindings'))) {
-    throw new Error('Commands: pack --source DIR --output DIR --version X.Y.Z[-preview.N|-rc.N] [--with-gui-bindings] | verify --package DIR | install --package DIR --project DIR | recover --project DIR | verify-project --project DIR | verify-source --package DIR --source DIR | verify-profile --package DIR --profile compatibility|modern|auto');
+  if (!keys || keys.some(key => !options[key]) || Object.keys(options).some(key => !keys.includes(key) && !(command === 'pack' && ['--with-gui-bindings', '--retain-failed-publication'].includes(key)))) {
+    throw new Error('Commands: pack --source DIR --output DIR --version X.Y.Z[-preview.N|-rc.N] [--with-gui-bindings] [--retain-failed-publication] | recover-publication --stage DIR --output DIR --manifest-sha256 SHA256 | verify --package DIR | install --package DIR --project DIR | recover --project DIR | verify-project --project DIR | verify-source --package DIR --source DIR | verify-profile --package DIR --profile compatibility|modern|auto');
   }
-  if (command === 'pack') return pack(options['--source'], options['--output'], options['--version'], {withGuiBindings: options['--with-gui-bindings'] === true});
+  if (command === 'pack') return pack(options['--source'], options['--output'], options['--version'], {
+    withGuiBindings: options['--with-gui-bindings'] === true, retainFailedPublication: options['--retain-failed-publication'] === true});
+  if (command === 'recover-publication') return recoverPublication(options['--stage'], options['--output'], options['--manifest-sha256']);
   if (command === 'install') return install(options['--package'], options['--project']);
   if (command === 'verify-profile') {
     requireProfile(readPackage(options['--package']), options['--profile']);
@@ -274,8 +373,15 @@ function main(argv) {
   return {status: 'verified', version: manifest.version, files: manifest.files.length, releaseReady: false};
 }
 
-module.exports = {pack, install, recover: transaction.recover, readPackage, readLock, managedRoots, managedFiles, requireProfile};
+module.exports = {pack, recoverPublication, install, recover: transaction.recover, readPackage, readLock, managedRoots, managedFiles, requireProfile};
 if (require.main === module) {
   try { process.stdout.write(encoded(main(process.argv.slice(2)))); }
-  catch (error) { process.stderr.write(`SDK: ${error.message}\n`); process.exitCode = 1; }
+  catch (error) {
+    process.stderr.write(`SDK: ${error.message}\n`);
+    if (error.publication || error.cleanupFailure) {
+      process.stderr.write(`SDK diagnostics: ${JSON.stringify({publication: error.publication,
+        cleanupFailure: error.cleanupFailure})}\n`);
+    }
+    process.exitCode = 1;
+  }
 }

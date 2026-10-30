@@ -2,10 +2,10 @@
   "$schema": "http://cyclonedx.org/schema/bom-1.5.schema.json",
   "bomFormat": "CycloneDX",
   "specVersion": "1.5",
-  "serialNumber": "urn:uuid:1ea0a674-a871-476b-84c8-949e68786ae7",
+  "serialNumber": "urn:uuid:dde1fd77-eb8a-4655-987e-eaad85943d1e",
   "version": 1,
   "metadata": {
-    "timestamp": "2026-10-15T17:24:14.254Z",
+    "timestamp": "2026-10-28T15:13:29.417Z",
     "lifecycles": [
       {
         "phase": "pre-build"
@@ -6999,12 +6999,12 @@
       ]
     },
     {
-      "bom-ref": "vite@6.4.4",
+      "bom-ref": "vite@6.4.5",
       "type": "library",
       "name": "vite",
-      "version": "6.4.4",
+      "version": "6.4.5",
       "scope": "optional",
-      "purl": "pkg:npm/vite@6.4.4",
+      "purl": "pkg:npm/vite@6.4.5",
       "properties": [
         {
           "name": "cdx:npm:package:development",
@@ -7014,13 +7014,13 @@
       "externalReferences": [
         {
           "type": "distribution",
-          "url": "https://registry.npmjs.org/vite/-/vite-6.4.4.tgz"
+          "url": "https://registry.npmjs.org/vite/-/vite-6.4.5.tgz"
         }
       ],
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "c468d4fd2ca378dc9bd04e0ac5706f633ff50bedc95eeba3bdfda15cd3ad9e5704fb9f28e5a8ddf4ddbf9f656192226fa423f6a906ac9d4a71e4f5cd788fa9d5"
+          "content": "e1e9f08c57e2e08c2d121d30fa33f3a4b54e15088f1e69b33f17075d03b212eaf8ee8eaed23139ef70e61a98c0fbb8ab5e830b611643e596855049de4b769b3e"
         }
       ],
       "licenses": [
@@ -7071,7 +7071,7 @@
       "dependsOn": [
         "@vitejs/plugin-legacy@6.1.1",
         "typescript@5.9.3",
-        "vite@6.4.4"
+        "vite@6.4.5"
       ]
     },
     {
@@ -8097,7 +8097,7 @@
       "ref": "@vitejs/plugin-legacy@6.1.1",
       "dependsOn": [
         "terser@5.51.2",
-        "vite@6.4.4",
+        "vite@6.4.5",
         "@babel/core@7.29.7",
         "@babel/preset-env@7.29.7",
         "browserslist@4.29.0",
@@ -8482,7 +8482,7 @@
       ]
     },
     {
-      "ref": "vite@6.4.4",
+      "ref": "vite@6.4.5",
       "dependsOn": [
         "terser@5.51.2",
         "esbuild@0.25.12",

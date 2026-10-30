@@ -15,6 +15,15 @@ const read = name => fs.readFileSync(name, 'utf8');
 const packageJson = name => JSON.parse(read(path.join(name, 'sdk-manifest.json')));
 const saveManifest = (name, value) => write(path.join(name, 'sdk-manifest.json'), JSON.stringify(value, null, 2) + '\n');
 const fileHash = name => crypto.createHash('sha256').update(fs.readFileSync(name)).digest('hex');
+const requiredDevtoolsDocs = [
+  'docs/devtools.md',
+  'docs/adr/0123-public-devtools-candidate.md',
+  'docs/adr/0128-controlled-cpu-presentation.md',
+  'docs/adr/0130-bounded-legacy-source-maps.md',
+  'docs/adr/0131-native-view-lifetime-observation.md',
+  'docs/adr/0134-controlled-inspector-keyboard-snapshot.md',
+  'docs/adr/0135-owned-local-resource-origin.md',
+];
 let checks = 0;
 function check(fn) { fn(); ++checks; }
 try {
@@ -29,7 +38,12 @@ try {
   });
   check(() => {
     sdk.pack(source, first, '0.1.0-preview.1');
-    assert.equal(sdk.readPackage(first).releaseReady, false);
+    const manifest = sdk.readPackage(first);
+    assert.equal(manifest.releaseReady, false);
+    for (const relative of requiredDevtoolsDocs) {
+      assert.ok(manifest.files.some(file => file.path === relative), `Missing packaged DevTools documentation: ${relative}`);
+      assert.deepEqual(fs.readFileSync(path.join(first, 'payload', relative)), Buffer.from("SDK notice\n"));
+    }
     assert.equal(read(path.join(first, 'payload/THIRD_PARTY_NOTICES.md')), 'SDK notice\n');
     assert.equal(read(path.join(first, 'payload/third_party/licenses/fixture.txt')), 'SDK third_party/licenses\n');
     assert.equal(fs.existsSync(path.join(first, 'payload/web/apps/business.tsx')), false);
@@ -73,7 +87,12 @@ try {
   check(() => {
     write(path.join(project, 'web/apps/business.tsx'), 'business custom');
     sdk.install(first, project);
-    assert.equal(sdk.readLock(project).manifest.version, '0.1.0-preview.1');
+    const installed = sdk.readLock(project);
+    assert.equal(installed.manifest.version, '0.1.0-preview.1');
+    for (const relative of requiredDevtoolsDocs) {
+      assert.ok(installed.manifest.files.some(file => file.path === relative), `Missing installed DevTools documentation: ${relative}`);
+      assert.deepEqual(fs.readFileSync(path.join(project, relative)), Buffer.from("SDK notice\n"));
+    }
     assert.equal(read(path.join(project, 'THIRD_PARTY_NOTICES.md')), 'SDK notice\n');
     assert.equal(read(path.join(project, 'third_party/licenses/fixture.txt')), 'SDK third_party/licenses\n');
     assert.equal(read(path.join(project, 'web/apps/business.tsx')), 'business custom');

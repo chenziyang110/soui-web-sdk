@@ -43,6 +43,8 @@
 #include "third_party/WebKit/Source/wtf/OwnPtr.h"
 #include <windows.h>
 #include <memory>
+#include <atomic>
+#include "third_party/WebKit/Source/platform/network/InspectorResourceSnapshot.h"
 #include "third_party/libcurl/include/curl/curl.h"
 
 //#define MINIBLINK_NO_MULTITHREAD_NET 0
@@ -134,6 +136,10 @@ public:
 public:
     WebURLLoaderClient* m_client;
     bool m_isSynchronous;
+    bool m_isInspectorResourceRequest = false; // Immutable after owner construction; safe on IO.
+    bool m_inspectorResourceBorrowed = false;
+    std::atomic<bool> m_inspectorFailureQueued{false};
+    std::shared_ptr<blink::InspectorResourceState> m_inspectorResourceState;
 
 private:
     blink::WebURLRequest* m_firstRequest;

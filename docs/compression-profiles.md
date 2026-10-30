@@ -1,7 +1,8 @@
 # 可选压缩档位
 
-本能力属于未发布 SDK 候选，只改变应用或 Bundle 的归档封装。默认仍使用
-原 ZIP 参数和原文件名；项目配置、载荷、Web 后端、运行目录及已发布固定包
+本能力纳入 0.6.0 源码交付，只改变应用或 Bundle 的归档封装；本轮资产与测量状态见[发布说明](releases/0.6.0.md)。默认仍使用
+ZIP 格式、压缩级别、线程数和原文件名；当前源码显式增加 `-mcu=on` 写入 UTF-8
+文件名及 ZIP bit 11，避免接收方依本机代码页误读中文路径。项目配置、载荷、Web 后端、运行目录及已发布固定包
 均沿用原契约。`-Profile` 选择 compatibility/modern/auto 后端，与压缩档位分开。
 
 ## 选择档位
@@ -25,11 +26,13 @@ powershell.exe -File tools/Soui.ps1 package --kind applications --architecture x
 
 | 档位 | 格式和算法 | 参数 | 请求字典 | 固实 |
 |---|---|---|---:|---|
-| zip（默认） | ZIP | `-tzip -mx=5 -mmt=2` | 未设置，沿用工具默认 | 未设置 |
+| zip（默认） | ZIP | `-tzip -mx=5 -mmt=2 -mcu=on` | 未设置，沿用工具默认 | 未设置 |
 | 7z-balanced | 7z / LZMA2 | `-t7z -m0=LZMA2 -mx=7 -md=32m -ms=on -mmt=2` | 32 MiB | 是 |
 | 7z-small | 7z / LZMA2 | `-t7z -m0=LZMA2 -mx=9 -md=64m -ms=on -mmt=2` | 64 MiB | 是 |
 
 档位定义集中在 `tools/internal/compression-profiles.cjs`，打包入口只接受列出的档位。
+源码归档入口 `tools/Package.ps1` 同样显式写入 UTF-8 ZIP 文件名。`-scsUTF-8`
+只选择列表文件编码，不能代替归档文件名编码。已发布 0.6.0 的包和侧车身份保持原样。
 表中参数用于创建归档，统一请求两线程；解压实测使用报告所记命令及工具的
 默认解码线程策略，不把它当成业务安装器的线程限制。
 更大字典不保证更小；工具也可能依据实际输入缩小归档字典。请求字典、编码器
@@ -83,4 +86,10 @@ Job 的 `totalProcesses` 为准。该列表用于解释样本，不是完整进�
 2026-10-23 的 `preview.1` 真实 Starter、Workbench 压缩测量摘录见
 [历史压缩测量](../verification/production-validation/auto-host-pr-2026-10-23/historical-compression.md)。
 该记录绑定原冻结快照，不代表拆分后 `preview.3` 已重测，也不推算下游安装器收益。
+
+2026-10-23 的首轮探针结果见
+[探针实测证据](../verification/production-validation/compression-profiles-2026-10-23/README.md)。
+后续补充的 Starter、Workbench 双架构正式打包、完整还原与原生短启动结果见
+[真实应用验证](../verification/production-validation/compression-real-apps-2026-10-23/README.md)，
+其中单独记录真实载荷的压缩收益、解压耗时和工具内存开销。
 设计与兼容性决定见 [ADR 0126](adr/0126-optional-compression-profiles.md)。

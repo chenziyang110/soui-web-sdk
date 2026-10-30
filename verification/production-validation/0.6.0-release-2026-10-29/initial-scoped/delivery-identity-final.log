@@ -1,0 +1,120 @@
+warning: in the working copy of '.gitattributes', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'VERSION', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.gitattributes', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'VERSION', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'source-manifest.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tools/test.ps1', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'VERSION', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'a.txt', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'VERSION', LF will be replaced by CRLF the next time Git touches it
+✔ source snapshot excludes ignored cache, works with CRLF checkout and without Git (2745.4658ms)
+✔ source export preserves tracked historical output paths and excludes unrelated build caches (1627.9318ms)
+✔ compatibility view builds preserve source identity without Git (73.9855ms)
+✔ unpacked source rejects missing or equal-length modified historical binaries (39.5895ms)
+✔ unpacked source rejects undeclared files including nested caches inside frozen output trees (86.8801ms)
+✔ unpacked source rejects duplicate, escaping and malformed manifest paths (44.25ms)
+✔ unpacked source rejects linked historical output directories without changing the target (33.0093ms)
+✔ unpacked source cannot hide a linked directory under an excluded cache name (25.9815ms)
+✔ source validation rejects missing, extra, ambiguous and escaping files (1082.1133ms)
+✔ license bytes survive Git checkout and full-source export under repository attributes (1226.8224ms)
+✔ payload evidence detects equal-length page edits, new files and missing DLLs (26.7188ms)
+✔ modern payload does not require Miniblink but preserves full asset identity checks (18.7281ms)
+✔ DevTools payload includes only the verified offline package and paired kernel (212.8173ms)
+✔ DevTools payload rejects files outside the owned package (69.5534ms)
+✔ DevTools payload rejects a changed paired kernel and another renderer (128.9625ms)
+✔ deployment replaces stale Web assets and preserves app data outside resources (176.2969ms)
+✔ deployment survives a temporary Windows denial while publishing staged resources (155.7134ms)
+✔ deployment bounds persistent Windows publication denials and restores old resources (517.9034ms)
+✔ deployment immediately propagates other publication errors and restores old resources (39.8975ms)
+✔ linked resource directories are rejected before deployment changes (12.2363ms)
+✖ SDK packages are identical across source EOLs but installed bytes remain pinned (620.0895ms)
+✔ build and smoke receipts fail closed after changes, empty runs or legacy successes (737.1136ms)
+✔ application files: default rejects unknown data and explicit exact rows survive verification (93.9579ms)
+✔ application files: descriptor limits and protected namespaces cannot grant runtime authority (1.6034ms)
+✔ application files: expected descriptor must be a byte-exact subset of payload files (15.8086ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 24
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9931.9067
+
+✖ failing tests:
+
+test at tests\sdk\delivery-identity.test.cjs:411:1
+✖ SDK packages are identical across source EOLs but installed bytes remain pinned (620.0895ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+      applicationContract: 'Applications own app, web, contracts and resources. SDK builds independently using CMake and links through Soui::Sdk.',
+      channel: 'preview',
+      files: [
+        {
+  +       bytes: 6,
+  -       bytes: 5,
+          path: 'LICENSE.md',
+  +       sha256: '56665747953f6d3095c4d0010565f55e960b6e168cff524df99f6adeede91f6c',
+  -       sha256: '67948dd9afd6afe5043b0029d5aa7cf0f8b2824baf16f4f097d40d830edb686d',
+          sourceNormalization: 'none'
+        },
+        {
+          bytes: 5,
+          path: 'THIRD_PARTY_NOTICES.md',
+  
+      at TestContext.<anonymous> (C:\sr06\tests\sdk\delivery-identity.test.cjs:425:10)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: {
+      schema: 'soui.source-sdk/v1',
+      id: 'soui-desktop-sdk',
+      version: '0.3.0-preview.1',
+      channel: 'preview',
+      releaseReady: false,
+      format: 'source-with-native-dependencies',
+      applicationContract: 'Applications own app, web, contracts and resources. SDK builds independently using CMake and links through Soui::Sdk.',
+      files: [
+        [Object], [Object], [Object],
+        [Object], [Object], [Object],
+        [Object], [Object], [Object],
+        [Object], [Object], [Object],
+        [Object], [Object], [Object],
+        [Object], [Object], [Object],
+        [Object], [Object], [Object],
+        [Object], [Object], [Object],
+        [Object], [Object], [Object]
+      ]
+    },
+    expected: {
+      schema: 'soui.source-sdk/v1',
+      id: 'soui-desktop-sdk',
+      version: '0.3.0-preview.1',
+      channel: 'preview',
+      releaseReady: false,
+      format: 'source-with-native-dependencies',
+      applicationContract: 'Applications own app, web, contracts and resources. SDK builds independently using CMake and links through Soui::Sdk.',
+      files: [
+        [Object], [Object], [Object],
+        [Object], [Object], [Object],
+        [Object], [Object], [Object],
+        [Object], [Object], [Object],
+        [Object], [Object], [Object],
+        [Object], [Object], [Object],
+        [Object], [Object], [Object],
+        [Object], [Object], [Object],
+        [Object], [Object], [Object]
+      ]
+    },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

@@ -1,0 +1,18 @@
+'use strict';
+// Data-only verification and publication following official7z extraction.
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),assert=require('node:assert/strict');
+const [stage,catalogFile]=process.argv.slice(2);assert.equal(process.argv.length,4);assert.match(path.resolve(stage),/^C:\\z06-[a-f0-9]{8}$/i);
+const hash=b=>crypto.createHash('sha256').update(b).digest('hex'),raw=fs.readFileSync(catalogFile);assert.equal(hash(raw),'e52ba6a8bdcd0f5eed8e1620ba0f8a232c7907a5aa8611b295f3563990911eb8');
+const catalog=JSON.parse(raw.toString('utf8'));assert.equal(catalog.files.length,5846);const roots=['soui-release06-compat-diag','soui-release06-modern-diag'];
+for(const n of roots)assert.equal(fs.existsSync('C:/'+n),false,'no existing final project root');
+function plain(p){for(let at=path.resolve(p);;at=path.dirname(at)){assert.equal(fs.lstatSync(at).isSymbolicLink(),false);if(at.toLowerCase()===path.resolve(stage).toLowerCase())return;assert.ok(at.toLowerCase().startsWith(path.resolve(stage).toLowerCase()+path.sep));}}
+function walk(r=''){const full=path.join(stage,r);plain(full);return fs.readdirSync(full).sort().flatMap(n=>{const rel=r?r+'/'+n:n,p=path.join(stage,rel);const s=fs.lstatSync(p,{bigint:true});assert.equal(s.isSymbolicLink(),false);if(s.isDirectory())return walk(rel);assert.ok(s.isFile()&&s.nlink===1n);return [rel];});}
+assert.deepEqual(walk().sort(),catalog.files.map(r=>r.path).sort(),'complete5846 file closed set');
+for(const row of catalog.files){assert.ok(typeof row.path==='string'&&!row.path.includes('\\')&&!row.path.includes(':')&&!row.path.split('/').some(p=>!p||p==='.'||p==='..'));assert.ok(roots.includes(row.path.split('/')[0]));
+ const b=fs.readFileSync(path.join(stage,row.path));assert.equal(b.length,row.bytes);assert.equal(hash(b),row.sha256,row.path);}
+const checks=roots.map(name=>{const root=path.join(stage,name),lock=require(path.join(root,'tools/sdk/soui-sdk.cjs')).readLock(root);assert.equal(lock.manifestSha256,'af9e61db01f8af4c8f0458be0821fab169ac26349110433c1d30dfd4f22ec21d');assert.equal(lock.manifest.files.length,1496);
+ const builds=['x86','x64'].map(arch=>{const report=require(path.join(root,'tools/internal/build-evidence.cjs')).verifyAcceptedBuild(root,arch,'Release',false,{nativeToolchain:'MSVC143',webProfile:'source-diagnostic'});
+  if(name==='soui-release06-compat-diag'){const v=require(path.join(root,'tools/internal/devtools-package.cjs')).verifyDelivery(path.join(root,'out',arch,'bin/Release/SouiRelease06CompatDiag'));assert.equal(v.metadata.mode,'delivery');}
+  return {architecture:arch,buildId:report.build.buildId,sourceSha256:report.build.source.sha256};});return {name,sdkManifestSha256:lock.manifestSha256,builds};});
+const output='C:/release06-control/diag-install-'+crypto.randomUUID();fs.mkdirSync(output);fs.writeFileSync(path.join(output,'Prepublish.actual.json'),JSON.stringify({stage,catalogSha256:hash(raw),files:5846,allRawExact:true,checks},null,2)+'\n',{flag:'wx'});
+const moved=[];try{for(const name of roots){assert.equal(fs.existsSync('C:/'+name),false);fs.renameSync(path.join(stage,name),'C:/'+name);moved.push(name);}fs.writeFileSync(path.join(output,'Publication.actual.json'),JSON.stringify({moved,sourceStage:stage,oldEmptyStagePreserved:true,publicReadersPassed:true,productStarted:false,releaseReady:false},null,2)+'\n',{flag:'wx'});console.log('DIAG_DATA_INSTALLED files=5846 evidence='+output);}catch(error){fs.writeFileSync(path.join(output,'Failure.actual.json'),JSON.stringify({message:error.message,moved,allOriginalsPreserved:true},null,2)+'\n',{flag:'wx'});throw error;}

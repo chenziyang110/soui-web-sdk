@@ -1,0 +1,17 @@
+{
+  "schema": "soui.native-closeout-independent-static-review/v1",
+  "reviewer": "/root/build_tool_closeout",
+  "recordedBy": "/root/devtools_auth_pause_closeout",
+  "recordedAtUtc": "2026-10-29T02:24:19.1679415Z",
+  "source": "collaboration message from the independent build lane",
+  "path": "C:/sc07/tests/native/devtools_host_tests.cpp",
+  "sha256": "1ecbd95d5276c43a1f621ca3f6bca7b761dc86fc706a69bb1f7ec05c873b7749",
+  "blockingFindings": [],
+  "result": "no-blocking-findings-static-only",
+  "conclusion": "Two public session() and !terminal() assertions correctly verify unused expired/revoked grants leave the business session alive; unmounts==0 and successful subsequent authorize/open cover continued availability. Calls occur after synchronous owner-thread pump/revoke returns. Other new old-grant, native-generation/document and closed-Host rejection sequences remain correct.",
+  "boundaries": [
+    "Reviewer did not run tests or modify source.",
+    "Controlled-adapter scenarios do not expand real paused-browser acceptance."
+  ],
+  "releaseReady": false
+}

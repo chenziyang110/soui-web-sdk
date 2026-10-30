@@ -402,3 +402,24 @@ third_party/patches/miniblink/0023-input-ui-native-causal-hooks.patch -text -eol
 
 verification/production-validation/pr-short-merge-2026-10-28/*.json -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
 verification/production-validation/pr-short-merge-2026-10-28/raw/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+
+# Preserve the kernel bytes used by source gates and compiler provenance.
+third_party/sources/miniblink/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
+
+# Preserve the externally pinned Chromium override's inherited end spaces.
+sdk/resources/devtools/miniblink/overrides/front_end/sdk/InspectorBackend.js whitespace=-blank-at-eol
+sdk/resources/devtools/miniblink/baseline/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab conflict-marker-size=32
+sdk/resources/devtools/miniblink/baseline-manifest.json -text -eol
+
+# PLY's pinned upstream README uses a seven-equals heading underline.
+third_party/sources/miniblink/third_party/ply/README conflict-marker-size=32
+
+# Preserve current release evidence, including captured script and JSON bytes.
+verification/production-validation/0.6.0-release-2026-10-29/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab conflict-marker-size=32
+verification/production-validation/0.6.0-source2-kernel-2026-10-29/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab conflict-marker-size=32
+
+# Preserve this closeout's original report bytes and captured build input files.
+verification/production-validation/production-tools-devtools-2026-10-29/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
+
+# Preserve the Windows tooling failure and short-verification raw bytes.
+verification/production-validation/windows-tooling-failure-closeout-2026-10-29/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab

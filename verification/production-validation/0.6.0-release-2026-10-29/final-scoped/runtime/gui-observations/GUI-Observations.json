@@ -1,0 +1,108 @@
+{
+  "schemaVersion": 1,
+  "scope": "GUI observations only; raw NDJSON and process ownership audit delegated to root",
+  "vmUrl": "http://127.0.0.1:52545/",
+  "browserViewport": {
+    "width": 1440,
+    "height": 960
+  },
+  "guestResolutionUnchanged": true,
+  "leaseOwner": "codex-devtools-root",
+  "budgetsUnmodified": true,
+  "priorRootTimeoutFailuresPreserved": true,
+  "limitations": [
+    "Original TSX line12 breakpoint pause verified on compatibility:x86. Follow-up six physical F10 presses changed source-column highlighting within line12, then one toolbar Step Over visibly advanced to main.tsx:13; physical F10 alone reaching a later source line was not observed.",
+    "No release-step fixture was used.",
+    "WebView2 SDK attached, paused, visible remain unknown regardless of visible DevTools.",
+    "compatibility:x64 Console and rejection were not repeated in this handoff; prior root evidence remains separate."
+  ],
+  "observations": [
+    {
+      "case": "compatibility:x64",
+      "startedAt": "2026-10-28T19:35:14.663Z",
+      "nativeWarningDefaultNoObserved": true,
+      "explicitYes": true,
+      "inspectorVisible": true,
+      "console42": "not repeated; prior root evidence",
+      "nativeCloseSentMs": 37915,
+      "rawResult": "root to audit",
+      "screenshots": [
+        "compatibility-x64-native-warning.png",
+        "compatibility-x64-inspector-visible.png"
+      ],
+      "caseExitScreen": 0,
+      "exportExitScreen": 0,
+      "guestEvidenceDirectory": "C:/release06-control/evidence/generated-compatibility-x64-0a3e24d1-164b-4058-9fa7-41d11ebe57f6"
+    },
+    {
+      "case": "compatibility:x86",
+      "startedAt": "2026-10-28T19:36:13.628Z",
+      "nativeWarningDefaultNoObserved": true,
+      "explicitYes": true,
+      "inspectorVisible": true,
+      "console42": true,
+      "originalMainTsxOpened": true,
+      "breakpointPausedLine": 12,
+      "physicalF10Pressed": 2,
+      "f10NextLineObserved": false,
+      "nativeCloseSentMs": 92492,
+      "rawResult": "root to audit",
+      "screenshots": [
+        "compatibility-x86-native-warning.png",
+        "compatibility-x86-console42.png",
+        "compatibility-x86-tsx-breakpoint-line12.png",
+        "compatibility-x86-after-f10.png"
+      ],
+      "caseExitScreen": 0,
+      "exportExitScreen": 0,
+      "guestEvidenceDirectory": "C:/release06-control/evidence/generated-compatibility-x86-35684a37-5250-4326-a267-8a425b71d72e"
+    },
+    {
+      "case": "modern:x64",
+      "startedAt": "2026-10-28T19:38:18.219Z",
+      "nativeWarningDefaultNoObserved": true,
+      "explicitYes": true,
+      "inspectorVisible": true,
+      "console42": true,
+      "nativeCloseSentMs": 35838,
+      "sdkAttached": "unknown",
+      "sdkPaused": "unknown",
+      "sdkVisible": "unknown",
+      "guiConsoleNonblockingError": "favicon.ico net::ERR_FILE_NOT_FOUND",
+      "rawResult": "root to audit",
+      "screenshots": [
+        "modern-x64-native-warning.png",
+        "modern-x64-console42.png"
+      ],
+      "caseExitScreen": 0,
+      "exportExitScreen": 0,
+      "guestEvidenceDirectory": "C:/release06-control/evidence/generated-modern-x64-261ad56a-b67c-4ace-a565-5b84f06e26e6"
+    },
+    {
+      "case": "modern:x86",
+      "startedAt": "2026-10-28T19:39:14.427Z",
+      "nativeWarningDefaultNoObserved": true,
+      "explicitYes": true,
+      "inspectorVisible": true,
+      "console42": true,
+      "nativeCloseSentMs": 30441,
+      "sdkAttached": "unknown",
+      "sdkPaused": "unknown",
+      "sdkVisible": "unknown",
+      "guiConsoleNonblockingError": "favicon.ico net::ERR_FILE_NOT_FOUND",
+      "rawResult": "root to audit",
+      "screenshots": [
+        "modern-x86-native-warning.png",
+        "modern-x86-console42.png"
+      ],
+      "nativeEndMenuSentMs": 68659,
+      "caseExitScreen": 0,
+      "exportExitScreen": 0,
+      "closeFollowup": "After initial X, business window remained visible then became white; opened native diagnostic menu and selected End diagnostics and close current window. CASE_EXIT=0 and EXPORT_EXIT=0 subsequently observed; causal effect of menu click not independently established.",
+      "guestEvidenceDirectory": "C:/release06-control/evidence/generated-modern-x86-e0f7d1f4-9d25-4766-81de-0706b78494f5"
+    }
+  ],
+  "stepMappingFollowup": "GUI-Step-Mapping-Followup.json",
+  "finalGuestState": "No product or Inspector visible; PowerShell at C:/release06-control/diag-media prompt after all case/export exit screens showed 0.",
+  "inputStoppedAt": "2026-10-28T19:43:00.714Z"
+}

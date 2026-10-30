@@ -14,7 +14,19 @@ const packages = [
 ];
 const previousPeerRange = '>=0.4.0-0 <0.5.0 || >=0.5.0-0 <0.6.0';
 const mitPeerRange = '>=0.4.0-0 <0.5.0 || >=0.5.0-0 <0.5.1 || >=0.5.1-0 <0.6.0';
-const peerRange = mitPeerRange + ' || 0.6.0-preview.3';
+const mainPreviewPeerRange = mitPeerRange + ' || 0.6.0-preview.3';
+const peerRange = mainPreviewPeerRange + ' || 0.6.0';
+const previewPeerRanges = new Map([
+  ['0.6.0-preview.1', previousPeerRange + ' || 0.6.0-preview.1'],
+  ['0.6.0-preview.2', previousPeerRange + ' || 0.6.0-preview.2'],
+  ['0.6.0-preview.3', previousPeerRange + ' || 0.6.0-preview.3'],
+  ['0.6.0-preview.4', previousPeerRange + ' || 0.6.0-preview.4'],
+  ['0.6.0-preview.5', previousPeerRange + ' || 0.6.0-preview.5'],
+  ['0.6.0-preview.6', previousPeerRange + ' || 0.6.0-preview.6'],
+  ['0.6.0-preview.7', previousPeerRange + ' || 0.6.0-preview.7'],
+  ['0.6.0-preview.8', previousPeerRange + ' || 0.6.0-preview.8'],
+  ['0.6.0-preview.9', previousPeerRange + ' || 0.6.0-preview.9'],
+]);
 const reportName = 'out/gui-bindings/build.json';
 function regular(root, name) {
   const file = identity.safePath(root, name), stat = fs.lstatSync(file);
@@ -33,7 +45,7 @@ function metadata(root, version = versionOf(root)) {
   const acceptsPreviousPeer = /^0\.[45]\.(0|[1-9][0-9]*)$/.test(version) ||
     /^0\.[45]\.0-(preview|rc)\.(0|[1-9][0-9]*)$/.test(version);
   const acceptsMitPeer = acceptsPreviousPeer || /^0\.5\.1-(preview|rc)\.(0|[1-9][0-9]*)$/.test(version);
-  const acceptsCurrentPeer = acceptsMitPeer || version === '0.6.0-preview.3';
+  const previewPeer = previewPeerRanges.get(version);
   for (const entry of packages) {
     const meta = read(root, `${entry.root}/package.json`), lock = read(root, `${entry.root}/package-lock.json`);
     if (meta.name !== entry.name || meta.version !== version || lock.version !== version ||
@@ -42,10 +54,23 @@ function metadata(root, version = versionOf(root)) {
         meta.exports?.['.']?.import !== meta.main || meta.exports?.['.']?.types !== meta.types ||
         (meta.dependencies && Object.keys(meta.dependencies).length)) throw new Error(`GUI package identity/imports differ: ${entry.name}`);
     if (entry.framework) {
+      const nativePeer = meta.peerDependencies?.['@soui/native-sdk'];
+      const acceptsNativePeer = (previewPeer !== undefined && nativePeer === previewPeer) ||
+        (acceptsPreviousPeer && (nativePeer === previousPeerRange || nativePeer === previewPeerRanges.get('0.6.0-preview.1'))) ||
+        (acceptsMitPeer && [mitPeerRange, mainPreviewPeerRange, peerRange].includes(nativePeer)) ||
+        (version === '0.6.0-preview.3' && nativePeer === mainPreviewPeerRange) ||
+        (version === '0.6.0' && nativePeer === peerRange);
+      const lockPeers = lock.packages[''].peerDependencies;
+      // Preserve old producer spellings/lock shapes. Only the exact p9 preview
+      // contracts from .3 onward and the new stable contract require root peers.
+      const requiresLockPeers = version === '0.6.0' || (nativePeer === previewPeer &&
+        ['0.6.0-preview.3', '0.6.0-preview.4', '0.6.0-preview.5', '0.6.0-preview.6', '0.6.0-preview.7', '0.6.0-preview.8', '0.6.0-preview.9'].includes(version));
+      const matchingLockPeers = lockPeers === undefined ? !requiresLockPeers :
+        lockPeers && typeof lockPeers === 'object' && !Array.isArray(lockPeers) &&
+        Object.keys(lockPeers).sort().join(',') === ['@soui/native-sdk', entry.framework].sort().join(',') &&
+        Object.entries(lockPeers).every(([name, value]) => value === meta.peerDependencies?.[name]);
       if (Object.keys(meta.peerDependencies || {}).sort().join(',') !== ['@soui/native-sdk', entry.framework].sort().join(',') ||
-          (!(acceptsCurrentPeer && meta.peerDependencies['@soui/native-sdk'] === peerRange) &&
-            !(acceptsMitPeer && meta.peerDependencies['@soui/native-sdk'] === mitPeerRange) &&
-            !(acceptsPreviousPeer && meta.peerDependencies['@soui/native-sdk'] === previousPeerRange)) ||
+          !acceptsNativePeer || !matchingLockPeers ||
           !meta.peerDependencies[entry.framework] ||
           meta.devDependencies?.['@soui/native-sdk'] !== 'file:../../web' ||
           lock.packages?.['node_modules/@soui/native-sdk']?.version !== version) {
