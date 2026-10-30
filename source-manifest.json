@@ -53,6 +53,12 @@
       "sha256": "ac7515c38b3326c41811c7a40f54f1687dfce80bd1afb474afdc5efe74c72997"
     },
     {
+      "path": ".github/workflows/platform-build.yml",
+      "normalization": "lf",
+      "bytes": 4425,
+      "sha256": "f2299c48208ebf086ebced64fbef8e44a567823e469ce65fcb8e1793a6c3f266"
+    },
+    {
       "path": ".gitignore",
       "normalization": "lf",
       "bytes": 570,
@@ -61,8 +67,8 @@
     {
       "path": "AGENTS.md",
       "normalization": "lf",
-      "bytes": 11114,
-      "sha256": "4afdce27bec5b4dd66e3457b6a0a4f7b76a6a6a5ff33441d726890cf5e735460"
+      "bytes": 11367,
+      "sha256": "d8cba1b761121d5e5f34d40b5d29a41cc1b3b089b2458016a25c8ef6e1d7d632"
     },
     {
       "path": "CHANGELOG.md",
@@ -3311,6 +3317,12 @@
       "sha256": "1782257eeac6c5f9b2137df1ad3ad3abebd6da1ea7cb18f24ec3ec2660943f98"
     },
     {
+      "path": "docs/ci-platform-matrix.md",
+      "normalization": "lf",
+      "bytes": 11598,
+      "sha256": "c9ddcbbc0f2793e8eca2565743636cbbe45197c6d74cb6ac42829916905d0c0f"
+    },
+    {
       "path": "docs/compression-profiles.md",
       "normalization": "lf",
       "bytes": 6550,
@@ -3571,8 +3583,8 @@
     {
       "path": "docs/testing.md",
       "normalization": "lf",
-      "bytes": 33818,
-      "sha256": "3b1d7f92345e0602941836a6928de41e219f45bc7fb970cda9cc2d85103645ed"
+      "bytes": 34138,
+      "sha256": "d0dd95b1f46b653a7f4b6ad704a3194b7443146acbd52337cf9d4dd9081f4918"
     },
     {
       "path": "docs/testing/v0.6.0-long-run-handoff.md",
@@ -10101,6 +10113,24 @@
       "normalization": "lf",
       "bytes": 9750,
       "sha256": "125799b15e98a41d83f59938941c012a71945451da526a70a60fbbdebc75ea96"
+    },
+    {
+      "path": "tests/ci/installed-consumer/CMakeLists.txt",
+      "normalization": "lf",
+      "bytes": 5808,
+      "sha256": "fca4c5eeb9fd154a704a948c8930013e52a05c5c6cfded86617b0086984cd644"
+    },
+    {
+      "path": "tests/ci/installed-consumer/desktop.cpp",
+      "normalization": "lf",
+      "bytes": 429,
+      "sha256": "228ff99236c8d5b43740e76d8763d5931aa4e4510bc8ad0f0d64243da7ef2078"
+    },
+    {
+      "path": "tests/ci/installed-consumer/runtime.cpp",
+      "normalization": "lf",
+      "bytes": 2589,
+      "sha256": "24177528e7a10a66851b5ddb420904a66a83a22160e9adb3e35020539c1eaad5"
     },
     {
       "path": "tests/dependencies/skia-resource-budget/README.md",
@@ -182397,6 +182427,18 @@
       "normalization": "lf",
       "bytes": 12507,
       "sha256": "cdd51e0562b0ed9b178ba3c2e3640a528aa2ce3c1d984877b8822b95c63cb816"
+    },
+    {
+      "path": "tools/ci/platform-build.cjs",
+      "normalization": "lf",
+      "bytes": 17930,
+      "sha256": "92dd04aaf862a733dc2594a629c88589aee32ba1472b3c001d9cc84dd39eab86"
+    },
+    {
+      "path": "tools/ci/validate-platform-workflow.cjs",
+      "normalization": "lf",
+      "bytes": 9177,
+      "sha256": "22efac28d877ce050a7134af22c0b881dcc900184410970b27b05d67a997cf48"
     },
     {
       "path": "tools/contractgen/contractgen.js",

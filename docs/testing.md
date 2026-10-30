@@ -197,7 +197,7 @@ LLVM 增量构建会单独认证生成命令中的工具路径（含 Windows 8.3
 `cmake --build --preset portable`、`ctest --preset portable`。
 另验证 `tests/portable/consumer` 对已安装 `SouiRuntime` 包的独立消费。
 完整命令和目标矩阵见 [跨平台说明](cross-platform.md)。合成架构/拒绝测试、
-本机编译、目标机运行与真实桌面验收必须分开报告；不新增远程 CI。
+本机编译、目标机运行与真实桌面验收必须分开报告。新增的[限定跨平台 CI](ci-platform-matrix.md)只覆盖六类标准 runner 的构建、安装消费者和模板文件交付；Windows 不执行项目程序，Linux/macOS 仅选择两项无界面 Runtime 测试。当前工作流仅完成本地静态准备，尚无云端通过记录，不替代真实桌面验收或改写历史失败。
 
 ## 统一系统 WebView 桌面补充验证
 

@@ -1,0 +1,112 @@
+{
+  "name": "Portable Runtime and Desktop build matrix",
+  "on": {
+    "push": {
+      "branches": [
+        "codex/portable-runtime-platform-matrix-20261020"
+      ]
+    },
+    "workflow_dispatch": {}
+  },
+  "permissions": {
+    "contents": "read"
+  },
+  "concurrency": {
+    "group": "soui-platform-${{ github.workflow }}-${{ github.ref }}",
+    "cancel-in-progress": true
+  },
+  "jobs": {
+    "native-build": {
+      "if": "${{ github.event.repository.private == false }}",
+      "name": "${{ matrix.runner }} / ${{ matrix.arch }}",
+      "runs-on": "${{ matrix.runner }}",
+      "timeout-minutes": 45,
+      "strategy": {
+        "fail-fast": false,
+        "max-parallel": 2,
+        "matrix": {
+          "include": [
+            {
+              "runner": "windows-2022",
+              "platform": "windows",
+              "arch": "x64"
+            },
+            {
+              "runner": "windows-11-arm",
+              "platform": "windows",
+              "arch": "arm64"
+            },
+            {
+              "runner": "ubuntu-24.04",
+              "platform": "linux",
+              "arch": "x64",
+              "ubuntu_archive": "https://archive.ubuntu.com/ubuntu",
+              "ubuntu_security": "https://security.ubuntu.com/ubuntu"
+            },
+            {
+              "runner": "ubuntu-24.04-arm",
+              "platform": "linux",
+              "arch": "arm64",
+              "ubuntu_archive": "https://ports.ubuntu.com/ubuntu-ports",
+              "ubuntu_security": "https://ports.ubuntu.com/ubuntu-ports"
+            },
+            {
+              "runner": "macos-15-intel",
+              "platform": "macos",
+              "arch": "x64"
+            },
+            {
+              "runner": "macos-15",
+              "platform": "macos",
+              "arch": "arm64"
+            }
+          ]
+        }
+      },
+      "steps": [
+        {
+          "name": "Check out exact pushed commit without persisted credentials",
+          "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "with": {
+            "ref": "${{ github.sha }}",
+            "fetch-depth": 1,
+            "persist-credentials": false
+          }
+        },
+        {
+          "name": "Use fixed Node.js",
+          "uses": "actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1",
+          "with": {
+            "node-version": "24.19.0",
+            "architecture": "${{ matrix.arch }}",
+            "package-manager-cache": false,
+            "check-latest": false
+          }
+        },
+        {
+          "name": "Validate the workflow and execution policy",
+          "run": "node tools/ci/validate-platform-workflow.cjs"
+        },
+        {
+          "name": "Install pinned Linux development dependencies from Ubuntu only",
+          "if": "${{ matrix.platform == 'linux' }}",
+          "shell": "bash",
+          "env": {
+            "UBUNTU_ARCHIVE": "${{ matrix.ubuntu_archive }}",
+            "UBUNTU_SECURITY": "${{ matrix.ubuntu_security }}"
+          },
+          "run": "set -euo pipefail\nsources=\"$RUNNER_TEMP/soui-apt-sources\"\nmkdir -p \"$sources\"\ncat > \"$sources/ubuntu.sources\" <<EOF\nTypes: deb\nURIs: $UBUNTU_ARCHIVE\nSuites: noble noble-updates\nComponents: main universe\nSigned-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg\n\nTypes: deb\nURIs: $UBUNTU_SECURITY\nSuites: noble-security\nComponents: main universe\nSigned-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg\nEOF\napt_options=(-o Dir::Etc::sourcelist=/dev/null -o \"Dir::Etc::sourceparts=$sources\" -o APT::Get::List-Cleanup=0)\nsudo apt-get \"${apt_options[@]}\" update\napt-cache \"${apt_options[@]}\" policy libwebkit2gtk-4.1-dev libgtk-3-dev pkg-config\nsudo apt-get \"${apt_options[@]}\" install --yes --no-install-recommends --no-remove \\\n  libwebkit2gtk-4.1-dev=2.52.6-0ubuntu0.24.04.1 \\\n  libgtk-3-dev=3.24.41-4ubuntu1.3 \\\n  pkg-config=1.8.1-2build1\ndpkg-query -W libwebkit2gtk-4.1-dev libgtk-3-dev pkg-config\npkg-config --modversion webkit2gtk-4.1 gtk+-3.0\n"
+        },
+        {
+          "name": "Build install link and verify application files",
+          "run": "node tools/ci/platform-build.cjs --platform ${{ matrix.platform }} --arch ${{ matrix.arch }}"
+        },
+        {
+          "name": "Write bounded qualification summary",
+          "if": "${{ always() }}",
+          "run": "node tools/ci/platform-build.cjs --summary"
+        }
+      ]
+    }
+  }
+}
