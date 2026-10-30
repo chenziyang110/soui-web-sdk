@@ -4,6 +4,22 @@
   "releaseReady": false,
   "dependencies": [
     {
+      "id": "miniblink-native-bitmap-completion-source",
+      "source": "third_party/manifests/miniblink-native-bitmap-completion-20261031.json",
+      "version": "PR129 native bitmap completion candidate; frozen prebuilt unchanged",
+      "license": "source identity record",
+      "sourceNormalization": "lf",
+      "sha256": "b948c596cf5111110d954b10c415a612ab341c7e2a12d9ca8ef18ed76c7d406e"
+    },
+    {
+      "id": "miniblink-native-bitmap-completion-patch",
+      "source": "third_party/patches/miniblink/0030-complete-native-bitmap-submission.patch",
+      "version": "PR129 native bitmap completion candidate; frozen prebuilt unchanged",
+      "license": "same terms as Miniblink source",
+      "sourceNormalization": "lf",
+      "sha256": "8b0b02c0f003ed208f2ca511e6381f1f8a6f73e4322efd124fb22b693372a184"
+    },
+    {
       "id": "miniblink-precise-deadline-patch",
       "source": "third_party/patches/miniblink/0029-retain-precise-shared-timer-wait.patch",
       "version": "PR129 precise deadline repair candidate; frozen prebuilt unchanged",

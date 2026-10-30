@@ -94,3 +94,7 @@
 `0026-steady-qpc-utc-read.patch` 以a00652824为前件，仅重排在用 `CurrentTimeImpl.cpp::currentTimeImpl()` 的UTC采样位置。稳定QPC路径原先每次读取但不使用低分辨率UTC；初次同步还会覆盖第一次读取。候选仅在QPC不可用和原首次精度窗口内读取，保留原elapsed/锚、返回单位、倒退保护和未调用旧函数，不改变WKE/provider ABI或时钟域。
 
 原字节前后SHA、源码减少50字节及补丁身份见 `third_party/manifests/miniblink-steady-clock-20261029.json`。保留旧编码/行尾，当前树反向非写入检查通过。x86/x64各实际复现一次稳定UTC冗余的RED，候选各5项函数体加Win32/CRT观测shim场景通过；旧union初始化样式告警仅在测试导入区局部处理。完整生产TU、DLL/消费者、真实时钟/并发和FPS尚未据此验证，原二进制导入与历史清单不重写。设计及独立既有风险见ADR0145。
+
+## 原生位图提交完成：0030
+
+`0030-complete-native-bitmap-submission.patch` 在源位图/DC仍有效时完成发起线程GDI批次，绘制失败仍刷新与清理。原字节前后与补丁身份见 `third_party/manifests/miniblink-native-bitmap-completion-20261031.json`。历史导入与正式prebuilt不重写；源码契约回归和x64限定验证见ADR-0149与其验证文档。历史CRC根因未证实，不声明完整桌面、性能或发布验收通过。

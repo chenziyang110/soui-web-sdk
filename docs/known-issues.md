@@ -4,6 +4,8 @@
 
 ## 0.6.0 后续源码候选
 
+PR129 原生位图提交已补发起线程 GDI 完成边界，两架构源码契约回归和增量内核编译、x64 隔离桌面短测通过。历史 CRC 坏帧根因仍未确认；原 VM 被其他任务占用，新内核尚未复测真实桌面 CRC、x86 实际运行或完整公开构建。范围见[限定验证](performance/native-bitmap-completion-20261031.md)，不更新已发布预编译包或生产门槛。
+
 PR127之后的工具遗留项已新增自有VCTIP自然idle生命周期、显式SDK失败stage保留/校验恢复，以及checked ZIP准备入口。当前两架构微型CMake自然收尾、实际子文件句柄EPERM恢复、候选canonical pack与实际PS5中文长路径短验已过；原失败与完整范围见[后续收尾](maintenance/windows-tooling-failure-closeout-20261029.md)。旧EPERM锁持有者及PS5原失败原因仍未知，完整构建负载与生产资格不据此关闭。
 
 当前工作分支已补 ZIP UTF-8 参数、MSVC 节点复用策略及 source SDK 发布失败诊断，

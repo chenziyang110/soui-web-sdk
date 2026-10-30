@@ -1,5 +1,10 @@
 # 变更记录
 
+## 未发布：MiniBlink 原生位图提交完成边界
+
+- 原生 BitBlt/AlphaBlend 返回前，在源 DC/像素仍有效时完成发起线程 GDI 批次；绘制失败仍刷新并保留清理，设备返回值同时反映绘制与刷新结果。避免依赖后续 onAccessBitmap 才刷新。
+- 本项为局部提交生命周期修复，不代表历史 CRC 根因已证实、全部区域原子呈现或性能改善；设计和验证边界见 ADR-0149。
+
 ## 未发布：MiniBlink 高精度截止唤醒修复
 
 - future deadline 优先复用高精度 waitable timer 与 threadpool wait，修复普通 pool timer 在不可见 Windows 11 场景中的唤醒精度退化；保持绝对截止复核、票号、默认预算和旧系统回退。

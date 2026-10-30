@@ -1,0 +1,41 @@
+diff --git a/third_party/sources/miniblink/skia/ext/bitmap_platform_device_win.cc b/third_party/sources/miniblink/skia/ext/bitmap_platform_device_win.cc
+index afac72faa..3365d90a0 100644
+--- a/third_party/sources/miniblink/skia/ext/bitmap_platform_device_win.cc
++++ b/third_party/sources/miniblink/skia/ext/bitmap_platform_device_win.cc
+@@ -238,8 +238,9 @@ bool BitmapPlatformDevice::DrawToNativeContext(HDC dc, int x, int y,
+   identity.reset();
+ 
+   LoadTransformToDC(source_dc, identity);
++  BOOL draw_succeeded = FALSE;
+   if (isOpaque()) {
+-    BitBlt(dc,
++    draw_succeeded = BitBlt(dc,
+            x,
+            y,
+            copy_width,
+@@ -251,7 +252,7 @@ bool BitmapPlatformDevice::DrawToNativeContext(HDC dc, int x, int y,
+   } else {
+     SkASSERT(copy_width != 0 && copy_height != 0);
+     BLENDFUNCTION blend_function = {AC_SRC_OVER, 0, 255, AC_SRC_ALPHA};
+-    GdiAlphaBlend(dc,
++    draw_succeeded = GdiAlphaBlend(dc,
+                   x,
+                   y,
+                   copy_width,
+@@ -265,11 +266,15 @@ bool BitmapPlatformDevice::DrawToNativeContext(HDC dc, int x, int y,
+   }
+   LoadTransformToDC(source_dc, transform_);
+ 
++  // A cached DC can outlive this call. Complete this thread's native source
++  // reads before the caller releases its pixel lease or rasterizes again;
++  // accessPixels() does not pass through onAccessBitmap()'s lazy flush.
++  const BOOL batch_succeeded = GdiFlush();
+   EndPlatformPaint();
+   if (created_dc)
+     ReleaseBitmapDC();
+ 
+-  return true;
++  return draw_succeeded && batch_succeeded;
+ }
+ 
+ bool BitmapPlatformDevice::DrawToNativeLayeredContext(HDC dc, const RECT* src_rect, const RECT* client_rect)
