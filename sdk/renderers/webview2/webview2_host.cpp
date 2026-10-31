@@ -16,6 +16,9 @@
 #include <windows.h>
 #include <bcrypt.h>
 #include <WebView2.h>
+#ifdef SOUI_WEBVIEW2_LOADER_SHARED
+#include "webview2_loader_bridge.h"
+#endif
 #include <wrl.h>
 #include <WebView2EnvironmentOptions.h>
 #include <exception>
@@ -1453,8 +1456,13 @@ void webview2_adapter::prepare_async(std::function<void(host_result)> completed)
     fail(value, "Environment creation is cancelled or already pending");
     return;
   }
+#ifdef SOUI_WEBVIEW2_LOADER_SHARED
+  const auto result = detail::webview2_loader_bridge::create_environment(
+      value->fixed_runtime.empty() ? nullptr : value->fixed_runtime.c_str(), value->profile.c_str(), options.Get(), callback.Get());
+#else
   const auto result = CreateCoreWebView2EnvironmentWithOptions(
       value->fixed_runtime.empty() ? nullptr : value->fixed_runtime.c_str(), value->profile.c_str(), options.Get(), callback.Get());
+#endif
   if (FAILED(result)) {
     (void)value->preparation.settle(detail::preparation_lifetime::operation::environment);
     value->preparation_failed_without_environment = true;
