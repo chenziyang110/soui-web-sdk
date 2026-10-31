@@ -1,5 +1,11 @@
 # Worker 生命周期真实源码回归
 
+## Provider 退休截止 RED 准备（2026-10-31）
+
+新增 `provider-retirement-deadline`，从真实 `serviceOwnerOpportunity(D,F)` 进入真实退休方法。每组先由真实 `fireForShutdown` 执行 128 个任务，其原有末尾 32 项退休后留下 96 个已完成捕获；不复制退休算法或伪造未执行任务。析构推进受控 QPC，并重入 owner/无参退休入口以检查既有重入屏障及锁外释放。过期整轮期望只退休一项且 ready callback 仍进展；未来截止期望在逐项之间停止；残留通过 provider 机会逐次恰好释放，真实已发布 continuation 只消费一次且空队列不再续发。最后检查旧无参入口仍为 32 项、无 QPC 采样和实际 shutdown 全部排空。
+
+原实现预期在 `provider-retirement-expired-count-assertion-failed` 失败。当前只准备测试与来源绑定，尚未配置、构建或执行，不能称作 RED 已实测。SharedTimer 绑定采用当前高精度实现；Win32 包装增加实际 waitable timer/threadpool wait 的计数，关闭断言同时接受原 fallback 与高精度路径，不关闭或跳过实际后端。
+
 ## 绝对截止时间 GREEN 候选（2026-10-29）
 
 当前保留原 23 项与上述 RED 准备的 3 项精度回归，另增 8 项边界回归，共 34 项。此状态仅表示候选已准备；两架构 RED 实测由父任务保存，本目录未自行配置、构建或执行 GREEN。

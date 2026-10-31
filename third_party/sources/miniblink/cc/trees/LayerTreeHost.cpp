@@ -3692,7 +3692,7 @@ bool LayerTreeHost::prepareWritableFrameBufferLocked()
             SkBaseDevice* device = skia::GetTopDevice(*previous->canvas);
             if (device) {
                 const SkBitmap& bitmap = device->accessBitmap(false);
-                if (m_hasTransparentBackground)
+                if (m_hasTransparentBackground && valid)
                     clearCanvas(next->canvas.get(), m_clientRect, true);
                 next->canvas->drawBitmap(bitmap, 0, 0, nullptr);
                 trace::add(trace::counter::copy_operations);

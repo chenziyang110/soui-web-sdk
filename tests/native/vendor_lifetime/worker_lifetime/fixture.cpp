@@ -27,6 +27,7 @@ std::atomic<int> observedJoins{0}, exitQueries{0}, injectedWaitFailures{0}, inje
 std::atomic<int> debugBreaks{0}, closeInspections{0}, inspectedCount{-1}, inspectedReady{-1};
 std::atomic<int> windowAcquired{0}, windowDestroyed{0}, timerAcquired{0}, timerKilled{0}, classUnregistered{0};
 std::atomic<int> poolTimerAcquired{0}, poolTimerArmed{0}, poolTimerCancelled{0}, poolTimerDrained{0}, poolTimerClosed{0};
+std::atomic<int> preciseTimerArmed{0}, preciseWaitAcquired{0}, preciseWaitDrained{0}, preciseWaitClosed{0};
 std::atomic<bool> failEvent{false}, failLaunch{false}, failTls{false}, failJoin{false};
 std::atomic<bool> holdStartup{false}, holdNativeReturn{false};
 std::atomic<bool> constructorReturned{false};
@@ -213,6 +214,25 @@ VOID WINAPI sourceClosePoolTimer(PTP_TIMER timer) {
     ::CloseThreadpoolTimer(timer);
     ++poolTimerClosed;
 }
+BOOL WINAPI sourceSetWaitableTimer(HANDLE timer, const LARGE_INTEGER* due, LONG period,
+    PTIMERAPCROUTINE callback, LPVOID argument, BOOL resume) {
+    const BOOL result = ::SetWaitableTimer(timer, due, period, callback, argument, resume);
+    if (result) ++preciseTimerArmed;
+    return result;
+}
+PTP_WAIT WINAPI sourceCreatePoolWait(PTP_WAIT_CALLBACK callback, PVOID context, PTP_CALLBACK_ENVIRON environment) {
+    const PTP_WAIT result = ::CreateThreadpoolWait(callback, context, environment);
+    if (result) ++preciseWaitAcquired;
+    return result;
+}
+VOID WINAPI sourceDrainPoolWait(PTP_WAIT wait, BOOL cancelPending) {
+    ::WaitForThreadpoolWaitCallbacks(wait, cancelPending);
+    ++preciseWaitDrained;
+}
+VOID WINAPI sourceClosePoolWait(PTP_WAIT wait) {
+    ::CloseThreadpoolWait(wait);
+    ++preciseWaitClosed;
+}
 BOOL WINAPI sourceDestroyWindow(HWND window) { const BOOL result = ::DestroyWindow(window); if (result) ++windowDestroyed; return result; }
 BOOL WINAPI sourceUnregisterClass(LPCWSTR name, HINSTANCE instance) { const BOOL result = ::UnregisterClassW(name, instance); if (result) ++classUnregistered; return result; }
 LRESULT WINAPI sourceDefWindowProc(HWND window, UINT message, WPARAM first, LPARAM second) {
@@ -277,6 +297,10 @@ void operator delete[](void* pointer, std::size_t) noexcept { ::operator delete(
 #define SetThreadpoolTimer fixture::sourceSetPoolTimer
 #define WaitForThreadpoolTimerCallbacks fixture::sourceDrainPoolTimer
 #define CloseThreadpoolTimer fixture::sourceClosePoolTimer
+#define SetWaitableTimer fixture::sourceSetWaitableTimer
+#define CreateThreadpoolWait fixture::sourceCreatePoolWait
+#define WaitForThreadpoolWaitCallbacks fixture::sourceDrainPoolWait
+#define CloseThreadpoolWait fixture::sourceClosePoolWait
 #define DestroyWindow fixture::sourceDestroyWindow
 #define UnregisterClassW fixture::sourceUnregisterClass
 #undef DefWindowProc
@@ -315,6 +339,10 @@ int CheckReEnter::s_kEnterCount = 0;
 #undef SetThreadpoolTimer
 #undef WaitForThreadpoolTimerCallbacks
 #undef CloseThreadpoolTimer
+#undef SetWaitableTimer
+#undef CreateThreadpoolWait
+#undef WaitForThreadpoolWaitCallbacks
+#undef CloseThreadpoolWait
 #undef DestroyWindow
 #undef UnregisterClassW
 #undef DefWindowProc
@@ -834,11 +862,13 @@ bool mainSchedulerShutdownCase() {
     note("shutdown-pool-timers-cancelled", poolTimerCancelled);
     note("shutdown-pool-timers-drained", poolTimerDrained);
     note("shutdown-pool-timers-closed", poolTimerClosed);
-    const bool nativeTimersClosed = poolTimerAcquired == 2 && poolTimerArmed >= 1
+    const bool nativeTimersClosed = poolTimerAcquired == 2 && poolTimerArmed + preciseTimerArmed >= 1
         && poolTimerCancelled >= 2 && poolTimerDrained == poolTimerAcquired
-        && poolTimerClosed == poolTimerAcquired && timerKilled == timerAcquired;
+        && poolTimerClosed == poolTimerAcquired && timerKilled == timerAcquired
+        && preciseWaitDrained == preciseWaitAcquired && preciseWaitClosed == preciseWaitAcquired;
     const bool publicationRetired = content::continuationClosed && !content::continuationWindow
         && !content::timerWindowHandle && !content::deadlineTimer && !content::retryTimer
+        && !content::preciseDeadlineTimer && !content::preciseDeadlineWait
         && !content::deadlineTicket && !content::pendingContinuation && !content::timerID
         && content::armedDeadline == 0 && !content::sharedHighResolution;
     return notRunEarly && schedulerTaskRuns == SchedulerReceipt::taskCount
@@ -1083,7 +1113,13 @@ bool schedulerAbsoluteHugeCancelCase() {
     const bool nativePosted = postAbsoluteValuesOnNativeThread(&posts[1], 1);
     const bool asynchronous = receipts[0].runs == 0 && receipts[1].runs == 0;
     thread->startTriggerTasks();
-    bool retained = thread->timerHeap().size() == 2 && content::armedDeadline == huge && poolTimerArmed > 0;
+    const bool backendArmed = (poolTimerArmed > 0 && content::deadlineTimer)
+        || (preciseTimerArmed > 0 && content::preciseDeadlineTimer && content::preciseDeadlineWait);
+    note("absolute-huge-pool-timer-arms", poolTimerArmed);
+    note("absolute-huge-precise-timer-arms", preciseTimerArmed);
+    note("absolute-huge-retained-timer-count", thread->timerHeap().size());
+    note("absolute-huge-deadline-retained", content::armedDeadline == huge);
+    bool retained = thread->timerHeap().size() == 2 && content::armedDeadline == huge && backendArmed;
     for (auto* timer : thread->timerHeap())
         retained = timer->nextFireInterval() == huge - schedulerSeconds.load() && retained;
     thread->fire();
@@ -1092,6 +1128,8 @@ bool schedulerAbsoluteHugeCancelCase() {
     while (!thread->timerHeap().empty()) thread->timerHeap().front()->stop();
     thread->retireCompletedTasksForOwner();
     const bool cancelled = absoluteValueReleased(receipts[0], 0) && absoluteValueReleased(receipts[1], 0);
+    note("absolute-huge-not-early", notEarly);
+    note("absolute-huge-owned-payloads-cancelled", cancelled);
     delete thread;
     return ownerPosted && nativePosted && asynchronous && retained && notEarly && cancelled
         && absoluteValueReleased(receipts[0], 0) && absoluteValueReleased(receipts[1], 0) && absoluteMainOwnerReleased();
@@ -1211,7 +1249,9 @@ bool providerReadyCase(bool legacy, bool crossCutoff, bool qpcFailure, bool reco
     bool drained = true;
     if (!legacy) {
         drained = thread->serviceOwnerOpportunity(0, 1000) && receipts[1].runs == 1 && receipts[2].runs == 0;
-        drained = !thread->serviceOwnerOpportunity(0, 1000) && receipts[2].runs == 1 && drained;
+        // The last ready callback leaves its completed capture for the next
+        // bounded retirement opportunity, which must still report work.
+        drained = thread->serviceOwnerOpportunity(0, 1000) && receipts[2].runs == 1 && drained;
     }
     const bool noFutureWake = !thread->serviceOwnerOpportunity(0, 1000) && receipts[3].runs == 0;
     const bool bridgeClockUsed = legacy ? providerClockReads == before : providerClockReads > before;
@@ -1253,7 +1293,7 @@ bool providerAdmissionCase(bool readyFirst, bool futureOnly) {
     }
     for (unsigned i = 0; i < 4; ++i) {
         const bool more = thread->serviceOwnerOpportunity(0, 1000);
-        passed = more == (i < 3) && receipts[i + 2].runs == (futureOnly ? 0u : 1u) && passed;
+        passed = more == (!futureOnly || i < 3) && receipts[i + 2].runs == (futureOnly ? 0u : 1u) && passed;
         if (futureOnly) passed = thread->timerHeap().size() == i + 1 && passed;
         else for (unsigned j = i + 1; j < 4; ++j) passed = receipts[j + 2].runs == 0 && passed;
     }
@@ -1283,7 +1323,127 @@ bool providerShutdownCase() {
     for (const auto& receipt : receipts) passed = providerReceiptComplete(receipt) && passed;
     return passed && absoluteMainOwnerReleased();
 }
+struct ProviderRetirementBatch {
+    static constexpr unsigned count = 128;
+    std::array<ProviderReceipt, count> receipts{};
+    content::WebThreadImpl* owner = nullptr;
+    unsigned disposed = 0;
+    unsigned qpcCost = 0;
+    bool reenter = false;
+    bool valid = true;
+};
+class ProviderRetirementTask final : public blink::WebThread::Task {
+public:
+    ProviderRetirementTask(ProviderRetirementBatch& batch, unsigned index) : batch_(batch), index_(index) {}
+    void run() override {
+        ++batch_.receipts[index_].runs;
+        batch_.receipts[index_].runTid = ::GetCurrentThreadId();
+    }
+    ~ProviderRetirementTask() override {
+        auto& receipt = batch_.receipts[index_];
+        ++receipt.disposed;
+        ++batch_.disposed;
+        batch_.valid = receipt.runs == 1 && receipt.disposed == 1
+            && receipt.runTid == engineThreadId && !sourceLockDepth && batch_.valid;
+        providerQpc += batch_.qpcCost;
+        if (batch_.reenter) {
+            const unsigned before = batch_.disposed;
+            const bool nested = batch_.owner->serviceOwnerOpportunity(0, 1000);
+            batch_.owner->retireCompletedTasksForOwner();
+            batch_.valid = !nested && batch_.disposed == before && batch_.valid;
+        }
+    }
+private:
+    ProviderRetirementBatch& batch_;
+    unsigned index_;
+};
+bool prepareCompletedRetirementBatch(content::WebThreadImpl* thread, ProviderRetirementBatch& batch) {
+    batch.owner = thread;
+    for (unsigned i = 0; i < batch.count; ++i)
+        thread->postTask(FROM_HERE, new ProviderRetirementTask(batch, i));
+    // Real callbacks finish through the existing pre-shutdown fire entry. Its
+    // unchanged final 32-item retirement leaves 96 completed captures retained.
+    thread->fireForShutdown();
+    bool completed = batch.disposed == 32 && thread->timerHeap().empty() && batch.valid;
+    for (const auto& receipt : batch.receipts)
+        completed = receipt.runs == 1 && receipt.runTid == engineThreadId && completed;
+    return completed;
+}
+bool providerRetirementBatchComplete(const ProviderRetirementBatch& batch) {
+    bool complete = batch.disposed == batch.count && batch.valid;
+    for (const auto& receipt : batch.receipts) complete = providerReceiptComplete(receipt) && complete;
+    return complete;
+}
+bool drainRetirementThroughProvider(content::WebThreadImpl* thread, ProviderRetirementBatch& batch,
+    const ProviderReceipt* ready = nullptr) {
+    const unsigned total = batch.count + (ready ? 1u : 0u);
+    for (unsigned attempt = 0; attempt < total; ++attempt) {
+        const unsigned before = batch.disposed + (ready ? ready->disposed.load() : 0u);
+        if (before == total) break;
+        const bool more = thread->serviceOwnerOpportunity(0, 1000);
+        const unsigned after = batch.disposed + (ready ? ready->disposed.load() : 0u);
+        if (after != before + 1 || more != (after < total)) return false;
+    }
+    // Consume the actual outstanding continuation once after its work was
+    // drained through provider turns. It must neither repeat work nor rearm.
+    const UINT_PTR ticket = content::pendingContinuation;
+    MSG message{};
+    unsigned continuations = 0;
+    bool matchingTicket = ticket != 0;
+    while (::PeekMessageW(&message, nativeWindow, content::continuationMessage, content::continuationMessage, PM_REMOVE)) {
+        matchingTicket = message.wParam == ticket && matchingTicket;
+        ::DispatchMessageW(&message);
+        ++continuations;
+    }
+    note("provider-retirement-continuations-consumed", continuations);
+    return providerRetirementBatchComplete(batch) && (!ready || providerReceiptComplete(*ready))
+        && matchingTicket && continuations == 1 && !content::pendingContinuation
+        && !thread->serviceOwnerOpportunity(0, 1000);
+}
+bool providerRetirementDeadlineCase() {
+    ProviderRetirementBatch expired, future, legacy;
+    ProviderReceipt ready;
+    auto* thread = schedulerMainThread();
+    if (!thread || !nativeWindow) return false;
+    controlledProviderClock = true;
+    bool passed = prepareCompletedRetirementBatch(thread, expired);
+    expired.qpcCost = 2;
+    expired.reenter = true;
+    thread->postTask(FROM_HERE, new ProviderTask(ready));
+    const unsigned beforeExpired = expired.disposed;
+    const bool expiredMore = thread->serviceOwnerOpportunity(0, 1000);
+    const unsigned expiredRetired = expired.disposed - beforeExpired;
+    note("provider-retirement-expired-count", expiredRetired);
+    if (expiredRetired != 1) {
+        contractFailureReason = "provider-retirement-expired-count-assertion-failed";
+        delete thread;
+        return false;
+    }
+    passed = expiredMore && ready.runs == 1 && ready.disposed == 0 && expired.valid && passed;
+    passed = drainRetirementThroughProvider(thread, expired, &ready) && passed;
+    passed = prepareCompletedRetirementBatch(thread, future) && passed;
+    future.qpcCost = 2;
+    future.reenter = true;
+    providerQpc = 1000;
+    const unsigned beforeFuture = future.disposed;
+    const bool futureMore = thread->serviceOwnerOpportunity(1005, 1000);
+    const unsigned futureRetired = future.disposed - beforeFuture;
+    note("provider-retirement-future-count", futureRetired);
+    passed = futureMore && futureRetired == 3 && providerQpc == 1006 && future.valid && passed;
+    passed = drainRetirementThroughProvider(thread, future) && passed;
+    passed = prepareCompletedRetirementBatch(thread, legacy) && passed;
+    const auto beforeLegacyReads = providerClockReads.load();
+    const unsigned beforeLegacy = legacy.disposed;
+    thread->retireCompletedTasksForOwner();
+    note("provider-retirement-legacy-count", legacy.disposed - beforeLegacy);
+    passed = legacy.disposed == beforeLegacy + 32 && providerClockReads == beforeLegacyReads && passed;
+    delete thread; // Real shutdown drains every remaining completed capture.
+    return passed && providerRetirementBatchComplete(expired) && providerRetirementBatchComplete(future)
+        && providerRetirementBatchComplete(legacy) && providerClockReads == beforeLegacyReads
+        && providerReceiptComplete(ready) && absoluteMainOwnerReleased();
+}
 bool dispatch() {
+    if (isCase("provider-retirement-deadline")) return providerRetirementDeadlineCase();
     if (isCase("provider-deadline-expired-ready")) return providerReadyCase(false, false, false, false);
     if (isCase("provider-deadline-callback-crosses")) return providerReadyCase(false, true, false, false);
     if (isCase("provider-deadline-clock-failure")) return providerReadyCase(false, false, true, false);

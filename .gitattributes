@@ -49,6 +49,8 @@ verification/production-validation/pr58-2026-10-08/** binary
 verification/production-validation/pr58-2026-10-08/README.md text eol=lf diff
 third_party/patches/miniblink/*.patch whitespace=-blank-at-eol
 third_party/patches/miniblink/0029-retain-precise-shared-timer-wait.patch -text -eol
+third_party/patches/miniblink/0031-transparent-spare-clear.patch -text -eol
+third_party/patches/miniblink/0032-provider-retirement-deadline.patch -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
 # Retain the exact historical records and the CRT regression's captured before source.
 third_party/manifests/provenance/preview14/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
 tests/fixtures/llvm-crt/before-Observe-LlvmBuild.ps1 -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol

@@ -90,6 +90,7 @@ private:
     friend class BlinkPlatformImpl;
     friend class WebTimerBase;
 
+    void retireCompletedTasksForOwner(unsigned long long deadlineQpc, unsigned long long qpcFrequency, bool ensureOne);
     void schedulerTasks(bool allowMainThreadBudget, unsigned long long deadlineQpc = 0, unsigned long long qpcFrequency = 0);
     void startTriggerTasks(unsigned* remainingAdmissions, double admissionDeadline,
         unsigned long long deadlineQpc = 0, unsigned long long qpcFrequency = 0, bool minimumAdmission = false);

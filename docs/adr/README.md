@@ -105,3 +105,5 @@
 - [ADR-0141：主线输入结束与恢复策略](0141-input-ending-capacity.md)（保留 mailbox/FIFO/ordered cancel）
 - [ADR-0142：显式本地编辑器资源策略](0142-isolated-local-editor.md)（默认 strict，原生 opt-in）
 - [ADR-0143：MiniBlink 截止唤醒与批次](0143-miniblink-deadline-scheduler.md)（主线索引保留，运行资格待验）
+- [ADR-0150：透明备用画布避免重复清屏](0150-transparent-frame-buffer-clear.md)
+- [ADR-0151：显式 provider 截止覆盖完成任务退休](0151-provider-retirement-deadline.md)

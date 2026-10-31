@@ -98,3 +98,9 @@
 ## 原生位图提交完成：0030
 
 `0030-complete-native-bitmap-submission.patch` 在源位图/DC仍有效时完成发起线程GDI批次，绘制失败仍刷新与清理。原字节前后与补丁身份见 `third_party/manifests/miniblink-native-bitmap-completion-20261031.json`。历史导入与正式prebuilt不重写；源码契约回归和x64限定验证见ADR-0149与其验证文档。历史CRC根因未证实，不声明完整桌面、性能或发布验收通过。
+
+## 透明备用槽与共享截止退休：0031–0032
+
+`0031-transparent-spare-clear.patch` 只省去新建/重建透明备用槽的重复clear，保留有效旧槽clear和完整copy。`0032-provider-retirement-deadline.patch` 将显式截止用于完成任务退休，保留一次最低进展、无参方法符号、默认32项与shutdown排空。独立设计见ADR-0150/0151；来源及真实方法回归分别见 `miniblink-transparent-spare-clear-20261031.json` 与 `miniblink-provider-retirement-20261031.json`。
+
+两架构受影响方法回归已执行，失败原件保留；92项SOURCE门禁仅为authored graph范围。匹配内核、实际载荷大小与真实性能以单独记录为准，不用源码字节变化代替DLL/包或FPS结论。

@@ -16,7 +16,7 @@ if($RecipeRoot){
  # generator, compiler or observer entry point is used. Delivered unexecuted.
  $root=[IO.Path]::GetFullPath($RecipeRoot);$build=Join-Path $root 'out/authored-observer-recipe';$configuration='Release'
  $recipes=@(GeneratedTestRecipes);$pins=@{};$physical=@{};$records=@();$pairs=@();$cases=[Collections.Generic.List[object]]::new();$failed=0
- $expectedCounts=@{'scheduler-continuation'=8;'scheduler-index'=0;'window-close-lifetime'=8;'independent-wheel'=18;'host-visibility'=11;'render-diagnostic'=3;'provider-deadline'=5}
+ $expectedCounts=@{'scheduler-continuation'=8;'scheduler-index'=0;'window-close-lifetime'=8;'independent-wheel'=18;'host-visibility'=11;'render-diagnostic'=3;'provider-deadline'=5;'frame-buffer-copy'=4}
  function FreezeRecipeInput([string]$path){$key=Norm $path;if($pins.ContainsKey($key)){return};$bytes=[IO.File]::ReadAllBytes($path);$pins[$key]=@{path=$path;bytes=$bytes.Length;sha256=(GeneratedTestHash $bytes)};$physical[$key]=$bytes}
  foreach($role in $recipes){
   FreezeRecipeInput (Join-Path $root ($role.directory+'/CMakeLists.txt'))
@@ -38,8 +38,8 @@ if($RecipeRoot){
  function CloneRecipe($value){$value|ConvertTo-Json -Depth 100 -Compress|ConvertFrom-Json -AsHashtable}
  function RecipeRows($selected=$records,$bindings=$pairs,$frozen=$pins,[scriptblock]$read=$reader){@(GeneratedTestDependencies $root $build $configuration $frozen $selected $read $bindings)}
  $derived=@()
- CheckRecipe 'Seven frozen roles cover 53 exact paths and both standalone compiler sources' {
-  $script:derived=RecipeRows;Need ($recipes.Count-eq7-and$derived.Count-eq53-and$records.Count-eq9) 'Frozen new-role dimensions'
+ CheckRecipe 'Eight frozen roles cover 57 exact paths and both standalone compiler sources' {
+  $script:derived=RecipeRows;Need ($recipes.Count-eq8-and$derived.Count-eq57-and$records.Count-eq10) 'Frozen new-role dimensions'
   foreach($family in $expectedCounts.Keys){Need (@($derived|Where-Object{$_.writerFamily-ceq$family}).Count-eq$expectedCounts[$family]) ('Recipe output extent: '+$family)}
   foreach($suffix in @('/generated/cc/input/ScrollController.cpp','/generated/cc/trees/ScrollTreeSnapshot.cpp')){
    $row=@($derived|Where-Object{(Norm $_.pin.path).EndsWith((Norm $suffix),[StringComparison]::Ordinal)})
@@ -79,7 +79,7 @@ if($RecipeRoot){
  CheckRecipe 'Known generated source cannot authorize a second unrecognized compiler object' {$next=CloneRecipe $pairs;$copy=CloneRecipe ($pairs|Where-Object{(Norm $_.object)-ceq(Norm $cppObject)});$copy.object=Join-Path $build 'unknown/generated.cpp.obj';$next+=@($copy);RejectRecipe {RecipeRows $records $next} 'cannot authorize another object'}
  CheckRecipe 'Shared generated header records both actual compiler users once' {
   $next=CloneRecipe $records;$header=Join-Path $build ($wheel.directory+'/generated/cc/input/ScrollController.h');($next|Where-Object{(Norm $_.object)-ceq(Norm $cppObject)}).headers+=@{resolved=$header}
-  $rows=RecipeRows $next;$proof=@($rows|Where-Object{(Norm $_.pin.path)-ceq(Norm $header)});Need ($rows.Count-eq53-and$proof.Count-eq1-and$proof[0].selectedObjects.Count-eq2) 'Per-object usage is retained without duplicate path permission'
+  $rows=RecipeRows $next;$proof=@($rows|Where-Object{(Norm $_.pin.path)-ceq(Norm $header)});Need ($rows.Count-eq57-and$proof.Count-eq1-and$proof[0].selectedObjects.Count-eq2) 'Per-object usage is retained without duplicate path permission'
  }
  CheckRecipe 'First following end marker matches writer semantics and preserves raw encoding bytes' {
   $raw=[byte[]](66,10,65,13,10,0,129,10,90,10,90,10);$range=GeneratedTestRecipeMarker $raw 'A' 'Z'
@@ -91,6 +91,23 @@ if($RecipeRoot){
   $raw=[byte[]](90,10,65,13,10,129,10);$range=GeneratedTestRecipeMarker $raw 'A' ''
   Need ($range.startByte-eq2-and$range.endByteExclusive-eq7-and[BitConverter]::ToString($range.bytes)-ceq'41-0D-0A-81-0A') 'Exact suffix extent'
   RejectRecipe {GeneratedTestRecipeMarker ([Text.Encoding]::ASCII.GetBytes('A A')) 'A' ''} 'one unique begin marker'
+ }
+ CheckRecipe 'Frame buffer role admits exactly the policy and three complete raw method ranges' {
+  $rows=@($derived|Where-Object{$_.writerFamily-ceq'frame-buffer-copy'})
+  Need ($rows.Count-eq4-and@($rows|Where-Object{$_.exactWholeFile}).Count-eq1) 'Frame buffer raw output extents'
+  foreach($row in $rows){[void](GeneratedTestActual $row $row.pin $row.expectedBytes);Need ($row.selectedObjects.Count-eq1-and-not$row.preBuildFrozen) 'One actual compiler owner per derived frame buffer input'}
+ }
+ CheckRecipe 'Frame buffer strict writer preserves UTF-8 CRLF bytes and rejects malformed fragments or repeated end' {
+  $raw=[byte[]](65,13,10,195,169,10,90,10);$range=GeneratedTestRecipeMarker $raw 'A' 'Z' $true
+  Need ([BitConverter]::ToString($range.bytes)-ceq'41-0D-0A-C3-A9-0A') 'Strict decoding must preserve the raw interval'
+  RejectRecipe {GeneratedTestRecipeMarker ([byte[]](65,10,129,10,90,10)) 'A' 'Z' $true} 'strict UTF-8 required'
+  RejectRecipe {GeneratedTestRecipeMarker ([Text.Encoding]::ASCII.GetBytes('A Z Z')) 'A' 'Z' $true} 'one following end marker'
+ }
+ CheckRecipe 'Frame buffer whole policy cannot bypass strict UTF-8 with a changed source pin' {
+  $source=Join-Path $root 'third_party/sources/miniblink/cc/trees/FrameBufferLeasePolicy.h';$sourceKey=Norm $source
+  $changed=$physical[$sourceKey]+[byte]129;$next=$pins.Clone();$next[$sourceKey]=@{path=$source;bytes=$changed.Length;sha256=(GeneratedTestHash $changed)}
+  $read={param($path)if((Norm $path)-ceq$sourceKey){return ,$changed};return ,$physical[(Norm $path)]}
+  RejectRecipe {RecipeRows $records $pairs $next $read} 'strict UTF-8 required'
  }
  # The current worker graph is distinct from the historical 26/12 capture below.
  # Its shutdown macro is a checked writer transform, never an exact source slice.

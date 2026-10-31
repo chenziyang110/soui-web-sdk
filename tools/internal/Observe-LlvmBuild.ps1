@@ -343,6 +343,11 @@ function GeneratedTestRecipes {
   [ordered]@{kind='render-diagnostic';directory='tests/native/render_diagnostic_source';target='soui_render_diagnostic_source_tests';units=@('fixture.cpp');cmake='2f6a02940e8954f3f2512cf2ba74692723f0a3d6e2cc7cc547e2e97367cf00d6';writer='174e6b972f02be0f14d8921630e8c81e3f1b6a6e579380bb326d34b690cbce3f';whole=[ordered]@{
    'content/common/InputFrameTrace.h'='content/common/InputFrameTrace.h';'cc/trees/RenderDiagnosticTrace.h'='cc/trees/RenderDiagnosticTrace.h'};fragments=@(
    ,@('cc/trees/GpuSkiaSurface.cpp','gpu_present.inc','bool GpuSkiaSurface::present()','void GpuSkiaSurface::recordPresented()'))},
+  [ordered]@{kind='frame-buffer-copy';directory='tests/native/frame_buffer_copy_source';target='frame_buffer_copy_contract';units=@('fixture.cpp');cmake='8b7363d8b619764d681a4e6a6517f783214354f05ac9271882055e78d181a42e';writer='d1e825d29282eca9c8726cc191d69019625e95c5498b4488caadc699c0ed2092';whole=[ordered]@{
+   'cc/trees/FrameBufferLeasePolicy.h'='cc/trees/FrameBufferLeasePolicy.h'};fragments=@(
+   @('cc/trees/LayerTreeHost.cpp','frame_buffer_constructor.inc','LayerTreeHost::FrameBuffer::FrameBuffer(','LayerTreeHost::FrameBufferLease::FrameBufferLease() = default;'),
+   @('cc/trees/LayerTreeHost.cpp','clear_canvas.inc','void LayerTreeHost::clearCanvas(','void LayerTreeHost::setDrawMinInterval('),
+   @('cc/trees/LayerTreeHost.cpp','prepare_writable_frame_buffer.inc','bool LayerTreeHost::prepareWritableFrameBufferLocked()','SkCanvas* LayerTreeHost::getMemoryCanvasLocked()'))},
   [ordered]@{kind='provider-deadline';directory='tests/native/provider_deadline';target='provider_deadline_contract';units=@('fixture.cpp');cmake='722e7540731d3f7166c24c40a0f30a3afbcbbf8c07713b7550a18401e2415bb6';writer='e8feabb132b3f65a98a8c0d31389b0931a864fb748a98e995e186c3b76a0d39c';whole=[ordered]@{
    'wke/InputUiApi.h'='input_ui_api.h'};fragments=@(
    @('content/common/PaintLifetime.h','cursor.inc','template<class Key> class PaintCloseServiceCursor {','inline PaintLifetimeRuntime& paintLifetimeRuntime()'),
@@ -351,10 +356,11 @@ function GeneratedTestRecipes {
    @('wke/InputUiApi.cpp','api.inc','const wkeInputUiApi* WKE_CALL_TYPE wkeGetInputUiApi(unsigned requestedVersion)',''))}
  )
 }
-function GeneratedTestRecipeMarker([byte[]]$source,[string]$begin,[string]$end){
+function GeneratedTestRecipeMarker([byte[]]$source,[string]$begin,[string]$end,[bool]$strictWriter=$false){
  # The locked JS writers require a unique begin and the first following end.
- # Slice bytes directly: unlike the older CMake writers, these accept raw GBK,
- # CRLF and NUL bytes without decoding or normalizing a generated fragment.
+ # Slice bytes directly: existing raw writers accept GBK, CRLF and NUL without
+ # decoding. The frame-buffer writer additionally validates strict UTF-8 and a
+ # unique following end; validation never rewrites its raw output bytes.
  $hex=[BitConverter]::ToString($source).Replace('-','').ToLowerInvariant();$a=[BitConverter]::ToString([Text.Encoding]::UTF8.GetBytes($begin)).Replace('-','').ToLowerInvariant();$b=[BitConverter]::ToString([Text.Encoding]::UTF8.GetBytes($end)).Replace('-','').ToLowerInvariant()
  Need ($a.Length-gt0-and[regex]::Matches($hex,$a).Count-eq1) 'Generated recipe requires one unique begin marker'
  $start=$hex.IndexOf($a,[StringComparison]::Ordinal)
@@ -362,7 +368,9 @@ function GeneratedTestRecipeMarker([byte[]]$source,[string]$begin,[string]$end){
  # and full frozen source identity bind the range just like a following marker.
  $stop=$(if($end.Length-eq0){$hex.Length}else{$hex.IndexOf($b,$start+$a.Length,[StringComparison]::Ordinal)})
  Need ($start%2-eq0-and$stop-gt$start-and$stop%2-eq0) 'Generated recipe following end marker/alignment'
+ if($strictWriter){Need ($end.Length-gt0-and$hex.IndexOf($b,$stop+2,[StringComparison]::Ordinal)-lt0) 'Generated recipe strict writer requires one following end marker'}
  $first=[int]($start/2);$last=[int]($stop/2);$bytes=[byte[]]::new($last-$first);[Array]::Copy($source,$first,$bytes,0,$bytes.Length)
+ if($strictWriter){$validUtf8=$true;try{[void][Text.UTF8Encoding]::new($false,$true).GetString($bytes)}catch{$validUtf8=$false};Need $validUtf8 'Generated recipe strict UTF-8 required'}
  return [ordered]@{startByte=$first;endByteExclusive=$last;bytes=$bytes}
 }
 function GeneratedTestRecipeDependencies($role,[string]$root,[string]$build,[string]$configuration,$allowed,$selected,[scriptblock]$readBytes,$bindings){
@@ -387,11 +395,12 @@ function GeneratedTestRecipeDependencies($role,[string]$root,[string]$build,[str
  if($null-ne$role.writer){[void](GeneratedTestWriter $root ($role.directory+'/generate.cjs') $role.writer $allowed $readBytes);$support.Add($allowed[(Norm (Join-Path $root ($role.directory+'/generate.cjs')))])}
  foreach($source in $role.whole.Keys){
   $value=Join-Path $root ($prefix+(GeneratedTestRelative $source));$raw=GeneratedTestFrozen $value $allowed $readBytes;$output=GeneratedTestRelative $role.whole[$source];$key=Norm (Join-Path $base $output)
+  if($role.kind-ceq'frame-buffer-copy'){$validUtf8=$true;try{[void][Text.UTF8Encoding]::new($false,$true).GetString($raw)}catch{$validUtf8=$false};Need $validUtf8 'Generated recipe strict UTF-8 required'}
   Need (-not$candidates.ContainsKey($key)) 'Unique generated recipe output';$support.Add($allowed[(Norm $value)])
   $candidates[$key]=[ordered]@{source=$allowed[(Norm $value)];range=[ordered]@{startByte=0;endByteExclusive=$raw.Length;bytes=$raw};output=$output;exactWholeFile=$true}
  }
  foreach($part in $role.fragments){
-  $value=Join-Path $root ($prefix+(GeneratedTestRelative $part[0]));$raw=GeneratedTestFrozen $value $allowed $readBytes;$range=GeneratedTestRecipeMarker $raw $part[2] $part[3];$output=GeneratedTestRelative $part[1];$key=Norm (Join-Path $base $output)
+  $value=Join-Path $root ($prefix+(GeneratedTestRelative $part[0]));$raw=GeneratedTestFrozen $value $allowed $readBytes;$range=GeneratedTestRecipeMarker $raw $part[2] $part[3] ($role.kind-ceq'frame-buffer-copy');$output=GeneratedTestRelative $part[1];$key=Norm (Join-Path $base $output)
   Need (-not$candidates.ContainsKey($key)) 'Unique generated recipe output';$support.Add($allowed[(Norm $value)])
   $candidates[$key]=[ordered]@{source=$allowed[(Norm $value)];range=$range;output=$output;exactWholeFile=$false}
  }
@@ -426,9 +435,9 @@ function GeneratedTestDependencies([string]$root,[string]$build,[string]$configu
    $sourcePath=Join-Path $root 'third_party/sources/miniblink/wke/wke.cpp';$sourceBytes=GeneratedTestFrozen $sourcePath $allowed $readBytes;$range=GeneratedTestMarker $sourceBytes 'struct InteractionEndpointImpl {' 'void WKE_CALL_TYPE retainInteractionEndpoint('
    $candidates[(Norm (Join-Path $base 'interaction_endpoint_source.inc'))]=[ordered]@{source=$allowed[(Norm $sourcePath)];range=$range;output='interaction_endpoint_source.inc'}
   }elseif($role.kind-ceq'worker'){
-   [void](GeneratedTestWriter $root ($role.directory+'/CMakeLists.txt') '44fa4315f2a244841e578e83171e09e085de704ca2141639b68ba40eb284c3f4' $allowed $readBytes)
+   [void](GeneratedTestWriter $root ($role.directory+'/CMakeLists.txt') 'cd328ca6ac5c249379c4475c1e8c2fed77b8e57983f476e45a6cf86ddc84b960' $allowed $readBytes)
    [void](GeneratedTestWriter $root ($role.directory+'/source-bytes.cmake') '12febdd96416c86b2d79da9ff41472f5c84b4c0f7cef3f7b82393a37948fa0ad' $allowed $readBytes)
-   $mapText=GeneratedTestWriter $root ($role.directory+'/source-map.json') 'db02d34745240ef9d7a837b893db716549745618ef81642d559f62ce146884a2' $allowed $readBytes;$map=$mapText|ConvertFrom-Json
+   $mapText=GeneratedTestWriter $root ($role.directory+'/source-map.json') '77ba71e8acbee8dca695c7d4aba4eb5131eeba491b89df643102a88360ebfb8e' $allowed $readBytes;$map=$mapText|ConvertFrom-Json
    Need ($map.schema-ceq'worker-lifetime-source-map/1'-and$map.sources.Count-eq16-and$map.copies.Count-eq16-and$map.payloads.Count-eq22) 'Exact frozen worker source map'
    foreach($relative in @('CMakeLists.txt','source-bytes.cmake','source-map.json')){$support.Add($allowed[(Norm (Join-Path $root ($role.directory+'/'+$relative)))])}
    $sources=@{};foreach($p in $map.sources){$relative=GeneratedTestRelative $p.path;$value=Join-Path $root $relative;Need (-not$sources.ContainsKey((Norm $value))) 'Unique frozen worker source';$raw=GeneratedTestFrozen $value $allowed $readBytes;Need ($raw.Length-eq$p.bytes-and(GeneratedTestHash $raw)-ceq$p.sha256) 'Worker map whole-source pin differs';$sources[(Norm $value)]=$raw;$support.Add($allowed[(Norm $value)])}

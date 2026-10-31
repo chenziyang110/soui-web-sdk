@@ -652,10 +652,17 @@ void WebThreadImpl::deleteUnusedTimers()
 
 void WebThreadImpl::retireCompletedTasksForOwner()
 {
+    retireCompletedTasksForOwner(0, 0, false); // Preserve the existing no-argument symbol and batch.
+}
+
+void WebThreadImpl::retireCompletedTasksForOwner(unsigned long long deadlineQpc,
+    unsigned long long qpcFrequency, bool ensureOne)
+{
     if (!isCurrentThread() || m_willExit || m_firingTimers || m_retiringCompletedTasks) return;
     m_retiringCompletedTasks = true;
     struct RetirementGuard { bool& active; ~RetirementGuard() { active = false; } } guard = { m_retiringCompletedTasks };
     for (unsigned count = 0; count < 32 && !m_unusedTimersToDelete.empty(); ++count) {
+        if (!(ensureOne && !count) && providerDeadlineReached(deadlineQpc, qpcFrequency)) break;
         WebTimerBase* timer = m_unusedTimersToDelete.back();
         m_unusedTimersToDelete.pop_back();
         timer->deref(); // Completed task only, outside callbacks and all locks.
@@ -755,7 +762,8 @@ void WebThreadImpl::schedulerTasks(bool allowMainThreadBudget, unsigned long lon
     // Do a re-entrancy check.
     if (m_firingTimers > 0 || m_retiringCompletedTasks /*|| m_suspendTimerQueue*/)
         return;
-    retireCompletedTasksForOwner();
+    const auto retirementFrequency = allowMainThreadBudget && m_isMainThread && !m_willExit ? qpcFrequency : 0;
+    retireCompletedTasksForOwner(deadlineQpc, retirementFrequency, false);
     ++m_firingTimers;
 
     ASSERT(m_threadId == WTF::currentThread());
@@ -827,7 +835,7 @@ void WebThreadImpl::schedulerTasks(bool allowMainThreadBudget, unsigned long lon
     }
     
     --m_firingTimers;
-    retireCompletedTasksForOwner(); // Last task releases resources without another idle pulse.
+    retireCompletedTasksForOwner(deadlineQpc, qpcFrequency, false); // Retain captures past the shared cutoff.
 
     updateSharedTimer();
     if (boundedMainThread && !m_willExit && !m_firingTimers
@@ -839,13 +847,13 @@ void WebThreadImpl::schedulerTasks(bool allowMainThreadBudget, unsigned long lon
 bool WebThreadImpl::serviceOwnerOpportunity(unsigned long long deadlineQpc, unsigned long long qpcFrequency)
 {
     if (!m_isMainThread || m_willExit || m_firingTimers || m_retiringCompletedTasks || !isCurrentThread() || CheckReEnter::getEnterCount()) return false;
-    retireCompletedTasksForOwner();
+    retireCompletedTasksForOwner(deadlineQpc, qpcFrequency, true);
     if (hasPendingTaskAdmission() || (!m_timerHeap.empty() && m_timerHeap[0]->m_nextFireTime <= monotonicallyIncreasingTime())) {
         CheckReEnter::incrementEnterCount();
         sharedTimerFiredFunction(deadlineQpc, qpcFrequency);
         CheckReEnter::decrementEnterCount();
     } else serviceSharedTimerOwnerOpportunity(deadlineQpc, qpcFrequency);
-    return !m_willExit && (hasPendingTaskAdmission()
+    return !m_willExit && (!m_unusedTimersToDelete.empty() || hasPendingTaskAdmission()
         || (!m_timerHeap.empty() && m_timerHeap[0]->m_nextFireTime <= monotonicallyIncreasingTime()));
 }
 
