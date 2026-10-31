@@ -4,7 +4,9 @@
 #include "auto_host_policy.h"
 #include "../webview2/loader_policy.h"
 #include <WebView2.h>
+#ifdef SOUI_WEBVIEW2_LOADER_SHARED
 #include "../webview2/webview2_loader_bridge.h"
+#endif
 #include <windows.h>
 #include <objbase.h>
 #include <exception>
@@ -78,8 +80,13 @@ webview2_runtime_discovery inspect_webview2_runtime(const std::filesystem::path&
   } version;
   auto native_runtime = fixed_runtime;
   native_runtime.make_preferred();
+#ifdef SOUI_WEBVIEW2_LOADER_SHARED
   const auto result = detail::webview2_loader_bridge::get_available_version(
       native_runtime.empty() ? nullptr : native_runtime.c_str(), &version.value);
+#else
+  const auto result = GetAvailableCoreWebView2BrowserVersionString(
+      native_runtime.empty() ? nullptr : native_runtime.c_str(), &version.value);
+#endif
   std::string text;
   if (result == S_OK && version.value) {
     const auto length = wcsnlen_s(version.value, 512);
