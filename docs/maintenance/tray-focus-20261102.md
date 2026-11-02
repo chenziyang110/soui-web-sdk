@@ -81,8 +81,10 @@ Host ready，不能只用 `commandFlowContinues=true` 代替。x64 的 Esc 由�
 
 ## 尚未完成的范围
 
-原生独立控制组另有十六个 case、三十五份 raw：十二次已完成 `NIM_SETFOCUS` 仍全部
-返回 FALSE；两组未调用超时、两组在结果前异常退出分别保留，未知 BOOL 不记为成功。
+原生独立控制组当前共二十个 case、四十三份 raw：十四次 `NIM_SETFOCUS` 已返回
+FALSE、两次已返回 TRUE；两组未调用超时、两组在结果前异常退出分别保留，未知
+BOOL 不记为成功。API 已返回 TRUE 不表示整个 case 通过；键盘观察 B 的后续期限
+失败不归入未调用超时，详见下文。
 修正独立诊断的 DR7 固定状态位匹配后，在固定 Server 2022 Shell32 样本中实际采到
 `SendMessageTimeoutW` 返回寄存器为 1、接收结果槽为 0，随后原 `Shell_NotifyIconW`
 返回 FALSE。两个采样点、原 DR 恢复与 readback、五次观察及清理均完成；原生自然
@@ -112,7 +114,7 @@ magic=`0x34753423`、operation=3、wire cbSize=956，owner/WParam 与已记录�
 36,864 ms 观察 root exit 1，36,873 ms terminal `root-failed`，Job 活跃数 0、
 无超时且未强清，`passed=false` 和晚期 `imageReadError=5` 均保留。精确 OS edition/build
 未独立核实；旧 manifest 下 DLL 自报的 `6.2.19041.2788` 仅是版本视图，不是 OS 版本。
-该客户端切片与既有 Server 样本均为 FALSE，不证明 early-reply 的实际运行分支、
+该客户端切片与此前 Server 普通 API 样本均为 FALSE，不证明 early-reply 的实际运行分支、
 真实键盘焦点资格或系统级根因；原生日志也未认证 Esc 手势。两份新增原件与导出
 manifest 的散列已匹配，记录位于 `out/tray-focus-20261102/raw-win10-baseline`。
 
@@ -120,6 +122,53 @@ manifest 的散列已匹配，记录位于 `out/tray-focus-20261102/raw-win10-ba
 所有系统版本的根因、焦点效果或零时序扰动。marker 的 RAX 不是 API BOOL，
 诊断 LastError 不是原发送错误；正常保留的 0 字节拒绝文件也不是有效拒绝记录。
 该独立诊断不修改公共 SDK 或系统代码，早期两次致命异常仍保留。
+
+新增独立预激活 A/B 对照使用同一冻结 EXE，SHA-256 为
+`26acc8b2d70432a4b471075322c333e8c6d34f2f50191610bbcd2ac5691a6ec6`。
+该轮结束时的历史汇总为十八个 case、三十九份 raw，十三次 API FALSE、一次 API TRUE，
+另有两组未调用超时和两组返回前异常；后续样本不追溯改写该时点。
+四份原始 NDJSON 及两份模块文件的字节数、SHA-256 均与导出 manifest 的六项记录
+匹配；Shell32 与 Explorer 的模块散列也与旧样本相同。该 VM 的 Settings About
+实测为 Windows Server 2022 Standard Evaluation、21H2、OS build `20348.587`；
+模块版本 `20348.558` 不是 OS build。记录位于
+`out/tray-focus-20261102/raw-preactivate-ab`。
+
+A 不执行准备，唯一一次原 `NIM_SETFOCUS` 返回 FALSE，原生退出 1，Owned 自然
+root exit 1、`root-failed`、`passed=false`。B 的四次准备检查均通过；一次
+`SetForegroundWindow` 返回 1，一次 `SendMessageTimeoutW(WM_NULL)` 返回 1、消息结果槽为 0，flags=34、
+timeout=1000 ms；随后唯一一次原 `NIM_SETFOCUS` 返回 TRUE，原生退出 0，Owned
+自然 root exit 0、`completed`、`passed=true`。两例均完成五次观察，
+`invalid=false`、`deadlineReached=false`、`cleanupConfirmed=true`，Job 活跃数 0，
+无超时且未强清。B 的 Owned 通过仅属于该独立诊断，不提升 SDK 或产品资格。
+
+焦点端点仍有关键差异：A 的首次观察为 `Shell_TrayWnd`，后四点为
+`ToolbarWindow32`；B 的五点始终为 `Shell_TrayWnd` 本身。因此 B 只证明此样本的
+API 确认改善，尚未证明实际托盘图标的键盘路由或 early-reply 的运行分支；
+该轮尚未执行后续真实键盘观察，公共 SDK 未修改，不能据此采纳准备策略或关闭问题。
+
+后续键盘观察 A/B 使用同一新冻结 EXE，SHA-256 为
+`2fce6a6a74e8baf68bbf6daa285eb203e94c9a55571c029d0d16e764d12a3f65`，
+并在相同 Shift+F10 操作条件下对照。四份 raw 和两份模块文件均与导出 manifest 的
+六项字节数及散列记录匹配，记录位于 `out/tray-focus-20261102/raw-preactivate-keyboard`。
+
+键盘 A 不执行准备，唯一 NIM 返回 FALSE；五次观察为 `Shell_TrayWnd` @0 ms，随后
+`ToolbarWindow32` @20/50/207/1003 ms。第二菜单的 `keyboard.candidate` 于 30,956 ms
+收到，先于 30,958 ms 的第二菜单 owner 激活；操作者实际看到 SECOND MENU 并以
+Esc 关闭，截图与 raw 共同支持该次图标菜单请求路由，原生通知自身仍不认证输入来源。
+原生于 41,878 ms 退出 1，`invalid=false`、`deadlineReached=false`、
+`cleanupConfirmed=true`；Owned 自然 root exit 1、Job 活跃数 0，无超时且未强清，
+`passed=false` 保留，不把实际菜单路由写成 API 成功。
+
+键盘 B 准备有效，唯一 NIM 已返回 TRUE，并完成五次观察：焦点由
+`ToolbarWindow32` @0 ms 转为 `Shell_TrayWnd` @19/65/205/1002 ms。实际 Shift+F10
+显示的是任务栏通用菜单，没有第二菜单 candidate。原生在原有 60 秒总期限后于
+60,013 ms 退出 2，`invalid=true`、`deadlineReached=true`、`cleanupConfirmed=true`；
+Owned 自然 root exit 2、Job 活跃数 0，未触发 Owned 超时且未强清，`passed=false`。
+这是 API 已返回后的键盘观察失败，不是未调用 API 的超时，也不能计为通过。
+
+该反例表明预激活后的 API TRUE 不能替代真实图标键盘路由；当前
+`SetForegroundWindow` + `WM_NULL` 准备方案不采纳到 SDK。公共 SDK、`VERSION` 和
+严格托盘消费者均未修改，early-reply 实际执行与延迟焦点覆盖机制均未证实。
 
 本次修复的是调用方业务流程，未改变公共 SDK、严格托盘消费者或 API 失败定义。
 新的安装后严格消费者、Win7、x86 真实 Esc、完整 #27/#29、长期驻留及生产资格仍待验；
