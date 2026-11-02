@@ -187,6 +187,11 @@ Server 两消费者、两 Workbench 及 Win10 两消费者共六个新用例完�
 direct，queued/replayed 均为零，不能把该 GUI 结果归因为队列重放或声称其真实路径
 已覆盖。原 NIM BOOL 没有单独 raw 字段，非零只按冻结严格成功路径推断。
 
-Windows 前台策略、旧快速快捷键 E_MENU_FOREGROUND、Win7 OS32、Explorer 重启、
+随后在同一 Server 以原冻结程序追加两架构正常 Explorer Restart；各一次 Taskbar
+处理成功、图标实际重现，后续菜单/键盘/提示/快捷键可用并自然退出 0。结合 GUI
+操作及十份原件验证恢复，不把 sourceVerified=false 的广播单独当作重启来源认证。
+两例仍无真实 FIFO 入队或重放。
+
+Windows 前台策略、旧快速快捷键 E_MENU_FOREGROUND、Win7 OS32、其它系统的恢复、
 长期驻留和完整 #27/#29 门槛继续保留。源码、BuildID、载荷、原件和结果散列见
 [维护记录](../maintenance/tray-focus-20261102.md)；未发布或提升生产资格。

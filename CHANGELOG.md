@@ -4,7 +4,8 @@
 
 - Workbench 与独立托盘消费者新增各自拥有的 UI 线程回调队列：只在 tray 成员调用栈内保存原始 callback，固定容量 64，在既有 timer 安全边界每轮重放至多 8 项。TaskbarCreated 仍立即交给 SDK；溢出、实际分派和焦点错误继续判失败，退出撤销待处理项目。
 - 队列日志区分未调用 SDK 的入队与实际重放，并保存原消息参数及 Win32 通知 word；新增两调用方的容量、顺序、重入、退出及真实 SDK fake 边界回归。SDK 的忙时拒绝和原 NIM BOOL 实现源文件保持 `.2` 字节不变，见 [ADR-0013](docs/adr/0013-public-menu-shortcut-and-residency.md)。
-- 新身份同步 SDK/Web/React/Vue 与锁文件，GUI 交付保留各历史精确 tuple，新增 `.3` 安装/回退回归。两架构 Release 标准构建、安装消费及每架构 14 项/76 组非 GUI 回归通过；Server/Win10 六个新 GUI 用例均自然退出 0，18 次焦点响应成功，见[维护记录](docs/maintenance/tray-focus-20261102.md)。本轮真实 callback 全为直接分派，FIFO 重放由故障注入覆盖；`.2` 的 E_BUSY、快速快捷键前台拒绝和超时失败完整保留，Win7、Explorer 重启、长期驻留及完整 #27/#29 资格仍开放。
+- 新身份同步 SDK/Web/React/Vue 与锁文件，GUI 交付保留各历史精确 tuple，新增 `.3` 安装/回退回归。两架构 Release 标准构建、安装消费及每架构 14 项/76 组非 GUI 回归通过；Server/Win10 六个新 GUI 用例均自然退出 0，18 次焦点响应成功，见[维护记录](docs/maintenance/tray-focus-20261102.md)。本轮真实 callback 全为直接分派，FIFO 重放由故障注入覆盖；`.2` 的 E_BUSY、快速快捷键前台拒绝和超时失败完整保留，Win7、跨系统恢复、长期驻留及完整 #27/#29 资格仍开放。
+- 同一冻结程序另在 Server 完成 x64/x86 两例正常 Explorer 重启恢复：图标重现、菜单/原位键盘焦点、提示更新和快捷键可用，两例均自然退出 0、清理确认、Job0，无超时或强清。`.3` 合计八例/34 份 guest raw、24 次焦点响应成功；TaskbarCreated 的 sourceVerified=false 保留，恢复证据结合真实 GUI，不把广播单独当成重启证明。
 
 ## 0.6.1-preview.2（本地候选，未发布）
 

@@ -360,3 +360,52 @@ Root 最终只读核验含 103 项断言全部通过，冻结源码及十七份�
 本轮先确认更新菜单返回再使用快捷键，不证明原快速序列已修复，当前策略不改变
 Windows 前台权限。Win7 SP1 OS32、Explorer 重启、长期驻留及完整 #27/#29 资格继续
 开放，未执行完整 Collector、发布或提升 `releaseReady`。
+
+## preview.3 追加 Explorer 重启恢复
+
+焦点短验之后，按 #27 的明确验收范围在同一原 Server 追加两例恢复观察。SDK、
+消费者、库、BuildID 和冻结源码 `d5a7ad96…` 均不变，没有重新编译或修改产品。
+新只读载体仅复用已封存的两套 55 文件，加两个新 token 的原生 LNK 及 PLAN；
+ISO 7,849,984 bytes，SHA-256 `4674ae3146ce48b42010dc4a270f443ed0cc58597badf350e82e5fd16aea281a`，
+两命名空间各 113 文件/2 目录完成闭集及全字节回读。新 PLAN 为 6,978 bytes，SHA-256
+`f5503d9d127e0c712c84f1a014959974d3e7f0117be1a7d066b0e2b67b541d5d`。
+
+每例只启动一次消费者，再通过正常 Task Manager 选中 Windows Explorer 并点击
+Restart。实际观察旧 Explorer 行及 CD 窗口消失、任务栏重建、消费者图标在隐藏区
+重现；之后完成公共菜单 Esc、至少 2,200 ms 不重定位后的 Shift+F10 应用菜单、
+tooltip update1、新界面状态后的 Ctrl+Alt+F9 第三菜单和明确退出。x64 两次误开的
+通用任务栏菜单在操作记录中排除，不作为焦点或恢复证据。两次真实键盘菜单均有
+截图，原生无选择返回不自行认证 Esc。
+
+| case / token | Taskbar 观察 | native / Owned completed | 后续 focus |
+|---|---|---|---|
+| x64 / `2820ebf2c388429bb12abf416c618f93` | 1 次 @31,241 ms | native0 @161,145 ms；Owned0 @161,179 ms | 3/3 success |
+| x86 / `0c6d2ec0a44f4d20a675d8bbc4b4b4bb` | 1 次 @31,388 ms | native0 @134,690 ms；Owned0 @134,754 ms | 3/3 success |
+
+两次 Taskbar 原响应均为 handled/ok、非 deferred、installed/desired=true、
+cleanupPending=false，sourceVerified=false 保留。公共 Taskbar 消息也供私有唤醒
+使用，raw 未记录其 wParam/lParam，不能把广播次数单独当成真实 Restart 或 ADD 次数。
+恢复判断同时依赖实际 GUI 操作、图标重现及后续服务可用。任意非延后失败仍按原
+策略失败，本次唯一 ok=false 为预期 shortcut conflict1409。
+
+两例均 cleanupConfirmed、菜单选择 0→1→2、shortcut1、退出 discarded0；callback
+分别 10/11 条，全部 direct，仍无真实 FIFO 入队或重放。原 180,000/200,000/2,000 ms
+预算保持，最终 Job0、closureConfirmed、无超时、限制终止或强清；x86 中间 conhost
+active1 后自然归零的记录保留。x64 操作记录的 184 秒退出后观察不冒充原生运行时长。
+六次 focus success 仍仅按冻结严格成功路径推断 NIM 非零，没有新增直接 BOOL 采样。
+
+同一 VM 正常 ACPI 退出 0、全局 QEMU0、写入句柄释放后，精确只读导出十份原件至
+`out/tray-focus-20261102/raw-sdk3-explorer-recovery`，全部 bytes/SHA/readback 匹配，
+只读句柄关闭、磁盘 metadata 不变，并已正常释放原 VM。manifest 6,310 bytes，
+SHA-256 `405e1a95137d1898e54e729812200dd64185b5a8150524c7004ed04a21ab78ce`；
+运行汇总 74,885 bytes，SHA-256 `6d4e5e7fcfb60cccc7e3f4eebdb56cc5fca55a67425771b29bfc96224b841200`。
+Root 新增 25 项只读断言通过，报告
+`out/tray-focus-20261102/root-explorer-recovery-review.actual.json` 为 15,316 bytes，
+SHA-256 `f18ec7b6925ec76b9efd9072b90e6a2b66da0e1d3723ab3ae7f6a6f23d11ef0c`。
+独立复核 3,873 项检查通过，报告 SHA-256 为
+`103724e82937dd52abf474cf6764913d52b1cb0185a9aa35602e11b229f6cad9`，
+包含十七张本例图的 pins 及十一张关键图的独立查看，保持相同事实边界。
+
+`.3` 现在合计八例/三十四份 guest raw、二十四次 focus success；此前六例、103 项
+报告和所有 `.2`/probe 原件不改写。这仅增加 Server 上的恢复样本，不授予 Win7
+OS32、其它系统恢复、快速快捷键前台拒绝、长期驻留或完整 #27/#29/生产资格。
