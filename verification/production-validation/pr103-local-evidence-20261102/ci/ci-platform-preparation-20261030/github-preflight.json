@@ -1,0 +1,57 @@
+{
+  "publicArchiveContext": {
+    "sourceLogicalId": "pr103-integration-evidence/ci-platform-preparation-20261030/github-preflight.json",
+    "originalBytes": 1464,
+    "originalSha256": "d579281743d4a7a511f7f0b5011ec654aa927cedfc301b88edc7eb82e8c58aad",
+    "modifiedPublicCopy": true,
+    "normalization": "UTF-8 without BOM; LF; final newline",
+    "evidenceIdentity": {
+      "historicalDate": "2026-10-30",
+      "baselineCommit": "19d450eae04d7ee51286168712d5b60c08631e89",
+      "baselineTree": "98cb4681032285309841293d65f0041344aa5f14",
+      "validationKind": "historical_local_static_or_publication_record",
+      "cloudExecutionVerified": false,
+      "validatesNewCandidate": false,
+      "unvalidatedCandidatePrefix": "e43a79"
+    },
+    "limitation": "Historical evidence copy only; not original bytes and not validation of candidate e43a79 or another new candidate."
+  },
+  "evidence": {
+    "pr": {
+      "url": "https://github.com/chenziyang110/soui-web-sdk/pull/103",
+      "head": "19d450eae04d7ee51286168712d5b60c08631e89",
+      "branch": "codex/portable-runtime-platform-matrix-20261020",
+      "draft": true,
+      "state": "open",
+      "merged": false
+    },
+    "actionsQueries": [
+      {
+        "url": "https://api.github.com/repos/chenziyang110/soui-web-sdk/actions/workflows?per_page=100",
+        "result": {
+          "error": "HTTPError: 400: GitHub Fetch URL is not an allowed public GitHub repository or search endpoint. (Response: None)",
+          "error_code": "INVALID_ARGUMENT"
+        }
+      },
+      {
+        "url": "https://api.github.com/repos/chenziyang110/soui-web-sdk/actions/permissions",
+        "result": {
+          "error": "HTTPError: 400: GitHub Fetch URL is not an allowed public GitHub repository or search endpoint. (Response: None)",
+          "error_code": "INVALID_ARGUMENT"
+        }
+      }
+    ],
+    "actionsSettingsKnown": false,
+    "baselineWorkflowFiles": [],
+    "baselineMainFetched": false,
+    "accountBillingBudgetRead": false,
+    "workflowTriggered": false,
+    "artifactsUploaded": false,
+    "paidResourcesProvisioned": false,
+    "repository": {
+      "fullName": "chenziyang110/soui-web-sdk",
+      "visibility": "public",
+      "url": "https://github.com/chenziyang110/soui-web-sdk.git"
+    }
+  }
+}

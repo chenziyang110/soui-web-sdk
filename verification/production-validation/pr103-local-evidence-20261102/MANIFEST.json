@@ -1,0 +1,1333 @@
+{
+  "schema": "soui.local-evidence-archive/v1",
+  "archiveDate": "2026-11-02",
+  "recoveryBase": {
+    "commit": "e43a79c6b5f6a3dce509fbf4c834952b64bf4985",
+    "tree": "9a5e9c13e7afc888bc982879aadbc79c5cadf929"
+  },
+  "scope": "仅已盘点PR103历史CI与Windows验收文本的脱敏副本；不包含其他项目、二进制包、截图或原始身份映射。",
+  "selectedInventoryItems": 33,
+  "copies": {
+    "ci": 20,
+    "windows": 4,
+    "total": 24
+  },
+  "originalsModified": false,
+  "includedOriginalsRehashedAndMatchedPriorInventory": true,
+  "textEncoding": "UTF-8 without BOM; LF; per-file transformations disclosed below",
+  "historicalEvidenceDoesNotValidateRecoveryBase": true,
+  "projectProgramsExecutedForArchive": false,
+  "remoteSaved": false,
+  "uploaded": false,
+  "releaseReady": false,
+  "redactionPlaceholders": "占位符描述逻辑角色，不保存其原身份映射；源码相对路径、技术错误、版本、退出码和SHA保留。",
+  "files": [
+    {
+      "sourceLogicalId": "pr103-integration-evidence/ci-first-run-20261030/commit-result.json",
+      "originalBytes": 417,
+      "originalSha256": "7baf0b0c5be206f17cde6897abe082dca2bcce8c9af332f9e74342a9d69452d2",
+      "evidenceIdentity": {
+        "historicalDate": "2026-10-30",
+        "baselineCommit": "19d450eae04d7ee51286168712d5b60c08631e89",
+        "baselineTree": "98cb4681032285309841293d65f0041344aa5f14",
+        "validationKind": "historical_local_static_or_publication_record",
+        "cloudExecutionVerified": false,
+        "validatesNewCandidate": false,
+        "unvalidatedCandidatePrefix": "e43a79",
+        "localCommit": "32b412b1c8c2bac1f10b9fa2e770170653fc9e41",
+        "localTree": "e4f78362f40d25ac5fe21692326b73f6a59077a3",
+        "historicalRemoteCommit": "19d450eae04d7ee51286168712d5b60c08631e89",
+        "historicalRemoteTree": "98cb4681032285309841293d65f0041344aa5f14",
+        "publicationOutcome": "remote_rejected_missing_workflow_scope",
+        "cloudExecutionAtRecordedCheckpoint": "not_started"
+      },
+      "archivePath": "ci/ci-first-run-20261030/commit-result.json",
+      "copyBytes": 1681,
+      "copySha256": "eecba5fc0269d5d7473b4e1227750157ae53360022535d0e0f81a2789729578b",
+      "redactions": {
+        "commit_identity_source_field_replaced": 1
+      },
+      "byteTransforms": {
+        "originalByteCopy": false,
+        "encoding": "UTF-8",
+        "bom": false,
+        "newline": "LF",
+        "finalNewline": true,
+        "jsonReserialized": true,
+        "sourceCRLFPairs": 11,
+        "sourceLoneCR": 0,
+        "sourceUTF8BOMRemoved": false,
+        "hashBasis": "final normalized copy bytes"
+      },
+      "currentArchiveBaseValidatedByHistoricalEvidence": false
+    },
+    {
+      "sourceLogicalId": "pr103-integration-evidence/ci-first-run-20261030/github-readback.json",
+      "originalBytes": 4214,
+      "originalSha256": "e8446cc5ba72aba619c2cd8db5a670a7b2b091ef8524f1dbf6e995dc5fa765d2",
+      "evidenceIdentity": {
+        "historicalDate": "2026-10-30",
+        "baselineCommit": "19d450eae04d7ee51286168712d5b60c08631e89",
+        "baselineTree": "98cb4681032285309841293d65f0041344aa5f14",
+        "validationKind": "historical_local_static_or_publication_record",
+        "cloudExecutionVerified": false,
+        "validatesNewCandidate": false,
+        "unvalidatedCandidatePrefix": "e43a79",
+        "localCommit": "32b412b1c8c2bac1f10b9fa2e770170653fc9e41",
+        "localTree": "e4f78362f40d25ac5fe21692326b73f6a59077a3",
+        "historicalRemoteCommit": "19d450eae04d7ee51286168712d5b60c08631e89",
+        "historicalRemoteTree": "98cb4681032285309841293d65f0041344aa5f14",
+        "publicationOutcome": "remote_rejected_missing_workflow_scope",
+        "cloudExecutionAtRecordedCheckpoint": "not_started"
+      },
+      "archivePath": "ci/ci-first-run-20261030/github-readback.json",
+      "copyBytes": 3077,
+      "copySha256": "a78cbaa6769bfaf9404a11edf06a369fbf510ff4b3c0963cf4fadda9ad5260f0",
+      "redactions": {
+        "nonessential_identity_and_service_fields_removed": 15
+      },
+      "byteTransforms": {
+        "originalByteCopy": false,
+        "encoding": "UTF-8",
+        "bom": false,
+        "newline": "LF",
+        "finalNewline": true,
+        "jsonReserialized": true,
+        "sourceCRLFPairs": 0,
+        "sourceLoneCR": 0,
+        "sourceUTF8BOMRemoved": false,
+        "hashBasis": "final normalized copy bytes"
+      },
+      "currentArchiveBaseValidatedByHistoricalEvidence": false
+    },
+    {
+      "sourceLogicalId": "pr103-integration-evidence/ci-first-run-20261030/publish-blocker-report.md",
+      "originalBytes": 2740,
+      "originalSha256": "6d9b4b47b8369b858b5cebc7852edcedb8c03aee2ac6264ea92d002303680ca6",
+      "evidenceIdentity": {
+        "historicalDate": "2026-10-30",
+        "baselineCommit": "19d450eae04d7ee51286168712d5b60c08631e89",
+        "baselineTree": "98cb4681032285309841293d65f0041344aa5f14",
+        "validationKind": "historical_local_static_or_publication_record",
+        "cloudExecutionVerified": false,
+        "validatesNewCandidate": false,
+        "unvalidatedCandidatePrefix": "e43a79",
+        "localCommit": "32b412b1c8c2bac1f10b9fa2e770170653fc9e41",
+        "localTree": "e4f78362f40d25ac5fe21692326b73f6a59077a3",
+        "historicalRemoteCommit": "19d450eae04d7ee51286168712d5b60c08631e89",
+        "historicalRemoteTree": "98cb4681032285309841293d65f0041344aa5f14",
+        "publicationOutcome": "remote_rejected_missing_workflow_scope",
+        "cloudExecutionAtRecordedCheckpoint": "not_started"
+      },
+      "archivePath": "ci/ci-first-run-20261030/publish-blocker-report.md",
+      "copyBytes": 2992,
+      "copySha256": "99178ddde6bff4352322d1365e34a89c4c0e07f7d1bb0ba1e6fbd3e3eb897ce1",
+      "redactions": {
+        "procedural_guidance_segments_removed": 2,
+        "commit_identity_values": 1
+      },
+      "byteTransforms": {
+        "originalByteCopy": false,
+        "encoding": "UTF-8",
+        "bom": false,
+        "newline": "LF",
+        "finalNewline": true,
+        "jsonReserialized": false,
+        "sourceCRLFPairs": 0,
+        "sourceLoneCR": 0,
+        "sourceUTF8BOMRemoved": false,
+        "hashBasis": "final normalized copy bytes"
+      },
+      "currentArchiveBaseValidatedByHistoricalEvidence": false
+    },
+    {
+      "sourceLogicalId": "pr103-integration-evidence/ci-first-run-20261030/push-result.json",
+      "originalBytes": 603,
+      "originalSha256": "564ff1d0232cdfc1883eff8193dd9d474e4b315daa55d1e3f26455d6b691c86f",
+      "evidenceIdentity": {
+        "historicalDate": "2026-10-30",
+        "baselineCommit": "19d450eae04d7ee51286168712d5b60c08631e89",
+        "baselineTree": "98cb4681032285309841293d65f0041344aa5f14",
+        "validationKind": "historical_local_static_or_publication_record",
+        "cloudExecutionVerified": false,
+        "validatesNewCandidate": false,
+        "unvalidatedCandidatePrefix": "e43a79",
+        "localCommit": "32b412b1c8c2bac1f10b9fa2e770170653fc9e41",
+        "localTree": "e4f78362f40d25ac5fe21692326b73f6a59077a3",
+        "historicalRemoteCommit": "19d450eae04d7ee51286168712d5b60c08631e89",
+        "historicalRemoteTree": "98cb4681032285309841293d65f0041344aa5f14",
+        "publicationOutcome": "remote_rejected_missing_workflow_scope",
+        "cloudExecutionAtRecordedCheckpoint": "not_started"
+      },
+      "archivePath": "ci/ci-first-run-20261030/push-result.json",
+      "copyBytes": 1913,
+      "copySha256": "0329df084d87e1cc16b60bd6e76bca82699c00e260bf7fcf3b32568ea7514f0c",
+      "redactions": {},
+      "byteTransforms": {
+        "originalByteCopy": false,
+        "encoding": "UTF-8",
+        "bom": false,
+        "newline": "LF",
+        "finalNewline": true,
+        "jsonReserialized": true,
+        "sourceCRLFPairs": 18,
+        "sourceLoneCR": 0,
+        "sourceUTF8BOMRemoved": false,
+        "hashBasis": "final normalized copy bytes"
+      },
+      "currentArchiveBaseValidatedByHistoricalEvidence": false
+    },
+    {
+      "sourceLogicalId": "pr103-integration-evidence/ci-first-run-20261030/push.stderr.log",
+      "originalBytes": 88,
+      "originalSha256": "8e1fe3fd664da87efea07553926eb06245e7e352a8ff2f4d9ff281bbf9478478",
+      "evidenceIdentity": {
+        "historicalDate": "2026-10-30",
+        "baselineCommit": "19d450eae04d7ee51286168712d5b60c08631e89",
+        "baselineTree": "98cb4681032285309841293d65f0041344aa5f14",
+        "validationKind": "historical_local_static_or_publication_record",
+        "cloudExecutionVerified": false,
+        "validatesNewCandidate": false,
+        "unvalidatedCandidatePrefix": "e43a79",
+        "localCommit": "32b412b1c8c2bac1f10b9fa2e770170653fc9e41",
+        "localTree": "e4f78362f40d25ac5fe21692326b73f6a59077a3",
+        "historicalRemoteCommit": "19d450eae04d7ee51286168712d5b60c08631e89",
+        "historicalRemoteTree": "98cb4681032285309841293d65f0041344aa5f14",
+        "publicationOutcome": "remote_rejected_missing_workflow_scope",
+        "cloudExecutionAtRecordedCheckpoint": "not_started"
+      },
+      "archivePath": "ci/ci-first-run-20261030/push.stderr.log",
+      "copyBytes": 428,
+      "copySha256": "1188b8978d4e30dee498d484b63ee5c5e34474d9d91f06f0a535bdb751cc50ce",
+      "redactions": {},
+      "byteTransforms": {
+        "originalByteCopy": false,
+        "encoding": "UTF-8",
+        "bom": false,
+        "newline": "LF",
+        "finalNewline": true,
+        "jsonReserialized": false,
+        "sourceCRLFPairs": 1,
+        "sourceLoneCR": 0,
+        "sourceUTF8BOMRemoved": false,
+        "hashBasis": "final normalized copy bytes"
+      },
+      "currentArchiveBaseValidatedByHistoricalEvidence": false
+    },
+    {
+      "sourceLogicalId": "pr103-integration-evidence/ci-first-run-20261030/push.stdout.log",
+      "originalBytes": 304,
+      "originalSha256": "f7e3b0ab14b17b4e57a42b998e7d936750a7ca35bd15953f1de9b6c3a7b0874f",
+      "evidenceIdentity": {
+        "historicalDate": "2026-10-30",
+        "baselineCommit": "19d450eae04d7ee51286168712d5b60c08631e89",
+        "baselineTree": "98cb4681032285309841293d65f0041344aa5f14",
+        "validationKind": "historical_local_static_or_publication_record",
+        "cloudExecutionVerified": false,
+        "validatesNewCandidate": false,
+        "unvalidatedCandidatePrefix": "e43a79",
+        "localCommit": "32b412b1c8c2bac1f10b9fa2e770170653fc9e41",
+        "localTree": "e4f78362f40d25ac5fe21692326b73f6a59077a3",
+        "historicalRemoteCommit": "19d450eae04d7ee51286168712d5b60c08631e89",
+        "historicalRemoteTree": "98cb4681032285309841293d65f0041344aa5f14",
+        "publicationOutcome": "remote_rejected_missing_workflow_scope",
+        "cloudExecutionAtRecordedCheckpoint": "not_started"
+      },
+      "archivePath": "ci/ci-first-run-20261030/push.stdout.log",
+      "copyBytes": 645,
+      "copySha256": "67790ebfa539d7a89f1d09a8b492f2bf5a48da51bbc2e3de324f02562c6d7d4e",
+      "redactions": {},
+      "byteTransforms": {
+        "originalByteCopy": false,
+        "encoding": "UTF-8",
+        "bom": false,
+        "newline": "LF",
+        "finalNewline": true,
+        "jsonReserialized": false,
+        "sourceCRLFPairs": 0,
+        "sourceLoneCR": 0,
+        "sourceUTF8BOMRemoved": false,
+        "hashBasis": "final normalized copy bytes"
+      },
+      "currentArchiveBaseValidatedByHistoricalEvidence": false
+    },
+    {
+      "sourceLogicalId": "pr103-integration-evidence/ci-first-run-20261030/remote-readback.json",
+      "originalBytes": 441,
+      "originalSha256": "934e0cce8a3e40891938cee64918a8f8f44b112f5a437e6ac04401550bad572d",
+      "evidenceIdentity": {
+        "historicalDate": "2026-10-30",
+        "baselineCommit": "19d450eae04d7ee51286168712d5b60c08631e89",
+        "baselineTree": "98cb4681032285309841293d65f0041344aa5f14",
+        "validationKind": "historical_local_static_or_publication_record",
+        "cloudExecutionVerified": false,
+        "validatesNewCandidate": false,
+        "unvalidatedCandidatePrefix": "e43a79",
+        "localCommit": "32b412b1c8c2bac1f10b9fa2e770170653fc9e41",
+        "localTree": "e4f78362f40d25ac5fe21692326b73f6a59077a3",
+        "historicalRemoteCommit": "19d450eae04d7ee51286168712d5b60c08631e89",
+        "historicalRemoteTree": "98cb4681032285309841293d65f0041344aa5f14",
+        "publicationOutcome": "remote_rejected_missing_workflow_scope",
+        "cloudExecutionAtRecordedCheckpoint": "not_started"
+      },
+      "archivePath": "ci/ci-first-run-20261030/remote-readback.json",
+      "copyBytes": 1750,
+      "copySha256": "64bfb1d38937183db0e1747e4e65f4cf869f33235bf8be56f171d5f99c68d45e",
+      "redactions": {},
+      "byteTransforms": {
+        "originalByteCopy": false,
+        "encoding": "UTF-8",
+        "bom": false,
+        "newline": "LF",
+        "finalNewline": true,
+        "jsonReserialized": true,
+        "sourceCRLFPairs": 13,
+        "sourceLoneCR": 0,
+        "sourceUTF8BOMRemoved": false,
+        "hashBasis": "final normalized copy bytes"
+      },
+      "currentArchiveBaseValidatedByHistoricalEvidence": false
+    },
+    {
+      "sourceLogicalId": "pr103-integration-evidence/ci-platform-closeout-20261030/closeout-review.md",
+      "originalBytes": 15405,
+      "originalSha256": "670ba290e261b644c01c2eb480a705132af5da50d4838eb1c1886661e68acb92",
+      "evidenceIdentity": {
+        "historicalDate": "2026-10-30",
+        "baselineCommit": "19d450eae04d7ee51286168712d5b60c08631e89",
+        "baselineTree": "98cb4681032285309841293d65f0041344aa5f14",
+        "validationKind": "historical_local_static_or_publication_record",
+        "cloudExecutionVerified": false,
+        "validatesNewCandidate": false,
+        "unvalidatedCandidatePrefix": "e43a79",
+        "indexTree": "8c052061f27ee62ae9e95b729096f31d430f8ad4"
+      },
+      "archivePath": "ci/ci-platform-closeout-20261030/closeout-review.md",
+      "copyBytes": 5912,
+      "copySha256": "f5ee65d26c5996a74eb5549f0042f33fa6a90104181f7931baab1b2a1890f0af",
+      "redactions": {
+        "source_and_procedural_appendix_blocks_removed": 1,
+        "source_and_procedural_appendix_lines_removed": 218,
+        "procedural_guidance_segments_removed": 1,
+        "technical_identity_values_retained_outside_removed_appendices": 2
+      },
+      "byteTransforms": {
+        "originalByteCopy": false,
+        "encoding": "UTF-8",
+        "bom": false,
+        "newline": "LF",
+        "finalNewline": true,
+        "jsonReserialized": false,
+        "sourceCRLFPairs": 0,
+        "sourceLoneCR": 0,
+        "sourceUTF8BOMRemoved": false,
+        "hashBasis": "final normalized copy bytes"
+      },
+      "currentArchiveBaseValidatedByHistoricalEvidence": false
+    },
+    {
+      "sourceLogicalId": "pr103-integration-evidence/ci-platform-closeout-20261030/final-policy.stdout.json",
+      "originalBytes": 1296,
+      "originalSha256": "8a292deee33a1b5dbad3da802f038b816a0bc93ab66f8f8ec53928ce6ca8bb88",
+      "evidenceIdentity": {
+        "historicalDate": "2026-10-30",
+        "baselineCommit": "19d450eae04d7ee51286168712d5b60c08631e89",
+        "baselineTree": "98cb4681032285309841293d65f0041344aa5f14",
+        "validationKind": "historical_local_static_or_publication_record",
+        "cloudExecutionVerified": false,
+        "validatesNewCandidate": false,
+        "unvalidatedCandidatePrefix": "e43a79",
+        "indexTree": "8c052061f27ee62ae9e95b729096f31d430f8ad4"
+      },
+      "archivePath": "ci/ci-platform-closeout-20261030/final-policy.stdout.json",
+      "copyBytes": 2379,
+      "copySha256": "338252b96c24da39598c09fb6f061b4d5005fc6b71fbd818f9b0097f2c2974fe",
+      "redactions": {},
+      "byteTransforms": {
+        "originalByteCopy": false,
+        "encoding": "UTF-8",
+        "bom": false,
+        "newline": "LF",
+        "finalNewline": true,
+        "jsonReserialized": true,
+        "sourceCRLFPairs": 0,
+        "sourceLoneCR": 0,
+        "sourceUTF8BOMRemoved": false,
+        "hashBasis": "final normalized copy bytes"
+      },
+      "currentArchiveBaseValidatedByHistoricalEvidence": false
+    },
+    {
+      "sourceLogicalId": "pr103-integration-evidence/ci-platform-closeout-20261030/final-state-and-diff.json",
+      "originalBytes": 4884,
+      "originalSha256": "85ae77c406468c939424bb3b81dec5234cd55a5fcf9541afdcdaf41b7cb19c38",
+      "evidenceIdentity": {
+        "historicalDate": "2026-10-30",
+        "baselineCommit": "19d450eae04d7ee51286168712d5b60c08631e89",
+        "baselineTree": "98cb4681032285309841293d65f0041344aa5f14",
+        "validationKind": "historical_local_static_or_publication_record",
+        "cloudExecutionVerified": false,
+        "validatesNewCandidate": false,
+        "unvalidatedCandidatePrefix": "e43a79",
+        "indexTree": "8c052061f27ee62ae9e95b729096f31d430f8ad4"
+      },
+      "archivePath": "ci/ci-platform-closeout-20261030/final-state-and-diff.json",
+      "copyBytes": 6094,
+      "copySha256": "05f378055c7cb8897e10def5821c7b32d895c9936afd992d309ec03f0b7542fc",
+      "redactions": {},
+      "byteTransforms": {
+        "originalByteCopy": false,
+        "encoding": "UTF-8",
+        "bom": false,
+        "newline": "LF",
+        "finalNewline": true,
+        "jsonReserialized": true,
+        "sourceCRLFPairs": 0,
+        "sourceLoneCR": 0,
+        "sourceUTF8BOMRemoved": false,
+        "hashBasis": "final normalized copy bytes"
+      },
+      "currentArchiveBaseValidatedByHistoricalEvidence": false
+    },
+    {
+      "sourceLogicalId": "pr103-integration-evidence/ci-platform-closeout-20261030/manifest-delta.json",
+      "originalBytes": 2619,
+      "originalSha256": "cfc8e4e371a7c21911f83e90a6cee3525baf47601332dfe984c77b7647dc2da6",
+      "evidenceIdentity": {
+        "historicalDate": "2026-10-30",
+        "baselineCommit": "19d450eae04d7ee51286168712d5b60c08631e89",
+        "baselineTree": "98cb4681032285309841293d65f0041344aa5f14",
+        "validationKind": "historical_local_static_or_publication_record",
+        "cloudExecutionVerified": false,
+        "validatesNewCandidate": false,
+        "unvalidatedCandidatePrefix": "e43a79",
+        "indexTree": "8c052061f27ee62ae9e95b729096f31d430f8ad4"
+      },
+      "archivePath": "ci/ci-platform-closeout-20261030/manifest-delta.json",
+      "copyBytes": 3757,
+      "copySha256": "600dec5702b60cb158bfa449b03c1c76c8518dbdd454aef76814a73af260d67d",
+      "redactions": {},
+      "byteTransforms": {
+        "originalByteCopy": false,
+        "encoding": "UTF-8",
+        "bom": false,
+        "newline": "LF",
+        "finalNewline": true,
+        "jsonReserialized": true,
+        "sourceCRLFPairs": 0,
+        "sourceLoneCR": 0,
+        "sourceUTF8BOMRemoved": false,
+        "hashBasis": "final normalized copy bytes"
+      },
+      "currentArchiveBaseValidatedByHistoricalEvidence": false
+    },
+    {
+      "sourceLogicalId": "pr103-integration-evidence/ci-platform-preparation-20261030/final-static/static-commands.json",
+      "originalBytes": 2475,
+      "originalSha256": "29b4f76521f78988d5bc5a0b52d286b28fa881cd6d60d7fbdaefdfab99461041",
+      "evidenceIdentity": {
+        "historicalDate": "2026-10-30",
+        "baselineCommit": "19d450eae04d7ee51286168712d5b60c08631e89",
+        "baselineTree": "98cb4681032285309841293d65f0041344aa5f14",
+        "validationKind": "historical_local_static_or_publication_record",
+        "cloudExecutionVerified": false,
+        "validatesNewCandidate": false,
+        "unvalidatedCandidatePrefix": "e43a79"
+      },
+      "archivePath": "ci/ci-platform-preparation-20261030/final-static/static-commands.json",
+      "copyBytes": 2586,
+      "copySha256": "0a8de5ab1a734cd7a16fae79195a5d81e446b01f00c9875ea21a195382fb300c",
+      "redactions": {
+        "windows_absolute_paths": 9
+      },
+      "byteTransforms": {
+        "originalByteCopy": false,
+        "encoding": "UTF-8",
+        "bom": false,
+        "newline": "LF",
+        "finalNewline": true,
+        "jsonReserialized": true,
+        "sourceCRLFPairs": 97,
+        "sourceLoneCR": 0,
+        "sourceUTF8BOMRemoved": false,
+        "hashBasis": "final normalized copy bytes"
+      },
+      "currentArchiveBaseValidatedByHistoricalEvidence": false
+    },
+    {
+      "sourceLogicalId": "pr103-integration-evidence/ci-platform-preparation-20261030/final-static/static-policy.stdout.json",
+      "originalBytes": 1260,
+      "originalSha256": "bacf8ce8f5d94e28ebf37aef223c49db982c60106759529123933a45cc9da188",
+      "evidenceIdentity": {
+        "historicalDate": "2026-10-30",
+        "baselineCommit": "19d450eae04d7ee51286168712d5b60c08631e89",
+        "baselineTree": "98cb4681032285309841293d65f0041344aa5f14",
+        "validationKind": "historical_local_static_or_publication_record",
+        "cloudExecutionVerified": false,
+        "validatesNewCandidate": false,
+        "unvalidatedCandidatePrefix": "e43a79"
+      },
+      "archivePath": "ci/ci-platform-preparation-20261030/final-static/static-policy.stdout.json",
+      "copyBytes": 2295,
+      "copySha256": "316094027a53c60e37e6c910d98916cc8e1090e15f5ce6a7471e360388825ede",
+      "redactions": {},
+      "byteTransforms": {
+        "originalByteCopy": false,
+        "encoding": "UTF-8",
+        "bom": false,
+        "newline": "LF",
+        "finalNewline": true,
+        "jsonReserialized": true,
+        "sourceCRLFPairs": 0,
+        "sourceLoneCR": 0,
+        "sourceUTF8BOMRemoved": false,
+        "hashBasis": "final normalized copy bytes"
+      },
+      "currentArchiveBaseValidatedByHistoricalEvidence": false
+    },
+    {
+      "sourceLogicalId": "pr103-integration-evidence/ci-platform-preparation-20261030/github-preflight.json",
+      "originalBytes": 1464,
+      "originalSha256": "d579281743d4a7a511f7f0b5011ec654aa927cedfc301b88edc7eb82e8c58aad",
+      "evidenceIdentity": {
+        "historicalDate": "2026-10-30",
+        "baselineCommit": "19d450eae04d7ee51286168712d5b60c08631e89",
+        "baselineTree": "98cb4681032285309841293d65f0041344aa5f14",
+        "validationKind": "historical_local_static_or_publication_record",
+        "cloudExecutionVerified": false,
+        "validatesNewCandidate": false,
+        "unvalidatedCandidatePrefix": "e43a79"
+      },
+      "archivePath": "ci/ci-platform-preparation-20261030/github-preflight.json",
+      "copyBytes": 2283,
+      "copySha256": "147ed8c886854a88c1c369c36dfa66456e81bb63891f3222520c2f72405d3670",
+      "redactions": {
+        "nonessential_identity_and_permission_fields_removed": 6
+      },
+      "byteTransforms": {
+        "originalByteCopy": false,
+        "encoding": "UTF-8",
+        "bom": false,
+        "newline": "LF",
+        "finalNewline": true,
+        "jsonReserialized": true,
+        "sourceCRLFPairs": 0,
+        "sourceLoneCR": 0,
+        "sourceUTF8BOMRemoved": false,
+        "hashBasis": "final normalized copy bytes"
+      },
+      "currentArchiveBaseValidatedByHistoricalEvidence": false
+    },
+    {
+      "sourceLogicalId": "pr103-integration-evidence/ci-platform-preparation-20261030/local-state-and-diff.json",
+      "originalBytes": 2946,
+      "originalSha256": "70d5e462d9b01fea5d6b0a709a21a07581fd563cb102b7f2f0f26b27e490f361",
+      "evidenceIdentity": {
+        "historicalDate": "2026-10-30",
+        "baselineCommit": "19d450eae04d7ee51286168712d5b60c08631e89",
+        "baselineTree": "98cb4681032285309841293d65f0041344aa5f14",
+        "validationKind": "historical_local_static_or_publication_record",
+        "cloudExecutionVerified": false,
+        "validatesNewCandidate": false,
+        "unvalidatedCandidatePrefix": "e43a79"
+      },
+      "archivePath": "ci/ci-platform-preparation-20261030/local-state-and-diff.json",
+      "copyBytes": 4054,
+      "copySha256": "a491c8a5376fd6202d3b83b61a1545f47383e63e2afa51e50e2b22b4c1d95ccc",
+      "redactions": {},
+      "byteTransforms": {
+        "originalByteCopy": false,
+        "encoding": "UTF-8",
+        "bom": false,
+        "newline": "LF",
+        "finalNewline": true,
+        "jsonReserialized": true,
+        "sourceCRLFPairs": 0,
+        "sourceLoneCR": 0,
+        "sourceUTF8BOMRemoved": false,
+        "hashBasis": "final normalized copy bytes"
+      },
+      "currentArchiveBaseValidatedByHistoricalEvidence": false
+    },
+    {
+      "sourceLogicalId": "pr103-integration-evidence/ci-platform-preparation-20261030/preparation-report.md",
+      "originalBytes": 8210,
+      "originalSha256": "3e53f68f69eb9227064f36120949a944967619fa675fcd02dd8da951162099e4",
+      "evidenceIdentity": {
+        "historicalDate": "2026-10-30",
+        "baselineCommit": "19d450eae04d7ee51286168712d5b60c08631e89",
+        "baselineTree": "98cb4681032285309841293d65f0041344aa5f14",
+        "validationKind": "historical_local_static_or_publication_record",
+        "cloudExecutionVerified": false,
+        "validatesNewCandidate": false,
+        "unvalidatedCandidatePrefix": "e43a79"
+      },
+      "archivePath": "ci/ci-platform-preparation-20261030/preparation-report.md",
+      "copyBytes": 8598,
+      "copySha256": "f23b88072feec96dd2afd03e9aef20c440c3b09fed7bf0e192dc7a11ff66792e",
+      "redactions": {
+        "procedural_guidance_segments_removed": 2,
+        "windows_absolute_paths": 1
+      },
+      "byteTransforms": {
+        "originalByteCopy": false,
+        "encoding": "UTF-8",
+        "bom": false,
+        "newline": "LF",
+        "finalNewline": true,
+        "jsonReserialized": false,
+        "sourceCRLFPairs": 0,
+        "sourceLoneCR": 0,
+        "sourceUTF8BOMRemoved": false,
+        "hashBasis": "final normalized copy bytes"
+      },
+      "currentArchiveBaseValidatedByHistoricalEvidence": false
+    },
+    {
+      "sourceLogicalId": "pr103-integration-evidence/ci-push-trigger-20261030/final-state-and-diff.json",
+      "originalBytes": 3832,
+      "originalSha256": "9ccca73cacfab57fc151312a00efcb3cbfc4267dba77be6feae99c964e85c71e",
+      "evidenceIdentity": {
+        "historicalDate": "2026-10-30",
+        "baselineCommit": "19d450eae04d7ee51286168712d5b60c08631e89",
+        "baselineTree": "98cb4681032285309841293d65f0041344aa5f14",
+        "validationKind": "historical_local_static_or_publication_record",
+        "cloudExecutionVerified": false,
+        "validatesNewCandidate": false,
+        "unvalidatedCandidatePrefix": "e43a79",
+        "indexTree": "e4f78362f40d25ac5fe21692326b73f6a59077a3"
+      },
+      "archivePath": "ci/ci-push-trigger-20261030/final-state-and-diff.json",
+      "copyBytes": 4965,
+      "copySha256": "adc4f96063a4f648b79be5148dad1d313ac0c749b8e214faa6da50d198d53d42",
+      "redactions": {},
+      "byteTransforms": {
+        "originalByteCopy": false,
+        "encoding": "UTF-8",
+        "bom": false,
+        "newline": "LF",
+        "finalNewline": true,
+        "jsonReserialized": true,
+        "sourceCRLFPairs": 0,
+        "sourceLoneCR": 0,
+        "sourceUTF8BOMRemoved": false,
+        "hashBasis": "final normalized copy bytes"
+      },
+      "currentArchiveBaseValidatedByHistoricalEvidence": false
+    },
+    {
+      "sourceLogicalId": "pr103-integration-evidence/ci-push-trigger-20261030/manifest-delta.json",
+      "originalBytes": 1695,
+      "originalSha256": "95547ef3f2642c4d758728c7eeb16a6f9fc7b119151cb2bf9e11344f15b94441",
+      "evidenceIdentity": {
+        "historicalDate": "2026-10-30",
+        "baselineCommit": "19d450eae04d7ee51286168712d5b60c08631e89",
+        "baselineTree": "98cb4681032285309841293d65f0041344aa5f14",
+        "validationKind": "historical_local_static_or_publication_record",
+        "cloudExecutionVerified": false,
+        "validatesNewCandidate": false,
+        "unvalidatedCandidatePrefix": "e43a79",
+        "indexTree": "e4f78362f40d25ac5fe21692326b73f6a59077a3"
+      },
+      "archivePath": "ci/ci-push-trigger-20261030/manifest-delta.json",
+      "copyBytes": 2766,
+      "copySha256": "6a8398231bae1ef96f3a8ae4e00ffcddaeb63dfe3da34f6c3e122491ccb1e713",
+      "redactions": {},
+      "byteTransforms": {
+        "originalByteCopy": false,
+        "encoding": "UTF-8",
+        "bom": false,
+        "newline": "LF",
+        "finalNewline": true,
+        "jsonReserialized": true,
+        "sourceCRLFPairs": 0,
+        "sourceLoneCR": 0,
+        "sourceUTF8BOMRemoved": false,
+        "hashBasis": "final normalized copy bytes"
+      },
+      "currentArchiveBaseValidatedByHistoricalEvidence": false
+    },
+    {
+      "sourceLogicalId": "pr103-integration-evidence/ci-push-trigger-20261030/trigger-policy.stdout.json",
+      "originalBytes": 1659,
+      "originalSha256": "24a9e8b55b0a0880e71b1c14738901390ffab8af914d4fa137fbd6ddbda45774",
+      "evidenceIdentity": {
+        "historicalDate": "2026-10-30",
+        "baselineCommit": "19d450eae04d7ee51286168712d5b60c08631e89",
+        "baselineTree": "98cb4681032285309841293d65f0041344aa5f14",
+        "validationKind": "historical_local_static_or_publication_record",
+        "cloudExecutionVerified": false,
+        "validatesNewCandidate": false,
+        "unvalidatedCandidatePrefix": "e43a79",
+        "indexTree": "e4f78362f40d25ac5fe21692326b73f6a59077a3"
+      },
+      "archivePath": "ci/ci-push-trigger-20261030/trigger-policy.stdout.json",
+      "copyBytes": 2761,
+      "copySha256": "5f01f4ac6fb83c3c74b3c4d0930312bb8a8dd6bd1e75dc59e090f2bda34ba17c",
+      "redactions": {},
+      "byteTransforms": {
+        "originalByteCopy": false,
+        "encoding": "UTF-8",
+        "bom": false,
+        "newline": "LF",
+        "finalNewline": true,
+        "jsonReserialized": true,
+        "sourceCRLFPairs": 0,
+        "sourceLoneCR": 0,
+        "sourceUTF8BOMRemoved": false,
+        "hashBasis": "final normalized copy bytes"
+      },
+      "currentArchiveBaseValidatedByHistoricalEvidence": false
+    },
+    {
+      "sourceLogicalId": "pr103-integration-evidence/ci-push-trigger-20261030/trigger-review.md",
+      "originalBytes": 2743,
+      "originalSha256": "c325a59ddddec2deae55933d0abe436099a8294abda967e14a353b42d3579c89",
+      "evidenceIdentity": {
+        "historicalDate": "2026-10-30",
+        "baselineCommit": "19d450eae04d7ee51286168712d5b60c08631e89",
+        "baselineTree": "98cb4681032285309841293d65f0041344aa5f14",
+        "validationKind": "historical_local_static_or_publication_record",
+        "cloudExecutionVerified": false,
+        "validatesNewCandidate": false,
+        "unvalidatedCandidatePrefix": "e43a79",
+        "indexTree": "e4f78362f40d25ac5fe21692326b73f6a59077a3"
+      },
+      "archivePath": "ci/ci-push-trigger-20261030/trigger-review.md",
+      "copyBytes": 3172,
+      "copySha256": "d30153716134e23c9a756920b1c6bd9660abf72000c633128202253a52a0eb99",
+      "redactions": {},
+      "byteTransforms": {
+        "originalByteCopy": false,
+        "encoding": "UTF-8",
+        "bom": false,
+        "newline": "LF",
+        "finalNewline": true,
+        "jsonReserialized": false,
+        "sourceCRLFPairs": 0,
+        "sourceLoneCR": 0,
+        "sourceUTF8BOMRemoved": false,
+        "hashBasis": "final normalized copy bytes"
+      },
+      "currentArchiveBaseValidatedByHistoricalEvidence": false
+    },
+    {
+      "sourceLogicalId": "q98/evidence/build-only-report.md",
+      "originalBytes": 10837,
+      "originalSha256": "bb52dffefc9e379648293e84241468425f46533f685977bbbe4ecf7edb288f8b",
+      "archivePath": "windows/build-only-report.md",
+      "copyBytes": 10815,
+      "copySha256": "8643434228eedee0746526264980eb2e003d9781144263507e91e659465e9e0f",
+      "redactions": [
+        {
+          "category": "internal-machine-record-reference",
+          "count": 1,
+          "originalLineRange": [
+            28,
+            28
+          ],
+          "action": "original-paragraph-removed-and-neutral-technical-summary-substituted",
+          "basis": "Exclude internal approval/session/executor details; retain technical results and failure boundaries."
+        },
+        {
+          "category": "internal-executor-reference",
+          "count": 1,
+          "originalLineRange": [
+            46,
+            46
+          ],
+          "action": "original-paragraph-removed-and-neutral-technical-summary-substituted",
+          "basis": "Exclude internal approval/session/executor details; retain technical results and failure boundaries."
+        },
+        {
+          "category": "internal-execution-record-reference",
+          "count": 1,
+          "originalLineRange": [
+            50,
+            50
+          ],
+          "action": "original-paragraph-removed-and-neutral-technical-summary-substituted",
+          "basis": "Exclude internal approval/session/executor details; retain technical results and failure boundaries."
+        },
+        {
+          "category": "internal-handoff-record-reference",
+          "count": 1,
+          "originalLineRange": [
+            106,
+            106
+          ],
+          "action": "original-paragraph-removed-and-neutral-technical-summary-substituted",
+          "basis": "Exclude internal approval/session/executor details; retain technical results and failure boundaries."
+        },
+        {
+          "category": "internal-execution-policy-narrative",
+          "count": 1,
+          "originalLineRange": [
+            108,
+            108
+          ],
+          "action": "original-paragraph-removed-and-neutral-technical-summary-substituted",
+          "basis": "Exclude internal approval/session/executor details; retain technical results and failure boundaries."
+        },
+        {
+          "category": "internal-approval-narrative",
+          "count": 1,
+          "originalLineRange": [
+            110,
+            110
+          ],
+          "action": "original-paragraph-removed-and-neutral-technical-summary-substituted",
+          "basis": "Exclude internal approval/session/executor details; retain technical results and failure boundaries."
+        },
+        {
+          "category": "source-root-absolute-path",
+          "count": 1,
+          "replacement": "<SOURCE_ROOT>",
+          "basis": "Remove local identity or executor-specific storage aliases while preserving technical suffixes."
+        },
+        {
+          "category": "workspace-absolute-path",
+          "count": 1,
+          "replacement": "<WORKSPACE>",
+          "basis": "Remove local identity or executor-specific storage aliases while preserving technical suffixes."
+        },
+        {
+          "category": "user-package-cache-path",
+          "count": 1,
+          "replacement": "<CACHE>/webview2-sdk",
+          "basis": "Remove local identity or executor-specific storage aliases while preserving technical suffixes."
+        },
+        {
+          "category": "host-identity",
+          "count": 1,
+          "replacement": "<HOST>",
+          "basis": "Remove local identity or executor-specific storage aliases while preserving technical suffixes."
+        },
+        {
+          "category": "scratch-output-alias-win32-runtime",
+          "count": 16,
+          "replacement": "windows-win32-runtime",
+          "basis": "Remove local identity or executor-specific storage aliases while preserving technical suffixes."
+        },
+        {
+          "category": "prior-scratch-build-alias",
+          "count": 4,
+          "replacement": "<PRIOR_BUILD>",
+          "basis": "Remove local identity or executor-specific storage aliases while preserving technical suffixes."
+        }
+      ],
+      "byteTransforms": {
+        "encoding": "UTF-8",
+        "bom": false,
+        "lineEndings": "LF",
+        "sourceCrLfCount": 0,
+        "sourceLoneCrCount": 0,
+        "finalNewline": true,
+        "archivalContextAdded": true,
+        "jsonReserialized": false
+      },
+      "verification": {
+        "sourceAndArtifactDigestsPreserved": true,
+        "technicalToolAndStageNamesPreserved": true,
+        "residualPrivateMarkerCount": 0,
+        "originalPersonalEmailCount": 0,
+        "originalProfileIdentityCount": 1,
+        "jsonParsed": false,
+        "originalUnmodified": true
+      },
+      "evidenceIdentity": {
+        "sourceTree": "98cb4681032285309841293d65f0041344aa5f14",
+        "historicalBuildOnly": true,
+        "validatesCurrentRecoveryCandidate": false,
+        "currentRecoveryCandidatePrefix": "e43a79",
+        "releaseReady": false,
+        "nativeRuntimeVerified": false
+      },
+      "excluded": false,
+      "currentArchiveBaseValidatedByHistoricalEvidence": false
+    },
+    {
+      "sourceLogicalId": "q98d/evidence/desktop-build-only-report.md",
+      "originalBytes": 10885,
+      "originalSha256": "c080951f0ca6acb9182843713038e813a139d64f3333a8b6c629bc1abcbff4f6",
+      "archivePath": "windows/desktop-build-only-report.md",
+      "copyBytes": 10789,
+      "copySha256": "aa6e248ad75056b8fad2bc4a7330f1df56a2574e506cc9fd4f51af7bb9f06840",
+      "redactions": [
+        {
+          "category": "internal-approval-narrative",
+          "count": 1,
+          "originalLineRange": [
+            3,
+            3
+          ],
+          "action": "original-paragraph-removed-and-neutral-technical-summary-substituted",
+          "basis": "Exclude internal approval/session/executor details; retain technical results and failure boundaries."
+        },
+        {
+          "category": "internal-agreement-and-approval-narrative",
+          "count": 1,
+          "originalLineRange": [
+            28,
+            28
+          ],
+          "action": "original-paragraph-removed-and-neutral-technical-summary-substituted",
+          "basis": "Exclude internal approval/session/executor details; retain technical results and failure boundaries."
+        },
+        {
+          "category": "internal-permission-style-executor-narrative",
+          "count": 1,
+          "originalLineRange": [
+            49,
+            49
+          ],
+          "action": "original-paragraph-removed-and-neutral-technical-summary-substituted",
+          "basis": "Exclude internal approval/session/executor details; retain technical results and failure boundaries."
+        },
+        {
+          "category": "internal-diagnostic-and-approval-reference",
+          "count": 1,
+          "originalLineRange": [
+            51,
+            51
+          ],
+          "action": "original-paragraph-removed-and-neutral-technical-summary-substituted",
+          "basis": "Exclude internal approval/session/executor details; retain technical results and failure boundaries."
+        },
+        {
+          "category": "internal-execution-record-reference",
+          "count": 1,
+          "originalLineRange": [
+            55,
+            55
+          ],
+          "action": "original-paragraph-removed-and-neutral-technical-summary-substituted",
+          "basis": "Exclude internal approval/session/executor details; retain technical results and failure boundaries."
+        },
+        {
+          "category": "internal-handoff-record-reference",
+          "count": 1,
+          "originalLineRange": [
+            107,
+            107
+          ],
+          "action": "original-paragraph-removed-and-neutral-technical-summary-substituted",
+          "basis": "Exclude internal approval/session/executor details; retain technical results and failure boundaries."
+        },
+        {
+          "category": "internal-approval-and-remote-action-narrative",
+          "count": 1,
+          "originalLineRange": [
+            109,
+            109
+          ],
+          "action": "original-paragraph-removed-and-neutral-technical-summary-substituted",
+          "basis": "Exclude internal approval/session/executor details; retain technical results and failure boundaries."
+        },
+        {
+          "category": "internal-transport-implementation-detail",
+          "count": 1,
+          "replacement": "omitted",
+          "basis": "Retain HTTP status, official HTTPS source and redirect outcome without executor configuration detail."
+        },
+        {
+          "category": "source-root-absolute-path",
+          "count": 1,
+          "replacement": "<SOURCE_ROOT>",
+          "basis": "Remove local identity or executor-specific storage aliases while preserving technical suffixes."
+        },
+        {
+          "category": "workspace-absolute-path",
+          "count": 1,
+          "replacement": "<WORKSPACE>",
+          "basis": "Remove local identity or executor-specific storage aliases while preserving technical suffixes."
+        },
+        {
+          "category": "host-identity",
+          "count": 1,
+          "replacement": "<HOST>",
+          "basis": "Remove local identity or executor-specific storage aliases while preserving technical suffixes."
+        },
+        {
+          "category": "scratch-output-alias-win32-desktop",
+          "count": 14,
+          "replacement": "windows-win32-desktop",
+          "basis": "Remove local identity or executor-specific storage aliases while preserving technical suffixes."
+        },
+        {
+          "category": "scratch-output-alias-win32-runtime",
+          "count": 2,
+          "replacement": "windows-win32-runtime",
+          "basis": "Remove local identity or executor-specific storage aliases while preserving technical suffixes."
+        }
+      ],
+      "byteTransforms": {
+        "encoding": "UTF-8",
+        "bom": false,
+        "lineEndings": "LF",
+        "sourceCrLfCount": 0,
+        "sourceLoneCrCount": 0,
+        "finalNewline": true,
+        "archivalContextAdded": true,
+        "jsonReserialized": false
+      },
+      "verification": {
+        "sourceAndArtifactDigestsPreserved": true,
+        "technicalToolAndStageNamesPreserved": true,
+        "residualPrivateMarkerCount": 0,
+        "originalPersonalEmailCount": 0,
+        "originalProfileIdentityCount": 1,
+        "jsonParsed": false,
+        "originalUnmodified": true
+      },
+      "evidenceIdentity": {
+        "sourceTree": "98cb4681032285309841293d65f0041344aa5f14",
+        "historicalBuildOnly": true,
+        "validatesCurrentRecoveryCandidate": false,
+        "currentRecoveryCandidatePrefix": "e43a79",
+        "releaseReady": false,
+        "nativeRuntimeVerified": false
+      },
+      "excluded": false,
+      "currentArchiveBaseValidatedByHistoricalEvidence": false
+    },
+    {
+      "sourceLogicalId": "q98x64/evidence/multi-architecture-report.md",
+      "originalBytes": 11823,
+      "originalSha256": "7501b00bd91f91412421a838288e7d8bbd54bc7a7402aed2d3b128e7a384cb00",
+      "archivePath": "windows/multi-architecture-report.md",
+      "copyBytes": 11642,
+      "copySha256": "a7bc8890d3a01a338bf790bbd523495645b0357cb7cb6532a520ae723044d7d3",
+      "redactions": [
+        {
+          "category": "internal-approval-narrative",
+          "count": 1,
+          "originalLineRange": [
+            13,
+            13
+          ],
+          "action": "original-paragraph-removed-and-neutral-technical-summary-substituted",
+          "basis": "Exclude internal approval/session/executor details; retain technical results and failure boundaries."
+        },
+        {
+          "category": "internal-executor-review-narrative",
+          "count": 1,
+          "originalLineRange": [
+            33,
+            33
+          ],
+          "action": "original-paragraph-removed-and-neutral-technical-summary-substituted",
+          "basis": "Exclude internal approval/session/executor details; retain technical results and failure boundaries."
+        },
+        {
+          "category": "internal-execution-record-reference",
+          "count": 1,
+          "originalLineRange": [
+            41,
+            41
+          ],
+          "action": "original-paragraph-removed-and-neutral-technical-summary-substituted",
+          "basis": "Exclude internal approval/session/executor details; retain technical results and failure boundaries."
+        },
+        {
+          "category": "internal-execution-record-reference",
+          "count": 1,
+          "originalLineRange": [
+            61,
+            61
+          ],
+          "action": "original-paragraph-removed-and-neutral-technical-summary-substituted",
+          "basis": "Exclude internal approval/session/executor details; retain technical results and failure boundaries."
+        },
+        {
+          "category": "internal-approval-and-record-reference",
+          "count": 1,
+          "originalLineRange": [
+            121,
+            121
+          ],
+          "action": "original-paragraph-removed-and-neutral-technical-summary-substituted",
+          "basis": "Exclude internal approval/session/executor details; retain technical results and failure boundaries."
+        },
+        {
+          "category": "internal-system-interface-and-remote-action-narrative",
+          "count": 1,
+          "originalLineRange": [
+            123,
+            123
+          ],
+          "action": "original-paragraph-removed-and-neutral-technical-summary-substituted",
+          "basis": "Exclude internal approval/session/executor details; retain technical results and failure boundaries."
+        },
+        {
+          "category": "source-root-absolute-path",
+          "count": 1,
+          "replacement": "<SOURCE_ROOT>",
+          "basis": "Remove local identity or executor-specific storage aliases while preserving technical suffixes."
+        },
+        {
+          "category": "host-identity",
+          "count": 1,
+          "replacement": "<HOST>",
+          "basis": "Remove local identity or executor-specific storage aliases while preserving technical suffixes."
+        },
+        {
+          "category": "scratch-output-alias-x64",
+          "count": 2,
+          "replacement": "windows-x64",
+          "basis": "Remove local identity or executor-specific storage aliases while preserving technical suffixes."
+        },
+        {
+          "category": "scratch-output-alias-win32-package",
+          "count": 2,
+          "replacement": "windows-win32-package",
+          "basis": "Remove local identity or executor-specific storage aliases while preserving technical suffixes."
+        },
+        {
+          "category": "scratch-output-alias-win32-desktop",
+          "count": 4,
+          "replacement": "windows-win32-desktop",
+          "basis": "Remove local identity or executor-specific storage aliases while preserving technical suffixes."
+        },
+        {
+          "category": "scratch-output-alias-win32-runtime",
+          "count": 1,
+          "replacement": "windows-win32-runtime",
+          "basis": "Remove local identity or executor-specific storage aliases while preserving technical suffixes."
+        }
+      ],
+      "byteTransforms": {
+        "encoding": "UTF-8",
+        "bom": false,
+        "lineEndings": "LF",
+        "sourceCrLfCount": 0,
+        "sourceLoneCrCount": 0,
+        "finalNewline": true,
+        "archivalContextAdded": true,
+        "jsonReserialized": false
+      },
+      "verification": {
+        "sourceAndArtifactDigestsPreserved": true,
+        "technicalToolAndStageNamesPreserved": true,
+        "residualPrivateMarkerCount": 0,
+        "originalPersonalEmailCount": 0,
+        "originalProfileIdentityCount": 1,
+        "jsonParsed": false,
+        "originalUnmodified": true
+      },
+      "evidenceIdentity": {
+        "sourceTree": "98cb4681032285309841293d65f0041344aa5f14",
+        "historicalBuildOnly": true,
+        "validatesCurrentRecoveryCandidate": false,
+        "currentRecoveryCandidatePrefix": "e43a79",
+        "releaseReady": false,
+        "nativeRuntimeVerified": false
+      },
+      "excluded": false,
+      "currentArchiveBaseValidatedByHistoricalEvidence": false
+    },
+    {
+      "sourceLogicalId": "q98x64/evidence/multi-architecture-summary.json",
+      "originalBytes": 4135,
+      "originalSha256": "4796e88190fa8b2f0dbc584b30c793246ac61d1fcd6df812b2ab3da8caf9231c",
+      "archivePath": "windows/multi-architecture-summary.json",
+      "copyBytes": 4198,
+      "copySha256": "0150f3d01d2d195a57bba4bf777331fd222f25f67388dc8cd2b3faa62a408f59",
+      "redactions": [
+        {
+          "category": "workspace-absolute-path",
+          "count": 1,
+          "replacement": "<WORKSPACE>",
+          "basis": "Remove local identity or executor-specific storage aliases while preserving technical suffixes."
+        },
+        {
+          "category": "scratch-output-alias-win32-package",
+          "count": 1,
+          "replacement": "windows-win32-package",
+          "basis": "Remove local identity or executor-specific storage aliases while preserving technical suffixes."
+        },
+        {
+          "category": "logical-path-separator-normalization",
+          "count": 3,
+          "replacement": "/",
+          "basis": "Use portable logical paths and avoid JSON escape sequences resembling UNC paths."
+        },
+        {
+          "category": "workspace-absolute-path",
+          "count": 1,
+          "replacement": "<WORKSPACE>",
+          "basis": "Remove local identity or executor-specific storage aliases while preserving technical suffixes."
+        },
+        {
+          "category": "scratch-output-alias-x64",
+          "count": 1,
+          "replacement": "windows-x64",
+          "basis": "Remove local identity or executor-specific storage aliases while preserving technical suffixes."
+        },
+        {
+          "category": "logical-path-separator-normalization",
+          "count": 3,
+          "replacement": "/",
+          "basis": "Use portable logical paths and avoid JSON escape sequences resembling UNC paths."
+        },
+        {
+          "category": "system-tools-absolute-root",
+          "count": 1,
+          "replacement": "<TOOLS>",
+          "basis": "Remove local identity or executor-specific storage aliases while preserving technical suffixes."
+        },
+        {
+          "category": "system-tools-absolute-root",
+          "count": 1,
+          "replacement": "<TOOLS>",
+          "basis": "Remove local identity or executor-specific storage aliases while preserving technical suffixes."
+        },
+        {
+          "category": "system-tools-absolute-root",
+          "count": 1,
+          "replacement": "<TOOLS>",
+          "basis": "Remove local identity or executor-specific storage aliases while preserving technical suffixes."
+        },
+        {
+          "category": "internal-action-or-approval-status-field",
+          "count": 1,
+          "replacement": "omitted",
+          "basis": "Remove internal remote-action/approval narrative rather than publishing operational status."
+        },
+        {
+          "category": "internal-action-or-approval-status-field",
+          "count": 1,
+          "replacement": "omitted",
+          "basis": "Remove internal remote-action/approval narrative rather than publishing operational status."
+        }
+      ],
+      "byteTransforms": {
+        "encoding": "UTF-8",
+        "bom": false,
+        "lineEndings": "LF",
+        "sourceCrLfCount": 104,
+        "sourceLoneCrCount": 0,
+        "finalNewline": true,
+        "archivalContextAdded": true,
+        "jsonReserialized": true
+      },
+      "verification": {
+        "sourceAndArtifactDigestsPreserved": true,
+        "technicalToolAndStageNamesPreserved": true,
+        "residualPrivateMarkerCount": 0,
+        "originalPersonalEmailCount": 0,
+        "originalProfileIdentityCount": 1,
+        "jsonParsed": true,
+        "originalUnmodified": true
+      },
+      "evidenceIdentity": {
+        "sourceTree": "98cb4681032285309841293d65f0041344aa5f14",
+        "historicalBuildOnly": true,
+        "validatesCurrentRecoveryCandidate": false,
+        "currentRecoveryCandidatePrefix": "e43a79",
+        "releaseReady": false,
+        "nativeRuntimeVerified": false
+      },
+      "excluded": false,
+      "currentArchiveBaseValidatedByHistoricalEvidence": false
+    }
+  ],
+  "excluded": [
+    {
+      "sourceLogicalId": "pr103-integration-evidence/ci-platform-preparation-20261030/ci-preparation.patch",
+      "originalBytes": 52694,
+      "originalSha256": "064c72c366668ac3c7bbad51c5110be45b495dcb986ec34832a879cce4b53259",
+      "reason": "Source is retained in Git; a source patch containing project guidance is not necessary acceptance text.",
+      "originalIdentitySource": "previously_rehashed_task_inventory",
+      "archived": false
+    },
+    {
+      "sourceLogicalId": "pr103-integration-evidence/ci-platform-closeout-20261030/ci-closeout.patch",
+      "originalBytes": 57744,
+      "originalSha256": "6c6a05f3d63cdefbce2f58ba9621e4888e12848796ecbe927e6aeb00ac731f97",
+      "reason": "Source is retained in Git; a source patch containing project guidance is not necessary acceptance text.",
+      "originalIdentitySource": "previously_rehashed_task_inventory",
+      "archived": false
+    },
+    {
+      "sourceLogicalId": "pr103-integration-evidence/ci-platform-closeout-20261030/workflow.snapshot.yml",
+      "originalBytes": 4528,
+      "originalSha256": "d8ea344b042c2374dd290f7b13b285e168c8c617f1bb648c10f2ce891cc76279",
+      "reason": "Versioned workflow source or source view includes execution instructions; only acceptance text is archived.",
+      "originalIdentitySource": "previously_rehashed_task_inventory",
+      "archived": false
+    },
+    {
+      "sourceLogicalId": "pr103-integration-evidence/ci-platform-closeout-20261030/workflow-readable.yml",
+      "originalBytes": 4103,
+      "originalSha256": "55f6abb8ec4874dd52d43608c9045f2b3a57db93611dd489391c9d084b2736bb",
+      "reason": "Versioned workflow source or source view includes execution instructions; only acceptance text is archived.",
+      "originalIdentitySource": "previously_rehashed_task_inventory",
+      "archived": false
+    },
+    {
+      "sourceLogicalId": "pr103-integration-evidence/ci-push-trigger-20261030/ci-trigger-change.patch",
+      "originalBytes": 11060,
+      "originalSha256": "7040768c449c41966e3785e3bbecd79fc3f34b01e50f027835aad1fea2126950",
+      "reason": "Source is retained in Git; a source patch containing project guidance is not necessary acceptance text.",
+      "originalIdentitySource": "previously_rehashed_task_inventory",
+      "archived": false
+    },
+    {
+      "sourceLogicalId": "pr103-integration-evidence/ci-push-trigger-20261030/ci-complete.patch",
+      "originalBytes": 60237,
+      "originalSha256": "030d971ef99538f5f8cd52301748e53fa3cf81d781fc86842ecda395efd3fa2f",
+      "reason": "Source is retained in Git; a source patch containing project guidance is not necessary acceptance text.",
+      "originalIdentitySource": "previously_rehashed_task_inventory",
+      "archived": false
+    },
+    {
+      "sourceLogicalId": "pr103-integration-evidence/ci-push-trigger-20261030/workflow.snapshot.yml",
+      "originalBytes": 4425,
+      "originalSha256": "f2299c48208ebf086ebced64fbef8e44a567823e469ce65fcb8e1793a6c3f266",
+      "reason": "Versioned workflow source or source view includes execution instructions; only acceptance text is archived.",
+      "originalIdentitySource": "previously_rehashed_task_inventory",
+      "archived": false
+    },
+    {
+      "sourceLogicalId": "q98p32/delivery/InstalledDesktopCheck-0.1.0-windows-x86.zip",
+      "originalBytes": 530377,
+      "originalSha256": "7a0405f884b89849aec8e65928d1dcbca6db2a1c0d537c5d270fcd08fcd45ee0",
+      "reason": "二进制开发应用ZIP；本次仅归档文本，未读取或复制包内容。",
+      "originalIdentitySource": "previously_rehashed_task_inventory",
+      "archived": false
+    },
+    {
+      "sourceLogicalId": "q98x64/delivery/InstalledDesktopCheck-0.1.0-windows-x64.zip",
+      "originalBytes": 605641,
+      "originalSha256": "ee11525199017d5d91946e0eb96150b4a8dd3b5d2df80830057c4a2f4a739062",
+      "reason": "二进制开发应用ZIP；本次仅归档文本，未读取或复制包内容。",
+      "originalIdentitySource": "previously_rehashed_task_inventory",
+      "archived": false
+    }
+  ],
+  "notSelected": [
+    "此前大体积before-source-manifest未列入本次33项选定清单；本轮未读取或归档。",
+    "未纳入其余历史CI文件或Windows原始输出目录。"
+  ],
+  "missing": [
+    {
+      "logicalId": "original-cloud-integration-20261102-and-raw-logs",
+      "status": "missing_not_recovered"
+    },
+    {
+      "logicalId": "bd42b51943c6d550cc9551f83f1eebfe5e0fcaff",
+      "status": "missing_not_recovered"
+    },
+    {
+      "logicalId": "6d64c01fd5ecaa188bddbd2e273833a4bcdd2ce1",
+      "status": "missing_not_recovered"
+    }
+  ],
+  "limits": [
+    "原始哈希标识原件；副本哈希仅标识脱敏与规范化后的公开字节。",
+    "CI记录限各自历史静态阶段、本地提交和workflow scope拒绝，不证明云端执行。",
+    "Windows记录仅验证旧tree98cb468的Release构建/安装/消费者/模板/文件打包；不证明项目运行。",
+    "本轮检查只覆盖选定文本及本归档元文件，不宣称全部128份CI、ZIP或全面凭据审计通过。"
+  ]
+}

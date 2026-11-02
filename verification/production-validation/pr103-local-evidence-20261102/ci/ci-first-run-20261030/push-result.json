@@ -1,0 +1,43 @@
+{
+  "publicArchiveContext": {
+    "sourceLogicalId": "pr103-integration-evidence/ci-first-run-20261030/push-result.json",
+    "originalBytes": 603,
+    "originalSha256": "564ff1d0232cdfc1883eff8193dd9d474e4b315daa55d1e3f26455d6b691c86f",
+    "modifiedPublicCopy": true,
+    "normalization": "UTF-8 without BOM; LF; final newline",
+    "evidenceIdentity": {
+      "historicalDate": "2026-10-30",
+      "baselineCommit": "19d450eae04d7ee51286168712d5b60c08631e89",
+      "baselineTree": "98cb4681032285309841293d65f0041344aa5f14",
+      "validationKind": "historical_local_static_or_publication_record",
+      "cloudExecutionVerified": false,
+      "validatesNewCandidate": false,
+      "unvalidatedCandidatePrefix": "e43a79",
+      "localCommit": "32b412b1c8c2bac1f10b9fa2e770170653fc9e41",
+      "localTree": "e4f78362f40d25ac5fe21692326b73f6a59077a3",
+      "historicalRemoteCommit": "19d450eae04d7ee51286168712d5b60c08631e89",
+      "historicalRemoteTree": "98cb4681032285309841293d65f0041344aa5f14",
+      "publicationOutcome": "remote_rejected_missing_workflow_scope",
+      "cloudExecutionAtRecordedCheckpoint": "not_started"
+    },
+    "limitation": "Historical evidence copy only; not original bytes and not validation of candidate e43a79 or another new candidate."
+  },
+  "evidence": {
+    "startUTC": "2026-10-30T09:43:41.3034059Z",
+    "endUTC": "2026-10-30T09:43:47.6650327Z",
+    "command": [
+      "git",
+      "push",
+      "--porcelain",
+      "https://github.com/chenziyang110/soui-web-sdk.git",
+      "32b412b1c8c2bac1f10b9fa2e770170653fc9e41:refs/heads/codex/portable-runtime-platform-matrix-20261020"
+    ],
+    "exitCode": 1,
+    "oldHead": "19d450eae04d7ee51286168712d5b60c08631e89",
+    "head": "32b412b1c8c2bac1f10b9fa2e770170653fc9e41",
+    "tree": "e4f78362f40d25ac5fe21692326b73f6a59077a3",
+    "force": false,
+    "separateDispatch": false,
+    "interactiveAuthentication": false
+  }
+}

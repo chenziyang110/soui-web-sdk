@@ -1,0 +1,116 @@
+{
+  "publicArchiveContext": {
+    "sourceLogicalId": "pr103-integration-evidence/ci-platform-preparation-20261030/final-static/static-commands.json",
+    "originalBytes": 2475,
+    "originalSha256": "29b4f76521f78988d5bc5a0b52d286b28fa881cd6d60d7fbdaefdfab99461041",
+    "modifiedPublicCopy": true,
+    "normalization": "UTF-8 without BOM; LF; final newline",
+    "evidenceIdentity": {
+      "historicalDate": "2026-10-30",
+      "baselineCommit": "19d450eae04d7ee51286168712d5b60c08631e89",
+      "baselineTree": "98cb4681032285309841293d65f0041344aa5f14",
+      "validationKind": "historical_local_static_or_publication_record",
+      "cloudExecutionVerified": false,
+      "validatesNewCandidate": false,
+      "unvalidatedCandidatePrefix": "e43a79"
+    },
+    "limitation": "Historical evidence copy only; not original bytes and not validation of candidate e43a79 or another new candidate."
+  },
+  "evidence": [
+    {
+      "command": [
+        "<NODE>",
+        "--check",
+        "tools/ci/platform-build.cjs"
+      ],
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "<NODE>",
+        "--check",
+        "tools/ci/validate-platform-workflow.cjs"
+      ],
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "<NODE>",
+        "tools/ci/validate-platform-workflow.cjs"
+      ],
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "<NODE>",
+        "tools/ci/platform-build.cjs",
+        "--platform",
+        "windows",
+        "--arch",
+        "x64",
+        "--plan"
+      ],
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "<NODE>",
+        "tools/ci/platform-build.cjs",
+        "--platform",
+        "windows",
+        "--arch",
+        "arm64",
+        "--plan"
+      ],
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "<NODE>",
+        "tools/ci/platform-build.cjs",
+        "--platform",
+        "linux",
+        "--arch",
+        "x64",
+        "--plan"
+      ],
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "<NODE>",
+        "tools/ci/platform-build.cjs",
+        "--platform",
+        "linux",
+        "--arch",
+        "arm64",
+        "--plan"
+      ],
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "<NODE>",
+        "tools/ci/platform-build.cjs",
+        "--platform",
+        "macos",
+        "--arch",
+        "x64",
+        "--plan"
+      ],
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "<NODE>",
+        "tools/ci/platform-build.cjs",
+        "--platform",
+        "macos",
+        "--arch",
+        "arm64",
+        "--plan"
+      ],
+      "exitCode": 0
+    }
+  ]
+}

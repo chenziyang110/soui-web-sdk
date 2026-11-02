@@ -1,0 +1,110 @@
+{
+  "recordedAtUtc": "2026-10-29T18:16:18.2097376Z",
+  "sourceTree": "98cb4681032285309841293d65f0041344aa5f14",
+  "head": "9e4e9c1fdeacc0eae8318a1bf40a04e8c1da97e7",
+  "fixedMainAndMergeHead": "0cdc0a9ace0cdce664ec4a9b54e5f8f71b97ba48",
+  "manifestSha256": "41CF83F1CF060DF6842FC55F9CC5676668944057AC825519EFE20B0BB5E9AEE5",
+  "indexComparisonExitCode": 0,
+  "unstagedDiffExitCode": 0,
+  "unmergedCount": 0,
+  "untrackedCount": 0,
+  "x64ToolStages": 15,
+  "allX64ToolStagesExit0": true,
+  "win32NewToolStages": 4,
+  "allWin32NewToolStagesExit0": true,
+  "packages": [
+    {
+      "architecture": "x86",
+      "archive": "<WORKSPACE>/windows-win32-package/delivery/InstalledDesktopCheck-0.1.0-windows-x86.zip",
+      "archiveBytes": 530377,
+      "archiveSha256": "7a0405f884b89849aec8e65928d1dcbca6db2a1c0d537c5d270fcd08fcd45ee0",
+      "archiveEntries": 20,
+      "payloadFiles": 16,
+      "extractedFileCount": 16,
+      "applicationManifestSha256": "1D4F750A39A263B545E467B2CEBAF4F025BBCF2D341F6237A7C1EEF5AB8CA6AB",
+      "stageSchema": "soui.desktop.application-stage/2",
+      "postExtractionVerification": {
+        "schema": "soui.desktop.application-verification/1",
+        "ok": true,
+        "code": "integrity_consistent",
+        "platform": "windows",
+        "architecture": "x86",
+        "checkedFiles": 15,
+        "checkedBytes": 523187,
+        "diagnosticsPresent": true,
+        "noticeSetVerified": true,
+        "stageSchema": "soui.desktop.application-stage/2",
+        "executablePermissionsChecked": false,
+        "authenticityVerified": false,
+        "nativeRuntimeVerified": false
+      },
+      "nativeRuntimeVerified": false,
+      "releaseReady": false
+    },
+    {
+      "architecture": "x64",
+      "archive": "<WORKSPACE>/windows-x64/delivery/InstalledDesktopCheck-0.1.0-windows-x64.zip",
+      "archiveBytes": 605641,
+      "archiveSha256": "ee11525199017d5d91946e0eb96150b4a8dd3b5d2df80830057c4a2f4a739062",
+      "archiveEntries": 20,
+      "payloadFiles": 16,
+      "extractedFileCount": 16,
+      "applicationManifestSha256": "EACF31FEB8A86239589017952E449CF164BDCF3AFF97E050527DBA7A666DF2EC",
+      "stageSchema": "soui.desktop.application-stage/2",
+      "postExtractionVerification": {
+        "schema": "soui.desktop.application-verification/1",
+        "ok": true,
+        "code": "integrity_consistent",
+        "platform": "windows",
+        "architecture": "x64",
+        "checkedFiles": 15,
+        "checkedBytes": 598451,
+        "diagnosticsPresent": true,
+        "noticeSetVerified": true,
+        "stageSchema": "soui.desktop.application-stage/2",
+        "executablePermissionsChecked": false,
+        "authenticityVerified": false,
+        "nativeRuntimeVerified": false
+      },
+      "nativeRuntimeVerified": false,
+      "releaseReady": false
+    }
+  ],
+  "arm64": {
+    "status": "not attempted; unavailable MSVC ARM64 compiler/linker and VC runtime libraries",
+    "componentQueryExitCode": 0,
+    "componentQuery": "[]",
+    "windowsSdkArm64Libraries": [
+      {
+        "path": "<TOOLS>/Windows Kits/10/Lib/10.0.19041.0/um/arm64/kernel32.lib",
+        "exists": true
+      },
+      {
+        "path": "<TOOLS>/Windows Kits/10/Lib/10.0.19041.0/ucrt/arm64/ucrt.lib",
+        "exists": true
+      },
+      {
+        "path": "<TOOLS>/Windows Kits/10/Lib/10.0.19041.0/ucrt/arm64/libucrt.lib",
+        "exists": true
+      }
+    ],
+    "compilerInstalled": false,
+    "architectureSubstitutionPerformed": false
+  },
+  "releaseReady": false,
+  "nativeRuntimeVerified": false,
+  "releaseReadyFieldScope": "source and qualification summary; existing application-stage/2 and delivery/1 schemas have no releaseReady field",
+  "projectExecutablesStarted": 0,
+  "ctestInvocations": 0,
+  "doctorOrLaunchInvocations": 0,
+  "signingPerformed": false,
+  "sourceModified": false,
+  "archiveContext": {
+    "redactedHistoricalCopy": true,
+    "sourceTree": "98cb4681032285309841293d65f0041344aa5f14",
+    "qualification": "historical Windows Release build-only; no project executable, CTest or GUI run",
+    "validatesCurrentRecoveryCandidate": false,
+    "currentRecoveryCandidatePrefix": "e43a79",
+    "normalization": "UTF-8 without BOM; LF"
+  }
+}

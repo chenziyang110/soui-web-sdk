@@ -1,0 +1,106 @@
+{
+  "publicArchiveContext": {
+    "sourceLogicalId": "pr103-integration-evidence/ci-push-trigger-20261030/final-state-and-diff.json",
+    "originalBytes": 3832,
+    "originalSha256": "9ccca73cacfab57fc151312a00efcb3cbfc4267dba77be6feae99c964e85c71e",
+    "modifiedPublicCopy": true,
+    "normalization": "UTF-8 without BOM; LF; final newline",
+    "evidenceIdentity": {
+      "historicalDate": "2026-10-30",
+      "baselineCommit": "19d450eae04d7ee51286168712d5b60c08631e89",
+      "baselineTree": "98cb4681032285309841293d65f0041344aa5f14",
+      "validationKind": "historical_local_static_or_publication_record",
+      "cloudExecutionVerified": false,
+      "validatesNewCandidate": false,
+      "unvalidatedCandidatePrefix": "e43a79",
+      "indexTree": "e4f78362f40d25ac5fe21692326b73f6a59077a3"
+    },
+    "limitation": "Historical evidence copy only; not original bytes and not validation of candidate e43a79 or another new candidate."
+  },
+  "evidence": {
+    "utc": "2026-10-30T09:37:44.581Z",
+    "previousTree": "8c052061f27ee62ae9e95b729096f31d430f8ad4",
+    "state": {
+      "head": "19d450eae04d7ee51286168712d5b60c08631e89",
+      "branch": "codex/ci-platform-matrix-20261030",
+      "tree": "e4f78362f40d25ac5fe21692326b73f6a59077a3",
+      "unstaged": "",
+      "untracked": "",
+      "unmerged": ""
+    },
+    "deltaPaths": [
+      ".github/workflows/platform-build.yml",
+      "docs/ci-platform-matrix.md",
+      "source-manifest.json",
+      "tools/ci/validate-platform-workflow.cjs"
+    ],
+    "files": [
+      {
+        "file": ".github/workflows/platform-build.yml",
+        "bytes": 4425,
+        "sha256": "f2299c48208ebf086ebced64fbef8e44a567823e469ce65fcb8e1793a6c3f266",
+        "blob": "2dddd92b8613e1e8434bba77e2b32bdee168385e"
+      },
+      {
+        "file": "docs/ci-platform-matrix.md",
+        "bytes": 11598,
+        "sha256": "c9ddcbbc0f2793e8eca2565743636cbbe45197c6d74cb6ac42829916905d0c0f",
+        "blob": "bc607b389f6a03da629e52bbc58ffaa65c2f0eb0"
+      },
+      {
+        "file": "source-manifest.json",
+        "bytes": 16822760,
+        "sha256": "a3d03f5082a354d9d161a62f95e57f36e2d5206842847d725768bbfeb4dd41a9",
+        "blob": "c0bd5767edf5826784c8ae39e6f2811c98284b5d"
+      },
+      {
+        "file": "tools/ci/validate-platform-workflow.cjs",
+        "bytes": 9177,
+        "sha256": "22efac28d877ce050a7134af22c0b881dcc900184410970b27b05d67a997cf48",
+        "blob": "5161a3845601a59c14f4d00eb32a1893ac211b76"
+      }
+    ],
+    "patches": [
+      {
+        "file": "ci-trigger-change.patch",
+        "base": "8c052061f27ee62ae9e95b729096f31d430f8ad4",
+        "bytes": 11060,
+        "sha256": "7040768c449c41966e3785e3bbecd79fc3f34b01e50f027835aad1fea2126950",
+        "reverseApplyCheckExitCode": 0
+      },
+      {
+        "file": "ci-complete.patch",
+        "base": "19d450eae04d7ee51286168712d5b60c08631e89",
+        "bytes": 60237,
+        "sha256": "030d971ef99538f5f8cd52301748e53fa3cf81d781fc86842ecda395efd3fa2f",
+        "reverseApplyCheckExitCode": 0
+      }
+    ],
+    "relativeDiffstat": ".github/workflows/platform-build.yml    | 15 ++++++--------\n docs/ci-platform-matrix.md              | 21 +++++++++++--------\n source-manifest.json                    | 12 +++++------\n tools/ci/validate-platform-workflow.cjs | 36 +++++++++++++++++++++++++++++++--\n 4 files changed, 59 insertions(+), 25 deletions(-)",
+    "cumulativeDiffstat": ".github/workflows/platform-build.yml       | 112 ++++++++++++\n AGENTS.md                                  |   2 +-\n docs/ci-platform-matrix.md                 | 156 +++++++++++++++++\n docs/testing.md                            |   2 +-\n source-manifest.json                       |  50 +++++-\n tests/ci/installed-consumer/CMakeLists.txt | 118 +++++++++++++\n tests/ci/installed-consumer/desktop.cpp    |  11 ++\n tests/ci/installed-consumer/runtime.cpp    |  52 ++++++\n tools/ci/platform-build.cjs                | 266 +++++++++++++++++++++++++++++\n tools/ci/validate-platform-workflow.cjs    | 149 ++++++++++++++++\n 10 files changed, 912 insertions(+), 6 deletions(-)",
+    "manifest": {
+      "files": 62652,
+      "sha256": "a3d03f5082a354d9d161a62f95e57f36e2d5206842847d725768bbfeb4dd41a9",
+      "releaseReady": false,
+      "createExitCode": 0,
+      "verifyExitCode": 0
+    },
+    "oldArtifactsPreserved": [
+      {
+        "file": "ci-closeout.patch",
+        "expectedSHA256": "6c6a05f3d63cdefbce2f58ba9621e4888e12848796ecbe927e6aeb00ac731f97",
+        "sha256": "6c6a05f3d63cdefbce2f58ba9621e4888e12848796ecbe927e6aeb00ac731f97"
+      },
+      {
+        "file": "closeout-review.md",
+        "expectedSHA256": "670ba290e261b644c01c2eb480a705132af5da50d4838eb1c1886661e68acb92",
+        "sha256": "670ba290e261b644c01c2eb480a705132af5da50d4838eb1c1886661e68acb92"
+      }
+    ],
+    "originalCheckoutClean": true,
+    "committed": false,
+    "pushed": false,
+    "workflowTriggered": false,
+    "actionsSettingsEndpointsRetried": false
+  }
+}

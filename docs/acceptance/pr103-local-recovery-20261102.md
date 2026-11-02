@@ -40,7 +40,7 @@ VERSION 仍为 `0.6.0`；更早 PR 身份为 `0.6.0-preview.3`。本地恢复内
 
 Windows 两包的 sidecar、交付清单、解压完整性日志与包身份一致；每包 20 条目、16 文件。它们仅绑定旧 tree 98cb4681 的 Release build/install/consumer/template/package 证据：没有 EXE/CTest/GUI 运行，Win32 也不代表 32 位硬件原生运行。两包是开发应用 ZIP，不是 SDK 安装包或正式发布；`nativeRuntimeVerified`、`signed`、`dependenciesBundled` 均为 false。
 
-可公开候选为经过范围审阅的补丁、包及其 sidecar/完整性材料；本轮没有复制或上传它们。原报告、命令和 GitHub 读回含机器路径或个人身份，公开副本须先脱敏并另算哈希。原件保留；包内已知路径标记未命中也不等于全面隐私审计。更详细的逐文件盘点单独保存在本地恢复 evidence 目录，使用本任务相对路径。
+恢复阶段只盘点原件，未复制或上传。随后另存了[24份脱敏验收文本及清单](../../verification/production-validation/pr103-local-evidence-20261102/README.md)，仅本地准备，原件保持不变。源码补丁、工作流源码快照、二进制ZIP及截图未放入文本归档；每份副本的原始哈希、删减/脱敏范围和副本哈希均单列。包内已知路径标记未命中也不等于全面隐私审计。
 
 ## 缺失与发布阻塞
 
@@ -49,4 +49,4 @@ Windows 两包的 sidecar、交付清单、解压完整性日志与包身份一�
 - 2026-10-30 对现存 CI 提交的普通 push 被 GitHub 明确拒绝：OAuth App 无 `workflow` scope。没有权限变化证据，本轮不重试、不更换凭据或接口、不修改安全设置；电脑恢复可用不解除该阻塞。
 - Actions 设置端点此前被连接器 allowlist 拒绝，不能据此认定 Actions 已禁用；本轮不重试这些端点。未发起 dispatch、付费 runner、artifact/cache 上传或 release。
 
-后续先完成公开材料脱敏与候选验收，再由有相应权限的负责人通过正规流程处理远端推送；不得借删除工作流、改路径或改身份绕过已知拒绝。
+公开材料仅按本归档披露的范围准备；候选运行验证仍待补齐。后续远端推送须由有相应权限的负责人通过正规流程处理，不得借删除工作流、改路径或改身份绕过已知拒绝。
