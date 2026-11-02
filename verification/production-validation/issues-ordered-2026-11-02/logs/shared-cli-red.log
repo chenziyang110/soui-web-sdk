@@ -1,0 +1,25 @@
+✖ shared WebView2 loader opt-in reaches the real standard build and PowerShell argv (0.8244ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 122.1239
+
+✖ failing tests:
+
+test at tests\tooling\devkit-command.test.cjs:87:1
+✖ shared WebView2 loader opt-in reaches the real standard build and PowerShell argv (0.8244ms)
+  Error: Supply one literal value after each option.
+      at need (F:\work\SOUI_WEB\soui-sdk-issues-20261102\tools\internal\devkit-command.cjs:15:41)
+      at Object.parseArgs (F:\work\SOUI_WEB\soui-sdk-issues-20261102\tools\internal\devkit-command.cjs:56:7)
+      at TestContext.<anonymous> (F:\work\SOUI_WEB\soui-sdk-issues-20261102\tests\tooling\devkit-command.test.cjs:89:19)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.start (node:internal/test_runner/test:1015:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
+    code: 'E_ARGUMENT',
+    fix: 'Supply one literal value after each option.'
+  }

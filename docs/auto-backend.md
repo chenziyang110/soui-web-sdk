@@ -4,6 +4,55 @@
 后端和启动行为保持不变。可选 `Soui::AutoHost` 复用公共 Host/Bridge，基础 SDK
 不因此依赖 WebView2。设计和边界见 [ADR 0127](adr/0127-automatic-renderer-host.md)。
 
+## 可选动态 Loader
+
+默认仍静态链接官方 Loader。需要让 AutoHost 在 Win7 启动前不受现代 Loader 的
+系统导入约束时，重编 SDK 时显式设置 `SOUI_WEBVIEW2_LOADER_SHARED=ON`。
+动态档不链接 Loader import library；SDK 在创建前从主 EXE 旁的绝对路径加载
+`WebView2Loader.dll`，同时检查发现及创建两个导出。缺 DLL 或任一导出时可选
+后端不可用，AutoHost 可选择 MiniBlink；权限、损坏映像、错误架构与策略错误
+仍失败，已开始现代初始化后的错误也不会触发业务重放。模块与首次结果保留到
+进程退出，运行中补放 DLL 不改变后端。
+
+公开构建入口可直接选择动态 Loader（同时启用现代后端）：
+
+```powershell
+powershell.exe -File tools/Build.ps1 -Architecture x64 -WithAutoHost -WithSharedWebView2Loader -Install
+```
+
+从根目录直接配置独立动态 SDK，也可使用：
+
+```powershell
+$webview2Package = powershell.exe -NoProfile -File tools/internal/Restore-WebView2.ps1
+cmake -S sdk -B out/optional-loader-x64 -G "Visual Studio 17 2022" `
+  -A "x64,version=10.0.19041.0" -DSOUI_BUILD_WEBVIEW2=ON `
+  -DSOUI_BUILD_AUTO_HOST=ON -DSOUI_WEBVIEW2_LOADER_SHARED=ON `
+  "-DSOUI_WEBVIEW2_SDK_ROOT=$webview2Package"
+cmake --build out/optional-loader-x64 --config Release
+cmake --install out/optional-loader-x64 --config Release --prefix out/optional-loader-install/x64
+```
+
+应用使用源码 SDK 或 `find_package(SouiSdk CONFIG REQUIRED COMPONENTS AutoHost)`
+的安装 SDK 后，在定义 EXE 并链接 `Soui::AutoHost` 后调用：
+
+```cmake
+soui_deploy_webview2_loader(MyApp)
+```
+
+helper 在静态档为空操作；动态档将固定包或安装 prefix 中的同架构 DLL 复制到
+目标 EXE 旁。自行打包的应用也必须包含该文件。静态与动态构建使用独立缓存；
+建议部署目录也分开保留。SDK 不下载、安装或随此选项提供 WebView2 Runtime。
+
+DLL 依赖只从其目录和 System32 查找，不回退 CWD/PATH。相应搜索 flags 在
+Win7 需 KB2533623；缺支持时显式现代加载保留错误。AutoHost 的 Win7 系统
+选择先采用兼容后端，不进入现代 Loader。此实现不静态引用较新的 DLL 搜索
+配置函数，不代表已完成 Win7 或 PE GUI 验收。设计见 [ADR-0138](adr/0138-optional-webview2-loader.md)。
+
+无浏览器原生夹具入口为 `tests/native/webview2_loader`；模式切换入口为
+`tests/sdk/webview2-loader-cmake.Tests.ps1`，需显式提供固定包路径与新的输出目录。
+真实安装消费者位于 `tests/optional-loader-consumer`，验证空 Fixed Runtime 发现、
+部署及缺 Loader 的分类。它们的通过范围与完整应用、目标系统验证分开记录。
+
 ## 启动策略
 
 Windows 10/11 常规桌面先通过实际 Loader 探测 WebView2 Runtime，再准备 Controller。

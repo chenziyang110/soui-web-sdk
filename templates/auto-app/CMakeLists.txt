@@ -8,6 +8,7 @@ if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
 endif()
 add_executable(SouiAutoStarter WIN32 app/main.cpp app/application.manifest)
 target_link_libraries(SouiAutoStarter PRIVATE Soui::AutoHost Soui::ActionJson)
+soui_deploy_webview2_loader(SouiAutoStarter)
 target_compile_options(SouiAutoStarter PRIVATE /utf-8 /W4 /U_DEBUG /EHsc)
 target_link_options(SouiAutoStarter PRIVATE /SUBSYSTEM:WINDOWS,6.01)
 set_target_properties(SouiAutoStarter PROPERTIES MSVC_RUNTIME_LIBRARY MultiThreadedDLL

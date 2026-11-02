@@ -6,11 +6,15 @@
 
 namespace soui::sdk::detail {
 
-inline webview2_runtime_discovery classify_auto_discovery(HRESULT result, std::string version) {
+inline webview2_runtime_discovery classify_auto_discovery(HRESULT result, std::string version,
+    bool optional_loader_unavailable = false) {
   webview2_runtime_discovery value;
   value.attempted = true;
   value.hresult = static_cast<std::int32_t>(result);
-  if (result == HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND)) {
+  if (optional_loader_unavailable && (result == HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND) ||
+      result == HRESULT_FROM_WIN32(ERROR_PATH_NOT_FOUND) || result == HRESULT_FROM_WIN32(ERROR_PROC_NOT_FOUND))) {
+    value.result = {true, {}, "The optional application-local WebView2 loader is unavailable."};
+  } else if (result == HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND)) {
     value.result = {true, {}, "No WebView2 runtime was found in the selected search scope."};
   } else if (FAILED(result)) {
     value.result = {false, "E_WEBVIEW2_DISCOVERY", "WebView2 discovery failed; this is not an absent runtime."};

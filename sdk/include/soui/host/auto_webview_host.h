@@ -31,7 +31,9 @@ struct webview2_runtime_discovery {
 };
 
 // Read-only loader discovery; does not create an environment or download a
-// runtime. Only ERROR_FILE_NOT_FOUND means a successfully observed absence.
+// runtime. Runtime ERROR_FILE_NOT_FOUND means an observed absence. The optional
+// shared-loader build also reports a missing loader or required export as
+// unavailable, retaining its actual HRESULT; other loader failures remain errors.
 [[nodiscard]] webview2_runtime_discovery inspect_webview2_runtime(
     const std::filesystem::path& fixed_runtime = {});
 

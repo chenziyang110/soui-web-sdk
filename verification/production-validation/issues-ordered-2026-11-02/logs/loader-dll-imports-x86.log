@@ -1,0 +1,144 @@
+Microsoft (R) COFF/PE Dumper Version 14.44.35226.0
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+
+Dump of file F:\work\SOUI_WEB\soui-sdk-issues-20261102\out\issue-order-20261102\install-shared-x86\bin\webview2\WebView2Loader.dll
+
+File Type: DLL
+
+  Section contains the following imports:
+
+    KERNEL32.dll
+              10020804 Import Address Table
+              100206B8 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                    0 AcquireSRWLockExclusive
+                   A0 CloseHandle
+                   E9 CreateFileW
+                  12A DecodePointer
+                  131 DeleteCriticalSection
+                  152 EncodePointer
+                  156 EnterCriticalSection
+                  183 ExitProcess
+                  19A FindClose
+                  1A0 FindFirstFileExW
+                  1B1 FindNextFileW
+                  1BF FlsAlloc
+                  1C0 FlsFree
+                  1C1 FlsGetValue
+                  1C3 FlsSetValue
+                  1C5 FlushFileBuffers
+                  1D0 FreeEnvironmentStringsW
+                  1D1 FreeLibrary
+                  1D8 GetACP
+                  1E7 GetCPInfo
+                  1FC GetCommandLineA
+                  1FD GetCommandLineW
+                  222 GetConsoleMode
+                  226 GetConsoleOutputCP
+                  23E GetCurrentProcess
+                  23F GetCurrentProcessId
+                  243 GetCurrentThreadId
+                  25E GetEnvironmentStringsW
+                  260 GetEnvironmentVariableW
+                  26C GetFileAttributesW
+                  276 GetFileType
+                  28A GetLastError
+                  29E GetModuleFileNameW
+                  2A1 GetModuleHandleExW
+                  2A2 GetModuleHandleW
+                  2C2 GetOEMCP
+                  2D9 GetProcAddress
+                  2E0 GetProcessHeap
+                  2FD GetStartupInfoW
+                  2FF GetStdHandle
+                  304 GetStringTypeW
+                  310 GetSystemInfo
+                  316 GetSystemTimeAsFileTime
+                  376 HeapAlloc
+                  37A HeapFree
+                  37D HeapReAlloc
+                  37F HeapSize
+                  391 InitializeCriticalSectionEx
+                  394 InitializeSListHead
+                  39D InterlockedFlushSList
+                  3B0 IsDebuggerPresent
+                  3B8 IsProcessorFeaturePresent
+                  3BE IsValidCodePage
+                  3E3 LCMapStringEx
+                  3E4 LCMapStringW
+                  3F0 LeaveCriticalSection
+                  3F5 LoadLibraryExA
+                  3F6 LoadLibraryExW
+                  3F7 LoadLibraryW
+                  3FD LocalAlloc
+                  402 LocalFree
+                  423 MultiByteToWideChar
+                  433 OpenEventW
+                  44A OutputDebugStringA
+                  44B OutputDebugStringW
+                  481 QueryPerformanceCounter
+                  497 RaiseException
+                  4E9 ReleaseSRWLockExclusive
+                  50C RtlUnwind
+                  55C SetFilePointerEx
+                  56C SetLastError
+                  587 SetStdHandle
+                  5AB SetUnhandledExceptionFilter
+                  5BD SleepConditionVariableSRW
+                  5CB TerminateProcess
+                  5ED UnhandledExceptionFilter
+                  60C VirtualProtect
+                  60E VirtualQuery
+                  61F WakeAllConditionVariable
+                  63E WideCharToMultiByte
+                  651 WriteConsoleW
+                  652 WriteFile
+
+  Section contains the following delay load imports:
+
+    ole32.dll
+              00000001 Characteristics
+              100229C8 Address of HMODULE
+              100229D8 Import Address Table
+              1002038C Import Name Table
+              00000000 Bound Import Name Table
+              00000000 Unload Import Name Table
+                     0 time date stamp
+
+          1001899B               0 CoTaskMemAlloc
+          100189A5               0 CoTaskMemFree
+
+    ADVAPI32.dll
+              00000001 Characteristics
+              100229D0 Address of HMODULE
+              100229E8 Import Address Table
+              1002039C Import Name Table
+              00000000 Bound Import Name Table
+              00000000 Unload Import Name Table
+                     0 time date stamp
+
+          100189C0               0 EventRegister
+          100189CA               0 EventSetInformation
+          100189D4               0 EventUnregister
+          100189DE               0 EventWriteTransfer
+          100189E8               0 GetSidSubAuthority
+          100189F2               0 GetSidSubAuthorityCount
+          100189FC               0 GetTokenInformation
+          10018A06               0 OpenProcessToken
+          10018A10               0 RegCloseKey
+          10018A1A               0 RegGetValueW
+          10018A24               0 RegOpenKeyExW
+          10018A2E               0 RegQueryValueExW
+
+  Summary
+
+        2000 .data
+        1000 .fptable
+        9000 .rdata
+        2000 .reloc
+        1000 .rsrc
+       18000 .text
+        1000 .tls

@@ -1,5 +1,11 @@
 # 变更记录
 
+## 0.6.1-preview.1（本地候选，未发布）
+
+- 为 Issue #133 增加默认关闭的 `SOUI_WEBVIEW2_LOADER_SHARED`。显式开启后从应用目录加载官方 WebView2 Loader，并在发现 Runtime 前检查两个必要导出；缺少可选 Loader 或导出时允许 AutoHost 在启动前选择 MiniBlink，权限、映像和策略错误保持失败。静态 Loader 仍为默认。
+- 动态档同步 SDK 安装、应用部署和已认证依赖输入；两种档位使用独立 CMake 缓存，避免切换选项后继续链接旧库。部署 helper 供源码和安装消费者显式调用，详情见 ADR-0138。
+- 新候选使用独立版本身份，不替换已发布 0.6.0。Issue #23/#27/#29/#31/#39/#42/#77/#96 的历史证据和未完成条件保留；代码回归、真实 Win7、长期与生产验收分别记录，`releaseReady=false`。
+
 ## 未发布：Windows 工具遗留失败恢复
 
 - MSVC configure/build管理固定VCTIP的有界idle生命周期，持有真实服务/工具身份并要求自然退出；共享服务争用拒绝接纳，原监督期限和旧失败保持。

@@ -84,6 +84,21 @@ test('file arguments remain literal argv; they are never shell commands',()=>{
   assert.equal(plan.args[plan.args.indexOf('-OutputRoot')+1],'C:/Apps/safe; $(whoami)');
   assert.equal(plan.args.includes('-Command'),false);
 });
+test('shared WebView2 loader opt-in reaches the real standard build and PowerShell argv',()=>{
+  const standard=require('../../tools/internal/standard-build.cjs');
+  const value=kit.parseArgs(['build','--with-auto-host','--with-shared-webview2-loader',
+    '--runner','C:/Tools/OwnedProcessRunner.exe']);
+  assert.equal(value.withSharedWebView2Loader,true);
+  const plan=kit.planCommand(value,root,ps);
+  assert(plan.args.includes('--with-shared-webview2-loader'));
+  const selected=standard.parseArgs(plan.args.slice(1));
+  assert.equal(selected.withSharedWebView2Loader,true);
+  const args=standard.buildArguments(root,selected);
+  assert(args.includes('-WithSharedWebView2Loader'));
+  assert(args.includes('-WithAutoHost'));
+  assert.equal(standard.buildArguments(root,standard.parseArgs([])).includes('-WithSharedWebView2Loader'),false);
+});
+
 test('build delegates only the real standard build CLI and leaves tail opt-in explicit',()=>{
   const v=kit.parseArgs(['build','--sdk-only','--skip-web','--architecture','x86']);v.runner='C:/Tools/OwnedProcessRunner.exe';
   const plan=kit.planCommand(v,root,ps);

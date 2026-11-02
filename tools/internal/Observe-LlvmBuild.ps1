@@ -927,7 +927,9 @@ if($cfg.withWebView2){
  $archivePin=ObsPin $archivePath;Need ($archivePin.sha256-ceq$descriptor.sha256) 'Optional dependency archive does not match frozen source'
  Add-Type -AssemblyName System.IO.Compression.FileSystem
  $zip=[IO.Compression.ZipFile]::OpenRead($archivePath)
- try{foreach($relative in @('build/native/include/WebView2.h','build/native/include/WebView2EnvironmentOptions.h',('build/native/'+$cfg.architecture+'/WebView2LoaderStatic.lib'),'LICENSE.txt','NOTICE.txt')){
+ $loaderMember='WebView2LoaderStatic.lib'
+ if($cache.ContainsKey('SOUI_WEBVIEW2_LOADER_SHARED')-and$cache['SOUI_WEBVIEW2_LOADER_SHARED']-imatch'^(1|ON|YES|TRUE|Y)$'){$loaderMember='WebView2Loader.dll'}
+ try{foreach($relative in @('build/native/include/WebView2.h','build/native/include/WebView2EnvironmentOptions.h',('build/native/'+$cfg.architecture+'/'+$loaderMember),'LICENSE.txt','NOTICE.txt')){
   $matches=@($zip.Entries|Where-Object{$_.FullName-ceq$relative});Need ($matches.Count-eq1) 'Unique authenticated optional dependency member'
   $entry=$matches[0];$stream=$entry.Open();$hash=[Security.Cryptography.SHA256]::Create()
   try{$expected=[BitConverter]::ToString($hash.ComputeHash($stream)).Replace('-','').ToLowerInvariant()}finally{$stream.Dispose();$hash.Dispose()}

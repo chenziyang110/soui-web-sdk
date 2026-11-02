@@ -1,0 +1,237 @@
+Microsoft (R) COFF/PE Dumper Version 14.44.35226.0
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+
+Dump of file F:\work\SOUI_WEB\soui-loader-consumers-20261102-53102354198e48bfb3272b3d55ead9f4\static-x86\Release\SouiOptionalLoaderConsumer.exe
+
+File Type: EXECUTABLE IMAGE
+
+  Section contains the following imports:
+
+    SHELL32.dll
+                40D148 Import Address Table
+                412B58 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                   3A GetCurrentProcessExplicitAppUserModelID
+
+    ole32.dll
+                40D22C Import Address Table
+                412C3C Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                   88 CoTaskMemAlloc
+                   89 CoTaskMemFree
+
+    ADVAPI32.dll
+                40D000 Import Address Table
+                412A10 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                  29C RegQueryValueExW
+                  296 RegQueryInfoKeyW
+                  28F RegOpenKeyExW
+                  25E RegCloseKey
+                  16D GetSidSubAuthorityCount
+                  121 EventRegister
+                  122 EventSetInformation
+                  129 EventWriteTransfer
+                  123 EventUnregister
+                  284 RegGetValueW
+                  218 OpenProcessToken
+                  170 GetTokenInformation
+                  16C GetSidSubAuthority
+
+    KERNEL32.dll
+                40D038 Import Address Table
+                412A48 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                  183 FindFirstFileW
+                  267 GetLocaleInfoEx
+                  1A9 FormatMessageA
+                    0 AcquireSRWLockExclusive
+                  584 SleepConditionVariableSRW
+                  5E4 WakeAllConditionVariable
+                  389 IsProcessorFeaturePresent
+                  245 GetFileAttributesExW
+                  572 SetUnhandledExceptionFilter
+                  591 TerminateProcess
+                  3CE LocalAlloc
+                  3C7 LoadLibraryExW
+                  34C HeapFree
+                  2B7 GetProcessHeap
+                  41B OutputDebugStringW
+                  41A OutputDebugStringA
+                  18F FindNextFileW
+                  17E FindFirstFileExW
+                  24B GetFileInformationByHandleEx
+                  4B5 ReleaseSRWLockExclusive
+                  5B2 UnhandledExceptionFilter
+                  178 FindClose
+                   CE CreateFileW
+                  450 QueryPerformanceFrequency
+                  44F QueryPerformanceCounter
+                  2EC GetSystemTimeAsFileTime
+                  366 InitializeSListHead
+                  382 IsDebuggerPresent
+                  3D3 LocalFree
+                  23C GetEnvironmentVariableW
+                  248 GetFileAttributesW
+                  264 GetLastError
+                  535 SetLastError
+                  21F GetCurrentThreadId
+                  277 GetModuleFileNameW
+                  27B GetModuleHandleW
+                  2B1 GetProcAddress
+                  603 WideCharToMultiByte
+                   89 CloseHandle
+                  2C1 GetProcessTimes
+                  21A GetCurrentProcess
+                  21B GetCurrentProcessId
+
+    MSVCP140.dll
+                40D0E4 Import Address Table
+                412AF4 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                  28E ?_Xlength_error@std@@YAXPBD@Z
+                  28F ?_Xout_of_range@std@@YAXPBD@Z
+                  51E ?uncaught_exception@std@@YA_NXZ
+                  273 ?_Syserror_map@std@@YAPBDH@Z
+                  285 ?_Winerror_map@std@@YAHH@Z
+                  3C5 ?good@ios_base@std@@QBE_NXZ
+                  367 ?flags@ios_base@std@@QBEHXZ
+                  53E ?width@ios_base@std@@QBE_JXZ
+                  53D ?width@ios_base@std@@QAE_J_J@Z
+                  4DE ?sputc@?$basic_streambuf@DU?$char_traits@D@std@@@std@@QAEHD@Z
+                  4E1 ?sputn@?$basic_streambuf@DU?$char_traits@D@std@@@std@@QAE_JPBD_J@Z
+                  4C5 ?setstate@?$basic_ios@DU?$char_traits@D@std@@@std@@QAEXH_N@Z
+                  50A ?tie@?$basic_ios@DU?$char_traits@D@std@@@std@@QBEPAV?$basic_ostream@DU?$char_traits@D@std@@@2@XZ
+                  487 ?rdbuf@?$basic_ios@DU?$char_traits@D@std@@@std@@QBEPAV?$basic_streambuf@DU?$char_traits@D@std@@@2@XZ
+                  361 ?fill@?$basic_ios@DU?$char_traits@D@std@@@std@@QBEDXZ
+                  244 ?_Osfx@?$basic_ostream@DU?$char_traits@D@std@@@std@@QAEXXZ
+                  10D ??6?$basic_ostream@DU?$char_traits@D@std@@@std@@QAEAAV01@_N@Z
+                   FF ??6?$basic_ostream@DU?$char_traits@D@std@@@std@@QAEAAV01@H@Z
+                  368 ?flush@?$basic_ostream@DU?$char_traits@D@std@@@std@@QAEAAV12@XZ
+                  2B4 ?cout@std@@3V?$basic_ostream@DU?$char_traits@D@std@@@1@A
+                  2A2 ?cerr@std@@3V?$basic_ostream@DU?$char_traits@D@std@@@1@A
+                  585 _Mtx_lock
+                  589 _Mtx_unlock
+                  275 ?_Throw_Cpp_error@std@@YAXH@Z
+
+    VCRUNTIME140.dll
+                40D150 Import Address Table
+                412B60 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                   35 _except_handler4_common
+                   1D __current_exception_context
+                   1C __current_exception
+                   48 memset
+                   23 __std_terminate
+                   22 __std_exception_destroy
+                   47 memmove
+                   46 memcpy
+                   10 __CxxFrameHandler3
+                    1 _CxxThrowException
+                   21 __std_exception_copy
+
+    api-ms-win-crt-runtime-l1-1-0.dll
+                40D1B0 Import Address Table
+                412BC0 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                    7 __p___wargv
+                   17 _cexit
+                   16 _c_exit
+                   42 _seh_filter_exe
+                   25 _exit
+                   58 exit
+                   39 _initterm_e
+                   38 _initterm
+                   36 _initialize_onexit_table
+                   3E _register_onexit_function
+                   1F _crt_atexit
+                   1D _controlfp_s
+                   2B _get_initial_wide_environment
+                   37 _initialize_wide_environment
+                   57 abort
+                   3C _invoke_watson
+                    5 __p___argc
+                   1A _configure_wide_argv
+                   44 _set_app_type
+                   6A terminate
+                   3F _register_thread_local_exe_atexit_callback
+
+    api-ms-win-crt-heap-l1-1-0.dll
+                40D18C Import Address Table
+                412B9C Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                   16 _set_new_mode
+                   19 malloc
+                    8 _callnewh
+                   18 free
+
+    api-ms-win-crt-stdio-l1-1-0.dll
+                40D208 Import Address Table
+                412C18 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                    1 __p__commode
+                   54 _set_fmode
+
+    api-ms-win-crt-string-l1-1-0.dll
+                40D214 Import Address Table
+                412C24 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                   A9 wcsnlen
+                   7B iswspace
+                   8B strlen
+                   A3 wcslen
+                   4A _wcsicmp
+
+    api-ms-win-crt-math-l1-1-0.dll
+                40D1A8 Import Address Table
+                412BB8 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                   2E __setusermatherr
+
+    api-ms-win-crt-convert-l1-1-0.dll
+                40D180 Import Address Table
+                412B90 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                   47 _wtoi
+                   33 _ultow_s
+
+    api-ms-win-crt-locale-l1-1-0.dll
+                40D1A0 Import Address Table
+                412BB0 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                    8 _configthreadlocale
+
+  Summary
+
+        1000 .data
+        7000 .rdata
+        1000 .reloc
+        1000 .rsrc
+        C000 .text

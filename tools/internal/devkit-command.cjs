@@ -21,7 +21,7 @@ const definitions={
   create:{'--name':'name','--output-root':'outputRoot','--sdk-package':'sdkPackage','--profile':'profile'},
   doctor:{'--native-toolchain':'nativeToolchain','--llvm-root':'llvmRoot','--msvc-root':'msvcRoot','--windows-sdk-root':'windowsSdkRoot',
     '--ninja-exe':'ninjaExe','--windows-cmd-exe':'windowsCmdExe','--powershell-exe':'powerShellExe'},
-  build:{'--sdk-only':'sdkOnly','--skip-web':'skipWeb','--with-webview2':'withWebView2','--with-auto-host':'withAutoHost','--with-uia':'withUia',
+  build:{'--sdk-only':'sdkOnly','--skip-web':'skipWeb','--with-webview2':'withWebView2','--with-shared-webview2-loader':'withSharedWebView2Loader','--with-auto-host':'withAutoHost','--with-uia':'withUia',
     '--with-gui-bindings':'withGuiBindings','--with-vendor-tests':'withVendorTests','--install':'install','--fresh-configure':'freshConfigure',
     '--compiler-tail':'compilerTail','--tail-image':'tailImage','--tail-sha256':'tailSha256',
     '--native-toolchain':'nativeToolchain','--llvm-root':'llvmRoot','--msvc-root':'msvcRoot','--windows-sdk-root':'windowsSdkRoot',
@@ -35,7 +35,7 @@ const definitions={
     '--native-toolchain':'nativeToolchain','--llvm-root':'llvmRoot','--msvc-root':'msvcRoot','--windows-sdk-root':'windowsSdkRoot',
     '--ninja-exe':'ninjaExe','--windows-cmd-exe':'windowsCmdExe','--powershell-exe':'powerShellExe'}
 };
-const booleans=new Set(['sdkOnly','skipWeb','withWebView2','withAutoHost','withUia','withGuiBindings','withVendorTests','install','freshConfigure','compilerTail','bundle']);
+const booleans=new Set(['sdkOnly','skipWeb','withWebView2','withSharedWebView2Loader','withAutoHost','withUia','withGuiBindings','withVendorTests','install','freshConfigure','compilerTail','bundle']);
 const pathKeys=new Set(['runner','devkitRoot','outputRoot','sdkPackage','tailImage','output','project','webRoot']);
 const defaults={architecture:'x64',configuration:'Release',format:'human',drainMs:2000,
   profile:'compatibility',scope:'unit',kind:'source',port:5173,durationMs:900000};

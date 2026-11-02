@@ -7,6 +7,7 @@ param(
   [switch]$SkipWeb,
   [ValidateSet('distribution','source-diagnostic')][string]$WebProfile='distribution',
   [switch]$WithWebView2,
+  [switch]$WithSharedWebView2Loader,
   [switch]$WithAutoHost,
   [switch]$WithDevToolsPackage,
   [string]$DevToolsPackageRoot,
@@ -110,6 +111,7 @@ if($WithAutoHost){
   $WithWebView2=$true
   if($WithDevToolsPackage){throw 'Auto host does not admit an offline DevTools kernel override.'}
 }
+if($WithSharedWebView2Loader){$WithWebView2=$true}
 if(Test-Path -LiteralPath (Join-Path $root 'sdk-lock.json')) {
   & $node.Source (Join-Path $root 'tools/sdk/soui-sdk.cjs') verify-project --project $root
   if($LASTEXITCODE -ne 0){throw 'Pinned SDK was modified; install a reviewed SDK version or restore its files.'}
@@ -189,10 +191,11 @@ if($WithGuiBindings){
   & $node.Source (Join-Path $root 'tools/sdk/gui-bindings-delivery.cjs') verify --root $root
   if($LASTEXITCODE -ne 0){throw 'Optional GUI bindings identity verification failed'}
 }
-$optional=@('-DSOUI_BUILD_WEBVIEW2=OFF')
+$optional=@('-DSOUI_BUILD_WEBVIEW2=OFF','-DSOUI_WEBVIEW2_LOADER_SHARED=OFF')
 if($WithWebView2){
   $webview2Package=& (Join-Path $PSScriptRoot 'internal/Restore-WebView2.ps1')
-  $optional=@('-DSOUI_BUILD_WEBVIEW2=ON',"-DSOUI_WEBVIEW2_SDK_ROOT=$webview2Package")
+  $optional=@('-DSOUI_BUILD_WEBVIEW2=ON',"-DSOUI_WEBVIEW2_SDK_ROOT=$webview2Package",
+    "-DSOUI_WEBVIEW2_LOADER_SHARED=$(if($WithSharedWebView2Loader){'ON'}else{'OFF'})")
 }
 $optional+=('-DSOUI_BUILD_AUTO_HOST='+$(if($WithAutoHost){'ON'}else{'OFF'}))
 $optional+=('-DSOUI_BUILD_UIA='+$(if($WithUia){'ON'}else{'OFF'}))

@@ -13,10 +13,10 @@ const {acceptCompilerTail} = require('./compiler-tail-policy.cjs');
 const encode = value => Buffer.from(JSON.stringify(value,null,2)+'\n');
 const sha = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
 const need = (condition,message) => {if(!condition)throw new Error(message);};
-const switches = {sdkOnly:'-SdkOnly',skipWeb:'-SkipWeb',withWebView2:'-WithWebView2',withAutoHost:'-WithAutoHost',withUia:'-WithUia',withGuiBindings:'-WithGuiBindings',withVendorTests:'-WithVendorTests',install:'-Install',freshConfigure:'-FreshConfigure'};
+const switches = {sdkOnly:'-SdkOnly',skipWeb:'-SkipWeb',withWebView2:'-WithWebView2',withSharedWebView2Loader:'-WithSharedWebView2Loader',withAutoHost:'-WithAutoHost',withUia:'-WithUia',withGuiBindings:'-WithGuiBindings',withVendorTests:'-WithVendorTests',install:'-Install',freshConfigure:'-FreshConfigure'};
 const cli = {'--root':'root','--architecture':'architecture','--configuration':'configuration','--runner':'runner','--powershell':'powershell',
   '--timeout-ms':'timeoutMs','--drain-ms':'drainMs','--tail-image':'tailImage','--tail-sha256':'tailSha256',
-  '--sdk-only':'sdkOnly','--skip-web':'skipWeb','--with-webview2':'withWebView2','--with-auto-host':'withAutoHost','--with-uia':'withUia','--with-gui-bindings':'withGuiBindings','--with-vendor-tests':'withVendorTests',
+  '--sdk-only':'sdkOnly','--skip-web':'skipWeb','--with-webview2':'withWebView2','--with-shared-webview2-loader':'withSharedWebView2Loader','--with-auto-host':'withAutoHost','--with-uia':'withUia','--with-gui-bindings':'withGuiBindings','--with-vendor-tests':'withVendorTests',
   '--install':'install','--fresh-configure':'freshConfigure','--compiler-tail':'compilerTail',
   '--native-toolchain':'nativeToolchain','--llvm-root':'llvmRoot','--msvc-root':'msvcRoot','--windows-sdk-root':'windowsSdkRoot',
   '--ninja-exe':'ninjaExe','--windows-cmd-exe':'windowsCmdExe','--powershell-exe':'powerShellExe','--devkit-root':'devkitRoot',
@@ -57,6 +57,7 @@ function options(value) {
   }else need(result.host64ObserverPrepared===undefined&&result.host64ObserverSha256===undefined,'Prepared observer inputs require explicit host64-build-observer');
   if(result.compilerTail) {
     need(!result.withAutoHost,'Compiler-tail policy does not include AutoHost');
+    need(!result.withSharedWebView2Loader,'Compiler-tail policy does not include the optional dynamic loader');
     need(!result.withGuiBindings,'Compiler-tail policy does not include WithGuiBindings');
     need(!result.withUia,'Compiler-tail policy does not include UIA');
     validateTailImagePin({image:result.tailImage,sha256:result.tailSha256,nonce:'0'.repeat(32)});
@@ -122,6 +123,7 @@ function time(value) {
 }
 function uint64(value) {need(typeof value==='string'&&/^[1-9]\d{0,19}$/.test(value)&&BigInt(value)<=18446744073709551615n,'Invalid creation FILETIME');return value;}
 function artifacts(build) {return {payloads:build.payloads,optionalLibraries:build.optionalLibraries,
+  ...(build.webview2Loader!==undefined?{webview2Loader:build.webview2Loader}:{}),
   ...(build.sdkOnly?{library:build.library}:{}),...(build.optionalPayloads!==undefined?{optionalPayloads:build.optionalPayloads}:{})};}
 function validateInvocation(context,frozen) {
   need(context.schema==='soui.owned-process-context/v1'&&['powershell.exe','pwsh.exe'].includes(path.win32.basename(context.executable).toLowerCase()),'Build PowerShell context required');

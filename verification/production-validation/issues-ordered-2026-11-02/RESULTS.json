@@ -1,0 +1,117 @@
+{
+  "schema": "soui.ordered-issue-results/v1",
+  "version": "0.6.1-preview.1",
+  "recordedAt": "2026-11-02T04:13:30.283Z",
+  "baseCommit": "ce9757e33e52ac680802691ff7e3a042eca86d52",
+  "issueOrder": [
+    23,
+    27,
+    29,
+    31,
+    39,
+    42,
+    77,
+    96,
+    133
+  ],
+  "releaseReady": false,
+  "productionQualificationComplete": false,
+  "fullDevtoolsGoalComplete": false,
+  "fullCollectionExecuted": false,
+  "guiExecuted": false,
+  "published": false,
+  "issues": {
+    "23": "umbrella remains open",
+    "27": "historical recovery passed; focus and Win7 remain",
+    "29": "retained E_TRAY_FOCUS failure; remaining desktop conditions open",
+    "31": "mixed-resource fixture incomplete; real 52-minute and eight-hour qualification absent",
+    "39": "current 0.6.0 map reverified; licensing approval remains",
+    "42": "historical V11 resize reverified; current Win7 x86 interaction unavailable",
+    "77": "candidate archives reverified; x64 baseline shutdown failed and x86 baseline not executed",
+    "96": "new candidate records unverified status only; full release integration remains",
+    "133": "implementation and scoped checks passed; maintainer and Win7 validation remain"
+  },
+  "checks": {
+    "sdk": {
+      "architectures": [
+        "x64",
+        "x86"
+      ],
+      "configuration": "Release",
+      "modes": [
+        "static",
+        "shared"
+      ],
+      "toolset": "v143/14.44.35207",
+      "windowsSdk": "10.0.19041.0",
+      "entry": "direct CMake, not standard Build/Owned qualification"
+    },
+    "installedConsumers": {
+      "builds": 4,
+      "finalDiscoveryRuns": 4,
+      "missingOptionalDllRuns": 2,
+      "sharedHardLoaderImport": false,
+      "sharedHardEventSetInformationImport": false,
+      "staticHardEventSetInformationImport": true,
+      "officialDllDelayedEventSetInformationImport": true
+    },
+    "nativeLoader": {
+      "x64": 6,
+      "x86": 6,
+      "failedFinal": 0
+    },
+    "cmakeTransitions": {
+      "x64": 3,
+      "x86": 3
+    },
+    "observerDerivedInputs": {
+      "passed": 28,
+      "syntheticArchiveFixtures": true,
+      "nativeLlvmBuild": false
+    },
+    "integratedReaders": {
+      "passed": 81,
+      "failed": 0
+    },
+    "webAndStatus": {
+      "passed": 68,
+      "failed": 0,
+      "rawLog": null,
+      "receipt": "executed tool transcript"
+    },
+    "sdkPackageSmoke": {
+      "passed": 15,
+      "failed": 0
+    },
+    "versionGui": {
+      "initialPassed": 36,
+      "initialFailed": 1,
+      "affectedCaseRerunPassed": 1
+    },
+    "historicalArchiveRecheck": {
+      "indexedFiles": 1161,
+      "newProductExecution": false
+    },
+    "npmAudits": {
+      "web": 0,
+      "react": 0,
+      "vue": 0
+    }
+  },
+  "retainedFailures": [
+    "original invalid-image test reached 10-second timeout before thread error-mode fix",
+    "two PS5 observer fixture preparation failures",
+    "one concurrent version fixture input change",
+    "CLI test first omitted its required runner fixture",
+    "first DLL import check conflated delay and mandatory tables"
+  ],
+  "notExecuted": [
+    "Debug/application release matrix",
+    "real WebView2 environment or page creation",
+    "Win7/PE product startup",
+    "full Collector",
+    "MessagePort baseline rerun",
+    "long-run and performance qualification",
+    "dependency licensing approval"
+  ]
+}

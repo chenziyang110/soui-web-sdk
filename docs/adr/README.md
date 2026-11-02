@@ -95,3 +95,4 @@
 
 - [ADR-0123：公共原生受控 DevTools](0123-public-devtools-candidate.md)（默认关闭与目标许可；本轮发布资格单列）
 - [ADR-0136：0.6.0 普通 Release 分类与限定范围](0136-0.6.0-release-scope.md)（用户本次授权；生产资格仍未完成）
+- [ADR-0138：可选的 WebView2 动态 Loader](0138-optional-webview2-loader.md)（默认静态；动态档在创建前完整检查）
