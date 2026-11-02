@@ -81,8 +81,8 @@ Host ready，不能只用 `commandFlowContinues=true` 代替。x64 的 Esc 由�
 
 ## 尚未完成的范围
 
-原生独立控制组当前共二十个 case、四十三份 raw：十四次 `NIM_SETFOCUS` 已返回
-FALSE、两次已返回 TRUE；两组未调用超时、两组在结果前异常退出分别保留，未知
+原生独立控制组当前共二十一个 case、四十五份 raw：十四次 `NIM_SETFOCUS` 已返回
+FALSE、三次已返回 TRUE；两组未调用超时、两组在结果前异常退出分别保留，未知
 BOOL 不记为成功。API 已返回 TRUE 不表示整个 case 通过；键盘观察 B 的后续期限
 失败不归入未调用超时，详见下文。
 修正独立诊断的 DR7 固定状态位匹配后，在固定 Server 2022 Shell32 样本中实际采到
@@ -166,10 +166,96 @@ Esc 关闭，截图与 raw 共同支持该次图标菜单请求路由，原生�
 Owned 自然 root exit 2、Job 活跃数 0，未触发 Owned 超时且未强清，`passed=false`。
 这是 API 已返回后的键盘观察失败，不是未调用 API 的超时，也不能计为通过。
 
-该反例表明预激活后的 API TRUE 不能替代真实图标键盘路由；当前
-`SetForegroundWindow` + `WM_NULL` 准备方案不采纳到 SDK。公共 SDK、`VERSION` 和
-严格托盘消费者均未修改，early-reply 实际执行与延迟焦点覆盖机制均未证实。
+该反例表明预激活后的 API TRUE 不能替代真实图标键盘路由；仅有
+`SetForegroundWindow` + `WM_NULL` 的准备方案不采纳到 SDK。该反例封存时公共 SDK、
+`VERSION` 和严格托盘消费者均未修改；early-reply 实际执行与延迟焦点覆盖机制均未证实。
 
-本次修复的是调用方业务流程，未改变公共 SDK、严格托盘消费者或 API 失败定义。
-新的安装后严格消费者、Win7、x86 真实 Esc、完整 #27/#29、长期驻留及生产资格仍待验；
-没有发布、完整 Collector 或 `releaseReady` 变更，也不声称焦点已实际归还。
+随后只运行一次新增 `activate-sync-state` 键盘对照，没有重跑旧 A/B。冻结程序为
+286,720 bytes，SHA-256 `5c49195e35f661616591d36686277da7a537aba3cda8df699f2ec18f39ebc980`；
+源码九项和编译产物六十二项均与冻结清单吻合。该模式将 metadata、一次 SFW、一次
+flags=34 的 WM_NULL 和只读状态观察放在同一绝对 1,000 ms 准备预算内，保留原
+60 秒总期限及 Owned 90 秒/2 秒 drain；最终日志写入之后再核对身份、前台、预算和
+`GetGUIThreadInfo` 的 active=focus=同一 `Shell_TrayWnd`，成功路径不再写盘才进入
+唯一一次原始 NIM。该瞬时条件不证明激活或队列工作全部完成。
+
+本次初始准备样本在 +1 ms 为 active=Shell、focus=NULL，未满足条件；一次 5 ms
+协作等待请求实际耗时 15 ms，+17 ms 首次匹配，最终查询和实际准入也在 +17 ms。
+这里的等待依赖状态变化，不能归纳为固定等待 5 ms 即可修复。原始 NIM 于
+17,558 ms 返回 TRUE，五次实际观察偏移 0/28/59/200/1012 ms 均为
+`ToolbarWindow32`。操作者第一 Esc 后未以鼠标、Win+B 或 Tab 重新定位，真实
+Shift+F10 打开可辨识的 SECOND MENU；原件中的 `keyboard.candidate` 在 29,599 ms
+收到，先于 29,602 ms 的第二菜单 owner 激活，候选前焦点仍为 Toolbar。第二 Esc
+对应 command=0/error=0，键盘观察于 41,020 ms 完成；原生 41,030 ms 自然退出 0，
+`invalid=false`、`deadlineReached=false`、`cleanupConfirmed=true`。Owned 于
+41,102 ms 完成，root exit 0、Job 活跃数 0，无超时或强清，`passed=true`。
+
+新增两份 raw 及两份授权模块文件的长度和散列均匹配导出 manifest，位于
+`out/tray-focus-20261102/raw-state-admission`；独立报告与原始记录、操作日志及截图
+交叉核对。这是该新模式首个同时满足 API 与真实图标键盘链的原生样本；原生日志
+自身仍不认证输入来源，单次正例不能证明条件充分、early-reply 根因、SDK 修复或
+跨平台资格。准备耗时 17 ms 与收尾记录年龄 23,490 ms 分别保留，不混为预算超限。
+SDK 接入先更新 [ADR-0012](../adr/0012-public-tray-service.md)，再验证重入、失败边界、
+安装后消费者及实际产品流程。后续本地内容采用独立 `0.6.1-preview.2` 身份推进实现，
+其后实际验证见下文，不继承上述 `.1` 或独立 probe 结果。
+
+## preview.2 安装消费与真实桌面记录
+
+该候选的标准源码绑定为 `2be49859ec60170d5e8a04f83b2dea3f6c250a5b6ea3cccc222b0348daaa6a47`。
+MSVC v143 14.44.35207、SDK19041、Release 的 x64/x86 全根标准构建和安装实际通过；
+BuildID 分别为 `b21c439e-78a8-43f4-8e91-d4a31f8484fd`、
+`d4133681-3ad8-4f56-9126-d7e0af3b090e`。每架构 14 项非 GUI CTest、70 组行为回归
+通过（tray 35、menu 15、shortcut 9、shutdown 11）。Web client 31、SDK package
+15、GUI bindings 30 项通过，四个 Web/npm 工程 audit 均为 0。原生新增回归先取得
+旧直接 NIM 路径的失败，再取得 35 组通过；一次测试空指针推导编译失败保留，修正
+仅在测试的显式指针类型。没有在宿主运行 GUI 产品或诊断。
+
+仓库外消费者只从安装前缀引用 SDK，完整头文件版本为 `.2`、Release/MD，安装库
+逐字节匹配当前标准构建。两架构消费者和原生 stdout 捕获启动器均实际编译通过，
+四个编译阶段及 Owned 均自然退出 0、Job0、无强清。首次 x64 attempt 被既存编译
+进程门禁拒绝，未进入 configure；当时具体 PID 未获证实，原失败和零字节排查记录
+保留。全新 attempt 通过，未修改门禁、超时或源码，也没有据后一次成功改写原因。
+构建汇总为 `out/tray-focus-20261102/consumer-build-preview2.actual.json`，
+SHA-256 `f77e68ad4c43b91e5bbdf258885d3b98cb8613966ce9aee6eff911e9704bb922`。
+
+真实 GUI 使用只读 CD 和唯一 case；消费者原生期限 180,000 ms，Owned 200,000 ms
+及 2,000 ms drain 保持。捕获启动器使用固定 consumer/Runner 的大小和 SHA pins，
+只传入一次性 token，分别保留 stdout、stderr、启动/完成记录和原 Owned 报告。
+启动器完成记录不自证其自身最终退出或最后一次 flush，消费者结论须结合全部原件。
+
+| 目标 / case | 实际观察与原结果 |
+|---|---|
+| Server 第一轮 Workbench x64 | 命令 3 后 slot3 generation2 ready；未完成 Esc/键盘/退出，Owned 200,034 ms timeout/root124、强清所属 Job，失败保留 |
+| Server 第一轮 Workbench x86 | 关闭后通知区激活恢复第三窗；真实 Esc、原位 Shift+F10 应用菜单、明确退出；两次 focus 响应成功，native0，Owned0/Job0，无超时或强清 |
+| Server 严格消费者 x64 | menu0→1→2，更新提示和 Ctrl+Alt+F9；三次 focus 成功，native0@61,485 ms、cleanupConfirmed，Owned0@61,577 ms/Job0 |
+| Server 严格消费者 x86 | 同样完成真实 Esc/键盘、更新、快捷键、退出；三次 focus 成功，native0@46,208 ms，Owned0@46,247 ms/Job0 |
+| Server 新 Workbench x64 | command3→slot3 generation2 ready@50,656 ms；真实 Esc/Shift+F10、command11退出；三次 focus 成功，但 seq65 非延后 E_BUSY 锁存 native1@120,219 ms，Owned root-failed1@120,350 ms/Job0，无强清 |
+| Win10 严格消费者 x64 | 首 Esc/Shift+F10 实际 SDK 菜单；三次 focus 成功，seq17 E_BUSY，更新后紧接快捷键的第三菜单 E_MENU_FOREGROUND；native1@47,056 ms，Owned1@47,511 ms/Job0，无强清 |
+| Win10 严格消费者 x86 | Esc/Shift+F10、更新提示、快捷键和明确退出完成；三次 focus 成功，但 seq19 E_BUSY 锁存 native1@63,548 ms，Owned1@64,115 ms/Job0，无强清 |
+
+Server 为前述同一已核对 Server 2022 overlay；客户端本会话 Settings About 实际核对
+为 Windows 10 Pro、22H2、OS build `19045.2965`、64-bit OS。该新观察不追溯改变
+旧 baseline 当时未核实 OS 版本的记录。About 截图含设备标识，仅本地保留，不发布。
+
+七个 `.2` case 共二十六份 guest raw，和独立 probe 的二十一个 case/四十五份 raw
+分别计数。十八次公共 focus 响应均成功；这些日志没有单列原生 BOOL，只有按冻结
+SDK 成功路径作出的 NIM 非零推断，不能写成直接仪器化采样。真实 Esc 和无鼠标、
+Win+B、Tab 重新定位的 Shift+F10 由操作日志与截图共同支持，原生通知自身不认证手势。
+
+原件位于 `out/tray-focus-20261102/raw-workbench-preview2`（四份）、
+`raw-sdk2-server`（十二份）、`raw-sdk2-win10`（十份）。每次在同一 VM 正常 ACPI
+退出、QEMU0、写入句柄释放后只读导出，长度与 SHA-256 全部核对，失败不被重跑覆盖。
+Server 本轮汇总 SHA-256 为
+`7759c6e6a5afde529c56d889c7595d00dd2eb61ef9c9a349895da864d0b99c0e`；
+Win10 汇总为 `42998aebb2a25b2a1811fdc8bbe4a0c1027549996fb3428a95bf98e0d7b3741b`。
+
+新失败收窄到调用方在 tray 成员调用尚未返回时再次分派 callback。`notification=0`
+是 SDK 的 `tray_event::none`，原 wParam/lParam 尚未记录，不能猜成具体 Win32 通知。
+busy 返回发生在通知解码前，所以也不能据此断言原通知不可操作。TaskbarCreated 的
+精确延后组合不适用于这些 callback；后续修复必须保留 SDK 严格失败语义，串行分派
+原通知并记录实际重放结果。Win10 x64 菜单激活失败另行保留，不归因为 NIM FALSE。
+
+Win7 SP1 OS32 仍无可操作的现存目标。进一步定向复核的历史记录仍指向已缺失的
+旧 D 盘；相关 ZIP 无 OS/VM 镜像，现存两套 VMware Win7 为 x64，两支 SOUI stable
+配置均为 Server 2022。没有接管他人租约、重置密码、克隆或重装来替代资格。
+因此 #27/#29、Win7、Explorer 重启、长期驻留及生产资格继续开放；没有发布、
+完整 Collector 或 `releaseReady` 变更。后续说明文档不改写本轮冻结构建与失败原件。

@@ -42,6 +42,14 @@ React 页面的外层和 V02 列表滚动条使用 Chrome 49 兼容的 `::-webki
 `commandFlowContinues` 是流程决定，不是命令已执行的证据；实际窗口恢复与 Host ready
 须另验。其它焦点校验、菜单、清理和 Host 错误仍按原失败路径处理，已有退出请求与
 失败码不撤销。SDK `return_focus()` 和严格托盘消费者仍把 Shell 拒绝判为失败。
+
+本地 `0.6.1-preview.2` 候选对重入重建提示作精确兼容：仅已注册的 `TaskbarCreated`、
+`handled=true`、事件为 none 且原结果为 failure / `E_BUSY` 时记录 `deferred=true`，
+保留原 `ok=false`、错误码和消息，但不新增退出码 1，也不清除已有失败。它只表示 SDK
+已保存延后提示，不是 Shell 恢复通过；其它忙错误、后续 ADD/VERSION 恢复失败与焦点
+失败仍严格处理。旧代次唤醒的 handled/success 也不证明发生了恢复。须继续核对后续
+实际恢复、图标/键盘路由和自然退出证据，候选改动不继承下述历史样本的资格。
+
 `0.6.1-preview.1` 本地候选已完成两架构 Release 标准构建、各 14 项非 GUI CTest
 （49 个契约组），并在隔离 VM 实际完成菜单恢复及保留退出码 1 的自然收尾；真实
 Esc 仅在 x64 完成，x86 未执行。此结果不代表焦点已归还，也不关闭 #27/#29。

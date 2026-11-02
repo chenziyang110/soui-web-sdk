@@ -261,12 +261,18 @@ class application final {
     if (tray_) {
       const auto event = tray_->dispatch_message(message, static_cast<std::uintptr_t>(first),
           static_cast<std::intptr_t>(second));
+      const bool deferred = taskbar_created_ != 0 && message == taskbar_created_ && event.handled &&
+          event.event == soui::runtime::tray_event::none &&
+          event.response.kind == soui::runtime::result_kind::failure && event.response.code == "E_BUSY";
       if (message == taskbar_created_) {
         record_response("taskbar.created", event.response,
             "\"observation\":" + std::to_string(++taskbar_count_) +
-            ",\"handled\":" + boolean(event.handled) + ",\"sourceVerified\":false");
+            ",\"handled\":" + boolean(event.handled) +
+            ",\"notification\":" + std::to_string(static_cast<unsigned>(event.event)) +
+            ",\"sourceVerified\":false" +
+            ",\"deferred\":" + boolean(deferred));
         // Keep listening after recovery failure so a later notification can retry.
-        if (!event.response.ok()) exit_code_ = 1;
+        if (!event.response.ok() && !deferred) exit_code_ = 1;
       }
       if (message == callback_message) {
         const char* name = event.event == soui::runtime::tray_event::activated ? "activated" :

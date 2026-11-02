@@ -1,0 +1,38 @@
+# 托盘焦点准备候选迁移
+
+`0.6.1-preview.2` 是新的本地内容身份，尚未发布。候选已加入状态准入与重入提示
+处理，已执行安装后真实验证但存在调用方重入失败；本说明不提升 #27/#29、Win7 或生产资格。`0.6.1-preview.1` 的载荷和历史失败
+保持原身份，不能原地替换其 DLL/LIB 后沿用旧验收。
+
+公共 C++ 签名、owner 线程、HWND/图标所有权和关闭顺序保持。应用结束菜单后仍须
+调用并检查 `tray_service::return_focus()`，不能仅以菜单选择或图标可见判断焦点成功。
+候选只在初始前台恰为 owner 时，先尝试一次 Shell 激活、一次 WM_NULL 和有界的
+GUI 状态准入。其余初始前台保持原 NIM 路径。准备采用共用的绝对 1,000 ms 协作预算，
+不使用固定等待作为成功条件，也不构成整个成员调用的硬超时。
+
+`E_TRAY_FOCUS` 可能来自准备阶段的保守拒绝，此时尚未执行 NIM；message 区分该
+情况与实际 NIM FALSE。一旦尝试 SFW，未知状态、身份/前台变化或预算耗尽均不会
+回退到未经准入的 NIM。实际调用仍只有原始 BOOL 非零才返回成功，不重试，不把
+焦点侧效应转换为 API 成功。API TRUE 也不能代替真实图标的 Shift+F10 路由验证。
+
+同步准备允许 WndProc 重入。应用继续把原 TaskbarCreated 消息连同原始参数交给
+`dispatch_message()`；无需注册新的公开消息或保存 SDK 指针。只有该已注册消息
+返回 handled、无事件、E_BUSY 的精确组合可记为“已延后”，须保留原响应，不能吞掉
+其它 E_BUSY 或把后续 ADD/VERSION 失败当通过。旧唤醒不会恢复已移除的身份；投递
+失败也不承诺自动重试。准备期间嵌套 remove 只取消本次准备且仍返回 E_BUSY，真正
+移除须在成员返回后重试；成员活动期间仍禁止销毁服务和 owner。
+
+安装消费者应使用新 SDK 重新构建。CMake 的 `find_package(SouiSdk 0.6.1 EXACT)`
+只检查数值部分，不能区分两个 preview；必须同时核对安装头文件中的完整
+`SOUI_SDK_VERSION_STRING`、库散列和实际构建记录。回退时恢复完整旧安装载荷及
+其记录，不能混用两代头文件、库和资源。GUI bindings 的精确 preview 声明保留各自
+元数据；旧 `.1` 安装/回退规则不因新增 `.2` 而放宽为任意未来版本。
+
+该候选已在 Server 和 Win10 上执行双架构安装消费者，另执行 Server Workbench。
+七个新 case 的十八次公共 `tray.focus` 响应均成功；原件没有单列 NIM BOOL，不能写成
+仪器化的直接 BOOL 采样。两 Server 消费者及第一轮 x86 Workbench 自然退出 0；
+新的 x64 Workbench 和两 Win10 消费者出现同步调用期间重入的非延后 `E_BUSY`，
+最终退出 1，Win10 x64 还记录菜单激活失败。第一轮 x64 Workbench 超时也保留。
+这些结果要求继续修复调用方的串行分派，不能吞掉 `E_BUSY` 或将整个 case 计为通过。
+完整经过与未完成项见[维护记录](../maintenance/tray-focus-20261102.md)；实现边界和
+失败处理见 [ADR-0012](../adr/0012-public-tray-service.md)。Win7 SP1 OS32 仍未验证。

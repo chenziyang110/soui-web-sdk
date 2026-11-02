@@ -241,10 +241,19 @@ Bridge 准入超过额度返回 `E_TASK_STORE_QUOTA`，直接 Core 调用抛出
 - `install(options)` 检查窗口归属、复制图标并安装 v4 Shell 图标；重复安装需先 `remove()`。`update_tooltip(text)` 只更新已安装图标，拒绝无效 UTF-8、嵌入 NUL 和超过 127 个 UTF-16 单元的提示，不静默截断。
 - WndProc 将消息交给 `dispatch_message(message, wparam, lparam)`；它返回 `handled`、`response` 和 `tray_event::activated/context_menu/none`。只有 `position_valid` 时可用 `x/y`；上下文菜单事件须由应用选择菜单位置。事件仅表示收到匹配通知，不能作为 Web 授权或可信手势凭据。重建消息也通过该入口处理并报告恢复结果。
 - `installed()` 表示最近增加图标和 v4 设置均成功，不能证明图标对用户可见；`desired()` 表示 Shell 重建后仍应尝试恢复；`cleanup_pending()` 表示清理尚未确认。安装失败仍须检查返回值和状态，不能仅凭期望状态继续交互。
-- 菜单等托盘 UI 操作完成或取消后，调用并检查 `return_focus()`，请求 Shell 将焦点交回通知区。它要求已安装状态，不改变图标生命周期；真实键盘操作仍需桌面验证。
+- 菜单等托盘 UI 操作完成或取消后，调用并检查 `return_focus()`，请求 Shell 将焦点交回通知区。它要求已安装状态，不改变图标生命周期。`0.6.1-preview.2` 候选只在初始前台恰为 owner 时尝试 Shell 准备；其它初始前台（含未知）保留原唯一 NIM 路径。准备共用绝对 1,000 ms 协作预算，包含元数据、一次 SFW、一次 WM_NULL 和状态观察；它不承诺整个调用在一秒内返回。准备未安全准入可在调用 NIM 前返回 `E_TRAY_FOCUS`；实际执行 NIM 后仍以其原 BOOL 判断，FALSE 不转换为成功。瞬时状态和 API TRUE 均不替代真实键盘验证，详见[迁移说明](migration/tray-focus-preparation.md)。
 - `remove()` 立即取消恢复意图，再尝试删除；返回失败时可在原线程重试。应用在 HWND 存活时明确移除，随后销毁服务，最后销毁 HWND。析构只做尽力清理。所有操作和状态查询须遵守线程及无重入契约。
 
 托盘服务只管理图标；菜单与快捷键由下面的独立服务负责。完整驻留由应用控制器负责。独立接入见 [tray-consumer](../tests/tray-consumer/README.md)；托盘语义见 [ADR-0012](adr/0012-public-tray-service.md)。
+
+候选中的同步准备允许消息重入。只有已注册的 TaskbarCreated 消息同时返回
+`handled=true`、`event=none`、`E_BUSY` 时，才表示提示已合并为延后恢复；调用方保存
+原始失败响应，不能将它记为恢复成功，也不必仅因该精确组合退出。其它忙时失败仍按
+原契约处理。服务在 guard 解除后最多投递一次原消息入口的标量唤醒，后续非忙分派
+才执行 ADD/VERSION 并报告实际结果；投递失败时保留提示，没有后续外部驱动则不
+保证自动恢复。移除取消旧提示，stale 唤醒仅被消费，不产生事件或重新安装。成员
+调用期间仍禁止销毁服务或 owner；准备中的嵌套 remove 仍返回 E_BUSY，真正移除须
+在非忙时重试。该提示与唤醒均不认证发送者或授予 Web 权限。
 
 ## 原生菜单与全局快捷键（preview.10）
 

@@ -1,5 +1,12 @@
 # 变更记录
 
+## 0.6.1-preview.2（本地候选，未发布）
+
+- `tray_service::return_focus()` 仅在初始前台为 owner 时尝试 Shell 状态准备：一次激活、一次 WM_NULL 及最终 GUI 状态检查共用绝对 1,000 ms 协作预算。SFW 后未知、不安全或超预算时零 NIM；其余初始前台保留原路径。实际 NIM 仍只按原 BOOL 判断，FALSE 不转换为成功，公共签名不变。
+- 同步准备中的重建提示以不复用标量票据延后，移除及旧唤醒不能复活图标，恢复失败不形成自投递循环。Workbench 与独立消费者保留精确 deferred E_BUSY 原响应，后续恢复和焦点失败仍严格处理。新增有界状态、取消、重入和资源边界的无桌面回归。
+- 已执行双架构安装后消费者和实际产品验证：Server 两消费者自然退出 0；新的 x64 Workbench 和 Win10 两消费者虽焦点响应成功，仍因重入通知 `E_BUSY` 锁存退出 1，Win10 x64 另有 `E_MENU_FOREGROUND`。这些失败及早期超时保留，候选未完成 #27/#29 资格，见[维护记录](docs/maintenance/tray-focus-20261102.md)、[ADR-0012](docs/adr/0012-public-tray-service.md)与[迁移说明](docs/migration/tray-focus-preparation.md)。
+- SDK/Web/React/Vue 的版本入口及锁文件同步新身份；GUI 交付只增加精确 `.2` 声明，并保留 `.1` 的安装与回退规则，不接受任意未来 preview。
+
 ## 0.6.1-preview.1（本地候选，未发布）
 
 - 为 Issue #133 增加默认关闭的 `SOUI_WEBVIEW2_LOADER_SHARED`。显式开启后从应用目录加载官方 WebView2 Loader，并在发现 Runtime 前检查两个必要导出；缺少可选 Loader 或导出时允许 AutoHost 在启动前选择 MiniBlink，权限、映像和策略错误保持失败。静态 Loader 仍为默认。

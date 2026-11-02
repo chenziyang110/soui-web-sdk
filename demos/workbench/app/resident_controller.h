@@ -675,8 +675,20 @@ class resident_controller final {
       {
         operation_scope operation(*this);
         event = tray_->dispatch_message(message, first, second);
-        desktop_result(message == taskbar_message_ ? "tray.taskbar-created" : "tray.notification", event.response,
-            {{"handled", event.handled}, {"notification", static_cast<unsigned>(event.event)}, {"trustedGesture", false}});
+        const bool deferred = taskbar_message_ != 0 && message == taskbar_message_ && event.handled &&
+            event.event == soui::runtime::tray_event::none &&
+            event.response.kind == soui::runtime::result_kind::failure && event.response.code == "E_BUSY";
+        json fields{{"handled", event.handled}, {"notification", static_cast<unsigned>(event.event)},
+            {"trustedGesture", false}, {"deferred", deferred}};
+        if (deferred) {
+          // Preserve the queued hint's raw failure without latching a new application failure.
+          fields["ok"] = event.response.ok(); fields["code"] = event.response.code;
+          fields["message"] = event.response.message; fields["services"] = services();
+          emit("tray.taskbar-created", std::move(fields));
+        } else {
+          desktop_result(message == taskbar_message_ ? "tray.taskbar-created" : "tray.notification",
+              event.response, std::move(fields));
+        }
       }
       if (event.event == soui::runtime::tray_event::context_menu) show_menu(event);
       else if (event.event == soui::runtime::tray_event::activated) queue_action(command_all);

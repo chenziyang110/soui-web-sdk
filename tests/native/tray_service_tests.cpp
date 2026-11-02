@@ -5,7 +5,10 @@
 #include <shellapi.h>
 
 #include <functional>
+#include <algorithm>
+#include <array>
 #include <iostream>
+#include <limits>
 #include <stdexcept>
 #include <string>
 #include <type_traits>
@@ -31,6 +34,9 @@ void require_error(const soui::runtime::desktop_response& response, const char* 
 }
 
 struct recorded_call { tray_native_operation operation; tray_native_data data; };
+enum class focus_step { foreground, acquire, environment, activate, barrier, gui, wait, release, post, count };
+struct focus_call { focus_step step; std::uint32_t requested; std::uint64_t began; };
+struct recorded_wake { void* owner; std::uint32_t message; std::uintptr_t ticket; };
 
 // Every HWND, HICON, process/thread identity and Shell call below is fake.
 // The test uses only UTF conversion from Win32; it creates no desktop objects.
@@ -56,6 +62,33 @@ class fake_platform final : public soui::runtime::detail::tray_platform {
   std::vector<void*> destroyed;
   std::vector<recorded_call> calls;
   std::function<void(tray_native_operation)> nested;
+  void* shell{reinterpret_cast<void*>(0x404)};
+  void* foreground{nullptr}; // Default legacy tests retain the original NIM path.
+  soui::runtime::detail::tray_focus_target target{soui::runtime::detail::tray_focus_query::known,
+      {shell, 91, 93, 12345}, reinterpret_cast<void*>(0x505)};
+  soui::runtime::detail::tray_focus_identity observed_target{shell, 91, 93, 12345};
+  soui::runtime::detail::tray_focus_query environment_query{soui::runtime::detail::tray_focus_query::known};
+  bool target_alive{true}, same_session{true}, same_desktop{true}, menu_clear{true};
+  bool activation_succeeds{true}, barrier_succeeds{true}, post_succeeds{true};
+  std::vector<soui::runtime::detail::tray_focus_gui> gui_script;
+  mutable std::size_t gui_index{0};
+  mutable std::uint64_t now_ms{0};
+  std::uint32_t actual_wait_ms{0}; // Zero means the requested duration.
+  std::array<std::uint64_t, static_cast<std::size_t>(focus_step::count)> focus_costs{};
+  mutable std::vector<focus_call> focus_calls;
+  std::function<void(focus_step)> focus_nested;
+  unsigned leases_opened{0}, leases_closed{0};
+  std::vector<recorded_wake> wakes;
+
+  void focus_step_called(focus_step step, std::uint32_t requested = 0) const noexcept {
+    focus_calls.push_back({step, requested, now_ms});
+    now_ms += focus_costs[static_cast<std::size_t>(step)];
+    if (focus_nested) focus_nested(step);
+  }
+  unsigned focus_count(focus_step step) const {
+    return static_cast<unsigned>(std::count_if(focus_calls.begin(), focus_calls.end(),
+        [step](const focus_call& call) { return call.step == step; }));
+  }
 
   std::uint32_t current_thread_id() const noexcept override { return thread; }
   std::uint32_t current_process_id() const noexcept override { return process; }
@@ -83,6 +116,46 @@ class fake_platform final : public soui::runtime::detail::tray_platform {
       case tray_native_operation::remove: return remove_succeeds;
     }
     return false;
+  }
+  std::uint64_t focus_now_ms() const noexcept override { return now_ms; }
+  void* focus_foreground() const noexcept override { focus_step_called(focus_step::foreground); return foreground; }
+  soui::runtime::detail::tray_focus_target acquire_focus_target() noexcept override {
+    focus_step_called(focus_step::acquire);
+    if (target.process_lease) ++leases_opened;
+    return target;
+  }
+  soui::runtime::detail::tray_focus_environment observe_focus_environment(
+      void*, const soui::runtime::detail::tray_focus_target&) const noexcept override {
+    focus_step_called(focus_step::environment);
+    return {environment_query, identity, observed_target, foreground, target_alive, same_session, same_desktop, menu_clear};
+  }
+  void release_focus_target(soui::runtime::detail::tray_focus_target& value) noexcept override {
+    focus_step_called(focus_step::release);
+    if (value.process_lease) { ++leases_closed; value.process_lease = nullptr; }
+  }
+  bool activate_focus_target(void*) noexcept override {
+    if (activation_succeeds) foreground = shell;
+    focus_step_called(focus_step::activate);
+    return activation_succeeds;
+  }
+  soui::runtime::detail::tray_focus_barrier send_focus_barrier(void*, std::uint32_t timeout) noexcept override {
+    focus_step_called(focus_step::barrier, timeout);
+    return {barrier_succeeds, 0};
+  }
+  soui::runtime::detail::tray_focus_gui focus_gui(std::uint32_t) const noexcept override {
+    focus_step_called(focus_step::gui);
+    if (gui_script.empty()) return {soui::runtime::detail::tray_focus_query::known, shell, shell};
+    const auto index = gui_index < gui_script.size() ? gui_index++ : gui_script.size() - 1;
+    return gui_script[index];
+  }
+  void wait_focus(std::uint32_t requested) noexcept override {
+    focus_step_called(focus_step::wait, requested);
+    now_ms += actual_wait_ms ? actual_wait_ms : requested;
+  }
+  bool post_taskbar_wake(void* owner, std::uint32_t message, std::uintptr_t ticket) noexcept override {
+    focus_step_called(focus_step::post);
+    wakes.push_back({owner, message, ticket});
+    return post_succeeds;
   }
   unsigned count(tray_native_operation operation) const {
     unsigned value = 0;
@@ -387,28 +460,531 @@ void test_reentrant_operations_are_rejected() {
           "Every nested operation must reject E_BUSY without native work or state changes");
 }
 
+void test_focus_known_null_never_ready_keeps_native_uncalled() {
+  fake_platform native;
+  auto service = tray_service_test_access::create(native);
+  require(service->install(native.options()).ok(), "Install before readiness test");
+  native.foreground = native.window;
+  native.actual_wait_ms = 15;
+  native.gui_script = {{soui::runtime::detail::tray_focus_query::known, native.shell, nullptr}};
+  require_error(service->return_focus(), "E_TRAY_FOCUS");
+  require(native.count(tray_native_operation::return_focus) == 0, "No ready state must mean zero NIM");
+  require(native.focus_count(focus_step::activate) == 1 && native.focus_count(focus_step::barrier) == 1,
+          "Preparation effects are single attempt");
+  require(native.leases_opened == native.leases_closed, "Timed-out preparation releases its metadata lease");
+}
+
+void test_focus_readiness_transition_preserves_native_false() {
+  fake_platform native;
+  auto service = tray_service_test_access::create(native);
+  require(service->install(native.options()).ok(), "Install before readiness transition");
+  native.foreground = native.window;
+  native.actual_wait_ms = 15;
+  native.focus_succeeds = false;
+  native.gui_script = {{soui::runtime::detail::tray_focus_query::known, native.shell, nullptr},
+                       {soui::runtime::detail::tray_focus_query::known, native.shell, native.shell}};
+  require_error(service->return_focus(), "E_TRAY_FOCUS");
+  require(native.focus_count(focus_step::wait) == 1, "Known NULL focus waits for a real readiness transition");
+  require(native.count(tray_native_operation::return_focus) == 1, "Readiness permits one original NIM");
+  require(native.leases_opened == native.leases_closed, "Prepared NIM releases metadata lease");
+}
+
+void test_focus_absolute_budget_includes_metadata_and_wait_overshoot() {
+  fake_platform native;
+  auto service = tray_service_test_access::create(native);
+  require(service->install(native.options()).ok(), "Install before budget test");
+  native.foreground = native.window;
+  native.focus_costs[static_cast<std::size_t>(focus_step::acquire)] = 700;
+  native.focus_costs[static_cast<std::size_t>(focus_step::barrier)] = 290;
+  native.actual_wait_ms = 15;
+  native.gui_script = {{soui::runtime::detail::tray_focus_query::known, native.shell, nullptr},
+                       {soui::runtime::detail::tray_focus_query::known, native.shell, native.shell}};
+  require_error(service->return_focus(), "E_TRAY_FOCUS");
+  require(native.count(tray_native_operation::return_focus) == 0, "Readiness after the absolute budget cannot call NIM");
+  for (const auto& call : native.focus_calls) {
+    if (call.step == focus_step::barrier) require(call.requested == 300, "Barrier receives metadata-adjusted remaining budget");
+    if (call.step == focus_step::wait) require(call.requested > 0 && call.requested <= 5 && call.requested <= 1000 - call.began,
+                                             "Cooperative wait is bounded by both caps");
+  }
+  require(native.leases_opened == native.leases_closed, "Overshooting wait cannot leak the target lease");
+}
+
+void test_focus_legacy_foreground_selection() {
+  for (void* foreground : {static_cast<void*>(nullptr), reinterpret_cast<void*>(0x909)}) {
+    fake_platform native;
+    auto service = tray_service_test_access::create(native);
+    require(service->install(native.options()).ok(), "Legacy foreground setup");
+    native.foreground = foreground; native.focus_succeeds = false;
+    require_error(service->return_focus(), "E_TRAY_FOCUS");
+    require(native.count(tray_native_operation::return_focus) == 1 && native.focus_count(focus_step::acquire) == 0 &&
+            native.focus_count(focus_step::activate) == 0, "Foreign/unknown foreground keeps old NIM and BOOL");
+  }
+}
+
+void test_focus_metadata_fallback_and_known_target_rejection() {
+  for (unsigned scenario = 0; scenario < 4; ++scenario) {
+    fake_platform native;
+    auto service = tray_service_test_access::create(native);
+    require(service->install(native.options()).ok(), "Metadata fallback setup");
+    native.foreground = native.window;
+    if (scenario < 2) native.target.query = soui::runtime::detail::tray_focus_query::unavailable;
+    if (scenario == 1) native.focus_nested = [&](focus_step step) {
+      if (step == focus_step::acquire) native.foreground = reinterpret_cast<void*>(0x909);
+    };
+    if (scenario == 2) native.target.query = soui::runtime::detail::tray_focus_query::unsafe;
+    if (scenario == 3) native.environment_query = soui::runtime::detail::tray_focus_query::unavailable;
+    const auto result = service->return_focus();
+    if (!scenario) require(result.ok(), "Only safe pre-activation missing metadata may use original NIM");
+    else require_error(result, "E_TRAY_FOCUS");
+    require(native.count(tray_native_operation::return_focus) == (scenario ? 0U : 1U) &&
+            native.focus_count(focus_step::activate) == 0, "Unsafe/known-target unknown cannot silently fall back");
+    require(native.leases_opened == 1 && native.leases_closed == 1, "Partial target acquisition is released exactly once");
+  }
+}
+
+void test_focus_activation_barrier_and_gui_failures() {
+  for (unsigned scenario = 0; scenario < 3; ++scenario) {
+    fake_platform native;
+    auto service = tray_service_test_access::create(native);
+    require(service->install(native.options()).ok(), "Activation failure setup");
+    native.foreground = native.window;
+    if (!scenario) native.activation_succeeds = false;
+    if (scenario == 1) native.barrier_succeeds = false;
+    if (scenario == 2) native.gui_script = {{soui::runtime::detail::tray_focus_query::unavailable, nullptr, nullptr}};
+    require_error(service->return_focus(), "E_TRAY_FOCUS");
+    require(native.count(tray_native_operation::return_focus) == 0 && native.focus_count(focus_step::activate) == 1,
+            "An attempted SFW forbids any unqualified fallback NIM");
+    require(native.focus_count(focus_step::barrier) == (scenario ? 1U : 0U) && native.leases_opened == native.leases_closed,
+            "Effects are not retried and every rejection releases its target");
+  }
+}
+
+void test_focus_known_environment_eligibility() {
+  for (unsigned scenario = 0; scenario < 4; ++scenario) {
+    fake_platform native;
+    auto service = tray_service_test_access::create(native);
+    require(service->install(native.options()).ok(), "Known environment eligibility setup");
+    native.foreground = native.window;
+    if (!scenario) native.target_alive = false;
+    if (scenario == 1) native.same_session = false;
+    if (scenario == 2) native.same_desktop = false;
+    if (scenario == 3) native.menu_clear = false;
+    require_error(service->return_focus(), "E_TRAY_FOCUS");
+    require(native.focus_count(focus_step::acquire) == 1 && native.focus_count(focus_step::activate) == 0 &&
+            native.count(tray_native_operation::return_focus) == 0 && native.leases_opened == native.leases_closed,
+            "Known dead/cross-session/other-desktop/menu state is a rejection, never a missing-metadata fallback");
+  }
+}
+
+void test_focus_target_identity_changes() {
+  for (unsigned field = 0; field < 4; ++field) {
+    fake_platform native;
+    auto service = tray_service_test_access::create(native);
+    require(service->install(native.options()).ok(), "Identity transition setup");
+    native.foreground = native.window;
+    native.focus_nested = [&](focus_step step) {
+      if (step != focus_step::barrier) return;
+      if (!field) native.observed_target.window = reinterpret_cast<void*>(0x808);
+      if (field == 1) ++native.observed_target.process_id;
+      if (field == 2) ++native.observed_target.thread_id;
+      if (field == 3) ++native.observed_target.creation_time;
+    };
+    require_error(service->return_focus(), "E_TRAY_FOCUS");
+    require(native.count(tray_native_operation::return_focus) == 0 && native.leases_closed == 1,
+            "Actual identity fields are compared after native callouts");
+  }
+}
+
+void test_focus_final_readiness_and_foreground_guard() {
+  for (unsigned scenario = 0; scenario < 5; ++scenario) {
+    fake_platform native;
+    auto service = tray_service_test_access::create(native);
+    require(service->install(native.options()).ok(), "Final readiness setup");
+    native.foreground = native.window;
+    native.gui_script = {{soui::runtime::detail::tray_focus_query::known, native.shell, native.shell},
+                         {soui::runtime::detail::tray_focus_query::known, native.shell, native.shell}};
+    if (!scenario) native.gui_script[1].focus = nullptr;
+    if (scenario == 1) native.gui_script[1].query = soui::runtime::detail::tray_focus_query::unavailable;
+    native.focus_nested = [&](focus_step step) {
+      if (step != focus_step::gui || native.focus_count(focus_step::gui) != 2) return;
+      if (scenario == 2) native.foreground = reinterpret_cast<void*>(0x909);
+      if (scenario == 3) native.now_ms = 1000;
+      if (scenario == 4) native.identity.valid = false;
+    };
+    require_error(service->return_focus(), "E_TRAY_FOCUS");
+    require(native.focus_count(focus_step::gui) == 2 && native.focus_count(focus_step::wait) == 0 &&
+            native.count(tray_native_operation::return_focus) == 0, "The first ready sample is insufficient for admission");
+    require(native.leases_opened == native.leases_closed, "Final-guard rejection closes its lease");
+  }
+}
+
+void test_focus_clock_bounds_and_poll_limit() {
+  for (unsigned scenario = 0; scenario < 4; ++scenario) {
+    fake_platform native;
+    auto service = tray_service_test_access::create(native);
+    require(service->install(native.options()).ok(), "Clock boundary setup");
+    native.foreground = native.window;
+    if (!scenario) native.now_ms = (std::numeric_limits<std::uint64_t>::max)() - 500;
+    if (scenario == 1) {
+      native.now_ms = 100;
+      native.focus_nested = [&](focus_step step) { if (step == focus_step::barrier) native.now_ms = 50; };
+    }
+    if (scenario == 2) native.focus_costs[static_cast<std::size_t>(focus_step::acquire)] = 1000;
+    if (scenario == 3) {
+      native.actual_wait_ms = 1;
+      native.gui_script = {{soui::runtime::detail::tray_focus_query::known, native.shell, nullptr}};
+    }
+    require_error(service->return_focus(), "E_TRAY_FOCUS");
+    require(native.count(tray_native_operation::return_focus) == 0 && native.leases_opened == native.leases_closed,
+            "Overflow/regression/expiry/excessive polls never enter NIM or leak");
+    if (scenario == 3) require(native.focus_count(focus_step::gui) == 256 && native.now_ms < 1000,
+                               "Poll limit is enforced even before time expires");
+  }
+}
+
+void test_focus_lease_outlives_native_result_and_release_reentry() {
+  for (const bool accepted : {false, true}) {
+    fake_platform native;
+    auto service = tray_service_test_access::create(native);
+    require(service->install(native.options()).ok(), "Lease lifetime setup");
+    native.foreground = native.window; native.focus_succeeds = accepted;
+    bool held_at_native = false, release_after_native = false, release_busy = false, release_hint = false;
+    native.nested = [&](tray_native_operation operation) {
+      if (operation == tray_native_operation::return_focus)
+        held_at_native = native.leases_opened == 1 && native.leases_closed == 0;
+    };
+    native.focus_nested = [&](focus_step step) {
+      if (step != focus_step::release) return;
+      release_after_native = native.count(tray_native_operation::return_focus) == 1;
+      release_busy = service->remove().code == "E_BUSY" && service->installed() && service->desired() && !service->cleanup_pending();
+      const auto hint = service->dispatch_message(native.rebuilt, 0, 0);
+      release_hint = hint.handled && hint.response.code == "E_BUSY" && hint.event == tray_event::none;
+    };
+    const auto result = service->return_focus();
+    require(result.ok() == accepted && (accepted || result.code == "E_TRAY_FOCUS"), "Release reentry cannot change the original BOOL");
+    require(held_at_native && release_after_native && release_busy && release_hint && native.leases_closed == 1 && native.wakes.size() == 1,
+            "Lease survives actual NIM, closes while guarded, and releases once");
+    native.nested = {}; native.focus_nested = {};
+  }
+}
+
+recorded_wake prime_pending_hint(fake_platform& native, tray_service& service) {
+  const auto posts_before = native.wakes.size();
+  const auto adds_before = native.count(tray_native_operation::add);
+  const auto focus_before = native.count(tray_native_operation::return_focus);
+  native.foreground = native.window;
+  bool tuple = false, unchanged = false;
+  native.focus_nested = [&](focus_step step) {
+    if (step != focus_step::activate) return;
+    const auto result = service.dispatch_message(native.rebuilt, 0, 0);
+    tuple = result.handled && result.event == tray_event::none && result.response.code == "E_BUSY" &&
+        result.response.kind == soui::runtime::result_kind::failure;
+    unchanged = service.installed() && service.desired() && !service.cleanup_pending();
+  };
+  require_error(service.return_focus(), "E_TRAY_FOCUS");
+  native.focus_nested = {};
+  require(tuple && unchanged && native.count(tray_native_operation::return_focus) == focus_before && native.wakes.size() == posts_before + 1,
+          "Busy hint is latched with the exact tuple and only one deferred post");
+  require(native.count(tray_native_operation::add) == adds_before && native.leases_opened == native.leases_closed,
+          "No ADD occurs inside focus/guard, and interrupted focus releases its lease");
+  return native.wakes.back();
+}
+
+soui::runtime::tray_message_result deliver_wake(tray_service& service, const recorded_wake& wake) {
+  return service.dispatch_message(wake.message, soui::runtime::detail::tray_taskbar_wake_tag,
+                                 static_cast<std::intptr_t>(wake.ticket));
+}
+
+void test_focus_busy_remove_aborts_only_preparation() {
+  for (const auto phase : {focus_step::activate, focus_step::barrier}) {
+    fake_platform native;
+    auto service = tray_service_test_access::create(native);
+    require(service->install(native.options()).ok(), "Busy remove setup");
+    native.foreground = native.window;
+    bool busy = false, unchanged = false;
+    native.focus_nested = [&](focus_step step) {
+      if (step != phase) return;
+      busy = service->remove().code == "E_BUSY";
+      unchanged = service->installed() && service->desired() && !service->cleanup_pending();
+    };
+    require_error(service->return_focus(), "E_TRAY_FOCUS");
+    native.focus_nested = {};
+    require(busy && unchanged && native.count(tray_native_operation::return_focus) == 0 &&
+            native.count(tray_native_operation::remove) == 0 && native.wakes.empty(), "Busy remove only requests private preparation abort");
+    require(service->remove().ok() && !service->desired(), "Actual removal still needs a later nonbusy call");
+  }
+}
+
+void test_pending_focus_selection_and_later_recovery() {
+  fake_platform native;
+  auto service = tray_service_test_access::create(native);
+  require(service->install(native.options()).ok(), "Pending focus setup");
+  const auto wake = prime_pending_hint(native, *service);
+  const auto acquired = native.focus_count(focus_step::acquire);
+  native.foreground = native.window;
+  require_error(service->return_focus(), "E_TRAY_FOCUS");
+  require(native.focus_count(focus_step::acquire) == acquired && native.count(tray_native_operation::return_focus) == 0 && native.wakes.size() == 1,
+          "Pending blocks only owner preparation, without a post chain");
+  native.foreground = nullptr; native.focus_succeeds = false;
+  require_error(service->return_focus(), "E_TRAY_FOCUS");
+  require(native.count(tray_native_operation::return_focus) == 1, "Pending cannot narrow unknown-foreground legacy NIM");
+  native.foreground = reinterpret_cast<void*>(0x909); native.focus_succeeds = true;
+  require(service->return_focus().ok() && native.count(tray_native_operation::return_focus) == 2 &&
+          native.focus_count(focus_step::acquire) == acquired, "Pending cannot narrow foreign-foreground legacy NIM");
+  const auto recovered = deliver_wake(*service, wake);
+  require(recovered.handled && recovered.response.ok() && service->installed() &&
+          native.count(tray_native_operation::add) == 2 && native.count(tray_native_operation::set_version) == 2,
+          "A later nonbusy wake performs the actual ADD/VERSION");
+}
+
+void test_consumed_busy_wake_gets_one_replacement() {
+  fake_platform native;
+  auto service = tray_service_test_access::create(native);
+  require(service->install(native.options()).ok(), "Consumed wake setup");
+  const auto old = prime_pending_hint(native, *service);
+  native.thread = 99;
+  const auto wrong_thread = deliver_wake(*service, old);
+  native.thread = 7;
+  require(!wrong_thread.handled && wrong_thread.response.code == "E_THREAD_AFFINITY",
+          "Wrong-thread delivery cannot consume the queued ticket");
+  bool busy = false;
+  native.nested = [&](tray_native_operation operation) {
+    if (operation != tray_native_operation::update_tooltip) return;
+    const auto event = deliver_wake(*service, old);
+    busy = event.handled && event.event == tray_event::none && event.response.code == "E_BUSY";
+  };
+  require(service->update_tooltip("external drive").ok(), "External operation may consume the queued wake while busy");
+  native.nested = {};
+  require(busy && native.wakes.size() == 2 && native.wakes.back().ticket != old.ticket,
+          "Consumed busy wake is invalidated and replaced after the outer guard");
+  const auto stale = deliver_wake(*service, old);
+  require(stale.handled && stale.response.ok() && native.wakes.size() == 2 && native.count(tray_native_operation::add) == 1,
+          "Stale wake cannot turn into a native hint or clear the replacement");
+  require(deliver_wake(*service, native.wakes.back()).response.ok() && native.count(tray_native_operation::add) == 2,
+          "Replacement remains usable exactly once");
+}
+
+void test_post_failure_pending_and_native_hint_supersession() {
+  fake_platform native;
+  auto service = tray_service_test_access::create(native);
+  require(service->install(native.options()).ok(), "Post failure setup");
+  native.post_succeeds = false;
+  const auto failed = prime_pending_hint(native, *service);
+  const auto stale = deliver_wake(*service, failed);
+  require(stale.handled && stale.response.ok() && native.wakes.size() == 1 && native.count(tray_native_operation::add) == 1,
+          "Failed PostMessage has no queued ownership and cannot trigger a self retry");
+  native.post_succeeds = true;
+  require(service->update_tooltip("later external call").ok() && native.wakes.size() == 2,
+          "A later external operation may schedule a pending hint");
+  const auto queued = native.wakes.back();
+  const auto actual_hint = service->dispatch_message(native.rebuilt, 0, 0);
+  require(actual_hint.handled && actual_hint.response.ok() && native.count(tray_native_operation::add) == 2,
+          "A real nonbusy hint can perform recovery before the queued wake");
+  require(deliver_wake(*service, queued).response.ok() && native.count(tray_native_operation::add) == 2 && native.wakes.size() == 2,
+          "Superseded queued wake is discarded without another ADD or post");
+}
+
+void test_wake_invalidation_across_remove_and_service_recreation() {
+  fake_platform native;
+  auto service = tray_service_test_access::create(native);
+  require(service->install(native.options()).ok(), "Wake identity setup");
+  const auto old = prime_pending_hint(native, *service);
+  require(service->remove().ok(), "Remove cancels desired residency and deferred work");
+  require(deliver_wake(*service, old).response.ok() && native.count(tray_native_operation::add) == 1,
+          "Removed identity is never resurrected by its wake");
+  require(service->install(native.options()).ok(), "Same object can install a fresh identity");
+  const auto fresh = prime_pending_hint(native, *service);
+  require(fresh.ticket && fresh.ticket != old.ticket, "Reinstall cannot reuse a wake ticket");
+  require(deliver_wake(*service, old).response.ok() && native.count(tray_native_operation::add) == 2,
+          "Old wake cannot attach to a reinstalled identity");
+  // Destruction happens only after every member call has returned, as required.
+  service.reset();
+  service = tray_service_test_access::create(native);
+  require(service->install(native.options()).ok(), "New service uses the still-live fake owner");
+  const auto recreated = prime_pending_hint(native, *service);
+  require(recreated.ticket != fresh.ticket && recreated.ticket != old.ticket,
+          "Ticket allocation is shared across service instances");
+  const auto adds = native.count(tray_native_operation::add);
+  require(deliver_wake(*service, fresh).response.ok() && native.count(tray_native_operation::add) == adds,
+          "Destroyed service's queued scalar cannot affect its replacement");
+  require(deliver_wake(*service, recreated).response.ok() && native.count(tray_native_operation::add) == adds + 1,
+          "Dropping stale tickets does not cancel the current one");
+}
+
+void test_recovery_reentry_and_failure_do_not_self_post() {
+  for (const bool succeeds : {false, true}) {
+    fake_platform native;
+    auto service = tray_service_test_access::create(native);
+    require(service->install(native.options()).ok(), "Recovery loop setup");
+    const auto wake = prime_pending_hint(native, *service);
+    native.add_succeeds = succeeds;
+    bool busy = false, unchanged = false;
+    native.nested = [&](tray_native_operation operation) {
+      if (operation != tray_native_operation::add) return;
+      const auto installed = service->installed();
+      const auto cleanup = service->cleanup_pending();
+      const auto hint = service->dispatch_message(native.rebuilt, 0, 0);
+      busy = hint.handled && hint.response.code == "E_BUSY" && hint.event == tray_event::none;
+      unchanged = service->installed() == installed && service->cleanup_pending() == cleanup && service->desired();
+    };
+    const auto result = deliver_wake(*service, wake);
+    native.nested = {};
+    require(result.response.ok() == succeeds && (succeeds || result.response.code == "E_TRAY_ADD"),
+            "Deferred recovery reports its actual ADD outcome");
+    require(busy && unchanged && native.wakes.size() == 1 && native.count(tray_native_operation::add) == 2,
+            "Recovery reentry only leaves pending; it cannot start a post/ADD chain");
+    require(service->remove().ok() && !service->desired(), "Explicit remove cancels even pending recovery failure");
+    require(deliver_wake(*service, wake).response.ok() && native.count(tray_native_operation::add) == 2,
+            "Cancelled recovery wake cannot revive an icon");
+  }
+}
+
+void test_taskbar_busy_tuple_wrong_thread_and_native_bool() {
+  fake_platform native;
+  auto service = tray_service_test_access::create(native);
+  require(service->install(native.options()).ok(), "Busy tuple setup");
+  native.foreground = native.window;
+  bool unrelated_busy = false, wrong_thread = false;
+  native.focus_nested = [&](focus_step step) {
+    if (step != focus_step::barrier) return;
+    const auto unrelated = service->dispatch_message(native.options().callback_message, 0,
+        notification(native.options().icon_id, WM_CONTEXTMENU));
+    unrelated_busy = !unrelated.handled && unrelated.event == tray_event::none && unrelated.response.code == "E_BUSY";
+    native.thread = 99;
+    const auto wrong = service->dispatch_message(native.rebuilt, 0, 0);
+    wrong_thread = !wrong.handled && wrong.response.code == "E_THREAD_AFFINITY";
+    native.thread = 7;
+  };
+  require(service->return_focus().ok() && unrelated_busy && wrong_thread && native.wakes.empty(),
+          "Unrelated/wrong-thread messages cannot latch a rebuild or cancel preparation");
+  native.focus_nested = {};
+  native.foreground = native.window;
+  native.focus_succeeds = false;
+  bool latched = false, remove_busy = false;
+  native.nested = [&](tray_native_operation operation) {
+    if (operation != tray_native_operation::return_focus) return;
+    const auto hint = service->dispatch_message(native.rebuilt, 0, 0);
+    latched = hint.handled && hint.response.code == "E_BUSY";
+    remove_busy = service->remove().code == "E_BUSY";
+  };
+  require_error(service->return_focus(), "E_TRAY_FOCUS");
+  native.nested = {};
+  require(latched && remove_busy && native.count(tray_native_operation::return_focus) == 2 && native.wakes.size() == 1,
+          "Hints inside an entered NIM defer but do not rewrite or retry its FALSE result");
+}
+
+void test_ticket_source_saturation_and_roundtrip() {
+  const auto limit = static_cast<std::uintptr_t>((std::numeric_limits<std::intptr_t>::max)());
+  soui::runtime::detail::tray_taskbar_ticket_source local(limit - 1);
+  const auto last = local.reserve();
+  require(last == limit - 1 && static_cast<std::uintptr_t>(static_cast<std::intptr_t>(last)) == last,
+          "Last usable positive ticket roundtrips without x86 truncation");
+  require(local.reserve() == 0 && local.reserve() == 0, "Exhaustion saturates; it cannot wrap to a stale value");
+  soui::runtime::detail::tray_taskbar_ticket_source invalid(0);
+  require(invalid.reserve() == 0, "Zero is never issued as a wake ticket");
+}
+
+void test_taskbar_hint_cancels_each_preparation_boundary() {
+  for (const auto phase : {focus_step::foreground, focus_step::acquire, focus_step::environment,
+                          focus_step::activate, focus_step::barrier, focus_step::gui, focus_step::wait}) {
+    fake_platform native;
+    auto service = tray_service_test_access::create(native);
+    require(service->install(native.options()).ok(), "Boundary cancellation setup");
+    native.foreground = native.window;
+    if (phase == focus_step::wait)
+      native.gui_script = {{soui::runtime::detail::tray_focus_query::known, native.shell, nullptr}};
+    bool sent = false, tuple = false, unchanged = false;
+    native.focus_nested = [&](focus_step step) {
+      if (step != phase || sent) return;
+      sent = true;
+      const auto hint = service->dispatch_message(native.rebuilt, 0, 0);
+      tuple = hint.handled && hint.event == tray_event::none && hint.response.kind == soui::runtime::result_kind::failure &&
+          hint.response.code == "E_BUSY";
+      unchanged = service->installed() && service->desired() && !service->cleanup_pending();
+    };
+    require_error(service->return_focus(), "E_TRAY_FOCUS");
+    native.focus_nested = {};
+    require(sent && tuple && unchanged && native.count(tray_native_operation::return_focus) == 0 && native.wakes.size() == 1 &&
+            native.count(tray_native_operation::add) == 1 && native.leases_opened == native.leases_closed,
+            "Every preparation boundary checks pending/abort before NIM and only schedules later recovery");
+  }
+}
+
+void test_focus_last_environment_callout_rejects_late_changes() {
+  for (unsigned scenario = 0; scenario < 4; ++scenario) {
+    fake_platform native;
+    auto service = tray_service_test_access::create(native);
+    require(service->install(native.options()).ok(), "Last environment boundary setup");
+    native.foreground = native.window;
+    bool injected = false, deferred_tuple = false;
+    native.focus_nested = [&](focus_step step) {
+      if (step != focus_step::environment || native.focus_count(focus_step::gui) != 2 || injected) return;
+      injected = true;
+      if (!scenario) {
+        const auto hint = service->dispatch_message(native.rebuilt, 0, 0);
+        deferred_tuple = hint.handled && hint.event == tray_event::none && hint.response.code == "E_BUSY";
+      }
+      if (scenario == 1) native.foreground = reinterpret_cast<void*>(0x909);
+      if (scenario == 2) ++native.observed_target.creation_time;
+      if (scenario == 3) native.now_ms = 1000;
+    };
+    require_error(service->return_focus(), "E_TRAY_FOCUS");
+    native.focus_nested = {};
+    require(injected && native.count(tray_native_operation::return_focus) == 0 && native.leases_opened == native.leases_closed,
+            "Changes in the final observable environment callout still reject before NIM");
+    if (!scenario) require(deferred_tuple && native.wakes.size() == 1 && native.count(tray_native_operation::add) == 1,
+                           "Late pending hint is only deferred after the guarded preparation unwinds");
+  }
+}
+
 }  // namespace
 
 int main() {
+  const char* current = "startup";
+  unsigned passed = 0;
   try {
-    test_success_ownership_and_remove();
-    test_invalid_configuration();
-    test_tooltip_boundaries();
-    test_setup_failures();
-    test_add_failure_and_recovery_retry();
-    test_version_rollback_and_pending_cleanup();
-    test_remove_failure_blocks_activation();
-    test_tooltip_commit_and_restart();
-    test_rebuild_hint_preserves_uncertain_registration();
-    test_event_decode_and_filters();
-    test_thread_and_owner_lifetime();
-    test_destructor_cleanup();
-    test_return_focus();
-    test_reentrant_operations_are_rejected();
-    std::cout << "tray_service: 14 no-desktop contract groups passed (fake platform; no Explorer/GUI claim)\n";
+    const auto run = [&](const char* name, void (*test)()) { current = name; test(); ++passed; };
+#define RUN_TRAY_TEST(test) run(#test, test)
+    RUN_TRAY_TEST(test_success_ownership_and_remove);
+    RUN_TRAY_TEST(test_invalid_configuration);
+    RUN_TRAY_TEST(test_tooltip_boundaries);
+    RUN_TRAY_TEST(test_setup_failures);
+    RUN_TRAY_TEST(test_add_failure_and_recovery_retry);
+    RUN_TRAY_TEST(test_version_rollback_and_pending_cleanup);
+    RUN_TRAY_TEST(test_remove_failure_blocks_activation);
+    RUN_TRAY_TEST(test_tooltip_commit_and_restart);
+    RUN_TRAY_TEST(test_rebuild_hint_preserves_uncertain_registration);
+    RUN_TRAY_TEST(test_event_decode_and_filters);
+    RUN_TRAY_TEST(test_thread_and_owner_lifetime);
+    RUN_TRAY_TEST(test_destructor_cleanup);
+    RUN_TRAY_TEST(test_return_focus);
+    RUN_TRAY_TEST(test_reentrant_operations_are_rejected);
+    RUN_TRAY_TEST(test_focus_known_null_never_ready_keeps_native_uncalled);
+    RUN_TRAY_TEST(test_focus_readiness_transition_preserves_native_false);
+    RUN_TRAY_TEST(test_focus_absolute_budget_includes_metadata_and_wait_overshoot);
+    RUN_TRAY_TEST(test_focus_legacy_foreground_selection);
+    RUN_TRAY_TEST(test_focus_metadata_fallback_and_known_target_rejection);
+    RUN_TRAY_TEST(test_focus_activation_barrier_and_gui_failures);
+    RUN_TRAY_TEST(test_focus_known_environment_eligibility);
+    RUN_TRAY_TEST(test_focus_target_identity_changes);
+    RUN_TRAY_TEST(test_focus_final_readiness_and_foreground_guard);
+    RUN_TRAY_TEST(test_focus_clock_bounds_and_poll_limit);
+    RUN_TRAY_TEST(test_focus_lease_outlives_native_result_and_release_reentry);
+    RUN_TRAY_TEST(test_focus_busy_remove_aborts_only_preparation);
+    RUN_TRAY_TEST(test_pending_focus_selection_and_later_recovery);
+    RUN_TRAY_TEST(test_consumed_busy_wake_gets_one_replacement);
+    RUN_TRAY_TEST(test_post_failure_pending_and_native_hint_supersession);
+    RUN_TRAY_TEST(test_wake_invalidation_across_remove_and_service_recreation);
+    RUN_TRAY_TEST(test_recovery_reentry_and_failure_do_not_self_post);
+    RUN_TRAY_TEST(test_taskbar_busy_tuple_wrong_thread_and_native_bool);
+    RUN_TRAY_TEST(test_ticket_source_saturation_and_roundtrip);
+    RUN_TRAY_TEST(test_taskbar_hint_cancels_each_preparation_boundary);
+    RUN_TRAY_TEST(test_focus_last_environment_callout_rejects_late_changes);
+#undef RUN_TRAY_TEST
+    std::cout << "tray_service: " << passed << " no-desktop contract groups passed (fake platform; no Explorer/GUI claim)\n";
     return 0;
   } catch (const std::exception& error) {
-    std::cerr << "tray_service contract failure: " << error.what() << '\n';
+    std::cerr << "tray_service contract failure in " << current << ": " << error.what() << '\n';
     return 1;
   }
 }
