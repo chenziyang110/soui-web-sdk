@@ -81,12 +81,40 @@ Host ready，不能只用 `commandFlowContinues=true` 代替。x64 的 Esc 由�
 
 ## 尚未完成的范围
 
-原生独立控制组另有十四个 case、三十份 raw：十次已完成 `NIM_SETFOCUS` 仍全部
+原生独立控制组另有十六个 case、三十五份 raw：十二次已完成 `NIM_SETFOCUS` 仍全部
 返回 FALSE；两组未调用超时、两组在结果前异常退出分别保留，未知 BOOL 不记为成功。
 修正独立诊断的 DR7 固定状态位匹配后，在固定 Server 2022 Shell32 样本中实际采到
 `SendMessageTimeoutW` 返回寄存器为 1、接收结果槽为 0，随后原 `Shell_NotifyIconW`
 返回 FALSE。两个采样点、原 DR 恢复与 readback、五次观察及清理均完成；原生自然
 退出 1，Owned Job 活跃数 0、无超时或强清，`passed=false` 保留。
+
+新增发送前 wire 样本的三个采样点完整，原始文件与导出 manifest 散列匹配。
+`WM_COPYDATA` 的 tag=1、cbData=1484，发送 flags=11、timeout=7000 ms；载荷
+magic=`0x34753423`、operation=3、wire cbSize=956，owner/WParam 与已记录窗口一致，
+图标 ID=19。离线已知字段检查均为 true，但接收分支和 receiver manager 状态仍未知。
+发送后 RAX=1、接收结果槽=0，原 API BOOL=0；原生退出 1、Owned `root-failed`、
+`passed=false`，Job 活跃数 0、无超时且未强清。解码记录位于
+`out/tray-focus-20261102/raw-wire-input/wire-decoded.actual.json`，不能把输入字段吻合
+写成接收分支已证实或 API 已成功；旧未调用超时和返回前致命异常均保留。
+
+精确 Explorer 的补充静态复核还发现条件链：托盘激活 → `StopInputObservation` →
+`InSendMessage` → `ReplyMessage(0)`，随后接收线程继续工作。因此最终 WndProc
+返回 1 不能排除发送方提前取得 0；本次实际是否走过该链仍未证明。该机制符合
+[ReplyMessage 文档](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-replymessage)，
+不支持把现有 BOOL 0 归因为已证实的输入拒绝，也不改变公共 API 的严格失败结果。
+
+新增现有 Win10 客户端 VM 的普通 API 对照，使用同一冻结 API-binding baseline
+（EXE SHA-256 `befe8db32f8fc6f8904e58a78ab1d7140d43a5a9a10bf9868dab1913312c6d04`）。
+正常自动登录后实际从来宾 E 盘载体运行，由操作者观察真实菜单和 Esc；旧 D 盘载体
+未执行，不计样本。原件于 35,162 ms 记录一次 `NIM_SETFOCUS` FALSE，36,375 ms
+原生退出 1，`invalid=false`、`deadlineReached=false`、`cleanupConfirmed=true`。
+五次观察的实际偏移为 1/135/154/202/1003 ms，不能写成计划采样点。Owned 于
+36,864 ms 观察 root exit 1，36,873 ms terminal `root-failed`，Job 活跃数 0、
+无超时且未强清，`passed=false` 和晚期 `imageReadError=5` 均保留。精确 OS edition/build
+未独立核实；旧 manifest 下 DLL 自报的 `6.2.19041.2788` 仅是版本视图，不是 OS 版本。
+该客户端切片与既有 Server 样本均为 FALSE，不证明 early-reply 的实际运行分支、
+真实键盘焦点资格或系统级根因；原生日志也未认证 Esc 手势。两份新增原件与导出
+manifest 的散列已匹配，记录位于 `out/tray-focus-20261102/raw-win10-baseline`。
 
 该仪器化样本把失败收窄到 Shell 接收返回值，不能据此确认具体 Explorer 内部函数、
 所有系统版本的根因、焦点效果或零时序扰动。marker 的 RAX 不是 API BOOL，
