@@ -528,10 +528,17 @@ class resident_controller final {
         {"command", selected.command_id}, {"nativeError", selected.native_error}});
     if (tray_->installed()) {
       const auto focused = tray_->return_focus(); desktop_result("tray.focus", focused);
-      if (!focused.ok()) request_exit("tray-focus-failed", 1);
+      if (!focused.ok()) {
+        if (focused.kind == soui::runtime::result_kind::failure && focused.code == "E_TRAY_FOCUS") {
+          // Retain the strict failure, but do not discard a confirmed menu command.
+          emit("tray.focus-warning", {{"code", focused.code}, {"severity", "warning"},
+              {"commandFlowContinues", selected.response.ok() && selected.has_selection && !exiting_},
+              {"command", selected.command_id}, {"strictExitCode", exit_code_}});
+        } else request_exit("tray-focus-failed", 1);
+      }
     } else { emit("tray.focus-skipped", services()); request_exit("tray-not-installed-after-menu", 1); }
     if (!selected.response.ok()) request_exit("menu-operation-failed", 1);
-    if (!exiting_ && selected.has_selection) queue_action(selected.command_id);
+    if (selected.response.ok() && selected.has_selection && !exiting_) queue_action(selected.command_id);
   }
   void request_exit(const char* reason, int code) {
     // Consent/error prompts run a native nested loop. Cancel only this

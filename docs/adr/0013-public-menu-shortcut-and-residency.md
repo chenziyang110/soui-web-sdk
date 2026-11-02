@@ -85,3 +85,55 @@ x64 与 Win32 各九个纯 C++ 用例和对应 CTest 已实际通过，并完成
 依据：
 [MsgWaitForMultipleObjectsEx](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-msgwaitformultipleobjectsex)、
 [PeekMessageW](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-peekmessagew)。
+
+## Workbench 焦点拒绝的关闭政策（2026-11-02）
+
+菜单已成功返回有效命令时，Workbench 原来先调用 `return_focus()`；任何失败都会
+立即请求退出，使尚未投递的窗口恢复命令被丢弃。无选择返回后，同一失败也会
+立即关闭驻留。这把 Shell 的焦点确认失败与必须停止业务的所有权错误耦合。
+
+本次只调整 Workbench 此调用点的关闭政策：精确的 failure / `E_TRAY_FOCUS`
+仍经原 `desktop_result` 记录 `ok=false` 并锁存非零退出码，另记
+`tray.focus-warning`，但不因此立即 `request_exit`。只有菜单结果成功、
+`has_selection=true` 且未进入退出时，才走原 `queue_action`；无选择时不派发
+命令，也不将它认证为真实 Esc。warning 中的 `commandFlowContinues` 表示
+继续命令流程的决定，不证明消息已投递、命令已执行或窗口已恢复。
+
+其它焦点校验错误、菜单/清理/Host 错误仍走原失败和关闭路径。已有退出请求
+不撤销，已有非零退出码不清除；成员栈、`operation_scope`、原消息投递和
+关闭顺序保持。SDK `return_focus()` 的 FALSE / `E_TRAY_FOCUS` 契约、原生
+失败测试和严格 `tests/tray-consumer` 全部保留，没有新增公共 API、线程、
+重试、焦点效果回退或成功定义。
+
+备选是继续立即关闭、把 API 错误改成 success，或只在日志中忽略该错误。
+本次选择保留严格失败码而继续应用流程，既避免丢弃已确认命令，也保留
+原始失败。此项是 Workbench 应用政策修复，不解释 NIM_SETFOCUS 根因、
+不证明焦点已归还；#27/#29、Win7 与完整驻留/生产资格继续未完成。
+
+适用验证须绑定当前源码、安装 SDK、EXE 与完整载荷，在 x64/x86 Release
+分别执行：实际选择已关闭槽位的打开/恢复命令，核对成功菜单选择、原焦点
+拒绝及 warning、后续命令路由和真实窗口/Host ready；另做真实菜单 Esc，
+确认无命令且继续驻留。最后显式退出，保留原非零结果、自然清理与外部
+Job 闭合。`commandFlowContinues`、PostMessage 成功或原生菜单无选择不能
+替代实际路由/界面证据。未修改的安装后严格消费者仍须保留焦点失败后
+停止动作/非零退出的结果；不得将功能路由通过写成原 API 或 SDK 资格通过。
+
+### 实际验证范围
+
+`0.6.1-preview.1` 本地未发布候选已完成 x64/x86 Release 标准构建，固定
+MSVC v143 `14.44.35207` Hostx64 与 Windows SDK `10.0.19041.0`；每架构
+三项 fake 平台服务契约和十一项纯驻留关闭策略 CTest 均通过，共 14 项、49 个
+契约组。两架构隔离 VM 样本均实际选择关闭槽位的命令 3，随后槽位 3 新代际
+创建并 ready；焦点结果仍为 `E_TRAY_FOCUS`，warning 和退出码 1 保留。
+随后命令 11 触发原有有序关闭，外部 Owned 均观察 root exit 1、Job 活跃数 0、
+无超时且未强清，`passed=false` 不转换为通过。真实菜单 Esc 只在 x64 完成，
+x86 未执行；无选择返回本身仍不是 Esc 证明。
+
+三个早期产品 GUI 样本因操作流程未在原 200 秒期限内完成而被 Owned 超时清理，
+原件和失败保持；它们没有产品自然关闭证明，也不据此归因为产品菜单或关闭故障。
+原生 `NIM_SETFOCUS` FALSE、SDK 严格契约与原托盘消费者均未修改，本次没有执行
+新的安装后严格消费者。Win7、完整 #27/#29 与生产资格继续未完成。
+
+源码、controller、EXE、完整运行载荷散列及实际事件时间见[本轮维护记录](../maintenance/tray-focus-20261102.md)。
+记录绑定当时已冻结输入；后续文档或重建不覆盖旧 raw，也不把调用方业务流程恢复
+写成公共 API 成功或焦点根因已修复。
