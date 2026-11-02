@@ -2,6 +2,7 @@
 
 #include <exception>
 #include "resident_shutdown_policy.h"
+#include "tray_callback_queue.h"
 
 // Private Workbench implementation, included after demo_soui_window in main.cpp.
 // All state belongs to the application's existing UI thread.
@@ -134,8 +135,10 @@ class resident_controller final {
       {
         operation_scope operation(*this);
         const auto icon = LoadIconW(nullptr, IDI_APPLICATION);
-        const auto result = tray_->install({controller_, icon, 41, tray_message,
-            "SOUI Workbench · 三窗口驻留 · Ctrl+Alt+W"});
+        soui::runtime::desktop_response result;
+        { workbench_tray_callbacks::queue::call_scope tray_call(tray_callbacks_);
+          result = tray_->install({controller_, icon, 41, tray_message,
+              "SOUI Workbench · 三窗口驻留 · Ctrl+Alt+W"}); }
         desktop_result("tray.install", result);
         if (!result.ok() || !tray_->installed() || !tray_->desired() || tray_->cleanup_pending())
           throw std::runtime_error("Resident tray installation was not confirmed");
@@ -440,7 +443,10 @@ class resident_controller final {
       for (auto& slot : slots_) if (slot && slot->window) slot->window->cancel_native_devtools_prompt();
       schedule_shutdown(); return;
     }
-    if (operation_depth_ || menu_active_ || business_dispatch_active()) return;
+    if (operation_depth_ || menu_active_ || business_dispatch_active() ||
+        tray_callbacks_.call_depth() || tray_callbacks_.draining()) return;
+    drain_tray_callbacks();
+    if (exiting_) return;
     for (unsigned index = 0; index < slots_.size(); ++index) {
       if (deferred_closes_[index]) {
         const auto generation = deferred_closes_[index]; deferred_closes_[index] = 0;
@@ -527,7 +533,9 @@ class resident_controller final {
     desktop_result("menu.finished", selected.response, {{"hasSelection", selected.has_selection},
         {"command", selected.command_id}, {"nativeError", selected.native_error}});
     if (tray_->installed()) {
-      const auto focused = tray_->return_focus(); desktop_result("tray.focus", focused);
+      soui::runtime::desktop_response focused;
+      { workbench_tray_callbacks::queue::call_scope tray_call(tray_callbacks_); focused = tray_->return_focus(); }
+      desktop_result("tray.focus", focused);
       if (!focused.ok()) {
         if (focused.kind == soui::runtime::result_kind::failure && focused.code == "E_TRAY_FOCUS") {
           // Retain the strict failure, but do not discard a confirmed menu command.
@@ -541,6 +549,7 @@ class resident_controller final {
     if (selected.response.ok() && selected.has_selection && !exiting_) queue_action(selected.command_id);
   }
   void request_exit(const char* reason, int code) {
+    cancel_tray_callbacks("exit-requested");
     // Consent/error prompts run a native nested loop. Cancel only this
     // application's prompt, then preserve the controller's original deadline
     // and wait until its message-filter/member stack has actually returned.
@@ -572,6 +581,7 @@ class resident_controller final {
   }
   void shutdown() noexcept {
     if (shutdown_complete_) return;
+    cancel_tray_callbacks("shutdown");
     begin_shutdown();
     require_shutdown_budget();
     if (in_shutdown_ || operation_depth_ || menu_active_ || business_dispatch_active()) return;
@@ -600,7 +610,9 @@ class resident_controller final {
         for (unsigned attempt = 1; attempt <= 3; ++attempt) {
           require_shutdown_budget();
           operation_scope operation(*this);
-          const auto result = tray_->remove(); desktop_result("tray.remove", result, {{"attempt", attempt}});
+          soui::runtime::desktop_response result;
+          { workbench_tray_callbacks::queue::call_scope tray_call(tray_callbacks_); result = tray_->remove(); }
+          desktop_result("tray.remove", result, {{"attempt", attempt}});
           if (result.ok() && !tray_->installed() && !tray_->desired() && !tray_->cleanup_pending()) break;
         }
       }
@@ -617,7 +629,8 @@ class resident_controller final {
       retry_shutdown("exit.cleanup-pending");
       return;
     }
-    shortcut_.reset(); menu_.reset(); tray_.reset();
+    shortcut_.reset(); menu_.reset();
+    { workbench_tray_callbacks::queue::call_scope tray_call(tray_callbacks_); tray_.reset(); }
     emit("services.destroyed");
     const auto runtime = soui::sdk::shutdown_miniblink_runtime();
     emit("runtime.shutdown", {{"ok", runtime.ok}, {"code", runtime.code}, {"message", runtime.message}});
@@ -648,6 +661,70 @@ class resident_controller final {
     emit("exit.cleanup-finished", {{"exitCode", exit_code_}});
     if (loop_started_) PostQuitMessage(exit_code_);
   }
+  json tray_callback_fields(const workbench_tray_callbacks::callback& raw, bool replayed, bool dispatched) const {
+    const auto word = static_cast<std::uint32_t>(raw.second);
+    return {{"messageId", raw.message}, {"wParam", std::to_string(raw.first)}, {"lParam", std::to_string(raw.second)},
+        {"callbackOrdinal", std::to_string(raw.ordinal)}, {"notificationWord", word},
+        {"lowCode", word & 0xFFFFU}, {"highIconId", word >> 16U}, {"replayed", replayed},
+        {"sdkDispatched", dispatched}, {"queued", false}, {"queueSize", tray_callbacks_.size()},
+        {"queueAgeMs", GetTickCount64() - raw.received_ms}};
+  }
+  void cancel_tray_callbacks(const char* reason) noexcept {
+    if (tray_callbacks_.revoked()) return;
+    const auto discarded = tray_callbacks_.revoke();
+    try { emit("tray.callbacks-cancelled", {{"reason", reason}, {"discarded", discarded}, {"sdkDispatched", false}}); }
+    catch (...) { context_.log_failed = true; }
+  }
+  bool dispatch_tray_message(UINT message, WPARAM first, LPARAM second,
+                            const workbench_tray_callbacks::callback* raw = nullptr, bool replayed = false) {
+    soui::runtime::tray_message_result event;
+    {
+      operation_scope operation(*this);
+      { workbench_tray_callbacks::queue::call_scope tray_call(tray_callbacks_);
+        event = tray_->dispatch_message(message, first, second); }
+      const bool deferred = taskbar_message_ != 0 && message == taskbar_message_ && event.handled &&
+          event.event == soui::runtime::tray_event::none &&
+          event.response.kind == soui::runtime::result_kind::failure && event.response.code == "E_BUSY";
+      json fields = raw ? tray_callback_fields(*raw, replayed, true) : json::object();
+      fields["handled"] = event.handled; fields["notification"] = static_cast<unsigned>(event.event);
+      fields["trustedGesture"] = false; fields["deferred"] = deferred;
+      if (deferred) {
+        fields["ok"] = event.response.ok(); fields["code"] = event.response.code;
+        fields["message"] = event.response.message; fields["services"] = services();
+        emit("tray.taskbar-created", std::move(fields));
+      } else desktop_result(message == taskbar_message_ ? "tray.taskbar-created" : "tray.notification",
+          event.response, std::move(fields));
+    }
+    if (event.event == soui::runtime::tray_event::context_menu) show_menu(event);
+    else if (event.event == soui::runtime::tray_event::activated) queue_action(command_all);
+    return event.handled;
+  }
+  bool receive_tray_callback(UINT message, WPARAM first, LPARAM second) {
+    workbench_tray_callbacks::callback raw;
+    if (!tray_callbacks_.capture(message, first, second, GetTickCount64(), raw)) {
+      emit("tray.callback-error", {{"code", "E_CALLBACK_ORDINAL"}, {"sdkDispatched", false}});
+      request_exit("callback-ordinal-exhausted", 1); return true;
+    }
+    const auto disposition = tray_callbacks_.defer(tray_message, raw);
+    if (disposition == workbench_tray_callbacks::queue::result::direct) {
+      return dispatch_tray_message(message, first, second, &raw);
+    }
+    auto fields = tray_callback_fields(raw, false, false);
+    fields["queued"] = disposition == workbench_tray_callbacks::queue::result::queued;
+    if (disposition == workbench_tray_callbacks::queue::result::overflow) {
+      fields["ok"] = false; fields["code"] = "E_CALLBACK_QUEUE_FULL";
+      emit("tray.callback-overflow", std::move(fields));
+      request_exit("callback-queue-overflow", 1);
+    } else emit(disposition == workbench_tray_callbacks::queue::result::queued ?
+        "tray.callback-queued" : "tray.callback-cancelled", std::move(fields));
+    return true;
+  }
+  void drain_tray_callbacks() {
+    workbench_tray_callbacks::queue::drain_scope batch(tray_callbacks_);
+    workbench_tray_callbacks::callback raw;
+    while (!exiting_ && tray_ && !operation_depth_ && !menu_active_ && !business_dispatch_active() && batch.next(raw))
+      (void)dispatch_tray_message(raw.message, raw.first, raw.second, &raw, true);
+  }
   LRESULT dispatch(HWND hwnd, UINT message, WPARAM first, LPARAM second) {
     require_shutdown_budget();
     if (message == WM_CLOSE) { request_exit("controller-close", 0); return 0; }
@@ -671,28 +748,8 @@ class resident_controller final {
     if (message == resident_action_message) { act(static_cast<std::uint32_t>(first)); return 0; }
     if (message == WM_TIMER && first == timer_id) { on_timer(); return 0; }
     if (!exiting_ && tray_ && (message == tray_message || message == taskbar_message_)) {
-      soui::runtime::tray_message_result event;
-      {
-        operation_scope operation(*this);
-        event = tray_->dispatch_message(message, first, second);
-        const bool deferred = taskbar_message_ != 0 && message == taskbar_message_ && event.handled &&
-            event.event == soui::runtime::tray_event::none &&
-            event.response.kind == soui::runtime::result_kind::failure && event.response.code == "E_BUSY";
-        json fields{{"handled", event.handled}, {"notification", static_cast<unsigned>(event.event)},
-            {"trustedGesture", false}, {"deferred", deferred}};
-        if (deferred) {
-          // Preserve the queued hint's raw failure without latching a new application failure.
-          fields["ok"] = event.response.ok(); fields["code"] = event.response.code;
-          fields["message"] = event.response.message; fields["services"] = services();
-          emit("tray.taskbar-created", std::move(fields));
-        } else {
-          desktop_result(message == taskbar_message_ ? "tray.taskbar-created" : "tray.notification",
-              event.response, std::move(fields));
-        }
-      }
-      if (event.event == soui::runtime::tray_event::context_menu) show_menu(event);
-      else if (event.event == soui::runtime::tray_event::activated) queue_action(command_all);
-      if (event.handled) return 0;
+      if (message == tray_message) { if (receive_tray_callback(message, first, second)) return 0; }
+      else if (dispatch_tray_message(message, first, second)) return 0;
     }
     if (!exiting_ && shortcut_ && message == WM_HOTKEY) {
       soui::runtime::global_shortcut_message_result event;
@@ -727,6 +784,7 @@ class resident_controller final {
   resident_run_context& context_;
   HWND controller_{nullptr};
   UINT taskbar_message_{0};
+  workbench_tray_callbacks::queue tray_callbacks_;
   std::unique_ptr<soui::runtime::tray_service> tray_;
   std::unique_ptr<soui::runtime::menu_service> menu_;
   std::unique_ptr<soui::runtime::global_shortcut> shortcut_;

@@ -1,5 +1,11 @@
 # 变更记录
 
+## 0.6.1-preview.3（本地候选，未发布）
+
+- Workbench 与独立托盘消费者新增各自拥有的 UI 线程回调队列：只在 tray 成员调用栈内保存原始 callback，固定容量 64，在既有 timer 安全边界每轮重放至多 8 项。TaskbarCreated 仍立即交给 SDK；溢出、实际分派和焦点错误继续判失败，退出撤销待处理项目。
+- 队列日志区分未调用 SDK 的入队与实际重放，并保存原消息参数及 Win32 通知 word；新增两调用方的容量、顺序、重入、退出及真实 SDK fake 边界回归。SDK 的忙时拒绝和原 NIM BOOL 实现源文件保持 `.2` 字节不变，见 [ADR-0013](docs/adr/0013-public-menu-shortcut-and-residency.md)。
+- 新身份同步 SDK/Web/React/Vue 与锁文件，GUI 交付保留各历史精确 tuple，新增 `.3` 安装/回退回归。两架构 Release 标准构建、安装消费及每架构 14 项/76 组非 GUI 回归通过；Server/Win10 六个新 GUI 用例均自然退出 0，18 次焦点响应成功，见[维护记录](docs/maintenance/tray-focus-20261102.md)。本轮真实 callback 全为直接分派，FIFO 重放由故障注入覆盖；`.2` 的 E_BUSY、快速快捷键前台拒绝和超时失败完整保留，Win7、Explorer 重启、长期驻留及完整 #27/#29 资格仍开放。
+
 ## 0.6.1-preview.2（本地候选，未发布）
 
 - `tray_service::return_focus()` 仅在初始前台为 owner 时尝试 Shell 状态准备：一次激活、一次 WM_NULL 及最终 GUI 状态检查共用绝对 1,000 ms 协作预算。SFW 后未知、不安全或超预算时零 NIM；其余初始前台保留原路径。实际 NIM 仍只按原 BOOL 判断，FALSE 不转换为成功，公共签名不变。

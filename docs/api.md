@@ -255,6 +255,11 @@ Bridge 准入超过额度返回 `E_TASK_STORE_QUOTA`，直接 Core 调用抛出
 调用期间仍禁止销毁服务或 owner；准备中的嵌套 remove 仍返回 E_BUSY，真正移除须
 在非忙时重试。该提示与唤醒均不认证发送者或授予 Web 权限。
 
+`.3` 的 Workbench 和独立消费者示例在应用内部暂存 tray 成员栈内的原 callback，
+待成员返回后从安全 timer 分派；TaskbarCreated 仍立即交 SDK。该队列属于调用方，
+不是新的公共服务或成功条件，SDK 忙时响应及原 NIM BOOL 契约保持。接入方应遵守
+无重入与关闭顺序，并分别检查队列准入、实际 SDK 结果和桌面行为。
+
 ## 原生菜单与全局快捷键（preview.10）
 
 `<soui/runtime/services/desktop/menu_service.h>` 的 `menu_service::show(owner, items, x, y)` 接收 `menu_item` 值树并同步返回 `menu_result`。命令、分隔线、子菜单分别使用 `menu_item_kind`；命令 ID 为全树唯一的 1–65535，子菜单/分隔线 ID 为 0。支持 UTF-8 标签、禁用、勾选；最多 256 项、8 层，每标签 1,024 UTF-16 单元、全树标签 64 KiB UTF-16 字节。分隔线不得附带文本、子项、勾选或禁用状态。owner 属于当前进程和构造线程；若为 child，服务激活其顶层父窗口。

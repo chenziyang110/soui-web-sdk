@@ -2,6 +2,7 @@
 #include <soui/runtime/services/desktop/menu_service.h>
 #include <soui/runtime/services/desktop/global_shortcut.h>
 #include <soui/version.h>
+#include "tray_callback_queue.h"
 
 #include <windows.h>
 
@@ -90,7 +91,8 @@ class application final {
       if (!icon) throw std::runtime_error("Cannot load the shared application icon");
       const soui::runtime::tray_options options{window_, icon, 19, callback_message,
           "SOUI SDK 独立托盘消费者"};
-      const auto installed = tray_->install(options);
+      soui::runtime::desktop_response installed;
+      { consumer_tray_callbacks::queue::call_scope tray_call(tray_callbacks_); installed = tray_->install(options); }
       record_response("tray.install", installed);
       if (!installed.ok() || !tray_->installed() || !tray_->desired() || tray_->cleanup_pending())
         throw std::runtime_error("Tray installation was not confirmed");
@@ -141,6 +143,15 @@ class application final {
   }
 
  private:
+  class operation_scope final {
+   public:
+    explicit operation_scope(application& owner) noexcept : owner_(owner) { ++owner_.operation_depth_; }
+    ~operation_scope() { --owner_.operation_depth_; }
+    operation_scope(const operation_scope&) = delete;
+    operation_scope& operator=(const operation_scope&) = delete;
+   private:
+    application& owner_;
+  };
   std::string state() const {
     return "\"installed\":" + std::string(boolean(tray_->installed())) +
         ",\"desired\":" + boolean(tray_->desired()) +
@@ -171,16 +182,21 @@ class application final {
     if (code != 0 && exit_code_ == 0) exit_code_ = code;
     if (exit_requested_) return;
     exit_requested_ = true;
+    cancel_tray_callbacks("exit-requested");
     log_.emit("exit.requested", "\"reason\":" + quote(reason) + ",\"exitCode\":" + std::to_string(exit_code_));
     cancel_menu();
     PostQuitMessage(exit_code_);
   }
   void update_tooltip() {
-    const auto response = tray_->update_tooltip("SOUI SDK 托盘提示已更新 · " + std::to_string(++updates_));
+    operation_scope operation(*this);
+    const auto tooltip = "SOUI SDK 托盘提示已更新 · " + std::to_string(++updates_);
+    soui::runtime::desktop_response response;
+    { consumer_tray_callbacks::queue::call_scope tray_call(tray_callbacks_); response = tray_->update_tooltip(tooltip); }
     record_response("tray.tooltip", response, "\"update\":" + std::to_string(updates_));
     if (!response.ok()) request_exit("tooltip-failed", 1);
   }
   void show_menu(const soui::runtime::tray_message_result& event = {}) {
+    operation_scope operation(*this);
     POINT position{};
     if (event.position_valid) { position.x = event.x; position.y = event.y; }
     else if (!GetCursorPos(&position)) throw std::runtime_error("Cannot obtain consumer menu position");
@@ -208,7 +224,8 @@ class application final {
     // Return focus even if a timeout/close request interrupted the modal menu.
     // Cleanup runs only after this message handler returns to the main loop.
     if (tray_ && tray_->installed()) {
-      const auto focus = tray_->return_focus();
+      soui::runtime::desktop_response focus;
+      { consumer_tray_callbacks::queue::call_scope tray_call(tray_callbacks_); focus = tray_->return_focus(); }
       record_response("tray.focus", focus, "\"exitRequested\":" + std::string(boolean(exit_requested_)));
       if (!focus.ok()) request_exit("focus-return-failed", 1);
     } else {
@@ -219,12 +236,90 @@ class application final {
     if (result.has_selection && result.command_id == menu_update) update_tooltip();
     else if (result.has_selection && result.command_id == menu_exit) request_exit("consumer-menu", 0);
   }
+  std::string callback_fields(const consumer_tray_callbacks::callback& raw, bool replayed, bool dispatched) const {
+    const auto word = static_cast<std::uint32_t>(raw.second);
+    return "\"messageId\":" + std::to_string(raw.message) +
+        ",\"wParam\":" + quote(std::to_string(raw.first)) + ",\"lParam\":" + quote(std::to_string(raw.second)) +
+        ",\"callbackOrdinal\":" + quote(std::to_string(raw.ordinal)) +
+        ",\"notificationWord\":" + std::to_string(word) +
+        ",\"lowCode\":" + std::to_string(word & 0xFFFFU) + ",\"highIconId\":" + std::to_string(word >> 16U) +
+        ",\"replayed\":" + boolean(replayed) + ",\"sdkDispatched\":" + boolean(dispatched) +
+        ",\"queueSize\":" + std::to_string(tray_callbacks_.size()) +
+        ",\"queueAgeMs\":" + std::to_string(GetTickCount64() - raw.received_ms);
+  }
+  void cancel_tray_callbacks(const char* reason) noexcept {
+    if (tray_callbacks_.revoked()) return;
+    const auto discarded = tray_callbacks_.revoke();
+    try { log_.emit("tray.callbacks-cancelled", "\"reason\":" + quote(reason) +
+        ",\"discarded\":" + std::to_string(discarded) + ",\"sdkDispatched\":false"); }
+    catch (...) { exit_code_ = 1; }
+  }
+  bool dispatch_tray_message(UINT message, WPARAM first, LPARAM second,
+                            const consumer_tray_callbacks::callback* raw = nullptr, bool replayed = false) {
+    operation_scope operation(*this);
+    soui::runtime::tray_message_result event;
+    { consumer_tray_callbacks::queue::call_scope tray_call(tray_callbacks_);
+      event = tray_->dispatch_message(message, static_cast<std::uintptr_t>(first), static_cast<std::intptr_t>(second)); }
+    const bool deferred = taskbar_created_ != 0 && message == taskbar_created_ && event.handled &&
+        event.event == soui::runtime::tray_event::none &&
+        event.response.kind == soui::runtime::result_kind::failure && event.response.code == "E_BUSY";
+    if (message == taskbar_created_) {
+      record_response("taskbar.created", event.response,
+          "\"observation\":" + std::to_string(++taskbar_count_) +
+          ",\"handled\":" + boolean(event.handled) +
+          ",\"notification\":" + std::to_string(static_cast<unsigned>(event.event)) +
+          ",\"sourceVerified\":false,\"deferred\":" + boolean(deferred));
+      // Keep listening after recovery failure so a later notification can retry.
+      if (!event.response.ok() && !deferred) exit_code_ = 1;
+    }
+    if (raw) {
+      const char* name = event.event == soui::runtime::tray_event::activated ? "activated" :
+          event.event == soui::runtime::tray_event::context_menu ? "context-menu" : "none";
+      record_response("tray.callback", event.response, "\"notification\":" + quote(name) +
+          ",\"observation\":" + std::to_string(raw->ordinal) +
+          ",\"handled\":" + boolean(event.handled) + ",\"trustedGesture\":false,\"queued\":false," +
+          callback_fields(*raw, replayed, true) + ",\"positionValid\":" + boolean(event.position_valid) +
+          ",\"x\":" + std::to_string(event.x) + ",\"y\":" + std::to_string(event.y));
+      if (!event.response.ok()) exit_code_ = 1;
+    }
+    if (interactive_ && !exit_requested_ && !menu_active_ && event.event != soui::runtime::tray_event::none)
+      show_menu(event);
+    return event.handled;
+  }
+  bool receive_tray_callback(UINT message, WPARAM first, LPARAM second) {
+    consumer_tray_callbacks::callback raw;
+    if (!tray_callbacks_.capture(message, first, second, GetTickCount64(), raw)) {
+      log_.emit("tray.callback-error", "\"ok\":false,\"code\":\"E_CALLBACK_ORDINAL\",\"sdkDispatched\":false");
+      request_exit("callback-ordinal-exhausted", 1); return true;
+    }
+    ++callback_count_;
+    const auto disposition = tray_callbacks_.defer(callback_message, raw);
+    if (disposition == consumer_tray_callbacks::queue::result::direct)
+      return dispatch_tray_message(message, first, second, &raw);
+    auto fields = callback_fields(raw, false, false) + ",\"queued\":" +
+        boolean(disposition == consumer_tray_callbacks::queue::result::queued);
+    if (disposition == consumer_tray_callbacks::queue::result::overflow) {
+      log_.emit("tray.callback-overflow", fields + ",\"ok\":false,\"code\":\"E_CALLBACK_QUEUE_FULL\"");
+      request_exit("callback-queue-overflow", 1);
+    } else log_.emit(disposition == consumer_tray_callbacks::queue::result::queued ?
+        "tray.callback-queued" : "tray.callback-cancelled", fields);
+    return true;
+  }
+  void drain_tray_callbacks() {
+    consumer_tray_callbacks::queue::drain_scope batch(tray_callbacks_);
+    consumer_tray_callbacks::callback raw;
+    while (!exit_requested_ && tray_ && !operation_depth_ && !menu_active_ && batch.next(raw))
+      (void)dispatch_tray_message(raw.message, raw.first, raw.second, &raw, true);
+  }
   LRESULT dispatch(HWND window, UINT message, WPARAM first, LPARAM second) {
     if (message == WM_CLOSE) {
       request_exit("owner-close", interactive_ ? 0 : 1);
       return 0;
     }
     if (message == WM_TIMER && first == timer_id && !exit_requested_) {
+      if (!operation_depth_ && !menu_active_ && !tray_callbacks_.call_depth() && !tray_callbacks_.draining())
+        drain_tray_callbacks();
+      if (exit_requested_) return 0;
       const auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(clock_type::now() - started_).count();
       if (elapsed >= (interactive_ ? 180000 : 10000)) request_exit("deadline-exceeded", 3);
       else if (!interactive_ && menu_active_ && !smoke_cancel_sent_) {
@@ -259,34 +354,8 @@ class application final {
       if (event.handled) return 0;
     }
     if (tray_) {
-      const auto event = tray_->dispatch_message(message, static_cast<std::uintptr_t>(first),
-          static_cast<std::intptr_t>(second));
-      const bool deferred = taskbar_created_ != 0 && message == taskbar_created_ && event.handled &&
-          event.event == soui::runtime::tray_event::none &&
-          event.response.kind == soui::runtime::result_kind::failure && event.response.code == "E_BUSY";
-      if (message == taskbar_created_) {
-        record_response("taskbar.created", event.response,
-            "\"observation\":" + std::to_string(++taskbar_count_) +
-            ",\"handled\":" + boolean(event.handled) +
-            ",\"notification\":" + std::to_string(static_cast<unsigned>(event.event)) +
-            ",\"sourceVerified\":false" +
-            ",\"deferred\":" + boolean(deferred));
-        // Keep listening after recovery failure so a later notification can retry.
-        if (!event.response.ok() && !deferred) exit_code_ = 1;
-      }
-      if (message == callback_message) {
-        const char* name = event.event == soui::runtime::tray_event::activated ? "activated" :
-            event.event == soui::runtime::tray_event::context_menu ? "context-menu" : "none";
-        record_response("tray.callback", event.response, "\"notification\":" + quote(name) +
-            ",\"observation\":" + std::to_string(++callback_count_) +
-            ",\"handled\":" + boolean(event.handled) + ",\"trustedGesture\":false" +
-            ",\"positionValid\":" + boolean(event.position_valid) +
-            ",\"x\":" + std::to_string(event.x) + ",\"y\":" + std::to_string(event.y));
-        if (!event.response.ok()) exit_code_ = 1;
-      }
-      if (interactive_ && !exit_requested_ && !menu_active_ && event.event != soui::runtime::tray_event::none)
-        show_menu(event);
-      if (event.handled) return 0;
+      if (message == callback_message) { if (receive_tray_callback(message, first, second)) return 0; }
+      else if (dispatch_tray_message(message, first, second)) return 0;
     }
     return DefWindowProcW(window, message, first, second);
   }
@@ -303,6 +372,7 @@ class application final {
     } catch (...) { app->log_.emit("dispatch.error", "\"message\":\"Unknown native exception\""); }
     app->exit_code_ = 1;
     app->exit_requested_ = true;
+    app->cancel_tray_callbacks("dispatch-exception");
     try { app->cancel_menu(); } catch (...) {}
     PostQuitMessage(1);
     return 0;
@@ -310,6 +380,7 @@ class application final {
   void cleanup() noexcept {
     if (cleaned_) return;
     cleaned_ = true;
+    cancel_tray_callbacks("cleanup");
     cleanup_confirmed_ = true;
     if (window_) KillTimer(window_, timer_id);
     if (menu_) {
@@ -345,7 +416,8 @@ class application final {
       bool removed = false;
       for (unsigned attempt = 1; attempt <= 3 && !removed; ++attempt) {
         try {
-          const auto response = tray_->remove();
+          soui::runtime::desktop_response response;
+          { consumer_tray_callbacks::queue::call_scope tray_call(tray_callbacks_); response = tray_->remove(); }
           record_response("tray.remove", response, "\"attempt\":" + std::to_string(attempt));
           if (!response.ok()) exit_code_ = 1;
           removed = response.ok() && !tray_->installed() && !tray_->desired() && !tray_->cleanup_pending();
@@ -356,7 +428,7 @@ class application final {
       }
       cleanup_confirmed_ = cleanup_confirmed_ && removed;
       if (!removed) exit_code_ = 1;
-      tray_.reset();
+      { consumer_tray_callbacks::queue::call_scope tray_call(tray_callbacks_); tray_.reset(); }
       log_.emit("service.destroyed", "\"removalConfirmed\":" + std::string(boolean(removed)));
     }
     if (window_) {
@@ -377,6 +449,7 @@ class application final {
   log_writer log_;
   HWND window_{nullptr};
   UINT taskbar_created_{0};
+  consumer_tray_callbacks::queue tray_callbacks_;
   std::unique_ptr<soui::runtime::tray_service> tray_;
   std::unique_ptr<soui::runtime::menu_service> menu_;
   std::unique_ptr<soui::runtime::global_shortcut> shortcut_;
@@ -388,6 +461,7 @@ class application final {
   unsigned menu_count_{0};
   unsigned smoke_stage_{0};
   unsigned taskbar_count_{0};
+  unsigned operation_depth_{0};
   int exit_code_{0};
   bool class_registered_{false};
   bool exit_requested_{false};

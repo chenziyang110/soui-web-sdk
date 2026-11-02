@@ -17,6 +17,8 @@ const candidateVersion = '0.6.1-preview.1';
 const candidatePeerRange = currentPeerRange + ' || ' + candidateVersion;
 const focusCandidateVersion = '0.6.1-preview.2';
 const focusCandidatePeerRange = currentPeerRange + ' || ' + focusCandidateVersion;
+const callbackCandidateVersion = '0.6.1-preview.3';
+const callbackCandidatePeerRange = currentPeerRange + ' || ' + callbackCandidateVersion;
 const knownPreviews = Array.from({length: 9}, (_, index) => '0.6.0-preview.' + (index + 1));
 const repository = path.resolve(__dirname, '../..');
 test('repository GUI metadata accepts the actual VERSION and lock files', () => {
@@ -231,6 +233,28 @@ test('focus preview upgrades and rolls back without changing the previous previe
   sdk.pack(next.source, preview, focusCandidateVersion, {withGuiBindings: true});
   sdk.install(preview, project);
   assert.equal(gui.verify(project).sdkVersion, focusCandidateVersion);
+  sdk.install(packed, project);
+  assert.deepEqual(gui.verify(project), original);
+});
+
+test('callback preview preserves earlier tuples and rejects mismatched or future declarations', t => {
+  assert.equal(gui.metadata(fixture(t, focusCandidateVersion, focusCandidatePeerRange).source), focusCandidateVersion);
+  assert.equal(gui.metadata(fixture(t, callbackCandidateVersion, callbackCandidatePeerRange).source), callbackCandidateVersion);
+  for (const peer of [candidatePeerRange, focusCandidatePeerRange, '*', callbackCandidatePeerRange + ' || 0.6.1-preview.4'])
+    assert.throws(() => gui.metadata(fixture(t, callbackCandidateVersion, peer).source), /borrow the exact local SDK/);
+  assert.throws(() => gui.metadata(fixture(t, '0.6.1-preview.4', callbackCandidatePeerRange).source), /borrow the exact local SDK/);
+});
+
+test('callback preview upgrades and rolls back without changing focus preview bytes', t => {
+  const old = fixture(t, focusCandidateVersion, focusCandidatePeerRange), packed = path.join(old.root, 'focus');
+  const project = path.join(old.root, 'project');
+  sdk.pack(old.source, packed, focusCandidateVersion, {withGuiBindings: true});
+  sdk.install(packed, project);
+  const original = gui.verify(project);
+  const next = fixture(t, callbackCandidateVersion, callbackCandidatePeerRange), preview = path.join(next.root, 'callback');
+  sdk.pack(next.source, preview, callbackCandidateVersion, {withGuiBindings: true});
+  sdk.install(preview, project);
+  assert.equal(gui.verify(project).sdkVersion, callbackCandidateVersion);
   sdk.install(packed, project);
   assert.deepEqual(gui.verify(project), original);
 });

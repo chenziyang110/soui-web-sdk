@@ -1,5 +1,7 @@
 #include <soui/runtime/services/desktop/tray_service.h>
 #include <runtime/services/desktop/tray_platform.h>
+#include "../../demos/workbench/app/tray_callback_queue.h"
+#include "../tray-consumer/tray_callback_queue.h"
 
 #include <windows.h>
 #include <shellapi.h>
@@ -939,6 +941,156 @@ void test_focus_last_environment_callout_rejects_late_changes() {
 
 }  // namespace
 
+template<class Queue>
+void check_callback_queue_boundaries() {
+  Queue queue;
+  typename Queue::value_type raw{};
+  require(queue.capture(71, (std::numeric_limits<std::uintptr_t>::max)(),
+      (std::numeric_limits<std::intptr_t>::min)(), 99, raw), "Capture full-width callback");
+  require(queue.defer(71, raw) == Queue::result::direct && queue.size() == 0, "Idle callback stays direct");
+  {
+    typename Queue::call_scope outer(queue);
+    { typename Queue::call_scope inner(queue); require(queue.call_depth() == 2, "Nested tray depth"); }
+    require(queue.call_depth() == 1, "Inner guard only lowers depth");
+    typename Queue::drain_scope blocked(queue);
+    require(!blocked.next(raw), "Cannot drain a live tray member");
+    for (unsigned index = 0; index != 64; ++index) {
+      require(queue.capture(71, (std::numeric_limits<std::uintptr_t>::max)() - index,
+          (std::numeric_limits<std::intptr_t>::min)() + static_cast<std::intptr_t>(index), index, raw), "Capture bounded input");
+      require(queue.defer(71, raw) == Queue::result::queued, "Fill all 64 slots");
+    }
+    require(queue.capture(71, 1, 2, 3, raw) && queue.defer(71, raw) == Queue::result::overflow,
+            "Full queue must report overflow without overwriting");
+    raw.message = 0xC123;
+    require(queue.defer(71, raw) == Queue::result::direct && queue.size() == 64,
+            "Taskbar/non-callback messages bypass the FIFO even inside a tray call");
+  }
+  require(queue.call_depth() == 0 && queue.size() == 64, "Guard never drains on destruction");
+  unsigned consumed = 0;
+  {
+    typename Queue::drain_scope batch(queue);
+    typename Queue::drain_scope nested(queue);
+    require(!nested.next(raw), "Reentrant drain cannot consume input");
+    while (batch.next(raw)) {
+      require(raw.first == (std::numeric_limits<std::uintptr_t>::max)() - consumed &&
+              raw.second == (std::numeric_limits<std::intptr_t>::min)() + static_cast<std::intptr_t>(consumed) && raw.received_ms == consumed,
+              "FIFO preserves message widths and order");
+      ++consumed;
+    }
+  }
+  require(consumed == 8 && queue.size() == 56, "One timer batch stops at eight");
+  {
+    typename Queue::call_scope guard(queue);
+    for (unsigned index = 64; index != 72; ++index) {
+      require(queue.capture(71, index, static_cast<std::intptr_t>(index), index, raw) &&
+              queue.defer(71, raw) == Queue::result::queued, "Ring tail wraps without losing old entries");
+    }
+  }
+  unsigned expected = 8;
+  while (queue.size()) {
+    typename Queue::drain_scope batch(queue);
+    while (batch.next(raw)) {
+      require(raw.received_ms == expected++, "Wrapped FIFO order");
+    }
+  }
+  require(expected == 72, "All wrapped entries delivered once");
+  {
+    typename Queue::call_scope guard(queue);
+    require(queue.capture(71, 1, -1, 100, raw) && queue.defer(71, raw) == Queue::result::queued, "Snapshot setup");
+  }
+  {
+    typename Queue::drain_scope batch(queue);
+    require(batch.next(raw), "Consume the initial snapshot item");
+    { typename Queue::call_scope guard(queue);
+      require(queue.capture(71, 2, -2, 101, raw) && queue.defer(71, raw) == Queue::result::queued, "Replay reentry is saved"); }
+    require(!batch.next(raw) && queue.size() == 1, "Replay-created input stays for the next timer");
+  }
+  require(queue.revoke() == 1 && queue.size() == 0, "Exit clears pending input and reports dropped count");
+  { typename Queue::call_scope guard(queue); require(queue.defer(71, raw) == Queue::result::revoked, "Exit cannot revive input"); }
+  typename Queue::drain_scope stopped(queue);
+  require(!stopped.next(raw), "Exited queue cannot replay");
+}
+
+template<class Queue>
+void check_sdk_callback_queue_replay() {
+  for (const bool accepted : {false, true}) {
+    fake_platform native;
+    auto service = tray_service_test_access::create(native);
+    require(service->install(native.options()).ok(), "Caller replay setup");
+    native.foreground = native.window; native.focus_succeeds = accepted;
+    Queue queue;
+    bool injected = false;
+    native.focus_nested = [&](focus_step step) {
+      if (step != focus_step::barrier || injected) return;
+      injected = true;
+      const auto busy = service->dispatch_message(native.options().callback_message, 0,
+          notification(native.options().icon_id, WM_CONTEXTMENU));
+      require(!busy.handled && busy.event == tray_event::none && busy.response.code == "E_BUSY",
+              "SDK busy contract remains real and unchanged");
+      for (const auto kind : {NIN_SELECT, NIN_KEYSELECT, WM_CONTEXTMENU, WM_MOUSEMOVE, 0x7777}) {
+        typename Queue::value_type raw{};
+        require(queue.capture(native.options().callback_message, position(-123, -32768),
+            notification(native.options().icon_id, kind), 0, raw) &&
+            queue.defer(native.options().callback_message, raw) == Queue::result::queued,
+            "Caller saves original raw kind without guessing whether it is actionable");
+      }
+    };
+    soui::runtime::desktop_response focused;
+    { typename Queue::call_scope guard(queue); focused = service->return_focus(); }
+    native.focus_nested = {};
+    require(injected && focused.ok() == accepted && (accepted || focused.code == "E_TRAY_FOCUS") &&
+            native.count(tray_native_operation::return_focus) == 1, "Queued callbacks cannot rewrite or retry native FALSE");
+    unsigned delivered = 0;
+    typename Queue::drain_scope batch(queue);
+    typename Queue::value_type raw{};
+    while (batch.next(raw)) {
+      typename Queue::call_scope guard(queue);
+      const auto replayed = service->dispatch_message(raw.message, raw.first, raw.second);
+      require(replayed.handled && replayed.response.ok(), "Actual SDK accepts replay only after its member returned");
+      ++delivered;
+    }
+    require(delivered == 5 && queue.size() == 0, "All original callbacks replay once");
+  }
+}
+
+template<class Queue>
+void check_sdk_callback_queue_taskbar_and_owner() {
+  fake_platform native;
+  auto service = tray_service_test_access::create(native);
+  require(service->install(native.options()).ok(), "Caller Taskbar setup");
+  native.foreground = native.window;
+  Queue queue;
+  bool injected = false;
+  native.focus_nested = [&](focus_step step) {
+    if (step != focus_step::barrier || injected) return;
+    injected = true;
+    typename Queue::value_type raw{};
+    require(queue.capture(native.rebuilt, 0, 0, 0, raw) &&
+            queue.defer(native.options().callback_message, raw) == Queue::result::direct, "Taskbar bypasses the caller FIFO");
+    const auto hint = service->dispatch_message(raw.message, raw.first, raw.second);
+    require(hint.handled && hint.response.code == "E_BUSY", "Immediate Taskbar still cancels SDK preparation");
+    require(queue.capture(native.options().callback_message, 0, notification(native.options().icon_id, NIN_SELECT), 0, raw) &&
+            queue.defer(native.options().callback_message, raw) == Queue::result::queued, "Callback remains saved independently");
+  };
+  { typename Queue::call_scope guard(queue); require_error(service->return_focus(), "E_TRAY_FOCUS"); }
+  native.focus_nested = {};
+  require(injected && native.count(tray_native_operation::return_focus) == 0 && native.wakes.size() == 1,
+          "Caller FIFO cannot delay Taskbar or accidentally enter NIM");
+  native.identity.valid = false;
+  typename Queue::drain_scope batch(queue);
+  typename Queue::value_type raw{};
+  require(batch.next(raw), "Saved owner-error callback is available");
+  typename Queue::call_scope guard(queue);
+  require_error(service->dispatch_message(raw.message, raw.first, raw.second).response, "E_INVALID_ARGUMENT");
+}
+
+void test_workbench_callback_queue_boundaries() { check_callback_queue_boundaries<workbench_tray_callbacks::queue>(); }
+void test_consumer_callback_queue_boundaries() { check_callback_queue_boundaries<consumer_tray_callbacks::queue>(); }
+void test_workbench_sdk_callback_queue_replay() { check_sdk_callback_queue_replay<workbench_tray_callbacks::queue>(); }
+void test_consumer_sdk_callback_queue_replay() { check_sdk_callback_queue_replay<consumer_tray_callbacks::queue>(); }
+void test_workbench_sdk_callback_taskbar_and_owner() { check_sdk_callback_queue_taskbar_and_owner<workbench_tray_callbacks::queue>(); }
+void test_consumer_sdk_callback_taskbar_and_owner() { check_sdk_callback_queue_taskbar_and_owner<consumer_tray_callbacks::queue>(); }
+
 int main() {
   const char* current = "startup";
   unsigned passed = 0;
@@ -980,6 +1132,12 @@ int main() {
     RUN_TRAY_TEST(test_ticket_source_saturation_and_roundtrip);
     RUN_TRAY_TEST(test_taskbar_hint_cancels_each_preparation_boundary);
     RUN_TRAY_TEST(test_focus_last_environment_callout_rejects_late_changes);
+    RUN_TRAY_TEST(test_workbench_callback_queue_boundaries);
+    RUN_TRAY_TEST(test_consumer_callback_queue_boundaries);
+    RUN_TRAY_TEST(test_workbench_sdk_callback_queue_replay);
+    RUN_TRAY_TEST(test_consumer_sdk_callback_queue_replay);
+    RUN_TRAY_TEST(test_workbench_sdk_callback_taskbar_and_owner);
+    RUN_TRAY_TEST(test_consumer_sdk_callback_taskbar_and_owner);
 #undef RUN_TRAY_TEST
     std::cout << "tray_service: " << passed << " no-desktop contract groups passed (fake platform; no Explorer/GUI claim)\n";
     return 0;

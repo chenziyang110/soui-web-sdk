@@ -259,3 +259,104 @@ Win7 SP1 OS32 仍无可操作的现存目标。进一步定向复核的历史记
 配置均为 Server 2022。没有接管他人租约、重置密码、克隆或重装来替代资格。
 因此 #27/#29、Win7、Explorer 重启、长期驻留及生产资格继续开放；没有发布、
 完整 Collector 或 `releaseReady` 变更。后续说明文档不改写本轮冻结构建与失败原件。
+
+## preview.3 调用方队列与本轮验证（2026-11-03）
+
+新候选为 `0.6.1-preview.3`，冻结标准源码为
+`d5a7ad96c2213d31ab678c0fb1444ed7ed68ae96e6d264bbd6c934ec467de0dc`，
+共 2,383 文件、178,214,066 规范化字节。两调用方各自持有容量 64 的 callback FIFO，
+只在实际 tray 成员栈内保存原参数；既有 timer 的安全边界每轮最多重放八项。
+入队不调用 SDK、不制造成功 response；TaskbarCreated 立即分派，退出撤销待处理项目。
+FIFO 仅保证已入队子序列，不承诺所有模态输入的全局顺序。SDK tray 实现、私有
+platform 与公共 tray 头保持 `.2` 字节不变，真实失败仍严格处理。
+
+固定 MSVC v143 `14.44.35207` / SDK `10.0.19041.0` 的 x64、x86 Release 全根标准
+构建与安装实际通过，BuildID 分别为 `b9f9f8e0-e305-4697-bc36-d9d11f738a5a`、
+`c9bba0bb-c2c7-4934-bcc0-2a141ab89133`。每架构 14 项非 GUI CTest、76 组行为测试
+通过（tray 41、menu 15、shortcut 9、shutdown 11）；新增六组回归对两个真实调用方
+helper 验证容量、参数宽度、顺序、批次、重入、退出、实际 SDK busy 后重放、NIM FALSE
+及 Taskbar/owner 失败边界。全部保留原失败断言，未在宿主运行 GUI 产品。
+
+两架构仓库外 Release/MD 消费者只引用各自安装 SDK，连同应用自有的第四份辅助头
+复制后实际构建，安装库匹配当前标准构建。每架构 671 项运行载荷和 467 项安装文件
+均完成闭集、字节和散列复核。Web client 31、SDK package 15、GUI bindings 32 项
+实际通过，四个 npm 工程本轮 audit 均为 0。原生八个编译阶段均自然退出 0，编译
+生命周期门禁和原监督预算保持；未改依赖。标准构建与消费者汇总分别位于
+`out/tray-focus-20261102/workbench-build-preview3.actual.json`（SHA-256
+`a763106d86ccead35ea1b2667259ceb69b8e5723596a3cf1c88ff1253d8214e5`）和
+`consumer-build-preview3.actual.json`（`9b10a9cfd5b34f21f641d7178f7faf4448929726710ceb3f9b84c7d1ae51eeb7`）。
+
+真实 GUI 载体包含六个唯一 case，ISO 116,383,744 bytes，SHA-256 为
+`c9784775366d121d694a14a1cf675ddddaccc833fd133109d920c4d9bbfd5d14`；两命名空间各
+1,463 文件/296 目录全字节回读，六个原生 LNK 的目标、参数、工作目录和显示方式
+逐项核对。每例只启动一次，不覆盖旧 case；原生消费者 180,000 ms、Owned 200,000 ms
+和 drain 2,000 ms 保持。捕获目录的 `Preview2` 只是冻结工具的输出命名空间，实际
+SDK 身份由新 token、`.3` 原生日志、EXE/库及源码绑定证明，不沿用 `.2` 应用资格。
+
+Server 仍为同一 Server 2022 Standard Evaluation / 21H2 / OS build `20348.587`。
+两消费者均实际完成：托盘菜单、Esc、原位等待至少 2,200 ms 后 Shift+F10 重开 SDK
+菜单、更新提示、在菜单返回且取得新界面状态后 Ctrl+Alt+F9、明确选择退出。两
+Workbench 均实际关闭第三窗、菜单命令 3 恢复新代际 ready、真实 Esc/原位键盘菜单、
+命令 11 显式退出。手势由操作日志和截图支持，原生通知不自证输入来源。
+
+| Server case | native 自然完成 | Owned completed / Job0 | focus |
+|---|---|---|---|
+| consumer x64 / `190ae4c390264b47b0de3b91da913d79` | exit0 @69,733 ms，cleanupConfirmed | exit0 @69,785 ms，无强清 | 3/3 success |
+| consumer x86 / `8c69afab89e7411188aa64f5517283b0` | exit0 @44,441 ms，cleanupConfirmed | exit0 @44,521 ms，无强清 | 3/3 success |
+| Workbench x64 / `swp3-45d72366389245f1b9eb7fba59953a80-x64` | exit0 @91,922 ms | exit0 @92,048 ms，无强清 | 3/3 success |
+| Workbench x86 / `swp3-e41e24c0aafc4bc78c4834756def72c3-x86` | exit0 @78,844 ms | exit0 @78,992 ms，无强清 | 3/3 success |
+
+Server 四例没有 callback 入队或 replayed=true；本轮未复现 E_BUSY，不能据此声称
+真实重放路径已被触发或因果已普遍证实。两 Workbench 的 cursor close pending 分别
+40/50 条、runtime shutdown pending 各三条，原冲突探测错误 1409 也保留；最终自然
+完成不改写这些中间结果。十二次公共 focus 响应均成功，但 raw 未单列原生 NIM BOOL，
+只能按冻结 SDK 成功路径推断非零，不能写成直接 BOOL 仪器采样。
+
+Server 正常 ACPI 退出 0、全局 QEMU0、写入句柄释放后，只读精确导出十四份原件至
+`out/tray-focus-20261102/raw-sdk3-server`；全部长度/SHA-256 与 manifest 匹配，
+只读句柄已关闭、磁盘 metadata 未变化。两捕获完成记录的 setup、runner wait/exit0、
+stdout/stderr flush 均有原记录，stderr 为零字节；helper 最终写入/退出仍不能由自身
+完成记录自证。第一消费者退出后的迟到桌面观察不作为其原生运行时长。
+
+Win10 使用同一已核对 Windows 10 Pro / 22H2 / OS build `19045.2965` / OS64bit 的
+原 overlay，正常登录后本会话实际确认光驱 E，再换入同一 `.3` ISO。未改原 CPU、
+TCG、内存、磁盘、父盘或网络隔离。两例各启动一次原生 LNK，完成与 Server 消费者
+相同的真实菜单/取消/原位键盘重开、更新、菜单返回后快捷键及显式退出。
+
+| Win10 case | native 自然完成 | Owned completed / Job0 | focus |
+|---|---|---|---|
+| consumer x64 / `65218db954db409e8a11a15c66505400` | exit0 @55,652 ms，cleanupConfirmed | exit0 @56,217 ms，无强清 | 3/3 success |
+| consumer x86 / `63ec74a6160b45d0a8e6930238400c05` | exit0 @55,855 ms，cleanupConfirmed | exit0 @56,318 ms，无强清 | 3/3 success |
+
+两份 stdout 各 46 events、16 条实际 callback，ordinal 1–16 均为 direct，
+queued/replayed 为零；未见 E_BUSY、E_MENU_FOREGROUND 或队列溢出，原冲突探测 1409
+保留。菜单选择均为 0→1→2，tooltip update1、shortcut1、明确 consumer-menu exit；
+退出撤销的 discarded=0。两 capture 的实际 Runner exit0 和 stream flush 记录完整，
+stderr 均零字节；helper 自身最终退出仍不以 proposedHelperExitCode 自证。
+
+Win10 正常 ACPI 退出 0、全局 QEMU0 后，精确只读导出十份原件至
+`out/tray-focus-20261102/raw-sdk3-win10`，全部 bytes/SHA/readback 匹配、只读句柄已
+关闭，磁盘 metadata 未改变。两台原 VM 均已正常释放，未启动后续 VM。
+
+本轮 `.3` 共六例、二十四份 guest raw、十八次公共 focus success，与 `.2` 七例/
+二十六份及独立 probe 二十一例/四十五份分开计数。六例均 native0、Owned completed0/
+Job0，无超时、强清；真实 FIFO 重放仍未覆盖，不能以本轮未复现 busy 证明一般因果。
+原件不单列 NIM BOOL，按 SDK 严格成功路径的非零推断与实际手势证据分别记录。
+
+Server 和 Win10 export manifest 的 SHA-256 分别为
+`da5892a899f2e72916823da7d27751902c64f7ac82376214e06763a71ccbfece`、
+`b788d574c798ce9a0c7e546b26448616689f0c29bb3214b5ec441266cab3ffc7`。
+Root 最终只读核验含 103 项断言全部通过，冻结源码及十七份已暂存源码均匹配，
+2,383 项源码均在 Git 索引中，包含两个新辅助头。该报告位于
+`out/tray-focus-20261102/sdk3-root-final-review.actual.json`，46,045 bytes，SHA-256
+`e3ffceb70cef4b50230ab62a8c5ea8e119cacdf7a78a6761d38383d48a012022`。
+另两份只读独立 GUI 复核分别完成 5,429 / 3,731 项检查，报告 SHA-256 为
+`d371d867a976300f5e939ea5d4f4588ad04a612fd1b923e1f4addb41547c3fb1`、
+`0b1b23f093b99bad2112f4168086be2735f7eb622814da34b9492c8cddf4d61b`；均保留
+真实队列未覆盖、非直接 BOOL 采样、helper 最终退出未知及旧快速前台拒绝的边界。
+后续只更新不参与该源码身份的维护文档和 CHANGELOG，不刷新旧构建或 raw。
+
+`.2` 的全部 E_BUSY、快速更新后快捷键 E_MENU_FOREGROUND、超时和非零退出保持原件；
+本轮先确认更新菜单返回再使用快捷键，不证明原快速序列已修复，当前策略不改变
+Windows 前台权限。Win7 SP1 OS32、Explorer 重启、长期驻留及完整 #27/#29 资格继续
+开放，未执行完整 Collector、发布或提升 `releaseReady`。

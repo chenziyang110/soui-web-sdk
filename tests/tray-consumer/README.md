@@ -2,7 +2,7 @@
 
 直接 CMake 示例按 3.27 以上准确选择 Windows SDK 10.0.19041.0；3.24–3.26 改用 `-A x64`（x86 为 `-A Win32`），仍保留完整引号的 `-DCMAKE_SYSTEM_VERSION=10.0.19041.0`。已有生成平台不同的目录请选新目录，或检查其所有权后显式 `--fresh`；不能在旧缓存中直接切换平台。
 
-本目录通过安装后的 `find_package(SouiSdk 0.6.1 EXACT CONFIG REQUIRED)` 和 `Soui::Sdk` 编译，只引用公开头文件。当前本地未发布候选为 `0.6.1-preview.2`；CMake 的数字版本 `0.6.1 EXACT` 不能区分 preview 身份，必须另核安装后 `include/soui/version.h` 的完整版本字符串，以及同轮安装库的架构、配置、SHA-256 和构建 ID/安装清单绑定。程序的 `sdkVersion` 日志来自编译头文件，不能独自证明链接库身份。应用自己创建隐藏顶层 HWND 并提供消息循环，调用公共 `tray_service`、`menu_service` 和 `global_shortcut`；不创建 WebView，不依赖模板、Workbench、私有 SDK 头文件或内核 DLL。仍需要对应架构的受支持 MSVC 运行库。历史 preview.10 的输入与行为不同于 preview.9，旧短测不能证明当前候选通过。
+本目录通过安装后的 `find_package(SouiSdk 0.6.1 EXACT CONFIG REQUIRED)` 和 `Soui::Sdk` 编译，只引用公开头文件。当前本地未发布候选为 `0.6.1-preview.3`；CMake 的数字版本 `0.6.1 EXACT` 不能区分 preview 身份，必须另核安装后 `include/soui/version.h` 的完整版本字符串，以及同轮安装库的架构、配置、SHA-256 和构建 ID/安装清单绑定。程序的 `sdkVersion` 日志来自编译头文件，不能独自证明链接库身份。应用自己创建隐藏顶层 HWND 并提供消息循环，调用公共 `tray_service`、`menu_service` 和 `global_shortcut`；不创建 WebView，不依赖模板、Workbench、私有 SDK 头文件或内核 DLL。仍需要对应架构的受支持 MSVC 运行库。历史 preview.10 的输入与行为不同于 preview.9，旧短测不能证明当前候选通过。
 
 程序必须显式选择一个模式，不接受其他参数：
 
@@ -15,6 +15,14 @@
 stdout 输出逐行 UTF-8 NDJSON，包含模式、递增序号、单调耗时、SDK 版本、架构、调用结果、状态及关闭顺序。每次 `TaskbarCreated` 消息分别记录处理结果和 `installed` / `desired` / `cleanupPending`。仅本应用已注册的该消息、`handled=true`、事件为 none、原结果为 failure / `E_BUSY` 的精确组合标记 `deferred=true`，原 `ok=false`、错误码和消息完整保留，但不因此新增退出码 1，也不清除已有失败。其它忙错误与实际恢复失败仍保持非零，继续接收后续消息以观察再次恢复；`return_focus()` 失败仍停止动作并保持非零。
 
 延后提示不表示已经恢复；旧代次唤醒的 handled/success 也不证明执行了 ADD/VERSION。后续恢复结果、实际图标与键盘路由、最终移除和自然退出须另有证据。消息源无法由这个接口验证，所以 `sourceVerified=false` / `trustedGesture=false`；日志不能单独证明是实际 Explorer 重启或真实输入。
+
+本应用自有 `tray_callback_queue.h`，须连同 CMakeLists、main.cpp 和 README 一起复制
+到仓库外；它不属于 SDK，也不引用 Demo 或私有 SDK。仅在 tray 自身成员栈内收到
+原 callback 时入队（64 项上限），TaskbarCreated 即时旁路。既有 timer 在安全边界
+每轮最多重放八项，入队不制造成功 response，实际分派的任何错误仍锁存非零。FIFO
+仅保证已入队项目之间的顺序；未入队通知保持 Windows 原顺序，退出撤销剩余项目。
+日志保存原参数与通知 word，并区分入队、重放和实际 SDK 回应；队列溢出明确失败。
+菜单前台激活可能被 Windows 拒绝，E_MENU_FOREGROUND 仍是错误，不自动重试或忽略。
 
 正常关闭顺序为菜单返回及 `menu.cleanup` → `shortcut.conflict-probe.unregister` / `shortcut.unregister` → `tray.remove` 且状态清空 → 服务析构 → `owner.destroyed` → `owner-class.removed` → `run.finished`。各移除操作失败最多重试三次，仍失败则记录未确认清理并返回非零；除上述精确延后提示外，曾发生的操作失败不会被重试成功或析构尽力清理改成通过。退出码 0 要求预期冲突和精确延后提示以外的全部已执行操作及清理成功，不能用延后提示授予 Shell 恢复通过；1 表示操作、消息循环、日志或清理错误，2 表示参数错误，3 表示观察超时。外部监督器仍应设置稍大于本程序上限的进程超时，以覆盖系统调用停滞。
 
