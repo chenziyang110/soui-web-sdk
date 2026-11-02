@@ -1,0 +1,32 @@
+{
+  "schema": "soui.current-message-port-finite-result/v1",
+  "version": "0.6.0",
+  "manifest": {
+    "path": "C:\\issue77cb1\\Current.manifest.json",
+    "bytes": 76885,
+    "sha256": "0e9d9bc5f42041c6d928ec00d33b389bc17d527a1bb6605acc7e4568bcc80055"
+  },
+  "stage": {
+    "path": "C:\\issue-closeout-evidence\\mp77c-b1-stage\\Stage.actual.json",
+    "bytes": 72862,
+    "sha256": "1353e3e0c5c93225e1c2b27d57224c49c29c94a9ad10e9a76d8895f902cf10df"
+  },
+  "results": [],
+  "failure": {
+    "message": "The expression evaluated to a falsy value:\n\n  assert(r.passed&&r.exitCode===0&&r.supervisorExitCode===0&&r.signal===null&&r.spawnError===null&&r.reportError===null&&!r.stopRequested&&!r.fallbackUsed&&r.closureConfirmed)\n",
+    "stack": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(r.passed&&r.exitCode===0&&r.supervisorExitCode===0&&r.signal===null&&r.spawnError===null&&r.reportError===null&&!r.stopRequested&&!r.fallbackUsed&&r.closureConfirmed)\n\n    at natural (C:\\issue77cb1\\Guest-Current.cjs:13:40)\n    at main (C:\\issue77cb1\\Guest-Current.cjs:62:5)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)"
+  },
+  "attempted": [
+    "x64"
+  ],
+  "remaining": [
+    "x86"
+  ],
+  "bothCurrentArchitectureFiniteCasesPassed": false,
+  "oldFourArmsPassed": false,
+  "currentSdk060Qualified": false,
+  "resourcePassed": false,
+  "productionQualificationComplete": false,
+  "fullDevtoolsGoalComplete": false,
+  "releaseReady": false
+}

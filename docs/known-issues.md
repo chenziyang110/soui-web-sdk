@@ -1,6 +1,6 @@
 # 已知限制与生产门槛
 
-> 本地集成候选说明：固定 PR 9e4e9c1f 与 main 0cdc0a9a 合并后采用 VERSION=0.6.0（原 PR 为 0.6.0-preview.3），尚未编译、运行或发布。以下 main 的 0.6.0 发布/后续候选与 PR 的跨平台记录保留各自身份；所有成功、失败及未知状态均不自动转授此候选。本地内容不等同已发布资产，发布前版本身份仍待协调。
+> 本地恢复候选说明：现存 CI 提交 32b412b1 整合固定 main ce9757e3，VERSION 仍为 0.6.0；本轮仅静态与源码清单验证，未编译、运行或发布。以下 main 发布记录、原 PR 9e4e9c1f / main 0cdc0a9a 沿革及 tree 98cb4681 的 Windows build-only 记录保留各自身份，所有成功、失败及未知状态均不自动转授。本地内容不等同已发布资产，发布前版本身份仍待协调。见[恢复身份与证据范围](acceptance/pr103-local-recovery-20261102.md)。
 
 0.6.0 按本次授权采用普通 GitHub Release 分类。两架构内核与必要 SDK 构建、安装消费者、默认应用八次运行及九份供应/应用 ZIP 已有实际记录；受控 GUI 代表例已记录，完整对应源码及最终发布身份见附件清单。`releaseReady=false`、`productionQualificationComplete=false`、`fullDevtoolsGoalComplete=false`。实际范围及保留失败见[发布说明](releases/0.6.0.md)和[RELEASE-FACTS](../verification/production-validation/0.6.0-release-2026-10-29/RELEASE-FACTS.json)，不从下列历史候选继承通过。
 
@@ -22,6 +22,7 @@ MiniBlink x86 Release真实暂停后原生关闭代表例自然完成；首轮�
 | PowerShell 临时解压 | PS5 在长临时路径下曾出现空 stage 或不完整解压；MAX_PATH 只是候选原因，尚无确定根因。保留原失败，并在全新目录解压后逐文件验内容，不以退出 0 代替闭集核验 |
 | source SDK 发布目录 | 规范输出目录两次 rename 返回 EPERM；合法外部目录的公开 pack 成功，原失败仍保留。根因未定，不归因于 MAX_PATH 或 Defender，也不修改权限/覆盖守卫来取得成功 |
 | 非自然构建与操作期限 | 八个辅助 compiler Job 的失败及两次原 C64 GUI 操作超时/强清保留于 RELEASE-FACTS；产物已核、适用尾部接纳或后续新例不改写原监督结果 |
+| 公共托盘恢复 | 当前安装 SDK 0.6.0 的独立 x64/x86 消费者已在 Server 2022 VM 完成真实 Explorer 重启恢复、显式移除后再次重启不复活及自然清理退出，见[本轮限定结果](maintenance/open-issues-20261029.md)。焦点归还仍失败，Win7 与完整托盘/驻留资格待验 |
 | 生产及环境资格 | D07 真实租期、D13 千次、D14 八小时、完整性能和目标系统/IME/DPI/多屏资格继续待验，见[长测交接](testing/v0.6.0-long-run-handoff.md)。原期限、owner 身份、默认拒绝和资源 fence 不变 |
 
 ## 历史记录
@@ -63,9 +64,9 @@ preview.10 新增受权动作schema、文档能力白名单和受控页面界面
 
 新 [Win7 v7 交互尝试](../verification/production-validation/win7-sp1-x86-v02-interaction-v7-resize-blocked-2026-09-28/README.md)在无外部 QEMU 干扰时完成 12 次原生外层滚轮，但 Workbench 默认窗口右下边框落在 1024×768 桌面的任务栏下；真实缩放探针拒绝被覆盖的边框，客体退出 1。任务、中文 IME、内层滚动及完整关闭检查未执行，V02 仍不通过。当前问题按 [Issue #42](https://github.com/chenziyang110/soui-web-sdk/issues/42) 继续处理，不得把驱动/QEMU 正常退出当成应用交互通过。
 
-[Win7 v8 输入](../verification/production-validation/win7-sp1-x86-v02-v8-prelaunch-refusal-2026-09-28/README.md)新增原生标题栏拖动后再缩放，x86 探针编译和冻结检查通过；客体第一次尝试在自身 QEMU 启动前遇到外部 VM，保护性退出 1，未产生交互结果。v8 的固定任务点击位置也未确认，后续即使结构检查通过，仍需用页面状态、进度事件和查询原件证明任务启动及并行，并单独证明真实 IME 组合。默认窗口位置的产品修复位于本分支，已完成现代 Windows x86/x64 正式构建及原生缩放短测；Win7 仍未验收，Issue #42 保持开放。
+[Win7 v8 输入](../verification/production-validation/win7-sp1-x86-v02-v8-prelaunch-refusal-2026-09-28/README.md)新增原生标题栏拖动后再缩放，x86 探针编译和冻结检查通过；客体第一次尝试在自身 QEMU 启动前遇到外部 VM，保护性退出 1，未产生交互结果。v8 的固定任务点击位置也未确认，后续即使结构检查通过，仍需用页面状态、进度事件和查询原件证明任务启动及并行，并单独证明真实 IME 组合。默认窗口位置的修复已完成历史现代 Windows x86/x64 正式构建及原生缩放短测；后续 Win7 V11 的有限缩放结果见下文，完整 V02 交互尚未验收，Issue #42 保持开放。
 
-[Win7 v8 第二次客体](../verification/production-validation/win7-sp1-x86-v02-v8-command-interrupted-2026-09-28/README.md)确认真实桌面后向 QEMU 发送一次冻结命令按键，但串口 0 字节且没有客体原生结果；外部 QEMU 随后出现，门禁只停我方客体。驱动退出 1、我方 QEMU 退出 -1。不能把按键已发送解释为应用已运行，也不能据此关闭 v7 窗口问题或中文 IME/任务/缩放门槛。下一轮使用独立 attempt 和修复后的新构建；修复版已完成现代 Windows x86/x64 原生缩放短测，Win7 V11 客体验收仍待执行。
+[Win7 v8 第二次客体](../verification/production-validation/win7-sp1-x86-v02-v8-command-interrupted-2026-09-28/README.md)确认真实桌面后向 QEMU 发送一次冻结命令按键，但串口 0 字节且没有客体原生结果；外部 QEMU 随后出现，门禁只停我方客体。驱动退出 1、我方 QEMU 退出 -1。不能把按键已发送解释为应用已运行，也不能据此关闭 v7 窗口问题或中文 IME/任务/缩放门槛。后续采用独立 attempt 的 Win7 V11 已记录有限原生缩放通过，原 v8 中断保持失败；完整交互条件见下文。
 
 [SDK Core 体积修正](../verification/production-validation/sdk-core-native-backups-2026-09-27/README.md)排除两份历史内核备份，并保留完整源码原件。内部 preview.14 的源码匹配失败后，preview.15 统一打包和校验筛选，真实新包匹配及安装往返通过，净减少约 55.94 MiB；不据此扩大应用运行体积或 Electron 对标结论。
 
@@ -95,7 +96,7 @@ preview.11 Win7 SP1 x86 [第三轮客体](../verification/production-validation/
 | 基准失败清理 | [失败清理回归](../verification/production-validation/benchmark-safe-stop-2026-09-29/README.md)已将两级监督器限制为只停止持有的直接子进程；Windows 父 PID 可能复用，不能仅凭直接子进程身份安全终止整棵树。失败后的后代清理仍未证实，正式下一轮前必须核查残留；尚无可靠的身份绑定整树清理机制，也没有隔离的五对性能结论。 |
 | GPU compositor 生命周期 | 旧默认 GPU 应用曾在 `wkeDestroyWebView` 阶段以 `0xC0000005` 退出；当前显式 GPU 短测未复现该退出，但独立消费者双架构 30 轮重建的 USER 对象每轮约增 1，Runtime 关闭后仍残留。普通句柄的短期上升在软件路径也出现并有后续回收，不能混为同一个缺陷。合成线程释放与 Skia 接口引用修补降低了内存末点，仍未关闭 GPU 资源门槛，见[专项记录](acceptance/gpu-lifecycle.md)。模板和 Workbench 默认软件路径；GPU 模式仅为实验 |
 | 目标系统 | 开发机通过不代表 Windows 7/10/11 全矩阵；各系统与补丁级别独立验证 |
-| V02 低分辨率窗口 | 旧候选 Workbench 的 `--height` 至少取 640，而 Win7 x86 客体预检桌面为 800×600；这组原始显示条件下完整可见页面尚未验收。[第一次可见探索](../verification/production-validation/win7-sp1-x86-v02-display-failure-2026-09-28/README.md)在第 10 秒检查过早；[第二次探索](../verification/production-validation/win7-sp1-x86-v02-visible-page-2026-09-28/README.md)在临时 1024×768 下第 35 秒探测到窗口并拍到 V02 数据页，应用原生退出 0、正常关闭。[第一轮滚轮探索](../verification/production-validation/win7-sp1-x86-v02-layout-wheel-2026-09-28/README.md)发送八次原生滚轮但缺滚前截图；[新一轮前后截图](../verification/production-validation/win7-sp1-x86-v02-layout-wheel-before-after-2026-09-28/README.md)显示列表顶部移动到下方公共任务区，并有十二次自然前台原生滚轮原件。[V7 真实缩放失败](../verification/production-validation/win7-sp1-x86-v02-interaction-v7-resize-blocked-2026-09-28/README.md)表明旧候选窗口下边框被任务栏覆盖。本分支已完成两架构正式 Release 构建、无窗口几何回归，以及[现代 Windows x86/x64 原生 80×60 缩放和关闭实测](../verification/production-validation/work-area-placement-gui-2026-09-28/README.md)；Win7 的新冻结输入与真实窗口边框仍待验证，小于 850×640 的工作区也尚未证明可完成 80×60 缩放。中文 IME 组合、Win7 缩放及公共任务并行未通过；原 800×600 条件和完整 V02 交互仍未放行。 |
+| V02 低分辨率窗口 | 旧候选 Workbench 的 `--height` 至少取 640，而 Win7 x86 客体预检桌面为 800×600；这组原始显示条件下完整可见页面尚未验收。[第一次可见探索](../verification/production-validation/win7-sp1-x86-v02-display-failure-2026-09-28/README.md)在第 10 秒检查过早；[第二次探索](../verification/production-validation/win7-sp1-x86-v02-visible-page-2026-09-28/README.md)在临时 1024×768 下第 35 秒探测到窗口并拍到 V02 数据页，应用原生退出 0、正常关闭。[第一轮滚轮探索](../verification/production-validation/win7-sp1-x86-v02-layout-wheel-2026-09-28/README.md)发送八次原生滚轮但缺滚前截图；[新一轮前后截图](../verification/production-validation/win7-sp1-x86-v02-layout-wheel-before-after-2026-09-28/README.md)显示列表顶部移动到下方公共任务区，并有十二次自然前台原生滚轮原件。[V7 真实缩放失败](../verification/production-validation/win7-sp1-x86-v02-interaction-v7-resize-blocked-2026-09-28/README.md)表明旧候选窗口下边框被任务栏覆盖。修复后历史构建已完成两架构正式 Release 构建、无窗口几何回归，以及[现代 Windows x86/x64 原生 80×60 缩放和关闭实测](../verification/production-validation/work-area-placement-gui-2026-09-28/README.md)。[Win7 V11](../verification/production-validation/win7-v11-native-resize-2026-09-29/README.md)随后在 1024×768 下完成同一历史 x86 构建的真实 80×60 缩放及夹具请求关闭后的原生退出 0；此有限结果不继承到 0.6.0 载荷。小于 850×640 的工作区、原 800×600 条件、中文 IME 组合、滚轮与公共任务并行和完整 V02 交互仍未放行。 |
 | DPI、多屏、输入法、辅助功能 | 需要实际产品和设备回归 |
 | 浏览器能力 | Miniblink49 分支；页面按 Chrome 49 构建，不能假定现代 Web API 可用 |
 | 不可信网页 | 模板面向本地受控页面；远程不可信内容需专项评估内核与原生能力边界 |
@@ -105,19 +106,21 @@ preview.11 Win7 SP1 x86 [第三轮客体](../verification/production-validation/
 | 同文档长会话续接 | preview.11 已实现显式公共续期、稳定授权资源归属与 Web 自动续期，[原生契约及安装后独立消费者](../verification/production-validation/preview11-session-renewal-preflight-2026-09-26/README.md)在两架构通过，设计见 [ADR-0014](adr/0014-same-document-session-renewal.md)。[真实时钟续期独立消费者](../verification/production-validation/preview11-real-renewal-build-2026-09-26/README.md)的 x86/x64 编译与无窗口自检通过；随后[本机 x86 GUI 首次短测](../verification/production-validation/preview11-real-renewal-smoke-attempt1-2026-09-26/README.md)在页面就绪前因会话关闭退出 1，任务未启动，x64 GUI 与真实超过 30 分钟/八小时运行未执行。[v2 修正夹具](../verification/production-validation/preview11-real-renewal-v2-build-2026-09-26/README.md)已完成两架构编译、每架构 45 项无窗口阶段自检、106 项分析器合成检查及 8 项运行输入绑定检查；随后[两架构首次 GUI](../verification/production-validation/preview11-real-renewal-v2-smoke-2026-09-26/README.md)均因初始 60 秒未就绪退出 1，bootstrap 和任务调用为 0，真实续期未通过；模拟时钟和短测不能替代任务/订阅跨轮换保留的真实长时验收。长模态或休眠跨过期限仍明确失败，完整门槛未关闭 |
 | 依赖授权 | 已保留部分来源、散列及授权文本；[历史 preview.15 运行包核对](../verification/production-validation/license-runtime-notices-2026-09-28/README.md)确认 x86 链接命令显式列出 `openssl.lib`，[同一构建的链接读取补充](../verification/production-validation/license-link-read-traces-2026-09-28/README.md)显示 x86/x64 链接器均打开该库。[匹配 x86 DLL/PDB 的成员记录](../verification/production-validation/license-pdb-members-2026-09-29/README.md)进一步列出 501 个来自 `openssl.lib` 的编译单元；精确 x64 DLL 没有 CodeView、采集时无链接 PDB，尚无同等级证据。该历史版本四份 Starter/Workbench 随包 `resources/legal/` 均未包含导入的 OpenSSL/SSLeay 许可文本。[OpenSSL 官方说明](https://openssl-library.org/source/license/)确认 1.0.2h 适用旧双许可。适用再分发条件与首方许可仍待审阅，见 [Issue #39](https://github.com/chenziyang110/soui-web-sdk/issues/39)；`releaseReady=false` |
 | Web 构建依赖审计 | Vite 6.4.3 / PostCSS 8.5.23 兼容性升级后，本次 npm audit：SDK、模板、Demo 均为 0 项；完整结果在 verification/*-audit.json。后续更新继续由锁文件、Dependabot 和发布验收共同约束 |
-| 自动验证 | 按当前维护决策不配置远程 CI；每个 PR 必须提供适用的本机构建、测试和真实桌面验收证据 |
-| 分支保护 | 当前私有仓库方案不支持 GitHub 分支保护；维护者通过 PR、CODEOWNERS、Squash 合并和人工评审执行流程约束 |
+| 自动验证 | 历史采用本地验收；已新增[限定跨平台 CI](ci-platform-matrix.md#候选身份与证据边界)，本地提交的 workflow 推送因权限不足被拒，尚无由此取得的云端通过。真实桌面验收仍须目标机证据 |
+| 分支保护 | 历史私有仓库阶段不支持 GitHub 分支保护；维护者通过 PR、CODEOWNERS、Squash 合并和人工评审执行流程约束。本轮未查询或修改当前分支保护设置 |
 | 安装、更新、签名 | 由实际项目配置，并验证升级和回退 |
 
 发布负责人应针对具体产品逐项补证据、处理未关闭缺陷，再确定生产版本。验收结果保持 `sourceDeliveryVerified=false`、`benchmarkValid=false`、`releaseReady=false`。
 
-[V9 当前 Workbench Win7 SP1 x86 可见交互探索](../verification/production-validation/win7-sp1-x86-v02-workarea-v9-failure-2026-09-29/README.md)在新冻结输入和 1024×768 桌面下，九次窗口探测仍未找到可见顶层窗口，客体整轮退出 1。应用由测试脚本发出关闭请求后原生退出 0，不能证明可见页面或工作区定位修正。需在新输入中诊断窗口可见性和启动时序；缩放、滚动、任务和中文输入仍开放。
+[V9 历史 Workbench Win7 SP1 x86 可见交互探索](../verification/production-validation/win7-sp1-x86-v02-workarea-v9-failure-2026-09-29/README.md)在新冻结输入和 1024×768 桌面下，九次窗口探测仍未找到可见顶层窗口，客体整轮退出 1。应用由测试脚本发出关闭请求后原生退出 0，不能证明可见页面或工作区定位修正。该轮失败保留；后续 V11 的有限成功不改写 V9 的结果，滚动、任务和中文输入仍开放。
 
-[V10 只读时序诊断](../verification/production-validation/win7-sp1-x86-v02-window-visibility-v10-2026-09-29/README.md)在同一官方 x86 构建及 Win7 SP1 x86 快照中，10–40 秒的七次窗口探针未检出窗口，客体单调计时 46.933 秒首次检出，之后至 105 秒保持可见。该轮应用和客体均原生退出 0，但关闭由夹具请求，未执行缩放、滚动、真实中文 IME 或公共任务并行；V9 的真实失败和 Issue 42 均保持开放。尚不能判断可见性波动原因或放行 Win7 工作区定位。
+[V10 只读时序诊断](../verification/production-validation/win7-sp1-x86-v02-window-visibility-v10-2026-09-29/README.md)在同一官方 x86 构建及 Win7 SP1 x86 快照中，10–40 秒的七次窗口探针未检出窗口，客体单调计时 46.933 秒首次检出，之后至 105 秒保持可见。该轮应用和客体均原生退出 0，但关闭由夹具请求，未执行缩放、滚动、真实中文 IME 或公共任务并行；不能据此判断可见性波动原因。V9 的真实失败仍保留，Issue #42 的完整交互条件仍开放。
+
+[V11 原生工作区缩放](../verification/production-validation/win7-v11-native-resize-2026-09-29/README.md)在 2026-09-29 的独立 attempt3 中，通过冻结输入 `6d712b263f6318aacd8077418d1906aa013104ed6c7113ca2faf98c637716aa2` 验证历史 x86 Release 构建 `b6caec6c-117e-49eb-86fa-4182e64d5b55`（源码 SHA-256 `60d729c8c0fe55dcabd72bf3a1aa2255af42017c10c63151a880fecd7d511640`）。Win7 SP1 x86、1024×768 下的矩形由 `[87,24,937,664]` 经一次真实 80×60 边框拖拽变为 `[87,24,1017,724]`，右下边框在默认任务栏上方；随后由夹具请求关闭，应用原生退出 0，客体严格校验及 QEMU 也退出 0。该输入的有限缩放结果已有真实原件，无需因文档更新重复执行；它不证明 0.6.0 载荷、中文 IME、滚轮与公共任务并行、800×600、DPI/多屏或完整 V02。`win7CurrentV02Verified=false`、`benchmarkValid=false`、`releaseReady=false` 保持；Issue #42 保留尚未完成的交互验收。
 
 ## 跨平台开发状态
 
-以下保留固定 PR 9e4e9c1f（0.6.0-preview.3）的限定记录；本地集成候选的跨平台编译和运行尚未执行。
+以下保留固定 PR 9e4e9c1f（0.6.0-preview.3）的限定记录；tree 98cb4681 的 Windows x86/x64 build-only 范围另见[恢复记录](acceptance/pr103-local-recovery-20261102.md)。本次恢复候选未编译或运行，不继承旧通过。
 
 `Soui::Runtime` 提供无窗口跨平台构建路径；另有独立 `Soui::Desktop` 系统 WebView
 后端和统一示例。截至 2026-10-26，Linux x64 已有真实头库编译链接、独立安装消费

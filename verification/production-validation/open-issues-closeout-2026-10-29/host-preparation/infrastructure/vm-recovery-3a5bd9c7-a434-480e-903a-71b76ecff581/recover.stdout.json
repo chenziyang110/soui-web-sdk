@@ -1,0 +1,213 @@
+{
+  "run": "C:\\Users\\11034\\.codex\\task-vms\\soui-devtools-qemu-stable-e89cf96f2d1e4685bbdac347cb9eea3d\\private-fe2e6175cf5a4a78b23d418330506ee3\\postsettings-cpu-nehalem-3f486e90\\runs\\166925c3-9fd3-4751-9a17-c45d880af0a6",
+  "state": "offline-recovered",
+  "receipt": {
+    "schema": "qemu-novnc.offline-recovery/v1",
+    "run": "C:\\Users\\11034\\.codex\\task-vms\\soui-devtools-qemu-stable-e89cf96f2d1e4685bbdac347cb9eea3d\\private-fe2e6175cf5a4a78b23d418330506ee3\\postsettings-cpu-nehalem-3f486e90\\runs\\166925c3-9fd3-4751-9a17-c45d880af0a6",
+    "uuid": "166925c3-9fd3-4751-9a17-c45d880af0a6",
+    "session": "bbc12535-6afa-4abb-a997-509bb3ebed32",
+    "archive": "sessions/offline-recovery-d5d9c999d91747b9b575f09528755d37",
+    "reason": "Current task VM supervisor lost without a terminal receipt; recover the existing disk using held native no-writer fences and preserve unknown prior outcome",
+    "recoveredAtUnix": 1793258393.992103,
+    "priorOutcome": "UNKNOWN",
+    "originalExitCode": null,
+    "cleanShutdownVerified": false,
+    "files": {
+      "lab.json": {
+        "bytes": 5658,
+        "sha256": "2d7f056425d7cbc300928fe94d31f656dfa1d08c5b1f20de5a3d47d94b81d2eb"
+      },
+      "started.json": {
+        "bytes": 107,
+        "sha256": "c239b3825b43d19218c8168c9c9b798c450c8552b5b5104f1476a09bb0dcf586"
+      },
+      "start.lock": {
+        "bytes": 5,
+        "sha256": "67cfcfcda241fee7091628efaba7dbd5d005f660d48618197f36f293b2da9c9e"
+      },
+      "active-session.json": {
+        "bytes": 106,
+        "sha256": "4c8633ccef776762ca9910a904d457d3ab0be6c34063ac3b59dc81e063cf960f"
+      },
+      "qemu.stdout.log": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "qemu.stderr.log": {
+        "bytes": 1074,
+        "sha256": "4f6071280fc90f2c352596d655fae5d6b5803406d8be705aaf6c3100ebab20de"
+      },
+      "serial.log": {
+        "bytes": 5047272,
+        "sha256": "916c35e4ac5f45a28027acdf7cd572f18c43d9b7fa3a62c5a797d6df4cb552f9"
+      }
+    },
+    "intent": {
+      "bytes": 1602,
+      "sha256": "c7b106f6b5474ec3a218a151ac8d5e9a86a0265f5218499da681facb8c9cc92e"
+    },
+    "proof": {
+      "catalogLockHeld": true,
+      "lifecycleLockHeld": true,
+      "qmpAbsenceChecks": [
+        {
+          "port": 52547,
+          "observedAtUnix": 1793258382.2734494,
+          "diskFenceHeld": false,
+          "tables": [
+            {
+              "family": 2,
+              "entryCount": 79,
+              "tableSha256": "e66472d785a020ae039a8a21ced47f89a58831d5c9ece4ceaa0dd14e8c8117a6",
+              "targetPortListening": false
+            },
+            {
+              "family": 23,
+              "entryCount": 18,
+              "tableSha256": "bed1dab7ed52e825dea283ce1264fb3d04230553bcc985736de766ff74475ed6",
+              "targetPortListening": false
+            }
+          ],
+          "method": "windows-tcp-tables-no-listener"
+        },
+        {
+          "port": 52547,
+          "observedAtUnix": 1793258386.2742467,
+          "diskFenceHeld": true,
+          "tables": [
+            {
+              "family": 2,
+              "entryCount": 79,
+              "tableSha256": "e66472d785a020ae039a8a21ced47f89a58831d5c9ece4ceaa0dd14e8c8117a6",
+              "targetPortListening": false
+            },
+            {
+              "family": 23,
+              "entryCount": 18,
+              "tableSha256": "bed1dab7ed52e825dea283ce1264fb3d04230553bcc985736de766ff74475ed6",
+              "targetPortListening": false
+            }
+          ],
+          "method": "windows-tcp-tables-no-listener"
+        },
+        {
+          "port": 52547,
+          "observedAtUnix": 1793258390.1913886,
+          "diskFenceHeld": true,
+          "tables": [
+            {
+              "family": 2,
+              "entryCount": 79,
+              "tableSha256": "e66472d785a020ae039a8a21ced47f89a58831d5c9ece4ceaa0dd14e8c8117a6",
+              "targetPortListening": false
+            },
+            {
+              "family": 23,
+              "entryCount": 18,
+              "tableSha256": "bed1dab7ed52e825dea283ce1264fb3d04230553bcc985736de766ff74475ed6",
+              "targetPortListening": false
+            }
+          ],
+          "method": "windows-tcp-tables-no-listener"
+        }
+      ],
+      "processSnapshots": [
+        {
+          "processCount": 705,
+          "snapshotSha256": "cc7fe06be699d09e6b57c58ace286555c9d1d26ec88b9f4b83c93bbb0dabafc9",
+          "recordedPidsAbsent": [
+            14728,
+            55276
+          ],
+          "visibleVmReferences": [],
+          "observedAtUnix": 1793258386.2723796,
+          "uninspectableProcessCount": 203,
+          "uninspectablePidsSha256": "292a5ee210b06be55625231e97a46eb9ecdaa71eb079962b6548b8745b238bc6",
+          "diskFenceHeld": false,
+          "cimProvesNoWriters": false,
+          "competingQemu": [
+            {
+              "pid": 106276,
+              "image": "C:\\Program Files\\qemu\\qemu-system-x86_64.exe",
+              "commandLineSha256": "47cc1042a7e153674261db346efd1f2d9269a029f784b2c1e73822d364a97092",
+              "explicitDiskArgumentCount": 4,
+              "classification": "disjoint-visible-cli-only"
+            }
+          ],
+          "performanceIsolationProved": false
+        },
+        {
+          "processCount": 713,
+          "snapshotSha256": "2bfa6d03a3de3a2c94bf3d25cd41a49a5d286b7999808a317d76d83fabebac8c",
+          "recordedPidsAbsent": [
+            14728,
+            55276
+          ],
+          "visibleVmReferences": [],
+          "observedAtUnix": 1793258390.138277,
+          "uninspectableProcessCount": 202,
+          "uninspectablePidsSha256": "713206d80a5577658ab95c1e99cf919ea3856147759befd46a2e5ec68e1f455e",
+          "diskFenceHeld": true,
+          "cimProvesNoWriters": false,
+          "competingQemu": [
+            {
+              "pid": 106276,
+              "image": "C:\\Program Files\\qemu\\qemu-system-x86_64.exe",
+              "commandLineSha256": "47cc1042a7e153674261db346efd1f2d9269a029f784b2c1e73822d364a97092",
+              "explicitDiskArgumentCount": 4,
+              "classification": "disjoint-visible-cli-only"
+            }
+          ],
+          "performanceIsolationProved": false
+        },
+        {
+          "processCount": 715,
+          "snapshotSha256": "f17979acf709daab20ef937b026c5a0504e8664f754743126684d2bc7377a7f9",
+          "recordedPidsAbsent": [
+            14728,
+            55276
+          ],
+          "visibleVmReferences": [],
+          "observedAtUnix": 1793258393.9917393,
+          "uninspectableProcessCount": 201,
+          "uninspectablePidsSha256": "93576655fec3a44b667a8eaa19fdca0b045a50547fbd6f82bb98afb86d8ecba6",
+          "diskFenceHeld": true,
+          "cimProvesNoWriters": false,
+          "competingQemu": [
+            {
+              "pid": 106276,
+              "image": "C:\\Program Files\\qemu\\qemu-system-x86_64.exe",
+              "commandLineSha256": "47cc1042a7e153674261db346efd1f2d9269a029f784b2c1e73822d364a97092",
+              "explicitDiskArgumentCount": 4,
+              "classification": "disjoint-visible-cli-only"
+            }
+          ],
+          "performanceIsolationProved": false
+        }
+      ],
+      "disks": [
+        {
+          "path": "C:\\Users\\11034\\.codex\\task-vms\\soui-devtools-qemu-stable-e89cf96f2d1e4685bbdac347cb9eea3d\\private-fe2e6175cf5a4a78b23d418330506ee3\\postsettings-cpu-nehalem-3f486e90\\runs\\166925c3-9fd3-4751-9a17-c45d880af0a6\\overlay.qcow2",
+          "volume": 505631073,
+          "fileIndex": 9851624186632027,
+          "bytes": 11738152960,
+          "creationFileTime": 134369549256918155,
+          "writeFileTime": 134377225334224641,
+          "shareMode": "READ_ONLY_DENY_WRITE_DELETE"
+        },
+        {
+          "path": "C:\\Users\\11034\\.codex\\task-vms\\soui-devtools-qemu-stable-e89cf96f2d1e4685bbdac347cb9eea3d\\private-fe2e6175cf5a4a78b23d418330506ee3\\install.qcow2",
+          "volume": 505631073,
+          "fileIndex": 8162774325912757,
+          "bytes": 9847504896,
+          "creationFileTime": 134369484064994487,
+          "writeFileTime": 134369516965839080,
+          "shareMode": "READ_ONLY_DENY_WRITE_DELETE"
+        }
+      ],
+      "diskHandlesClosed": true
+    }
+  },
+  "autoStarted": false,
+  "guest_ui_verified": false
+}

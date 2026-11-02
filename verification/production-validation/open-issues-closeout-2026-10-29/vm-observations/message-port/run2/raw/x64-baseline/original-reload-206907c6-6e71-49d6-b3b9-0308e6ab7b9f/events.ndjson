@@ -1,0 +1,22 @@
+{"event":"run.begin","elapsedMs":0,"mode":"reload","cycles":3,"warmup":0,"settleMs":500,"timeoutMs":20000,"pid":4764,"creationFileTime":"134377352938104405"}
+{"event":"sample","elapsedMs":5,"phase":"process","cycle":0,"privateBytes":1220608,"workingSetBytes":5955584,"handles":95,"threads":4,"gdiObjects":0,"userObjects":2,"windowClasses":{"OleMainThreadWndClass":1}}
+{"event":"step.begin","elapsedMs":5,"action":"mount","window":1,"cycle":0}
+{"event":"step.complete","elapsedMs":2714,"action":"mount","window":1,"cycle":0}
+{"event":"step.begin","elapsedMs":2715,"action":"runtime.reject-busy","window":0,"cycle":0}
+{"event":"step.complete","elapsedMs":2715,"action":"runtime.reject-busy","window":0,"cycle":0}
+{"event":"sample","elapsedMs":3238,"phase":"mounted","cycle":0,"privateBytes":46071808,"workingSetBytes":54407168,"handles":321,"threads":17,"gdiObjects":56,"userObjects":21,"windowClasses":{"CicMarshalWndClass":1,"IME":2,"MSCTFIME UI":1,"MbToolTip":2,"MiniBlinkTimerWindowClass":1,"OleMainThreadWndClass":1,"SouiMiniblinkInteractionWindowV1":1,"SouiPublicSdkAcceptanceV1":1,"SystemUserAdapterWindowClass":1}}
+{"event":"step.begin","elapsedMs":3238,"action":"reload","window":1,"cycle":1}
+{"event":"step.complete","elapsedMs":5652,"action":"reload","window":1,"cycle":1}
+{"event":"sample","elapsedMs":6160,"phase":"cycle","cycle":1,"privateBytes":56795136,"workingSetBytes":66240512,"handles":335,"threads":18,"gdiObjects":56,"userObjects":21,"windowClasses":{"CicMarshalWndClass":1,"IME":2,"MSCTFIME UI":1,"MbToolTip":2,"MiniBlinkTimerWindowClass":1,"OleMainThreadWndClass":1,"SouiMiniblinkInteractionWindowV1":1,"SouiPublicSdkAcceptanceV1":1,"SystemUserAdapterWindowClass":1}}
+{"event":"step.begin","elapsedMs":6160,"action":"reload","window":1,"cycle":2}
+{"event":"step.complete","elapsedMs":8605,"action":"reload","window":1,"cycle":2}
+{"event":"sample","elapsedMs":9113,"phase":"cycle","cycle":2,"privateBytes":72712192,"workingSetBytes":76939264,"handles":348,"threads":19,"gdiObjects":56,"userObjects":21,"windowClasses":{"CicMarshalWndClass":1,"IME":2,"MSCTFIME UI":1,"MbToolTip":2,"MiniBlinkTimerWindowClass":1,"OleMainThreadWndClass":1,"SouiMiniblinkInteractionWindowV1":1,"SouiPublicSdkAcceptanceV1":1,"SystemUserAdapterWindowClass":1}}
+{"event":"step.begin","elapsedMs":9113,"action":"reload","window":1,"cycle":3}
+{"event":"step.complete","elapsedMs":11649,"action":"reload","window":1,"cycle":3}
+{"event":"sample","elapsedMs":12159,"phase":"cycle","cycle":3,"privateBytes":84168704,"workingSetBytes":86405120,"handles":361,"threads":20,"gdiObjects":56,"userObjects":21,"windowClasses":{"CicMarshalWndClass":1,"IME":2,"MSCTFIME UI":1,"MbToolTip":2,"MiniBlinkTimerWindowClass":1,"OleMainThreadWndClass":1,"SouiMiniblinkInteractionWindowV1":1,"SouiPublicSdkAcceptanceV1":1,"SystemUserAdapterWindowClass":1}}
+{"event":"step.begin","elapsedMs":12159,"action":"close","window":1,"cycle":4}
+{"event":"step.complete","elapsedMs":12484,"action":"close","window":1,"cycle":4}
+{"event":"sample","elapsedMs":12991,"phase":"closed","cycle":4,"privateBytes":78434304,"workingSetBytes":81006592,"handles":340,"threads":18,"gdiObjects":51,"userObjects":10,"windowClasses":{"IME":1,"MiniBlinkTimerWindowClass":1,"OleMainThreadWndClass":1,"SystemUserAdapterWindowClass":1}}
+{"event":"step.begin","elapsedMs":12991,"action":"runtime.shutdown","window":0,"cycle":4}
+{"event":"step.failed","elapsedMs":12991,"action":"runtime.shutdown","window":0,"cycle":4,"code":"E_RUNTIME_SHUTDOWN_PENDING","message":"Worker prepare has not completed; retry this retained shutdown generation."}
+{"event":"run.failed","elapsedMs":12998,"message":"Public host operation failed: E_RUNTIME_SHUTDOWN_PENDING"}

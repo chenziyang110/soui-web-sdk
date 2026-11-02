@@ -1,0 +1,188 @@
+{
+  "schema": "soui.current-sdk-message-port-pair-feasibility/v1",
+  "createdUtc": "2026-10-29T12:30:42.620Z",
+  "route": "Stage only two current0.6 baseline runtime variants using unchanged original stage/run wrappers and Guest-Current controllers; reuse actual current0.6 candidate results. New candidate test execution is unnecessary.",
+  "futureGuestRoot": "C:/issue77cb1",
+  "futureStage": "C:/issue-closeout-evidence/mp77c-b1-stage",
+  "futureRun": "C:/issue-closeout-evidence/mp77c-b1-run",
+  "inputFileCount": 17,
+  "inputBytes": 2384369,
+  "runtimeCopyCount": 156,
+  "baselineRuntimeBytes": 80228858,
+  "rows": [
+    {
+      "architecture": "x64",
+      "baseline": {
+        "path": "F:\\work\\soui-issue96\\out\\acceptance\\82e96f65-8695-4546-b468-fec6c7d8a386\\runtime\\node.dll",
+        "bytes": 38959616,
+        "sha256": "f552226e00c16c9df1ef6cb94081c69b37185c44741197d5a337a4ed70d1fdef"
+      },
+      "candidate": {
+        "path": "C:/sr06/out/x64/bin/Release/SouiStarter/node.dll",
+        "bytes": 39204352,
+        "sha256": "d888637d5dd1476dde16b8c5bb28172d7b8ec3495b69c725fa3572013748139a"
+      },
+      "currentSdkExe": {
+        "relative": "SouiAcceptance.exe",
+        "source": "SouiAcceptance-x64.exe",
+        "bytes": 1145856,
+        "sha256": "038f85dddf997c7e0caab6834527d1b7e2386802723005346e5f7a778b873499",
+        "fromPayload": true,
+        "kind": "new independently compiled current installed SDK consumer"
+      },
+      "runtimeFiles": 78,
+      "unchangedRuntimePins": 77,
+      "baselineRuntimeBytes": 45816725,
+      "staticRequiredApiCount": 59,
+      "missingRequiredApiNames": [],
+      "baselineNamedExportCount": 9659,
+      "candidateNamedExportCount": 9663,
+      "candidateOnlyExports": [
+        "wkeGetInputUiApi",
+        "wkeGetLocalResourceApi",
+        "wkeGetViewDiagnosticsApi",
+        "wkeStage0GetDevToolsApi"
+      ],
+      "candidateObservedDocuments": 4,
+      "candidateObservedCases": 32,
+      "candidateNaturalDurationMs": 11002,
+      "baselineNotExecuted": true
+    },
+    {
+      "architecture": "x86",
+      "baseline": {
+        "path": "F:\\work\\soui-issue96\\out\\acceptance\\87d5be4b-c0df-47b8-a737-b39ff45e1787\\runtime\\node.dll",
+        "bytes": 28115968,
+        "sha256": "90a214ca2d416eda8e980cab7aacb80fffef777ace20c06179f41e584dae093b"
+      },
+      "candidate": {
+        "path": "C:/sr06/out/x86/bin/Release/SouiStarter/node.dll",
+        "bytes": 28318208,
+        "sha256": "dc8c37178f4bbd9260edc973d61af876cf8460178eaf89fa2994fdffc94abc9a"
+      },
+      "currentSdkExe": {
+        "relative": "SouiAcceptance.exe",
+        "source": "SouiAcceptance-x86.exe",
+        "bytes": 1003520,
+        "sha256": "209e99b0213a1d8c98a11be89e71f66e4c09530060d67f1cec82c8edec1867b2",
+        "fromPayload": true,
+        "kind": "new independently compiled current installed SDK consumer"
+      },
+      "runtimeFiles": 78,
+      "unchangedRuntimePins": 77,
+      "baselineRuntimeBytes": 34412133,
+      "staticRequiredApiCount": 59,
+      "missingRequiredApiNames": [],
+      "baselineNamedExportCount": 9871,
+      "candidateNamedExportCount": 9875,
+      "candidateOnlyExports": [
+        "wkeGetInputUiApi",
+        "wkeGetLocalResourceApi",
+        "wkeGetViewDiagnosticsApi",
+        "wkeStage0GetDevToolsApi"
+      ],
+      "candidateObservedDocuments": 4,
+      "candidateObservedCases": 32,
+      "candidateNaturalDurationMs": 10944,
+      "baselineNotExecuted": true
+    }
+  ],
+  "sourceApiEvidence": {
+    "sourceKernelApi": {
+      "path": "C:/sr06/sdk/src/host/source_kernel_api.h",
+      "bytes": 3335,
+      "sha256": "41e031fc6c3860ebd4d03de6fad873e99149bfcc838b4cdcd3c2d8d37d0ca981"
+    },
+    "installedSdkHostSource": {
+      "path": "C:/sr06/sdk/src/host/soui_miniblink_host.cpp",
+      "bytes": 269957,
+      "sha256": "0f4de698a8d78dfb1864c7e58a8903a18f1f090577abd8786080fbf9742217e2"
+    },
+    "currentConsumerSource": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port-reload-current/light-payload-3777b18d-61d3-4310-b70d-bc1b73057be2/payload/NativeSource.main.cpp",
+      "bytes": 38955,
+      "sha256": "a7df1670caa8551c759ba2dd6c7f2c50f961705c905cf0c21d2aac90d0da9d44"
+    },
+    "requiredNames": [
+      "jsArg",
+      "jsArgCount",
+      "jsBoolean",
+      "jsIsString",
+      "wkeGetURL",
+      "jsDouble",
+      "jsEval",
+      "jsGetWebView",
+      "jsString",
+      "jsToBoolean",
+      "jsToInt",
+      "jsToString",
+      "jsToTempString",
+      "jsUndefined",
+      "wkeCreateWebView",
+      "wkeDestroyWebView",
+      "wkeFinalize",
+      "wkeGetHostHWND",
+      "wkeGetString",
+      "wkeGlobalExec",
+      "wkeIsInitialize",
+      "wkeIsMainFrame",
+      "wkeIsProcessingUserGesture",
+      "wkeJsBindFunction",
+      "wkeLoadFileW",
+      "wkeOnDidCreateScriptContext",
+      "wkeOnDocumentReady",
+      "wkeOnNavigation",
+      "wkeOnPaintUpdated",
+      "wkeReload",
+      "wkeIsDirty",
+      "wkeRepaintIfNeeded",
+      "wkeResize",
+      "wkeResizeWindow",
+      "wkeRunJS",
+      "wkeSetContextMenuEnabled",
+      "wkeSetDebugConfig",
+      "wkeSetFocus",
+      "wkeSetNavigationToNewWindowEnable",
+      "wkeKillFocus",
+      "wkeSetHandle",
+      "wkeFireMouseEvent",
+      "wkeFireMouseWheelEvent",
+      "wkeFireKeyDownEvent",
+      "wkeFireKeyUpEvent",
+      "wkeFireKeyPressEvent",
+      "wkeSetComposition",
+      "wkeConfirmComposition",
+      "wkeCancelComposition",
+      "wkeGetCaretRect",
+      "wkeGetInteractionApi",
+      "wkeSetZoomFactor",
+      "wkeShowWindow",
+      "wkeShutdown",
+      "wkeUpdate",
+      "wkeWake",
+      "wkeInitializeEx",
+      "wkePrepareWorkerShutdown",
+      "wkeFinalizePrepared"
+    ],
+    "fixtureDefaultAdapter": true,
+    "ownedLocalResourceAdapterSelected": false,
+    "missingOptionalExportsRetained": [
+      "wkeGetInputUiApi",
+      "wkeGetLocalResourceApi",
+      "wkeGetViewDiagnosticsApi",
+      "wkeStage0GetDevToolsApi"
+    ],
+    "staticNamesDoNotProveAbiOrBehavior": true
+  },
+  "qualificationBoundary": "This would be a current0.6 fixture A/B composition, not a pass of the failed historical oldSDK four-arm profile. Exact candidate inputs are reused; only each baseline node.dll changes. Original validators, deadline budgets, whole-Job natural closure and runtime closed-set fences stay required. No resource, optional API, long-run, Win7, complete toolchain or production qualification is claimed.",
+  "candidateResultsAlreadyPassed": true,
+  "candidateRerunRequired": false,
+  "baselineRunsStillRequired": 2,
+  "baselineExecuted": false,
+  "currentPairBehaviorPassed": false,
+  "oldSdkFourArmsPassed": false,
+  "resourcePassed": false,
+  "currentSdk060Qualified": false,
+  "productionQualificationComplete": false,
+  "releaseReady": false
+}

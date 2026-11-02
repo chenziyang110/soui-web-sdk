@@ -76,7 +76,7 @@ preview.9 新增 `sdk.native.host-adapter`（引擎无关转发、失败重试�
 
 `demo.native.interaction-task` 通过真实 Workbench adapter 和公开 JSON Bridge 验证有界 `demo.interaction`：单调时钟计时、后台进度事件、运行中取消、会话隔离、非法类型/整数范围与溢出、关闭会话清理，以及原快速任务兼容。构建后可运行 `ctest --test-dir out/x64 -C Release -R demo.native.interaction-task --output-on-failure`，x86 使用对应目录。这是无窗口的原生集成回归；V02 仍需新构建上真实滚动、IME、缩放和公共任务并发的桌面证据，不能继承旧应用载荷的短测结果。
 
-Workbench 普通窗口初始位置使用主显示器的工作区：空间充足时居中；只要仍可放下至少 640×480 的窗口，就给右下缩放方向预留至少 84×64 像素；再小的工作区退回到可见范围内。任务栏占用的区域不计入工作区。`demo.native.window-placement` 覆盖 Win7 1024×768 与 800×600 底部任务栏、默认大窗口与显式 850×640 窗口的 80×60 缩放目标、负坐标显示器及无效区域。纯几何测试不能证明真实边框命中和拖拽；[现代 Windows x86/x64 原生缩放记录](../verification/production-validation/work-area-placement-gui-2026-09-28/README.md)已证明本机 1920×1032 工作区中的两架构 80×60 鼠标拖拽与正常关闭，但不证明 Win7 SP1 x86、页面在 708×488 下可用或完整 V02。须用新冻结输入在 Win7 记录真实窗口矩形、任务栏区域、原生缩放输入与关闭结果，再判断 [Issue #42](https://github.com/chenziyang110/soui-web-sdk/issues/42) 是否关闭。
+Workbench 普通窗口初始位置使用主显示器的工作区：空间充足时居中；只要仍可放下至少 640×480 的窗口，就给右下缩放方向预留至少 84×64 像素；再小的工作区退回到可见范围内。任务栏占用的区域不计入工作区。`demo.native.window-placement` 覆盖 Win7 1024×768 与 800×600 底部任务栏、默认大窗口与显式 850×640 窗口的 80×60 缩放目标、负坐标显示器及无效区域。纯几何测试不能证明真实边框命中和拖拽；[现代 Windows x86/x64 原生缩放记录](../verification/production-validation/work-area-placement-gui-2026-09-28/README.md)证明了历史构建在本机 1920×1032 工作区中的两架构 80×60 鼠标拖拽与正常关闭。[Win7 V11 原生缩放记录](../verification/production-validation/win7-v11-native-resize-2026-09-29/README.md)另证明历史 x86 Release 构建 `b6caec6c-117e-49eb-86fa-4182e64d5b55` 在 Win7 SP1 x86、1024×768 下由 `[87,24,937,664]` 拖至 `[87,24,1017,724]`，边框保持在任务栏上方，随后由夹具请求关闭并原生退出 0。该冻结输入的已通过范围无需因文档更新重复执行；这些结果不能改挂到 0.6.0 载荷，也不证明 800×600 或 708×488 页面的可用性、中文 IME、滚轮与公共任务并行或完整 V02。[Issue #42](https://github.com/chenziyang110/soui-web-sdk/issues/42) 保留上述未完成交互条件；新载荷只按输入变化和实际缺项补必要验证。
 
 `node --test tests/sdk/sdk-native-payload.test.cjs` 验证 SDK Core 排除已知历史内核备份，保留有效 DLL/LIB 和许可材料，并执行旧包安装、新包升级、旧包回退。原始源码备份和业务文件必须保持原字节；`Test.ps1` 和交付汇总均包含此回归。
 
@@ -197,7 +197,7 @@ LLVM 增量构建会单独认证生成命令中的工具路径（含 Windows 8.3
 `cmake --build --preset portable`、`ctest --preset portable`。
 另验证 `tests/portable/consumer` 对已安装 `SouiRuntime` 包的独立消费。
 完整命令和目标矩阵见 [跨平台说明](cross-platform.md)。合成架构/拒绝测试、
-本机编译、目标机运行与真实桌面验收必须分开报告。新增的[限定跨平台 CI](ci-platform-matrix.md)只覆盖六类标准 runner 的构建、安装消费者和模板文件交付；Windows 不执行项目程序，Linux/macOS 仅选择两项无界面 Runtime 测试。当前工作流仅完成本地静态准备，尚无云端通过记录，不替代真实桌面验收或改写历史失败。
+本机编译、目标机运行与真实桌面验收必须分开报告。新增的[限定跨平台 CI](ci-platform-matrix.md)只覆盖六类标准 runner 的构建、安装消费者和模板文件交付；Windows 不执行项目程序，Linux/macOS 仅选择两项无界面 Runtime 测试。现存 CI 提交 32b412b1 的推送因 workflow 权限不足被拒；本次整合固定 main ce9757e3 仅静态与清单验证，旧 tree 98cb4681 的 Windows build-only 证据不自动沿用。见[候选身份与证据边界](ci-platform-matrix.md#候选身份与证据边界)，尚无由此取得的云端通过，不替代真实桌面验收或改写历史失败。
 
 ## 统一系统 WebView 桌面补充验证
 

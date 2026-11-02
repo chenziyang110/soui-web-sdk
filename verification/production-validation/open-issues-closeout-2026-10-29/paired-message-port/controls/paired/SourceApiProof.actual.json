@@ -1,0 +1,325 @@
+{
+  "schema": "soui.message-port-old-sdk-source-api-readonly-proof/v1",
+  "observedUtc": "2026-10-29T10:27:35.689988+00:00",
+  "scope": "static source/declaration comparison only; not compiler/link/ABI/runtime proof",
+  "oldMain": {
+    "path": "F:\\work\\soui-issue96\\tests\\message-port-app\\main.cpp",
+    "bytes": 38377,
+    "sha256": "2795cdb2ae28ede1343c2150c123f5552a302a387c0b597805af70731ab2feef"
+  },
+  "newMain": {
+    "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\source\\main.cpp",
+    "bytes": 38955,
+    "sha256": "a7df1670caa8551c759ba2dd6c7f2c50f961705c905cf0c21d2aac90d0da9d44"
+  },
+  "helper": {
+    "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\source\\shutdown-poll.h",
+    "bytes": 734,
+    "sha256": "cb0bbc2cd1e76eb27898550060a7a43cfdee4a5e68ceefb38ac1035ac9da4abe"
+  },
+  "difference": {
+    "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\ConsumerSourceApi.actual.diff",
+    "bytes": 2415,
+    "sha256": "cf48479c20fd86c48946e52a2da4d34898df49be5ef935ff4d22ddf572ae0314"
+  },
+  "oldInstalledHeaderDeclarations": [
+    {
+      "architecture": "x64",
+      "headers": [
+        {
+          "pin": {
+            "path": "F:\\work\\soui-issue96\\out\\acceptance\\bd7afa33-ea0d-4e55-b482-d2b01f64ee19\\install\\include\\soui\\host\\soui_miniblink_host.h",
+            "bytes": 12855,
+            "sha256": "38093a0d12bc8adc8485bbf54d21328c9db6cbbeddc6fbd3948e9f3f17682f90"
+          },
+          "matchingDeclarations": {
+            "shutdown_miniblink_runtime": [
+              {
+                "line": 37,
+                "text": "[[nodiscard]] host_result shutdown_miniblink_runtime();"
+              }
+            ]
+          }
+        },
+        {
+          "pin": {
+            "path": "F:\\work\\soui-issue96\\out\\acceptance\\bd7afa33-ea0d-4e55-b482-d2b01f64ee19\\install\\include\\soui\\host\\webview_host.h",
+            "bytes": 5239,
+            "sha256": "f1bfc4af1fa30f90a7507bb5f61afe6d47a139caa49cf6be97c76d989413ec32"
+          },
+          "matchingDeclarations": {
+            "host_result": [
+              {
+                "line": 29,
+                "text": "struct host_result {"
+              },
+              {
+                "line": 40,
+                "text": "[[nodiscard]] virtual host_result mount(const host_config& config) = 0;"
+              },
+              {
+                "line": 41,
+                "text": "[[nodiscard]] virtual host_result unmount() = 0;"
+              },
+              {
+                "line": 42,
+                "text": "[[nodiscard]] virtual host_result show(bool) {"
+              },
+              {
+                "line": 45,
+                "text": "[[nodiscard]] virtual host_result reload() {"
+              },
+              {
+                "line": 48,
+                "text": "[[nodiscard]] virtual host_result resize(int, int) {"
+              },
+              {
+                "line": 51,
+                "text": "[[nodiscard]] virtual host_result focus() {"
+              },
+              {
+                "line": 79,
+                "text": "[[nodiscard]] host_result start(const host_config& config);"
+              },
+              {
+                "line": 80,
+                "text": "[[nodiscard]] host_result hide();"
+              },
+              {
+                "line": 81,
+                "text": "[[nodiscard]] host_result show();"
+              },
+              {
+                "line": 82,
+                "text": "[[nodiscard]] host_result reload();"
+              },
+              {
+                "line": 83,
+                "text": "[[nodiscard]] host_result close();"
+              },
+              {
+                "line": 87,
+                "text": "[[nodiscard]] host_result destroy();"
+              },
+              {
+                "line": 88,
+                "text": "[[nodiscard]] host_result resize(int width, int height);"
+              },
+              {
+                "line": 89,
+                "text": "[[nodiscard]] host_result focus();"
+              },
+              {
+                "line": 99,
+                "text": "[[nodiscard]] host_result request_memory_recovery();"
+              },
+              {
+                "line": 111,
+                "text": "[[nodiscard]] host_result require_running() const;"
+              },
+              {
+                "line": 112,
+                "text": "[[nodiscard]] static host_result validate_local_resources(const std::filesystem::path& root);"
+              },
+              {
+                "line": 113,
+                "text": "[[nodiscard]] static host_result validate_architecture(const host_config& config);"
+              }
+            ],
+            "reload": [
+              {
+                "line": 45,
+                "text": "[[nodiscard]] virtual host_result reload() {"
+              },
+              {
+                "line": 46,
+                "text": "return {false, \"E_NOT_SUPPORTED\", \"The renderer adapter does not support reload.\"};"
+              },
+              {
+                "line": 64,
+                "text": "// Optional notification after successful start/reload. Adapters with their"
+              },
+              {
+                "line": 82,
+                "text": "[[nodiscard]] host_result reload();"
+              }
+            ],
+            "application_ready": [
+              {
+                "line": 62,
+                "text": "[[nodiscard]] virtual bool application_ready() { return false; }"
+              },
+              {
+                "line": 95,
+                "text": "[[nodiscard]] bool application_ready();"
+              }
+            ]
+          }
+        },
+        {
+          "pin": {
+            "path": "F:\\work\\soui-issue96\\out\\acceptance\\bd7afa33-ea0d-4e55-b482-d2b01f64ee19\\install\\include\\soui\\json_bridge.h",
+            "bytes": 6002,
+            "sha256": "e379813b1c3d0493d5a81eccb5e97642869324c71fbc8e3b2bff7f8968148b3e"
+          },
+          "matchingDeclarations": {}
+        }
+      ]
+    },
+    {
+      "architecture": "x86",
+      "headers": [
+        {
+          "pin": {
+            "path": "F:\\work\\soui-issue96\\out\\acceptance\\5c02d217-f04f-4f32-9794-110e7fb3f734\\install\\include\\soui\\host\\soui_miniblink_host.h",
+            "bytes": 12855,
+            "sha256": "38093a0d12bc8adc8485bbf54d21328c9db6cbbeddc6fbd3948e9f3f17682f90"
+          },
+          "matchingDeclarations": {
+            "shutdown_miniblink_runtime": [
+              {
+                "line": 37,
+                "text": "[[nodiscard]] host_result shutdown_miniblink_runtime();"
+              }
+            ]
+          }
+        },
+        {
+          "pin": {
+            "path": "F:\\work\\soui-issue96\\out\\acceptance\\5c02d217-f04f-4f32-9794-110e7fb3f734\\install\\include\\soui\\host\\webview_host.h",
+            "bytes": 5239,
+            "sha256": "f1bfc4af1fa30f90a7507bb5f61afe6d47a139caa49cf6be97c76d989413ec32"
+          },
+          "matchingDeclarations": {
+            "host_result": [
+              {
+                "line": 29,
+                "text": "struct host_result {"
+              },
+              {
+                "line": 40,
+                "text": "[[nodiscard]] virtual host_result mount(const host_config& config) = 0;"
+              },
+              {
+                "line": 41,
+                "text": "[[nodiscard]] virtual host_result unmount() = 0;"
+              },
+              {
+                "line": 42,
+                "text": "[[nodiscard]] virtual host_result show(bool) {"
+              },
+              {
+                "line": 45,
+                "text": "[[nodiscard]] virtual host_result reload() {"
+              },
+              {
+                "line": 48,
+                "text": "[[nodiscard]] virtual host_result resize(int, int) {"
+              },
+              {
+                "line": 51,
+                "text": "[[nodiscard]] virtual host_result focus() {"
+              },
+              {
+                "line": 79,
+                "text": "[[nodiscard]] host_result start(const host_config& config);"
+              },
+              {
+                "line": 80,
+                "text": "[[nodiscard]] host_result hide();"
+              },
+              {
+                "line": 81,
+                "text": "[[nodiscard]] host_result show();"
+              },
+              {
+                "line": 82,
+                "text": "[[nodiscard]] host_result reload();"
+              },
+              {
+                "line": 83,
+                "text": "[[nodiscard]] host_result close();"
+              },
+              {
+                "line": 87,
+                "text": "[[nodiscard]] host_result destroy();"
+              },
+              {
+                "line": 88,
+                "text": "[[nodiscard]] host_result resize(int width, int height);"
+              },
+              {
+                "line": 89,
+                "text": "[[nodiscard]] host_result focus();"
+              },
+              {
+                "line": 99,
+                "text": "[[nodiscard]] host_result request_memory_recovery();"
+              },
+              {
+                "line": 111,
+                "text": "[[nodiscard]] host_result require_running() const;"
+              },
+              {
+                "line": 112,
+                "text": "[[nodiscard]] static host_result validate_local_resources(const std::filesystem::path& root);"
+              },
+              {
+                "line": 113,
+                "text": "[[nodiscard]] static host_result validate_architecture(const host_config& config);"
+              }
+            ],
+            "reload": [
+              {
+                "line": 45,
+                "text": "[[nodiscard]] virtual host_result reload() {"
+              },
+              {
+                "line": 46,
+                "text": "return {false, \"E_NOT_SUPPORTED\", \"The renderer adapter does not support reload.\"};"
+              },
+              {
+                "line": 64,
+                "text": "// Optional notification after successful start/reload. Adapters with their"
+              },
+              {
+                "line": 82,
+                "text": "[[nodiscard]] host_result reload();"
+              }
+            ],
+            "application_ready": [
+              {
+                "line": 62,
+                "text": "[[nodiscard]] virtual bool application_ready() { return false; }"
+              },
+              {
+                "line": 95,
+                "text": "[[nodiscard]] bool application_ready();"
+              }
+            ]
+          }
+        },
+        {
+          "pin": {
+            "path": "F:\\work\\soui-issue96\\out\\acceptance\\5c02d217-f04f-4f32-9794-110e7fb3f734\\install\\include\\soui\\json_bridge.h",
+            "bytes": 6002,
+            "sha256": "e379813b1c3d0493d5a81eccb5e97642869324c71fbc8e3b2bff7f8968148b3e"
+          },
+          "matchingDeclarations": {}
+        }
+      ]
+    }
+  ],
+  "addedSdkCallableNames": [],
+  "newConsumerChanges": "new local poll_shutdown and accepted-latched reload consuming the same already-used host_result/reload/ready/shutdown APIs; shutdown-poll.h adds std::invoke(C++17) only",
+  "exactOldInstalledSdkCMake": {
+    "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\source\\CMakeLists.txt",
+    "bytes": 945,
+    "sha256": "2cfb244bf255430d1f4c97e0a253227980e621e3258978022eb6a0ac0a78cff3"
+  },
+  "newSdkApiNeeded": false,
+  "sourceCompatibilityCompiled": false,
+  "abiQualified": false,
+  "productExecuted": false,
+  "releaseReady": false
+}

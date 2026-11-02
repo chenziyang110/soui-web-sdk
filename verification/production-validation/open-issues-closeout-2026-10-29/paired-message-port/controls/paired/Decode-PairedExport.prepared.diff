@@ -1,0 +1,13 @@
+diff --git a/F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-serial-tools/Decode-CurrentExport.cjs b/F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port-paired-current/Decode-PairedExport.cjs
+index 29feddf..9745688 100644
+--- a/F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-serial-tools/Decode-CurrentExport.cjs
++++ b/F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port-paired-current/Decode-PairedExport.cjs
+@@ -20,7 +20,7 @@ function relFromOriginal(p,expectedRun){
+   need(typeof p==='string'&&p.length<1024,'Invalid original path');
+   const match=/^C:\\issue-closeout-evidence\\([a-z0-9-]{1,80})\\(.+)$/i.exec(p);
+   need(match,'Original path outside task evidence root');
+-  need(/^(?:mp77c|wb31c)-[a-z0-9][a-z0-9-]{0,23}-(?:stage|run)$/.test(match[1]),'Not a current stage/run evidence root');
++  need(/^(?:(?:mp77c|wb31c)-[a-z0-9][a-z0-9-]{0,23}-(?:stage|run)|mp77p-(?:stage|preflight|run)-[a-z0-9][a-z0-9-]{0,23})$/.test(match[1]),'Not a current stage/run evidence root');
+   need(!expectedRun||match[1]===expectedRun,'Multiple original evidence roots');
+   need(path.win32.normalize(p)===p,'Original path has noncanonical navigation');
+   const segments=match[2].split('\\');

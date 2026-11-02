@@ -1,0 +1,367 @@
+{
+  "schema": "soui.current-tray-recovery-light-payload/v1",
+  "version": "0.6.0",
+  "preparationHost": "Robin11",
+  "expectedGuest": "SOUI-7AEMMK5Q0T",
+  "guestRoot": "C:/trayrc-a1",
+  "actualBuildSummary": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/tray-recovery-current/attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/summary.json",
+    "bytes": 17246,
+    "sha256": "f6cece91cf2f92ea583dd7958ee6e61f1852f5c15ac86257f710cdc44bc3a430"
+  },
+  "sourcePins": [
+    {
+      "path": "C:\\sc07\\tests\\tray-recovery-consumer\\CMakeLists.txt",
+      "bytes": 742,
+      "sha256": "dfcae26f8af6be654b2e81c3d44954cb99111b4c8d88a956ede05b7cb762ac31"
+    },
+    {
+      "path": "C:\\sc07\\tests\\tray-recovery-consumer\\main.cpp",
+      "bytes": 23798,
+      "sha256": "71026eeffad9e4efa532db3d6903061db4a38fc03fbbb0c2fcfa04a6e18a24c2"
+    },
+    {
+      "path": "C:\\sc07\\tests\\tray-recovery-consumer\\README.md",
+      "bytes": 3639,
+      "sha256": "001d75eaabacca23009c1797dc45aca1e106e6b14221202141a05e40b80b7fbd"
+    }
+  ],
+  "originalR1Manifest": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/tray-build/handoff-6d09f9b2-1585-4187-95ba-2cd3d40cc832/payload/Payload.manifest.json",
+    "bytes": 285033,
+    "sha256": "c6bb34afb81252ca16dd2bec955e3a8b36bfe830041e52ba417e9c34445eb897"
+  },
+  "tools": {
+    "node": {
+      "path": "C:/issues8/tools/node.exe",
+      "bytes": 91380224,
+      "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+    },
+    "runner": {
+      "path": "C:/issues8/tools/OwnedProcessRunner.exe",
+      "bytes": 170496,
+      "sha256": "f254dadd4eccad3c57d69e98f260d15ee598c0b6441b7fe68fc4ef5b3b7dea83"
+    },
+    "ownedModule": {
+      "path": "C:/issues8/tools/owned-process.cjs",
+      "bytes": 8386,
+      "sha256": "8ccec5802c793b45990d2d7585f2c29fb618a7b170adebd5d270a7c291757ce7"
+    },
+    "ownedTail": {
+      "path": "C:/issues8/tools/owned-tail-evidence.cjs",
+      "bytes": 20024,
+      "sha256": "61bceb766ecdfae0552c26212b332c8d7dbd0c2f24833cf7d27d59932f2b23cd"
+    },
+    "exporter": {
+      "path": "C:/issues8/Guest-Export.ps1",
+      "bytes": 3074,
+      "sha256": "f1cc23cfa6d76d35b2a6d8dd0779ceb332a42b51f74271bf097b5e9b44f1ce7c"
+    }
+  },
+  "payloadFiles": [
+    {
+      "relative": "Export-TrayRecovery.ps1",
+      "bytes": 4485,
+      "sha256": "21d4c092a8caaa07d196789b64f39d7c6eb13c196b883755b4510606717370d9"
+    },
+    {
+      "relative": "Guest-TrayRecovery.cjs",
+      "bytes": 14459,
+      "sha256": "3746bb08fefb52448f076318e722c62d36e1f037580cd89adc2627b83b46b7a6"
+    },
+    {
+      "relative": "Guest-TrayRecovery.ps1",
+      "bytes": 5388,
+      "sha256": "7896cc46e59a24267eab39d5e2909117be0794877a743fc137e28cf32284440d"
+    },
+    {
+      "relative": "Run-TrayRecovery.ps1",
+      "bytes": 1638,
+      "sha256": "72ce5e94b64a8448591184ab3b805b1b9338e324e33061e122fbcc97516ce804"
+    },
+    {
+      "relative": "SouiTrayRecoveryConsumer-x64.exe",
+      "bytes": 100352,
+      "sha256": "981f90a1437c77ed9e0c88247c6f74992d5979d40f62c505fd4cc0cd2b6a7344"
+    },
+    {
+      "relative": "SouiTrayRecoveryConsumer-x86.exe",
+      "bytes": 86528,
+      "sha256": "5b716498d853ba14dfa550922b121fe4fdab76cb98e7fce96fec0072af4e1d42"
+    },
+    {
+      "relative": "Stage-TrayRecovery.ps1",
+      "bytes": 2750,
+      "sha256": "50eefa08cc24d123465909056422324488b19f7c8a5815d7b72b021c12f652e5"
+    },
+    {
+      "relative": "TrayRecovery-Lib.ps1",
+      "bytes": 10308,
+      "sha256": "7d07ca53842487a8a202957849c8c8ba6b1b05f86967c74810ffcefa48d9e442"
+    }
+  ],
+  "arms": [
+    {
+      "architecture": "x64",
+      "runtimeDirectory": "runtime-x64",
+      "files": [
+        {
+          "relative": "SouiTrayRecoveryConsumer.exe",
+          "source": "SouiTrayRecoveryConsumer-x64.exe",
+          "fromPayload": true,
+          "bytes": 100352,
+          "sha256": "981f90a1437c77ed9e0c88247c6f74992d5979d40f62c505fd4cc0cd2b6a7344"
+        },
+        {
+          "relative": "api-ms-win-crt-convert-l1-1-0.dll",
+          "source": "C:/issues8/tray-x64/api-ms-win-crt-convert-l1-1-0.dll",
+          "fromPayload": false,
+          "bytes": 16952,
+          "sha256": "25fe8493624b0a0d9d00a46fb41e4356c1cd01fa80f7b1e6ab831df2ccac762a"
+        },
+        {
+          "relative": "api-ms-win-crt-environment-l1-1-0.dll",
+          "source": "C:/issues8/tray-x64/api-ms-win-crt-environment-l1-1-0.dll",
+          "fromPayload": false,
+          "bytes": 13368,
+          "sha256": "16e8b7c5f5c806bf831c81f2124c86ed8da1d34d7c430475894f49d3007e499a"
+        },
+        {
+          "relative": "api-ms-win-crt-filesystem-l1-1-0.dll",
+          "source": "C:/issues8/tray-x64/api-ms-win-crt-filesystem-l1-1-0.dll",
+          "fromPayload": false,
+          "bytes": 14888,
+          "sha256": "790495652731de7e51e4803e3ecb0c050d95749e8e84bc4bcf6f3b67d756e9ed"
+        },
+        {
+          "relative": "api-ms-win-crt-heap-l1-1-0.dll",
+          "source": "C:/issues8/tray-x64/api-ms-win-crt-heap-l1-1-0.dll",
+          "fromPayload": false,
+          "bytes": 13880,
+          "sha256": "49f8312f15018bbf386704dd8fc62e0043ed38b98413b5a19f3776bc780d1253"
+        },
+        {
+          "relative": "api-ms-win-crt-locale-l1-1-0.dll",
+          "source": "C:/issues8/tray-x64/api-ms-win-crt-locale-l1-1-0.dll",
+          "fromPayload": false,
+          "bytes": 13368,
+          "sha256": "880127e94c1437d94e508f8c806e24413d95d1e0b131f88bc45606e4dece23ca"
+        },
+        {
+          "relative": "api-ms-win-crt-math-l1-1-0.dll",
+          "source": "C:/issues8/tray-x64/api-ms-win-crt-math-l1-1-0.dll",
+          "fromPayload": false,
+          "bytes": 22072,
+          "sha256": "26effb6000a24e3c1c597009e148f48a44498bbcf4218f0119c7301f8ac5a78c"
+        },
+        {
+          "relative": "api-ms-win-crt-runtime-l1-1-0.dll",
+          "source": "C:/issues8/tray-x64/api-ms-win-crt-runtime-l1-1-0.dll",
+          "fromPayload": false,
+          "bytes": 17488,
+          "sha256": "6a95a2ea68320591a955c2930462798083a8cc7e6d79754122c21b293ba9a1a8"
+        },
+        {
+          "relative": "api-ms-win-crt-stdio-l1-1-0.dll",
+          "source": "C:/issues8/tray-x64/api-ms-win-crt-stdio-l1-1-0.dll",
+          "fromPayload": false,
+          "bytes": 18984,
+          "sha256": "18d8b00e797538bc4767c19ae1762df18c64479a54e7041b8b4da99e32cda8bd"
+        },
+        {
+          "relative": "api-ms-win-crt-string-l1-1-0.dll",
+          "source": "C:/issues8/tray-x64/api-ms-win-crt-string-l1-1-0.dll",
+          "fromPayload": false,
+          "bytes": 19520,
+          "sha256": "c94bb2053a6541cc065b806ea945d420eb3207c3bee1d760401a600506e99589"
+        },
+        {
+          "relative": "api-ms-win-crt-time-l1-1-0.dll",
+          "source": "C:/issues8/tray-x64/api-ms-win-crt-time-l1-1-0.dll",
+          "fromPayload": false,
+          "bytes": 15400,
+          "sha256": "26376455bd746d87e150e73856d0db88303e0af2533f32956999c505e29db6fb"
+        },
+        {
+          "relative": "api-ms-win-crt-utility-l1-1-0.dll",
+          "source": "C:/issues8/tray-x64/api-ms-win-crt-utility-l1-1-0.dll",
+          "fromPayload": false,
+          "bytes": 13368,
+          "sha256": "39b254cb97f25869d3c335899c6d3bab346cd6b000f2803ca9ddc8f2540c3a32"
+        },
+        {
+          "relative": "msvcp140.dll",
+          "source": "C:/issues8/tray-x64/msvcp140.dll",
+          "fromPayload": false,
+          "bytes": 557728,
+          "sha256": "0f885b509a685d2bbfa652fed26b5fb31d88fbdab0a978c641d1c7b8aa460aa9"
+        },
+        {
+          "relative": "ucrtbase.dll",
+          "source": "C:/issues8/tray-x64/ucrtbase.dll",
+          "fromPayload": false,
+          "bytes": 1036864,
+          "sha256": "0a2be4a529a46fe0579150e205af3518988a58e70000dd4053bae541e98fc3f2"
+        },
+        {
+          "relative": "vcruntime140.dll",
+          "source": "C:/issues8/tray-x64/vcruntime140.dll",
+          "fromPayload": false,
+          "bytes": 124544,
+          "sha256": "d5e4d9a3e835fa679450145d6a7d94e36573a509317111904d9b3712c30d9066"
+        },
+        {
+          "relative": "vcruntime140_1.dll",
+          "source": "C:/issues8/tray-x64/vcruntime140_1.dll",
+          "fromPayload": false,
+          "bytes": 49792,
+          "sha256": "1f2d41c4aa5db0bc33ebf7b66d72943a817d7ce6cbe880502a9403823633093f"
+        }
+      ],
+      "installedSdkPrefix": "C:\\sr06\\out\\release-install-x64-release",
+      "actualBuildExecutable": {
+        "path": "C:\\sctr-37db1a86-x64\\out\\x64\\bin\\Release\\SouiTrayRecoveryConsumer.exe",
+        "bytes": 100352,
+        "sha256": "981f90a1437c77ed9e0c88247c6f74992d5979d40f62c505fd4cc0cd2b6a7344",
+        "fileId": "3377699727351570",
+        "mtimeNs": "1793281573089256700",
+        "ctimeNs": "1793281573090259800"
+      },
+      "timeoutMs": 100000,
+      "drainMs": 2000,
+      "innerDeadlineMs": 90000
+    },
+    {
+      "architecture": "x86",
+      "runtimeDirectory": "runtime-x86",
+      "files": [
+        {
+          "relative": "SouiTrayRecoveryConsumer.exe",
+          "source": "SouiTrayRecoveryConsumer-x86.exe",
+          "fromPayload": true,
+          "bytes": 86528,
+          "sha256": "5b716498d853ba14dfa550922b121fe4fdab76cb98e7fce96fec0072af4e1d42"
+        },
+        {
+          "relative": "api-ms-win-crt-convert-l1-1-0.dll",
+          "source": "C:/issues8/tray-x86/api-ms-win-crt-convert-l1-1-0.dll",
+          "fromPayload": false,
+          "bytes": 16440,
+          "sha256": "ce26c495f3682f728cd783c4703e709a817355ac9c996713562b9c6ec4a64855"
+        },
+        {
+          "relative": "api-ms-win-crt-environment-l1-1-0.dll",
+          "source": "C:/issues8/tray-x86/api-ms-win-crt-environment-l1-1-0.dll",
+          "fromPayload": false,
+          "bytes": 12840,
+          "sha256": "29cb4c12407e87d1cfb2073c9d856bbdec8d29f2190a6e2eb762ed2c14b75869"
+        },
+        {
+          "relative": "api-ms-win-crt-filesystem-l1-1-0.dll",
+          "source": "C:/issues8/tray-x86/api-ms-win-crt-filesystem-l1-1-0.dll",
+          "fromPayload": false,
+          "bytes": 14376,
+          "sha256": "31011adfbe20d6004532a56937349b98ae2913ae0996e88236e4d2db37f0d19e"
+        },
+        {
+          "relative": "api-ms-win-crt-heap-l1-1-0.dll",
+          "source": "C:/issues8/tray-x86/api-ms-win-crt-heap-l1-1-0.dll",
+          "fromPayload": false,
+          "bytes": 13352,
+          "sha256": "06e35112d8b3d1d98566bb75b0f586e457783af8f981c2c1fb97bed11d7c4030"
+        },
+        {
+          "relative": "api-ms-win-crt-locale-l1-1-0.dll",
+          "source": "C:/issues8/tray-x86/api-ms-win-crt-locale-l1-1-0.dll",
+          "fromPayload": false,
+          "bytes": 12840,
+          "sha256": "7347bdcfef657d6dc57c74abe2969632f96d8e1f1228c0d6b405b56a3cbcb3ac"
+        },
+        {
+          "relative": "api-ms-win-crt-math-l1-1-0.dll",
+          "source": "C:/issues8/tray-x86/api-ms-win-crt-math-l1-1-0.dll",
+          "fromPayload": false,
+          "bytes": 23080,
+          "sha256": "efc419f701c15228db2cd8347ee030515dfd3ff9b6c13f6c0b50e207313dc6cf"
+        },
+        {
+          "relative": "api-ms-win-crt-runtime-l1-1-0.dll",
+          "source": "C:/issues8/tray-x86/api-ms-win-crt-runtime-l1-1-0.dll",
+          "fromPayload": false,
+          "bytes": 16952,
+          "sha256": "c68c494549d7891a37b9e5fe6e172af1a1da88ac20e7db951d2f51e6a69df3d8"
+        },
+        {
+          "relative": "api-ms-win-crt-stdio-l1-1-0.dll",
+          "source": "C:/issues8/tray-x86/api-ms-win-crt-stdio-l1-1-0.dll",
+          "fromPayload": false,
+          "bytes": 18472,
+          "sha256": "e116c1689a811dd9740eeba6f4ea200c54a685f716e5ae2e8526ec18a3973e53"
+        },
+        {
+          "relative": "api-ms-win-crt-string-l1-1-0.dll",
+          "source": "C:/issues8/tray-x86/api-ms-win-crt-string-l1-1-0.dll",
+          "fromPayload": false,
+          "bytes": 18984,
+          "sha256": "fe123c4190422cda976253ec952ab0ba37c3bca66bc428dcaab5b9e69e769a8e"
+        },
+        {
+          "relative": "api-ms-win-crt-time-l1-1-0.dll",
+          "source": "C:/issues8/tray-x86/api-ms-win-crt-time-l1-1-0.dll",
+          "fromPayload": false,
+          "bytes": 14904,
+          "sha256": "f9914b9aa16678157aa8bd5203d383a08d5e1df3fd54fd8858d7bceed04be65d"
+        },
+        {
+          "relative": "api-ms-win-crt-utility-l1-1-0.dll",
+          "source": "C:/issues8/tray-x86/api-ms-win-crt-utility-l1-1-0.dll",
+          "fromPayload": false,
+          "bytes": 12856,
+          "sha256": "55b9e24759c65a74a3dc6422f9e2e796b42b61b1090dac2776df07f568f50582"
+        },
+        {
+          "relative": "msvcp140.dll",
+          "source": "C:/issues8/tray-x86/msvcp140.dll",
+          "fromPayload": false,
+          "bytes": 447616,
+          "sha256": "97e71a3c697fb1ab3af777db39009e4602525e8c3aff0837ecc7031cba188165"
+        },
+        {
+          "relative": "ucrtbase.dll",
+          "source": "C:/issues8/tray-x86/ucrtbase.dll",
+          "fromPayload": false,
+          "bytes": 1172024,
+          "sha256": "d7a94eabf4109bb5a2e381a603bee5e398a81f23894e1764170399ec83ad2541"
+        },
+        {
+          "relative": "vcruntime140.dll",
+          "source": "C:/issues8/tray-x86/vcruntime140.dll",
+          "fromPayload": false,
+          "bytes": 91216,
+          "sha256": "a9d7732a3c3de09f0601a7fa2555093dcb49f08e2fc62a86091461f0f38393ed"
+        }
+      ],
+      "installedSdkPrefix": "C:\\sr06\\out\\release-install-x86-release",
+      "actualBuildExecutable": {
+        "path": "C:\\sctr-37db1a86-x86\\out\\x86\\bin\\Release\\SouiTrayRecoveryConsumer.exe",
+        "bytes": 86528,
+        "sha256": "5b716498d853ba14dfa550922b121fe4fdab76cb98e7fce96fec0072af4e1d42",
+        "fileId": "2533274797219794",
+        "mtimeNs": "1793281647690373200",
+        "ctimeNs": "1793281647690373200"
+      },
+      "timeoutMs": 100000,
+      "drainMs": 2000,
+      "innerDeadlineMs": 90000
+    }
+  ],
+  "oneArchitecturePerCommand": true,
+  "automaticStageToRun": false,
+  "inputInjection": false,
+  "controllerRestartsExplorer": false,
+  "externalRestartProofRequired": true,
+  "focusQualified": false,
+  "win7Qualified": false,
+  "productionQualificationComplete": false,
+  "releaseReady": false
+}

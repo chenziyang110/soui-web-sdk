@@ -1,0 +1,118 @@
+{
+  "schema": "soui.issue-short-serial-decoded/v1",
+  "startedAtUtc": "2026-10-29T12:07:04.827Z",
+  "completedAtUtc": "2026-10-29T12:07:05.026Z",
+  "scope": "Offline decode of one selected tag only; no application/VM/test execution or product qualification",
+  "tag": "ISSUESHORTD7E056A4BA0343609013440DD1ED1916",
+  "sourceSerial": {
+    "path": "C:/Users/11034/.codex/task-vms/soui-devtools-qemu-stable-e89cf96f2d1e4685bbdac347cb9eea3d/private-fe2e6175cf5a4a78b23d418330506ee3/postsettings-cpu-nehalem-3f486e90/runs/166925c3-9fd3-4751-9a17-c45d880af0a6/serial.log",
+    "bytesAtOpen": 7277702,
+    "bytesAtClose": 7277702,
+    "readBoundaryBytes": 7277702,
+    "wholeSerialCopied": false,
+    "otherTagsCopied": false
+  },
+  "originalFrame": {
+    "byteOffset": 5427783,
+    "bytes": 1849919,
+    "sha256": "ab4ab7624a2848797ea0989691cec7c2c13f41474b0913710647d0ffff94f47b",
+    "path": "Serial.frame.raw"
+  },
+  "envelope": {
+    "path": "Envelope.json.raw",
+    "bytes": 1387368,
+    "sha256": "7452ee0b23ba7fef85507c6fa73ec4660677e05dd2152fcb2bc3ffe832fa7f67",
+    "canonicalBase64": true,
+    "exactCompactOrderedJson": true
+  },
+  "catalog": {
+    "path": "raw/ExportFiles.actual.json",
+    "originalPath": "C:\\issue-closeout-evidence\\mp77p-verify-a3\\ExportFiles.actual.json",
+    "bytes": 2300,
+    "sha256": "39ba066caf25d3c71c437b62dc999596f2bdaa77e207fa8c73870ee7f8a74854",
+    "declaredFiles": 7,
+    "declaredFileBytes": 1038124
+  },
+  "payloadFileCount": 7,
+  "rawFileCountIncludingCatalog": 8,
+  "payloadFileBytes": 1038124,
+  "rawBytesIncludingCatalog": 1040424,
+  "files": [
+    {
+      "originalPath": "C:\\issue-closeout-evidence\\mp77p-verify-a3\\ExportPreflight.actual.json",
+      "path": "ExportPreflight.actual.json",
+      "bytes": 1877,
+      "sha256": "53dd5baee6b7d34d6d50b7525d8f2680a82382c53c167b6590fe33813b181de2"
+    },
+    {
+      "originalPath": "C:\\issue-closeout-evidence\\mp77p-verify-a3\\Lease.actual.json",
+      "path": "Lease.actual.json",
+      "bytes": 196,
+      "sha256": "b3b6a71b3f48978058f3c4011141fea24a50d08ad59b9a98dfa139efa07a09e6"
+    },
+    {
+      "originalPath": "C:\\issue-closeout-evidence\\mp77p-verify-a3\\PowerShell.finished.json",
+      "path": "PowerShell.finished.json",
+      "bytes": 384,
+      "sha256": "607a3560f1788d7c8d519fcdff709d18f5c9b951cfcb13eef7a7482516c27e6e"
+    },
+    {
+      "originalPath": "C:\\issue-closeout-evidence\\mp77p-verify-a3\\Start.actual.json",
+      "path": "Start.actual.json",
+      "bytes": 1503,
+      "sha256": "bf778c1b83af376ba26b9f6403c39002fff443b8ba10d6195e7c168973e791e1"
+    },
+    {
+      "originalPath": "C:\\issue-closeout-evidence\\mp77p-verify-a3\\stderr.log",
+      "path": "stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "originalPath": "C:\\issue-closeout-evidence\\mp77p-verify-a3\\stdout.log",
+      "path": "stdout.log",
+      "bytes": 910,
+      "sha256": "bf9cc5f96c8ea49e4f53436a99fca5aec819396439c002272203646044ef2cbf"
+    },
+    {
+      "originalPath": "C:\\issue-closeout-evidence\\mp77p-verify-a3\\Summary.actual.json",
+      "path": "Summary.actual.json",
+      "bytes": 1033254,
+      "sha256": "277be4d9d643d0407c0382be5a0d023de320fa1b5140350611bd50fc5eae69ca"
+    }
+  ],
+  "base64CanonicalForAll": true,
+  "originalPathsConfined": true,
+  "caseInsensitiveClosedSetVerified": true,
+  "allOriginalBytesAndSha256Verified": true,
+  "producer": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/tray-build/Guest-Export.ps1",
+    "bytes": 3074,
+    "sha256": "f1cc23cfa6d76d35b2a6d8dd0779ceb332a42b51f74271bf097b5e9b44f1ce7c"
+  },
+  "decoder": {
+    "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\Decode-PairedExportA3.cjs",
+    "bytes": 11479,
+    "sha256": "0cfada52ebfeee8236de2dceac4ffa3b75448bbc49c50a7dab5e578c4900eb33"
+  },
+  "node": {
+    "path": "C:\\nvm4w\\nodejs\\node.exe",
+    "bytes": 91380224,
+    "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+  },
+  "argv": [
+    "C:\\nvm4w\\nodejs\\node.exe",
+    "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\Decode-PairedExportA3.cjs",
+    "C:/Users/11034/.codex/task-vms/soui-devtools-qemu-stable-e89cf96f2d1e4685bbdac347cb9eea3d/private-fe2e6175cf5a4a78b23d418330506ee3/postsettings-cpu-nehalem-3f486e90/runs/166925c3-9fd3-4751-9a17-c45d880af0a6/serial.log",
+    "ISSUESHORTD7E056A4BA0343609013440DD1ED1916",
+    "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/mp77p-a3-verify"
+  ],
+  "cwd": "F:\\work\\SOUI_WEB",
+  "pid": 37680,
+  "testPassed": null,
+  "browserPassClaimed": false,
+  "uiInteractionQualified": false,
+  "releaseReady": false,
+  "productionQualificationComplete": false,
+  "fullDevtoolsGoalComplete": false
+}

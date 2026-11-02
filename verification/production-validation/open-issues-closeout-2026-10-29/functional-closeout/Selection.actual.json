@@ -1,0 +1,3409 @@
+{
+  "schema": "soui.current-execution-archive-selection/v1",
+  "executionApproved": true,
+  "destination": "C:/sc07/verification/production-validation/open-issues-closeout-2026-10-29/functional-closeout",
+  "pendingGroups": [],
+  "groups": [
+    {
+      "id": "prior-references",
+      "sourceRoot": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/functional-closeout-archive-prep/references",
+      "destination": "references",
+      "kind": "control-source",
+      "description": "Exact external immutable archive/proof references; no duplicate contents",
+      "allSourceMembers": [
+        "PriorEvidence.references.prepared.json"
+      ],
+      "members": [
+        "PriorEvidence.references.prepared.json"
+      ]
+    },
+    {
+      "id": "focus-b1-controls",
+      "sourceRoot": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/tray-focus-deferred-current",
+      "destination": "focus/deferred-b1/controls-and-shots",
+      "kind": "control-source",
+      "description": "Frozen direct-native deferred focus diagnostic controls and actual screenshots; original false focus result retained",
+      "allSourceMembers": [
+        "ControlIso.selection.prepared.json",
+        "Deferred-b1.prepared.diff",
+        "Preparation.actual.json",
+        "README.md",
+        "StaticReview.actual.json",
+        "observed/after-escape.actual.png",
+        "observed/menu-visible.actual.png",
+        "observed/menu.actual.png",
+        "payload/Focus-Owned-b1.cjs",
+        "payload/FocusExport-b1.ps1",
+        "payload/Invoke-NativeFocusControl-b1.ps1",
+        "payload/Loader-Crt.inputs.json",
+        "payload/NativeFocusControl.cs",
+        "payload/Preparation-b1.actual.json"
+      ],
+      "members": [
+        "ControlIso.selection.prepared.json",
+        "Deferred-b1.prepared.diff",
+        "Preparation.actual.json",
+        "README.md",
+        "StaticReview.actual.json",
+        "observed/after-escape.actual.png",
+        "observed/menu-visible.actual.png",
+        "observed/menu.actual.png",
+        "payload/Focus-Owned-b1.cjs",
+        "payload/FocusExport-b1.ps1",
+        "payload/Invoke-NativeFocusControl-b1.ps1",
+        "payload/Loader-Crt.inputs.json",
+        "payload/NativeFocusControl.cs",
+        "payload/Preparation-b1.actual.json"
+      ]
+    },
+    {
+      "id": "focus-b1-actual",
+      "sourceRoot": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/focusc-b1-run",
+      "destination": "focus/deferred-b1/actual",
+      "kind": "decoded-vm-observations",
+      "description": "Complete selected frame/envelope/raw decoded deferred focus run; no whole serial",
+      "allSourceMembers": [
+        "Decode.actual.json",
+        "Envelope.json.raw",
+        "Files.index.json",
+        "Serial.frame.raw",
+        "raw/ExportFiles.actual.json",
+        "raw/ExportPreflight.actual.json",
+        "raw/Invocation.actual.json",
+        "raw/Summary.actual.json",
+        "raw/finished.json",
+        "raw/native/Compilation.actual.json",
+        "raw/native/Invocation.actual.json",
+        "raw/native/Native.events.ndjson",
+        "raw/native/PowerShell.finished.json",
+        "raw/owned.ndjson",
+        "raw/owned.ndjson.context.json",
+        "raw/ready.json",
+        "raw/stderr.raw",
+        "raw/stdout.raw"
+      ],
+      "members": [
+        "Decode.actual.json",
+        "Envelope.json.raw",
+        "Files.index.json",
+        "Serial.frame.raw",
+        "raw/ExportFiles.actual.json",
+        "raw/ExportPreflight.actual.json",
+        "raw/Invocation.actual.json",
+        "raw/Summary.actual.json",
+        "raw/finished.json",
+        "raw/native/Compilation.actual.json",
+        "raw/native/Invocation.actual.json",
+        "raw/native/Native.events.ndjson",
+        "raw/native/PowerShell.finished.json",
+        "raw/owned.ndjson",
+        "raw/owned.ndjson.context.json",
+        "raw/ready.json",
+        "raw/stderr.raw",
+        "raw/stdout.raw"
+      ]
+    },
+    {
+      "id": "focus-b1-analysis",
+      "sourceRoot": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-analysis/focusc-b1-run",
+      "destination": "focus/deferred-b1/analysis",
+      "kind": "derived-analysis-observations",
+      "description": "Independent actual failed focus observation analysis",
+      "allSourceMembers": [
+        "Analysis.actual.json"
+      ],
+      "members": [
+        "Analysis.actual.json"
+      ]
+    },
+    {
+      "id": "legal-reuse-controls-actual",
+      "sourceRoot": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/license-delivery-reuse-current",
+      "destination": "legal/published-060/reuse",
+      "kind": "derived-analysis-observations",
+      "description": "Preserve v2 recipe-root failure and v3 selected1238 material composition, controls, plan, exact typed differences and layout proof pins",
+      "allSourceMembers": [
+        "InstalledNotice.field-diff.prepared.json",
+        "Plan.prepared.json",
+        "Plan.v2.prepared.json",
+        "Plan.v3.prepared.json",
+        "ProofAvailability.prepared.json",
+        "README.prepared.md",
+        "README.v3.prepared.md",
+        "Recipe.v2-to-v3.diff",
+        "RootPathDelta.v3.prepared.json",
+        "Run-ReuseComposition-v3.cjs",
+        "Run-ReuseComposition.cjs",
+        "attempt-698fbc7c-fb0b-484e-b701-664fabf045e6/Files.index.json",
+        "attempt-698fbc7c-fb0b-484e-b701-664fabf045e6/Inputs.actual.json",
+        "attempt-698fbc7c-fb0b-484e-b701-664fabf045e6/Summary.actual.json",
+        "attempt-980978e4-8027-4770-b664-94fcf114f036/Files.index.json",
+        "attempt-980978e4-8027-4770-b664-94fcf114f036/Inputs.actual.json",
+        "attempt-980978e4-8027-4770-b664-94fcf114f036/Summary.actual.json"
+      ],
+      "members": [
+        "InstalledNotice.field-diff.prepared.json",
+        "Plan.prepared.json",
+        "Plan.v2.prepared.json",
+        "Plan.v3.prepared.json",
+        "ProofAvailability.prepared.json",
+        "README.prepared.md",
+        "README.v3.prepared.md",
+        "Recipe.v2-to-v3.diff",
+        "RootPathDelta.v3.prepared.json",
+        "Run-ReuseComposition-v3.cjs",
+        "Run-ReuseComposition.cjs",
+        "attempt-698fbc7c-fb0b-484e-b701-664fabf045e6/Files.index.json",
+        "attempt-698fbc7c-fb0b-484e-b701-664fabf045e6/Inputs.actual.json",
+        "attempt-698fbc7c-fb0b-484e-b701-664fabf045e6/Summary.actual.json",
+        "attempt-980978e4-8027-4770-b664-94fcf114f036/Files.index.json",
+        "attempt-980978e4-8027-4770-b664-94fcf114f036/Inputs.actual.json",
+        "attempt-980978e4-8027-4770-b664-94fcf114f036/Summary.actual.json"
+      ]
+    },
+    {
+      "id": "legal-reuse-analysis",
+      "sourceRoot": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-analysis/license-delivery-reuse-v3",
+      "destination": "legal/published-060/analysis",
+      "kind": "derived-analysis-observations",
+      "description": "Independent narrow engineering composition review; no human legal approval",
+      "allSourceMembers": [
+        "Analysis.actual.json"
+      ],
+      "members": [
+        "Analysis.actual.json"
+      ]
+    },
+    {
+      "id": "issue77-investigation",
+      "sourceRoot": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/issue77-shutdown-investigation",
+      "destination": "message-port/issue77-source-investigation",
+      "kind": "derived-analysis-observations",
+      "description": "Source-only shutdown/fence investigation and closure assessment; no SDK fix or new test",
+      "allSourceMembers": [
+        "Analysis.actual.json",
+        "Closure-Assessment.actual.json",
+        "README.md"
+      ],
+      "members": [
+        "Analysis.actual.json",
+        "Closure-Assessment.actual.json",
+        "README.md"
+      ]
+    },
+    {
+      "id": "win7-existing-investigation",
+      "sourceRoot": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/win7-short-investigation",
+      "destination": "win7/investigation",
+      "kind": "derived-analysis-observations",
+      "description": "Historic proof and necessary-short gap assessment; no new Win7 product result",
+      "allSourceMembers": [
+        "MediaRecovery.actual.json",
+        "MediaRecovery.actual.md",
+        "Report.md"
+      ],
+      "members": [
+        "MediaRecovery.actual.json",
+        "MediaRecovery.actual.md",
+        "Report.md"
+      ]
+    },
+    {
+      "id": "recovery-build-prep",
+      "sourceRoot": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/tray-recovery-current",
+      "destination": "recovery/build-controls",
+      "kind": "control-source",
+      "description": "Reviewed frozen three-source/build controls plus unexecuted PS5 r1 preserved",
+      "allSourceMembers": [
+        "BuildPreparation.prepared.json",
+        "Invoke-TrayRecoveryBuild.ps1",
+        "PS5-local-correction.prepared.diff",
+        "README.prepared.md",
+        "Recipe.prepared.diff",
+        "Run-TrayRecoveryBuild.cjs",
+        "SourceInputs.frozen.json",
+        "StaticPreparation.actual.json",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/inputs-after.json",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/inputs-before.json",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/original-preparation.json",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/summary.json",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/build.log",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/build/compiler-lifecycle-build-ce22ff4d-f091-4a3a-8f89-84285bf9ac06/returned.json",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/build/compiler-lifecycle-build-ce22ff4d-f091-4a3a-8f89-84285bf9ac06/started.json",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/build/compiler-lifecycle-build-ce22ff4d-f091-4a3a-8f89-84285bf9ac06/stderr.bin",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/build/compiler-lifecycle-build-ce22ff4d-f091-4a3a-8f89-84285bf9ac06/stdout.bin",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/case-verdict.json",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/compiled-output-pins.json",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/configure.log",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/configure/compiler-lifecycle-configure-980d10d0-9ad5-453f-99ad-95d227bed199/returned.json",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/configure/compiler-lifecycle-configure-980d10d0-9ad5-453f-99ad-95d227bed199/started.json",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/configure/compiler-lifecycle-configure-980d10d0-9ad5-453f-99ad-95d227bed199/stderr.bin",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/configure/compiler-lifecycle-configure-980d10d0-9ad5-453f-99ad-95d227bed199/stdout.bin",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/copied-observations/000-ALL_BUILD.vcxproj",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/copied-observations/001-CMakeCache.txt",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/copied-observations/002-CMakeCXXCompiler.cmake",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/copied-observations/003-CompilerIdCXX.vcxproj",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/copied-observations/004-CMakeCXXCompilerId.obj",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/copied-observations/005-CL.command.1.tlog",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/copied-observations/006-CL.read.1.tlog",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/copied-observations/007-CL.write.1.tlog",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/copied-observations/008-Cl.items.tlog",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/copied-observations/009-link.command.1.tlog",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/copied-observations/010-link.read.1.tlog",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/copied-observations/011-link.secondary.1.tlog",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/copied-observations/012-link.write.1.tlog",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/copied-observations/013-VCTargetsPath.vcxproj",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/copied-observations/014-CL.command.1.tlog",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/copied-observations/015-CL.read.1.tlog",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/copied-observations/016-CL.write.1.tlog",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/copied-observations/017-Cl.items.tlog",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/copied-observations/018-CustomBuild.command.1.tlog",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/copied-observations/019-CustomBuild.read.1.tlog",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/copied-observations/020-CustomBuild.write.1.tlog",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/copied-observations/021-link.command.1.tlog",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/copied-observations/022-link.read.1.tlog",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/copied-observations/023-link.secondary.1.tlog",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/copied-observations/024-link.write.1.tlog",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/copied-observations/025-main.obj",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/copied-observations/026-SouiTrayRecoveryConsumer.vcxproj",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/copied-observations/027-ZERO_CHECK.vcxproj",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/copied-observations/028-SouiTrayRecoveryConsumer.exe",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/copied-observations/029-CustomBuild.command.1.tlog",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/copied-observations/030-CustomBuild.read.1.tlog",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/copied-observations/031-CustomBuild.write.1.tlog",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/fixture-source-pins.json",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/invocations.json",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/native-finished.json",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/native-ready.json",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/native-stderr.bin",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/native-stdout.bin",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/native.ndjson",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/native.ndjson.context.json",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/observation-copies.json",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/output-pins.json",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/request.json",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/root-return.json",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/tool-pins-after.json",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x64/tool-pins-before.json",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/build.log",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/build/compiler-lifecycle-build-34f551b6-ac31-4427-8bf8-d6826d108c5f/returned.json",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/build/compiler-lifecycle-build-34f551b6-ac31-4427-8bf8-d6826d108c5f/started.json",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/build/compiler-lifecycle-build-34f551b6-ac31-4427-8bf8-d6826d108c5f/stderr.bin",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/build/compiler-lifecycle-build-34f551b6-ac31-4427-8bf8-d6826d108c5f/stdout.bin",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/case-verdict.json",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/compiled-output-pins.json",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/configure.log",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/configure/compiler-lifecycle-configure-acee6a9f-1558-413e-941b-0872fa956c53/returned.json",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/configure/compiler-lifecycle-configure-acee6a9f-1558-413e-941b-0872fa956c53/started.json",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/configure/compiler-lifecycle-configure-acee6a9f-1558-413e-941b-0872fa956c53/stderr.bin",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/configure/compiler-lifecycle-configure-acee6a9f-1558-413e-941b-0872fa956c53/stdout.bin",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/copied-observations/000-ALL_BUILD.vcxproj",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/copied-observations/001-CMakeCache.txt",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/copied-observations/002-CMakeCXXCompiler.cmake",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/copied-observations/003-CompilerIdCXX.vcxproj",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/copied-observations/004-CMakeCXXCompilerId.obj",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/copied-observations/005-CL.command.1.tlog",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/copied-observations/006-CL.read.1.tlog",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/copied-observations/007-CL.write.1.tlog",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/copied-observations/008-Cl.items.tlog",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/copied-observations/009-link.command.1.tlog",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/copied-observations/010-link.read.1.tlog",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/copied-observations/011-link.secondary.1.tlog",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/copied-observations/012-link.write.1.tlog",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/copied-observations/013-VCTargetsPath.vcxproj",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/copied-observations/014-CL.command.1.tlog",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/copied-observations/015-CL.read.1.tlog",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/copied-observations/016-CL.write.1.tlog",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/copied-observations/017-Cl.items.tlog",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/copied-observations/018-CustomBuild.command.1.tlog",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/copied-observations/019-CustomBuild.read.1.tlog",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/copied-observations/020-CustomBuild.write.1.tlog",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/copied-observations/021-link.command.1.tlog",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/copied-observations/022-link.read.1.tlog",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/copied-observations/023-link.secondary.1.tlog",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/copied-observations/024-link.write.1.tlog",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/copied-observations/025-main.obj",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/copied-observations/026-SouiTrayRecoveryConsumer.vcxproj",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/copied-observations/027-CustomBuild.command.1.tlog",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/copied-observations/028-CustomBuild.read.1.tlog",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/copied-observations/029-CustomBuild.write.1.tlog",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/copied-observations/030-ZERO_CHECK.vcxproj",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/copied-observations/031-SouiTrayRecoveryConsumer.exe",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/fixture-source-pins.json",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/invocations.json",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/native-finished.json",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/native-ready.json",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/native-stderr.bin",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/native-stdout.bin",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/native.ndjson",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/native.ndjson.context.json",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/observation-copies.json",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/output-pins.json",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/request.json",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/root-return.json",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/tool-pins-after.json",
+        "attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47/x86/tool-pins-before.json",
+        "prepared-r1-unexecuted/BuildPreparation.prepared.json",
+        "prepared-r1-unexecuted/Invoke-TrayRecoveryBuild.ps1",
+        "prepared-r1-unexecuted/README.prepared.md",
+        "prepared-r1-unexecuted/Recipe.prepared.diff",
+        "prepared-r1-unexecuted/Run-TrayRecoveryBuild.cjs",
+        "prepared-r1-unexecuted/Snapshot.index.json",
+        "prepared-r1-unexecuted/SourceInputs.frozen.json",
+        "prepared-r1-unexecuted/StaticPreparation.actual.json",
+        "source/CMakeLists.txt",
+        "source/README.md",
+        "source/main.cpp"
+      ],
+      "members": [
+        "BuildPreparation.prepared.json",
+        "Invoke-TrayRecoveryBuild.ps1",
+        "PS5-local-correction.prepared.diff",
+        "README.prepared.md",
+        "Recipe.prepared.diff",
+        "Run-TrayRecoveryBuild.cjs",
+        "SourceInputs.frozen.json",
+        "StaticPreparation.actual.json",
+        "prepared-r1-unexecuted/BuildPreparation.prepared.json",
+        "prepared-r1-unexecuted/Invoke-TrayRecoveryBuild.ps1",
+        "prepared-r1-unexecuted/README.prepared.md",
+        "prepared-r1-unexecuted/Recipe.prepared.diff",
+        "prepared-r1-unexecuted/Run-TrayRecoveryBuild.cjs",
+        "prepared-r1-unexecuted/Snapshot.index.json",
+        "prepared-r1-unexecuted/SourceInputs.frozen.json",
+        "prepared-r1-unexecuted/StaticPreparation.actual.json"
+      ]
+    },
+    {
+      "id": "recovery-three-source",
+      "sourceRoot": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/tray-recovery-current/source",
+      "destination": "recovery/source",
+      "kind": "control-source",
+      "description": "Actual author-frozen public-only consumer source copies matching C:/sc07 three files",
+      "allSourceMembers": [
+        "CMakeLists.txt",
+        "README.md",
+        "main.cpp"
+      ],
+      "members": [
+        "CMakeLists.txt",
+        "README.md",
+        "main.cpp"
+      ]
+    },
+    {
+      "id": "recovery-actual-build",
+      "sourceRoot": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/tray-recovery-current/attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47",
+      "destination": "recovery/host-build",
+      "kind": "host-compile-only-passed",
+      "description": "Actual independent two-architecture consumer build, natural0Job0; binaries/objects excluded",
+      "allSourceMembers": [
+        "inputs-after.json",
+        "inputs-before.json",
+        "original-preparation.json",
+        "summary.json",
+        "x64/build.log",
+        "x64/build/compiler-lifecycle-build-ce22ff4d-f091-4a3a-8f89-84285bf9ac06/returned.json",
+        "x64/build/compiler-lifecycle-build-ce22ff4d-f091-4a3a-8f89-84285bf9ac06/started.json",
+        "x64/build/compiler-lifecycle-build-ce22ff4d-f091-4a3a-8f89-84285bf9ac06/stderr.bin",
+        "x64/build/compiler-lifecycle-build-ce22ff4d-f091-4a3a-8f89-84285bf9ac06/stdout.bin",
+        "x64/case-verdict.json",
+        "x64/compiled-output-pins.json",
+        "x64/configure.log",
+        "x64/configure/compiler-lifecycle-configure-980d10d0-9ad5-453f-99ad-95d227bed199/returned.json",
+        "x64/configure/compiler-lifecycle-configure-980d10d0-9ad5-453f-99ad-95d227bed199/started.json",
+        "x64/configure/compiler-lifecycle-configure-980d10d0-9ad5-453f-99ad-95d227bed199/stderr.bin",
+        "x64/configure/compiler-lifecycle-configure-980d10d0-9ad5-453f-99ad-95d227bed199/stdout.bin",
+        "x64/copied-observations/000-ALL_BUILD.vcxproj",
+        "x64/copied-observations/001-CMakeCache.txt",
+        "x64/copied-observations/002-CMakeCXXCompiler.cmake",
+        "x64/copied-observations/003-CompilerIdCXX.vcxproj",
+        "x64/copied-observations/004-CMakeCXXCompilerId.obj",
+        "x64/copied-observations/005-CL.command.1.tlog",
+        "x64/copied-observations/006-CL.read.1.tlog",
+        "x64/copied-observations/007-CL.write.1.tlog",
+        "x64/copied-observations/008-Cl.items.tlog",
+        "x64/copied-observations/009-link.command.1.tlog",
+        "x64/copied-observations/010-link.read.1.tlog",
+        "x64/copied-observations/011-link.secondary.1.tlog",
+        "x64/copied-observations/012-link.write.1.tlog",
+        "x64/copied-observations/013-VCTargetsPath.vcxproj",
+        "x64/copied-observations/014-CL.command.1.tlog",
+        "x64/copied-observations/015-CL.read.1.tlog",
+        "x64/copied-observations/016-CL.write.1.tlog",
+        "x64/copied-observations/017-Cl.items.tlog",
+        "x64/copied-observations/018-CustomBuild.command.1.tlog",
+        "x64/copied-observations/019-CustomBuild.read.1.tlog",
+        "x64/copied-observations/020-CustomBuild.write.1.tlog",
+        "x64/copied-observations/021-link.command.1.tlog",
+        "x64/copied-observations/022-link.read.1.tlog",
+        "x64/copied-observations/023-link.secondary.1.tlog",
+        "x64/copied-observations/024-link.write.1.tlog",
+        "x64/copied-observations/025-main.obj",
+        "x64/copied-observations/026-SouiTrayRecoveryConsumer.vcxproj",
+        "x64/copied-observations/027-ZERO_CHECK.vcxproj",
+        "x64/copied-observations/028-SouiTrayRecoveryConsumer.exe",
+        "x64/copied-observations/029-CustomBuild.command.1.tlog",
+        "x64/copied-observations/030-CustomBuild.read.1.tlog",
+        "x64/copied-observations/031-CustomBuild.write.1.tlog",
+        "x64/fixture-source-pins.json",
+        "x64/invocations.json",
+        "x64/native-finished.json",
+        "x64/native-ready.json",
+        "x64/native-stderr.bin",
+        "x64/native-stdout.bin",
+        "x64/native.ndjson",
+        "x64/native.ndjson.context.json",
+        "x64/observation-copies.json",
+        "x64/output-pins.json",
+        "x64/request.json",
+        "x64/root-return.json",
+        "x64/tool-pins-after.json",
+        "x64/tool-pins-before.json",
+        "x86/build.log",
+        "x86/build/compiler-lifecycle-build-34f551b6-ac31-4427-8bf8-d6826d108c5f/returned.json",
+        "x86/build/compiler-lifecycle-build-34f551b6-ac31-4427-8bf8-d6826d108c5f/started.json",
+        "x86/build/compiler-lifecycle-build-34f551b6-ac31-4427-8bf8-d6826d108c5f/stderr.bin",
+        "x86/build/compiler-lifecycle-build-34f551b6-ac31-4427-8bf8-d6826d108c5f/stdout.bin",
+        "x86/case-verdict.json",
+        "x86/compiled-output-pins.json",
+        "x86/configure.log",
+        "x86/configure/compiler-lifecycle-configure-acee6a9f-1558-413e-941b-0872fa956c53/returned.json",
+        "x86/configure/compiler-lifecycle-configure-acee6a9f-1558-413e-941b-0872fa956c53/started.json",
+        "x86/configure/compiler-lifecycle-configure-acee6a9f-1558-413e-941b-0872fa956c53/stderr.bin",
+        "x86/configure/compiler-lifecycle-configure-acee6a9f-1558-413e-941b-0872fa956c53/stdout.bin",
+        "x86/copied-observations/000-ALL_BUILD.vcxproj",
+        "x86/copied-observations/001-CMakeCache.txt",
+        "x86/copied-observations/002-CMakeCXXCompiler.cmake",
+        "x86/copied-observations/003-CompilerIdCXX.vcxproj",
+        "x86/copied-observations/004-CMakeCXXCompilerId.obj",
+        "x86/copied-observations/005-CL.command.1.tlog",
+        "x86/copied-observations/006-CL.read.1.tlog",
+        "x86/copied-observations/007-CL.write.1.tlog",
+        "x86/copied-observations/008-Cl.items.tlog",
+        "x86/copied-observations/009-link.command.1.tlog",
+        "x86/copied-observations/010-link.read.1.tlog",
+        "x86/copied-observations/011-link.secondary.1.tlog",
+        "x86/copied-observations/012-link.write.1.tlog",
+        "x86/copied-observations/013-VCTargetsPath.vcxproj",
+        "x86/copied-observations/014-CL.command.1.tlog",
+        "x86/copied-observations/015-CL.read.1.tlog",
+        "x86/copied-observations/016-CL.write.1.tlog",
+        "x86/copied-observations/017-Cl.items.tlog",
+        "x86/copied-observations/018-CustomBuild.command.1.tlog",
+        "x86/copied-observations/019-CustomBuild.read.1.tlog",
+        "x86/copied-observations/020-CustomBuild.write.1.tlog",
+        "x86/copied-observations/021-link.command.1.tlog",
+        "x86/copied-observations/022-link.read.1.tlog",
+        "x86/copied-observations/023-link.secondary.1.tlog",
+        "x86/copied-observations/024-link.write.1.tlog",
+        "x86/copied-observations/025-main.obj",
+        "x86/copied-observations/026-SouiTrayRecoveryConsumer.vcxproj",
+        "x86/copied-observations/027-CustomBuild.command.1.tlog",
+        "x86/copied-observations/028-CustomBuild.read.1.tlog",
+        "x86/copied-observations/029-CustomBuild.write.1.tlog",
+        "x86/copied-observations/030-ZERO_CHECK.vcxproj",
+        "x86/copied-observations/031-SouiTrayRecoveryConsumer.exe",
+        "x86/fixture-source-pins.json",
+        "x86/invocations.json",
+        "x86/native-finished.json",
+        "x86/native-ready.json",
+        "x86/native-stderr.bin",
+        "x86/native-stdout.bin",
+        "x86/native.ndjson",
+        "x86/native.ndjson.context.json",
+        "x86/observation-copies.json",
+        "x86/output-pins.json",
+        "x86/request.json",
+        "x86/root-return.json",
+        "x86/tool-pins-after.json",
+        "x86/tool-pins-before.json"
+      ],
+      "members": [
+        "inputs-after.json",
+        "inputs-before.json",
+        "original-preparation.json",
+        "summary.json",
+        "x64/build.log",
+        "x64/build/compiler-lifecycle-build-ce22ff4d-f091-4a3a-8f89-84285bf9ac06/returned.json",
+        "x64/build/compiler-lifecycle-build-ce22ff4d-f091-4a3a-8f89-84285bf9ac06/started.json",
+        "x64/build/compiler-lifecycle-build-ce22ff4d-f091-4a3a-8f89-84285bf9ac06/stderr.bin",
+        "x64/build/compiler-lifecycle-build-ce22ff4d-f091-4a3a-8f89-84285bf9ac06/stdout.bin",
+        "x64/case-verdict.json",
+        "x64/compiled-output-pins.json",
+        "x64/configure.log",
+        "x64/configure/compiler-lifecycle-configure-980d10d0-9ad5-453f-99ad-95d227bed199/returned.json",
+        "x64/configure/compiler-lifecycle-configure-980d10d0-9ad5-453f-99ad-95d227bed199/started.json",
+        "x64/configure/compiler-lifecycle-configure-980d10d0-9ad5-453f-99ad-95d227bed199/stderr.bin",
+        "x64/configure/compiler-lifecycle-configure-980d10d0-9ad5-453f-99ad-95d227bed199/stdout.bin",
+        "x64/copied-observations/000-ALL_BUILD.vcxproj",
+        "x64/copied-observations/001-CMakeCache.txt",
+        "x64/copied-observations/002-CMakeCXXCompiler.cmake",
+        "x64/copied-observations/003-CompilerIdCXX.vcxproj",
+        "x64/copied-observations/005-CL.command.1.tlog",
+        "x64/copied-observations/013-VCTargetsPath.vcxproj",
+        "x64/copied-observations/014-CL.command.1.tlog",
+        "x64/copied-observations/026-SouiTrayRecoveryConsumer.vcxproj",
+        "x64/copied-observations/027-ZERO_CHECK.vcxproj",
+        "x64/fixture-source-pins.json",
+        "x64/invocations.json",
+        "x64/native-finished.json",
+        "x64/native-ready.json",
+        "x64/native-stderr.bin",
+        "x64/native-stdout.bin",
+        "x64/native.ndjson",
+        "x64/native.ndjson.context.json",
+        "x64/observation-copies.json",
+        "x64/output-pins.json",
+        "x64/request.json",
+        "x64/root-return.json",
+        "x64/tool-pins-after.json",
+        "x64/tool-pins-before.json",
+        "x86/build.log",
+        "x86/build/compiler-lifecycle-build-34f551b6-ac31-4427-8bf8-d6826d108c5f/returned.json",
+        "x86/build/compiler-lifecycle-build-34f551b6-ac31-4427-8bf8-d6826d108c5f/started.json",
+        "x86/build/compiler-lifecycle-build-34f551b6-ac31-4427-8bf8-d6826d108c5f/stderr.bin",
+        "x86/build/compiler-lifecycle-build-34f551b6-ac31-4427-8bf8-d6826d108c5f/stdout.bin",
+        "x86/case-verdict.json",
+        "x86/compiled-output-pins.json",
+        "x86/configure.log",
+        "x86/configure/compiler-lifecycle-configure-acee6a9f-1558-413e-941b-0872fa956c53/returned.json",
+        "x86/configure/compiler-lifecycle-configure-acee6a9f-1558-413e-941b-0872fa956c53/started.json",
+        "x86/configure/compiler-lifecycle-configure-acee6a9f-1558-413e-941b-0872fa956c53/stderr.bin",
+        "x86/configure/compiler-lifecycle-configure-acee6a9f-1558-413e-941b-0872fa956c53/stdout.bin",
+        "x86/copied-observations/000-ALL_BUILD.vcxproj",
+        "x86/copied-observations/001-CMakeCache.txt",
+        "x86/copied-observations/002-CMakeCXXCompiler.cmake",
+        "x86/copied-observations/003-CompilerIdCXX.vcxproj",
+        "x86/copied-observations/005-CL.command.1.tlog",
+        "x86/copied-observations/013-VCTargetsPath.vcxproj",
+        "x86/copied-observations/014-CL.command.1.tlog",
+        "x86/copied-observations/026-SouiTrayRecoveryConsumer.vcxproj",
+        "x86/copied-observations/030-ZERO_CHECK.vcxproj",
+        "x86/fixture-source-pins.json",
+        "x86/invocations.json",
+        "x86/native-finished.json",
+        "x86/native-ready.json",
+        "x86/native-stderr.bin",
+        "x86/native-stdout.bin",
+        "x86/native.ndjson",
+        "x86/native.ndjson.context.json",
+        "x86/observation-copies.json",
+        "x86/output-pins.json",
+        "x86/request.json",
+        "x86/root-return.json",
+        "x86/tool-pins-after.json",
+        "x86/tool-pins-before.json"
+      ]
+    },
+    {
+      "id": "recovery-vm-prep-actual-shots",
+      "sourceRoot": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/tray-recovery-vm-current",
+      "destination": "recovery/vm-controls-and-shots",
+      "kind": "control-source",
+      "description": "Frozen controller/data-finalizer/decoder, actual9-file carrier metadata, manifest and actual screenshots; two EXE bytes excluded",
+      "allSourceMembers": [
+        "ActualBuild.inputs.prepared.json",
+        "ControlIso.selection.actual.json",
+        "Controls.prepared.diff",
+        "Decode-TrayRecoveryExport.cjs",
+        "Decoder.derivation.prepared.json",
+        "Finalization.actual.json",
+        "Finalize-Payload.cjs",
+        "Preparation.prepared.json",
+        "README.prepared.md",
+        "Reuse.inputs.prepared.json",
+        "SourceControls.frozen.prepared.json",
+        "observed-x64/01-start.actual.png",
+        "observed-x64/02-first-restart-selected.actual.png",
+        "observed-x64/03-after-first-restart.actual.png",
+        "observed-x64/04-recovered-visible.actual.png",
+        "observed-x64/05-removed.actual.png",
+        "observed-x64/06-second-restart-selected.actual.png",
+        "observed-x64/07-second-restart-confirmed.actual.png",
+        "observed-x64/08-after-second-restart.actual.png",
+        "observed-x64/09-finish-clicked.actual.png",
+        "observed-x86/01-start.actual.png",
+        "observed-x86/02-first-restart-selected.actual.png",
+        "observed-x86/03-first-restart-confirmed.actual.png",
+        "observed-x86/04-recovered-visible.actual.png",
+        "observed-x86/05-removed.actual.png",
+        "observed-x86/06-second-restart-confirmed.actual.png",
+        "observed-x86/07-after-second-restart.actual.png",
+        "observed-x86/08-no-resurrection-visible.actual.png",
+        "observed-x86/09-finish-clicked.actual.png",
+        "payload/Export-TrayRecovery.ps1",
+        "payload/Guest-TrayRecovery.cjs",
+        "payload/Guest-TrayRecovery.ps1",
+        "payload/Run-TrayRecovery.ps1",
+        "payload/SouiTrayRecoveryConsumer-x64.exe",
+        "payload/SouiTrayRecoveryConsumer-x86.exe",
+        "payload/Stage-TrayRecovery.ps1",
+        "payload/TrayRecovery-Lib.ps1",
+        "payload/TrayRecovery.manifest.json"
+      ],
+      "members": [
+        "ActualBuild.inputs.prepared.json",
+        "ControlIso.selection.actual.json",
+        "Controls.prepared.diff",
+        "Decode-TrayRecoveryExport.cjs",
+        "Decoder.derivation.prepared.json",
+        "Finalization.actual.json",
+        "Finalize-Payload.cjs",
+        "Preparation.prepared.json",
+        "README.prepared.md",
+        "Reuse.inputs.prepared.json",
+        "SourceControls.frozen.prepared.json",
+        "observed-x64/01-start.actual.png",
+        "observed-x64/02-first-restart-selected.actual.png",
+        "observed-x64/03-after-first-restart.actual.png",
+        "observed-x64/04-recovered-visible.actual.png",
+        "observed-x64/05-removed.actual.png",
+        "observed-x64/06-second-restart-selected.actual.png",
+        "observed-x64/07-second-restart-confirmed.actual.png",
+        "observed-x64/08-after-second-restart.actual.png",
+        "observed-x64/09-finish-clicked.actual.png",
+        "observed-x86/01-start.actual.png",
+        "observed-x86/02-first-restart-selected.actual.png",
+        "observed-x86/03-first-restart-confirmed.actual.png",
+        "observed-x86/04-recovered-visible.actual.png",
+        "observed-x86/05-removed.actual.png",
+        "observed-x86/06-second-restart-confirmed.actual.png",
+        "observed-x86/07-after-second-restart.actual.png",
+        "observed-x86/08-no-resurrection-visible.actual.png",
+        "observed-x86/09-finish-clicked.actual.png",
+        "payload/Export-TrayRecovery.ps1",
+        "payload/Guest-TrayRecovery.cjs",
+        "payload/Guest-TrayRecovery.ps1",
+        "payload/Run-TrayRecovery.ps1",
+        "payload/Stage-TrayRecovery.ps1",
+        "payload/TrayRecovery-Lib.ps1",
+        "payload/TrayRecovery.manifest.json"
+      ]
+    },
+    {
+      "id": "recovery-stage-actual",
+      "sourceRoot": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/trayrc-a1-stage",
+      "destination": "recovery/vm/stage",
+      "kind": "decoded-vm-observations",
+      "description": "Exact selected decoded stage original raw/Owned and frame metadata",
+      "allSourceMembers": [
+        "Decode.actual.json",
+        "Envelope.json.raw",
+        "Files.index.json",
+        "Serial.frame.raw",
+        "raw/Environment.before-and-active.json",
+        "raw/ExportFiles.actual.json",
+        "raw/ExportPreflight.actual.json",
+        "raw/InputCopy.actual.json",
+        "raw/Inputs.actual.json",
+        "raw/Invocation.actual.json",
+        "raw/Lease.actual.json",
+        "raw/PowerShell.finished.json",
+        "raw/Stage.actual.json",
+        "raw/Wrapper.Invocation.actual.json",
+        "raw/Wrapper.finished.json",
+        "raw/stderr.log",
+        "raw/stdout.log"
+      ],
+      "members": [
+        "Decode.actual.json",
+        "Envelope.json.raw",
+        "Files.index.json",
+        "Serial.frame.raw",
+        "raw/Environment.before-and-active.json",
+        "raw/ExportFiles.actual.json",
+        "raw/ExportPreflight.actual.json",
+        "raw/InputCopy.actual.json",
+        "raw/Inputs.actual.json",
+        "raw/Invocation.actual.json",
+        "raw/Lease.actual.json",
+        "raw/PowerShell.finished.json",
+        "raw/Stage.actual.json",
+        "raw/Wrapper.Invocation.actual.json",
+        "raw/Wrapper.finished.json",
+        "raw/stderr.log",
+        "raw/stdout.log"
+      ]
+    },
+    {
+      "id": "recovery-stage-analysis",
+      "sourceRoot": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-analysis/trayrc-a1-stage",
+      "destination": "recovery/analysis/stage",
+      "kind": "derived-analysis-observations",
+      "description": "Independent actual stage validation; archive collector adds no product verdict",
+      "allSourceMembers": [
+        "Analysis.actual.json"
+      ],
+      "members": [
+        "Analysis.actual.json"
+      ]
+    },
+    {
+      "id": "recovery-x64-actual",
+      "sourceRoot": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/trayrc-a1-x64",
+      "destination": "recovery/vm/x64",
+      "kind": "decoded-vm-observations",
+      "description": "Exact selected decoded x64 original raw/Owned and frame metadata",
+      "allSourceMembers": [
+        "Decode.actual.json",
+        "Envelope.json.raw",
+        "Files.index.json",
+        "Serial.frame.raw",
+        "raw/Environment.before-and-active.json",
+        "raw/ExportFiles.actual.json",
+        "raw/ExportPreflight.actual.json",
+        "raw/Inputs.actual.json",
+        "raw/Invocation.actual.json",
+        "raw/Lease.actual.json",
+        "raw/Native.Invocation.actual.json",
+        "raw/PowerShell.finished.json",
+        "raw/Summary.actual.json",
+        "raw/Wrapper.Invocation.actual.json",
+        "raw/Wrapper.finished.json",
+        "raw/finished.json",
+        "raw/owned.ndjson",
+        "raw/owned.ndjson.context.json",
+        "raw/ready.json",
+        "raw/stderr.bin",
+        "raw/stderr.log",
+        "raw/stdout.bin",
+        "raw/stdout.log"
+      ],
+      "members": [
+        "Decode.actual.json",
+        "Envelope.json.raw",
+        "Files.index.json",
+        "Serial.frame.raw",
+        "raw/Environment.before-and-active.json",
+        "raw/ExportFiles.actual.json",
+        "raw/ExportPreflight.actual.json",
+        "raw/Inputs.actual.json",
+        "raw/Invocation.actual.json",
+        "raw/Lease.actual.json",
+        "raw/Native.Invocation.actual.json",
+        "raw/PowerShell.finished.json",
+        "raw/Summary.actual.json",
+        "raw/Wrapper.Invocation.actual.json",
+        "raw/Wrapper.finished.json",
+        "raw/finished.json",
+        "raw/owned.ndjson",
+        "raw/owned.ndjson.context.json",
+        "raw/ready.json",
+        "raw/stderr.bin",
+        "raw/stderr.log",
+        "raw/stdout.bin",
+        "raw/stdout.log"
+      ]
+    },
+    {
+      "id": "recovery-x64-analysis",
+      "sourceRoot": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-analysis/trayrc-a1-x64",
+      "destination": "recovery/analysis/x64",
+      "kind": "derived-analysis-observations",
+      "description": "Independent actual x64 validation; archive collector adds no product verdict",
+      "allSourceMembers": [
+        "Analysis.actual.json"
+      ],
+      "members": [
+        "Analysis.actual.json"
+      ]
+    },
+    {
+      "id": "recovery-x86-actual",
+      "sourceRoot": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/trayrc-a1-x86",
+      "destination": "recovery/vm/x86",
+      "kind": "decoded-vm-observations",
+      "description": "Exact selected decoded x86 original raw/Owned and frame metadata",
+      "allSourceMembers": [
+        "Decode.actual.json",
+        "Envelope.json.raw",
+        "Files.index.json",
+        "Serial.frame.raw",
+        "raw/Environment.before-and-active.json",
+        "raw/ExportFiles.actual.json",
+        "raw/ExportPreflight.actual.json",
+        "raw/Inputs.actual.json",
+        "raw/Invocation.actual.json",
+        "raw/Lease.actual.json",
+        "raw/Native.Invocation.actual.json",
+        "raw/PowerShell.finished.json",
+        "raw/Summary.actual.json",
+        "raw/Wrapper.Invocation.actual.json",
+        "raw/Wrapper.finished.json",
+        "raw/finished.json",
+        "raw/owned.ndjson",
+        "raw/owned.ndjson.context.json",
+        "raw/ready.json",
+        "raw/stderr.bin",
+        "raw/stderr.log",
+        "raw/stdout.bin",
+        "raw/stdout.log"
+      ],
+      "members": [
+        "Decode.actual.json",
+        "Envelope.json.raw",
+        "Files.index.json",
+        "Serial.frame.raw",
+        "raw/Environment.before-and-active.json",
+        "raw/ExportFiles.actual.json",
+        "raw/ExportPreflight.actual.json",
+        "raw/Inputs.actual.json",
+        "raw/Invocation.actual.json",
+        "raw/Lease.actual.json",
+        "raw/Native.Invocation.actual.json",
+        "raw/PowerShell.finished.json",
+        "raw/Summary.actual.json",
+        "raw/Wrapper.Invocation.actual.json",
+        "raw/Wrapper.finished.json",
+        "raw/finished.json",
+        "raw/owned.ndjson",
+        "raw/owned.ndjson.context.json",
+        "raw/ready.json",
+        "raw/stderr.bin",
+        "raw/stderr.log",
+        "raw/stdout.bin",
+        "raw/stdout.log"
+      ]
+    },
+    {
+      "id": "recovery-x86-analysis",
+      "sourceRoot": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-analysis/trayrc-a1-x86",
+      "destination": "recovery/analysis/x86",
+      "kind": "derived-analysis-observations",
+      "description": "Independent actual x86 recovery short PASS and raw/Owned identity validation",
+      "allSourceMembers": [
+        "Analysis.actual.json",
+        "CombinedShortSummary.actual.json"
+      ],
+      "members": [
+        "Analysis.actual.json",
+        "CombinedShortSummary.actual.json"
+      ]
+    },
+    {
+      "id": "recovery-control-media",
+      "sourceRoot": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/control-media-841c00cb-d296-40c6-9906-9c133fd3e2db",
+      "destination": "recovery/media-metadata",
+      "kind": "derived-analysis-observations",
+      "description": "Actual nine-file ISO source plan and natural0Job0 writer metadata only; ISO bytes and duplicate iso-tree payload excluded",
+      "allSourceMembers": [
+        "IsoSource.plan.json",
+        "Preparation.actual.json",
+        "SouiOpenIssues.iso",
+        "Write-ControlIso.ps1",
+        "iso-tree/Export-TrayRecovery.ps1",
+        "iso-tree/Guest-TrayRecovery.cjs",
+        "iso-tree/Guest-TrayRecovery.ps1",
+        "iso-tree/Run-TrayRecovery.ps1",
+        "iso-tree/SouiTrayRecoveryConsumer-x64.exe",
+        "iso-tree/SouiTrayRecoveryConsumer-x86.exe",
+        "iso-tree/Stage-TrayRecovery.ps1",
+        "iso-tree/TrayRecovery-Lib.ps1",
+        "iso-tree/TrayRecovery.manifest.json",
+        "iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5/Final.actual.json",
+        "iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5/Invocation.actual.json",
+        "iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5/IsoWriter.inputs.json",
+        "iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5/IsoWriter.post.json",
+        "iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5/IsoWriter.pre.json",
+        "iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5/IsoWriter.result.json",
+        "iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5/finished.json",
+        "iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5/owned.ndjson",
+        "iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5/owned.ndjson.context.json",
+        "iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5/ready.json",
+        "iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5/stderr.raw",
+        "iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5/stdout.raw"
+      ],
+      "members": [
+        "IsoSource.plan.json",
+        "Preparation.actual.json",
+        "Write-ControlIso.ps1",
+        "iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5/Final.actual.json",
+        "iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5/Invocation.actual.json",
+        "iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5/IsoWriter.inputs.json",
+        "iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5/IsoWriter.post.json",
+        "iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5/IsoWriter.pre.json",
+        "iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5/IsoWriter.result.json",
+        "iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5/finished.json",
+        "iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5/owned.ndjson",
+        "iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5/owned.ndjson.context.json",
+        "iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5/ready.json",
+        "iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5/stderr.raw",
+        "iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5/stdout.raw"
+      ]
+    }
+  ],
+  "rows": [
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-b1-run\\Decode.actual.json",
+      "destination": "focus/deferred-b1/actual/Decode.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-b1-run\\Decode.actual.json",
+        "bytes": 6312,
+        "sha256": "a3edc000d160f86d52cb01c6125691feba034d00ded37c173301e225c0b8b739"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-b1-run\\Envelope.json.raw",
+      "destination": "focus/deferred-b1/actual/Envelope.json.raw",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-b1-run\\Envelope.json.raw",
+        "bytes": 52836,
+        "sha256": "c87df3aeee5bda8af7a93cca647dd6075da380cd78050d27d141aca54490457f"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-b1-run\\Files.index.json",
+      "destination": "focus/deferred-b1/actual/Files.index.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-b1-run\\Files.index.json",
+        "bytes": 2951,
+        "sha256": "3c816f10edf463bb4cbdc8ae808c3f4f7255f658fba0e98c26bdec7dbca20b19"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-b1-run\\Serial.frame.raw",
+      "destination": "focus/deferred-b1/actual/Serial.frame.raw",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-b1-run\\Serial.frame.raw",
+        "bytes": 70543,
+        "sha256": "cba0de34e1ae5247866e7af04771c09f0ef723a80dbb537fefeaea5ed8ec1ffe"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-b1-run\\raw\\ExportFiles.actual.json",
+      "destination": "focus/deferred-b1/actual/raw/ExportFiles.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-b1-run\\raw\\ExportFiles.actual.json",
+        "bytes": 3977,
+        "sha256": "66b5bd9b0c289b9e89dacc77c0ab0c7086e8928c636b60069cbfd975954d995f"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-b1-run\\raw\\ExportPreflight.actual.json",
+      "destination": "focus/deferred-b1/actual/raw/ExportPreflight.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-b1-run\\raw\\ExportPreflight.actual.json",
+        "bytes": 657,
+        "sha256": "be0e44f3cfda84aa0c26158b58bd731adc5c95bdf00a55821772d7bbd3a5b8ec"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-b1-run\\raw\\Invocation.actual.json",
+      "destination": "focus/deferred-b1/actual/raw/Invocation.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-b1-run\\raw\\Invocation.actual.json",
+        "bytes": 6436,
+        "sha256": "69920bbae407cfdd982018103f254ee805ddab366c77c5b2c5b259df08b58344"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-b1-run\\raw\\Summary.actual.json",
+      "destination": "focus/deferred-b1/actual/raw/Summary.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-b1-run\\raw\\Summary.actual.json",
+        "bytes": 4571,
+        "sha256": "5ada1bd835cd8b340d02d020bbc1bcfd29c4f32204e1bb302792ab5f1758aee6"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-b1-run\\raw\\finished.json",
+      "destination": "focus/deferred-b1/actual/raw/finished.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-b1-run\\raw\\finished.json",
+        "bytes": 946,
+        "sha256": "e264ea1004990eac6da00bb2ad1d48b277eace7f9ea390bae259aff893ef1b5d"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-b1-run\\raw\\native\\Compilation.actual.json",
+      "destination": "focus/deferred-b1/actual/raw/native/Compilation.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-b1-run\\raw\\native\\Compilation.actual.json",
+        "bytes": 541,
+        "sha256": "852b89edbf3b508e02356e4ee79d6403c850cb32b9bd408ecd07ca35bbfb5dd9"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-b1-run\\raw\\native\\Invocation.actual.json",
+      "destination": "focus/deferred-b1/actual/raw/native/Invocation.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-b1-run\\raw\\native\\Invocation.actual.json",
+        "bytes": 649,
+        "sha256": "03de65c4259bf912b2eba85ac1e3e0e8da93ff9efd464b4ecd5718e3a9bd64f8"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-b1-run\\raw\\native\\Native.events.ndjson",
+      "destination": "focus/deferred-b1/actual/raw/native/Native.events.ndjson",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-b1-run\\raw\\native\\Native.events.ndjson",
+        "bytes": 16745,
+        "sha256": "f27256aeddc5c330212a310100c112423c6e57d1ae7a6843b106366d0bfbd68d"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-b1-run\\raw\\native\\PowerShell.finished.json",
+      "destination": "focus/deferred-b1/actual/raw/native/PowerShell.finished.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-b1-run\\raw\\native\\PowerShell.finished.json",
+        "bytes": 416,
+        "sha256": "38d70cbf3a8011166c943cb5ea8e4392f3198cf334c060d3cb0613b447a40a60"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-b1-run\\raw\\owned.ndjson",
+      "destination": "focus/deferred-b1/actual/raw/owned.ndjson",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-b1-run\\raw\\owned.ndjson",
+        "bytes": 2698,
+        "sha256": "4bdc87c4ce924a724b870b04d7f4419a19fc74fd2361629b621f105d336f7d2b"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-b1-run\\raw\\owned.ndjson.context.json",
+      "destination": "focus/deferred-b1/actual/raw/owned.ndjson.context.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-b1-run\\raw\\owned.ndjson.context.json",
+        "bytes": 800,
+        "sha256": "0cd29837a51ac35829c1660722515168bc4d8b736260f085aaa63f1b800277e2"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-b1-run\\raw\\ready.json",
+      "destination": "focus/deferred-b1/actual/raw/ready.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-b1-run\\raw\\ready.json",
+        "bytes": 62,
+        "sha256": "d1830f2beca2bffc00fb6079adb6a9fdb7eaec89c9b946c4f808fe7eabbb4d4d"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-b1-run\\raw\\stderr.raw",
+      "destination": "focus/deferred-b1/actual/raw/stderr.raw",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-b1-run\\raw\\stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-b1-run\\raw\\stdout.raw",
+      "destination": "focus/deferred-b1/actual/raw/stdout.raw",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-b1-run\\raw\\stdout.raw",
+        "bytes": 953,
+        "sha256": "417c5849ba3bad74506c83fd605ab0fbf1b715ff542e81dee146485e562efd1f"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-analysis\\focusc-b1-run\\Analysis.actual.json",
+      "destination": "focus/deferred-b1/analysis/Analysis.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-analysis\\focusc-b1-run\\Analysis.actual.json",
+        "bytes": 8451,
+        "sha256": "eaab9f97b2ca5c10aa3c8f61ba2abb805f46659ced81b69511e3bea3131545b2"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-focus-deferred-current\\ControlIso.selection.prepared.json",
+      "destination": "focus/deferred-b1/controls-and-shots/ControlIso.selection.prepared.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-focus-deferred-current\\ControlIso.selection.prepared.json",
+        "bytes": 1647,
+        "sha256": "64d8ca4109bf8b3330ef17e0bea876fb456803dadd2b41932977c0e9d2e56324"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-focus-deferred-current\\Deferred-b1.prepared.diff",
+      "destination": "focus/deferred-b1/controls-and-shots/Deferred-b1.prepared.diff",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-focus-deferred-current\\Deferred-b1.prepared.diff",
+        "bytes": 20964,
+        "sha256": "bc29500149d28d854553d4b64c7b32930eba8226c86fb84cae93a3a0b9be0952"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-focus-deferred-current\\Preparation.actual.json",
+      "destination": "focus/deferred-b1/controls-and-shots/Preparation.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-focus-deferred-current\\Preparation.actual.json",
+        "bytes": 3657,
+        "sha256": "c47edc94ea20283b365614516519450db4cb69dec691ac8d93580bbbb6800a45"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-focus-deferred-current\\README.md",
+      "destination": "focus/deferred-b1/controls-and-shots/README.md",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-focus-deferred-current\\README.md",
+        "bytes": 2167,
+        "sha256": "c37e57efcfde6f4615b61883272e886b056fc457e0f5d81c5eb78fa73238a9b5"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-focus-deferred-current\\StaticReview.actual.json",
+      "destination": "focus/deferred-b1/controls-and-shots/StaticReview.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-focus-deferred-current\\StaticReview.actual.json",
+        "bytes": 3318,
+        "sha256": "1a8b5b483a8fbae0e938912eeb4a2d2c0aa48dc0778c15c40bd14aa8fb39fbb3"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-focus-deferred-current\\observed\\after-escape.actual.png",
+      "destination": "focus/deferred-b1/controls-and-shots/observed/after-escape.actual.png",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-focus-deferred-current\\observed\\after-escape.actual.png",
+        "bytes": 144183,
+        "sha256": "69f16121626e700658751d4f928e6349c706421dcf964b6a9757e72fb145ae64"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-focus-deferred-current\\observed\\menu-visible.actual.png",
+      "destination": "focus/deferred-b1/controls-and-shots/observed/menu-visible.actual.png",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-focus-deferred-current\\observed\\menu-visible.actual.png",
+        "bytes": 145776,
+        "sha256": "4032a6d807973601d05c3d7e596d2f04fe162d149be9905f000cd01060678028"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-focus-deferred-current\\observed\\menu.actual.png",
+      "destination": "focus/deferred-b1/controls-and-shots/observed/menu.actual.png",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-focus-deferred-current\\observed\\menu.actual.png",
+        "bytes": 146105,
+        "sha256": "2e9a81b0da9aa9fe922fdf7088ff21c2c23d273d5ba8ab6c9a845e6a91e8c095"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-focus-deferred-current\\payload\\Focus-Owned-b1.cjs",
+      "destination": "focus/deferred-b1/controls-and-shots/payload/Focus-Owned-b1.cjs",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-focus-deferred-current\\payload\\Focus-Owned-b1.cjs",
+        "bytes": 10534,
+        "sha256": "cbc1bed97d08bc7173ced76471eeb4b9d29667bd9ddbecd7981355354967f3b6"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-focus-deferred-current\\payload\\FocusExport-b1.ps1",
+      "destination": "focus/deferred-b1/controls-and-shots/payload/FocusExport-b1.ps1",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-focus-deferred-current\\payload\\FocusExport-b1.ps1",
+        "bytes": 6791,
+        "sha256": "af245c196bbb8bc20563a6fc424a22b49dc80185dad2d4e8c252366abf7084f4"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-focus-deferred-current\\payload\\Invoke-NativeFocusControl-b1.ps1",
+      "destination": "focus/deferred-b1/controls-and-shots/payload/Invoke-NativeFocusControl-b1.ps1",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-focus-deferred-current\\payload\\Invoke-NativeFocusControl-b1.ps1",
+        "bytes": 6297,
+        "sha256": "65aae66088a7e5e61bd32180506770405005831465f062af9e937214925b8a08"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-focus-deferred-current\\payload\\Loader-Crt.inputs.json",
+      "destination": "focus/deferred-b1/controls-and-shots/payload/Loader-Crt.inputs.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-focus-deferred-current\\payload\\Loader-Crt.inputs.json",
+        "bytes": 3459,
+        "sha256": "1a6c1c0987af3e259aff0c2f9615dce8b893267efd4e1fdb6de4d5f625ac90ce"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-focus-deferred-current\\payload\\NativeFocusControl.cs",
+      "destination": "focus/deferred-b1/controls-and-shots/payload/NativeFocusControl.cs",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-focus-deferred-current\\payload\\NativeFocusControl.cs",
+        "bytes": 36991,
+        "sha256": "8efacf1e18b2f90eb2945a3ee3edeb04eb0947b2ea8b9994294fb03928557fb9"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-focus-deferred-current\\payload\\Preparation-b1.actual.json",
+      "destination": "focus/deferred-b1/controls-and-shots/payload/Preparation-b1.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-focus-deferred-current\\payload\\Preparation-b1.actual.json",
+        "bytes": 3067,
+        "sha256": "dfee96241c9da94c16a1e4dc2fe2f75c7339d87270372b4eee94a88ea19c4b3c"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-analysis\\license-delivery-reuse-v3\\Analysis.actual.json",
+      "destination": "legal/published-060/analysis/Analysis.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-analysis\\license-delivery-reuse-v3\\Analysis.actual.json",
+        "bytes": 9182,
+        "sha256": "534aff2a67839bedb89ea2f7fd2f1c32d6b42b1d117ebe5a30963bde36f14bba"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\license-delivery-reuse-current\\InstalledNotice.field-diff.prepared.json",
+      "destination": "legal/published-060/reuse/InstalledNotice.field-diff.prepared.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\license-delivery-reuse-current\\InstalledNotice.field-diff.prepared.json",
+        "bytes": 6596,
+        "sha256": "5bb86ce284ae1ab489f045ae54f444ba10977dcfe6717346f9c2d4672b86aca4"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\license-delivery-reuse-current\\Plan.prepared.json",
+      "destination": "legal/published-060/reuse/Plan.prepared.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\license-delivery-reuse-current\\Plan.prepared.json",
+        "bytes": 48073,
+        "sha256": "3a41d52999474bbdccfeb586421360ccf2711218b2068f91b1ebb4040ddb6a12"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\license-delivery-reuse-current\\Plan.v2.prepared.json",
+      "destination": "legal/published-060/reuse/Plan.v2.prepared.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\license-delivery-reuse-current\\Plan.v2.prepared.json",
+        "bytes": 49957,
+        "sha256": "f36644214df785062d6f936e5b5bb0a3200437dca423a5e9bfef7bcec8bc5bd4"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\license-delivery-reuse-current\\Plan.v3.prepared.json",
+      "destination": "legal/published-060/reuse/Plan.v3.prepared.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\license-delivery-reuse-current\\Plan.v3.prepared.json",
+        "bytes": 49968,
+        "sha256": "4ad52d1643061eede40a7f3ba51b61f1f590153df4017607ddcd5c0c3c4284da"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\license-delivery-reuse-current\\ProofAvailability.prepared.json",
+      "destination": "legal/published-060/reuse/ProofAvailability.prepared.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\license-delivery-reuse-current\\ProofAvailability.prepared.json",
+        "bytes": 1602,
+        "sha256": "d14b5dd397bb6d98becbf713c53ec3a002309fd75d08c0318600270b2b2c716a"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\license-delivery-reuse-current\\README.prepared.md",
+      "destination": "legal/published-060/reuse/README.prepared.md",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\license-delivery-reuse-current\\README.prepared.md",
+        "bytes": 3015,
+        "sha256": "7b22bd62edd5a384265810c9590e7fe19579bcab495369a2f9c6da01c9454263"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\license-delivery-reuse-current\\README.v3.prepared.md",
+      "destination": "legal/published-060/reuse/README.v3.prepared.md",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\license-delivery-reuse-current\\README.v3.prepared.md",
+        "bytes": 1421,
+        "sha256": "c1d423d08bf0d6146195a5721c42f8c9c8aa7fedec05752763c5a872131aa0a1"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\license-delivery-reuse-current\\Recipe.v2-to-v3.diff",
+      "destination": "legal/published-060/reuse/Recipe.v2-to-v3.diff",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\license-delivery-reuse-current\\Recipe.v2-to-v3.diff",
+        "bytes": 1091,
+        "sha256": "03d06021422d9c6374d37cbd5fbc35a9418e5efe9705fac314f26b58a614b4bc"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\license-delivery-reuse-current\\RootPathDelta.v3.prepared.json",
+      "destination": "legal/published-060/reuse/RootPathDelta.v3.prepared.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\license-delivery-reuse-current\\RootPathDelta.v3.prepared.json",
+        "bytes": 5893,
+        "sha256": "3d7b096736d72991bfa22320deaba12f422f6d5c6031cdd8de7ae18396ab7d7b"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\license-delivery-reuse-current\\Run-ReuseComposition-v3.cjs",
+      "destination": "legal/published-060/reuse/Run-ReuseComposition-v3.cjs",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\license-delivery-reuse-current\\Run-ReuseComposition-v3.cjs",
+        "bytes": 15189,
+        "sha256": "76ab0693dbd6bdda4cf823ecbe6ad9acfa909f18164d932e0403390e5a712298"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\license-delivery-reuse-current\\Run-ReuseComposition.cjs",
+      "destination": "legal/published-060/reuse/Run-ReuseComposition.cjs",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\license-delivery-reuse-current\\Run-ReuseComposition.cjs",
+        "bytes": 15178,
+        "sha256": "b5ba1154085833af9a05f8960df744cdd365fc34e9ea327f1781e85b32575702"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\license-delivery-reuse-current\\attempt-698fbc7c-fb0b-484e-b701-664fabf045e6\\Files.index.json",
+      "destination": "legal/published-060/reuse/attempt-698fbc7c-fb0b-484e-b701-664fabf045e6/Files.index.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\license-delivery-reuse-current\\attempt-698fbc7c-fb0b-484e-b701-664fabf045e6\\Files.index.json",
+        "bytes": 370,
+        "sha256": "094baa2b18f1b084ec507b898879987e3269b062fbd9b207f2d6c67afde69c0a"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\license-delivery-reuse-current\\attempt-698fbc7c-fb0b-484e-b701-664fabf045e6\\Inputs.actual.json",
+      "destination": "legal/published-060/reuse/attempt-698fbc7c-fb0b-484e-b701-664fabf045e6/Inputs.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\license-delivery-reuse-current\\attempt-698fbc7c-fb0b-484e-b701-664fabf045e6\\Inputs.actual.json",
+        "bytes": 533891,
+        "sha256": "4bd4261af64ada590d120aedee428c1a2050d22dc9a79b91fd4b1199637ffed6"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\license-delivery-reuse-current\\attempt-698fbc7c-fb0b-484e-b701-664fabf045e6\\Summary.actual.json",
+      "destination": "legal/published-060/reuse/attempt-698fbc7c-fb0b-484e-b701-664fabf045e6/Summary.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\license-delivery-reuse-current\\attempt-698fbc7c-fb0b-484e-b701-664fabf045e6\\Summary.actual.json",
+        "bytes": 252783,
+        "sha256": "af26fdfecd920bf103b534bcf03a344a9e3825efe484ebed5a74e316f35292f0"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\license-delivery-reuse-current\\attempt-980978e4-8027-4770-b664-94fcf114f036\\Files.index.json",
+      "destination": "legal/published-060/reuse/attempt-980978e4-8027-4770-b664-94fcf114f036/Files.index.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\license-delivery-reuse-current\\attempt-980978e4-8027-4770-b664-94fcf114f036\\Files.index.json",
+        "bytes": 370,
+        "sha256": "a8bbbd9ccfed85a8c95eaa9e6b55fce5a00ba1a24e1af7788929260fbccc88b8"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\license-delivery-reuse-current\\attempt-980978e4-8027-4770-b664-94fcf114f036\\Inputs.actual.json",
+      "destination": "legal/published-060/reuse/attempt-980978e4-8027-4770-b664-94fcf114f036/Inputs.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\license-delivery-reuse-current\\attempt-980978e4-8027-4770-b664-94fcf114f036\\Inputs.actual.json",
+        "bytes": 450517,
+        "sha256": "4312e2c9dad2f7bb984ce95629b2400eb3f058699980b4fb61d523603a8f4c59"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\license-delivery-reuse-current\\attempt-980978e4-8027-4770-b664-94fcf114f036\\Summary.actual.json",
+      "destination": "legal/published-060/reuse/attempt-980978e4-8027-4770-b664-94fcf114f036/Summary.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\license-delivery-reuse-current\\attempt-980978e4-8027-4770-b664-94fcf114f036\\Summary.actual.json",
+        "bytes": 316918,
+        "sha256": "fac83612cbcc461bfa0a19e87aef77968a3afa3165f5f4f9ab550e16a34509e7"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\issue77-shutdown-investigation\\Analysis.actual.json",
+      "destination": "message-port/issue77-source-investigation/Analysis.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\issue77-shutdown-investigation\\Analysis.actual.json",
+        "bytes": 22696,
+        "sha256": "dedf5f3b21705213747ce9655bc93ede6926711f1dd396d23e047bcefe48cf23"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\issue77-shutdown-investigation\\Closure-Assessment.actual.json",
+      "destination": "message-port/issue77-source-investigation/Closure-Assessment.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\issue77-shutdown-investigation\\Closure-Assessment.actual.json",
+        "bytes": 10973,
+        "sha256": "323c280a3898d76cc6c0d10f3da159dbb55a50bba6392397bd092e19d33b70ae"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\issue77-shutdown-investigation\\README.md",
+      "destination": "message-port/issue77-source-investigation/README.md",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\issue77-shutdown-investigation\\README.md",
+        "bytes": 6911,
+        "sha256": "38b59e4b67222f6e22ae9e8468a7d93b71e5a83ad9efc4f02c32cab10822d772"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-analysis\\trayrc-a1-stage\\Analysis.actual.json",
+      "destination": "recovery/analysis/stage/Analysis.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-analysis\\trayrc-a1-stage\\Analysis.actual.json",
+        "bytes": 3082,
+        "sha256": "20f095035c924789fd79f8e13c458c4043be79c13574a9748a8d05385cb6cb01"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-analysis\\trayrc-a1-x64\\Analysis.actual.json",
+      "destination": "recovery/analysis/x64/Analysis.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-analysis\\trayrc-a1-x64\\Analysis.actual.json",
+        "bytes": 10630,
+        "sha256": "9f164d59b812076bb1f93194bf7f19cc479cced74079e03dee38691abf8d3600"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-analysis\\trayrc-a1-x86\\Analysis.actual.json",
+      "destination": "recovery/analysis/x86/Analysis.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-analysis\\trayrc-a1-x86\\Analysis.actual.json",
+        "bytes": 10761,
+        "sha256": "bb904c8c568ad6139274ca96a56c11d031d41d699766e2730096e83baeffb70a"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-analysis\\trayrc-a1-x86\\CombinedShortSummary.actual.json",
+      "destination": "recovery/analysis/x86/CombinedShortSummary.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-analysis\\trayrc-a1-x86\\CombinedShortSummary.actual.json",
+        "bytes": 4562,
+        "sha256": "e3d082e1ff1d31368fef8ce2f61ab7a0dd3057c883db5773eed0baaefb96d352"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\BuildPreparation.prepared.json",
+      "destination": "recovery/build-controls/BuildPreparation.prepared.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\BuildPreparation.prepared.json",
+        "bytes": 6997,
+        "sha256": "056f3523746668944103f9507ebd5fe6fc449f2f93c12bba2dd5ed9f9c64df47"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\Invoke-TrayRecoveryBuild.ps1",
+      "destination": "recovery/build-controls/Invoke-TrayRecoveryBuild.ps1",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\Invoke-TrayRecoveryBuild.ps1",
+        "bytes": 8311,
+        "sha256": "b66efcb628f33a6566df718329651e0e567cca5f42a1652600d7b7c39eb9e703"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\PS5-local-correction.prepared.diff",
+      "destination": "recovery/build-controls/PS5-local-correction.prepared.diff",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\PS5-local-correction.prepared.diff",
+        "bytes": 1734,
+        "sha256": "5440bcae7a030d0e2d72d859ccdedb4f60b1cfe2e4fd9891c9e2114b2174792f"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\README.prepared.md",
+      "destination": "recovery/build-controls/README.prepared.md",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\README.prepared.md",
+        "bytes": 3082,
+        "sha256": "95255afb5718d84d7f052b6d64155bdeee99080523cb39c94f51c4d0e6787d6d"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\Recipe.prepared.diff",
+      "destination": "recovery/build-controls/Recipe.prepared.diff",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\Recipe.prepared.diff",
+        "bytes": 15896,
+        "sha256": "568a0b9083f65884a96cfe6d6248e0378a899e69291043720b1a6c9f45c5ecd6"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\Run-TrayRecoveryBuild.cjs",
+      "destination": "recovery/build-controls/Run-TrayRecoveryBuild.cjs",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\Run-TrayRecoveryBuild.cjs",
+        "bytes": 17729,
+        "sha256": "b4db907618b3c1741f8372d079fccfe4b2b74eaeec2c4273b6bb02c94fe870c8"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\SourceInputs.frozen.json",
+      "destination": "recovery/build-controls/SourceInputs.frozen.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\SourceInputs.frozen.json",
+        "bytes": 4591,
+        "sha256": "a46936a09f0e1ec53816c084ac1b290d59cc91c256c35e75273607dc7bfa70a6"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\StaticPreparation.actual.json",
+      "destination": "recovery/build-controls/StaticPreparation.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\StaticPreparation.actual.json",
+        "bytes": 3813,
+        "sha256": "b30d0e0c9df974a99652859c130d38689f3cea1ba080b09ad6df6642e78f106c"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\prepared-r1-unexecuted\\BuildPreparation.prepared.json",
+      "destination": "recovery/build-controls/prepared-r1-unexecuted/BuildPreparation.prepared.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\prepared-r1-unexecuted\\BuildPreparation.prepared.json",
+        "bytes": 5503,
+        "sha256": "4c27f32a4fdbadb3534560ede0cb2e26c59c1f8ccd65931d6fa40ae3ac7783b5"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\prepared-r1-unexecuted\\Invoke-TrayRecoveryBuild.ps1",
+      "destination": "recovery/build-controls/prepared-r1-unexecuted/Invoke-TrayRecoveryBuild.ps1",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\prepared-r1-unexecuted\\Invoke-TrayRecoveryBuild.ps1",
+        "bytes": 7777,
+        "sha256": "bc1247279269aac80c7ec9cac8bd5fd9ade27170e846feb5a2e890e2da4245bc"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\prepared-r1-unexecuted\\README.prepared.md",
+      "destination": "recovery/build-controls/prepared-r1-unexecuted/README.prepared.md",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\prepared-r1-unexecuted\\README.prepared.md",
+        "bytes": 2486,
+        "sha256": "f0bc1480828a765231140900a1eb815aecd7f6e5c4eae7024185c56980422a20"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\prepared-r1-unexecuted\\Recipe.prepared.diff",
+      "destination": "recovery/build-controls/prepared-r1-unexecuted/Recipe.prepared.diff",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\prepared-r1-unexecuted\\Recipe.prepared.diff",
+        "bytes": 14904,
+        "sha256": "0332adac3c48982d6847ae3017b21d18a1f16f5dbeafc3e40345f35e1cff60a9"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\prepared-r1-unexecuted\\Run-TrayRecoveryBuild.cjs",
+      "destination": "recovery/build-controls/prepared-r1-unexecuted/Run-TrayRecoveryBuild.cjs",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\prepared-r1-unexecuted\\Run-TrayRecoveryBuild.cjs",
+        "bytes": 17729,
+        "sha256": "b4db907618b3c1741f8372d079fccfe4b2b74eaeec2c4273b6bb02c94fe870c8"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\prepared-r1-unexecuted\\Snapshot.index.json",
+      "destination": "recovery/build-controls/prepared-r1-unexecuted/Snapshot.index.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\prepared-r1-unexecuted\\Snapshot.index.json",
+        "bytes": 4166,
+        "sha256": "06da6558de97524f4397b5565381a3f4ae45485eace9fe1af4981e2a896456ef"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\prepared-r1-unexecuted\\SourceInputs.frozen.json",
+      "destination": "recovery/build-controls/prepared-r1-unexecuted/SourceInputs.frozen.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\prepared-r1-unexecuted\\SourceInputs.frozen.json",
+        "bytes": 4591,
+        "sha256": "a46936a09f0e1ec53816c084ac1b290d59cc91c256c35e75273607dc7bfa70a6"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\prepared-r1-unexecuted\\StaticPreparation.actual.json",
+      "destination": "recovery/build-controls/prepared-r1-unexecuted/StaticPreparation.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\prepared-r1-unexecuted\\StaticPreparation.actual.json",
+        "bytes": 2487,
+        "sha256": "23864787b6faefc21875277b898e2b8d0d2b548eee08e367647d93bf5f5a6dfe"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\inputs-after.json",
+      "destination": "recovery/host-build/inputs-after.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\inputs-after.json",
+        "bytes": 362364,
+        "sha256": "f5c0ff3ef874db6b2a1762bb3eb7160faad15aa561dfb45cc1d03e4fab583217"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\inputs-before.json",
+      "destination": "recovery/host-build/inputs-before.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\inputs-before.json",
+        "bytes": 362716,
+        "sha256": "939513df2255c773c8a209b83a79127f78f4b522c2ffaf23c77546cce311a2a4"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\original-preparation.json",
+      "destination": "recovery/host-build/original-preparation.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\original-preparation.json",
+        "bytes": 6750,
+        "sha256": "0de724e35238813efe68f35c0f286f6432934d695d12e2575a8e95caa76ba629"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\summary.json",
+      "destination": "recovery/host-build/summary.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\summary.json",
+        "bytes": 17246,
+        "sha256": "f6cece91cf2f92ea583dd7958ee6e61f1852f5c15ac86257f710cdc44bc3a430"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\build.log",
+      "destination": "recovery/host-build/x64/build.log",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\build.log",
+        "bytes": 540,
+        "sha256": "b1a45c22a934379ecf3e212abbc6ccffeaab9ac215b4b2a235fed34da1a1111f"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\build\\compiler-lifecycle-build-ce22ff4d-f091-4a3a-8f89-84285bf9ac06\\returned.json",
+      "destination": "recovery/host-build/x64/build/compiler-lifecycle-build-ce22ff4d-f091-4a3a-8f89-84285bf9ac06/returned.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\build\\compiler-lifecycle-build-ce22ff4d-f091-4a3a-8f89-84285bf9ac06\\returned.json",
+        "bytes": 1527,
+        "sha256": "bc19cc7636ab5fa10e1960fac0a2589047497384eaa02b0d98149aa0f24e1302"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\build\\compiler-lifecycle-build-ce22ff4d-f091-4a3a-8f89-84285bf9ac06\\started.json",
+      "destination": "recovery/host-build/x64/build/compiler-lifecycle-build-ce22ff4d-f091-4a3a-8f89-84285bf9ac06/started.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\build\\compiler-lifecycle-build-ce22ff4d-f091-4a3a-8f89-84285bf9ac06\\started.json",
+        "bytes": 1265,
+        "sha256": "d7e4b58d6784d62a253f0e024a3a892e08bcfcc232447b2d2db754cb874184a2"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\build\\compiler-lifecycle-build-ce22ff4d-f091-4a3a-8f89-84285bf9ac06\\stderr.bin",
+      "destination": "recovery/host-build/x64/build/compiler-lifecycle-build-ce22ff4d-f091-4a3a-8f89-84285bf9ac06/stderr.bin",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\build\\compiler-lifecycle-build-ce22ff4d-f091-4a3a-8f89-84285bf9ac06\\stderr.bin",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\build\\compiler-lifecycle-build-ce22ff4d-f091-4a3a-8f89-84285bf9ac06\\stdout.bin",
+      "destination": "recovery/host-build/x64/build/compiler-lifecycle-build-ce22ff4d-f091-4a3a-8f89-84285bf9ac06/stdout.bin",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\build\\compiler-lifecycle-build-ce22ff4d-f091-4a3a-8f89-84285bf9ac06\\stdout.bin",
+        "bytes": 288,
+        "sha256": "ab89c5b5aaba38dee8d380e5d735d855a25cadac0954fbe07593fed159e11d07"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\case-verdict.json",
+      "destination": "recovery/host-build/x64/case-verdict.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\case-verdict.json",
+        "bytes": 7721,
+        "sha256": "aae277634007c7ef15a0e4c25893d5695aa994230f3c9994d8d401df80e73a1a"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\compiled-output-pins.json",
+      "destination": "recovery/host-build/x64/compiled-output-pins.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\compiled-output-pins.json",
+        "bytes": 650,
+        "sha256": "c28b33736ebc99d5d004746d44aeeaf1fd82f6fe94b4f6c5e587241af300f2ee"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\configure.log",
+      "destination": "recovery/host-build/x64/configure.log",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\configure.log",
+        "bytes": 1080,
+        "sha256": "9589f536563c5d5c2a5c7fe48e1baa4d110ef4333370fd527b088d7cb3cffef1"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\configure\\compiler-lifecycle-configure-980d10d0-9ad5-453f-99ad-95d227bed199\\returned.json",
+      "destination": "recovery/host-build/x64/configure/compiler-lifecycle-configure-980d10d0-9ad5-453f-99ad-95d227bed199/returned.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\configure\\compiler-lifecycle-configure-980d10d0-9ad5-453f-99ad-95d227bed199\\returned.json",
+        "bytes": 1531,
+        "sha256": "9cc58c63de38ae1ae1367eabf9bc0ccf8148174e8b3fc9dece3cb6b1a0e99f51"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\configure\\compiler-lifecycle-configure-980d10d0-9ad5-453f-99ad-95d227bed199\\started.json",
+      "destination": "recovery/host-build/x64/configure/compiler-lifecycle-configure-980d10d0-9ad5-453f-99ad-95d227bed199/started.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\configure\\compiler-lifecycle-configure-980d10d0-9ad5-453f-99ad-95d227bed199\\started.json",
+        "bytes": 1269,
+        "sha256": "d06e24bfc402bb729c45cea1ac92c4b9f7a04b0efd50feeb5f6cf95439dd849e"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\configure\\compiler-lifecycle-configure-980d10d0-9ad5-453f-99ad-95d227bed199\\stderr.bin",
+      "destination": "recovery/host-build/x64/configure/compiler-lifecycle-configure-980d10d0-9ad5-453f-99ad-95d227bed199/stderr.bin",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\configure\\compiler-lifecycle-configure-980d10d0-9ad5-453f-99ad-95d227bed199\\stderr.bin",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\configure\\compiler-lifecycle-configure-980d10d0-9ad5-453f-99ad-95d227bed199\\stdout.bin",
+      "destination": "recovery/host-build/x64/configure/compiler-lifecycle-configure-980d10d0-9ad5-453f-99ad-95d227bed199/stdout.bin",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\configure\\compiler-lifecycle-configure-980d10d0-9ad5-453f-99ad-95d227bed199\\stdout.bin",
+        "bytes": 288,
+        "sha256": "ab89c5b5aaba38dee8d380e5d735d855a25cadac0954fbe07593fed159e11d07"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\copied-observations\\000-ALL_BUILD.vcxproj",
+      "destination": "recovery/host-build/x64/copied-observations/000-ALL_BUILD.vcxproj",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\copied-observations\\000-ALL_BUILD.vcxproj",
+        "bytes": 41565,
+        "sha256": "32b997af51dae6ca1f6a2c12b3788fd44b780602c5821f9166f489f113b35e59"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\copied-observations\\001-CMakeCache.txt",
+      "destination": "recovery/host-build/x64/copied-observations/001-CMakeCache.txt",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\copied-observations\\001-CMakeCache.txt",
+        "bytes": 13329,
+        "sha256": "3aeb3d55b0d1e275f04ac09a47c3da2d8d64600a2aaad8a9f7b4fb781f21a7e4"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\copied-observations\\002-CMakeCXXCompiler.cmake",
+      "destination": "recovery/host-build/x64/copied-observations/002-CMakeCXXCompiler.cmake",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\copied-observations\\002-CMakeCXXCompiler.cmake",
+        "bytes": 6508,
+        "sha256": "1b080885144120f43636716a60139852ad7dd840aad639de4664d4253f8a63f8"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\copied-observations\\003-CompilerIdCXX.vcxproj",
+      "destination": "recovery/host-build/x64/copied-observations/003-CompilerIdCXX.vcxproj",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\copied-observations\\003-CompilerIdCXX.vcxproj",
+        "bytes": 2806,
+        "sha256": "b5a1b5175b32b552ef789ce6058b13232255b8d1648fa4d1a1bb8f912b71f336"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\copied-observations\\005-CL.command.1.tlog",
+      "destination": "recovery/host-build/x64/copied-observations/005-CL.command.1.tlog",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\copied-observations\\005-CL.command.1.tlog",
+        "bytes": 812,
+        "sha256": "858c517d3a3ab39533feb92a8f3e08ef6812cfc19e30523cad66e818dc3bedb2"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\copied-observations\\013-VCTargetsPath.vcxproj",
+      "destination": "recovery/host-build/x64/copied-observations/013-VCTargetsPath.vcxproj",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\copied-observations\\013-VCTargetsPath.vcxproj",
+        "bytes": 1255,
+        "sha256": "24fac7257bc0523f8eacba7408241a2b83d1a9aa96e6d481323bab364ce3ceb2"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\copied-observations\\014-CL.command.1.tlog",
+      "destination": "recovery/host-build/x64/copied-observations/014-CL.command.1.tlog",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\copied-observations\\014-CL.command.1.tlog",
+        "bytes": 1098,
+        "sha256": "896ffce8d043b3e87d849cf70983f4816cc8ce6352c2c7ec4a74e88d55a19425"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\copied-observations\\026-SouiTrayRecoveryConsumer.vcxproj",
+      "destination": "recovery/host-build/x64/copied-observations/026-SouiTrayRecoveryConsumer.vcxproj",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\copied-observations\\026-SouiTrayRecoveryConsumer.vcxproj",
+        "bytes": 57419,
+        "sha256": "8589ac15f16389a9315c5f3ae5c588be25631c5dfdea1c10fd96a6cba9a7b507"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\copied-observations\\027-ZERO_CHECK.vcxproj",
+      "destination": "recovery/host-build/x64/copied-observations/027-ZERO_CHECK.vcxproj",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\copied-observations\\027-ZERO_CHECK.vcxproj",
+        "bytes": 41702,
+        "sha256": "71f17624f3bbc54144d4d84f3c6c7a0ee37269a66fc4a9c22be4ff0f9dec8361"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\fixture-source-pins.json",
+      "destination": "recovery/host-build/x64/fixture-source-pins.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\fixture-source-pins.json",
+        "bytes": 575,
+        "sha256": "bb67f4103cc55cae744836943f429e8cd294a8fc69200e4384b672a17314b904"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\invocations.json",
+      "destination": "recovery/host-build/x64/invocations.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\invocations.json",
+        "bytes": 2017,
+        "sha256": "d2e04ad0087a76668b5567102492c4be6fafd78a7b80875ec61f4cf0f2ea0e82"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\native-finished.json",
+      "destination": "recovery/host-build/x64/native-finished.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\native-finished.json",
+        "bytes": 1031,
+        "sha256": "ad434a7cb5c5a3a5a9a7efc1e5f655fadd0e9dd5cd44b4767ea8a1ec7d123d46"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\native-ready.json",
+      "destination": "recovery/host-build/x64/native-ready.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\native-ready.json",
+        "bytes": 63,
+        "sha256": "9753c72fcfdba4c04242401641b68aee5c4c5a99b45ec752865e38e9e7b70db3"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\native-stderr.bin",
+      "destination": "recovery/host-build/x64/native-stderr.bin",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\native-stderr.bin",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\native-stdout.bin",
+      "destination": "recovery/host-build/x64/native-stdout.bin",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\native-stdout.bin",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\native.ndjson",
+      "destination": "recovery/host-build/x64/native.ndjson",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\native.ndjson",
+        "bytes": 110970,
+        "sha256": "9f2a15550332bf9b561e380e213a6d65504b8bfcd0a7aaf2b4a44f7d41d4af6f"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\native.ndjson.context.json",
+      "destination": "recovery/host-build/x64/native.ndjson.context.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\native.ndjson.context.json",
+        "bytes": 1000,
+        "sha256": "37cff5ccaec08b7e1a7a3ec5ca81ac71e541b7e6ea062b1e9ff4da308ee76587"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\observation-copies.json",
+      "destination": "recovery/host-build/x64/observation-copies.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\observation-copies.json",
+        "bytes": 25641,
+        "sha256": "1215a96bedbf3d75461db50a67fe62a5d724f4268c2d1e405b380b1ca91465d6"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\output-pins.json",
+      "destination": "recovery/host-build/x64/output-pins.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\output-pins.json",
+        "bytes": 20925,
+        "sha256": "ac81dc2c882e6f0cc61f3602724574684dd5629d048f60f9dc5647d8757476df"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\request.json",
+      "destination": "recovery/host-build/x64/request.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\request.json",
+        "bytes": 901,
+        "sha256": "fe68f041b267643e0183bdb5b9a8d2379e5cab39cee028e9485a4f78f2f9f9f6"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\root-return.json",
+      "destination": "recovery/host-build/x64/root-return.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\root-return.json",
+        "bytes": 966,
+        "sha256": "a101ba0d426ba072c9d77f43e78df1d2b9a35e1e954279a940cb7452bd8ff1cd"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\tool-pins-after.json",
+      "destination": "recovery/host-build/x64/tool-pins-after.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\tool-pins-after.json",
+        "bytes": 2265,
+        "sha256": "680bda3730a7db96e356fef776d3e635739658e4b49d07774d9276ec679a9a10"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\tool-pins-before.json",
+      "destination": "recovery/host-build/x64/tool-pins-before.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x64\\tool-pins-before.json",
+        "bytes": 2265,
+        "sha256": "680bda3730a7db96e356fef776d3e635739658e4b49d07774d9276ec679a9a10"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\build.log",
+      "destination": "recovery/host-build/x86/build.log",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\build.log",
+        "bytes": 540,
+        "sha256": "2e6ec126646552940adaa40b64916f7a53ce81bfaecb08fd5ecb209107048b36"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\build\\compiler-lifecycle-build-34f551b6-ac31-4427-8bf8-d6826d108c5f\\returned.json",
+      "destination": "recovery/host-build/x86/build/compiler-lifecycle-build-34f551b6-ac31-4427-8bf8-d6826d108c5f/returned.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\build\\compiler-lifecycle-build-34f551b6-ac31-4427-8bf8-d6826d108c5f\\returned.json",
+        "bytes": 1527,
+        "sha256": "5c95fb1d3e1a622fd2afb6d74d8ff5c8222c7a70e32a739d38d10c33cdf2d288"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\build\\compiler-lifecycle-build-34f551b6-ac31-4427-8bf8-d6826d108c5f\\started.json",
+      "destination": "recovery/host-build/x86/build/compiler-lifecycle-build-34f551b6-ac31-4427-8bf8-d6826d108c5f/started.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\build\\compiler-lifecycle-build-34f551b6-ac31-4427-8bf8-d6826d108c5f\\started.json",
+        "bytes": 1265,
+        "sha256": "cac3c77620345dcbe74fb8c79618fae20c601dcdd9d7f95aaa822a6e9c07af9f"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\build\\compiler-lifecycle-build-34f551b6-ac31-4427-8bf8-d6826d108c5f\\stderr.bin",
+      "destination": "recovery/host-build/x86/build/compiler-lifecycle-build-34f551b6-ac31-4427-8bf8-d6826d108c5f/stderr.bin",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\build\\compiler-lifecycle-build-34f551b6-ac31-4427-8bf8-d6826d108c5f\\stderr.bin",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\build\\compiler-lifecycle-build-34f551b6-ac31-4427-8bf8-d6826d108c5f\\stdout.bin",
+      "destination": "recovery/host-build/x86/build/compiler-lifecycle-build-34f551b6-ac31-4427-8bf8-d6826d108c5f/stdout.bin",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\build\\compiler-lifecycle-build-34f551b6-ac31-4427-8bf8-d6826d108c5f\\stdout.bin",
+        "bytes": 288,
+        "sha256": "ab89c5b5aaba38dee8d380e5d735d855a25cadac0954fbe07593fed159e11d07"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\case-verdict.json",
+      "destination": "recovery/host-build/x86/case-verdict.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\case-verdict.json",
+        "bytes": 7720,
+        "sha256": "5086947841ddcbaf010bf77a84172bf43426ee334dcfd10be878cd94a93040c2"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\compiled-output-pins.json",
+      "destination": "recovery/host-build/x86/compiled-output-pins.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\compiled-output-pins.json",
+        "bytes": 649,
+        "sha256": "2b6a230087b18f5041731efc17a9b7574f05ee3db0e1804878059be462994e1a"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\configure.log",
+      "destination": "recovery/host-build/x86/configure.log",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\configure.log",
+        "bytes": 1080,
+        "sha256": "09c90bb9a336ac5bca4ea6e8933b6489be8e58c9b085f7dba3eb8c62f1d39f80"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\configure\\compiler-lifecycle-configure-acee6a9f-1558-413e-941b-0872fa956c53\\returned.json",
+      "destination": "recovery/host-build/x86/configure/compiler-lifecycle-configure-acee6a9f-1558-413e-941b-0872fa956c53/returned.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\configure\\compiler-lifecycle-configure-acee6a9f-1558-413e-941b-0872fa956c53\\returned.json",
+        "bytes": 1531,
+        "sha256": "7ae3ae3eb9bb55e02edaa500a13802d3f2db6efee06cb0f876adbca1f4b7609f"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\configure\\compiler-lifecycle-configure-acee6a9f-1558-413e-941b-0872fa956c53\\started.json",
+      "destination": "recovery/host-build/x86/configure/compiler-lifecycle-configure-acee6a9f-1558-413e-941b-0872fa956c53/started.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\configure\\compiler-lifecycle-configure-acee6a9f-1558-413e-941b-0872fa956c53\\started.json",
+        "bytes": 1269,
+        "sha256": "1b63a2c9c32dfdab79536f0ca141f9e0ef38f78a52d72f1858245f5126d14695"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\configure\\compiler-lifecycle-configure-acee6a9f-1558-413e-941b-0872fa956c53\\stderr.bin",
+      "destination": "recovery/host-build/x86/configure/compiler-lifecycle-configure-acee6a9f-1558-413e-941b-0872fa956c53/stderr.bin",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\configure\\compiler-lifecycle-configure-acee6a9f-1558-413e-941b-0872fa956c53\\stderr.bin",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\configure\\compiler-lifecycle-configure-acee6a9f-1558-413e-941b-0872fa956c53\\stdout.bin",
+      "destination": "recovery/host-build/x86/configure/compiler-lifecycle-configure-acee6a9f-1558-413e-941b-0872fa956c53/stdout.bin",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\configure\\compiler-lifecycle-configure-acee6a9f-1558-413e-941b-0872fa956c53\\stdout.bin",
+        "bytes": 288,
+        "sha256": "ab89c5b5aaba38dee8d380e5d735d855a25cadac0954fbe07593fed159e11d07"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\copied-observations\\000-ALL_BUILD.vcxproj",
+      "destination": "recovery/host-build/x86/copied-observations/000-ALL_BUILD.vcxproj",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\copied-observations\\000-ALL_BUILD.vcxproj",
+        "bytes": 41647,
+        "sha256": "d81158772627af187bec3c734f61cee0376e026e8eb09d23fb8a4ba6e84d1b27"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\copied-observations\\001-CMakeCache.txt",
+      "destination": "recovery/host-build/x86/copied-observations/001-CMakeCache.txt",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\copied-observations\\001-CMakeCache.txt",
+        "bytes": 13337,
+        "sha256": "9de6c8262593f41a8174da701f1e1f6be58a8ad08795a71cac1a7d44fb7e3948"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\copied-observations\\002-CMakeCXXCompiler.cmake",
+      "destination": "recovery/host-build/x86/copied-observations/002-CMakeCXXCompiler.cmake",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\copied-observations\\002-CMakeCXXCompiler.cmake",
+        "bytes": 6508,
+        "sha256": "95f10a437e276655abad1f3627373bfec2ab7c70169b0c7b9e1d57bfce28fe1d"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\copied-observations\\003-CompilerIdCXX.vcxproj",
+      "destination": "recovery/host-build/x86/copied-observations/003-CompilerIdCXX.vcxproj",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\copied-observations\\003-CompilerIdCXX.vcxproj",
+        "bytes": 2820,
+        "sha256": "1f616b32ca13cb1cb59ce61d42109ac551f5b513143affcf4d609669c8eee279"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\copied-observations\\005-CL.command.1.tlog",
+      "destination": "recovery/host-build/x86/copied-observations/005-CL.command.1.tlog",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\copied-observations\\005-CL.command.1.tlog",
+        "bytes": 842,
+        "sha256": "c92ec707720087b85bca76999aa87bd9743d16add1efda4df24397450473e038"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\copied-observations\\013-VCTargetsPath.vcxproj",
+      "destination": "recovery/host-build/x86/copied-observations/013-VCTargetsPath.vcxproj",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\copied-observations\\013-VCTargetsPath.vcxproj",
+        "bytes": 1261,
+        "sha256": "b392ec75b7860d7de265026986be273eb184a3fc6524ff8c71ced413f2a03aa0"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\copied-observations\\014-CL.command.1.tlog",
+      "destination": "recovery/host-build/x86/copied-observations/014-CL.command.1.tlog",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\copied-observations\\014-CL.command.1.tlog",
+        "bytes": 1128,
+        "sha256": "809b69344ffb885efa457d1abbfcd255344491a63311d3dbf9c7242ae643ffa6"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\copied-observations\\026-SouiTrayRecoveryConsumer.vcxproj",
+      "destination": "recovery/host-build/x86/copied-observations/026-SouiTrayRecoveryConsumer.vcxproj",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\copied-observations\\026-SouiTrayRecoveryConsumer.vcxproj",
+        "bytes": 57541,
+        "sha256": "2a2ff67931ab1d447a031931f4f25f3a31423f4638c9a864ec8137ca3fdfda91"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\copied-observations\\030-ZERO_CHECK.vcxproj",
+      "destination": "recovery/host-build/x86/copied-observations/030-ZERO_CHECK.vcxproj",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\copied-observations\\030-ZERO_CHECK.vcxproj",
+        "bytes": 41792,
+        "sha256": "5eb55aeb71d08d77df05f2b354cb66e5d30e52d3649655115cfc2df0a61186f3"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\fixture-source-pins.json",
+      "destination": "recovery/host-build/x86/fixture-source-pins.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\fixture-source-pins.json",
+        "bytes": 575,
+        "sha256": "56d2165abc7d372ee58491ebdff7c0d5104165d30c1569578466087272782a80"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\invocations.json",
+      "destination": "recovery/host-build/x86/invocations.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\invocations.json",
+        "bytes": 2019,
+        "sha256": "b42d7006f372b7906254e1566db3cbf828f7730b6b0619e0237f318655c3953c"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\native-finished.json",
+      "destination": "recovery/host-build/x86/native-finished.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\native-finished.json",
+        "bytes": 1031,
+        "sha256": "233701f9d2cdbbb46e437393eb5af136afcab8b77cd9e70693b9cd55fdb1bcd7"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\native-ready.json",
+      "destination": "recovery/host-build/x86/native-ready.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\native-ready.json",
+        "bytes": 63,
+        "sha256": "56b5f12d3811166b116f284bcf3d5d98322739de7ef0b40b8b9047b882b9c81c"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\native-stderr.bin",
+      "destination": "recovery/host-build/x86/native-stderr.bin",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\native-stderr.bin",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\native-stdout.bin",
+      "destination": "recovery/host-build/x86/native-stdout.bin",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\native-stdout.bin",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\native.ndjson",
+      "destination": "recovery/host-build/x86/native.ndjson",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\native.ndjson",
+        "bytes": 119947,
+        "sha256": "f3c4d993f84db5870fd4e8473efa1a902e48110f28a1be528288bd1ed8d8f40f"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\native.ndjson.context.json",
+      "destination": "recovery/host-build/x86/native.ndjson.context.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\native.ndjson.context.json",
+        "bytes": 1000,
+        "sha256": "e95140d1560b4bf204d63bf2d74161fcb3a0e7e3f3a62b54656b9314bcd2d68e"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\observation-copies.json",
+      "destination": "recovery/host-build/x86/observation-copies.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\observation-copies.json",
+        "bytes": 25640,
+        "sha256": "b8f7a2390348eb45fe32abbeb3f9354964393990f21d588bc3bafe7de7787b86"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\output-pins.json",
+      "destination": "recovery/host-build/x86/output-pins.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\output-pins.json",
+        "bytes": 20915,
+        "sha256": "dd6af6dbb56fc8e5808be40bc8da8ce5c8bf078cb976280f8b5a4ab7de959655"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\request.json",
+      "destination": "recovery/host-build/x86/request.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\request.json",
+        "bytes": 901,
+        "sha256": "ef648edb83ee933781b140ac37e4c41f552e7bbb53a33c8ce56476ab09520ba4"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\root-return.json",
+      "destination": "recovery/host-build/x86/root-return.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\root-return.json",
+        "bytes": 966,
+        "sha256": "c31466b0bbcc9a35807e86813d17f2fc1bef023aaca76f5c1d892d7f6e5d3303"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\tool-pins-after.json",
+      "destination": "recovery/host-build/x86/tool-pins-after.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\tool-pins-after.json",
+        "bytes": 2265,
+        "sha256": "1453d28bf8930e01eaf1d1d2bb763cb47755ed123444a1007c7621d2a0a71d8e"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\tool-pins-before.json",
+      "destination": "recovery/host-build/x86/tool-pins-before.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\attempt-37db1a86-0b86-46bc-87bf-6de1a7b63b47\\x86\\tool-pins-before.json",
+        "bytes": 2265,
+        "sha256": "1453d28bf8930e01eaf1d1d2bb763cb47755ed123444a1007c7621d2a0a71d8e"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-841c00cb-d296-40c6-9906-9c133fd3e2db\\IsoSource.plan.json",
+      "destination": "recovery/media-metadata/IsoSource.plan.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-841c00cb-d296-40c6-9906-9c133fd3e2db\\IsoSource.plan.json",
+        "bytes": 4503,
+        "sha256": "3d6105d2d4a8e2a4b851c95e2428e620145f879ca55c1d07ed3bc00be7c3ac8b"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-841c00cb-d296-40c6-9906-9c133fd3e2db\\Preparation.actual.json",
+      "destination": "recovery/media-metadata/Preparation.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-841c00cb-d296-40c6-9906-9c133fd3e2db\\Preparation.actual.json",
+        "bytes": 5366,
+        "sha256": "bda65a69a3802dc27e0846a9fa359dcdb5ea27a19625edfd80aec19ecee173f4"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-841c00cb-d296-40c6-9906-9c133fd3e2db\\Write-ControlIso.ps1",
+      "destination": "recovery/media-metadata/Write-ControlIso.ps1",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-841c00cb-d296-40c6-9906-9c133fd3e2db\\Write-ControlIso.ps1",
+        "bytes": 8965,
+        "sha256": "a862627eecde038aa7ccea317b3bae68b8faa1fa87822c17dd3e903de9fb0110"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-841c00cb-d296-40c6-9906-9c133fd3e2db\\iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5\\Final.actual.json",
+      "destination": "recovery/media-metadata/iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5/Final.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-841c00cb-d296-40c6-9906-9c133fd3e2db\\iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5\\Final.actual.json",
+        "bytes": 2495,
+        "sha256": "14d984dcad04cc6ca9dd49e5a09000a3af4601bcd8be64ffa6861855af352d02"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-841c00cb-d296-40c6-9906-9c133fd3e2db\\iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5\\Invocation.actual.json",
+      "destination": "recovery/media-metadata/iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5/Invocation.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-841c00cb-d296-40c6-9906-9c133fd3e2db\\iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5\\Invocation.actual.json",
+        "bytes": 1685,
+        "sha256": "fbd5b631f4c4a9758f11542c01107f2f305e7e375349e7328d221b1a92bb1801"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-841c00cb-d296-40c6-9906-9c133fd3e2db\\iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5\\IsoWriter.inputs.json",
+      "destination": "recovery/media-metadata/iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5/IsoWriter.inputs.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-841c00cb-d296-40c6-9906-9c133fd3e2db\\iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5\\IsoWriter.inputs.json",
+        "bytes": 1662,
+        "sha256": "d6f10be41b26ec1dcd7ac3211dc66071b1611c97ec901741e13ff34c81d09339"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-841c00cb-d296-40c6-9906-9c133fd3e2db\\iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5\\IsoWriter.post.json",
+      "destination": "recovery/media-metadata/iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5/IsoWriter.post.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-841c00cb-d296-40c6-9906-9c133fd3e2db\\iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5\\IsoWriter.post.json",
+        "bytes": 7427,
+        "sha256": "37ebdb781a12b8de74fb3304af8f167ac57c1e7e403729645af0808661c21015"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-841c00cb-d296-40c6-9906-9c133fd3e2db\\iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5\\IsoWriter.pre.json",
+      "destination": "recovery/media-metadata/iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5/IsoWriter.pre.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-841c00cb-d296-40c6-9906-9c133fd3e2db\\iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5\\IsoWriter.pre.json",
+        "bytes": 3533,
+        "sha256": "cba0aa3c7751f4b219fcb0fd6ebc32c5d5d66a7e258dbac34662aebca837cb0b"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-841c00cb-d296-40c6-9906-9c133fd3e2db\\iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5\\IsoWriter.result.json",
+      "destination": "recovery/media-metadata/iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5/IsoWriter.result.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-841c00cb-d296-40c6-9906-9c133fd3e2db\\iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5\\IsoWriter.result.json",
+        "bytes": 1777,
+        "sha256": "3655aaeb44296dcb94a48a9e43e7e6bc78ae0d30994fbacb7d22098870d63dbc"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-841c00cb-d296-40c6-9906-9c133fd3e2db\\iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5\\finished.json",
+      "destination": "recovery/media-metadata/iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5/finished.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-841c00cb-d296-40c6-9906-9c133fd3e2db\\iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5\\finished.json",
+        "bytes": 1051,
+        "sha256": "6f3fb4392c0956d210347ffc936168ffa2e8ed73ff55fcd6789d06025694f1bb"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-841c00cb-d296-40c6-9906-9c133fd3e2db\\iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5\\owned.ndjson",
+      "destination": "recovery/media-metadata/iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5/owned.ndjson",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-841c00cb-d296-40c6-9906-9c133fd3e2db\\iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5\\owned.ndjson",
+        "bytes": 1228,
+        "sha256": "60f815b39a76322f7f0ca96c08d0d8cb654467bed525de9a9990d0b7519aad73"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-841c00cb-d296-40c6-9906-9c133fd3e2db\\iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5\\owned.ndjson.context.json",
+      "destination": "recovery/media-metadata/iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5/owned.ndjson.context.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-841c00cb-d296-40c6-9906-9c133fd3e2db\\iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5\\owned.ndjson.context.json",
+        "bytes": 1038,
+        "sha256": "a980c1e248348859d7552988aaa3cc7d7d00f9229f825085f86a4b1960848fc1"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-841c00cb-d296-40c6-9906-9c133fd3e2db\\iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5\\ready.json",
+      "destination": "recovery/media-metadata/iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5/ready.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-841c00cb-d296-40c6-9906-9c133fd3e2db\\iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5\\ready.json",
+        "bytes": 63,
+        "sha256": "6893139b700db4297066f499fb65acea9f821850bfbd475aa41e3bc85a66a0c9"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-841c00cb-d296-40c6-9906-9c133fd3e2db\\iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5\\stderr.raw",
+      "destination": "recovery/media-metadata/iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5/stderr.raw",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-841c00cb-d296-40c6-9906-9c133fd3e2db\\iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5\\stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-841c00cb-d296-40c6-9906-9c133fd3e2db\\iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5\\stdout.raw",
+      "destination": "recovery/media-metadata/iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5/stdout.raw",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-841c00cb-d296-40c6-9906-9c133fd3e2db\\iso-writer-r3-e21ab820-9819-4de0-9cc7-624f7a4a7fa5\\stdout.raw",
+        "bytes": 1540,
+        "sha256": "2a3fca1798574fd231ac1dca536e71d7be1152d3922efbe4bd8f64afcd6d1676"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\source\\CMakeLists.txt",
+      "destination": "recovery/source/CMakeLists.txt",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\source\\CMakeLists.txt",
+        "bytes": 742,
+        "sha256": "dfcae26f8af6be654b2e81c3d44954cb99111b4c8d88a956ede05b7cb762ac31"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\source\\README.md",
+      "destination": "recovery/source/README.md",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\source\\README.md",
+        "bytes": 3639,
+        "sha256": "001d75eaabacca23009c1797dc45aca1e106e6b14221202141a05e40b80b7fbd"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\source\\main.cpp",
+      "destination": "recovery/source/main.cpp",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-current\\source\\main.cpp",
+        "bytes": 23798,
+        "sha256": "71026eeffad9e4efa532db3d6903061db4a38fc03fbbb0c2fcfa04a6e18a24c2"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\ActualBuild.inputs.prepared.json",
+      "destination": "recovery/vm-controls-and-shots/ActualBuild.inputs.prepared.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\ActualBuild.inputs.prepared.json",
+        "bytes": 1850,
+        "sha256": "96126fb364030ae2f14c02242e7ded2a334066c16a1b75087730de320e6f2a28"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\ControlIso.selection.actual.json",
+      "destination": "recovery/vm-controls-and-shots/ControlIso.selection.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\ControlIso.selection.actual.json",
+        "bytes": 2535,
+        "sha256": "7ebea2e9ac80d06541adb6c65f8051e393bee233ba3a8b470673f732dbdb6f74"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\Controls.prepared.diff",
+      "destination": "recovery/vm-controls-and-shots/Controls.prepared.diff",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\Controls.prepared.diff",
+        "bytes": 44431,
+        "sha256": "031af9c2302fedc1a621eadb3dbccdb9d3bb622f2989fb1bd839b038b3b4d12e"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\Decode-TrayRecoveryExport.cjs",
+      "destination": "recovery/vm-controls-and-shots/Decode-TrayRecoveryExport.cjs",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\Decode-TrayRecoveryExport.cjs",
+        "bytes": 11361,
+        "sha256": "f30531ce7d72f03cac6ef7c49b997cc9e808c60c68b0daba84b9456fc8021633"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\Decoder.derivation.prepared.json",
+      "destination": "recovery/vm-controls-and-shots/Decoder.derivation.prepared.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\Decoder.derivation.prepared.json",
+        "bytes": 769,
+        "sha256": "f742947819855cd8213571c5615939d9753c36a530a51a8d9f4d4738b6afcc6a"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\Finalization.actual.json",
+      "destination": "recovery/vm-controls-and-shots/Finalization.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\Finalization.actual.json",
+        "bytes": 2955,
+        "sha256": "16d6a895e0e77e4e8b0aba0baf1c3fafec69b6bc03ea4f2ec7dad4b7eb06a460"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\Finalize-Payload.cjs",
+      "destination": "recovery/vm-controls-and-shots/Finalize-Payload.cjs",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\Finalize-Payload.cjs",
+        "bytes": 6904,
+        "sha256": "a60d3951422f3b023a693aafae24bcfc9f18fbcda2c7da7662aeeb8855d7eb05"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\Preparation.prepared.json",
+      "destination": "recovery/vm-controls-and-shots/Preparation.prepared.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\Preparation.prepared.json",
+        "bytes": 4200,
+        "sha256": "a2ebebbcd2850def8899997dceea7e4a1dbaaecdf3713e0ae5fa40ee5c92c7e0"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\README.prepared.md",
+      "destination": "recovery/vm-controls-and-shots/README.prepared.md",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\README.prepared.md",
+        "bytes": 5279,
+        "sha256": "e9a93c2f4dfa2b68fb6feb404f94d2320815bde86a7ec5a950c1acac8809fd6c"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\Reuse.inputs.prepared.json",
+      "destination": "recovery/vm-controls-and-shots/Reuse.inputs.prepared.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\Reuse.inputs.prepared.json",
+        "bytes": 8688,
+        "sha256": "a607e3fe9a49e1095d8b94753996e76f2a62db6a731185587448956f4c78f286"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\SourceControls.frozen.prepared.json",
+      "destination": "recovery/vm-controls-and-shots/SourceControls.frozen.prepared.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\SourceControls.frozen.prepared.json",
+        "bytes": 2124,
+        "sha256": "7bdecbd4f60ee50b7960040d8b7b7cc90564f3e490143e016946ba58deb06ee4"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\observed-x64\\01-start.actual.png",
+      "destination": "recovery/vm-controls-and-shots/observed-x64/01-start.actual.png",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\observed-x64\\01-start.actual.png",
+        "bytes": 112441,
+        "sha256": "09312a26123fd86b58d0e66a4c6ff8e09b625a485532c2931ca5d8ab4bffb13d"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\observed-x64\\02-first-restart-selected.actual.png",
+      "destination": "recovery/vm-controls-and-shots/observed-x64/02-first-restart-selected.actual.png",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\observed-x64\\02-first-restart-selected.actual.png",
+        "bytes": 104313,
+        "sha256": "f9a50a93f765639e744a7ecd8bf27af2311250b7c1f0872d1b8bc75722c8ac4c"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\observed-x64\\03-after-first-restart.actual.png",
+      "destination": "recovery/vm-controls-and-shots/observed-x64/03-after-first-restart.actual.png",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\observed-x64\\03-after-first-restart.actual.png",
+        "bytes": 110017,
+        "sha256": "8d1769b11a04e4f1832e67748d423e4da09a6c765d8235d6544cc4656211f83e"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\observed-x64\\04-recovered-visible.actual.png",
+      "destination": "recovery/vm-controls-and-shots/observed-x64/04-recovered-visible.actual.png",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\observed-x64\\04-recovered-visible.actual.png",
+        "bytes": 114228,
+        "sha256": "9828ee56ecf37db9d498e2b609dba196664402344880fb75bb630c4bfd194b82"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\observed-x64\\05-removed.actual.png",
+      "destination": "recovery/vm-controls-and-shots/observed-x64/05-removed.actual.png",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\observed-x64\\05-removed.actual.png",
+        "bytes": 113089,
+        "sha256": "d092933ad2ab6b6b7a5fed369cffc19922eeb4906fd849c2312b48def9255e90"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\observed-x64\\06-second-restart-selected.actual.png",
+      "destination": "recovery/vm-controls-and-shots/observed-x64/06-second-restart-selected.actual.png",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\observed-x64\\06-second-restart-selected.actual.png",
+        "bytes": 103639,
+        "sha256": "716282adc91f3595dd5c5428a5c31d54b77f3bdc0d7827e4f1ad8b0a5b37960c"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\observed-x64\\07-second-restart-confirmed.actual.png",
+      "destination": "recovery/vm-controls-and-shots/observed-x64/07-second-restart-confirmed.actual.png",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\observed-x64\\07-second-restart-confirmed.actual.png",
+        "bytes": 104150,
+        "sha256": "e9fdf6fb3705ffd37406d78bd3bacddb4da888e68e0f45197a9f1f28ca762b68"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\observed-x64\\08-after-second-restart.actual.png",
+      "destination": "recovery/vm-controls-and-shots/observed-x64/08-after-second-restart.actual.png",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\observed-x64\\08-after-second-restart.actual.png",
+        "bytes": 113409,
+        "sha256": "99e7085a8423b3054ae456e77c8bd5ad59fed8bb9e2196db7761be1230311ac2"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\observed-x64\\09-finish-clicked.actual.png",
+      "destination": "recovery/vm-controls-and-shots/observed-x64/09-finish-clicked.actual.png",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\observed-x64\\09-finish-clicked.actual.png",
+        "bytes": 133589,
+        "sha256": "d8ba353b3266bfade95ab9c48d390c91f09d00a010c2fef8d3428fbefae5d158"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\observed-x86\\01-start.actual.png",
+      "destination": "recovery/vm-controls-and-shots/observed-x86/01-start.actual.png",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\observed-x86\\01-start.actual.png",
+        "bytes": 113539,
+        "sha256": "1e151d2b2395209946d300af6c560395b16d87ce960e91fa44d80544e3432f56"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\observed-x86\\02-first-restart-selected.actual.png",
+      "destination": "recovery/vm-controls-and-shots/observed-x86/02-first-restart-selected.actual.png",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\observed-x86\\02-first-restart-selected.actual.png",
+        "bytes": 105751,
+        "sha256": "a8cdd43c8cc0f61c0542b7ba754723d139527cddcd40d65427a230018d602fef"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\observed-x86\\03-first-restart-confirmed.actual.png",
+      "destination": "recovery/vm-controls-and-shots/observed-x86/03-first-restart-confirmed.actual.png",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\observed-x86\\03-first-restart-confirmed.actual.png",
+        "bytes": 106420,
+        "sha256": "6c8532443aa81e4ce35672ecf8dcf752274e6fed67f2b6d943816d1195877324"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\observed-x86\\04-recovered-visible.actual.png",
+      "destination": "recovery/vm-controls-and-shots/observed-x86/04-recovered-visible.actual.png",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\observed-x86\\04-recovered-visible.actual.png",
+        "bytes": 115218,
+        "sha256": "553d362251c34af3fdf6a0875c62252a8a81cb309f28d2b9d2305a9e0a003767"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\observed-x86\\05-removed.actual.png",
+      "destination": "recovery/vm-controls-and-shots/observed-x86/05-removed.actual.png",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\observed-x86\\05-removed.actual.png",
+        "bytes": 113930,
+        "sha256": "d6d56de02bd6575d0609752aa6a6a2f21af136f47e013386339da953e673a8f3"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\observed-x86\\06-second-restart-confirmed.actual.png",
+      "destination": "recovery/vm-controls-and-shots/observed-x86/06-second-restart-confirmed.actual.png",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\observed-x86\\06-second-restart-confirmed.actual.png",
+        "bytes": 106249,
+        "sha256": "9cd748c664e6b6bb54908f1eb29b4575bcc410600e59fe7e775c0ffbd2a1d8dc"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\observed-x86\\07-after-second-restart.actual.png",
+      "destination": "recovery/vm-controls-and-shots/observed-x86/07-after-second-restart.actual.png",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\observed-x86\\07-after-second-restart.actual.png",
+        "bytes": 104857,
+        "sha256": "e8d95d6012da659eb677cedca788f33cc0c0983ac97fe1f7aee0352f8a659223"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\observed-x86\\08-no-resurrection-visible.actual.png",
+      "destination": "recovery/vm-controls-and-shots/observed-x86/08-no-resurrection-visible.actual.png",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\observed-x86\\08-no-resurrection-visible.actual.png",
+        "bytes": 114269,
+        "sha256": "bf9dd1125fbfa314ed14066cc7eb0375cf474efb18ce5be5c54647ba3613950b"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\observed-x86\\09-finish-clicked.actual.png",
+      "destination": "recovery/vm-controls-and-shots/observed-x86/09-finish-clicked.actual.png",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\observed-x86\\09-finish-clicked.actual.png",
+        "bytes": 135770,
+        "sha256": "b85c17c947fecbc5c6a7de6496abfd94200133cfb69e3331e3922a90ae6014b1"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\payload\\Export-TrayRecovery.ps1",
+      "destination": "recovery/vm-controls-and-shots/payload/Export-TrayRecovery.ps1",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\payload\\Export-TrayRecovery.ps1",
+        "bytes": 4485,
+        "sha256": "21d4c092a8caaa07d196789b64f39d7c6eb13c196b883755b4510606717370d9"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\payload\\Guest-TrayRecovery.cjs",
+      "destination": "recovery/vm-controls-and-shots/payload/Guest-TrayRecovery.cjs",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\payload\\Guest-TrayRecovery.cjs",
+        "bytes": 14459,
+        "sha256": "3746bb08fefb52448f076318e722c62d36e1f037580cd89adc2627b83b46b7a6"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\payload\\Guest-TrayRecovery.ps1",
+      "destination": "recovery/vm-controls-and-shots/payload/Guest-TrayRecovery.ps1",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\payload\\Guest-TrayRecovery.ps1",
+        "bytes": 5388,
+        "sha256": "7896cc46e59a24267eab39d5e2909117be0794877a743fc137e28cf32284440d"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\payload\\Run-TrayRecovery.ps1",
+      "destination": "recovery/vm-controls-and-shots/payload/Run-TrayRecovery.ps1",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\payload\\Run-TrayRecovery.ps1",
+        "bytes": 1638,
+        "sha256": "72ce5e94b64a8448591184ab3b805b1b9338e324e33061e122fbcc97516ce804"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\payload\\Stage-TrayRecovery.ps1",
+      "destination": "recovery/vm-controls-and-shots/payload/Stage-TrayRecovery.ps1",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\payload\\Stage-TrayRecovery.ps1",
+        "bytes": 2750,
+        "sha256": "50eefa08cc24d123465909056422324488b19f7c8a5815d7b72b021c12f652e5"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\payload\\TrayRecovery-Lib.ps1",
+      "destination": "recovery/vm-controls-and-shots/payload/TrayRecovery-Lib.ps1",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\payload\\TrayRecovery-Lib.ps1",
+        "bytes": 10308,
+        "sha256": "7d07ca53842487a8a202957849c8c8ba6b1b05f86967c74810ffcefa48d9e442"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\payload\\TrayRecovery.manifest.json",
+      "destination": "recovery/vm-controls-and-shots/payload/TrayRecovery.manifest.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-recovery-vm-current\\payload\\TrayRecovery.manifest.json",
+        "bytes": 14187,
+        "sha256": "1003ff60a0d933a2c3fab8cfbeca48901b36e6abc58ec39a98cf2ff80b841c86"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-stage\\Decode.actual.json",
+      "destination": "recovery/vm/stage/Decode.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-stage\\Decode.actual.json",
+        "bytes": 6128,
+        "sha256": "8762123011b287afd0bef733d2b2012c49f5b811c0ff3e4f0b4d70fdd19d2125"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-stage\\Envelope.json.raw",
+      "destination": "recovery/vm/stage/Envelope.json.raw",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-stage\\Envelope.json.raw",
+        "bytes": 47522,
+        "sha256": "c710d175a8d611a1f32a1874ebeb97fbb8ef04d564acbaf12b02032b3ccc5d0f"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-stage\\Files.index.json",
+      "destination": "recovery/vm/stage/Files.index.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-stage\\Files.index.json",
+        "bytes": 2801,
+        "sha256": "faca40c743354b48dbe3b1b8f831ad3ccb00db311758c06455372aed3509aa8b"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-stage\\Serial.frame.raw",
+      "destination": "recovery/vm/stage/Serial.frame.raw",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-stage\\Serial.frame.raw",
+        "bytes": 63459,
+        "sha256": "af2b1a3a95bb734faa632cadd5c54a13ac40fca205d9cac2ffbadee8874e0da9"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-stage\\raw\\Environment.before-and-active.json",
+      "destination": "recovery/vm/stage/raw/Environment.before-and-active.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-stage\\raw\\Environment.before-and-active.json",
+        "bytes": 938,
+        "sha256": "6791f20c72b358a02244d77e52c7ea37c5b0ad7672c70826d8bc1095804e2fb3"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-stage\\raw\\ExportFiles.actual.json",
+      "destination": "recovery/vm/stage/raw/ExportFiles.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-stage\\raw\\ExportFiles.actual.json",
+        "bytes": 3715,
+        "sha256": "ca03b69914229a5802bef0a43d7f07a0a4f254e737f25fb7479cf3d838e61712"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-stage\\raw\\ExportPreflight.actual.json",
+      "destination": "recovery/vm/stage/raw/ExportPreflight.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-stage\\raw\\ExportPreflight.actual.json",
+        "bytes": 4529,
+        "sha256": "444f5388d4fca19420ebc5578d5861476a340da1a439c6352ff0031a11f3e515"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-stage\\raw\\InputCopy.actual.json",
+      "destination": "recovery/vm/stage/raw/InputCopy.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-stage\\raw\\InputCopy.actual.json",
+        "bytes": 7405,
+        "sha256": "4d89ba4bb2f2907f354fb042a1ba7d5d8ba6105f1f4bde18aecbf27e6ae70a2d"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-stage\\raw\\Inputs.actual.json",
+      "destination": "recovery/vm/stage/raw/Inputs.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-stage\\raw\\Inputs.actual.json",
+        "bytes": 1566,
+        "sha256": "2fc1424baeaaa463febb0c32d50c8ce4e2cf72ceddeaf5544da4088b4b2ccf42"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-stage\\raw\\Invocation.actual.json",
+      "destination": "recovery/vm/stage/raw/Invocation.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-stage\\raw\\Invocation.actual.json",
+        "bytes": 739,
+        "sha256": "7eb709889d64fb0c0316607dcffa652c6d13750e1cc3d94c725d9ffe0fe96d95"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-stage\\raw\\Lease.actual.json",
+      "destination": "recovery/vm/stage/raw/Lease.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-stage\\raw\\Lease.actual.json",
+        "bytes": 163,
+        "sha256": "23439da7b65ea4ea2c483b17822ec66e3c4818bb165ff958bac9e3a67193a863"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-stage\\raw\\PowerShell.finished.json",
+      "destination": "recovery/vm/stage/raw/PowerShell.finished.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-stage\\raw\\PowerShell.finished.json",
+        "bytes": 443,
+        "sha256": "521d9e8b7732bb4c868d8650e805cc9daf99489081e5bfe96030d432f689f1b0"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-stage\\raw\\Stage.actual.json",
+      "destination": "recovery/vm/stage/raw/Stage.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-stage\\raw\\Stage.actual.json",
+        "bytes": 13670,
+        "sha256": "ed5dc9cb9be8c39d41e023b9161cadcbfa24e03a39a2d3d831c396746f114068"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-stage\\raw\\Wrapper.Invocation.actual.json",
+      "destination": "recovery/vm/stage/raw/Wrapper.Invocation.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-stage\\raw\\Wrapper.Invocation.actual.json",
+        "bytes": 1669,
+        "sha256": "9175a4a86c59479abbb597756b0ef62f6c115ee02ee8bb0d96e343e9597f889e"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-stage\\raw\\Wrapper.finished.json",
+      "destination": "recovery/vm/stage/raw/Wrapper.finished.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-stage\\raw\\Wrapper.finished.json",
+        "bytes": 240,
+        "sha256": "dd6cf5538e62d56588a99c6c72a25010073677db105501b802adec01bfc3a444"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-stage\\raw\\stderr.log",
+      "destination": "recovery/vm/stage/raw/stderr.log",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-stage\\raw\\stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-stage\\raw\\stdout.log",
+      "destination": "recovery/vm/stage/raw/stdout.log",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-stage\\raw\\stdout.log",
+        "bytes": 400,
+        "sha256": "2abd64368927ac713baa0630fc4e0b56ad4381f2561f13a0ab81b3c0e76d517c"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x64\\Decode.actual.json",
+      "destination": "recovery/vm/x64/Decode.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x64\\Decode.actual.json",
+        "bytes": 7503,
+        "sha256": "c6b01166e456648312492cd25f8d0ae502c6a3666f4532009a3b831faf167b18"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x64\\Envelope.json.raw",
+      "destination": "recovery/vm/x64/Envelope.json.raw",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x64\\Envelope.json.raw",
+        "bytes": 54322,
+        "sha256": "47f37813bd0ae87bf68cb01a5f4e4d1ffdc170f09d01d1e1c237fe8a9983ce1f"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x64\\Files.index.json",
+      "destination": "recovery/vm/x64/Files.index.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x64\\Files.index.json",
+        "bytes": 3718,
+        "sha256": "2e7a502fb0df87066fafa9937df08ce99821867db0fc8c36a6ecf631e552c703"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x64\\Serial.frame.raw",
+      "destination": "recovery/vm/x64/Serial.frame.raw",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x64\\Serial.frame.raw",
+        "bytes": 72527,
+        "sha256": "e05ae7e99f9d288d6cba7a14e1eba7111383bf6c72e0efcece6fb9347cae78e6"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x64\\raw\\Environment.before-and-active.json",
+      "destination": "recovery/vm/x64/raw/Environment.before-and-active.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x64\\raw\\Environment.before-and-active.json",
+        "bytes": 941,
+        "sha256": "4441ad5ddd47d9b47b0b668dd88df54e333b5875342da0d02455ab1ceb370041"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x64\\raw\\ExportFiles.actual.json",
+      "destination": "recovery/vm/x64/raw/ExportFiles.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x64\\raw\\ExportFiles.actual.json",
+        "bytes": 5352,
+        "sha256": "e559a85caa7ca106f994cf4bc283dbb1d654b6d50f95651c4dd71f029dc57f60"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x64\\raw\\ExportPreflight.actual.json",
+      "destination": "recovery/vm/x64/raw/ExportPreflight.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x64\\raw\\ExportPreflight.actual.json",
+        "bytes": 4736,
+        "sha256": "dba8f185a2c45d9233618e685774e3a062233d6aecde6592bc7699e0345928df"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x64\\raw\\Inputs.actual.json",
+      "destination": "recovery/vm/x64/raw/Inputs.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x64\\raw\\Inputs.actual.json",
+        "bytes": 1562,
+        "sha256": "b1e822aa019b0a70930ae016182feb6cf4592b23aaf5f7d674cd5baf84ffdf07"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x64\\raw\\Invocation.actual.json",
+      "destination": "recovery/vm/x64/raw/Invocation.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x64\\raw\\Invocation.actual.json",
+        "bytes": 960,
+        "sha256": "1769edd7427f0cc8fae039c640896298ba94013f17a0725450139739d13fcb26"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x64\\raw\\Lease.actual.json",
+      "destination": "recovery/vm/x64/raw/Lease.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x64\\raw\\Lease.actual.json",
+        "bytes": 163,
+        "sha256": "f409a227c120af96cd73130768cd6cdc6b9985d4df149b78e6691afcf4455177"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x64\\raw\\Native.Invocation.actual.json",
+      "destination": "recovery/vm/x64/raw/Native.Invocation.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x64\\raw\\Native.Invocation.actual.json",
+        "bytes": 1265,
+        "sha256": "7b955a091e3c1c032ec5ef0e4d0951d99195141e33f229d241cb8e7376a3b355"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x64\\raw\\PowerShell.finished.json",
+      "destination": "recovery/vm/x64/raw/PowerShell.finished.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x64\\raw\\PowerShell.finished.json",
+        "bytes": 443,
+        "sha256": "521d9e8b7732bb4c868d8650e805cc9daf99489081e5bfe96030d432f689f1b0"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x64\\raw\\Summary.actual.json",
+      "destination": "recovery/vm/x64/raw/Summary.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x64\\raw\\Summary.actual.json",
+        "bytes": 7451,
+        "sha256": "0d64ff02732146ef103ea4c07247173b00597f5c3b8219266b7e0bb5401ef3b2"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x64\\raw\\Wrapper.Invocation.actual.json",
+      "destination": "recovery/vm/x64/raw/Wrapper.Invocation.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x64\\raw\\Wrapper.Invocation.actual.json",
+        "bytes": 2081,
+        "sha256": "51ef60e580fbf192d3ca70f4cd46ea47a15995420c731319e43a8391687f3536"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x64\\raw\\Wrapper.finished.json",
+      "destination": "recovery/vm/x64/raw/Wrapper.finished.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x64\\raw\\Wrapper.finished.json",
+        "bytes": 240,
+        "sha256": "e5ddfcf5be027bda88415a6f70e39951ee8be839c566cf38b2a8ccd7e5d8c9d9"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x64\\raw\\finished.json",
+      "destination": "recovery/vm/x64/raw/finished.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x64\\raw\\finished.json",
+        "bytes": 942,
+        "sha256": "ef3f994da4a6fbf2d54eeeb54450a62947f66fe92559ead31b85e9def91a7122"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x64\\raw\\owned.ndjson",
+      "destination": "recovery/vm/x64/raw/owned.ndjson",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x64\\raw\\owned.ndjson",
+        "bytes": 1125,
+        "sha256": "eafa5db38e325923ff6356d79c3f867a3de336d1a9bc47f274403c848e76dc7f"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x64\\raw\\owned.ndjson.context.json",
+      "destination": "recovery/vm/x64/raw/owned.ndjson.context.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x64\\raw\\owned.ndjson.context.json",
+        "bytes": 395,
+        "sha256": "b86e0de0a057ed50ffb307a5aeca77ed1da7c5661de105c12c9be8c6695b314f"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x64\\raw\\ready.json",
+      "destination": "recovery/vm/x64/raw/ready.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x64\\raw\\ready.json",
+        "bytes": 62,
+        "sha256": "8a8d389ac25428929432db448c5c072ae7b8d82953ef69d68f42ed7435fd4b8f"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x64\\raw\\stderr.bin",
+      "destination": "recovery/vm/x64/raw/stderr.bin",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x64\\raw\\stderr.bin",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x64\\raw\\stderr.log",
+      "destination": "recovery/vm/x64/raw/stderr.log",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x64\\raw\\stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x64\\raw\\stdout.bin",
+      "destination": "recovery/vm/x64/raw/stdout.bin",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x64\\raw\\stdout.bin",
+        "bytes": 11949,
+        "sha256": "edbbec7245c8429dae67e07d771f9b57bcf4656dfa4b6c6596ec20bb2317b2b3"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x64\\raw\\stdout.log",
+      "destination": "recovery/vm/x64/raw/stdout.log",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x64\\raw\\stdout.log",
+        "bytes": 852,
+        "sha256": "4bc48e88e4aba6d1e7a4dfd08e8734f5c94d437114c13d4aded3cb22c900ced3"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x86\\Decode.actual.json",
+      "destination": "recovery/vm/x86/Decode.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x86\\Decode.actual.json",
+        "bytes": 7503,
+        "sha256": "b4edd4ab845096c258cc64e6f28c1a0558e4558936349855ab5322673fefc5f7"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x86\\Envelope.json.raw",
+      "destination": "recovery/vm/x86/Envelope.json.raw",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x86\\Envelope.json.raw",
+        "bytes": 54322,
+        "sha256": "9cce82749e4cb3de9bc7d23a1e0bb07ecdd6669cb235b003232a09626d805c70"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x86\\Files.index.json",
+      "destination": "recovery/vm/x86/Files.index.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x86\\Files.index.json",
+        "bytes": 3718,
+        "sha256": "51c6a8417adcccfea93a1c289bd980f0b0f79c0d29aa0f2e3f6a58c405931698"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x86\\Serial.frame.raw",
+      "destination": "recovery/vm/x86/Serial.frame.raw",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x86\\Serial.frame.raw",
+        "bytes": 72527,
+        "sha256": "6c956d9557e7b87cd0aa6b357dda9ec4b2d9523fdf27fe16fefdfdc07be275cb"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x86\\raw\\Environment.before-and-active.json",
+      "destination": "recovery/vm/x86/raw/Environment.before-and-active.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x86\\raw\\Environment.before-and-active.json",
+        "bytes": 941,
+        "sha256": "4441ad5ddd47d9b47b0b668dd88df54e333b5875342da0d02455ab1ceb370041"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x86\\raw\\ExportFiles.actual.json",
+      "destination": "recovery/vm/x86/raw/ExportFiles.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x86\\raw\\ExportFiles.actual.json",
+        "bytes": 5352,
+        "sha256": "5d1505c960cad2c9b227ef8cf6e771cb67f934e6fe4dec16ff11b59c731d9e91"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x86\\raw\\ExportPreflight.actual.json",
+      "destination": "recovery/vm/x86/raw/ExportPreflight.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x86\\raw\\ExportPreflight.actual.json",
+        "bytes": 4736,
+        "sha256": "94067d8e364ef82a3268ac9ea2f3e48c59407dfdb7c26321e07295ad90b1f943"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x86\\raw\\Inputs.actual.json",
+      "destination": "recovery/vm/x86/raw/Inputs.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x86\\raw\\Inputs.actual.json",
+        "bytes": 1562,
+        "sha256": "9311fea6678503b563ec23c2cd1036ef0c4d4b09690901ef7b4471c8bc23c6b2"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x86\\raw\\Invocation.actual.json",
+      "destination": "recovery/vm/x86/raw/Invocation.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x86\\raw\\Invocation.actual.json",
+        "bytes": 960,
+        "sha256": "37e67aa8f332703dd4c773ed13580c2141d3fab7681c95cdab5e9d4ff0f735df"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x86\\raw\\Lease.actual.json",
+      "destination": "recovery/vm/x86/raw/Lease.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x86\\raw\\Lease.actual.json",
+        "bytes": 163,
+        "sha256": "ccef298cc5f9afe78883ef5cad3a377bbf5d71976e8013c629e949942852fa98"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x86\\raw\\Native.Invocation.actual.json",
+      "destination": "recovery/vm/x86/raw/Native.Invocation.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x86\\raw\\Native.Invocation.actual.json",
+        "bytes": 1264,
+        "sha256": "082c2c27033c7a63ddc1dc51a13c71d8f3121f6ceb541df71a1682d67cbbe6e3"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x86\\raw\\PowerShell.finished.json",
+      "destination": "recovery/vm/x86/raw/PowerShell.finished.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x86\\raw\\PowerShell.finished.json",
+        "bytes": 443,
+        "sha256": "521d9e8b7732bb4c868d8650e805cc9daf99489081e5bfe96030d432f689f1b0"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x86\\raw\\Summary.actual.json",
+      "destination": "recovery/vm/x86/raw/Summary.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x86\\raw\\Summary.actual.json",
+        "bytes": 7451,
+        "sha256": "b4227580243609e923211a92b8b36b4f322c04e189e724390d0c399f1c77c561"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x86\\raw\\Wrapper.Invocation.actual.json",
+      "destination": "recovery/vm/x86/raw/Wrapper.Invocation.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x86\\raw\\Wrapper.Invocation.actual.json",
+        "bytes": 2081,
+        "sha256": "890256cae1ca38026a1fe1af95835fbb16c4306c4a16ff169af1e18a82c3868a"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x86\\raw\\Wrapper.finished.json",
+      "destination": "recovery/vm/x86/raw/Wrapper.finished.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x86\\raw\\Wrapper.finished.json",
+        "bytes": 240,
+        "sha256": "1e4d9ec8b96303c94e5d77d186119064a5d5b673a17b37c67c2901348dafff00"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x86\\raw\\finished.json",
+      "destination": "recovery/vm/x86/raw/finished.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x86\\raw\\finished.json",
+        "bytes": 942,
+        "sha256": "912a9680c3c006e7f4109b4d0fc30092c775e1c62a54e4c2225c9ec9c4acdb85"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x86\\raw\\owned.ndjson",
+      "destination": "recovery/vm/x86/raw/owned.ndjson",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x86\\raw\\owned.ndjson",
+        "bytes": 1125,
+        "sha256": "d805ed2830a53a439a8118cf24077602ff660023a276dc6e2bd98b072a2c6f6f"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x86\\raw\\owned.ndjson.context.json",
+      "destination": "recovery/vm/x86/raw/owned.ndjson.context.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x86\\raw\\owned.ndjson.context.json",
+        "bytes": 395,
+        "sha256": "6643c828a0a69ddbecfa9036e01499ea82a2b96fdb1840f8e23b18c0fde0833b"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x86\\raw\\ready.json",
+      "destination": "recovery/vm/x86/raw/ready.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x86\\raw\\ready.json",
+        "bytes": 62,
+        "sha256": "31aeb52d09445135a0fa2b0c95b1ecade407d192410a5700b9cd4a59e954cbb7"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x86\\raw\\stderr.bin",
+      "destination": "recovery/vm/x86/raw/stderr.bin",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x86\\raw\\stderr.bin",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x86\\raw\\stderr.log",
+      "destination": "recovery/vm/x86/raw/stderr.log",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x86\\raw\\stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x86\\raw\\stdout.bin",
+      "destination": "recovery/vm/x86/raw/stdout.bin",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x86\\raw\\stdout.bin",
+        "bytes": 11949,
+        "sha256": "6331e6c9d5f8d687aae7dd5fbdd2282ac788732ae3ecce456983bed9dd0134c6"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x86\\raw\\stdout.log",
+      "destination": "recovery/vm/x86/raw/stdout.log",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\trayrc-a1-x86\\raw\\stdout.log",
+        "bytes": 852,
+        "sha256": "7940864572f2e5ed18eeb1a45d65761953ef082e1da0a41653d9fb7f3cd2b0be"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\functional-closeout-archive-prep\\references\\PriorEvidence.references.prepared.json",
+      "destination": "references/PriorEvidence.references.prepared.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\functional-closeout-archive-prep\\references\\PriorEvidence.references.prepared.json",
+        "bytes": 3032,
+        "sha256": "aa0cabdf80ebe37e325895abaa97884bc5d12e43aad1d4109b529f07773483a3"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\win7-short-investigation\\MediaRecovery.actual.json",
+      "destination": "win7/investigation/MediaRecovery.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\win7-short-investigation\\MediaRecovery.actual.json",
+        "bytes": 112600,
+        "sha256": "ee511b1b87b17839c470786ca6bac62ef90b52c6125fdb7c9bbe1bf901af3eef"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\win7-short-investigation\\MediaRecovery.actual.md",
+      "destination": "win7/investigation/MediaRecovery.actual.md",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\win7-short-investigation\\MediaRecovery.actual.md",
+        "bytes": 4386,
+        "sha256": "8d6b407d1cfd87c0b44f0859004250e6a2262d137ce62ad9805e1d1fa3a09c90"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\win7-short-investigation\\Report.md",
+      "destination": "win7/investigation/Report.md",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\win7-short-investigation\\Report.md",
+        "bytes": 9625,
+        "sha256": "84077e7d07c9b00ff1f9267a8a81cc80ea5ed0f351d1ec98ec0a454c6d1ec30e"
+      }
+    }
+  ],
+  "totalBytes": 7011801,
+  "sourceCount": 269,
+  "desiredCompleteCapMiB": 16,
+  "exclusions": [
+    "No EXE/DLL/LIB/OBJ/PDB/ISO/ZIP/VM-image/archive bytes",
+    "No private catalog/credential/lease token or whole serial",
+    "No duplicate old immutable archive contents; precise prior references only",
+    "No long test/focus/Win7/full-issue qualification inferred from short observations",
+    "Recovery pending source groups will be frozen only after all actual outputs and reviews are complete",
+    "Win7 conversion/newVM/short-test future outputs excluded from this snapshot; only completed bounded read-only search reports selected",
+    "Actual recovery ISO tree control source duplicates excluded; frozen originals and writer metadata retained"
+  ],
+  "allEightIssuesClosed": false,
+  "humanLegalApproval": false,
+  "focusQualified": false,
+  "win7Qualified": false,
+  "productionQualificationComplete": false,
+  "releaseReady": false,
+  "actualCompletedScopes": {
+    "serverVmRecovery": {
+      "architectures": [
+        "x64",
+        "x86"
+      ],
+      "nativeCases": 2,
+      "observedTaskbarCreatedPerCase": 2,
+      "removeCallsPerCase": 1,
+      "screenshotsPerCase": 9,
+      "sourceVerified": false,
+      "externalRootUiProofIncluded": true,
+      "focusQualified": false,
+      "win7Qualified": false
+    },
+    "published060MaterialEngineeringOnly": {
+      "v2RecipeRootFailureRetained": true,
+      "v3SelectedMaterialFiles": 1238,
+      "legalApproval": false,
+      "currentBranchNoticesApproved": false
+    },
+    "win7ExistingMediaSearchOnly": {
+      "infoAndMeasureReadOnly": true,
+      "conversionOrWin7ProductExecuted": false,
+      "futureConversionAndShortsExcluded": true
+    },
+    "issue77SourceInvestigationOnly": {
+      "newSdkFixQualified": false,
+      "newTestsExecuted": false
+    },
+    "collectorAddsNoProductQualification": true
+  }
+}

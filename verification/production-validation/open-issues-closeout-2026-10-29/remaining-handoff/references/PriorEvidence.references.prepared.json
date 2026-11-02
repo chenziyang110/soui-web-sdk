@@ -1,0 +1,30 @@
+{
+  "schema": "soui.remaining-handoff-prior-evidence-references/v1",
+  "meaning": "References only; existing immutable archive contents are not duplicated or reclassified",
+  "functionalCloseout": {
+    "path": "C:/sc07/verification/production-validation/open-issues-closeout-2026-10-29/functional-closeout/Files.index.json",
+    "bytes": 52496,
+    "sha256": "59f70e1762f079d58bde10983fee7545a425d67ad61a7aaff97be276923e0f99",
+    "indexEntries": 274,
+    "oldWin7InvestigationEntries": [
+      {
+        "path": "win7/investigation/MediaRecovery.actual.json",
+        "bytes": 112600,
+        "sha256": "ee511b1b87b17839c470786ca6bac62ef90b52c6125fdb7c9bbe1bf901af3eef"
+      },
+      {
+        "path": "win7/investigation/MediaRecovery.actual.md",
+        "bytes": 4386,
+        "sha256": "8d6b407d1cfd87c0b44f0859004250e6a2262d137ce62ad9805e1d1fa3a09c90"
+      },
+      {
+        "path": "win7/investigation/Report.md",
+        "bytes": 9625,
+        "sha256": "84077e7d07c9b00ff1f9267a8a81cc80ea5ed0f351d1ec98ec0a454c6d1ec30e"
+      }
+    ]
+  },
+  "scope": "The three old Win7 search reports are already in main/PR131; this selection adds only later assessment/conversion/boot/standalone observations.",
+  "existingArchiveReadThisPreparation": "Only its exact Files.index.json; none of its referenced media/archives/product bytes",
+  "newProductOrVmExecution": false
+}

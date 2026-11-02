@@ -1,0 +1,114 @@
+{
+  "schema": "soui.ordinary-reload-consumer-build-preparation/v1",
+  "scope": "New ordinary acceptance consumer-only x64/x86 compile after exact reload-pending fix; no build executed by preparation",
+  "recipeDerivedFrom": {
+    "node": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port-reload-current/Run-MessagePortReloadBuild.cjs",
+      "bytes": 17397,
+      "sha256": "1b3f7d3e18951eece5f51ba95490d25c675782421ae1cf8a9031b8a7479a8983"
+    },
+    "powershell": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port-reload-current/Invoke-MessagePortBuild.ps1",
+      "bytes": 7938,
+      "sha256": "cd1f74788819d0d813b4d1b80805d665ac30cb7d8c0b7c83b97a7f5bce9a73a3"
+    }
+  },
+  "controls": {
+    "node": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/ordinary-reload-current/Run-OrdinaryBuild.cjs",
+      "bytes": 17600,
+      "sha256": "b3b10fd22d3ba4ee9afa068f3d450bdca6047d85fe69bdbd88224a024c46946a"
+    },
+    "powershell": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/ordinary-reload-current/Invoke-OrdinaryBuild.ps1",
+      "bytes": 8063,
+      "sha256": "4c9d5738b6eed3daefd18e714caaaf9ff8fc5035326b71730e59f7bec358f745"
+    },
+    "webPreparation": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/ordinary-reload-current/Prepare-WebReuse.cjs",
+      "bytes": 9180,
+      "sha256": "ca925caf88ce9958a73c2c342ea7de7d6ea12b82c2df4c22f28174cac1ec29be"
+    },
+    "reuse": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/ordinary-reload-current/web-reuse/Reuse.actual.json",
+      "bytes": 66438,
+      "sha256": "29fb458b38dc052a2272ec47f16b9eda42a1c8373f860dc598f6892adffd40bf"
+    },
+    "patch": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/ordinary-reload-current/Patch.prepared.json",
+      "bytes": 2146,
+      "sha256": "fda59c8ffaceaab532641d55550ab4ec0471f0067aa4f80d5d302660fe43d385"
+    }
+  },
+  "frozenNativeFiles": [
+    {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/ordinary-reload-current/source/CMakeLists.txt",
+      "bytes": 979,
+      "sha256": "96a898f5a8ea33494b91e7bd9ab50ad2e70b3ca810976dff9980dd169073ac9e"
+    },
+    {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/ordinary-reload-current/source/main.cpp",
+      "bytes": 42218,
+      "sha256": "4d58281549806425f097ee0ca9bc04160f43ca112c027b46b4dfc199a8173be4"
+    },
+    {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/ordinary-reload-current/source/shutdown-poll.h",
+      "bytes": 734,
+      "sha256": "cb0bbc2cd1e76eb27898550060a7a43cfdee4a5e68ceefb38ac1035ac9da4abe"
+    },
+    {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/ordinary-reload-current/source/native-owner-metrics.h",
+      "bytes": 23624,
+      "sha256": "f8c6179246760e320e2063ac662c424526767453236be38ada059c57450b7157"
+    },
+    {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/ordinary-reload-current/source/process-address-census.h",
+      "bytes": 5956,
+      "sha256": "2ea0e2a58fa82d036bda63d6bf53f52cb57c20cc69a9ed78f6835b277fc46792"
+    }
+  ],
+  "webFiles": 5,
+  "webBytes": 169771,
+  "installedSdkPrefixes": {
+    "x64": "C:/sr06/out/release-install-x64-release",
+    "x86": "C:/sr06/out/release-install-x86-release"
+  },
+  "fixedTimeoutMs": 120000,
+  "fixedDrainMs": 2000,
+  "vctipNaturalTimeoutArgument": "-timeout:20",
+  "vctipNaturalWaitLimitMs": 30000,
+  "nativeJobsRequireOriginalRootAndWholeJobNatural0": true,
+  "compilerIdleAndOriginalMsvcLifecycleGuardUnchanged": true,
+  "buildTarget": "SouiAcceptance",
+  "configuration": "Release",
+  "freshWorkspacePattern": "C:/sco1-<first8uuid>-<x64|x86>",
+  "rootInvocation": [
+    "node",
+    "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/ordinary-reload-current/Run-OrdinaryBuild.cjs",
+    "ROOT_REVIEWED_ORDINARY_RELOAD_BUILD_V1"
+  ],
+  "changesFromReviewedRecipe": [
+    "Explicit Root gate; fresh ordinary output/schema/workspace labels",
+    "Copy and pin two actual native-owner metrics/census headers required by this consumer; five native build inputs instead of three",
+    "Freeze this preparation+patch+all copied source/current public source paths; current sealed installed SDK and Web assets exact before/after",
+    "Use ordinary immutable five-file Web asset proof retaining original producer and explicit current-toolchain differences"
+  ],
+  "futureVmShort": {
+    "mode": "reload",
+    "cycles": 3,
+    "warmup": 0,
+    "stepTimeoutMs": 20000,
+    "unchangedOriginalUntilAndMessageService": true,
+    "executeOnlyInTaskVm": true,
+    "notPreparedForAutomaticExecution": true,
+    "originalValidatorMustBindFreshExeSdkWebAndOwnedIdentity": true,
+    "resourceGate": "not-evaluated",
+    "productionGate": false
+  },
+  "buildExecuted": false,
+  "testExecuted": false,
+  "vmControlled": false,
+  "rootReviewPending": true,
+  "releaseReady": false,
+  "productionQualificationComplete": false
+}

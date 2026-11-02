@@ -1,0 +1,96 @@
+{
+  "schema": "soui.native-focus-owned-preparation/v1",
+  "preparedUtc": "2026-10-29T10:50:59.338Z",
+  "sourcePins": [
+    {
+      "name": "NativeFocusControl.cs",
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\NativeFocusControl.cs",
+      "bytes": 30830,
+      "sha256": "690305a4dbe13e2c3a56d269bd7c4377bd3ab8c7b5e0ba9de23bbcd00c0ea5e2"
+    },
+    {
+      "name": "Invoke-NativeFocusControl.ps1",
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\Invoke-NativeFocusControl.ps1",
+      "bytes": 5837,
+      "sha256": "9227597e840ddf12317ae3940c7f78db69faa601adc62347715f4b23500814c2"
+    },
+    {
+      "name": "README.md",
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\README.md",
+      "bytes": 6127,
+      "sha256": "9b4df7135152e2ee3b351305d2c085f6e7ae2da17cf06003e5f6a7b9f78f2306"
+    },
+    {
+      "name": "Preparation.actual.json",
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\Preparation.actual.json",
+      "bytes": 2446,
+      "sha256": "6b5fd304995a766913b5d6d765b7a71e4eb5755a6043a05c36865cbb27e609e6"
+    },
+    {
+      "name": "Focus-Owned.cjs",
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\Focus-Owned.cjs",
+      "bytes": 8224,
+      "sha256": "29fac428862351d58d28cb3841f34fd4fe5082aed94499e7a684eee5fb5bc1d1"
+    },
+    {
+      "name": "FocusExport.ps1",
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\FocusExport.ps1",
+      "bytes": 6791,
+      "sha256": "5cc5469a02c12b9db4372d14f6cbab71db2acd70e9f7c1ebcfd58604ed04db89"
+    }
+  ],
+  "selection": {
+    "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\FocusOwned.selection.prepared.json",
+    "bytes": 1548,
+    "sha256": "48f39f938ac677d0aed30d173fadf85753e652204611c9e424f8987444fbcd1c"
+  },
+  "commands": {
+    "start": "C:\\issues8\\tools\\node.exe D:\\Focus-Owned.cjs",
+    "exportAfterControllerEnded": "powershell -NoProfile -File D:\\FocusExport.ps1"
+  },
+  "guest": "SOUI-7AEMMK5Q0T",
+  "freshOuter": "C:/issue-closeout-evidence/focusc-a1-run",
+  "freshInner": "C:/issue-closeout-evidence/focusc-a1",
+  "outerTimeoutMs": 90000,
+  "drainMs": 2000,
+  "innerDeadlineMs": 60000,
+  "deadlineFrozenBeforeFirstControl": true,
+  "innerDeadlineChanged": false,
+  "controllerBirthNotCollected": true,
+  "controllerPidMustBeAbsentForExport": true,
+  "nativeRootIdentityRequiresPidAndExactBirth": true,
+  "copiedInnerRecords": [
+    "Invocation.actual.json",
+    "Compilation.actual.json",
+    "Native.events.ndjson",
+    "PowerShell.error.json",
+    "PowerShell.finished.json"
+  ],
+  "copiedOnlyAfterOwnedClosure": true,
+  "transportWholeClosedTreeMaxFiles": 512,
+  "transportWholeClosedTreeMaxBytes": 8388608,
+  "unchangedExporterSha256": "f1cc23cfa6d76d35b2a6d8dd0779ceb332a42b51f74271bf097b5e9b44f1ce7c",
+  "syntaxParsedOnly": true,
+  "executed": false,
+  "compiled": false,
+  "vmTouched": false,
+  "sdkFixed": false,
+  "sdkSupervisionQualified": false,
+  "independentlyReviewed": false,
+  "testPassed": null,
+  "releaseReady": false,
+  "previousPreparation": {
+    "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\owned-v1-prepared\\OwnedSupervision.prepared.json",
+    "bytes": 3234,
+    "sha256": "4b9ae1dec64cb14e3b9b36ba0448ad00f329a995cec3dfc671fabcbd23e2e600"
+  },
+  "classificationCorrection": {
+    "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\OwnedClassificationCorrection.prepared.json",
+    "bytes": 3665,
+    "sha256": "df2eeebbe9d17a85705c341de32b026c8c211c52a7aa8ac902b26815668232d9"
+  },
+  "closureField": "wholeJobClosedWithoutForce",
+  "jobClosureDoesNotEstablishSuccess": true,
+  "closureReason": "exit0 completed; matching nonzero exit root-failed; no signal/force/fallback and Job0 required",
+  "nativeExitPreserved": true
+}

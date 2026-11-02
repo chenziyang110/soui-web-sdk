@@ -1,0 +1,10 @@
+^C:\SCI8-047CA0D2-X64\OUT\X64\CMAKEFILES\A5D8C6365CA4EDABAD1AC648686629B0\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/sci8-047ca0d2-x64/source -BC:/sci8-047ca0d2-x64/out/x64 --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/sci8-047ca0d2-x64/out/x64/SouiAcceptance.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

@@ -1,0 +1,3328 @@
+{
+  "schema": "soui.win7-local-media-readonly-recovery/v1",
+  "completedUtc": "2026-10-29T13:59:52.190794+00:00",
+  "scope": "Bounded read-only local metadata recovery plus explicitly authorized trusted qemu-img info/measure only; no conversion, create, force-share, pool mutation, VM start, credentials, guest files or gigabyte disk hashing.",
+  "selectedSource": "F:/vm/Windows 7 x64 Sp1-000008.vmdk",
+  "originalHistoricalWin7X86BaseStillMissing": "D:/SOUI-SDK-QEMU-validation/system.qcow2",
+  "selectedSourceProfile": "New independent Windows7x64 candidate; VMX name says SP1 but actual guest service pack/boot/IME remain unobserved",
+  "selectedFromExistingLocalUserVm": true,
+  "boundedSearch": {
+    "roots": [
+      "D:/SOUI-SDK-QEMU-validation",
+      "C:/SOUI-SDK-production-validation/work-area-placement-20260928",
+      "C:/Users/11034/Downloads",
+      "C:/Users/11034/.codex/task-vms",
+      "F:/QemuLabs",
+      "F:/vm",
+      "F:/VM-lab",
+      "F:/VMs"
+    ],
+    "maxMediaDepth": 5,
+    "cacheNodeModulesGitGuestUserDataExcluded": true,
+    "win7X86ImageFound": false,
+    "catalogOrLeaseCopied": false
+  },
+  "occupancyBeforeImageTools": {
+    "observedUtc": "2026-10-29T13:59:50.4332269Z",
+    "vmProcesses": [
+      {
+        "pid": 47764,
+        "name": "qemu-system-x86_64.exe",
+        "commandLineAvailable": true,
+        "referencesExactFvmRoot": false
+      },
+      {
+        "pid": 35100,
+        "name": "qemu-system-x86_64.exe",
+        "commandLineAvailable": true,
+        "referencesExactFvmRoot": false
+      }
+    ],
+    "uninspectableVmProcesses": 0,
+    "sourceReferences": 0,
+    "sourceLocks": [],
+    "readOnly": true,
+    "rawCommandLinesOmitted": true
+  },
+  "sourceLockMetadataEntries": [],
+  "sourceChain": [
+    {
+      "descriptor": {
+        "path": "F:/vm/Windows 7 x64 Sp1-000008.vmdk",
+        "bytes": 1198,
+        "sha256": "5df33780835ff3190259ff402fec6c0c15c3d144395cae1556a3aef9f58b4f88"
+      },
+      "CID": "2b05f511",
+      "parentCID": "930dac02",
+      "parentFileNameHint": "Windows 7 x64 Sp1-000005.vmdk",
+      "createType": "twoGbMaxExtentSparse",
+      "virtualBytes": 64424509440,
+      "extents": [
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000008-s001.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 4129882112,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 4129882112,
+            "mtimeNs": "1768979535524743200",
+            "ctimeNs": "1768962779169008800",
+            "fileId": "2251799814045400"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000008-s002.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 2868445184,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 2868445184,
+            "mtimeNs": "1768979535525735400",
+            "ctimeNs": "1768962779169008800",
+            "fileId": "1688849860624090"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000008-s003.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 1507328,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 1507328,
+            "mtimeNs": "1768979535525735400",
+            "ctimeNs": "1768962779170509900",
+            "fileId": "1125899907202779"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000008-s004.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 9109504,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 9109504,
+            "mtimeNs": "1768979535525735400",
+            "ctimeNs": "1768962779171929000",
+            "fileId": "1688849860624092"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000008-s005.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 38273024,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 38273024,
+            "mtimeNs": "1768979535526785900",
+            "ctimeNs": "1768962779171929000",
+            "fileId": "1125899907202781"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000008-s006.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 18874368,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 18874368,
+            "mtimeNs": "1768979535526785900",
+            "ctimeNs": "1768962779172953600",
+            "fileId": "1125899907202783"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000008-s007.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 72810496,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 72810496,
+            "mtimeNs": "1768979535526785900",
+            "ctimeNs": "1768962779174048000",
+            "fileId": "2251799814045408"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000008-s008.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 54263808,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 54263808,
+            "mtimeNs": "1768979535528697900",
+            "ctimeNs": "1768962779175045200",
+            "fileId": "2251799814045409"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000008-s009.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 83558400,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 83558400,
+            "mtimeNs": "1768979535529699600",
+            "ctimeNs": "1768962779177037900",
+            "fileId": "562949953781474"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000008-s010.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 524288,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 524288,
+            "mtimeNs": "1768962779178034700",
+            "ctimeNs": "1768962779178034700",
+            "fileId": "562949953781475"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000008-s011.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 524288,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 524288,
+            "mtimeNs": "1768962779179354000",
+            "ctimeNs": "1768962779179354000",
+            "fileId": "562949953781476"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000008-s012.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 524288,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 524288,
+            "mtimeNs": "1768962779180349400",
+            "ctimeNs": "1768962779179354000",
+            "fileId": "562949953781477"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000008-s013.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 1114112,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 1114112,
+            "mtimeNs": "1768979535530994700",
+            "ctimeNs": "1768962779180349400",
+            "fileId": "562949953781478"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000008-s014.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 40894464,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 40894464,
+            "mtimeNs": "1768963848391354600",
+            "ctimeNs": "1768962779180349400",
+            "fileId": "562949953781479"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000008-s015.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 524288,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 524288,
+            "mtimeNs": "1768962779182492400",
+            "ctimeNs": "1768962779181476000",
+            "fileId": "562949953781480"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000008-s016.vmdk",
+          "sectors": 983040,
+          "physicalBytes": 65536,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 65536,
+            "mtimeNs": "1768962779183548100",
+            "ctimeNs": "1768962779182492400",
+            "fileId": "562949953781481"
+          }
+        }
+      ]
+    },
+    {
+      "descriptor": {
+        "path": "F:/vm/Windows 7 x64 Sp1-000005.vmdk",
+        "bytes": 1148,
+        "sha256": "06079ca6b3001601024fd64eb69c254410dbd41feb4bda0c0c5e0613c675aa08"
+      },
+      "CID": "930dac02",
+      "parentCID": "c12f6486",
+      "parentFileNameHint": "Windows 7 x64 Sp1-000003.vmdk",
+      "createType": "twoGbMaxExtentSparse",
+      "virtualBytes": 64424509440,
+      "extents": [
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000005-s001.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 493223936,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 493223936,
+            "mtimeNs": "1759053342697479300",
+            "ctimeNs": "1759046465621183800",
+            "fileId": "3377699720556886"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000005-s002.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 50593792,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 50593792,
+            "mtimeNs": "1759053342698669700",
+            "ctimeNs": "1759046465622183600",
+            "fileId": "1970324837003609"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000005-s003.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 27328512,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 27328512,
+            "mtimeNs": "1759053342699850500",
+            "ctimeNs": "1759046465622183600",
+            "fileId": "844424930160987"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000005-s004.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 232652800,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 232652800,
+            "mtimeNs": "1759053342700853400",
+            "ctimeNs": "1759046465623348800",
+            "fileId": "1970324837003613"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000005-s005.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 317652992,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 317652992,
+            "mtimeNs": "1759053342700853400",
+            "ctimeNs": "1759046465623348800",
+            "fileId": "18577348462932404"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000005-s006.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 262864896,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 262864896,
+            "mtimeNs": "1759053342702253200",
+            "ctimeNs": "1759046465624358000",
+            "fileId": "18577348462932405"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000005-s007.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 503054336,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 503054336,
+            "mtimeNs": "1759053342702253200",
+            "ctimeNs": "1759046465624358000",
+            "fileId": "1407374883582390"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000005-s008.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 2229207040,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 2229207040,
+            "mtimeNs": "1759053342703275400",
+            "ctimeNs": "1759046465625576400",
+            "fileId": "562949953450423"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000005-s009.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 1672609792,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 1672609792,
+            "mtimeNs": "1759053342704780000",
+            "ctimeNs": "1759046465625576400",
+            "fileId": "562949953450424"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000005-s010.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 524288,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 524288,
+            "mtimeNs": "1759046465626890200",
+            "ctimeNs": "1759046465626890200",
+            "fileId": "844424930161081"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000005-s011.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 524288,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 524288,
+            "mtimeNs": "1759046465627931200",
+            "ctimeNs": "1759046465627931200",
+            "fileId": "844424930161082"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000005-s012.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 524288,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 524288,
+            "mtimeNs": "1759046465629051800",
+            "ctimeNs": "1759046465627931200",
+            "fileId": "281474976739771"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000005-s013.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 1461059584,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 1461059584,
+            "mtimeNs": "1759053342706269100",
+            "ctimeNs": "1759046465629051800",
+            "fileId": "281474976739772"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000005-s014.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 3464232960,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 3464232960,
+            "mtimeNs": "1759053342707273000",
+            "ctimeNs": "1759046465630062000",
+            "fileId": "281474976739773"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000005-s015.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 524288,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 524288,
+            "mtimeNs": "1759046465631067300",
+            "ctimeNs": "1759046465630062000",
+            "fileId": "281474976739774"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000005-s016.vmdk",
+          "sectors": 983040,
+          "physicalBytes": 65536,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 65536,
+            "mtimeNs": "1759046465631067300",
+            "ctimeNs": "1759046465631067300",
+            "fileId": "281474976739775"
+          }
+        }
+      ]
+    },
+    {
+      "descriptor": {
+        "path": "F:/vm/Windows 7 x64 Sp1-000003.vmdk",
+        "bytes": 1148,
+        "sha256": "d02a6c46583875cdcde0d60260785647d0c5a3a97eef077229960fa5411963c8"
+      },
+      "CID": "c12f6486",
+      "parentCID": "edd2cdf4",
+      "parentFileNameHint": "Windows 7 x64 Sp1-000002.vmdk",
+      "createType": "twoGbMaxExtentSparse",
+      "virtualBytes": 64424509440,
+      "extents": [
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000003-s001.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 1027538944,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 1027538944,
+            "mtimeNs": "1759028101118616200",
+            "ctimeNs": "1758271341503720500",
+            "fileId": "8725724278056861"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000003-s002.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 164495360,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 164495360,
+            "mtimeNs": "1759028101119631400",
+            "ctimeNs": "1758271341504723300",
+            "fileId": "562949953448480"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000003-s003.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 94175232,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 94175232,
+            "mtimeNs": "1759028074300075400",
+            "ctimeNs": "1758271341504723300",
+            "fileId": "562949953448483"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000003-s004.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 832503808,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 832503808,
+            "mtimeNs": "1759028101120637800",
+            "ctimeNs": "1758271341505733700",
+            "fileId": "562949953449305"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000003-s005.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 674693120,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 674693120,
+            "mtimeNs": "1759028101122051500",
+            "ctimeNs": "1758271341505733700",
+            "fileId": "281474976738651"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000003-s006.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 323092480,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 323092480,
+            "mtimeNs": "1759028101123262900",
+            "ctimeNs": "1758271341506748600",
+            "fileId": "281474976738652"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000003-s007.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 1570635776,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 1570635776,
+            "mtimeNs": "1759028101123262900",
+            "ctimeNs": "1758271341506748600",
+            "fileId": "281474976738653"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000003-s008.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 3760652288,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 3760652288,
+            "mtimeNs": "1759028101123262900",
+            "ctimeNs": "1758271341506748600",
+            "fileId": "281474976738654"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000003-s009.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 1290207232,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 1290207232,
+            "mtimeNs": "1759028101124689700",
+            "ctimeNs": "1758271341507753100",
+            "fileId": "281474976738655"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000003-s010.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 524288,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 524288,
+            "mtimeNs": "1758271341507753100",
+            "ctimeNs": "1758271341507753100",
+            "fileId": "281474976738656"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000003-s011.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 524288,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 524288,
+            "mtimeNs": "1758271341508787900",
+            "ctimeNs": "1758271341507753100",
+            "fileId": "281474976738657"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000003-s012.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 524288,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 524288,
+            "mtimeNs": "1758271341508787900",
+            "ctimeNs": "1758271341508787900",
+            "fileId": "281474976738658"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000003-s013.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 1461256192,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 1461256192,
+            "mtimeNs": "1759028101125691800",
+            "ctimeNs": "1758271341508787900",
+            "fileId": "281474976738659"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000003-s014.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 1141833728,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 1141833728,
+            "mtimeNs": "1759028101125691800",
+            "ctimeNs": "1758271341509973500",
+            "fileId": "281474976738660"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000003-s015.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 524288,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 524288,
+            "mtimeNs": "1758271341509973500",
+            "ctimeNs": "1758271341509973500",
+            "fileId": "281474976738661"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000003-s016.vmdk",
+          "sectors": 983040,
+          "physicalBytes": 131072,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 131072,
+            "mtimeNs": "1759028101125691800",
+            "ctimeNs": "1758271341509973500",
+            "fileId": "281474976738662"
+          }
+        }
+      ]
+    },
+    {
+      "descriptor": {
+        "path": "F:/vm/Windows 7 x64 Sp1-000002.vmdk",
+        "bytes": 1148,
+        "sha256": "e7b50206ba0e189bcdf317e4abf425611b310ed9a365693c3d2a10c0f670744e"
+      },
+      "CID": "edd2cdf4",
+      "parentCID": "646d4d3d",
+      "parentFileNameHint": "Windows 7 x64 Sp1-000001.vmdk",
+      "createType": "twoGbMaxExtentSparse",
+      "virtualBytes": 64424509440,
+      "extents": [
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000002-s001.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 1971650560,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 1971650560,
+            "mtimeNs": "1758271341450971100",
+            "ctimeNs": "1758187686583028800",
+            "fileId": "3940649673975689"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000002-s002.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 71041024,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 71041024,
+            "mtimeNs": "1758271341457255600",
+            "ctimeNs": "1758187686586354900",
+            "fileId": "844424930158530"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000002-s003.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 1364000768,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 1364000768,
+            "mtimeNs": "1758271341458411000",
+            "ctimeNs": "1758187686587674000",
+            "fileId": "562949953447877"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000002-s004.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 156368896,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 156368896,
+            "mtimeNs": "1758271341460463400",
+            "ctimeNs": "1758187686587674000",
+            "fileId": "281474976737223"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000002-s005.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 319160320,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 319160320,
+            "mtimeNs": "1758271341465501100",
+            "ctimeNs": "1758187686587674000",
+            "fileId": "281474976737224"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000002-s006.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 233177088,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 233177088,
+            "mtimeNs": "1758271341470009500",
+            "ctimeNs": "1758187686589087200",
+            "fileId": "281474976737225"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000002-s007.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 1796210688,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 1796210688,
+            "mtimeNs": "1758271341471012500",
+            "ctimeNs": "1758187686589087200",
+            "fileId": "281474976737226"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000002-s008.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 659161088,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 659161088,
+            "mtimeNs": "1758271341473089300",
+            "ctimeNs": "1758187686590404100",
+            "fileId": "281474976737227"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000002-s009.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 524288,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 524288,
+            "mtimeNs": "1758187686590404100",
+            "ctimeNs": "1758187686590404100",
+            "fileId": "281474976737228"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000002-s010.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 524288,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 524288,
+            "mtimeNs": "1758187686591837800",
+            "ctimeNs": "1758187686590404100",
+            "fileId": "281474976737229"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000002-s011.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 524288,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 524288,
+            "mtimeNs": "1758187686591837800",
+            "ctimeNs": "1758187686591837800",
+            "fileId": "281474976737230"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000002-s012.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 524288,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 524288,
+            "mtimeNs": "1758187686591837800",
+            "ctimeNs": "1758187686591837800",
+            "fileId": "281474976737231"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000002-s013.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 524288,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 524288,
+            "mtimeNs": "1758187686593272500",
+            "ctimeNs": "1758187686591837800",
+            "fileId": "281474976737232"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000002-s014.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 524288,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 524288,
+            "mtimeNs": "1758187686593272500",
+            "ctimeNs": "1758187686593272500",
+            "fileId": "281474976737233"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000002-s015.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 524288,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 524288,
+            "mtimeNs": "1758187686594747300",
+            "ctimeNs": "1758187686593272500",
+            "fileId": "281474976737234"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000002-s016.vmdk",
+          "sectors": 983040,
+          "physicalBytes": 65536,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 65536,
+            "mtimeNs": "1758187686594747300",
+            "ctimeNs": "1758187686594747300",
+            "fileId": "281474976737235"
+          }
+        }
+      ]
+    },
+    {
+      "descriptor": {
+        "path": "F:/vm/Windows 7 x64 Sp1-000001.vmdk",
+        "bytes": 1141,
+        "sha256": "6f0d28852a7ccb45d95a4871ff8cc4c15e7c1684386b2bb57b8a583ef6bad05e"
+      },
+      "CID": "646d4d3d",
+      "parentCID": "4efc3352",
+      "parentFileNameHint": "Windows 7 x64 Sp1.vmdk",
+      "createType": "twoGbMaxExtentSparse",
+      "virtualBytes": 64424509440,
+      "extents": [
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000001-s001.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 13303808,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 13303808,
+            "mtimeNs": "1758187686573323700",
+            "ctimeNs": "1758185219573878300",
+            "fileId": "4785074604107642"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000001-s002.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 8126464,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 8126464,
+            "mtimeNs": "1758187686573323700",
+            "ctimeNs": "1758185219577581300",
+            "fileId": "281474976737163"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000001-s003.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 720896,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 720896,
+            "mtimeNs": "1758187686573323700",
+            "ctimeNs": "1758185219577581300",
+            "fileId": "281474976737164"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000001-s004.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 2031616,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 2031616,
+            "mtimeNs": "1758187686573323700",
+            "ctimeNs": "1758185219577581300",
+            "fileId": "281474976737165"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000001-s005.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 16842752,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 16842752,
+            "mtimeNs": "1758187686573323700",
+            "ctimeNs": "1758185219578804400",
+            "fileId": "281474976737166"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000001-s006.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 5242880,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 5242880,
+            "mtimeNs": "1758187686573323700",
+            "ctimeNs": "1758185219578804400",
+            "fileId": "281474976737167"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000001-s007.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 14942208,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 14942208,
+            "mtimeNs": "1758187686573323700",
+            "ctimeNs": "1758185219579870400",
+            "fileId": "281474976737168"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000001-s008.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 25493504,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 25493504,
+            "mtimeNs": "1758187686573323700",
+            "ctimeNs": "1758185219579870400",
+            "fileId": "281474976737169"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000001-s009.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 524288,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 524288,
+            "mtimeNs": "1758185219580943000",
+            "ctimeNs": "1758185219579870400",
+            "fileId": "281474976737170"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000001-s010.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 524288,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 524288,
+            "mtimeNs": "1758185219580943000",
+            "ctimeNs": "1758185219580943000",
+            "fileId": "281474976737171"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000001-s011.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 524288,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 524288,
+            "mtimeNs": "1758185219580943000",
+            "ctimeNs": "1758185219580943000",
+            "fileId": "281474976737172"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000001-s012.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 524288,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 524288,
+            "mtimeNs": "1758185219582363900",
+            "ctimeNs": "1758185219582363900",
+            "fileId": "281474976737173"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000001-s013.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 524288,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 524288,
+            "mtimeNs": "1758185219582363900",
+            "ctimeNs": "1758185219582363900",
+            "fileId": "281474976737174"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000001-s014.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 524288,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 524288,
+            "mtimeNs": "1758185219583367200",
+            "ctimeNs": "1758185219582363900",
+            "fileId": "281474976737175"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000001-s015.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 524288,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 524288,
+            "mtimeNs": "1758185219583367200",
+            "ctimeNs": "1758185219583367200",
+            "fileId": "281474976737176"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-000001-s016.vmdk",
+          "sectors": 983040,
+          "physicalBytes": 65536,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 65536,
+            "mtimeNs": "1758185219583367200",
+            "ctimeNs": "1758185219583367200",
+            "fileId": "281474976737177"
+          }
+        }
+      ]
+    },
+    {
+      "descriptor": {
+        "path": "F:/vm/Windows 7 x64 Sp1.vmdk",
+        "bytes": 1245,
+        "sha256": "a413448f04041cac639d21bde929f46cba3f2ca5e0f0c4ddc1525becc28bc7fc"
+      },
+      "CID": "4efc3352",
+      "parentCID": "ffffffff",
+      "parentFileNameHint": null,
+      "createType": "twoGbMaxExtentSparse",
+      "virtualBytes": 64424509440,
+      "extents": [
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-s001.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 4261937152,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 4261937152,
+            "mtimeNs": "1758185218819515500",
+            "ctimeNs": "1758161507247549900",
+            "fileId": "2251799813686221"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-s002.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 4261937152,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 4261937152,
+            "mtimeNs": "1758185218820532400",
+            "ctimeNs": "1758161507250559100",
+            "fileId": "1407374883554259"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-s003.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 1748762624,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 1748762624,
+            "mtimeNs": "1758185213311305800",
+            "ctimeNs": "1758161507251908100",
+            "fileId": "1688849860264916"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-s004.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 2700673024,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 2700673024,
+            "mtimeNs": "1758185215825047300",
+            "ctimeNs": "1758161507251908100",
+            "fileId": "1407374883554261"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-s005.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 4237754368,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 4237754368,
+            "mtimeNs": "1758185218822248800",
+            "ctimeNs": "1758161507253138400",
+            "fileId": "3659174697239511"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-s006.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 4211212288,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 4211212288,
+            "mtimeNs": "1758185219561001000",
+            "ctimeNs": "1758161507254250500",
+            "fileId": "1688849860264920"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-s007.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 3973578752,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 3973578752,
+            "mtimeNs": "1758185219561999300",
+            "ctimeNs": "1758161507254250500",
+            "fileId": "844424930132953"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-s008.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 2299920384,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 2299920384,
+            "mtimeNs": "1758185219561999300",
+            "ctimeNs": "1758161507254250500",
+            "fileId": "1125899906843610"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-s009.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 784662528,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 784662528,
+            "mtimeNs": "1758184587092561500",
+            "ctimeNs": "1758161507255485300",
+            "fileId": "2251799813686235"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-s010.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 524288,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 524288,
+            "mtimeNs": "1758161507256608300",
+            "ctimeNs": "1758161507255485300",
+            "fileId": "844424930132956"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-s011.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 524288,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 524288,
+            "mtimeNs": "1758161507256608300",
+            "ctimeNs": "1758161507256608300",
+            "fileId": "844424930132957"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-s012.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 524288,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 524288,
+            "mtimeNs": "1758161507256608300",
+            "ctimeNs": "1758161507256608300",
+            "fileId": "2251799813686238"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-s013.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 524288,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 524288,
+            "mtimeNs": "1758161507257974200",
+            "ctimeNs": "1758161507256608300",
+            "fileId": "2251799813686239"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-s014.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 524288,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 524288,
+            "mtimeNs": "1758161507257974200",
+            "ctimeNs": "1758161507257974200",
+            "fileId": "1688849860264928"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-s015.vmdk",
+          "sectors": 8323072,
+          "physicalBytes": 524288,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 524288,
+            "mtimeNs": "1758161507257974200",
+            "ctimeNs": "1758161507257974200",
+            "fileId": "3377699720528865"
+          }
+        },
+        {
+          "path": "F:/vm/Windows 7 x64 Sp1-s016.vmdk",
+          "sectors": 983040,
+          "physicalBytes": 131072,
+          "headerVersion": 1,
+          "grainSectors": 128,
+          "headerMagicAndCapacityMatched": true,
+          "identity": {
+            "bytes": 131072,
+            "mtimeNs": "1758164396248637600",
+            "ctimeNs": "1758161507257974200",
+            "fileId": "562949953422306"
+          }
+        }
+      ]
+    }
+  ],
+  "parentCidLinksAllMatched": true,
+  "all96SparseExtentHeadersMatched": true,
+  "allDescriptorAndExtentMetadataUnchangedAfterTools": true,
+  "descriptorCount": 6,
+  "extentCount": 96,
+  "sourceVirtualBytes": 64424509440,
+  "physicalChainExtentBytes": 65529511936,
+  "firmwareEvidence": {
+    "vmx": {
+      "path": "F:/vm/Windows 7 x64 Sp1.vmx",
+      "bytes": 4897,
+      "sha256": "ee04d451475e71377513cba05473d5fc04814f71614b398934f8e5e391664ab5"
+    },
+    "guestOS": "windows7-64",
+    "explicitFirmwareProperty": null,
+    "uefiPropertiesPresent": false,
+    "observedBootFirmware": null,
+    "interpretation": "VMX has no firmware/efi property, so only the VMware default-BIOS hint is available; this report does not promote absence or BIOS geometry log text to an observed firmware proof. Root must decide the supported BIOS profile or obtain stronger metadata before conversion/start.",
+    "secondaryDiskAttachmentPresentAndExcluded": true,
+    "fullOriginalVmxWillNotBeImported": true,
+    "hostPhysicalDeviceNotReadOrIncluded": true,
+    "uncPathNotPersistedOrAccessed": true
+  },
+  "trustedImageTool": {
+    "registeredVmName": "soui-devtools-windows",
+    "configurationSourcePath": "C:/Users/11034/.codex/task-vms/soui-devtools-qemu-stable-e89cf96f2d1e4685bbdac347cb9eea3d/private-fe2e6175cf5a4a78b23d418330506ee3/postsettings-cpu-nehalem-3f486e90/runs/166925c3-9fd3-4751-9a17-c45d880af0a6/lab.json",
+    "onlyToolPathProjectionUsed": true,
+    "privateConfigurationCopied": false,
+    "tool": {
+      "path": "C:/Users/11034/.codex/task-tools/qemu-ucrt64-11.1.2-e89cf96f2d1e4685bbdac347cb9eea3d/runtime/ucrt64/bin/qemu-img.exe",
+      "bytes": 1966340,
+      "sha256": "b4ef313ad2bd5070e44a5cccb50d8c2529dd68303c44ef8926b4c5a38ca219ff"
+    },
+    "qemuExecutablePath": "C:\\Users\\11034\\.codex\\task-tools\\qemu-ucrt64-11.1.2-e89cf96f2d1e4685bbdac347cb9eea3d\\runtime\\ucrt64\\bin\\qemu-system-x86_64.exe",
+    "qemuDataDirectory": "C:\\Users\\11034\\.codex\\task-tools\\qemu-ucrt64-11.1.2-e89cf96f2d1e4685bbdac347cb9eea3d\\runtime\\ucrt64\\share\\qemu",
+    "toolPinUnchangedAfterReadOnlyUse": true
+  },
+  "readOnlyCommands": [
+    {
+      "argv": [
+        "C:/Users/11034/.codex/task-tools/qemu-ucrt64-11.1.2-e89cf96f2d1e4685bbdac347cb9eea3d/runtime/ucrt64/bin/qemu-img.exe",
+        "info",
+        "--backing-chain",
+        "--output=json",
+        "-f",
+        "vmdk",
+        "F:/vm/Windows 7 x64 Sp1-000008.vmdk"
+      ],
+      "startedUtc": "2026-10-29T13:59:50.648745+00:00",
+      "finishedUtc": "2026-10-29T13:59:51.086357+00:00",
+      "exitCode": 0,
+      "stderr": "",
+      "readOnly": true,
+      "forceShareOrUUsed": false,
+      "stdoutJson": [
+        {
+          "children": [
+            {
+              "name": "extents.15",
+              "info": {
+                "children": [],
+                "virtual-size": 65536,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000008-s016.vmdk",
+                "format": "file",
+                "actual-size": 65536
+              }
+            },
+            {
+              "name": "extents.14",
+              "info": {
+                "children": [],
+                "virtual-size": 524288,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000008-s015.vmdk",
+                "format": "file",
+                "actual-size": 524288
+              }
+            },
+            {
+              "name": "extents.13",
+              "info": {
+                "children": [],
+                "virtual-size": 40894464,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000008-s014.vmdk",
+                "format": "file",
+                "actual-size": 40894464
+              }
+            },
+            {
+              "name": "extents.12",
+              "info": {
+                "children": [],
+                "virtual-size": 1114112,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000008-s013.vmdk",
+                "format": "file",
+                "actual-size": 1114112
+              }
+            },
+            {
+              "name": "extents.11",
+              "info": {
+                "children": [],
+                "virtual-size": 524288,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000008-s012.vmdk",
+                "format": "file",
+                "actual-size": 524288
+              }
+            },
+            {
+              "name": "extents.10",
+              "info": {
+                "children": [],
+                "virtual-size": 524288,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000008-s011.vmdk",
+                "format": "file",
+                "actual-size": 524288
+              }
+            },
+            {
+              "name": "extents.9",
+              "info": {
+                "children": [],
+                "virtual-size": 524288,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000008-s010.vmdk",
+                "format": "file",
+                "actual-size": 524288
+              }
+            },
+            {
+              "name": "extents.8",
+              "info": {
+                "children": [],
+                "virtual-size": 83558400,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000008-s009.vmdk",
+                "format": "file",
+                "actual-size": 83558400
+              }
+            },
+            {
+              "name": "extents.7",
+              "info": {
+                "children": [],
+                "virtual-size": 54263808,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000008-s008.vmdk",
+                "format": "file",
+                "actual-size": 54263808
+              }
+            },
+            {
+              "name": "extents.6",
+              "info": {
+                "children": [],
+                "virtual-size": 72810496,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000008-s007.vmdk",
+                "format": "file",
+                "actual-size": 72810496
+              }
+            },
+            {
+              "name": "extents.5",
+              "info": {
+                "children": [],
+                "virtual-size": 18874368,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000008-s006.vmdk",
+                "format": "file",
+                "actual-size": 18874368
+              }
+            },
+            {
+              "name": "extents.4",
+              "info": {
+                "children": [],
+                "virtual-size": 38273024,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000008-s005.vmdk",
+                "format": "file",
+                "actual-size": 38273024
+              }
+            },
+            {
+              "name": "extents.3",
+              "info": {
+                "children": [],
+                "virtual-size": 9109504,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000008-s004.vmdk",
+                "format": "file",
+                "actual-size": 9109504
+              }
+            },
+            {
+              "name": "extents.2",
+              "info": {
+                "children": [],
+                "virtual-size": 1507328,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000008-s003.vmdk",
+                "format": "file",
+                "actual-size": 1507328
+              }
+            },
+            {
+              "name": "extents.1",
+              "info": {
+                "children": [],
+                "virtual-size": 2868445184,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000008-s002.vmdk",
+                "format": "file",
+                "actual-size": 2868445184
+              }
+            },
+            {
+              "name": "extents.0",
+              "info": {
+                "children": [],
+                "virtual-size": 4129882112,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000008-s001.vmdk",
+                "format": "file",
+                "actual-size": 4129882112
+              }
+            },
+            {
+              "name": "file",
+              "info": {
+                "children": [],
+                "virtual-size": 1536,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000008.vmdk",
+                "format": "file",
+                "actual-size": 1198
+              }
+            }
+          ],
+          "backing-filename-format": "vmdk",
+          "virtual-size": 64424509440,
+          "filename": "F:/vm/Windows 7 x64 Sp1-000008.vmdk",
+          "cluster-size": 65536,
+          "format": "vmdk",
+          "actual-size": 7320896686,
+          "format-specific": {
+            "type": "vmdk",
+            "data": {
+              "cid": 721810705,
+              "parent-cid": 2467146754,
+              "create-type": "twoGbMaxExtentSparse",
+              "extents": [
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000008-s001.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000008-s002.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000008-s003.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000008-s004.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000008-s005.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000008-s006.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000008-s007.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000008-s008.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000008-s009.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000008-s010.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000008-s011.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000008-s012.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000008-s013.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000008-s014.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000008-s015.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 503316480,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000008-s016.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                }
+              ]
+            }
+          },
+          "full-backing-filename": "F:/vm/Windows 7 x64 Sp1-000005.vmdk",
+          "backing-filename": "Windows 7 x64 Sp1-000005.vmdk",
+          "dirty-flag": false
+        },
+        {
+          "children": [
+            {
+              "name": "extents.15",
+              "info": {
+                "children": [],
+                "virtual-size": 65536,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000005-s016.vmdk",
+                "format": "file",
+                "actual-size": 65536
+              }
+            },
+            {
+              "name": "extents.14",
+              "info": {
+                "children": [],
+                "virtual-size": 524288,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000005-s015.vmdk",
+                "format": "file",
+                "actual-size": 524288
+              }
+            },
+            {
+              "name": "extents.13",
+              "info": {
+                "children": [],
+                "virtual-size": 3464232960,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000005-s014.vmdk",
+                "format": "file",
+                "actual-size": 3464232960
+              }
+            },
+            {
+              "name": "extents.12",
+              "info": {
+                "children": [],
+                "virtual-size": 1461059584,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000005-s013.vmdk",
+                "format": "file",
+                "actual-size": 1461059584
+              }
+            },
+            {
+              "name": "extents.11",
+              "info": {
+                "children": [],
+                "virtual-size": 524288,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000005-s012.vmdk",
+                "format": "file",
+                "actual-size": 524288
+              }
+            },
+            {
+              "name": "extents.10",
+              "info": {
+                "children": [],
+                "virtual-size": 524288,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000005-s011.vmdk",
+                "format": "file",
+                "actual-size": 524288
+              }
+            },
+            {
+              "name": "extents.9",
+              "info": {
+                "children": [],
+                "virtual-size": 524288,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000005-s010.vmdk",
+                "format": "file",
+                "actual-size": 524288
+              }
+            },
+            {
+              "name": "extents.8",
+              "info": {
+                "children": [],
+                "virtual-size": 1672609792,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000005-s009.vmdk",
+                "format": "file",
+                "actual-size": 1672609792
+              }
+            },
+            {
+              "name": "extents.7",
+              "info": {
+                "children": [],
+                "virtual-size": 2229207040,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000005-s008.vmdk",
+                "format": "file",
+                "actual-size": 2229207040
+              }
+            },
+            {
+              "name": "extents.6",
+              "info": {
+                "children": [],
+                "virtual-size": 503054336,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000005-s007.vmdk",
+                "format": "file",
+                "actual-size": 503054336
+              }
+            },
+            {
+              "name": "extents.5",
+              "info": {
+                "children": [],
+                "virtual-size": 262864896,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000005-s006.vmdk",
+                "format": "file",
+                "actual-size": 262864896
+              }
+            },
+            {
+              "name": "extents.4",
+              "info": {
+                "children": [],
+                "virtual-size": 317652992,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000005-s005.vmdk",
+                "format": "file",
+                "actual-size": 317652992
+              }
+            },
+            {
+              "name": "extents.3",
+              "info": {
+                "children": [],
+                "virtual-size": 232652800,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000005-s004.vmdk",
+                "format": "file",
+                "actual-size": 232652800
+              }
+            },
+            {
+              "name": "extents.2",
+              "info": {
+                "children": [],
+                "virtual-size": 27328512,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000005-s003.vmdk",
+                "format": "file",
+                "actual-size": 27328512
+              }
+            },
+            {
+              "name": "extents.1",
+              "info": {
+                "children": [],
+                "virtual-size": 50593792,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000005-s002.vmdk",
+                "format": "file",
+                "actual-size": 50593792
+              }
+            },
+            {
+              "name": "extents.0",
+              "info": {
+                "children": [],
+                "virtual-size": 493223936,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000005-s001.vmdk",
+                "format": "file",
+                "actual-size": 493223936
+              }
+            },
+            {
+              "name": "file",
+              "info": {
+                "children": [],
+                "virtual-size": 1536,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000005.vmdk",
+                "format": "file",
+                "actual-size": 1148
+              }
+            }
+          ],
+          "backing-filename-format": "vmdk",
+          "virtual-size": 64424509440,
+          "filename": "F:/vm/Windows 7 x64 Sp1-000005.vmdk",
+          "cluster-size": 65536,
+          "format": "vmdk",
+          "actual-size": 10716644476,
+          "format-specific": {
+            "type": "vmdk",
+            "data": {
+              "cid": 2467146754,
+              "parent-cid": 3241108614,
+              "create-type": "twoGbMaxExtentSparse",
+              "extents": [
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000005-s001.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000005-s002.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000005-s003.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000005-s004.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000005-s005.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000005-s006.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000005-s007.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000005-s008.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000005-s009.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000005-s010.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000005-s011.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000005-s012.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000005-s013.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000005-s014.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000005-s015.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 503316480,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000005-s016.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                }
+              ]
+            }
+          },
+          "full-backing-filename": "F:/vm/Windows 7 x64 Sp1-000003.vmdk",
+          "backing-filename": "Windows 7 x64 Sp1-000003.vmdk",
+          "dirty-flag": false
+        },
+        {
+          "children": [
+            {
+              "name": "extents.15",
+              "info": {
+                "children": [],
+                "virtual-size": 131072,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000003-s016.vmdk",
+                "format": "file",
+                "actual-size": 131072
+              }
+            },
+            {
+              "name": "extents.14",
+              "info": {
+                "children": [],
+                "virtual-size": 524288,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000003-s015.vmdk",
+                "format": "file",
+                "actual-size": 524288
+              }
+            },
+            {
+              "name": "extents.13",
+              "info": {
+                "children": [],
+                "virtual-size": 1141833728,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000003-s014.vmdk",
+                "format": "file",
+                "actual-size": 1141833728
+              }
+            },
+            {
+              "name": "extents.12",
+              "info": {
+                "children": [],
+                "virtual-size": 1461256192,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000003-s013.vmdk",
+                "format": "file",
+                "actual-size": 1461256192
+              }
+            },
+            {
+              "name": "extents.11",
+              "info": {
+                "children": [],
+                "virtual-size": 524288,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000003-s012.vmdk",
+                "format": "file",
+                "actual-size": 524288
+              }
+            },
+            {
+              "name": "extents.10",
+              "info": {
+                "children": [],
+                "virtual-size": 524288,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000003-s011.vmdk",
+                "format": "file",
+                "actual-size": 524288
+              }
+            },
+            {
+              "name": "extents.9",
+              "info": {
+                "children": [],
+                "virtual-size": 524288,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000003-s010.vmdk",
+                "format": "file",
+                "actual-size": 524288
+              }
+            },
+            {
+              "name": "extents.8",
+              "info": {
+                "children": [],
+                "virtual-size": 1290207232,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000003-s009.vmdk",
+                "format": "file",
+                "actual-size": 1290207232
+              }
+            },
+            {
+              "name": "extents.7",
+              "info": {
+                "children": [],
+                "virtual-size": 3760652288,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000003-s008.vmdk",
+                "format": "file",
+                "actual-size": 3760652288
+              }
+            },
+            {
+              "name": "extents.6",
+              "info": {
+                "children": [],
+                "virtual-size": 1570635776,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000003-s007.vmdk",
+                "format": "file",
+                "actual-size": 1570635776
+              }
+            },
+            {
+              "name": "extents.5",
+              "info": {
+                "children": [],
+                "virtual-size": 323092480,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000003-s006.vmdk",
+                "format": "file",
+                "actual-size": 323092480
+              }
+            },
+            {
+              "name": "extents.4",
+              "info": {
+                "children": [],
+                "virtual-size": 674693120,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000003-s005.vmdk",
+                "format": "file",
+                "actual-size": 674693120
+              }
+            },
+            {
+              "name": "extents.3",
+              "info": {
+                "children": [],
+                "virtual-size": 832503808,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000003-s004.vmdk",
+                "format": "file",
+                "actual-size": 832503808
+              }
+            },
+            {
+              "name": "extents.2",
+              "info": {
+                "children": [],
+                "virtual-size": 94175232,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000003-s003.vmdk",
+                "format": "file",
+                "actual-size": 94175232
+              }
+            },
+            {
+              "name": "extents.1",
+              "info": {
+                "children": [],
+                "virtual-size": 164495360,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000003-s002.vmdk",
+                "format": "file",
+                "actual-size": 164495360
+              }
+            },
+            {
+              "name": "extents.0",
+              "info": {
+                "children": [],
+                "virtual-size": 1027538944,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000003-s001.vmdk",
+                "format": "file",
+                "actual-size": 1027538944
+              }
+            },
+            {
+              "name": "file",
+              "info": {
+                "children": [],
+                "virtual-size": 1536,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000003.vmdk",
+                "format": "file",
+                "actual-size": 1148
+              }
+            }
+          ],
+          "backing-filename-format": "vmdk",
+          "virtual-size": 64424509440,
+          "filename": "F:/vm/Windows 7 x64 Sp1-000003.vmdk",
+          "cluster-size": 65536,
+          "format": "vmdk",
+          "actual-size": 12343313532,
+          "format-specific": {
+            "type": "vmdk",
+            "data": {
+              "cid": 3241108614,
+              "parent-cid": 3990015476,
+              "create-type": "twoGbMaxExtentSparse",
+              "extents": [
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000003-s001.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000003-s002.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000003-s003.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000003-s004.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000003-s005.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000003-s006.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000003-s007.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000003-s008.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000003-s009.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000003-s010.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000003-s011.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000003-s012.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000003-s013.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000003-s014.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000003-s015.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 503316480,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000003-s016.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                }
+              ]
+            }
+          },
+          "full-backing-filename": "F:/vm/Windows 7 x64 Sp1-000002.vmdk",
+          "backing-filename": "Windows 7 x64 Sp1-000002.vmdk",
+          "dirty-flag": false
+        },
+        {
+          "children": [
+            {
+              "name": "extents.15",
+              "info": {
+                "children": [],
+                "virtual-size": 65536,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000002-s016.vmdk",
+                "format": "file",
+                "actual-size": 65536
+              }
+            },
+            {
+              "name": "extents.14",
+              "info": {
+                "children": [],
+                "virtual-size": 524288,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000002-s015.vmdk",
+                "format": "file",
+                "actual-size": 524288
+              }
+            },
+            {
+              "name": "extents.13",
+              "info": {
+                "children": [],
+                "virtual-size": 524288,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000002-s014.vmdk",
+                "format": "file",
+                "actual-size": 524288
+              }
+            },
+            {
+              "name": "extents.12",
+              "info": {
+                "children": [],
+                "virtual-size": 524288,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000002-s013.vmdk",
+                "format": "file",
+                "actual-size": 524288
+              }
+            },
+            {
+              "name": "extents.11",
+              "info": {
+                "children": [],
+                "virtual-size": 524288,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000002-s012.vmdk",
+                "format": "file",
+                "actual-size": 524288
+              }
+            },
+            {
+              "name": "extents.10",
+              "info": {
+                "children": [],
+                "virtual-size": 524288,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000002-s011.vmdk",
+                "format": "file",
+                "actual-size": 524288
+              }
+            },
+            {
+              "name": "extents.9",
+              "info": {
+                "children": [],
+                "virtual-size": 524288,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000002-s010.vmdk",
+                "format": "file",
+                "actual-size": 524288
+              }
+            },
+            {
+              "name": "extents.8",
+              "info": {
+                "children": [],
+                "virtual-size": 524288,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000002-s009.vmdk",
+                "format": "file",
+                "actual-size": 524288
+              }
+            },
+            {
+              "name": "extents.7",
+              "info": {
+                "children": [],
+                "virtual-size": 659161088,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000002-s008.vmdk",
+                "format": "file",
+                "actual-size": 659161088
+              }
+            },
+            {
+              "name": "extents.6",
+              "info": {
+                "children": [],
+                "virtual-size": 1796210688,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000002-s007.vmdk",
+                "format": "file",
+                "actual-size": 1796210688
+              }
+            },
+            {
+              "name": "extents.5",
+              "info": {
+                "children": [],
+                "virtual-size": 233177088,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000002-s006.vmdk",
+                "format": "file",
+                "actual-size": 233177088
+              }
+            },
+            {
+              "name": "extents.4",
+              "info": {
+                "children": [],
+                "virtual-size": 319160320,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000002-s005.vmdk",
+                "format": "file",
+                "actual-size": 319160320
+              }
+            },
+            {
+              "name": "extents.3",
+              "info": {
+                "children": [],
+                "virtual-size": 156368896,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000002-s004.vmdk",
+                "format": "file",
+                "actual-size": 156368896
+              }
+            },
+            {
+              "name": "extents.2",
+              "info": {
+                "children": [],
+                "virtual-size": 1364000768,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000002-s003.vmdk",
+                "format": "file",
+                "actual-size": 1364000768
+              }
+            },
+            {
+              "name": "extents.1",
+              "info": {
+                "children": [],
+                "virtual-size": 71041024,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000002-s002.vmdk",
+                "format": "file",
+                "actual-size": 71041024
+              }
+            },
+            {
+              "name": "extents.0",
+              "info": {
+                "children": [],
+                "virtual-size": 1971650560,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000002-s001.vmdk",
+                "format": "file",
+                "actual-size": 1971650560
+              }
+            },
+            {
+              "name": "file",
+              "info": {
+                "children": [],
+                "virtual-size": 1536,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000002.vmdk",
+                "format": "file",
+                "actual-size": 1148
+              }
+            }
+          ],
+          "backing-filename-format": "vmdk",
+          "virtual-size": 64424509440,
+          "filename": "F:/vm/Windows 7 x64 Sp1-000002.vmdk",
+          "cluster-size": 65536,
+          "format": "vmdk",
+          "actual-size": 6574507132,
+          "format-specific": {
+            "type": "vmdk",
+            "data": {
+              "cid": 3990015476,
+              "parent-cid": 1684884797,
+              "create-type": "twoGbMaxExtentSparse",
+              "extents": [
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000002-s001.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000002-s002.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000002-s003.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000002-s004.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000002-s005.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000002-s006.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000002-s007.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000002-s008.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000002-s009.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000002-s010.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000002-s011.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000002-s012.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000002-s013.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000002-s014.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000002-s015.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 503316480,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000002-s016.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                }
+              ]
+            }
+          },
+          "full-backing-filename": "F:/vm/Windows 7 x64 Sp1-000001.vmdk",
+          "backing-filename": "Windows 7 x64 Sp1-000001.vmdk",
+          "dirty-flag": false
+        },
+        {
+          "children": [
+            {
+              "name": "extents.15",
+              "info": {
+                "children": [],
+                "virtual-size": 65536,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000001-s016.vmdk",
+                "format": "file",
+                "actual-size": 65536
+              }
+            },
+            {
+              "name": "extents.14",
+              "info": {
+                "children": [],
+                "virtual-size": 524288,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000001-s015.vmdk",
+                "format": "file",
+                "actual-size": 524288
+              }
+            },
+            {
+              "name": "extents.13",
+              "info": {
+                "children": [],
+                "virtual-size": 524288,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000001-s014.vmdk",
+                "format": "file",
+                "actual-size": 524288
+              }
+            },
+            {
+              "name": "extents.12",
+              "info": {
+                "children": [],
+                "virtual-size": 524288,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000001-s013.vmdk",
+                "format": "file",
+                "actual-size": 524288
+              }
+            },
+            {
+              "name": "extents.11",
+              "info": {
+                "children": [],
+                "virtual-size": 524288,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000001-s012.vmdk",
+                "format": "file",
+                "actual-size": 524288
+              }
+            },
+            {
+              "name": "extents.10",
+              "info": {
+                "children": [],
+                "virtual-size": 524288,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000001-s011.vmdk",
+                "format": "file",
+                "actual-size": 524288
+              }
+            },
+            {
+              "name": "extents.9",
+              "info": {
+                "children": [],
+                "virtual-size": 524288,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000001-s010.vmdk",
+                "format": "file",
+                "actual-size": 524288
+              }
+            },
+            {
+              "name": "extents.8",
+              "info": {
+                "children": [],
+                "virtual-size": 524288,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000001-s009.vmdk",
+                "format": "file",
+                "actual-size": 524288
+              }
+            },
+            {
+              "name": "extents.7",
+              "info": {
+                "children": [],
+                "virtual-size": 25493504,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000001-s008.vmdk",
+                "format": "file",
+                "actual-size": 25493504
+              }
+            },
+            {
+              "name": "extents.6",
+              "info": {
+                "children": [],
+                "virtual-size": 14942208,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000001-s007.vmdk",
+                "format": "file",
+                "actual-size": 14942208
+              }
+            },
+            {
+              "name": "extents.5",
+              "info": {
+                "children": [],
+                "virtual-size": 5242880,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000001-s006.vmdk",
+                "format": "file",
+                "actual-size": 5242880
+              }
+            },
+            {
+              "name": "extents.4",
+              "info": {
+                "children": [],
+                "virtual-size": 16842752,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000001-s005.vmdk",
+                "format": "file",
+                "actual-size": 16842752
+              }
+            },
+            {
+              "name": "extents.3",
+              "info": {
+                "children": [],
+                "virtual-size": 2031616,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000001-s004.vmdk",
+                "format": "file",
+                "actual-size": 2031616
+              }
+            },
+            {
+              "name": "extents.2",
+              "info": {
+                "children": [],
+                "virtual-size": 720896,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000001-s003.vmdk",
+                "format": "file",
+                "actual-size": 720896
+              }
+            },
+            {
+              "name": "extents.1",
+              "info": {
+                "children": [],
+                "virtual-size": 8126464,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000001-s002.vmdk",
+                "format": "file",
+                "actual-size": 8126464
+              }
+            },
+            {
+              "name": "extents.0",
+              "info": {
+                "children": [],
+                "virtual-size": 13303808,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000001-s001.vmdk",
+                "format": "file",
+                "actual-size": 13303808
+              }
+            },
+            {
+              "name": "file",
+              "info": {
+                "children": [],
+                "virtual-size": 1536,
+                "filename": "F:/vm/Windows 7 x64 Sp1-000001.vmdk",
+                "format": "file",
+                "actual-size": 1141
+              }
+            }
+          ],
+          "backing-filename-format": "vmdk",
+          "virtual-size": 64424509440,
+          "filename": "F:/vm/Windows 7 x64 Sp1-000001.vmdk",
+          "cluster-size": 65536,
+          "format": "vmdk",
+          "actual-size": 90440821,
+          "format-specific": {
+            "type": "vmdk",
+            "data": {
+              "cid": 1684884797,
+              "parent-cid": 1325151058,
+              "create-type": "twoGbMaxExtentSparse",
+              "extents": [
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000001-s001.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000001-s002.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000001-s003.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000001-s004.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000001-s005.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000001-s006.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000001-s007.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000001-s008.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000001-s009.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000001-s010.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000001-s011.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000001-s012.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000001-s013.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000001-s014.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000001-s015.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 503316480,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-000001-s016.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                }
+              ]
+            }
+          },
+          "full-backing-filename": "F:/vm/Windows 7 x64 Sp1.vmdk",
+          "backing-filename": "Windows 7 x64 Sp1.vmdk",
+          "dirty-flag": false
+        },
+        {
+          "children": [
+            {
+              "name": "extents.15",
+              "info": {
+                "children": [],
+                "virtual-size": 131072,
+                "filename": "F:/vm/Windows 7 x64 Sp1-s016.vmdk",
+                "format": "file",
+                "actual-size": 131072
+              }
+            },
+            {
+              "name": "extents.14",
+              "info": {
+                "children": [],
+                "virtual-size": 524288,
+                "filename": "F:/vm/Windows 7 x64 Sp1-s015.vmdk",
+                "format": "file",
+                "actual-size": 524288
+              }
+            },
+            {
+              "name": "extents.13",
+              "info": {
+                "children": [],
+                "virtual-size": 524288,
+                "filename": "F:/vm/Windows 7 x64 Sp1-s014.vmdk",
+                "format": "file",
+                "actual-size": 524288
+              }
+            },
+            {
+              "name": "extents.12",
+              "info": {
+                "children": [],
+                "virtual-size": 524288,
+                "filename": "F:/vm/Windows 7 x64 Sp1-s013.vmdk",
+                "format": "file",
+                "actual-size": 524288
+              }
+            },
+            {
+              "name": "extents.11",
+              "info": {
+                "children": [],
+                "virtual-size": 524288,
+                "filename": "F:/vm/Windows 7 x64 Sp1-s012.vmdk",
+                "format": "file",
+                "actual-size": 524288
+              }
+            },
+            {
+              "name": "extents.10",
+              "info": {
+                "children": [],
+                "virtual-size": 524288,
+                "filename": "F:/vm/Windows 7 x64 Sp1-s011.vmdk",
+                "format": "file",
+                "actual-size": 524288
+              }
+            },
+            {
+              "name": "extents.9",
+              "info": {
+                "children": [],
+                "virtual-size": 524288,
+                "filename": "F:/vm/Windows 7 x64 Sp1-s010.vmdk",
+                "format": "file",
+                "actual-size": 524288
+              }
+            },
+            {
+              "name": "extents.8",
+              "info": {
+                "children": [],
+                "virtual-size": 784662528,
+                "filename": "F:/vm/Windows 7 x64 Sp1-s009.vmdk",
+                "format": "file",
+                "actual-size": 784662528
+              }
+            },
+            {
+              "name": "extents.7",
+              "info": {
+                "children": [],
+                "virtual-size": 2299920384,
+                "filename": "F:/vm/Windows 7 x64 Sp1-s008.vmdk",
+                "format": "file",
+                "actual-size": 2299920384
+              }
+            },
+            {
+              "name": "extents.6",
+              "info": {
+                "children": [],
+                "virtual-size": 3973578752,
+                "filename": "F:/vm/Windows 7 x64 Sp1-s007.vmdk",
+                "format": "file",
+                "actual-size": 3973578752
+              }
+            },
+            {
+              "name": "extents.5",
+              "info": {
+                "children": [],
+                "virtual-size": 4211212288,
+                "filename": "F:/vm/Windows 7 x64 Sp1-s006.vmdk",
+                "format": "file",
+                "actual-size": 4211212288
+              }
+            },
+            {
+              "name": "extents.4",
+              "info": {
+                "children": [],
+                "virtual-size": 4237754368,
+                "filename": "F:/vm/Windows 7 x64 Sp1-s005.vmdk",
+                "format": "file",
+                "actual-size": 4237754368
+              }
+            },
+            {
+              "name": "extents.3",
+              "info": {
+                "children": [],
+                "virtual-size": 2700673024,
+                "filename": "F:/vm/Windows 7 x64 Sp1-s004.vmdk",
+                "format": "file",
+                "actual-size": 2700673024
+              }
+            },
+            {
+              "name": "extents.2",
+              "info": {
+                "children": [],
+                "virtual-size": 1748762624,
+                "filename": "F:/vm/Windows 7 x64 Sp1-s003.vmdk",
+                "format": "file",
+                "actual-size": 1748762624
+              }
+            },
+            {
+              "name": "extents.1",
+              "info": {
+                "children": [],
+                "virtual-size": 4261937152,
+                "filename": "F:/vm/Windows 7 x64 Sp1-s002.vmdk",
+                "format": "file",
+                "actual-size": 4261937152
+              }
+            },
+            {
+              "name": "extents.0",
+              "info": {
+                "children": [],
+                "virtual-size": 4261937152,
+                "filename": "F:/vm/Windows 7 x64 Sp1-s001.vmdk",
+                "format": "file",
+                "actual-size": 4261937152
+              }
+            },
+            {
+              "name": "file",
+              "info": {
+                "children": [],
+                "virtual-size": 1536,
+                "filename": "F:/vm/Windows 7 x64 Sp1.vmdk",
+                "format": "file",
+                "actual-size": 1245
+              }
+            }
+          ],
+          "virtual-size": 64424509440,
+          "filename": "F:/vm/Windows 7 x64 Sp1.vmdk",
+          "cluster-size": 65536,
+          "format": "vmdk",
+          "actual-size": 28483716317,
+          "format-specific": {
+            "type": "vmdk",
+            "data": {
+              "cid": 1325151058,
+              "parent-cid": 4294967295,
+              "create-type": "twoGbMaxExtentSparse",
+              "extents": [
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-s001.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-s002.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-s003.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-s004.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-s005.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-s006.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-s007.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-s008.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-s009.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-s010.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-s011.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-s012.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-s013.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-s014.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 4261412864,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-s015.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                },
+                {
+                  "virtual-size": 503316480,
+                  "filename": "F:/vm/Windows 7 x64 Sp1-s016.vmdk",
+                  "cluster-size": 65536,
+                  "format": "SPARSE"
+                }
+              ]
+            }
+          },
+          "dirty-flag": false
+        }
+      ]
+    },
+    {
+      "argv": [
+        "C:/Users/11034/.codex/task-tools/qemu-ucrt64-11.1.2-e89cf96f2d1e4685bbdac347cb9eea3d/runtime/ucrt64/bin/qemu-img.exe",
+        "measure",
+        "--output=json",
+        "-f",
+        "vmdk",
+        "-O",
+        "qcow2",
+        "F:/vm/Windows 7 x64 Sp1-000008.vmdk"
+      ],
+      "startedUtc": "2026-10-29T13:59:51.086659+00:00",
+      "finishedUtc": "2026-10-29T13:59:52.184166+00:00",
+      "exitCode": 0,
+      "stderr": "",
+      "readOnly": true,
+      "forceShareOrUUsed": false,
+      "stdoutJson": {
+        "required": 38598868992,
+        "fully-allocated": 64434601984
+      }
+    }
+  ],
+  "qemuCanReadSelectedVmdk": true,
+  "measurementSucceeded": true,
+  "qcow2Measurement": {
+    "required": 38598868992,
+    "fully-allocated": 64434601984
+  },
+  "proposedConversionNotExecuted": {
+    "destination": "C:/SOUI-SDK-QEMU-Win7/base-win7-sp1-x64.qcow2",
+    "freshDirectoryRequired": true,
+    "existingDestinationMustRefuseOverwrite": true,
+    "singleImmutableBaseAndFreshRunsDirectory": true,
+    "selectedInputOnly": "F:/vm/Windows 7 x64 Sp1-000008.vmdk",
+    "allSecondaryDevicesExcluded": true,
+    "currentCFreeBytes": 205183369216,
+    "conservative64GiBPlus20GiBHeadroomBytes": 90194313216,
+    "conservativeBudgetFitsC": true,
+    "FNotSelectedForConversion": true,
+    "physicalImageOrVmCreated": false,
+    "conversionAuthorizedOrStartedByThisReport": false
+  },
+  "licenseAndSourceEvidence": {
+    "existingRetainedLocalDiskOnly": true,
+    "installationIsoLocated": false,
+    "licenseOrActivationReviewed": false,
+    "redistributionApproval": false,
+    "mediaBytesPublishedOrCopied": false
+  },
+  "limitations": [
+    "No full disk content/hash or filesystem integrity scan",
+    "No actual guest OS/SP1/IME/loader/desktop observation",
+    "No source VM borrowed or started",
+    "HistoricalV11 Win7x86 results remain their original profile",
+    "Read-only occupancy is a point-in-time observation; Root must recheck before conversion and preserve source bytes"
+  ],
+  "productOrCompilerExecuted": false,
+  "vmStarted": false,
+  "sourceModified": false,
+  "releaseReady": false,
+  "productionQualificationComplete": false
+}

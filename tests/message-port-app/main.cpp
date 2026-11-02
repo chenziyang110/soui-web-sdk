@@ -3,6 +3,7 @@
 #include <tlhelp32.h>
 #include <soui/host/soui_miniblink_host.h>
 #include <soui/json_bridge.h>
+#include "shutdown-poll.h"
 #include <array>
 #include <atomic>
 #include <chrono>
@@ -526,14 +527,14 @@ class runner final {
       }
     }
     settle(); sample(total + 1, "closed");
-    step("runtime.shutdown", 0, total + 1, [] { return soui::sdk::shutdown_miniblink_runtime(); });
+    step("runtime.shutdown", 0, total + 1, [this] { return poll_shutdown(); });
     sample(total + 1, "runtime-closed");
     step("runtime.reject-restart", 0, total + 1, [this] {
       test_window attempted(1);
       const auto result = attempted.mount(root_);
       return soui::sdk::host_result{!result.ok && result.code == "E_RUNTIME_SHUTDOWN", result.code, result.message};
     });
-    step("runtime.shutdown-idempotent", 0, total + 1, [] { return soui::sdk::shutdown_miniblink_runtime(); });
+    step("runtime.shutdown-idempotent", 0, total + 1, [this] { return poll_shutdown(); });
     log_.emit("run.complete");
   }
  private:
@@ -615,6 +616,11 @@ class runner final {
       service(); MsgWaitForMultipleObjectsEx(0, nullptr, 10, QS_ALLINPUT, MWMO_INPUTAVAILABLE);
     }
   }
+  soui::sdk::host_result poll_shutdown() {
+    return soui::acceptance::poll_runtime_shutdown(
+        [this](const std::function<bool()>& ready) { until(ready); },
+        [] { return soui::sdk::shutdown_miniblink_runtime(); });
+  }
   void settle() {
     const auto deadline = clock_type::now() + std::chrono::milliseconds(settings_.settle_ms);
     while (clock_type::now() < deadline) {
@@ -651,8 +657,18 @@ class runner final {
     step("reload", id, cycle, [&] {
       auto& window = windows_.at(id - 1);
       const auto expected = window->ready_count() + 1;
-      const auto result = window->reload();
-      if (result.ok) until([&] { return window->ready(expected); });
+      soui::sdk::host_result result{false, "", ""};
+      bool accepted = false;
+      // Poll the same pending reload, then wait for its document within one
+      // original deadline. Never request a successor after reload succeeds.
+      until([&] {
+        if (!accepted) {
+          result = window->reload();
+          if (!result.ok) return result.code != "E_RELOAD_PENDING";
+          accepted = true;
+        }
+        return window->ready(expected);
+      });
       return result;
     });
   }

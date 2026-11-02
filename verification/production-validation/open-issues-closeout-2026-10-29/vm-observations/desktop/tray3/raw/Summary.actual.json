@@ -1,0 +1,17 @@
+{
+  "schema": "soui.current-public-desktop-short-execution/v1",
+  "selected": [
+    "tray-x86"
+  ],
+  "outcomes": [],
+  "failure": {
+    "message": "The expression evaluated to a falsy value:\n\n  assert(r.passed&&r.exitCode===0&&r.supervisorExitCode===0&&r.signal===null&&r.spawnError===null&&r.reportError===null&&!r.stopRequested&&!r.fallbackUsed&&r.closureConfirmed)\n",
+    "stack": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(r.passed&&r.exitCode===0&&r.supervisorExitCode===0&&r.signal===null&&r.spawnError===null&&r.reportError===null&&!r.stopRequested&&!r.fallbackUsed&&r.closureConfirmed)\n\n    at natural (C:\\issues9\\Guest-Shorts.cjs:15:40)\n    at main (C:\\issues9\\Guest-Shorts.cjs:50:70)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)"
+  },
+  "nativeExecutionAndNaturalClosePassed": false,
+  "uiInteractionIndependentlyQualified": false,
+  "explorerRestartQualified": false,
+  "win7Qualified": false,
+  "productionQualificationComplete": false,
+  "releaseReady": false
+}

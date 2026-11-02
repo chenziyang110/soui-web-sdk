@@ -1,0 +1,41 @@
+{
+  "schema": "soui.issue77-iso-r3-system-component-boundary/v1",
+  "originalR2Writer": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port/Write-IssuesIso.r2.ps1",
+    "bytes": 8789,
+    "sha256": "bfcfeced2b2c808624aab70c56205e72a0faed37ff278d897c00ff5d8b1af56a"
+  },
+  "writer": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port/Write-IssuesIso.r3.ps1",
+    "bytes": 8771,
+    "sha256": "91a4d02a139d176ee6f1c85405fef60f19ae7333635c6246b88068fa2885886d"
+  },
+  "wrapper": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port/Run-IsoWriter.r3.cjs",
+    "bytes": 4895,
+    "sha256": "40ebe9a66d1d128a82ca63e706aa483625d653c0c8051b04125d20a1439788a5"
+  },
+  "helper": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port/BoundedIsoIO.longpath.cs",
+    "bytes": 11934,
+    "sha256": "00789c652e6e2c3639ee2896c05e56023974fc6ef8d334b8c4d5098d3003417a"
+  },
+  "scope": "Restore the trusted writer system-COM verification boundary; no payload hardlink/reparse/share/hash rule changed.",
+  "systemComponent": {
+    "path": "C:/Windows/System32/imapi2fs.dll",
+    "bytes": 839680,
+    "sha256": "6b00e77979673c6d8bc4ff24a11dc49adc0a839f7a4d80986ef3711f587dbeaf"
+  },
+  "observedSystemComponentLinks": 2,
+  "metadataLeaseRemovedOnly": "$frozen.comServer",
+  "systemBoundedSmallBeforeAfterUnchanged": true,
+  "originalCLSIDGuardUnchanged": true,
+  "sourcePlanUnchanged": true,
+  "timeoutMs": 120000,
+  "drainMs": 2000,
+  "previousAttemptPreserved": true,
+  "rootIndependentReviewPending": true,
+  "productExecuted": false,
+  "vmTouched": false,
+  "releaseReady": false
+}

@@ -1,0 +1,40 @@
+--- Invoke-WorkbenchBuild.ps1
++++ Invoke-WorkbenchBuild-x86Retry.ps1
+@@ -1,4 +1,4 @@
+-param([Parameter(Mandatory=$true)][ValidateSet('x64','x86')][string]$Architecture,
++param([Parameter(Mandatory=$true)][ValidateSet('x86')][string]$Architecture,
+       [Parameter(Mandatory=$true)][string]$CaseDirectory,
+       [Parameter(Mandatory=$true)][string]$ShortWorkspace,
+       [Parameter(Mandatory=$true)][string]$FrozenInputs)
+@@ -7,7 +7,7 @@
+ $repository='C:\sc07'
+ $phase=$null;$failure=$null;$cleanupFailures=[Collections.Generic.List[string]]::new()
+ $previous=Get-Item -LiteralPath Env:MSBUILDDISABLENODEREUSE -ErrorAction SilentlyContinue
+-$receipt=[ordered]@{schema='soui.workbench-consumer-build-only-root/v1';architecture=$Architecture;rootPid=$PID;
++$receipt=[ordered]@{schema='soui.workbench-consumer-x86-retry-root/v1';architecture=$Architecture;rootPid=$PID;
+   beganUtc=[DateTime]::UtcNow.ToString('o');completed=$false;productExecuted=$false;executableExecuted=$false;
+   originalTimeoutMs=120000;originalDrainMs=2000;wholeJobProofRequired=$true;oldFailureReclassified=$false}
+ function Pin-File([string]$Path){
+@@ -71,9 +71,19 @@
+     $phaseEvidence=Join-Path $CaseDirectory $phaseName
+     [void](New-Item -ItemType Directory -Path $phaseEvidence)
+     $phase=Start-SouiMsvcCompilerPhase -Toolchain $toolchain -Architecture $Architecture -EvidenceRoot $phaseEvidence -Phase $phaseName
+-    if($phaseName-eq'configure'){& $cmake @configure *> (Join-Path $CaseDirectory 'configure.log')}
+-    else{& $cmake @buildArguments *> (Join-Path $CaseDirectory 'build.log')}
+-    $nativeExit=$LASTEXITCODE
++    # Windows PowerShell 5 must preserve native stderr warnings without turning
++    # a successful CMake invocation into a PowerShell terminating error.
++    # The actual native status still goes through the unchanged lifecycle guard.
++    $nativePreference=$ErrorActionPreference
++    $nativeExit=$null
++    try{
++      $ErrorActionPreference='Continue'
++      $global:LASTEXITCODE=$null
++      if($phaseName-eq'configure'){& $cmake @configure *> (Join-Path $CaseDirectory 'configure.log')}
++      else{& $cmake @buildArguments *> (Join-Path $CaseDirectory 'build.log')}
++      $nativeExit=$LASTEXITCODE
++    }finally{$ErrorActionPreference=$nativePreference}
++    if($null-eq$nativeExit){throw 'CMake invocation did not produce a native exit code.'}
+     Complete-SouiMsvcCompilerPhase $phase $nativeExit ('Independent Workbench CMake '+$phaseName+' failed')
+   }
+   $cache=Join-Path $build 'CMakeCache.txt';$cacheLines=Get-Content -LiteralPath $cache

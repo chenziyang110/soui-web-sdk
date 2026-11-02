@@ -1,0 +1,43 @@
+{
+  "schema": "soui.standalone-win7-mbr-only-analysis/v1",
+  "readOnlyCommandNative0": true,
+  "actualBytes": 512,
+  "mbrSha256": "20b85a34c81d87093c3495a76da87163ad644f9919e6eb44276271e8bb3f5e36",
+  "signature55aa": true,
+  "partitions": [
+    {
+      "index": 1,
+      "bootIndicator": 128,
+      "partitionType": 7,
+      "firstLba": 2048,
+      "sectorCount": 125825024
+    },
+    {
+      "index": 2,
+      "bootIndicator": 0,
+      "partitionType": 0,
+      "firstLba": 0,
+      "sectorCount": 0
+    },
+    {
+      "index": 3,
+      "bootIndicator": 0,
+      "partitionType": 0,
+      "firstLba": 0,
+      "sectorCount": 0
+    },
+    {
+      "index": 4,
+      "bootIndicator": 0,
+      "partitionType": 0,
+      "firstLba": 0,
+      "sectorCount": 0
+    }
+  ],
+  "gptProtectivePartitionPresent": false,
+  "gptHeaderNotRead": true,
+  "legacyBootLayoutPlausible": true,
+  "osFilesNotReadOrProven": true,
+  "SP1NotInferredFromMbr": true,
+  "noConversionVmOrSourceWrite": true
+}

@@ -1,0 +1,57 @@
+--- vm-recipe-count-v1-prepared/Finalize-OrdinaryPayload.cjs
++++ ordinary-reload-current/Finalize-OrdinaryPayload.cjs
+@@ -45,5 +45,5 @@
+  arms.push({architecture:arch,runtimeDirectory:'runtime-'+arch,files,currentKernel:dlls.find(f=>f.relative==='node.dll'),oldSdkNativeExeReused:false});
+ }
++const payloadFiles=copies.map(c=>c.payload).sort((a,b)=>a.relative<b.relative?-1:a.relative>b.relative?1:0);assert.equal(payloadFiles.length,19);
+-const payloadFiles=copies.map(c=>c.payload).sort((a,b)=>a.relative<b.relative?-1:a.relative>b.relative?1:0);assert.equal(payloadFiles.length,20);
+ const manifest={schema:'soui.current-ordinary-acceptance-light-payload/v1',version:'0.6.0',createdUtc:new Date().toISOString(),preparationHost:os.hostname(),payloadFiles,readers,readerPins:[...modules.values()],tools,installedSdkProducers,arms,
+  currentNativeSource:'tests/acceptance-app exact pending-only reload consumption under one original deadline',validatorByteProof:proof,webAssets,
+@@ -52,6 +52,6 @@
+  oldSuitesReadOnly:true,browserBehaviorQualified:false,messagePortBehaviorAsserted:false,currentSdk060Qualified:false,resourcePassed:false,productionQualificationComplete:false,fullDevtoolsGoalComplete:false,productExecuted:false,vmTouched:false,releaseReady:false};
+ const manifestFile=path.join(payload,'Ordinary.manifest.json');write(manifestFile,manifest);
++const selection=[...payloadFiles.map(f=>({name:f.relative,path:path.join(payload,f.relative),bytes:f.bytes,sha256:f.sha256})),{name:'Ordinary.manifest.json',...pin(manifestFile)}];assert.equal(selection.length,20);assert(selection.every(f=>f.bytes<=16777216));write(path.join(folder,'ControlIso.selection.json'),selection);
++const wrapperNames=['Ordinary-Lib.ps1','Stage-Ordinary.ps1','Run-Ordinary.ps1','Export-Ordinary.ps1'];const controlSelection=[...selection,...wrapperNames.map(name=>({name,...pin(path.join(__dirname,name))}))];assert.equal(controlSelection.length,24);write(path.join(folder,'ControlIso.with-wrappers.selection.json'),controlSelection);
+-const selection=[...payloadFiles.map(f=>({name:f.relative,path:path.join(payload,f.relative),bytes:f.bytes,sha256:f.sha256})),{name:'Ordinary.manifest.json',...pin(manifestFile)}];assert.equal(selection.length,21);assert(selection.every(f=>f.bytes<=16777216));write(path.join(folder,'ControlIso.selection.json'),selection);
+-const wrapperNames=['Ordinary-Lib.ps1','Stage-Ordinary.ps1','Run-Ordinary.ps1','Export-Ordinary.ps1'];const controlSelection=[...selection,...wrapperNames.map(name=>({name,...pin(path.join(__dirname,name))}))];assert.equal(controlSelection.length,25);write(path.join(folder,'ControlIso.with-wrappers.selection.json'),controlSelection);
+ write(path.join(folder,'Preparation.actual.json'),{schema:'soui.current-ordinary-acceptance-light-preparation/v1',preparer:pin(__filename),buildSummary:pin(summaryFile),copies,manifest:pin(manifestFile),selection:pin(path.join(folder,'ControlIso.selection.json')),selectionWithWrappers:pin(path.join(folder,'ControlIso.with-wrappers.selection.json')),payloadBytes:selection.reduce((n,f)=>n+f.bytes,0),oldSuitesChanged:false,productExecuted:false,vmTouched:false,browserBehaviorQualified:false,messagePortBehaviorAsserted:false,releaseReady:false});
+ console.log(JSON.stringify({payload,manifest:pin(manifestFile),selection:pin(path.join(folder,'ControlIso.selection.json')),selectionWithWrappers:pin(path.join(folder,'ControlIso.with-wrappers.selection.json')),files:selection.length,bytes:selection.reduce((n,f)=>n+f.bytes,0),productExecuted:false}));
+--- vm-recipe-count-v1-prepared/Ordinary-Lib.ps1
++++ ordinary-reload-current/Ordinary-Lib.ps1
+@@ -46,5 +46,5 @@
+   if($pin.sha256-cne$Sha256){throw 'Current manifest identity differs'}
+   $plan=[IO.File]::ReadAllText($file,[Text.Encoding]::UTF8)|ConvertFrom-Json
++  if($plan.schema-cne$Paths.schema-or$plan.version-cne'0.6.0'-or$plan.preparationHost-ieq$env:COMPUTERNAME-or@($plan.payloadFiles).Count-ne19){throw 'Exact ordinary 20-file control payload required'}
+-  if($plan.schema-cne$Paths.schema-or$plan.version-cne'0.6.0'-or$plan.preparationHost-ieq$env:COMPUTERNAME-or@($plan.payloadFiles).Count-ne20){throw 'Exact ordinary 21-file control payload required'}
+   $names=[Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+   $selection=[Collections.Generic.List[object]]::new()
+--- vm-recipe-count-v1-prepared/Stage-Ordinary.ps1
++++ ordinary-reload-current/Stage-Ordinary.ps1
+@@ -24,5 +24,5 @@
+   if(($expected-join"`n")-cne($actual-join"`n")){throw 'Copied payload closed set differs'}
+   foreach($source in $payload.selection){Assert-CurrentPin $source}
++  Write-NewCurrentJson (Join-Path $paths.root 'InputCopy.actual.json') @{schema='soui.current-flat-payload-copy/v1';kind=$Kind;stamp=$Stamp;source='D:\';manifestSha256=$ManifestSha256;copies=@($copies.ToArray());files=20;oldRootsChanged=$false;productExecuted=$false;releaseReady=$false}
+-  Write-NewCurrentJson (Join-Path $paths.root 'InputCopy.actual.json') @{schema='soui.current-flat-payload-copy/v1';kind=$Kind;stamp=$Stamp;source='D:\';manifestSha256=$ManifestSha256;copies=@($copies.ToArray());files=21;oldRootsChanged=$false;productExecuted=$false;releaseReady=$false}
+   $code=Invoke-CurrentController $paths 'stage' $ManifestSha256 ''
+   if(Test-Path -LiteralPath $paths.stage){[IO.File]::Copy((Join-Path $paths.root 'InputCopy.actual.json'),(Join-Path $paths.stage 'InputCopy.actual.json'),$false)}
+--- vm-recipe-count-v1-prepared/README.prepared.md
++++ ordinary-reload-current/README.prepared.md
+@@ -49,5 +49,7 @@
+ ```
+ 
++Root's first data-only finalizer attempt failed at the author's incorrect member-count assertion (`19 !== 20`), before writing a manifest or selection. The partial `light-payload-79d898d5-d5d6-4378-a308-b204f50c757e` remains unchanged; the author-received summary is `DataFinalizer.count-failure.received.json`, not raw tool or app evidence. All19required files were present:2guest controllers +2metadata +6native source +5Web assets +4architecture EXE/case records. No padding file is needed. The original prepared source bytes are preserved in `vm-recipe-count-v1-prepared/`.
++
++The corrected template has not run. It will create a fresh `light-payload-<uuid>` only, with a 20-file flat payload (including `Ordinary.manifest.json`) and a 24-entry ISO selection including four launcher/export wrappers. The five original ordinary Web assets add only169,771 bytes and are transported under flat `WebAsset-*` names; the manifest maps them into all three window resource directories. The guest is not assumed to contain the old ordinary producer suite, and no MessagePort Web assets substitute for ordinary Web. Current DLLs and existing authenticated tools/readers are checked at their existing guest locations.
+-This template has not run. It will create a fresh `light-payload-<uuid>` only, with a 21-file flat payload (including `Ordinary.manifest.json`) and a 25-entry ISO selection including four launcher/export wrappers. The five original ordinary Web assets add only169,771 bytes and are transported under flat `WebAsset-*` names; the manifest maps them into all three window resource directories. The guest is not assumed to contain the old ordinary producer suite, and no MessagePort Web assets substitute for ordinary Web. Current DLLs and existing authenticated tools/readers are checked at their existing guest locations.
+ 
+ `Guest-Ordinary.cjs` / `.ps1` retain the current MP recipe's original native lifecycle/monotonic supervision and environment/mutex handling, with an `ordc` namespace. The native result must contain nine completed steps, three reloads, seven actual samples and27native events, with natural root0/supervisor0/Job0 and no stop/fallback/forced termination. Original inner20s, native214,500ms, Owned394,500ms and drain2,000ms remain unchanged. Actual nonzero exits and prior failures stay failed. Each staged runtime source is checked immediately before and after its exact copy; final runtime membership/bytes remain checked.
+@@ -55,7 +57,7 @@
+ The ordinary consumer does not contain MP's dedicated browser behavior fixture. Its guest recipe never loads the MessagePort behavior reader, never requires a MessagePort sidecar and never claims the32behavior cases. It only calls the existing ordinary `settings`, `expectedSteps`, `verifyNativeIdentity` and `validateRecords`. `OrdinaryValidatorProof.prepared.json` byte-binds their actual original/current source ranges; no substitute validator algorithm was written. Resource and production gates remain false even if this finite native lifecycle passes.
+ 
++The four small wrappers are narrow derivatives of `current-guest-launch`: `Ordinary-Lib.ps1`, `Stage-Ordinary.ps1`, `Run-Ordinary.ps1`, `Export-Ordinary.ps1`. They accept only kind `ord`, use fresh `C:/ordc-<stamp>` and `C:/issue-closeout-evidence/ordc-<stamp>-stage|run`, validate all20flat payload files, retain the same read-only `D:` and named task-VM requirements, and preserve actual closed controller/wrapper identities before export. Stage never automatically runs the app. The unchanged `C:/issues8/Guest-Export.ps1` remains pinned;512files/8MiB/full-tree export checks remain unchanged.
+-The four small wrappers are narrow derivatives of `current-guest-launch`: `Ordinary-Lib.ps1`, `Stage-Ordinary.ps1`, `Run-Ordinary.ps1`, `Export-Ordinary.ps1`. They accept only kind `ord`, use fresh `C:/ordc-<stamp>` and `C:/issue-closeout-evidence/ordc-<stamp>-stage|run`, validate all21flat payload files, retain the same read-only `D:` and named task-VM requirements, and preserve actual closed controller/wrapper identities before export. Stage never automatically runs the app. The unchanged `C:/issues8/Guest-Export.ps1` remains pinned;512files/8MiB/full-tree export checks remain unchanged.
+ 
++After mounting Root's actual 24-entry control ISO, example separate future commands are:
+-After mounting Root's actual 25-entry control ISO, example separate future commands are:
+ 
+ ```text

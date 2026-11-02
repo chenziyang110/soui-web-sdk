@@ -1,0 +1,18 @@
+{
+  "schema": "soui.current-public-desktop-short-execution/v1",
+  "selected": [
+    "resident-x64",
+    "resident-x86"
+  ],
+  "outcomes": [],
+  "failure": {
+    "message": "Expected values to be strictly deep-equal:\n\u001b[32m+ actual\u001b[39m \u001b[31m- expected\u001b[39m\n... Skipped lines\n\n\u001b[39m  [\n\u001b[39m    '.soui-runtime.json',\n\u001b[39m    '.soui-workbench-native-fixtures.json',\n\u001b[39m    'SouiWorkbench.exe',\n\u001b[39m    'api-ms-win-core-console-l1-1-0.dll',\n\u001b[34m...\u001b[39m\n\u001b[39m    'vcruntime140_threads.dll',\n\u001b[32m+\u001b[39m   'webview-smoke.log',\n\u001b[39m    'zlib1.dll'\n\u001b[39m  ]\n",
+    "stack": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n\u001b[32m+ actual\u001b[39m \u001b[31m- expected\u001b[39m\n... Skipped lines\n\n\u001b[39m  [\n\u001b[39m    '.soui-runtime.json',\n\u001b[39m    '.soui-workbench-native-fixtures.json',\n\u001b[39m    'SouiWorkbench.exe',\n\u001b[39m    'api-ms-win-core-console-l1-1-0.dll',\n\u001b[34m...\u001b[39m\n\u001b[39m    'vcruntime140_threads.dll',\n\u001b[32m+\u001b[39m   'webview-smoke.log',\n\u001b[39m    'zlib1.dll'\n\u001b[39m  ]\n\n    at verifyFiles (C:\\issues8\\Guest-Shorts.cjs:11:70)\n    at main (C:\\issues8\\Guest-Shorts.cjs:35:28)\n    at Object.<anonymous> (C:\\issues8\\Guest-Shorts.cjs:66:1)\n    at Module._compile (node:internal/modules/cjs/loader:1812:14)\n    at Object..js (node:internal/modules/cjs/loader:1943:10)\n    at Module.load (node:internal/modules/cjs/loader:1533:32)\n    at Module._load (node:internal/modules/cjs/loader:1335:12)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)\n    at node:internal/main/run_main_module:33:47"
+  },
+  "nativeExecutionAndNaturalClosePassed": false,
+  "uiInteractionIndependentlyQualified": false,
+  "explorerRestartQualified": false,
+  "win7Qualified": false,
+  "productionQualificationComplete": false,
+  "releaseReady": false
+}

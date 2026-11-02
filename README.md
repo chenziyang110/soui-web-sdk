@@ -19,7 +19,7 @@
 
 SOUI Web SDK 把业务页面、类型化桥接、原生宿主、运行依赖与交付工具放在一套可独立构建的源码工程中。前端编写界面，C++ 注册业务动作和任务，应用决定允许谁调用、何时取消，以及如何结束当前窗口与 Runtime。
 
-> 本地集成候选（未发布）：固定 PR 9e4e9c1f 与固定 main 0cdc0a9a 的合并采用 main 的 VERSION=0.6.0，原 PR 身份为 0.6.0-preview.3。当前候选未编译、运行或发布；下列发布与历史验证仅对各自原始身份有效。本地内容不等同已发布的 0.6.0 资产，发布前须协调新内容的版本身份。
+> 本地恢复候选（未发布）：以现存 CI 提交 32b412b1 为起点，整合固定 main ce9757e3；VERSION 仍为 0.6.0。更早的固定 PR 9e4e9c1f / main 0cdc0a9a 整合及 tree 98cb4681 的 Windows 限定构建证据保留各自身份。本轮仅做静态与源码清单验证，历史成功、失败及未知状态不自动转授；本地内容不等同已发布的 0.6.0 资产，发布前须协调新内容版本。见[恢复身份与证据范围](docs/acceptance/pr103-local-recovery-20261102.md)。
 
 **0.6.0 采用普通 GitHub Release 分类；完整资格保持 `releaseReady=false`、`productionQualificationComplete=false`、`fullDevtoolsGoalComplete=false`。** 两架构内核与必要 SDK 构建、安装消费者、默认应用八次启动/自然关闭及九份供应/应用 ZIP 已有实际记录。双后端、双架构的受控 DevTools 代表例及 MiniBlink x86 原始 TSX 断点/单步观察已完成，具体范围见[发布说明](docs/releases/0.6.0.md)；普通 Release 分类不代表生产、目标系统或性能资格。
 
@@ -38,7 +38,7 @@ source SDK 与两份 DevTools 组件包已核逐文件闭集。两架构默认�
 
 ## 未发布本地集成：跨平台 Runtime 与统一桌面
 
-以下跨平台功能及限定记录来自固定 PR 9e4e9c1f（版本 0.6.0-preview.3），尚未在本地集成候选重新编译或运行。
+以下跨平台功能及限定记录来自固定 PR 9e4e9c1f（版本 0.6.0-preview.3）；后续 tree 98cb4681 的 Windows x86/x64 build-only 结果另列于[恢复记录](docs/acceptance/pr103-local-recovery-20261102.md)，不授予本次新候选编译或运行通过。
 
 固定 PR 新增显式 [跨平台 Runtime](docs/cross-platform.md)：无窗口的任务、权限、
 Bridge 协议和文件扫描可独立构建为 `Soui::Runtime`，覆盖 Windows/Linux

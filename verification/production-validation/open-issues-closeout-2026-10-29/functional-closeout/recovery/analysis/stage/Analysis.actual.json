@@ -1,0 +1,84 @@
+{
+  "schema": "soui.independent-tray-recovery-stage-data-review/v1",
+  "reviewedUtc": "2026-10-29T13:53:38.404Z",
+  "reviewer": "focus_review_supported",
+  "scope": "Independent offline exact selected frame/catalog/index bytes and actual pinned controller records; no guest disk reread, stage rerun, build, native application, VM, Git or archive copy.",
+  "blockingFindings": [],
+  "dataReviewBlockingFindings": 0,
+  "stagePassedWithinCopyOnlyScope": true,
+  "stage": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/trayrc-a1-stage/raw/Stage.actual.json",
+    "bytes": 13670,
+    "sha256": "ed5dc9cb9be8c39d41e023b9161cadcbfa24e03a39a2d3d831c396746f114068"
+  },
+  "manifest": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/tray-recovery-vm-current/payload/TrayRecovery.manifest.json",
+    "bytes": 14187,
+    "sha256": "1003ff60a0d933a2c3fab8cfbeca48901b36e6abc58ec39a98cf2ff80b841c86"
+  },
+  "transport": {
+    "tag": "ISSUESHORT1A5B45FA133F4B1A88E803FB25F6CA64",
+    "index": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/trayrc-a1-stage/Files.index.json",
+      "bytes": 2801,
+      "sha256": "faca40c743354b48dbe3b1b8f831ad3ccb00db311758c06455372aed3509aa8b"
+    },
+    "closedFiles": 17,
+    "indexRecords": 16,
+    "rawFilesIncludingCatalog": 13,
+    "payloadFiles": 12,
+    "payloadFileBytes": 31762,
+    "rawBytesIncludingCatalog": 35477,
+    "frame": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/trayrc-a1-stage/Serial.frame.raw",
+      "bytes": 63459,
+      "sha256": "af2b1a3a95bb734faa632cadd5c54a13ac40fca205d9cac2ffbadee8874e0da9"
+    },
+    "allClosedBytesAndOriginalBase64PayloadsVerified": true,
+    "wholeSerialCopied": false
+  },
+  "flatInputCopies": {
+    "count": 9,
+    "allSourceAndCopyPinsEqualSelection": true
+  },
+  "runtimeCopies": {
+    "count": 31,
+    "newExecutables": 2,
+    "reusedOriginalR1Crt": 29,
+    "allSourceAndCopyPinsEqualManifest": true,
+    "uniqueTargets": true,
+    "closedSetVerificationPerformedByPinnedController": true,
+    "guestBytesRereadByReviewer": false
+  },
+  "toolsExactlyOriginalR1": true,
+  "processClosure": {
+    "controllerPid": 1932,
+    "controllerParentPid": 2684,
+    "nodePidAbsentObserved": true,
+    "nodeBirthCollected": false,
+    "nodePidReuseInferred": false,
+    "powerShellPid": 2684,
+    "powerShellBirth": "134377554276387659",
+    "wrapperPid": 4544,
+    "wrapperBirth": "134377554266079039",
+    "exactPowerShellAndWrapperIdentitiesAbsent": true,
+    "guestObservationByPinnedExporter": true,
+    "processesQueriedLiveByReviewer": false,
+    "nativeRoot": null,
+    "wholeJobClosureClaimed": false
+  },
+  "launcher": {
+    "powerShellExit": 0,
+    "wrapperNativeExit": 0,
+    "environmentRestored": true,
+    "mutexReleased": true,
+    "pathRestored": true,
+    "stderrBytes": 0
+  },
+  "productExecuted": false,
+  "explorerRestartQualified": false,
+  "focusQualified": false,
+  "win7Qualified": false,
+  "productionQualificationComplete": false,
+  "releaseReady": false
+}

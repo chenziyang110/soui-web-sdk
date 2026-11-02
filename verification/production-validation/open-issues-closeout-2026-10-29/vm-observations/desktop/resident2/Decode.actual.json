@@ -1,0 +1,150 @@
+{
+  "schema": "soui.issue-short-serial-decoded/v1",
+  "startedAtUtc": "2026-10-29T08:43:17.631Z",
+  "completedAtUtc": "2026-10-29T08:43:17.754Z",
+  "scope": "Offline decode of one selected tag only; no application/VM/test execution or product qualification",
+  "tag": "ISSUESHORTD75331B4843D42AA98F5D76FF2F6B90F",
+  "sourceSerial": {
+    "path": "C:/Users/11034/.codex/task-vms/soui-devtools-qemu-stable-e89cf96f2d1e4685bbdac347cb9eea3d/private-fe2e6175cf5a4a78b23d418330506ee3/postsettings-cpu-nehalem-3f486e90/runs/166925c3-9fd3-4751-9a17-c45d880af0a6/serial.log",
+    "bytesAtOpen": 745650,
+    "bytesAtClose": 745650,
+    "readBoundaryBytes": 745650,
+    "wholeSerialCopied": false,
+    "otherTagsCopied": false
+  },
+  "originalFrame": {
+    "byteOffset": 168303,
+    "bytes": 577347,
+    "sha256": "864984f03d1b834612508ca10674d0e7c3704b1ed2193ea18ed0fbc209ff4340",
+    "path": "Serial.frame.raw"
+  },
+  "envelope": {
+    "path": "Envelope.json.raw",
+    "bytes": 432938,
+    "sha256": "cc7ee7ab83c79e8ca3de11df90b21eeaea1c7b8502a6786584e39779877c9491",
+    "canonicalBase64": true,
+    "exactCompactOrderedJson": true
+  },
+  "catalog": {
+    "path": "raw/ExportFiles.actual.json",
+    "originalPath": "C:\\issue-closeout-evidence\\resident2\\ExportFiles.actual.json",
+    "bytes": 2611,
+    "sha256": "c33c9436a55d30a32ad7224885e7542b074ec02fc6305143892546952b489b7f",
+    "declaredFiles": 12,
+    "declaredFileBytes": 321935
+  },
+  "decodedSummarySelected": [
+    "resident-x64",
+    "resident-x86"
+  ],
+  "decodedSummaryNativeExecutionAndNaturalClosePassed": false,
+  "payloadFileCount": 12,
+  "rawFileCountIncludingCatalog": 13,
+  "payloadFileBytes": 321935,
+  "rawBytesIncludingCatalog": 324546,
+  "files": [
+    {
+      "originalPath": "C:\\issue-closeout-evidence\\resident2\\Inputs.actual.json",
+      "path": "Inputs.actual.json",
+      "bytes": 876,
+      "sha256": "e2f64fc5e3471d84849d48e9a54a5337e98ed783d70f54d2363b972db5efbb43"
+    },
+    {
+      "originalPath": "C:\\issue-closeout-evidence\\resident2\\Summary.actual.json",
+      "path": "Summary.actual.json",
+      "bytes": 1094,
+      "sha256": "65b878dbbc875816dee15f6c18a3de237adf88ee71342f3bceb033fa8021ad72"
+    },
+    {
+      "originalPath": "C:\\issue-closeout-evidence\\resident2\\resident-x64\\Invocation.actual.json",
+      "path": "resident-x64/Invocation.actual.json",
+      "bytes": 489,
+      "sha256": "c518ecdf19d4571c53ae35ad75c6d81230bcdf16d664c42105d5812197f74f6b"
+    },
+    {
+      "originalPath": "C:\\issue-closeout-evidence\\resident2\\resident-x64\\ResidentPayload.after.json",
+      "path": "resident-x64/ResidentPayload.after.json",
+      "bytes": 125217,
+      "sha256": "51786f4ac98a1cd4356317a472efa6c2f4d0575acb43e1c30d2b14eb29e4aa8b"
+    },
+    {
+      "originalPath": "C:\\issue-closeout-evidence\\resident2\\resident-x64\\ResidentPayload.before.json",
+      "path": "resident-x64/ResidentPayload.before.json",
+      "bytes": 125216,
+      "sha256": "832e00a8a977012f99b1d2b6fb85d0f5763b2c3f2fce81434f52d97443d62448"
+    },
+    {
+      "originalPath": "C:\\issue-closeout-evidence\\resident2\\resident-x64\\finished.json",
+      "path": "resident-x64/finished.json",
+      "bytes": 956,
+      "sha256": "2fb26a60d9568cbb8c307d34391170ae65548d647e2b73d8515c2d258bf8b3e7"
+    },
+    {
+      "originalPath": "C:\\issue-closeout-evidence\\resident2\\resident-x64\\owned.ndjson",
+      "path": "resident-x64/owned.ndjson",
+      "bytes": 767,
+      "sha256": "7f87fd8aa67e7633dc466df94beea7fe41c517ece0d77f1737832326afaab010"
+    },
+    {
+      "originalPath": "C:\\issue-closeout-evidence\\resident2\\resident-x64\\owned.ndjson.context.json",
+      "path": "resident-x64/owned.ndjson.context.json",
+      "bytes": 595,
+      "sha256": "85a25fa9d97a688cb6d31f9bd935a7787ddd19f05014ae03eb3a399a8ac3c67c"
+    },
+    {
+      "originalPath": "C:\\issue-closeout-evidence\\resident2\\resident-x64\\ready.json",
+      "path": "resident-x64/ready.json",
+      "bytes": 62,
+      "sha256": "167e8dbf653a9a41b143ca9e016e4b7cb0ebb565ea0f0b65d2d90c4f280a72c0"
+    },
+    {
+      "originalPath": "C:\\issue-closeout-evidence\\resident2\\resident-x64\\resident.ndjson",
+      "path": "resident-x64/resident.ndjson",
+      "bytes": 66663,
+      "sha256": "5d1bbe235cfe04048bfa23879c7619078fe1ded61e3d7e0ec14bd06478fb0ceb"
+    },
+    {
+      "originalPath": "C:\\issue-closeout-evidence\\resident2\\resident-x64\\stderr.bin",
+      "path": "resident-x64/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "originalPath": "C:\\issue-closeout-evidence\\resident2\\resident-x64\\stdout.bin",
+      "path": "resident-x64/stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "base64CanonicalForAll": true,
+  "originalPathsConfined": true,
+  "caseInsensitiveClosedSetVerified": true,
+  "allOriginalBytesAndSha256Verified": true,
+  "producer": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/tray-build/Guest-Export.ps1",
+    "bytes": 3074,
+    "sha256": "f1cc23cfa6d76d35b2a6d8dd0779ceb332a42b51f74271bf097b5e9b44f1ce7c"
+  },
+  "decoder": {
+    "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-build\\decoded-resident2\\Decode-TrayExport.cjs",
+    "bytes": 11249,
+    "sha256": "5572e91ea8e6849e4cf2553e470d1cae9684bac5f84146fceedf72091b23c4b9"
+  },
+  "node": {
+    "path": "C:\\nvm4w\\nodejs\\node.exe",
+    "bytes": 91380224,
+    "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+  },
+  "argv": [
+    "C:\\nvm4w\\nodejs\\node.exe",
+    "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-build\\decoded-resident2\\Decode-TrayExport.cjs"
+  ],
+  "cwd": "F:\\work\\SOUI_WEB",
+  "pid": 94212,
+  "testPassed": null,
+  "browserPassClaimed": false,
+  "uiInteractionQualified": false,
+  "releaseReady": false,
+  "productionQualificationComplete": false,
+  "fullDevtoolsGoalComplete": false
+}

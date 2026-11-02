@@ -1,0 +1,24 @@
+{
+  "schema": "soui.preparation-failure/v1",
+  "recordKind": "Author-transcribed summary of tool failure; not raw tool output",
+  "phase": "Source patch and metadata preparation",
+  "result": "Assertion after successful exact source patch: MessagePort byte comparison included its two comment lines",
+  "sourceBefore": {
+    "path": "C:/sc07/tests/acceptance-app/main.cpp",
+    "bytes": 42015,
+    "sha256": "02bc1ff85205acec289b2489896d107c4c34fcad5a28f91577f3bf72754c734b"
+  },
+  "sourceAfter": {
+    "path": "C:/sc07/tests/acceptance-app/main.cpp",
+    "bytes": 42218,
+    "sha256": "4d58281549806425f097ee0ca9bc04160f43ca112c027b46b4dfc199a8173be4"
+  },
+  "sourcePatchValid": true,
+  "sourceWasNotRewrittenByCompletion": true,
+  "sourceBeforeAndAfterPreserved": true,
+  "fix": "Compare the identical code lines excluding MessagePort comments, then complete the missing preparation metadata and diff",
+  "productFailure": false,
+  "buildExecuted": false,
+  "testExecuted": false,
+  "vmControlled": false
+}

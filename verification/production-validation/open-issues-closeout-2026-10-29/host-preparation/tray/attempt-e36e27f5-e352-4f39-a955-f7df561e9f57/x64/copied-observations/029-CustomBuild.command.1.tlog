@@ -1,0 +1,10 @@
+^C:\SCI8-E36E27F5-X64\OUT\X64\CMAKEFILES\6F84058C3548E9C431C07948C3B64AE4\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/sci8-e36e27f5-x64/source -BC:/sci8-e36e27f5-x64/out/x64 --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/sci8-e36e27f5-x64/out/x64/SouiTrayConsumer.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

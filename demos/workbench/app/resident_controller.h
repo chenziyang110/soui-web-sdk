@@ -409,10 +409,20 @@ class resident_controller final {
       slot.reload_waiting_ready = true;
     }
     const auto reloaded = slot.host->reload();
-    slot.reload_pending = !reloaded.ok && reloaded.code == "E_RELOAD_PENDING";
-    if (!polling_reload || !slot.reload_pending)
-      host_result(slot.reload_pending ? "host.reload-pending" : "host.reloaded", index, reloaded);
-    if (!reloaded.ok && !slot.reload_pending) throw std::runtime_error("Resident smoke reload failed");
+    const auto reload_state = resident_classify_reload(reloaded.ok, reloaded.code);
+    slot.reload_pending = reload_state == resident_async_result::pending;
+    if (!polling_reload || !slot.reload_pending) {
+      if (slot.reload_pending) {
+        // This is the first observation of the admitted asynchronous reload,
+        // not a terminal Host error. Keep the existing ready/deadline state.
+        emit("host.reload-pending", {{"slot", index + 1}, {"generation", generations_[index]},
+            {"ok", reloaded.ok}, {"code", reloaded.code}, {"message", reloaded.message}});
+      } else {
+        host_result("host.reloaded", index, reloaded);
+      }
+    }
+    if (reload_state == resident_async_result::failed)
+      throw std::runtime_error("Resident smoke reload failed");
   }
   bool all_ready() const {
     return std::all_of(slots_.begin(), slots_.end(), [](const auto& slot) { return slot && slot->ready; });
@@ -545,6 +555,14 @@ class resident_controller final {
     shutdown_posted_ = PostMessageW(controller_, resident_exit_message, 0, 1) != FALSE;
     if (!shutdown_posted_) { fail(1); PostQuitMessage(exit_code_); }
   }
+  void retry_shutdown(const char* event) noexcept {
+    require_shutdown_budget();
+    in_shutdown_ = false;
+    if (!controller_ || !IsWindow(controller_) || !SetTimer(controller_, timer_id,
+        static_cast<UINT>(shutdown_policy_.wait_ms(GetTickCount64())), nullptr))
+      cleanup_fail_stop("Pending cleanup has no live controller retry timer");
+    emit(event, {{"liveWindows", live_count()}, {"ownedSlots", owned_slot_count()}});
+  }
   void shutdown() noexcept {
     if (shutdown_complete_) return;
     begin_shutdown();
@@ -589,18 +607,21 @@ class resident_controller final {
     if (owned_slot_count() != 0) {
       // Preserve each actual HWND and its Host until native borrowers and
       // callbacks leave. This controller remains available for bounded retries.
-      in_shutdown_ = false;
-      if (!controller_ || !IsWindow(controller_) || !SetTimer(controller_, timer_id,
-          static_cast<UINT>(shutdown_policy_.wait_ms(GetTickCount64())), nullptr))
-        cleanup_fail_stop("Pending Host cleanup has no live controller retry timer");
-      emit("exit.cleanup-pending", {{"liveWindows", live_count()}, {"ownedSlots", owned_slot_count()}});
+      retry_shutdown("exit.cleanup-pending");
       return;
     }
     shortcut_.reset(); menu_.reset(); tray_.reset();
     emit("services.destroyed");
     const auto runtime = soui::sdk::shutdown_miniblink_runtime();
     emit("runtime.shutdown", {{"ok", runtime.ok}, {"code", runtime.code}, {"message", runtime.message}});
-    if (!runtime.ok) fail(7);
+    const auto runtime_state = resident_classify_runtime_shutdown(runtime.ok, runtime.code);
+    if (runtime_state == resident_async_result::pending) {
+      // The same UI-thread cleanup phase retains the controller and original
+      // total deadline until the process Runtime confirms retirement.
+      retry_shutdown("exit.runtime-pending");
+      return;
+    }
+    if (runtime_state == resident_async_result::failed) fail(7);
     require_shutdown_budget();
     if (controller_) {
       const bool destroyed = DestroyWindow(controller_) != FALSE;

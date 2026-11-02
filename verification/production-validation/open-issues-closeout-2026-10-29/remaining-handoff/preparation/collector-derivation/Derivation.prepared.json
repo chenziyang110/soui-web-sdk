@@ -1,0 +1,55 @@
+{
+  "schema": "soui.remaining-handoff-collector-derivation/v1",
+  "preparedUtc": "2026-10-29T15:15:38.158Z",
+  "executionApproved": false,
+  "source": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/functional-closeout-archive-prep/Collect-FunctionalCloseout.cjs",
+    "bytes": 17441,
+    "sha256": "a0a415586d9243a41b35e1671f5a394e11aaff08564a677349eba25078ee85d1"
+  },
+  "derivative": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/remaining-handoff-archive-prep/Collect-RemainingHandoff.cjs",
+    "bytes": 17474,
+    "sha256": "2640935c72c241db5062d057256d86416feef1598bdb86ea7f0ad63c07a6a787"
+  },
+  "changes": [
+    {
+      "purpose": "destination",
+      "before": "open-issues-closeout-2026-10-29/functional-closeout",
+      "after": "open-issues-closeout-2026-10-29/remaining-handoff"
+    },
+    {
+      "purpose": "extension allowlist",
+      "before": "diff|js|html|cs)$/i",
+      "after": "diff|js|html|cs|py)$/i"
+    },
+    {
+      "purpose": "no-verdict data kind",
+      "before": "group.kind==='derived-analysis-observations'",
+      "after": "group.kind==='derived-analysis-observations'||group.kind==='data-only-observations'"
+    },
+    {
+      "purpose": "approval gate",
+      "before": "ROOT_REVIEWED_FUNCTIONAL_CLOSEOUT_ARCHIVE_V1",
+      "after": "ROOT_REVIEWED_REMAINING_HANDOFF_ARCHIVE_V1"
+    },
+    {
+      "purpose": "actual RAM-only lease lookup",
+      "before": ".vms['soui-devtools-windows'].lease.token",
+      "after": ".vms['soui-win7-compat'].lease.token"
+    }
+  ],
+  "unchangedGuards": [
+    "B-only explicit sources",
+    "plain single-link ancestor guards",
+    "exact closed member set before/after",
+    "source-before/copy/source-after bytes and file identity",
+    "fresh no-overwrite canonical destination",
+    "actual lease token RAM-only UTF8/UTF16LE/Base64UTF8 scan",
+    "sensitive credential value rejection",
+    "file/source/complete16MiB caps",
+    "full sorted index",
+    "no compiler/application/VM/Git executed"
+  ],
+  "physicalNodeForRootExecution": "C:/Users/11034/AppData/Local/nvm/v24.14.0/node.exe"
+}

@@ -1,0 +1,156 @@
+{
+  "derivative": {
+    "schema": "soui.offline-decoder-derivative/v1",
+    "original": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/tray-build/decoded-resident1/Decode-TrayExport.cjs",
+      "bytes": 11249,
+      "sha256": "40865d2c33e4e1e4ade854ca9fed71086a7867816ce74b474ebffce5a20d9d20"
+    },
+    "edits": [
+      "Select exact new tray3 tag",
+      "Selection description only",
+      "Require exact tray-x86 selected run",
+      "Selection description only"
+    ],
+    "unchangedGuards": [
+      "canonical Base64",
+      "round-trip fatal UTF-8",
+      "unique complete selected frame",
+      "bounded exact envelope/catalog order",
+      "safe original evidence paths",
+      "case-insensitive closed output set",
+      "all declared file sizes and SHA-256",
+      "aggregate byte total"
+    ],
+    "productOrVmExecution": false
+  },
+  "schema": "soui.issue-short-serial-decoded/v1",
+  "startedAtUtc": "2026-10-29T09:00:59.046Z",
+  "completedAtUtc": "2026-10-29T09:00:59.131Z",
+  "scope": "Offline decode of one selected tag only; no application/VM/test execution or product qualification",
+  "tag": "ISSUESHORT832C1A66DBB049618D74D90C38D9E717",
+  "sourceSerial": {
+    "path": "C:/Users/11034/.codex/task-vms/soui-devtools-qemu-stable-e89cf96f2d1e4685bbdac347cb9eea3d/private-fe2e6175cf5a4a78b23d418330506ee3/postsettings-cpu-nehalem-3f486e90/runs/166925c3-9fd3-4751-9a17-c45d880af0a6/serial.log",
+    "bytesAtOpen": 822551,
+    "bytesAtClose": 822551,
+    "readBoundaryBytes": 822551,
+    "wholeSerialCopied": false,
+    "otherTagsCopied": false
+  },
+  "originalFrame": {
+    "byteOffset": 745650,
+    "bytes": 18479,
+    "sha256": "a69e34c40eb8cf4d269e21ee654b3732c816c6df4bb81fb63ffaca166c7d5fac",
+    "path": "Serial.frame.raw"
+  },
+  "envelope": {
+    "path": "Envelope.json.raw",
+    "bytes": 13788,
+    "sha256": "89fda1279383c603b4596a70f89d602f2d076a177f3e683576a2be2d8da6d536",
+    "canonicalBase64": true,
+    "exactCompactOrderedJson": true
+  },
+  "catalog": {
+    "path": "raw/ExportFiles.actual.json",
+    "originalPath": "C:\\issue-closeout-evidence\\tray3\\ExportFiles.actual.json",
+    "bytes": 1909,
+    "sha256": "974f27d1297c56ef5d6aad00e68d4ffb127f607198621376e7374407fc74e4ef",
+    "declaredFiles": 9,
+    "declaredFileBytes": 8306
+  },
+  "decodedSummarySelected": [
+    "tray-x86"
+  ],
+  "decodedSummaryNativeExecutionAndNaturalClosePassed": false,
+  "payloadFileCount": 9,
+  "rawFileCountIncludingCatalog": 10,
+  "payloadFileBytes": 8306,
+  "rawBytesIncludingCatalog": 10215,
+  "files": [
+    {
+      "originalPath": "C:\\issue-closeout-evidence\\tray3\\Inputs.actual.json",
+      "path": "Inputs.actual.json",
+      "bytes": 852,
+      "sha256": "251ee1fbb9c83b7f05ef54fd7b2a799a4070d91e9f0d5635ab9fcfb325f92a80"
+    },
+    {
+      "originalPath": "C:\\issue-closeout-evidence\\tray3\\Summary.actual.json",
+      "path": "Summary.actual.json",
+      "bytes": 1070,
+      "sha256": "e906df1aef67378213c7caebee6b3eb507ac37677044b493c838a3337e3d9aea"
+    },
+    {
+      "originalPath": "C:\\issue-closeout-evidence\\tray3\\tray-x86\\Invocation.actual.json",
+      "path": "tray-x86/Invocation.actual.json",
+      "bytes": 293,
+      "sha256": "43f5a466495bfa50691427190ce304a879edc9328701adc7bbc1a8ba307d799d"
+    },
+    {
+      "originalPath": "C:\\issue-closeout-evidence\\tray3\\tray-x86\\finished.json",
+      "path": "tray-x86/finished.json",
+      "bytes": 948,
+      "sha256": "badc10d685ac7e56c222c9d743f979f1c5c668b53a2fd74c7f37e0a8a9ec39ac"
+    },
+    {
+      "originalPath": "C:\\issue-closeout-evidence\\tray3\\tray-x86\\owned.ndjson",
+      "path": "tray-x86/owned.ndjson",
+      "bytes": 1102,
+      "sha256": "2938769363a000a9322bd36b57ac2d835ca5d9d91750e54d2cbc9fc6bd91bc33"
+    },
+    {
+      "originalPath": "C:\\issue-closeout-evidence\\tray3\\tray-x86\\owned.ndjson.context.json",
+      "path": "tray-x86/owned.ndjson.context.json",
+      "bytes": 400,
+      "sha256": "c3b7cee459af9c203c748d5006b1e572f81d43abc2a001d3cd76caa8ec46953d"
+    },
+    {
+      "originalPath": "C:\\issue-closeout-evidence\\tray3\\tray-x86\\ready.json",
+      "path": "tray-x86/ready.json",
+      "bytes": 62,
+      "sha256": "5a91c2411b7b891f14d3f3cb9022f71ffc2eb8f331d67f6a0841f35fe44281ca"
+    },
+    {
+      "originalPath": "C:\\issue-closeout-evidence\\tray3\\tray-x86\\stderr.bin",
+      "path": "tray-x86/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "originalPath": "C:\\issue-closeout-evidence\\tray3\\tray-x86\\stdout.bin",
+      "path": "tray-x86/stdout.bin",
+      "bytes": 3579,
+      "sha256": "b28c0229dfb90797301c073f3b3e945cf1f1c6805bf923c83a21eed677ebe8e6"
+    }
+  ],
+  "base64CanonicalForAll": true,
+  "originalPathsConfined": true,
+  "caseInsensitiveClosedSetVerified": true,
+  "allOriginalBytesAndSha256Verified": true,
+  "producer": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/tray-build/Guest-Export.ps1",
+    "bytes": 3074,
+    "sha256": "f1cc23cfa6d76d35b2a6d8dd0779ceb332a42b51f74271bf097b5e9b44f1ce7c"
+  },
+  "decoder": {
+    "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-build\\decoded-tray3\\Decode-TrayExport.cjs",
+    "bytes": 11928,
+    "sha256": "07190633c5343df08a4810baa136e6f176ea44ba92ba98e211066ce5f2ffc83d"
+  },
+  "node": {
+    "path": "C:\\nvm4w\\nodejs\\node.exe",
+    "bytes": 91380224,
+    "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+  },
+  "argv": [
+    "C:\\nvm4w\\nodejs\\node.exe",
+    "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\tray-build\\decoded-tray3\\Decode-TrayExport.cjs"
+  ],
+  "cwd": "F:\\work\\SOUI_WEB",
+  "pid": 66096,
+  "testPassed": null,
+  "browserPassClaimed": false,
+  "uiInteractionQualified": false,
+  "releaseReady": false,
+  "productionQualificationComplete": false,
+  "fullDevtoolsGoalComplete": false
+}

@@ -1,0 +1,10 @@
+^C:\SCI8-F26AD533-X86\SOURCE\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/sci8-f26ad533-x86/source -BC:/sci8-f26ad533-x86/out/x86 --check-stamp-file C:/sci8-f26ad533-x86/out/x86/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

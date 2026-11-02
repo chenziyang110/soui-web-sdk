@@ -1,0 +1,77 @@
+{
+  "schema": "soui.issue77-data-iso-writer-inputs/v1",
+  "sourcePlan": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port/carrier-1249be88-0f1f-4f2f-840f-bb159c691d63/IsoSource.plan.json",
+    "bytes": 839679,
+    "sha256": "49c4073010ee942ba9a60bbb250230e3e3094a87fa423310ed9bc0d6f0aaff99"
+  },
+  "attemptRoot": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port/carrier-1249be88-0f1f-4f2f-840f-bb159c691d63/iso-writer-r3-3be2d976-6f91-4a49-9123-a0875404ebb2",
+  "originalHelper": {
+    "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vm-short-prep/media-tooldeps-4/BoundedIsoIO.cs",
+    "bytes": 11926,
+    "sha256": "fbedad4f3f1dd8357df8615f15917572e191681c676eba56d2b23507bf24dc72"
+  },
+  "helper": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port/BoundedIsoIO.longpath.cs",
+    "bytes": 11934,
+    "sha256": "00789c652e6e2c3639ee2896c05e56023974fc6ef8d334b8c4d5098d3003417a"
+  },
+  "writer": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port/Write-IssuesIso.r3.ps1",
+    "bytes": 8964,
+    "sha256": "68f0b9f99b5734472d55973e134a19bdc43417d14331be5569c294c9c080585b"
+  },
+  "trustedOriginalWriter": {
+    "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/vm-short-prep/media-tooldeps-4/Write-Iso.ps1",
+    "bytes": 7828,
+    "sha256": "af9e5e8d881b3d7177c728630bc1f5c0cdc837feb9c030795b2f9942b9e37407"
+  },
+  "comServer": {
+    "path": "C:/Windows/System32/imapi2fs.dll",
+    "bytes": 839680,
+    "sha256": "6b00e77979673c6d8bc4ff24a11dc49adc0a839f7a4d80986ef3711f587dbeaf"
+  },
+  "pwsh": {
+    "path": "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/pwsh.exe",
+    "bytes": 301368,
+    "sha256": "362a356ce7f0940ec74f73a8fc2c990a2cc24a38a11c90bbd8eca947110ad139"
+  },
+  "runner": {
+    "path": "F:/work/sm05/out/benchmark-protocol/Release/OwnedProcessRunner.exe",
+    "bytes": 60928,
+    "sha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f"
+  },
+  "originalAttemptFailure": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port/carrier-1249be88-0f1f-4f2f-840f-bb159c691d63/IsoWriter.failure.json",
+    "bytes": 234,
+    "sha256": "9bd658fc80575e813ee99e73179e9000e2a6fd14e10bebc3f19720ba71c59b39"
+  },
+  "originalAttemptOutcome": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port/carrier-1249be88-0f1f-4f2f-840f-bb159c691d63/IsoWriter.finished.json",
+    "bytes": 1021,
+    "sha256": "410bfcafb5873f052b48ac82ae7dce2498ac32090378778b38b89533d3f64489"
+  },
+  "previousAttemptFailure": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port/carrier-1249be88-0f1f-4f2f-840f-bb159c691d63/iso-writer-r2-c2d2ed7e-ccbe-45fa-8600-7ef2f5e67091/IsoWriter.failure.json",
+    "bytes": 249,
+    "sha256": "e9ed4df26ff10806b0a6391954c55b81f48bd3484b180f1d49b231049dc1f39f"
+  },
+  "previousAttemptOutcome": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port/carrier-1249be88-0f1f-4f2f-840f-bb159c691d63/iso-writer-r2-c2d2ed7e-ccbe-45fa-8600-7ef2f5e67091/finished.json",
+    "bytes": 1061,
+    "sha256": "e4beff088efcf880b145acf9b34b8e3d872639ccad9afd18752af42a090fcfa4"
+  },
+  "minimalChange": "Native CreateFileW and COM AddTree extended local path spelling; original path/identity/reparse/link/share/hash fences retained.",
+  "sourcePlanFileSystems": 7,
+  "actualFileSystems": 4,
+  "udfRevision": 513,
+  "strictCompliance": true,
+  "representationReason": "The unchanged tree has21 levels; ISO9660 strict compliance is limited to8. Select strict UDFonly; never shorten or alter payload paths.",
+  "filesystemReference": "https://learn.microsoft.com/en-us/windows/win32/api/imapi2fs/ne-imapi2fs-fsifilesystems",
+  "depthReference": "https://learn.microsoft.com/en-us/windows/win32/api/imapi2fs/nf-imapi2fs-ifsidirectoryitem-addtree",
+  "wholeJobTimeoutMs": 120000,
+  "drainMs": 2000,
+  "dataOnly": true,
+  "productExecuted": false,
+  "vmTouched": false
+}

@@ -1,0 +1,63 @@
+--- original-Run-MessagePortReloadBuild.cjs
++++ Run-PairedBuild.cjs
+@@ -4,6 +4,8 @@
+ const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
+ const {isDeepStrictEqual}=require('node:util');
+ const repository='C:/sc07',legacy='C:/sr06';
++const installedPrefixes={"x64":"F:\\work\\soui-issue96\\out\\acceptance\\bd7afa33-ea0d-4e55-b482-d2b01f64ee19\\install","x86":"F:\\work\\soui-issue96\\out\\acceptance\\5c02d217-f04f-4f32-9794-110e7fb3f734\\install"};
++const installedPrefix=architecture=>installedPrefixes[architecture];
+ const runner='C:/sr06/out/benchmark-protocol/Release/OwnedProcessRunner.exe';
+ const powershell='C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe';
+ const preparation='C:/sr06/out/benchmark-protocol/measurement-tools.json';
+@@ -51,7 +53,7 @@
+   const invocations=JSON.parse(fs.readFileSync(path.join(directory,'invocations.json')));
+   need(invocations.toolchain.MsvcVersion==='14.44.35207'&&invocations.toolchain.Toolset==='v143'&&invocations.toolchain.HostArchitecture==='x64'&&
+     invocations.environment.MSBUILDDISABLENODEREUSE==='1'&&invocations.compilerHelperSuppressionConfigured===false,'Actual MSVC profile differs');
+-  need(samePath(receipt.installedSdkPrefix,path.join(legacy,'out/release-install-'+architecture+'-release')),'Installed SDK prefix differs');
++  need(samePath(receipt.installedSdkPrefix,installedPrefix(architecture)),'Installed SDK prefix differs');
+   const compiler=path.win32.join(invocations.toolchain.MsvcRoot,'bin','Hostx64',architecture,'cl.exe');
+   const copiedSource=JSON.parse(fs.readFileSync(path.join(directory,'fixture-source-pins.json')));
+   need(copiedSource.length===3,'MessagePort source fixture is incomplete');
+@@ -106,7 +108,7 @@
+   const verdict={schema:'soui.message-port-consumer-build-only-case/v1',architecture,root:capture.ready,terminal:capture.result.terminal,
+     genericSupervisionPassed:true,wholeJobNaturallyClosed:true,helperPhases:expectedMembers,phasePins,toolPins:before,
+     compiler,selectedWindowsSdk:'10.0.19041.0',compiledExecutable:pin(receipt.executable),executableExecuted:false,
+-    scope:'independent current public MessagePort consumer configure/build only',installedSdkPrefix:receipt.installedSdkPrefix,oldFailuresReclassified:false,productionQualified:false,releaseReady:false};
++    scope:'fresh public 0.5.1 SDK consumer configure/build only; kernel A/B not executed',sdkVersion:'0.5.1-preview.1',installedSdkPrefix:receipt.installedSdkPrefix,oldFailuresReclassified:false,productionQualified:false,releaseReady:false};
+   save(directory,'case-verdict.json',verdict);return verdict;
+ }
+ async function main(){
+@@ -121,11 +123,11 @@
+     'tools/internal/Find-Toolchain.ps1','tools/internal/CMake-Configure.ps1','cmake/SouiWindowsSdk.cmake',
+     'tools/internal/standard-build.cjs','tools/internal/owned-process.cjs','tools/internal/owned-tail-evidence.cjs',
+     'tools/internal/compiler-tail-policy.cjs','tools/internal/sdk-version.cjs','tools/internal/build-evidence.cjs','tools/internal/delivery-identity.cjs'];
+-  const files=[__filename,path.join(__dirname,'Invoke-MessagePortBuild.ps1'),path.join(__dirname,'source/CMakeLists.txt'),path.join(__dirname,'source/main.cpp'),path.join(__dirname,'source/shutdown-poll.h'),
++  const files=[__filename,path.join(__dirname,'Invoke-PairedBuild.ps1'),path.join(__dirname,'source/CMakeLists.txt'),path.join(__dirname,'source/main.cpp'),path.join(__dirname,'source/shutdown-poll.h'),
+     process.execPath,powershell,runner,preparation,readerPath,path.join(legacy,'tools/internal/delivery-identity.cjs'),path.join(legacy,'tools/internal/owned-process.cjs'),
+     ...codeNames.map(name=>path.join(repository,name)),...prepared.report.source.files.map(file=>path.join(legacy,file.path))];
+   const reuseFile=path.join(__dirname,'web-reuse/Reuse.actual.json'),reuse=JSON.parse(fs.readFileSync(reuseFile)); files.push(reuseFile,...reuse.sourcePins.map(p=>p.path),...reuse.copies.map(c=>c.copied.path));
+-  files.push(path.join(__dirname,'ReloadPreparation.actual.json'),path.join(__dirname,'Run-MessagePortBuild.cjs'),path.join(__dirname,'source/README.md'),...walk(path.join(__dirname,'web-output'))); const installedRoots=['x64','x86'].map(a=>path.join(legacy,'out/release-install-'+a+'-release')); const installedFileSets=installedRoots.map(root=>({root,files:walk(root)})); for(const root of installedRoots)files.push(...walk(root)); files.push(...['CMakeLists.txt','main.cpp','shutdown-poll.h'].map(n=>path.join(repository,'tests/message-port-app',n))); const sourcePins=[...new Set(files.map(file=>path.resolve(file)))].map(pin),freeze=path.join(directory,'inputs-before.json');
++  files.push(path.join(__dirname,'SourceApiProof.actual.json'),path.join(__dirname,'ConsumerSourceApi.actual.diff'),path.join(__dirname,'PairedPreparation.actual.json'),path.join(__dirname,'original-controls/Run-MessagePortReloadBuild.cjs'),path.join(__dirname,'source/README.md'),...walk(path.join(__dirname,'source')),...walk(path.join(__dirname,'web-output'))); const installedRoots=['x64','x86'].map(installedPrefix); const installedFileSets=installedRoots.map(root=>({root,files:walk(root)})); for(const root of installedRoots)files.push(...walk(root)); files.push(...['main.cpp','shutdown-poll.h'].map(n=>path.join(repository,'tests/message-port-app',n)), 'F:/work/soui-issue96/tests/message-port-app/CMakeLists.txt'); const sourcePins=[...new Set(files.map(file=>path.resolve(file)))].map(pin),freeze=path.join(directory,'inputs-before.json');
+   save(directory,'inputs-before.json',{schema:'soui.message-port-consumer-build-only-inputs/v1',repository,runnerOrigin:legacy,
+     originalPreparedAt:prepared.report.preparedAt,originalPreparationGenericSupervisionPassed:null,sourcePins,
+     timeoutMs:120000,drainMs:2000,architectures:['x64','x86'],oldFailuresReclassified:false});
+@@ -137,7 +139,7 @@
+       unchanged(sourcePins);const folder=path.join(directory,architecture);fs.mkdirSync(folder);
+       const shortWorkspace='C:\\sci8-'+stamp.replace(/-/g,'').slice(0,8)+'-'+architecture;
+       need(!fs.existsSync(shortWorkspace),'Short native workspace already exists');
+-      const args=['-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',path.join(__dirname,'Invoke-MessagePortBuild.ps1'),
++      const args=['-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',path.join(__dirname,'Invoke-PairedBuild.ps1'),
+         '-Architecture',architecture,'-CaseDirectory',folder,'-ShortWorkspace',shortWorkspace,'-FrozenInputs',freeze];
+       save(folder,'request.json',{executable:powershell,args,cwd:repository,runner,timeoutMs:120000,drainMs:2000,shortWorkspace});
+       const env={...process.env};for(const name of Object.keys(env))if(name.toLowerCase()==='psmodulepath')delete env[name];
+@@ -150,8 +152,8 @@
+     const after=sourcePins.map(expected=>{try{return pin(expected.path);}catch(error){return {path:expected.path,error:error.message};}});
+     save(directory,'inputs-after.json',{sourcePins:after});
+     if(!isDeepStrictEqual(sourcePins,after)){failure??={message:'Frozen input bytes or metadata changed during the short smoke.'};}
+-    save(directory,'summary.json',{schema:'soui.message-port-reload-consumer-build-only/v1',passed:failure===null&&verdicts.length===2,
+-      scope:'post-E_RELOAD_PENDING MessagePort consumer compile x64 then x86 only; no SDK/Web rebuild or unchanged Workbench/policy repetition',originalRunnerPreparationGenericSupervisionPassed:null,
++    save(directory,'summary.json',{schema:'soui.message-port-old-sdk-paired-consumer-build-only/v1',passed:failure===null&&verdicts.length===2,
++      scope:'fresh a7df MessagePort consumer linked to exact old 0.5.1 SDK x64/x86 for separately staged kernel A/B; not a current 0.6 SDK build',sdkVersion:'0.5.1-preview.1',sdkSourceSha256:'652a66973f09c5a90a5e06465944dd7ea8d3a3d9463411db5b07d045cb843973',originalRunnerPreparationGenericSupervisionPassed:null,
+       verdicts,failure,productExecuted:false,executableExecuted:false,oldFailuresReclassified:false,
+       currentFullBuildEntriesExecuted:false,productionQualified:false,releaseReady:false});
+   }
