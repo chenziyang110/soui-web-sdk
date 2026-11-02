@@ -8,6 +8,7 @@ if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
 endif()
 add_executable(SouiModernStarter WIN32 app/main.cpp app/application.manifest)
 target_link_libraries(SouiModernStarter PRIVATE Soui::WebView2 Soui::ActionJson)
+soui_deploy_webview2_loader(SouiModernStarter)
 target_compile_options(SouiModernStarter PRIVATE /utf-8 /W4 /U_DEBUG /EHsc)
 set_target_properties(SouiModernStarter PROPERTIES MSVC_RUNTIME_LIBRARY MultiThreadedDLL
   RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/$<CONFIG>/SouiModernStarter")

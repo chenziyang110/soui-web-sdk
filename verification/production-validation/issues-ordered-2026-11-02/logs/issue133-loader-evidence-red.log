@@ -1,0 +1,177 @@
+✖ SDK-only evidence pins the actual shared Loader input and mode (58.9547ms)
+✖ SDK-only verification rejects shared Loader bytes drift after recording (73.4519ms)
+✖ SDK-only verification rejects shared Loader missing drift after recording (56.7854ms)
+✖ SDK-only verification rejects shared Loader mode drift after recording (49.3001ms)
+✖ SDK-only verification rejects shared Loader selected-path drift after recording (63.1737ms)
+✖ a shared build cannot omit the new input pin and reuse legacy static evidence (70.2815ms)
+✖ new static evidence pins its selected archive, while unpinned historical static reports retain their old scope (49.3562ms)
+✖ a shared build refuses to record an absent selected Loader cache input (47.9395ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 0
+ℹ fail 8
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 576.021
+
+✖ failing tests:
+
+test at tests\sdk\webview2-loader-evidence.test.cjs:43:1
+✖ SDK-only evidence pins the actual shared Loader input and mode (58.9547ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + undefined
+  - {
+  -   input: {
+  -     bytes: 16,
+  -     path: 'C:\\Users\\11034\\AppData\\Local\\Temp\\soui-loader-evidence-moqNgB\\out\\dependency\\build\\native\\x64\\WebView2Loader.dll',
+  -     sha256: '3337df30e86b3c451126417a44bccd2700a4c562907b25fa003c72b1ecfc2fb4'
+  -   },
+  -   mode: 'shared'
+  - }
+  
+      at TestContext.<anonymous> (F:\work\SOUI_WEB\soui-sdk-issues-20261102\tests\sdk\webview2-loader-evidence.test.cjs:45:10)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.start (node:internal/test_runner/test:1015:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: { mode: 'shared', input: { path: 'C:\\Users\\11034\\AppData\\Local\\Temp\\soui-loader-evidence-moqNgB\\out\\dependency\\build\\native\\x64\\WebView2Loader.dll', bytes: 16, sha256: '3337df30e86b3c451126417a44bccd2700a4c562907b25fa003c72b1ecfc2fb4' } },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests\sdk\webview2-loader-evidence.test.cjs:51:3
+✖ SDK-only verification rejects shared Loader bytes drift after recording (73.4519ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (F:\work\SOUI_WEB\soui-sdk-issues-20261102\tests\sdk\webview2-loader-evidence.test.cjs:59:12)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /Loader|loader|ENOENT/,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at tests\sdk\webview2-loader-evidence.test.cjs:51:3
+✖ SDK-only verification rejects shared Loader missing drift after recording (56.7854ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (F:\work\SOUI_WEB\soui-sdk-issues-20261102\tests\sdk\webview2-loader-evidence.test.cjs:59:12)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /Loader|loader|ENOENT/,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at tests\sdk\webview2-loader-evidence.test.cjs:51:3
+✖ SDK-only verification rejects shared Loader mode drift after recording (49.3001ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (F:\work\SOUI_WEB\soui-sdk-issues-20261102\tests\sdk\webview2-loader-evidence.test.cjs:59:12)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /Loader|loader|ENOENT/,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at tests\sdk\webview2-loader-evidence.test.cjs:51:3
+✖ SDK-only verification rejects shared Loader selected-path drift after recording (63.1737ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (F:\work\SOUI_WEB\soui-sdk-issues-20261102\tests\sdk\webview2-loader-evidence.test.cjs:59:12)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /Loader|loader|ENOENT/,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at tests\sdk\webview2-loader-evidence.test.cjs:63:1
+✖ a shared build cannot omit the new input pin and reuse legacy static evidence (70.2815ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (F:\work\SOUI_WEB\soui-sdk-issues-20261102\tests\sdk\webview2-loader-evidence.test.cjs:65:10)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /Loader|loader/,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at tests\sdk\webview2-loader-evidence.test.cjs:68:1
+✖ new static evidence pins its selected archive, while unpinned historical static reports retain their old scope (49.3562ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - 'static'
+  
+      at TestContext.<anonymous> (F:\work\SOUI_WEB\soui-sdk-issues-20261102\tests\sdk\webview2-loader-evidence.test.cjs:70:10)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'static',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests\sdk\webview2-loader-evidence.test.cjs:79:1
+✖ a shared build refuses to record an absent selected Loader cache input (47.9395ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (F:\work\SOUI_WEB\soui-sdk-issues-20261102\tests\sdk\webview2-loader-evidence.test.cjs:83:10)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /Loader|loader/,
+    operator: 'throws',
+    diff: 'simple'
+  }

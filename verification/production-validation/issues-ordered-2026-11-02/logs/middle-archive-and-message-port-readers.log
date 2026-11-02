@@ -1,0 +1,86 @@
+{
+  "scope": "Read-only indexed archive and existing lifecycle/MessagePort parser revalidation; no product/build/GUI execution",
+  "inventories": [
+    {
+      "root": "verification/production-validation/current-license-crosswalk-0.6.0-2026-10-29",
+      "indexedFiles": 20,
+      "indexedBytes": 8541412,
+      "closedFileSetVerified": true
+    },
+    {
+      "root": "verification/production-validation/open-issues-closeout-2026-10-29/current-execution",
+      "indexedFiles": 790,
+      "indexedBytes": 18470351,
+      "closedFileSetVerified": true
+    },
+    {
+      "root": "verification/production-validation/open-issues-closeout-2026-10-29/functional-closeout",
+      "indexedFiles": 274,
+      "indexedBytes": 7511150,
+      "closedFileSetVerified": true
+    },
+    {
+      "root": "verification/production-validation/open-issues-closeout-2026-10-29/remaining-handoff",
+      "indexedFiles": 77,
+      "indexedBytes": 922461,
+      "closedFileSetVerified": true
+    }
+  ],
+  "currentCandidateArchivedResults": [
+    {
+      "architecture": "x64",
+      "identity": {
+        "pid": 3592,
+        "creationFileTime": "134377432991630236"
+      },
+      "completedSteps": 9,
+      "samples": 7,
+      "sidecarRows": 40,
+      "schema": "soui.message-port-browser-behavior/v1",
+      "observedDocuments": 4,
+      "observedCases": 32,
+      "messageChannelBehaviorObserved": true,
+      "dedicatedWorkerMessagingObserved": true,
+      "boundedWorkerMessageSuppressionObserved": true,
+      "workerNativeJoinObserved": false,
+      "genericDebuggerWaitKillQualified": false,
+      "polyfillSchedulerBranchObserved": false,
+      "resourcePassed": false,
+      "osQualified": false,
+      "releaseReady": false,
+      "nativeExitCode": 0,
+      "supervisorExitCode": 0,
+      "wholeJobNatural": true
+    },
+    {
+      "architecture": "x86",
+      "identity": {
+        "pid": 4744,
+        "creationFileTime": "134377433108723942"
+      },
+      "completedSteps": 9,
+      "samples": 7,
+      "sidecarRows": 40,
+      "schema": "soui.message-port-browser-behavior/v1",
+      "observedDocuments": 4,
+      "observedCases": 32,
+      "messageChannelBehaviorObserved": true,
+      "dedicatedWorkerMessagingObserved": true,
+      "boundedWorkerMessageSuppressionObserved": true,
+      "workerNativeJoinObserved": false,
+      "genericDebuggerWaitKillQualified": false,
+      "polyfillSchedulerBranchObserved": false,
+      "resourcePassed": false,
+      "osQualified": false,
+      "releaseReady": false,
+      "nativeExitCode": 0,
+      "supervisorExitCode": 0,
+      "wholeJobNatural": true
+    }
+  ],
+  "currentSdkBaselineFailureRetained": true,
+  "baselineX86Executed": false,
+  "fourArmsPassed": false,
+  "newProductTestsExecuted": 0,
+  "releaseReady": false
+}

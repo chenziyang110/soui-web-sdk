@@ -26,6 +26,7 @@ const managedFiles = ['LICENSE.md', 'THIRD_PARTY_NOTICES.md', 'tools/Build.ps1',
   'docs/adr/0134-controlled-inspector-keyboard-snapshot.md',
   'docs/adr/0135-owned-local-resource-origin.md',
   'docs/adr/0137-bounded-windows-tool-preparation.md',
+  'docs/adr/0138-optional-webview2-loader.md',
   'benchmarks/protocol/host64-build-debug-observer.cpp',
   'benchmarks/protocol/host64-build-debug-observer/CMakeLists.txt'];
 const hash = data => crypto.createHash('sha256').update(data).digest('hex');

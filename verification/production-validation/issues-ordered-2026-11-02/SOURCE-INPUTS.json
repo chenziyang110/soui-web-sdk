@@ -1,0 +1,302 @@
+{
+  "schema": "soui.issue-source-inputs/v1",
+  "baseCommit": "ce9757e33e52ac680802691ff7e3a042eca86d52",
+  "changedFiles": [
+    {
+      "path": ".gitattributes",
+      "bytes": 41819,
+      "sha256": "ba30d20dc12b79d51d26332963c2cfa36ecdeaac95c69073834077ca037b9ded"
+    },
+    {
+      "path": "benchmarks/hosts/soui/CMakeLists.txt",
+      "bytes": 654,
+      "sha256": "afce4a798a808b879abd34df3b482f0962deb7be27c70c45af620baaa3ba20d1"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "bytes": 60832,
+      "sha256": "1ef3cf8382cdb4540ff235851c60e20c94cd216c90777743aac2f98cce35e2f4"
+    },
+    {
+      "path": "demos/reference-workbench/CMakeLists.txt",
+      "bytes": 12613,
+      "sha256": "b948c10734d834fa304222d85b61a9d872b87c27198c1bee76dc841bc469e9b4"
+    },
+    {
+      "path": "docs/adr/0138-optional-webview2-loader.md",
+      "bytes": 3370,
+      "sha256": "78142ec686f6c3de7cba868c2dba07ca404cd4b1204c357fc1239423c2af3ecd"
+    },
+    {
+      "path": "docs/adr/README.md",
+      "bytes": 10529,
+      "sha256": "dc1d8cfcd60b256574657d8a81f0364cacfa510664345df0cec84aa526dc21a5"
+    },
+    {
+      "path": "docs/auto-backend.md",
+      "bytes": 7531,
+      "sha256": "4228273ace6aa7de3bd9077355dc0d5c550178d612fe7a9f57edf2894b548273"
+    },
+    {
+      "path": "docs/build.md",
+      "bytes": 13841,
+      "sha256": "a2b2fae1683ceabac80ef002ea38fd0e4b8f676ab1828f773c0c51adbc32e1b4"
+    },
+    {
+      "path": "docs/maintenance/issues-ordered-20261102.md",
+      "bytes": 6926,
+      "sha256": "8ef62a120a7c962194755adf1697a3e7c1d9d78d66c77e53296f240a39f882ea"
+    },
+    {
+      "path": "README.md",
+      "bytes": 15021,
+      "sha256": "b4b179a8e31343cb3273f42d43eac497a4c3bbffd83fef6ed8c042edfa224ba9"
+    },
+    {
+      "path": "sdk/bindings/react/package-lock.json",
+      "bytes": 3431,
+      "sha256": "2d0a7d73e32d8c737323626af83d3f7cb86ad11d89dd1a5c23fa8bdc461dd39e"
+    },
+    {
+      "path": "sdk/bindings/react/package.json",
+      "bytes": 720,
+      "sha256": "bb14e9185f555f0ce418d04e43ad2df3f0927fbbcf9cfe599a486669e32e0f17"
+    },
+    {
+      "path": "sdk/bindings/vue/package-lock.json",
+      "bytes": 11777,
+      "sha256": "07373eb52a4b8affd78418ade0f9b12643de8f60e4e5c2fd5b77709b0dd7920f"
+    },
+    {
+      "path": "sdk/bindings/vue/package.json",
+      "bytes": 667,
+      "sha256": "53ff6be832fa289cc67a546383f9c87d3adbec2597125ad99a70dab613b79fa8"
+    },
+    {
+      "path": "sdk/cmake/SouiSdkConfig.cmake.in",
+      "bytes": 892,
+      "sha256": "0292dc06766b2e4e2de14613c128313d6d4a156a22dd53088cc9f07328b7f0fa"
+    },
+    {
+      "path": "sdk/include/soui/host/auto_webview_host.h",
+      "bytes": 3453,
+      "sha256": "4765391c6e2f368087a50901eb82b8bba8db6ac67907391a1eb9d473a1956daf"
+    },
+    {
+      "path": "sdk/include/soui/version.h",
+      "bytes": 250,
+      "sha256": "66487d0a1af093490c8b95e1755b0d0c3f754425340bb819f56e215b5db7fd5a"
+    },
+    {
+      "path": "sdk/renderers/auto/auto_host_policy.h",
+      "bytes": 2137,
+      "sha256": "e2585478599c2ba97b3308c5a16eb9b0d130f9e3055ad503037c1964bcc74732"
+    },
+    {
+      "path": "sdk/renderers/auto/auto_webview_host.cpp",
+      "bytes": 17173,
+      "sha256": "637e3a1d4b95f7488099dea28f5ec77f10b796c935469eef05215a46533878e3"
+    },
+    {
+      "path": "sdk/renderers/webview2/CMakeLists.txt",
+      "bytes": 3904,
+      "sha256": "78b0d3ff5a5ae397317d80b1e716a0550bdedc08eaa901c56ce37af454890e5f"
+    },
+    {
+      "path": "sdk/renderers/webview2/SouiWebView2Loader.cmake",
+      "bytes": 657,
+      "sha256": "10e125339d26ec6568fee160a6a7773e1ad77764d6404387b338de517fd926ba"
+    },
+    {
+      "path": "sdk/renderers/webview2/webview2_host.cpp",
+      "bytes": 116537,
+      "sha256": "8aa3f8a7845028c43ec21c8f8bb0336f8336a5ac1ce7aa2253835a460ad67e73"
+    },
+    {
+      "path": "sdk/renderers/webview2/webview2_loader_bridge.cpp",
+      "bytes": 3708,
+      "sha256": "3575ef8ad50cb04b025d3b1fbdb1f2ff9f0f92cd5bb016e69f380bdd858355d4"
+    },
+    {
+      "path": "sdk/renderers/webview2/webview2_loader_bridge.h",
+      "bytes": 508,
+      "sha256": "6b4831501be939fc3bafde1c1ae49844aff387d5e2fbe8aa1cb1ad07c1b0e565"
+    },
+    {
+      "path": "sdk/web/package-lock.json",
+      "bytes": 759,
+      "sha256": "602164847f066668bc846fabd017876f2107c8ee361e20cdea5f1e3411c3f6c1"
+    },
+    {
+      "path": "sdk/web/package.json",
+      "bytes": 442,
+      "sha256": "f4a81614e4475b38c411ae235698123e196217d7db7dcfe302b9a5be6cbaed16"
+    },
+    {
+      "path": "templates/auto-app/CMakeLists.txt",
+      "bytes": 1989,
+      "sha256": "f949dc05d81ae9964e7093c1524808661a689dea5a0835d64dd34acbfe0657f7"
+    },
+    {
+      "path": "templates/modern-app/CMakeLists.txt",
+      "bytes": 2452,
+      "sha256": "efbfc91626354b721831f60632b61e71c2ecf3f056ba28fa30c74a95e6b0ea10"
+    },
+    {
+      "path": "tests/acceptance-app/CMakeLists.txt",
+      "bytes": 979,
+      "sha256": "072ff0b8de2997900aa9b8b84157f5752c0a762da71e312bf1984d093f055715"
+    },
+    {
+      "path": "tests/acceptance-thread-sampler/CMakeLists.txt",
+      "bytes": 2060,
+      "sha256": "410c885464b994a27117b724b661673b81702f99ba8a9047b2f94ca14410d0f3"
+    },
+    {
+      "path": "tests/calibration/CMakeLists.txt",
+      "bytes": 771,
+      "sha256": "1ace2fa60d5b30b7f27770632603bee2f4acd52d3ddf0c319dc740441170b391"
+    },
+    {
+      "path": "tests/endpoint-consumer/CMakeLists.txt",
+      "bytes": 524,
+      "sha256": "8e9347ec69520e7f1c3ec410214571af60c5e45c03059cd507e41fbaf0825b9f"
+    },
+    {
+      "path": "tests/gui-bindings/package-lock.json",
+      "bytes": 32385,
+      "sha256": "0e7d3084938d96ff54acecc63166a5c29fcc3e237a7b99306a7cc37e395fa1b5"
+    },
+    {
+      "path": "tests/gui-bindings/react18/package-lock.json",
+      "bytes": 4436,
+      "sha256": "0f7d0525f90f86510f5ce3d60f544553ce783f049d9a72cf192f5d6c3165b4eb"
+    },
+    {
+      "path": "tests/message-port-app/CMakeLists.txt",
+      "bytes": 962,
+      "sha256": "026ac6b457e65ec54a86ed294fa9088efb1e7830598b3e8f6f0be067083bb9a6"
+    },
+    {
+      "path": "tests/native/CMakeLists.txt",
+      "bytes": 45998,
+      "sha256": "758672d4fd073a74d4dd9c4c6ec673078d82a13312b570243bcc0a4106a5a5ba"
+    },
+    {
+      "path": "tests/native/webview2_loader/CMakeLists.txt",
+      "bytes": 3456,
+      "sha256": "dbdf3424faecd0d0c0dd5360a085585c760eaab02c434619d4a96e8031705f89"
+    },
+    {
+      "path": "tests/native/webview2_loader/fixture.cpp",
+      "bytes": 837,
+      "sha256": "45c981253d74fd81adabaf9e0df77132b6bc6c6bee3bc2291424f2e4f6ee1899"
+    },
+    {
+      "path": "tests/native/webview2_loader/loader_tests.cpp",
+      "bytes": 4458,
+      "sha256": "0a21e906813e5ea84fa06b9588a751e7a0bb196454b377c286c490f2ee5a29be"
+    },
+    {
+      "path": "tests/optional-loader-consumer/CMakeLists.txt",
+      "bytes": 583,
+      "sha256": "4a6d9277c50bf0309db40341a2c6772e00e12af1a7dc9c96e2c0c95ff30b259f"
+    },
+    {
+      "path": "tests/optional-loader-consumer/main.cpp",
+      "bytes": 950,
+      "sha256": "b0b3dfcd2459bec17ba33409b7761e3def2729bb2e913160446405539fba9c82"
+    },
+    {
+      "path": "tests/optional-loader-consumer/README.md",
+      "bytes": 1145,
+      "sha256": "5148b01a4c0db862e6be62020be41455e28ea2aa1637a6082642d30cee1b22db"
+    },
+    {
+      "path": "tests/sdk/gui-bindings-delivery.test.cjs",
+      "bytes": 29122,
+      "sha256": "9aaebfbd6d9b7fb27fd40b0935101a01ac88f1b588253cf1efbb443de1680c48"
+    },
+    {
+      "path": "tests/sdk/llvm-webview2-dependencies.Tests.ps1",
+      "bytes": 5923,
+      "sha256": "d984e87b65fa1d84d603974a98182a2ad841ccef8dbd77bbaf01aacfd9e40b97"
+    },
+    {
+      "path": "tests/sdk/webview2-loader-cmake.Tests.ps1",
+      "bytes": 3719,
+      "sha256": "37c2fbcb0db9e7e84469c635b29dbaf4805a39810b6a7a76fd2427577857d669"
+    },
+    {
+      "path": "tests/sdk/webview2-loader-evidence.test.cjs",
+      "bytes": 4656,
+      "sha256": "3246a4fd9c1eeea052404b1c76fbc1955354d355cf14817d8d1fb4bcafb6620f"
+    },
+    {
+      "path": "tests/tooling/devkit-command.test.cjs",
+      "bytes": 20164,
+      "sha256": "60d411bc483380c0301b5eaae600303b9265c2b139c4eff50c9bdf8201cdcf3c"
+    },
+    {
+      "path": "tests/tray-consumer/CMakeLists.txt",
+      "bytes": 627,
+      "sha256": "3679f10fa635f0ad898dc3e102b0478662a1fe3a6a4b60c8af855493a14940a4"
+    },
+    {
+      "path": "tests/tray-recovery-consumer/CMakeLists.txt",
+      "bytes": 754,
+      "sha256": "e9e7366ff495c20f2ca486097827914a15f01d497e72a182613eb72aad47cc7a"
+    },
+    {
+      "path": "tests/uia-consumer/CMakeLists.txt",
+      "bytes": 1630,
+      "sha256": "7af8bb9ed7e5a78abcfc8bb11bdd85951bb6091e199dad82328e40d21616e10e"
+    },
+    {
+      "path": "tools/Build.ps1",
+      "bytes": 16884,
+      "sha256": "cc9290df6296c2191369ee954d7cce570a28677963dab50230dc6e7fa026a2d2"
+    },
+    {
+      "path": "tools/internal/build-evidence.cjs",
+      "bytes": 37437,
+      "sha256": "9dd200b08aa152bf09540ebc9e3488dc641f2443043275115a4c388044661f41"
+    },
+    {
+      "path": "tools/internal/devkit-command.cjs",
+      "bytes": 39317,
+      "sha256": "33970391fa7ba36c44fa3ded2252df3bd971fa46c7acb99fb086601b1cd8dd24"
+    },
+    {
+      "path": "tools/internal/Observe-LlvmBuild.ps1",
+      "bytes": 130641,
+      "sha256": "7b9fcc029e7cf92344dda9e12832801aaef6ab6460e4d08408ce7eb3800adee3"
+    },
+    {
+      "path": "tools/internal/Restore-WebView2.ps1",
+      "bytes": 2638,
+      "sha256": "4ff1d6add3fb8b5a326f38e9fab094224ea3634c8b9223781d8afc742ddde608"
+    },
+    {
+      "path": "tools/internal/standard-build.cjs",
+      "bytes": 44099,
+      "sha256": "e371bc517a2fdcf861631ee63731d872085662928456961e2a0d85f952845703"
+    },
+    {
+      "path": "tools/sdk/gui-bindings-delivery.cjs",
+      "bytes": 17916,
+      "sha256": "67570ba19cfca94246f00866d6678165c280d9cd14ee38986d251134aa4ee376"
+    },
+    {
+      "path": "tools/sdk/soui-sdk.cjs",
+      "bytes": 20681,
+      "sha256": "3f408ec7ddf490d16504fc286649c08338a2eb8a4d9ca4f934079c209b599bef"
+    },
+    {
+      "path": "VERSION",
+      "bytes": 17,
+      "sha256": "2073eadd9f9fd2b4babd8093ecf0667728bc791777ca26637d9219c668d5f2ad"
+    }
+  ],
+  "sha256": "d04898050b3b6f4e197b8ddcda2ebaf4a3ba22b57cb493366d6a087263c42b7f"
+}

@@ -28,6 +28,13 @@
 
 自动宿主与双资源模板使用 `-WithAutoHost` 显式启用，详见[自动后端](auto-backend.md)。
 
+未发布候选 `0.6.1-preview.1` 可另加 `-WithSharedWebView2Loader`，在应用目录动态
+加载可选 Loader；统一入口对应 `--with-shared-webview2-loader`。省略该选项会明确
+恢复静态档，不继承旧 CMake 缓存中的动态选择。该选项同时启用 WebView2 组件；
+使用 AutoHost 时仍需 `-WithAutoHost`。源码与安装消费者需调用
+`soui_deploy_webview2_loader(target)`；内置 Modern/Auto 模板已接线。边界见
+[ADR-0138](adr/0138-optional-webview2-loader.md)，不构成 Win7 或生产验收。
+
 ```powershell
 powershell.exe -File tools/Build.ps1 -Architecture x64 -Configuration Release -Install
 powershell.exe -File tools/Build.ps1 -Architecture x86 -Configuration Debug

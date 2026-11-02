@@ -272,6 +272,7 @@ set_property(TARGET soui_webview2_request_capacity_tests PROPERTY MSVC_RUNTIME_L
 add_test(NAME sdk.native.webview2-capacity COMMAND soui_webview2_request_capacity_tests)
 set_tests_properties(sdk.native.webview2-capacity PROPERTIES TIMEOUT 10)
 if(TARGET Soui::WebView2)
+  add_subdirectory(webview2_loader)
   # Compile the actual private callback/retirement implementation with fake COM;
   # do not link the WebView2 archive a second time or start a browser runtime.
   add_executable(soui_webview2_cancelled_controller_tests webview2_cancelled_controller_tests.cpp)
@@ -279,8 +280,14 @@ if(TARGET Soui::WebView2)
   target_include_directories(soui_webview2_cancelled_controller_tests PRIVATE
     "${SOUI_WEBVIEW2_INCLUDE}" "${webview2_generated_dir}"
     "${SOUI_DISTRIBUTION_ROOT}/third_party/include/json")
-  target_link_libraries(soui_webview2_cancelled_controller_tests PRIVATE Soui::Sdk
-    "${SOUI_WEBVIEW2_LOADER}" shlwapi version bcrypt)
+  target_link_libraries(soui_webview2_cancelled_controller_tests PRIVATE Soui::Sdk shlwapi version bcrypt)
+  if(SOUI_WEBVIEW2_LOADER_SHARED)
+    target_sources(soui_webview2_cancelled_controller_tests PRIVATE
+      "${SOUI_DISTRIBUTION_ROOT}/sdk/renderers/webview2/webview2_loader_bridge.cpp")
+    target_compile_definitions(soui_webview2_cancelled_controller_tests PRIVATE SOUI_WEBVIEW2_LOADER_SHARED=1)
+  else()
+    target_link_libraries(soui_webview2_cancelled_controller_tests PRIVATE "${SOUI_WEBVIEW2_STATIC_LOADER}")
+  endif()
   target_compile_options(soui_webview2_cancelled_controller_tests PRIVATE /utf-8 /W4 /U_DEBUG /EHsc)
   set_property(TARGET soui_webview2_cancelled_controller_tests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
   add_test(NAME sdk.native.webview2-cancelled-controller COMMAND soui_webview2_cancelled_controller_tests)

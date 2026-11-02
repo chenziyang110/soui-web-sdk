@@ -1,0 +1,47 @@
+✖ repository GUI metadata accepts the actual VERSION and lock files (4.3156ms)
+✖ the next preview accepts only its exact added peer and rejects unknown versions (258.4083ms)
+✖ stable GUI upgrades to the next preview and rolls back with original peer bytes (4639.5159ms)
+✔ stable and strict previews require exact root lock peers and local SDK versions (10884.7874ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 1
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 15930.5479
+
+✖ failing tests:
+
+test at tests\sdk\gui-bindings-delivery.test.cjs:20:1
+✖ repository GUI metadata accepts the actual VERSION and lock files (4.3156ms)
+  Error: GUI package must borrow the exact local SDK and framework peers: @soui/gui-react
+      at Object.metadata (F:\work\SOUI_WEB\soui-sdk-issues-20261102\tools\sdk\gui-bindings-delivery.cjs:77:15)
+      at TestContext.<anonymous> (F:\work\SOUI_WEB\soui-sdk-issues-20261102\tests\sdk\gui-bindings-delivery.test.cjs:22:20)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.start (node:internal/test_runner/test:1015:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17)
+
+test at tests\sdk\gui-bindings-delivery.test.cjs:187:1
+✖ the next preview accepts only its exact added peer and rejects unknown versions (258.4083ms)
+  Error: GUI package must borrow the exact local SDK and framework peers: @soui/gui-react
+      at Object.metadata (F:\work\SOUI_WEB\soui-sdk-issues-20261102\tools\sdk\gui-bindings-delivery.cjs:77:15)
+      at TestContext.<anonymous> (F:\work\SOUI_WEB\soui-sdk-issues-20261102\tests\sdk\gui-bindings-delivery.test.cjs:188:20)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+
+test at tests\sdk\gui-bindings-delivery.test.cjs:196:1
+✖ stable GUI upgrades to the next preview and rolls back with original peer bytes (4639.5159ms)
+  Error: GUI package must borrow the exact local SDK and framework peers: @soui/gui-react
+      at metadata (F:\work\SOUI_WEB\soui-sdk-issues-20261102\tools\sdk\gui-bindings-delivery.cjs:77:15)
+      at Object.verify (F:\work\SOUI_WEB\soui-sdk-issues-20261102\tools\sdk\gui-bindings-delivery.cjs:169:3)
+      at Object.pack (F:\work\SOUI_WEB\soui-sdk-issues-20261102\tools\sdk\soui-sdk.cjs:189:69)
+      at TestContext.<anonymous> (F:\work\SOUI_WEB\soui-sdk-issues-20261102\tests\sdk\gui-bindings-delivery.test.cjs:203:7)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7)

@@ -16,6 +16,8 @@ const previousPeerRange = '>=0.4.0-0 <0.5.0 || >=0.5.0-0 <0.6.0';
 const mitPeerRange = '>=0.4.0-0 <0.5.0 || >=0.5.0-0 <0.5.1 || >=0.5.1-0 <0.6.0';
 const mainPreviewPeerRange = mitPeerRange + ' || 0.6.0-preview.3';
 const peerRange = mainPreviewPeerRange + ' || 0.6.0';
+const candidateVersion = '0.6.1-preview.1';
+const candidatePeerRange = peerRange + ' || ' + candidateVersion;
 const previewPeerRanges = new Map([
   ['0.6.0-preview.1', previousPeerRange + ' || 0.6.0-preview.1'],
   ['0.6.0-preview.2', previousPeerRange + ' || 0.6.0-preview.2'],
@@ -59,11 +61,12 @@ function metadata(root, version = versionOf(root)) {
         (acceptsPreviousPeer && (nativePeer === previousPeerRange || nativePeer === previewPeerRanges.get('0.6.0-preview.1'))) ||
         (acceptsMitPeer && [mitPeerRange, mainPreviewPeerRange, peerRange].includes(nativePeer)) ||
         (version === '0.6.0-preview.3' && nativePeer === mainPreviewPeerRange) ||
-        (version === '0.6.0' && nativePeer === peerRange);
+        (version === '0.6.0' && nativePeer === peerRange) ||
+        (version === candidateVersion && nativePeer === candidatePeerRange);
       const lockPeers = lock.packages[''].peerDependencies;
       // Preserve old producer spellings/lock shapes. Only the exact p9 preview
-      // contracts from .3 onward and the new stable contract require root peers.
-      const requiresLockPeers = version === '0.6.0' || (nativePeer === previewPeer &&
+      // contracts from .3 onward and the exact stable/candidate contracts require root peers.
+      const requiresLockPeers = version === '0.6.0' || version === candidateVersion || (nativePeer === previewPeer &&
         ['0.6.0-preview.3', '0.6.0-preview.4', '0.6.0-preview.5', '0.6.0-preview.6', '0.6.0-preview.7', '0.6.0-preview.8', '0.6.0-preview.9'].includes(version));
       const matchingLockPeers = lockPeers === undefined ? !requiresLockPeers :
         lockPeers && typeof lockPeers === 'object' && !Array.isArray(lockPeers) &&

@@ -1,0 +1,69 @@
+✔ repository GUI metadata accepts the actual VERSION and lock files (3.5298ms)
+✔ previous preview optional GUI reads, installs and downgrades with its fixed declaration (12875.5493ms)
+✔ stable release delivers the exact new peer and rejects the previous declaration (4277.2365ms)
+✔ MIT preview GUI upgrades to the current candidate and downgrades without rewriting its peer (15149.2198ms)
+✔ GUI peer declarations preserve legacy, MIT and exact stable contracts (15383.8719ms)
+✔ the next preview accepts only its exact added peer and rejects unknown versions (1946.8174ms)
+✔ stable GUI upgrades to the next preview and rolls back with original peer bytes (8820.8613ms)
+✔ each p9-lineage preview retains only its own exact declaration (9748.5836ms)
+✔ the p9 package reads, installs and rolls back with its original peer bytes (9313.9628ms)
+✔ stable and strict previews require exact root lock peers and local SDK versions (8149.3675ms)
+✔ historical producers keep their original minimal lock shapes (857.3785ms)
+✔ historical optional GUI verifies the complete source and output sets (2144.6792ms)
+✔ an installed historical lock does not hide a failed or changed GUI build record (2482.9435ms)
+✔ historical producer cannot authorize RC or stable declarations (1522.6635ms)
+✔ current GUI producer cannot omit the helper in packages or installed locks (2451.2898ms)
+✔ historical compatibility requires exact previous producer bytes and absent helper (1071.0094ms)
+✔ an installed historical declaration cannot bypass new GUI packaging input requirements (2010.6091ms)
+✔ optional GUI delivery preserves exact 0.5.0-rc.1 identity (2204.2823ms)
+✔ optional GUI delivery preserves exact 0.5.0 identity (2343.6227ms)
+✔ optional GUI delivery preserves exact 0.5.1-preview.1 identity (2759.1533ms)
+✔ default source delivery remains framework-free and does not require compiled GUI output (439.1599ms)
+✖ opt-in source package carries compiled imports through installation and relocation (461.3914ms)
+✔ stale source, missing output, mismatched SDK version, and output mutation fail before publication (784.7753ms)
+✔ delivered missing, changed and undeclared compiled files are rejected (2353.967ms)
+✔ links and hard-linked output cannot be consumed as GUI delivery (195.0165ms)
+✔ a failed compile command or modified raw compile log cannot become a verified build (320.2008ms)
+✔ a refreshed build record cannot replace the installed optional SDK lock (2462.2958ms)
+✔ a source-only fixed SDK allows unmanaged dist but still checks every managed file (1865.7398ms)
+✔ actual PowerShell optional web blocks preserve default, SDK-only, generated, and SkipWeb branches (2735.1849ms)
+✔ standard tests and collection make framework installation explicitly optional (0.7252ms)
+✔ actual Build evidence calls separate Web arguments from both native profiles (4321.9792ms)
+✔ real Web CLI SDK keeps profile rejection and source/output gates (2150.9518ms)
+✔ real Web CLI applications keeps profile rejection and source/output gates (3529.2864ms)
+✔ versions have one canonical preview, RC or stable channel (0.8908ms)
+✔ channel mismatch and claimed production acceptance cannot enter an SDK lock (71.0559ms)
+✔ preview to RC to stable installs and rolls back without altering business files (1764.0366ms)
+✔ build identity requires matching header and JavaScript metadata for RC and stable (17.1846ms)
+ℹ tests 37
+ℹ suites 0
+ℹ pass 36
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 114547.68
+
+✖ failing tests:
+
+test at tests\sdk\gui-bindings-delivery.test.cjs:371:1
+✖ opt-in source package carries compiled imports through installation and relocation (461.3914ms)
+  AssertionError [ERR_ASSERTION]: SDK: ENOENT: no such file or directory, stat 'C:\Users\11034\AppData\Local\Temp\soui-optional-gui-9s0x38\source\docs\adr\0138-optional-webview2-loader.md'
+  
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (F:\work\SOUI_WEB\soui-sdk-issues-20261102\tests\sdk\gui-bindings-delivery.test.cjs:375:10)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

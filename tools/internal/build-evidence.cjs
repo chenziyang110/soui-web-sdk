@@ -109,6 +109,29 @@ function optionalLibraries(root, arch, config, sdkOnly) {
     libraries.uia = id.snapshot(dir, [prefix+'accessibility/uia/'+config+'/soui_uia.lib']);
   return libraries;
 }
+function webview2Loader(root, arch, config, sdkOnly, legacyStatic = false) {
+  const cache = path.join(output(root, arch, config, sdkOnly), 'CMakeCache.txt');
+  if (!fs.existsSync(cache)) return null;
+  const text = fs.readFileSync(cache, 'utf8');
+  if (!/^SOUI_BUILD_WEBVIEW2:BOOL=ON\r?$/m.test(text)) return null;
+  const cacheValue = name => {
+    const rows = text.split(/\r?\n/).filter(line => line.startsWith(name + ':'));
+    if (rows.length > 1) throw new Error('Ambiguous WebView2 Loader cache input: ' + name);
+    return rows.length ? rows[0].slice(rows[0].indexOf('=') + 1) : undefined;
+  };
+  const shared = cacheValue('SOUI_WEBVIEW2_LOADER_SHARED') || '';
+  const mode = /^(?:0|OFF|NO|FALSE|N|IGNORE|NOTFOUND)?$|^.*-NOTFOUND$/i.test(shared) ? 'static' : 'shared';
+  // Old static reports predate input pinning. Preserve their original scope;
+  // they cannot authorize a newly selected dynamic Loader.
+  if (legacyStatic && mode === 'static') return null;
+  const selected = cacheValue(mode === 'shared' ? 'SOUI_WEBVIEW2_SHARED_LOADER' : 'SOUI_WEBVIEW2_STATIC_LOADER');
+  if (selected === undefined && mode === 'static') return {mode};
+  if (!selected || !path.isAbsolute(selected)) throw new Error('Missing absolute WebView2 Loader cache input');
+  const file = id.safePath(path.resolve(selected));
+  if (!fs.statSync(file).isFile()) throw new Error('WebView2 Loader input must be a regular file');
+  const bytes = fs.readFileSync(file);
+  return {mode, input: {path: file, bytes: bytes.length, sha256: id.hash(bytes)}};
+}
 function profileRequest(root, arch, config, sdkOnly, selected = {}) {
   const profile=selected.nativeToolchain||'MSVC143';
   if(profile==='MSVC143') {if(selected.profileRequest!==undefined)throw new Error('LLVM request requires explicit LLVM22MSVC142');return null;}
@@ -174,6 +197,8 @@ function finish(root, arch, config, sdkOnly = false, selected = {}) {
       applicationFilesForTarget(root, target, path.join(dir, 'bin', config, target)))]));
   if (sdkOnly) report.library = id.snapshot(dir, [`${config}/soui_sdk.lib`]);
   report.optionalLibraries = optionalLibraries(root, arch, config, sdkOnly);
+  const loader = webview2Loader(root, arch, config, sdkOnly);
+  if (loader) report.webview2Loader = loader;
   if (Boolean(report.autoHost) !== Boolean(report.optionalLibraries.autoHost)) throw new Error('Auto host build selection differs from configured library');
   if (!sdkOnly && !fs.existsSync(path.join(root, 'project.json')) && report.optionalLibraries.webview2) {
     verifyApplicationWeb(path.join(dir, 'bin', config, 'SouiModernStarter'), webProfile);
@@ -311,6 +336,10 @@ function verifyBuild(root, arch, config, sdkOnly = false, selected = {}) {
   } else if (!report.library || id.snapshot(dir, [`${config}/soui_sdk.lib`]).sha256 !== report.library.sha256) throw new Error('SDK library drift');
   if (JSON.stringify(report.optionalLibraries || {}) !== JSON.stringify(optionalLibraries(root, arch, config, sdkOnly)))
     throw new Error('Optional SDK library or component configuration drift');
+  const loader = webview2Loader(root, arch, config, sdkOnly, report.webview2Loader === undefined);
+  if ((report.webview2Loader !== undefined || loader?.mode === 'shared') &&
+      JSON.stringify(report.webview2Loader || null) !== JSON.stringify(loader))
+    throw new Error('WebView2 Loader mode or selected input drift; rebuild current inputs');
   if (Boolean(report.autoHost) !== Boolean(report.optionalLibraries?.autoHost)) throw new Error('Auto host library evidence missing');
   if (!sdkOnly && !fs.existsSync(path.join(root, 'project.json')) && report.optionalLibraries?.webview2) {
     verifyApplicationWeb(path.join(dir, 'bin', config, 'SouiModernStarter'), recordedWebProfile);
