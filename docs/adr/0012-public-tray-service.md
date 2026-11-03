@@ -83,7 +83,7 @@ readiness 或输入桌面的新准入条件，避免把新准备阶段的限制�
 | SFW 已尝试，包括其 BOOL 为 0 | 从此不再回退未准入的原 NIM；任何后续拒绝、未知或不安全条件均零 NIM |
 | SFW、单次 barrier 及最终状态准入全部满足，预算仍剩余 | 执行唯一原 NIM，不重试 NIM |
 
-进入准备后，前台不得变成第三方或 NULL/未知；激活前要求仍为 owner，激活后最终
+`.2/.3` 的原策略要求进入准备后前台不得变成第三方或 NULL/未知；激活前要求仍为 owner，激活后最终
 要求为同一目标 Shell。owner、目标 HWND/PID/TID、Shell 发现结果、进程存活及 birth、
 会话和输入桌面关系均须复核。目标只在本次调用内持有最小查询/同步权限的进程句柄，
 各路径都释放；不缓存 Shell HWND，不仅凭类名或文件名接受目标，不硬编码 `Default`
@@ -179,7 +179,39 @@ API/迁移说明；不得让 `0.6.1-preview.1` 对应不同 SDK。依现有授�
 不能提高最低系统来规避；完整 #27/#29、长期及生产门槛另行验收，禁止以此 probe 或
 fake 测试更新通过结论。
 
-依据：[SetForegroundWindow](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setforegroundwindow)、
+### 2026-11-03 决策补充：激活后的 NULL 前台作为待就绪状态
+
+外部 POD 诊断在同一 Win10 上得到两例实际失败：一次在成功 SFW 和成功 WM_NULL
+后、一次在成功 SFW 后且尚未调用 WM_NULL 时，完整已知的身份/owner/桌面/session/
+菜单检查通过，但原前台查询返回 NULL，触发严格前台谓词拒绝，均未调用 NIM。
+诊断源码与 `.3` SDK 分开封存；这不证明 NULL 的内部产生原因，也没有复现旧
+`E_MENU_FOREGROUND`。Microsoft 文档明确允许窗口失活期间返回 NULL，故不能把
+这一结果直接等同于已观察到第三方前台。
+
+计划在新的 `.4` 身份实施以下窄修，实施及验收结果另记，不追溯覆盖旧失败：
+
+- 初始前台分支不变；初始 NULL 仍只走原 NIM。进入准备后、SFW 前仍要求前台恰为
+  owner。唯一 SFW 返回 FALSE 仍直接失败；不增加激活、barrier 或 NIM 重试。
+- 只有已执行且成功的 SFW 之后，在其它准入条件全部已知且安全时，NULL 前台可
+  暂记为 pending，允许继续唯一 barrier 和原有界就绪等待。它永不计为 ready，也
+  不授权 NIM；未知元数据、身份变化、非 NULL 第三方前台、取消、重建提示或失效
+  owner 仍立即拒绝。barrier 后的非 NULL owner 前台保持原拒绝规则。
+- 所有阶段继续共用原绝对 1,000 ms 预算，等待每次不超过剩余时间与 5 ms，原
+  256 次就绪检查上限包含最终复核。最终仍必须实际观察前台恰为 Shell 目标，且
+  GUI active/focus 均为该目标。最终复核遇到安全 pending 时回到同一有界等待，
+  不把 FALSE/NULL 改成成功；预算或次数耗尽时零 NIM。
+- 保留原线程、重入、Taskbar/取消、所有权和清理语义。故障注入先证实旧实现对
+  激活后、barrier 后和最终复核的 NULL 立即拒绝，再覆盖 pending→ready、持续
+  pending、期间第三方/未知/重建/取消以及原 NIM FALSE。真实两架构验证须绑定
+  新版本、源码、载荷及新的用例身份；本补充不构成已修复或兼容性通过声明。
+
+备选是维持 NULL 立即失败、把 NULL 当 ready、固定 Sleep 后无条件 NIM、重试
+SFW 或增加前台权限。前者保留已观察到的过早拒绝，其余无法保持实际就绪和权限
+边界，均不采用。代价是原本立即拒绝的 NULL 分支现在可能消耗剩余协作预算，
+实际 Windows 调用仍无法硬抢占；持续失活或输入竞争仍可明确失败。
+
+依据：[GetForegroundWindow](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getforegroundwindow)、
+[SetForegroundWindow](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setforegroundwindow)、
 [SendMessageTimeoutW](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-sendmessagetimeoutw)、
 [GetGUIThreadInfo](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getguithreadinfo)、
 [Sleep](https://learn.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-sleep)、

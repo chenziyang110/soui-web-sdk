@@ -303,15 +303,20 @@ struct tray_service::implementation {
            owner.process_id == platform.current_process_id();
   }
   enum class focus_route { original_call, prepared_call, reject };
-  bool focus_check(focus_budget& budget, const detail::tray_focus_target& target, unsigned foreground_kind) const noexcept {
-    if (focus_cancelled() || !budget.remaining()) return false;
+  enum class focus_state { unsafe, pending, accepted };
+  focus_state focus_check(focus_budget& budget, const detail::tray_focus_target& target, unsigned foreground_kind) const noexcept {
+    if (focus_cancelled() || !budget.remaining()) return focus_state::unsafe;
     const auto observed = platform.observe_focus_environment(data.window, target);
     if (focus_cancelled() || !budget.remaining() || observed.query != detail::tray_focus_query::known ||
         !focus_owner_valid(observed.owner) || !same_focus_identity(target.identity, observed.target) ||
-        !observed.target_alive || !observed.same_session || !observed.same_input_desktop || !observed.owner_menu_clear) return false;
-    return foreground_kind == 0 ? observed.foreground == data.window : foreground_kind == 1
+        !observed.target_alive || !observed.same_session || !observed.same_input_desktop || !observed.owner_menu_clear) return focus_state::unsafe;
+    // Only post-activation checks may tolerate a known-safe activation gap.
+    // NULL is never a foreground match and cannot authorize NIM.
+    if (foreground_kind != 0 && !observed.foreground) return focus_state::pending;
+    const bool accepted = foreground_kind == 0 ? observed.foreground == data.window : foreground_kind == 1
         ? observed.foreground == data.window || observed.foreground == target.identity.window
         : observed.foreground == target.identity.window;
+    return accepted ? focus_state::accepted : focus_state::unsafe;
   }
   focus_route prepare_focus(detail::tray_focus_target& target, focus_budget& budget) noexcept {
     if (focus_cancelled() || !budget.remaining()) return focus_route::reject;
@@ -329,37 +334,46 @@ struct tray_service::implementation {
     if (!target.process_lease || !target.identity.window || target.identity.window == data.window ||
         !target.identity.process_id || !target.identity.thread_id || !target.identity.creation_time ||
         target.identity.process_id == platform.current_process_id() || target.identity.thread_id == owner_thread ||
-        !focus_check(budget, target, 0)) return focus_route::reject;
+        focus_check(budget, target, 0) != focus_state::accepted) return focus_route::reject;
     // From the attempted activation onward every failure is a rejection;
     // there is no second activation, barrier, or fallback NIM.
     const bool activated = platform.activate_focus_target(target.identity.window);
-    if (!focus_check(budget, target, 1) || !activated) return focus_route::reject;
+    if (focus_check(budget, target, 1) == focus_state::unsafe || !activated) return focus_route::reject;
     const auto timeout = budget.remaining();
     if (!timeout || focus_cancelled()) return focus_route::reject;
     const auto barrier = platform.send_focus_barrier(target.identity.window, timeout);
-    if (!focus_check(budget, target, 2) || !barrier.sent) return focus_route::reject;
+    if (focus_check(budget, target, 2) == focus_state::unsafe || !barrier.sent) return focus_route::reject;
     unsigned polls = 0;
+    enum class readiness { unsafe, foreground_pending, not_ready, ready };
     auto ready = [&]() noexcept {
-      if (polls >= 256 || !focus_check(budget, target, 2)) return -1;
+      if (polls >= 256) return readiness::unsafe;
+      const auto before = focus_check(budget, target, 2);
+      if (before == focus_state::unsafe) return readiness::unsafe;
       ++polls;
       const auto gui = platform.focus_gui(target.identity.thread_id);
-      if (!focus_check(budget, target, 2) || gui.query != detail::tray_focus_query::known) return -1;
-      return gui.active == target.identity.window && gui.focus == target.identity.window ? 1 : 0;
+      const auto after = focus_check(budget, target, 2);
+      if (after == focus_state::unsafe || gui.query != detail::tray_focus_query::known) return readiness::unsafe;
+      if (before == focus_state::pending || after == focus_state::pending) return readiness::foreground_pending;
+      return gui.active == target.identity.window && gui.focus == target.identity.window ? readiness::ready : readiness::not_ready;
     };
     for (;;) {
       const auto state = ready();
-      if (state < 0) return focus_route::reject;
-      if (state > 0) break;
+      if (state == readiness::unsafe) return focus_route::reject;
+      if (state == readiness::ready) {
+        // Recheck the actual predicate at the final boundary. Only a safe
+        // foreground NULL returns to waiting; ordinary GUI match loss still
+        // rejects. A later attempt must establish a new complete ready pair.
+        const auto final = ready();
+        if (final == readiness::ready)
+          return !focus_cancelled() && budget.remaining() ? focus_route::prepared_call : focus_route::reject;
+        if (final != readiness::foreground_pending) return focus_route::reject;
+      }
       if (polls >= 256) return focus_route::reject;
       const auto remaining = budget.remaining();
       if (!remaining || focus_cancelled()) return focus_route::reject;
       platform.wait_focus((std::min)(remaining, std::uint32_t{5}));
-      if (!focus_check(budget, target, 2)) return focus_route::reject;
+      if (focus_check(budget, target, 2) == focus_state::unsafe) return focus_route::reject;
     }
-    // Recheck the actual predicate and all identity/foreground/cancel/budget
-    // conditions at the final boundary, not merely at the first match.
-    return ready() == 1 && !focus_cancelled() && budget.remaining()
-        ? focus_route::prepared_call : focus_route::reject;
   }
 
   desktop_response validate_owner(void* window) const {

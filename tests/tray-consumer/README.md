@@ -2,7 +2,7 @@
 
 直接 CMake 示例按 3.27 以上准确选择 Windows SDK 10.0.19041.0；3.24–3.26 改用 `-A x64`（x86 为 `-A Win32`），仍保留完整引号的 `-DCMAKE_SYSTEM_VERSION=10.0.19041.0`。已有生成平台不同的目录请选新目录，或检查其所有权后显式 `--fresh`；不能在旧缓存中直接切换平台。
 
-本目录通过安装后的 `find_package(SouiSdk 0.6.1 EXACT CONFIG REQUIRED)` 和 `Soui::Sdk` 编译，只引用公开头文件。当前本地未发布候选为 `0.6.1-preview.3`；CMake 的数字版本 `0.6.1 EXACT` 不能区分 preview 身份，必须另核安装后 `include/soui/version.h` 的完整版本字符串，以及同轮安装库的架构、配置、SHA-256 和构建 ID/安装清单绑定。程序的 `sdkVersion` 日志来自编译头文件，不能独自证明链接库身份。应用自己创建隐藏顶层 HWND 并提供消息循环，调用公共 `tray_service`、`menu_service` 和 `global_shortcut`；不创建 WebView，不依赖模板、Workbench、私有 SDK 头文件或内核 DLL。仍需要对应架构的受支持 MSVC 运行库。历史 preview.10 的输入与行为不同于 preview.9，旧短测不能证明当前候选通过。
+本目录通过安装后的 `find_package(SouiSdk 0.6.1 EXACT CONFIG REQUIRED)` 和 `Soui::Sdk` 编译，只引用公开头文件。当前本地未发布候选为 `0.6.1-preview.4`（验证中）；CMake 的数字版本 `0.6.1 EXACT` 不能区分 preview 身份，必须另核安装后 `include/soui/version.h` 的完整版本字符串，以及同轮安装库的架构、配置、SHA-256 和构建 ID/安装清单绑定。程序的 `sdkVersion` 日志来自编译头文件，不能独自证明链接库身份。应用自己创建隐藏顶层 HWND 并提供消息循环，调用公共 `tray_service`、`menu_service` 和 `global_shortcut`；不创建 WebView，不依赖模板、Workbench、私有 SDK 头文件或内核 DLL。仍需要对应架构的受支持 MSVC 运行库。历史 preview.10 的输入与行为不同于 preview.9，旧短测不能证明当前候选通过。
 
 程序必须显式选择一个模式，不接受其他参数：
 

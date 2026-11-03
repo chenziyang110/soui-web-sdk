@@ -409,3 +409,146 @@ SHA-256 `f18ec7b6925ec76b9efd9072b90e6a2b66da0e1d3723ab3ae7f6a6f23d11ef0c`。
 `.3` 现在合计八例/三十四份 guest raw、二十四次 focus success；此前六例、103 项
 报告和所有 `.2`/probe 原件不改写。这仅增加 Server 上的恢复样本，不授予 Win7
 OS32、其它系统恢复、快速快捷键前台拒绝、长期驻留或完整 #27/#29/生产资格。
+
+## preview.3 追加快速输入诊断（2026-11-03）
+
+在原 Win10 VM 复用完全相同的 `.3` 消费者、SDK、BuildID 和冻结源码
+`d5a7ad96…`，另用三枚唯一 token 各启动一次，未编译或替换载荷。新只读 ISO
+7,856,128 bytes，SHA-256
+`631f7302de3be49d48fe6cc5f754928c891772e67458d524767b64c3df8a0970`；
+两命名空间各 114 文件/2 目录完成闭集及全字节回读。
+
+每例先观察真实 SDK 菜单、按 Esc、至少 2,200 ms 不重定位，再按 Shift+F10。
+两例 rapid 尝试点击更新后，紧接唯一一次 Ctrl+Alt+F9，中间没有截图或等待。
+host 点击开始至按键开始分别 20/14 ms；该 host 顺序不认证 guest 已提交选择。
+实际第二菜单均返回 selection0/hasSelection=false，无 tooltip update 事件，随后
+`return_focus()` 准备被拒绝、明确没有尝试 NIM_SETFOCUS，先请求退出 1 才收到
+快捷键通知。没有第三次菜单调用，不能把这两例称为旧 `E_MENU_FOREGROUND`
+复现，也不能计算不存在的 update→hotkey 间隔。
+
+| case / token | 第二菜单 → 焦点结果 → 退出请求（native ms） | native / Owned |
+|---|---|---|
+| x64 rapid / `467e2eedf1c74fd5af208ac5591cfda1` | selection0 @39,873 → preparation rejected @39,960 → exit1 @39,964 | native1 @40,503；root-failed1 @41,080 |
+| x64 delayed / `e29584a0094a41de83cb9a63c9218b6b` | selection1 @108,569 → focus success @108,820 → tooltip1 @108,827 | native0 @150,108；completed0 @150,459 |
+| x86 rapid / `15ab56fadd6541179aff8e16cb55ea22` | selection0 @30,164 → preparation rejected @30,300 → exit1 @30,305 | native1 @30,781；root-failed1 @31,299 |
+
+对照例在更新后取得新界面状态，再显式等待 10,011 ms，唯一快捷键触发真实第三
+菜单并明确选择退出。完整原生 tooltip→hotkey 通知间隔为 32,344 ms；不能把
+host 显式等待等同于完整间隔。对照图标位于隐藏区，而两例 rapid 位于主任务栏，
+且对照前曾误开通用任务栏和网络菜单，均已排除。这不是严格单变量因果比较。
+
+本轮首次有真实 FIFO 覆盖：对照 ordinal8 的原 message/wParam/lParam 入队，
+187 ms 后同 tuple 实际回放，SDK 响应成功。它只证明该次回放；既有策略允许
+depth0 的 direct 通知越过待处理项目，不承诺全局 ordinal 有序。x86 rapid 的
+ordinal16 入队后随退出撤销丢弃 1 条；退出后 ordinal17 被取消、未调用 SDK。
+取消 receipt 不能算作实际 SDK 分派成功。其余既有失败均原样保留。
+
+三例均 cleanupConfirmed、自然闭合、Job0，无超时或强清；原预算保持。
+7 次焦点响应中 5 次 success、2 次 preparation rejected，后者零 NIM。原始
+日志仍不单列 NIM BOOL，不从成功响应宣称额外的直接 BOOL 采样。
+只读精确导出 15 份 guest 原件至 `out/tray-focus-20261102/raw-sdk3-rapid-menu`，
+bytes/SHA/readback 全部匹配、句柄已关闭、磁盘 metadata 不变；原 VM 正常 ACPI
+退出 0 后已释放，free/stopped/globalQEMU0。
+
+export manifest 为 8,806 bytes，SHA-256
+`c096b72b901431dd2cfa8b4c5ef5bc5483539df13c0e5526883f1a61be5eaecc`；
+运行汇总为 167,632 bytes，SHA-256
+`54479a915515e2720d922e68192c9900dc44297f47a226657111199e210fed9b`。
+独立复核完成 4,087 项完整性检查，仍判一例成功、两例失败；报告 SHA-256 为
+`b14e8b3947c9784bc86ba9ac93614f5719e84db1031c25c8ac00868154ea5cb0`。
+本轮三例/15 份与之前八例/34 份分开计数；旧 `.2` 前台拒绝和本轮两个 `.3`
+准备拒绝仍开放。下一步只诊断具体拒绝条件，不把该失败放宽成通过；Win7 OS32、
+完整 #27/#29、长期及生产门槛仍未完成。
+
+## 外部 POD 诊断：激活成功后的 NULL 前台（2026-11-03）
+
+为区分统一准备错误的具体判断点，另建仅诊断的外部程序，复制冻结 `.3` 的消费者
+及 tray/menu 实现，在原观察点写固定 8,192 项 POD；保留原查询短路和 NDJSON，
+只在原 run.finished/cleanup 后输出新增 trace。它不是普通安装 SDK 消费者资格。
+四源经独立审查，无新增时钟/Win32 查询、GLE、激活、消息泵、post、等待或重试。
+首次构建在编译前被 workspace/out 路径门拒绝；仅修外部包装路径后的全新构建
+成功，两个 MSVC 阶段自然 0，Owned0/Job0，无强清。旧门禁失败保持。
+
+成功构建原件为 21,453 bytes，SHA-256
+`f4f6c4039e680879dc0473d1679e17342614a2f7729f3c99dfc8c0b99e562345`；
+诊断 EXE 169,472 bytes，SHA-256
+`5f37d65179e58b495045231bf42e5b35c348a18de59785a337a4b385d69de543`。
+完整 MAP 将 tray/menu 归属到显式诊断对象，cursor scope 来自安装 SDK archive；
+source closure 和无 FORCE 链接另核。中文 VERBOSE:LIB 只有库搜索行，没有
+per-member Loaded 行，空匹配不当作完整库加载证明。
+
+只读 ISO 为 4,091,904 bytes，SHA-256
+`41980da9819855cafc657b637081f4fce2c34427815a6fc6022f1edebf54a464`；
+58 文件/1 目录在两个 namespace 均完成闭集和全字节回读。原 Win10 上两枚新
+LNK/token 各启动一次、各一次主要快捷键，先真实 Esc→至少 2,200 ms 原位等待→
+Shift+F10，再尝试更新后以立即/固定 250 ms 间隔按 Ctrl+Alt+F9。两例主/隐藏通知
+区不同，不是严格单变量比较。没有第三菜单或明确退出选择；原件分别为：
+
+| case / token | 第二菜单 | 失败 call4 的首判断点 | native / Owned |
+|---|---|---|---|
+| immediate / `5884e5ae953c4ffea4fe98301af20a26` | selection0 @40,100 ms | SFW raw1、barrier raw1 后 `check.foreground_target`；known environment 的 foreground 为 NULL | native1 @40,586 ms；root-failed1 @41,391 ms |
+| fixed250 / `a4e1f5d64483468eb2de998711c6e91c` | selection1 @89,301 ms | SFW raw1 后 `check.foreground_owner_or_target`；foreground 为 NULL，尚无 barrier | native1 @89,670 ms；root-failed1 @90,068 ms |
+
+两次首判断点之前的 owner/目标身份、alive、session、input desktop、owner menu
+检查均通过，最后预算仍余 897/949 ms，不是 FALSE 激活或超时。失败 call4 均未
+调用 NIM；之前 call2 则直接记录 NIM raw1，原错误未查询，不填为已知 0。
+固定 250 ms 例虽提交 selection1，焦点先失败而未执行 tooltip，也没有处理到
+WM_HOTKEY；不能计算 update→hotkey 间隔。立即例的 WM_HOTKEY 在退出请求和
+call4 返回后才被处理，不能归因为嵌套热键打断已执行的准备。
+
+视觉消失不证明进程已退出。原 capture finished FILETIME 与下一 started 的精确
+记录证明前一已闭合、后例随后启动，间隔 26.5763663 秒，PID/载荷各自匹配，
+没有进程重叠。两例 cleanupConfirmed、自然失败、Job0，无超时或强清。trace
+99/105 项均完整、dropped0；typed query=known 的 NULL 观测是真实记录，但其
+内部原因仍未知。[Microsoft 文档](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getforegroundwindow)
+说明失去激活期间可能返回 NULL，只支持等待的合理性，不证明此处必会恢复。
+
+两例十份原件完整只读导出至 `out/tray-focus-20261102/raw-pod-focus-diagnostic`，
+manifest 6,146 bytes，SHA-256
+`72c9386fc7e40d3274caa7e712172d22885790e183fea24a7539617b00242f88`；
+汇总 117,274 bytes，SHA-256
+`d979d81b525e1a7f30772d342c64e7baba744e1a28f9246a9b1944510864c83f`。
+VM 正常 ACPI0、只读句柄关闭、磁盘 metadata 不变，已释放为 free/stopped/
+globalQEMU0。诊断两例/十份与 `.3` 正式消费者各轮分开计数，旧前台激活失败、
+本次两个准备拒绝及所有生产门槛保持。后续 `.4` 的安全 NULL pending 窄修先更新
+ADR，再执行回归和真实新载荷验证；本节不是修复通过声明。
+
+## preview.4 实现与无桌面回归（正式构建和桌面验证待执行）
+
+按上述 ADR 在生产 `tray_service.cpp` 引入 unsafe/pending/accepted 的前台准入
+结果，readiness 另区分 foreground pending 与普通 GUI 未就绪。成功 SFW 后、
+全部元数据仍安全的 NULL 只可等待，不能授权 NIM；最终复核必须取得新的完整
+ready pair。只有最终 foreground pending 回到原 waiter，原 GUI 焦点失配仍
+立即拒绝。原绝对 1,000 ms、共享 256 次、单次 SFW/barrier/NIM、FALSE 和取消/
+重建/所有权规则保持。两次独立源码审查无阻塞，生产实现 SHA-256
+`4770d4a8bf90971b37f40f87d21f88c3c2173173853f53554cb7d6a0f6626d26`。
+
+原 41 组函数、断言及运行顺序保留，新增 8 组覆盖激活/barrier/最终前后 NULL
+恢复、持续 NULL/共享次数/绝对预算、pending 中十二类安全变化、实际原生失败及
+初始 NULL 兼容路径。冻结 SDK3 的外部 RED harness 实际运行 49 组：原 41 组
+全部成功，新 8 组中 7 组失败、1 组兼容检查成功，native1/Owned root-failed1、
+Job0，无强清；测试失败是真实旧行为，未改成通过。外部汇总对预期 root-failed
+曾错误判为非自然，原记录保留，后补离线判读不重跑或覆盖。
+
+GREEN 的 native configure/build 均返回 0，但编译器后台进程未自然退休，整轮
+Owned root1、执行了自有 Job 清理，fake 尚未启动。这一构建继续失败。其它任务
+随后出现活动编译，按条件清理孤立 VCTIP 的预检拒绝，未停止外部进程。之后只
+将已链接 fake 的源码、MAP、项目、EXE 与输入重新绑定，独立单次运行无桌面
+测试：49/49 成功、native0/Owned0、63 ms、Job0，无强清。该报告明确
+`priorCompileStillFailed=true`、`acceptedBuild=false`，仅确认测试行为，不认证
+完整 SDK 构建或安装消费。
+
+行为报告 5,570 bytes，SHA-256
+`281f72aa3f45c4acc2743e72c68ec76e8cc7a27e6fc2653c3c0e2ed24e57ccc3`；
+实现实际汇总 10,881 bytes，SHA-256
+`f3a5c4d8ac6bf34141b7586435752e498e76b6ef165b5096e7bfe54ca446240c`。
+TDD 的历史 x64 Runner 与当前正式工具有不同映像身份，但已有独立来源、原始
+清单及五项相同源码核对，未假定只是时间戳差异；正式 `.4` 构建/消费者继续使用
+本任务原固定工具。两架构 `.3` 安装目录各 467 文件、库、报告和四种 fake 已按
+完整字节归档，避免后续 `.4` 覆盖输出时丢失旧证据。归档 manifest SHA-256 为
+`c9c880d25de3a4f27d1698a9dd53445aa9c6a283d93940ede7ad7b38201c3fb0`。
+
+VERSION、SDK/Web/React/Vue 与锁文件已同步 `.4`，GUI bindings 只新增精确 `.4`
+契约，保留 `.1/.2/.3` 安装与回退；相关 Node 测试实际 38/38 通过。依赖版本及
+integrity/resolved 未变。当前尚未完成 `.4` 正式双架构构建、安装消费者或真实
+桌面输入，不能从这次 fake 通过关闭 #27/#29、旧快速菜单失败或生产资格。

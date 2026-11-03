@@ -1,7 +1,12 @@
 # 变更记录
 
+## 0.6.1-preview.4（本地候选，未发布）
+
+- 修正 Shell 激活后 NULL 前台被立即拒绝的问题：仅在其它身份与环境检查均安全时，将其作为原协作预算内的 pending；最终仍须确认 Shell 前台及 GUI active/focus，实际 NIM BOOL 继续严格判定。新增 8 组回归，保留原 41 组；独立无桌面测试 49 组通过。首次编译进程收尾失败保持失败，正式两架构构建和桌面验证仍未完成，见 [ADR-0012](docs/adr/0012-public-tray-service.md)与[维护记录](docs/maintenance/tray-focus-20261102.md)。
+
 ## 0.6.1-preview.3（本地候选，未发布）
 
+- Win10 追加三例快速输入诊断，实际退出码为 1/0/1。两例快速操作未提交菜单更新，随后焦点准备拒绝且未调用 NIM；不能据此判定旧 `E_MENU_FOREGROUND` 已复现或修复。对照例完成退出，并首次记录真实回调入队/回放；退出撤销路径亦有实际记录，详见[维护记录](docs/maintenance/tray-focus-20261102.md)。
 - Workbench 与独立托盘消费者新增各自拥有的 UI 线程回调队列：只在 tray 成员调用栈内保存原始 callback，固定容量 64，在既有 timer 安全边界每轮重放至多 8 项。TaskbarCreated 仍立即交给 SDK；溢出、实际分派和焦点错误继续判失败，退出撤销待处理项目。
 - 队列日志区分未调用 SDK 的入队与实际重放，并保存原消息参数及 Win32 通知 word；新增两调用方的容量、顺序、重入、退出及真实 SDK fake 边界回归。SDK 的忙时拒绝和原 NIM BOOL 实现源文件保持 `.2` 字节不变，见 [ADR-0013](docs/adr/0013-public-menu-shortcut-and-residency.md)。
 - 新身份同步 SDK/Web/React/Vue 与锁文件，GUI 交付保留各历史精确 tuple，新增 `.3` 安装/回退回归。两架构 Release 标准构建、安装消费及每架构 14 项/76 组非 GUI 回归通过；Server/Win10 六个新 GUI 用例均自然退出 0，18 次焦点响应成功，见[维护记录](docs/maintenance/tray-focus-20261102.md)。本轮真实 callback 全为直接分派，FIFO 重放由故障注入覆盖；`.2` 的 E_BUSY、快速快捷键前台拒绝和超时失败完整保留，Win7、跨系统恢复、长期驻留及完整 #27/#29 资格仍开放。

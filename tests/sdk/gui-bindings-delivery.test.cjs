@@ -19,6 +19,8 @@ const focusCandidateVersion = '0.6.1-preview.2';
 const focusCandidatePeerRange = currentPeerRange + ' || ' + focusCandidateVersion;
 const callbackCandidateVersion = '0.6.1-preview.3';
 const callbackCandidatePeerRange = currentPeerRange + ' || ' + callbackCandidateVersion;
+const foregroundCandidateVersion = '0.6.1-preview.4';
+const foregroundCandidatePeerRange = currentPeerRange + ' || ' + foregroundCandidateVersion;
 const knownPreviews = Array.from({length: 9}, (_, index) => '0.6.0-preview.' + (index + 1));
 const repository = path.resolve(__dirname, '../..');
 test('repository GUI metadata accepts the actual VERSION and lock files', () => {
@@ -259,6 +261,41 @@ test('callback preview upgrades and rolls back without changing focus preview by
   assert.deepEqual(gui.verify(project), original);
 });
 
+test('foreground preview accepts only its exact tuple and preserves earlier preview contracts', t => {
+  for (const [candidate, peer] of [[candidateVersion, candidatePeerRange],
+    [focusCandidateVersion, focusCandidatePeerRange], [callbackCandidateVersion, callbackCandidatePeerRange],
+    [foregroundCandidateVersion, foregroundCandidatePeerRange]])
+    assert.equal(gui.metadata(fixture(t, candidate, peer).source), candidate);
+  for (const peer of [candidatePeerRange, focusCandidatePeerRange, callbackCandidatePeerRange, currentPeerRange,
+    '*', '>=0.6.0-0 <0.7.0', foregroundCandidatePeerRange + ' || 0.6.1-preview.5'])
+    assert.throws(() => gui.metadata(fixture(t, foregroundCandidateVersion, peer).source), /borrow the exact local SDK/);
+  for (const candidate of [candidateVersion, focusCandidateVersion, callbackCandidateVersion,
+    '0.6.1-preview.5', '0.6.1-rc.1', '0.6.1'])
+    assert.throws(() => gui.metadata(fixture(t, candidate, foregroundCandidatePeerRange).source), /borrow the exact local SDK/);
+  assert.throws(() => gui.metadata(fixture(t, '0.6.1-preview.5', currentPeerRange + ' || 0.6.1-preview.5').source), /borrow the exact local SDK/);
+});
+
+test('foreground preview installs and rolls back to each earlier exact preview without rewriting metadata', t => {
+  for (const [oldVersion, oldPeer] of [[candidateVersion, candidatePeerRange],
+    [focusCandidateVersion, focusCandidatePeerRange], [callbackCandidateVersion, callbackCandidatePeerRange]]) {
+    const old = fixture(t, oldVersion, oldPeer), packed = path.join(old.root, 'previous');
+    const project = path.join(old.root, 'project');
+    sdk.pack(old.source, packed, oldVersion, {withGuiBindings: true});
+    sdk.install(packed, project);
+    const original = gui.verify(project);
+    const next = fixture(t, foregroundCandidateVersion, foregroundCandidatePeerRange), preview = path.join(next.root, 'foreground');
+    sdk.pack(next.source, preview, foregroundCandidateVersion, {withGuiBindings: true});
+    sdk.install(preview, project);
+    assert.equal(gui.verify(project).sdkVersion, foregroundCandidateVersion);
+    sdk.install(packed, project);
+    assert.deepEqual(gui.verify(project), original);
+    for (const framework of ['react', 'vue']) for (const filename of ['package.json', 'package-lock.json']) {
+      const name = `sdk/bindings/${framework}/${filename}`;
+      assert.deepEqual(fs.readFileSync(path.join(project, name)), fs.readFileSync(path.join(old.source, name)));
+    }
+  }
+});
+
 test('each p9-lineage preview retains only its own exact declaration', t => {
   for (const [index, candidate] of knownPreviews.entries()) {
     const expected = previousPeerRange + ' || ' + candidate;
@@ -289,9 +326,10 @@ test('the p9 package reads, installs and rolls back with its original peer bytes
 });
 
 test('stable and strict previews require exact root lock peers and local SDK versions', t => {
-  for (const candidate of ['0.6.0', '0.6.0-preview.3', '0.6.0-preview.9', candidateVersion]) {
-    const peer = candidate === candidateVersion ? candidatePeerRange :
-      candidate === '0.6.0' ? currentPeerRange : previousPeerRange + ' || ' + candidate;
+  for (const [candidate, peer] of [['0.6.0', currentPeerRange],
+    ...['0.6.0-preview.3', '0.6.0-preview.9'].map(candidate => [candidate, previousPeerRange + ' || ' + candidate]),
+    [candidateVersion, candidatePeerRange], [focusCandidateVersion, focusCandidatePeerRange],
+    [callbackCandidateVersion, callbackCandidatePeerRange], [foregroundCandidateVersion, foregroundCandidatePeerRange]]) {
     for (const framework of ['react', 'vue']) for (const mutate of [
       lock => { lock.packages[''].peerDependencies['@soui/native-sdk'] = '*'; },
       lock => { lock.packages[''].peerDependencies[framework] = 'different-framework-peer'; },

@@ -1091,6 +1091,179 @@ void test_consumer_sdk_callback_queue_replay() { check_sdk_callback_queue_replay
 void test_workbench_sdk_callback_taskbar_and_owner() { check_sdk_callback_queue_taskbar_and_owner<workbench_tray_callbacks::queue>(); }
 void test_consumer_sdk_callback_taskbar_and_owner() { check_sdk_callback_queue_taskbar_and_owner<consumer_tray_callbacks::queue>(); }
 
+void test_focus_null_after_activation_and_barrier_recovers() {
+  for (const auto phase : {focus_step::activate, focus_step::barrier}) {
+    fake_platform native;
+    auto service = tray_service_test_access::create(native);
+    require(service->install(native.options()).ok(), "NULL transition setup");
+    native.foreground = native.window;
+    native.focus_nested = [&](focus_step step) {
+      if (step == phase) native.foreground = nullptr;
+      if (step == focus_step::wait) {
+        require(native.count(tray_native_operation::return_focus) == 0, "NULL cannot authorize NIM even with ready GUI");
+        native.foreground = native.shell;
+      }
+    };
+    require(service->return_focus().ok(), "Safe activation/barrier NULL may become genuinely ready");
+    require(native.focus_count(focus_step::wait) == 1 && native.focus_count(focus_step::gui) == 3 &&
+            native.focus_count(focus_step::activate) == 1 && native.focus_count(focus_step::barrier) == 1 &&
+            native.count(tray_native_operation::return_focus) == 1 && native.leases_closed == 1,
+            "Recovery reobserves readiness and never retries effects");
+  }
+}
+
+void test_focus_null_at_final_check_restarts_readiness() {
+  for (const bool before_gui : {false, true}) {
+    fake_platform native;
+    auto service = tray_service_test_access::create(native);
+    require(service->install(native.options()).ok(), "Final NULL setup");
+    native.foreground = native.window;
+    bool injected = false;
+    native.focus_nested = [&](focus_step step) {
+      if (!injected && ((before_gui && step == focus_step::environment && native.focus_count(step) == 6) ||
+                        (!before_gui && step == focus_step::gui && native.focus_count(step) == 2))) {
+        injected = true;
+        native.foreground = nullptr;
+      }
+      if (step == focus_step::wait) native.foreground = native.shell;
+    };
+    require(service->return_focus().ok(), "A safe final NULL must wait for a new complete ready pair");
+    require(injected && native.focus_count(focus_step::wait) == 1 && native.focus_count(focus_step::gui) == 4 &&
+            native.count(tray_native_operation::return_focus) == 1 && native.focus_count(focus_step::activate) == 1 &&
+            native.focus_count(focus_step::barrier) == 1, "The earlier match is not reused across NULL");
+  }
+}
+
+void test_focus_continuous_null_uses_absolute_budget_and_shared_cap() {
+  for (const bool exhaust_polls : {false, true}) {
+    fake_platform native;
+    auto service = tray_service_test_access::create(native);
+    require(service->install(native.options()).ok(), "Continuous NULL setup");
+    native.foreground = native.window;
+    native.actual_wait_ms = exhaust_polls ? 1 : 15;
+    native.focus_nested = [&](focus_step step) { if (step == focus_step::activate) native.foreground = nullptr; };
+    require_error(service->return_focus(), "E_TRAY_FOCUS");
+    require(native.focus_count(focus_step::barrier) == 1 && native.focus_count(focus_step::wait) > 0 &&
+            native.count(tray_native_operation::return_focus) == 0 && native.leases_closed == 1,
+            "Persistent safe NULL consumes only bounded preparation and never NIM");
+    if (exhaust_polls) require(native.focus_count(focus_step::gui) == 256 && native.now_ms == 255,
+                               "Pending observations share the original cap even before deadline");
+    else require(native.now_ms >= 1000 && native.now_ms < 1015 && native.focus_count(focus_step::gui) < 256,
+                 "Actual wait overshoot still exhausts the original absolute deadline");
+    for (const auto& call : native.focus_calls)
+      if (call.step == focus_step::wait) require(call.requested <= 5 && call.requested <= 1000 - call.began,
+                                               "Each pending wait respects remaining original budget");
+  }
+}
+
+void test_focus_repeated_final_null_cannot_reset_cap() {
+  fake_platform native;
+  auto service = tray_service_test_access::create(native);
+  require(service->install(native.options()).ok(), "Repeated final NULL setup");
+  native.foreground = native.window;
+  native.actual_wait_ms = 1;
+  native.focus_nested = [&](focus_step step) {
+    if (step == focus_step::gui && native.focus_count(step) % 2 == 0) native.foreground = nullptr;
+    if (step == focus_step::wait) native.foreground = native.shell;
+  };
+  require_error(service->return_focus(), "E_TRAY_FOCUS");
+  require(native.focus_count(focus_step::gui) == 256 && native.focus_count(focus_step::wait) == 127 &&
+          native.count(tray_native_operation::return_focus) == 0 && native.focus_count(focus_step::activate) == 1 &&
+          native.focus_count(focus_step::barrier) == 1 && native.leases_closed == 1,
+          "Final confirmation consumes the same counter and cannot reuse its preceding match");
+}
+
+void test_focus_null_transition_revalidates_all_safety_conditions() {
+  for (unsigned scenario = 0; scenario < 12; ++scenario) {
+    fake_platform native;
+    auto service = tray_service_test_access::create(native);
+    require(service->install(native.options()).ok(), "Pending safety setup");
+    native.foreground = native.window;
+    bool injected = false;
+    native.focus_nested = [&](focus_step step) {
+      if (step == focus_step::activate) native.foreground = nullptr;
+      if (step != focus_step::wait) return;
+      injected = true;
+      if (scenario == 0) native.foreground = reinterpret_cast<void*>(0x909);
+      if (scenario == 1) native.environment_query = soui::runtime::detail::tray_focus_query::unavailable;
+      if (scenario == 2) native.environment_query = soui::runtime::detail::tray_focus_query::unsafe;
+      if (scenario == 3) ++native.observed_target.creation_time;
+      if (scenario == 4) native.identity.valid = false;
+      if (scenario == 5) native.target_alive = false;
+      if (scenario == 6) native.same_session = false;
+      if (scenario == 7) native.same_desktop = false;
+      if (scenario == 8) native.menu_clear = false;
+      if (scenario == 9) require_error(service->remove(), "E_BUSY");
+      if (scenario == 10) {
+        const auto hint = service->dispatch_message(native.rebuilt, 0, 0);
+        require(hint.handled && hint.event == tray_event::none, "Taskbar remains immediate during pending");
+        require_error(hint.response, "E_BUSY");
+      }
+      if (scenario == 11) native.foreground = native.window;
+    };
+    require_error(service->return_focus(), "E_TRAY_FOCUS");
+    require(injected && native.focus_count(focus_step::wait) == 1 && native.focus_count(focus_step::activate) == 1 &&
+            native.focus_count(focus_step::barrier) == 1 && native.count(tray_native_operation::return_focus) == 0 &&
+            native.leases_closed == 1 && service->installed() && service->desired(),
+            "NULL tolerates neither unsafe metadata nor foreign/owner foreground, cancel or rebuild");
+    require(native.count(tray_native_operation::remove) == 0 && native.count(tray_native_operation::add) == 1 &&
+            native.wakes.size() == (scenario == 10 ? 1U : 0U), "No hidden removal, recovery or post chain");
+    native.focus_nested = {};
+  }
+}
+
+void test_focus_null_does_not_hide_native_or_gui_failures() {
+  for (unsigned scenario = 0; scenario < 3; ++scenario) {
+    fake_platform native;
+    auto service = tray_service_test_access::create(native);
+    require(service->install(native.options()).ok(), "Pending native failure setup");
+    native.foreground = native.window;
+    if (scenario == 0) native.activation_succeeds = false;
+    if (scenario == 1) native.barrier_succeeds = false;
+    if (scenario == 2) native.gui_script = {{soui::runtime::detail::tray_focus_query::unavailable, nullptr, nullptr}};
+    native.focus_nested = [&](focus_step step) { if (step == focus_step::activate) native.foreground = nullptr; };
+    require_error(service->return_focus(), "E_TRAY_FOCUS");
+    require(native.focus_count(focus_step::activate) == 1 && native.focus_count(focus_step::barrier) == (scenario ? 1U : 0U) &&
+            native.focus_count(focus_step::wait) == 0 && native.count(tray_native_operation::return_focus) == 0 &&
+            native.leases_closed == 1, "NULL cannot convert rejected SFW, barrier or unknown GUI into readiness");
+  }
+}
+
+void test_focus_null_recovery_keeps_unique_native_false() {
+  fake_platform native;
+  auto service = tray_service_test_access::create(native);
+  require(service->install(native.options()).ok(), "Pending strict BOOL setup");
+  native.foreground = native.window;
+  native.focus_succeeds = false;
+  native.focus_nested = [&](focus_step step) {
+    if (step == focus_step::barrier) native.foreground = nullptr;
+    if (step == focus_step::wait) native.foreground = native.shell;
+  };
+  require_error(service->return_focus(), "E_TRAY_FOCUS");
+  require(native.focus_count(focus_step::wait) == 1 && native.count(tray_native_operation::return_focus) == 1 &&
+          native.focus_count(focus_step::activate) == 1 && native.focus_count(focus_step::barrier) == 1 &&
+          native.leases_closed == 1, "Actual original NIM FALSE stays failure after genuine readiness");
+}
+
+void test_focus_null_before_activation_and_initial_legacy_are_unchanged() {
+  for (unsigned scenario = 0; scenario < 3; ++scenario) {
+    fake_platform native;
+    auto service = tray_service_test_access::create(native);
+    require(service->install(native.options()).ok(), "Pre-activation NULL compatibility setup");
+    native.focus_succeeds = scenario == 1;
+    if (scenario == 2) {
+      native.foreground = native.window;
+      native.focus_nested = [&](focus_step step) { if (step == focus_step::environment) native.foreground = nullptr; };
+    }
+    const auto result = service->return_focus();
+    if (scenario == 1) require(result.ok(), "Initial NULL preserves original NIM TRUE");
+    else require_error(result, "E_TRAY_FOCUS");
+    require(native.count(tray_native_operation::return_focus) == (scenario == 2 ? 0U : 1U) &&
+            native.focus_count(focus_step::activate) == 0 && native.focus_count(focus_step::barrier) == 0 &&
+            native.focus_count(focus_step::wait) == 0, "Only successful explicit activation admits NULL pending");
+  }
+}
+
 int main() {
   const char* current = "startup";
   unsigned passed = 0;
@@ -1138,6 +1311,14 @@ int main() {
     RUN_TRAY_TEST(test_consumer_sdk_callback_queue_replay);
     RUN_TRAY_TEST(test_workbench_sdk_callback_taskbar_and_owner);
     RUN_TRAY_TEST(test_consumer_sdk_callback_taskbar_and_owner);
+    RUN_TRAY_TEST(test_focus_null_after_activation_and_barrier_recovers);
+    RUN_TRAY_TEST(test_focus_null_at_final_check_restarts_readiness);
+    RUN_TRAY_TEST(test_focus_continuous_null_uses_absolute_budget_and_shared_cap);
+    RUN_TRAY_TEST(test_focus_repeated_final_null_cannot_reset_cap);
+    RUN_TRAY_TEST(test_focus_null_transition_revalidates_all_safety_conditions);
+    RUN_TRAY_TEST(test_focus_null_does_not_hide_native_or_gui_failures);
+    RUN_TRAY_TEST(test_focus_null_recovery_keeps_unique_native_false);
+    RUN_TRAY_TEST(test_focus_null_before_activation_and_initial_legacy_are_unchanged);
 #undef RUN_TRAY_TEST
     std::cout << "tray_service: " << passed << " no-desktop contract groups passed (fake platform; no Explorer/GUI claim)\n";
     return 0;
