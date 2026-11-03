@@ -12,16 +12,26 @@ const file = path.resolve(__dirname, '../../.github/workflows/platform-build.yml
 const workflow = JSON.parse(fs.readFileSync(file, 'utf8'));
 const expression = text => '$' + '{{ ' + text + ' }}';
 const pushBranch = 'codex/portable-runtime-platform-matrix-20261020';
+const checkoutGitEnvironment = {
+  GIT_CONFIG_COUNT: '1', GIT_CONFIG_KEY_0: 'core.longpaths', GIT_CONFIG_VALUE_0: 'true'
+};
+
+function checkNoGitConfigEnvironment(env) {
+  for (const key of Object.keys(env || {}))
+    assert(!/^GIT_CONFIG(?:_|$)/i.test(key), 'Git runtime configuration must be scoped to checkout');
+}
 
 function checkWorkflow(w) {
   assert.deepEqual(Object.keys(w.on).sort(), ['push', 'workflow_dispatch']);
   assert.deepEqual(w.on.push, { branches: [pushBranch] });
   assert.deepEqual(w.on.workflow_dispatch, {});
   assert.deepEqual(w.permissions, { contents: 'read' });
+  checkNoGitConfigEnvironment(w.env);
   assert.equal(w.concurrency['cancel-in-progress'], true);
   assert.equal(w.concurrency.group, 'soui-platform-' + expression('github.workflow') + '-' + expression('github.ref'));
   assert.deepEqual(Object.keys(w.jobs), ['native-build']);
   const job = w.jobs['native-build'];
+  checkNoGitConfigEnvironment(job.env);
   assert.equal(job.if, expression('github.event.repository.private == false'));
   assert.equal(job['runs-on'], expression('matrix.runner'));
   assert.equal(job['timeout-minutes'], 45);
@@ -34,14 +44,20 @@ function checkWorkflow(w) {
     'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1',
     'actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1'
   ]);
-  assert.equal(actions[0].with['persist-credentials'], false);
-  assert.equal(actions[0].with.ref, expression('github.sha'));
+  const checkout = actions[0];
+  assert.deepEqual(checkout.with, {
+    ref: expression('github.sha'), 'fetch-depth': 1, 'persist-credentials': false
+  });
+  assert.deepEqual(checkout.env, checkoutGitEnvironment);
+  for (const step of job.steps)
+    if (step !== checkout) checkNoGitConfigEnvironment(step.env);
   assert.equal(actions[1].with['node-version'], '24.19.0');
   assert.equal(actions[1].with.architecture, expression('matrix.arch'));
   assert.equal(actions[1].with['package-manager-cache'], false);
   const text = JSON.stringify(w);
   assert(!/secrets[.]|pull_request_target|upload-artifact|actions\/cache|self-hosted/.test(text));
   assert(job.steps.some(s => s.run === 'node tools/ci/validate-platform-workflow.cjs'));
+  assert(job.steps.some(s => s.run === 'node --test tests/ci/platform-build.test.cjs'));
   const apt = job.steps.find(s => s.env?.UBUNTU_ARCHIVE);
   assert.equal(apt.if, expression("matrix.platform == 'linux'"));
   for (const pinned of ['libwebkit2gtk-4.1-dev=2.52.6-0ubuntu0.24.04.1',
@@ -115,7 +131,11 @@ for (const mutate of [
   w => { w.jobs['native-build'].steps[0].with.ref = expression('github.event.pull_request.head.sha || github.sha'); },
   w => { w.jobs['native-build'].strategy.matrix.include[0].runner = 'self-hosted'; },
   w => { w.jobs['native-build']['timeout-minutes'] = 360; },
-  w => { w.jobs['native-build'].steps[0].with['persist-credentials'] = true; }
+  w => { w.jobs['native-build'].steps[0].with['persist-credentials'] = true; },
+  w => { delete w.jobs['native-build'].steps[0].env; },
+  w => { w.jobs['native-build'].steps[0].env.GIT_CONFIG_VALUE_0 = 'false'; },
+  w => { w.jobs['native-build'].env = { ...checkoutGitEnvironment }; },
+  w => { w.jobs['native-build'].steps[0].with['sparse-checkout'] = 'sdk'; }
 ]) {
   const bad = copy(); mutate(bad); assert.throws(() => checkWorkflow(bad)); negativeControls++;
 }

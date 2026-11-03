@@ -71,6 +71,11 @@
             "ref": "${{ github.sha }}",
             "fetch-depth": 1,
             "persist-credentials": false
+          },
+          "env": {
+            "GIT_CONFIG_COUNT": "1",
+            "GIT_CONFIG_KEY_0": "core.longpaths",
+            "GIT_CONFIG_VALUE_0": "true"
           }
         },
         {
@@ -86,6 +91,10 @@
         {
           "name": "Validate the workflow and execution policy",
           "run": "node tools/ci/validate-platform-workflow.cjs"
+        },
+        {
+          "name": "Check CI package-origin and result metadata regressions",
+          "run": "node --test tests/ci/platform-build.test.cjs"
         },
         {
           "name": "Install pinned Linux development dependencies from Ubuntu only",

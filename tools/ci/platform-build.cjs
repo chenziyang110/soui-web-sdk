@@ -141,11 +141,25 @@ function discoverGenerator(platform, arch) {
 }
 function assertPrefix(cacheFile, prefix) {
   const cache = fs.readFileSync(cacheFile, 'utf8');
+  const packages = {};
   for (const name of ['SouiRuntime', 'SouiDesktop']) {
-    const row = cache.split(/\r?\n/).find(line => line.startsWith(name + '_DIR:PATH='));
-    if (!row || fs.realpathSync(row.slice(row.indexOf('=') + 1)) !== fs.realpathSync(path.join(prefix, 'lib/cmake', name)))
+    // A valid -D<Package>_DIR=... input can remain UNINITIALIZED after find_package.
+    const rows = cache.split(/\r?\n/).filter(line => line.startsWith(name + '_DIR:'));
+    const match = rows.length === 1 && /^(PATH|UNINITIALIZED)=(.+)$/.exec(rows[0].slice((name + '_DIR:').length));
+    if (!match) throw new Error('Template package cache entry missing or unsupported: ' + name);
+    const directory = fs.realpathSync(match[2]);
+    if (directory !== fs.realpathSync(path.join(prefix, 'lib/cmake', name)))
       throw new Error('Template package outside isolated installation: ' + name);
+    packages[name] = { cacheType: match[1], directory };
   }
+  return packages;
+}
+function runtimeTestsPassed(steps, planned) {
+  return planned === true && ['runtime-primitives-test', 'runtime-installed-test'].every(name => {
+    const matches = steps.filter(step => step.name === name);
+    return matches.length === 1 && matches[0].tool === 'ctest' && matches[0].exitCode === 0 &&
+      matches[0].signal === null && matches[0].errorCode === null;
+  });
 }
 function compareTrees(left, right, relative = '') {
   const files = root => fs.readdirSync(path.join(root, relative), { withFileTypes: true })
@@ -213,7 +227,8 @@ async function execute(plan) {
         exitCode: r.status, signal: r.signal, errorCode: r.error?.code ?? null });
       save();
       if (r.error || r.signal || !Number.isInteger(r.status) || r.status !== 0) throw new Error('Stage failed: ' + step.name);
-      if (step.name === 'template-configure') assertPrefix(path.join(plan.work, 'ab/CMakeCache.txt'), plan.prefix);
+      if (step.name === 'template-configure')
+        report.templatePackages = assertPrefix(path.join(plan.work, 'ab/CMakeCache.txt'), plan.prefix);
     }
     const basename = 'CiDesktopCheck-0.1.0-' + plan.platform + '-' + plan.arch;
     report.extractedFilesMatched = compareTrees(path.join(plan.work, 'stage'), path.join(plan.work, 'expanded', basename));
@@ -223,11 +238,13 @@ async function execute(plan) {
     if (manifest.nativeRuntimeVerified !== false || manifest.signed !== false ||
         manifest.dependenciesBundled !== false || manifest.developmentOnly !== true)
       throw new Error('Application qualification unexpectedly changed');
-    report.runtimeNoGuiTestsPassed = plan.runtimeNoGuiTestsPlanned;
     report.outcome = 'passed';
   } catch (error) {
     report.outcome = 'failed'; report.failure = error.message; throw error;
-  } finally { save(); }
+  } finally {
+    report.runtimeNoGuiTestsPassed = runtimeTestsPassed(report.steps, plan.runtimeNoGuiTestsPlanned);
+    save();
+  }
 }
 function parseArgs(argv) {
   if (argv.length === 1 && argv[0] === '--summary') return { summary: true };
@@ -262,5 +279,6 @@ async function main(argv) {
   if (options.plan) console.log(JSON.stringify(plan, null, 2));
   else await execute(plan);
 }
-module.exports = { buildPlan, MATRIX, WEBVIEW2, compareTrees, parseArgs, isolatedEnvironment };
+module.exports = { buildPlan, MATRIX, WEBVIEW2, compareTrees, parseArgs, isolatedEnvironment,
+  assertPrefix, runtimeTestsPassed };
 if (require.main === module) main(process.argv.slice(2)).catch(error => { console.error(error.message); process.exitCode = 1; });

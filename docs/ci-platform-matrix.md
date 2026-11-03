@@ -16,6 +16,15 @@ ce9757e33e52ac680802691ff7e3a042eca86d52。本轮范围仅为静态与源码清�
 新本地候选不能冒充旧提交。具体沿革、可公开资产盘点和缺失项见
 [本地恢复记录](acceptance/pr103-local-recovery-20261102.md)。
 
+2026-11-03，固定提交
+d8589e90622b1010e3ebf122a0f51a8940ba1799（tree
+5144ab0e8a9b4cdb4261b5b968b4d7d786687298）已实际推送到原 PR 分支。
+[首轮六平台 CI](https://github.com/chenziyang110/soui-web-sdk/actions/runs/41575151728)
+全部结束为 failure；Windows 停在长路径 checkout，四个 Linux/macOS 任务已完成
+SDK/安装消费者及各两项 Runtime 测试，随后在模板来源校验停止。原始失败保留，
+本次修复的效果仍待新 head 验证，不能把首轮部分成功写成全链通过。
+详见[首轮结果与修复范围](acceptance/pr103-first-ci-20261103.md)。
+
 工作流文件采用 JSON 兼容的 YAML，以 Node 内置 JSON parser 静态校验，不安装额外解析器。
 
 ## 六个标准 runner 与边界
@@ -50,6 +59,7 @@ Linux/macOS 仅运行根构建内的 sdk.portable.primitives，以及独立安�
 
 ~~~sh
 node tools/ci/validate-platform-workflow.cjs
+node --test tests/ci/platform-build.test.cjs
 node tools/ci/platform-build.cjs --platform linux --arch arm64
 ~~~
 
@@ -58,6 +68,13 @@ node tools/ci/platform-build.cjs --platform linux --arch arm64
 是否支持相应 VS17/VS18 generator；缺组件或不匹配即失败，不下载编译器、不回退架构。
 Windows ARM 官方镜像文档存在 VS2022/VS2026 映射差异，所以不固定某一旧安装路径。
 这不提高 SDK 对其他使用者的最低工具链要求。
+
+checkout 的完整文件集合、精确 SHA、fetch-depth=1 和不持久化凭据保持。
+仅该 step 给 Git 传 GIT_CONFIG_COUNT=1、GIT_CONFIG_KEY_0=core.longpaths、
+GIT_CONFIG_VALUE_0=true，解决 Git for Windows 的长总路径限制；不写全局 Git
+配置或系统策略，不使用 sparse/filter/path 来减少源码。后续步骤不继承该覆盖。
+新增的 Node 元数据回归仅创建并清理自己的临时目录/缓存文本，不启动工具、
+CMake、CTest 或项目产物；Windows 仍不执行 Runtime、consumer、模板应用或 GUI。
 
 1. 全新 SDK 构建：SOUI_BUILD_PORTABLE=ON、SOUI_BUILD_DESKTOP=ON，关闭 example、
    legacy template/demo/WebView2/UIA/vendor/auto-host/input UI 和 startup trace。
@@ -74,7 +91,9 @@ Windows ARM 官方镜像文档存在 VS2022/VS2026 映射差异，所以不固�
    从同一安装前缀配置并链接；再核对模板缓存中实际包来源。macOS 固定单一原生 slice、
    deployment target 12.0；Windows 原有 vcpkg/MSBuild 用户导入按 job 进程隔离。
    CPATH/INCLUDE/LIB 等编译器环境搜索路径及 PKG_CONFIG 环境覆盖会被清理；预装工具、
-   系统 SDK 和包依赖仍按原生规则解析。当前只证明未配置源码回退，实际编译依赖留待云端记录。
+   系统 SDK 和包依赖仍按原生规则解析。模板包缓存接受合法 PATH/UNINITIALIZED
+   类型，仍要求两项唯一、非空且 canonical 路径严格位于安装包的预期目录；
+   实际类型和目录随结果记录，其他类型、缺项或外部来源继续失败。
 7. 使用安装版 stage / verify / archive 工具生成 application-stage/2 应用目录及
    application-delivery/1 ZIP。只传当前平台需要的首方 Runtime 和 WebView2 notices。
 8. 在新目录解压 ZIP，再 verify，并逐文件比较 stage/解压树的类型与 SHA256。
@@ -120,10 +139,11 @@ chenziyang110/soui-web-sdk 当前由 GitHub 元数据确认为 public，公开�
 未核实，因此初版不上传 artifact、不缓存，ZIP 随临时 runner 生命周期消失。
 没有新增持久 artifact 保留；若以后批准上传，另核预算并限制 retention-days=1 与文件集合。
 
-GitHub 连接器读取 Actions permissions 和 workflows 列表的 URL 被其端点 allowlist
-以 INVALID_ARGUMENT 拒绝，不能据此推断 Actions 已禁用或账号无权限。只确认冻结 PR
-源码没有既有 workflow；实际 Actions 启用状态、允许 actions 策略、fork 审批和存储预算未知。
-后续首次启用前须确认这些设置；不为此绕过端点或改安全权限。
+GitHub 连接器最初读取 Actions permissions 和 workflows 列表的 URL 被其端点 allowlist
+以 INVALID_ARGUMENT 拒绝，不能据此推断 Actions 已禁用或账号无权限。初始检查只确认
+冻结 PR 源码没有既有 workflow；当时的 Actions 策略、fork 审批和存储预算未核实。
+上述设置未重查或修改；11 月 3 日的真实 push run 已证明此限定工作流可运行，
+不把这项结果推广到其他 Actions 策略、fork 或账户存储预算。
 
 Linux/macOS 两项 Runtime 通过也不证明 Desktop/GUI 运行。应用 nativeRuntimeVerified、
 authenticityVerified、signed、dependenciesBundled 保持 false，developmentOnly=true；
@@ -135,22 +155,24 @@ authenticityVerified、signed、dependenciesBundled 保持 false，developmentOn
 ~~~sh
 node --check tools/ci/platform-build.cjs
 node --check tools/ci/validate-platform-workflow.cjs
+node --test tests/ci/platform-build.test.cjs
 node tools/ci/validate-platform-workflow.cjs
 node tools/ci/platform-build.cjs --platform windows --arch arm64 --plan
 ~~~
 
 --plan 只拼接路径和参数，不发现工具、spawn、下载、配置或构建。静态校验解析
 JSON/YAML、核对六标签/固定 actions/权限/超时/费用约束、检查全部六个平台计划；
-13 个负面场景拒绝内容写权限、PR/不安全触发器、错误/通配分支和 tag 订阅、旧 checkout
-回退、自托管标签、超时放大、凭据持久化、Windows CTest、未声明架构及重复参数。
+17 个负面场景拒绝内容写权限、PR/不安全触发器、错误/通配分支和 tag 订阅、旧 checkout
+回退、自托管标签、超时放大、凭据持久化、Windows CTest、未声明架构及重复参数，
+以及长路径配置缺失/关闭/扩大作用域与缩减 checkout 文件集合。
 另以纯配置模型核对正确分支只选一轮六项矩阵，错误分支/PR/tag/私有仓库不选任务，
 默认分支工作流缺失时不能依赖 dispatch。该模型不是 GitHub 实际触发证据。
 另检查14个注入的环境覆盖会被清理，同时保留
 原生工具 PATH 和系统 SDKROOT。这不是 GitHub 服务解析、CMake 配置或六平台实测。
 本地收尾按项目现有流程从完整暂存区生成并校验 source-manifest；实际 tree、清单哈希和
 退出码另存任务收尾报告。清单只声明对应索引的文件和哈希，不代表配置、编译或云端验收。
-32b412b1 已本地提交，其普通 push 因 workflow scope 不足被拒；本轮恢复候选仅保存在
-本地，未重试推送或触发。新清单只绑定本次索引，旧清单和历史验收仍保留原身份。
+旧 32b412b1 的 push 拒绝和 11 月 2 日本地恢复结果保留各自历史身份；11 月 3 日
+d8589e9 已发布并完成首轮 CI。本次修复按新索引生成清单，不改写首轮失败或旧验收。
 
 ## 官方资料（2026-10-30 只读核对）
 

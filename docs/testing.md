@@ -197,7 +197,7 @@ LLVM 增量构建会单独认证生成命令中的工具路径（含 Windows 8.3
 `cmake --build --preset portable`、`ctest --preset portable`。
 另验证 `tests/portable/consumer` 对已安装 `SouiRuntime` 包的独立消费。
 完整命令和目标矩阵见 [跨平台说明](cross-platform.md)。合成架构/拒绝测试、
-本机编译、目标机运行与真实桌面验收必须分开报告。新增的[限定跨平台 CI](ci-platform-matrix.md)只覆盖六类标准 runner 的构建、安装消费者和模板文件交付；Windows 不执行项目程序，Linux/macOS 仅选择两项无界面 Runtime 测试。现存 CI 提交 32b412b1 的推送因 workflow 权限不足被拒；本次整合固定 main ce9757e3 仅静态与清单验证，旧 tree 98cb4681 的 Windows build-only 证据不自动沿用。见[候选身份与证据边界](ci-platform-matrix.md#候选身份与证据边界)，尚无由此取得的云端通过，不替代真实桌面验收或改写历史失败。
+本机编译、目标机运行与真实桌面验收必须分开报告。[限定跨平台 CI](ci-platform-matrix.md)覆盖六类标准 runner 的构建、安装消费者和模板文件交付；Windows 不执行项目程序，Linux/macOS 仅选择两项无界面 Runtime 测试。d8589e9 已实际发布并完成[首轮六平台运行](acceptance/pr103-first-ci-20261103.md)：六任务整体失败，四个 Unix 任务的 SDK/安装消费者与两项 Runtime 有限定通过。本次 checkout/模板缓存/汇总修复仍须新 head 实测，旧 tree 98cb4681 的 Windows build-only 和其他旧证据不自动沿用；真实桌面及生产资格不据此完成。
 
 ## 统一系统 WebView 桌面补充验证
 
