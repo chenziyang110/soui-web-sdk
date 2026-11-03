@@ -720,3 +720,55 @@ FILETIME 间隔为 175.0403415 秒，首例 Owned 已 Job0 / closure，串行归
 当前证据支持保留非 NULL 前台守卫，不支持把它放宽为 pending 或无条件 NIM。
 下一步先补充失败返回后的窗口上下文诊断，并继续当前 #27/#29；不推进 #31，不将
 这次诊断通过例、原始失败或尚缺的 Win10 x86 / Win7 OS32 / 完整矩阵改写为通过。
+
+## 返回后窗口上下文：菜单拒绝和原 NIM FALSE 再现
+
+新的仓库外诊断仍绑定同一 SDK4 / CF / x64 安装库，增加的 Win32 查询仅在原 focus
+失败已经返回且原响应记录后执行；SDK 的拒绝谓词、实际 BOOL 和退出码没有改写。
+consumer SHA-256 为 `59f6ad8e89920e4a2d0a9e74a6464a8c3446c716aad8fc830bc4ceb9642c0841`。
+实际两阶段及 Owned 自然通过，163 项冻结文件和 467 项安装清单已独立核验；首轮
+configure 通过后在 build 入口被既存编译门禁拒绝的失败保留。此阶段另有 PID18084
+一次按既有条件授权的孤立 VCTIP 强停，累计 22 项，历史闭集不刷新；收尾快照中的
+VCTIP28584 身份未知、未停止，不能把 compiler lane 释放写成全局编译进程为零。
+
+原 r12 新会话 `aceec4e3-b109-4f8a-861a-a61786a309d7` 串行运行两个新立即输入
+token，各启动一次、唯一主热键一次，真实 Esc / 2.2 秒无重定位 / ShiftF10 前序由
+图片与原件配对。两例都没有提交 tooltip 更新，native / capture runner / trace /
+Owned root 与 terminal 的已知退出码均为 1，清理确认、Job0，无监督超时或强清。
+
+- `c190914ccdfa47b99dc086c6d38f249b`：前两个 focus 的实际 NIM BOOL 均为 1；
+  后续快捷键请求的第三次菜单，SFW 原 BOOL0、原条件内 GLE 已观测0，前后 FG
+  均为 131690，非 owner131828，实际 `E_MENU_FOREGROUND`。全局首拒绝为 call5 /
+  ordinal143 / `menu.foreground.rejected`。随后先因 menu-failed 锁存退出1，再调用
+  focus；其初始 FG 非 owner，走原 legacy NIM，实际 BOOL0（其 GLE 未采样），
+  call6 首叶 `return.nim_false`。post context reason6 正确保持不可用，不能凭第三次
+  menu request 计数断言第三次菜单实际显示。native1@32430ms、Owned1@33163ms。
+- `7579e8d12f3844688a513b39a5226189`：第二次 focus 的一次 SFW/barrier 均返回1，
+  但 after_barrier 的 known 环境中 FG131690 不是 owner590584 或 target65666，
+  call4 / ordinal105 / `check.foreground_target` 拒绝，该次无 NIM。随后绑定同一
+  返回调用采样到 CabinetWClass、PID3400/TID3360、root/rootOwner131690，
+  GW_OWNER 原返回NULL（不认证无owner），进程 image 为 explorer.exe、创建
+  FILETIME 与 Shell 进程相同；
+  前后 FG / PID / TID bits 相同，查询句柄 CloseHandle 返回1。Shell target TID3728
+  与该窗口线程不同。它们仅是返回后的新观察，不认证拒绝瞬间身份、排除 HWND
+  复用或允许任意 Explorer；也不追认首例同值 HWND 或旧262580 的历史身份。
+  native1@75304ms、Owned1@75900ms。
+
+两 trace v3 完整152 / 124条、零丢弃；pending、最终普通 GUI 拒绝及 queued/replayed
+均为0，没有新增这些路径的实测覆盖。主通知区与 overflow、输入交付等额外变量
+保留；host 调用间隔约0.0034 / 0.0038ms 不是 guest 事件间隔。第一 capture 完成
+到第二 capture 开始的精确 FILETIME 间隔133.7258104秒，原 Owned closure 已完成。
+
+十份原件及空 stderr 保存在 `out/tray-focus-20261102/raw-postreturn-focus-diagnostic`，
+manifest 24,099 bytes，SHA-256
+`9ae175f2280556676229e0ff6f1a2631aafb8d360b6bef59eb15a481b1eb5119`。
+停机仅请求一次正常 ACPI：首30秒观察没有确认 stopped 的失败另存，随后只读检查
+确认迟到的自然退出0；没有重复 ACPI、force 或 quit。离线导出后句柄全关、原磁盘
+metadata 不变，最终 stopped / free / globalQEMU0，临时标签和 viewport 已清理。
+本次文档更新前 `sdk/web` 的新增 npm audit 已实际退出0、受检依赖漏洞数0；
+此前 registry TLS 失败原件仍保留，不扩展为其它包的新增审计结论。
+
+此结果真实复现了旧菜单前台失败与原 NIM FALSE，不能将 `.4` 描述为完整修复。
+下一步只在仓库外、通过原公开安装 SDK4 验证调用方调度假设：已知菜单请求和最终
+焦点义务在既有 timer 的 UI 安全点处理，先取得 pure helper TDD 与新 GUI 证据，再
+决定是否形成新的生产候选。尚未修改生产实现或版本，#27/#29 保持，未推进 #31。
