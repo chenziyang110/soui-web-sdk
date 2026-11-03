@@ -51,10 +51,15 @@ class tray_service final {
   [[nodiscard]] desktop_response update_tooltip(const std::string& tooltip);
   // Return keyboard focus to the notification area after dismissing native
   // UI such as a context menu. This does not activate a business window.
+  // Foreground-owner preparation has a cooperative 1000ms budget, not a hard
+  // member-call timeout. E_TRAY_FOCUS may precede the native notification;
+  // an invoked notification still succeeds only on its original native BOOL.
   [[nodiscard]] desktop_response return_focus();
   // Revokes desired residency before attempting Shell removal. A failed
   // removal is not confirmed cleanup; retry on the owner thread while alive.
   [[nodiscard]] desktop_response remove();
+  // A busy TaskbarCreated hint may be handled and deferred with E_BUSY/none.
+  // Other failures and the eventual recovery result still require checking.
   [[nodiscard]] tray_message_result dispatch_message(std::uint32_t message,
                                                     std::uintptr_t wparam,
                                                     std::intptr_t lparam);

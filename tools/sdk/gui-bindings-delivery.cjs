@@ -18,6 +18,12 @@ const mainPreviewPeerRange = mitPeerRange + ' || 0.6.0-preview.3';
 const peerRange = mainPreviewPeerRange + ' || 0.6.0';
 const candidateVersion = '0.6.1-preview.1';
 const candidatePeerRange = peerRange + ' || ' + candidateVersion;
+const focusCandidateVersion = '0.6.1-preview.2';
+const focusCandidatePeerRange = peerRange + ' || ' + focusCandidateVersion;
+const callbackCandidateVersion = '0.6.1-preview.3';
+const callbackCandidatePeerRange = peerRange + ' || ' + callbackCandidateVersion;
+const foregroundCandidateVersion = '0.6.1-preview.4';
+const foregroundCandidatePeerRange = peerRange + ' || ' + foregroundCandidateVersion;
 const previewPeerRanges = new Map([
   ['0.6.0-preview.1', previousPeerRange + ' || 0.6.0-preview.1'],
   ['0.6.0-preview.2', previousPeerRange + ' || 0.6.0-preview.2'],
@@ -62,11 +68,14 @@ function metadata(root, version = versionOf(root)) {
         (acceptsMitPeer && [mitPeerRange, mainPreviewPeerRange, peerRange].includes(nativePeer)) ||
         (version === '0.6.0-preview.3' && nativePeer === mainPreviewPeerRange) ||
         (version === '0.6.0' && nativePeer === peerRange) ||
-        (version === candidateVersion && nativePeer === candidatePeerRange);
+        (version === candidateVersion && nativePeer === candidatePeerRange) ||
+        (version === focusCandidateVersion && nativePeer === focusCandidatePeerRange) ||
+        (version === callbackCandidateVersion && nativePeer === callbackCandidatePeerRange) ||
+        (version === foregroundCandidateVersion && nativePeer === foregroundCandidatePeerRange);
       const lockPeers = lock.packages[''].peerDependencies;
       // Preserve old producer spellings/lock shapes. Only the exact p9 preview
       // contracts from .3 onward and the exact stable/candidate contracts require root peers.
-      const requiresLockPeers = version === '0.6.0' || version === candidateVersion || (nativePeer === previewPeer &&
+      const requiresLockPeers = version === '0.6.0' || version === candidateVersion || version === focusCandidateVersion || version === callbackCandidateVersion || version === foregroundCandidateVersion || (nativePeer === previewPeer &&
         ['0.6.0-preview.3', '0.6.0-preview.4', '0.6.0-preview.5', '0.6.0-preview.6', '0.6.0-preview.7', '0.6.0-preview.8', '0.6.0-preview.9'].includes(version));
       const matchingLockPeers = lockPeers === undefined ? !requiresLockPeers :
         lockPeers && typeof lockPeers === 'object' && !Array.isArray(lockPeers) &&

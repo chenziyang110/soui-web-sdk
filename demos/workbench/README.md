@@ -36,6 +36,33 @@ React 页面的外层和 V02 列表滚动条使用 Chrome 49 兼容的 `::-webki
 
 交付根运行 `out/x64/bin/Release/SouiWorkbench/SouiWorkbench.exe --resident --react --page=data`。应用控制器创建三个独立 Host/adapter/会话，共用进程 Runtime；关闭任一业务窗口或全部业务窗口后仍保留托盘。点击图标、托盘菜单或 Ctrl+Alt+W 可恢复窗口，托盘菜单提供明确退出。快捷键被占用或服务初始化失败会记录错误并退出，不静默换用其他组合。默认不带 `--resident` 的单窗关闭行为保留。
 
+菜单结束后，精确的 `E_TRAY_FOCUS` 保留原 `tray.focus` 的 `ok=false` 和非零退出码，
+另记 `tray.focus-warning`，但不立即关闭驻留。成功返回的有效菜单选择可继续走原
+消息投递；无选择时不派发命令，也不凭此证明真实 Esc。warning 的
+`commandFlowContinues` 是流程决定，不是命令已执行的证据；实际窗口恢复与 Host ready
+须另验。其它焦点校验、菜单、清理和 Host 错误仍按原失败路径处理，已有退出请求与
+失败码不撤销。SDK `return_focus()` 和严格托盘消费者仍把 Shell 拒绝判为失败。
+
+本地 `0.6.1-preview.2` 候选对重入重建提示作精确兼容：仅已注册的 `TaskbarCreated`、
+`handled=true`、事件为 none 且原结果为 failure / `E_BUSY` 时记录 `deferred=true`，
+保留原 `ok=false`、错误码和消息，但不新增退出码 1，也不清除已有失败。它只表示 SDK
+已保存延后提示，不是 Shell 恢复通过；其它忙错误、后续 ADD/VERSION 恢复失败与焦点
+失败仍严格处理。旧代次唤醒的 handled/success 也不证明发生了恢复。须继续核对后续
+实际恢复、图标/键盘路由和自然退出证据，候选改动不继承下述历史样本的资格。
+
+`.3` 候选以应用内部队列串行分派 tray 成员栈内收到的原始 callback，容量 64，
+在既有 timer 的安全边界每轮最多重放八项。只保证入队项目之间的 FIFO 顺序；普通
+未入队通知仍按 Windows 原分派处理。TaskbarCreated 不进入这个队列。入队记录
+表示尚未调用 SDK，须继续核对重放的实际 response；溢出或实际错误仍判失败，退出
+会撤销剩余项目。该策略不吞掉 `E_BUSY`，不改变 SDK 原 NIM BOOL，也不保证 Windows
+允许每次菜单前台激活。实现与待验范围见 ADR 和维护记录，历史 `.2` 失败继续保留。
+
+`0.6.1-preview.1` 本地候选已完成两架构 Release 标准构建、各 14 项非 GUI CTest
+（49 个契约组），并在隔离 VM 实际完成菜单恢复及保留退出码 1 的自然收尾；真实
+Esc 仅在 x64 完成，x86 未执行。此结果不代表焦点已归还，也不关闭 #27/#29。
+实际身份、早期超时与未完成范围见[本轮维护记录](../../docs/maintenance/tray-focus-20261102.md)，
+关闭政策见 [ADR-0013](../../docs/adr/0013-public-menu-shortcut-and-residency.md)。
+
 有限生命周期短测使用 `--resident --resident-smoke-test --react --page=data`：等待三个页面 ready，关闭中间窗，重载其余两窗并重建中间窗，关闭全部业务窗后保留控制器至少 500 ms，再重建三窗并统一退出。180 秒内未完成返回非零；监督器应另设进程超时。它不自动操作菜单或发送快捷键，也不证明页面中真实任务互不干扰、用户输入、IME、Explorer 重启、长期资源或 Win7 兼容通过。
 
 驻留模式的 NDJSON 事件默认写到系统临时目录、按进程和运行标识生成新文件；验收可传 `--resident-log` 指向仓库外新的绝对文件路径，保存槽位、代际、ready、关闭、各服务和最终 Runtime 退出结果。禁止覆盖既有证据。不要与单窗 smoke/self-test、benchmark 或时序实验参数组合。桌面验收必须与其他 SDK 窗口和 QEMU 串行，x86 使用对应 x86 输出。公共服务 API 见 [SDK 文档](../../docs/api.md)。

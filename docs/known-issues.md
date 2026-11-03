@@ -4,6 +4,8 @@
 
 ## 0.6.0 后续源码候选
 
+`0.6.1-preview.4` 已完成两架构正式 Release、独立安装消费者及各 14 项 / 84 组原生回归。Server 四个新用例均自然退出 0、12 次焦点响应成功；Win10 原失败和无效对照保留，POD4 新 250 毫秒诊断有一个完整通过例。后续返回后上下文诊断两例均退出1：一例真实复现 `E_MENU_FOREGROUND` 后原 NIM FALSE；另一例在非目标前台时准备拒绝，返回后采到 CabinetWClass/explorer.exe，但不证明拒绝瞬间身份或允许放宽守卫。调用方调度实验尚待验证。Win10 x86、Win7 OS32、旧快速菜单前台失败及完整 #27/#29 资格仍开放。结果与历史失败见[焦点维护记录](maintenance/tray-focus-20261102.md)，`releaseReady=false` 保持。
+
 PR127之后的工具遗留项已新增自有VCTIP自然idle生命周期、显式SDK失败stage保留/校验恢复，以及checked ZIP准备入口。当前两架构微型CMake自然收尾、实际子文件句柄EPERM恢复、候选canonical pack与实际PS5中文长路径短验已过；原失败与完整范围见[后续收尾](maintenance/windows-tooling-failure-closeout-20261029.md)。旧EPERM锁持有者及PS5原失败原因仍未知，完整构建负载与生产资格不据此关闭。
 
 当前工作分支已补 ZIP UTF-8 参数、MSVC 节点复用策略及 source SDK 发布失败诊断，

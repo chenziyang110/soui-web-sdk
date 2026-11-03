@@ -1,10 +1,37 @@
 # 变更记录
 
+## 0.6.1-preview.4（本地候选，未发布）
+
+- 修正 Shell 激活后 NULL 前台被立即拒绝的问题：仅在其它身份与环境检查均安全时，将其作为原协作预算内的 pending；最终仍须确认 Shell 前台及 GUI active/focus，实际 NIM BOOL 继续严格判定。新增 8 组回归，保留原 41 组；两架构正式 Release 构建、安装消费者及每架构 14 项 / 84 组原生回归通过。首次编译进程收尾失败保持失败，见 [ADR-0012](docs/adr/0012-public-tray-service.md)与[维护记录](docs/maintenance/tray-focus-20261102.md)。
+- Server 两消费者的 Explorer 重启恢复及两架构 Workbench 关闭第三窗口后恢复均自然退出 0，12 次焦点响应成功。Win10 新立即输入例的第二次焦点调用仍在准备阶段拒绝、该次未调用 NIM；另一次 250 毫秒计划因操作员未完成目标输入而到达原 180 秒期限，不能作为有效对照。两个 Win10 x86 用例暂未执行，#27/#29 与生产资格保持开放。
+- 外部 POD4 新诊断实际定位立即用例在等待后遇到非 NULL、既非 owner 也非目标的前台而严格拒绝，该次未调用 NIM；窗口身份及内部变化原因未知，保留守卫。另一个新 250 毫秒诊断完成真实更新、快捷键和显式退出，native / Owned 均为 0；两例额外变量及旧失败保留，不扩大为 SDK 或 #27/#29 资格通过。
+- 新的返回后上下文诊断两例均自然退出1，其中一例真实复现菜单前台拒绝与后续原 NIM FALSE；另一例准备拒绝后的窗口样本为 CabinetWClass/explorer.exe，仍不认证历史身份或放宽前台条件。生产 `.4` 实现与资格保持；下一步先通过公开安装 SDK4 做仓库外调用方调度实验。
+
+## 0.6.1-preview.3（本地候选，未发布）
+
+- Win10 追加三例快速输入诊断，实际退出码为 1/0/1。两例快速操作未提交菜单更新，随后焦点准备拒绝且未调用 NIM；不能据此判定旧 `E_MENU_FOREGROUND` 已复现或修复。对照例完成退出，并首次记录真实回调入队/回放；退出撤销路径亦有实际记录，详见[维护记录](docs/maintenance/tray-focus-20261102.md)。
+- Workbench 与独立托盘消费者新增各自拥有的 UI 线程回调队列：只在 tray 成员调用栈内保存原始 callback，固定容量 64，在既有 timer 安全边界每轮重放至多 8 项。TaskbarCreated 仍立即交给 SDK；溢出、实际分派和焦点错误继续判失败，退出撤销待处理项目。
+- 队列日志区分未调用 SDK 的入队与实际重放，并保存原消息参数及 Win32 通知 word；新增两调用方的容量、顺序、重入、退出及真实 SDK fake 边界回归。SDK 的忙时拒绝和原 NIM BOOL 实现源文件保持 `.2` 字节不变，见 [ADR-0013](docs/adr/0013-public-menu-shortcut-and-residency.md)。
+- 新身份同步 SDK/Web/React/Vue 与锁文件，GUI 交付保留各历史精确 tuple，新增 `.3` 安装/回退回归。两架构 Release 标准构建、安装消费及每架构 14 项/76 组非 GUI 回归通过；Server/Win10 六个新 GUI 用例均自然退出 0，18 次焦点响应成功，见[维护记录](docs/maintenance/tray-focus-20261102.md)。本轮真实 callback 全为直接分派，FIFO 重放由故障注入覆盖；`.2` 的 E_BUSY、快速快捷键前台拒绝和超时失败完整保留，Win7、跨系统恢复、长期驻留及完整 #27/#29 资格仍开放。
+- 同一冻结程序另在 Server 完成 x64/x86 两例正常 Explorer 重启恢复：图标重现、菜单/原位键盘焦点、提示更新和快捷键可用，两例均自然退出 0、清理确认、Job0，无超时或强清。`.3` 合计八例/34 份 guest raw、24 次焦点响应成功；TaskbarCreated 的 sourceVerified=false 保留，恢复证据结合真实 GUI，不把广播单独当成重启证明。
+
+## 0.6.1-preview.2（本地候选，未发布）
+
+- `tray_service::return_focus()` 仅在初始前台为 owner 时尝试 Shell 状态准备：一次激活、一次 WM_NULL 及最终 GUI 状态检查共用绝对 1,000 ms 协作预算。SFW 后未知、不安全或超预算时零 NIM；其余初始前台保留原路径。实际 NIM 仍只按原 BOOL 判断，FALSE 不转换为成功，公共签名不变。
+- 同步准备中的重建提示以不复用标量票据延后，移除及旧唤醒不能复活图标，恢复失败不形成自投递循环。Workbench 与独立消费者保留精确 deferred E_BUSY 原响应，后续恢复和焦点失败仍严格处理。新增有界状态、取消、重入和资源边界的无桌面回归。
+- 已执行双架构安装后消费者和实际产品验证：Server 两消费者自然退出 0；新的 x64 Workbench 和 Win10 两消费者虽焦点响应成功，仍因重入通知 `E_BUSY` 锁存退出 1，Win10 x64 另有 `E_MENU_FOREGROUND`。这些失败及早期超时保留，候选未完成 #27/#29 资格，见[维护记录](docs/maintenance/tray-focus-20261102.md)、[ADR-0012](docs/adr/0012-public-tray-service.md)与[迁移说明](docs/migration/tray-focus-preparation.md)。
+- SDK/Web/React/Vue 的版本入口及锁文件同步新身份；GUI 交付只增加精确 `.2` 声明，并保留 `.1` 的安装与回退规则，不接受任意未来 preview。
+
 ## 0.6.1-preview.1（本地候选，未发布）
 
 - 为 Issue #133 增加默认关闭的 `SOUI_WEBVIEW2_LOADER_SHARED`。显式开启后从应用目录加载官方 WebView2 Loader，并在发现 Runtime 前检查两个必要导出；缺少可选 Loader 或导出时允许 AutoHost 在启动前选择 MiniBlink，权限、映像和策略错误保持失败。静态 Loader 仍为默认。
 - 动态档同步 SDK 安装、应用部署和已认证依赖输入；两种档位使用独立 CMake 缓存，避免切换选项后继续链接旧库。部署 helper 供源码和安装消费者显式调用，详情见 ADR-0138。
 - 新候选使用独立版本身份，不替换已发布 0.6.0。Issue #23/#27/#29/#31/#39/#42/#77/#96 的历史证据和未完成条件保留；代码回归、真实 Win7、长期与生产验收分别记录，`releaseReady=false`。
+
+## 未发布：Workbench 驻留焦点错误关闭政策
+
+- Workbench 菜单结束后的精确 `E_TRAY_FOCUS` 保留原失败日志和非零退出码，新增可观察 warning，但不立即关闭驻留或丢弃已确认的菜单命令；其它错误和已有退出请求保持原处理。
+- 此项仅调整 Demo 关闭政策。`0.6.1-preview.1` 本地候选已完成 x64/x86 Release 标准构建、每架构 14 项非 GUI CTest（49 个契约组），以及两架构实际菜单恢复和保留退出码 1 的自然收尾；真实 Esc 仅在 x64 完成。SDK 严格契约、原托盘消费者、原生焦点失败及早期超时原件保留，#27/#29 与生产资格仍未完成，见[本轮维护记录](docs/maintenance/tray-focus-20261102.md)和 ADR-0013。
 
 ## 未发布：Windows 工具遗留失败恢复
 

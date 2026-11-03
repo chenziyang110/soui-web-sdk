@@ -19,7 +19,7 @@
 
 SOUI Web SDK 把业务页面、类型化桥接、原生宿主、运行依赖与交付工具放在一套可独立构建的源码工程中。前端编写界面，C++ 注册业务动作和任务，应用决定允许谁调用、何时取消，以及如何结束当前窗口与 Runtime。
 
-> 当前本地源码候选为 **`0.6.1-preview.1`（未发布）**，以 [VERSION](VERSION) 为准。下列 `0.6.0` 下载、发布范围与证据保留其原版本身份，不作为本候选的验收结果；本候选仍保持 `releaseReady=false`。
+> 当前本地源码候选为 **`0.6.1-preview.4`（未发布）**，以 [VERSION](VERSION) 为准。下列 `0.6.0` 下载、发布范围与证据保留其原版本身份，不作为本候选的验收结果；本候选仍保持 `releaseReady=false`。
 
 **0.6.0 采用普通 GitHub Release 分类；完整资格保持 `releaseReady=false`、`productionQualificationComplete=false`、`fullDevtoolsGoalComplete=false`。** 两架构内核与必要 SDK 构建、安装消费者、默认应用八次启动/自然关闭及九份供应/应用 ZIP 已有实际记录。双后端、双架构的受控 DevTools 代表例及 MiniBlink x86 原始 TSX 断点/单步观察已完成，具体范围见[发布说明](docs/releases/0.6.0.md)；普通 Release 分类不代表生产、目标系统或性能资格。
 

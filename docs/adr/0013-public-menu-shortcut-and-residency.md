@@ -85,3 +85,113 @@ x64 与 Win32 各九个纯 C++ 用例和对应 CTest 已实际通过，并完成
 依据：
 [MsgWaitForMultipleObjectsEx](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-msgwaitformultipleobjectsex)、
 [PeekMessageW](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-peekmessagew)。
+
+## Workbench 焦点拒绝的关闭政策（2026-11-02）
+
+菜单已成功返回有效命令时，Workbench 原来先调用 `return_focus()`；任何失败都会
+立即请求退出，使尚未投递的窗口恢复命令被丢弃。无选择返回后，同一失败也会
+立即关闭驻留。这把 Shell 的焦点确认失败与必须停止业务的所有权错误耦合。
+
+本次只调整 Workbench 此调用点的关闭政策：精确的 failure / `E_TRAY_FOCUS`
+仍经原 `desktop_result` 记录 `ok=false` 并锁存非零退出码，另记
+`tray.focus-warning`，但不因此立即 `request_exit`。只有菜单结果成功、
+`has_selection=true` 且未进入退出时，才走原 `queue_action`；无选择时不派发
+命令，也不将它认证为真实 Esc。warning 中的 `commandFlowContinues` 表示
+继续命令流程的决定，不证明消息已投递、命令已执行或窗口已恢复。
+
+其它焦点校验错误、菜单/清理/Host 错误仍走原失败和关闭路径。已有退出请求
+不撤销，已有非零退出码不清除；成员栈、`operation_scope`、原消息投递和
+关闭顺序保持。SDK `return_focus()` 的 FALSE / `E_TRAY_FOCUS` 契约、原生
+失败测试和严格 `tests/tray-consumer` 全部保留，没有新增公共 API、线程、
+重试、焦点效果回退或成功定义。
+
+备选是继续立即关闭、把 API 错误改成 success，或只在日志中忽略该错误。
+本次选择保留严格失败码而继续应用流程，既避免丢弃已确认命令，也保留
+原始失败。此项是 Workbench 应用政策修复，不解释 NIM_SETFOCUS 根因、
+不证明焦点已归还；#27/#29、Win7 与完整驻留/生产资格继续未完成。
+
+适用验证须绑定当前源码、安装 SDK、EXE 与完整载荷，在 x64/x86 Release
+分别执行：实际选择已关闭槽位的打开/恢复命令，核对成功菜单选择、原焦点
+拒绝及 warning、后续命令路由和真实窗口/Host ready；另做真实菜单 Esc，
+确认无命令且继续驻留。最后显式退出，保留原非零结果、自然清理与外部
+Job 闭合。`commandFlowContinues`、PostMessage 成功或原生菜单无选择不能
+替代实际路由/界面证据。未修改的安装后严格消费者仍须保留焦点失败后
+停止动作/非零退出的结果；不得将功能路由通过写成原 API 或 SDK 资格通过。
+
+### 实际验证范围
+
+`0.6.1-preview.1` 本地未发布候选已完成 x64/x86 Release 标准构建，固定
+MSVC v143 `14.44.35207` Hostx64 与 Windows SDK `10.0.19041.0`；每架构
+三项 fake 平台服务契约和十一项纯驻留关闭策略 CTest 均通过，共 14 项、49 个
+契约组。两架构隔离 VM 样本均实际选择关闭槽位的命令 3，随后槽位 3 新代际
+创建并 ready；焦点结果仍为 `E_TRAY_FOCUS`，warning 和退出码 1 保留。
+随后命令 11 触发原有有序关闭，外部 Owned 均观察 root exit 1、Job 活跃数 0、
+无超时且未强清，`passed=false` 不转换为通过。真实菜单 Esc 只在 x64 完成，
+x86 未执行；无选择返回本身仍不是 Esc 证明。
+
+三个早期产品 GUI 样本因操作流程未在原 200 秒期限内完成而被 Owned 超时清理，
+原件和失败保持；它们没有产品自然关闭证明，也不据此归因为产品菜单或关闭故障。
+原生 `NIM_SETFOCUS` FALSE、SDK 严格契约与原托盘消费者均未修改，本次没有执行
+新的安装后严格消费者。Win7、完整 #27/#29 与生产资格继续未完成。
+
+源码、controller、EXE、完整运行载荷散列及实际事件时间见[本轮维护记录](../maintenance/tray-focus-20261102.md)。
+记录绑定当时已冻结输入；后续文档或重建不覆盖旧 raw，也不把调用方业务流程恢复
+写成公共 API 成功或焦点根因已修复。
+
+## preview.3 调用方串行分派决定（实现前记录）
+
+`.2` 已取得十八次公共 focus 成功响应，但 Server Workbench 和 Win10 两个严格
+消费者仍实际收到非延后的 callback `E_BUSY`，使最终退出码锁存 1。busy 检查早于
+原通知的 ID/kind 解码；旧 raw 的 notification=0 仅表示 SDK event none，不能证明
+原通知属于可忽略种类。Win10 x64 另有一次快速更新后快捷键的 E_MENU_FOREGROUND，
+该失败单独保留，不推断其已由本决定解决。具体冻结样本见维护记录。
+
+决定在两个原生调用方内串行分派 callback，保持 `.2` SDK 的忙时拒绝与原 NIM BOOL
+契约。各应用以独立 RAII 深度仅标记 tray 自身成员调用；在该成员栈内收到 callback
+时，保存原 message/wParam/lParam 到 UI 线程拥有的固定容量 FIFO，不调用 SDK，也
+不制造成功 response。TaskbarCreated 继续立即分派，保留准备取消和重建提示语义。
+队列容量 64；溢出须记录明确错误并使应用失败，不能覆盖旧通知或自动循环重试。
+
+在既有 timer 的安全边界（tray 调用、应用操作、菜单和业务分派均已返回）按 FIFO
+重放，每轮至多八项且只处理进入该轮前已有的项目。FIFO 只保证已入队项目之间的
+顺序，未入队 callback 继续按 Windows 原分派顺序处理，不承诺全局输入排序。
+重放本身须有防重入标志；重放期间在 tray 成员栈内新入队的项目留给后续 timer。
+guard 析构只降低深度，不执行 SDK、不重放或投递循环。
+真实 SDK response 仍按原严格处理，包括 E_BUSY、owner 错误、重建失败及 NIM FALSE。
+退出先撤销队列意图、记录丢弃数，成员返回后再按既有关停契约移除服务与 HWND。
+
+Workbench 与独立消费者各拥有内部辅助代码，SDK 不依赖 Demo 或测试目录；安装后
+消费者把其应用辅助头一同复制到仓库外，仍只使用公共安装 SDK。不新增公共 API、
+线程、额外消息泵、Shell 权限、输入模拟或超时。新日志明确区分原通知入队、未调用
+SDK、重放及实际 response，并保存原参数和 Win32 通知 word；raw 数值不作为可信手势。
+
+备选方案是忙时吞掉 callback E_BUSY、在 SDK busy 前猜测通知不可操作，或延后全部
+模态菜单期间的消息。前两者会掩盖真实失败或依赖旧 raw 未记录的信息，后者会让
+鼠标通知积压。因此选取只覆盖 tray 自身成员调用的应用队列，不改变 SDK busy 合同。
+
+该后续内容使用独立 `.3` 身份；`.2` 构建、载荷与失败保持冻结，回退须恢复完整 `.2`
+应用与 SDK 安装。验证须覆盖原参数顺序/宽度、容量、重入、重放中新消息、退出清空、
+实际 SDK 回应和 TaskbarCreated 旁路；再执行双架构安装消费及真实取消/键盘/窗口恢复。
+以上为实现前决定；后续实现及限定验证另行记录，不追溯修改 `.2` 的结果。
+
+### preview.3 实际实现与验证
+
+两调用方已按上述边界实现；双架构 Release 标准构建、安装后独立消费及每架构
+14 项非 GUI CTest、76 组行为测试通过。新增六组回归保留真实 SDK busy 拒绝、原始
+NIM FALSE、Taskbar 取消及 owner 失败，再验证调用方原参数队列和成员返回后重放。
+原 35 组 SDK 托盘回归保持，未通过忽略失败取得通过。
+
+Server 两消费者、两 Workbench 及 Win10 两消费者共六个新用例完成真实菜单取消、
+原位键盘重开及显式退出；Workbench 另完成第三窗恢复。十八次公共 focus 响应均
+成功，六例 native0、Owned completed0/Job0，无超时或强清。真实 callback 全部
+direct，queued/replayed 均为零，不能把该 GUI 结果归因为队列重放或声称其真实路径
+已覆盖。原 NIM BOOL 没有单独 raw 字段，非零只按冻结严格成功路径推断。
+
+随后在同一 Server 以原冻结程序追加两架构正常 Explorer Restart；各一次 Taskbar
+处理成功、图标实际重现，后续菜单/键盘/提示/快捷键可用并自然退出 0。结合 GUI
+操作及十份原件验证恢复，不把 sourceVerified=false 的广播单独当作重启来源认证。
+两例仍无真实 FIFO 入队或重放。
+
+Windows 前台策略、旧快速快捷键 E_MENU_FOREGROUND、Win7 OS32、其它系统的恢复、
+长期驻留和完整 #27/#29 门槛继续保留。源码、BuildID、载荷、原件和结果散列见
+[维护记录](../maintenance/tray-focus-20261102.md)；未发布或提升生产资格。
