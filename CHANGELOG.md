@@ -2,7 +2,8 @@
 
 ## 0.6.1-preview.4（本地候选，未发布）
 
-- 修正 Shell 激活后 NULL 前台被立即拒绝的问题：仅在其它身份与环境检查均安全时，将其作为原协作预算内的 pending；最终仍须确认 Shell 前台及 GUI active/focus，实际 NIM BOOL 继续严格判定。新增 8 组回归，保留原 41 组；独立无桌面测试 49 组通过。首次编译进程收尾失败保持失败，正式两架构构建和桌面验证仍未完成，见 [ADR-0012](docs/adr/0012-public-tray-service.md)与[维护记录](docs/maintenance/tray-focus-20261102.md)。
+- 修正 Shell 激活后 NULL 前台被立即拒绝的问题：仅在其它身份与环境检查均安全时，将其作为原协作预算内的 pending；最终仍须确认 Shell 前台及 GUI active/focus，实际 NIM BOOL 继续严格判定。新增 8 组回归，保留原 41 组；两架构正式 Release 构建、安装消费者及每架构 14 项 / 84 组原生回归通过。首次编译进程收尾失败保持失败，见 [ADR-0012](docs/adr/0012-public-tray-service.md)与[维护记录](docs/maintenance/tray-focus-20261102.md)。
+- Server 两消费者的 Explorer 重启恢复及两架构 Workbench 关闭第三窗口后恢复均自然退出 0，12 次焦点响应成功。Win10 新立即输入例的第二次焦点调用仍在准备阶段拒绝、该次未调用 NIM；另一次 250 毫秒计划因操作员未完成目标输入而到达原 180 秒期限，不能作为有效对照。两个 Win10 x86 用例暂未执行，#27/#29 与生产资格保持开放。
 
 ## 0.6.1-preview.3（本地候选，未发布）
 

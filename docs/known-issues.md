@@ -4,7 +4,7 @@
 
 ## 0.6.0 后续源码候选
 
-`0.6.1-preview.3` 的托盘焦点候选已完成两架构安装消费者、限定桌面输入及 Server Explorer 恢复短验；追加 Win10 快速输入仍有两例真实准备拒绝、未调用 NIM，旧快速菜单前台激活失败亦未确证修复。真实回调入队/回放已有一个成功样本，不能据此关闭全部重入、Win7 OS32 或完整 #27/#29 资格。结果及保留失败见[焦点维护记录](maintenance/tray-focus-20261102.md)，`releaseReady=false` 保持。
+`0.6.1-preview.4` 已完成两架构正式 Release、独立安装消费者及各 14 项 / 84 组原生回归。Server 四个新用例均自然退出 0、12 次焦点响应成功；Win10 新立即输入例的第二次焦点调用仍有真实准备拒绝、该次未调用 NIM，另一个计划中的 250 毫秒对照未完成操作链并按原期限退出 3，不能算有效对照。Win10 x86、Win7 OS32、旧快速菜单前台失败及完整 #27/#29 资格仍开放。结果与历史失败见[焦点维护记录](maintenance/tray-focus-20261102.md)，`releaseReady=false` 保持。
 
 PR127之后的工具遗留项已新增自有VCTIP自然idle生命周期、显式SDK失败stage保留/校验恢复，以及checked ZIP准备入口。当前两架构微型CMake自然收尾、实际子文件句柄EPERM恢复、候选canonical pack与实际PS5中文长路径短验已过；原失败与完整范围见[后续收尾](maintenance/windows-tooling-failure-closeout-20261029.md)。旧EPERM锁持有者及PS5原失败原因仍未知，完整构建负载与生产资格不据此关闭。
 

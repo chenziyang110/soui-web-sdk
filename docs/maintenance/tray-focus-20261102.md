@@ -513,7 +513,7 @@ globalQEMU0。诊断两例/十份与 `.3` 正式消费者各轮分开计数，�
 本次两个准备拒绝及所有生产门槛保持。后续 `.4` 的安全 NULL pending 窄修先更新
 ADR，再执行回归和真实新载荷验证；本节不是修复通过声明。
 
-## preview.4 实现与无桌面回归（正式构建和桌面验证待执行）
+## preview.4 实现与首轮无桌面回归
 
 按上述 ADR 在生产 `tray_service.cpp` 引入 unsafe/pending/accepted 的前台准入
 结果，readiness 另区分 foreground pending 与普通 GUI 未就绪。成功 SFW 后、
@@ -550,5 +550,104 @@ TDD 的历史 x64 Runner 与当前正式工具有不同映像身份，但已有�
 
 VERSION、SDK/Web/React/Vue 与锁文件已同步 `.4`，GUI bindings 只新增精确 `.4`
 契约，保留 `.1/.2/.3` 安装与回退；相关 Node 测试实际 38/38 通过。依赖版本及
-integrity/resolved 未变。当前尚未完成 `.4` 正式双架构构建、安装消费者或真实
-桌面输入，不能从这次 fake 通过关闭 #27/#29、旧快速菜单失败或生产资格。
+integrity/resolved 未变。本小节形成时尚未完成 `.4` 正式双架构构建、安装消费者或
+真实桌面输入；后续实测见下节，不能从这次 fake 通过关闭 #27/#29 或生产资格。
+
+## preview.4 正式构建与 Server 实测（2026-11-03）
+
+实际构建源码提交为 `814b641ac211b290f7ee152d51d0592ba852cedb`，冻结源码为
+`cf822d00e0a736a1d68b80d6e37491c14b047f114d508c323714e5e87fb9a0d5`，
+2,383 文件 / 178,229,047 normalized bytes。两架构使用原 MSVC v143
+`14.44.35207`、Windows SDK `10.0.19041.0`、Release / MD。
+
+| 实际检查 | x64 | x86 |
+|---|---|---|
+| 标准 Build ID | `ff7f1d81-56cd-4265-afe0-0c53cebc312e` | `945da6f5-477c-4f33-baf3-0773ffe4f799` |
+| 正式构建、安装 | accepted；467 个安装文件、671 个 Workbench 文件 | accepted；467 个安装文件、671 个 Workbench 文件 |
+| 精确 safe CTest | 14 项、84 组实际通过 | 14 项、84 组实际通过 |
+| 仓库外消费者与 capture | 四份夹具源码，仅公开安装 SDK；实际构建通过 | 同左，独立架构绑定和 capture 五项常量均核符 |
+
+84 组由 tray49 / menu15 / shortcut9 / resident11 构成。当前标准与消费者的
+四个 Owned 构建过程及八个 MSVC configure/build 阶段均自然退出 0、Job0。
+任务期间另按用户授权精确清理了 18 个外部来源未知的孤立编译后台进程，全部
+如实记为强制清理；标准汇总保留当时 13 项，消费者汇总保留后续 18 项闭集及
+两次部分执行后被活动编译拒绝的记录，不能把整个任务描述为“从未强清”。
+
+首个正式 x64 尝试在完成四个 Web ci/build 后，被既存 VCTIP 门禁拒绝，仍为
+失败。后续精确核对原始失败、四个 dist 的 433 个文件与 distribution 身份后，
+通过官方 Web 证据入口续接当前新鲜 Web 产物，另用新 Build ID 执行原生构建和
+安装；没有覆盖失败或重复 npm 构建。Web client31、SDK package smoke15、
+版本/GUI bindings38 项实际通过；SDK Web、React、Vue 和 Workbench Web 四个
+受检包的 npm audit 均为 0 项，不扩大为全仓库依赖无风险声明。
+
+标准与消费者汇总分别位于 `out/tray-focus-20261102/` 下的
+`workbench-build-preview4.actual.json`（60,794 bytes，SHA-256
+`6cd345f8a7e3f1ebcc40d71d3b2a58fcf7810064da6797607015c10c4e900639`）及
+`consumer-build-preview4.actual.json`（49,966 bytes，SHA-256
+`f84287cf18de21ebab0feaf533b9bcbe44485064434174cb2fdc4a0c461db522`）。
+首轮失败和 SDK3 归档由实际汇总保留，独立审查另存外部证据目录。
+
+新只读 ISO 为 116,416,512 bytes，SHA-256
+`253be885a12458657bb23b2d5a170d3148e0b9895dbaa81c8cbf14b5da3b77f4`。
+1,465 个文件、八个新原生 LNK 均绑定上述载荷；两个 ISO namespace 都完成闭集
+及全字节回读。预先计划八例并不代表八例已经执行。
+
+Server 原 VM 新会话 `e1158f0c-045b-45c3-815d-8281161b7672` 串行执行前四例：
+两消费者各通过 Task Manager 真实重启 Explorer 一次，恢复原目标图标，再完成
+真实应用菜单 Esc、2.2 秒无重定位、ShiftF10、提示更新、唯一 CtrlAltF9 和显式退出。
+两 Workbench 实际 X 关闭 slot3，再以 command3 恢复至 generation2 ready，
+完成应用菜单 Esc / 原位 ShiftF10，以 command11 有序退出。
+
+四例 native / Owned 均为 0，12 条 `tray.focus.ok=true`，Job0，无超时或强清。
+消费者菜单序列均为 `[0,1,2]`、各有一次 `taskbar.created`；其
+`sourceVerified=false` 保留，恢复结论结合真实 GUI。Workbench 菜单均为
+`[3,0,11]`，每例原有 41 条 cursor pending、3 条 Runtime pending 仍保留，最终
+Runtime、清理和有序关闭均完成；退出清理耗时 828 / 797 ms。记录建立 10,000 ms
+预算的 `exit.cleanup-deadline` 不等于期限已耗尽。此四例 callback 全为直接分派，
+不新增真实 FIFO 回放覆盖。`sdk4-server-x64-recovered-consumer-menu.jpg` 实际仍是
+系统图标场景，另一次 x86 Workbench 通用任务栏菜单也被排除；不以文件名充当
+应用菜单证据。slot3 / generation2 由原件和实际窗口重新出现共同核对。
+
+14 份 Server 原件完整导出至 `out/tray-focus-20261102/raw-sdk4-server`，manifest
+8,653 bytes，SHA-256
+`f6138f3c839e669a16c1ec153130cade5e3094bdfc6f7c4559fb9e3da2cc9c66`。
+前两例 capture FILETIME 与后一启动严格有序；WB64 的 `process.finished` 到
+WB86 resident context 初始化，通过同一 boot 的 GetTickCount64 轴确认间隔
+16,157 ms。没有额外记录绝对 Owned 退出 FILETIME，不冒充已知精确退出时刻。
+
+## preview.4 Win10 立即输入仍失败，250 毫秒计划未完成
+
+同一 ISO 在原 r12 新会话 `2086049e-3413-4608-8b30-0c03b915939d` 只启动了
+两个 x64 新 token；两个 x86 用例暂未执行。立即输入 token
+`2141959dd70245e897f3a706ea71d7bb` 的真实 Esc / 2.2 秒 / ShiftF10 前序成功，
+随后同一 operator batch 尝试点击更新并立即发送唯一 CtrlAltF9，两个动作之间
+没有截图或额外输入。原菜单实际 selection 为 `[0,0]`，没有提交更新或 tooltip；
+第二菜单在 146,564 ms 返回，146,709 ms 的第二次焦点调用出现 `E_TRAY_FOCUS`，
+明确为准备拒绝、该次未调用 NIM；首次焦点调用已成功。146,710 ms 请求退出 1，
+快捷键通知直到 146,714 ms 才被处理。
+native 在 146,974 ms 退出 1，Owned 自然 root-failed1、Job0，无监督超时或强清。
+本次原件仍未暴露具体拒绝谓词，不能从 `.3` 的 POD 原因推定 `.4` 同一分支，
+也不能将其改写为 NIM BOOL FALSE 或 `E_MENU_FOREGROUND`。
+
+本例真实 callback ordinal9 曾入队并以相同 tuple 回放成功，queue age234ms；
+ordinal18 入队后随退出丢弃 1 项，之后 ordinal19 被取消且未交给 SDK。它增加
+组件级回放观察，不能改变整例失败或关闭完整重入资格。
+
+计划 fixed250 的 token `53add7321c5b438d9dea614b4833eaec` 实际安装成功，并在
+154 ms 输出 `interactive.ready`。操作员没有完成目标图标/菜单输入，callback、
+menu、shortcut、focus 计数均为 0；原 native 180 秒期限耗尽，在 180,251 ms
+退出 3，Owned 自然 root-failed3、Job0，无 Owned 超时或强清。它不是启动失败，
+也不是有效的 250 毫秒对照。原操作记录中“未观察到图标”仅是视觉观察，不能
+推断目标未启动；未执行的输入和超时均保留，不以重复启动覆盖此例。
+
+两 capture 之间的同来宾 FILETIME 间隔为 58.4366502 秒，没有进程重叠。
+十份原件导出至 `out/tray-focus-20261102/raw-sdk4-win10-triage`，manifest
+6,375 bytes，SHA-256
+`80d00086ccfe1565373b2c7c7d380da2668120bd8b7fabcee83dd2f3a695d0d5`。
+两个 stderr 空文件也保留。两 VM 均正常 ACPI0、free/stopped、全部只读句柄关闭，
+最终 globalQEMU0，原磁盘链及 CPU / 网络配置、凭据未改；只读导出前后的
+磁盘 metadata 不变，不表示测试期间来宾没有写入日志。
+
+下一步先为当前 `.4` 准备独立第一拒绝诊断，不猜测或放宽失败守卫。旧 `.2/.3`
+失败、本轮立即输入失败、无效对照及 Win10 x86 / Win7 OS32 / 完整 #27/#29 和
+生产门槛全部保持，`releaseReady=false`。
