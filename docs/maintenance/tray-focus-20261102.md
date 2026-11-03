@@ -651,3 +651,72 @@ menu、shortcut、focus 计数均为 0；原 native 180 秒期限耗尽，在 18
 下一步先为当前 `.4` 准备独立第一拒绝诊断，不猜测或放宽失败守卫。旧 `.2/.3`
 失败、本轮立即输入失败、无效对照及 Win10 x86 / Win7 OS32 / 完整 #27/#29 和
 生产门槛全部保持，`releaseReady=false`。
+
+## POD4 实测：非 NULL 前台变化导致严格拒绝（2026-11-03）
+
+新的外部 POD4 诊断绑定同一 `.4` 冻结源码 `cf822d00…`、x64 标准安装
+Build ID `ff7f1d81-56cd-4265-afe0-0c53cebc312e`，不是新的 SDK 版本或安装消费
+资格。consumer / capture / runner SHA-256 分别为
+`ebae361070164915ad411a5a6a579852528adc952d256b28ea27148776bd2ef4`、
+`5d377d679dc97316af4cdc2d5b3c4ed7007ff85f2f51de4bf6a579292d30d4a6`、
+`6b22afda18e3d770c596f876ed83da06e9c564543f73d0853cdc6bb5cff9826d`。
+独立文件核验通过：166 项冻结文件及全部 467 个安装文件匹配；实际编译命令为
+MD / C++17，MAP 和实际 link 输入绑定显式 tray/menu override 与当前 SDK 库。
+静态全局 BSS 区间下界不等于 exact sizeof 或运行期内存；Loaded 匹配 0 仍是
+unknown，不作为完整库加载排除证明。
+
+首轮 configure 的 compiler 生命周期失败保留，另一次全新尝试的两阶段及 Owned
+均自然退出 0。POD4 期间按既有用户条件授权清理的 PID 71976、34200、64332
+三项另存实际强停收据，不计入上节正式构建当时的 13 / 18 项闭集；累计为 21 项。
+未终止不同 VS18 工具链进程，也未联系其它聊天要求编译时段。
+
+新 ISO 4,096,000 bytes、SHA-256
+`d282f20e6af827b588b71d141a484a72c84ed21812460715cc101afccd286617`，
+两个 namespace 各 58 文件 / 1 目录全字节回读。原 r12 VM 新会话
+`8daf1da2-0e71-4f71-bfc4-d083046edf49` 中各启动一次下列两个新 token，原 SDK4
+失败和无效对照未重跑或覆盖。两例都观察到真实应用菜单、Esc 后 2.2 秒无重定位、
+ShiftF10 再次打开同一应用菜单。
+
+| 新诊断用例 | 原始结果 |
+|---|---|
+| immediate，`d01070f0e0c447608f2e0a2c809d09cc` | update 点击尝试后唯一 CtrlAltF9；菜单实际 `[0,0]`，无 tooltip 更新。第二次 focus 准备拒绝，native 退出 1@26181 ms；Owned root-failed1@26940 ms、Job0、无监督超时或强清 |
+| fixed250，`a98bedcd6c6d4c1d8b1d3411c794d157` | 本次输入链实际完成，菜单 `[0,1,2]`、tooltip1、唯一快捷键及显式退出。三次 focus / NIM BOOL 均为成功；native 0@48250 ms、Owned completed0@48682 ms、Job0、无监督超时或强清 |
+
+immediate 的 trace v2 完整 147 条、零丢弃。call4 首拒绝叶子为 ordinal141 的
+`check.foreground_target`，阶段 `prepare.after_wait`：唯一 SFW 与 WM_NULL
+原返回值均为 1，首次 GUI 查询 known、active 为目标 131146、focus 为 NULL，
+因此普通循环结果为 not_ready；请求等待 5 ms 后，环境仍 known，身份 / session /
+桌面 / owner 菜单检查均安全，但前台变为 262580，既非 owner328472 也非目标131146。
+原 clock 样本表明尚余 918 ms；该次零 NIM，首次 focus 则已调用 NIM 并返回 1。
+这明确是非 NULL 前台不匹配，不能归为 NULL pending、最终 GUI 复核、预算耗尽、
+原 NIM FALSE 或旧 `E_MENU_FOREGROUND`。262580 的进程、线程和窗口类未被采集，
+不能认定其为 Explorer、托盘、菜单或快捷键导致。
+
+本例 WM_HOTKEY ingress ordinal146 位于 call4 end145 之后，记录时各操作深度为 0。
+物理修饰键、排队与前台变更的内部时序未知；不能把后来处理的快捷键写成已证实的
+调用内重入原因。fixed250 的 220 条完整 trace 无拒绝；两例均未出现 pending 状态、
+真实 queued / replayed 均为 0，故不增加这些路径的实测覆盖。
+
+操作记录中的 0 ms 是声明不等待，immediate 只保存了点击返回至热键完成的
+106.4575 ms，热键调用起点间隔未知。fixed250 保存的 host 点击返回至热键调用
+间隔为 258.4574 ms；来宾 tooltip 到 shortcut.message 实际仅 7 ms。两例图标分别
+位于主通知区与 overflow，且 immediate 未提交 update，不是只改变等待时间的严格
+单变量对照。首例关键链结束后一次地址输入误投递打开了离线 Edge，已关闭且未接受
+设置；其后通过目录导航观察到 finished 文件，再启动第二例，原操作失误保留。
+
+十份原件保存在 `out/tray-focus-20261102/raw-pod4-focus-diagnostic`；export manifest
+23,000 bytes、SHA-256
+`6298c1f871b1de257ac2572df4468b1d8238fd5a7ee954893ffbc46904dd16e0`。
+两个 stderr 空文件保留。原 run.finished、trace runResult、Owned root-exit / terminal
+和 capture runnerExitCode 分别交叉为 1 / 0；capture 的 proposedHelperExitCode 不
+冒充独立 helper OS 退出证据。首例 capture finished 到第二例 started 的精确
+FILETIME 间隔为 175.0403415 秒，首例 Owned 已 Job0 / closure，串行归属成立。
+测试机正常 ACPI 自然退出 0，原链 / 配置 / 网络隔离保持，只读导出句柄全部关闭，
+最终 stopped / free / globalQEMU0；临时浏览器标签及 viewport override 已清理。
+
+本次文档更新前的新增 `npm --prefix sdk/web audit --json` 尝试因 registry TLS
+连接中断退出 1，原响应另存；不计为零漏洞，也不改写上节正式构建时的四项审计结果。
+
+当前证据支持保留非 NULL 前台守卫，不支持把它放宽为 pending 或无条件 NIM。
+下一步先补充失败返回后的窗口上下文诊断，并继续当前 #27/#29；不推进 #31，不将
+这次诊断通过例、原始失败或尚缺的 Win10 x86 / Win7 OS32 / 完整矩阵改写为通过。
