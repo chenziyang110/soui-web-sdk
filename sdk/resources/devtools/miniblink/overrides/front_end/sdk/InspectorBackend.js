@@ -170,6 +170,17 @@ InspectorBackendClass.prototype = {
      */
     registerCommand: function(method, signature, replyArgs, hasErrorData)
     {
+        // The paired raw DOMModel/highlighter still call the boolean command
+        // implemented by this MiniBlink kernel. The supplied generated table
+        // declares only its newer enum replacement; retain the legacy entry
+        // so toggling the picker actually reaches the inspected page.
+        if (method === "DOM.setInspectMode") {
+            this._agentPrototype("DOM").registerCommand("setInspectModeEnabled", [
+                {name: "enabled", type: "boolean", optional: false},
+                {name: "inspectUAShadowDOM", type: "boolean", optional: true},
+                {name: "highlightConfig", type: "object", optional: true}
+            ], [], false);
+        }
         var domainAndMethod = method.split(".");
         this._agentPrototype(domainAndMethod[0]).registerCommand(domainAndMethod[1], signature, replyArgs, hasErrorData);
         this._initialized = true;

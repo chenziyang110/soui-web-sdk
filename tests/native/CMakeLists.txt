@@ -187,6 +187,7 @@ set_property(TARGET soui_local_resource_host_tests PROPERTY MSVC_RUNTIME_LIBRARY
 add_test(NAME sdk.native.local-resource-host COMMAND soui_local_resource_host_tests)
 set_tests_properties(sdk.native.local-resource-host PROPERTIES TIMEOUT 10)
 if(SOUI_BUILD_VENDOR_TESTS)
+  add_subdirectory(devtools_cursor_document)
   add_executable(soui_local_resource_state_tests local_resource_state_tests.cpp
     "${SOUI_DISTRIBUTION_ROOT}/third_party/sources/miniblink/content/web_impl_win/LocalResourceState.cpp"
     "${SOUI_DISTRIBUTION_ROOT}/third_party/sources/miniblink/content/web_impl_win/LocalResourceAdmissionCell.cpp")

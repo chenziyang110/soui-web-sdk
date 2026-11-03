@@ -74,3 +74,9 @@
 有效的原有 `FontPlatformData`/typeface 继续使用原路径。具名候选为空或不含 typeface 时，直接向当前 `SkFontMgr` 请求真实系统默认字体，要求非空且包含 glyph；保留原有效字号、粗斜体合成、方向、subpixel、`ShouldRetain` 和字体缓存所有权。不调用可能生成 `SkEmptyTypeface` 的默认包装，不伪造行高或关闭 Inspector 高亮。
 
 若 OS 字体管理器、默认 typeface 或 glyph 仍不可用，函数明确返回空值；这保留极端系统字体失败边界，不宣称所有字体资源故障已恢复。下游仍要求主字体非空，因此不保证该环境能安全退出或正常启动。此次仅完成源修复和补丁原始字节核对，尚未编译、执行或复测。已有 0013 及其历史验证说明原样保留；新内核、配对与受影响应用的统一短测需另绑定真实产物。
+
+## 受控 Inspector 首文档光标：0015
+
+`0015-inspector-initial-document-cursor.patch` 只修改 `CursorDescriptorBroker.cpp` 的 `brokerDocumentCommitted`。受控 Inspector 在首个资源文档加载前已绑定 session/endpoint；首次提交不能进入等待业务 Host 文档 ACK 的路径，否则缓存变为 `TypeNone` 后无法恢复。例外仅限首个主文档且 Inspector 资源仍开放，保留资源/session fence、identity action 撤销、epoch 和重入检查；后续导航、关闭资源、业务页面继续等待或撤销原代际。
+
+补丁可在当前修复树反向执行 `git apply --reverse --check`。源码函数直接抽取回归、x86/x64 Release 编译及局部 x64 内核/窗口验证分别记录于 [输入修复记录](../../../docs/acceptance/devtools-inspector-input-20261103/README.md)。不更新历史导入清单、不替换预编译依赖、不把局部内核构建视为当前主线完整内核的资格通过。

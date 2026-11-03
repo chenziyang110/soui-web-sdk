@@ -54,3 +54,47 @@ test('client wrappers preserve their fallback without printing backend errors', 
   assert.equal(received, fallback);
   assert.deepEqual(errors, ['E_PROTOCOL_CLIENT']);
 });
+
+// The paired raw DOMModel/InspectElementModeController use the boolean
+// command, whereas the supplied generated command table declares the enum
+// replacement. Exercise registration plus the actual request/response path.
+function inspectorConnection() {
+  const instance = frontend();
+  // InspectorBackend normally receives this utility from platform/utilities.js.
+  vm.runInContext('Array.prototype.peekLast = function() {return this[this.length - 1];};',
+    instance.context);
+  instance.context.InspectorBackend.registerCommand('DOM.setInspectMode', [
+    {name: 'mode', type: 'string', optional: false},
+    {name: 'highlightConfig', type: 'object', optional: true},
+  ], [], false);
+  const connection = new instance.api.Connection();
+  const messages = [];
+  connection.sendMessage = message => messages.push(JSON.parse(JSON.stringify(message)));
+  return {...instance, connection, messages, agent: connection.agent('DOM')};
+}
+
+test('paired Inspector registers the boolean picker command supported by MiniBlink', () => {
+  const {agent, connection, messages} = inspectorConnection();
+  const highlightConfig = {showInfo: true, contentColor: {r: 100, g: 100, b: 100, a: 0.5}};
+  const replies = [];
+  agent.setInspectModeEnabled(true, false, highlightConfig, error => replies.push(error));
+  agent.setInspectModeEnabled(true, true, highlightConfig, error => replies.push(error));
+  agent.setInspectModeEnabled(false, false, highlightConfig, error => replies.push(error));
+  assert.deepEqual(messages, [false, true, false].map((inspectUAShadowDOM, index) => ({
+    id: index + 1, method: 'DOM.setInspectModeEnabled',
+    params: {enabled: index < 2, inspectUAShadowDOM, highlightConfig},
+  })));
+  for (const message of messages) connection.dispatch({id: message.id, result: {}});
+  assert.deepEqual(replies, [null, null, null]);
+  assert.equal(connection._pendingResponsesCount, 0);
+});
+
+test('picker errors reach their original callback and do not report successful activation', () => {
+  const {agent, connection, messages, errors} = inspectorConnection();
+  let reply;
+  agent.setInspectModeEnabled(true, false, {}, error => {reply = error;});
+  connection.dispatch({id: messages[0].id, error: {code: -32001, message: 'picker-refused'}});
+  assert.equal(reply, 'picker-refused');
+  assert.deepEqual(errors, ['E_PROTOCOL_REQUEST code=-32001']);
+  assert.equal(connection._pendingResponsesCount, 0);
+});

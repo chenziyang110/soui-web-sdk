@@ -1079,13 +1079,19 @@ void brokerDocumentCommitted(wkeWebView view, bool mainDocument)
         c->inspectorResources->documentCommitted();
     }
     stage0DocumentCommitted(view, mainDocument);
+    // The controlled Inspector is bound before its one permitted document loads.
+    // Its resource/session fences own that initial admission; no business Host
+    // context callback will ACK a new cursor document generation for this view.
+    // Later Inspector navigation is still fenced and must revoke the old cursor.
+    const bool initialInspectorDocument = mainDocument && c->inspectorResources
+        && c->inspectorDocuments == 1 && !c->inspectorResources->closed();
     ActionCalloutLease lease(c);
     if (!lease.entered()) return;
     std::array<BrokerActionOwner, kIdentityActionsPerEndpoint> actions = {};
     if (!snapshotActions(c, c->identityActions, actions)) return;
     const auto epoch = nextSequence(c->epoch);
     if (!epoch) { c->failed = true; return; }
-    if (mainDocument) {
+    if (mainDocument && !initialInspectorDocument) {
         // Clear the old latest slot immediately, then withhold new CSS cursor
         // pixels until the SDK acknowledges a strictly newer document epoch.
         // The old engine cache must not be republished under the new SDK epoch
