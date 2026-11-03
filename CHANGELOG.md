@@ -1,5 +1,11 @@
 # 变更记录
 
+## 未发布：MiniBlink Inspector 输入修复
+
+- 修复受控 Inspector 首个主文档错误等待业务 Host ACK 导致指针消失；后续导航、关闭资源和业务文档仍走原撤销规则。
+- 补齐配对离线前端缺失的 `DOM.setInspectModeEnabled` 命令注册，使元素拾取实际到达内核，并更新覆盖源散列。启用、关闭、UA Shadow DOM 和原错误回调新增回归。
+- 源码修复及本地 x64 窗口短验见 [验证记录](docs/acceptance/devtools-inspector-input-20261103/README.md)。不替换既有二进制、配对清单或发布资产；完整两架构内核及目标系统资格另计。
+
 ## 未发布：Windows 工具遗留失败恢复
 
 - MSVC configure/build管理固定VCTIP的有界idle生命周期，持有真实服务/工具身份并要求自然退出；共享服务争用拒绝接纳，原监督期限和旧失败保持。

@@ -4,6 +4,8 @@
 
 `InspectorBackend.js`的自动协议错误日志仅保留固定类别及有限整数错误码，至多64条；协议结果和错误data仍交给请求面板的原回调，不将它们复制到自动诊断日志。显式开启的开发者协议dump不属于默认路径。
 
+固定配对快照的 raw `DOMModel`/元素拾取器使用布尔形式 `DOM.setInspectModeEnabled`，供应的 `InspectorBackendCommands.js` 却只注册新版 `DOM.setInspectMode`。覆盖源在遇到该声明时额外注册内核实际支持的旧命令，保留 `enabled`、可选 `inspectUAShadowDOM`/`highlightConfig` 及原请求/响应处理。没有将未知模式伪装为成功，也不修改全局鼠标或业务页面。此修复更新 `source.json`，必须重新合成新 manifest 并由应用显式选择新的配对 pin；直接编辑已部署 JS 会因散列不匹配被拒绝。验证范围见 [输入修复记录](../../../../docs/acceptance/devtools-inspector-input-20261103/README.md)。
+
 原基线中的有限数字暂停观测仍为候选内部实现，不授予native policy/grant，不是公开API或生产观测保证。当前日志修订必须生成新的manifest/技术配对pin，不能覆盖旧2ecb载荷并借用旧测试结论。
 
 覆盖源统一使用LF，与源码SDK打包/安装的文本规范化一致；`source.json`的源文件pin固定这些实际字节，`baseSha256`继续固定原供应基线。通过`tools/internal/devtools-frontend.cjs compose`显式合成新的前端清单，输入包括独立650成员基线、基线manifest及pin、当前源目录与source.json pin、明确内核pin和全新输出目录。输出的receipt只记录技术组合，不验证内核运行或生成法律批准。
