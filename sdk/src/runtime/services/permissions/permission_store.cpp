@@ -2,12 +2,11 @@
 #include "scope_id_sequence.h"
 #include "scope_budget_ledger.h"
 #include "../../diagnostics/runtime_metrics_internal.h"
+#include "../../platform/secure_random.h"
+#include "../../platform/strict_utf8.h"
 
-#include <windows.h>
-#include <bcrypt.h>
 #include <algorithm>
 #include <array>
-#include <limits>
 #include <stdexcept>
 #include <unordered_set>
 #include <utility>
@@ -38,8 +37,7 @@ bool valid_operation(const std::string& value) {
 
 bool valid_local_text(const std::string& value, std::size_t bound) {
   return !value.empty() && value.size() <= bound && value.find('\0') == std::string::npos &&
-      MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, value.data(),
-                          static_cast<int>(value.size()), nullptr, 0) > 0;
+      detail::valid_utf8(value);
 }
 
 void validate_local_policy(const std::vector<std::string>& capabilities,
@@ -133,8 +131,7 @@ bool authorization_scope::matches(const std::string& session, const std::string&
 }
 
 bool permission_store::system_entropy(unsigned char* bytes, std::size_t size) {
-  return size <= std::numeric_limits<ULONG>::max() && BCryptGenRandom(nullptr, bytes, static_cast<ULONG>(size),
-                                            BCRYPT_USE_SYSTEM_PREFERRED_RNG) == 0;
+  return detail::secure_random(bytes, size);
 }
 std::string permission_store::make_token() const {
   std::array<unsigned char, 32> bytes{};
@@ -473,3 +470,4 @@ void permission_store::revoke_session(const std::string& session_id) {
   }
 }
 }  // namespace soui::runtime
+

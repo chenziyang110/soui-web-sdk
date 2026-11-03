@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self'; base-uri 'none'; form-action 'none'; frame-src 'none'; object-src 'none'">
+  <title>@APP_NAME@</title>
+  <link rel="stylesheet" href="./style.css">
+  <script type="module" src="./app.mjs"></script>
+</head>
+<body>
+  <main>
+    <p class="eyebrow">SOUI DESKTOP STARTER</p>
+    <h1>@APP_NAME@</h1>
+    <p>One application source, explicit native permissions, local frontend modules.</p>
+    <div class="actions">
+      <button id="info" type="button">Read application info</button>
+      <button id="assets" type="button">Load module and JSON</button>
+    </div>
+    <pre id="status" aria-live="polite">Loading frontend module…</pre>
+  </main>
+</body>
+</html>

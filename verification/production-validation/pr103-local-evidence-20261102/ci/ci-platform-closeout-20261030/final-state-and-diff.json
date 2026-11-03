@@ -1,0 +1,142 @@
+{
+  "publicArchiveContext": {
+    "sourceLogicalId": "pr103-integration-evidence/ci-platform-closeout-20261030/final-state-and-diff.json",
+    "originalBytes": 4884,
+    "originalSha256": "85ae77c406468c939424bb3b81dec5234cd55a5fcf9541afdcdaf41b7cb19c38",
+    "modifiedPublicCopy": true,
+    "normalization": "UTF-8 without BOM; LF; final newline",
+    "evidenceIdentity": {
+      "historicalDate": "2026-10-30",
+      "baselineCommit": "19d450eae04d7ee51286168712d5b60c08631e89",
+      "baselineTree": "98cb4681032285309841293d65f0041344aa5f14",
+      "validationKind": "historical_local_static_or_publication_record",
+      "cloudExecutionVerified": false,
+      "validatesNewCandidate": false,
+      "unvalidatedCandidatePrefix": "e43a79",
+      "indexTree": "8c052061f27ee62ae9e95b729096f31d430f8ad4"
+    },
+    "limitation": "Historical evidence copy only; not original bytes and not validation of candidate e43a79 or another new candidate."
+  },
+  "evidence": {
+    "utc": "2026-10-30T09:22:39.924Z",
+    "state": {
+      "head": "19d450eae04d7ee51286168712d5b60c08631e89",
+      "branch": "codex/ci-platform-matrix-20261030",
+      "indexTree": "8c052061f27ee62ae9e95b729096f31d430f8ad4",
+      "staged": [
+        ".github/workflows/platform-build.yml",
+        "AGENTS.md",
+        "docs/ci-platform-matrix.md",
+        "docs/testing.md",
+        "source-manifest.json",
+        "tests/ci/installed-consumer/CMakeLists.txt",
+        "tests/ci/installed-consumer/desktop.cpp",
+        "tests/ci/installed-consumer/runtime.cpp",
+        "tools/ci/platform-build.cjs",
+        "tools/ci/validate-platform-workflow.cjs"
+      ],
+      "unstaged": "",
+      "untracked": "",
+      "unmerged": ""
+    },
+    "manifest": {
+      "schema": "soui.full-source/v2",
+      "version": "0.6.0",
+      "files": 62652,
+      "releaseReady": false,
+      "sha256": "e74c73bf6ac23277fe7a9738b3e613a211ed7034962f8e0ecf9eb1af63edfa6d",
+      "blob": "c165c1e15c9570e28717befb2cca21f57b5ad0ec",
+      "createExitCode": 0,
+      "verifyExitCode": 0
+    },
+    "patch": {
+      "file": "ci-closeout.patch",
+      "bytes": 57744,
+      "sha256": "6c6a05f3d63cdefbce2f58ba9621e4888e12848796ecbe927e6aeb00ac731f97"
+    },
+    "diffstat": ".github/workflows/platform-build.yml       | 115 +++++++++++++\n AGENTS.md                                  |   2 +-\n docs/ci-platform-matrix.md                 | 151 ++++++++++++++++\n docs/testing.md                            |   2 +-\n source-manifest.json                       |  50 +++++-\n tests/ci/installed-consumer/CMakeLists.txt | 118 +++++++++++++\n tests/ci/installed-consumer/desktop.cpp    |  11 ++\n tests/ci/installed-consumer/runtime.cpp    |  52 ++++++\n tools/ci/platform-build.cjs                | 266 +++++++++++++++++++++++++++++\n tools/ci/validate-platform-workflow.cjs    | 117 +++++++++++++\n 10 files changed, 878 insertions(+), 6 deletions(-)",
+    "diffCheckExitCode": 0,
+    "reverseApplyCheckExitCode": 0,
+    "files": [
+      {
+        "file": ".github/workflows/platform-build.yml",
+        "blob": "0649a8dac871138364f140c6a6a2c8bacfe3078e",
+        "bytes": 4528,
+        "sha256": "d8ea344b042c2374dd290f7b13b285e168c8c617f1bb648c10f2ce891cc76279"
+      },
+      {
+        "file": "AGENTS.md",
+        "blob": "81b53627b5cd4037014e25433edead5d70ba915b",
+        "bytes": 11367,
+        "sha256": "d8cba1b761121d5e5f34d40b5d29a41cc1b3b089b2458016a25c8ef6e1d7d632"
+      },
+      {
+        "file": "docs/ci-platform-matrix.md",
+        "blob": "3aa66639b72ebdb7967abc54fa1c67aee17cb6e3",
+        "bytes": 11110,
+        "sha256": "94d13e31fe02d43e23cb494cfd2911577121d244354fb664c6d06df7bf9e982c"
+      },
+      {
+        "file": "docs/testing.md",
+        "blob": "9d2deba9eb8c22486770846d33dac072435bafc4",
+        "bytes": 34138,
+        "sha256": "d0dd95b1f46b653a7f4b6ad704a3194b7443146acbd52337cf9d4dd9081f4918"
+      },
+      {
+        "file": "source-manifest.json",
+        "blob": "c165c1e15c9570e28717befb2cca21f57b5ad0ec",
+        "bytes": 16822760,
+        "sha256": "e74c73bf6ac23277fe7a9738b3e613a211ed7034962f8e0ecf9eb1af63edfa6d"
+      },
+      {
+        "file": "tests/ci/installed-consumer/CMakeLists.txt",
+        "blob": "9e72851e669eb20a4df800e28a215702c8b18cfb",
+        "bytes": 5808,
+        "sha256": "fca4c5eeb9fd154a704a948c8930013e52a05c5c6cfded86617b0086984cd644"
+      },
+      {
+        "file": "tests/ci/installed-consumer/desktop.cpp",
+        "blob": "b24176f2dba5f12df8aa9a9ccc262142d17a303d",
+        "bytes": 429,
+        "sha256": "228ff99236c8d5b43740e76d8763d5931aa4e4510bc8ad0f0d64243da7ef2078"
+      },
+      {
+        "file": "tests/ci/installed-consumer/runtime.cpp",
+        "blob": "168b8b244451c99b1e9d615ad2f9aa8ce6e3b8c4",
+        "bytes": 2589,
+        "sha256": "24177528e7a10a66851b5ddb420904a66a83a22160e9adb3e35020539c1eaad5"
+      },
+      {
+        "file": "tools/ci/platform-build.cjs",
+        "blob": "f2604602da3342eac2fceb47bb69811d9106e694",
+        "bytes": 17930,
+        "sha256": "92dd04aaf862a733dc2594a629c88589aee32ba1472b3c001d9cc84dd39eab86"
+      },
+      {
+        "file": "tools/ci/validate-platform-workflow.cjs",
+        "blob": "f6c402a6bf11c85a1c330213c73c1d8f867aa766",
+        "bytes": 7103,
+        "sha256": "4855a03c0c57fff3042331c370dec48aaf36a735dde05ace73f609859038fb26"
+      }
+    ],
+    "historicalArtifacts": [
+      {
+        "file": "ci-preparation.patch",
+        "expectedSHA256": "064c72c366668ac3c7bbad51c5110be45b495dcb986ec34832a879cce4b53259",
+        "actualSHA256": "064c72c366668ac3c7bbad51c5110be45b495dcb986ec34832a879cce4b53259"
+      },
+      {
+        "file": "preparation-report.md",
+        "expectedSHA256": "3e53f68f69eb9227064f36120949a944967619fa675fcd02dd8da951162099e4",
+        "actualSHA256": "3e53f68f69eb9227064f36120949a944967619fa675fcd02dd8da951162099e4"
+      }
+    ],
+    "originalPublishedCheckoutClean": true,
+    "committed": false,
+    "pushed": false,
+    "workflowTriggered": false,
+    "stoppedActionsSettingsEndpointsRetried": false,
+    "releaseReady": false,
+    "nativeRuntimeVerified": false
+  }
+}

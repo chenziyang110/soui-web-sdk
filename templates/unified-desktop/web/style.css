@@ -1,0 +1,10 @@
+:root { color-scheme: light dark; font: 16px/1.6 system-ui, sans-serif; }
+body { margin: 0; background: #11202c; color: #ecf4f8; }
+main { max-width: 760px; margin: 10vh auto; padding: 32px; }
+h1 { margin: 0; font-size: clamp(2rem, 6vw, 3.5rem); line-height: 1.2; }
+.eyebrow { color: #78dccc; font-size: .8rem; letter-spacing: .14em; }
+.actions { display: flex; flex-wrap: wrap; gap: 12px; margin: 28px 0; }
+button { font: inherit; padding: 10px 18px; border: 1px solid #78dccc; border-radius: 6px; background: #183d47; color: inherit; cursor: pointer; }
+button:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+button:disabled { opacity: .6; cursor: wait; }
+pre { white-space: pre-wrap; overflow-wrap: anywhere; padding: 20px; background: #0b161f; border-radius: 6px; }

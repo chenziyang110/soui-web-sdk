@@ -1,0 +1,90 @@
+{
+  "publicArchiveContext": {
+    "sourceLogicalId": "pr103-integration-evidence/ci-push-trigger-20261030/trigger-policy.stdout.json",
+    "originalBytes": 1659,
+    "originalSha256": "24a9e8b55b0a0880e71b1c14738901390ffab8af914d4fa137fbd6ddbda45774",
+    "modifiedPublicCopy": true,
+    "normalization": "UTF-8 without BOM; LF; final newline",
+    "evidenceIdentity": {
+      "historicalDate": "2026-10-30",
+      "baselineCommit": "19d450eae04d7ee51286168712d5b60c08631e89",
+      "baselineTree": "98cb4681032285309841293d65f0041344aa5f14",
+      "validationKind": "historical_local_static_or_publication_record",
+      "cloudExecutionVerified": false,
+      "validatesNewCandidate": false,
+      "unvalidatedCandidatePrefix": "e43a79",
+      "indexTree": "e4f78362f40d25ac5fe21692326b73f6a59077a3"
+    },
+    "limitation": "Historical evidence copy only; not original bytes and not validation of candidate e43a79 or another new candidate."
+  },
+  "evidence": {
+    "result": "passed",
+    "staticOnly": true,
+    "processesSpawnedByPlanning": 0,
+    "workflowParsedAs": "JSON-compatible YAML",
+    "matrix": [
+      {
+        "runner": "windows-2022",
+        "platform": "windows",
+        "arch": "x64",
+        "steps": 13,
+        "ctestSteps": 0,
+        "applicationExecution": false
+      },
+      {
+        "runner": "windows-11-arm",
+        "platform": "windows",
+        "arch": "arm64",
+        "steps": 13,
+        "ctestSteps": 0,
+        "applicationExecution": false
+      },
+      {
+        "runner": "ubuntu-24.04",
+        "platform": "linux",
+        "arch": "x64",
+        "steps": 16,
+        "ctestSteps": 2,
+        "applicationExecution": false
+      },
+      {
+        "runner": "ubuntu-24.04-arm",
+        "platform": "linux",
+        "arch": "arm64",
+        "steps": 16,
+        "ctestSteps": 2,
+        "applicationExecution": false
+      },
+      {
+        "runner": "macos-15-intel",
+        "platform": "macos",
+        "arch": "x64",
+        "steps": 16,
+        "ctestSteps": 2,
+        "applicationExecution": false
+      },
+      {
+        "runner": "macos-15",
+        "platform": "macos",
+        "arch": "arm64",
+        "steps": 16,
+        "ctestSteps": 2,
+        "applicationExecution": false
+      }
+    ],
+    "negativeControls": 13,
+    "triggerModel": {
+      "modelOnly": true,
+      "automaticEvent": "push",
+      "exactBranch": "codex/portable-runtime-platform-matrix-20261020",
+      "matchingPushWorkflowRuns": 1,
+      "matchingPushMatrixJobs": 6,
+      "otherBranchMatrixJobs": 0,
+      "pullRequestMatrixJobs": 0,
+      "privatePushMatrixJobs": 0,
+      "dispatchWithoutDefaultWorkflowMatrixJobs": 0
+    },
+    "ambientSearchPathsRejected": 14,
+    "projectConfigureBuildRuntimeExecuted": false
+  }
+}

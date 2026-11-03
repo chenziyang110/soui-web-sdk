@@ -1,0 +1,1946 @@
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+#include <windows.h>
+#include <shellapi.h>
+#include <shlobj.h>
+#include <shobjidl.h>
+#include <wrl.h>
+#include <WebView2.h>
+
+#include "../backend.h"
+#include "../deferred_failure.h"
+#include "../resource_uri.h"
+
+#include <algorithm>
+#include <atomic>
+#include <cstdint>
+#include <cstdio>
+#include <cstring>
+#include <deque>
+#include <limits>
+#include <map>
+#include <mutex>
+#include <set>
+#include <utility>
+
+namespace soui::desktop::detail {
+namespace {
+
+using Microsoft::WRL::Callback;
+using Microsoft::WRL::ComPtr;
+
+constexpr wchar_t window_class[] = L"Soui.UnifiedDesktop.WebView2.v1";
+constexpr UINT dispatch_message = WM_APP + 0x491;
+constexpr UINT failure_message = WM_APP + 0x492;
+constexpr UINT tray_message = WM_APP + 0x493;
+constexpr UINT tray_icon_id = 1;
+constexpr std::size_t max_dispatch_queue = 1024;
+constexpr std::size_t max_message_characters = 65536;
+constexpr std::size_t max_clipboard_bytes = 1024 * 1024;
+constexpr std::size_t max_file_selection_count = 32;
+constexpr std::size_t max_file_path_bytes = 32768;
+constexpr std::size_t max_file_selection_bytes = 128 * 1024;
+constexpr std::size_t max_global_shortcuts = 32;
+constexpr unsigned int max_global_shortcut_id = 0xBFFF;
+// HWND values may be recycled while old messages remain queued. Use one
+// process-wide, saturating ID pool so even a later window cannot inherit them.
+std::atomic<unsigned int> next_global_shortcut_id{1};
+// EndMenu operates on the calling thread. A nested popup belonging to another
+// window must not steal ownership of the native menu currently being tracked.
+thread_local HWND active_menu_owner = nullptr;
+
+result hresult_failure(const char* operation, HRESULT code) {
+  char number[16]{};
+  std::snprintf(number, sizeof(number), "0x%08lX", static_cast<unsigned long>(code));
+  return result::failure("E_WINDOWS", std::string(operation) + " failed (" + number + ")");
+}
+
+// Loader discovery and asynchronous environment creation can both report a
+// missing runtime. Never expose browser/profile paths or environment overrides.
+result webview_startup_failure(const char* operation, HRESULT code) {
+  auto failure = hresult_failure(operation, code);
+  if (code == HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND)) {
+    failure.code = "E_WEBVIEW2_RUNTIME";
+    failure.message += ". No compatible WebView2 runtime was found. Install or repair the "
+      "official Microsoft Edge WebView2 Runtime for this application architecture, then retry.";
+  } else {
+    failure.message += ". Check the WebView2 Runtime installation, application architecture "
+      "and user-data-directory permissions. Run the staged runtime doctor for deployment guidance.";
+  }
+  return failure;
+}
+
+result win32_failure(const char* operation) {
+  const DWORD error = GetLastError();
+  return hresult_failure(operation, HRESULT_FROM_WIN32(error ? error : ERROR_GEN_FAILURE));
+}
+
+result closed_error() {
+  return result::failure("E_CLOSED", "The desktop window is closed or unavailable");
+}
+
+result shortcut_failure(const char* code, const char* operation, DWORD error) {
+  auto failure = hresult_failure(operation,
+      HRESULT_FROM_WIN32(error ? error : ERROR_GEN_FAILURE));
+  failure.code = code;
+  return failure;
+}
+
+int consume_global_shortcut_id() {
+  auto candidate = next_global_shortcut_id.load(std::memory_order_relaxed);
+  while (candidate <= max_global_shortcut_id) {
+    if (next_global_shortcut_id.compare_exchange_weak(candidate, candidate + 1,
+                                                     std::memory_order_relaxed))
+      return static_cast<int>(candidate);
+  }
+  return 0;
+}
+
+UINT shortcut_virtual_key(shortcut_key key) {
+  switch (key) {
+    case shortcut_key::f1: return VK_F1;
+    case shortcut_key::f2: return VK_F2;
+    case shortcut_key::f3: return VK_F3;
+    case shortcut_key::f4: return VK_F4;
+    case shortcut_key::f5: return VK_F5;
+    case shortcut_key::f6: return VK_F6;
+    case shortcut_key::f7: return VK_F7;
+    case shortcut_key::f8: return VK_F8;
+    case shortcut_key::f9: return VK_F9;
+    case shortcut_key::f10: return VK_F10;
+    case shortcut_key::f11: return VK_F11;
+    case shortcut_key::left: return VK_LEFT;
+    case shortcut_key::right: return VK_RIGHT;
+    case shortcut_key::up: return VK_UP;
+    case shortcut_key::down: return VK_DOWN;
+    case shortcut_key::home: return VK_HOME;
+    case shortcut_key::end: return VK_END;
+    case shortcut_key::page_up: return VK_PRIOR;
+    case shortcut_key::page_down: return VK_NEXT;
+    case shortcut_key::insert_key: return VK_INSERT;
+    case shortcut_key::delete_key: return VK_DELETE;
+  }
+  return 0;
+}
+
+bool to_wide(std::string_view input, std::wstring& output) {
+  if (input.size() > static_cast<std::size_t>((std::numeric_limits<int>::max)()))
+    return false;
+  if (input.empty()) {
+    output.clear();
+    return true;
+  }
+  const int length = MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, input.data(),
+                                       static_cast<int>(input.size()), nullptr, 0);
+  if (!length) return false;
+  output.resize(static_cast<std::size_t>(length));
+  return MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, input.data(),
+                            static_cast<int>(input.size()), output.data(), length) == length;
+}
+
+bool to_utf8(std::wstring_view input, std::string& output) {
+  if (input.size() > static_cast<std::size_t>((std::numeric_limits<int>::max)()))
+    return false;
+  if (input.empty()) {
+    output.clear();
+    return true;
+  }
+  const int length = WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, input.data(),
+                                       static_cast<int>(input.size()), nullptr, 0, nullptr, nullptr);
+  if (!length) return false;
+  output.resize(static_cast<std::size_t>(length));
+  return WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, input.data(),
+                            static_cast<int>(input.size()), output.data(), length,
+                            nullptr, nullptr) == length;
+}
+
+bool bounded_utf8(const wchar_t* text, std::size_t limit, std::string& output) {
+  if (!text) return false;
+  std::size_t length = 0;
+  while (length <= limit && text[length]) ++length;
+  return length <= limit && to_utf8(std::wstring_view(text, length), output);
+}
+
+struct com_string {
+  LPWSTR value{nullptr};
+  ~com_string() { CoTaskMemFree(value); }
+  com_string() = default;
+  com_string(const com_string&) = delete;
+  com_string& operator=(const com_string&) = delete;
+};
+
+result configure_file_dialog(IFileDialog* dialog, const std::string& title,
+                             const std::vector<std::string>& extensions, bool saving) {
+  std::wstring native_title;
+  if (title.size() > 4096 || title.find('\0') != std::string::npos ||
+      !to_wide(title, native_title) || extensions.size() > 16)
+    return result::failure("E_ARGUMENT", "File dialog options are invalid");
+  if (!native_title.empty()) {
+    const HRESULT hr = dialog->SetTitle(native_title.c_str());
+    if (FAILED(hr)) return hresult_failure("Set file dialog title", hr);
+  }
+
+  // Common validation normalizes suffixes; keep the native filter grammar
+  // bounded as well. A single union filter does not imply content validation.
+  std::wstring pattern;
+  std::wstring default_extension;
+  for (const auto& extension : extensions) {
+    if (extension.empty() || extension.size() > 16)
+      return result::failure("E_ARGUMENT", "A file extension is invalid");
+    std::wstring native_extension;
+    for (const unsigned char character : extension) {
+      if (!((character >= 'a' && character <= 'z') ||
+            (character >= 'A' && character <= 'Z') ||
+            (character >= '0' && character <= '9')))
+        return result::failure("E_ARGUMENT", "A file extension is invalid");
+      native_extension += static_cast<wchar_t>(
+          character >= 'A' && character <= 'Z' ? character - 'A' + 'a' : character);
+    }
+    if (default_extension.empty()) default_extension = native_extension;
+    if (!pattern.empty()) pattern += L';';
+    pattern += L"*.";
+    pattern += native_extension;
+  }
+  if (pattern.empty()) pattern = L"*.*";
+  const COMDLG_FILTERSPEC filter{
+      extensions.empty() ? L"All files" : L"Supported files", pattern.c_str()};
+  HRESULT hr = dialog->SetFileTypes(1, &filter);
+  if (SUCCEEDED(hr) && saving && !default_extension.empty())
+    hr = dialog->SetDefaultExtension(default_extension.c_str());
+  if (FAILED(hr)) return hresult_failure("Set file dialog extensions", hr);
+  return result::success();
+}
+
+value_result selected_file_path(IShellItem* selected) {
+  if (!selected)
+    return {result::failure("E_PATH", "No local file path was selected"), {}};
+  com_string path;
+  const HRESULT hr = selected->GetDisplayName(SIGDN_FILESYSPATH, &path.value);
+  if (FAILED(hr)) return {hresult_failure("Read selected file path", hr), {}};
+  if (!path.value)
+    return {result::failure("E_PATH", "The selected file path is invalid"), {}};
+  std::size_t length = 0;
+  while (length <= max_file_path_bytes && path.value[length]) ++length;
+  if (!length || length > max_file_path_bytes)
+    return {result::failure("E_PATH", "The selected file path is too large or empty"), {}};
+  // Bound both the native scan and the UTF-8 allocation before converting.
+  const int bytes = WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, path.value,
+      static_cast<int>(length), nullptr, 0, nullptr, nullptr);
+  if (bytes <= 0 || static_cast<std::size_t>(bytes) > max_file_path_bytes)
+    return {result::failure("E_PATH", "The selected file path is too large or invalid"), {}};
+  std::string value(static_cast<std::size_t>(bytes), '\0');
+  if (WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, path.value,
+          static_cast<int>(length), value.data(), bytes, nullptr, nullptr) != bytes)
+    return {result::failure("E_PATH", "The selected file path is invalid"), {}};
+  return {result::success(), std::move(value)};
+}
+
+struct clipboard_lock {
+  explicit clipboard_lock(HWND owner) : opened(OpenClipboard(owner) != FALSE) {}
+  ~clipboard_lock() { if (opened) CloseClipboard(); }
+  bool opened;
+};
+
+struct global_lock {
+  explicit global_lock(HGLOBAL value) : handle(value), data(GlobalLock(value)) {}
+  ~global_lock() { if (data) GlobalUnlock(handle); }
+  HGLOBAL handle;
+  void* data;
+};
+
+struct popup_handle {
+  HMENU value{CreatePopupMenu()};
+  ~popup_handle() { if (value) DestroyMenu(value); }
+  popup_handle() = default;
+  popup_handle(const popup_handle&) = delete;
+  popup_handle& operator=(const popup_handle&) = delete;
+  HMENU release() noexcept { return std::exchange(value, nullptr); }
+};
+
+result validate_menu_tree(const std::vector<menu_item>& items, std::size_t depth,
+                          std::size_t& count, std::set<std::string_view>& ids) {
+  if (depth > 4 || items.size() > 64 - count)
+    return result::failure("E_MENU_ITEMS", "A menu tree allows at most 64 items and 4 levels");
+  count += items.size();
+  for (const auto& item : items) {
+    if (item.separator) {
+      if (!item.children.empty() || !item.id.empty() || !item.label.empty())
+        return result::failure("E_MENU_ITEM", "Separators must have no children, ID or label");
+      continue;
+    }
+    std::wstring label;
+    if (item.label.empty() || item.label.size() > 4096 ||
+        item.label.find('\0') != std::string::npos || !to_wide(item.label, label))
+      return result::failure("E_MENU_LABEL", "A menu label must be bounded, nonempty UTF-8");
+    if (!item.children.empty()) {
+      if (!item.id.empty() || item.checked)
+        return result::failure("E_MENU_ITEM", "Submenus must have an empty ID and cannot be checked");
+      const auto valid = validate_menu_tree(item.children, depth + 1, count, ids);
+      if (!valid.ok) return valid;
+      continue;
+    }
+    if (item.id.empty() || item.id.size() > 64 || !ids.insert(item.id).second)
+      return result::failure("E_MENU_ID", "Menu command IDs must be bounded and unique in the tree");
+    for (const unsigned char character : item.id)
+      if (!((character >= 'a' && character <= 'z') ||
+            (character >= 'A' && character <= 'Z') ||
+            (character >= '0' && character <= '9') ||
+            character == '.' || character == '_' || character == '-'))
+        return result::failure("E_MENU_ID", "A menu command ID contains an invalid character");
+  }
+  return result::success();
+}
+
+result validate_menu_tree(const std::vector<menu_item>& items) {
+  std::size_t count = 0;
+  std::set<std::string_view> ids;
+  return validate_menu_tree(items, 1, count, ids);
+}
+
+struct popup_command {
+  std::string id;
+  bool enabled;
+};
+
+result append_menu_tree(HMENU menu, const std::vector<menu_item>& items,
+                        std::vector<popup_command>& commands, bool ancestors_enabled) {
+  for (const auto& item : items) {
+    if (item.separator) {
+      if (!AppendMenuW(menu, MF_SEPARATOR, 0, nullptr)) return win32_failure("AppendMenuW");
+      continue;
+    }
+    std::wstring label;
+    if (!to_wide(item.label, label))
+      return result::failure("E_MENU_LABEL", "A menu label is not valid UTF-8");
+    std::wstring literal;
+    literal.reserve(label.size());
+    for (const wchar_t character : label) {
+      literal += character;
+      if (character == L'&') literal += L'&';
+    }
+    const bool enabled = ancestors_enabled && item.enabled;
+    const UINT flags = MF_STRING | (enabled ? MF_ENABLED : MF_GRAYED) |
+                       (item.checked ? MF_CHECKED : MF_UNCHECKED);
+    if (!item.children.empty()) {
+      popup_handle submenu;
+      if (!submenu.value) return win32_failure("CreatePopupMenu");
+      const auto built = append_menu_tree(submenu.value, item.children, commands, enabled);
+      if (!built.ok) return built;
+      if (!AppendMenuW(menu, flags | MF_POPUP, reinterpret_cast<UINT_PTR>(submenu.value),
+                       literal.c_str()))
+        return win32_failure("AppendMenuW");
+      // DestroyMenu recursively frees attached submenus. Until AppendMenuW
+      // succeeds, this scope alone owns the child and every descendant.
+      submenu.release();
+    } else {
+      // Stable, one-based native IDs enumerate leaves, not sibling positions.
+      // Retain effective enablement so a native result cannot bypass a parent.
+      commands.push_back({item.id, enabled});
+      if (!AppendMenuW(menu, flags, static_cast<UINT_PTR>(commands.size()), literal.c_str()))
+        return win32_failure("AppendMenuW");
+    }
+  }
+  return result::success();
+}
+
+struct shortcut_registration {
+  int native_id;
+  UINT modifiers;
+  UINT virtual_key;
+  std::uint64_t revision{1};
+  bool active{false};
+};
+
+struct state : std::enable_shared_from_this<state> {
+  HWND window{nullptr};
+  bool closed{false};
+  bool created{false};
+  bool dispatching{false};
+  bool finishing_failure{false};
+  bool visible{true};
+  bool window_state_known{false};
+  window_state last_window_state{};
+  bool enable_resource_server{false};
+  bool installing_script{false};
+  bool has_load{false};
+  bool navigation_ticket{false};
+  std::uint64_t generation{0};
+  std::uint64_t installed_generation{0};
+  UINT64 navigation_id{0};
+  std::string target_uri;
+  std::wstring target_preload;
+  std::wstring script_id;
+  backend_events events;
+  result terminal_status{result::success()};
+  result shutdown_status{result::success()};
+  deferred_failure<state> pending_failure;
+  ComPtr<ICoreWebView2Environment> environment;
+  ComPtr<ICoreWebView2Controller> controller;
+  ComPtr<ICoreWebView2> webview;
+  ComPtr<ICoreWebView2_18> secured_webview;
+  // Directory, open and save share one window-owned modal slot.
+  ComPtr<IFileDialog> file_dialog;
+  UINT taskbar_created_message{0};
+  bool tray_desired{false};
+  bool tray_present{false};
+  bool tray_ready{false};
+  std::uint64_t tray_revision{0};
+  std::uint64_t popup_revision{0};
+  std::wstring tray_tooltip;
+  std::vector<menu_item> tray_items;
+  std::map<std::uint64_t, shortcut_registration> shortcuts;
+
+  // Workers touch only these fields under queue_mutex. Posted messages carry no
+  // pointer/ownership payload, so DestroyWindow cannot strand allocated work.
+  std::mutex queue_mutex;
+  HWND dispatch_window{nullptr};
+  bool accepting_work{false};
+  bool dispatch_posted{false};
+  std::deque<std::function<void()>> queue;
+
+  bool active() const { return created && !closed && terminal_status.ok; }
+
+  window_state_result observed_window_state() const {
+    if (!active() || !window || !IsWindow(window)) return {closed_error(), {}};
+    WINDOWPLACEMENT placement{};
+    placement.length = sizeof(placement);
+    if (!GetWindowPlacement(window, &placement))
+      return {win32_failure("GetWindowPlacement"), {}};
+    // GetWindowPlacement reports these three show states, including for a
+    // hidden window. Do not interpret an unknown native value as normal.
+    switch (placement.showCmd) {
+      case SW_SHOWNORMAL:
+        return {result::success(), {false, false}};
+      case SW_SHOWMINIMIZED:
+        return {result::success(),
+                {true, (placement.flags & WPF_RESTORETOMAXIMIZED) != 0}};
+      case SW_SHOWMAXIMIZED:
+        return {result::success(), {false, true}};
+      default:
+        return {result::failure("E_STATE", "Windows returned an unknown window state"), {}};
+    }
+  }
+
+  result request_window_state(UINT show_command) {
+    if (!active() || !window || !IsWindow(window)) return closed_error();
+    WINDOWPLACEMENT placement{};
+    placement.length = sizeof(placement);
+    if (!GetWindowPlacement(window, &placement)) return win32_failure("GetWindowPlacement");
+    placement.showCmd = show_command;
+    // SW_RESTORE can return a minimized window to its earlier maximized state.
+    // The unified restore contract instead requests a normal, non-iconic window.
+    if (show_command == SW_SHOWNORMAL) placement.flags &= ~WPF_RESTORETOMAXIMIZED;
+    const HWND owner = window;
+    // SetWindowPlacement, unlike ShowWindow, reports request failure rather
+    // than the previous visibility. Its synchronous messages may close us.
+    if (!SetWindowPlacement(owner, &placement)) return win32_failure("SetWindowPlacement");
+    if (!active() || window != owner) return closed_error();
+    visible = IsWindowVisible(owner) != FALSE;
+    // These commands can show a previously hidden window. WM_SIZE may have
+    // run with the former visibility preference; synchronize the renderer with
+    // the actual native state after the request, without predicting its result.
+    const auto current_controller = controller;
+    if (current_controller) {
+      const HRESULT hr = current_controller->put_IsVisible(
+          visible && !IsIconic(owner) ? TRUE : FALSE);
+      if (FAILED(hr)) return hresult_failure("WebView2 put_IsVisible", hr);
+    }
+    if (!active() || window != owner) return closed_error();
+    return result::success();
+  }
+
+  void notify_window_state() {
+    if (!active() || !events.state_changed) return;
+    const auto observed = observed_window_state();
+    if (!observed.status.ok) {
+      report(observed.status);
+      return;
+    }
+    if (window_state_known && last_window_state.minimized == observed.value.minimized &&
+        last_window_state.maximized == observed.value.maximized)
+      return;
+    // Commit only a successful native observation, before a callback can
+    // reenter and cause another WM_SIZE for this same state.
+    last_window_state = observed.value;
+    window_state_known = true;
+    // Capture the callback before calling out: close clears events. Notify the
+    // common layer now so it binds webpage delivery to this navigation, not a
+    // later document reached before a backend dispatch queue drains.
+    const auto callback = events.state_changed;
+    callback(observed.value);
+  }
+
+  result add_global_shortcut(std::uint64_t token, const global_shortcut& shortcut) {
+    if (!active() || !window || !IsWindow(window)) return closed_error();
+    constexpr auto allowed_modifiers = shortcut_modifiers::control | shortcut_modifiers::alt |
+                                       shortcut_modifiers::shift | shortcut_modifiers::primary;
+    const UINT key = shortcut_virtual_key(shortcut.key);
+    if (!token || !key || (shortcut.modifiers & ~allowed_modifiers) ||
+        !(shortcut.modifiers & (shortcut_modifiers::control | shortcut_modifiers::alt |
+                                shortcut_modifiers::primary)))
+      return result::failure("E_SHORTCUT", "The global shortcut key or modifiers are invalid");
+    UINT modifiers = 0;
+    if (shortcut.modifiers & (shortcut_modifiers::control | shortcut_modifiers::primary))
+      modifiers |= MOD_CONTROL;
+    if (shortcut.modifiers & shortcut_modifiers::alt) modifiers |= MOD_ALT;
+    if (shortcut.modifiers & shortcut_modifiers::shift) modifiers |= MOD_SHIFT;
+    if (shortcuts.find(token) != shortcuts.end())
+      return result::failure("E_SHORTCUT_DUPLICATE", "The global shortcut token is already registered");
+    for (const auto& entry : shortcuts)
+      if (entry.second.modifiers == modifiers && entry.second.virtual_key == key)
+        return result::failure("E_SHORTCUT_DUPLICATE", "The global shortcut combination is still registered");
+    if (shortcuts.size() >= max_global_shortcuts)
+      return result::failure("E_SHORTCUT_LIMIT", "The window has reached its global shortcut limit");
+    // Consume on every native attempt, including failures, without wraparound
+    // or reuse by another HWND or a subsequently created application group.
+    const int native_id = consume_global_shortcut_id();
+    if (!native_id)
+      return result::failure("E_SHORTCUT_EXHAUSTED", "The process has exhausted its native shortcut IDs");
+    // Allocate ownership before registering with Windows; no allocation after
+    // native success may strand a hotkey without its cleanup record.
+    const auto inserted = shortcuts.emplace(token, shortcut_registration{native_id, modifiers, key});
+    SetLastError(ERROR_SUCCESS);
+    if (!RegisterHotKey(window, native_id, modifiers | MOD_NOREPEAT, key)) {
+      const DWORD error = GetLastError();
+      shortcuts.erase(inserted.first);
+      return shortcut_failure("E_SHORTCUT_REGISTER", "RegisterHotKey", error);
+    }
+    inserted.first->second.active = true;
+    return result::success();
+  }
+
+  result remove_global_shortcut(std::uint64_t token) {
+    const auto found = shortcuts.find(token);
+    if (found == shortcuts.end()) return result::success();
+    auto& registration = found->second;
+    // Revoke callbacks before native cleanup. A failed unregister retains the
+    // original ID and combination for retry, but can never activate again.
+    if (registration.active) {
+      registration.active = false;
+      ++registration.revision;
+    }
+    SetLastError(ERROR_SUCCESS);
+    if (!UnregisterHotKey(window, registration.native_id))
+      return shortcut_failure("E_SHORTCUT_UNREGISTER", "UnregisterHotKey", GetLastError());
+    shortcuts.erase(found);
+    return result::success();
+  }
+
+  result remove_all_global_shortcuts() {
+    DWORD first_error = ERROR_SUCCESS;
+    bool failed = false;
+    for (auto it = shortcuts.begin(); it != shortcuts.end();) {
+      auto& registration = it->second;
+      if (registration.active) {
+        registration.active = false;
+        ++registration.revision;
+      }
+      SetLastError(ERROR_SUCCESS);
+      if (UnregisterHotKey(window, registration.native_id)) {
+        it = shortcuts.erase(it);
+      } else {
+        if (!failed) first_error = GetLastError();
+        failed = true;
+        ++it;
+      }
+    }
+    // Attempt every registration before allocating an error or destroying the
+    // HWND. Destruction is best effort, not confirmed native unregistration.
+    return failed ? shortcut_failure("E_SHORTCUT_UNREGISTER", "UnregisterHotKey during close",
+                                     first_error) : result::success();
+  }
+
+  void notify_global_shortcut(HWND owner, WPARAM wparam, LPARAM lparam) {
+    if (!active() || window != owner || !events.global_shortcut) return;
+    for (const auto& entry : shortcuts) {
+      const auto& registration = entry.second;
+      const auto expected = (static_cast<std::uintptr_t>(registration.virtual_key) << 16U) |
+                            registration.modifiers;
+      // Compare the complete parameters, not truncated words. MOD_NOREPEAT
+      // controls registration only and is absent from WM_HOTKEY modifiers.
+      if (!registration.active || wparam != static_cast<WPARAM>(registration.native_id) ||
+          static_cast<std::uintptr_t>(lparam) != expected)
+        continue;
+      const std::weak_ptr<state> weak = shared_from_this();
+      const auto queued = enqueue([weak, token = entry.first, native_id = registration.native_id,
+                                   revision = registration.revision] {
+        const auto self = weak.lock();
+        if (!self || !self->active() || !self->events.global_shortcut) return;
+        const auto found = self->shortcuts.find(token);
+        if (found == self->shortcuts.end() || !found->second.active ||
+            found->second.native_id != native_id || found->second.revision != revision)
+          return;
+        const auto callback = self->events.global_shortcut;
+        callback(token);
+      });
+      if (!queued.ok) report(queued);
+      return;
+    }
+  }
+
+  NOTIFYICONDATAW tray_identity() const {
+    NOTIFYICONDATAW data{};
+    data.cbSize = sizeof(data);
+    data.hWnd = window;
+    // HWND + uID is the Shell identity; equal IDs on different windows do not
+    // share icons, command handlers, or mutable menu configuration.
+    data.uID = tray_icon_id;
+    return data;
+  }
+
+  result remove_tray() {
+    tray_desired = false;
+    tray_ready = false;
+    ++tray_revision;
+    tray_items.clear();
+    tray_tooltip.clear();
+    if (!tray_present) return result::success();
+    auto data = tray_identity();
+    if (!Shell_NotifyIconW(NIM_DELETE, &data))
+      return result::failure("E_TRAY_REMOVE", "Windows Shell did not confirm tray icon removal");
+    tray_present = false;
+    return result::success();
+  }
+
+  result publish_tray(const std::wstring& tooltip) {
+    auto data = tray_identity();
+    // A failed version negotiation may have left an unconfigured icon.
+    if (tray_present && !tray_ready) {
+      if (!Shell_NotifyIconW(NIM_DELETE, &data))
+        return result::failure("E_TRAY_CLEANUP", "Windows Shell refused stale tray cleanup");
+      tray_present = false;
+    }
+    data.uFlags = NIF_MESSAGE | NIF_ICON | NIF_TIP | NIF_SHOWTIP;
+    data.uCallbackMessage = tray_message;
+    // This is a shared system icon. It is never destroyed by an individual
+    // backend, and no icon file/parser or SOUI legacy dependency is required.
+    data.hIcon = LoadIconW(nullptr, MAKEINTRESOURCEW(32512));
+    if (!data.hIcon) return win32_failure("LoadIconW");
+    if (tooltip.size() >= sizeof(data.szTip) / sizeof(data.szTip[0]))
+      return result::failure("E_TRAY_TOOLTIP", "Windows tray tooltips allow 127 UTF-16 units");
+    std::copy(tooltip.begin(), tooltip.end(), data.szTip);
+    if (tray_present) {
+      if (!Shell_NotifyIconW(NIM_MODIFY, &data))
+        return result::failure("E_TRAY_UPDATE", "Windows Shell did not update the tray icon");
+      return result::success();
+    }
+    if (!Shell_NotifyIconW(NIM_ADD, &data))
+      return result::failure("E_TRAY_UNAVAILABLE",
+                             "Windows Shell notification area is unavailable or rejected the icon");
+    tray_present = true;
+    data.uVersion = NOTIFYICON_VERSION_4;
+    if (!Shell_NotifyIconW(NIM_SETVERSION, &data)) {
+      tray_present = !Shell_NotifyIconW(NIM_DELETE, &data);
+      return result::failure(tray_present ? "E_TRAY_CLEANUP" : "E_TRAY_VERSION",
+          tray_present ? "Tray version negotiation and rollback both failed" :
+                         "Windows Shell does not support the required tray event format");
+    }
+    tray_ready = true;
+    return result::success();
+  }
+
+  result update_tray(const tray_options& settings) {
+    if (!active()) return closed_error();
+    const auto valid = validate_menu_tree(settings.menu);
+    if (!valid.ok) return valid;
+    std::wstring tooltip;
+    if (settings.tooltip.find('\0') != std::string::npos ||
+        !to_wide(settings.tooltip, tooltip) || tooltip.size() > 127)
+      return result::failure("E_TRAY_TOOLTIP",
+                             "Windows tray tooltip must be UTF-8 and at most 127 UTF-16 units");
+    // Copy before calling the Shell so allocation failure cannot leave native
+    // and stored command configurations describing different successful updates.
+    auto items = settings.menu;
+    if (!taskbar_created_message) {
+      taskbar_created_message = RegisterWindowMessageW(L"TaskbarCreated");
+      if (!taskbar_created_message) return win32_failure("RegisterWindowMessageW");
+    }
+    const auto published = publish_tray(tooltip);
+    if (!published.ok) return published;
+    tray_tooltip = std::move(tooltip);
+    tray_items = std::move(items);
+    tray_desired = true;
+    ++tray_revision;
+    return result::success();
+  }
+
+  void restore_tray() {
+    // Explorer discards notification icons on restart. Keep the user's desired
+    // state, but do not pretend recovery succeeded when no Shell host accepts it.
+    tray_present = false;
+    tray_ready = false;
+    if (!active() || !tray_desired) return;
+    const auto restored = publish_tray(tray_tooltip);
+    if (!restored.ok) report(restored);
+  }
+
+  result show_menu(const std::vector<menu_item>& items, POINT position,
+                   std::uint64_t expected_tray_revision = 0) {
+    if (!active()) return closed_error();
+    if (active_menu_owner)
+      return result::failure("E_BUSY", "Another native popup menu is already active");
+    if (items.empty()) {
+      if (!expected_tray_revision) ++popup_revision;
+      return result::success();
+    }
+    const auto valid = validate_menu_tree(items);
+    if (!valid.ok) return valid;
+    std::vector<popup_command> commands;
+    commands.reserve(64);
+    popup_handle menu;
+    if (!menu.value) return win32_failure("CreatePopupMenu");
+    const auto built = append_menu_tree(menu.value, items, commands, true);
+    if (!built.ok) return built;
+    const HWND owner = window;
+    if (GetForegroundWindow() != owner && !SetForegroundWindow(owner) &&
+        GetForegroundWindow() != owner)
+      return result::failure("E_FOCUS", "Windows refused foreground activation for the popup");
+    // TrackPopupMenuEx enters a nested message loop. Invalidate a previously
+    // selected popup command before that loop can dispatch it into this newer
+    // menu registration, even when both registrations reuse the same ID.
+    const auto expected_popup_revision = expected_tray_revision ? 0 : ++popup_revision;
+    active_menu_owner = owner;
+    SetLastError(ERROR_SUCCESS);
+    const UINT command = static_cast<UINT>(TrackPopupMenuEx(
+        menu.value, TPM_RETURNCMD | TPM_NONOTIFY | TPM_RIGHTBUTTON |
+        (GetSystemMetrics(SM_MENUDROPALIGNMENT) ? TPM_RIGHTALIGN : TPM_LEFTALIGN),
+        position.x, position.y, owner, nullptr));
+    const DWORD track_error = command ? ERROR_SUCCESS : GetLastError();
+    active_menu_owner = nullptr;
+    // Required for reliable dismissal when opened from a notification icon.
+    if (IsWindow(owner)) PostMessageW(owner, WM_NULL, 0, 0);
+    if (!active()) return closed_error();
+    if (expected_tray_revision &&
+        (!tray_ready || !tray_desired || tray_revision != expected_tray_revision))
+      return result::success();
+    if (expected_tray_revision) {
+      auto data = tray_identity();
+      Shell_NotifyIconW(NIM_SETFOCUS, &data);
+    }
+    if (!command) {
+      // TPM_RETURNCMD uses zero for both dismissal and failure. Do not claim a
+      // command ran; preserve a supplied error and otherwise finish with none.
+      return track_error ? hresult_failure("TrackPopupMenuEx", HRESULT_FROM_WIN32(track_error)) :
+                           result::success();
+    }
+    if (command > commands.size() || !commands[command - 1].enabled)
+      return result::failure("E_MENU_COMMAND", "Windows returned an invalid menu command");
+    const std::weak_ptr<state> weak = shared_from_this();
+    return enqueue([weak, expected_tray_revision, expected_popup_revision,
+                    id = commands[command - 1].id] {
+      if (const auto self = weak.lock(); self && self->active() && self->events.command &&
+          (!expected_tray_revision || (self->tray_desired && self->tray_ready &&
+                                      self->tray_revision == expected_tray_revision)) &&
+          (expected_tray_revision || self->popup_revision == expected_popup_revision))
+        self->events.command(id);
+    });
+  }
+
+  void open_tray_menu() {
+    if (!active() || !tray_desired || !tray_ready || tray_items.empty()) return;
+    POINT position{};
+    NOTIFYICONIDENTIFIER identity{};
+    identity.cbSize = sizeof(identity);
+    identity.hWnd = window;
+    identity.uID = tray_icon_id;
+    RECT icon_bounds{};
+    if (SUCCEEDED(Shell_NotifyIconGetRect(&identity, &icon_bounds))) {
+      position = {icon_bounds.left, icon_bounds.bottom};
+    } else if (!GetCursorPos(&position)) {
+      report(win32_failure("GetCursorPos"));
+      return;
+    }
+    const auto revision = tray_revision;
+    const std::weak_ptr<state> weak = shared_from_this();
+    const auto queued = enqueue([weak, revision, position] {
+      if (const auto self = weak.lock(); self && self->active() && self->tray_ready &&
+          self->tray_desired && self->tray_revision == revision) {
+        const auto displayed = self->show_menu(self->tray_items, position, revision);
+        if (!displayed.ok && self->active()) self->report(displayed);
+      }
+    });
+    if (!queued.ok) report(queued);
+  }
+
+  result enqueue(std::function<void()> work) {
+    if (!work) return result::failure("E_ARGUMENT", "The dispatched callback is empty");
+    std::lock_guard<std::mutex> lock(queue_mutex);
+    if (!accepting_work || !dispatch_window) return closed_error();
+    if (queue.size() >= max_dispatch_queue)
+      return result::failure("E_BUSY", "The desktop dispatch queue is full");
+    queue.push_back(std::move(work));
+    if (!dispatch_posted) {
+      if (!PostMessageW(dispatch_window, dispatch_message, 0, 0)) {
+        queue.pop_back();
+        return win32_failure("PostMessageW");
+      }
+      dispatch_posted = true;
+    }
+    return result::success();
+  }
+
+  void invoke_next() {
+    std::function<void()> work;
+    {
+      std::lock_guard<std::mutex> lock(queue_mutex);
+      dispatch_posted = false;
+      // A modal directory picker may run a nested native message pump. Keep
+      // application callbacks serialized until the outer callback has returned.
+      if (dispatching || !accepting_work || queue.empty()) return;
+      work = std::move(queue.front());
+      queue.pop_front();
+    }
+    dispatching = true;
+    try {
+      if (active()) work();
+    } catch (...) {
+      fail(result::failure("E_CALLBACK", "A dispatched desktop callback threw an exception"));
+    }
+    dispatching = false;
+    bool post_failed = false;
+    {
+      std::lock_guard<std::mutex> lock(queue_mutex);
+      if (accepting_work && !queue.empty() && !dispatch_posted) {
+        dispatch_posted = PostMessageW(dispatch_window, dispatch_message, 0, 0) != FALSE;
+        post_failed = !dispatch_posted;
+      }
+    }
+    if (post_failed) fail(win32_failure("PostMessageW"));
+  }
+
+  bool allowed(std::string_view uri) const {
+    // Opting in permits the native-selected loopback document, not arbitrary
+    // HTTP pages or even other documents served by the same resource server.
+    const bool local_uri = uri.compare(0, 7, "file://") == 0 ||
+        (enable_resource_server && is_resource_uri(uri));
+    return active() && local_uri && events.allow_navigation && events.allow_navigation(uri);
+  }
+
+  bool current_source(std::string& source) const {
+    if (!webview || installed_generation != generation || !installed_generation) return false;
+    com_string native_source;
+    return SUCCEEDED(webview->get_Source(&native_source.value)) &&
+           bounded_utf8(native_source.value, 32768, source) && allowed(source);
+  }
+
+  void report(result error) {
+    const std::weak_ptr<state> weak = shared_from_this();
+    enqueue([weak, error = std::move(error)] {
+      if (const auto self = weak.lock(); self && self->active() && self->events.error)
+        self->events.error(error);
+    });
+  }
+
+  void fail(result error) {
+    if (closed || !terminal_status.ok) return;
+    terminal_status = std::move(error);
+    {
+      std::lock_guard<std::mutex> lock(queue_mutex);
+      accepting_work = false;
+    }
+    // Finish COM event handlers before notifying the application or closing its
+    // controller. In particular, never run a modal user callback inside WebView2.
+    pending_failure.schedule(weak_from_this());
+    if (window) PostMessageW(window, failure_message, 0, 0);
+    // If posting fails, the outer UI pump consumes pending_failure. Never run
+    // arbitrary application error callbacks inline on this COM callback stack.
+  }
+
+  void finish_failure() {
+    if (closed || terminal_status.ok || finishing_failure) return;
+    finishing_failure = true;
+    pending_failure.cancel();
+    try {
+      const auto error_callback = events.error;
+      if (error_callback) error_callback(terminal_status);
+    } catch (...) {}
+    shutdown(true);
+  }
+
+  result shutdown(bool notify, bool destroy_window = true) {
+    pending_failure.cancel();
+    if (closed) return shutdown_status;
+    closed = true;  // Revoke all async completions before releasing COM objects.
+    ++generation;
+    std::deque<std::function<void()>> discarded;
+    {
+      std::lock_guard<std::mutex> lock(queue_mutex);
+      accepting_work = false;
+      dispatch_window = nullptr;
+      dispatch_posted = false;
+      discarded.swap(queue);
+    }
+    auto on_closed = notify ? std::move(events.closed) : std::function<void()>{};
+    auto on_error = notify ? std::move(events.error) : std::function<void(result)>{};
+    events = {};
+    if (active_menu_owner == window) EndMenu();
+    const auto shortcuts_removed = remove_all_global_shortcuts();
+    const auto tray_removed = remove_tray();
+    shutdown_status = shortcuts_removed.ok ? tray_removed : shortcuts_removed;
+    if (file_dialog) file_dialog->Close(HRESULT_FROM_WIN32(ERROR_CANCELLED));
+    file_dialog.Reset();
+    if (webview) webview->Stop();
+    if (controller) controller->Close();
+    secured_webview.Reset();
+    webview.Reset();
+    controller.Reset();
+    environment.Reset();
+    const HWND old_window = window;
+    window = nullptr;
+    if (destroy_window && old_window && IsWindow(old_window)) DestroyWindow(old_window);
+    if (!shortcuts_removed.ok && on_error) {
+      try { on_error(shortcuts_removed); } catch (...) {}
+    }
+    if (!tray_removed.ok && on_error) {
+      try { on_error(tray_removed); } catch (...) {}
+    }
+    if (on_closed) {
+      try { on_closed(); } catch (...) {}
+    }
+    return shutdown_status;
+  }
+
+  void update_bounds() {
+    if (!controller || !window || closed) return;
+    RECT bounds{};
+    if (!GetClientRect(window, &bounds)) {
+      fail(win32_failure("GetClientRect"));
+      return;
+    }
+    const HRESULT hr = controller->put_Bounds(bounds);
+    if (FAILED(hr)) fail(hresult_failure("WebView2 put_Bounds", hr));
+  }
+
+  // Only one registration is outstanding. An obsolete completion removes its
+  // script and starts the newest request; it can never Navigate the old URI.
+  void install_latest_script() {
+    if (!active() || !webview || !has_load || installing_script) return;
+    if (!script_id.empty()) {
+      const HRESULT removed = webview->RemoveScriptToExecuteOnDocumentCreated(script_id.c_str());
+      if (FAILED(removed)) {
+        fail(hresult_failure("WebView2 RemoveScriptToExecuteOnDocumentCreated", removed));
+        return;
+      }
+      script_id.clear();
+    }
+    installed_generation = 0;
+    installing_script = true;
+    const auto requested_generation = generation;
+    const std::weak_ptr<state> weak = shared_from_this();
+    const HRESULT hr = webview->AddScriptToExecuteOnDocumentCreated(
+        target_preload.c_str(),
+        Callback<ICoreWebView2AddScriptToExecuteOnDocumentCreatedCompletedHandler>(
+            [weak, requested_generation](HRESULT error, LPCWSTR id) -> HRESULT {
+              const auto self = weak.lock();
+              if (!self || !self->active()) return S_OK;
+              try {
+                self->installing_script = false;
+                if (FAILED(error) || !id || !*id) {
+                  self->fail(hresult_failure("WebView2 document-start preload",
+                                            FAILED(error) ? error : E_UNEXPECTED));
+                  return S_OK;
+                }
+                if (requested_generation != self->generation) {
+                  const HRESULT removed =
+                      self->webview->RemoveScriptToExecuteOnDocumentCreated(id);
+                  if (FAILED(removed)) {
+                    self->fail(hresult_failure("WebView2 remove stale preload", removed));
+                  } else {
+                    self->install_latest_script();
+                  }
+                  return S_OK;
+                }
+                self->script_id = id;
+                self->installed_generation = requested_generation;
+                std::wstring uri;
+                if (!to_wide(self->target_uri, uri)) {
+                  self->fail(result::failure("E_ARGUMENT", "The navigation URI is not UTF-8"));
+                  return S_OK;
+                }
+                // Navigate to the currently selected document can be interpreted
+                // as a fragment-only transition. Reload guarantees a new
+                // document and execution of this generation's fresh preload.
+                com_string native_source;
+                std::string source;
+                const bool same_document =
+                    SUCCEEDED(self->webview->get_Source(&native_source.value)) &&
+                    bounded_utf8(native_source.value, 32768, source) && self->allowed(source);
+                self->navigation_ticket = true;
+                const HRESULT navigated = same_document ? self->webview->Reload() :
+                    self->webview->Navigate(uri.c_str());
+                if (FAILED(navigated))
+                  self->fail(hresult_failure("WebView2 Navigate/Reload", navigated));
+              } catch (...) {
+                self->fail(result::failure("E_BACKEND", "WebView2 preload initialization failed"));
+              }
+              return S_OK;
+            }).Get());
+    if (FAILED(hr)) {
+      installing_script = false;
+      fail(hresult_failure("WebView2 AddScriptToExecuteOnDocumentCreated", hr));
+    }
+  }
+
+  result connect_events() {
+    ComPtr<ICoreWebView2Settings> settings;
+    HRESULT hr = webview->get_Settings(settings.GetAddressOf());
+    if (FAILED(hr)) return hresult_failure("WebView2 get_Settings", hr);
+    // Fail startup if an essential security control could not be applied.
+    if (FAILED(hr = settings->put_IsScriptEnabled(TRUE)) ||
+        FAILED(hr = settings->put_IsWebMessageEnabled(TRUE)) ||
+        FAILED(hr = settings->put_AreHostObjectsAllowed(FALSE)) ||
+        FAILED(hr = settings->put_AreDevToolsEnabled(FALSE)) ||
+        FAILED(hr = settings->put_AreDefaultContextMenusEnabled(FALSE)) ||
+        FAILED(hr = settings->put_AreDefaultScriptDialogsEnabled(FALSE)))
+      return hresult_failure("WebView2 security settings", hr);
+    hr = webview.As(&secured_webview);
+    if (FAILED(hr))
+      return result::failure("E_UNSUPPORTED",
+          "WebView2 Runtime must support ICoreWebView2_18 to refuse external URI launches");
+
+    const std::weak_ptr<state> weak = shared_from_this();
+    // Tokens need not outlive setup: Controller.Close unregisters all handlers.
+    // Every handler that uses the host captures only a weak state reference.
+    EventRegistrationToken token{};
+    hr = webview->add_NavigationStarting(
+        Callback<ICoreWebView2NavigationStartingEventHandler>(
+            [weak](ICoreWebView2*, ICoreWebView2NavigationStartingEventArgs* args) -> HRESULT {
+              // Deny first, including on conversion failure or an exception.
+              HRESULT denied = args->put_Cancel(TRUE);
+              const auto self = weak.lock();
+              if (!self || !self->active()) return denied;
+              try {
+                com_string native_uri;
+                std::string uri;
+                UINT64 id = 0;
+                if (SUCCEEDED(args->get_Uri(&native_uri.value)) &&
+                    bounded_utf8(native_uri.value, 32768, uri) &&
+                    self->installed_generation == self->generation &&
+                    self->installed_generation && self->allowed(uri) &&
+                    SUCCEEDED(args->get_NavigationId(&id))) {
+                  if (self->navigation_ticket) {
+                    self->navigation_ticket = false;
+                    self->navigation_id = id;
+                    return args->put_Cancel(FALSE);
+                  }
+                  // This is a renderer reload/assignment, not our one native
+                  // navigation. Cancel it, revoke the old generation immediately,
+                  // and let the common layer issue a fresh token and preload.
+                  // Fragment-only navigation never raises NavigationStarting.
+                  self->navigation_id = 0;
+                  self->installed_generation = 0;
+                  const auto reload_generation = ++self->generation;
+                  const result queued = self->enqueue([weak, reload_generation] {
+                    if (const auto target = weak.lock(); target && target->active() &&
+                        target->generation == reload_generation && target->events.reload)
+                      target->events.reload();
+                  });
+                  if (!queued.ok) self->fail(queued);
+                }
+              } catch (...) {
+                self->fail(result::failure("E_BACKEND", "WebView2 navigation validation failed"));
+              }
+              if (FAILED(denied)) self->fail(hresult_failure("WebView2 cancel navigation", denied));
+              return denied;
+            }).Get(), &token);
+    if (FAILED(hr)) return hresult_failure("WebView2 NavigationStarting", hr);
+
+    hr = webview->add_FrameNavigationStarting(
+        Callback<ICoreWebView2NavigationStartingEventHandler>(
+            [](ICoreWebView2*, ICoreWebView2NavigationStartingEventArgs* args) -> HRESULT {
+              return args->put_Cancel(TRUE);
+            }).Get(), &token);
+    if (FAILED(hr)) return hresult_failure("WebView2 FrameNavigationStarting", hr);
+
+    hr = webview->add_NewWindowRequested(
+        Callback<ICoreWebView2NewWindowRequestedEventHandler>(
+            [](ICoreWebView2*, ICoreWebView2NewWindowRequestedEventArgs* args) -> HRESULT {
+              return args->put_Handled(TRUE);
+            }).Get(), &token);
+    if (FAILED(hr)) return hresult_failure("WebView2 NewWindowRequested", hr);
+
+    hr = webview->add_WindowCloseRequested(
+        Callback<ICoreWebView2WindowCloseRequestedEventHandler>(
+            [weak](ICoreWebView2* sender, IUnknown*) -> HRESULT {
+              const auto self = weak.lock();
+              if (!self || !self->active() || self->webview.Get() != sender) return S_OK;
+              try {
+                // Finish the COM event before approval can close its Controller.
+                // A DOM close is a proposal, just like the native titlebar close.
+                const auto queued = self->enqueue([weak] {
+                  const auto target = weak.lock();
+                  if (!target || !target->active()) return;
+                  try {
+                    const auto callback = target->events.close_requested;
+                    if (callback) callback();
+                  } catch (...) {
+                    try {
+                      target->report(result::failure("E_CALLBACK", "The desktop close request failed"));
+                    } catch (...) {}
+                  }
+                });
+                if (!queued.ok) self->report(queued);
+              } catch (...) {
+                // Failure is not permission to bypass the host's close policy.
+                try {
+                  self->report(result::failure("E_CALLBACK", "The desktop close request failed"));
+                } catch (...) {}
+              }
+              return S_OK;
+            }).Get(), &token);
+    if (FAILED(hr)) return hresult_failure("WebView2 WindowCloseRequested", hr);
+
+    hr = secured_webview->add_DownloadStarting(
+        Callback<ICoreWebView2DownloadStartingEventHandler>(
+            [](ICoreWebView2*, ICoreWebView2DownloadStartingEventArgs* args) -> HRESULT {
+              return args->put_Cancel(TRUE);
+            }).Get(), &token);
+    if (FAILED(hr)) return hresult_failure("WebView2 DownloadStarting", hr);
+
+    hr = secured_webview->add_LaunchingExternalUriScheme(
+        Callback<ICoreWebView2LaunchingExternalUriSchemeEventHandler>(
+            [](ICoreWebView2*, ICoreWebView2LaunchingExternalUriSchemeEventArgs* args) -> HRESULT {
+              return args->put_Cancel(TRUE);
+            }).Get(), &token);
+    if (FAILED(hr)) return hresult_failure("WebView2 LaunchingExternalUriScheme", hr);
+
+    hr = webview->add_PermissionRequested(
+        Callback<ICoreWebView2PermissionRequestedEventHandler>(
+            [](ICoreWebView2*, ICoreWebView2PermissionRequestedEventArgs* args) -> HRESULT {
+              return args->put_State(COREWEBVIEW2_PERMISSION_STATE_DENY);
+            }).Get(), &token);
+    if (FAILED(hr)) return hresult_failure("WebView2 PermissionRequested", hr);
+
+    hr = webview->add_WebMessageReceived(
+        Callback<ICoreWebView2WebMessageReceivedEventHandler>(
+            [weak](ICoreWebView2*, ICoreWebView2WebMessageReceivedEventArgs* args) -> HRESULT {
+              const auto self = weak.lock();
+              if (!self || !self->active()) return S_OK;
+              try {
+                com_string native_payload, native_source;
+                std::string payload, source, current;
+                // The base ICoreWebView2 event is top-level-only. Do not register
+                // ICoreWebView2Frame::WebMessageReceived or trust a JS frame flag.
+                if (FAILED(args->TryGetWebMessageAsString(&native_payload.value)) ||
+                    !bounded_utf8(native_payload.value, max_message_characters, payload) ||
+                    payload.size() > max_message_characters ||
+                    FAILED(args->get_Source(&native_source.value)) ||
+                    !bounded_utf8(native_source.value, 32768, source) ||
+                    !self->allowed(source) || !self->current_source(current))
+                  return S_OK;
+                const auto received_generation = self->generation;
+                self->enqueue([weak, received_generation, payload = std::move(payload),
+                               source = std::move(source)] {
+                  const auto target = weak.lock();
+                  std::string current_uri;
+                  if (target && target->active() &&
+                      target->generation == received_generation &&
+                      target->allowed(source) && target->current_source(current_uri) &&
+                      target->events.message)
+                    target->events.message(payload, source, message_frame::main);
+                });
+              } catch (...) {
+                self->fail(result::failure("E_BACKEND", "WebView2 message delivery failed"));
+              }
+              return S_OK;
+            }).Get(), &token);
+    if (FAILED(hr)) return hresult_failure("WebView2 WebMessageReceived", hr);
+
+    hr = webview->add_NavigationCompleted(
+        Callback<ICoreWebView2NavigationCompletedEventHandler>(
+            [weak](ICoreWebView2*, ICoreWebView2NavigationCompletedEventArgs* args) -> HRESULT {
+              const auto self = weak.lock();
+              if (!self || !self->active()) return S_OK;
+              try {
+                UINT64 id = 0;
+                BOOL success = FALSE;
+                if (FAILED(args->get_NavigationId(&id)) || !self->navigation_id ||
+                    id != self->navigation_id ||
+                    self->installed_generation != self->generation)
+                  return S_OK;
+                if (FAILED(args->get_IsSuccess(&success)) || !success) {
+                  COREWEBVIEW2_WEB_ERROR_STATUS status = COREWEBVIEW2_WEB_ERROR_STATUS_UNKNOWN;
+                  args->get_WebErrorStatus(&status);
+                  self->report(result::failure("E_NAVIGATION",
+                      "WebView2 navigation failed (status " +
+                      std::to_string(static_cast<int>(status)) + ")"));
+                  return S_OK;
+                }
+                std::string source;
+                if (!self->current_source(source)) return S_OK;
+                const auto loaded_generation = self->generation;
+                self->enqueue([weak, loaded_generation, source = std::move(source)] {
+                  const auto target = weak.lock();
+                  std::string current;
+                  if (target && target->active() && target->generation == loaded_generation &&
+                      target->allowed(source) && target->current_source(current) &&
+                      target->events.loaded)
+                    target->events.loaded(source);
+                });
+              } catch (...) {
+                self->fail(result::failure("E_BACKEND", "WebView2 load notification failed"));
+              }
+              return S_OK;
+            }).Get(), &token);
+    if (FAILED(hr)) return hresult_failure("WebView2 NavigationCompleted", hr);
+
+    hr = webview->add_ProcessFailed(
+        Callback<ICoreWebView2ProcessFailedEventHandler>(
+            [weak](ICoreWebView2*, ICoreWebView2ProcessFailedEventArgs*) -> HRESULT {
+              if (const auto self = weak.lock(); self && self->active())
+                self->fail(result::failure("E_WEBVIEW_PROCESS", "A WebView2 process failed"));
+              return S_OK;
+            }).Get(), &token);
+    if (FAILED(hr)) return hresult_failure("WebView2 ProcessFailed", hr);
+    return result::success();
+  }
+};
+
+LRESULT CALLBACK window_procedure(HWND window, UINT message, WPARAM wparam, LPARAM lparam) {
+  auto* self = reinterpret_cast<state*>(GetWindowLongPtrW(window, GWLP_USERDATA));
+  if (message == WM_NCCREATE) {
+    const auto* creation = reinterpret_cast<const CREATESTRUCTW*>(lparam);
+    self = static_cast<state*>(creation->lpCreateParams);
+    SetWindowLongPtrW(window, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(self));
+  }
+  if (!self) return DefWindowProcW(window, message, wparam, lparam);
+  // Native messages and state callbacks can synchronously close the owning
+  // backend. Keep its HWND userdata alive until this invocation has returned.
+  const auto keep_alive = self->weak_from_this().lock();
+  try {
+    if (self->taskbar_created_message && message == self->taskbar_created_message) {
+      self->restore_tray();
+      return 0;
+    }
+    switch (message) {
+      case WM_CLOSE:
+        // This is only a proposal. Approval calls backend::close() directly,
+        // so a veto must leave both the HWND and its pending work intact.
+        // Copy before calling out: approval can synchronously clear events.
+        try {
+          if (self->active() && self->window == window) {
+            const auto callback = self->events.close_requested;
+            if (callback) callback();
+          }
+        } catch (...) {
+          // A failed proposal is not permission to destroy the window, even
+          // if reporting the failure itself cannot allocate or enqueue work.
+          try {
+            self->report(result::failure("E_CALLBACK", "The desktop close request failed"));
+          } catch (...) {}
+        }
+        // Never fall through to DefWindowProc, including on callback failure.
+        return 0;
+      case WM_DESTROY:
+        // Also handle destruction initiated by the owning native application.
+        self->shutdown(true, false);
+        return 0;
+      case WM_NCDESTROY:
+        SetWindowLongPtrW(window, GWLP_USERDATA, 0);
+        break;
+      case WM_SIZE:
+        if (!self->active() || self->window != window) return 0;
+        if (self->controller) {
+          const HRESULT hr = self->controller->put_IsVisible(
+              self->visible && wparam != SIZE_MINIMIZED ? TRUE : FALSE);
+          if (FAILED(hr)) self->fail(hresult_failure("WebView2 put_IsVisible", hr));
+        }
+        self->update_bounds();
+        self->notify_window_state();
+        return 0;
+      case WM_MOVE:
+      case WM_MOVING:
+        if (self->controller) self->controller->NotifyParentWindowPositionChanged();
+        break;
+      case WM_SETFOCUS:
+        if (self->controller)
+          self->controller->MoveFocus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+        return 0;
+      case WM_HOTKEY:
+        self->notify_global_shortcut(window, wparam, lparam);
+        return 0;
+      case WM_DPICHANGED: {
+        const auto* bounds = reinterpret_cast<const RECT*>(lparam);
+        SetWindowPos(window, nullptr, bounds->left, bounds->top,
+                     bounds->right - bounds->left, bounds->bottom - bounds->top,
+                     SWP_NOACTIVATE | SWP_NOZORDER);
+        return 0;
+      }
+      case dispatch_message:
+        self->invoke_next();
+        return 0;
+      case failure_message:
+        self->finish_failure();
+        return 0;
+      case tray_message:
+        if (HIWORD(lparam) == tray_icon_id &&
+            (LOWORD(lparam) == WM_CONTEXTMENU || LOWORD(lparam) == NIN_SELECT ||
+             LOWORD(lparam) == NIN_KEYSELECT))
+          self->open_tray_menu();
+        return 0;
+      case WM_QUERYENDSESSION:
+        return TRUE;
+      case WM_ENDSESSION: {
+        // Session termination is already committed by Windows. This is a
+        // best-effort notification, not a promise that an app veto stops it.
+        const auto callback = self->events.quit_requested;
+        if (wparam && callback) callback();
+        return 0;
+      }
+      default:
+        break;
+    }
+  } catch (...) {
+    // Never unwind through the Win32 callback ABI.
+    self->fail(result::failure("E_BACKEND", "The desktop window callback failed"));
+  }
+  return DefWindowProcW(window, message, wparam, lparam);
+}
+
+result default_profile_directory(std::filesystem::path& directory,
+                                 const std::filesystem::path& resource_root) {
+  com_string app_data;
+  HRESULT hr = SHGetKnownFolderPath(FOLDERID_LocalAppData, KF_FLAG_CREATE, nullptr,
+                                   &app_data.value);
+  if (FAILED(hr)) return hresult_failure("SHGetKnownFolderPath", hr);
+  // Stable app/root-specific directory, rather than WebView2's potentially
+  // unwritable default beside an executable installed in Program Files.
+  wchar_t executable[32768]{};
+  const DWORD length = GetModuleFileNameW(nullptr, executable, 32768);
+  if (!length || length >= 32768) return win32_failure("GetModuleFileNameW");
+  const std::wstring identity = std::wstring(executable, length) + L"|" + resource_root.native();
+  std::uint64_t hash = UINT64_C(14695981039346656037);
+  for (const wchar_t c : identity) {
+    hash ^= static_cast<std::uint16_t>(c);
+    hash *= UINT64_C(1099511628211);
+  }
+  directory = std::filesystem::path(app_data.value) / L"SOUI" / L"Desktop" /
+              std::to_wstring(hash);
+  return result::success();
+}
+
+result show_file_dialog(const std::shared_ptr<state>& current, IFileDialog* dialog,
+                        const char* operation) {
+  const HWND owner = current->window;
+  if (!current->active() || !owner || !IsWindow(owner)) return closed_error();
+  if (current->file_dialog)
+    return result::failure("E_BUSY", "A file or directory dialog is already open");
+  current->file_dialog = dialog;
+  const HRESULT hr = dialog->Show(owner);
+  if (current->file_dialog.Get() == dialog) current->file_dialog.Reset();
+  // Show pumps native messages. The owner can die (and release the backend)
+  // while the shared state and local COM dialog remain alive on this stack.
+  if (!current->active() || current->window != owner || !IsWindow(owner))
+    return closed_error();
+  if (hr == HRESULT_FROM_WIN32(ERROR_CANCELLED))
+    return result::failure("E_CANCELLED", "File selection was cancelled");
+  if (FAILED(hr)) return hresult_failure(operation, hr);
+  return result::success();
+}
+
+class windows_backend final : public backend {
+ public:
+  windows_backend() : state_(std::make_shared<state>()) {}
+  ~windows_backend() override {
+    state_->shutdown(false);
+    state_.reset();
+    if (com_initialized_) CoUninitialize();
+  }
+
+  result create(const options& settings, backend_events events) override {
+    if (creation_attempted_ || state_->closed)
+      return result::failure("E_STATE", "The desktop backend can only be created once");
+    creation_attempted_ = true;
+    owner_thread_ = GetCurrentThreadId();
+    // Root run() can outlive its own HWND. Retain only this group-level callback
+    // independently; ordinary window callbacks are revoked by state::shutdown.
+    quit_requested_ = events.quit_requested;
+    HRESULT hr = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
+    if (FAILED(hr))
+      return hresult_failure("CoInitializeEx (WebView2 requires an STA UI thread)", hr);
+    com_initialized_ = true;
+
+    // Use the same loader discovery rules as environment creation. Discovery
+    // success is not proof that controller creation or the application will run.
+    LPWSTR runtime_version = nullptr;
+    hr = GetAvailableCoreWebView2BrowserVersionString(nullptr, &runtime_version);
+    const bool version_found = runtime_version && runtime_version[0] != L'\0';
+    CoTaskMemFree(runtime_version);
+    if (FAILED(hr) || !version_found)
+      return webview_startup_failure("Discover WebView2 Runtime", FAILED(hr) ? hr : E_UNEXPECTED);
+
+    std::wstring title;
+    if (settings.title.find('\0') != std::string::npos || !to_wide(settings.title, title))
+      return result::failure("E_ARGUMENT", "The window title must be valid UTF-8 without NUL");
+    std::filesystem::path profile = settings.user_data_directory;
+    if (profile.empty()) {
+      const result selected = default_profile_directory(profile, settings.resource_root);
+      if (!selected.ok) return selected;
+    }
+    std::error_code fs_error;
+    profile = std::filesystem::absolute(profile, fs_error);
+    if (!fs_error) std::filesystem::create_directories(profile, fs_error);
+    if (fs_error)
+      return result::failure("E_PROFILE", "Cannot create the WebView2 user data directory: " +
+                            fs_error.message());
+
+    WNDCLASSEXW type{};
+    type.cbSize = sizeof(type);
+    type.hInstance = GetModuleHandleW(nullptr);
+    type.lpfnWndProc = window_procedure;
+    type.hCursor = LoadCursorW(nullptr, MAKEINTRESOURCEW(32512));
+    type.hIcon = LoadIconW(nullptr, MAKEINTRESOURCEW(32512));
+    type.hIconSm = type.hIcon;
+    type.hbrBackground = reinterpret_cast<HBRUSH>(COLOR_WINDOW + 1);
+    type.lpszClassName = window_class;
+    if (!RegisterClassExW(&type) && GetLastError() != ERROR_CLASS_ALREADY_EXISTS)
+      return win32_failure("RegisterClassExW");
+    RECT bounds{0, 0, settings.width, settings.height};
+    if (!AdjustWindowRectEx(&bounds, WS_OVERLAPPEDWINDOW, FALSE, 0))
+      return win32_failure("AdjustWindowRectEx");
+    state_->events = std::move(events);
+    state_->visible = settings.visible;
+    state_->enable_resource_server = settings.enable_resource_server;
+    state_->window = CreateWindowExW(
+        0, window_class, title.c_str(), WS_OVERLAPPEDWINDOW,
+        CW_USEDEFAULT, CW_USEDEFAULT, bounds.right - bounds.left, bounds.bottom - bounds.top,
+        nullptr, nullptr, type.hInstance, state_.get());
+    if (!state_->window) {
+      const auto failure = win32_failure("CreateWindowExW");
+      state_->shutdown(false);
+      return failure;
+    }
+    state_->created = true;
+    {
+      std::lock_guard<std::mutex> lock(state_->queue_mutex);
+      state_->dispatch_window = state_->window;
+      state_->accepting_work = true;
+    }
+    if (settings.visible) ShowWindow(state_->window, SW_SHOW);
+    const std::weak_ptr<state> weak = state_;
+    hr = CreateCoreWebView2EnvironmentWithOptions(
+        nullptr, profile.c_str(), nullptr,
+        Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
+            [weak](HRESULT error, ICoreWebView2Environment* environment) -> HRESULT {
+              const auto self = weak.lock();
+              if (!self || !self->active()) return S_OK;
+              try {
+                if (FAILED(error) || !environment) {
+                  self->fail(webview_startup_failure(
+                      "Create WebView2 environment",
+                      FAILED(error) ? error : E_UNEXPECTED));
+                  return S_OK;
+                }
+                self->environment = environment;
+                const HRESULT creation = environment->CreateCoreWebView2Controller(
+                    self->window,
+                    Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
+                        [weak](HRESULT controller_error,
+                               ICoreWebView2Controller* controller) -> HRESULT {
+                          const auto target = weak.lock();
+                          if (!target || !target->active()) {
+                            // A controller created after cancellation must be
+                            // closed even though its former host no longer exists.
+                            if (controller) controller->Close();
+                            return S_OK;
+                          }
+                          try {
+                            if (FAILED(controller_error) || !controller) {
+                              if (controller) controller->Close();
+                              target->fail(hresult_failure("Create WebView2 controller",
+                                  FAILED(controller_error) ? controller_error : E_UNEXPECTED));
+                              return S_OK;
+                            }
+                            target->controller = controller;
+                            HRESULT configured = controller->get_CoreWebView2(
+                                target->webview.GetAddressOf());
+                            if (FAILED(configured) || !target->webview) {
+                              target->fail(hresult_failure("WebView2 get_CoreWebView2",
+                                  FAILED(configured) ? configured : E_UNEXPECTED));
+                              return S_OK;
+                            }
+                            const result connected = target->connect_events();
+                            if (!connected.ok) {
+                              target->fail(connected);
+                              return S_OK;
+                            }
+                            target->update_bounds();
+                            if (!target->active()) return S_OK;
+                            configured = controller->put_IsVisible(
+                                target->visible && !IsIconic(target->window) ? TRUE : FALSE);
+                            if (FAILED(configured)) {
+                              target->fail(hresult_failure("WebView2 put_IsVisible", configured));
+                              return S_OK;
+                            }
+                            if (GetFocus() == target->window) {
+                              configured = controller->MoveFocus(
+                                  COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+                              if (FAILED(configured)) {
+                                target->fail(hresult_failure("WebView2 MoveFocus", configured));
+                                return S_OK;
+                              }
+                            }
+                            target->install_latest_script();
+                          } catch (...) {
+                            target->fail(result::failure("E_BACKEND",
+                                                       "WebView2 controller initialization failed"));
+                          }
+                          return S_OK;
+                        }).Get());
+                if (FAILED(creation))
+                  self->fail(hresult_failure("CreateCoreWebView2Controller", creation));
+              } catch (...) {
+                self->fail(result::failure("E_BACKEND", "WebView2 environment initialization failed"));
+              }
+              return S_OK;
+            }).Get());
+    if (FAILED(hr)) {
+      const result failure = webview_startup_failure("CreateCoreWebView2EnvironmentWithOptions", hr);
+      state_->shutdown(false);
+      return failure;
+    }
+    return result::success();
+  }
+
+  result load(std::string uri, std::string preload) override {
+    if (!state_->active()) return closed_error();
+    std::wstring wide_uri, wide_preload;
+    if (uri.find('\0') != std::string::npos || !to_wide(uri, wide_uri) ||
+        preload.find('\0') != std::string::npos || !to_wide(preload, wide_preload))
+      return result::failure("E_ARGUMENT", "The URI and preload must be valid UTF-8 without NUL");
+    if (!state_->allowed(uri))
+      return result::failure("E_NAVIGATION", "Navigation is outside the current native selection");
+    ++state_->generation;
+    state_->target_uri = std::move(uri);
+    // WebView2's registration runs in child frames too; no bridge or token
+    // executes there, even if an embedding page creates an about:blank/srcdoc frame.
+    state_->target_preload = L"(function(){if(window.top!==window)return;\n" +
+                             wide_preload + L"\n})();";
+    state_->has_load = true;
+    state_->navigation_ticket = false;
+    state_->navigation_id = 0;
+    if (state_->webview) {
+      const HRESULT hr = state_->webview->Stop();
+      if (FAILED(hr)) {
+        state_->fail(hresult_failure("WebView2 Stop", hr));
+        return state_->terminal_status;
+      }
+    }
+    state_->install_latest_script();
+    return state_->terminal_status;
+  }
+
+  result run() override {
+    if (!state_->created) return closed_error();
+    if (loop_running_) return result::failure("E_STATE", "The desktop loop is already running");
+    if (quit_loop_requested_) return state_->terminal_status;
+    loop_running_ = true;
+    struct running_guard {
+      bool& running;
+      ~running_guard() { running = false; }
+    } reset{loop_running_};
+    MSG message{};
+    while (!quit_loop_requested_) {
+      deferred_failure<state>::drain([](const std::shared_ptr<state>& failed) {
+        failed->finish_failure();
+      });
+      if (quit_loop_requested_) break;
+      // A callback may have queued another terminal failure without a native
+      // wakeup. Finish another bounded batch instead of blocking with it idle.
+      if (deferred_failure<state>::pending()) continue;
+      const BOOL received = GetMessageW(&message, nullptr, 0, 0);
+      const DWORD receive_error = received == -1 ? GetLastError() : ERROR_SUCCESS;
+      if (received <= 0) {
+        deferred_failure<state>::drain([](const std::shared_ptr<state>& failed) {
+          failed->finish_failure();
+        });
+      }
+      if (received == -1) {
+        const result failure = hresult_failure("GetMessageW", HRESULT_FROM_WIN32(
+            receive_error ? receive_error : ERROR_GEN_FAILURE));
+        request_group_quit();
+        return failure;
+      }
+      if (quit_loop_requested_) break;
+      if (!received) {
+        request_group_quit();
+        // WM_QUIT has been consumed, but approval may be deferred or denied.
+        // Only the common layer's quit_loop() commits normal loop shutdown.
+        continue;
+      }
+      TranslateMessage(&message);
+      DispatchMessageW(&message);
+    }
+    return state_->terminal_status;
+  }
+
+  result quit_loop() override {
+    if (quit_loop_requested_) return result::success();
+    quit_loop_requested_ = true;
+    // A thread message remains valid after the root window has closed. Do not
+    // use WM_QUIT: an unconsumed quit could poison a later application group.
+    if (loop_running_ && !PostThreadMessageW(owner_thread_, WM_NULL, 0, 0))
+      return win32_failure("PostThreadMessageW");
+    return result::success();
+  }
+
+  result close() override {
+    return state_->shutdown(true);
+  }
+
+  result evaluate(std::string script) override {
+    if (!state_->active()) return closed_error();
+    std::string source;
+    if (!state_->current_source(source))
+      return result::failure("E_NOT_READY", "The selected WebView2 document is not ready");
+    std::wstring wide_script;
+    if (!to_wide(script, wide_script) || script.find('\0') != std::string::npos)
+      return result::failure("E_ARGUMENT", "The script must be valid UTF-8 without NUL");
+    const auto generation = state_->generation;
+    const std::weak_ptr<state> weak = state_;
+    const HRESULT hr = state_->webview->ExecuteScript(
+        wide_script.c_str(),
+        Callback<ICoreWebView2ExecuteScriptCompletedHandler>(
+            [weak, generation](HRESULT error, LPCWSTR) -> HRESULT {
+              const auto self = weak.lock();
+              if (self && self->active() && self->generation == generation && FAILED(error)) {
+                try { self->report(hresult_failure("WebView2 ExecuteScript", error)); }
+                catch (...) {}
+              }
+              return S_OK;
+            }).Get());
+    return SUCCEEDED(hr) ? result::success() : hresult_failure("WebView2 ExecuteScript", hr);
+  }
+
+  result dispatch(std::function<void()> work) override {
+    return state_->enqueue(std::move(work));
+  }
+
+  result set_title(std::string_view title) override {
+    if (!state_->active()) return closed_error();
+    std::wstring value;
+    if (title.find('\0') != std::string_view::npos || !to_wide(title, value))
+      return result::failure("E_ARGUMENT", "The window title must be valid UTF-8 without NUL");
+    return SetWindowTextW(state_->window, value.c_str()) ? result::success() :
+           win32_failure("SetWindowTextW");
+  }
+
+  result resize(int width, int height) override {
+    if (!state_->active()) return closed_error();
+    if (width <= 0 || height <= 0 || width > 32768 || height > 32768)
+      return result::failure("E_ARGUMENT", "Window dimensions must be between 1 and 32768");
+    RECT bounds{0, 0, width, height};
+    if (!AdjustWindowRectEx(&bounds, WS_OVERLAPPEDWINDOW, FALSE, 0))
+      return win32_failure("AdjustWindowRectEx");
+    if (!SetWindowPos(state_->window, nullptr, 0, 0, bounds.right - bounds.left,
+                      bounds.bottom - bounds.top, SWP_NOMOVE | SWP_NOACTIVATE | SWP_NOZORDER))
+      return win32_failure("SetWindowPos");
+    return result::success();
+  }
+
+  result show(bool visible) override {
+    if (!state_->active()) return closed_error();
+    if (state_->controller) {
+      const HRESULT hr = state_->controller->put_IsVisible(
+          visible && !IsIconic(state_->window) ? TRUE : FALSE);
+      if (FAILED(hr)) return hresult_failure("WebView2 put_IsVisible", hr);
+    }
+    state_->visible = visible;
+    ShowWindow(state_->window, visible ? SW_SHOW : SW_HIDE);
+    return result::success();
+  }
+
+  result focus() override {
+    if (!state_->active()) return closed_error();
+    if (!state_->visible) return result::failure("E_STATE", "A hidden window cannot be focused");
+    if (IsIconic(state_->window)) ShowWindow(state_->window, SW_RESTORE);
+    if (!SetForegroundWindow(state_->window))
+      return result::failure("E_FOCUS", "Windows refused foreground activation");
+    SetFocus(state_->window);
+    if (state_->controller) {
+      const HRESULT hr = state_->controller->MoveFocus(
+          COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+      if (FAILED(hr)) return hresult_failure("WebView2 MoveFocus", hr);
+    }
+    return result::success();
+  }
+
+  result minimize() override {
+    const auto self = state_;
+    return self->request_window_state(SW_SHOWMINIMIZED);
+  }
+
+  result maximize() override {
+    const auto self = state_;
+    return self->request_window_state(SW_SHOWMAXIMIZED);
+  }
+
+  result restore() override {
+    const auto self = state_;
+    return self->request_window_state(SW_SHOWNORMAL);
+  }
+
+  window_state_result get_window_state() const override {
+    return state_->observed_window_state();
+  }
+
+  value_result clipboard_read() override {
+    if (!state_->active()) return {closed_error(), {}};
+    clipboard_lock clipboard(state_->window);
+    if (!clipboard.opened) return {win32_failure("OpenClipboard"), {}};
+    if (!IsClipboardFormatAvailable(CF_UNICODETEXT))
+      return {result::failure("E_CLIPBOARD_FORMAT", "The clipboard does not contain text"), {}};
+    const HGLOBAL handle = GetClipboardData(CF_UNICODETEXT);
+    if (!handle) return {win32_failure("GetClipboardData"), {}};
+    const SIZE_T bytes = GlobalSize(handle);
+    if (bytes < sizeof(wchar_t) || bytes > (max_clipboard_bytes + 1) * sizeof(wchar_t) ||
+        bytes % sizeof(wchar_t))
+      return {result::failure("E_CLIPBOARD_SIZE", "Clipboard text has an invalid size"), {}};
+    global_lock memory(handle);
+    if (!memory.data) return {win32_failure("GlobalLock"), {}};
+    const auto* text = static_cast<const wchar_t*>(memory.data);
+    const auto capacity = bytes / sizeof(wchar_t);
+    std::size_t length = 0;
+    while (length < capacity && text[length]) ++length;
+    std::string value;
+    if (length == capacity || !to_utf8(std::wstring_view(text, length), value))
+      return {result::failure("E_CLIPBOARD_TEXT", "Clipboard text is malformed"), {}};
+    if (value.size() > max_clipboard_bytes)
+      return {result::failure("E_CLIPBOARD_SIZE", "Clipboard text exceeds 1 MiB of UTF-8"), {}};
+    return {result::success(), std::move(value)};
+  }
+
+  result clipboard_write(std::string_view text) override {
+    if (!state_->active()) return closed_error();
+    std::wstring value;
+    if (text.size() > max_clipboard_bytes || text.find('\0') != std::string_view::npos ||
+        !to_wide(text, value))
+      return result::failure("E_ARGUMENT", "Clipboard text is too large or is not valid UTF-8");
+    HGLOBAL handle = GlobalAlloc(GMEM_MOVEABLE, (value.size() + 1) * sizeof(wchar_t));
+    if (!handle) return win32_failure("GlobalAlloc");
+    {
+      global_lock memory(handle);
+      if (!memory.data) {
+        const auto failure = win32_failure("GlobalLock");
+        GlobalFree(handle);
+        return failure;
+      }
+      std::memcpy(memory.data, value.c_str(), (value.size() + 1) * sizeof(wchar_t));
+    }
+    clipboard_lock clipboard(state_->window);
+    if (!clipboard.opened) {
+      const auto failure = win32_failure("OpenClipboard");
+      GlobalFree(handle);
+      return failure;
+    }
+    if (!EmptyClipboard() || !SetClipboardData(CF_UNICODETEXT, handle)) {
+      const auto failure = win32_failure("SetClipboardData");
+      GlobalFree(handle);
+      return failure;
+    }
+    // Successful SetClipboardData transfers ownership of handle to Windows.
+    return result::success();
+  }
+
+  value_result choose_directory() override {
+    const auto current = state_;
+    if (!current->active()) return {closed_error(), {}};
+    if (current->file_dialog)
+      return {result::failure("E_BUSY", "A file or directory dialog is already open"), {}};
+    ComPtr<IFileOpenDialog> dialog;
+    HRESULT hr = CoCreateInstance(CLSID_FileOpenDialog, nullptr, CLSCTX_INPROC_SERVER,
+                                 IID_PPV_ARGS(dialog.GetAddressOf()));
+    if (FAILED(hr)) return {hresult_failure("Create directory dialog", hr), {}};
+    FILEOPENDIALOGOPTIONS flags{};
+    hr = dialog->GetOptions(&flags);
+    if (SUCCEEDED(hr))
+      hr = dialog->SetOptions(flags | FOS_PICKFOLDERS | FOS_FORCEFILESYSTEM |
+                              FOS_PATHMUSTEXIST | FOS_NOCHANGEDIR);
+    if (FAILED(hr)) return {hresult_failure("Configure directory dialog", hr), {}};
+    const auto shown = show_file_dialog(current, dialog.Get(), "Show directory dialog");
+    if (!shown.ok) return {shown, {}};
+    ComPtr<IShellItem> selected;
+    hr = dialog->GetResult(selected.GetAddressOf());
+    if (FAILED(hr)) return {hresult_failure("Read directory selection", hr), {}};
+    com_string path;
+    hr = selected->GetDisplayName(SIGDN_FILESYSPATH, &path.value);
+    if (FAILED(hr)) return {hresult_failure("Read selected directory path", hr), {}};
+    std::string value;
+    if (!bounded_utf8(path.value, 32768, value))
+      return {result::failure("E_PATH", "The selected directory path is invalid"), {}};
+    if (!current->active()) return {closed_error(), {}};
+    return {result::success(), std::move(value)};
+  }
+
+  file_selection_result choose_files(const open_file_options& settings) override {
+    const auto current = state_;
+    if (!current->active()) return {closed_error(), {}};
+    if (current->file_dialog)
+      return {result::failure("E_BUSY", "A file or directory dialog is already open"), {}};
+    const bool multiple = settings.multiple;
+    ComPtr<IFileOpenDialog> dialog;
+    HRESULT hr = CoCreateInstance(CLSID_FileOpenDialog, nullptr, CLSCTX_INPROC_SERVER,
+                                 IID_PPV_ARGS(dialog.GetAddressOf()));
+    if (FAILED(hr)) return {hresult_failure("Create file open dialog", hr), {}};
+    FILEOPENDIALOGOPTIONS flags{};
+    hr = dialog->GetOptions(&flags);
+    if (SUCCEEDED(hr)) {
+      flags &= ~(FOS_PICKFOLDERS | FOS_ALLOWMULTISELECT | FOS_ALLNONSTORAGEITEMS |
+                 FOS_NOVALIDATE | FOS_STRICTFILETYPES);
+      flags |= FOS_FORCEFILESYSTEM | FOS_PATHMUSTEXIST | FOS_FILEMUSTEXIST | FOS_NOCHANGEDIR;
+      if (multiple) flags |= FOS_ALLOWMULTISELECT;
+      hr = dialog->SetOptions(flags);
+    }
+    if (FAILED(hr)) return {hresult_failure("Configure file open dialog", hr), {}};
+    const auto configured = configure_file_dialog(dialog.Get(), settings.title,
+                                                  settings.extensions, false);
+    if (!configured.ok) return {configured, {}};
+    const auto shown = show_file_dialog(current, dialog.Get(), "Show file open dialog");
+    if (!shown.ok) return {shown, {}};
+    ComPtr<IShellItemArray> selected;
+    hr = dialog->GetResults(selected.GetAddressOf());
+    if (FAILED(hr)) return {hresult_failure("Read file selections", hr), {}};
+    if (!selected)
+      return {result::failure("E_PATH", "No local files were selected"), {}};
+    DWORD count = 0;
+    hr = selected->GetCount(&count);
+    if (FAILED(hr)) return {hresult_failure("Count file selections", hr), {}};
+    if (!count || count > max_file_selection_count || (!multiple && count != 1))
+      return {result::failure("E_PATH", "The selected file count is invalid"), {}};
+    std::vector<std::string> paths;
+    paths.reserve(count);
+    std::size_t total = 0;
+    for (DWORD index = 0; index < count; ++index) {
+      ComPtr<IShellItem> item;
+      hr = selected->GetItemAt(index, item.GetAddressOf());
+      if (FAILED(hr)) return {hresult_failure("Read file selection", hr), {}};
+      auto path = selected_file_path(item.Get());
+      if (!path.status.ok) return {std::move(path.status), {}};
+      if (path.value.size() > max_file_selection_bytes - total)
+        return {result::failure("E_PATH", "The selected file paths exceed 128 KiB"), {}};
+      total += path.value.size();
+      paths.push_back(std::move(path.value));
+    }
+    if (!current->active()) return {closed_error(), {}};
+    return {result::success(), std::move(paths)};
+  }
+
+  value_result choose_save_file(const save_file_options& settings) override {
+    const auto current = state_;
+    if (!current->active()) return {closed_error(), {}};
+    if (current->file_dialog)
+      return {result::failure("E_BUSY", "A file or directory dialog is already open"), {}};
+    std::wstring name;
+    // Common validation additionally rejects nonportable/reserved basenames.
+    if (settings.default_name.size() > 255 ||
+        settings.default_name.find_first_of("\\/:") != std::string::npos ||
+        settings.default_name.find('\0') != std::string::npos ||
+        !to_wide(settings.default_name, name))
+      return {result::failure("E_ARGUMENT", "The default file name is invalid"), {}};
+    ComPtr<IFileSaveDialog> dialog;
+    HRESULT hr = CoCreateInstance(CLSID_FileSaveDialog, nullptr, CLSCTX_INPROC_SERVER,
+                                 IID_PPV_ARGS(dialog.GetAddressOf()));
+    if (FAILED(hr)) return {hresult_failure("Create file save dialog", hr), {}};
+    FILEOPENDIALOGOPTIONS flags{};
+    hr = dialog->GetOptions(&flags);
+    if (SUCCEEDED(hr)) {
+      flags &= ~(FOS_PICKFOLDERS | FOS_ALLOWMULTISELECT | FOS_ALLNONSTORAGEITEMS |
+                 FOS_NOVALIDATE | FOS_STRICTFILETYPES | FOS_FILEMUSTEXIST | FOS_CREATEPROMPT);
+      // Selecting a path must not create even a temporary write-test file.
+      flags |= FOS_FORCEFILESYSTEM | FOS_PATHMUSTEXIST | FOS_NOCHANGEDIR |
+               FOS_OVERWRITEPROMPT | FOS_NOTESTFILECREATE;
+      hr = dialog->SetOptions(flags);
+    }
+    if (FAILED(hr)) return {hresult_failure("Configure file save dialog", hr), {}};
+    const auto configured = configure_file_dialog(dialog.Get(), settings.title,
+                                                  settings.extensions, true);
+    if (!configured.ok) return {configured, {}};
+    if (!name.empty()) {
+      hr = dialog->SetFileName(name.c_str());
+      if (FAILED(hr)) return {hresult_failure("Set default file name", hr), {}};
+    }
+    const auto shown = show_file_dialog(current, dialog.Get(), "Show file save dialog");
+    if (!shown.ok) return {shown, {}};
+    ComPtr<IShellItem> selected;
+    hr = dialog->GetResult(selected.GetAddressOf());
+    if (FAILED(hr)) return {hresult_failure("Read file save selection", hr), {}};
+    // Return the actual final selection, including any native extension change.
+    auto path = selected_file_path(selected.Get());
+    if (!current->active()) return {closed_error(), {}};
+    return path;
+  }
+
+  result popup_menu(const std::vector<menu_item>& items) override {
+    if (!state_->active()) return closed_error();
+    if (items.empty()) return state_->show_menu(items, POINT{});
+    if (!IsWindowVisible(state_->window))
+      return result::failure("E_WINDOW_HIDDEN", "Show the owning window before opening its popup menu");
+    POINT position{};
+    if (!GetCursorPos(&position)) return win32_failure("GetCursorPos");
+    return state_->show_menu(items, position);
+  }
+
+  result set_tray(const tray_options& settings) override {
+    return state_->update_tray(settings);
+  }
+
+  result clear_tray() override {
+    if (!state_->active()) return closed_error();
+    return state_->remove_tray();
+  }
+
+  result register_global_shortcut(std::uint64_t token, const global_shortcut& shortcut) override {
+    return state_->add_global_shortcut(token, shortcut);
+  }
+
+  result unregister_global_shortcut(std::uint64_t token) override {
+    if (!state_->active()) return closed_error();
+    return state_->remove_global_shortcut(token);
+  }
+
+  capabilities get_capabilities() const override {
+    return {"webview2", true, true, true, true, true, true, true, true, true, true, true, true,
+            true, true};
+  }
+
+ private:
+  void request_group_quit() {
+    // WM_QUIT and a broken message pump are process-loop events, not a request
+    // to close just the root HWND. The common layer owns closing every member.
+    if (quit_requested_) {
+      try {
+        const auto callback = quit_requested_;
+        callback();
+      } catch (...) {
+        // As with WM_CLOSE, callback failure must not turn a proposal into a
+        // forced close. GetMessage errors are still returned by run().
+        try {
+          state_->report(result::failure("E_CALLBACK", "The desktop quit request failed"));
+        } catch (...) {}
+      }
+    } else {
+      state_->shutdown(true);
+      quit_loop();
+    }
+  }
+
+  std::shared_ptr<state> state_;
+  bool creation_attempted_{false};
+  bool com_initialized_{false};
+  bool loop_running_{false};
+  bool quit_loop_requested_{false};
+  DWORD owner_thread_{0};
+  std::function<void()> quit_requested_;
+};
+
+}  // namespace
+
+std::unique_ptr<backend> make_backend() {
+  return std::make_unique<windows_backend>();
+}
+
+}  // namespace soui::desktop::detail

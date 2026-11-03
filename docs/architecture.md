@@ -1,5 +1,17 @@
 # 架构与所有权
 
+开发分支可显式构建独立的 `Soui::Runtime` 无窗口子集，目标平台、头文件
+交付边界与系统熵见 [跨平台说明](cross-platform.md) 和
+[ADR-0122](adr/0122-portable-runtime-core.md)。独立 `Soui::Desktop` 的三系统
+WebView 后端、统一 API 和实际验收边界见 [统一桌面入口](unified-desktop.md) 与
+[ADR-0119](adr/0119-unified-system-webview-desktop.md)。以下 `Soui::Sdk` 说明仍适用
+原 Windows 路径，其历史验收不能自动转移给新入口。
+
+新入口的根 application 管理一个事件循环和至多 32 个活动窗口；子窗口独立
+持有资源根、Bridge 授权和导航代际，所有业务回调按组串行。`close` 关闭当前窗，
+`quit` 关闭整组；根析构撤销所有子窗口。原生菜单/托盘归属具体窗口而非网页，
+细节见 [ADR-0120](adr/0120-managed-desktop-windows-and-native-actions.md)。
+
 可选 `Soui::AutoHost` 在 `sdk/renderers/auto/` 统一持有启动选择与后端生命周期。
 `auto` 模板使用该组件，启动前优先 WebView2，明确不可用时使用随包 MiniBlink；
 两份页面资源分开构建。已有模板和基础 SDK 的依赖不变。详见 [ADR-0127](adr/0127-automatic-renderer-host.md)。
@@ -70,3 +82,4 @@ preview.10 的动作契约是方法注册的可选元数据和原生校验边界
 当前是 C++17 静态源码 SDK，使用 MSVC v143、动态 Release CRT（包括带调试符号的 Debug 配置）。公开 C++ 类不是跨编译器稳定的 DLL ABI；应用、SDK 和接口宏必须使用一致的构建设置。CMake 导出携带必要的头文件、编译特性和系统链接库。
 
 性能实验宏和测试注入宏不属于标准发行构建契约。标准 SDK 的目标、模板和 Demo 使用相同的公开类型布局。
+

@@ -1,0 +1,22 @@
+:root { color-scheme: dark; font-family: system-ui, sans-serif; background: #10171c; color: #e9f0ed; }
+* { box-sizing: border-box; }
+body { margin: 0; }
+main { max-width: 1100px; padding: 52px 48px 28px; margin: auto; }
+.eyebrow { letter-spacing: .22em; color: #a4d9be; font-size: 12px; font-weight: 700; }
+h1 { font-size: clamp(34px, 5.5vw, 62px); line-height: 1.07; letter-spacing: -.05em; margin: 24px 0 18px; }
+.intro { max-width: 700px; color: #a7b7be; line-height: 1.65; }
+.status { display: flex; align-items: center; gap: 10px; margin: 25px 0 32px; font-size: 13px; }
+#dot { width: 8px; height: 8px; border-radius: 50%; background: #b89760; }
+#dot.connected { background: #a4d9be; }
+.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+article { border: 1px solid #33434a; border-radius: 12px; padding: 21px; background: #172127; }
+h2 { font-size: 14px; margin: 0 0 18px; letter-spacing: .04em; }
+article p { color: #a7b7be; font-size: 13px; line-height: 1.6; min-height: 64px; }
+button { background: #a4d9be; color: #11231b; border: 0; border-radius: 6px; padding: 9px 12px; font: inherit; font-size: 12px; font-weight: 650; margin: 4px 5px 4px 0; cursor: pointer; }
+button:hover { background: #c9ead8; } button:disabled { opacity: .35; cursor: not-allowed; }
+.console { border: 1px solid #33434a; border-radius: 12px; margin-top: 18px; overflow: hidden; }
+.console-head { display: flex; justify-content: space-between; align-items: center; padding: 10px 18px; border-bottom: 1px solid #33434a; color: #a7b7be; font-size: 11px; letter-spacing: .12em; }
+.console-head button { background: #26383e; color: #c9ded7; }
+pre { padding: 0 18px; min-height: 70px; max-height: 190px; overflow: auto; white-space: pre-wrap; word-break: break-word; color: #b7d8c8; font-size: 12px; line-height: 1.75; }
+.footnote { color: #788c94; font-size: 11px; line-height: 1.5; margin-top: 22px; }
+@media(max-width: 760px) { main { padding: 28px 20px; } .grid { grid-template-columns: 1fr; } article p { min-height: auto; } }

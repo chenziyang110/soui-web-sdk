@@ -1,5 +1,7 @@
 # 已知限制与生产门槛
 
+> 本地恢复候选说明：现存 CI 提交 32b412b1 整合固定 main ce9757e3，VERSION 仍为 0.6.0；本轮仅静态与源码清单验证，未编译、运行或发布。以下 main 发布记录、原 PR 9e4e9c1f / main 0cdc0a9a 沿革及 tree 98cb4681 的 Windows build-only 记录保留各自身份，所有成功、失败及未知状态均不自动转授。本地内容不等同已发布资产，发布前版本身份仍待协调。见[恢复身份与证据范围](acceptance/pr103-local-recovery-20261102.md)。
+
 0.6.0 按本次授权采用普通 GitHub Release 分类。两架构内核与必要 SDK 构建、安装消费者、默认应用八次运行及九份供应/应用 ZIP 已有实际记录；受控 GUI 代表例已记录，完整对应源码及最终发布身份见附件清单。`releaseReady=false`、`productionQualificationComplete=false`、`fullDevtoolsGoalComplete=false`。实际范围及保留失败见[发布说明](releases/0.6.0.md)和[RELEASE-FACTS](../verification/production-validation/0.6.0-release-2026-10-29/RELEASE-FACTS.json)，不从下列历史候选继承通过。
 
 ## 0.6.0 后续源码候选
@@ -104,8 +106,8 @@ preview.11 Win7 SP1 x86 [第三轮客体](../verification/production-validation/
 | 同文档长会话续接 | preview.11 已实现显式公共续期、稳定授权资源归属与 Web 自动续期，[原生契约及安装后独立消费者](../verification/production-validation/preview11-session-renewal-preflight-2026-09-26/README.md)在两架构通过，设计见 [ADR-0014](adr/0014-same-document-session-renewal.md)。[真实时钟续期独立消费者](../verification/production-validation/preview11-real-renewal-build-2026-09-26/README.md)的 x86/x64 编译与无窗口自检通过；随后[本机 x86 GUI 首次短测](../verification/production-validation/preview11-real-renewal-smoke-attempt1-2026-09-26/README.md)在页面就绪前因会话关闭退出 1，任务未启动，x64 GUI 与真实超过 30 分钟/八小时运行未执行。[v2 修正夹具](../verification/production-validation/preview11-real-renewal-v2-build-2026-09-26/README.md)已完成两架构编译、每架构 45 项无窗口阶段自检、106 项分析器合成检查及 8 项运行输入绑定检查；随后[两架构首次 GUI](../verification/production-validation/preview11-real-renewal-v2-smoke-2026-09-26/README.md)均因初始 60 秒未就绪退出 1，bootstrap 和任务调用为 0，真实续期未通过；模拟时钟和短测不能替代任务/订阅跨轮换保留的真实长时验收。长模态或休眠跨过期限仍明确失败，完整门槛未关闭 |
 | 依赖授权 | 已保留部分来源、散列及授权文本；[历史 preview.15 运行包核对](../verification/production-validation/license-runtime-notices-2026-09-28/README.md)确认 x86 链接命令显式列出 `openssl.lib`，[同一构建的链接读取补充](../verification/production-validation/license-link-read-traces-2026-09-28/README.md)显示 x86/x64 链接器均打开该库。[匹配 x86 DLL/PDB 的成员记录](../verification/production-validation/license-pdb-members-2026-09-29/README.md)进一步列出 501 个来自 `openssl.lib` 的编译单元；精确 x64 DLL 没有 CodeView、采集时无链接 PDB，尚无同等级证据。该历史版本四份 Starter/Workbench 随包 `resources/legal/` 均未包含导入的 OpenSSL/SSLeay 许可文本。[OpenSSL 官方说明](https://openssl-library.org/source/license/)确认 1.0.2h 适用旧双许可。适用再分发条件与首方许可仍待审阅，见 [Issue #39](https://github.com/chenziyang110/soui-web-sdk/issues/39)；`releaseReady=false` |
 | Web 构建依赖审计 | Vite 6.4.3 / PostCSS 8.5.23 兼容性升级后，本次 npm audit：SDK、模板、Demo 均为 0 项；完整结果在 verification/*-audit.json。后续更新继续由锁文件、Dependabot 和发布验收共同约束 |
-| 自动验证 | 按当前维护决策不配置远程 CI；每个 PR 必须提供适用的本机构建、测试和真实桌面验收证据 |
-| 分支保护 | 当前私有仓库方案不支持 GitHub 分支保护；维护者通过 PR、CODEOWNERS、Squash 合并和人工评审执行流程约束 |
+| 自动验证 | 已启用[限定跨平台 CI](ci-platform-matrix.md#候选身份与证据边界)。d8589e9 首轮六任务均失败，四个 Unix 任务各有两项 Runtime/安装消费者的限定通过；checkout 与模板校验修复仍待新 head 核验。历史拒绝/失败保留，真实桌面验收仍须目标机证据 |
+| 分支保护 | 历史私有仓库阶段不支持 GitHub 分支保护；维护者通过 PR、CODEOWNERS、Squash 合并和人工评审执行流程约束。本轮未查询或修改当前分支保护设置 |
 | 安装、更新、签名 | 由实际项目配置，并验证升级和回退 |
 
 发布负责人应针对具体产品逐项补证据、处理未关闭缺陷，再确定生产版本。验收结果保持 `sourceDeliveryVerified=false`、`benchmarkValid=false`、`releaseReady=false`。
@@ -115,3 +117,28 @@ preview.11 Win7 SP1 x86 [第三轮客体](../verification/production-validation/
 [V10 只读时序诊断](../verification/production-validation/win7-sp1-x86-v02-window-visibility-v10-2026-09-29/README.md)在同一官方 x86 构建及 Win7 SP1 x86 快照中，10–40 秒的七次窗口探针未检出窗口，客体单调计时 46.933 秒首次检出，之后至 105 秒保持可见。该轮应用和客体均原生退出 0，但关闭由夹具请求，未执行缩放、滚动、真实中文 IME 或公共任务并行；不能据此判断可见性波动原因。V9 的真实失败仍保留，Issue #42 的完整交互条件仍开放。
 
 [V11 原生工作区缩放](../verification/production-validation/win7-v11-native-resize-2026-09-29/README.md)在 2026-09-29 的独立 attempt3 中，通过冻结输入 `6d712b263f6318aacd8077418d1906aa013104ed6c7113ca2faf98c637716aa2` 验证历史 x86 Release 构建 `b6caec6c-117e-49eb-86fa-4182e64d5b55`（源码 SHA-256 `60d729c8c0fe55dcabd72bf3a1aa2255af42017c10c63151a880fecd7d511640`）。Win7 SP1 x86、1024×768 下的矩形由 `[87,24,937,664]` 经一次真实 80×60 边框拖拽变为 `[87,24,1017,724]`，右下边框在默认任务栏上方；随后由夹具请求关闭，应用原生退出 0，客体严格校验及 QEMU 也退出 0。该输入的有限缩放结果已有真实原件，无需因文档更新重复执行；它不证明 0.6.0 载荷、中文 IME、滚轮与公共任务并行、800×600、DPI/多屏或完整 V02。`win7CurrentV02Verified=false`、`benchmarkValid=false`、`releaseReady=false` 保持；Issue #42 保留尚未完成的交互验收。
+
+## 跨平台开发状态
+
+以下保留固定 PR 9e4e9c1f（0.6.0-preview.3）的限定记录；tree 98cb4681 的 Windows x86/x64 build-only 范围另见[恢复记录](acceptance/pr103-local-recovery-20261102.md)。本次恢复候选未编译或运行，不继承旧通过。
+
+`Soui::Runtime` 提供无窗口跨平台构建路径；另有独立 `Soui::Desktop` 系统 WebView
+后端和统一示例。截至 2026-10-26，Linux x64 已有真实头库编译链接、独立安装消费
+及历史窗口/Bridge/模块证据；最新六纵切未重新完成 Linux GUI 验收。
+macOS universal2 已完成构建及安装消费，Apple Silicon 主机有新候选窗口/Bridge/
+模块及 DOM 关闭否决的限定证据，Intel slice 未实际运行。
+Windows x64 Release 已完成 SDK、原模板及探针交付构建，原模板有可见窗口、
+app.info、模块/同源 fetch、原生标题栏最大化/还原及正常窗口关闭证据，进程退出码未采集。
+后续 WebView2 DOM 关闭审批修复的生产候选，在扩展独立 fixture 首轮自然退出 0；
+最终 fixture 增加空 handle 防御和错误记录后编译成功，但正常启动被 OS 拒绝，
+**最终 fixture 运行仍受阻**，不能继承首轮通过结论。错误原文乱码，无可靠原生数值码，
+不能确定具体策略产品；生产候选及链接 SDK 字节未变，详见 [ADR 0138](adr/0138-cancellable-user-close.md)。
+六纵切已有实现，但目标机菜单/托盘/快捷键、剪贴板/对话框及完整关闭交互仍缺证据；
+Linux 托盘依赖 XEmbed 宿主，无兼容宿主明确失败。其他架构、目标系统、DPI/IME/
+多屏及长稳矩阵未完成；完整可访问性、Agent 与安装/签名/更新流程尚未全部迁移。
+统一 SDK 开发 ZIP 不是正式安装器。各次源码与产物身份见
+[集中限定验收记录](acceptance/unified-desktop-2026-10-23.md)，旧证据不授予最终 head 全绿。
+矩阵/fake/VM 测试不代替实机。详见[统一桌面限制](unified-desktop.md)
+及[Runtime 范围](cross-platform.md)。
+本开发 PR 不改变既有发布与生产门槛，也不替换冻结的 0.5.0 包。
+

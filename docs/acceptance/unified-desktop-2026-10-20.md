@@ -1,0 +1,322 @@
+# 统一桌面入口本轮验证：2026-10-20
+
+> 历史记录：以下结果与阻塞属于各自当时的源码/环境，不是当前总状态。
+> 最新六纵切集中验证和目标矩阵见 [2026-10-23 记录](unified-desktop-2026-10-23.md)。
+
+本记录只覆盖 PR #103 新增的未发布 `Soui::Runtime` / `Soui::Desktop` 路径，
+不修改 `verification/acceptance.json`，不授予生产或全架构通过结论。
+
+## 已实际执行
+
+环境：Debian 13 x64、GCC 14.2、C++17、GTK 3.24.49、WebKitGTK 2.52.6、
+Node 24.19。依赖来自官方 Debian 包，隔离解包供编译链接，未执行安装脚本，
+未提交依赖二进制。构建工具与依赖路径只用于本地测试，不写入源码配置。
+
+| 检查 | 配置与命令 | 结果 |
+|---|---|---|
+| 三层源码及真实 Linux 后端 | `cmake --preset desktop`，`cmake --build --preset desktop`，Release | 编译、链接通过；包含 Runtime、Desktop、同源码示例和原生 Linux 集成测试可执行文件 |
+| 当前全部默认本地回归 | `ctest --preset desktop --output-on-failure` | 7/7 通过；其中 4 项 portable、2 项 Desktop 无窗口契约、1 项开发包工具回归 |
+| 共用应用/协议边界 | `soui_desktop_contract` | 255 项检查、0 失败；fake backend，不调用原生窗口/系统能力 |
+| 实际 preload 脚本 | `SOUI_DESKTOP_CONTRACT_EXECUTABLE=out/desktop/tests/desktop/soui_desktop_contract node --test tests/desktop/preload.test.cjs` | 10/10 通过；从实际编译代码输出脚本，在 Node VM 运行，不是真实浏览器 |
+| 平台矩阵与拒绝配置 | `node --test tests/portable/platform-matrix.test.cjs`（使用实际 CMake） | 28/28 通过；合成架构策略不代表目标交叉编译 |
+| 安装 | `cmake --install out/desktop --config Release` | Runtime / Desktop 安装包生成成功 |
+| 独立消费者 | `cmake -S examples/unified-desktop -B out/desktop-final-consumer -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$PWD/out/desktop-install"`，随后 build | 仅使用安装后的公共头文件和目标，编译、链接通过 |
+| 前一轮独立 Debug 检查（非本次多窗口增量） | Desktop 关闭和开启两种配置，各运行 contract / preload | 两种配置均 2/2 通过；Desktop 开启时原生 Linux 集成目标编译链接通过，未执行 GUI |
+| 前一轮 Linux 后端严格编译（非本次多窗口增量） | GCC `-std=c++17 -Wall -Wextra -Wpedantic -Werror` 配合实际 GTK/WebKit 库 | 后端及原生测试编译、链接通过 |
+| 开发包入口 | `node tools/package-desktop.cjs --build-dir out/desktop --output out/desktop-package-managed` | build → 7 套 CTest → install → ZIP 实际完成；另核验 ZIP CRC、归档 SHA-256、34 个载荷文件字节数及 SHA-256 |
+| 本轮独立消费者 | 使用上述开发包 `sdk` 作为唯一 `CMAKE_PREFIX_PATH`，独立配置、构建同源码多窗口示例 | 编译、链接通过，未运行 GUI |
+| 地址/未定义行为检查 | GCC ASan+UBSan 重编公共契约，`ASAN_OPTIONS=detect_leaks=0` | 255 项通过；完整 LeakSanitizer 因环境 ptrace 不兼容报 fatal，不能宣称泄漏检查通过 |
+| 补丁检查 | `git diff --check` | 通过 |
+
+本次增量新增：窗口间 token/请求序号隔离、同 URI 不同窗口、根窗口先关闭、最后一窗退出、显式整组退出、32 窗口上限、跨窗模态回调串行化、菜单命令归属与输入限制。Linux 原生集成可执行文件已重新编译，仍未运行。Windows/macOS 新增菜单与托盘只有源码审查，尚无目标编译证据。
+
+共用回归包含：URI 根边界、错误来源/frame/token、重复 ID、同 URI 原生重载、
+旧代际消息与响应、回调内导航/关闭、模态消息重入、有界 dispatch、非法响应、
+UTF-8 请求边界、超时/pagehide Promise 拒绝及 `__proto__` JSON 语义。
+
+## 明确未通过验收
+
+- Linux 真实窗口和 JavaScript/Bridge 集成：早期 shell 环境不能创建 Xvfb/D-Bus
+  所需 Unix socket，提升入口也未能初始化。后续使用受支持的既有云图形桌面，经文件管理器确认同一源码目录可访问，并在该会话启动样例；不再把“没有显示服务”视为唯一阻塞。实际启动因系统前缀缺少 `WebKitNetworkProcess` 辅助进程而中止，尚未加载页面。隔离开发库仅能支撑编译；正式发行库没有采用临时辅助程序路径覆盖。当前仍需正确安装的系统 WebKitGTK 运行依赖。未绕过权限、修改第三方二进制或关闭 WebKit sandbox。
+- Windows x86/x64/ARM64：没有 Windows SDK/MSVC 目标环境，后端只完成实现与
+  源码/API 审查，未编译、链接或运行。原 Windows SOUI/Miniblink 默认路径未在
+  本环境重建。
+- macOS x64/ARM64/universal2：没有 Apple SDK，未编译、链接或运行。
+- Linux ARM64/x86/ARM32：未交叉编译或实机运行。32 位目标还依赖发行版是否提供
+  所需 WebKitGTK 开发/运行包及匹配 ABI。
+- 未执行真实 DPI、IME、焦点、多屏、长期内存、重载稳定性、系统对话框和权限交互，
+  没有 Electron 性能或逐像素对比结论。
+
+原生目标机下一步按 [统一桌面说明](../unified-desktop.md)、
+[Linux 用例](../../tests/portable/desktop-linux.md) 与
+[macOS 检查单](../../tests/desktop/macos-wkwebview.md) 执行。Windows 先使用匹配
+架构的官方 WebView2 SDK/当前受支持 Runtime 构建同一示例，再逐项执行窗口、
+reload、双向 Bridge、系统能力、关闭与晚回调检查。真实引擎导航 ticket 的事件
+顺序必须在各目标机确认，不能由 fake backend 的通过结论替代。
+
+本仓库按既有约定不新增远程 CI。PR 保持 Draft，等待维护者审查及目标机验收。
+
+## 生命周期及打包稳健性增量
+
+本轮最终代码重新编译后通过全部七套 CTest：公共契约284项、preload10项、打包工具11项，以及portable四套检查。新增生命周期用例先对旧HEAD复现12个断言失败，修复后通过。独立安装包再次完成真实 build、CTest注册核对/执行、install和ZIP；仅引用该包的示例消费者编译链接通过。ZIP CRC、归档SHA-256及34个载荷文件哈希已重新核对。
+
+新增Linux原生阶段覆盖“根窗口先关闭、子窗口仍加载/交换消息、最后结束根循环”，已用实际GTK/WebKit库严格编译链接。它未实际运行，不计入七套默认无窗口测试。Windows旧菜单选择的生成代际修复仍只有源码审查，未目标编译。上述GUI运行依赖阻塞尚未解决；本轮没有安装系统包。
+
+## 显式本地资产读取增量
+
+Linux x64 / GCC 14.2 / Release 完整构建（含真实 GTK/WebKit 后端、原生 fixture
+和示例）通过；最终八套 CTest 全部通过。新增生产文件读取器使用真实临时文件，
+957 项检查、0 失败、symlink 分支无跳过；公共 Bridge 契约303项、preload VM
+16项、打包工具11项均通过。新增用例覆盖大小、MIME、原始字节、路径、特殊文件、
+根边界、启用/禁用及窗口/来源/导航隔离。JS 孤立 UTF-16 代理字符导致超时的问题
+在独立审查中发现，修复为发送前拒绝；有效 emoji 保留，最终 VM 回归通过。
+
+改动的五个 C++ 翻译单元独立使用 `-Wall -Wextra -Wpedantic -Werror` 编译通过。
+尝试全仓 `-Werror` 时，既有 Runtime 的缺字段初始化和符号比较警告导致失败；
+未为此修改无关服务或放宽源码检查，完整构建按项目原有警告策略运行。
+文件读取器 ASan/UBSan 通过，运行参数为 `ASAN_OPTIONS=detect_leaks=0`；
+LeakSanitizer 受 ptrace 环境限制不可用，不能据此宣称无泄漏。
+
+真实开发包入口重新完成构建、八项测试注册核对/执行、安装与 ZIP，仅引用安装包
+的独立示例消费者编译链接通过。34个文件的字节数/SHA-256、ZIP CRC 和归档散列
+核对通过。此记录不代表正式发布，仍保持 `releaseReady=false`。
+
+未执行新的真实 GUI 或 Windows/macOS/ARM 目标运行。此前获得系统依赖安装许可
+后，受支持的提升入口在 apt 启动前因只读文件系统初始化错误失败，未安装依赖；
+未通过其他入口绕过限制。新资产 API 不改变这一验收边界，也不证明原生
+ES module、fetch 或跨引擎 CORS 已得到统一支持。
+
+## 异步资产读取增量
+
+Linux x64 / GCC 14.2 / Release 最终重新构建、九套 CTest 全通过。生产工作线程
+用确定性门闩执行282项检查，覆盖2线程/16作业上限、UI结果持有额度、排队与
+运行中取消、读取未结束时销毁立即返回、异常恢复和取消/完成竞争；同一最终
+测试连续执行100次通过。公共 Bridge320项检查，真实文件读取957项检查，
+preload16项和打包11项均通过，刷新/关闭后旧结果不交付。
+
+公共契约与改动实现以 C++17 / `-Wall -Wextra -Wpedantic -Werror` 编译通过。
+工作线程测试 ASan/UBSan 通过，仍为 `detect_leaks=0`；LeakSanitizer 的 ptrace
+限制未解除。进程固定工作池具有刻意的进程期生命周期，不能宣称退出前已回收。
+
+真实开发包入口再次完成 build、九项测试注册核对/执行、install和ZIP；最终
+安装包的独立示例消费者编译链接通过。34个载荷文件字节数/SHA-256及ZIP
+CRC/归档散列核对通过。原生 GTK/WebKit 后端与 fixture 已编译链接，但未运行。
+没有重试系统安装、修改安全配置或使用远程CI；Windows/macOS/ARM和真实GUI
+验收缺口保持不变，未扩大正式发布或性能声明。
+
+## 本地 HTTP 资源源代码增量（07:12 UTC）
+
+按本轮“以实现为主，少量检查，后续统一回归”范围执行：
+
+- Linux 隔离的真实 GTK/WebKitGTK 头库下构建 `soui_desktop`、
+  `soui_desktop_example`、`soui_desktop_contract` 成功。
+- 公共/fake-backend 契约 333 项通过（含新 loopback URI/来源边界）；
+  app.js、feature.mjs、module-label.mjs 的 Node 语法检查通过。
+- 临时 C++ 驱动直接包含生产 resource_server.cpp，20 项解析器/真实临时文件
+  重点检查通过：精确 Host、GET/HEAD/非法方法、一次解码、穿越、非法编码、
+  MIME、根外 symlink、目录/缺失文件、8 MiB 上限。未增加正式测试目标。
+- 临时驱动实际启动 loopback 服务，一次 HTTP GET 返回预期字节和 no-store。
+  这是服务冒烟检查，不是 WebView/窗口/模块链路运行证据。
+- 独立边界审查修正 NOMINMAX、HEAD 错误响应正文与重复同步根目录检查；
+  Linux 原子设置 socket/accept4 的 CLOEXEC/NONBLOCK。`git diff --check` 通过。
+
+未执行本增量的完整 CTest、打包、重复压力或 sanitizer 矩阵；Windows/macOS
+编译、真实三引擎模块/fetch/CSP、网络对抗、关闭/导航竞争、目标架构运行与
+跨窗口存储隔离仍待统一验收。既有 GUI 运行依赖阻塞没有被此次 HTTP 检查解决。
+
+## 可搬移应用 staging 增量（07:21 UTC）
+
+- Linux x64 源码树配置、实际 Desktop/example 构建及新 CMake staging 目标通过，
+  输出包含程序、同一份前端、启动脚本、依赖说明和 SHA-256 manifest。
+- 安装 SDK 到独立前缀后，独立示例 find_package、构建、staging 通过；最终收紧
+  二进制检查后，已安装 staging 工具再次处理真实 Linux 示例通过。
+- 新工具 Node 语法和8项重点测试通过：覆盖拒绝、路径/名称、架构不匹配、
+  ELF OSABI/入口、Mach-O macOS/iOS 平台、PE 子系统；合成头测试不是实机认证。
+- 资源 helper 的 Linux 严格语法检查通过；临时生产源码 probe 从 cwd=/ 经 PATH
+  启动仍定位正确，缺失 web 时明确 resource_directory_unavailable。
+- 独立审查修复过宽二进制平台/可执行类型判断；git diff --check 通过。
+
+未运行本增量 GUI、完整 CTest、打包矩阵或压力测试。Windows/macOS 编译和真实
+快捷方式/Finder 启动、搬移后的目标运行、外部依赖、签名、公证及安装器仍待
+统一验收。应用 staging 不提供系统 WebView，不改变已记录 GUI 依赖阻塞。
+
+## 应用运行依赖诊断增量（07:47 UTC）
+
+- Linux 实际头库下 Desktop/example 增量构建通过；Linux 原生后端严格语法检查
+  通过。Windows 的 WebView2 发现 API 按官方文档接入，但未编译或运行。
+- doctor 生成器5项与应用 staging 8项重点测试通过；Node 与生成的 Linux/macOS
+  shell 语法检查通过。Windows PowerShell 和 macOS 实机检查未执行。
+- 源码工具生成真实 Linux 应用目录，`launch.sh --doctor` 返回0且不执行应用：
+  GTK 库缓存有候选，WebKit/JavaScriptCore 库及两个 helper 未建立标准位置候选，
+  显示变量未设置；这些情况均诚实报告 unknown，不能当作依赖安装或 GUI 成功。
+- 安装到独立 SDK 前缀后，工具及新生成器模块一起安装，实际应用 staging 通过。
+- 独立审查修正“缺少显示变量就阻止启动”的错误假设，保留默认 Wayland 连接
+  可能性，由 GTK 实际连接决定结果；最终只读复核通过，git diff --check 通过。
+
+没有安装系统运行库、关闭沙箱、变更执行策略或重新尝试提升入口。完整回归、
+Windows/macOS 原生诊断和实际窗口验收延后；此前 GUI 依赖阻塞未因此消除。
+
+## 统一桌面最小项目生成器（08:17 UTC）
+
+- 新生成器4项重点测试通过：新建/拒绝覆盖、名称/metadata注入与构建保留名称、
+  symlink父路径、重复/未知CLI参数；Node语法与git diff --check通过。
+- 模板三个JS模块语法、main.cpp Linux严格语法检查通过。模板只有单窗口、
+  app.info白名单与模块/fetch，不包含演示业务或外部下载。
+- 工具和模板随SDK安装到独立前缀后，从该已安装工具在仓库外新建StarterApp；
+  使用安装SDK完成Linux x64 CMake配置、实际编译/链接及StarterApp_stage通过。
+  输出含前端、二进制、doctor、依赖说明和manifest；没有运行GUI。
+- 独立审查发现的CMake保留名称/web冲突已拒绝，未触碰历史Windows模板。
+
+没有执行完整CTest、其他架构/平台编译或真实WebView交互；完整回归延后。
+生成/构建成功不代表系统引擎、窗口、模块或Bridge已在三平台实机验收。
+
+## 应用目录完整性校验增量（08:48 UTC）
+
+- verifier Node语法及7项重点测试通过：生产staging清单、修改/缺失、额外文件/
+  目录与symlink、路径/重复/身份修改、旧无doctor清单、owner执行位、CLI参数。
+- 安装SDK后，仓库外生成应用使用新CMake入口实际构建/staging；自动校验通过，
+  核对10个文件/539455字节，authenticityVerified/nativeRuntimeVerified均为false。
+- 最终修正执行权限检查为owner位后重新安装工具，独立StarterApp_verify_stage
+  通过，只出现校验目标，没有重新构建或再次staging，不运行应用/doctor。
+- 独立审查提出的仅other执行位误通过已修复；git diff --check通过。
+
+未执行完整测试矩阵、GUI、Windows/macOS真实目录/权限或正式签名验收；这些
+仍留待统一回归。该结果仅证明自附清单内部一致，不证明交付来源可信或可运行。
+
+## 已校验应用归档增量（09:18 UTC）
+
+- archive工具3项重点测试、Node语法与git diff --check通过：ZIP元数据/权限、
+  create-only、损坏源/预期身份、路径重叠/symlink与CLI错误。
+- 安装SDK后，仓库外生成应用的StarterApp_archive_stage独立目标成功，未重新
+  构建/staging或执行应用。产物ZIP为543833字节，包含11个文件、13个归档条目。
+- 独立Python zipfile读取通过CRC、全部载荷SHA-256、UTF-8标志与程序/脚本owner
+  执行位检查；ZIP SHA-256与交付清单一致：
+  `0ba63c1cccaaa86311efb2ac2cc14ea58ee76930b714547b64810aa10b07a2d6`。
+- 实现worker另对既有Linux示例目录做过一次独立ZIP读取冒烟；没有执行应用。
+  已安装与源码archive工具SHA-256一致，独立只读审查未发现具体待修问题。
+
+没有自动上传、发布、签名、解压执行或安装依赖。Windows/macOS解压器和真实
+.app启动、正式分发及完整矩阵仍待统一验收；散列/清单不构成来源认证。
+
+## 前端薄适配与类型声明增量（10:16 UTC）
+
+- 适配层3项聚焦Node测试通过：缺失/不兼容宿主、原生Promise/错误/订阅身份、
+  256KiB边界、规范base64、损坏UTF-8/JSON。生成器4项测试通过，新增逐字复制检查。
+- adapter与生成器Node语法检查、git diff --check通过。
+- 现有Linux配置重新configure/install后，从已安装SDK生成仓库外12文件项目；
+  两个适配文件与SDK源逐字一致，生成app.mjs语法通过。没有重建C++或运行GUI。
+- 当前未发现已安装TypeScript编译器，未安装新依赖；声明经契约阅读，类型编译
+  检查留待统一验收。完整回归与Windows/macOS/原生三引擎执行亦未进行。
+
+## 受管开发资源同步增量（10:39 UTC）
+
+- 同步工具5项重点测试通过：删除传播/空目录/no-op、拒绝接管、手工内容/额外
+  条目保护、源身份/重叠/锁、链接拒绝；有界复制修正后重新执行同一5项通过。
+- 生成器4项测试及Node语法、git diff --check通过。独立只读审查未发现额外问题；
+  复制实现改为64KiB缓冲、已登记大小上限、EOF与SHA256校验，避免源增长导致无界复制。
+- Linux既有SDK configure/install通过；从安装SDK在仓库外生成12文件项目并
+  configure，只构建SyncedApp_assets目标。第一次9文件，删除临时源fixture后
+  第二次8文件且旧输出已移除，第三次unchanged；已安装工具与源码逐字一致。
+- 没有重建/运行C++应用、GUI或跨平台全矩阵；多配置Windows/macOS真实文件锁
+  和异常中断恢复仍待统一验收。正式staging仍create-only。
+
+## Linux helper 可控失败增量（15:23 UTC）
+
+- 受支持云图形桌面仍可用；系统前缀仍缺少 WebKitNetworkProcess，隔离目录虽有
+  helper，官方生产版 WebKit 不支持用 WEBKIT_EXEC_PATH 重定位。未重试安装或
+  权限提升，也未修改第三方二进制/关闭 sandbox。此前安装失败发生在执行器
+  bwrap 初始化，不能写成 apt 已执行或库安装失败。
+- 当前Linux原生integration目标及示例实际编译链接通过，尚未运行图形测试。
+- 显式配置 SOUI_DESKTOP_WEBKIT_HELPER_DIR 为当前Debian运行库的已知系统前缀，
+  构建新增预检测试与真实示例成功。重点文件检查通过；链接真实官方WebKit的
+  示例实际返回 E_WEBKIT_RUNTIME、退出码1，无abort、无绝对路径泄露。
+- SDK安装成功，安装静态库与构建静态库逐字一致，预检契约随静态库传播。
+  git diff --check通过；独立只读审查未发现具体缺陷。
+- 默认空配置仍未知，不承诺自动检测或阻止所有WebKit abort。此增量没有证明
+  GUI、模块/fetch或Bridge真实运行通过；Linux运行依赖和macOS目标机验收仍缺。
+
+## 2026-10-21：并行原生后端终态修复（ADR-0134）
+
+- Linux：主文档失败/进程终止撤销 generation、navigation ticket、reload pending
+  与异步求值；旧文档 queued loaded/message/reload 不再越过终态，窗口级工作保留。
+- 独立生产回调 fixture 在真实 GTK/WebKit 头库下 C++17 严格警告编译链接成功，
+  78 checks / 0 failures；旧 HEAD 探针复现四项终态不变量失败。新增 CMake 目标
+  独立构建及 CTest 注册核验、定向 1/1 执行通过，未初始化 GUI/renderer。
+- macOS：关闭前置单次门闩，撤销 delegate、清空对外句柄，再清理；系统
+  windowWillClose 不递归 close。精确 strong 生命周期与调用方 autorelease pool
+  保留窗口覆盖外层 close/performClose 调用，关闭后不允许复用 create。
+- macOS 仅执行源码不变量及 diff 检查，无 Apple SDK/编译器，未原生编译、链接
+  或运行。ARC 语义参考 Clang 官方 Automatic Reference Counting / Semantics，
+  不是 AppKit 行为验收。目标机检查清单已更新。
+- 完整 WebKitGTK 用户前缀构建继续独立单并行执行，尚未完成真实窗口、Bridge、
+  module/fetch 验收；本次没有等待它才开发代码，也没有扩大完整测试集合。
+
+### 2026-10-21：失效文档求值提交门禁
+
+- Linux 在调用引擎前拒绝失败文档（E_LOAD）及重载等待/已取消通道
+  （E_NAVIGATION），不要求额外 ready/commit。独立轻量目标重新编译链接及
+  CTest 定向 1/1 通过，86 checks / 0 failures。无 GUI。
+- macOS 增加明确 document_failed/reload_pending 门禁，保持正常 precommit
+  求值与 terminal_failure 错误优先级；替换加载前撤下旧 navigation identity。
+  实际生产 guard/completion 条件抽取为 C++ 状态矩阵编译运行通过；它不是
+  Objective-C++、AppKit 或 WKWebView 运行测试。目标机检查清单已补充。
+- common error 回调只报告错误，不等于撤销所有 native emit 的 ready 状态，
+  因此由各 backend 同步拒绝失效文档的新提交。已在途脚本取消不保证副作用回滚。
+- 未重跑完整测试，WebKit 完整编译继续并行，macOS 原生验收仍未执行。
+
+### 2026-10-21：前端解码与生成项目完整性
+
+- assetBytes 使用一次性输入快照，严格类型/长度校验和分配使用同一组 primitive。
+  旧 HEAD accessor 探针实测分配 262145 字节，超过 262144 上界；修复后拒绝绕过。
+- 安装模板缺失 app/feature/details/config/style 任一必要资源时，在创建输出前
+  拒绝；完整模板仍生成成功，可选文档不设硬依赖。
+- frontend-adapter 4 项 + create-app 5 项，共 9/9 Node 重点测试通过；diff 检查
+  通过。未执行完整回归、CI 或三引擎 GUI。本轮不新增 API、权限、依赖或模板功能。
+
+### 2026-10-21：事件解绑身份与生成器源树保护
+
+- 原 preload 实测 A 解绑、B 同事件订阅、A 再解绑导致 B 收到 0 次而非 1 次。
+  修复后旧解绑只有在注册表仍指向自身组时才删组，原 Set 去重语义不变。
+- 原生成器在临时安装夹具允许输出 frontend/NewApp，污染后后续正常输出失败；
+  新检查在 mkdir 前拒绝与 adapter 源树重叠，不覆盖或清理用户目录。
+- 只编译当前 protocol.cpp 临时 preload 发射器：preload 17/17、生成器 5/5
+  重点检查通过，diff 检查通过。没有主库或 WebKit 重编，也没有新增 GUI 结论。
+
+### 2026-10-21：资源 listener 单连接中止恢复
+
+- accept 专用分类识别 ECONNABORTED / WSAECONNRESET，单个中止连接不再使
+  listener 整体退出；永久 EBADF 不重试，普通 send/recv 分类未放宽。
+- 生产源码独立故障注入红绿回归实际复现旧退出问题，修复后真实 loopback GET
+  返回完整资源，stop 撤销 URI 并释放服务额度；GCC C++17 严格警告编译通过。
+- 独立 CMake 3.31.10 / Make / Linux x64 GCC 14.2 Debug 配置及资源目标单并行
+  构建成功，精确 CTest sdk.desktop.resource-server 1/1 通过（0.21 秒）。
+  Runtime 依赖中的既有初始化/符号比较警告仍在，无资源目标新增警告。
+- 未执行全量测试、Windows/macOS 编译或 GUI；未触碰后台 WebKit 构建树。
+
+## 2026-10-22：Linux x86_64 真实原生验证补充
+
+此前“系统 helper 缺失、未完成 GUI”的结论保留为历史记录。现在已通过官方源码
+在用户前缀构建 WebKitGTK 2.52.6，并保持 sandbox 开启，完成限定真实桌面验证。
+该运行时带可追溯构建补丁，不是系统发行二进制或 SDK 发布载荷。
+
+实际发现并修复 evaluate 正常完成值序列化错误，同时纠正 native reload 观察
+边界之前消息的 fixture 时序假设。修复后 sdk.desktop.linux-native 1/1 通过，
+同代码示例验证 Bridge JSON、readAsset、ES module、dynamic import、同源 fetch，
+并正常退出。完整来源、配置、散列、失败与通过记录见
+[Linux 原生验证记录](../linux-native-validation-20261022.md)。
+
+未执行全量回归、长期稳定性、DPI/多屏或 Windows/macOS/ARM 原生验收；不改变
+releaseReady、版本号、许可或正式分发资格。
+
+
+## 2026-10-23 状态补充（不改写上文历史结果）
+
+| 平台 / 范围 | 最新限定结果 | 仍未验收 |
+|---|---|---|
+| macOS universal2 / ARM64 宿主 | AppleClang 21 编译链接通过，含 WKWebView 后端；两程序含 x64/ARM64 slice；公共 fake-backend CTest 1/1；安装SDK→生成项目→构建→stage/verify/archive通过 | GUI应用激活阻塞；真实Bridge、模块/fetch与关闭；Intel slice运行、最低系统版本兼容性及签名公证 |
+| Linux x64 | 2026-10-22历史限定真实GUI/Bridge/模块验证通过 | 后续部署RPATH策略GUI未复验，原自构建runtime快照已丢失 |
+| Windows / 其他未验证架构 | 保持原未验收状态 | 不以Mac编译或合成配置结果代替目标机证据 |
+
+Mac依据与边界见[2026-10-23记录](../macos-native-validation-20261023.md)，
+Linux见[2026-10-22记录](../linux-native-validation-20261022.md)。
+本补充不修改 `verification/acceptance.json` 的正式生产验收结论。

@@ -1,0 +1,84 @@
+# Install to an isolated test prefix, then build a consumer with only the
+# exported package. Never add the source include directory to the consumer.
+cmake_minimum_required(VERSION 3.24)
+if(NOT CONFIG)
+  set(CONFIG Release)
+endif()
+string(RANDOM LENGTH 12 ALPHABET 0123456789abcdef nonce)
+set(prefix "@CMAKE_CURRENT_BINARY_DIR@/installed-test-${CONFIG}-${nonce}")
+# Keep nested MSBuild tracking paths short; the build still belongs to this tree.
+set(consumer_build "@CMAKE_BINARY_DIR@/pc-${nonce}")
+function(run_checked)
+  execute_process(COMMAND ${ARGV} RESULT_VARIABLE result OUTPUT_VARIABLE output ERROR_VARIABLE error)
+  if(NOT result EQUAL 0)
+    message(FATAL_ERROR "Portable installed consumer failed (${result}): ${ARGV}\n${output}\n${error}")
+  endif()
+endfunction()
+run_checked("@CMAKE_COMMAND@" --install "@CMAKE_BINARY_DIR@" --config "${CONFIG}" --prefix "${prefix}")
+foreach(header json_bridge.h host/webview_host.h runtime/agent/windows_local_endpoint.h runtime/accessibility/windows_uia_provider.h)
+  if(EXISTS "${prefix}/include/soui/${header}")
+    message(FATAL_ERROR "Portable installation leaked an unsupported Windows API: ${header}")
+  endif()
+endforeach()
+set(configure_args
+  -S "@CMAKE_CURRENT_SOURCE_DIR@/consumer"
+  -B "${consumer_build}"
+  -G "@CMAKE_GENERATOR@"
+  "-DCMAKE_PREFIX_PATH=${prefix}"
+  "-DCMAKE_BUILD_TYPE=${CONFIG}"
+  "-DCMAKE_CXX_COMPILER=@CMAKE_CXX_COMPILER@")
+if(NOT "@CMAKE_GENERATOR_PLATFORM@" STREQUAL "")
+  list(APPEND configure_args -A "@CMAKE_GENERATOR_PLATFORM@")
+endif()
+if(NOT "@CMAKE_GENERATOR_TOOLSET@" STREQUAL "")
+  list(APPEND configure_args -T "@CMAKE_GENERATOR_TOOLSET@")
+endif()
+foreach(pair
+    "CMAKE_MAKE_PROGRAM|@CMAKE_MAKE_PROGRAM@"
+    "CMAKE_TOOLCHAIN_FILE|@CMAKE_TOOLCHAIN_FILE@"
+    "CMAKE_CXX_COMPILER_TARGET|@CMAKE_CXX_COMPILER_TARGET@"
+    "CMAKE_CXX_FLAGS|@CMAKE_CXX_FLAGS@"
+    "CMAKE_CXX_FLAGS_DEBUG|@CMAKE_CXX_FLAGS_DEBUG@"
+    "CMAKE_CXX_FLAGS_RELEASE|@CMAKE_CXX_FLAGS_RELEASE@"
+    "CMAKE_CXX_FLAGS_RELWITHDEBINFO|@CMAKE_CXX_FLAGS_RELWITHDEBINFO@"
+    "CMAKE_CXX_FLAGS_MINSIZEREL|@CMAKE_CXX_FLAGS_MINSIZEREL@"
+    "CMAKE_EXE_LINKER_FLAGS|@CMAKE_EXE_LINKER_FLAGS@"
+    "CMAKE_EXE_LINKER_FLAGS_DEBUG|@CMAKE_EXE_LINKER_FLAGS_DEBUG@"
+    "CMAKE_EXE_LINKER_FLAGS_RELEASE|@CMAKE_EXE_LINKER_FLAGS_RELEASE@"
+    "CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO|@CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO@"
+    "CMAKE_EXE_LINKER_FLAGS_MINSIZEREL|@CMAKE_EXE_LINKER_FLAGS_MINSIZEREL@"
+    "CMAKE_OSX_SYSROOT|@CMAKE_OSX_SYSROOT@"
+    "CMAKE_OSX_DEPLOYMENT_TARGET|@CMAKE_OSX_DEPLOYMENT_TARGET@"
+    "CMAKE_SYSROOT|@CMAKE_SYSROOT@")
+  string(FIND "${pair}" "|" separator)
+  string(SUBSTRING "${pair}" 0 ${separator} key)
+  math(EXPR value_start "${separator}+1")
+  string(SUBSTRING "${pair}" ${value_start} -1 value)
+  if(NOT value STREQUAL "")
+    list(APPEND configure_args "-D${key}=${value}")
+  endif()
+endforeach()
+# Lists need escaped semicolons to stay one -D argument.
+foreach(key CMAKE_OSX_ARCHITECTURES CMAKE_CROSSCOMPILING_EMULATOR)
+  if(key STREQUAL "CMAKE_OSX_ARCHITECTURES")
+    set(value "@CMAKE_OSX_ARCHITECTURES@")
+  else()
+    set(value "@CMAKE_CROSSCOMPILING_EMULATOR@")
+  endif()
+  if(NOT value STREQUAL "")
+    string(REPLACE ";" "\\;" value "${value}")
+    list(APPEND configure_args "-D${key}=${value}")
+  endif()
+endforeach()
+# Do not pass this list through a function's ${ARGV}: that adds a second list
+# expansion and splits universal2/emulator semicolon values into bare arguments.
+execute_process(COMMAND "@CMAKE_COMMAND@" ${configure_args}
+  RESULT_VARIABLE result OUTPUT_VARIABLE output ERROR_VARIABLE error)
+if(NOT result EQUAL 0)
+  message(FATAL_ERROR "Portable installed consumer configure failed (${result}):\n${output}\n${error}")
+endif()
+run_checked("@CMAKE_COMMAND@" --build "${consumer_build}" --config "${CONFIG}")
+run_checked("@CMAKE_CTEST_COMMAND@" --test-dir "${consumer_build}" -C "${CONFIG}" --output-on-failure)
+# These paths are created exclusively by this invocation. Preserve failures for
+# diagnosis, but do not accumulate successful installations between test runs.
+file(REMOVE_RECURSE "${prefix}" "${consumer_build}")

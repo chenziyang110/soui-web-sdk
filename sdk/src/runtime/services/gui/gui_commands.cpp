@@ -1,8 +1,12 @@
 #include "gui_commands_internal.h"
 #include "../../diagnostics/runtime_metrics_internal.h"
 #include <json.hpp>
+#if defined(_WIN32)
 #include <windows.h>
 #include <objbase.h>
+#else
+#include "../../platform/uuid_v4.h"
+#endif
 #include <algorithm>
 #include <set>
 #include <stdexcept>
@@ -25,19 +29,24 @@ bool identifier(const std::string& value) {
 json decode(std::string_view value, std::size_t limit = 32768) {
   if (value.empty() || value.size() > limit) throw std::invalid_argument("GUI size");
   auto parsed = json::parse(value.begin(), value.end(), [](int depth, json::parse_event_t, json&) {
-    if (depth > 8) throw std::invalid_argument("GUI depth"); return true;
+    if (depth > 8) throw std::invalid_argument("GUI depth");
+    return true;
   });
   if (!parsed.is_object()) throw std::invalid_argument("GUI object");
   (void)parsed.dump(); // Exact valid UTF-8, including fields a projection ignores.
   return parsed;
 }
 std::string identity() {
+#if defined(_WIN32)
   GUID value{}; wchar_t encoded[40]{};
   if (FAILED(CoCreateGuid(&value)) || !StringFromGUID2(value, encoded, 40))
     throw std::runtime_error("GUI identity");
   std::string result{"gui:"};
   for (auto c : encoded) if (c && c != L'{' && c != L'}') result += static_cast<char>(c);
   return result;
+#else
+  return "gui:" + random_uuid_v4();
+#endif
 }
 json string_schema(unsigned max) { return {{"type","string"},{"maxLength",max}}; }
 json object_schema(json properties = json::object(), json required = json::array()) {
@@ -532,3 +541,4 @@ task_outcome gui_commands_state::run(const std::shared_ptr<gui_job_context>& con
   return {confirmed?result_kind::success:result_kind::failure,result,"GUI command ended."};
 }
 } // namespace soui::runtime::detail
+

@@ -19,6 +19,8 @@
 
 SOUI Web SDK 把业务页面、类型化桥接、原生宿主、运行依赖与交付工具放在一套可独立构建的源码工程中。前端编写界面，C++ 注册业务动作和任务，应用决定允许谁调用、何时取消，以及如何结束当前窗口与 Runtime。
 
+> 本地恢复候选（未发布）：以现存 CI 提交 32b412b1 为起点，整合固定 main ce9757e3；VERSION 仍为 0.6.0。更早的固定 PR 9e4e9c1f / main 0cdc0a9a 整合及 tree 98cb4681 的 Windows 限定构建证据保留各自身份。本轮仅做静态与源码清单验证，历史成功、失败及未知状态不自动转授；本地内容不等同已发布的 0.6.0 资产，发布前须协调新内容版本。见[恢复身份与证据范围](docs/acceptance/pr103-local-recovery-20261102.md)。
+
 **0.6.0 采用普通 GitHub Release 分类；完整资格保持 `releaseReady=false`、`productionQualificationComplete=false`、`fullDevtoolsGoalComplete=false`。** 两架构内核与必要 SDK 构建、安装消费者、默认应用八次启动/自然关闭及九份供应/应用 ZIP 已有实际记录。双后端、双架构的受控 DevTools 代表例及 MiniBlink x86 原始 TSX 断点/单步观察已完成，具体范围见[发布说明](docs/releases/0.6.0.md)；普通 Release 分类不代表生产、目标系统或性能资格。
 
 ## 获取 0.6.0
@@ -33,6 +35,26 @@ SOUI Web SDK 把业务页面、类型化桥接、原生宿主、运行依赖与�
 | 完整对应源码 | `soui-sdk-0.6.0-full-source.zip`，按当前 Git 源清单与显式 UTF-8 文件名封存 |
 
 source SDK 与两份 DevTools 组件包已核逐文件闭集。两架构默认应用的八次运行在 Windows `10.0.20348.587` 完成；Modern 使用 WebView2 Runtime `156.0.4314.50`。这组短测不覆盖全部目标系统、AutoHost 双启动路径或长期稳定性。最终资产名、散列和实际范围以[发布说明](docs/releases/0.6.0.md)及[机器事实记录](verification/production-validation/0.6.0-release-2026-10-29/RELEASE-FACTS.json)为准，下载以发布页实际附件为准。
+
+## 未发布本地集成：跨平台 Runtime 与统一桌面
+
+以下跨平台功能及限定记录来自固定 PR 9e4e9c1f（版本 0.6.0-preview.3）；后续 tree 98cb4681 的 Windows x86/x64 build-only 结果另列于[恢复记录](docs/acceptance/pr103-local-recovery-20261102.md)，不授予本次新候选编译或运行通过。
+
+固定 PR 新增显式 [跨平台 Runtime](docs/cross-platform.md)：无窗口的任务、权限、
+Bridge 协议和文件扫描可独立构建为 `Soui::Runtime`，覆盖 Windows/Linux
+x86/x64/ARM32/ARM64 与 macOS x64/ARM64/universal2 的目标策略。
+另新增 [统一桌面入口](docs/unified-desktop.md) `Soui::Desktop`：同一份 C++ 与 Web
+源码接入 Linux WebKitGTK、macOS WKWebView、Windows WebView2，包含窗口生命周期、
+独立会话的多窗口、双向 Bridge、层级原生菜单和有明确失败的托盘能力。
+新增 `tools/package-desktop.cjs` 统一构建、测试、安装与 SDK 开发快照打包入口，
+不是应用安装器。窗口状态/关闭保护、独立授权系统服务、层级菜单、宿主全局快捷键及
+打开/保存路径选择已接入统一接口。Linux 有历史限定真实 GUI/Bridge 证据，最新功能尚未
+重新进行原生交互验收；macOS universal2 构建交付及 Apple Silicon 主机限定窗口/Bridge/模块/fetch、DOM 关闭否决探针已过。
+Windows x64 Release 的安装 SDK、独立消费者交付及真实 WebView2 Bridge/模块/fetch/公开关闭探针已过；
+2026-10-26 原模板补充可见窗口、app.info、模块/同源 fetch、原生标题栏最大化/还原及正常窗口关闭验证。原模板进程退出码未测，其他架构及完整原生能力仍待验收。当前状态见[集中验收矩阵](docs/acceptance/unified-desktop-2026-10-23.md)。
+现有下载包不含这些未发布功能，不能据此宣称 Electron 全功能兼容。
+
+<a id="capabilities"></a>
 
 ## 0.6 带来了什么
 
@@ -121,7 +143,7 @@ F12 与 Ctrl+Shift+I 只作为当前窗口及其子窗口的原生请求入口�
 - 当前内置结束策略为 `destroy_target`。撤销/结束诊断可能关闭当前业务窗口；应用先处理未保存状态，再保留 Host、Bridge、adapter、HWND 与消息循环，直到实际退休及 Runtime 屏障完成。
 - `request.accepted()` 表示接纳，不表示附加或退出已完成。超时、失败或未知观察必须保留；资源回收后也不能把旧失败改写成正常完成。
 
-源码 SDK、CMake 安装目录与离线供应材料有不同职责。CMake prefix 提供编译库和头文件，不会自动包含模板、Node 部署工具或 MiniBlink Inspector。配对材料的准备、六个显式构建输入和原生接入示例见 [DevTools 文档](docs/devtools.md)。
+源码 SDK、CMake 安装目录与离线供应材料有不同职责。传统 `Soui::Sdk` 的 CMake prefix 提供编译库和头文件，不会自动包含模板、Node 部署工具或 MiniBlink Inspector。未发布候选中的 `Soui::Desktop` 另安装 `share/SouiDesktop` 下的应用模板、Node 交付工具和前端适配，见[统一桌面入口](docs/unified-desktop.md)。MiniBlink 配对材料的准备、六个显式构建输入和原生接入示例见 [DevTools 文档](docs/devtools.md)。
 
 ### 离线源码诊断
 

@@ -79,7 +79,7 @@ ADR 必须说明背景、决定、备选方案、兼容性、迁移和验证。�
 7. 底层依赖变化：两架构执行 `Build-Dependencies.ps1 -Component All`，再执行 `Test-Dependencies.ps1`。
 8. 汇总：`node tools/Collect-Verification.cjs`。只有该工具成功且证据齐全，才可更新验收结论。
 
-本仓库不配置远程 CI。维护者必须在具备完整工具链的 Windows 开发机执行适用验证，并在 PR 中记录命令、架构、配置和结果。真实窗口、输入、DPI、多屏、长期内存和关闭稳定性必须在可交互目标机执行。
+跨平台 Runtime/统一 Desktop 的限定 GitHub Actions 方案见 `docs/ci-platform-matrix.md`；首次启用前须核对 Actions 策略和费用边界，当前新增工作流仍待云端验证。Windows job 仅构建、安装和文件打包，Linux/macOS 仅运行明确列出的无界面 Runtime 测试；不以 CI 绕过本地应用控制。维护者仍须在 PR 中记录命令、架构、配置和真实结果。真实窗口、输入、DPI、多屏、长期内存和关闭稳定性必须在可交互目标机执行。
 
 0.3 的 build/smoke 记录必须绑定源码、构建 ID 和完整运行载荷，不能用旧 v1 成功标记授权发布。`--foundation` 只验收基础切片，不代表完整候选。完整源码清单从 Git 暂存区生成：先完成报告和文档、暂存修改、刷新并验证清单，最后打包。源码打包不能与写入验收文件的步骤并行。应用输出的 `resources/` 为部署工具所有，用户数据必须存放在其他目录。
 

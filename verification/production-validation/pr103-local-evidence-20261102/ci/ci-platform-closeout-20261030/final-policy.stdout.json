@@ -1,0 +1,79 @@
+{
+  "publicArchiveContext": {
+    "sourceLogicalId": "pr103-integration-evidence/ci-platform-closeout-20261030/final-policy.stdout.json",
+    "originalBytes": 1296,
+    "originalSha256": "8a292deee33a1b5dbad3da802f038b816a0bc93ab66f8f8ec53928ce6ca8bb88",
+    "modifiedPublicCopy": true,
+    "normalization": "UTF-8 without BOM; LF; final newline",
+    "evidenceIdentity": {
+      "historicalDate": "2026-10-30",
+      "baselineCommit": "19d450eae04d7ee51286168712d5b60c08631e89",
+      "baselineTree": "98cb4681032285309841293d65f0041344aa5f14",
+      "validationKind": "historical_local_static_or_publication_record",
+      "cloudExecutionVerified": false,
+      "validatesNewCandidate": false,
+      "unvalidatedCandidatePrefix": "e43a79",
+      "indexTree": "8c052061f27ee62ae9e95b729096f31d430f8ad4"
+    },
+    "limitation": "Historical evidence copy only; not original bytes and not validation of candidate e43a79 or another new candidate."
+  },
+  "evidence": {
+    "result": "passed",
+    "staticOnly": true,
+    "processesSpawnedByPlanning": 0,
+    "workflowParsedAs": "JSON-compatible YAML",
+    "matrix": [
+      {
+        "runner": "windows-2022",
+        "platform": "windows",
+        "arch": "x64",
+        "steps": 13,
+        "ctestSteps": 0,
+        "applicationExecution": false
+      },
+      {
+        "runner": "windows-11-arm",
+        "platform": "windows",
+        "arch": "arm64",
+        "steps": 13,
+        "ctestSteps": 0,
+        "applicationExecution": false
+      },
+      {
+        "runner": "ubuntu-24.04",
+        "platform": "linux",
+        "arch": "x64",
+        "steps": 16,
+        "ctestSteps": 2,
+        "applicationExecution": false
+      },
+      {
+        "runner": "ubuntu-24.04-arm",
+        "platform": "linux",
+        "arch": "arm64",
+        "steps": 16,
+        "ctestSteps": 2,
+        "applicationExecution": false
+      },
+      {
+        "runner": "macos-15-intel",
+        "platform": "macos",
+        "arch": "x64",
+        "steps": 16,
+        "ctestSteps": 2,
+        "applicationExecution": false
+      },
+      {
+        "runner": "macos-15",
+        "platform": "macos",
+        "arch": "arm64",
+        "steps": 16,
+        "ctestSteps": 2,
+        "applicationExecution": false
+      }
+    ],
+    "negativeControls": 8,
+    "ambientSearchPathsRejected": 14,
+    "projectConfigureBuildRuntimeExecuted": false
+  }
+}

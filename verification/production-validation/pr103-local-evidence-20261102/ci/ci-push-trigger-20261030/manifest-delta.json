@@ -1,0 +1,78 @@
+{
+  "publicArchiveContext": {
+    "sourceLogicalId": "pr103-integration-evidence/ci-push-trigger-20261030/manifest-delta.json",
+    "originalBytes": 1695,
+    "originalSha256": "95547ef3f2642c4d758728c7eeb16a6f9fc7b119151cb2bf9e11344f15b94441",
+    "modifiedPublicCopy": true,
+    "normalization": "UTF-8 without BOM; LF; final newline",
+    "evidenceIdentity": {
+      "historicalDate": "2026-10-30",
+      "baselineCommit": "19d450eae04d7ee51286168712d5b60c08631e89",
+      "baselineTree": "98cb4681032285309841293d65f0041344aa5f14",
+      "validationKind": "historical_local_static_or_publication_record",
+      "cloudExecutionVerified": false,
+      "validatesNewCandidate": false,
+      "unvalidatedCandidatePrefix": "e43a79",
+      "indexTree": "e4f78362f40d25ac5fe21692326b73f6a59077a3"
+    },
+    "limitation": "Historical evidence copy only; not original bytes and not validation of candidate e43a79 or another new candidate."
+  },
+  "evidence": {
+    "result": "passed",
+    "before": {
+      "files": 62652,
+      "sha256": "e74c73bf6ac23277fe7a9738b3e613a211ed7034962f8e0ecf9eb1af63edfa6d"
+    },
+    "after": {
+      "files": 62652,
+      "sha256": "a3d03f5082a354d9d161a62f95e57f36e2d5206842847d725768bbfeb4dd41a9",
+      "releaseReady": false
+    },
+    "changed": [
+      {
+        "before": {
+          "path": ".github/workflows/platform-build.yml",
+          "normalization": "lf",
+          "bytes": 4528,
+          "sha256": "d8ea344b042c2374dd290f7b13b285e168c8c617f1bb648c10f2ce891cc76279"
+        },
+        "after": {
+          "path": ".github/workflows/platform-build.yml",
+          "normalization": "lf",
+          "bytes": 4425,
+          "sha256": "f2299c48208ebf086ebced64fbef8e44a567823e469ce65fcb8e1793a6c3f266"
+        }
+      },
+      {
+        "before": {
+          "path": "docs/ci-platform-matrix.md",
+          "normalization": "lf",
+          "bytes": 11110,
+          "sha256": "94d13e31fe02d43e23cb494cfd2911577121d244354fb664c6d06df7bf9e982c"
+        },
+        "after": {
+          "path": "docs/ci-platform-matrix.md",
+          "normalization": "lf",
+          "bytes": 11598,
+          "sha256": "c9ddcbbc0f2793e8eca2565743636cbbe45197c6d74cb6ac42829916905d0c0f"
+        }
+      },
+      {
+        "before": {
+          "path": "tools/ci/validate-platform-workflow.cjs",
+          "normalization": "lf",
+          "bytes": 7103,
+          "sha256": "4855a03c0c57fff3042331c370dec48aaf36a735dde05ace73f609859038fb26"
+        },
+        "after": {
+          "path": "tools/ci/validate-platform-workflow.cjs",
+          "normalization": "lf",
+          "bytes": 9177,
+          "sha256": "22efac28d877ce050a7134af22c0b881dcc900184410970b27b05d67a997cf48"
+        }
+      }
+    ],
+    "added": [],
+    "deleted": []
+  }
+}
