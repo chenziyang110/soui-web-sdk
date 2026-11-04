@@ -2982,8 +2982,8 @@ void dynamic_miniblink_adapter::pump_on_engine() {
           api && api->structSize >= offsetof(wkeInputUiApi, capabilities) + sizeof(api->capabilities) ? api->capabilities : 0,
           api ? api->structSize : 0, api ? api->abiVersion : 0,
           mode, requested, display, main_rate};
-      const auto now = std::chrono::steady_clock::now();
-      if (const auto ticket = lifetime->frame_policy.begin(key, now)) {
+      const auto started_at = std::chrono::steady_clock::now();
+      if (const auto ticket = lifetime->frame_policy.begin(key, started_at)) {
         int status = WKE_INPUT_UI_UNAVAILABLE, observed = -1, effective = main_rate;
         lifetime->frame_effective = -1;
         if (negotiated) {
@@ -3021,7 +3021,8 @@ void dynamic_miniblink_adapter::pump_on_engine() {
               }
             }
           } else if (status == WKE_INPUT_UI_OK) status = WKE_INPUT_UI_REJECTED;
-          (void)lifetime->frame_policy.complete(ticket, status, effective, observed, now);
+          const auto completed_at = std::chrono::steady_clock::now();
+          (void)lifetime->frame_policy.complete(ticket, status, effective, observed, completed_at);
           configured_main_frame_rate_ = lifetime->frame_policy.observed_applied();
         } else if (wkeSetDebugConfig) {
           // The matching legacy fractional setter is known to reject >240.
@@ -3033,14 +3034,16 @@ void dynamic_miniblink_adapter::pump_on_engine() {
             wkeSetDebugConfig(static_cast<wkeWebView>(view), "mainFrameRate", value.c_str());
           } catch (...) {
             if (!still_current()) return;
-            (void)lifetime->frame_policy.complete(ticket, WKE_INPUT_UI_REJECTED, effective, -1, now);
+            const auto completed_at = std::chrono::steady_clock::now();
+            (void)lifetime->frame_policy.complete(ticket, WKE_INPUT_UI_REJECTED, effective, -1, completed_at);
             return;
           }
           if (!still_current()) return;
           (void)lifetime->frame_policy.complete_legacy(ticket, effective);
           configured_main_frame_rate_ = -1; // Void setter cannot confirm applied.
         } else {
-          (void)lifetime->frame_policy.complete(ticket, status, -1, -1, now);
+          const auto completed_at = std::chrono::steady_clock::now();
+          (void)lifetime->frame_policy.complete(ticket, status, -1, -1, completed_at);
         }
         configured_draw_min_interval_ = -1;
         configured_draw_frame_rate_ = -1;

@@ -4,6 +4,7 @@
 #include <filesystem>
 #include <memory>
 #include <string>
+#include "desktop-capture.h"
 
 namespace soui::benchmark {
 struct passive_options;
@@ -14,7 +15,8 @@ int observe_manual_desktop(HANDLE process, const passive_options& options);
 class desktop_observer final {
  public:
   desktop_observer(HANDLE process, DWORD pid, std::uint64_t creation, HWND window,
-                   const std::filesystem::path& output, unsigned scene, bool probe);
+                   const std::filesystem::path& output, unsigned scene, bool probe,
+                   desktop_capture_backend backend = desktop_capture_backend::dxgi);
   ~desktop_observer();
   desktop_observer(const desktop_observer&) = delete;
   desktop_observer& operator=(const desktop_observer&) = delete;

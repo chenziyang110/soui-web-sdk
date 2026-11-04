@@ -2,7 +2,9 @@
 
 目标 `soui_host_frame_policy_tests`，CTest `sdk.native.host-frame-policy`。可由根 native 工程或本目录独立配置；Windows MSVC 是产品工具链，纯策略/source-projection fixture 也能用 LLVM-MinGW 做两架构快验，后者不替代真实 vendor reader 编译。
 
-本 target 覆盖现有 `main_rate` 模式优先级、公共 requested/display/backend clamp、provider size/version/capability gates、actual query/apply、attempted/applied/failed 去重、旧内核 unverified、100/200/400ms 三次有界重试、generation/关闭后迟到 receipt。0 始终表示主帧控制器禁用，legacy draw interval 仍由 host 恢复，不新增 0ms 全局节流。
+本 target 覆盖现有 `main_rate` 模式优先级、公共 requested/display/backend clamp、provider size/version/capability gates、actual query/apply、attempted/applied/failed 去重、旧内核 unverified、100/200/400ms 三次有界重试、BUSY/UNAVAILABLE 重试成功、慢于100ms的 provider 失败从完成时刻开始退避，以及 generation 递增后的旧 ticket 丢弃。0 始终表示主帧控制器禁用，legacy draw interval 仍由 host 恢复，不新增 0ms 全局节流。
+
+退避用单调时钟的合成时间验证：模拟 provider 操作耗时150ms，确认失败完成后的99ms仍不重试、100ms才允许下一次 owner 机会。它验证状态机的完成时刻语义，不测真实 provider 延迟；当前 Host 实现在 provider/query/apply 及失败读回结束后采样完成时间并传给 `complete()`，产品 Host 构建仍待验。
 
 `generate.cjs` 从当前 vendor `WebPageImpl`、`WebPage` 与 `InputUiApi.cpp` 提取原始 ASCII 方法字节，验证两个 ABI 头逐字节相等，并写 source-binding manifest。fixture 的 owner/live-view、paint lifetime、commit publication 是显式 fake；测试能证明真实方法状态转换和 ABI 调用规则，不能证明实际 Skia、WKE 周期、GUI 或物理 FPS。
 
@@ -11,8 +13,8 @@
 `frame_policy_attempts` 放在 per-mount Engine-owned 私有状态中；不持有 view 或 DLL。key 使用当前 view generation、provider 指针/size/version/capabilities、mode 和稳定策略输入。进入 mount 以外的状态时 `invalidate()`。不要把同一个全局 cache 共享给多个 Host。
 
 ```cpp
-const auto now = detail::frame_policy_attempts::clock::now();
-const auto ticket = attempts.begin(key, now);
+const auto attempt_started = detail::frame_policy_attempts::clock::now();
+const auto ticket = attempts.begin(key, attempt_started);
 if (ticket) {
   // Only here query/apply; unchanged keys and bounded backoff never call them.
   // Prepare output {sizeof(output), FRAME_POLICY_ABI_VERSION, ...zero...}.
@@ -20,7 +22,10 @@ if (ticket) {
   //     selected_main, output.minRate, output.maxRate).
   // Apply selected effective (or skip if actual already equals it).
   // On failed apply query once to reconcile a possible partial mutation.
-  attempts.complete(ticket, result, attempted_rate, observed_applied, now);
+  // Sample after query/apply and any failure readback so the backoff starts
+  // when this provider operation has actually finished.
+  attempts.complete(ticket, result, attempted_rate, observed_applied,
+      detail::frame_policy_attempts::clock::now());
 }
 ```
 

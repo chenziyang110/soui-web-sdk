@@ -130,6 +130,7 @@ public:
     task_scheduling::DeadlinePriorityIndex m_timerIndex;
     void schedulerTasks();void schedulerTasks(bool, unsigned long long = 0, unsigned long long = 0);void updateSharedTimer();
     bool serviceOwnerOpportunity(unsigned long long = 0, unsigned long long = 0);void enableScheduler();void retireCompletedTasksForOwner();
+    void retireCompletedTasksForOwner(unsigned long long deadlineQpc, unsigned long long qpcFrequency, bool ensureOne);
     void fire(unsigned long long deadlineQpc = 0, unsigned long long qpcFrequency = 0){schedulerTasks(true, deadlineQpc, qpcFrequency);} bool isCurrentThread()const{return true;}
     void deleteUnusedTimers(){} void startTriggerTasks(unsigned*,double,unsigned long long = 0,unsigned long long = 0,bool = false){}
     bool hasPendingTaskAdmission(){return false;}void willProcessTasks(){}void didProcessTasks(){}

@@ -60,10 +60,56 @@ function fixture() {
       run_id:run,qpc_frequency:'1000',observation_error_ms:0.25,device_pixel_ratio:1}};
   return {input,desktop,streams:[traceRows(points)],options};
 }
+function asGdi(value) {
+  value.input[0].capture_backend='gdi-bitblt';
+  const rows=value.desktop,begin=rows[0],output=rows[1],end=rows.at(-1);
+  begin.captureBackend='gdi-bitblt';begin.adapterLow=null;begin.adapterHigh=null;
+  output.adapterLow=null;output.adapterHigh=null;
+  const converted=[begin,output];
+  let emittedWarmupReject=false;
+  for(const row of rows.slice(2,-1)) {
+    if(row.event==='desktop.acquire')continue;
+    if(row.event==='desktop.ready'||row.event==='desktop.frame') {
+      const visible=BigInt(row.lastPresentQpc);
+      row.captureBeginQpc=String(visible-1n);row.captureEndQpc=String(visible+2n);
+      row.visibleQpc=String(visible+1n);row.observedQpc=String(visible+3n);
+      if(row.event==='desktop.ready') {
+        if(!emittedWarmupReject) {
+          converted.push({event:'desktop.baseline-reject',captureBeginQpc:'900',captureEndQpc:'910',visibleQpc:'910'});
+          emittedWarmupReject=true;
+        }
+        delete row.lastPresentQpc;
+      } else {
+        row.lastPresentQpc=null;row.accumulatedFrames=null;row.protected=null;
+      }
+    }
+    converted.push(row);
+  }
+  end.pointerOnly=null;end.captureSamples=String(end.frames);
+  converted.push(end);
+  value.desktop=converted;
+  return value;
+}
 const check=value=>burst.checkBurst(value.input,value.streams,value.desktop,value.options);
 test('canonical uint64 rejects rounding, leading zero, exponent and overflow',()=>{
   assert.equal(trace.exact('18446744073709551615'),18446744073709551615n);
   for(const value of [9007199254740992,'01','1e3','-1','18446744073709551616'])assert.throws(()=>trace.exact(value));
+});
+test('same-product run pins capture backend to the frozen workload and burst trace',()=>{
+  const source=backend=>backend===undefined?{}:{capture_backend:backend};
+  const frozen=backend=>({capture_backend:backend,frozen_inputs:{capture_backend:backend}});
+  assert.equal(pair.validateCaptureBackendPair({}, {}, {}, {}),'dxgi'); // legacy v1/v2 records default to DXGI
+  assert.equal(pair.validateCaptureBackendPair(source('dxgi'),source('dxgi'),source('dxgi'),frozen('dxgi')),'dxgi');
+  assert.equal(pair.validateCaptureBackendPair(source('gdi-bitblt'),source('gdi-bitblt'),source('gdi-bitblt'),
+    frozen('gdi-bitblt')),'gdi-bitblt');
+  assert.throws(()=>pair.validateCaptureBackendPair({},source('gdi-bitblt'),{},{}),/gdi-bitblt selection/);
+  assert.throws(()=>pair.validateCaptureBackendPair(source('gdi-bitblt'),{},source('gdi-bitblt'),
+    frozen('gdi-bitblt')),/gdi-bitblt selection/);
+  assert.throws(()=>pair.validateCaptureBackendPair(source('gdi-bitblt'),source('dxgi'),source('gdi-bitblt'),
+    frozen('gdi-bitblt')),/Capture backend differs/);
+  assert.throws(()=>pair.validateCaptureBackendPair(source('auto'),{}, {}, {}),/Unknown capture_backend/);
+  assert.throws(()=>pair.validateCaptureBackendPair(source('gdi-bitblt'),source('gdi-bitblt'),source('gdi-bitblt'),
+    {capture_backend:'gdi-bitblt',frozen_inputs:{}}),/gdi-bitblt selection/);
 });
 
 test('diagnostic stages use only fixed value codes and never create causal relations',()=>{
@@ -87,6 +133,53 @@ test('captured-image samples never inflate visible sample count or full native c
   assert.equal(result.captured_image_upper_ms.samples,2);assert.equal(result.fullCausalComplete,false);
   assert.equal(result.unknown_microtask_inputs,3);assert.equal(result.host_to_submit_ms,null);
   assert.equal(result.physicalPresentation,false);assert.equal(result.performanceGate,false);assert.equal(result.releaseReady,false);
+});
+test('explicit BitBlt samples are software-visible T7 bounds, never captured-image or physical frame counts',()=>{
+  const f=asGdi(fixture()),result=check(f);
+  assert.equal(result.captureBackend,'gdi-bitblt');
+  assert.equal(result.t7_endpoint,'BitBlt-software-capture-end-not-physical-presentation');
+  assert.equal(result.captured_image_upper_ms,null);assert.equal(result.software_capture_upper_ms.samples,2);
+  assert.equal(result.desktop_omitted_images,null);assert.equal(result.fullCausalComplete,false);
+  assert.equal(result.physicalPresentation,false);assert.equal(result.performanceGate,false);
+});
+test('GDI warmup rejection and ready accept producer-shaped omitted or null LastPresentQpc',()=>{
+  const f=asGdi(fixture());
+  const rejection=f.desktop.find(row=>row.event==='desktop.baseline-reject');
+  const ready=f.desktop.find(row=>row.event==='desktop.ready');
+  const frame=f.desktop.find(row=>row.event==='desktop.frame');
+  assert.equal(Object.hasOwn(rejection,'lastPresentQpc'),false);
+  assert.equal(Object.hasOwn(ready,'lastPresentQpc'),false);
+  assert.equal(frame.lastPresentQpc,null);
+  assert.equal(check(f).desktop_samples,2);
+
+  const explicitNull=asGdi(fixture());
+  for(const row of explicitNull.desktop.filter(item=>item.event==='desktop.baseline-reject'||item.event==='desktop.ready'))
+    row.lastPresentQpc=null;
+  assert.equal(check(explicitNull).desktop_samples,2);
+});
+test('GDI warmup rejection and ready reject non-null LastPresentQpc',()=>{
+  for(const [event,value,reason] of [
+    ['desktop.baseline-reject','910',/Invalid GDI desktop warmup rejection/],
+    ['desktop.ready',951,/Fresh run baseline missing/],
+  ]) {
+    const f=asGdi(fixture());
+    f.desktop.find(row=>row.event===event).lastPresentQpc=value;
+    assert.throws(()=>check(f),reason);
+  }
+});
+test('GDI desktop frames still require explicit null LastPresentQpc',()=>{
+  const missing=asGdi(fixture());
+  delete missing.desktop.find(row=>row.event==='desktop.frame').lastPresentQpc;
+  assert.throws(()=>check(missing),/Burst marker\/content\/generation changed/);
+  const nonNull=asGdi(fixture());
+  nonNull.desktop.find(row=>row.event==='desktop.frame').lastPresentQpc='951';
+  assert.throws(()=>check(nonNull),/Burst marker\/content\/generation changed/);
+});
+test('A/B capture method mismatch and unsupported backend are rejected',()=>{
+  const mixed=asGdi(fixture());mixed.desktop[0].captureBackend='dxgi';
+  assert.throws(()=>check(mixed),/backend mismatch/);
+  const invalid=fixture();invalid.input[0].capture_backend='auto';
+  assert.throws(()=>check(invalid),/frozen burst session/);
 });
 test('ACK crossing retains oldest unresolved input age instead of discarding it',()=>{
   const result=check(fixture());assert.equal(result.ack_crossed_inputs,1);

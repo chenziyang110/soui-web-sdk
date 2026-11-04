@@ -44,6 +44,8 @@ begin 可选字段 `waitTimerBackend` 仅接受 `high-resolution-waitable` 或 `
 
 ## 读取接口
 
+`InputTrace --observe-manual` 的末尾可选参数显式选择 `dxgi` 或 `gdi-bitblt`；省略时使用 DXGI。手动 A/B 应在各自 `expected` 中设置相同的 `captureBackend`。GDI 路径同步执行 BitBlt 与 GdiFlush，以 BitBlt 完成后的 QPC 作为软件可见 T7 时间；不自动回退，不能将其称为 DXGI 呈现时间、物理 FPS 或扫描输出。原 100 ms 单次采集预算和外层截止时间仍生效；同步调用不能抢占，超出预算/截止的样本会被读取器拒绝。
+
 `manual-frame-observation.cjs` 导出 `analyzeManualObservation(rows, expected)` 和 `readManualObservation(absoluteFile, expected)`。前者只检查原始记录及声明的原件身份，返回 `traceQualified`；后者还按 held 文件读取 NDJSON 并核当前原件散列，返回 `artifactIdentity.currentFilesRevalidated`。二者始终保留 `observationQualified=false` 和 `performanceGate=false`：成功 end 行可能先于失败的最终 Flush，文件内容不能代替进程终态。外部监督器须另外核 held observer PID/creation、root/supervisor exit0、natural Job0/no-force，再与 trace/artifact 资格合成整轮判断。
 
 `expected` 绑定 `run_id`、`targetPid/targetCreationFileTime`、`observerPid/observerCreationFileTime`、`hwnd`、`qpcFrequency`、`intervalMs/durationMs/startupMs`。所有 QPC、QPF、FILETIME、HWND 均为规范十进制 uint64 字符串；PID 是正 uint32。可额外给 `phaseBeginQpc/phaseEndQpc` 复验外部窗口边界。实际 `window` 从 validated phase 行及 end 原件导出，交给资源窗口读取器；nominal deadline 与实际尾部超出分开保存。

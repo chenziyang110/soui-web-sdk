@@ -16,6 +16,13 @@ test('frozen inputs detect same-length mutation before a measurement launch',()=
     assert.throws(()=>frozen.verify({schema:'soui.input-ui-run-request/v1'}),/v2/);
   }finally{fs.rmSync(directory,{recursive:true,force:true});}
 });
+test('capture backend is an explicit frozen selection with legacy DXGI default',()=>{
+  assert.equal(frozen.selectedCaptureBackend({}),'dxgi');
+  assert.equal(frozen.selectedCaptureBackend({capture_backend:'dxgi'}),'dxgi');
+  assert.equal(frozen.selectedCaptureBackend({capture_backend:'gdi-bitblt'}),'gdi-bitblt');
+  for(const value of ['',null,'automatic','GDI'])
+    assert.throws(()=>frozen.selectedCaptureBackend({capture_backend:value}),/capture_backend/);
+});
 test('matching commit labels do not allow changed measurement source bytes into a pair',()=>{
   assert.throws(()=>compareRuns({record:{measurement_sources_sha256:'a'.repeat(64)}},
     {record:{measurement_sources_sha256:'b'.repeat(64)}}),/source bytes differ/);

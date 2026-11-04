@@ -5,7 +5,13 @@ const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypt
 const {isDeepStrictEqual}=require('node:util');
 const measurement=require('../../tools/internal/measurement-validation.cjs');
 const root=path.resolve(__dirname,'../..');
+const CAPTURE_BACKENDS=['dxgi','gdi-bitblt'];
 function need(value,message){if(!value)throw new Error(message);}
+function selectedCaptureBackend(request){
+  const backend=Object.hasOwn(request,'capture_backend')?request.capture_backend:'dxgi';
+  need(CAPTURE_BACKENDS.includes(backend),'capture_backend must be dxgi or gdi-bitblt');
+  return backend;
+}
 function pin(filename){
   need(typeof filename==='string'&&path.isAbsolute(filename),'Frozen input requires an absolute file path');
   const location=fs.realpathSync(filename),stat=fs.statSync(location);
@@ -43,15 +49,19 @@ function inputs(request){
   const files=Object.fromEntries(entries.map(name=>[name,pin(request[name])]));
   files.page_html=pin(path.join(request.page_root,'burst-page.html'));
   files.page_script=pin(path.join(request.page_root,'burst-page.js'));
-  return {files,measurement_preparation:preparedTools(request),measurement_sources:sources()};
+  const result={files,measurement_preparation:preparedTools(request),measurement_sources:sources()};
+  if(Object.hasOwn(request,'capture_backend'))result.capture_backend=selectedCaptureBackend(request);
+  return result;
 }
 function freeze(request){
   need(request?.schema==='soui.input-ui-run-request/v1','Expected a v1 request template');
   need(!Object.hasOwn(request,'frozen_inputs'),'Template already contains frozen inputs');
-  return {...request,schema:'soui.input-ui-run-request/v2',frozen_inputs:inputs(request)};
+  const normalized={...request,capture_backend:selectedCaptureBackend(request)};
+  return {...normalized,schema:'soui.input-ui-run-request/v2',frozen_inputs:inputs(normalized)};
 }
 function verify(request){
   need(request?.schema==='soui.input-ui-run-request/v2'&&request.frozen_inputs,'Run requires an independently prepared v2 frozen request');
+  selectedCaptureBackend(request); // Legacy v2 requests without the field remain DXGI-only.
   verifyPins(inputs(request),request.frozen_inputs);
 }
 if(require.main===module){try{
@@ -61,4 +71,4 @@ if(require.main===module){try{
   fs.writeFileSync(output,JSON.stringify(freeze(JSON.parse(fs.readFileSync(template.path,'utf8'))),null,2)+'\n',{flag:'wx'});
   console.log(output);
 }catch(error){console.error(error.message);process.exitCode=1;}}
-module.exports={freeze,verify,pin,verifyPins,sourceDigest};
+module.exports={freeze,verify,pin,verifyPins,sourceDigest,selectedCaptureBackend};

@@ -72,11 +72,11 @@ std::string marker_hex(const marker& value) {
   for(auto byte:value.bytes){result+=digits[byte>>4];result+=digits[byte&15];}
   return result;
 }
-marker decode(const D3D11_MAPPED_SUBRESOURCE& map) {
-  require(map.RowPitch >= 64 * 4 && map.pData, "Desktop pixel buffer invalid");
+marker decode(const void* pixels, std::size_t row_pitch) {
+  require(row_pitch >= 64 * 4 && pixels, "Desktop pixel buffer invalid");
   std::array<unsigned char,16> data{};
   for (unsigned i = 0; i < 128; ++i) {
-    const auto* pixel = static_cast<const unsigned char*>(map.pData) + ((i / 16) * 4 + 2) * map.RowPitch + ((i % 16) * 4 + 2) * 4;
+    const auto* pixel = static_cast<const unsigned char*>(pixels) + ((i / 16) * 4 + 2) * row_pitch + ((i % 16) * 4 + 2) * 4;
     const bool dark = pixel[0] <= 32 && pixel[1] <= 32 && pixel[2] <= 32;
     const bool light = pixel[0] >= 223 && pixel[1] >= 223 && pixel[2] >= 223;
     require(dark || light, "Desktop marker has ambiguous pixels");
@@ -93,23 +93,24 @@ marker decode(const D3D11_MAPPED_SUBRESOURCE& map) {
   result.bytes=data;
   result.delivered_units=data[14]|(static_cast<std::uint32_t>(data[15])<<8)|((flags>>4)<<16);
   require(result.delivered_units<=result.ack&&result.delivered_units<=100000,"Burst delivery counter exceeds ACK");
-  const auto* content=static_cast<const unsigned char*>(map.pData)+34*map.RowPitch+2*4;
+  const auto* content=static_cast<const unsigned char*>(pixels)+34*row_pitch+2*4;
   result.content_sequence=content[2]|(static_cast<std::uint32_t>(content[1])<<8)|(static_cast<std::uint32_t>(content[0])<<16);
   return result;
 }
+marker decode(const D3D11_MAPPED_SUBRESOURCE& map) { return decode(map.pData, map.RowPitch); }
 } // namespace
 
 struct burst_desktop_observer::state {
   HANDLE process; DWORD pid; std::uint64_t creation; HWND window;
-  std::filesystem::path output; unsigned scene{1}; bool probe{false};
+  std::filesystem::path output; unsigned scene{1}; bool probe{false}; desktop_capture_backend backend;
   std::string run_id; std::uint32_t expected_nonce;
   std::thread thread; std::mutex mutex; std::condition_variable changed;
   std::atomic<bool> stop{false}, normal_stop{false}; bool ready{}, done{}; std::string failure;
   std::uint32_t acknowledged{};
   marker latest{}; std::uint64_t frames{}, pointer_only{}, started{}, frequency{};
   POINT origin{}; HMONITOR monitor{};
-  state(HANDLE p,DWORD id,std::uint64_t c,HWND w,const std::filesystem::path& out,const std::string& run,std::uint32_t nonce)
-      :process(p),pid(id),creation(c),window(w),output(out),run_id(run),expected_nonce(nonce) {}
+  state(HANDLE p,DWORD id,std::uint64_t c,HWND w,const std::filesystem::path& out,const std::string& run,std::uint32_t nonce,desktop_capture_backend selected)
+      :process(p),pid(id),creation(c),window(w),output(out),run_id(run),expected_nonce(nonce),backend(selected) {}
   void bind_window() {
     DWORD current{}; GetWindowThreadProcessId(window,&current);
     require(IsWindow(window) && IsWindowVisible(window) && !IsIconic(window) && current == pid && WaitForSingleObject(process,0) == WAIT_TIMEOUT, "Desktop owner window/process changed");
@@ -119,6 +120,74 @@ struct burst_desktop_observer::state {
     RECT client{}; require(GetClientRect(window,&client) && ((client.right==1100&&client.bottom==720)||(scene==4&&client.right==1060&&client.bottom==700)),"Desktop client geometry changed");
     HDC dc=GetDC(window); require(dc != nullptr,"Desktop DPI unavailable"); const int dpi=GetDeviceCaps(dc,LOGPIXELSX); ReleaseDC(window,dc); require(dpi==96,"Desktop observation requires 96 DPI");
   }
+  void run_gdi(HANDLE file, FILETIME collector_creation) {
+    MONITORINFOEXW monitor_info{};monitor_info.cbSize=sizeof(monitor_info);
+    require(GetMonitorInfoW(monitor,reinterpret_cast<MONITORINFO*>(&monitor_info))!=FALSE,"Desktop monitor information unavailable");
+    require(desktop_output_has_identity_rotation(monitor_info.szDevice),"Desktop rotated output unsupported");
+    RECT bounds{};require(GetWindowRect(window,&bounds)&&bounds.left>=monitor_info.rcMonitor.left&&bounds.top>=monitor_info.rcMonitor.top&&
+      bounds.right<=monitor_info.rcMonitor.right&&bounds.bottom<=monitor_info.rcMonitor.bottom,"Desktop owner must fit one output");
+    const auto x64=static_cast<std::int64_t>(origin.x)+8,y64=static_cast<std::int64_t>(origin.y)+8;
+    require(x64>=monitor_info.rcMonitor.left&&y64>=monitor_info.rcMonitor.top&&x64+64<=monitor_info.rcMonitor.right&&y64+36<=monitor_info.rcMonitor.bottom,
+      "Desktop marker coordinates invalid");
+    const int x=static_cast<int>(x64),y=static_cast<int>(y64);
+    gdi_screen_roi_capture capture(64,36);
+    line(file,"{\"event\":\"desktop.begin\",\"schema\":\"soui.burst-desktop/v1\",\"captureBackend\":\"gdi-bitblt\",\"run_id\":\""+run_id+
+      "\",\"expectedNonce\":"+std::to_string(expected_nonce)+",\"pid\":"+std::to_string(pid)+",\"creationFileTime\":"+quoted(creation)+
+      ",\"collectorPid\":"+std::to_string(GetCurrentProcessId())+",\"collectorCreationFileTime\":"+quoted(ft(collector_creation))+
+      ",\"hwnd\":"+quoted(reinterpret_cast<std::uintptr_t>(window))+",\"scene\":"+std::to_string(scene)+",\"probe\":false,\"qpcFrequency\":"+quoted(frequency)+
+      ",\"startedQpc\":"+quoted(started)+",\"originX\":"+std::to_string(origin.x)+",\"originY\":"+std::to_string(origin.y)+
+      ",\"dpi\":96,\"rotation\":0,\"region\":[8,8,64,36],\"contentProbe\":[10,42],\"adapterLow\":null,\"adapterHigh\":null}");
+    line(file,"{\"event\":\"desktop.output\",\"deviceName\":"+output_name(monitor_info.szDevice)+",\"left\":"+std::to_string(monitor_info.rcMonitor.left)+
+      ",\"top\":"+std::to_string(monitor_info.rcMonitor.top)+",\"right\":"+std::to_string(monitor_info.rcMonitor.right)+
+      ",\"bottom\":"+std::to_string(monitor_info.rcMonitor.bottom)+",\"adapterLow\":null,\"adapterHigh\":null}");
+    const auto deadline=GetTickCount64()+140000;
+    std::uint64_t sample_sequence{};
+    while(!stop.load()) {
+      require(GetTickCount64()<deadline,"Desktop observation exceeded its deadline");bind_window();
+      MONITORINFOEXW current{};current.cbSize=sizeof(current);
+      require(GetMonitorInfoW(monitor,reinterpret_cast<MONITORINFO*>(&current))!=FALSE&&current.rcMonitor.left==monitor_info.rcMonitor.left&&
+        current.rcMonitor.top==monitor_info.rcMonitor.top&&current.rcMonitor.right==monitor_info.rcMonitor.right&&
+        current.rcMonitor.bottom==monitor_info.rcMonitor.bottom&&std::wstring(current.szDevice)==monitor_info.szDevice&&
+        desktop_output_has_identity_rotation(current.szDevice),
+        "Desktop output configuration changed");
+      require(!desktop_cursor_overlaps(x,y,64,36),"Desktop cursor overlaps marker ROI");
+      const auto capture_begin=tick();capture.capture(x,y);const auto capture_end=tick();
+      require(capture_end>=capture_begin&&capture_end-capture_begin<=frequency/10,"Desktop GDI capture exceeded the 100ms observation budget");
+      require(GetTickCount64()<deadline,"Desktop observation exceeded its deadline");
+      require(!desktop_cursor_overlaps(x,y,64,36),"Desktop cursor overlaps marker ROI");
+      marker value;
+      try{value=decode(capture.pixels(),capture.pitch());}
+      catch(...){
+        if(!ready&&capture_end-started<frequency*5){
+          line(file,"{\"event\":\"desktop.baseline-reject\",\"captureBeginQpc\":"+quoted(capture_begin)+
+            ",\"captureEndQpc\":"+quoted(capture_end)+",\"visibleQpc\":"+quoted(capture_end)+"}");Sleep(4);continue;
+        }
+        throw;
+      }
+      require(value.nonce==expected_nonce,"Burst marker does not bind the requested run");
+      require(value.content_sequence==value.ack,"Burst content pixel differs from marker ACK");
+      if(!ready)line(file,"{\"event\":\"desktop.ready\",\"captureBeginQpc\":"+quoted(capture_begin)+
+        ",\"captureEndQpc\":"+quoted(capture_end)+",\"visibleQpc\":"+quoted(capture_end)+
+        ",\"observedQpc\":"+quoted(tick())+",\"nonce\":"+std::to_string(value.nonce)+",\"ack\":"+std::to_string(value.ack)+"}");
+      {std::lock_guard<std::mutex> lock(mutex);if(ready)require(value.nonce==latest.nonce&&value.ack>=latest.ack&&value.frame>=latest.frame&&
+        value.delivered_units>=latest.delivered_units,"Desktop marker lifetime/counters changed");latest=value;ready=true;}
+      changed.notify_all();
+      require(++sample_sequence<=200000,"Desktop GDI sample limit exceeded");++frames;
+      RECT client{};require(GetClientRect(window,&client),"Desktop client dimensions unavailable");
+      line(file,"{\"event\":\"desktop.frame\",\"captureSequence\":"+std::to_string(sample_sequence)+
+        ",\"captureBeginQpc\":"+quoted(capture_begin)+",\"captureEndQpc\":"+quoted(capture_end)+
+        ",\"visibleQpc\":"+quoted(capture_end)+",\"observedQpc\":"+quoted(tick())+
+        ",\"lastPresentQpc\":null,\"accumulatedFrames\":null,\"protected\":null,\"nonce\":"+std::to_string(value.nonce)+
+        ",\"ack\":"+std::to_string(value.ack)+",\"frame\":"+std::to_string(value.frame)+",\"scene\":"+std::to_string(value.scene)+
+        ",\"motion\":"+(value.motion?"true":"false")+",\"markerHex\":\""+marker_hex(value)+"\",\"contentSequence\":"+
+        std::to_string(value.content_sequence)+",\"deliveredUnits\":"+std::to_string(value.delivered_units)+
+        ",\"width\":"+std::to_string(client.right)+",\"height\":"+std::to_string(client.bottom)+"}");
+      Sleep(1);
+    }
+    line(file,"{\"event\":\"desktop.end\",\"completed\":"+std::string(normal_stop.load()?"true":"false")+
+      ",\"frames\":"+quoted(frames)+",\"pointerOnly\":null,\"captureSamples\":"+quoted(sample_sequence)+",\"endedQpc\":"+quoted(tick())+"}");
+    require(FlushFileBuffers(file)!=FALSE,"Desktop trace flush failed");
+  }
   void run() noexcept {
     handle file;
     try {
@@ -127,6 +196,7 @@ struct burst_desktop_observer::state {
       LARGE_INTEGER f{}; require(QueryPerformanceFrequency(&f) && f.QuadPart>0,"Desktop QPC frequency unavailable"); frequency=static_cast<std::uint64_t>(f.QuadPart); started=tick();
       FILETIME c{},e{},k{},u{};require(GetProcessTimes(GetCurrentProcess(),&c,&e,&k,&u),"Desktop collector identity unavailable");
       origin={};require(ClientToScreen(window,&origin),"Desktop region unavailable");monitor=MonitorFromWindow(window,MONITOR_DEFAULTTONULL);require(monitor != nullptr,"Desktop monitor unavailable");bind_window();
+      if(backend==desktop_capture_backend::gdi_bitblt){run_gdi(file.p,c);{std::lock_guard<std::mutex> lock(mutex);done=true;}changed.notify_all();return;}
       library dxgi(L"dxgi.dll"), d3d(L"d3d11.dll");
       using factory_fn=HRESULT (WINAPI*)(REFIID,void**);
       using device_fn=HRESULT (WINAPI*)(IDXGIAdapter*,D3D_DRIVER_TYPE,HMODULE,UINT,const D3D_FEATURE_LEVEL*,UINT,UINT,ID3D11Device**,D3D_FEATURE_LEVEL*,ID3D11DeviceContext**);
@@ -210,13 +280,15 @@ struct burst_desktop_observer::state {
       line(file.p,"{\"event\":\"desktop.end\",\"completed\":"+std::string(normal_stop.load()?"true":"false")+",\"frames\":"+quoted(frames)+",\"pointerOnly\":"+quoted(pointer_only)+",\"endedQpc\":"+quoted(tick())+"}");require(FlushFileBuffers(file.p),"Desktop trace flush failed");
     } catch(const std::exception& error) {
       {std::lock_guard<std::mutex> lock(mutex);failure=error.what();}
-      if(file.p!=INVALID_HANDLE_VALUE){try{line(file.p,"{\"event\":\"desktop.end\",\"completed\":false,\"frames\":"+quoted(frames)+",\"pointerOnly\":"+quoted(pointer_only)+",\"endedQpc\":"+quoted(tick())+"}");FlushFileBuffers(file.p);}catch(...){}}
+      if(file.p!=INVALID_HANDLE_VALUE){try{line(file.p,"{\"event\":\"desktop.end\",\"completed\":false,\"frames\":"+quoted(frames)+
+        ",\"pointerOnly\":"+(backend==desktop_capture_backend::dxgi?quoted(pointer_only):"null")+
+        (backend==desktop_capture_backend::gdi_bitblt?",\"captureSamples\":"+quoted(frames):"")+",\"endedQpc\":"+quoted(tick())+"}");FlushFileBuffers(file.p);}catch(...){}}
     } catch(...) {std::lock_guard<std::mutex> lock(mutex);failure="Desktop observation failed";}
     {std::lock_guard<std::mutex> lock(mutex);done=true;}changed.notify_all();
   }
 };
-burst_desktop_observer::burst_desktop_observer(HANDLE p,DWORD id,std::uint64_t c,HWND w,const std::filesystem::path& out,const std::string& run_id,std::uint32_t nonce)
-    :state_(std::make_unique<state>(p,id,c,w,out,run_id,nonce)) {
+burst_desktop_observer::burst_desktop_observer(HANDLE p,DWORD id,std::uint64_t c,HWND w,const std::filesystem::path& out,const std::string& run_id,std::uint32_t nonce,desktop_capture_backend backend)
+    :state_(std::make_unique<state>(p,id,c,w,out,run_id,nonce,backend)) {
   require(run_id.size()==32 && nonce!=0,"Burst run identity invalid");
   for(char digit:run_id)require((digit>='0'&&digit<='9')||(digit>='a'&&digit<='f'),"Burst run identity invalid");
   state_->thread=std::thread([s=state_.get()]{s->run();});

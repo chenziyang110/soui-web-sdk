@@ -11,6 +11,7 @@
   var kind = kindMatch[1], canvas = document.getElementById('feedback'), context = canvas.getContext('2d');
   var sequence = 0, frame = 0, pending = false, seenCount = 0, rejected = 0, invalid = false, wheelUnits=0;
   var seen = new Uint32Array(100000);
+  var samePositionRepeats = 0, samePositionRepeatLimit = 100000, samePositionRepeatOverflow = false;
   function render() {
     pending = false;
     if (frame >= 65535) throw new Error('Marker frame capacity exhausted');
@@ -45,6 +46,15 @@
       if (x<0 || x>=1000 || y<0 || y>=100 || x!==Math.floor(x) || y!==Math.floor(y)) return;
       next=y*1000+x+1;
     }
+    if (kind === 'pointer_move' && !invalid && sequence > 0 && next === sequence) {
+      if (samePositionRepeats >= samePositionRepeatLimit) {
+        ++rejected; samePositionRepeatOverflow=true; invalid=true;
+        if (!pending) { pending=true; requestAnimationFrame(render); }
+        return;
+      }
+      ++samePositionRepeats;
+      return;
+    }
     if (invalid || next<=sequence || next>100000 || seenCount>=seen.length) {
       ++rejected; invalid=true;
       if(!pending){pending=true;requestAnimationFrame(render);}
@@ -59,6 +69,9 @@
   window.souiBurstResult=function () {
     return {schema:'soui.burst-page/v1',run_id:runMatch[1],kind:kind,nonce:nonce,
       latest:sequence,observed:seenCount,rejected:rejected,device_pixel_ratio:1,
+      invalid:invalid,same_position_repeats:samePositionRepeats,same_position_repeat_limit:samePositionRepeatLimit,
+      same_position_repeat_range:[0,samePositionRepeatLimit],same_position_repeat_overflow:samePositionRepeatOverflow,
+      same_position_repeat_scope:"page-observed same-coordinate pointer callbacks; not injection IDs, acknowledgements, or presentations",
       marker_region:[8,8,64,36],content_probe:[10,42]};
   };
 }());

@@ -40,7 +40,7 @@ node benchmarks/protocol/input-frame-trace.cjs <trace-sdk.ndjson> <trace-vendor.
 
 新桌面协议允许 ACK 跨越和有界 accumulated images，保留遗漏数量。仅对实际观察到、同时匹配内容像素的 ACK 计算 captured-image 样本；跨越的输入不自动获得“已显示”终态。最老未显示输入年龄不会因较新 ACK 消失。遗漏图像不能证明真实首次显示；物理发光未测。`calibration.json` 须绑定本轮 run/QPC，并记录 `schema:soui.burst-calibration/v1`、`observation_error_ms`、`device_pixel_ratio:1`。误差值由专人实测冻结；reader 不认证自报校准。
 
-NEW burst marker 将20-bit delivered_units 放入 byte14/15 与 flags高4位，CRC同时覆盖这些位；旧 marker/reader 完全不改。指针计数只在严格递增、合法唯一坐标时加一，重复/倒序使 marker 失效；滚轮计数是实际累计120单位。只有冻结受控页面、单 injector、内容像素、完整图像历史，以及 delivered_units==ACK 的共同证据，才能把未单独呈现的范围记为 visual-coalesced。缺任一证据仍为 unknown，不能仅凭 ACK 跳号分类。终态各类与 unknown 总数必须等于注入数；coalesced 不是新 T7 样本。
+NEW burst marker 将20-bit delivered_units 放入 byte14/15 与 flags高4位，CRC同时覆盖这些位；旧 marker/reader 完全不改。指针计数只在严格递增、合法唯一坐标时加一。同位 pointer_move（next==sequence>0）单独计入页面的 bounded same_position_repeats，范围为[0,100000]，不推进sequence/seenCount/delivered_units、不产生新render，也不是新的注入、原生接收、ACK或呈现；native SDK 仍按原路径处理每个输入包，页面不会过滤或合并输入。页面同位计数溢出及真正倒序（next<sequence）仍使marker失效，wheel计数和验证保持实际累计120单位。页面坐标重复仅证明DOM观察到同位回调，不能归因到SendInput、SDK或其他消息源。正式A/B两侧必须使用完全相同的冻结burst页面HTML/JS hash。只有冻结受控页面、单 injector、内容像素、完整图像历史，以及 delivered_units==ACK 的共同证据，才能把未单独呈现的范围记为 visual-coalesced。缺任一证据仍为 unknown，不能仅凭 ACK 跳号分类。终态各类与 unknown 总数必须等于注入数；coalesced 不是新 T7 样本。
 
 ### CRC 拒绝的诊断原件
 
@@ -75,6 +75,8 @@ node benchmarks/protocol/same-product-input-pair.cjs <baseline结果目录> <can
 ## 一轮与系列的执行交接
 
 `run-input-ui.cjs` 是新的单轮 Owned orchestration，直接启动实际公共 SDK Host 与 BurstInput，等待并核对 native ready/host-ready，两个 Job 都自然完成后生成 run manifest，保留所有原件。失败只停止持有的自有 Job；不自动重试、不猜测环境根因。请求 schema 为 `soui.input-ui-run-request/v1`，字段是 product_id/source_commit/measurement_source_commit/runtime_version/trace_mode/kind/hz/count，及绝对路径 host_executable/input_executable/owned_runner/miniblink_binary/sdk_library/page_root/frozen_environment/frozen_configuration/calibration_template。measurement_source_commit 固定同一量测源码，core source_commit 分别为基线/候选。校准模板 schema 为 `soui.burst-calibration-template/v1`，含 qpc_frequency/observation_error_ms/device_pixel_ratio；本工具不替专人制造校准证据。
+
+捕获后端在冻结请求的 `capture_backend` 中选择，取值为 `dxgi` 或 `gdi-bitblt`。新冻结请求省略该字段时会固定为 `dxgi`；旧 v2 请求缺字段也只按 DXGI 解释。显式选择 `gdi-bitblt` 时，冻结请求及 `frozen_inputs`、`workload.json`、`input-ui-run.json` 和 `burst.begin.capture_backend` 必须一致且都明确写出该值，配对读取器会拒绝缺失或不匹配；A/B 两轮须使用相同后端。GDI 不会自动回退，也不代表 DXGI `LastPresentTime` 或物理刷新/扫描输出，结果只描述 BitBlt 软件可见的 T7 观测端点。
 
 ```powershell
 node benchmarks/protocol/run-input-ui.cjs <冻结请求JSON绝对路径> <新的结果目录绝对路径>

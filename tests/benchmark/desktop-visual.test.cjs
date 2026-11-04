@@ -30,10 +30,65 @@ function fixture() {
   const options={ownerSubject:{pid:11,creationFileTime:begin.creationFileTime},collectorSubject:{pid:22,creationFileTime:begin.collectorCreationFileTime},pageMarker:{schema:'soui.visual-marker/v1',nonce:123,devicePixelRatio:1,region:[8,8,64,32]}};
   return {input,rows,options};
 }
+function asGdi(value) {
+  const [begin,output,...rest]=value.rows;
+  begin.captureBackend='gdi-bitblt';begin.adapterLow=null;begin.adapterHigh=null;
+  output.adapterLow=null;output.adapterHigh=null;
+  const converted=[begin,output];
+  for(const row of rest) {
+    if(row.event==='desktop.acquire')continue;
+    if(row.event==='desktop.ready'||row.event==='desktop.frame') {
+      const visible=BigInt(row.lastPresentQpc);
+      row.captureBeginQpc=String(visible-1n);row.captureEndQpc=String(visible+1n);
+      row.visibleQpc=String(visible);row.observedQpc=String(visible+2n);
+      row.lastPresentQpc=null;row.accumulatedFrames=null;row.protected=null;
+    }
+    converted.push(row);
+  }
+  const end=converted.at(-1);end.pointerOnly=null;end.captureSamples=end.frames;
+  value.rows=converted;return value;
+}
+function withGdiWarmupReject(value, missingReadyField = true) {
+  asGdi(value);
+  const [,output,...rest]=value.rows;
+  const ready=rest.find(row=>row.event==='desktop.ready');
+  const reject={event:'desktop.baseline-reject',captureBeginQpc:'1000000',captureEndQpc:'1000002',visibleQpc:'1000001'};
+  value.rows.splice(value.rows.indexOf(ready),0,reject);
+  if(missingReadyField)delete ready.lastPresentQpc;
+  return value;
+}
 function check(value) {return checkDesktopTrace(value.input,value.rows,'S05',value.options);}
 test('real meaning and signed time bounds stay finite and never claim physical/performance pass',()=>{
   const result=check(fixture());assert.equal(result.desktopObservationAccepted,true);assert.equal(result.visualResponseUpperMs.p95,20);assert.equal(result.markerFrameIntervalsMs.p95,1000);
   assert.equal(result.physicalPresentation,false);assert.equal(result.performanceGate,false);assert.equal(result.releaseReady,false);
+});
+test('GDI reader binds explicit software-visible observations without claiming presentation timestamps',()=>{
+  const result=check(asGdi(fixture()));
+  assert.equal(result.captureBackend,'gdi-bitblt');
+  assert.equal(result.t7_endpoint,'BitBlt-software-capture-end-not-physical-presentation');
+  assert.equal(result.samples[0].visibleQpc,'1001020');
+  assert.equal(Object.hasOwn(result.samples[0],'presentQpc'),false);
+  assert.equal(result.visualResponseUpperMs.p95,20);assert.equal(result.markerFrameIntervalsMs.p95,1000);
+  assert.equal(result.physicalPresentation,false);
+});
+test('GDI producer-shaped warmup and ready records may omit DXGI-only timestamps',()=>{
+  const result=check(withGdiWarmupReject(fixture()));
+  assert.equal(result.captureBackend,'gdi-bitblt');
+  assert.equal(result.desktopObservationAccepted,true);
+});
+test('GDI warmup/ready reject a non-null presentation timestamp while frames still require explicit null',()=>{
+  for(const target of ['desktop.baseline-reject','desktop.ready']) {
+    const value=withGdiWarmupReject(fixture());
+    const row=value.rows.find(item=>item.event===target);
+    row.lastPresentQpc='1000001';
+    assert.throws(()=>check(value),/GDI baseline warmup|Duplicate\/invalid baseline/);
+  }
+  const missingFrame=asGdi(fixture());
+  delete missingFrame.rows.find(item=>item.event==='desktop.frame').lastPresentQpc;
+  assert.throws(()=>check(missingFrame),/Missing frame acquisition/);
+  const nonnullFrame=asGdi(fixture());
+  nonnullFrame.rows.find(item=>item.event==='desktop.frame').lastPresentQpc='1001020';
+  assert.throws(()=>check(nonnullFrame),/Missing frame acquisition/);
 });
 test('absence of caller verified held identities remains unbound',()=>{const f=fixture();f.options={};assert.equal(check(f).desktopObservationAccepted,false);});
 test('adjacent native FILETIME is not rounded together',()=>{const f=fixture();f.options.ownerSubject.creationFileTime='134360000000000002';assert.throws(()=>check(f),/owned subjects/);});

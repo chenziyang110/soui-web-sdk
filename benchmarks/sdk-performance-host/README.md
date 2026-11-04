@@ -24,17 +24,22 @@
 cmake -S benchmarks/sdk-performance-host -B ../perf-host-baseline `
   -G 'Visual Studio 17 2022' -A x64 -T v143 `
   '-DMATCHED_SDK_ROOT=../baseline-install' '-DMATCHED_SDK_VERSION=0.6.0' `
+  '-DMATCHED_SDK_BUILD_RECEIPT=../baseline-build/build-Release.json' `
+  "-DMATCHED_WEBVIEW2_SDK_ARCHIVE=$((Resolve-Path ../webview2-deps/microsoft.web.webview2.1.0.4258.31.nupkg).Path)" `
   -DSOUI_PERF_BUILD_IDENTITY=a4fc-baseline -DSOUI_PERF_OPTIONAL_FRAME_FEEDBACK=OFF
 cmake --build ../perf-host-baseline --config Release --parallel 2
 # 候选使用独立安装目录、独立 build、实际数值 package version，并设 feedback=ON；页面不修改。
 node --test benchmarks/sdk-performance-host/tests/page-contract.cjs
+node --test benchmarks/sdk-performance-host/tests/sdk-build-identity.cjs
 ```
 
 Windows SDK 必须为 10.0.19041.0，具体锁定方式沿用宿主工具链；CMake 配置会拒绝选到其他 Windows SDK。静态库 /MD Release 与消费者宏布局保持一致。构建不添加默认 GUI CTest。
 
-显式 `LLVM22MSVC142` 消费者使用产品 `cmake/toolchains/SouiLLVM22.cmake` 和已验证的同档 SDK，生成器须为 `Ninja Multi-Config`。配置会实际调用产品的编译器、ABI、工具与 SDK 身份验证；Windows SDK 从该档位固定的实际输入与 `CMAKE_SYSTEM_VERSION` 核验，Visual Studio 档继续检查生成器选中的 SDK。LLVM 构建结果单独记账，不能继承 MSVC143 或真实性能资格。工具路径沿用正式 `Build.ps1` 的六个显式输入，相关构建说明见 [构建文档](../../docs/build.md)。
+`MATCHED_SDK_BUILD_RECEIPT` 必须是该安装载荷对应、已通过的 SDK-only `soui.source-build/v2` 收据。配置时核对数值版本、架构、配置、源码清单自身散列、每份安装公共头和两份静态库；安装头的 CRLF 按收据既有 LF 规范核对。完整安装前缀另保存逐文件散列至 build 目录 `sdk-build-inputs.json`，每次编译前重新核验，任何输入或收据变化均要求重新配置消费者。报告的 `identity.sdkBuild` 内嵌源码/收据/安装闭集散列及静态库身份；`buildIdentity` 只作显示标签，不再承担源码绑定。该摘要不包含开发机绝对路径；它证明编译输入，不授予性能或生产资格。基线必须提供自己的真实收据，不使用候选头文件或手填标签代替。
 
 ## 手动运行
+
+`MATCHED_WEBVIEW2_SDK_ARCHIVE` 指向本地已有的、与安装前缀中 source-bound dependency.json 对应的 NuGet 包；配置不会下载。Loader 必须匹配包散列及包内当前架构成员，不能只因它出现在安装目录就信任。旧 `baseline-a4fc` 的 legacy result/install-manifest 不属于 v2 收据；上面的基线示例须先具备真实匹配的 v2 构建收据，不能直接套用旧路径或手工改写 schema。
 
 先冻结并核对 MiniBlink DLL 所在完整依赖目录。WebView2 可使用调用方指定的 Fixed Runtime，或记录实际检测到的已安装 Runtime 版本。所有结果、报告、独占 WebView2 profile 均进入调用方指定的**全新**任务目录，不写应用资源或旧结果。
 
@@ -56,6 +61,8 @@ Windows SDK 必须为 10.0.19041.0，具体锁定方式沿用宿主工具链；C
 环境身份包含 W02 实际读取的 `SOUI_WEBVIEW2_PREPARE_OUTPUT`、`SOUI_WEBVIEW2_OWNER_BUDGET_US`、`SOUI_WEBVIEW2_OUTPUT_TIMING`；未设置为 null，超过读取上限明确标记不可取得。普通配对必须三项相同；W02 控制实验需明确唯一变量，不能把继承环境变化混成 SDK 收益。
 
 ### 原生 Bridge 分段诊断（ADR-0159）
+
+scalar Begin/End 另附 `clockAnchor`：用 QPC 前后括号夹住一次 UTC FILETIME 读取，记录实际 QPC 频率、读取跨度和采用的 UTC API。优先动态探测精确 API，旧系统回退 `GetSystemTimeAsFileTime`，不提高最低系统要求。UTC 精度未知、可发生墙钟调整；该字段不校准 renderer 的 `performance.now()`，不改变原 scalar 来源资格。采集器必须先 ready，再开始页面区间；仅在 Native Begin 后才启动采集的记录只能算部分覆盖，不能宣称完整 30 秒。
 
 消费者同时记录冷环境项 `SOUI_DIAGNOSTIC_BRIDGE_PHASES`。仅在明确的诊断载荷中将它设为 `1`，保持 `SOUI_DIAGNOSTIC_SCRIPT` 未设置，并启用 `--input-trace=scalar`；必须在进程启动前冻结这些值。本组统一使用未设置来隔离 SCRIPT 诊断；已核对的 Host 仅在值为 `1` 时开启，`0` 会关闭，仍拒绝实际意外出现的 script 后缀。普通入口不设置该开关。这个独立观测有额外QPC/原子成本，不是默认性能配置，也不代表既有scalar计时全部关闭。
 

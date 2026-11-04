@@ -76,13 +76,13 @@ test('generated application and relative-root inputs cannot stand in for root na
   fs.writeFileSync(path.join(f.root, 'project.json'), '{}');
   assert.throws(() => configuration(f.root, 'x64', 'Release'), /generated app/);
 });
-test('ON accepts all 78 registered names and OFF preserves SDK registration only', () => {
-  assert.deepEqual(registry(jsonRegistry(allNames), 'ON'), {registeredVendorTests: 78, registeredNativeTests: 83});
+test('ON accepts all 100 registered names and OFF preserves SDK registration only', () => {
+  assert.deepEqual(registry(jsonRegistry(allNames), 'ON'), {registeredVendorTests: 100, registeredNativeTests: 105});
   assert.deepEqual(registry(jsonRegistry([sdkName]), 'OFF'), {registeredVendorTests: 0, registeredNativeTests: 1});
 });
 test('one missing, extra, duplicate or disabled vendor case rejects the whole registry', () => {
-  assert.throws(() => registry(jsonRegistry(allNames.filter(name => name !== manifest.names[0])), 'ON'), /all 78 exact names/);
-  assert.throws(() => registry(jsonRegistry([...allNames, 'kernel.native.unexpected']), 'ON'), /all 78 exact names/);
+  assert.throws(() => registry(jsonRegistry(allNames.filter(name => name !== manifest.names[0])), 'ON'), /all 100 exact names/);
+  assert.throws(() => registry(jsonRegistry([...allNames, 'kernel.native.unexpected']), 'ON'), /all 100 exact names/);
   assert.throws(() => registry(jsonRegistry([...allNames, manifest.names[0]]), 'ON'), /Duplicate/);
   const disabled = JSON.parse(jsonRegistry(allNames));
   disabled.tests[1].properties.push({name: 'DISABLED', value: true});
@@ -125,7 +125,7 @@ test('manifest follows every actual vendor CMake case registration', () => {
       }
     }
   }
-  assert.equal(names.size, 78);
+  assert.equal(names.size, 100);
   assert.deepEqual([...names].sort(), manifest.names);
 });
 
@@ -138,6 +138,10 @@ test('auxiliary scheduler names bind the actual standalone source fixtures', () 
       for (const registration of loop[2].matchAll(/add_test\(NAME\s+(scheduler\.[^\s)]+)\s/g))
         for (const failure of loop[1].trim().split(/\s+/)) names.add(registration[1].replace('${failure}', failure));
     }
+    for (const loop of source.matchAll(/foreach\(boundary IN ITEMS\s+([^)]*)\)([\s\S]*?)endforeach\(\)/g)) {
+      for (const registration of loop[2].matchAll(/add_test\(NAME\s+(scheduler\.[^\s)]+)\s/g))
+        for (const boundary of loop[1].trim().split(/\s+/)) names.add(registration[1].replace('${boundary}', boundary));
+    }
   }
   assert.deepEqual([...names].sort(), manifest.auxiliaryNames);
 });
@@ -147,7 +151,7 @@ test('central vendor preflight covers the union of actual leaf source inputs', (
     'wke/CursorDescriptorBroker.cpp', 'wke/CursorDescriptorBroker.h', 'wke/wke_cursor_broker.h',
     'content/web_impl_win/TaskSchedulingPolicy.h', 'content/web_impl_win/TaskSchedulingIndex.h',
     'content/common/InputFrameTrace.cpp', 'content/common/InputFrameTrace.h',
-    'cc/trees/FrameDeadlinePolicy.h', 'cc/trees/LegacyPaintRetryPolicy.h',
+    'cc/trees/FrameDeadlinePolicy.h', 'cc/trees/DirtyRegionPolicy.h', 'cc/trees/LegacyPaintRetryPolicy.h',
     'cc/trees/ResourceNotificationPolicy.h',
     'cc/trees/RenderDiagnosticTrace.h', 'cc/trees/GpuSkiaSurface.cpp',
     'cc/trees/FrameBufferLeasePolicy.h',
@@ -156,7 +160,7 @@ test('central vendor preflight covers the union of actual leaf source inputs', (
     'cc/trees/ViewTraceIdentity.h',
     'cc/trees/DrawFrameWakePolicy.h',
     'cc/raster/RasterSchedulingPolicy.h',
-    'cc/raster/RasterCandidateBudget.h',
+    'cc/raster/RasterCandidateBudget.h', 'cc/raster/CompletionWaiters.h',
     'content/browser/HostVisibilityPolicy.h',
     'content/common/PaintLifetime.h',
     'cc/input/ScrollController.h',
@@ -179,7 +183,7 @@ test('central vendor preflight covers the union of actual leaf source inputs', (
   const required = module.match(/set\(_soui_vendor_required\s+([\s\S]*?)\n\)/);
   assert.ok(required, 'Actual central required inputs are required');
   const actual = [...required[1].matchAll(/"([^"]+)"/g)].map(match => match[1]);
-  assert.equal(expected.size, 50);
+  assert.equal(expected.size, 52);
   assert.equal(new Set(actual).size, actual.length);
   assert.deepEqual(actual.sort(), [...expected].sort());
 });
@@ -194,7 +198,7 @@ test('private source freeze binds all actual required files and rejects one abse
   const required = moduleText.match(/set\(_soui_vendor_required\s+([\s\S]*?)\n\)/);
   assert.ok(required);
   const names = [...required[1].matchAll(/"([^"]+)"/g)].map(match => match[1]).sort();
-  assert.equal(names.length, 50);
+  assert.equal(names.length, 52);
   fs.mkdirSync(path.join(f.root, 'cmake'));
   fs.writeFileSync(path.join(f.root, 'cmake/SouiVendorTests.cmake'), moduleText);
   for (const [index, name] of names.entries()) {

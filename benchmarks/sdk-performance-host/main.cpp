@@ -1,6 +1,7 @@
 #include "support.h"
 #include "scalar_capture.h"
 #include "native_phase_capture.h"
+#include "frozen_sdk_identity.h"
 #include <soui/version.h>
 #include <soui/host/soui_miniblink_host.h>
 #include <soui/host/webview2_host.h>
@@ -112,14 +113,11 @@ struct slot final {
   std::unique_ptr<sdk::webview2_runtime_exit_watch> runtime_watch;sdk::frame_pacer pacer;
   bool preparing{},prepared{},mounted{},closing{},controller_closed{},closed{},close_running{},display_dirty{true};
   ULONGLONG close_started{},restore_at{},snapshot_at{};
-  ULONGLONG reload_deadline{};
-  std::uint64_t reload_original_epoch{};
-  bool reload_pending{},reload_polling{};
   mutable std::mutex snapshot_mutex;json snapshot=json::object();
   json runtime_identity=json::object();
   json copy_snapshot()const{std::lock_guard<std::mutex> lock(snapshot_mutex);return snapshot;}
   json copy_wire_snapshot()const{return native_phase_wire_snapshot(copy_snapshot());}
-  void publish_snapshot();void request_close();void close_step();void pulse();void housekeeping();void reload_step();
+  void publish_snapshot();void request_close();void close_step();void pulse();void housekeeping();
 };
 struct action final{unsigned slot_index;dispatch_gate::receipt receipt;ULONGLONG due;std::string name;};
 class application final {
@@ -142,8 +140,10 @@ class application final {
     write_new(settings.output/L"page-hash-input.txt",page_seed);
     input_capture.configure(settings.input_trace,settings.backend=="miniblink"?settings.miniblink:fs::path{});
     std::array<wchar_t,32768> exe{};const auto size=GetModuleFileNameW(nullptr,exe.data(),static_cast<DWORD>(exe.size()));require(size&&size<exe.size(),"Executable path unavailable");
-    identity={{"schema","soui.sdk-performance-identity/v1"},{"backend",settings.backend},{"buildIdentity",SOUI_PERF_BUILD_IDENTITY},
-      {"architecture",architecture},
+    const auto sdk_build=json::parse(frozen_sdk_build_json);
+    require(sdk_build.at("sdkVersion").get<std::string>()==SOUI_SDK_VERSION_STRING,"Installed SDK version differs from frozen build");
+    identity={{"schema","soui.sdk-performance-identity/v1"},{"backend",settings.backend},{"buildIdentity",SOUI_PERF_BUILD_IDENTITY},{"sdkBuild",sdk_build},
+      {"architecture",architecture},{"consumerCompiler",{{"id",SOUI_PERF_COMPILER_ID},{"version",SOUI_PERF_COMPILER_VERSION},{"windowsSdk",SOUI_PERF_WINDOWS_SDK}}},
       {"sdkVersion",SOUI_SDK_VERSION_STRING},{"sdkPackageVersion",SOUI_PERF_PACKAGE_VERSION},{"optionalFeedback",bool(SOUI_PERF_OPTIONAL_FRAME_FEEDBACK)},
       {"engineBudgetUs",settings.budget},{"pageHash",sha256(settings.output/L"page-hash-input.txt")},{"pageFiles",files},{"executableSha256",sha256(exe.data())},
       {"requestedFrameRate",settings.frame_rate},
@@ -258,13 +258,7 @@ class application final {
       auto& item=*slots.at(next.slot_index);if(item.closing||item.closed||!item.mounted||!item.bridge.dispatch().claim(next.receipt)){log({{"stage","action-cancelled"},{"action",next.name},{"slot",next.slot_index},{"requestGeneration",std::to_string(next.receipt.epoch)}});continue;}
       log({{"stage","action-begin"},{"action",next.name},{"slot",next.slot_index},{"requestGeneration",std::to_string(next.receipt.epoch)},{"authorization","original receipt claimed before reentrant Host call"}});
       if(next.name=="second-host"){if(created_count.load()<2)create_slot();}
-      else if(next.name=="reload"){
-        if(item.reload_deadline){fail(item,{false,"E_RELOAD_ALREADY_OWNED","A reload is already being observed."});continue;}
-        item.reload_original_epoch=next.receipt.epoch;
-        item.reload_deadline=GetTickCount64()+15000;
-        item.reload_pending=true;
-        item.reload_step();
-      }
+      else if(next.name=="reload"){const auto result=item.host->reload();if(!result.ok)fail(item,result);}
       else{const auto result=item.host->hide();if(!result.ok){fail(item,result);continue;}ShowWindow(item.window,SW_HIDE);item.restore_at=GetTickCount64()+1500;}
     }
   }
@@ -359,39 +353,8 @@ void slot::pulse(){
   const auto desired=bridge.desired_rate();if(pacer.target()!=desired){if(!pacer.start(window,desired)){app.fail(*this,{false,"E_PACER","Pacer update failed"});return;}bridge.applied_pacer(pacer.target());}
   if(pacer.failed()){app.fail(*this,{false,"E_PACER","Pacer clock failed"});return;}host->pump();
 }
-void slot::reload_step(){
-  if(!reload_deadline||closing||closed||reload_polling)return;
-  if(GetTickCount64()>=reload_deadline){
-    reload_deadline=0;app.fail(*this,{false,"E_RELOAD_DEADLINE","Reload or subsequent application readiness exceeded the original 15-second window."});return;
-  }
-  reload_polling=true;
-  struct release_poll{bool& value;~release_poll(){value=false;}} guard{reload_polling};
-  if(reload_pending){
-    const auto result=host->reload(); // Retain the original SDK operation; same UI owner.
-    if(closing||closed)return;
-    if(!result.ok){
-      if(result.code=="E_RELOAD_PENDING")return;
-      reload_deadline=0;app.fail(*this,result);return;
-    }
-    reload_pending=false;
-    app.log({{"stage","reload-operation-complete"},{"slot",index},{"previousGeneration",std::to_string(reload_original_epoch)}});
-  }
-  if(GetTickCount64()>=reload_deadline){
-    reload_deadline=0;app.fail(*this,{false,"E_RELOAD_DEADLINE","Reload operation completed after its original deadline."});return;
-  }
-  if(host->document_ready()&&host->application_ready()&&bridge.epoch()>reload_original_epoch){
-    const auto generation=bridge.epoch();
-    reload_deadline=0;
-    publish_snapshot();
-    app.log({{"stage","reload-ready"},{"slot",index},{"previousGeneration",std::to_string(reload_original_epoch)},
-             {"generation",std::to_string(generation)}});
-  }
-}
-
 void slot::housekeeping(){
-  if(closing){close_step();return;}
-  reload_step();if(closing||closed)return;
-  app.process_actions();if(closing||closed)return;
+  if(closing){close_step();return;}app.process_actions();if(closing||closed)return;
   if(restore_at&&GetTickCount64()>=restore_at){restore_at=0;const auto shown=host->show();if(!shown.ok){app.fail(*this,shown);return;}ShowWindow(window,SW_SHOWNOACTIVATE);app.log({{"stage","hidden-restored"},{"slot",index},{"activatedByTool",false}});}
   if(GetTickCount64()-snapshot_at>=1000)publish_snapshot();
   if(modern&&prepared){const auto status=modern->status();if(!status.ok&&status.code!="E_PENDING")app.fail(*this,status);}
@@ -473,6 +436,8 @@ unsigned boundary_contracts(scalar_capture& capture,report_writer& writer){
 }
 int self_test(const options& settings){
   require(fs::create_directory(settings.output),"Fresh contract result directory required");unsigned passed=0;
+  const auto frozen_build=json::parse(frozen_sdk_build_json);
+  require(frozen_build.at("sdkVersion").get<std::string>()==SOUI_SDK_VERSION_STRING,"Compiled SDK header differs from its frozen build receipt");++passed;
   for(std::size_t size:{std::size_t{0},std::size_t{16},std::size_t{4096},std::size_t{60000}}){auto value=json{{"payload",std::string(size,'x')},{"sequence",UINT32_MAX}};require(echo(value.dump())==value,"Echo boundary mismatch");++passed;}
   for(const auto& value:{json{{"payload",std::string(60001,'x')},{"sequence",1}},json{{"payload","x"},{"sequence",-1}},json{{"payload","\n"},{"sequence",1}},json{{"payload","x"},{"sequence",4294967296ULL}}}){
     bool rejected=false;try{(void)echo(value.dump());}catch(const std::exception&){rejected=true;}require(rejected,"Invalid echo admitted");++passed;
@@ -489,6 +454,17 @@ int self_test(const options& settings){
   const auto absent=scalar_json(input_trace::scalar_snapshot{});require(!absent["available"].get<bool>()&&absent["counters"].is_null()&&absent["durations"].is_null(),"Unavailable source converted into zero measurements");++passed;
   capture.configure(true,{});passed+=boundary_contracts(capture,trace_writer);
   auto actual=input_trace::process_recorder().snapshot();actual.attempted=42;actual.recorded=0;
+  const auto anchor=native_clock_anchor_json(100,1234,103,1000,false);
+  require(anchor["available"]==true&&anchor["qpcBefore"]=="100"&&anchor["qpcAfter"]=="103"&&
+    anchor["utcFileTime100ns"]=="1234"&&anchor["readBracketQpcTicks"]=="3"&&anchor["utcResolution100ns"].is_null()&&
+    anchor["rendererClockCalibration"]==false,"Clock anchor lost its bracket or invented clock precision");++passed;
+  for(const auto& invalid:std::array<json,4>{native_clock_anchor_json(0,1,2,3,false),native_clock_anchor_json(2,1,1,3,true),
+      native_clock_anchor_json(1,0,2,3,false),native_clock_anchor_json(1,1,2,0,false)})
+    require(invalid["available"]==false,"Invalid clock anchor was accepted");++passed;
+  const auto live_anchor=capture_native_clock_anchor();
+  require(live_anchor["available"]==true&&std::stoull(live_anchor["qpcAfter"].get<std::string>())>=
+    std::stoull(live_anchor["qpcBefore"].get<std::string>())&&live_anchor["rendererClockCalibration"]==false,
+    "Actual native clock anchor unavailable or misclassified");++passed;
   require(scalar_source_status(actual,actual.session,true)["complete"]==true,"Normal scalar-only attempted events were mislabeled as loss");++passed;
   require(scalar_source_status({},actual.session,true)["complete"]==false&&scalar_source_status({},actual.session,false)["complete"].is_null(),"Missing requested source was accepted or not-applicable source fabricated");++passed;
   for(unsigned fault=0;fault<12;++fault){auto value=actual;
@@ -500,7 +476,7 @@ int self_test(const options& settings){
   }++passed;
   const std::uint64_t exact_large=(std::uint64_t{1}<<53)+17;
   input_trace::add(input_trace::counter::copy_bytes,exact_large);
-  const auto begin=capture.measurement(true,0,gate,original,0,trace_writer,{{"contractOnly",true}});
+  const auto begin=capture.measurement(true,0,gate,original,0,trace_writer,{{"contractOnly",true},{"sdkBuild",frozen_build}});
   require(begin["snapshotUsable"]==true&&begin["sourceStatus"]["kernel"]["complete"].is_null(),"Actual scalar boundary receipt lacks source qualification");++passed;
   bool duplicate=false;try{(void)capture.measurement(true,0,gate,original,0,trace_writer,json::object());}catch(const std::exception&){duplicate=true;}
   require(duplicate,"Duplicate measurement Begin accepted");++passed;
@@ -508,13 +484,15 @@ int self_test(const options& settings){
   bool stale=false;try{(void)capture.measurement(false,0,other,unrelated,begin["id"].get<unsigned>(),trace_writer,json::object());}catch(const std::exception&){stale=true;}
   require(stale,"Stale measurement End accepted");++passed;
   input_trace::add(input_trace::counter::copy_bytes,7);input_trace::observe_duration(input_trace::duration_metric::input_queue,8);
-  const auto end=capture.measurement(false,0,gate,original,begin["id"].get<unsigned>(),trace_writer,{{"contractOnly",true}});
+  const auto end=capture.measurement(false,0,gate,original,begin["id"].get<unsigned>(),trace_writer,{{"contractOnly",true},{"sdkBuild",frozen_build}});
   trace_writer.stop();const auto trace_deadline=GetTickCount64()+5000;while(!trace_writer.stopped()&&GetTickCount64()<trace_deadline)Sleep(1);
   if(!trace_writer.stopped())std::_Exit(3);require(!trace_writer.failed(),"Trace boundary writer failed");
   std::ifstream input(fs::u8path(end["path"].get<std::string>()));json stored;input>>stored;
   require(stored["sdk"]["counters"]["copy_bytes"]==std::to_string(exact_large+7)&&stored["sdk"]["durations"]["input_queue"][3]=="1", "Scalar counter precision/histogram contract changed");++passed;
   require(stored["kernel"]["available"]==false&&stored["kernel"]["counters"].is_null(),"No-kernel contract fabricated kernel metrics");++passed;
   require(stored["snapshotUsable"]==end["snapshotUsable"]&&stored["sourceStatus"]==end["sourceStatus"],"Persisted source qualification differs from actual receipt");++passed;
+  require(stored["clockAnchor"]==end["clockAnchor"]&&stored["clockAnchor"]["available"]==true,
+    "Persisted boundary clock anchor differs from the actual receipt");++passed;
   const auto environment=environment_snapshot();for(const auto* name:{"SOUI_WEBVIEW2_PREPARE_OUTPUT","SOUI_WEBVIEW2_OWNER_BUDGET_US","SOUI_WEBVIEW2_OUTPUT_TIMING"})require(environment.contains(name),"W02 cold option missing from process identity");++passed;
   require(capture.before_runtime_shutdown()&&capture.finish(trace_root),"Actual scalar SDK did not quiesce/export");++passed;
   const json phase_environment={{native_phase_environment,"1"},{"SOUI_DIAGNOSTIC_SCRIPT","0"}};

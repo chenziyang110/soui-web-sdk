@@ -1,6 +1,7 @@
 #pragma once
 #include "support.h"
 #include "native_phase_capture.h"
+#include "native_clock_anchor.h"
 #include <soui/diagnostics/input_frame_trace.h>
 #include <soui/diagnostics/miniblink_trace_source.h>
 #include <cstring>
@@ -100,12 +101,14 @@ class scalar_capture final {
     const auto kernel_snapshot=kernel_?kernel_->snapshot():input_trace::scalar_snapshot{};
     const auto captured_end=input_trace::now_qpc();
     require(captured_begin&&captured_end>=captured_begin,"E_MEASUREMENT_CLOCK");
+    const auto clock_anchor=capture_native_clock_anchor();
     const auto phase_cache=native_phase_boundary(source_identity,captured_begin,captured_end,identity_.qpc_frequency,epoch);
     const auto sources=source_status(sdk_snapshot,kernel_snapshot);const bool usable=sources_usable(sources);
     auto kernel=kernel_?scalar_json(kernel_snapshot):json{{"available",false},{"missingReason",kernel_status_name()},{"counters",nullptr},{"durations",nullptr},{"stages",nullptr}};
     json report={{"schema","soui.sdk-performance-scalar-boundary/v1"},{"phase",begin?"begin":"end"},{"measurementId",id},
       {"hostIndex",host},{"sessionGeneration",std::to_string(epoch)},{"scope","process-cumulative-live"},{"sourceIdentity",source_identity},
       {"captureBeginQpc",std::to_string(captured_begin)},{"captureEndQpc",std::to_string(captured_end)},{"qpcFrequency",std::to_string(identity_.qpc_frequency)},
+      {"clockAnchor",clock_anchor},
       {"sdk",scalar_json(sdk_snapshot)},{"kernel",std::move(kernel)},{"physicalInputLatencyMeasured",false},
       {"snapshotUsable",usable},{"sourceStatus",sources},
       {"clockBoundary","Native snapshot executes after Bridge dispatch; never subtract performance.now from QPC"}};
@@ -124,7 +127,7 @@ class scalar_capture final {
     }),"E_MEASUREMENT_STALE");
     json result={{"id",id},{"phase",begin?"begin":"end"},{"status","snapshot_queued"},{"scope","process-cumulative-live"},
       {"writeId",receipt["id"]},{"path",receipt["path"]},{"captureEndQpc",std::to_string(captured_end)},
-      {"qpcFrequency",std::to_string(identity_.qpc_frequency)},{"snapshotUsable",usable},{"sourceStatus",sources}};
+      {"qpcFrequency",std::to_string(identity_.qpc_frequency)},{"clockAnchor",clock_anchor},{"snapshotUsable",usable},{"sourceStatus",sources}};
     result[begin?"beginNativeQpc":"endNativeQpc"]=std::to_string(captured_begin);return result;
   }
   bool before_runtime_shutdown(){return !configured_||input_trace::register_current_thread();}

@@ -7,6 +7,7 @@
 #include <limits>
 #include <stdexcept>
 #include <string>
+#include "desktop-capture.h"
 
 namespace soui::benchmark {
 struct passive_error : std::runtime_error { using std::runtime_error::runtime_error; };
@@ -17,6 +18,7 @@ struct passive_options {
   std::string run;
   unsigned interval_ms{}, duration_ms{}, startup_ms{};
   std::filesystem::path output;
+  desktop_capture_backend capture_backend{desktop_capture_backend::dxgi};
 };
 inline std::uint64_t passive_integer(const wchar_t* text, std::uint64_t maximum) {
   if (!text || !*text || (*text == L'0' && text[1])) throw std::runtime_error("Invalid passive integer");
@@ -49,8 +51,8 @@ inline bool passive_relative_due_100ns(std::uint64_t ticks, std::uint64_t freque
   return true;
 }
 inline passive_options parse_passive_options(int argc, wchar_t** argv) {
-  if (argc != 10 || !argv || !argv[1] || std::wstring(argv[1]) != L"--observe-manual")
-    throw std::runtime_error("Usage: InputTrace --observe-manual PID CREATION HWND RUN INTERVAL_MS DURATION_MS STARTUP_MS ABS_NEW_OUTPUT");
+  if ((argc != 10 && argc != 11) || !argv || !argv[1] || std::wstring(argv[1]) != L"--observe-manual")
+    throw std::runtime_error("Usage: InputTrace --observe-manual PID CREATION HWND RUN INTERVAL_MS DURATION_MS STARTUP_MS ABS_NEW_OUTPUT [dxgi|gdi-bitblt]");
   passive_options result;
   result.pid = static_cast<std::uint32_t>(passive_integer(argv[2], std::numeric_limits<std::uint32_t>::max()));
   result.creation = passive_integer(argv[3], std::numeric_limits<std::uint64_t>::max());
@@ -69,6 +71,7 @@ inline passive_options parse_passive_options(int argc, wchar_t** argv) {
   if (!argv[9] || std::wstring(argv[9]).size() > 32760) throw std::runtime_error("Invalid passive output path");
   result.output = std::filesystem::path(argv[9]);
   if (!result.output.is_absolute() || result.output.filename().empty()) throw std::runtime_error("Passive output must be an absolute new file");
+  if (argc == 11) result.capture_backend = parse_desktop_capture_backend(argv[10]);
   return result;
 }
 inline std::uint32_t passive_nonce(const std::string& run) {

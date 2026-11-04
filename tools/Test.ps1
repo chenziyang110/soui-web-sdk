@@ -69,7 +69,7 @@ if(-not $NativeOnly){
   if($vendorState.mode -eq 'OFF'){
     Write-Output 'Private vendor regressions and private ABI source comparison were not evaluated (SOUI_BUILD_VENDOR_TESTS=OFF). Public Host and SDK tests remain enabled.'
   }else{
-    Write-Output 'All 54 vendor tests are registered; private ABI comparison and actual CTest execution are still required.'
+    Write-Output 'All 100 vendor tests are registered; private ABI comparison and actual CTest execution are still required.'
     if($NativeToolchain-eq'LLVM22MSVC142'){
       $llvmPrivateText=& node $vendorHelper required-source $root
       if($LASTEXITCODE-ne0){throw 'The private vendor source contract is incomplete.'}

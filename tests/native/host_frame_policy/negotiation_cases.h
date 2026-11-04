@@ -70,6 +70,29 @@ inline void run() {
   require(state.complete(receipt, WKE_INPUT_UI_OK, 240, 240, start), "acknowledged apply completes");
   require(state.state() == attempts::outcome::applied && state.observed_applied() == 240
       && !state.begin(key, start + std::chrono::hours(1)), "same successful policy never reapplied");
+
+  // Model a provider operation that takes longer than the first 100 ms
+  // backoff. The retry interval starts when the failed operation completes,
+  // not when the owner pump began it.
+  const int transient_statuses[] = {WKE_INPUT_UI_BUSY, WKE_INPUT_UI_UNAVAILABLE};
+  for (const int transient_status : transient_statuses) {
+    attempts recovered;
+    const auto failed_ticket = recovered.begin(key, start);
+    const auto provider_completed = start + std::chrono::milliseconds(150);
+    require(failed_ticket && recovered.complete(failed_ticket, transient_status, 240, -1, provider_completed),
+        "slow transient provider failure is recorded at completion");
+    require(!recovered.begin(key, provider_completed + std::chrono::milliseconds(99)),
+        "slow BUSY/UNAVAILABLE still observes the full post-completion backoff");
+    const auto retry_ticket = recovered.begin(key, provider_completed + std::chrono::milliseconds(100));
+    require(retry_ticket != 0, "transient provider failure retries at the completion-based deadline");
+    const auto retry_completed = provider_completed + std::chrono::milliseconds(250);
+    require(recovered.complete(retry_ticket, WKE_INPUT_UI_OK, 240, 240, retry_completed)
+        && recovered.attempts() == 2 && recovered.state() == attempts::outcome::applied
+        && recovered.observed_applied() == 240
+        && !recovered.begin(key, retry_completed + std::chrono::hours(1)),
+        "a successful transient retry becomes applied and is deduplicated");
+  }
+
   key.display_limit = 144;
   const auto next = state.begin(key, start);
   require(next && next != receipt && state.observed_applied() == 240, "new target preserves old actual until confirmation");
@@ -78,8 +101,15 @@ inline void run() {
   require(state.observed_applied() == 144 && state.state() == attempts::outcome::failed
       && !state.begin(key, start + std::chrono::hours(1)), "readback is not apply success or retry license");
   ++key.view_generation;
-  receipt = state.begin(key, start);
-  require(receipt && state.observed_applied() == -1, "new view clears old actual");
+  const auto stale_generation_receipt = state.begin(key, start);
+  require(stale_generation_receipt && state.observed_applied() == -1, "new view clears old actual");
+  ++key.view_generation;
+  receipt = state.begin(key, start + std::chrono::milliseconds(1));
+  require(receipt && receipt != stale_generation_receipt && state.observed_applied() == -1,
+      "a newer view generation replaces the pending ticket");
+  require(!state.complete(stale_generation_receipt, WKE_INPUT_UI_OK, 144, 144, start + std::chrono::milliseconds(2))
+      && state.state() == attempts::outcome::in_progress && state.observed_applied() == -1,
+      "late completion from an older view generation cannot publish actual state");
   auto at = start;
   const unsigned backoff[] = {100, 200, 400};
   for (unsigned delay : backoff) {

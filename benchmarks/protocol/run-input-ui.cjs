@@ -53,6 +53,7 @@ async function runRequest(requestFile,output) {
     Number.isSafeInteger(request.count)&&request.count>0&&request.count<=Math.min(100000,request.hz*120)&&
     typeof request.runtime_version==='string'&&request.runtime_version.length>0&&request.runtime_version.length<=256,
     'Invalid frozen run request');
+  const captureBackend=frozen.selectedCaptureBackend(request);
   frozen.verify(request); // Before output creation, process launch or input.
   insist(path.isAbsolute(output)&&!fs.existsSync(output),'Output must be a new absolute directory');
   const host=file(request.host_executable),input=file(request.input_executable),runner=file(request.owned_runner),
@@ -76,7 +77,8 @@ async function runRequest(requestFile,output) {
   write(output,'calibration.json',{...calibration,schema:'soui.burst-calibration/v1',run_id:run,
     calibration_template_sha256:hash(file(request.calibration_template)).sha256});
   write(output,'workload.json',{schema:'soui.burst-workload/v1',kind:request.kind,hz:request.hz,requested:request.count,
-    content_width:1100,content_height:720,page_html_sha256:identities.html.sha256,page_script_sha256:identities.script.sha256});
+    content_width:1100,content_height:720,capture_backend:captureBackend,
+    page_html_sha256:identities.html.sha256,page_script_sha256:identities.script.sha256});
   write(output,'payload-manifest.json',{schema:'soui.input-ui-payload/v1',source_commit:request.source_commit,files:[
     {role:'host',path:'runtime/host.exe',...identities.host},{role:'runtime',path:'runtime/miniblink.dll',...identities.binary},
     {role:'sdk-library',path:'runtime/soui_sdk.lib',...identities.library}]});
@@ -86,7 +88,7 @@ async function runRequest(requestFile,output) {
     measurement_source_commit:request.measurement_source_commit,
     measurement_sources_sha256:frozen.sourceDigest(request.frozen_inputs.measurement_sources),
     run_id:run,capture_root:output,renderer:'miniblink-software',runtime_version:request.runtime_version,
-    trace_mode:request.trace_mode,host_exe_sha256:identities.host.sha256,
+    trace_mode:request.trace_mode,capture_backend:captureBackend,host_exe_sha256:identities.host.sha256,
     tools:{input_sha256:identities.input.sha256,owned_runner_sha256:identities.runner.sha256},host_arguments:arguments_,
     frozen_request:owned.describe(output,'frozen-request.json'),
     processes:[],owned_evidence:[],traces:[],evidence:{},status:'incomplete',performanceGate:false,releaseReady:false};
@@ -98,9 +100,10 @@ async function runRequest(requestFile,output) {
     watchdog=setTimeout(()=>stop(runs),195000);
     const subject=await hostRun.ready,ready=await waitReady(output,subject,hostRun);
     insist(ready.run_id===run&&ready.qpc_frequency===calibration.qpc_frequency,'Ready run/QPC differs from frozen calibration');
+    const inputEnvironment={...cleanEnvironment,SOUI_DESKTOP_CAPTURE_BACKEND:captureBackend};
     const inputRun=launch('input',input,[String(subject.pid),subject.creationFileTime,run,String(request.hz),String(request.count),
       path.join(output,'burst-input.ndjson'),path.join(output,'burst-desktop.ndjson'),request.kind],
-      path.dirname(input),output,cleanEnvironment,{runner,timeoutMs:155000});runs.push(inputRun);
+      path.dirname(input),output,inputEnvironment,{runner,timeoutMs:155000});runs.push(inputRun);
     for(const child of runs)void child.finished.then(result=>{if(result.code!==0||result.error)stop(runs);});
     await inputRun.ready;record.processes=await Promise.all(runs.map(child=>child.finished));
     insist(record.processes.every(child=>child.code===0&&!child.error),'Native owned Host/input run failed');

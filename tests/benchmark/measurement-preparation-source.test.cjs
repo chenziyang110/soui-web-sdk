@@ -19,6 +19,8 @@ const toolNames = ['OwnedProcessRunner', 'OwnedProcessAssignmentFixture', 'Proce
   'OwnedTailProcessFixture', 'OwnedTailMutationFixture', 'OwnedTailApiFixture', 'DisplayCalibration', 'BurstInput'];
 const burstInputs = ['benchmarks/protocol/burst-input.cpp', 'benchmarks/protocol/burst-desktop-observer.cpp',
   'benchmarks/protocol/burst-desktop-observer.h'];
+const observerHeaderInputs = ['benchmarks/protocol/desktop-capture.h', 'benchmarks/protocol/passive-observation.h',
+  'benchmarks/protocol/passive-wait-timer.h', 'benchmarks/protocol/rejected-frame-evidence.h'];
 const displayInput = 'benchmarks/protocol/display-calibration.cpp';
 const cohortInput = 'benchmarks/protocol/owned-process-cohort.h';
 const hash = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
@@ -65,7 +67,8 @@ function fixture(t, architecture) {
   const existing = load(repository, {count: 0}).fingerprint();
   for (const entry of existing.files) write(entry.path, fs.readFileSync(path.join(repository, entry.path)));
   write(sdkCheck, fs.readFileSync(path.join(repository, sdkCheck)));
-  for (const name of [...tailInputs, cohortInput, ...burstInputs]) write(name, fs.readFileSync(path.join(repository, name)));
+  for (const name of [...tailInputs, cohortInput, ...burstInputs, ...observerHeaderInputs])
+    write(name, fs.readFileSync(path.join(repository, name)));
   for (const name of [displayInput, 'benchmarks/protocol/display-calibration.cjs', 'benchmarks/protocol/owned-trace-subject.cjs'])
     write(name, fs.readFileSync(path.join(repository, name)));
   write('tools/internal/owned-process.cjs', '// pure fixture client\n');
@@ -87,6 +90,23 @@ function fixture(t, architecture) {
     genericSupervisionPassed: null, source: validation.fingerprint(), executables}));
   return {workspace, write, validation, launches, directory, sdkFile: path.join(workspace, sdkCheck)};
 }
+
+test('observer inline headers are frozen inputs and changed or missing headers reject the old receipt', t => {
+  const f = fixture(t, 'x64'), initial = f.validation.fingerprint();
+  f.validation.prepared('x64');
+  const included = new Set(initial.files.map(item => item.path));
+  assert.deepEqual(observerHeaderInputs.filter(name => included.has(name)), observerHeaderInputs);
+  for (const name of observerHeaderInputs) {
+    const before = f.validation.fingerprint().sha256;
+    fs.appendFileSync(path.join(f.workspace, name), '\n// changed inline measurement dependency\n');
+    assert.notEqual(f.validation.fingerprint().sha256, before, `Changing ${name} must change the prepared source fingerprint`);
+    assert.throws(() => f.validation.prepared('x64'), /missing or stale/);
+  }
+  fs.unlinkSync(path.join(f.workspace, observerHeaderInputs[0]));
+  assert.throws(() => f.validation.fingerprint(), /ENOENT/);
+  assert.throws(() => f.validation.prepared('x64'), /ENOENT/);
+  assert.equal(f.launches.count, 0);
+});
 
 for (const architecture of ['x86', 'x64']) {
   for (const name of ['tools/internal/Find-Toolchain.ps1', 'tools/internal/Msvc-CompilerLifecycle.ps1']) {

@@ -79,6 +79,41 @@ test('passive reader binds exact identities and the native phase without convert
   assert.equal(reader.analyzeManualObservation(edge,expected).coverage.headTicks,'0');
 });
 
+function gdiObservationFixture(t) {
+  const fixture=observationFixture(t),{rows,expected}=fixture;
+  expected.captureBackend='gdi-bitblt';
+  rows[0].captureBackend='gdi-bitblt';
+  const output={schema,event:'manual-observation.output',run_id:run,deviceName:'\\\\.\\DISPLAY1',
+    left:0,top:0,right:1920,bottom:1080,originX:0,originY:0,region:[8,328,64,40]};
+  rows.splice(1,0,output);
+  rows[2].captureBeginQpc='1010';rows[2].visibleQpc='1011';rows[2].captureEndQpc='1012';
+  rows[2].lastPresentQpc=null;rows[2].accumulatedFrames=null;rows[2].pointerOnly=null;
+  rows[3].phaseBeginQpc='1012';rows[3].phaseDeadlineQpc='2012';
+  for(const [index,visible,end] of [[4,'1021','1022'],[5,'1041','1042']]) {
+    rows[index].visibleQpc=visible;rows[index].captureEndQpc=end;
+    rows[index].lastPresentQpc=null;rows[index].accumulatedFrames=null;rows[index].pointerOnly=null;
+  }
+  rows[6].captureBackend='gdi-bitblt';rows[6].phaseBeginQpc='1012';rows[6].phaseEndQpc='2013';rows[6].phaseDeadlineQpc='2012';
+  rows[6].pointerOnlySamples=null;rows[6].accumulatedDesktopFrames=null;rows[6].unobservedDesktopFrames=null;
+  rows[6].firstContentQpc='1021';rows[6].lastContentQpc='1041';rows[6].headTicks='9';rows[6].tailTicks='972';
+  return fixture;
+}
+test('explicit GDI reader reports software-visible T7 and never fabricates DXGI frame counters',t=>{
+  const {expected,rows}=gdiObservationFixture(t),result=reader.analyzeManualObservation(rows,expected);
+  assert.equal(result.traceQualified,true);assert.equal(result.captureBackend,'gdi-bitblt');
+  assert.equal(result.t7_endpoint,'BitBlt-software-capture-end-not-physical-presentation');
+  assert.equal(result.counts.accumulatedDesktopFrames,null);assert.equal(result.counts.pointerOnlySamples,null);
+  assert.equal(result.contentObservations[0].visibleQpc,'1021');
+  assert.equal(result.observedContentTiming.status,'gdi-software-visible-intervals');
+  assert.equal(result.physicalPresentation,false);assert.equal(result.uniqueScreenFrames,null);
+  const mismatch=structuredClone(rows);mismatch[6].captureBackend='dxgi';
+  assert.throws(()=>reader.analyzeManualObservation(mismatch,expected),/backend changed/);
+  const late=structuredClone(rows);late[4].captureEndQpc='2013';late[6].phaseEndQpc='2014';late[6].tailTicks='973';
+  assert.throws(()=>reader.analyzeManualObservation(late,expected),/after its fixed deadline/);
+  const overBudget=structuredClone(rows);overBudget[5].visibleQpc='1141';overBudget[5].captureEndQpc='1142';
+  assert.throws(()=>reader.analyzeManualObservation(overBudget,expected),/budget/);
+});
+
 test('wait timer backend compatibility preserves old unknown and never grants observation qualification',t=>{
   const {expected,rows}=observationFixture(t);
   assert.equal(reader.analyzeManualObservation(rows,expected).waitTimerBackend,'unknown');

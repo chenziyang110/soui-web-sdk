@@ -29,6 +29,26 @@ function traceRows(root,item) {
     return trace.parseNdjson(raw);
   } finally {fs.closeSync(file);}
 }
+function validateCaptureBackendPair(begin,workload,record,frozenRequest) {
+  const sources=[
+    ['burst.begin',begin,'capture_backend'],
+    ['workload',workload,'capture_backend'],
+    ['run record',record,'capture_backend'],
+    ['frozen request',frozenRequest,'capture_backend'],
+    ['frozen inputs',frozenRequest?.frozen_inputs,'capture_backend']
+  ];
+  const declared=sources.map(([name,value,key])=>{
+    const present=value!=null&&Object.hasOwn(value,key),backend=present?value[key]:'dxgi';
+    insist(backend==='dxgi'||backend==='gdi-bitblt','Unknown capture_backend in '+name);
+    return {name,present,backend};
+  });
+  const backend=declared[0].backend;
+  if(declared.some(item=>item.backend==='gdi-bitblt'))
+    insist(declared.every(item=>item.present),
+      'Explicit gdi-bitblt selection must be present in burst trace, workload, run record and frozen request');
+  insist(declared.every(item=>item.backend===backend),'Capture backend differs between burst trace, workload, run record and frozen request');
+  return backend;
+}
 function checkRun(root) {
   const record=owned.readRunJson(root,'input-ui-run.json');
   insist(record?.schema==='soui.same-product-input-run/v1' && typeof record.product_id==='string' &&
@@ -112,6 +132,7 @@ function checkRun(root) {
     names.add(item.path); return traceRows(root,item);
   });
   const workload=owned.readRunJson(root,'workload.json');
+  const captureBackend=validateCaptureBackendPair(begin,workload,record,frozenRequest);
   insist(workload?.schema==='soui.burst-workload/v1' && workload.kind===begin.kind && workload.hz===begin.hz &&
     workload.requested===begin.requested && workload.content_width===1100 && workload.content_height===720 &&
     digest(workload.page_html_sha256) && digest(workload.page_script_sha256), 'Workload differs from frozen injection/page');
@@ -128,7 +149,7 @@ function checkRun(root) {
     {ownedTarget:processes.host.subject,ownedInjector:processes.input.subject,
       allowUnavailableStages:record.trace_mode==='e2e',controlledWorkload:true,
       calibration:owned.readRunJson(root,'calibration.json')});
-  return {record,result,workload,environment,closed};
+  return {record,result,workload,environment,closed,captureBackend};
 }
 function compareRuns(baseline,candidate) {
   const before=baseline.record, after=candidate.record;
@@ -154,4 +175,4 @@ if(require.main===module) {
     console.log(JSON.stringify(checkPair(process.argv[2],process.argv[3]),null,2));
   } catch(error) { console.error(error.message); process.exitCode=1; }
 }
-module.exports={checkRun,checkPair,compareRuns,verifiedDescriptor};
+module.exports={checkRun,checkPair,compareRuns,verifiedDescriptor,validateCaptureBackendPair};

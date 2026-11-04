@@ -25,7 +25,9 @@ const sourceNames=['benchmarks/protocol/CMakeLists.txt','benchmarks/protocol/own
  'tools/internal/Msvc-CompilerLifecycle.ps1','tools/internal/measurement-validation.cjs',
  'tests/benchmark/owned-tail-process-fixture.cpp','tests/benchmark/owned-tail-mutation-fixture.cpp','tests/benchmark/owned-tail-api-fixture.cpp',
  'benchmarks/protocol/display-calibration.cpp','benchmarks/protocol/burst-input.cpp',
- 'benchmarks/protocol/burst-desktop-observer.cpp','benchmarks/protocol/burst-desktop-observer.h'];
+ 'benchmarks/protocol/burst-desktop-observer.cpp','benchmarks/protocol/burst-desktop-observer.h',
+ 'benchmarks/protocol/desktop-capture.h','benchmarks/protocol/passive-observation.h',
+ 'benchmarks/protocol/passive-wait-timer.h','benchmarks/protocol/rejected-frame-evidence.h'];
 const hash=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
 const encoded=value=>JSON.stringify(value,null,2)+'\n';
 function need(condition,message){if(!condition)throw new Error(message);}
