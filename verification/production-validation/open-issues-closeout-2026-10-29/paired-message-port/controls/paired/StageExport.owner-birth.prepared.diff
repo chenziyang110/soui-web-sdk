@@ -1,0 +1,13 @@
+diff --git a/F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port-paired-current/Export-PairedStage.v1-prepared.ps1 b/F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port-paired-current/Export-PairedStage.ps1
+index 63bcb4a..b34dc2e 100644
+--- a/F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port-paired-current/Export-PairedStage.v1-prepared.ps1
++++ b/F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port-paired-current/Export-PairedStage.ps1
+@@ -18,7 +18,7 @@ $summaryPin=Pin (Join-Path $folder 'Summary.actual.json');$summary=Get-Content -
+ if($summary.schema-cne'soui.fresh-paired-guest-stage-result/v1'-or-not$summary.stagingCompleted-or$summary.executionEnabled-or$summary.productExecuted-or$summary.process.pid-le0-or$summary.process.parentPid-ne$lease.ownerProcessId){throw 'Actual metadata stage result/owner differs'}
+ $owner=Get-Process -Id ([int]$lease.ownerProcessId) -ErrorAction SilentlyContinue
+ $ownerReused=$false
+-if($null-ne$owner){try{$observedBirth=$owner.StartTime.ToUniversalTime().ToFileTimeUtc().ToString();if($observedBirth-ceq[string]$lease.ownerCreationFileTime-and-not$owner.HasExited){throw 'Original PowerShell owner still alive'};$ownerReused=($observedBirth-cne[string]$lease.ownerCreationFileTime)}finally{$owner.Dispose()}}
++if($null-ne$owner){try{$observedBirth=$owner.StartTime.ToUniversalTime().ToFileTimeUtc().ToString();if([UInt64]::Parse($observedBirth)-lt[UInt64]::Parse([string]$lease.ownerCreationFileTime)){throw 'Observed PID birth predates recorded owner; inconsistent identity'};if($observedBirth-ceq[string]$lease.ownerCreationFileTime-and-not$owner.HasExited){throw 'Original PowerShell owner still alive'};$ownerReused=($observedBirth-cne[string]$lease.ownerCreationFileTime)}finally{$owner.Dispose()}}
+ # The metadata script did not capture Node birth. Any occupant of that PID is
+ # therefore refused, rather than guessing a reused PID or touching a process.
+ $node=Get-Process -Id ([int]$summary.process.pid) -ErrorAction SilentlyContinue

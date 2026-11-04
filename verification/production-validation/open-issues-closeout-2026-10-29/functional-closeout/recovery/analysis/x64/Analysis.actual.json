@@ -1,0 +1,261 @@
+{
+  "schema": "soui.independent-tray-recovery-run-data-review/v1",
+  "reviewedUtc": "2026-10-29T13:57:03.153Z",
+  "reviewer": "focus_review_supported",
+  "architecture": "x64",
+  "scope": "Offline original raw/index/frame/identity/native protocol/Owned validation plus retained screenshot inspection and received Root gesture observations; no app/VM/build/Git rerun or canonical archive copy.",
+  "blockingFindings": [],
+  "dataReviewBlockingFindings": 0,
+  "finiteShortPassedWithinScope": true,
+  "summary": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/trayrc-a1-x64/raw/Summary.actual.json",
+    "bytes": 7451,
+    "sha256": "0d64ff02732146ef103ea4c07247173b00597f5c3b8219266b7e0bb5401ef3b2"
+  },
+  "manifest": {
+    "path": "C:\\trayrc-a1\\TrayRecovery.manifest.json",
+    "bytes": 14187,
+    "sha256": "1003ff60a0d933a2c3fab8cfbeca48901b36e6abc58ec39a98cf2ff80b841c86"
+  },
+  "stage": {
+    "path": "C:\\issue-closeout-evidence\\trayrc-a1-stage\\Stage.actual.json",
+    "bytes": 13670,
+    "sha256": "ed5dc9cb9be8c39d41e023b9161cadcbfa24e03a39a2d3d831c396746f114068"
+  },
+  "sourcePins": [
+    {
+      "path": "C:\\sc07\\tests\\tray-recovery-consumer\\CMakeLists.txt",
+      "bytes": 742,
+      "sha256": "dfcae26f8af6be654b2e81c3d44954cb99111b4c8d88a956ede05b7cb762ac31"
+    },
+    {
+      "path": "C:\\sc07\\tests\\tray-recovery-consumer\\main.cpp",
+      "bytes": 23798,
+      "sha256": "71026eeffad9e4efa532db3d6903061db4a38fc03fbbb0c2fcfa04a6e18a24c2"
+    },
+    {
+      "path": "C:\\sc07\\tests\\tray-recovery-consumer\\README.md",
+      "bytes": 3639,
+      "sha256": "001d75eaabacca23009c1797dc45aca1e106e6b14221202141a05e40b80b7fbd"
+    }
+  ],
+  "controllerPin": {
+    "path": "C:\\trayrc-a1\\Guest-TrayRecovery.cjs",
+    "bytes": 14459,
+    "sha256": "3746bb08fefb52448f076318e722c62d36e1f037580cd89adc2627b83b46b7a6"
+  },
+  "transport": {
+    "tag": "ISSUESHORT1151C5FEC1EE4AC2BF1B9BC14247317A",
+    "index": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/trayrc-a1-x64/Files.index.json",
+      "bytes": 3718,
+      "sha256": "2e7a502fb0df87066fafa9937df08ce99821867db0fc8c36a6ecf631e552c703"
+    },
+    "closedFiles": 23,
+    "indexRecords": 22,
+    "rawFilesIncludingCatalog": 19,
+    "payloadFileBytes": 35167,
+    "rawBytesIncludingCatalog": 40519,
+    "frame": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/trayrc-a1-x64/Serial.frame.raw",
+      "bytes": 72527,
+      "sha256": "e05ae7e99f9d288d6cba7a14e1eba7111383bf6c72e0efcece6fb9347cae78e6"
+    },
+    "allIndexCatalogBase64AndPayloadBytesVerified": true,
+    "wholeSerialCopied": false
+  },
+  "native": {
+    "ready": {
+      "pid": 4516,
+      "creationFileTime": "134377555900031081"
+    },
+    "protocol": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/trayrc-a1-x64/raw/stdout.bin",
+      "bytes": 11949,
+      "sha256": "edbbec7245c8429dae67e07d771f9b57bcf4656dfa4b6c6596ec20bb2317b2b3"
+    },
+    "records": 37,
+    "elapsedMs": 52303,
+    "deadlinesUnchanged": {
+      "innerMs": 90000,
+      "ownedMs": 100000,
+      "drainMs": 2000
+    },
+    "explorerIdentities": [
+      {
+        "pid": 1440,
+        "birthFileTime": "134377458949105068",
+        "imagePath": "C:\\Windows\\explorer.exe"
+      },
+      {
+        "pid": 1492,
+        "birthFileTime": "134377556022860935",
+        "imagePath": "C:\\Windows\\explorer.exe"
+      },
+      {
+        "pid": 4872,
+        "birthFileTime": "134377556329956152",
+        "imagePath": "C:\\Windows\\explorer.exe"
+      }
+    ],
+    "actualOldProcessWaits": [
+      {
+        "pid": 1440,
+        "birthFileTime": "134377458949105068",
+        "waitResult": 0,
+        "waitError": 0
+      },
+      {
+        "pid": 1492,
+        "birthFileTime": "134377556022860935",
+        "waitResult": 0,
+        "waitError": 0
+      }
+    ],
+    "publicInstallAndFirstRecoveryPassed": true,
+    "explicitRemoveCalls": 1,
+    "secondRestartDidNotResurrect": true,
+    "settleObservedMs": 523,
+    "handlesClosed": 6,
+    "serviceDestroyedBeforeOwner": true,
+    "cleanupConfirmed": true,
+    "taskbarSourceVerified": false
+  },
+  "owned": {
+    "report": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/trayrc-a1-x64/raw/owned.ndjson",
+      "bytes": 1125,
+      "sha256": "eafa5db38e325923ff6356d79c3f867a3de336d1a9bc47f274403c848e76dc7f"
+    },
+    "validator": {
+      "path": "F:/work/soui-issue96/tools/internal/standard-build.cjs",
+      "bytes": 39757,
+      "sha256": "0411e6813baae2d4134c5b1735f56c63a31579168f4f8be12c1ea189d8cb220e"
+    },
+    "originalPureVerifyStreamPassed": true,
+    "result": {
+      "pid": 4516,
+      "creationFileTime": "134377555900031081",
+      "exitCode": 0,
+      "supervisorExitCode": 0,
+      "signal": null,
+      "spawnError": null,
+      "reportError": null,
+      "stopRequested": false,
+      "fallbackUsed": false,
+      "closureConfirmed": true,
+      "passed": true,
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 52367,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 2,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      },
+      "report": "C:\\issue-closeout-evidence\\trayrc-a1-x64\\owned.ndjson",
+      "reportSha256": "eafa5db38e325923ff6356d79c3f867a3de336d1a9bc47f274403c848e76dc7f",
+      "runnerSha256": "f254dadd4eccad3c57d69e98f260d15ee598c0b6441b7fe68fc4ef5b3b7dea83",
+      "executableSha256": "981f90a1437c77ed9e0c88247c6f74992d5979d40f62c505fd4cc0cd2b6a7344"
+    },
+    "naturalExitAndWholeJobClosed": true,
+    "forceOrFallbackUsed": false
+  },
+  "launcher": {
+    "powerShellPid": 3148,
+    "powerShellBirth": "134377555892481720",
+    "wrapperPid": 1036,
+    "wrapperBirth": "134377555888666966",
+    "nodeControllerPid": 1996,
+    "nodeBirthCollected": false,
+    "pidReuseAssumed": false,
+    "nativePowerShellAndWrapperIdentityAbsent": true,
+    "nodePidAbsentObserved": true,
+    "closureObservedByPinnedGuestExporter": true,
+    "liveGuestQueriesByReviewer": false,
+    "powerShellExit": 0,
+    "wrapperNativeExit": 0,
+    "environmentRestored": true,
+    "mutexReleased": true,
+    "stderrBytes": 0
+  },
+  "uiProof": {
+    "screenshots": [
+      {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/tray-recovery-vm-current/observed-x64/01-start.actual.png",
+        "bytes": 112441,
+        "sha256": "09312a26123fd86b58d0e66a4c6ff8e09b625a485532c2931ca5d8ab4bffb13d"
+      },
+      {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/tray-recovery-vm-current/observed-x64/02-first-restart-selected.actual.png",
+        "bytes": 104313,
+        "sha256": "f9a50a93f765639e744a7ecd8bf27af2311250b7c1f0872d1b8bc75722c8ac4c"
+      },
+      {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/tray-recovery-vm-current/observed-x64/03-after-first-restart.actual.png",
+        "bytes": 110017,
+        "sha256": "8d1769b11a04e4f1832e67748d423e4da09a6c765d8235d6544cc4656211f83e"
+      },
+      {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/tray-recovery-vm-current/observed-x64/04-recovered-visible.actual.png",
+        "bytes": 114228,
+        "sha256": "9828ee56ecf37db9d498e2b609dba196664402344880fb75bb630c4bfd194b82"
+      },
+      {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/tray-recovery-vm-current/observed-x64/05-removed.actual.png",
+        "bytes": 113089,
+        "sha256": "d092933ad2ab6b6b7a5fed369cffc19922eeb4906fd849c2312b48def9255e90"
+      },
+      {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/tray-recovery-vm-current/observed-x64/06-second-restart-selected.actual.png",
+        "bytes": 103639,
+        "sha256": "716282adc91f3595dd5c5428a5c31d54b77f3bdc0d7827e4f1ad8b0a5b37960c"
+      },
+      {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/tray-recovery-vm-current/observed-x64/07-second-restart-confirmed.actual.png",
+        "bytes": 104150,
+        "sha256": "e9fdf6fb3705ffd37406d78bd3bacddb4da888e68e0f45197a9f1f28ca762b68"
+      },
+      {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/tray-recovery-vm-current/observed-x64/08-after-second-restart.actual.png",
+        "bytes": 113409,
+        "sha256": "99e7085a8423b3054ae456e77c8bd5ad59fed8bb9e2196db7761be1230311ac2"
+      },
+      {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/tray-recovery-vm-current/observed-x64/09-finish-clicked.actual.png",
+        "bytes": 133589,
+        "sha256": "d8ba353b3266bfade95ab9c48d390c91f09d00a010c2fef8d3428fbefae5d158"
+      }
+    ],
+    "allNineReadLocally": true,
+    "rootGestureObservationReceived": "Root reported two Task Manager Explorer Restart actions, one native Remove and one Finish click in this same x64 run.",
+    "independentVisibleStates": {
+      "start": "Recovery owner visible; both buttons disabled.",
+      "firstRestartSelection": "02 shows Windows Explorer selected with Restart button.",
+      "recovered": "03/04 show recovery text and Remove enabled; transient Shutdown Event Tracker popup appears03 and is absent04.",
+      "removed": "05 shows removal confirmed with both buttons disabled.",
+      "secondRestartSelection": "06 shows Task Manager list before selection;07 shows Windows Explorer selected with Restart button.",
+      "secondRestartComplete": "08 shows no-resurrection text and Finish enabled.",
+      "finished": "09 shows consumer window absent and command console retained."
+    },
+    "popupLimit": "Root reported Cancel dismissal. Screenshot title/question is a historical shutdown-report prompt; it does not establish an OS restart during this run. No extra product test was performed.",
+    "composition": "Root action report, visible state changes, exact manifest/native identity and retained process-handle exit records jointly support the finite real Explorer restart scenario. Raw TaskbarCreated sourceVerified remains false; screenshots alone do not authenticate message sender."
+  },
+  "claims": {
+    "nativeRecoveryStateMachinePassed": true,
+    "realExplorerRestartScenarioSupportedWithinThisRun": true,
+    "messageSenderAuthenticated": false,
+    "focusQualified": false,
+    "win7Qualified": false,
+    "fullIssueQualified": false,
+    "productionQualificationComplete": false,
+    "releaseReady": false,
+    "testsRerun": false
+  }
+}

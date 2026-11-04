@@ -1,0 +1,114 @@
+{
+  "schema": "soui.independent-current-message-port-baseline-stage-analysis/v1",
+  "createdUtc": "2026-10-29T12:35:35.112Z",
+  "reviewer": "paired_review_supported",
+  "findings": [],
+  "blockingFindings": 0,
+  "scope": "Offline exact selected-frame/index/raw-copy and current baseline-vs-passed-candidate input comparison only; no producer/app/VM or test execution",
+  "decode": {
+    "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\mp-b1-stage\\Decode.actual.json",
+    "bytes": 5854,
+    "sha256": "c964e923886029ddf15b4af85d455595a6040218cba31a62d8bb7ce32595b034"
+  },
+  "index": {
+    "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\mp-b1-stage\\Files.index.json",
+    "bytes": 2647,
+    "sha256": "61deadaa741594e6345a7281910dfc5daa645abe24adb94ad56dd352e1ca2f86"
+  },
+  "closedFileSet": true,
+  "allIndexedBytesMatch": true,
+  "stage": {
+    "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\mp-b1-stage\\raw\\Stage.actual.json",
+    "bytes": 72862,
+    "sha256": "1353e3e0c5c93225e1c2b27d57224c49c29c94a9ad10e9a76d8895f902cf10df"
+  },
+  "baselineManifest": {
+    "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-baseline-current\\payload\\Current.manifest.json",
+    "bytes": 76885,
+    "sha256": "0e9d9bc5f42041c6d928ec00d33b389bc17d527a1bb6605acc7e4568bcc80055"
+  },
+  "candidateManifest": {
+    "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-reload-current\\light-payload-3777b18d-61d3-4310-b70d-bc1b73057be2\\payload\\Current.manifest.json",
+    "bytes": 74576,
+    "sha256": "2a38ab95b705937cc35be30574e7930bce29b36d24bb3a30647bc6be3e86e0b9"
+  },
+  "candidateActualStage": {
+    "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\mp-a2-stage\\raw\\Stage.actual.json",
+    "bytes": 72780,
+    "sha256": "b119a40d2a463034eec929e462ad7125b514d1c3cbdd6996db5b8bd40b876935"
+  },
+  "inputCopies": 13,
+  "runtimeCopies": 156,
+  "allCopySourceAndTargetPinsMatch": true,
+  "payloadInputsUnchangedFromPassedCandidate": true,
+  "readerAndSupervisorAndSdkProducersUnchanged": true,
+  "pairs": [
+    {
+      "architecture": "x64",
+      "baselineKernel": {
+        "relative": "node.dll",
+        "source": "F:/work/soui-issue96/out/acceptance/82e96f65-8695-4546-b468-fec6c7d8a386/runtime/node.dll",
+        "bytes": 38959616,
+        "sha256": "f552226e00c16c9df1ef6cb94081c69b37185c44741197d5a337a4ed70d1fdef",
+        "fromPayload": false,
+        "kind": "known baseline kernel; unchanged current0.6 installed SDK fixture"
+      },
+      "candidateKernel": {
+        "relative": "node.dll",
+        "source": "C:/sr06/out/x64/bin/Release/SouiStarter/node.dll",
+        "bytes": 39204352,
+        "sha256": "d888637d5dd1476dde16b8c5bb28172d7b8ec3495b69c725fa3572013748139a",
+        "fromPayload": false,
+        "kind": "current0.6.0-runtime-DLL"
+      },
+      "unchangedRuntimeMembers": 77,
+      "executable": {
+        "relative": "SouiAcceptance.exe",
+        "source": "SouiAcceptance-x64.exe",
+        "bytes": 1145856,
+        "sha256": "038f85dddf997c7e0caab6834527d1b7e2386802723005346e5f7a778b873499",
+        "fromPayload": true,
+        "kind": "new independently compiled current installed SDK consumer"
+      }
+    },
+    {
+      "architecture": "x86",
+      "baselineKernel": {
+        "relative": "node.dll",
+        "source": "F:/work/soui-issue96/out/acceptance/87d5be4b-c0df-47b8-a737-b39ff45e1787/runtime/node.dll",
+        "bytes": 28115968,
+        "sha256": "90a214ca2d416eda8e980cab7aacb80fffef777ace20c06179f41e584dae093b",
+        "fromPayload": false,
+        "kind": "known baseline kernel; unchanged current0.6 installed SDK fixture"
+      },
+      "candidateKernel": {
+        "relative": "node.dll",
+        "source": "C:/sr06/out/x86/bin/Release/SouiStarter/node.dll",
+        "bytes": 28318208,
+        "sha256": "dc8c37178f4bbd9260edc973d61af876cf8460178eaf89fa2994fdffc94abc9a",
+        "fromPayload": false,
+        "kind": "current0.6.0-runtime-DLL"
+      },
+      "unchangedRuntimeMembers": 77,
+      "executable": {
+        "relative": "SouiAcceptance.exe",
+        "source": "SouiAcceptance-x86.exe",
+        "bytes": 1003520,
+        "sha256": "209e99b0213a1d8c98a11be89e71f66e4c09530060d67f1cec82c8edec1867b2",
+        "fromPayload": true,
+        "kind": "new independently compiled current installed SDK consumer"
+      }
+    }
+  ],
+  "originalGuestAndWrappersUnchanged": true,
+  "psAndWrapperExit0": true,
+  "environmentRestoredLeaseReleased": true,
+  "actualLauncherAndWrapperIdentitiesAbsent": true,
+  "meaning": "Only the two missing baseline cases may now execute; already-passed unchanged current0.6 candidates are reused without rerun.",
+  "currentBaselineCasesExecuted": false,
+  "currentPairBehaviorPassed": false,
+  "oldSdkFailureReclassified": false,
+  "currentSdk060Qualified": false,
+  "resourcePassed": false,
+  "releaseReady": false
+}

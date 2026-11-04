@@ -1,0 +1,20 @@
+--- original-Invoke-MessagePortBuild.ps1
++++ Invoke-PairedBuild.ps1
+@@ -7,7 +7,7 @@
+ $repository='C:\sc07'
+ $phase=$null;$failure=$null;$cleanupFailures=[Collections.Generic.List[string]]::new()
+ $previous=Get-Item -LiteralPath Env:MSBUILDDISABLENODEREUSE -ErrorAction SilentlyContinue
+-$receipt=[ordered]@{schema='soui.message-port-consumer-build-only-root/v1';architecture=$Architecture;rootPid=$PID;
++$receipt=[ordered]@{schema='soui.message-port-old-sdk-paired-consumer-build-only-root/v1';sdkVersion='0.5.1-preview.1';architecture=$Architecture;rootPid=$PID;
+   beganUtc=[DateTime]::UtcNow.ToString('o');completed=$false;productExecuted=$false;executableExecuted=$false;
+   originalTimeoutMs=120000;originalDrainMs=2000;wholeJobProofRequired=$true;oldFailureReclassified=$false}
+ function Pin-File([string]$Path){
+@@ -62,7 +62,7 @@
+   Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'web-output') -Destination $workspace -Recurse
+   $configure=@(Get-SouiCMakeConfigureArguments -CMake $cmake -WorkspaceRoot $workspace -SourceDirectory $source `
+     -BuildDirectory $build -Architecture $Architecture -FreshConfigure -NativeToolchain MSVC143)
+-  $prefix='C:\sr06\out\release-install-'+$Architecture+'-release'
++  $prefix=if($Architecture-eq'x64'){'F:\work\soui-issue96\out\acceptance\bd7afa33-ea0d-4e55-b482-d2b01f64ee19\install'}else{'F:\work\soui-issue96\out\acceptance\5c02d217-f04f-4f32-9794-110e7fb3f734\install'}
+   $receipt.installedSdkPrefix=$prefix
+   $configure+=('-DCMAKE_GENERATOR_INSTANCE:PATH='+$toolchain.Root),('-DSouiSdk_DIR:PATH='+(Join-Path $prefix 'lib/cmake/SouiSdk')),('-DSOUI_ACCEPTANCE_WEB_ROOT:PATH='+(Join-Path $workspace 'web-output'))
+   $buildArguments=@('--build',$build,'--config','Release','--target','SouiAcceptance','--parallel','2','--','/nr:false')

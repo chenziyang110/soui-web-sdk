@@ -1,0 +1,132 @@
+{
+  "schema": "soui.independent-host-evidence-review/v1",
+  "reviewer": "/root/issues_runtime_audit",
+  "createdUtc": "2026-10-29T07:30:40.315Z",
+  "authors": {
+    "linkArchive": "/root/issues_qualification_audit",
+    "infrastructure": "/root/issues_ui_fixture_audit",
+    "trayPreparation": "/root/issues_runtime_audit"
+  },
+  "linkArchive": {
+    "sourcePins": [
+      {
+        "path": "verification/production-validation/current-link-members-0.6.0-2026-10-29/Collection.actual.json",
+        "bytes": 2191,
+        "sha256": "76c7b4ae5b266ce611cd000397e0768a392e252dcd969b803f3bbd6f413ea43a"
+      },
+      {
+        "path": "verification/production-validation/current-link-members-0.6.0-2026-10-29/README.md",
+        "bytes": 2531,
+        "sha256": "c0ed197a7eb1e20237d2ebf6b195291e0eb16aebc82508caea5ce4ba1d63505c"
+      },
+      {
+        "path": "verification/production-validation/current-link-members-0.6.0-2026-10-29/SUMMARY.json",
+        "bytes": 4083,
+        "sha256": "642b77b3dd3bc188b37e2f95f6cde6c365305d45a93a6955a5edcf4805e1caaf"
+      },
+      {
+        "path": "verification/production-validation/current-link-members-0.6.0-2026-10-29/collect.cjs",
+        "bytes": 11793,
+        "sha256": "e2b49203d77b4d878672a0778eed4a8de13c56d182d8da608167ec8397111ee0"
+      },
+      {
+        "path": "verification/production-validation/current-link-members-0.6.0-2026-10-29/verify.cjs",
+        "bytes": 8595,
+        "sha256": "c59f03fe3c5f9883ae060c656e9a1afad13fb28ac5a15b65b27cec7fcdae475b"
+      },
+      {
+        "path": "verification/production-validation/current-link-members-0.6.0-2026-10-29/x64.json",
+        "bytes": 156040,
+        "sha256": "b23f784b59d3cdc957700d7719402db3c9498c07a812ad1a1e2c92c79b58b024"
+      },
+      {
+        "path": "verification/production-validation/current-link-members-0.6.0-2026-10-29/x64.map.gz",
+        "bytes": 5913417,
+        "sha256": "54d4b412d66a483bb2dd1b19b6ab5b94dc17720ba0d656911409a0b2424dda39"
+      },
+      {
+        "path": "verification/production-validation/current-link-members-0.6.0-2026-10-29/x86.json",
+        "bytes": 153790,
+        "sha256": "831ad561f957842f7e3ed30ca3b92d8cc29e2f75743ffd43541de9852c9ffaa2"
+      },
+      {
+        "path": "verification/production-validation/current-link-members-0.6.0-2026-10-29/x86.map.gz",
+        "bytes": 5411736,
+        "sha256": "83f02a523ecb7475b0191417b708e065c26c8f1242e1684bc78dacc46f140a15"
+      },
+      {
+        "path": "C:/sc07/verification/production-validation/current-link-members-0.6.0-2026-10-29/Files.index.json",
+        "bytes": 1440,
+        "sha256": "409ae653d42a05178a9faf976b38f413a58767e1e54434e8a986154c6044bafe"
+      }
+    ],
+    "blockers": 0,
+    "verifierReexecuted": false,
+    "scope": "Read collector/verifier/index/summary/both architecture records/README; independent bounded MAP read for skipped-row and section-bound concerns",
+    "actualMapInspection": [
+      {
+        "architecture": "x64",
+        "symbolRows": 342174,
+        "sectionSizeRows": 46,
+        "unexpectedSkippedRows": 0,
+        "outsideSectionCount": 0
+      },
+      {
+        "architecture": "x86",
+        "symbolRows": 304462,
+        "sectionSizeRows": 44,
+        "unexpectedSkippedRows": 0,
+        "outsideSectionCount": 0
+      }
+    ],
+    "boundaries": "Mechanical MAP membership and exact source/DLL identities only; no legal approval, exhaustive transitive inventory or product run"
+  },
+  "infrastructureV3": {
+    "blockers": 0,
+    "scope": "Native all-disk deny-write/delete handle fence, metadata/session/PID identity, archive rollback/pending and UNKNOWN outcome; known availability restrictions corrected by v4"
+  },
+  "infrastructureV4": {
+    "sourcePins": [
+      {
+        "path": "scripts/lab.py",
+        "bytes": 49103,
+        "sha256": "ed4216f706238f2ec8277da190e6929f1688d4a60be5b1817b683f9a71846d50"
+      },
+      {
+        "path": "scripts/pool.py",
+        "bytes": 20562,
+        "sha256": "1bfa2b9ec7effecc3657ccc5d7a5dcbac99c045b74902b9c9013e440810cff2a"
+      },
+      {
+        "path": "scripts/test_offline_recovery.py",
+        "bytes": 24110,
+        "sha256": "72ffef34a31c0917b7a55fb77172db0354b9a27a5c1a4bb7853b467d11e776e0"
+      },
+      {
+        "path": "references/troubleshooting.md",
+        "bytes": 7605,
+        "sha256": "6f91648d1fb39ff2c689ed2161767cd2e8c6c24e2dc6d67d0308b5b6060ca7d1"
+      },
+      {
+        "path": "SKILL.md",
+        "bytes": 9635,
+        "sha256": "a3a8ac14d4fa333fe20649a51d161ca8af9c4048a68457768b896efe977f01e9"
+      }
+    ],
+    "blockers": 0,
+    "testsReexecutedByReviewer": false,
+    "scope": "Dual-family native TCP fallback and truthful QMP methods; foreign visible CLI-only classification; unchanged all-disk fences; final process/endpoint checks held under fence; no early archive on uncertainty",
+    "labSha256": "ed4216f706238f2ec8277da190e6929f1688d4a60be5b1817b683f9a71846d50",
+    "cimProvesNoWriters": false,
+    "performanceIsolationProved": false
+  },
+  "selfAuthoredTrayPreparationIsIndependentReview": false,
+  "buildsExecutedByThisArchive": false,
+  "testsExecutedByThisArchive": false,
+  "vmInputByReviewer": false,
+  "productExecutedByReviewer": false,
+  "binaryLicenseReviewComplete": false,
+  "productionQualificationComplete": false,
+  "fullDevtoolsGoalComplete": false,
+  "releaseReady": false
+}

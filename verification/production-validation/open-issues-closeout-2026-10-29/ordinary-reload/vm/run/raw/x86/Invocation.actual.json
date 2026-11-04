@@ -1,0 +1,55 @@
+{
+  "version": "0.6.0",
+  "architecture": "x86",
+  "executable": {
+    "path": "C:\\ordc-a1\\runtime-x86\\SouiAcceptance.exe",
+    "bytes": 1156608,
+    "sha256": "62a25a0c3b78cc1c30345e7a8e2b5b44c822200e7307a60fcd044657283dfc0a"
+  },
+  "args": [
+    "--mode=reload",
+    "--cycles=3",
+    "--warmup=0",
+    "--settle-ms=500",
+    "--timeout-ms=20000",
+    "--report=C:\\issue-closeout-evidence\\ordc-a1-run\\x86\\events.ndjson"
+  ],
+  "cwd": "C:\\ordc-a1\\runtime-x86",
+  "processTimeoutMs": 214500,
+  "ownedTimeoutMs": 394500,
+  "drainMs": 2000,
+  "config": {
+    "mode": "reload",
+    "cycles": 3,
+    "warmup": 0,
+    "settleMs": 500,
+    "timeoutMs": 20000
+  },
+  "installedSdkProducer": {
+    "version": "0.6.0",
+    "prefix": "C:/sr06/out/release-install-x86-release",
+    "library": {
+      "path": "C:/sr06/out/release-install-x86-release/lib/Release/soui_sdk.lib",
+      "bytes": 37409002,
+      "sha256": "d4ec7df4957d4110f0ffbd339ff840770e81860faceda18be09e19fc099afafd"
+    },
+    "versionHeader": {
+      "path": "C:/sr06/out/release-install-x86-release/include/soui/version.h",
+      "bytes": 240,
+      "sha256": "74e0b9639567ae187c236628bec3b0a30e7ad113ee15f78b0cbd4283258f2cc0"
+    },
+    "compileVerdict": {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\ordinary-reload-current\\attempt-bdeb6e02-7baf-4384-a5ea-c0b79a26b892\\x86\\case-verdict.json",
+      "bytes": 7747,
+      "sha256": "9f0eb992213f6cc4901f20ce19e21ddba339d79c116fde1d2fa138400dc85065"
+    },
+    "selectedCurrentApplicationBuild": {
+      "path": "C:/sr06/out/x86/build-Release.json",
+      "bytes": 814760,
+      "sha256": "bba72443655141c695b0287d3ce0b271a66860795b4f5abf77af54c320ebe5ec"
+    },
+    "sdkRebuilt": false
+  },
+  "webRebuilt": false,
+  "messagePortBehaviorAsserted": false
+}

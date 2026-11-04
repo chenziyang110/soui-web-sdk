@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark light">
+    <title>SDK 公共接口验证</title>
+
+  </head>
+  <body>
+    <div id="app" aria-live="polite"></div>
+    <script>(function(){try{var D=window.DOMException;new D(1,2);}catch(e){var P=D&&D.prototype;var S=function(message,name){this.message=String(message||"");this.name=String(name||"Error");};if(P)S.prototype=P;try{window.DOMException=S;}catch(ignore){}}})();</script>
+    <script src="./assets/polyfills-legacy-DmQYsS2w.js"></script>
+    <script>
+      System.import('./assets/index-legacy-9vXmrNCI.js').then(function (module) {
+
+      }).catch(function (error) {
+        window.__souiBootstrapError = String(error && error.message || error);
+        document.getElementById('app').textContent = '页面启动失败：' + window.__souiBootstrapError;
+      });
+    </script>
+  </body>
+</html>

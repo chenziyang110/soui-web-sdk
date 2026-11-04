@@ -1,0 +1,60 @@
+{
+  "version": "0.6.0",
+  "architecture": "x86",
+  "executable": {
+    "path": "C:\\issue31ca1\\runtime-x86\\SouiWorkbench.exe",
+    "bytes": 1507328,
+    "sha256": "f3da178e5d78b2ccdf36a469d52788a7b729aab4ace3a69e0115ee2ca3be4781"
+  },
+  "args": [
+    "--resident",
+    "--resident-smoke-test",
+    "--react",
+    "--page=data",
+    "--resident-log=C:\\issue-closeout-evidence\\wb31c-a1-run\\x86\\resident.ndjson"
+  ],
+  "cwd": "C:\\issue31ca1\\runtime-x86",
+  "timeoutMs": 200000,
+  "drainMs": 2000,
+  "residentReadyMs": 45000,
+  "residentSmokeMs": 180000,
+  "sourceProducer": {
+    "version": "0.6.0",
+    "newExecutable": {
+      "path": "C:\\scw8-55faf327-x86\\out\\x86\\bin\\Release\\SouiWorkbench\\SouiWorkbench.exe",
+      "bytes": 1507328,
+      "sha256": "f3da178e5d78b2ccdf36a469d52788a7b729aab4ace3a69e0115ee2ca3be4781"
+    },
+    "compileVerdict": {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\workbench-current\\composed-2c3a322a-dee5-4c96-95a2-3047bd6050ce\\x86\\case-verdict.json",
+      "bytes": 7715,
+      "sha256": "665ab2afcafd7e49e4a545c44093a781453108345ad7730e89c0bd9245619aab"
+    },
+    "installedLibrary": {
+      "path": "C:/sr06/out/release-install-x86-release/lib/Release/soui_sdk.lib",
+      "bytes": 37409002,
+      "sha256": "d4ec7df4957d4110f0ffbd339ff840770e81860faceda18be09e19fc099afafd"
+    },
+    "installedVersionHeader": {
+      "path": "C:/sr06/out/release-install-x86-release/include/soui/version.h",
+      "bytes": 240,
+      "sha256": "74e0b9639567ae187c236628bec3b0a30e7ad113ee15f78b0cbd4283258f2cc0"
+    },
+    "auxiliaryZlib": {
+      "path": "C:/sr06/out/x86/sdk/Release/soui_zlib.lib",
+      "bytes": 95140,
+      "sha256": "9487fd844a36682d0b0340f9a958c32047281ff8ba1a2f5a91471206749a8cb9"
+    },
+    "originalReleaseRuntimeProducer": {
+      "path": "C:/sr06/out/x86/build-Release.json",
+      "bytes": 814760,
+      "sha256": "bba72443655141c695b0287d3ce0b271a66860795b4f5abf77af54c320ebe5ec"
+    },
+    "sdkRebuilt": false,
+    "webRebuilt": false,
+    "originalBuildRelabeled": false,
+    "devtoolsPackageEnabled": false
+  },
+  "originalReleaseRelabeled": false,
+  "inputInjection": false
+}

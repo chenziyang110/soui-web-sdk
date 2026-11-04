@@ -1,0 +1,57 @@
+{
+  "schema": "soui.issue77-iso-transport-diagnosis/v1",
+  "recordedUtc": "2026-10-29T07:45:19.872Z",
+  "originalWriterFailure": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port/carrier-1249be88-0f1f-4f2f-840f-bb159c691d63/IsoWriter.failure.json",
+    "bytes": 234,
+    "sha256": "9bd658fc80575e813ee99e73179e9000e2a6fd14e10bebc3f19720ba71c59b39"
+  },
+  "originalOutcome": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port/carrier-1249be88-0f1f-4f2f-840f-bb159c691d63/IsoWriter.finished.json",
+    "bytes": 1021,
+    "sha256": "410bfcafb5873f052b48ac82ae7dce2498ac32090378778b38b89533d3f64489"
+  },
+  "longPathObservation": {
+    "source": "Actual output from Diagnose-IsoLease.ps1 command",
+    "pathLength": 262,
+    "nativeErrorCode": 3,
+    "nativeMessage": "The system cannot find the path specified",
+    "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port\\carrier-1249be88-0f1f-4f2f-840f-bb159c691d63\\iso-tree\\F\\work\\soui-issue96\\out\\acceptance\\0fa75154-f026-48d1-84b7-fcd486b9819b\\install\\share\\SouiSdk\\licenses\\kernel-source\\node\\openssl\\openssl\\crypto",
+    "script": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port/Diagnose-IsoLease.ps1",
+      "bytes": 1343,
+      "sha256": "a1de9b9db4600771a862be4705f8f05bd1a651152a076c6f9a29df084fc769bc"
+    }
+  },
+  "r2Failure": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port/carrier-1249be88-0f1f-4f2f-840f-bb159c691d63/iso-writer-r2-c2d2ed7e-ccbe-45fa-8600-7ef2f5e67091/IsoWriter.failure.json",
+    "bytes": 249,
+    "sha256": "e9ed4df26ff10806b0a6391954c55b81f48bd3484b180f1d49b231049dc1f39f"
+  },
+  "r2Outcome": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port/carrier-1249be88-0f1f-4f2f-840f-bb159c691d63/iso-writer-r2-c2d2ed7e-ccbe-45fa-8600-7ef2f5e67091/finished.json",
+    "bytes": 1061,
+    "sha256": "e4beff088efcf880b145acf9b34b8e3d872639ccad9afd18752af42a090fcfa4"
+  },
+  "systemComponent": {
+    "path": "C:/Windows/System32/imapi2fs.dll",
+    "bytes": 839680,
+    "sha256": "6b00e77979673c6d8bc4ff24a11dc49adc0a839f7a4d80986ef3711f587dbeaf",
+    "links": 2,
+    "isSymbolicLink": false
+  },
+  "scope": "Data ISO transport only; no SDK/product or VM execution",
+  "strictUdfReason": {
+    "maxObservedDirectoryDepth": 21,
+    "directoriesOver8": 767,
+    "iso9660DocumentedLimit": 8,
+    "sourcePlan": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port/carrier-1249be88-0f1f-4f2f-840f-bb159c691d63/IsoSource.plan.json",
+      "bytes": 839679,
+      "sha256": "49c4073010ee942ba9a60bbb250230e3e3094a87fa423310ed9bc0d6f0aaff99"
+    },
+    "reference": "https://learn.microsoft.com/en-us/windows/win32/api/imapi2fs/nf-imapi2fs-ifsidirectoryitem-addtree"
+  },
+  "sourceOrPayloadFenceRelaxed": false,
+  "releaseReady": false
+}

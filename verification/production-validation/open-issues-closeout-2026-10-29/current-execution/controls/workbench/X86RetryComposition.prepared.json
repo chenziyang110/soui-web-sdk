@@ -1,0 +1,75 @@
+{
+  "schema": "soui.workbench-x86-retry-composition-preparation/v1",
+  "createdUtc": "2026-10-29T09:57:32.851Z",
+  "files": [
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\workbench-current\\Invoke-WorkbenchBuild-x86Retry.ps1",
+      "bytes": 9167,
+      "sha256": "f15cff57d6ae50f4468da3fc55bf60e1835cc21733993abeec6cb8cfb866648f"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\workbench-current\\Run-WorkbenchBuild-x86Retry.cjs",
+      "bytes": 20878,
+      "sha256": "f3963c63a89b87a79d00e819a538d3212e2a29bbc67163def06abc1a9dc18850"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\workbench-current\\Compose-WorkbenchBuild.cjs",
+      "bytes": 13875,
+      "sha256": "f14fad7035aafc2187b7b4e61931fb3b00aeede2fee98486419377280c2a2648"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\workbench-current\\Invoke-WorkbenchBuild-x86Retry.ps1.prepared.diff",
+      "bytes": 2565,
+      "sha256": "c447daf327a091024b62374deee841a8fc7afdb9a2c86d7e7d6639fe5a417d28"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\workbench-current\\Run-WorkbenchBuild-x86Retry.cjs.prepared.diff",
+      "bytes": 5523,
+      "sha256": "0a2b54fe4b8e62ee5ea0d50e9753679eb364c0667b72494b18fd2c9c62e79906"
+    }
+  ],
+  "reason": "x64 finite compilation passed; x86 PS5 native-stderr warning handling failed before the build. Preserve all original failed records; retry only x86.",
+  "oldAttempt": {
+    "summary": {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\workbench-current\\attempt-ca3ff662-7003-4503-a652-00e198ce53b0\\summary.json",
+      "bytes": 9962,
+      "sha256": "ee2422f682d39fee1fa45ee3ea646a56975f9c3f53abb9cdc0d045ad81676746"
+    },
+    "x64Case": {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\workbench-current\\attempt-ca3ff662-7003-4503-a652-00e198ce53b0\\x64\\case-verdict.json",
+      "bytes": 8039,
+      "sha256": "98fe50c4c2c257163d2fb974f523f38fb98a33bc13fcb7a81d874f7c0603b596"
+    },
+    "x86RootReturn": {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\workbench-current\\attempt-ca3ff662-7003-4503-a652-00e198ce53b0\\x86\\root-return.json",
+      "bytes": 623,
+      "sha256": "08e5e074a612760e67f51a366131405513efdb00f26dca211e0468bb015a2346"
+    },
+    "parentSummaryPassed": false,
+    "x64CasePassed": true
+  },
+  "requiredRootGates": [
+    "ROOT_REVIEWED_CURRENT_WORKBENCH_X86_RETRY_V1",
+    "ROOT_REVIEWED_CURRENT_WORKBENCH_COMPOSITION_V1"
+  ],
+  "fixedNativeBounds": {
+    "timeoutMs": 120000,
+    "drainMs": 2000,
+    "vctipArgument": "-timeout:20",
+    "naturalWaitLimitMs": 30000,
+    "wholeJobNaturalClosureRequired": true
+  },
+  "composition": "Fresh explicitly labeled composed summary; exact original successful case copies with before/copy/after and source-membership equality. Never change an old attempt summary.",
+  "productAndPolicySourceCounts": {
+    "product": 19,
+    "policy": 3
+  },
+  "passedX64Reexecuted": false,
+  "passedMessagePortReexecuted": false,
+  "retryExecuted": false,
+  "compositionExecuted": false,
+  "policyCasesExecuted": false,
+  "productExecuted": false,
+  "productionQualified": false,
+  "releaseReady": false
+}

@@ -1,0 +1,53 @@
+diff --git a/F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port-paired-current/Invoke-PairedBrowserA2.v1-prepared.ps1 b/F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port-paired-current/Invoke-PairedBrowserA2.ps1
+index e5ce672..7fc8a5f 100644
+--- a/F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port-paired-current/Invoke-PairedBrowserA2.v1-prepared.ps1
++++ b/F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port-paired-current/Invoke-PairedBrowserA2.ps1
+@@ -14,14 +14,16 @@ function Pin([string]$File){$i=Get-Item -LiteralPath $File -Force;if($i.PSIsCont
+ function Match-Pin($Actual,$Expected){if($Actual.bytes-ne$Expected.bytes-or$Actual.sha256-cne$Expected.sha256){throw 'Frozen image or source pin differs'}}
+ if([IntPtr]::Size-ne8-or$env:COMPUTERNAME-ine'SOUI-7AEMMK5Q0T'){throw 'Task VM x64 only'}
+ $folder=[IO.Path]::GetFullPath($EvidenceDirectory).TrimEnd('\','/')
+-if($folder-notmatch'^C:\\issue-closeout-evidence\\mp77p-(preflight|run)-[a-z0-9-]{1,40}$'-or(Test-Path -LiteralPath $folder)){throw 'Fresh bounded task evidence root required'}
+-if(($Mode-eq'preflight')-ne($folder-match'\\mp77p-preflight-')){throw 'Mode and evidence namespace differ'}
++if($folder-notmatch'^C:\\issue-closeout-evidence\\mp77-(preflight|run)-pa2$'-or(Test-Path -LiteralPath $folder)){throw 'Fresh bounded task evidence root required'}
++if(($Mode-eq'preflight')-ne($folder-match'\\mp77-preflight-pa2$')){throw 'Mode and evidence namespace differ'}
+ $manifestPin=Pin $Manifest;if($manifestPin.sha256-cne$ManifestSha256){throw 'Reviewed browser manifest differs'}
+ $m=[IO.File]::ReadAllText($Manifest,[Text.Encoding]::UTF8)|ConvertFrom-Json
+ if($m.schema-cne'soui.message-port-vm-carrier/v1'-or$m.producerProfile-cne'NEW fresh-paired execution metadata; unchanged original guest and AB controllers'-or$env:COMPUTERNAME-ieq$m.preparationHost){throw 'Reviewed new producer and VM required'}
++$expectedFolder=if($Mode-eq'preflight'){[string]$m.executionEvidenceNamespace.preflight}else{[string]$m.executionEvidenceNamespace.run}
++if([IO.Path]::GetFullPath($folder)-ine[IO.Path]::GetFullPath($expectedFolder)){throw 'Manifest and original-controller evidence namespace differ'}
+ $cfgFile=[string]$m.executionInput.path;Match-Pin (Pin $cfgFile) $m.executionInput
+ $cfg=[IO.File]::ReadAllText($cfgFile,[Text.Encoding]::UTF8)|ConvertFrom-Json
+-if(-not$cfg.executionEnabled-or$cfg.rootIndependentReviewPending-or$cfg.sourceVersion-cne'0.5.1-preview.1'-or$cfg.originalProcessTimeoutMs-ne214500-or$cfg.originalOwnedTimeoutMs-ne394500-or$cfg.originalDrainMs-ne2000-or$cfg.outerInitialTimeoutMs-ne420000-or$cfg.outerDrainMs-ne2000){throw 'Frozen paired profile differs'}
++if(-not$cfg.executionEnabled-or$cfg.rootIndependentReviewPending-or$cfg.sourceRoot-cne'F:/work/soui-issue96'-or$cfg.sourceVersion-cne'0.5.1-preview.1'-or$cfg.originalProcessTimeoutMs-ne214500-or$cfg.originalOwnedTimeoutMs-ne394500-or$cfg.originalDrainMs-ne2000-or$cfg.outerInitialTimeoutMs-ne420000-or$cfg.outerDrainMs-ne2000){throw 'Frozen paired profile differs'}
+ $node=[string]$cfg.requiredExecutionNode.path;$controller=[string]$m.originalGuestController.path
+ Match-Pin (Pin $node) $cfg.requiredExecutionNode;Match-Pin (Pin $cfg.subjectRunner.path) $cfg.subjectRunner;Match-Pin (Pin $controller) $m.originalGuestController
+ $launcherExpected=@($m.files|Where-Object {[IO.Path]::GetFullPath([string]$_.guestPath)-ieq[IO.Path]::GetFullPath($PSCommandPath)});if($launcherExpected.Count-ne1){throw 'This exact launcher must be in the manifest'};Match-Pin (Pin $PSCommandPath) $launcherExpected[0]
+@@ -38,6 +40,7 @@ $crtPins=@(foreach($r in $crtRows){$p=Pin (Join-Path 'C:\issues8' $r.path);Match
+ if($Mode-eq'run'-and($RootGate-cne'ROOT_REVIEWED_GUEST_PREFLIGHT_V1'-or$PreflightSha256-notmatch'^[a-f0-9]{64}$')){throw 'Root actual-preflight review required'}
+ $names=@('NODE_OPTIONS','NODE_PATH','NODE_REPL_EXTERNAL_MODULE','SOUI_DIAGNOSTIC_SCRIPT','SOUI_BRIDGE_TRACE','SOUI_OWNED_PROCESS_RUNNER')
+ $saved=@{};$restoreErrors=[Collections.Generic.List[string]]::new();$held=$false;$released=$false;$nativeExit=$null;$exitCode=1;$failure=$null
++$locationSaved=$false;$priorLocation=$null
+ $mutex=[Threading.Mutex]::new($false,'Local\SouiDevKit.DesktopValidation')
+ try{
+  try{$held=$mutex.WaitOne(0)}catch [Threading.AbandonedMutexException]{$held=$true;throw 'Abandoned desktop lease'}
+@@ -49,16 +52,18 @@ try{
+  foreach($name in $names){[Environment]::SetEnvironmentVariable($name,$null,'Process')}
+  [Environment]::SetEnvironmentVariable('SOUI_OWNED_PROCESS_RUNNER',[string]$cfg.subjectRunner.path,'Process')
+  $oldPath=$saved['PATH'].value;[Environment]::SetEnvironmentVariable('PATH',($crt+$(if([string]::IsNullOrEmpty($oldPath)){''}else{';'+$oldPath})),'Process')
++ $priorLocation=Get-Location;Set-Location -LiteralPath ([string]$cfg.sourceRoot);$locationSaved=$true
+  $arguments=@($controller,$Mode,$Manifest,$ManifestSha256,'SOUI-7AEMMK5Q0T',$folder)
+  if($Mode-eq'run'){$arguments+=@($RootGate,$PreflightFile,$PreflightSha256)}
+- Write-NewJson (Join-Path $folder 'Invocation.actual.json') @{node=(Pin $node);args=$arguments;actualController=(Pin $controller);manifest=$manifestPin;mode=$Mode;machine=$env:COMPUTERNAME;wrapperPid=$PID;wrapperCreationFileTime=$owner.StartTime.ToUniversalTime().ToFileTimeUtc().ToString();crtPrefix=$crt;crtPins=$crtPins;clearedEnvironment=$names;originalValuesPersisted=$false;originalNativeProcessTimeoutMs=214500;originalNativeOwnedTimeoutMs=394500;originalOuterTimeoutMs=420000;originalDrainMs=2000;productHostExecutionAuthorized=$false;originalControllersModified=$false}
++ Write-NewJson (Join-Path $folder 'Invocation.actual.json') @{node=(Pin $node);args=$arguments;actualController=(Pin $controller);manifest=$manifestPin;actualNodeCwd=(Get-Location).Path;mode=$Mode;machine=$env:COMPUTERNAME;wrapperPid=$PID;wrapperCreationFileTime=$owner.StartTime.ToUniversalTime().ToFileTimeUtc().ToString();crtPrefix=$crt;crtPins=$crtPins;clearedEnvironment=$names;originalValuesPersisted=$false;originalNativeProcessTimeoutMs=214500;originalNativeOwnedTimeoutMs=394500;originalOuterTimeoutMs=420000;originalDrainMs=2000;productHostExecutionAuthorized=$false;originalControllersModified=$false}
+  $oldPreference=$ErrorActionPreference
+  try{$ErrorActionPreference='Continue';$global:LASTEXITCODE=$null;& $node @arguments 1>(Join-Path $folder 'controller.stdout.log') 2>(Join-Path $folder 'controller.stderr.log');$nativeExit=$LASTEXITCODE}finally{$ErrorActionPreference=$oldPreference}
+  if($null-eq$nativeExit){throw 'Actual native exit code missing'};$exitCode=[int]$nativeExit
+ }catch{$failure=$_.Exception.Message;[Console]::Error.WriteLine($failure);$exitCode=1}
+ finally{
+  foreach($name in $saved.Keys){try{[Environment]::SetEnvironmentVariable($name,$saved[$name].value,'Process');$now=[Environment]::GetEnvironmentVariable($name,'Process');if(($null-ne$now)-ne$saved[$name].present-or($saved[$name].present-and$now-cne$saved[$name].value)){throw 'Environment restore mismatch'}}catch{$restoreErrors.Add($name)}}
++ if($locationSaved){try{Set-Location -LiteralPath $priorLocation.Path}catch{$restoreErrors.Add('CWD')}}
+  if($held){try{$mutex.ReleaseMutex();$released=$true}catch{$restoreErrors.Add('mutex')}};$mutex.Dispose()
+- if(Test-Path -LiteralPath $folder){Write-NewJson (Join-Path $folder 'PowerShell.finished.json') @{actualNativeExitCode=$nativeExit;exitCode=$exitCode;failure=$failure;restoreErrors=@($restoreErrors.ToArray());environmentRestored=($restoreErrors.Count-eq0);pathRestored=($restoreErrors-notcontains'PATH');leaseReleased=$released;originalControllersModified=$false;originalTimelimitsChanged=$false;currentSdk060Qualified=$false;releaseReady=$false}}
++ if(Test-Path -LiteralPath $folder){Write-NewJson (Join-Path $folder 'PowerShell.finished.json') @{actualNativeExitCode=$nativeExit;exitCode=$exitCode;failure=$failure;restoreErrors=@($restoreErrors.ToArray());environmentRestored=($restoreErrors.Count-eq0);pathRestored=($restoreErrors-notcontains'PATH');cwdRestored=($restoreErrors-notcontains'CWD');leaseReleased=$released;originalControllersModified=$false;originalTimelimitsChanged=$false;currentSdk060Qualified=$false;releaseReady=$false}}
+ }
+ if($restoreErrors.Count){exit 1};exit $exitCode

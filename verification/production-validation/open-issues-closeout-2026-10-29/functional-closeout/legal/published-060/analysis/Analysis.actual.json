@@ -1,0 +1,234 @@
+{
+  "schema": "soui.independent-license-material-reuse-v3-data-review/v1",
+  "reviewedUtc": "2026-10-29T13:21:14.642430+00:00",
+  "reviewer": "paired_review_supported",
+  "scope": "Read-only actual metadata/declared-row/source recipe audit. Actual Root composition and prior closure proofs are reused; no rerun of composition, full material scan, ZIP read/extract/hash, source-SDK/prefix whole closure, native test, build, VM or Git operation.",
+  "blockingFindings": [],
+  "dataReviewBlockingFindings": 0,
+  "engineeringMaterialCompositionAcceptedWithinDeclaredScope": true,
+  "actualAttempt": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/license-delivery-reuse-current/attempt-698fbc7c-fb0b-484e-b701-664fabf045e6",
+  "actualPins": {
+    "index": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/license-delivery-reuse-current/attempt-698fbc7c-fb0b-484e-b701-664fabf045e6/Files.index.json",
+      "bytes": 370,
+      "sha256": "094baa2b18f1b084ec507b898879987e3269b062fbd9b207f2d6c67afde69c0a"
+    },
+    "inputs": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/license-delivery-reuse-current/attempt-698fbc7c-fb0b-484e-b701-664fabf045e6/Inputs.actual.json",
+      "bytes": 533891,
+      "sha256": "4bd4261af64ada590d120aedee428c1a2050d22dc9a79b91fd4b1199637ffed6"
+    },
+    "summary": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/license-delivery-reuse-current/attempt-698fbc7c-fb0b-484e-b701-664fabf045e6/Summary.actual.json",
+      "bytes": 252783,
+      "sha256": "af26fdfecd920bf103b534bcf03a344a9e3825efe484ebed5a74e316f35292f0"
+    },
+    "recipe": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/license-delivery-reuse-current/Run-ReuseComposition-v3.cjs",
+      "bytes": 15189,
+      "sha256": "76ab0693dbd6bdda4cf823ecbe6ad9acfa909f18164d932e0403390e5a712298"
+    },
+    "plan": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/license-delivery-reuse-current/Plan.v3.prepared.json",
+      "bytes": 49968,
+      "sha256": "4ad52d1643061eede40a7f3ba51b61f1f590153df4017607ddcd5c0c3c4284da"
+    }
+  },
+  "actualStatus": "PASS_PUBLISHED_060_MATERIAL_COMPOSITION_ONLY",
+  "actualFailures": 0,
+  "indexPinsAndExactThreeFileSetVerified": true,
+  "actualInputRecords": 1256,
+  "metadataPinsRechecked": 18,
+  "minimalV3Delta": {
+    "planChangedFields": [
+      "schema",
+      "roots.sourceSdk",
+      "predecessor"
+    ],
+    "sourceSdkRoot": "C:/s06sdk/payload",
+    "sourceSdkManifestLocationUnchanged": "C:/s06sdk/sdk-manifest.json",
+    "recipeChangedLines": [
+      10,
+      11,
+      127,
+      131,
+      132,
+      133
+    ],
+    "allOtherGuardsAndMaterialRelationsUnchanged": true
+  },
+  "preservedV2": {
+    "summary": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/license-delivery-reuse-current/attempt-980978e4-8027-4770-b664-94fcf114f036/Summary.actual.json",
+      "bytes": 316918,
+      "sha256": "fac83612cbcc461bfa0a19e87aef77968a3afa3165f5f4f9ab550e16a34509e7"
+    },
+    "plan": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/license-delivery-reuse-current/Plan.v2.prepared.json",
+      "bytes": 49957,
+      "sha256": "f36644214df785062d6f936e5b5bb0a3200437dca423a5e9bfef7bcec8bc5bd4"
+    },
+    "recipe": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/license-delivery-reuse-current/Run-ReuseComposition.cjs",
+      "bytes": 15178,
+      "sha256": "b5ba1154085833af9a05f8960df744cdd365fc34e9ea327f1781e85b32575702"
+    },
+    "status": "FAIL",
+    "inputReadFailures": 207,
+    "physicalMaterialCountFailure": 1,
+    "otherFailureCodes": 0,
+    "physicalMaterialsRead": 1031,
+    "reclassified": false
+  },
+  "reusedClosureMetadata": {
+    "releaseFacts": {
+      "path": "C:/sc07/verification/production-validation/0.6.0-release-2026-10-29/RELEASE-FACTS.json",
+      "bytes": 119391,
+      "sha256": "46cb4ce199ca591c0c8c1d47e3318af2e99b7154c0ca84447553e8db5eff4b0d"
+    },
+    "canonicalReferences": [
+      {
+        "path": "C:/sc07/verification/production-validation/0.6.0-release-2026-10-29/final-scoped/closing/Files.index.json",
+        "bytes": 21993,
+        "sha256": "cae2871a45abe57c33115c2ff0058be70f3e205f1d2039c9c4f6165465cd9fba"
+      },
+      {
+        "path": "C:/sc07/verification/production-validation/0.6.0-release-2026-10-29/FinalReleaseFactsIndependentReview.json",
+        "bytes": 21980,
+        "sha256": "cc07771d4e368a3848fe956ec0e117a47fccc08f4aab7ebf4ffcae92e06f0c62"
+      },
+      {
+        "path": "C:/sc07/verification/production-validation/0.6.0-release-2026-10-29/RawEvidenceIndexInclusion.json",
+        "bytes": 643,
+        "sha256": "ac5a9c2037713100f6458c05e3675b40f1fea00c47761dd4dea44078cc0e9f4d"
+      }
+    ],
+    "sourceSdkManifest": {
+      "path": "C:/s06sdk/sdk-manifest.json",
+      "bytes": 353462,
+      "sha256": "af9e61db01f8af4c8f0458be0821fab169ac26349110433c1d30dfd4f22ec21d"
+    },
+    "sourceSdkRows": 1496,
+    "applicationArchives": [
+      {
+        "target": "SouiStarter",
+        "architecture": "x64",
+        "declaredRows": 206,
+        "priorArchiveClosureReused": true,
+        "archiveBytesRead": false
+      },
+      {
+        "target": "SouiWorkbench",
+        "architecture": "x64",
+        "declaredRows": 206,
+        "priorArchiveClosureReused": true,
+        "archiveBytesRead": false
+      },
+      {
+        "target": "SouiModernStarter",
+        "architecture": "x64",
+        "declaredRows": 206,
+        "priorArchiveClosureReused": true,
+        "archiveBytesRead": false
+      },
+      {
+        "target": "SouiStarter",
+        "architecture": "x86",
+        "declaredRows": 206,
+        "priorArchiveClosureReused": true,
+        "archiveBytesRead": false
+      },
+      {
+        "target": "SouiWorkbench",
+        "architecture": "x86",
+        "declaredRows": 206,
+        "priorArchiveClosureReused": true,
+        "archiveBytesRead": false
+      },
+      {
+        "target": "SouiModernStarter",
+        "architecture": "x86",
+        "declaredRows": 206,
+        "priorArchiveClosureReused": true,
+        "archiveBytesRead": false
+      }
+    ],
+    "installedPrefixes": [
+      {
+        "architecture": "x64",
+        "priorPrefixMembers": 473,
+        "selectedMaterialRows": 412,
+        "rawEqualRows": 410,
+        "typedNonRawRows": 2,
+        "priorWholeClosureReused": true
+      },
+      {
+        "architecture": "x86",
+        "priorPrefixMembers": 473,
+        "selectedMaterialRows": 412,
+        "rawEqualRows": 410,
+        "typedNonRawRows": 2,
+        "priorWholeClosureReused": true
+      }
+    ],
+    "newWholeClosureVerificationPerformed": false
+  },
+  "materialComposition": {
+    "commonDeclaredLegalRows": 206,
+    "licenseOriginalFiles": 203,
+    "sealedSelectedFiles": 207,
+    "sourceSdkSelectedFiles": 207,
+    "installedSelectedFilesEach": 412,
+    "actualPhysicalMaterialFilesReadByRoot": 1238,
+    "recordedPinsMatchEverySelectedManifestRow": true,
+    "allSixSidecarsHaveExactlyCommon206Rows": true,
+    "installedWantedRowsUnique": true,
+    "typedInequalitiesOnly": [
+      {
+        "architecture": "x64",
+        "path": "share/SouiSdk/THIRD_PARTY_NOTICES.md",
+        "relation": "notice-link-transform",
+        "rawEqual": false,
+        "replacements": 5,
+        "verified": true
+      },
+      {
+        "architecture": "x64",
+        "path": "share/SouiSdk/webview2/LICENSE.txt",
+        "relation": "remove-exact-one-final-LF-from-source",
+        "rawEqual": false,
+        "verified": true
+      },
+      {
+        "architecture": "x86",
+        "path": "share/SouiSdk/THIRD_PARTY_NOTICES.md",
+        "relation": "notice-link-transform",
+        "rawEqual": false,
+        "replacements": 5,
+        "verified": true
+      },
+      {
+        "architecture": "x86",
+        "path": "share/SouiSdk/webview2/LICENSE.txt",
+        "relation": "remove-exact-one-final-LF-from-source",
+        "rawEqual": false,
+        "verified": true
+      }
+    ],
+    "otherTextOrBinaryNormalizationPermitted": false,
+    "allOtherInstalledRowsRawEqual": 410
+  },
+  "independentTargetedReads": "Only the six unique source/installed NOTICE or WebView2 LICENSE files were reread to independently validate the four typed exceptions. No other physical material was rehashed; all1238 recorded selected pins were compared to declared/prior manifests.",
+  "limits": {
+    "humanTermsReviewApproved": false,
+    "redistributionApproved": false,
+    "currentBranchNoticesApproved": false,
+    "wholeMaterialInventoryQualified": false,
+    "fullInstalledMaterialClosedSetClaimed": false,
+    "productionQualificationComplete": false,
+    "releaseReady": false,
+    "testsExecuted": false,
+    "zipBytesRead": false
+  },
+  "remaining": "Human terms/redistribution review and broader runtime inventory/version ambiguity remain separate. This result establishes declared published0.6 engineering material delivery composition only."
+}

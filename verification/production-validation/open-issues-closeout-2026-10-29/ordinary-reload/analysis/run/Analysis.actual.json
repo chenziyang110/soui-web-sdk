@@ -1,0 +1,259 @@
+{
+  "schema": "soui.current-ordinary-finite-offline-analysis/v1",
+  "analyzedUtc": "2026-10-29T11:51:01.227Z",
+  "scope": "Independent offline inspection of existing stage and finite x64/x86 native results; no application, compiler, SDK or VM operation by analysis",
+  "transport": [
+    {
+      "directory": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/ordc-a1-stage",
+      "index": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/ordc-a1-stage/Files.index.json",
+        "bytes": 2647,
+        "sha256": "37dca3c010d81e301e7eef37133eb5deb98f655c7d9743672152758831e77b1b"
+      },
+      "frame": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/ordc-a1-stage/Serial.frame.raw",
+        "bytes": 166651,
+        "sha256": "29d76c108de4adbef17756af6248c6ca4d5ed02524477a52dd06803b6a4ecc66"
+      },
+      "selectedTag": "ISSUESHORT8774D15988CF45CAB5E956DC40DDE723",
+      "decodedFiles": 16,
+      "payloadFiles": 11,
+      "payloadBytes": 90128,
+      "closedSetAndAllPinsMatch": true
+    },
+    {
+      "directory": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/ordc-a1-run",
+      "index": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/ordc-a1-run/Files.index.json",
+        "bytes": 5315,
+        "sha256": "1fd80e0a15237db7ec7164479ac84cd3bc3d50318284ab5122869dcf30498570"
+      },
+      "frame": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/ordc-a1-run/Serial.frame.raw",
+        "bytes": 886707,
+        "sha256": "44b6e1670b57dccef2055ce0ec723999b991cd75f48e18b7b524f249c435ef72"
+      },
+      "selectedTag": "ISSUESHORT43623F82F8A5416992518A1D5F274FF3",
+      "decodedFiles": 33,
+      "payloadFiles": 28,
+      "payloadBytes": 490223,
+      "closedSetAndAllPinsMatch": true
+    }
+  ],
+  "manifest": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/ordinary-reload-current/light-payload-082fc18e-2d24-45e1-8f87-5a725bf76760/payload/Ordinary.manifest.json",
+    "bytes": 72145,
+    "sha256": "3adf77fc6c299568f20db6d8f5f7d6fae0b8198f0c36b0ff92b6b5372d6deab2"
+  },
+  "summary": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/ordc-a1-run/raw/Summary.actual.json",
+    "bytes": 173451,
+    "sha256": "a81005bed426455e9584075bffd74b7cd5cea88bbc71b42b4de22eafc17d3ab5"
+  },
+  "stage": {
+    "raw": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/ordc-a1-stage/raw/Stage.actual.json",
+      "bytes": 66405,
+      "sha256": "741e55e2aacea64b1ca5835b2a4c2d422e86326f8786a88e4c5589960236972d"
+    },
+    "inputCopy": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/ordc-a1-stage/raw/InputCopy.actual.json",
+      "bytes": 15745,
+      "sha256": "2497c0931c7d5cf5444a3a5d24f899f9092daef86714d19f9fbc685280084d76"
+    },
+    "exactInputCopies": 20,
+    "exactRuntimeCopies": 150,
+    "originalRuntimeCopiesPerArchitecture": 75,
+    "allCopiesMatchManifest": true,
+    "productExecutedByStage": false,
+    "oldSuitesChanged": false
+  },
+  "source": {
+    "main": {
+      "path": "C:/sc07/tests/acceptance-app/main.cpp",
+      "bytes": 42218,
+      "sha256": "4d58281549806425f097ee0ca9bc04160f43ca112c027b46b4dfc199a8173be4"
+    },
+    "actualFrozenInputsBound": true,
+    "sourceInputs": 5,
+    "originalSdkVersion": "0.6.0"
+  },
+  "offlineValidators": {
+    "nativeIdentity": {
+      "path": "F:/work/soui-issue96/tests/acceptance/runner.cjs",
+      "bytes": 44569,
+      "sha256": "b275b928899b6c91325a7dd46adf963a455c4eb7afaf60b5c305e660fb4993c8"
+    },
+    "nativeLifecycleValidator": "Original runner.verifyNativeIdentity and runner.validateRecords, no runner.run/prepare call",
+    "stream": {
+      "path": "F:\\work\\soui-issue96\\tools\\internal\\standard-build.cjs",
+      "bytes": 39757,
+      "sha256": "0411e6813baae2d4134c5b1735f56c63a31579168f4f8be12c1ea189d8cb220e"
+    },
+    "streamFunction": "Original verifyStream, no runBuild/capture call",
+    "readerPinsVerifiedBeforeAndAfter": 40
+  },
+  "results": [
+    {
+      "architecture": "x64",
+      "subject": {
+        "pid": 704,
+        "creationFileTime": "134377479745285185"
+      },
+      "actualNativeIdentity": {
+        "pid": 704,
+        "creationFileTime": "134377479745285185"
+      },
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "elapsedMs": 3958,
+      "wholeJobNatural": true,
+      "activeBeforeCleanup": 0,
+      "activeProcesses": 0,
+      "totalProcesses": 1,
+      "force": false,
+      "fallback": false,
+      "originalInnerTimeoutMs": 20000,
+      "originalProcessTimeoutMs": 214500,
+      "originalOwnedTimeoutMs": 394500,
+      "originalDrainMs": 2000,
+      "nativeEventCount": 27,
+      "completedSteps": 9,
+      "reloads": 3,
+      "samples": 7,
+      "executableSha256": "678eb4ad5a3dcf35f54d44df88fc5014f1ed21cb7d468f6d454c5150b243887f",
+      "events": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/ordc-a1-run/raw/x64/events.ndjson",
+        "bytes": 71490,
+        "sha256": "34e8a1bfffcc01f8ef6409098c4aaf79f9710a94818bac149dc5beab23b0083c"
+      },
+      "owned": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/ordc-a1-run/raw/x64/owned.ndjson",
+        "bytes": 737,
+        "sha256": "3fa5309f5b1510427a18633610cd6936f54448ed6a031d696dbfbb4d22942172"
+      }
+    },
+    {
+      "architecture": "x86",
+      "subject": {
+        "pid": 4844,
+        "creationFileTime": "134377479792759617"
+      },
+      "actualNativeIdentity": {
+        "pid": 4844,
+        "creationFileTime": "134377479792759617"
+      },
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "elapsedMs": 3850,
+      "wholeJobNatural": true,
+      "activeBeforeCleanup": 0,
+      "activeProcesses": 0,
+      "totalProcesses": 1,
+      "force": false,
+      "fallback": false,
+      "originalInnerTimeoutMs": 20000,
+      "originalProcessTimeoutMs": 214500,
+      "originalOwnedTimeoutMs": 394500,
+      "originalDrainMs": 2000,
+      "nativeEventCount": 27,
+      "completedSteps": 9,
+      "reloads": 3,
+      "samples": 7,
+      "executableSha256": "62a25a0c3b78cc1c30345e7a8e2b5b44c822200e7307a60fcd044657283dfc0a",
+      "events": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/ordc-a1-run/raw/x86/events.ndjson",
+        "bytes": 71498,
+        "sha256": "a3b666f8847f98494a882ab69a99a3238f6ff5a681df5d9209575fed8d6c7c81"
+      },
+      "owned": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/ordc-a1-run/raw/x86/owned.ndjson",
+        "bytes": 739,
+        "sha256": "94af36233d14a19baf2a9358c59767012196bfd71e932456b4cf407ac570ce01"
+      }
+    }
+  ],
+  "wrappers": [
+    {
+      "kind": "stage",
+      "powerShell": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/ordc-a1-stage/raw/PowerShell.finished.json",
+        "bytes": 436,
+        "sha256": "0514a65cae836db6c45ecc8f3518d56f8647bfa4422673f67b15787be2ac371e"
+      },
+      "wrapper": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/ordc-a1-stage/raw/Wrapper.finished.json",
+        "bytes": 240,
+        "sha256": "344ea2a57641a0906ceb4a7fa36c329ec14e0ba119dd909453ad26d56779725a"
+      },
+      "closedExport": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/ordc-a1-stage/raw/ExportPreflight.actual.json",
+        "bytes": 3572,
+        "sha256": "d5f72e31ab08369018440508cf12e35a77e693c71e14efa95d03e0eb38789770"
+      },
+      "exitCode": 0,
+      "environmentRestored": true,
+      "leaseReleased": true,
+      "launcherIdentityAbsent": true,
+      "wrapperIdentityAbsent": true
+    },
+    {
+      "kind": "run",
+      "powerShell": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/ordc-a1-run/raw/PowerShell.finished.json",
+        "bytes": 436,
+        "sha256": "0514a65cae836db6c45ecc8f3518d56f8647bfa4422673f67b15787be2ac371e"
+      },
+      "wrapper": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/ordc-a1-run/raw/Wrapper.finished.json",
+        "bytes": 240,
+        "sha256": "0b36eb01d8d0553884f8908ec667d33d866e82338fa5a2308327b3ef806f6f6a"
+      },
+      "closedExport": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/ordc-a1-run/raw/ExportPreflight.actual.json",
+        "bytes": 3565,
+        "sha256": "8a2cb93ddd7a96be822824e2485d3a060b9ede69093adc04e1ff5a422e0ff74a"
+      },
+      "exitCode": 0,
+      "environmentRestored": true,
+      "leaseReleased": true,
+      "launcherIdentityAbsent": true,
+      "wrapperIdentityAbsent": true
+    }
+  ],
+  "webReuse": {
+    "record": "WebReuse.actual.json",
+    "executableSdkDistByteIdenticalFiles": 26,
+    "fixtureWebByteIdenticalFiles": 2,
+    "originalPackageVersion": "0.5.1-preview.1",
+    "currentSdkPackageVersion": "0.6.0",
+    "changedPackageKeys": [
+      "version"
+    ],
+    "originalToolsVite": "6.4.4",
+    "currentToolsVite": "6.4.5",
+    "currentToolchainOutputEquivalenceClaimed": false,
+    "webRebuilt": false,
+    "typecheckReexecuted": false
+  },
+  "conclusion": {
+    "bothFiniteCasesPassed": true,
+    "scope": "Three ordinary reloads, original nine lifecycle steps, explicit Runtime shutdown/restart rejection/idempotence and natural whole-Job closure for these two exact newly compiled consumers",
+    "messagePortBehaviorAsserted": false,
+    "browserBehaviorQualified": false,
+    "resourcePassed": false,
+    "currentSdk060Qualified": false,
+    "productionQualificationComplete": false,
+    "fullDevtoolsGoalComplete": false,
+    "releaseReady": false,
+    "longTestsExecuted": false,
+    "alreadyPassedMpOrWorkbenchReexecuted": false
+  },
+  "analysisExecuted": {
+    "appOrProbeRerun": false,
+    "build": false,
+    "vmInput": false,
+    "sdkModification": false,
+    "gitModification": false
+  }
+}

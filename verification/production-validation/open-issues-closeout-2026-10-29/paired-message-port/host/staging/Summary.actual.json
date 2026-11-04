@@ -1,0 +1,780 @@
+{
+  "schema": "soui.fresh-old-sdk-four-arm-stage-result/v1",
+  "newProducer": true,
+  "stagingCompleted": true,
+  "armKeys": [
+    "x64-baseline",
+    "x64-candidate",
+    "x86-baseline",
+    "x86-candidate"
+  ],
+  "creations": [
+    {
+      "architecture": "x64",
+      "arm": "baseline",
+      "suite": "F:\\work\\soui-issue96\\out\\acceptance\\82e96f65-8695-4546-b468-fec6c7d8a386"
+    },
+    {
+      "architecture": "x64",
+      "arm": "candidate",
+      "suite": "F:\\work\\soui-issue96\\out\\acceptance\\ed1c00c6-af8d-49e8-b226-590ae1c899f5"
+    },
+    {
+      "architecture": "x86",
+      "arm": "baseline",
+      "suite": "F:\\work\\soui-issue96\\out\\acceptance\\87d5be4b-c0df-47b8-a737-b39ff45e1787"
+    },
+    {
+      "architecture": "x86",
+      "arm": "candidate",
+      "suite": "F:\\work\\soui-issue96\\out\\acceptance\\b247541a-b25c-43f1-8eda-b1db362b910a"
+    }
+  ],
+  "differences": [
+    {
+      "architecture": "x64",
+      "differences": [
+        "node.dll"
+      ]
+    },
+    {
+      "architecture": "x86",
+      "differences": [
+        "node.dll"
+      ]
+    }
+  ],
+  "draftExecutionInput": {
+    "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\staging-05b4e0e9-aa11-4394-9b5b-3b1a34cbdab8\\BrowserABInputs.draft.json",
+    "bytes": 883426,
+    "sha256": "dbb967095b13d4af0f2f920bf5d11e66c098bf7cf5f89a2b32a037c5adbfc060"
+  },
+  "actualNativeBuild": {
+    "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\attempt-b6426db2-c6b9-4e78-817f-8318ee7bd8d9\\summary.json",
+    "bytes": 17676,
+    "sha256": "d6088ccfeff3edf684be29d01b67bb46871f68386839754f853cec9535b4041b"
+  },
+  "webReuseProjection": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port-paired-current/web-reuse-projection-add7a895-e32b-4b7f-9090-5c479b788656/ProjectionSummary.actual.json",
+    "bytes": 51954,
+    "sha256": "945230675c7f5fc25693949af486db74f8e27769dd637afbbf775cb8cb3c05bb"
+  },
+  "executionNodeLocationBinding": {
+    "schema": "soui.paired-node-host-carrier-binding/v1",
+    "originalGuestExecutionNode": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port/tools/node.exe",
+      "bytes": 91380224,
+      "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+    },
+    "actualHostCarrierNode": {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port\\carrier-1249be88-0f1f-4f2f-840f-bb159c691d63\\iso-tree\\F\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port\\tools\\node.exe",
+      "bytes": 91380224,
+      "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+    },
+    "originalCarrierManifest": {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port\\carrier-1249be88-0f1f-4f2f-840f-bb159c691d63\\iso-tree\\MessagePort.manifest.json",
+      "bytes": 1374350,
+      "sha256": "d1d9053b53529d5566ca71b018fa6c806579e0f574765352332f556bb088b2c1"
+    },
+    "originalCarrierMember": {
+      "source": "C:/Users/11034/AppData/Local/nvm/v24.14.0/node.exe",
+      "guestPath": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port/tools/node.exe",
+      "bytes": 91380224,
+      "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088",
+      "reason": "Exact pinned Node image relocated as an execution tool; old producer argv/logs unchanged"
+    },
+    "byteIdentityPreserved": true,
+    "originalReceiptModified": false,
+    "nodeExecuted": false
+  },
+  "inputs": [
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\Stage-PairedSuites.cjs",
+      "bytes": 17369,
+      "sha256": "7c41580e229dec9a65e2874cbc8927900da793d5dab9933af3bc0a775ef42267"
+    },
+    {
+      "path": "C:\\nvm4w\\nodejs\\node.exe",
+      "bytes": 91380224,
+      "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\attempt-b6426db2-c6b9-4e78-817f-8318ee7bd8d9\\summary.json",
+      "bytes": 17676,
+      "sha256": "d6088ccfeff3edf684be29d01b67bb46871f68386839754f853cec9535b4041b"
+    },
+    {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port-paired-current/web-reuse-projection-add7a895-e32b-4b7f-9090-5c479b788656/ProjectionSummary.actual.json",
+      "bytes": 51954,
+      "sha256": "945230675c7f5fc25693949af486db74f8e27769dd637afbbf775cb8cb3c05bb"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\PairedPreparation.actual.json",
+      "bytes": 176565,
+      "sha256": "d0bf7acac6abcd71545f6f19681b410766cd4feaa031f8601169012dd4d6b815"
+    },
+    {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port/BrowserABInputs.approved.json",
+      "bytes": 334558,
+      "sha256": "3f8dd68bca50d567256f448a9d25026b7bacb0f3a302130c195d64ad6444f72c"
+    },
+    {
+      "path": "F:/work/soui-issue96/tools/internal/delivery-identity.cjs",
+      "bytes": 5986,
+      "sha256": "11b171d1252f05e3f0dee558ab8bf48093fb9ec1532666c00ee5ecd414983dc3"
+    },
+    {
+      "path": "F:/work/soui-issue96/tests/acceptance/runner.cjs",
+      "bytes": 44569,
+      "sha256": "b275b928899b6c91325a7dd46adf963a455c4eb7afaf60b5c305e660fb4993c8"
+    },
+    {
+      "path": "F:/work/soui-issue96/tests/acceptance/runner.cjs",
+      "bytes": 44569,
+      "sha256": "b275b928899b6c91325a7dd46adf963a455c4eb7afaf60b5c305e660fb4993c8"
+    },
+    {
+      "path": "F:/work/soui-issue96/tests/acceptance/message-port-report-reader.cjs",
+      "bytes": 5145,
+      "sha256": "a409d6a6cdb288cb681ffd72a9f0baccf039493ada0540bb8850492b4e21445d"
+    },
+    {
+      "path": "F:/work/sm05/out/benchmark-protocol/Release/OwnedProcessRunner.exe",
+      "bytes": 60928,
+      "sha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f"
+    },
+    {
+      "path": "F:/work/soui-issue96/tests/acceptance/message-port-ab-controller.cjs",
+      "bytes": 9694,
+      "sha256": "98517dc0d6a1bbb32e03d20cf1c9c99cfa470c680b8edba6fb6ebfe308ac9b01"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port\\carrier-1249be88-0f1f-4f2f-840f-bb159c691d63\\iso-tree\\F\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port\\tools\\node.exe",
+      "bytes": 91380224,
+      "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port\\carrier-1249be88-0f1f-4f2f-840f-bb159c691d63\\iso-tree\\MessagePort.manifest.json",
+      "bytes": 1374350,
+      "sha256": "d1d9053b53529d5566ca71b018fa6c806579e0f574765352332f556bb088b2c1"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\source\\CMakeLists.txt",
+      "bytes": 945,
+      "sha256": "2cfb244bf255430d1f4c97e0a253227980e621e3258978022eb6a0ac0a78cff3"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\source\\README.md",
+      "bytes": 6371,
+      "sha256": "9c008cc61b1181618783b5229c7d1536ef3464647b42b90973675489aa3dfa17"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\source\\main.cpp",
+      "bytes": 38955,
+      "sha256": "a7df1670caa8551c759ba2dd6c7f2c50f961705c905cf0c21d2aac90d0da9d44"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\source\\shutdown-poll.h",
+      "bytes": 734,
+      "sha256": "cb0bbc2cd1e76eb27898550060a7a43cfdee4a5e68ceefb38ac1035ac9da4abe"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\source\\web\\index.html",
+      "bytes": 197,
+      "sha256": "4649848a5da50b7d4a39191a474417556b9798b2e1ed6d44608dfcf192cd00a5"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\source\\web\\main.ts",
+      "bytes": 15820,
+      "sha256": "01713ae213fba36314377f737976e10747e03bfdf2297824524364d5438c85d2"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\source\\web\\message-port-behavior.ts",
+      "bytes": 14162,
+      "sha256": "db649de835990d7fdb5b7c5217c7030554dc2524129731cc2c3730af294e1289"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\source\\web\\public\\message-worker.js",
+      "bytes": 1756,
+      "sha256": "fa30117df45f7cb7b70b956c0e83d14baab6a68d87c3072fb64e7ca0423c2085"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\Prepare-PairedWebProjection.cjs",
+      "bytes": 10260,
+      "sha256": "302b6380e3d72f0e54ea53954845ef3a18753d016125ea70948b22c3fce1a0ba"
+    },
+    {
+      "path": "C:\\nvm4w\\nodejs\\node.exe",
+      "bytes": 91380224,
+      "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\attempt-b6426db2-c6b9-4e78-817f-8318ee7bd8d9\\summary.json",
+      "bytes": 17676,
+      "sha256": "d6088ccfeff3edf684be29d01b67bb46871f68386839754f853cec9535b4041b"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\PairedPreparation.actual.json",
+      "bytes": 176565,
+      "sha256": "d0bf7acac6abcd71545f6f19681b410766cd4feaa031f8601169012dd4d6b815"
+    },
+    {
+      "path": "F:/work/soui-issue96/tools/internal/delivery-identity.cjs",
+      "bytes": 5986,
+      "sha256": "11b171d1252f05e3f0dee558ab8bf48093fb9ec1532666c00ee5ecd414983dc3"
+    },
+    {
+      "path": "F:/work/soui-issue96/tests/acceptance/runner.cjs",
+      "bytes": 44569,
+      "sha256": "b275b928899b6c91325a7dd46adf963a455c4eb7afaf60b5c305e660fb4993c8"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\source\\CMakeLists.txt",
+      "bytes": 945,
+      "sha256": "2cfb244bf255430d1f4c97e0a253227980e621e3258978022eb6a0ac0a78cff3"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\source\\README.md",
+      "bytes": 6371,
+      "sha256": "9c008cc61b1181618783b5229c7d1536ef3464647b42b90973675489aa3dfa17"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\source\\main.cpp",
+      "bytes": 38955,
+      "sha256": "a7df1670caa8551c759ba2dd6c7f2c50f961705c905cf0c21d2aac90d0da9d44"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\source\\shutdown-poll.h",
+      "bytes": 734,
+      "sha256": "cb0bbc2cd1e76eb27898550060a7a43cfdee4a5e68ceefb38ac1035ac9da4abe"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\source\\web\\index.html",
+      "bytes": 197,
+      "sha256": "4649848a5da50b7d4a39191a474417556b9798b2e1ed6d44608dfcf192cd00a5"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\source\\web\\main.ts",
+      "bytes": 15820,
+      "sha256": "01713ae213fba36314377f737976e10747e03bfdf2297824524364d5438c85d2"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\source\\web\\message-port-behavior.ts",
+      "bytes": 14162,
+      "sha256": "db649de835990d7fdb5b7c5217c7030554dc2524129731cc2c3730af294e1289"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\source\\web\\public\\message-worker.js",
+      "bytes": 1756,
+      "sha256": "fa30117df45f7cb7b70b956c0e83d14baab6a68d87c3072fb64e7ca0423c2085"
+    },
+    {
+      "path": "C:\\sci8-b6426db2-x64\\out\\x64\\bin\\Release\\SouiAcceptance.exe",
+      "bytes": 879616,
+      "sha256": "1b77094fa4d67baa86d097e9cca67d301b043e666e19c467b578a342f4a31cdd"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\bd7afa33-ea0d-4e55-b482-d2b01f64ee19\\web-build.json",
+      "bytes": 1678,
+      "sha256": "92bcdb8217cd4b7877b41d844edc1d9c34a9277c3e78dc90e3b4aedcebf40e8f"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\bd7afa33-ea0d-4e55-b482-d2b01f64ee19\\build.json",
+      "bytes": 73856,
+      "sha256": "f8f1f3a532af786c69c41df398d510ddd0b8f249182c11b0c47af598752413c8"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\bd7afa33-ea0d-4e55-b482-d2b01f64ee19\\web-typecheck.tsconfig.json",
+      "bytes": 515,
+      "sha256": "86d9980f9cb5572105d3ee2b5aa8c9567ea95196f1a3631e472bdf549de55347"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\bd7afa33-ea0d-4e55-b482-d2b01f64ee19\\web-typecheck.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\bd7afa33-ea0d-4e55-b482-d2b01f64ee19\\web-build.log",
+      "bytes": 664,
+      "sha256": "dd5ee20f17fcad48a7d62dd9bcd01f128b6152b12c42cd202a025ad54443aa12"
+    },
+    {
+      "path": "F:/work/soui-issue96/tests/acceptance/package.json",
+      "bytes": 230,
+      "sha256": "f5a57172d2bd2d45abbe18a416e0131a51a312382530ad6fe89ebb08a6e5a9f7"
+    },
+    {
+      "path": "F:/work/soui-issue96/tests/acceptance/package-lock.json",
+      "bytes": 122928,
+      "sha256": "513b730812c5847a838dfd0251cb85a6b397f19dae1df1800b5b4358b0c26cc2"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\bd7afa33-ea0d-4e55-b482-d2b01f64ee19\\consumer-source\\web\\index.html",
+      "bytes": 197,
+      "sha256": "4649848a5da50b7d4a39191a474417556b9798b2e1ed6d44608dfcf192cd00a5"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\source\\web\\index.html",
+      "bytes": 197,
+      "sha256": "4649848a5da50b7d4a39191a474417556b9798b2e1ed6d44608dfcf192cd00a5"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\bd7afa33-ea0d-4e55-b482-d2b01f64ee19\\consumer-source\\web\\main.ts",
+      "bytes": 15820,
+      "sha256": "01713ae213fba36314377f737976e10747e03bfdf2297824524364d5438c85d2"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\source\\web\\main.ts",
+      "bytes": 15820,
+      "sha256": "01713ae213fba36314377f737976e10747e03bfdf2297824524364d5438c85d2"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\bd7afa33-ea0d-4e55-b482-d2b01f64ee19\\consumer-source\\web\\message-port-behavior.ts",
+      "bytes": 14162,
+      "sha256": "db649de835990d7fdb5b7c5217c7030554dc2524129731cc2c3730af294e1289"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\source\\web\\message-port-behavior.ts",
+      "bytes": 14162,
+      "sha256": "db649de835990d7fdb5b7c5217c7030554dc2524129731cc2c3730af294e1289"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\bd7afa33-ea0d-4e55-b482-d2b01f64ee19\\consumer-source\\web\\public\\message-worker.js",
+      "bytes": 1756,
+      "sha256": "fa30117df45f7cb7b70b956c0e83d14baab6a68d87c3072fb64e7ca0423c2085"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\source\\web\\public\\message-worker.js",
+      "bytes": 1756,
+      "sha256": "fa30117df45f7cb7b70b956c0e83d14baab6a68d87c3072fb64e7ca0423c2085"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\bd7afa33-ea0d-4e55-b482-d2b01f64ee19\\web-sdk\\dist\\action-contract-core.d.ts",
+      "bytes": 505,
+      "sha256": "4af780195bdc72315af8a5bbd8a0a2a71a67957e6a3fc580d3b2da91be9beeeb"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\bd7afa33-ea0d-4e55-b482-d2b01f64ee19\\web-sdk\\dist\\action-contract-core.js",
+      "bytes": 11417,
+      "sha256": "d76d00e2a3fa9ea2f25c9124534fd2b04e1c662bc07afaee9b985b40bf8b00a4"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\bd7afa33-ea0d-4e55-b482-d2b01f64ee19\\web-sdk\\dist\\action-contracts.d.ts",
+      "bytes": 1716,
+      "sha256": "6e4fd2c306c78cac64bdd41da4c40d4ac16de848278619ac48989134635e2ad4"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\bd7afa33-ea0d-4e55-b482-d2b01f64ee19\\web-sdk\\dist\\action-contracts.js",
+      "bytes": 2561,
+      "sha256": "e9fe8c0975f655fde61ffade7d32d7eb8791a67ea804442e7960b120ad18caae"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\bd7afa33-ea0d-4e55-b482-d2b01f64ee19\\web-sdk\\dist\\capabilities.d.ts",
+      "bytes": 1170,
+      "sha256": "9ea83c612285207e742a563a37216367113b5086cf9ecd5a12ac25d3d56d7028"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\bd7afa33-ea0d-4e55-b482-d2b01f64ee19\\web-sdk\\dist\\capabilities.js",
+      "bytes": 4077,
+      "sha256": "1ef5a3f610c45da4ae557f1cefec3c41d12a27361692c1b8d975afcf32cb99fe"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\bd7afa33-ea0d-4e55-b482-d2b01f64ee19\\web-sdk\\dist\\client.d.ts",
+      "bytes": 3587,
+      "sha256": "b802525b8405d47eb27b8109973b1d59d4ed493ffe7ab0c2ed47674d862d5ea4"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\bd7afa33-ea0d-4e55-b482-d2b01f64ee19\\web-sdk\\dist\\client.js",
+      "bytes": 13810,
+      "sha256": "bdd55c5ee8e2104a3229410a809ce4158de48802b9aae69b2b436c43d887fd8d"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\bd7afa33-ea0d-4e55-b482-d2b01f64ee19\\web-sdk\\dist\\connection.d.ts",
+      "bytes": 1024,
+      "sha256": "dabf49c56bb107d8617bff08064d8e5d97a447c66136ae1987dd2c5c6437c29d"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\bd7afa33-ea0d-4e55-b482-d2b01f64ee19\\web-sdk\\dist\\connection.js",
+      "bytes": 7695,
+      "sha256": "fd63d56a4a7a930de7d348277574b1e658db3591b6db85452cd52a7c39b239f2"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\bd7afa33-ea0d-4e55-b482-d2b01f64ee19\\web-sdk\\dist\\contracts.d.ts",
+      "bytes": 10823,
+      "sha256": "d89cb72bda32503903614ed996331a051c65feaa08ec96f722e82ec9e95fc05b"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\bd7afa33-ea0d-4e55-b482-d2b01f64ee19\\web-sdk\\dist\\contracts.js",
+      "bytes": 100,
+      "sha256": "a5a3d5d72ebbce80878b35311427b38f0ec2946e82ddfeb890c70578abe11344"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\bd7afa33-ea0d-4e55-b482-d2b01f64ee19\\web-sdk\\dist\\gui-command.d.ts",
+      "bytes": 1375,
+      "sha256": "56e5bc02e4070e30d3d688e414de52af6a381bf3b1b0d556897d4b6e14552211"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\bd7afa33-ea0d-4e55-b482-d2b01f64ee19\\web-sdk\\dist\\gui-command.js",
+      "bytes": 8320,
+      "sha256": "fdbae8f8c9ebab4285895db042e8c96dbc0782c441516e56fa47a1fffe20428f"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\bd7afa33-ea0d-4e55-b482-d2b01f64ee19\\web-sdk\\dist\\gui.d.ts",
+      "bytes": 2135,
+      "sha256": "16285589021b3daed750294dc73820ff1020c0b293f1e28182fec419cbc8d950"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\bd7afa33-ea0d-4e55-b482-d2b01f64ee19\\web-sdk\\dist\\gui.js",
+      "bytes": 14824,
+      "sha256": "0e3e0424807bd5a8486aab15c6a3d94c19f8bf7f7de185d9040ba61234d5bb22"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\bd7afa33-ea0d-4e55-b482-d2b01f64ee19\\web-sdk\\dist\\index.d.ts",
+      "bytes": 1586,
+      "sha256": "4b57cd5f3e2e4d035bede6f282996d2745f752c0709837b027b05e6f84b277d2"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\bd7afa33-ea0d-4e55-b482-d2b01f64ee19\\web-sdk\\dist\\index.js",
+      "bytes": 425,
+      "sha256": "acaba2502e1304305bf75e1395751f80301e534d193898ba2e638251c9f3bcb2"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\bd7afa33-ea0d-4e55-b482-d2b01f64ee19\\web-sdk\\dist\\protocol.d.ts",
+      "bytes": 5516,
+      "sha256": "f4f2527207d245cba3abddc9f68407a1c39cb9fda856c11726cfa3fdc79cccdc"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\bd7afa33-ea0d-4e55-b482-d2b01f64ee19\\web-sdk\\dist\\protocol.js",
+      "bytes": 3445,
+      "sha256": "bf0f8678f0bc28cd974d70d22afcbf442ef7c97f446b0a531b9ef0f4c67ace65"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\bd7afa33-ea0d-4e55-b482-d2b01f64ee19\\web-sdk\\dist\\session-renewal.d.ts",
+      "bytes": 1384,
+      "sha256": "eec9f45daecb2857b55d662987a571786ce519bf1260114894b7aee01ad43a10"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\bd7afa33-ea0d-4e55-b482-d2b01f64ee19\\web-sdk\\dist\\session-renewal.js",
+      "bytes": 11085,
+      "sha256": "161b551f6afc1dbae07c38a6286e78075fcd04c8b3a717849954a1f2ff64a74c"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\bd7afa33-ea0d-4e55-b482-d2b01f64ee19\\web-sdk\\dist\\task-query.d.ts",
+      "bytes": 629,
+      "sha256": "d79a3f33319fd162d00a6aaee75afaa685be7aa9e2620ac0cd984b29a86b8835"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\bd7afa33-ea0d-4e55-b482-d2b01f64ee19\\web-sdk\\dist\\task-query.js",
+      "bytes": 1963,
+      "sha256": "ff0b7c09dcd46d20371d4478c2b17b79dd40d1d28b46ebbfa7fea37b7a1d0ec9"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\bd7afa33-ea0d-4e55-b482-d2b01f64ee19\\web-sdk\\dist\\web-features.d.ts",
+      "bytes": 1400,
+      "sha256": "d660fcbbb92d26eb2fcc05b3bd03fdee64a2f586488d3085eedbbbde17df5e29"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\bd7afa33-ea0d-4e55-b482-d2b01f64ee19\\web-sdk\\dist\\web-features.js",
+      "bytes": 3590,
+      "sha256": "c9c03f65a9988474a2e806b78367bab69957d706785c9fb316be3280923557b5"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\bd7afa33-ea0d-4e55-b482-d2b01f64ee19\\web-sdk\\package.json",
+      "bytes": 442,
+      "sha256": "09df3e941bc9e06765fc8eff1bf6b54ce56968ec9018781e79e41244c5f7111f"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\bd7afa33-ea0d-4e55-b482-d2b01f64ee19\\web-output\\.vite\\manifest.json",
+      "bytes": 461,
+      "sha256": "6aab4d7adaa4807d360b6a0a7ac7430d9be1c2a3f654af2fda67449ae6b6b40d"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\bd7afa33-ea0d-4e55-b482-d2b01f64ee19\\web-output\\assets\\index-BeEGxAzo.js",
+      "bytes": 46990,
+      "sha256": "685d1c90a979b79cc06fc5682436502ce6696e803a534c7364bebad4e27b5232"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\bd7afa33-ea0d-4e55-b482-d2b01f64ee19\\web-output\\assets\\index-legacy-9vXmrNCI.js",
+      "bytes": 58582,
+      "sha256": "deee1c3b51d6f332481d1642b7967bece0d8b6f8754870ba532aae423be58de0"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\bd7afa33-ea0d-4e55-b482-d2b01f64ee19\\web-output\\assets\\polyfills-legacy-DmQYsS2w.js",
+      "bytes": 86515,
+      "sha256": "a157becc9702a9e7e2e6f1db4a84cdd33dc5cbb37b1725e22969af5cbc0b3a75"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\bd7afa33-ea0d-4e55-b482-d2b01f64ee19\\web-output\\index.html",
+      "bytes": 999,
+      "sha256": "b9ee8a942ace4b62ea4788fb473305d2d09faf14ca8a6638a28341be34a8b976"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\bd7afa33-ea0d-4e55-b482-d2b01f64ee19\\web-output\\message-worker.js",
+      "bytes": 1756,
+      "sha256": "fa30117df45f7cb7b70b956c0e83d14baab6a68d87c3072fb64e7ca0423c2085"
+    },
+    {
+      "path": "C:\\sci8-b6426db2-x86\\out\\x86\\bin\\Release\\SouiAcceptance.exe",
+      "bytes": 770048,
+      "sha256": "7c2e9f1e4fde337d107adcac5b0552b969e93cb789e3648e40e32901a0a9e875"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\5c02d217-f04f-4f32-9794-110e7fb3f734\\web-build.json",
+      "bytes": 1678,
+      "sha256": "4b5123d680db4c231af2a78036c5f25aaa89db7e99b126d7745079bb9d29228a"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\5c02d217-f04f-4f32-9794-110e7fb3f734\\build.json",
+      "bytes": 73869,
+      "sha256": "14ce724d93ae4c2ef860bdbc327375eb7608c0abc87c83421b7e5c7153337b90"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\5c02d217-f04f-4f32-9794-110e7fb3f734\\web-typecheck.tsconfig.json",
+      "bytes": 515,
+      "sha256": "a0227a2fdd814e5cd203e6de3fd9966a0215a0cb961dcceb0c77b1d76efc2b82"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\5c02d217-f04f-4f32-9794-110e7fb3f734\\web-typecheck.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\5c02d217-f04f-4f32-9794-110e7fb3f734\\web-build.log",
+      "bytes": 664,
+      "sha256": "7dff6a3d913e0134187b4ccd5059f8167ef5ee255d7cf9e0dc35c03803cb813c"
+    },
+    {
+      "path": "F:/work/soui-issue96/tests/acceptance/package.json",
+      "bytes": 230,
+      "sha256": "f5a57172d2bd2d45abbe18a416e0131a51a312382530ad6fe89ebb08a6e5a9f7"
+    },
+    {
+      "path": "F:/work/soui-issue96/tests/acceptance/package-lock.json",
+      "bytes": 122928,
+      "sha256": "513b730812c5847a838dfd0251cb85a6b397f19dae1df1800b5b4358b0c26cc2"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\5c02d217-f04f-4f32-9794-110e7fb3f734\\consumer-source\\web\\index.html",
+      "bytes": 197,
+      "sha256": "4649848a5da50b7d4a39191a474417556b9798b2e1ed6d44608dfcf192cd00a5"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\source\\web\\index.html",
+      "bytes": 197,
+      "sha256": "4649848a5da50b7d4a39191a474417556b9798b2e1ed6d44608dfcf192cd00a5"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\5c02d217-f04f-4f32-9794-110e7fb3f734\\consumer-source\\web\\main.ts",
+      "bytes": 15820,
+      "sha256": "01713ae213fba36314377f737976e10747e03bfdf2297824524364d5438c85d2"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\source\\web\\main.ts",
+      "bytes": 15820,
+      "sha256": "01713ae213fba36314377f737976e10747e03bfdf2297824524364d5438c85d2"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\5c02d217-f04f-4f32-9794-110e7fb3f734\\consumer-source\\web\\message-port-behavior.ts",
+      "bytes": 14162,
+      "sha256": "db649de835990d7fdb5b7c5217c7030554dc2524129731cc2c3730af294e1289"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\source\\web\\message-port-behavior.ts",
+      "bytes": 14162,
+      "sha256": "db649de835990d7fdb5b7c5217c7030554dc2524129731cc2c3730af294e1289"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\5c02d217-f04f-4f32-9794-110e7fb3f734\\consumer-source\\web\\public\\message-worker.js",
+      "bytes": 1756,
+      "sha256": "fa30117df45f7cb7b70b956c0e83d14baab6a68d87c3072fb64e7ca0423c2085"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\source\\web\\public\\message-worker.js",
+      "bytes": 1756,
+      "sha256": "fa30117df45f7cb7b70b956c0e83d14baab6a68d87c3072fb64e7ca0423c2085"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\5c02d217-f04f-4f32-9794-110e7fb3f734\\web-sdk\\dist\\action-contract-core.d.ts",
+      "bytes": 505,
+      "sha256": "4af780195bdc72315af8a5bbd8a0a2a71a67957e6a3fc580d3b2da91be9beeeb"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\5c02d217-f04f-4f32-9794-110e7fb3f734\\web-sdk\\dist\\action-contract-core.js",
+      "bytes": 11417,
+      "sha256": "d76d00e2a3fa9ea2f25c9124534fd2b04e1c662bc07afaee9b985b40bf8b00a4"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\5c02d217-f04f-4f32-9794-110e7fb3f734\\web-sdk\\dist\\action-contracts.d.ts",
+      "bytes": 1716,
+      "sha256": "6e4fd2c306c78cac64bdd41da4c40d4ac16de848278619ac48989134635e2ad4"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\5c02d217-f04f-4f32-9794-110e7fb3f734\\web-sdk\\dist\\action-contracts.js",
+      "bytes": 2561,
+      "sha256": "e9fe8c0975f655fde61ffade7d32d7eb8791a67ea804442e7960b120ad18caae"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\5c02d217-f04f-4f32-9794-110e7fb3f734\\web-sdk\\dist\\capabilities.d.ts",
+      "bytes": 1170,
+      "sha256": "9ea83c612285207e742a563a37216367113b5086cf9ecd5a12ac25d3d56d7028"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\5c02d217-f04f-4f32-9794-110e7fb3f734\\web-sdk\\dist\\capabilities.js",
+      "bytes": 4077,
+      "sha256": "1ef5a3f610c45da4ae557f1cefec3c41d12a27361692c1b8d975afcf32cb99fe"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\5c02d217-f04f-4f32-9794-110e7fb3f734\\web-sdk\\dist\\client.d.ts",
+      "bytes": 3587,
+      "sha256": "b802525b8405d47eb27b8109973b1d59d4ed493ffe7ab0c2ed47674d862d5ea4"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\5c02d217-f04f-4f32-9794-110e7fb3f734\\web-sdk\\dist\\client.js",
+      "bytes": 13810,
+      "sha256": "bdd55c5ee8e2104a3229410a809ce4158de48802b9aae69b2b436c43d887fd8d"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\5c02d217-f04f-4f32-9794-110e7fb3f734\\web-sdk\\dist\\connection.d.ts",
+      "bytes": 1024,
+      "sha256": "dabf49c56bb107d8617bff08064d8e5d97a447c66136ae1987dd2c5c6437c29d"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\5c02d217-f04f-4f32-9794-110e7fb3f734\\web-sdk\\dist\\connection.js",
+      "bytes": 7695,
+      "sha256": "fd63d56a4a7a930de7d348277574b1e658db3591b6db85452cd52a7c39b239f2"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\5c02d217-f04f-4f32-9794-110e7fb3f734\\web-sdk\\dist\\contracts.d.ts",
+      "bytes": 10823,
+      "sha256": "d89cb72bda32503903614ed996331a051c65feaa08ec96f722e82ec9e95fc05b"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\5c02d217-f04f-4f32-9794-110e7fb3f734\\web-sdk\\dist\\contracts.js",
+      "bytes": 100,
+      "sha256": "a5a3d5d72ebbce80878b35311427b38f0ec2946e82ddfeb890c70578abe11344"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\5c02d217-f04f-4f32-9794-110e7fb3f734\\web-sdk\\dist\\gui-command.d.ts",
+      "bytes": 1375,
+      "sha256": "56e5bc02e4070e30d3d688e414de52af6a381bf3b1b0d556897d4b6e14552211"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\5c02d217-f04f-4f32-9794-110e7fb3f734\\web-sdk\\dist\\gui-command.js",
+      "bytes": 8320,
+      "sha256": "fdbae8f8c9ebab4285895db042e8c96dbc0782c441516e56fa47a1fffe20428f"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\5c02d217-f04f-4f32-9794-110e7fb3f734\\web-sdk\\dist\\gui.d.ts",
+      "bytes": 2135,
+      "sha256": "16285589021b3daed750294dc73820ff1020c0b293f1e28182fec419cbc8d950"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\5c02d217-f04f-4f32-9794-110e7fb3f734\\web-sdk\\dist\\gui.js",
+      "bytes": 14824,
+      "sha256": "0e3e0424807bd5a8486aab15c6a3d94c19f8bf7f7de185d9040ba61234d5bb22"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\5c02d217-f04f-4f32-9794-110e7fb3f734\\web-sdk\\dist\\index.d.ts",
+      "bytes": 1586,
+      "sha256": "4b57cd5f3e2e4d035bede6f282996d2745f752c0709837b027b05e6f84b277d2"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\5c02d217-f04f-4f32-9794-110e7fb3f734\\web-sdk\\dist\\index.js",
+      "bytes": 425,
+      "sha256": "acaba2502e1304305bf75e1395751f80301e534d193898ba2e638251c9f3bcb2"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\5c02d217-f04f-4f32-9794-110e7fb3f734\\web-sdk\\dist\\protocol.d.ts",
+      "bytes": 5516,
+      "sha256": "f4f2527207d245cba3abddc9f68407a1c39cb9fda856c11726cfa3fdc79cccdc"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\5c02d217-f04f-4f32-9794-110e7fb3f734\\web-sdk\\dist\\protocol.js",
+      "bytes": 3445,
+      "sha256": "bf0f8678f0bc28cd974d70d22afcbf442ef7c97f446b0a531b9ef0f4c67ace65"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\5c02d217-f04f-4f32-9794-110e7fb3f734\\web-sdk\\dist\\session-renewal.d.ts",
+      "bytes": 1384,
+      "sha256": "eec9f45daecb2857b55d662987a571786ce519bf1260114894b7aee01ad43a10"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\5c02d217-f04f-4f32-9794-110e7fb3f734\\web-sdk\\dist\\session-renewal.js",
+      "bytes": 11085,
+      "sha256": "161b551f6afc1dbae07c38a6286e78075fcd04c8b3a717849954a1f2ff64a74c"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\5c02d217-f04f-4f32-9794-110e7fb3f734\\web-sdk\\dist\\task-query.d.ts",
+      "bytes": 629,
+      "sha256": "d79a3f33319fd162d00a6aaee75afaa685be7aa9e2620ac0cd984b29a86b8835"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\5c02d217-f04f-4f32-9794-110e7fb3f734\\web-sdk\\dist\\task-query.js",
+      "bytes": 1963,
+      "sha256": "ff0b7c09dcd46d20371d4478c2b17b79dd40d1d28b46ebbfa7fea37b7a1d0ec9"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\5c02d217-f04f-4f32-9794-110e7fb3f734\\web-sdk\\dist\\web-features.d.ts",
+      "bytes": 1400,
+      "sha256": "d660fcbbb92d26eb2fcc05b3bd03fdee64a2f586488d3085eedbbbde17df5e29"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\5c02d217-f04f-4f32-9794-110e7fb3f734\\web-sdk\\dist\\web-features.js",
+      "bytes": 3590,
+      "sha256": "c9c03f65a9988474a2e806b78367bab69957d706785c9fb316be3280923557b5"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\5c02d217-f04f-4f32-9794-110e7fb3f734\\web-sdk\\package.json",
+      "bytes": 442,
+      "sha256": "09df3e941bc9e06765fc8eff1bf6b54ce56968ec9018781e79e41244c5f7111f"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\5c02d217-f04f-4f32-9794-110e7fb3f734\\web-output\\.vite\\manifest.json",
+      "bytes": 461,
+      "sha256": "6aab4d7adaa4807d360b6a0a7ac7430d9be1c2a3f654af2fda67449ae6b6b40d"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\5c02d217-f04f-4f32-9794-110e7fb3f734\\web-output\\assets\\index-BeEGxAzo.js",
+      "bytes": 46990,
+      "sha256": "685d1c90a979b79cc06fc5682436502ce6696e803a534c7364bebad4e27b5232"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\5c02d217-f04f-4f32-9794-110e7fb3f734\\web-output\\assets\\index-legacy-9vXmrNCI.js",
+      "bytes": 58582,
+      "sha256": "deee1c3b51d6f332481d1642b7967bece0d8b6f8754870ba532aae423be58de0"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\5c02d217-f04f-4f32-9794-110e7fb3f734\\web-output\\assets\\polyfills-legacy-DmQYsS2w.js",
+      "bytes": 86515,
+      "sha256": "a157becc9702a9e7e2e6f1db4a84cdd33dc5cbb37b1725e22969af5cbc0b3a75"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\5c02d217-f04f-4f32-9794-110e7fb3f734\\web-output\\index.html",
+      "bytes": 999,
+      "sha256": "b9ee8a942ace4b62ea4788fb473305d2d09faf14ca8a6638a28341be34a8b976"
+    },
+    {
+      "path": "F:\\work\\soui-issue96\\out\\acceptance\\5c02d217-f04f-4f32-9794-110e7fb3f734\\web-output\\message-worker.js",
+      "bytes": 1756,
+      "sha256": "fa30117df45f7cb7b70b956c0e83d14baab6a68d87c3072fb64e7ca0423c2085"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\web-reuse-projection-add7a895-e32b-4b7f-9090-5c479b788656\\x64\\web-build.projection.json",
+      "bytes": 25937,
+      "sha256": "49f1844de8c8ded7f2059fed198b9a7ca3a6fdc191eed777905631e7feb3420d"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\web-reuse-projection-add7a895-e32b-4b7f-9090-5c479b788656\\x86\\web-build.projection.json",
+      "bytes": 25937,
+      "sha256": "1b5a43dad4e6a35f4e15310f0118456628313904f825e1b816666b607a2ec47e"
+    }
+  ],
+  "originalStageAndVerifyInvoked": true,
+  "originalPrepareEntryExecuted": false,
+  "originalCandidateStageHelperExecuted": false,
+  "productExecuted": false,
+  "fourArmBehaviorPassed": false,
+  "currentSdk060Qualified": false,
+  "productionQualificationComplete": false,
+  "releaseReady": false
+}

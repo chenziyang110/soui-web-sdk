@@ -1,0 +1,89 @@
+{
+  "schema": "soui.ordinary-vm-recipe-count-correction-prepared/v1",
+  "reason": "Preparation author miscounted real payload members; Root actual data-only finalizer refused before writing manifest",
+  "oldPreparedSourcesPreservedIn": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/ordinary-reload-current/vm-recipe-count-v1-prepared",
+  "sourceBefore": [
+    {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/ordinary-reload-current/Finalize-OrdinaryPayload.cjs",
+      "bytes": 11301,
+      "sha256": "f45e826034542e942a5caf4b6c9c973bbafd63f399ba29645797499a7e74c0a4"
+    },
+    {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/ordinary-reload-current/Ordinary-Lib.ps1",
+      "bytes": 9374,
+      "sha256": "feb8a0f344c378a6783569e3b15be22876cc64a2d1c81a76e0e6a7737a1c79c4"
+    },
+    {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/ordinary-reload-current/Stage-Ordinary.ps1",
+      "bytes": 2476,
+      "sha256": "a7dd2ab131bc49c678c093b97feaad9279491a47447279fab860f4f2330f2fae"
+    },
+    {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/ordinary-reload-current/README.prepared.md",
+      "bytes": 10773,
+      "sha256": "c41b3a97a393bb991e0cb8954fb07479240ed387bfeef10f6c912db3f8d5f324"
+    },
+    {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/ordinary-reload-current/VMRecipe.prepared.json",
+      "bytes": 6407,
+      "sha256": "c25a52f39e7932aac491481374f708066c21fb379a0e60a201f3029273d322ce"
+    }
+  ],
+  "sourceAfter": [
+    {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/ordinary-reload-current/Finalize-OrdinaryPayload.cjs",
+      "bytes": 11301,
+      "sha256": "200c21745eaff95b86a1c351bc71b70037d936210805c765915028dced35a32b"
+    },
+    {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/ordinary-reload-current/Ordinary-Lib.ps1",
+      "bytes": 9374,
+      "sha256": "eed2044bea962c2b196757253bae3a0b5c1a0d3f7fb8bf971a9d246900362f80"
+    },
+    {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/ordinary-reload-current/Stage-Ordinary.ps1",
+      "bytes": 2476,
+      "sha256": "6fd9d6413f0e812bd50d4615aaccf6902f3c7f2ec367295f6025c5a45bd9e78e"
+    },
+    {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/ordinary-reload-current/README.prepared.md",
+      "bytes": 11361,
+      "sha256": "bd73a2ffbc7c8d56f6d2bac9680ee5567d212560e08b05b207090f5ba28c28ea"
+    },
+    {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/ordinary-reload-current/VMRecipe.prepared.json",
+      "bytes": 6886,
+      "sha256": "e52c2d1efaab76fc387390a5200f071399e2013fc01f838f7072890893eb619c"
+    }
+  ],
+  "actualRequiredCount": {
+    "guestControllers": 2,
+    "metadata": 2,
+    "nativeSource": 6,
+    "webAssets": 5,
+    "architectureExeAndCase": 4,
+    "payloadFiles": 19,
+    "manifest": 1,
+    "totalFlatCopy": 20,
+    "wrappers": 4,
+    "totalIsoSelection": 24
+  },
+  "paddingFilesAdded": 0,
+  "requiredFilesRemoved": 0,
+  "partialFailureReceipt": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/ordinary-reload-current/DataFinalizer.count-failure.received.json",
+    "bytes": 7219,
+    "sha256": "57c60c1a27ad71c199c6b208150bf2878324ffa6ee4e111f62db989882a0a36c"
+  },
+  "originalPassedBuildSourceRunInvokeBuildPreparationChanged": false,
+  "finalizerExecutedByCorrection": false,
+  "vmExecuted": false,
+  "appExecuted": false,
+  "rootReviewPending": true,
+  "releaseReady": false,
+  "minimalDiff": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/ordinary-reload-current/CountCorrection.prepared.diff",
+    "bytes": 9987,
+    "sha256": "76e6d5b25aad40ca5544b2d5de77b95946b857fbc816d0d76f2fc13bb5ed38cf"
+  }
+}

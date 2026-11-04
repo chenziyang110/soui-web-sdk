@@ -1,0 +1,156 @@
+{
+  "schema": "soui.independent-current-baseline-message-port-failure-analysis/v1",
+  "createdUtc": "2026-10-29T12:38:22.362Z",
+  "reviewer": "paired_review_supported",
+  "scope": "Read-only decoded-byte/actual failed-control analysis with original pure report reader; no producer, VM, native application or new test execution",
+  "findings": [],
+  "dataReviewBlockingFindings": 0,
+  "productResult": "FAIL: x64 old-kernel control timed out in Runtime shutdown; x86 control unrun",
+  "decode": {
+    "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\mp-b1-run\\Decode.actual.json",
+    "bytes": 7788,
+    "sha256": "35cfcdddd7f04f1a3797028aa4832f3dbd02c4599afb54919da1445672a7c79a"
+  },
+  "index": {
+    "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\mp-b1-run\\Files.index.json",
+    "bytes": 3914,
+    "sha256": "99ba09eeb504896b7462d41993873e44756de150168a6ea0a708e3a115ce1fd8"
+  },
+  "allIndexedBytesVerified": true,
+  "closedDecodedFileSetVerified": true,
+  "indexRecords": 23,
+  "decodedFiles": 24,
+  "rawFiles": 20,
+  "summary": {
+    "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\mp-b1-run\\raw\\Summary.actual.json",
+    "bytes": 1516,
+    "sha256": "8dd74c1bc2d61f7f3e452d79e13a78d93b12ddaad7c32b862bd75b9c02f828d3"
+  },
+  "baselineManifest": {
+    "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-baseline-current\\payload\\Current.manifest.json",
+    "bytes": 76885,
+    "sha256": "0e9d9bc5f42041c6d928ec00d33b389bc17d527a1bb6605acc7e4568bcc80055"
+  },
+  "candidateManifest": {
+    "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-reload-current\\light-payload-3777b18d-61d3-4310-b70d-bc1b73057be2\\payload\\Current.manifest.json",
+    "bytes": 74576,
+    "sha256": "2a38ab95b705937cc35be30574e7930bce29b36d24bb3a30647bc6be3e86e0b9"
+  },
+  "candidateEarlierSummary": {
+    "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\mp-a2-run\\raw\\Summary.actual.json",
+    "bytes": 15100,
+    "sha256": "fcde58053b4b09473e5960cfc08a118aa59fb0b5ad52ca241186dc02309ef90e"
+  },
+  "nativeResult": {
+    "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\mp-b1-run\\raw\\x64\\finished.json",
+    "bytes": 950,
+    "sha256": "ae17b51e64f7a66fdfd7309cdc4391259309782066227a7c2c79493428fb144b"
+  },
+  "nativeRaw": {
+    "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\mp-b1-run\\raw\\x64\\owned.ndjson",
+    "bytes": 748,
+    "sha256": "72b48b12e2eb2a1cab7aeccb71ef0dc7d7ef14a78b16a71ca96b59354b11abfd"
+  },
+  "nativeContext": {
+    "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\mp-b1-run\\raw\\x64\\owned.ndjson.context.json",
+    "bytes": 573,
+    "sha256": "5768967cf34dde15f352c24b39342bf84c07c5b41a53689a5d7febb6ba36d94c"
+  },
+  "nativeEvents": {
+    "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\mp-b1-run\\raw\\x64\\events.ndjson",
+    "bytes": 3456,
+    "sha256": "aa55aa8107da2acfd72914c644eb2bac0a09006afa32e27e74e375a0731b90eb"
+  },
+  "sidecar": {
+    "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\mp-b1-run\\raw\\x64\\events.ndjson.message-port.ndjson",
+    "bytes": 14299,
+    "sha256": "fba7af15447bd58dbd7872a200d1d446135ff4c388fc673505581b1aa04302c0"
+  },
+  "actual": {
+    "sdkVersion": "0.6.0",
+    "architecture": "x64",
+    "pid": 3740,
+    "creationFileTime": "134377508292946488",
+    "executableSha256": "038f85dddf997c7e0caab6834527d1b7e2386802723005346e5f7a778b873499",
+    "nativeExitCode": 1,
+    "supervisorExitCode": 1,
+    "elapsedMs": 32613,
+    "reason": "root-failed",
+    "naturalFailedExit": true,
+    "wholeJobClosed": true,
+    "activeProcesses": 0,
+    "forcedTermination": false,
+    "fallbackUsed": false,
+    "originalOwnedTimeoutMs": 394500,
+    "originalDrainMs": 2000,
+    "nativeEventCount": 21,
+    "completedSteps": 6,
+    "samples": 6,
+    "shutdownStepBeginMs": 12556,
+    "runFailedMs": 32573,
+    "originalStepTimeoutMs": 20000,
+    "shutdownWaitMs": 20017,
+    "message": "Page/bridge readiness timed out",
+    "mountThreeReloadsAndWindowCloseCompleted": true,
+    "browser": {
+      "schema": "soui.message-port-browser-behavior/v1",
+      "observedDocuments": 4,
+      "observedCases": 32,
+      "messageChannelBehaviorObserved": true,
+      "dedicatedWorkerMessagingObserved": true,
+      "boundedWorkerMessageSuppressionObserved": true,
+      "workerNativeJoinObserved": false,
+      "genericDebuggerWaitKillQualified": false,
+      "polyfillSchedulerBranchObserved": false,
+      "resourcePassed": false,
+      "osQualified": false,
+      "releaseReady": false
+    },
+    "sidecarRows": 40,
+    "attempted": [
+      "x64"
+    ],
+    "unrun": [
+      "x86"
+    ],
+    "bothBaselineArchitectureFiniteCasesPassed": false
+  },
+  "comparison": {
+    "sameCurrentCandidateExeAndPayloadInputs": true,
+    "sameInstalledSdkProducers": true,
+    "unchangedRuntimeMembersPerArchitecture": 77,
+    "onlyDeclaredRuntimeDifference": "node.dll",
+    "x64Baseline": {
+      "relative": "node.dll",
+      "source": "F:/work/soui-issue96/out/acceptance/82e96f65-8695-4546-b468-fec6c7d8a386/runtime/node.dll",
+      "bytes": 38959616,
+      "sha256": "f552226e00c16c9df1ef6cb94081c69b37185c44741197d5a337a4ed70d1fdef",
+      "fromPayload": false,
+      "kind": "known baseline kernel; unchanged current0.6 installed SDK fixture"
+    },
+    "x64Candidate": {
+      "relative": "node.dll",
+      "source": "C:/sr06/out/x64/bin/Release/SouiStarter/node.dll",
+      "bytes": 39204352,
+      "sha256": "d888637d5dd1476dde16b8c5bb28172d7b8ec3495b69c725fa3572013748139a",
+      "fromPayload": false,
+      "kind": "current0.6.0-runtime-DLL"
+    },
+    "earlierCandidateX64NaturalPassReused": true,
+    "earlierCandidateX86NaturalPassReused": true,
+    "candidateTestsRerun": false,
+    "interpretation": "The finite current0.6 profile shows a kernel-difference-sensitive shutdown outcome. This old baseline is a comparison control, not the product release candidate. No exact cursor/worker-prepare/finalization/native-join substage or code-level cause is established by these raw logs."
+  },
+  "limits": {
+    "browser32CasesAreWholeRunPass": false,
+    "currentFourArmSuccess": false,
+    "oldSdkFailureReclassified": false,
+    "currentSdk060Qualified": false,
+    "resourcePassed": false,
+    "workerNativeJoinQualified": false,
+    "genericDebuggerQualified": false,
+    "qualificationPassed": false,
+    "releaseReady": false
+  },
+  "noFurtherTestsOrSourceFixProposed": true
+}

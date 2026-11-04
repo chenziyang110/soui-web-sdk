@@ -1,0 +1,69 @@
+{
+  "schema": "soui.current-sdk-message-port-candidate-canonical-reuse/v1",
+  "meaning": "Local immutable file-byte reference binding only; existing actual candidate evidence is reused without rerun or raw-byte duplication",
+  "canonicalIndex": {
+    "path": "C:/sc07/verification/production-validation/open-issues-closeout-2026-10-29/current-execution/Files.index.json",
+    "bytes": 175857,
+    "sha256": "e6576fd855c8f6724860e7a5720a1f4cd39eea00a8d3e007dc03c6f2fface0b1"
+  },
+  "references": [
+    {
+      "kind": "manifest",
+      "original": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port-reload-current/light-payload-3777b18d-61d3-4310-b70d-bc1b73057be2/payload/Current.manifest.json",
+        "bytes": 74576,
+        "sha256": "2a38ab95b705937cc35be30574e7930bce29b36d24bb3a30647bc6be3e86e0b9"
+      },
+      "existingCanonical": {
+        "path": "C:/sc07/verification/production-validation/open-issues-closeout-2026-10-29/current-execution/payload/message-port-a2/payload/Current.manifest.json",
+        "bytes": 74576,
+        "sha256": "2a38ab95b705937cc35be30574e7930bce29b36d24bb3a30647bc6be3e86e0b9"
+      },
+      "byteEqual": true
+    },
+    {
+      "kind": "stage",
+      "original": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/mp-a2-stage/raw/Stage.actual.json",
+        "bytes": 72780,
+        "sha256": "b119a40d2a463034eec929e462ad7125b514d1c3cbdd6996db5b8bd40b876935"
+      },
+      "existingCanonical": {
+        "path": "C:/sc07/verification/production-validation/open-issues-closeout-2026-10-29/current-execution/vm/message-port-a2/stage/raw/Stage.actual.json",
+        "bytes": 72780,
+        "sha256": "b119a40d2a463034eec929e462ad7125b514d1c3cbdd6996db5b8bd40b876935"
+      },
+      "byteEqual": true
+    },
+    {
+      "kind": "run",
+      "original": {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/mp-a2-run/raw/Summary.actual.json",
+        "bytes": 15100,
+        "sha256": "fcde58053b4b09473e5960cfc08a118aa59fb0b5ad52ca241186dc02309ef90e"
+      },
+      "existingCanonical": {
+        "path": "C:/sc07/verification/production-validation/open-issues-closeout-2026-10-29/current-execution/vm/message-port-a2/run/raw/Summary.actual.json",
+        "bytes": 15100,
+        "sha256": "fcde58053b4b09473e5960cfc08a118aa59fb0b5ad52ca241186dc02309ef90e"
+      },
+      "byteEqual": true
+    }
+  ],
+  "baselinePreparation": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port-baseline-current/Preparation.actual.json",
+    "bytes": 12156,
+    "sha256": "042f4cf355b28132d21ad63e563ee0c468ff5073dd00cd524ac2f9e4cc188df3"
+  },
+  "candidateMainSha256": "a7df1670caa8551c759ba2dd6c7f2c50f961705c905cf0c21d2aac90d0da9d44",
+  "candidateExecutables": {
+    "x64": "038f85dddf997c7e0caab6834527d1b7e2386802723005346e5f7a778b873499",
+    "x86": "209e99b0213a1d8c98a11be89e71f66e4c09530060d67f1cec82c8edec1867b2"
+  },
+  "rawCandidateEvidenceCopied": false,
+  "testsReexecuted": false,
+  "oldSdkFailedRunReclassified": false,
+  "compositionPassed": false,
+  "releaseReady": false,
+  "productionQualificationComplete": false
+}

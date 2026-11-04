@@ -1,0 +1,106 @@
+{
+  "schema": "soui.issue-short-serial-decoded/v1",
+  "startedAtUtc": "2026-10-29T11:56:08.735Z",
+  "completedAtUtc": "2026-10-29T11:56:08.829Z",
+  "scope": "Offline decode of one selected tag only; no application/VM/test execution or product qualification",
+  "tag": "ISSUESHORT119E7F31DF434EF9B8E52EB8A2D41B63",
+  "sourceSerial": {
+    "path": "C:/Users/11034/.codex/task-vms/soui-devtools-qemu-stable-e89cf96f2d1e4685bbdac347cb9eea3d/private-fe2e6175cf5a4a78b23d418330506ee3/postsettings-cpu-nehalem-3f486e90/runs/166925c3-9fd3-4751-9a17-c45d880af0a6/serial.log",
+    "bytesAtOpen": 5427783,
+    "bytesAtClose": 5427783,
+    "readBoundaryBytes": 5427783,
+    "wholeSerialCopied": false,
+    "otherTagsCopied": false
+  },
+  "originalFrame": {
+    "byteOffset": 5415848,
+    "bytes": 11935,
+    "sha256": "b57c43e1c57ab2e864b1336dfc18ac20e804989e4401c43171469b8d7ce1e2da",
+    "path": "Serial.frame.raw"
+  },
+  "envelope": {
+    "path": "Envelope.json.raw",
+    "bytes": 8880,
+    "sha256": "864985fdb19ed114bcc857a9235adac0c0d3cfd400c6dc3c5d8e3776b6c67dd9",
+    "canonicalBase64": true,
+    "exactCompactOrderedJson": true
+  },
+  "catalog": {
+    "path": "raw/ExportFiles.actual.json",
+    "originalPath": "C:\\issue-closeout-evidence\\mp77p-stage-a1\\ExportFiles.actual.json",
+    "bytes": 1661,
+    "sha256": "4ab726dd6730ed8e87ac76b3816235b5d2323d36482a10ab2b09977d786866b4",
+    "declaredFiles": 5,
+    "declaredFileBytes": 4921
+  },
+  "payloadFileCount": 5,
+  "rawFileCountIncludingCatalog": 6,
+  "payloadFileBytes": 4921,
+  "rawBytesIncludingCatalog": 6582,
+  "files": [
+    {
+      "originalPath": "C:\\issue-closeout-evidence\\mp77p-stage-a1\\ExportPreflight.actual.json",
+      "path": "ExportPreflight.actual.json",
+      "bytes": 2325,
+      "sha256": "b8ac9c9d6a9513bb1dce428d2cf305c7b009e23a0da9e14d9db1f7bea955cb80"
+    },
+    {
+      "originalPath": "C:\\issue-closeout-evidence\\mp77p-stage-a1\\Lease.actual.json",
+      "path": "Lease.actual.json",
+      "bytes": 186,
+      "sha256": "1a8c2b7caa988f95d4cfc39d83ac31391e3cb528aa41c0c965bb1ad90c791d67"
+    },
+    {
+      "originalPath": "C:\\issue-closeout-evidence\\mp77p-stage-a1\\PowerShell.finished.json",
+      "path": "PowerShell.finished.json",
+      "bytes": 270,
+      "sha256": "0375014c8ce98d61245ac4e7a2a13bd2fd171f448bb6fb3e9decc3a753bccde4"
+    },
+    {
+      "originalPath": "C:\\issue-closeout-evidence\\mp77p-stage-a1\\stderr.log",
+      "path": "stderr.log",
+      "bytes": 2140,
+      "sha256": "5f58db3ed23be33715ec3bc62172152293032f611ba99a4f8258c9432fd69073"
+    },
+    {
+      "originalPath": "C:\\issue-closeout-evidence\\mp77p-stage-a1\\stdout.log",
+      "path": "stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "base64CanonicalForAll": true,
+  "originalPathsConfined": true,
+  "caseInsensitiveClosedSetVerified": true,
+  "allOriginalBytesAndSha256Verified": true,
+  "producer": {
+    "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/tray-build/Guest-Export.ps1",
+    "bytes": 3074,
+    "sha256": "f1cc23cfa6d76d35b2a6d8dd0779ceb332a42b51f74271bf097b5e9b44f1ce7c"
+  },
+  "decoder": {
+    "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\Decode-PairedExport.cjs",
+    "bytes": 11445,
+    "sha256": "cb73973fae005a21f25f01912f1378d865bc632a41f225c2bc04b507e07065a0"
+  },
+  "node": {
+    "path": "C:\\nvm4w\\nodejs\\node.exe",
+    "bytes": 91380224,
+    "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+  },
+  "argv": [
+    "C:\\nvm4w\\nodejs\\node.exe",
+    "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\message-port-paired-current\\Decode-PairedExport.cjs",
+    "C:/Users/11034/.codex/task-vms/soui-devtools-qemu-stable-e89cf96f2d1e4685bbdac347cb9eea3d/private-fe2e6175cf5a4a78b23d418330506ee3/postsettings-cpu-nehalem-3f486e90/runs/166925c3-9fd3-4751-9a17-c45d880af0a6/serial.log",
+    "ISSUESHORT119E7F31DF434EF9B8E52EB8A2D41B63",
+    "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/mp77p-a1-stage-failed"
+  ],
+  "cwd": "F:\\work\\SOUI_WEB",
+  "pid": 43740,
+  "testPassed": null,
+  "browserPassClaimed": false,
+  "uiInteractionQualified": false,
+  "releaseReady": false,
+  "productionQualificationComplete": false,
+  "fullDevtoolsGoalComplete": false
+}

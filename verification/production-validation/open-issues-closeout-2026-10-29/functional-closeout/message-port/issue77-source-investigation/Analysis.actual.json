@@ -1,0 +1,479 @@
+{
+  "schema": "soui.read-only-issue77-kernel-shutdown-source-investigation/v1",
+  "createdUtc": "2026-10-29T12:59:18.507342+00:00",
+  "reviewer": "paired_review_supported",
+  "scope": "Read-only source/provenance/previous actual evidence analysis. Only this new analysis output is written; no VM, Git, native application, build, test, wrapper or protocol execution.",
+  "verdict": {
+    "baselineSourceDefect": "Completed tracked Worker Task retains its raw lease and payload until deferred WebTimerBase destruction. Baseline WebThread retires deferred timers only at the next scheduler entry or final thread drain. An empty worker heap skips the scheduler and waits indefinitely; shutdown preparation refuses the native join until that retained raw lease is gone. This is a reachable self-sustaining idle-retirement cycle.",
+    "candidateCorrection": "Patch0018 retires completed timers after a scheduler turn and on retirement-only worker wakes, after callback/observer return. Bounded32 retirement plus explicit remainder wake breaks the source cycle while preserving actual Task destruction, resource fences and native held-HANDLE join.",
+    "currentProductSourceAlreadyContainsCorrection": true,
+    "sdkFallbackBugEstablished": false,
+    "exactFailedProcessInternalStateObserved": false,
+    "actualFailureAttribution": "The only-DLL current0.6 comparison, both historical/current SDK baseline failures, exact source defect and candidate correction strongly support this kernel liveness mechanism. Existing raw logs do not sample preparation_status, raw-active counters, cursor realm result or Worker stacks; they do not prove which exact Worker/prepare/finalization substage PID3740 occupied."
+  },
+  "provenance": {
+    "baselineImportManifest": {
+      "path": "C:/sr06/third_party/manifests/kernel-build-050.json",
+      "bytes": 3675,
+      "sha256": "da7fa3fe8666dfd0ec5c4f600c01b271386039f03a0abf0639f3fa2b87b579e7"
+    },
+    "baselineSourceManifest": {
+      "path": "F:/work/soui-issue96/verification/production-validation/0.5-kernel-cache-rebuild-2026-10-15/x64/build/kernel-source-before.json",
+      "bytes": 4585875,
+      "sha256": "ae3cbffa48ed9188eec0dedc6738de1dbc5bc0f70b82f5bae3ba371dfe1aa9a9",
+      "identity": "0bbed0bfd1b81a0c924ca3927cd4c53dfa2e916ac3aa5da43c51c2b70bba091f",
+      "fileCount": 23545,
+      "totalBytes": 321015498
+    },
+    "baselinePostUpgradeBuild": {
+      "path": "C:/sr06/verification/production-validation/0.5-post-upgrade-rebuild-2026-10-16/kernel/x64/build-Miniblink.json",
+      "bytes": 5679,
+      "sha256": "41e5198e549e6ef7886b4f341f2d5262a8484a3535b4ecca1aff13123ff4d7c7"
+    },
+    "candidateImportManifest": {
+      "path": "C:/sr06/third_party/manifests/kernel-build-060-source2.json",
+      "bytes": 3558,
+      "sha256": "4cca1707916d12f0a8a26828381c2807187147158c8c05602febb6b6a28414f5"
+    },
+    "candidateSourceManifest": {
+      "path": "C:/sr06/verification/production-validation/0.6.0-source2-kernel-2026-10-29/common-provenance/source/Source2.source-after.json",
+      "bytes": 4505919,
+      "sha256": "c698985f7d46d02984a7eec46d96c1ebeac5164b816b61b560d96b657c136809",
+      "identity": "26c5b73e4915bb4539e87b987cd8e952005f0fe41d987138d8d8e3b13eb25c95",
+      "fileCount": 23064,
+      "totalBytes": 305373649
+    },
+    "candidateBuildResult": {
+      "path": "C:/sr06/verification/production-validation/0.6.0-source2-kernel-2026-10-29/x64/build-result.json",
+      "bytes": 7461,
+      "sha256": "e0853a38f9fdbe643985284374e589671015bb463a056ddc2c57bc0b868b98c9"
+    },
+    "patch": {
+      "path": "C:/sr06/third_party/patches/miniblink/0018-input-ui-deadline-index.patch",
+      "bytes": 59711,
+      "sha256": "e01da602512a53b3cf5a200cb257b3f756f20ae1f6c08a46baba02ebda127421"
+    },
+    "patchManifest": {
+      "path": "C:/sr06/third_party/manifests/kernel-input-ui-w03-w04-deadline-index-source.json",
+      "bytes": 3716,
+      "sha256": "d9c29797abac07686d09a800802a127a7e6f11ae99f2ae20f1ad3c435730dbd3"
+    },
+    "currentEditableThreadSource": {
+      "path": "C:/sc07/third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp",
+      "bytes": 30838,
+      "sha256": "d32ca7726ec6edda098b36f8fe578dcd98868cfa187bbef54818cb5edc893a44"
+    },
+    "historicalSourceManifestWasNotUsedAsCurrentCompilerSnapshot": true
+  },
+  "sourcePins": [
+    {
+      "relative": "content/web_impl_win/WebThreadImpl.cpp",
+      "baseline": {
+        "path": "F:/work/soui-issue96/third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp",
+        "bytes": 24157,
+        "sha256": "95fe2fdd2d109cf3bfed4a155222d4a13642c3980b372e5ca952c4f09a9bdad2"
+      },
+      "candidate": {
+        "path": "C:/sr06/third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp",
+        "bytes": 30838,
+        "sha256": "d32ca7726ec6edda098b36f8fe578dcd98868cfa187bbef54818cb5edc893a44"
+      },
+      "bothMatchActualCompilerSourceManifests": true,
+      "equal": false
+    },
+    {
+      "relative": "content/web_impl_win/WebThreadImpl.h",
+      "baseline": {
+        "path": "F:/work/soui-issue96/third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.h",
+        "bytes": 4244,
+        "sha256": "253c1b74696c717c9145e5b5b598986354a06182f4bcb9ccfc71674d76a1e358"
+      },
+      "candidate": {
+        "path": "C:/sr06/third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.h",
+        "bytes": 4986,
+        "sha256": "a886ed6f388ccd94aba8d238ae9e9963c6da2c02c5ec345b4cd503d8a649d058"
+      },
+      "bothMatchActualCompilerSourceManifests": true,
+      "equal": false
+    },
+    {
+      "relative": "content/web_impl_win/WebTimerBase.cpp",
+      "baseline": {
+        "path": "F:/work/soui-issue96/third_party/sources/miniblink/content/web_impl_win/WebTimerBase.cpp",
+        "bytes": 12967,
+        "sha256": "22eb8dca0f7d663c327346c2fd18f9d05cd302e9186bbcc572fce5b2ea6aa535"
+      },
+      "candidate": {
+        "path": "C:/sr06/third_party/sources/miniblink/content/web_impl_win/WebTimerBase.cpp",
+        "bytes": 15627,
+        "sha256": "f902f45a4512b98ff1ad3663798188247272383ff9d80cc725188dd97b2fb28d"
+      },
+      "bothMatchActualCompilerSourceManifests": true,
+      "equal": false
+    },
+    {
+      "relative": "content/web_impl_win/WebSchedulerImpl.cpp",
+      "baseline": {
+        "path": "F:/work/soui-issue96/third_party/sources/miniblink/content/web_impl_win/WebSchedulerImpl.cpp",
+        "bytes": 3651,
+        "sha256": "4a444a58d081d23999c7bd1b04eb44904bf6eb9d71dd02c1fac763485ce43b33"
+      },
+      "candidate": {
+        "path": "C:/sr06/third_party/sources/miniblink/content/web_impl_win/WebSchedulerImpl.cpp",
+        "bytes": 3651,
+        "sha256": "4a444a58d081d23999c7bd1b04eb44904bf6eb9d71dd02c1fac763485ce43b33"
+      },
+      "bothMatchActualCompilerSourceManifests": true,
+      "equal": true
+    },
+    {
+      "relative": "third_party/WebKit/Source/core/workers/WorkerMessagingProxy.cpp",
+      "baseline": {
+        "path": "F:/work/soui-issue96/third_party/sources/miniblink/third_party/WebKit/Source/core/workers/WorkerMessagingProxy.cpp",
+        "bytes": 21698,
+        "sha256": "a12929f62fa92e97f0d5f1b2df31ebb48e82f5e5a1d8e0b11cf417aadb7e1d97"
+      },
+      "candidate": {
+        "path": "C:/sr06/third_party/sources/miniblink/third_party/WebKit/Source/core/workers/WorkerMessagingProxy.cpp",
+        "bytes": 21698,
+        "sha256": "a12929f62fa92e97f0d5f1b2df31ebb48e82f5e5a1d8e0b11cf417aadb7e1d97"
+      },
+      "bothMatchActualCompilerSourceManifests": true,
+      "equal": true
+    },
+    {
+      "relative": "third_party/WebKit/Source/core/workers/WorkerThread.cpp",
+      "baseline": {
+        "path": "F:/work/soui-issue96/third_party/sources/miniblink/third_party/WebKit/Source/core/workers/WorkerThread.cpp",
+        "bytes": 28012,
+        "sha256": "eef0f04aac2dbb37940496bf200a6301004bc135ce945d942998f98bc6883745"
+      },
+      "candidate": {
+        "path": "C:/sr06/third_party/sources/miniblink/third_party/WebKit/Source/core/workers/WorkerThread.cpp",
+        "bytes": 28012,
+        "sha256": "eef0f04aac2dbb37940496bf200a6301004bc135ce945d942998f98bc6883745"
+      },
+      "bothMatchActualCompilerSourceManifests": true,
+      "equal": true
+    },
+    {
+      "relative": "third_party/WebKit/Source/core/workers/WorkerShutdownRecord.h",
+      "baseline": {
+        "path": "F:/work/soui-issue96/third_party/sources/miniblink/third_party/WebKit/Source/core/workers/WorkerShutdownRecord.h",
+        "bytes": 18024,
+        "sha256": "af5a9ef99d0df2c238dcce24e8d5e42a6db74d3dcb6fa6651c82a479eac1e761"
+      },
+      "candidate": {
+        "path": "C:/sr06/third_party/sources/miniblink/third_party/WebKit/Source/core/workers/WorkerShutdownRecord.h",
+        "bytes": 18024,
+        "sha256": "af5a9ef99d0df2c238dcce24e8d5e42a6db74d3dcb6fa6651c82a479eac1e761"
+      },
+      "bothMatchActualCompilerSourceManifests": true,
+      "equal": true
+    },
+    {
+      "relative": "third_party/WebKit/Source/core/workers/DedicatedWorkerThread.cpp",
+      "baseline": {
+        "path": "F:/work/soui-issue96/third_party/sources/miniblink/third_party/WebKit/Source/core/workers/DedicatedWorkerThread.cpp",
+        "bytes": 4519,
+        "sha256": "68cbb5df05a05e6b242eb41bf7975b994bf01225ef78a7f4ccc6b7218192d6c7"
+      },
+      "candidate": {
+        "path": "C:/sr06/third_party/sources/miniblink/third_party/WebKit/Source/core/workers/DedicatedWorkerThread.cpp",
+        "bytes": 4519,
+        "sha256": "68cbb5df05a05e6b242eb41bf7975b994bf01225ef78a7f4ccc6b7218192d6c7"
+      },
+      "bothMatchActualCompilerSourceManifests": true,
+      "equal": true
+    },
+    {
+      "relative": "third_party/WebKit/Source/platform/WebThreadSupportingGC.cpp",
+      "baseline": {
+        "path": "F:/work/soui-issue96/third_party/sources/miniblink/third_party/WebKit/Source/platform/WebThreadSupportingGC.cpp",
+        "bytes": 1717,
+        "sha256": "27920efdaa7795b8f13243c7f0641d23b8236995dd22c24da42a2cb24999f03e"
+      },
+      "candidate": {
+        "path": "C:/sr06/third_party/sources/miniblink/third_party/WebKit/Source/platform/WebThreadSupportingGC.cpp",
+        "bytes": 1717,
+        "sha256": "27920efdaa7795b8f13243c7f0641d23b8236995dd22c24da42a2cb24999f03e"
+      },
+      "bothMatchActualCompilerSourceManifests": true,
+      "equal": true
+    },
+    {
+      "relative": "wke/wke.cpp",
+      "baseline": {
+        "path": "F:/work/soui-issue96/third_party/sources/miniblink/wke/wke.cpp",
+        "bytes": 98317,
+        "sha256": "46b92f710a9cbfc260bbbb61a2bbe3a11ed64c892df0efd31669352cfcafbdab"
+      },
+      "candidate": {
+        "path": "C:/sr06/third_party/sources/miniblink/wke/wke.cpp",
+        "bytes": 103449,
+        "sha256": "c21e7a494686ad3d488e1f75fd7a8f17b2110facaf3083b1e84537c43389786e"
+      },
+      "bothMatchActualCompilerSourceManifests": true,
+      "equal": false
+    },
+    {
+      "relative": "wke/CursorDescriptorBroker.cpp",
+      "baseline": {
+        "path": "F:/work/soui-issue96/third_party/sources/miniblink/wke/CursorDescriptorBroker.cpp",
+        "bytes": 44020,
+        "sha256": "9bc5cee92eeb5e3b560bd31c4d367aae10b6d4c51f4187e2c257abb1c5733863"
+      },
+      "candidate": {
+        "path": "C:/sr06/third_party/sources/miniblink/wke/CursorDescriptorBroker.cpp",
+        "bytes": 83542,
+        "sha256": "986730bed21ae2cfcd40236a6db12a2d8a8087bda202d0514e6b156b36d5f226"
+      },
+      "bothMatchActualCompilerSourceManifests": true,
+      "equal": false
+    }
+  ],
+  "sourceChain": [
+    {
+      "file": "third_party/WebKit/Source/core/workers/WorkerThread.cpp",
+      "lines": [
+        96,
+        102,
+        111,
+        113,
+        131
+      ],
+      "fact": "TrackedWorkerTask::run acquires record begin and keeps m_running=true through raw Worker access; destructor calls finish. run returning alone does not decrement m_active."
+    },
+    {
+      "file": "third_party/WebKit/Source/core/workers/WorkerShutdownRecord.h",
+      "lines": [
+        219,
+        225,
+        228,
+        234,
+        251,
+        253,
+        261
+      ],
+      "fact": "begin increments m_active; finish decrements it. Shutdown reservation rejects >1 active lease, and rawAccessQuiescent requires scopePrepared && !m_active."
+    },
+    {
+      "file": "content/web_impl_win/WebTimerBase.cpp",
+      "lines": [
+        218,
+        224,
+        315,
+        321,
+        324,
+        417
+      ],
+      "fact": "heapDelete moves the executed one-shot timer to m_unusedTimersToDelete; fired only runs m_task. Its actual destructor deletes the tracked Task."
+    },
+    {
+      "file": "content/web_impl_win/WebThreadImpl.cpp",
+      "lines": [
+        246,
+        257,
+        261,
+        569,
+        656,
+        665,
+        716
+      ],
+      "fact": "Baseline scheduler clears unused timers only at its entry. After final callback it leaves the newly completed timer retained. Empty-heap worker skips scheduler and enters infinite wait; a leftover event without heap work still skips retirement."
+    },
+    {
+      "file": "third_party/WebKit/Source/core/workers/WorkerMessagingProxy.cpp",
+      "lines": [
+        420,
+        427,
+        428,
+        438,
+        478,
+        494
+      ],
+      "fact": "Preparation terminates Workers, but pollRetirement returns Pending before retireBacking while rawAccessQuiescent is false. Poll retries cannot destroy a task owned by the sleeping worker scheduler."
+    },
+    {
+      "file": "third_party/WebKit/Source/core/workers/WorkerThread.cpp",
+      "lines": [
+        396,
+        401,
+        427,
+        439,
+        679,
+        685
+      ],
+      "fact": "The retained lease can prevent soleRawAccess before scope preparation, or prevent rawAccessQuiescent after it. These are alternative positions of the same source liveness cycle, not separate observed phases."
+    },
+    {
+      "file": "third_party/WebKit/Source/platform/WebThreadSupportingGC.cpp",
+      "lines": [
+        44,
+        48,
+        51
+      ],
+      "fact": "shutdown removes GC observers and detaches GC; it does not stop or drain the platform worker. WebSchedulerImpl.cpp40 shutdown is empty."
+    },
+    {
+      "file": "content/web_impl_win/WebThreadImpl.cpp",
+      "profile": "candidate",
+      "lines": [
+        263,
+        621,
+        626,
+        628,
+        629,
+        631,
+        726,
+        790
+      ],
+      "fact": "Candidate physically dereferences completed timers at end-of-turn and worker wakes, max32 per bounded normal retirement. Ownership is removed before destructor, outside locks and callbacks; remainder is explicitly woken. Full final drain remains separate."
+    }
+  ],
+  "abiAndSdk": {
+    "baselineFeasibilityReceipt": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/message-port-baseline-current/Feasibility.actual.json",
+      "bytes": 6770,
+      "sha256": "713d726b79c6d66443d44444c70070fb0d7a49a8a33c0d5dd34068d11e3dcd6d"
+    },
+    "bothBaselineArchitecturesRequiredCoreExportsPresent": true,
+    "optionalOwnerOpportunityMissingFromBaseline": "wkeGetInputUiApi",
+    "optionalGetterAbsenceIsAllowed": true,
+    "optionalInputHookCannotServicePrivateWorkerThreadRetirement": "SDK hook services engine owner/main thread. It cannot destroy private worker-owned timers on another thread; making it mandatory would reject legacy runtimes, not cure the old worker lifecycle.",
+    "sameNormalizedSdkShutdownFunction": true,
+    "normalizedFunctionBytes": 4691,
+    "normalizedFunctionSha256": "021be8ff3e8d9f61116c52f7e3a0870624aff15c714009fe54d28eee91e56e2c",
+    "sdkSourcePins": [
+      {
+        "path": "F:/work/soui-issue96/sdk/src/host/soui_miniblink_host.cpp",
+        "bytes": 200875,
+        "sha256": "aa1e2906a00ddad91af83a7eab87b8b22aead6804e3d7a532ffe0c88b74a5bb5"
+      },
+      {
+        "path": "C:/sr06/sdk/src/host/soui_miniblink_host.cpp",
+        "bytes": 269957,
+        "sha256": "0f4de698a8d78dfb1864c7e58a8903a18f1f090577abd8786080fbf9742217e2"
+      },
+      {
+        "path": "C:/sr06/sdk/src/host/runtime_shutdown_api.h",
+        "bytes": 360,
+        "sha256": "aeaac3b5b09fe6a527c1fe10014494a8d22be963534c86c18a2c0270c434e90a"
+      },
+      {
+        "path": "C:/sr06/third_party/include/miniblink/wke.h",
+        "bytes": 71046,
+        "sha256": "d406cee09dc7f2c1dfa4d5690d831a82470dd5d8140df5f4f9bc902c07008cc7"
+      }
+    ],
+    "currentSdkLines": [
+      750,
+      754,
+      757,
+      859,
+      890,
+      915,
+      920
+    ],
+    "interpretation": "Current SDK correctly preserves a pending retained shutdown generation and refuses to stop/unload before kernel preparation succeeds. No safe generic SDK fallback is established for a kernel that retains its private Worker task indefinitely."
+  },
+  "actualEvidence": {
+    "baselineStageAnalysis": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-analysis/mp-b1-stage/Analysis.actual.json",
+      "bytes": 4991,
+      "sha256": "4180a65afe028b38ab5dcb2b8c5860856cce2dee06870dcac0f65d54da29fead"
+    },
+    "baselineRunAnalysis": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-analysis/mp-b1-run/Analysis.actual.json",
+      "bytes": 6676,
+      "sha256": "fd6dd63d66fd6f611ba63d966bfcdaf524691339c9360b1c3e93e3dfdec7396e"
+    },
+    "oldSdkBaselineRunAnalysis": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-analysis/mp77-run-pa2/Analysis.actual.json",
+      "bytes": 9053,
+      "sha256": "a5e781754bd340477b00a79fd7987cd2374a93d0cd20d97194a4192f9dbd25e4"
+    },
+    "currentCandidateRawSummary": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/mp-a2-run/raw/Summary.actual.json",
+      "bytes": 15100,
+      "sha256": "fcde58053b4b09473e5960cfc08a118aa59fb0b5ad52ca241186dc02309ef90e"
+    },
+    "currentBaselineRawSummary": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/mp-b1-run/raw/Summary.actual.json",
+      "bytes": 1516,
+      "sha256": "8dd74c1bc2d61f7f3e452d79e13a78d93b12ddaad7c32b862bd75b9c02f828d3"
+    },
+    "x64OnlyDllComparison": {
+      "sameCurrentCandidateExeAndPayloadInputs": true,
+      "sameInstalledSdkProducers": true,
+      "unchangedRuntimeMembersPerArchitecture": 77,
+      "onlyDeclaredRuntimeDifference": "node.dll",
+      "x64Baseline": {
+        "relative": "node.dll",
+        "source": "F:/work/soui-issue96/out/acceptance/82e96f65-8695-4546-b468-fec6c7d8a386/runtime/node.dll",
+        "bytes": 38959616,
+        "sha256": "f552226e00c16c9df1ef6cb94081c69b37185c44741197d5a337a4ed70d1fdef",
+        "fromPayload": false,
+        "kind": "known baseline kernel; unchanged current0.6 installed SDK fixture"
+      },
+      "x64Candidate": {
+        "relative": "node.dll",
+        "source": "C:/sr06/out/x64/bin/Release/SouiStarter/node.dll",
+        "bytes": 39204352,
+        "sha256": "d888637d5dd1476dde16b8c5bb28172d7b8ec3495b69c725fa3572013748139a",
+        "fromPayload": false,
+        "kind": "current0.6.0-runtime-DLL"
+      },
+      "earlierCandidateX64NaturalPassReused": true,
+      "earlierCandidateX86NaturalPassReused": true,
+      "candidateTestsRerun": false,
+      "interpretation": "The finite current0.6 profile shows a kernel-difference-sensitive shutdown outcome. This old baseline is a comparison control, not the product release candidate. No exact cursor/worker-prepare/finalization/native-join substage or code-level cause is established by these raw logs."
+    },
+    "baselineShutdownWaitMs": 20017,
+    "baselineBrowserDocuments": 4,
+    "baselineBrowserCases": 32,
+    "baselineNativeExit": 1,
+    "baselineWholeJobClosed": true,
+    "candidateCasesReusedWithoutRerun": [
+      "current0.6 x64 natural0, Job0,32 browser cases",
+      "current0.6 x86 natural0, Job0,32 browser cases"
+    ],
+    "x86BaselineUnrun": true,
+    "wholeFourArmSuccess": false,
+    "resourceOrProductionQualification": false
+  },
+  "minimumCorrectRecommendation": {
+    "productChangeNeededForThisSourceCycle": false,
+    "route": "Keep shipping the already-built/passed current0.6 kernel pair carrying the owner retirement correction. Keep old baseline as an explicit failed negative control; do not replace its bytes, classify it as native success, extend20s or bypass shutdown fences.",
+    "ifLegacyKernelMaintenanceRequired": "Backport the bounded completed-Task owner-retirement mechanism as a new separately identified kernel build. Do not decrement raw leases before real Task destruction or force-stop workers. This would be a new maintenance scope, not a mutation of the comparison baseline.",
+    "existingMinimumRegressionSources": [
+      {
+        "path": "C:/sr06/tests/native/scheduler_continuation/fixture.cpp",
+        "bytes": 14895,
+        "sha256": "f736605c381c8b003d324023c80743e6ed8bc709fcc44709d1de86fd43acb15f"
+      },
+      {
+        "path": "C:/sr06/tests/native/vendor_lifetime/worker_lifetime/fixture.cpp",
+        "bytes": 47534,
+        "sha256": "ceea406a505efef1ba605a80c36788b2aec64eaf26e3cd80c5b0e2b2ef466589"
+      }
+    ],
+    "existingRegressionAssertions": [
+      "scheduler_continuation fixture156: last completed Task retires without another pulse",
+      "scheduler_continuation fixture158: retirement bounded32 and schedules remainder",
+      "worker_lifetime fixture761: actual retired gate before delete thread prevents shutdown drain masking idle retention"
+    ],
+    "newTestExecutionRecommendedNow": false,
+    "evidenceReuse": "The candidate x64/x86 short behavior/natural-exit results already passed on unchanged inputs. Reuse them. The source mechanism explains an old control failure; no extra browser retry is needed to make that failed control pass.",
+    "specificRemainingEvidenceLimit": "A counter/stack diagnostic would be needed only if exact failed-process branch attribution, beyond the established source defect and controlled outcome, is required. None is executed or prepared here."
+  },
+  "claims": {
+    "baselineFailureReclassified": false,
+    "fourArmPassed": false,
+    "newVmExecution": false,
+    "newNativeOrCTestExecution": false,
+    "sourcePatched": false,
+    "qualificationPassed": false,
+    "releaseReady": false
+  }
+}

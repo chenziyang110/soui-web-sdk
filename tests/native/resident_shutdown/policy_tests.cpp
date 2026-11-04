@@ -84,12 +84,45 @@ void completed_close() {
   require(resident_classify_host_close(true, std::string()) == resident_host_close::completed,
       "actual Host success permits the subsequent real HWND cleanup");
 }
+void reload_pending() {
+  require(resident_classify_reload(false, std::string("E_RELOAD_PENDING")) ==
+      resident_async_result::pending, "an admitted reload must remain pending without a terminal failure");
+  require(resident_classify_reload(true, std::string()) == resident_async_result::completed,
+      "a later successful reload must complete the pending operation");
+  for (const std::string code : {"", "E_HOST", "E_RELOAD_PENDING_OTHER", "e_reload_pending",
+                               "E_RUNTIME_SHUTDOWN_PENDING", "E_DEVTOOLS_PENDING"})
+    require(resident_classify_reload(false, code) == resident_async_result::failed,
+        "another error or operation's pending code must remain a terminal reload failure");
+  require(resident_classify_reload(false, std::string("E_RELOAD_PENDING\0suffix", 23)) ==
+      resident_async_result::failed, "an embedded NUL suffix must not authorize a pending reload");
+}
+void runtime_pending() {
+  resident_shutdown_policy policy;
+  policy.begin(10563);
+  require(resident_classify_runtime_shutdown(false, std::string("E_RUNTIME_SHUTDOWN_PENDING")) ==
+      resident_async_result::pending, "worker preparation must retain the same cleanup phase");
+  policy.begin(11609);
+  require(policy.elapsed(11609) == 1046 && policy.remaining(11609) == 8954,
+      "Runtime pending must not restart the original cleanup budget");
+  require(resident_classify_runtime_shutdown(true, std::string()) == resident_async_result::completed,
+      "only actual Runtime success completes its pending operation");
+  for (const std::string code : {"", "E_RUNTIME_IN_USE", "E_RUNTIME_THREAD", "E_RUNTIME_SHUTDOWN_FAILED",
+                               "E_RUNTIME_SHUTDOWN_PENDING_OTHER", "E_RELOAD_PENDING"})
+    require(resident_classify_runtime_shutdown(false, code) == resident_async_result::failed,
+        "non-pending Runtime failures must retain their terminal meaning");
+  require(resident_classify_runtime_shutdown(false,
+      std::string("E_RUNTIME_SHUTDOWN_PENDING\0suffix", 33)) == resident_async_result::failed,
+      "an embedded NUL suffix must not authorize another Runtime attempt");
+  require(policy.expired(20563) && policy.wait_ms(20563) == 0,
+      "a still-pending Runtime cannot extend the original 10000ms cleanup deadline");
+}
 struct test_case { const char* name; void (*run)(); };
 const test_case cases[] = {
     {"inactive", inactive}, {"zero-tick", zero_tick}, {"repeated-exit", repeated_exit},
     {"pending-boundary", pending_boundary}, {"tick-wrap", tick_wrap},
     {"clock-regression", clock_regression}, {"exact-pending", exact_pending},
-    {"unknown-close", unknown_close}, {"completed-close", completed_close}};
+    {"unknown-close", unknown_close}, {"completed-close", completed_close},
+    {"reload-pending", reload_pending}, {"runtime-pending", runtime_pending}};
 }  // namespace
 
 int main(int argc, char** argv) {

@@ -1,0 +1,86 @@
+{
+  "fixedDiagnosticDeadlineMs": 60000,
+  "schema": "soui.native-tray-focus-control-preparation/v1",
+  "compiled": false,
+  "guestArchitecture": "x64",
+  "preparationHost": "Robin11",
+  "executed": false,
+  "preparedUtc": "2026-10-29T11:18:37.713Z",
+  "maximumNativeFocusCalls": 1,
+  "oldConsumersRerun": false,
+  "productExecuted": false,
+  "releaseReady": false,
+  "expectedGuest": "SOUI-7AEMMK5Q0T",
+  "sdkChanged": false,
+  "independentlyReviewed": false,
+  "files": [
+    {
+      "relative": "NativeFocusControl.cs",
+      "bytes": 30830,
+      "sha256": "690305a4dbe13e2c3a56d269bd7c4377bd3ab8c7b5e0ba9de23bbcd00c0ea5e2"
+    },
+    {
+      "relative": "Invoke-NativeFocusControl-a2.ps1",
+      "bytes": 6297,
+      "sha256": "f686d65b3e69f2e00ab23c451840c3d766b42a456cd87381e0372cdb7e2ebcf9"
+    },
+    {
+      "relative": "README.md",
+      "bytes": 6127,
+      "sha256": "9b4df7135152e2ee3b351305d2c085f6e7ae2da17cf06003e5f6a7b9f78f2306"
+    }
+  ],
+  "sourceReferences": [
+    {
+      "bytes": 13336,
+      "path": "C:\\sc07\\sdk\\src\\runtime\\services\\desktop\\tray_service.cpp",
+      "sha256": "f96238fcfa7abbbc08ef4ba242c210450657ed69841df6e777c3174a7ce280a3"
+    },
+    {
+      "bytes": 16248,
+      "path": "C:\\sc07\\sdk\\src\\runtime\\services\\desktop\\menu_service.cpp",
+      "sha256": "19171cec0dbae9689a7c0afb5f19fca8d664aea4e66d4d1db794a13451e42407"
+    },
+    {
+      "bytes": 19725,
+      "path": "C:\\sc07\\tests\\tray-consumer\\main.cpp",
+      "sha256": "6c62349eb7fa11730dbd0e566404ba31658707680d146c1c997672849c72fa34"
+    },
+    {
+      "bytes": 72163,
+      "path": "C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.19041.0\\um\\shellapi.h",
+      "sha256": "e8146c7b6047320d600430026d16d270b07ba0edfa7267d881a2b56a6fa5a51f"
+    }
+  ],
+  "productionQualificationComplete": false,
+  "maximumForegroundAttempts": 1,
+  "vmTouched": false,
+  "previousPreparation": {
+    "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\Preparation.actual.json",
+    "bytes": 2446,
+    "sha256": "6b5fd304995a766913b5d6d765b7a71e4eb5755a6043a05c36865cbb27e609e6"
+  },
+  "correction": {
+    "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\SyntaxCorrection.prepared.json",
+    "bytes": 1614,
+    "sha256": "c74b2b20fab6edbfbe87de89f46a3d990643f1da2b2831111126c982dc8c7174"
+  },
+  "syntaxCorrectionOnly": false,
+  "syntaxParsedOnly": true,
+  "pathCorrection": {
+    "scope": "Only normalize the supplied absolute evidence path and confine it to the fresh a2 leaf; original a1/native/control/deadlines retained",
+    "originalInvoke": {
+      "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\Invoke-NativeFocusControl.ps1",
+      "bytes": 5837,
+      "sha256": "9227597e840ddf12317ae3940c7f78db69faa601adc62347715f4b23500814c2"
+    },
+    "exactLeaf": "C:/issue-closeout-evidence/focusc-a2",
+    "rejectRawNavigation": true,
+    "immediatePureConsoleCasesPassed": 11,
+    "filesCreatedByConsoleCases": false,
+    "nativeCompiledByConsoleCases": false,
+    "vmTouchedByConsoleCases": false
+  },
+  "nativeSourceUnchanged": true,
+  "deadlineUnchanged": true
+}

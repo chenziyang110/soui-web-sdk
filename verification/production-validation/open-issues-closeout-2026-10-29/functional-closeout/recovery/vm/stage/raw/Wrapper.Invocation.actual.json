@@ -1,0 +1,39 @@
+{
+    "schema":  "soui.current-guest-wrapper-invocation/v1",
+    "mode":  "stage",
+    "kind":  "tray-recovery",
+    "wrapperPid":  4544,
+    "wrapperCreationFileTime":  "134377554266079039",
+    "executable":  "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+    "arguments":  [
+                      "-NoProfile",
+                      "-NonInteractive",
+                      "-ExecutionPolicy",
+                      "Bypass",
+                      "-File",
+                      "C:\\trayrc-a1\\Guest-TrayRecovery.ps1",
+                      "-Mode",
+                      "stage",
+                      "-Architecture",
+                      "stage",
+                      "-Manifest",
+                      "C:\\trayrc-a1\\TrayRecovery.manifest.json",
+                      "-ManifestSha256",
+                      "1003ff60a0d933a2c3fab8cfbeca48901b36e6abc58ec39a98cf2ff80b841c86",
+                      "-ExpectedMachine",
+                      "SOUI-7AEMMK5Q0T",
+                      "-EvidenceDirectory",
+                      "C:\\issue-closeout-evidence\\trayrc-a1-stage"
+                  ],
+    "manifestSha256":  "1003ff60a0d933a2c3fab8cfbeca48901b36e6abc58ec39a98cf2ff80b841c86",
+    "stageSha256":  "",
+    "controller":  {
+                       "path":  "C:\\trayrc-a1\\Guest-TrayRecovery.ps1",
+                       "bytes":  5388,
+                       "sha256":  "7896cc46e59a24267eab39d5e2909117be0794877a743fc137e28cf32284440d"
+                   },
+    "deadlineChanged":  false,
+    "automaticStageToRun":  false,
+    "productExecutedByWrapper":  false,
+    "releaseReady":  false
+}

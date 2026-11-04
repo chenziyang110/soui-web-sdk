@@ -1,0 +1,1051 @@
+{
+  "schema": "soui.current-execution-archive-selection/v1",
+  "preparedAtUtc": "2026-10-29T11:29:16.562Z",
+  "revision": 1,
+  "executionApproved": true,
+  "destination": "C:/sc07/verification/production-validation/open-issues-closeout-2026-10-29/focus-control",
+  "meaning": "Separate failure-preserving snapshot of one completed x64 native NIM_SETFOCUS control and original a1 loader observation; not SDK issue closure, a product pass or an SDK fix",
+  "pendingGroups": [],
+  "groups": [
+    {
+      "sourceRoot": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-a2-run",
+      "destination": "vm/a2",
+      "kind": "decoded-vm-observations",
+      "meaning": "Original selected frame/envelope/catalog/payload plus decoder index. Actual native FALSE remains failure; file presence is not a pass.",
+      "allSourceMembers": [
+        "Decode.actual.json",
+        "Envelope.json.raw",
+        "Files.index.json",
+        "Serial.frame.raw",
+        "raw/ExportFiles.actual.json",
+        "raw/ExportPreflight.actual.json",
+        "raw/Invocation.actual.json",
+        "raw/Summary.actual.json",
+        "raw/finished.json",
+        "raw/native/Compilation.actual.json",
+        "raw/native/Invocation.actual.json",
+        "raw/native/Native.events.ndjson",
+        "raw/native/PowerShell.finished.json",
+        "raw/owned.ndjson",
+        "raw/owned.ndjson.context.json",
+        "raw/ready.json",
+        "raw/stderr.raw",
+        "raw/stdout.raw"
+      ],
+      "members": [
+        "Decode.actual.json",
+        "Envelope.json.raw",
+        "Files.index.json",
+        "Serial.frame.raw",
+        "raw/ExportFiles.actual.json",
+        "raw/ExportPreflight.actual.json",
+        "raw/Invocation.actual.json",
+        "raw/Summary.actual.json",
+        "raw/finished.json",
+        "raw/native/Compilation.actual.json",
+        "raw/native/Invocation.actual.json",
+        "raw/native/Native.events.ndjson",
+        "raw/native/PowerShell.finished.json",
+        "raw/owned.ndjson",
+        "raw/owned.ndjson.context.json",
+        "raw/ready.json",
+        "raw/stderr.raw",
+        "raw/stdout.raw"
+      ]
+    },
+    {
+      "sourceRoot": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-analysis\\focusc-a2-run",
+      "destination": "analysis/a2",
+      "kind": "derived-analysis-observations",
+      "meaning": "Offline independent review of existing raw bytes; Root gesture observation separated from native facts.",
+      "allSourceMembers": [
+        "Analysis.actual.json"
+      ],
+      "members": [
+        "Analysis.actual.json"
+      ]
+    },
+    {
+      "sourceRoot": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\a1-observed",
+      "destination": "screenshots/a1",
+      "kind": "task-vm-screenshots",
+      "meaning": "Actual Root screenshot of loader-failed a1, not an exported native stream or Job closure proof.",
+      "allSourceMembers": [
+        "loader-finished.actual.png"
+      ],
+      "members": [
+        "loader-finished.actual.png"
+      ]
+    },
+    {
+      "sourceRoot": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\a2-observed",
+      "destination": "screenshots/a2",
+      "kind": "task-vm-screenshots",
+      "meaning": "Actual menu-visible and after-Escape screenshots; input action provenance is a Root received observation.",
+      "allSourceMembers": [
+        "after-escape.actual.png",
+        "menu.actual.png"
+      ],
+      "members": [
+        "after-escape.actual.png",
+        "menu.actual.png"
+      ]
+    },
+    {
+      "sourceRoot": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current",
+      "destination": "controls",
+      "kind": "control-source",
+      "meaning": "Exact executed a2 controls and bounded preparation lineage; original a1 inputs and four material changed pre-path-fix a2 records retained. No unused earlier native/owned v1 preparation trees or duplicate unchanged backup bytes.",
+      "allSourceMembers": [
+        "Focus-Owned-a2.cjs",
+        "Focus-Owned.cjs",
+        "FocusControl.selection.prepared.json",
+        "FocusExport-a2.ps1",
+        "FocusExport.ps1",
+        "FocusOwned.selection.prepared.json",
+        "Invoke-NativeFocusControl-a2.ps1",
+        "Invoke-NativeFocusControl.ps1",
+        "Loader-Crt.inputs.json",
+        "LoaderA2.PathCorrection.prepared.json",
+        "LoaderA2.path-fix.review.diff",
+        "LoaderA2.path-fix.review.json",
+        "LoaderA2.prepared.json",
+        "LoaderA2.review.diff",
+        "LoaderA2.selection.prepared.json",
+        "NativeFocusControl.cs",
+        "OwnedClassificationCorrection.prepared.json",
+        "OwnedSupervision.prepared.json",
+        "Preparation-a2.actual.json",
+        "Preparation.actual.json",
+        "Prepare-A2PathCorrection.cjs",
+        "Prepare-LoaderA2.cjs",
+        "README.md",
+        "SyntaxCorrection.prepared.json",
+        "a1-observed/loader-finished.actual.png",
+        "a2-observed/after-escape.actual.png",
+        "a2-observed/menu.actual.png",
+        "loader-a2-before-path-fix/Focus-Owned-a2.cjs",
+        "loader-a2-before-path-fix/FocusExport-a2.ps1",
+        "loader-a2-before-path-fix/Invoke-NativeFocusControl.ps1",
+        "loader-a2-before-path-fix/Loader-Crt.inputs.json",
+        "loader-a2-before-path-fix/LoaderA2.prepared.json",
+        "loader-a2-before-path-fix/LoaderA2.review.diff",
+        "loader-a2-before-path-fix/LoaderA2.selection.prepared.json",
+        "loader-a2-before-path-fix/NativeFocusControl.cs",
+        "loader-a2-before-path-fix/Preparation.actual.json",
+        "loader-a2-before-path-fix/Prepare-LoaderA2.cjs",
+        "loader-a2-before-path-fix/README.md",
+        "owned-v1-prepared/Focus-Owned.cjs",
+        "owned-v1-prepared/FocusExport.ps1",
+        "owned-v1-prepared/FocusOwned.selection.prepared.json",
+        "owned-v1-prepared/OwnedSupervision.prepared.json",
+        "v1-prepared/Invoke-NativeFocusControl.ps1",
+        "v1-prepared/NativeFocusControl.cs",
+        "v1-prepared/Preparation.actual.json",
+        "v1-prepared/README.md"
+      ],
+      "members": [
+        "Focus-Owned-a2.cjs",
+        "Focus-Owned.cjs",
+        "FocusExport-a2.ps1",
+        "FocusExport.ps1",
+        "FocusOwned.selection.prepared.json",
+        "Invoke-NativeFocusControl-a2.ps1",
+        "Invoke-NativeFocusControl.ps1",
+        "Loader-Crt.inputs.json",
+        "LoaderA2.PathCorrection.prepared.json",
+        "LoaderA2.path-fix.review.diff",
+        "LoaderA2.path-fix.review.json",
+        "LoaderA2.prepared.json",
+        "LoaderA2.selection.prepared.json",
+        "NativeFocusControl.cs",
+        "OwnedSupervision.prepared.json",
+        "Preparation-a2.actual.json",
+        "Preparation.actual.json",
+        "Prepare-A2PathCorrection.cjs",
+        "Prepare-LoaderA2.cjs",
+        "README.md",
+        "loader-a2-before-path-fix/Focus-Owned-a2.cjs",
+        "loader-a2-before-path-fix/LoaderA2.prepared.json",
+        "loader-a2-before-path-fix/LoaderA2.review.diff",
+        "loader-a2-before-path-fix/LoaderA2.selection.prepared.json"
+      ]
+    },
+    {
+      "sourceRoot": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-archive-prep\\records",
+      "destination": "records",
+      "kind": "derived-analysis-observations",
+      "meaning": "Collector reuse note and explicitly received a1 observation; neither is raw guest evidence.",
+      "allSourceMembers": [
+        "A1.RootObservation.received.json",
+        "CopierReuse.prepared.json",
+        "README.md"
+      ],
+      "members": [
+        "A1.RootObservation.received.json",
+        "CopierReuse.prepared.json",
+        "README.md"
+      ]
+    },
+    {
+      "sourceRoot": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-130eb4fe-2a83-498b-9564-23b09627457f",
+      "destination": "media/a1",
+      "kind": "control-source",
+      "meaning": "Data-only ISO preparation/writer/closed-return metadata; no ISO or iso-tree payload copies and no test-pass inference.",
+      "allSourceMembers": [
+        "IsoSource.plan.json",
+        "Preparation.actual.json",
+        "SouiOpenIssues.iso",
+        "Write-ControlIso.ps1",
+        "iso-tree/Focus-Owned.cjs",
+        "iso-tree/FocusExport.ps1",
+        "iso-tree/Invoke-NativeFocusControl.ps1",
+        "iso-tree/NativeFocusControl.cs",
+        "iso-tree/Preparation.actual.json",
+        "iso-tree/README.md",
+        "iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2/Final.actual.json",
+        "iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2/Invocation.actual.json",
+        "iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2/IsoWriter.inputs.json",
+        "iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2/IsoWriter.post.json",
+        "iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2/IsoWriter.pre.json",
+        "iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2/IsoWriter.result.json",
+        "iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2/finished.json",
+        "iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2/owned.ndjson",
+        "iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2/owned.ndjson.context.json",
+        "iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2/ready.json",
+        "iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2/stderr.raw",
+        "iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2/stdout.raw"
+      ],
+      "members": [
+        "IsoSource.plan.json",
+        "Preparation.actual.json",
+        "Write-ControlIso.ps1",
+        "iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2/Final.actual.json",
+        "iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2/Invocation.actual.json",
+        "iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2/IsoWriter.inputs.json",
+        "iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2/IsoWriter.post.json",
+        "iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2/IsoWriter.pre.json",
+        "iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2/IsoWriter.result.json",
+        "iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2/finished.json",
+        "iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2/owned.ndjson",
+        "iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2/owned.ndjson.context.json",
+        "iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2/ready.json",
+        "iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2/stderr.raw",
+        "iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2/stdout.raw"
+      ]
+    },
+    {
+      "sourceRoot": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-6dd531ab-cc91-4a10-ac30-9a9986bbb9ab",
+      "destination": "media/a2",
+      "kind": "control-source",
+      "meaning": "Data-only ISO preparation/writer/closed-return metadata; no ISO or iso-tree payload copies and no test-pass inference.",
+      "allSourceMembers": [
+        "IsoSource.plan.json",
+        "Preparation.actual.json",
+        "SouiOpenIssues.iso",
+        "Write-ControlIso.ps1",
+        "iso-tree/Focus-Owned-a2.cjs",
+        "iso-tree/FocusExport-a2.ps1",
+        "iso-tree/Invoke-NativeFocusControl-a2.ps1",
+        "iso-tree/Loader-Crt.inputs.json",
+        "iso-tree/NativeFocusControl.cs",
+        "iso-tree/Preparation-a2.actual.json",
+        "iso-tree/README.md",
+        "iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e/Final.actual.json",
+        "iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e/Invocation.actual.json",
+        "iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e/IsoWriter.inputs.json",
+        "iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e/IsoWriter.post.json",
+        "iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e/IsoWriter.pre.json",
+        "iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e/IsoWriter.result.json",
+        "iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e/finished.json",
+        "iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e/owned.ndjson",
+        "iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e/owned.ndjson.context.json",
+        "iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e/ready.json",
+        "iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e/stderr.raw",
+        "iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e/stdout.raw"
+      ],
+      "members": [
+        "IsoSource.plan.json",
+        "Preparation.actual.json",
+        "Write-ControlIso.ps1",
+        "iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e/Final.actual.json",
+        "iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e/Invocation.actual.json",
+        "iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e/IsoWriter.inputs.json",
+        "iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e/IsoWriter.post.json",
+        "iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e/IsoWriter.pre.json",
+        "iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e/IsoWriter.result.json",
+        "iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e/finished.json",
+        "iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e/owned.ndjson",
+        "iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e/owned.ndjson.context.json",
+        "iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e/ready.json",
+        "iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e/stderr.raw",
+        "iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e/stdout.raw"
+      ]
+    }
+  ],
+  "rows": [
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-analysis\\focusc-a2-run\\Analysis.actual.json",
+      "destination": "analysis/a2/Analysis.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-analysis\\focusc-a2-run\\Analysis.actual.json",
+        "bytes": 7465,
+        "sha256": "038912bac564f527b580f99a7919f40aee1ca2c281ad4a96ea7dfefbc7610e81"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\Focus-Owned-a2.cjs",
+      "destination": "controls/Focus-Owned-a2.cjs",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\Focus-Owned-a2.cjs",
+        "bytes": 10534,
+        "sha256": "c68b83da0784d0b60346881879657719bc341644f5d6ce3aec41c989f4eecfea"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\Focus-Owned.cjs",
+      "destination": "controls/Focus-Owned.cjs",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\Focus-Owned.cjs",
+        "bytes": 8224,
+        "sha256": "29fac428862351d58d28cb3841f34fd4fe5082aed94499e7a684eee5fb5bc1d1"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\FocusExport-a2.ps1",
+      "destination": "controls/FocusExport-a2.ps1",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\FocusExport-a2.ps1",
+        "bytes": 6791,
+        "sha256": "440af4243d305dedec3876e0c7f18af1a338d21da614e034719f8595e570bf04"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\FocusExport.ps1",
+      "destination": "controls/FocusExport.ps1",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\FocusExport.ps1",
+        "bytes": 6791,
+        "sha256": "5cc5469a02c12b9db4372d14f6cbab71db2acd70e9f7c1ebcfd58604ed04db89"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\FocusOwned.selection.prepared.json",
+      "destination": "controls/FocusOwned.selection.prepared.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\FocusOwned.selection.prepared.json",
+        "bytes": 1548,
+        "sha256": "48f39f938ac677d0aed30d173fadf85753e652204611c9e424f8987444fbcd1c"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\Invoke-NativeFocusControl-a2.ps1",
+      "destination": "controls/Invoke-NativeFocusControl-a2.ps1",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\Invoke-NativeFocusControl-a2.ps1",
+        "bytes": 6297,
+        "sha256": "f686d65b3e69f2e00ab23c451840c3d766b42a456cd87381e0372cdb7e2ebcf9"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\Invoke-NativeFocusControl.ps1",
+      "destination": "controls/Invoke-NativeFocusControl.ps1",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\Invoke-NativeFocusControl.ps1",
+        "bytes": 5837,
+        "sha256": "9227597e840ddf12317ae3940c7f78db69faa601adc62347715f4b23500814c2"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\Loader-Crt.inputs.json",
+      "destination": "controls/Loader-Crt.inputs.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\Loader-Crt.inputs.json",
+        "bytes": 3459,
+        "sha256": "1a6c1c0987af3e259aff0c2f9615dce8b893267efd4e1fdb6de4d5f625ac90ce"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\LoaderA2.PathCorrection.prepared.json",
+      "destination": "controls/LoaderA2.PathCorrection.prepared.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\LoaderA2.PathCorrection.prepared.json",
+        "bytes": 6930,
+        "sha256": "8035e5a47dc58452f90fd6594a925d2c0eab69bd89cfd91e2e670190bac173f0"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\LoaderA2.path-fix.review.diff",
+      "destination": "controls/LoaderA2.path-fix.review.diff",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\LoaderA2.path-fix.review.diff",
+        "bytes": 5134,
+        "sha256": "b9bda1c29d82c3f16163109ba3b369a4c1560703eaf2c60a30b29dab6e8d8366"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\LoaderA2.path-fix.review.json",
+      "destination": "controls/LoaderA2.path-fix.review.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\LoaderA2.path-fix.review.json",
+        "bytes": 3236,
+        "sha256": "a0e8a18d1fe68ff6751509ebbca9fe4466ff75b4f4d34dfd4c633d045791ee6d"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\LoaderA2.prepared.json",
+      "destination": "controls/LoaderA2.prepared.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\LoaderA2.prepared.json",
+        "bytes": 8511,
+        "sha256": "35ad9c14d6b9591e783cd88116aac6d77725e83ee252c59c1dc1893808bec46b"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\LoaderA2.selection.prepared.json",
+      "destination": "controls/LoaderA2.selection.prepared.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\LoaderA2.selection.prepared.json",
+        "bytes": 1837,
+        "sha256": "de3520e5fb457187975045c4c446608a525900ebda12225943b901189ce364d0"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\NativeFocusControl.cs",
+      "destination": "controls/NativeFocusControl.cs",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\NativeFocusControl.cs",
+        "bytes": 30830,
+        "sha256": "690305a4dbe13e2c3a56d269bd7c4377bd3ab8c7b5e0ba9de23bbcd00c0ea5e2"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\OwnedSupervision.prepared.json",
+      "destination": "controls/OwnedSupervision.prepared.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\OwnedSupervision.prepared.json",
+        "bytes": 4026,
+        "sha256": "eaae83dc5cb9389c1b0387da28b2f3b7dd2d0c9fce3503acbf7726804c6582ed"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\Preparation-a2.actual.json",
+      "destination": "controls/Preparation-a2.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\Preparation-a2.actual.json",
+        "bytes": 3191,
+        "sha256": "874fd1a9b2ff028962948d8e6f33afd8e88e0af739223affc22828142cfe3e80"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\Preparation.actual.json",
+      "destination": "controls/Preparation.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\Preparation.actual.json",
+        "bytes": 2446,
+        "sha256": "6b5fd304995a766913b5d6d765b7a71e4eb5755a6043a05c36865cbb27e609e6"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\Prepare-A2PathCorrection.cjs",
+      "destination": "controls/Prepare-A2PathCorrection.cjs",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\Prepare-A2PathCorrection.cjs",
+        "bytes": 7725,
+        "sha256": "06b5864780c7c6cba2a764c44e1037f6ba02550c85cf38773f7eda486778727e"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\Prepare-LoaderA2.cjs",
+      "destination": "controls/Prepare-LoaderA2.cjs",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\Prepare-LoaderA2.cjs",
+        "bytes": 8812,
+        "sha256": "920bcbb666bc2f31e72b6c7df6a3905adb3f1e5e3c7e5b91f7ca7374e40bf1d7"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\README.md",
+      "destination": "controls/README.md",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\README.md",
+        "bytes": 6127,
+        "sha256": "9b4df7135152e2ee3b351305d2c085f6e7ae2da17cf06003e5f6a7b9f78f2306"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\loader-a2-before-path-fix\\Focus-Owned-a2.cjs",
+      "destination": "controls/loader-a2-before-path-fix/Focus-Owned-a2.cjs",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\loader-a2-before-path-fix\\Focus-Owned-a2.cjs",
+        "bytes": 10528,
+        "sha256": "df95b018b2545479d29dec803b856c8072fb69064915b07dfcbb67c3664ac8f2"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\loader-a2-before-path-fix\\LoaderA2.prepared.json",
+      "destination": "controls/loader-a2-before-path-fix/LoaderA2.prepared.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\loader-a2-before-path-fix\\LoaderA2.prepared.json",
+        "bytes": 4647,
+        "sha256": "233fa8f41ebb64b158ea28926dfbacadc2e0fc5dc234008dc92ceb3ce18c01bb"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\loader-a2-before-path-fix\\LoaderA2.review.diff",
+      "destination": "controls/loader-a2-before-path-fix/LoaderA2.review.diff",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\loader-a2-before-path-fix\\LoaderA2.review.diff",
+        "bytes": 9990,
+        "sha256": "3fdc4fd638c0f42b9889f0b1f2864067f7f2475e8ea5e02caf4a1d372528c295"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\loader-a2-before-path-fix\\LoaderA2.selection.prepared.json",
+      "destination": "controls/loader-a2-before-path-fix/LoaderA2.selection.prepared.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\loader-a2-before-path-fix\\LoaderA2.selection.prepared.json",
+        "bytes": 1825,
+        "sha256": "3ff7e060c6da3fda7c61adcbf51dee9b164a1f235f214073a13674cf6a31df87"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-130eb4fe-2a83-498b-9564-23b09627457f\\IsoSource.plan.json",
+      "destination": "media/a1/IsoSource.plan.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-130eb4fe-2a83-498b-9564-23b09627457f\\IsoSource.plan.json",
+        "bytes": 3064,
+        "sha256": "006cae94116341afaca6139083e14d2eb898ccd1386f9520d7124883c725bbe1"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-130eb4fe-2a83-498b-9564-23b09627457f\\Preparation.actual.json",
+      "destination": "media/a1/Preparation.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-130eb4fe-2a83-498b-9564-23b09627457f\\Preparation.actual.json",
+        "bytes": 3926,
+        "sha256": "8115d81f9a3db6c39849e00ecce507bbf3d0339541a185019f6e3b9a4d60ab2e"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-130eb4fe-2a83-498b-9564-23b09627457f\\Write-ControlIso.ps1",
+      "destination": "media/a1/Write-ControlIso.ps1",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-130eb4fe-2a83-498b-9564-23b09627457f\\Write-ControlIso.ps1",
+        "bytes": 8965,
+        "sha256": "daa4c168f2cea070d4381e6c7551edb01e2d694390654bd99958b8ffd36c90ea"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-130eb4fe-2a83-498b-9564-23b09627457f\\iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2\\Final.actual.json",
+      "destination": "media/a1/iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2/Final.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-130eb4fe-2a83-498b-9564-23b09627457f\\iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2\\Final.actual.json",
+        "bytes": 2495,
+        "sha256": "3b2b2d2521eb46d1daa54485ca37817c28dac13d2ba67570223e1238bbb2aa9e"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-130eb4fe-2a83-498b-9564-23b09627457f\\iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2\\Invocation.actual.json",
+      "destination": "media/a1/iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2/Invocation.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-130eb4fe-2a83-498b-9564-23b09627457f\\iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2\\Invocation.actual.json",
+        "bytes": 1685,
+        "sha256": "a754c1ad5bea90c00ea724fcbfa57d140dc803d9ac4e87f82ff14b437f59ad8e"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-130eb4fe-2a83-498b-9564-23b09627457f\\iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2\\IsoWriter.inputs.json",
+      "destination": "media/a1/iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2/IsoWriter.inputs.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-130eb4fe-2a83-498b-9564-23b09627457f\\iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2\\IsoWriter.inputs.json",
+        "bytes": 1662,
+        "sha256": "b38f6bd5d5a2c77474a5fd462f4bc434f9872d4eefdc5c9c3815e97d2d72e7f9"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-130eb4fe-2a83-498b-9564-23b09627457f\\iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2\\IsoWriter.post.json",
+      "destination": "media/a1/iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2/IsoWriter.post.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-130eb4fe-2a83-498b-9564-23b09627457f\\iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2\\IsoWriter.post.json",
+        "bytes": 4908,
+        "sha256": "a26f50add2d59d9759942dccb6bc208d483bcbf85d64aaaae0a1cff8968837a4"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-130eb4fe-2a83-498b-9564-23b09627457f\\iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2\\IsoWriter.pre.json",
+      "destination": "media/a1/iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2/IsoWriter.pre.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-130eb4fe-2a83-498b-9564-23b09627457f\\iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2\\IsoWriter.pre.json",
+        "bytes": 2371,
+        "sha256": "e5b9a49a3d2304bb2d92da7e2edaffd0d07a5accb62b630a76f1b3a14600ebd3"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-130eb4fe-2a83-498b-9564-23b09627457f\\iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2\\IsoWriter.result.json",
+      "destination": "media/a1/iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2/IsoWriter.result.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-130eb4fe-2a83-498b-9564-23b09627457f\\iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2\\IsoWriter.result.json",
+        "bytes": 1777,
+        "sha256": "cbe72579b0955e798a49f2eeaf386ba4d2fb85f401ad828dfee6c2a959b672f5"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-130eb4fe-2a83-498b-9564-23b09627457f\\iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2\\finished.json",
+      "destination": "media/a1/iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2/finished.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-130eb4fe-2a83-498b-9564-23b09627457f\\iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2\\finished.json",
+        "bytes": 1051,
+        "sha256": "9019d220f492404155409f4245be961f5dc5c4e5d33c1d576e05aaa857ec66e1"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-130eb4fe-2a83-498b-9564-23b09627457f\\iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2\\owned.ndjson",
+      "destination": "media/a1/iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2/owned.ndjson",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-130eb4fe-2a83-498b-9564-23b09627457f\\iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2\\owned.ndjson",
+        "bytes": 1227,
+        "sha256": "61d837dc817fa24854a9de0c658ceeb2ceb60971e6c843b6b620fb2583aecf6b"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-130eb4fe-2a83-498b-9564-23b09627457f\\iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2\\owned.ndjson.context.json",
+      "destination": "media/a1/iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2/owned.ndjson.context.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-130eb4fe-2a83-498b-9564-23b09627457f\\iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2\\owned.ndjson.context.json",
+        "bytes": 1038,
+        "sha256": "a9c7d1dc52434229703b82f37ec7157a43b85186498fc2bcca1df1b121b3c1f2"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-130eb4fe-2a83-498b-9564-23b09627457f\\iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2\\ready.json",
+      "destination": "media/a1/iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2/ready.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-130eb4fe-2a83-498b-9564-23b09627457f\\iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2\\ready.json",
+        "bytes": 63,
+        "sha256": "d686247ae10afe4e154ad6de7293cc7e0ea03625754693631031679e52d51604"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-130eb4fe-2a83-498b-9564-23b09627457f\\iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2\\stderr.raw",
+      "destination": "media/a1/iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2/stderr.raw",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-130eb4fe-2a83-498b-9564-23b09627457f\\iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2\\stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-130eb4fe-2a83-498b-9564-23b09627457f\\iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2\\stdout.raw",
+      "destination": "media/a1/iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2/stdout.raw",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-130eb4fe-2a83-498b-9564-23b09627457f\\iso-writer-r3-fd3bc719-bd25-445e-80a7-fb13eef35fd2\\stdout.raw",
+        "bytes": 1540,
+        "sha256": "1bd524fcaf0a7a5f21619d36dddeed14ced90fde073d1614b238706f6164e5ae"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-6dd531ab-cc91-4a10-ac30-9a9986bbb9ab\\IsoSource.plan.json",
+      "destination": "media/a2/IsoSource.plan.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-6dd531ab-cc91-4a10-ac30-9a9986bbb9ab\\IsoSource.plan.json",
+        "bytes": 3503,
+        "sha256": "5d1e298a0be9e5a2a734dfcec130ebcc2e85498fd9f340de19428d7443ce5f43"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-6dd531ab-cc91-4a10-ac30-9a9986bbb9ab\\Preparation.actual.json",
+      "destination": "media/a2/Preparation.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-6dd531ab-cc91-4a10-ac30-9a9986bbb9ab\\Preparation.actual.json",
+        "bytes": 4363,
+        "sha256": "3c0c00fd0f714e330d27037afd3e2b70cf593e6a60f1cf3847ebfcbc49e8fa4f"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-6dd531ab-cc91-4a10-ac30-9a9986bbb9ab\\Write-ControlIso.ps1",
+      "destination": "media/a2/Write-ControlIso.ps1",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-6dd531ab-cc91-4a10-ac30-9a9986bbb9ab\\Write-ControlIso.ps1",
+        "bytes": 8965,
+        "sha256": "1ced9a90b709193921bab1825e0b0d72a851b8feb14269dfd5b7d4559eea1a4a"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-6dd531ab-cc91-4a10-ac30-9a9986bbb9ab\\iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e\\Final.actual.json",
+      "destination": "media/a2/iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e/Final.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-6dd531ab-cc91-4a10-ac30-9a9986bbb9ab\\iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e\\Final.actual.json",
+        "bytes": 2495,
+        "sha256": "9c4d8b2cabd4e592a3fe95b260e4fe9ca387dd7cdbd93b27d0cd751695726c4d"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-6dd531ab-cc91-4a10-ac30-9a9986bbb9ab\\iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e\\Invocation.actual.json",
+      "destination": "media/a2/iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e/Invocation.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-6dd531ab-cc91-4a10-ac30-9a9986bbb9ab\\iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e\\Invocation.actual.json",
+        "bytes": 1685,
+        "sha256": "2dbbd70dfff9921832aa21d8531ec2baa1234000eb9c2cbd4920de43a9bb23af"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-6dd531ab-cc91-4a10-ac30-9a9986bbb9ab\\iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e\\IsoWriter.inputs.json",
+      "destination": "media/a2/iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e/IsoWriter.inputs.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-6dd531ab-cc91-4a10-ac30-9a9986bbb9ab\\iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e\\IsoWriter.inputs.json",
+        "bytes": 1662,
+        "sha256": "1d8d4e0cce02f305236073a17f6965864f4c4bdd499cc2864982e6b0aa1c131c"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-6dd531ab-cc91-4a10-ac30-9a9986bbb9ab\\iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e\\IsoWriter.post.json",
+      "destination": "media/a2/iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e/IsoWriter.post.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-6dd531ab-cc91-4a10-ac30-9a9986bbb9ab\\iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e\\IsoWriter.post.json",
+        "bytes": 5743,
+        "sha256": "347ca1b3fd0184b68c0084ff244b6da65a9c164d2649e46c8b21ab82ccd4faa3"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-6dd531ab-cc91-4a10-ac30-9a9986bbb9ab\\iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e\\IsoWriter.pre.json",
+      "destination": "media/a2/iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e/IsoWriter.pre.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-6dd531ab-cc91-4a10-ac30-9a9986bbb9ab\\iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e\\IsoWriter.pre.json",
+        "bytes": 2756,
+        "sha256": "f37d3bd268c201076071cf3a02a06c0a4bd44ca0e5ce684fa0ff9c460f26d738"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-6dd531ab-cc91-4a10-ac30-9a9986bbb9ab\\iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e\\IsoWriter.result.json",
+      "destination": "media/a2/iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e/IsoWriter.result.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-6dd531ab-cc91-4a10-ac30-9a9986bbb9ab\\iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e\\IsoWriter.result.json",
+        "bytes": 1777,
+        "sha256": "db901608e26d984ac4919f7ebc57ab98844c775e0c2a5550cff1c0f63b00d590"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-6dd531ab-cc91-4a10-ac30-9a9986bbb9ab\\iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e\\finished.json",
+      "destination": "media/a2/iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e/finished.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-6dd531ab-cc91-4a10-ac30-9a9986bbb9ab\\iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e\\finished.json",
+        "bytes": 1051,
+        "sha256": "145b0fb94db7278c2f49b03cfbbe6e61f1d574822aa01b4b02e43d0fdbe45520"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-6dd531ab-cc91-4a10-ac30-9a9986bbb9ab\\iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e\\owned.ndjson",
+      "destination": "media/a2/iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e/owned.ndjson",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-6dd531ab-cc91-4a10-ac30-9a9986bbb9ab\\iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e\\owned.ndjson",
+        "bytes": 1228,
+        "sha256": "b50f28cc06688168d966cfa6018cdb5cdf788fa533079be33f5ffcf64614a1f7"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-6dd531ab-cc91-4a10-ac30-9a9986bbb9ab\\iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e\\owned.ndjson.context.json",
+      "destination": "media/a2/iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e/owned.ndjson.context.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-6dd531ab-cc91-4a10-ac30-9a9986bbb9ab\\iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e\\owned.ndjson.context.json",
+        "bytes": 1038,
+        "sha256": "f16e7407070972fdaadb158c3e30df48e7f7c4272d7c8359417550dff05842e5"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-6dd531ab-cc91-4a10-ac30-9a9986bbb9ab\\iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e\\ready.json",
+      "destination": "media/a2/iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e/ready.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-6dd531ab-cc91-4a10-ac30-9a9986bbb9ab\\iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e\\ready.json",
+        "bytes": 63,
+        "sha256": "11b306b04233298ac73edd74040da8b91ca68c8d0c915c88df27e679ad2c4dc7"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-6dd531ab-cc91-4a10-ac30-9a9986bbb9ab\\iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e\\stderr.raw",
+      "destination": "media/a2/iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e/stderr.raw",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-6dd531ab-cc91-4a10-ac30-9a9986bbb9ab\\iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e\\stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-6dd531ab-cc91-4a10-ac30-9a9986bbb9ab\\iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e\\stdout.raw",
+      "destination": "media/a2/iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e/stdout.raw",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\control-media-6dd531ab-cc91-4a10-ac30-9a9986bbb9ab\\iso-writer-r3-12510696-f7e5-4c38-85a6-a1eb2522177e\\stdout.raw",
+        "bytes": 1540,
+        "sha256": "d34221dc7a21e8ad27050cfc8a5f29a53300b736bd0b2c7e91f2a8f59c2a247a"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-archive-prep\\records\\A1.RootObservation.received.json",
+      "destination": "records/A1.RootObservation.received.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-archive-prep\\records\\A1.RootObservation.received.json",
+        "bytes": 1395,
+        "sha256": "d953a820ba601bc75c7ac8212631e8156abc914e8b4186769b75661b66e8f127"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-archive-prep\\records\\CopierReuse.prepared.json",
+      "destination": "records/CopierReuse.prepared.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-archive-prep\\records\\CopierReuse.prepared.json",
+        "bytes": 1326,
+        "sha256": "27fca861b3ca80f35e4ec37535bfbdcf8044089d601aaac6bc86222c82d6b4f2"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-archive-prep\\records\\README.md",
+      "destination": "records/README.md",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-archive-prep\\records\\README.md",
+        "bytes": 1327,
+        "sha256": "f34fe78c4b3e0550eecee73586dc8de56ddc71ecbcf131b15a7a059c004fb406"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\a1-observed\\loader-finished.actual.png",
+      "destination": "screenshots/a1/loader-finished.actual.png",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\a1-observed\\loader-finished.actual.png",
+        "bytes": 57526,
+        "sha256": "01a47ec51a085e87a738ffca91d2dad3cb93c1bb7d02901b250a6b7956ef9f98"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\a2-observed\\after-escape.actual.png",
+      "destination": "screenshots/a2/after-escape.actual.png",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\a2-observed\\after-escape.actual.png",
+        "bytes": 53346,
+        "sha256": "e02bda58d5c13c2fdde8afc01223002bfe3c38d71a62346e35f6546122c00374"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\a2-observed\\menu.actual.png",
+      "destination": "screenshots/a2/menu.actual.png",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-control-current\\a2-observed\\menu.actual.png",
+        "bytes": 54465,
+        "sha256": "be450c25b05a05be3f49d86cbf4bee97bd3051679607e6b526cf6aadf8d4cad0"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-a2-run\\Decode.actual.json",
+      "destination": "vm/a2/Decode.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-a2-run\\Decode.actual.json",
+        "bytes": 6300,
+        "sha256": "cc098f706b2299b89c55be9fc0078b779c98e3168d36bc8c827f848a48fdab2e"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-a2-run\\Envelope.json.raw",
+      "destination": "vm/a2/Envelope.json.raw",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-a2-run\\Envelope.json.raw",
+        "bytes": 49748,
+        "sha256": "7f11b0edaae66a3861d78e295ba323647e700aef9bee4e1d3f01876192415ee3"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-a2-run\\Files.index.json",
+      "destination": "vm/a2/Files.index.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-a2-run\\Files.index.json",
+        "bytes": 2951,
+        "sha256": "5c63c73013b37076b6551879904ef5673d5c6679016ca61a7b669cf1dfcdeec3"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-a2-run\\Serial.frame.raw",
+      "destination": "vm/a2/Serial.frame.raw",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-a2-run\\Serial.frame.raw",
+        "bytes": 66427,
+        "sha256": "16d9d09b46cfe7dc14588bd20fb57be1cb78684dae35477940895e36339bfa66"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-a2-run\\raw\\ExportFiles.actual.json",
+      "destination": "vm/a2/raw/ExportFiles.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-a2-run\\raw\\ExportFiles.actual.json",
+        "bytes": 3977,
+        "sha256": "261224b849565797c0a4b18515d28e58b05fe0b8ec73dd5e24fbde9478ec386d"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-a2-run\\raw\\ExportPreflight.actual.json",
+      "destination": "vm/a2/raw/ExportPreflight.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-a2-run\\raw\\ExportPreflight.actual.json",
+        "bytes": 657,
+        "sha256": "96fb604465e6ae212686a0ce73e906674f2622b9b4cdc10a392bbadad67db09a"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-a2-run\\raw\\Invocation.actual.json",
+      "destination": "vm/a2/raw/Invocation.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-a2-run\\raw\\Invocation.actual.json",
+        "bytes": 6584,
+        "sha256": "7d634fca721bff1082965121120a5a0fa72fb00e4a396434f5db93d350d0e0cb"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-a2-run\\raw\\Summary.actual.json",
+      "destination": "vm/a2/raw/Summary.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-a2-run\\raw\\Summary.actual.json",
+        "bytes": 4571,
+        "sha256": "c1a83cf5072a00e9648d2c864525c0b9c14524b766c757bb2e5a69e6c0084845"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-a2-run\\raw\\finished.json",
+      "destination": "vm/a2/raw/finished.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-a2-run\\raw\\finished.json",
+        "bytes": 946,
+        "sha256": "63a5f592f2fbfb96b02834c035ad676754ee63d1494ee53d326db017f768843c"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-a2-run\\raw\\native\\Compilation.actual.json",
+      "destination": "vm/a2/raw/native/Compilation.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-a2-run\\raw\\native\\Compilation.actual.json",
+        "bytes": 541,
+        "sha256": "378919d976d8c1e9d9602b7afeea00d8e878dda6b5f78c81c9ac3e021ae5afcc"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-a2-run\\raw\\native\\Invocation.actual.json",
+      "destination": "vm/a2/raw/native/Invocation.actual.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-a2-run\\raw\\native\\Invocation.actual.json",
+        "bytes": 649,
+        "sha256": "7abce5f051661dd0870d19367847ff9d8947966a9ca1aa2689fff49f4680b7ef"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-a2-run\\raw\\native\\Native.events.ndjson",
+      "destination": "vm/a2/raw/native/Native.events.ndjson",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-a2-run\\raw\\native\\Native.events.ndjson",
+        "bytes": 14412,
+        "sha256": "5ee6b74dd977c94a7a6c13790e51614ede0879f82a15b50277726c3383f88cbc"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-a2-run\\raw\\native\\PowerShell.finished.json",
+      "destination": "vm/a2/raw/native/PowerShell.finished.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-a2-run\\raw\\native\\PowerShell.finished.json",
+        "bytes": 416,
+        "sha256": "38d70cbf3a8011166c943cb5ea8e4392f3198cf334c060d3cb0613b447a40a60"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-a2-run\\raw\\owned.ndjson",
+      "destination": "vm/a2/raw/owned.ndjson",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-a2-run\\raw\\owned.ndjson",
+        "bytes": 2678,
+        "sha256": "9ca2f95e43cd656d6718b1a223a889cc8f2ddc527a67688a1f1558d19412abfa"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-a2-run\\raw\\owned.ndjson.context.json",
+      "destination": "vm/a2/raw/owned.ndjson.context.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-a2-run\\raw\\owned.ndjson.context.json",
+        "bytes": 800,
+        "sha256": "c133d8101e1068ad0557d0a04c764d724e11aed2fb20eb20036c79f1cef1aee6"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-a2-run\\raw\\ready.json",
+      "destination": "vm/a2/raw/ready.json",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-a2-run\\raw\\ready.json",
+        "bytes": 62,
+        "sha256": "01868b6b359f34a992b8f817d8357487badf0620a8760abce1392ddfeab09862"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-a2-run\\raw\\stderr.raw",
+      "destination": "vm/a2/raw/stderr.raw",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-a2-run\\raw\\stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "source": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-a2-run\\raw\\stdout.raw",
+      "destination": "vm/a2/raw/stdout.raw",
+      "pin": {
+        "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\current-decoded\\focusc-a2-run\\raw\\stdout.raw",
+        "bytes": 846,
+        "sha256": "fff283cbe710948da1b1d80de9afc4f84ddd686834dc1d15e8644f14841345f3"
+      }
+    }
+  ],
+  "exclusions": [
+    "ISO/disk/archive/binary/SDK/runtime payload bytes and iso-tree duplicate copies",
+    "Whole live serial.log, VM private catalog/session credentials and token/password values",
+    "The sealed791file current-execution archive is not duplicated or modified",
+    "Unused earlier v1 native/owned preparation subtrees and unchanged duplicate backup source bytes",
+    "Unrelated paired MessagePort media/attempts or other VM/workspace data"
+  ],
+  "scope": {
+    "nativeControlValid": true,
+    "nativeFocusAccepted": false,
+    "nativeRootExitCode": 1,
+    "supervisorExitCode": 1,
+    "wholeJobClosedWithoutForce": true,
+    "sourceResultsReclassified": false,
+    "onlyOriginalDecodedBytesAndDerivedReview": true,
+    "a1JobClosureUnknown": true,
+    "sdkFixed": false,
+    "testPassed": null,
+    "productionQualificationComplete": false,
+    "releaseReady": false
+  },
+  "selectedFiles": 79,
+  "selectedBytes": 578332,
+  "plannedUnderThreeMiB": true,
+  "preservedCurrentIndex": {
+    "path": "C:\\sc07\\verification\\production-validation\\open-issues-closeout-2026-10-29\\current-execution\\Files.index.json",
+    "bytes": 175857,
+    "sha256": "e6576fd855c8f6724860e7a5720a1f4cd39eea00a8d3e007dc03c6f2fface0b1"
+  },
+  "copier": {
+    "path": "F:\\work\\SOUI_WEB\\out\\open-issues-closeout-20261029\\focus-archive-prep\\Collect-CurrentExecution.cjs",
+    "bytes": 17275,
+    "sha256": "e7ffe4b1b89ba6afeedc5eae42d95e0832c10b211f86309274ef1fd48b8f133a"
+  },
+  "approvalInstructions": "Root creates a fresh approved derivative with executionApproved=true, pendingGroups=[]; invokes the pinned copier and exact selection SHA. No copier was executed by preparation.",
+  "preparedOnly": true,
+  "canonicalWritten": false,
+  "productExecutedByPreparation": false,
+  "vmControlledByPreparation": false,
+  "gitTouched": false,
+  "rootReview": {
+    "reviewedAtUtc": "2026-10-29T11:31:49.895Z",
+    "originalPreparedSelection": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/focus-archive-prep/Selection.r1.prepared.json",
+      "bytes": 56210,
+      "sha256": "ae9609057d57712723123fb412527af416e8c0d2694862a1ce9174cea6ea77df"
+    },
+    "collectorDiffScope": "Only canonical destination and explicit C# source extension",
+    "nativeFailurePreserved": true,
+    "a1JobClosureUnknown": true,
+    "reviewKind": "Root source/selection review; actual a2 raw independent audit by focus_review_supported retained as derived analysis"
+  }
+}

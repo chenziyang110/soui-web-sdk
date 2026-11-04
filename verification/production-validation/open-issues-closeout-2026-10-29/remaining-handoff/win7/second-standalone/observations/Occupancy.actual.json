@@ -1,0 +1,58 @@
+{
+    "schema":  "soui.native-ps-targeted-psutil-vm-occupancy/v1",
+    "observedUtc":  "2026-10-29T15:04:38.2057495Z",
+    "nativeBefore":  {
+                         "nativeProcessCount":  627,
+                         "allNamesReadable":  true,
+                         "selected":  [
+                                          {
+                                              "pid":  35100,
+                                              "name":  "qemu-system-x86_64.exe",
+                                              "creationFileTime":  "134377482707072546"
+                                          },
+                                          {
+                                              "pid":  47764,
+                                              "name":  "qemu-system-x86_64.exe",
+                                              "creationFileTime":  "134377457986986023"
+                                          }
+                                      ]
+                     },
+    "nativeAfter":  {
+                        "nativeProcessCount":  627,
+                        "allNamesReadable":  true,
+                        "selected":  [
+                                         {
+                                             "pid":  35100,
+                                             "name":  "qemu-system-x86_64.exe",
+                                             "creationFileTime":  "134377482707072546"
+                                         },
+                                         {
+                                             "pid":  47764,
+                                             "name":  "qemu-system-x86_64.exe",
+                                             "creationFileTime":  "134377457986986023"
+                                         }
+                                     ]
+                    },
+    "vmProcesses":  [
+                        {
+                            "pid":  35100,
+                            "name":  "qemu-system-x86_64.exe",
+                            "creationFileTime":  "134377482707072546",
+                            "commandLineAvailable":  true,
+                            "referencesExactFvmRoot":  false
+                        },
+                        {
+                            "pid":  47764,
+                            "name":  "qemu-system-x86_64.exe",
+                            "creationFileTime":  "134377457986986023",
+                            "commandLineAvailable":  true,
+                            "referencesExactFvmRoot":  false
+                        }
+                    ],
+    "sourceLocks":  [
+
+                    ],
+    "rawCommandLinesOmitted":  true,
+    "WmiOrCimUsed":  false,
+    "unknownNamesAdmitted":  false
+}

@@ -11,7 +11,7 @@ if(MSVC)
 endif()
 set(SOUI_RESIDENT_SHUTDOWN_POLICY_CASES
   inactive zero-tick repeated-exit pending-boundary tick-wrap clock-regression
-  exact-pending unknown-close completed-close)
+  exact-pending unknown-close completed-close reload-pending runtime-pending)
 foreach(policy_case IN LISTS SOUI_RESIDENT_SHUTDOWN_POLICY_CASES)
   add_test(NAME "demo.resident-shutdown-policy.${policy_case}"
     COMMAND soui_resident_shutdown_policy_tests "${policy_case}")

@@ -43,3 +43,20 @@ resident_host_close resident_classify_host_close(bool ok, const Code& code) noex
   return code == "E_BUSY" || code == "E_CURSOR_CLOSE_PENDING"
       ? resident_host_close::retry : resident_host_close::fail_stop;
 }
+
+enum class resident_async_result { completed, pending, failed };
+
+// Each operation admits only its own exact pending result. Other Host/runtime
+// failures retain their terminal meaning; a pending observation is not success.
+template <class Code>
+resident_async_result resident_classify_reload(bool ok, const Code& code) noexcept {
+  if (ok) return resident_async_result::completed;
+  return code == "E_RELOAD_PENDING" ? resident_async_result::pending : resident_async_result::failed;
+}
+
+template <class Code>
+resident_async_result resident_classify_runtime_shutdown(bool ok, const Code& code) noexcept {
+  if (ok) return resident_async_result::completed;
+  return code == "E_RUNTIME_SHUTDOWN_PENDING"
+      ? resident_async_result::pending : resident_async_result::failed;
+}

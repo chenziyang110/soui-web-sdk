@@ -1,0 +1,192 @@
+{
+  "schema": "soui.native-focus-control-offline-analysis/v1",
+  "analyzedUtc": "2026-10-29T11:24:39.543Z",
+  "scope": "Independent offline reading of the one already executed x64 native control; no diagnostic/product/VM execution by this analysis",
+  "transport": {
+    "tag": "ISSUESHORT1A505FEEEB5A430C9E8271E016D70BFA",
+    "payloadFiles": 13,
+    "payloadBytes": 33162,
+    "rawFilesIncludingCatalog": 14,
+    "closedDecodedFileCount": 18,
+    "indexedFileCount": 17,
+    "frame": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/focusc-a2-run/Serial.frame.raw",
+      "bytes": 66427,
+      "sha256": "16d9d09b46cfe7dc14588bd20fb57be1cb78684dae35477940895e36339bfa66"
+    },
+    "canonicalEnvelopeAndPayloadBytesVerified": true,
+    "wholeSerialCopied": false
+  },
+  "inputs": {
+    "invocation": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/focusc-a2-run/raw/Invocation.actual.json",
+      "bytes": 6584,
+      "sha256": "7d634fca721bff1082965121120a5a0fa72fb00e4a396434f5db93d350d0e0cb"
+    },
+    "summary": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/focusc-a2-run/raw/Summary.actual.json",
+      "bytes": 4571,
+      "sha256": "c1a83cf5072a00e9648d2c864525c0b9c14524b766c757bb2e5a69e6c0084845"
+    },
+    "sourcePreparation": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/focus-control-current/Preparation-a2.actual.json",
+      "bytes": 3191,
+      "sha256": "874fd1a9b2ff028962948d8e6f33afd8e88e0af739223affc22828142cfe3e80"
+    },
+    "nativeSource": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/focus-control-current/NativeFocusControl.cs",
+      "bytes": 30830,
+      "sha256": "690305a4dbe13e2c3a56d269bd7c4377bd3ab8c7b5e0ba9de23bbcd00c0ea5e2"
+    },
+    "nativeLog": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/current-decoded/focusc-a2-run/raw/native/Native.events.ndjson",
+      "bytes": 14412,
+      "sha256": "5ee6b74dd977c94a7a6c13790e51614ede0879f82a15b50277726c3383f88cbc"
+    },
+    "standardReader": {
+      "path": "F:/work/soui-issue96/tools/internal/standard-build.cjs",
+      "bytes": 39757,
+      "sha256": "0411e6813baae2d4134c5b1735f56c63a31579168f4f8be12c1ea189d8cb220e"
+    },
+    "existingReaderPinManifest": {
+      "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/workbench-current/light-payload-0534dc25-c5fb-434c-a05f-19442ea332dd/payload/WB.manifest.json",
+      "bytes": 866965,
+      "sha256": "39d10f0236550188ebdbccf06f4cc4d7e54400293ce2b8fda93dc8fd64a50551"
+    },
+    "readerPinsCheckedBeforeAfter": 23,
+    "actualNativeCompilationSourceMatchesReviewedSource": true
+  },
+  "originalStreamVerification": {
+    "method": "Original unchanged standard-build.cjs verifyStream(raw,context,ready,result) called offline, not runBuild/capture",
+    "accepted": true,
+    "meaning": "Stream identity/hash/Job closure consistency only, including nonzero failure; not a test-pass verdict",
+    "subject": {
+      "pid": 3712,
+      "creationFileTime": "134377464186938507"
+    },
+    "terminal": {
+      "event": "terminal",
+      "reason": "root-failed",
+      "elapsedMs": 19639,
+      "rootExited": true,
+      "rootExitCode": 1,
+      "activeBeforeCleanup": 0,
+      "terminatedOwnedJob": false,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "totalProcesses": 4,
+      "limitTerminatedProcesses": 0,
+      "passed": false
+    },
+    "rootExitCode": 1,
+    "supervisorExitCode": 1,
+    "passed": false,
+    "noForce": true,
+    "unreadableMemberImagesRetained": [
+      {
+        "pid": 4612,
+        "creationFileTime": "134377464205907748",
+        "imageReadError": 5
+      }
+    ]
+  },
+  "rawNativeFacts": {
+    "eventRows": 31,
+    "orderedSingleRun": true,
+    "runId": "92abc8df-d885-4300-9e0e-7b5ac43c8fac",
+    "controlValid": true,
+    "foregroundCalls": 1,
+    "focusCalls": 1,
+    "hiddenTopLevelOwner": {
+      "hwnd": "0x300c4",
+      "isWindow": true,
+      "visible": false,
+      "root": "0x300c4",
+      "parent": "0x0",
+      "threadId": 3332,
+      "processId": 3712,
+      "style": "0x4cf0000",
+      "topLevel": true
+    },
+    "foregroundImmediatelyBefore": {
+      "hwnd": "0x300c4",
+      "isWindow": true,
+      "visible": false,
+      "root": "0x300c4",
+      "parent": "0x0",
+      "threadId": 3332,
+      "processId": 3712,
+      "style": "0x4cf0000",
+      "topLevel": true
+    },
+    "menuReturnedCommand": 0,
+    "menuLastErrorAfterClear": 0,
+    "postNullAccepted": true,
+    "menuDestroyed": true,
+    "nimSetFocus": {
+      "accepted": false,
+      "operation": 3,
+      "elapsedMs": 17563,
+      "lastErrorAfterClear": -2147467259,
+      "lastErrorHex": "0x80004005",
+      "extendedErrorContractDocumented": false
+    },
+    "foregroundAfter": {
+      "hwnd": "0x2002a",
+      "isWindow": true,
+      "visible": true,
+      "root": "0x2002a",
+      "parent": "0x0",
+      "threadId": 1576,
+      "processId": 1440,
+      "style": "0x96000000",
+      "topLevel": true
+    },
+    "controlSucceeded": false,
+    "nativeExitCode": 1,
+    "nativeElapsedMs": 17579,
+    "cleanupConfirmed": true,
+    "deadlineReached": false
+  },
+  "receivedRootGestureObservation": {
+    "source": "Parent Root NEW_TASK message received by this reviewer; not a raw native event or independently captured input log",
+    "reportedAction": "One real noVNC right-click at 662,638, followed by Escape",
+    "screenshotPins": [
+      {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/focus-control-current/a2-observed/menu.actual.png",
+        "bytes": 54465,
+        "sha256": "be450c25b05a05be3f49d86cbf4bee97bd3051679607e6b526cf6aadf8d4cad0"
+      },
+      {
+        "path": "F:/work/SOUI_WEB/out/open-issues-closeout-20261029/focus-control-current/a2-observed/after-escape.actual.png",
+        "bytes": 53346,
+        "sha256": "e02bda58d5c13c2fdde8afc01223002bfe3c38d71a62346e35f6546122c00374"
+      }
+    ],
+    "reviewerSawMenuVisibleThenAbsent": true,
+    "rawNativeGestureAuthentication": false,
+    "rawEscapeEstablishedByController": false
+  },
+  "conclusion": {
+    "observed": "The one valid native Win32 control also returned FALSE for NIM_SETFOCUS under the same task-VM conditions, without invoking SDK control code. Original failure remains failure.",
+    "inference": "This narrows the investigation to native Shell/API/environment/parameter conditions that can occur independently of the SDK. It does not exclude a coexisting SDK defect or identify a supported/unsupported OS rule.",
+    "lastErrorInterpretation": "The immediate diagnostic integer is retained; no documented extended-error contract was established, so 0x80004005 is not promoted to a causal API guarantee.",
+    "afterForegroundInterpretation": "Raw snapshots prove a change to HWND0x2002a/PID1440. They do not contain that process image/class; Shell naming is not independently established by this raw analysis.",
+    "a1LoaderFailureRetained": true,
+    "sdkFixed": false,
+    "apiGloballyUnsupported": false,
+    "x86Qualified": false,
+    "win7Qualified": false,
+    "productionQualificationComplete": false,
+    "releaseReady": false,
+    "testPassed": false
+  },
+  "analysisExecuted": {
+    "productOrProbeRerun": false,
+    "nativeCompilation": false,
+    "vmInput": false,
+    "sdkSourceModification": false,
+    "canonicalArchiveModification": false,
+    "gitModification": false
+  }
+}

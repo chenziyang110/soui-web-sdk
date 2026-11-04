@@ -1,0 +1,386 @@
+#pragma once
+
+#include <soui/diagnostics/runtime_metrics.h>
+#include <soui/diagnostics/cache_observation.h>
+#include <soui/diagnostics/storage_observation.h>
+#include <soui/diagnostics/task_store_private_storage.h>
+#include <soui/runtime/core/task/task_store_quota.h>
+#include <windows.h>
+#include <json.hpp>
+#include <string>
+
+// Internal acceptance serialization, never a Web-supplied observation.
+namespace soui::acceptance::metrics {
+using json = nlohmann::json;
+namespace diagnostics = soui::sdk::diagnostics;
+
+inline const char* status_name(diagnostics::status state) noexcept {
+  switch (state) {
+    case diagnostics::status::disabled: return "disabled";
+    case diagnostics::status::ready: return "ready";
+    case diagnostics::status::busy: return "busy";
+    case diagnostics::status::not_started: return "not_started";
+    case diagnostics::status::wrong_owner_thread: return "wrong_owner_thread";
+    case diagnostics::status::unavailable: return "unavailable";
+  }
+  return "unknown";
+}
+
+inline json serialize(const diagnostics::sample& value) {
+  return {{"state", status_name(value.state)},
+          {"owner_epoch", std::to_string(value.owner_epoch)},
+          {"begin_monotonic_us", std::to_string(value.begin_monotonic_us)},
+          {"end_monotonic_us", std::to_string(value.end_monotonic_us)},
+          {"counter_saturated", value.counter_saturated},
+          {"clock_invalid", value.clock_invalid}};
+}
+
+// Keep SDK field names and exact decimal uint64 values. JSON numbers would lose
+// precision in downstream JavaScript well before a native uint64 saturates.
+#define SOUI_ACCEPTANCE_COUNT(field) result[#field] = std::to_string(value.field)
+
+inline json serialize(const diagnostics::allocation_requests& value) {
+  json result{{"current_bytes_exact", value.current_bytes_exact},
+              {"current_allocations_exact", value.current_allocations_exact}};
+  SOUI_ACCEPTANCE_COUNT(current_bytes); SOUI_ACCEPTANCE_COUNT(high_water_bytes);
+  SOUI_ACCEPTANCE_COUNT(current_allocations); SOUI_ACCEPTANCE_COUNT(high_water_allocations);
+  SOUI_ACCEPTANCE_COUNT(allocations_total); SOUI_ACCEPTANCE_COUNT(deallocations_total);
+  SOUI_ACCEPTANCE_COUNT(failed_allocations_total); SOUI_ACCEPTANCE_COUNT(allocated_bytes_total);
+  SOUI_ACCEPTANCE_COUNT(deallocated_bytes_total);
+  return result;
+}
+
+inline json serialize(const diagnostics::storage_strings& value) {
+  json result = json::object();
+  SOUI_ACCEPTANCE_COUNT(fields); SOUI_ACCEPTANCE_COUNT(size_bytes); SOUI_ACCEPTANCE_COUNT(capacity_bytes);
+  return result;
+}
+
+inline json serialize(const diagnostics::task_store_storage& value) {
+  json result{{"schemaVersion", diagnostics::task_store_storage::schema_version},
+      {"scope", "task-store-map-allocator-requests"}, {"observation", serialize(value.observation)},
+      {"map_requests", serialize(value.map_requests)}, {"snapshot_strings", serialize(value.snapshot_strings)},
+      {"task_keys", serialize(value.task_keys)}, {"operation_strings", serialize(value.operation_strings)},
+      {"scope_strings", serialize(value.scope_strings)}, {"id_prefix", serialize(value.id_prefix)},
+      {"phasePartitionObserved", false}, {"stringAllocatorExact", false},
+      {"mapsIncludePreparationAndRetirement", true}, {"cacheBudgetGate", "not-evaluated"},
+      {"configuration", nullptr}, {"budgets", nullptr}, {"quota", nullptr}, {"calibrationPin", nullptr},
+      {"gaps", {"string allocator requests", "committed/prepared/retiring partition",
+                 "prepared/retiring strings", "other SDK owners and shared pointees",
+                 "allocator reserve/whole heap/external bytes", "final public disposal receipt"}}};
+  SOUI_ACCEPTANCE_COUNT(coverage_mask); SOUI_ACCEPTANCE_COUNT(gap_mask);
+  SOUI_ACCEPTANCE_COUNT(task_entries); SOUI_ACCEPTANCE_COUNT(operation_entries); SOUI_ACCEPTANCE_COUNT(scope_entries);
+  return result;
+}
+
+inline json serialize(const diagnostics::task_store_private_storage& value) {
+  json result{{"schemaVersion", diagnostics::task_store_private_storage::schema_version},
+      {"scope", "task-store-private-allocator-requests"}, {"observation", serialize(value.observation)},
+      {"map_requests", serialize(value.map_requests)},
+      {"private_string_requests", serialize(value.private_string_requests)},
+      {"aggregate_requests", serialize(value.aggregate_requests)},
+      {"privateStringAllocatorRequestsCovered", (value.coverage_mask & diagnostics::task_store_private_storage::private_string_allocator_requests) != 0},
+      {"requestsIncludePrivatePreparationAndRetirement", true},
+      {"publicCopiesObserved", false}, {"phasePartitionObserved", false},
+      {"wholeHeapObserved", false}, {"finalDisposalReceiptObserved", false},
+      {"cacheBudgetGate", "not-evaluated"},
+      {"configuration", nullptr}, {"budgets", nullptr}, {"quota", nullptr}, {"calibrationPin", nullptr},
+      {"gaps", {"public parameters/prepared receipt/evicted ID/formatted ID/returned copies",
+                 "committed/prepared/retiring partition", "other SDK owners and shared pointees",
+                 "object/external storage/allocator reserve/fragmentation/whole heap/kernel caches",
+                 "final public disposal receipt"}}};
+  SOUI_ACCEPTANCE_COUNT(coverage_mask); SOUI_ACCEPTANCE_COUNT(gap_mask);
+  SOUI_ACCEPTANCE_COUNT(task_entries); SOUI_ACCEPTANCE_COUNT(operation_entries); SOUI_ACCEPTANCE_COUNT(scope_entries);
+  return result;
+}
+
+inline json serialize(const diagnostics::queue& value) {
+  json result{{"observation", serialize(value.observation)},
+              {"has_capacity_bound", value.has_capacity_bound}};
+  SOUI_ACCEPTANCE_COUNT(queued); SOUI_ACCEPTANCE_COUNT(executing);
+  SOUI_ACCEPTANCE_COUNT(high_water); SOUI_ACCEPTANCE_COUNT(oldest_queued_age_us);
+  SOUI_ACCEPTANCE_COUNT(current_callback_age_us); SOUI_ACCEPTANCE_COUNT(posted_total);
+  SOUI_ACCEPTANCE_COUNT(stopped_rejections_total); SOUI_ACCEPTANCE_COUNT(full_rejections_total);
+  SOUI_ACCEPTANCE_COUNT(discarded_on_stop_total); SOUI_ACCEPTANCE_COUNT(capacity_bound);
+  return result;
+}
+
+inline json serialize(const diagnostics::tasks& value) {
+  json result{{"observation", serialize(value.observation)}, {"stopping", value.stopping}};
+  SOUI_ACCEPTANCE_COUNT(worker_limit); SOUI_ACCEPTANCE_COUNT(inflight_limit);
+  SOUI_ACCEPTANCE_COUNT(subscription_limit); SOUI_ACCEPTANCE_COUNT(worker_slots);
+  SOUI_ACCEPTANCE_COUNT(active_handlers); SOUI_ACCEPTANCE_COUNT(inflight);
+  SOUI_ACCEPTANCE_COUNT(queued); SOUI_ACCEPTANCE_COUNT(subscriptions);
+  SOUI_ACCEPTANCE_COUNT(inflight_high_water); SOUI_ACCEPTANCE_COUNT(queued_high_water);
+  SOUI_ACCEPTANCE_COUNT(subscription_high_water); SOUI_ACCEPTANCE_COUNT(oldest_queued_age_us);
+  SOUI_ACCEPTANCE_COUNT(committed_starts_total); SOUI_ACCEPTANCE_COUNT(duplicate_starts_total);
+  SOUI_ACCEPTANCE_COUNT(inflight_full_rejections_total); SOUI_ACCEPTANCE_COUNT(store_full_rejections_total);
+  SOUI_ACCEPTANCE_COUNT(subscription_full_rejections_total); SOUI_ACCEPTANCE_COUNT(finished_handlers_total);
+  SOUI_ACCEPTANCE_COUNT(cancelled_before_handler_total); SOUI_ACCEPTANCE_COUNT(store_limit);
+  SOUI_ACCEPTANCE_COUNT(store_entries); SOUI_ACCEPTANCE_COUNT(terminal_entries);
+  SOUI_ACCEPTANCE_COUNT(queued_entries); SOUI_ACCEPTANCE_COUNT(running_entries);
+  SOUI_ACCEPTANCE_COUNT(timeout_observed_entries); SOUI_ACCEPTANCE_COUNT(cancel_requested_entries);
+  SOUI_ACCEPTANCE_COUNT(committed_terminal_evictions_total); SOUI_ACCEPTANCE_COUNT(owner_entries);
+  SOUI_ACCEPTANCE_COUNT(operation_entries); SOUI_ACCEPTANCE_COUNT(result_cache_entries);
+  SOUI_ACCEPTANCE_COUNT(store_string_size_bytes); SOUI_ACCEPTANCE_COUNT(store_string_capacity_bytes);
+  SOUI_ACCEPTANCE_COUNT(result_string_size_bytes); SOUI_ACCEPTANCE_COUNT(result_string_capacity_bytes);
+  return result;
+}
+
+inline json serialize(const diagnostics::lane& value) {
+  json result = json::object();
+  SOUI_ACCEPTANCE_COUNT(limit); SOUI_ACCEPTANCE_COUNT(outstanding);
+  SOUI_ACCEPTANCE_COUNT(high_water); SOUI_ACCEPTANCE_COUNT(oldest_outstanding_age_us);
+  SOUI_ACCEPTANCE_COUNT(acquired_total); SOUI_ACCEPTANCE_COUNT(released_total);
+  SOUI_ACCEPTANCE_COUNT(full_rejections_total); SOUI_ACCEPTANCE_COUNT(duplicate_rejections_total);
+  return result;
+}
+
+inline json serialize(const diagnostics::software_requests& value) {
+  json result{{"observation", serialize(value.observation)},
+              {"ordinary", serialize(value.ordinary)},
+              {"control", serialize(value.control)}, {"renewal", serialize(value.renewal)}};
+  SOUI_ACCEPTANCE_COUNT(queue_expired_total); SOUI_ACCEPTANCE_COUNT(stale_context_drop_total);
+  SOUI_ACCEPTANCE_COUNT(worker_post_rejections_total); SOUI_ACCEPTANCE_COUNT(engine_post_rejections_total);
+  return result;
+}
+
+inline json serialize(const diagnostics::permissions& value) {
+  json result{{"observation", serialize(value.observation)},
+              {"has_scope_capacity_bound", value.has_scope_capacity_bound}};
+  SOUI_ACCEPTANCE_COUNT(stored_scope_owners); SOUI_ACCEPTANCE_COUNT(bearer_alias_entries);
+  SOUI_ACCEPTANCE_COUNT(stored_previous_aliases); SOUI_ACCEPTANCE_COUNT(issued_scopes_total);
+  SOUI_ACCEPTANCE_COUNT(rotated_leases_total); SOUI_ACCEPTANCE_COUNT(idempotent_renewals_total);
+  SOUI_ACCEPTANCE_COUNT(renewal_too_early_total); SOUI_ACCEPTANCE_COUNT(checked_renewal_rejections_total);
+  SOUI_ACCEPTANCE_COUNT(revoked_scopes_total); SOUI_ACCEPTANCE_COUNT(stored_scope_limit);
+  SOUI_ACCEPTANCE_COUNT(pending_scope_reservations); SOUI_ACCEPTANCE_COUNT(pending_alias_reservations);
+  SOUI_ACCEPTANCE_COUNT(committed_alias_limit); SOUI_ACCEPTANCE_COUNT(renewal_alias_transient_limit);
+  SOUI_ACCEPTANCE_COUNT(bearer_alias_high_water); SOUI_ACCEPTANCE_COUNT(module_scope_limit);
+  SOUI_ACCEPTANCE_COUNT(module_scope_slots_used); SOUI_ACCEPTANCE_COUNT(store_scope_capacity_rejections_total);
+  SOUI_ACCEPTANCE_COUNT(module_scope_capacity_rejections_total); SOUI_ACCEPTANCE_COUNT(alias_capacity_rejections_total);
+  return result;
+}
+
+inline json serialize(const diagnostics::gui& value) {
+  json result{{"observation", serialize(value.observation)}, {"closed", value.closed},
+              {"owner_poll_active", value.owner_poll_active}};
+  SOUI_ACCEPTANCE_COUNT(context_limit); SOUI_ACCEPTANCE_COUNT(context_slots_used);
+  SOUI_ACCEPTANCE_COUNT(pending_live_contexts); SOUI_ACCEPTANCE_COUNT(retained_weak_slots);
+  SOUI_ACCEPTANCE_COUNT(effect_queue_limit); SOUI_ACCEPTANCE_COUNT(queued_effects);
+  SOUI_ACCEPTANCE_COUNT(effect_borrows); SOUI_ACCEPTANCE_COUNT(effect_queue_high_water);
+  SOUI_ACCEPTANCE_COUNT(oldest_queued_effect_age_us);
+  return result;
+}
+
+inline json serialize(const diagnostics::bridge_runtime& value) {
+  return {{"schema_version", diagnostics::bridge_runtime::schema_version},
+          {"task_service", serialize(value.task_service)},
+          {"permission_store", serialize(value.permission_store)},
+          {"gui_commands", serialize(value.gui_commands)}};
+}
+
+inline json serialize(const diagnostics::software_host_runtime& value) {
+  json result{{"schema_version", diagnostics::software_host_runtime::schema_version},
+              {"requests", serialize(value.requests)},
+              {"bridge_worker_fifo", serialize(value.bridge_worker_fifo)},
+              {"bridge_accepting", value.bridge_accepting},
+              {"process_engine_scope", "process"}};
+  SOUI_ACCEPTANCE_COUNT(context_receipt_before); SOUI_ACCEPTANCE_COUNT(context_receipt_after);
+  // The shared Engine is serialized once by the process owner, never per view.
+  return result;
+}
+
+inline const char* renderer_status_name(diagnostics::renderer_status value) noexcept {
+  switch (value) {
+    case diagnostics::renderer_status::disabled: return "disabled";
+    case diagnostics::renderer_status::not_started: return "not_started";
+    case diagnostics::renderer_status::busy: return "busy";
+    case diagnostics::renderer_status::ready: return "ready";
+    case diagnostics::renderer_status::closed: return "closed";
+    default: return "unknown";
+  }
+}
+
+inline json serialize(const diagnostics::renderer_observation& value) {
+  const auto& raw = value.native;
+  json result{{"schemaVersion", 1}, {"scope", "bound-dll-completed-compositor-calls"},
+              {"state", renderer_status_name(value.state)}, {"modulePath", value.module_path},
+              {"moduleMatches", value.module_matches}, {"identityBound", value.identity_bound},
+              {"terminalSnapshot", value.terminal_snapshot}, {"structSize", raw.structSize},
+              {"abiVersion", raw.abiVersion}, {"status", raw.status}, {"flags", raw.flags},
+              {"lastDrawKind", raw.lastDrawKind}, {"reserved", raw.reserved}};
+#define SOUI_RENDERER_COUNT(name) result[#name] = std::to_string(raw.name)
+  SOUI_RENDERER_COUNT(processId); SOUI_RENDERER_COUNT(processCreationFileTime);
+  SOUI_RENDERER_COUNT(engineOwnerThreadId); SOUI_RENDERER_COUNT(qpcFrequency);
+  SOUI_RENDERER_COUNT(recordingEpoch); SOUI_RENDERER_COUNT(renderersCreatedTotal);
+  SOUI_RENDERER_COUNT(renderersClosedTotal); SOUI_RENDERER_COUNT(renderersLive);
+  SOUI_RENDERER_COUNT(rasterDrawsTotal); SOUI_RENDERER_COUNT(gpuSkiaDrawsTotal);
+  SOUI_RENDERER_COUNT(drawEventsTotal); SOUI_RENDERER_COUNT(lastDrawQpc);
+  SOUI_RENDERER_COUNT(lastDrawThreadId); SOUI_RENDERER_COUNT(lastDrawProcessId);
+  SOUI_RENDERER_COUNT(lastRendererCloseQpc); SOUI_RENDERER_COUNT(closedSnapshotQpc);
+  SOUI_RENDERER_COUNT(engineFinalizedQpc); SOUI_RENDERER_COUNT(initializedQpc);
+#undef SOUI_RENDERER_COUNT
+  return result;
+}
+
+inline json serialize(const diagnostics::renderer_model_observation& value) {
+  const auto& raw = value.native;
+  diagnostics::renderer_observation compositor;
+  compositor.state = value.state; compositor.module_path = value.module_path;
+  compositor.module_matches = value.module_matches; compositor.identity_bound = value.identity_bound;
+  compositor.terminal_snapshot = value.terminal_snapshot; compositor.native = raw.compositor;
+  json result{{"schemaVersion", 2}, {"scope", "bound-compatibility-backend-workload"},
+      {"state", renderer_status_name(value.state)}, {"modulePath", value.module_path},
+      {"moduleMatches", value.module_matches}, {"identityBound", value.identity_bound},
+      {"terminalSnapshot", value.terminal_snapshot}, {"structSize", raw.structSize},
+      {"abiVersion", raw.abiVersion}, {"status", raw.status}, {"flags", raw.flags},
+      {"providerId", raw.providerId}, {"backendId", raw.backendId},
+      {"compiledGpuSupport", raw.compiledGpuSupport}, {"factoryCoverageMask", raw.factoryCoverageMask},
+      {"compositor", serialize(compositor)}};
+#define SOUI_MODEL_COUNT(name) result[#name] = std::to_string(raw.name)
+  SOUI_MODEL_COUNT(backendInitializationQpc); SOUI_MODEL_COUNT(mediaFactoryAttempts);
+  SOUI_MODEL_COUNT(pluginFactoryAttempts); SOUI_MODEL_COUNT(offscreenFactoryAttempts);
+  SOUI_MODEL_COUNT(sharedContextFactoryAttempts); SOUI_MODEL_COUNT(externalFactoryAttempts);
+  SOUI_MODEL_COUNT(platformMismatchTotal); SOUI_MODEL_COUNT(unknownRouteTotal);
+#undef SOUI_MODEL_COUNT
+  return result;
+}
+
+inline json serialize(const diagnostics::process_engine_runtime& value) {
+  json result{{"schema_version", diagnostics::process_engine_runtime::schema_version},
+              {"scope", "process"}, {"engine_fifo", serialize(value.engine_fifo)},
+              {"initialized", value.initialized}, {"retired", value.retired},
+              {"terminal_snapshot", value.terminal_snapshot}};
+  SOUI_ACCEPTANCE_COUNT(mounted_hosts);
+  return result;
+}
+
+inline const char* cache_status_name(diagnostics::cache_status state) noexcept {
+  switch (state) {
+    case diagnostics::cache_status::disabled: return "disabled";
+    case diagnostics::cache_status::not_started: return "not_started";
+    case diagnostics::cache_status::pending: return "pending";
+    case diagnostics::cache_status::busy: return "busy";
+    case diagnostics::cache_status::sampled: return "sampled";
+    default: return "unavailable";
+  }
+}
+inline json serialize(const diagnostics::cache_observation& value) {
+  const auto& raw = value.native;
+  json result{{"schemaVersion", 1}, {"scope", "named-process-cache-scalars"},
+      {"state", cache_status_name(value.state)}, {"modulePath", value.module_path},
+      {"moduleMatches", value.module_matches}, {"identityBound", value.identity_bound},
+      {"hasCompletedSample", value.has_completed_sample}, {"inflight", value.inflight},
+      {"runtimeRetired", value.runtime_retired}, {"structSize", raw.structSize},
+      {"abiVersion", raw.abiVersion}, {"status", raw.status}, {"reserved", raw.reserved},
+      {"blinkStatus", raw.blinkStatus}, {"blinkReserved", raw.blinkReserved},
+      {"glyphStatus", raw.glyphStatus}, {"glyphReserved", raw.glyphReserved},
+      {"resourceStatus", raw.resourceStatus}, {"resourceDiscardable", raw.resourceDiscardable}};
+#define SOUI_CACHE_COUNT(name) result[#name] = std::to_string(raw.name)
+  SOUI_CACHE_COUNT(processId); SOUI_CACHE_COUNT(processCreationFileTime);
+  SOUI_CACHE_COUNT(engineOwnerThreadId); SOUI_CACHE_COUNT(recordingEpoch);
+  SOUI_CACHE_COUNT(initializedQpc); SOUI_CACHE_COUNT(sampleQpc); SOUI_CACHE_COUNT(qpcFrequency);
+  SOUI_CACHE_COUNT(blinkLiveBytes); SOUI_CACHE_COUNT(blinkDeadBytes); SOUI_CACHE_COUNT(blinkCapacity);
+  SOUI_CACHE_COUNT(blinkMinDeadCapacity); SOUI_CACHE_COUNT(blinkMaxDeadCapacity);
+  SOUI_CACHE_COUNT(glyphAttachedBytes); SOUI_CACHE_COUNT(glyphAttachedCount);
+  SOUI_CACHE_COUNT(glyphByteLimit); SOUI_CACHE_COUNT(glyphCountLimit);
+  SOUI_CACHE_COUNT(resourceRetainedBytes); SOUI_CACHE_COUNT(resourceRetainedCount);
+  SOUI_CACHE_COUNT(resourceByteLimit); SOUI_CACHE_COUNT(resourceCountLimit);
+  SOUI_CACHE_COUNT(resourceRawSingleLimit); SOUI_CACHE_COUNT(resourceEffectiveSingleLimit);
+#undef SOUI_CACHE_COUNT
+  return result;
+}
+
+// Independent caller envelope for the one real Bridge quota getter. These QPC
+// ticks never reuse a diagnostic end timestamp or its unrelated owner epoch.
+struct task_store_quota_capture {
+  std::uint64_t window_id{0}, window_handle{0}, process_creation_file_time{0};
+  DWORD process_id{0}, capture_thread_id{0}, window_thread_id{0};
+  std::uint64_t qpc_frequency{0}, begin_qpc{0}, end_qpc{0};
+  bool identity_valid{false}, clock_valid{false};
+};
+
+inline task_store_quota_capture begin_task_store_quota_capture(unsigned window_id, HWND window) noexcept {
+  task_store_quota_capture value;
+  value.window_id = window_id;
+  value.window_handle = static_cast<std::uint64_t>(reinterpret_cast<std::uintptr_t>(window));
+  value.process_id = GetCurrentProcessId(); value.capture_thread_id = GetCurrentThreadId();
+  DWORD window_process_id = 0;
+  value.window_thread_id = GetWindowThreadProcessId(window, &window_process_id);
+  FILETIME created{}, exited{}, kernel{}, user{};
+  if (GetProcessTimes(GetCurrentProcess(), &created, &exited, &kernel, &user)) {
+    ULARGE_INTEGER stamp{}; stamp.LowPart = created.dwLowDateTime; stamp.HighPart = created.dwHighDateTime;
+    value.process_creation_file_time = stamp.QuadPart;
+  }
+  value.identity_valid = value.window_id != 0 && value.window_handle != 0 && value.process_id != 0 &&
+      value.process_creation_file_time != 0 && value.capture_thread_id != 0 &&
+      window_process_id == value.process_id && value.window_thread_id == value.capture_thread_id;
+  LARGE_INTEGER frequency{}, timestamp{};
+  value.clock_valid = QueryPerformanceFrequency(&frequency) && frequency.QuadPart > 0 &&
+      QueryPerformanceCounter(&timestamp) && timestamp.QuadPart > 0;
+  if (value.clock_valid) {
+    value.qpc_frequency = static_cast<std::uint64_t>(frequency.QuadPart);
+    value.begin_qpc = static_cast<std::uint64_t>(timestamp.QuadPart);
+  }
+  return value;
+}
+
+inline void end_task_store_quota_capture(task_store_quota_capture& value, HWND window) noexcept {
+  LARGE_INTEGER timestamp{};
+  const bool end_valid = QueryPerformanceCounter(&timestamp) && timestamp.QuadPart > 0;
+  if (end_valid) value.end_qpc = static_cast<std::uint64_t>(timestamp.QuadPart);
+  value.clock_valid = value.clock_valid && end_valid && value.end_qpc >= value.begin_qpc;
+  DWORD window_process_id = 0;
+  const auto window_thread_id = GetWindowThreadProcessId(window, &window_process_id);
+  value.identity_valid = value.identity_valid && value.process_id == GetCurrentProcessId() &&
+      value.capture_thread_id == GetCurrentThreadId() && window_process_id == value.process_id &&
+      window_thread_id == value.window_thread_id &&
+      value.window_handle == static_cast<std::uint64_t>(reinterpret_cast<std::uintptr_t>(window));
+}
+
+inline const char* quota_status_name(soui::runtime::task_store_request_quota_status state) noexcept {
+  switch (state) {
+    case soui::runtime::task_store_request_quota_status::available: return "available";
+    case soui::runtime::task_store_request_quota_status::busy: return "busy";
+    case soui::runtime::task_store_request_quota_status::invalid: return "invalid";
+    case soui::runtime::task_store_request_quota_status::unavailable: return "unavailable";
+  }
+  return "unknown";
+}
+
+inline json serialize_task_store_request_quota(const soui::runtime::task_store_request_quota_snapshot& value,
+    soui::runtime::task_store_request_quota_status getter_status, const task_store_quota_capture& capture,
+    const diagnostics::sample& service_diagnostics) {
+  json result{{"schema", "soui.acceptance-task-store-request-quota/1"},
+      {"scope", "task-store-private-request-byte-quota"},
+      {"state", quota_status_name(value.status)}, {"getterStatus", quota_status_name(getter_status)},
+      {"captureState", capture.identity_valid && capture.clock_valid ? "valid" : "invalid"},
+      {"maxLiveRequestedBytes", nullptr}, {"poolEpoch", std::to_string(value.owner_epoch)},
+      {"poolEpochValid", value.owner_epoch_valid}, {"creditValid", value.credit_valid},
+      {"chargedLiveRequestedBytes", std::to_string(value.charged_live_requested_bytes)},
+      {"chargedPeakRequestedBytes", std::to_string(value.charged_peak_requested_bytes)},
+      {"successfulLiveRequestedBytes", std::to_string(value.successful_live_requested_bytes)},
+      {"successfulPeakRequestedBytes", std::to_string(value.successful_peak_requested_bytes)},
+      {"deniedRequests", std::to_string(value.denied_requests)}, {"deniedRequestsExact", value.denied_requests_exact},
+      {"diagnosticsServiceEpoch", std::to_string(service_diagnostics.owner_epoch)},
+      {"diagnosticsServiceState", status_name(service_diagnostics.state)},
+      {"capture", {{"windowId", std::to_string(capture.window_id)},
+          {"windowHandle", std::to_string(capture.window_handle)}, {"pid", std::to_string(capture.process_id)},
+          {"creationFileTime", std::to_string(capture.process_creation_file_time)},
+          {"captureThreadId", std::to_string(capture.capture_thread_id)},
+          {"windowThreadId", std::to_string(capture.window_thread_id)}, {"identityValid", capture.identity_valid},
+          {"clock", {{"source", "QueryPerformanceCounter"}, {"unit", "ticks"},
+              {"frequency", nullptr}, {"begin", nullptr}, {"end", nullptr}, {"valid", capture.clock_valid}}}}},
+      {"productionDefaultGate", "not-evaluated"}, {"fullCacheBudgetGate", "not-evaluated"},
+      {"calibrationPin", nullptr}};
+  if (value.max_live_requested_bytes) result["maxLiveRequestedBytes"] = std::to_string(*value.max_live_requested_bytes);
+  if (capture.clock_valid) {
+    result["capture"]["clock"]["frequency"] = std::to_string(capture.qpc_frequency);
+    result["capture"]["clock"]["begin"] = std::to_string(capture.begin_qpc);
+    result["capture"]["clock"]["end"] = std::to_string(capture.end_qpc);
+  }
+  return result;
+}
+
+#undef SOUI_ACCEPTANCE_COUNT
+} // namespace soui::acceptance::metrics

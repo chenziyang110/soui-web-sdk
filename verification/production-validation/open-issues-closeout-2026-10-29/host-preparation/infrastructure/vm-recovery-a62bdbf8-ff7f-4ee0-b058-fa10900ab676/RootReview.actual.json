@@ -1,0 +1,36 @@
+{
+  "schema": "soui.qemu-offline-recovery-root-review/v1",
+  "originalMarkers": [
+    {
+      "name": "lab.json",
+      "bytes": 5658,
+      "sha256": "2d7f056425d7cbc300928fe94d31f656dfa1d08c5b1f20de5a3d47d94b81d2eb"
+    },
+    {
+      "name": "started.json",
+      "bytes": 107,
+      "sha256": "c239b3825b43d19218c8168c9c9b798c450c8552b5b5104f1476a09bb0dcf586"
+    },
+    {
+      "name": "active-session.json",
+      "bytes": 106,
+      "sha256": "4c8633ccef776762ca9910a904d457d3ab0be6c34063ac3b59dc81e063cf960f"
+    },
+    {
+      "name": "start.lock",
+      "bytes": 5,
+      "sha256": "67cfcfcda241fee7091628efaba7dbd5d005f660d48618197f36f293b2da9c9e"
+    }
+  ],
+  "productExecuted": false,
+  "originalSession": "bbc12535-6afa-4abb-a997-509bb3ebed32",
+  "cleanShutdownVerified": false,
+  "approved": true,
+  "sourceLabSha256": "3c1ac1689f85e78c80135897871ae1ac757a6956e76cf7b8df30112177c65f77",
+  "originalExitCode": null,
+  "reviewer": "root",
+  "priorOutcome": "UNKNOWN",
+  "createdUtc": "2026-10-29T07:10:02.5450305Z",
+  "implementationAuthor": "issues_ui_fixture_audit",
+  "reviewScope": "Independent source and focused-test evidence review; actual deny-write/delete disk fence and current marker/session checks required by entry"
+}
