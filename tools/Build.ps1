@@ -59,6 +59,7 @@ if($NativeToolchain -eq 'MSVC143'){
     -ToolIdentityBridge (Join-Path $PSScriptRoot 'internal/Invoke-ToolFileIdentity.ps1') `
     -ToolIdentityHelper (Join-Path $PSScriptRoot 'internal/Tool-FileIdentity.ps1')
 }
+if(-not$llvm){Assert-SouiMsvcCompilerAdmission -Toolchain $toolchain -Architecture $Architecture}
 # Build policy is process-local and restored even when configuration fails.
 $buildEnvironment=@{}
 $nodeReusePrevious=Get-Item -LiteralPath 'Env:MSBUILDDISABLENODEREUSE' -ErrorAction SilentlyContinue

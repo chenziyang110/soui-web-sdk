@@ -22,6 +22,32 @@ function Assert-SouiCompilerPhaseIdle([string]$ReadyName) {
   if($busy.Count){throw 'A preexisting compiler or VCTIP service prevents an isolated compiler phase; no process was stopped.'}
 }
 
+function New-SouiCompilerPhaseMutex {
+  return [Threading.Mutex]::new($false,'Local\SouiDevKit.MsvcCompilerLifecycle.14.44.35226.0')
+}
+
+function Assert-SouiMsvcCompilerAdmission {
+  [CmdletBinding()]
+  param([Parameter(Mandatory=$true)]$Toolchain,
+        [Parameter(Mandatory=$true)][ValidateSet('x86','x64')][string]$Architecture)
+  if($Toolchain.MsvcVersion-cne'14.44.35207'-or$Toolchain.HostArchitecture-cne'x64'-or$Toolchain.Toolset-cne'v143'){
+    throw 'Bounded compiler lifecycle requires the reviewed MSVC v143 Hostx64 toolset.'
+  }
+  # This early, read-only check avoids Web/output work in a known-busy
+  # environment. It grants no lease for later work: Start checks again.
+  $mutex=$null;$held=$false
+  try {
+    $mutex=New-SouiCompilerPhaseMutex
+    try {$held=$mutex.WaitOne(0)}
+    catch [Threading.AbandonedMutexException] {$held=$true;throw 'The compiler lifecycle lease was abandoned; inspect the previous failure.'}
+    if(-not$held){throw 'Another owned MSVC compiler phase is active.'}
+    Assert-SouiCompilerPhaseIdle 'VCTIP_14.44.35226.0_READY_EVENT'
+  }finally{
+    try {if($held){$mutex.ReleaseMutex()}}
+    finally {if($null-ne$mutex){$mutex.Dispose()}}
+  }
+}
+
 function Wait-SouiCompilerPhaseReady($Process,[string]$ReadyName) {
   $ready=$null;$timer=[Diagnostics.Stopwatch]::StartNew()
   try {
@@ -60,7 +86,7 @@ function Start-SouiMsvcCompilerPhase {
   try {
     # One session-wide lease across workspaces and architectures. Contention
     # fails immediately; it never consumes a new wait or extends a deadline.
-    $state.mutex=[Threading.Mutex]::new($false,'Local\SouiDevKit.MsvcCompilerLifecycle.14.44.35226.0')
+    $state.mutex=New-SouiCompilerPhaseMutex
     try {$state.mutexHeld=$state.mutex.WaitOne(0)}
     catch [Threading.AbandonedMutexException] {$state.mutexHeld=$true;throw 'The compiler lifecycle lease was abandoned; inspect the previous failure.'}
     if(-not$state.mutexHeld){throw 'Another owned MSVC compiler phase is active.'}
