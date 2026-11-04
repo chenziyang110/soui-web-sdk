@@ -32,6 +32,8 @@ node --test benchmarks/sdk-performance-host/tests/page-contract.cjs
 
 Windows SDK 必须为 10.0.19041.0，具体锁定方式沿用宿主工具链；CMake 配置会拒绝选到其他 Windows SDK。静态库 /MD Release 与消费者宏布局保持一致。构建不添加默认 GUI CTest。
 
+显式 `LLVM22MSVC142` 消费者使用产品 `cmake/toolchains/SouiLLVM22.cmake` 和已验证的同档 SDK，生成器须为 `Ninja Multi-Config`。配置会实际调用产品的编译器、ABI、工具与 SDK 身份验证；Windows SDK 从该档位固定的实际输入与 `CMAKE_SYSTEM_VERSION` 核验，Visual Studio 档继续检查生成器选中的 SDK。LLVM 构建结果单独记账，不能继承 MSVC143 或真实性能资格。工具路径沿用正式 `Build.ps1` 的六个显式输入，相关构建说明见 [构建文档](../../docs/build.md)。
+
 ## 手动运行
 
 先冻结并核对 MiniBlink DLL 所在完整依赖目录。WebView2 可使用调用方指定的 Fixed Runtime，或记录实际检测到的已安装 Runtime 版本。所有结果、报告、独占 WebView2 profile 均进入调用方指定的**全新**任务目录，不写应用资源或旧结果。
