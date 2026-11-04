@@ -112,11 +112,14 @@ struct slot final {
   std::unique_ptr<sdk::webview2_runtime_exit_watch> runtime_watch;sdk::frame_pacer pacer;
   bool preparing{},prepared{},mounted{},closing{},controller_closed{},closed{},close_running{},display_dirty{true};
   ULONGLONG close_started{},restore_at{},snapshot_at{};
+  ULONGLONG reload_deadline{};
+  std::uint64_t reload_original_epoch{};
+  bool reload_pending{},reload_polling{};
   mutable std::mutex snapshot_mutex;json snapshot=json::object();
   json runtime_identity=json::object();
   json copy_snapshot()const{std::lock_guard<std::mutex> lock(snapshot_mutex);return snapshot;}
   json copy_wire_snapshot()const{return native_phase_wire_snapshot(copy_snapshot());}
-  void publish_snapshot();void request_close();void close_step();void pulse();void housekeeping();
+  void publish_snapshot();void request_close();void close_step();void pulse();void housekeeping();void reload_step();
 };
 struct action final{unsigned slot_index;dispatch_gate::receipt receipt;ULONGLONG due;std::string name;};
 class application final {
@@ -255,7 +258,13 @@ class application final {
       auto& item=*slots.at(next.slot_index);if(item.closing||item.closed||!item.mounted||!item.bridge.dispatch().claim(next.receipt)){log({{"stage","action-cancelled"},{"action",next.name},{"slot",next.slot_index},{"requestGeneration",std::to_string(next.receipt.epoch)}});continue;}
       log({{"stage","action-begin"},{"action",next.name},{"slot",next.slot_index},{"requestGeneration",std::to_string(next.receipt.epoch)},{"authorization","original receipt claimed before reentrant Host call"}});
       if(next.name=="second-host"){if(created_count.load()<2)create_slot();}
-      else if(next.name=="reload"){const auto result=item.host->reload();if(!result.ok)fail(item,result);}
+      else if(next.name=="reload"){
+        if(item.reload_deadline){fail(item,{false,"E_RELOAD_ALREADY_OWNED","A reload is already being observed."});continue;}
+        item.reload_original_epoch=next.receipt.epoch;
+        item.reload_deadline=GetTickCount64()+15000;
+        item.reload_pending=true;
+        item.reload_step();
+      }
       else{const auto result=item.host->hide();if(!result.ok){fail(item,result);continue;}ShowWindow(item.window,SW_HIDE);item.restore_at=GetTickCount64()+1500;}
     }
   }
@@ -350,8 +359,39 @@ void slot::pulse(){
   const auto desired=bridge.desired_rate();if(pacer.target()!=desired){if(!pacer.start(window,desired)){app.fail(*this,{false,"E_PACER","Pacer update failed"});return;}bridge.applied_pacer(pacer.target());}
   if(pacer.failed()){app.fail(*this,{false,"E_PACER","Pacer clock failed"});return;}host->pump();
 }
+void slot::reload_step(){
+  if(!reload_deadline||closing||closed||reload_polling)return;
+  if(GetTickCount64()>=reload_deadline){
+    reload_deadline=0;app.fail(*this,{false,"E_RELOAD_DEADLINE","Reload or subsequent application readiness exceeded the original 15-second window."});return;
+  }
+  reload_polling=true;
+  struct release_poll{bool& value;~release_poll(){value=false;}} guard{reload_polling};
+  if(reload_pending){
+    const auto result=host->reload(); // Retain the original SDK operation; same UI owner.
+    if(closing||closed)return;
+    if(!result.ok){
+      if(result.code=="E_RELOAD_PENDING")return;
+      reload_deadline=0;app.fail(*this,result);return;
+    }
+    reload_pending=false;
+    app.log({{"stage","reload-operation-complete"},{"slot",index},{"previousGeneration",std::to_string(reload_original_epoch)}});
+  }
+  if(GetTickCount64()>=reload_deadline){
+    reload_deadline=0;app.fail(*this,{false,"E_RELOAD_DEADLINE","Reload operation completed after its original deadline."});return;
+  }
+  if(host->document_ready()&&host->application_ready()&&bridge.epoch()>reload_original_epoch){
+    const auto generation=bridge.epoch();
+    reload_deadline=0;
+    publish_snapshot();
+    app.log({{"stage","reload-ready"},{"slot",index},{"previousGeneration",std::to_string(reload_original_epoch)},
+             {"generation",std::to_string(generation)}});
+  }
+}
+
 void slot::housekeeping(){
-  if(closing){close_step();return;}app.process_actions();if(closing||closed)return;
+  if(closing){close_step();return;}
+  reload_step();if(closing||closed)return;
+  app.process_actions();if(closing||closed)return;
   if(restore_at&&GetTickCount64()>=restore_at){restore_at=0;const auto shown=host->show();if(!shown.ok){app.fail(*this,shown);return;}ShowWindow(window,SW_SHOWNOACTIVATE);app.log({{"stage","hidden-restored"},{"slot",index},{"activatedByTool",false}});}
   if(GetTickCount64()-snapshot_at>=1000)publish_snapshot();
   if(modern&&prepared){const auto status=modern->status();if(!status.ok&&status.code!="E_PENDING")app.fail(*this,status);}
