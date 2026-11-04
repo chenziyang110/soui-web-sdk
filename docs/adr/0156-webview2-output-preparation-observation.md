@@ -2,6 +2,8 @@
 
 状态：实施观测辅助与无窗口 CPU 对照；默认策略保持不变，owner 公平性等待真实输入 trace。
 
+输出时间诊断关闭时不初始化 executor/origin 时间元数据，也不查询当前线程身份；准备与排队路径继续使用原行为。该状态只在 Host 创建时冻结，后续 `note_output` 关闭分支不读取未初始化的元数据。此优化不代表已量化的端到端收益。
+
 ## 背景
 
 WebView2 `push_output` 的 `trace_task` 在准备前分配，`queued_qpc` 在准备完成和 output credit 接纳后赋值。现有 task_queue histogram 只包含实际队列等待，不能用来判断准备耗时。现有 `SOUI_WEBVIEW2_PREPARE_OUTPUT=1` 由调用 push_output 的线程执行，并非统一 worker：普通回复通常是 Bridge worker，拒绝分支是 owner STA，事件来自 sink 调用线程。相同 serialization metric 同时包含预制和 owner fallback。

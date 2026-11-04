@@ -708,6 +708,14 @@ void note_output(const std::shared_ptr<state>& value, const state::output& outpu
       [](const input_trace::event& event) { (void)input_trace::record(event); },
       point, output.trace_task, output.generation, output.timing, why);
 }
+void initialize_output_timing(const std::shared_ptr<state>& value, state::output& output,
+    output_timing::origin origin) noexcept {
+  if (!value->trace_outputs) return;
+  output.timing = {origin, GetCurrentThreadId() == value->ui_thread ? output_timing::executor::owner :
+      origin == output_timing::origin::bridge_reply ? output_timing::executor::bridge_worker : output_timing::executor::other,
+      value->prepare_output ? output_timing::preparation::limit_fallback : output_timing::preparation::disabled,
+      static_cast<std::uint32_t>(output.raw.size())};
+}
 void note_discarded_outputs(const std::shared_ptr<state>& value, input_trace::reason why) noexcept {
   if (value->trace_outputs) for (const auto& output : value->outputs)
     note_output(value, output, input_trace::stage::task_cancelled, why);
@@ -784,10 +792,7 @@ void push_output(const std::shared_ptr<state>& value, state::output output, outp
   }
   output.trace_task = input_trace::next_task_id();
   output.charged_bytes = output.raw.size();
-  output.timing = {origin, GetCurrentThreadId() == value->ui_thread ? output_timing::executor::owner :
-      origin == output_timing::origin::bridge_reply ? output_timing::executor::bridge_worker : output_timing::executor::other,
-      value->prepare_output ? output_timing::preparation::limit_fallback : output_timing::preparation::disabled,
-      static_cast<std::uint32_t>(output.raw.size())};
+  initialize_output_timing(value, output, origin);
   note_output(value, output, input_trace::stage::task_posted);
   note_output(value, output, input_trace::stage::task_begin);
   if (output_timing::should_prepare(value->prepare_output, output.event, output.raw.size(), message_limit)) {

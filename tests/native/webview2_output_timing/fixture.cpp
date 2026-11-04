@@ -10,6 +10,7 @@ void require(bool value, const char* why) { if (!value) throw std::runtime_error
 #include "observation_cases.h"
 int main(int argc, char** argv) {
   try {
+    observation_fixture::run_initialization();
     observation_fixture::run();
     unsigned checked = 0;
     for(unsigned source=1;source<=3;++source)for(unsigned executor=1;executor<=3;++executor)

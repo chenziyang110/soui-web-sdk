@@ -8,6 +8,8 @@ const chunks=['std::wstring wide(const std::string& text)','json parse_bounded(c
   'std::string serialize_output(const state::output& output)'].map(extract);
 const output=chunks.join('\n\n')+'\n';fs.mkdirSync(directory,{recursive:true});
 fs.writeFileSync(path.join(directory,'serialization.inc'),output);
+const timingInitialization=extract('void initialize_output_timing(')+'\n';
+fs.writeFileSync(path.join(directory,'output-timing-initialization.inc'),timingInitialization);
 // Preserve the complete production guard's bytes. The fixture supplies only
 // state/output identities and a bounded fake note_output observation sink.
 const observationNeedle=Buffer.from('struct output_observation final {','ascii');
@@ -19,6 +21,8 @@ const observation=raw.subarray(observationStart,observationEnd);
 fs.writeFileSync(path.join(directory,'output-observation.inc'),observation);
 fs.writeFileSync(path.join(directory,'projection.json'),JSON.stringify({source,sourceSha256:crypto.createHash('sha256').update(raw).digest('hex'),
   projectedSha256:crypto.createHash('sha256').update(output).digest('hex'),functions:3,
+  timingInitialization:{sha256:crypto.createHash('sha256').update(timingInitialization).digest('hex'),
+    scope:'Exact production initialization helper; fake state and counted thread identity query'},
   observation:{startByte:observationStart,endByteExclusive:observationEnd,sha256:crypto.createHash('sha256').update(observation).digest('hex'),
     scope:'Exact production RAII bytes; fake state identities and note_output sink, no queue/COM execution'},
   scope:'CPU projection; no WebView2, COM, GPU or input measurement'},null,2)+'\n');
