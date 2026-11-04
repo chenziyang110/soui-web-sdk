@@ -52,7 +52,7 @@ BurstInput 在已就绪后的像素解码失败时仍拒绝该轮，并额外保
 预热期间暂态拒绝策略不变；构造器的独立超时不保证留下坏帧原件。
 sidecar 只用于取证，不是有效显示样本，也不放宽 reader 的失败判定。
 
-构建 `RejectedFrameTests` 后，运行 `RejectedFrameTests.exe ABS_NEW_DIRECTORY`
+在独立构建目录配置 `-DSOUI_BUILD_BENCHMARK_REGRESSION_TESTS=ON`，构建 `RejectedFrameTests` 后，运行 `RejectedFrameTests.exe ABS_NEW_DIRECTORY`
 验证损坏 CRC、模糊像素、带填充 RowPitch、原件回读和禁止覆盖等边界。
 此合成 fixture 不替代真实桌面采集或完整性能校准。
 

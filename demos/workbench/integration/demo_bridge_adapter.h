@@ -38,9 +38,11 @@ class demo_bridge_adapter : public soui::sdk::bridge_adapter {
   void record_paint() noexcept { paint_count_.fetch_add(1, std::memory_order_relaxed); }
   void set_present_count(std::uint64_t count) noexcept { present_count_.store(static_cast<unsigned>(count), std::memory_order_relaxed); }
   void set_display_refresh(unsigned rate) noexcept { display_refresh_.store(rate, std::memory_order_relaxed); }
-  [[nodiscard]] unsigned requested_frame_rate() const noexcept { return requested_frame_rate_.load(); }
+  [[nodiscard]] unsigned requested_frame_rate() const noexcept override { return requested_frame_rate_.load(); }
   [[nodiscard]] unsigned active_frame_rate() const noexcept { return active_frame_rate_.load(); }
   void set_active_frame_rate(unsigned rate) noexcept { active_frame_rate_.store(rate); }
+  bool set_backend_frame_rate_limit(unsigned rate) noexcept override { backend_frame_rate_limit_.store(rate); return true; }
+  [[nodiscard]] unsigned backend_frame_rate_limit() const noexcept { return backend_frame_rate_limit_.load(); }
   void set_draw_interval(unsigned interval_ms) noexcept { draw_interval_ms_.store(interval_ms, std::memory_order_relaxed); }
   void set_gpu_active(bool active) noexcept { gpu_active_.store(active, std::memory_order_relaxed); }
   void set_event_sink(event_sink sink);
@@ -153,6 +155,7 @@ class demo_bridge_adapter : public soui::sdk::bridge_adapter {
   std::atomic<unsigned> present_count_{0};
   std::atomic<unsigned> display_refresh_{0};
   std::atomic<unsigned> requested_frame_rate_{120}, active_frame_rate_{60};
+  std::atomic<unsigned> backend_frame_rate_limit_{0};
   std::atomic<unsigned> draw_interval_ms_{17};
   std::atomic<bool> gpu_active_{false};
   std::atomic<unsigned> preferred_frame_rate_{120};

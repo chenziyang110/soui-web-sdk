@@ -107,3 +107,11 @@
 - [ADR-0143：MiniBlink 截止唤醒与批次](0143-miniblink-deadline-scheduler.md)（主线索引保留，运行资格待验）
 - [ADR-0150：透明备用画布避免重复清屏](0150-transparent-frame-buffer-clear.md)
 - [ADR-0151：显式 provider 截止覆盖完成任务退休](0151-provider-retirement-deadline.md)
+- [ADR-0153：输入发布事务的唤醒 receipt](0153-input-publication-wake-receipt.md)
+- [ADR-0154：主帧策略协商与实际应用状态](0154-frame-policy-applied-state.md)
+- [ADR-0155：WebView2 有界请求调度元数据](0155-webview2-request-dispatch-metadata.md)
+- [ADR-0156：WebView2 输出准备分段观测](0156-webview2-output-preparation-observation.md)
+- [ADR-0157：MiniBlink 排队请求复用已解析的方法分类](0157-miniblink-queued-method-route.md)
+- [ADR-0158：MiniBlink 原生接纳复用同请求的同步解析视图](0158-miniblink-native-admission-metadata.md)
+- [ADR-0159：MiniBlink 原生 Bridge 的有界分段观测](0159-miniblink-native-phase-observation.md)
+- [ADR-0160：默认关闭的原生渲染阶段成本诊断](0160-private-render-phase-cost-observation.md)（独立 benchmark overlay，默认 SDK 载荷不变）

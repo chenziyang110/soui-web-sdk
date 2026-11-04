@@ -3,6 +3,7 @@
 #include "ordinal_cases.h"
 #include "terminal_cases.h"
 #include "wake_cases.h"
+#include "publication_cases.h"
 #include "applied_identity_cases.h"
 #include "visibility_cases.h"
 #include "deadline_cases.h"
@@ -97,6 +98,7 @@ int main() {
     require(limited.post(blocked_key) == input_admission_result::accepted, "new document did not recover after observed physical release");
     drain(limited);
     input_terminal_cases::run(fail_next_allocation);
+    input_publication_cases::run_receipts(fail_next_allocation);
     host_visibility_cases::run();
     input_deadline_cases::run_mailbox();
     provider_deadline_cases::run();
@@ -112,6 +114,7 @@ int main() {
     require(engine.start([] { return true; }), "engine startup");
     input_ordinal_cases::run(engine);
     input_wake_cases::run(engine);
+    input_publication_cases::run_engine(engine);
     applied_identity_cases::run(engine);
     trace::event context; context.input_first = context.input_last = 123;
     context.view_id = context.view_generation = context.document_generation = context.geometry_generation = 1;

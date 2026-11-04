@@ -1,0 +1,22 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),cp=require('node:child_process'),assert=require('node:assert/strict');
+const {analyze,decode}=require('./analyze-trace.cjs');
+const trace=require('../../../benchmarks/protocol/input-frame-trace.cjs');
+const [executable,build]=process.argv.slice(2);
+assert.ok(executable&&build,'Expected fixture executable and output directory');
+const directory=fs.mkdtempSync(path.join(build,'output-trace-')),filename=path.join(directory,'fixture.ndjson');
+const run=cp.spawnSync(executable,[filename],{encoding:'utf8',timeout:10000});assert.ifError(run.error);assert.equal(run.status,0,run.stderr);
+const rows=trace.readNdjson(filename),result=analyze(rows);
+assert.equal(result.completeTrace,true);assert.equal(result.owner_observations,1);
+assert.deepEqual(result.observed_failures,{capacity:1,stale:1,stopped:1,invalid:1,other:1});
+assert.equal(result.preparation_ms.samples,1);assert.equal(result.preparation_end_to_owner_observation_ms.samples,1);
+assert.equal(result.input_causality,false);assert.equal(result.com_completion,false);assert.equal(result.performanceGate,false);
+const lossy=structuredClone(rows);lossy.at(-1).dropped='1';const incomplete=analyze(lossy);
+assert.equal(incomplete.completeTrace,false);assert.equal(incomplete.preparation_ms,null);
+assert.equal(incomplete.preparation_end_to_owner_observation_ms,null);assert.equal(incomplete.observed_failures.capacity,1);
+assert.equal(decode('1'),null);
+assert.throws(()=>decode((0x57564f0100000000n).toString()),/metadata/); // Unknown roles.
+const changed=structuredClone(rows);changed[2].value=(BigInt(changed[2].value)^(3n<<20n)).toString();
+assert.throws(()=>analyze(changed),/provenance|metadata/);
+fs.writeFileSync(path.join(directory,'analysis.json'),JSON.stringify(result,null,2)+'\n',{flag:'wx'});
+console.log(JSON.stringify({nativeTraceAndReaderPassed:true,faultBoundariesPassed:true,evidence:directory,gui:false,input:false}));

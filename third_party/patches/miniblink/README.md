@@ -104,3 +104,9 @@
 `0031-transparent-spare-clear.patch` 只省去新建/重建透明备用槽的重复clear，保留有效旧槽clear和完整copy。`0032-provider-retirement-deadline.patch` 将显式截止用于完成任务退休，保留一次最低进展、无参方法符号、默认32项与shutdown排空。独立设计见ADR-0150/0151；来源及真实方法回归分别见 `miniblink-transparent-spare-clear-20261031.json` 与 `miniblink-provider-retirement-20261031.json`。
 
 两架构受影响方法回归已执行，失败原件保留；92项SOURCE门禁仅为authored graph范围。匹配内核、实际载荷大小与真实性能以单独记录为准，不用源码字节变化代替DLL/包或FPS结论。
+
+## 主帧策略实际状态：0033
+
+`0033-frame-policy-applied-state.patch` 以 `a4fc394427c99a3331abfb2e3e3307ae27503dd0` 为前件，覆盖七个文件：InputUiApi 的两份镜像头、实现，以及 WebPage/WebPageImpl 的头和实现。函数表尾部新增可选 query/apply 与 capability，旧前缀保留；只读回配置状态，不表示帧已经呈现。非零主帧范围仍为30–240，0仍禁用该控制器。SDK协商、兼容性与重试规则见 [ADR-0154](../../../docs/adr/0154-frame-policy-applied-state.md)。
+
+七文件原始字节的正反向重放及当前树反向检查已通过，前后散列、外部候选内核与证据散列见 `third_party/manifests/miniblink-frame-policy-state-20261102.json`。两架构实际编译受影响头文件的完整40-TU reader闭包，再链接经验证的源等价旧对象/库；不是fresh整内核构建。历史 SOURCE-MANIFEST、prebuilt、许可证审查及已发布0.6.0证据不被改写。新候选载荷的应用、物理性能与完整包体积资格分别记录，不能由补丁或配置读回推断。

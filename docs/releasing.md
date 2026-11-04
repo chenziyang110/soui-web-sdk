@@ -70,6 +70,8 @@ node tools/Collect-Verification.cjs --record-unverified --evidence-reference ver
 
 `verification/sbom-native.cdx.json` 独立列出实际复算散列的 136 个原生交付文件及两架构共 22 个内核静态链接输入。链接输入仅表示该 archive 参与真实链接，不表示每个成员都进入最终 DLL；这些构建输入也不全是运行时分发文件。来源分别绑定 `third_party/manifests/dependencies.json`、`kernel-build-050.json` 和当前实际构建报告。清单不含首方编译产物和完整传递源码组成，composition 明确为 `incomplete`，未知叶依赖没有伪装成空集合。`sbom-native.validation.json` 保存实际官方 1.5 schema 校验结果及 schema 散列。版本或载荷变动后须重新生成、复算文件散列并校验。所有清单都不等同于漏洞已清零或授权审核完成；完整源码另由 `source-manifest.json` 及各来源记录约束。
 
+未发布的 `0.7.0-preview.2` 已刷新受影响的 Web SDK、React/Vue 和原生四份清单；旧 `0.6.0` 生成及校验原件仍在发布归档中。当前原生来源另绑定 `kernel-build-070-preview2.json` 及其增量受影响 reader 闭包：136 个实际交付文件重新计算散列，22 个静态 archive 沿原 F01 producer 的 frozen-link-inputs/link.rsp 记录，明确没有由 SBOM 步骤重算或重建。三份 npm raw、三个交付副本和原生文档共七份实际通过官方 schema 校验；顶层验证摘要把当前交付字节对应到原始校验，不将其解释为完整依赖图、应用运行或发布资格。
+
 源码维护者先将审查过的源码加入 Git 暂存区，再执行 `node tools/internal/source-archive.cjs create` 和 `node tools/internal/source-archive.cjs verify`。除清单自身外存在未暂存修改时生成器会失败。v2 清单从 Git index blob 的原始字节生成；验证先比较原字节，再允许文本 checkout 的 CRLF 转换，保留 Git 中原有的特殊混合换行。二进制不转换；上游导入清单中的历史缓存不决定发布内容。
 
 历史验收目录 `verification/**/raw/old-generator/` 中的 `package.json` 和 `package-lock.json` 是当次输入原件，由同批 `raw-manifest.json` 固定字节数与 SHA-256。它们仅用于取证和复现历史记录，不在这些目录启动 devserver，也不升级其历史依赖或改写 raw manifest。活动模板的依赖升级在 `templates/` 中独立维护。执行 `node --test tests/sdk/archived-generator-inputs.test.cjs` 可核对已归档生成器的两份依赖输入与原始固定身份。

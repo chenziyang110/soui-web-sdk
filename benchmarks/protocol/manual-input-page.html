@@ -1,0 +1,9 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>SOUI manual input feedback</title>
+<style>html,body{margin:0;width:1100px;height:720px;overflow:hidden}canvas{display:block;width:1100px;height:720px}#finish-panel{position:fixed;left:30px;bottom:24px;color:white;background:#222;padding:10px;font:16px sans-serif}#finish{font:inherit}</style>
+<canvas id="feedback" width="1100" height="720"></canvas>
+<!-- Manual observation marker: [8,336,64,32]; existing background probe: [10,330]. -->
+<div id="finish-panel"><button id="finish" type="button">完成记录</button> <span id="submission-status">按本轮说明完成采样；有外部观察器须先等控制台观察结束，再保存、关窗。</span></div>
+<script src="manual-input-config.js"></script>
+<script src="manual-input-page.js"></script>

@@ -7,6 +7,8 @@ const {isDeepStrictEqual} = require('node:util');
 const owned = require('./owned-trace-subject.cjs');
 const trace = require('./input-frame-trace.cjs');
 const {checkBurst} = require('./burst-input.cjs');
+const {requireFormalHarness} = require('./input-ui-harness-policy.cjs');
+const {sourceDigest} = require('./freeze-input-ui-request.cjs');
 const {insist} = trace;
 const digest=value=>typeof value==='string' && /^[a-f0-9]{64}$/.test(value);
 function verifiedDescriptor(root,item,expectedPath) {
@@ -37,8 +39,18 @@ function checkRun(root) {
     ['miniblink-software','webview2'].includes(record.renderer) &&
     typeof record.runtime_version==='string' && record.runtime_version.length>0 && record.runtime_version.length<=256 &&
     ['full','e2e'].includes(record.trace_mode) &&
-    digest(record.host_exe_sha256) && digest(record.tools?.input_sha256) && digest(record.tools?.owned_runner_sha256),
+    digest(record.host_exe_sha256) && digest(record.measurement_sources_sha256) && digest(record.tools?.input_sha256) && digest(record.tools?.owned_runner_sha256),
     'Invalid same-product source/payload identity');
+  verifiedDescriptor(root,record.frozen_request,'frozen-request.json');
+  const frozenRequest=owned.readRunJson(root,'frozen-request.json');
+  insist(frozenRequest?.schema==='soui.input-ui-run-request/v2'&&frozenRequest.source_commit===record.source_commit&&
+    frozenRequest.measurement_source_commit===record.measurement_source_commit&&
+    Array.isArray(frozenRequest.frozen_inputs?.measurement_sources)&&
+    sourceDigest(frozenRequest.frozen_inputs.measurement_sources)===record.measurement_sources_sha256&&
+    frozenRequest.frozen_inputs?.files?.host_executable?.sha256===record.host_exe_sha256&&
+    frozenRequest.frozen_inputs?.files?.input_executable?.sha256===record.tools.input_sha256&&
+    frozenRequest.frozen_inputs?.files?.owned_runner?.sha256===record.tools.owned_runner_sha256,
+    'Frozen request differs from launched source/tools');
   for (const [key,filename] of [['payload_manifest','payload-manifest.json'],['environment','environment.json'],
     ['configuration','configuration.json'],['workload','workload.json'],['calibration','calibration.json'],
     ['host_ready','host-ready.json'],['host_result','host-result.json'],
@@ -58,6 +70,11 @@ function checkRun(root) {
   }
   const hostFiles=payload.files.filter(file=>file.role==='host');
   insist(hostFiles.length===1 && hostFiles[0].sha256===record.host_exe_sha256, 'Host payload is not bound to owned launch');
+  for(const [role,key]of [['runtime','miniblink_binary'],['sdk-library','sdk_library']]){
+    const matches=payload.files.filter(file=>file.role===role),expected=frozenRequest.frozen_inputs.files[key];
+    insist(matches.length===1&&matches[0].sha256===expected?.sha256&&matches[0].bytes===expected?.bytes,
+      'Frozen request differs from SDK/runtime payload');
+  }
   const select=(items,name)=>{
     insist(Array.isArray(items) && items.length===2, 'Two owned processes required');
     const matches=items.filter(item=>item?.name===name);
@@ -76,6 +93,7 @@ function checkRun(root) {
     path.join(record.capture_root,'burst-desktop.ndjson'),begin.kind];
   insist(isDeepStrictEqual(processes.input.context.args,expectedArgs), 'Owned burst launch did not bind held target/session');
   const ready=owned.readRunJson(root,'host-ready.json'),closed=owned.readRunJson(root,'host-result.json');
+  requireFormalHarness(ready);requireFormalHarness(closed);
   insist(ready?.schema==='soui.input-ui-host-ready/v1'&&ready.run_id===record.run_id&&ready.pid===processes.host.subject.pid&&
     ready.creationFileTime===processes.host.subject.creationFileTime&&closed?.schema==='soui.input-ui-host-result/v1'&&
     closed.run_id===record.run_id&&closed.process_id===processes.host.subject.pid&&
@@ -115,6 +133,7 @@ function checkRun(root) {
 function compareRuns(baseline,candidate) {
   const before=baseline.record, after=candidate.record;
   for(const key of ['product_id','renderer','runtime_version','trace_mode','measurement_source_commit']) insist(before[key]===after[key], 'Different products/renderers/runtime/trace modes/measurement sources cannot form this pair');
+  insist(before.measurement_sources_sha256===after.measurement_sources_sha256,'Pair measurement source bytes differ despite commit label');
   insist(before.source_commit!==after.source_commit && before.run_id!==after.run_id, 'Two distinct source commits/runs required');
   for(const key of ['environment','configuration','workload'])
     insist(before.evidence[key].sha256===after.evidence[key].sha256, 'Pair environment/configuration/workload differs');

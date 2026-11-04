@@ -1,39 +1,23 @@
 {
   "schema": "soui.dependencies/v2",
-  "sdkVersion": "0.6.0",
+  "sdkVersion": "0.7.0-preview.2",
   "releaseReady": false,
   "dependencies": [
     {
-      "id": "miniblink-native-bitmap-completion-source",
-      "source": "third_party/manifests/miniblink-native-bitmap-completion-20261031.json",
-      "version": "PR129 native bitmap completion candidate; frozen prebuilt unchanged",
+      "id": "miniblink-frame-policy-source",
+      "source": "third_party/manifests/miniblink-frame-policy-state-20261102.json",
+      "version": "20261102 frame-policy source candidate; binary identity is in the selected kernel provenance",
       "license": "source identity record",
       "sourceNormalization": "lf",
-      "sha256": "b948c596cf5111110d954b10c415a612ab341c7e2a12d9ca8ef18ed76c7d406e"
+      "sha256": "b54627fbc947e47e232b4d5279afb1491d6781f2e816bdeba824d693edbe036c"
     },
     {
-      "id": "miniblink-native-bitmap-completion-patch",
-      "source": "third_party/patches/miniblink/0030-complete-native-bitmap-submission.patch",
-      "version": "PR129 native bitmap completion candidate; frozen prebuilt unchanged",
+      "id": "miniblink-frame-policy-patch",
+      "source": "third_party/patches/miniblink/0033-frame-policy-applied-state.patch",
+      "version": "20261102 frame-policy source candidate; binary identity is in the selected kernel provenance",
       "license": "same terms as Miniblink source",
-      "sourceNormalization": "lf",
-      "sha256": "8b0b02c0f003ed208f2ca511e6381f1f8a6f73e4322efd124fb22b693372a184"
-    },
-    {
-      "id": "miniblink-precise-deadline-patch",
-      "source": "third_party/patches/miniblink/0029-retain-precise-shared-timer-wait.patch",
-      "version": "PR129 precise deadline repair candidate; frozen prebuilt unchanged",
-      "license": "same terms as Miniblink source",
-      "sourceNormalization": "lf",
-      "sha256": "ecb417d6ef481861fa9de1b27843e3a6adf62435340b4297c5e7d05b0621f24a"
-    },
-    {
-      "id": "miniblink-precise-deadline-source",
-      "source": "third_party/manifests/miniblink-precise-deadline-20261030.json",
-      "version": "PR129 precise deadline repair candidate; frozen prebuilt unchanged",
-      "license": "source identity record",
-      "sourceNormalization": "lf",
-      "sha256": "0536424b0056e080ae4122cf6adfab521b5c8a2360b9cb9ab6591a6b2fe58999"
+      "sourceNormalization": "none",
+      "sha256": "1a0ec8bcc0d05a0dd72148349c7996eb139f12196fd098559d18a759cde9547a"
     },
     {
       "id": "soui-source",
@@ -93,11 +77,11 @@
     },
     {
       "id": "miniblink-build-provenance",
-      "source": "third_party/manifests/kernel-build-060-source2.json",
-      "version": "0.6.0 dual-architecture import",
+      "source": "third_party/manifests/kernel-build-070-preview2.json",
+      "version": "0.7.0-preview.2 dual-architecture import",
       "license": "build identity record",
       "sourceNormalization": "lf",
-      "sha256": "4cca1707916d12f0a8a26828381c2807187147158c8c05602febb6b6a28414f5"
+      "sha256": "33477b2be7ada09381dbdb52b0e09f75ef36f03ea9893bb6603cb57bcab69faa"
     },
     {
       "id": "miniblink-cache-budget-patch",
@@ -132,6 +116,22 @@
       "sha256": "bb8dbd28c9d2079205fc3c1f8d7fbe451dcf52dddca106f86e89ee8a3ef756be"
     },
     {
+      "id": "miniblink-precise-deadline-patch",
+      "source": "third_party/patches/miniblink/0029-retain-precise-shared-timer-wait.patch",
+      "version": "PR129 precise deadline repair candidate; frozen prebuilt unchanged",
+      "license": "same terms as Miniblink source",
+      "sourceNormalization": "lf",
+      "sha256": "ecb417d6ef481861fa9de1b27843e3a6adf62435340b4297c5e7d05b0621f24a"
+    },
+    {
+      "id": "miniblink-precise-deadline-source",
+      "source": "third_party/manifests/miniblink-precise-deadline-20261030.json",
+      "version": "PR129 precise deadline repair candidate; frozen prebuilt unchanged",
+      "license": "source identity record",
+      "sourceNormalization": "lf",
+      "sha256": "0536424b0056e080ae4122cf6adfab521b5c8a2360b9cb9ab6591a6b2fe58999"
+    },
+    {
       "id": "zlib-source",
       "source": "third_party/sources/zlib/source-manifest.json",
       "version": "1.2.11",
@@ -158,10 +158,10 @@
     {
       "id": "miniblink-x86",
       "source": "third_party/prebuilt/x86/miniblink/node.dll",
-      "version": "imported binary 0.6.0",
+      "version": "imported binary 0.7.0-preview.2",
       "license": "binary redistribution review incomplete",
       "sourceNormalization": "none",
-      "sha256": "dc8c37178f4bbd9260edc973d61af876cf8460178eaf89fa2994fdffc94abc9a"
+      "sha256": "367f1cd087bb5166c5b75f32fb76e7ca2950feae68dc15d05ec8f0ffcdc5b296"
     },
     {
       "id": "zlib-runtime-x86",
@@ -174,10 +174,10 @@
     {
       "id": "miniblink-x64",
       "source": "third_party/prebuilt/x64/miniblink/node.dll",
-      "version": "imported binary 0.6.0",
+      "version": "imported binary 0.7.0-preview.2",
       "license": "binary redistribution review incomplete",
       "sourceNormalization": "none",
-      "sha256": "d888637d5dd1476dde16b8c5bb28172d7b8ec3495b69c725fa3572013748139a"
+      "sha256": "8d84f0d0b307c4ee1fdee8d4ac27b8e67dec32545e9cf52dbfaf1a85d88904b6"
     },
     {
       "id": "zlib-runtime-x64",
@@ -193,7 +193,7 @@
       "version": "lockfile",
       "license": "resolved package licenses",
       "sourceNormalization": "lf",
-      "sha256": "93cb42bd9f11a9bcb9059f6ec505de87c520dac76cb2ac0c769779add37e5195"
+      "sha256": "92f3f0709182a53bd2099cc50020f376d86bd18f015b06de6d1f82496202b26f"
     },
     {
       "id": "template-web",
@@ -231,8 +231,8 @@
   "nativeFiles": [
     {
       "path": "third_party/prebuilt/x64/miniblink/node.dll",
-      "bytes": 39204352,
-      "sha256": "d888637d5dd1476dde16b8c5bb28172d7b8ec3495b69c725fa3572013748139a"
+      "bytes": 39211008,
+      "sha256": "8d84f0d0b307c4ee1fdee8d4ac27b8e67dec32545e9cf52dbfaf1a85d88904b6"
     },
     {
       "path": "third_party/prebuilt/x64/runtime/ucrt/x64/api-ms-win-core-console-l1-1-0.dll",
@@ -571,8 +571,8 @@
     },
     {
       "path": "third_party/prebuilt/x86/miniblink/node.dll",
-      "bytes": 28318208,
-      "sha256": "dc8c37178f4bbd9260edc973d61af876cf8460178eaf89fa2994fdffc94abc9a"
+      "bytes": 28323840,
+      "sha256": "367f1cd087bb5166c5b75f32fb76e7ca2950feae68dc15d05ec8f0ffcdc5b296"
     },
     {
       "path": "third_party/prebuilt/x86/runtime/ucrt/x86/api-ms-win-core-console-l1-1-0.dll",

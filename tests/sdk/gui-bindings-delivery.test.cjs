@@ -83,6 +83,33 @@ function legacyToolBytes() {
   assert.equal(identity.hash(bytes), '26305269c19891cd5dfb6d781985114f7b6aa1d6437d22213d4cb6ba25c10ec3');
   return bytes;
 }
+test('performance preview keeps an exact peer tuple and strict root lock peers', t => {
+  const candidate = '0.7.0-preview.1', range = currentPeerRange + ' || ' + candidate;
+  const f = fixture(t, candidate, range);
+  assert.equal(gui.metadata(f.source), candidate);
+  const lockPath = 'sdk/bindings/react/package-lock.json';
+  const lock = JSON.parse(fs.readFileSync(path.join(f.source, lockPath), 'utf8'));
+  delete lock.packages[''].peerDependencies;
+  f.write(lockPath, identity.encoded(lock));
+  assert.throws(() => gui.metadata(f.source), /exact local SDK and framework peers/);
+  const stale = fixture(t, candidate, currentPeerRange);
+  assert.throws(() => gui.metadata(stale.source), /exact local SDK and framework peers/);
+  const successorWithStalePeer = fixture(t, '0.7.0-preview.2', range);
+  assert.throws(() => gui.metadata(successorWithStalePeer.source), /exact local SDK and framework peers/);
+});
+test('performance successor has its own exact peer tuple without widening future versions', t => {
+  const firstRange = currentPeerRange + ' || 0.7.0-preview.1';
+  const successor = '0.7.0-preview.2', range = firstRange + ' || ' + successor;
+  const f = fixture(t, successor, range);
+  assert.equal(gui.metadata(f.source), successor);
+  assert.equal(gui.metadata(fixture(t, '0.7.0-preview.1', firstRange).source), '0.7.0-preview.1');
+  const lockPath = 'sdk/bindings/vue/package-lock.json';
+  const lock = JSON.parse(fs.readFileSync(path.join(f.source, lockPath), 'utf8'));
+  delete lock.packages[''].peerDependencies;
+  f.write(lockPath, identity.encoded(lock));
+  assert.throws(() => gui.metadata(f.source), /exact local SDK and framework peers/);
+  assert.throws(() => gui.metadata(fixture(t, '0.7.0-preview.3', range).source), /exact local SDK and framework peers/);
+});
 function historicalPackage(t, targetVersion = version, tool = legacyToolBytes()) {
   const f = fixture(t, targetVersion, previousPeerRange), packed = path.join(f.root, 'historical-package');
   f.write('tools/sdk/gui-bindings-delivery.cjs', tool);

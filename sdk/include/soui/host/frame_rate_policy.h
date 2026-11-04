@@ -13,6 +13,14 @@ namespace soui::sdk {
   const unsigned ceiling = is_supported_frame_rate(display) ? display : 60;
   return requested < ceiling ? requested : ceiling;
 }
+// backend==0 leaves the backend unconstrained (legacy/unknown/disabled policy).
+// A positive limit is an acknowledged backend capability, not measured FPS.
+[[nodiscard]] constexpr unsigned clamp_frame_rate_to_limits(unsigned requested, unsigned display,
+    unsigned backend) noexcept {
+  if (backend && !is_supported_frame_rate(backend)) return 0;
+  const auto display_limited = clamp_frame_rate_to_display(requested, display);
+  return backend && display_limited > backend ? backend : display_limited;
+}
 
 // Integer QPC deadlines retain the fractional remainder. Every deadline is
 // ceil(origin + ordinal * frequency / rate), with no accumulated truncation.

@@ -5,6 +5,8 @@ const {launch,stop}=require('./run-one.cjs');
 const owned=require('./owned-trace-subject.cjs');
 const trace=require('./input-frame-trace.cjs');
 const {checkRun}=require('./same-product-input-pair.cjs');
+const {requireFormalHarness}=require('./input-ui-harness-policy.cjs');
+const frozen=require('./freeze-input-ui-request.cjs');
 const {insist}=trace;
 function file(value) {
   insist(typeof value==='string'&&path.isAbsolute(value),'Absolute input file required');
@@ -34,6 +36,7 @@ async function waitReady(root,subject,hostRun) {
       const ready=owned.readRunJson(root,'host-ready.json');
       insist(ready.schema==='soui.input-ui-host-ready/v1'&&ready.pid===subject.pid&&
         ready.creationFileTime===subject.creationFileTime,'Host ready identity differs from held subject');
+      requireFormalHarness(ready); // Refuse before launching the injector.
       return ready;
     }catch(error){if(error.code!=='ENOENT')throw error;}
     await new Promise(resolve=>setTimeout(resolve,20));
@@ -43,13 +46,14 @@ async function waitReady(root,subject,hostRun) {
 async function runRequest(requestFile,output) {
   insist(process.platform==='win32','Real input run requires Windows');
   const request=json(requestFile);
-  insist(request?.schema==='soui.input-ui-run-request/v1'&&/^[a-f0-9]{40}$/.test(request.source_commit)&&
+  insist(request?.schema==='soui.input-ui-run-request/v2'&&/^[a-f0-9]{40}$/.test(request.source_commit)&&
     /^[a-f0-9]{40}$/.test(request.measurement_source_commit)&&
     typeof request.product_id==='string'&&/^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/.test(request.product_id)&&['full','e2e'].includes(request.trace_mode)&&
     ['pointer_move','wheel'].includes(request.kind)&&[125,500,1000].includes(request.hz)&&
     Number.isSafeInteger(request.count)&&request.count>0&&request.count<=Math.min(100000,request.hz*120)&&
     typeof request.runtime_version==='string'&&request.runtime_version.length>0&&request.runtime_version.length<=256,
     'Invalid frozen run request');
+  frozen.verify(request); // Before output creation, process launch or input.
   insist(path.isAbsolute(output)&&!fs.existsSync(output),'Output must be a new absolute directory');
   const host=file(request.host_executable),input=file(request.input_executable),runner=file(request.owned_runner),
     binary=file(request.miniblink_binary),library=file(request.sdk_library);
@@ -65,6 +69,7 @@ async function runRequest(requestFile,output) {
   const identities={host:hash(host),input:hash(input),runner:hash(runner),binary:hash(binary),library:hash(library),
     html:hash(pageHtml),script:hash(pageScript)};
   fs.mkdirSync(output,{recursive:true});
+  write(output,'frozen-request.json',request);
   fs.copyFileSync(environment,path.join(output,'environment.json'),fs.constants.COPYFILE_EXCL);
   fs.copyFileSync(configuration,path.join(output,'configuration.json'),fs.constants.COPYFILE_EXCL);
   const randomRun=crypto.randomBytes(16);randomRun[0]|=1;const run=randomRun.toString('hex');
@@ -79,9 +84,11 @@ async function runRequest(requestFile,output) {
     `--run=${run}`,`--kind=${request.kind}`,`--trace=${request.trace_mode}`];
   const record={schema:'soui.same-product-input-run/v1',product_id:request.product_id,source_commit:request.source_commit,
     measurement_source_commit:request.measurement_source_commit,
+    measurement_sources_sha256:frozen.sourceDigest(request.frozen_inputs.measurement_sources),
     run_id:run,capture_root:output,renderer:'miniblink-software',runtime_version:request.runtime_version,
     trace_mode:request.trace_mode,host_exe_sha256:identities.host.sha256,
     tools:{input_sha256:identities.input.sha256,owned_runner_sha256:identities.runner.sha256},host_arguments:arguments_,
+    frozen_request:owned.describe(output,'frozen-request.json'),
     processes:[],owned_evidence:[],traces:[],evidence:{},status:'incomplete',performanceGate:false,releaseReady:false};
   const runs=[];let watchdog;
   try {
@@ -106,6 +113,7 @@ async function runRequest(requestFile,output) {
       record.traces.push({path:name,...hash(path.join(output,name))});
     for(const [name,filename]of [['host',host],['input',input],['runner',runner],['binary',binary],['library',library],['html',pageHtml],['script',pageScript]])
       insist(hash(filename).sha256===identities[name].sha256,'Frozen payload changed during run');
+    frozen.verify(request);
     record.status='completed';write(output,'input-ui-run.json',record);
     const checked=checkRun(output);write(output,'input-ui-check.json',checked.result);
     return {output,status:'completed',run_id:run,stage_evidence:checked.result.stage_evidence,

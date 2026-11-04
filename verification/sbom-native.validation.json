@@ -1,45 +1,79 @@
 {
+  "schema": "soui.current-sbom-validation/v1",
+  "sdkVersion": "0.7.0-preview.2",
   "schemaValidated": true,
   "errors": [],
+  "documents": [
+    {
+      "path": "verification/sbom-web-sdk.cdx.json",
+      "bytes": 2032,
+      "sha256": "d732e231ad84c909147bd8cb5644fe51f33685349ade7faf879f81a07f3ee359",
+      "validatedAs": "web-sdk/delivery"
+    },
+    {
+      "path": "verification/sbom-gui-react.cdx.json",
+      "bytes": 8377,
+      "sha256": "55184c0adef35213741a9e74cb2e3bb61bff74c134d6cdf249ba649ceb22d47e",
+      "validatedAs": "gui-react/delivery"
+    },
+    {
+      "path": "verification/sbom-gui-vue.cdx.json",
+      "bytes": 25600,
+      "sha256": "94f29d48e17fdd5b1c74a12e26cbe2585f54f7ef9fa44301bc7a8d613e5104b4",
+      "validatedAs": "gui-vue/delivery"
+    },
+    {
+      "path": "verification/sbom-native.cdx.json",
+      "bytes": 177304,
+      "sha256": "52367c477e5b195d6267850db1d5f31b217af29cc01eb366980b87fac6bdb6ff",
+      "validatedAs": "native/delivery"
+    }
+  ],
+  "rawSourceValidation": {
+    "evidenceRoot": "sdk-performance-implementation-20261102",
+    "path": "R01/preview2-sbom-preparation-r1/artifacts-r1/Validation.json",
+    "bytes": 4425,
+    "sha256": "d78d3ea103cab007996d90471777972224b9be6c8740e4eb321f85e44a57d300",
+    "documentsActuallyValidated": 7,
+    "actualGenerationTool": "00c9cc",
+    "actualValidationTool": "c35d03",
+    "rootExitCodes": [
+      0,
+      0
+    ]
+  },
   "schemaInputs": [
     {
-      "path": "C:/sr06/out/release-sbom/schemas/cyclonedx-1.5/bom-1.5.schema.json",
+      "name": "bom-1.5.schema.json",
       "bytes": 164769,
-      "sha256": "067f7824b08653839ea050ae9e09ca48375eadc2652b0e2a299476e7db90335b",
-      "url": "https://raw.githubusercontent.com/CycloneDX/specification/1.5/schema/bom-1.5.schema.json",
-      "matchesHistoricalPin": true
+      "sha256": "067f7824b08653839ea050ae9e09ca48375eadc2652b0e2a299476e7db90335b"
     },
     {
-      "path": "C:/sr06/out/release-sbom/schemas/cyclonedx-1.5/spdx.schema.json",
+      "name": "spdx.schema.json",
       "bytes": 12322,
-      "sha256": "4f6e2b05c05d26a4f2dc5879fbc2fca94b0a28db46289d0c51345621b71cfbfc",
-      "url": "https://raw.githubusercontent.com/CycloneDX/specification/1.5/schema/spdx.schema.json",
-      "matchesHistoricalPin": true
+      "sha256": "4f6e2b05c05d26a4f2dc5879fbc2fca94b0a28db46289d0c51345621b71cfbfc"
     },
     {
-      "path": "C:/sr06/out/release-sbom/schemas/cyclonedx-1.5/jsf-0.82.schema.json",
+      "name": "jsf-0.82.schema.json",
       "bytes": 8058,
-      "sha256": "8bae002c25e723db7ee1f26afde680ae1a2b1a8f6b4b4b0fd65dc3becb090aae",
-      "url": "https://raw.githubusercontent.com/CycloneDX/specification/1.5/schema/jsf-0.82.schema.json",
-      "matchesHistoricalPin": true
+      "sha256": "8bae002c25e723db7ee1f26afde680ae1a2b1a8f6b4b4b0fd65dc3becb090aae"
     }
   ],
   "validator": {
+    "jsonschemaVersion": "4.26.0",
     "python": {
-      "path": "C:/Users/11034/miniconda3/python.exe",
       "bytes": 104264,
       "sha256": "ec0ea8d6907787b76dcf8524aaa93e52e167ceee62fa8778e182ea637a3dbc1d"
     },
-    "jsonschemaVersion": "4.26.0",
-    "networkResolution": false
+    "networkResolution": false,
+    "formatChecking": true
   },
-  "bom": {
-    "path": "F:/work/SOUI_WEB/out/release-v0.6.0-20261028/sbom-prep/source2-native-candidate-1/sbom-native-060.cdx.json",
-    "bytes": 173894,
-    "sha256": "6602c1bee082530e17f69bf642b9bb7817347560b69c9f6b3a4f30cc3031f45e"
-  },
+  "deliveredFilesRehashed": 136,
+  "originalObservedStaticArchives": 22,
+  "staticArchivesRehashed": false,
+  "transitiveCompleteness": "incomplete",
   "licenseReviewComplete": false,
+  "verificationPromoted": true,
   "releaseReady": false,
-  "verificationPromoted": false,
   "runtimeQualificationInferred": false
 }

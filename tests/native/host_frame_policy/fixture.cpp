@@ -2,6 +2,9 @@
 #include <limits>
 #include <stdexcept>
 #include <iostream>
+#include "negotiation_cases.h"
+#include "provider_cases.h"
+#include "display_reference_cases.h"
 using policy = soui::sdk::detail::host_frame_policy;
 int main() {
   try {
@@ -22,6 +25,9 @@ int main() {
     if (policy::rounded_interval(60) != 17 || policy::rounded_interval(144) != 7
         || policy::rounded_interval(0) != 17 || policy::rounded_interval((std::numeric_limits<int>::max)()) != 1)
       throw std::runtime_error("legacy interval rounding/default/overflow");
+    negotiation_fixture::run();
+    provider_fixture::run();
+    display_reference_fixture::run();
     std::cout << "Host frame policy SOURCE contract complete\n"; return 0;
   } catch (const std::exception& error) { std::cerr << error.what() << '\n'; return 1; }
 }

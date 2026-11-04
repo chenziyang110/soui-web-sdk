@@ -25,6 +25,11 @@ class bridge_adapter {
   virtual void set_draw_interval(unsigned) noexcept {}
   virtual void set_gpu_active(bool) noexcept {}
   virtual unsigned active_frame_rate() const noexcept { return 60; }
+  // Optional pacing feedback. Called by the engine owner; implementations only
+  // publish bounded synchronized state. Never stop/join a UI pacer here.
+  // Zero clears the backend ceiling. True acknowledges storage, not a frame.
+  virtual bool set_backend_frame_rate_limit(unsigned) noexcept { return false; }
+  virtual unsigned requested_frame_rate() const noexcept { return active_frame_rate(); }
   // Optional diagnostic fixture support; production adapters may omit it.
   virtual std::string register_root(const soui::runtime::scan_request_context&,
                                     const std::filesystem::path&) { return {}; }

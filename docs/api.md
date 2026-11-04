@@ -1,6 +1,18 @@
 # SDK API
 
-本页描述 0.6.0 集成后的源码接口。新发布的构建、消费者与 Runtime 结果正在收口，见[发布说明](releases/0.6.0.md)；带 preview 标识的旧记录仍保留各自身份。
+本页描述 0.7.0-preview.2 开发候选源码接口，尚未发布。新增可选帧策略反馈需要 SDK 与应用配套重编；已发布0.6.0及其他旧记录保留各自身份，不继承为本候选验证。
+
+## 帧策略反馈（后续源码候选）
+
+公共 `bridge_adapter::requested_frame_rate()` 默认返回 `active_frame_rate()`，应用可覆盖返回原始目标。`bool set_backend_frame_rate_limit(unsigned) noexcept` 在 Engine owner 上通知应用后端上限；0清除限制，默认返回false。true只确认接纳反馈，不能证明显示帧率或UI时钟已经改变。实现只发布原子等有界状态，不在回调中操作UI、stop/join frame_pacer或阻塞。
+
+应用在原有UI pulse/配置机会，用 `clamp_frame_rate_to_limits(requested, display, backend)` 重算时钟，必要时重启pacer，并用active_frame_rate报告真实选择。旧adapter默认no-op继续运行；诊断中的requested默认可能只是reported active，未接入者不可据此宣称原用户意图或pulse自动同步。新增虚函数需要SDK/消费者整体重编，不能混用已发布0.6.0二进制。
+
+MiniBlink匹配内核通过可选尾扩展query/apply返回实际主帧策略；当前非零范围30..240，0禁用主帧控制器。host区分模式、尝试、实际应用、后端能力与pulse同步；旧内核保留unverified回退。完整设计见[ADR0154](adr/0154-frame-policy-applied-state.md)。这不代表实际FPS已提升。
+
+managed显示查询及monitor缓存使用`host_config.owner_window`，为空才回退child；应用pacer应使用同一参考。未知显示仍沿用60Hz并等待既有失效机会重查，不能据owner参考一致推导外部时钟已同步。
+
+MiniBlink可用冷环境变量`SOUI_DIAGNOSTIC_BRIDGE_PHASES=1`显式请求三个原生调用的固定直方图；unset/空值/0关闭，其他值为无效配置。每次mount单独配置，不热切换，不记录请求内容。UI owner的既有`application_diagnostics()`在旧`,script=`前追加`,native_phases=`JSON，默认关闭时旧输出保持；它不打开SCRIPT或另等Engine。既有getter自身的锁/SCRIPT行为不因此改变。JSON的64位数据为十进制字符串，不可用数据为null；scope为inclusive wall-time，非CPU或输入到屏幕耗时。消费者缓存的captureQPC/age必须保留，不能把缓存当新鲜边界。此功能已通过x86/x64 Release相关编译和每架构31项CPU合同，限定LLVM22/MSVC142/19041；不代表物理输入或呈现验收。见[ADR0159](adr/0159-miniblink-native-phase-observation.md)。
 
 ## 本地编辑器资源模式（后续源码候选）
 

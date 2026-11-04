@@ -23,7 +23,7 @@
 
 namespace soui::sdk {
 
-namespace detail { class bridge_request_budget; class cursor_broker_endpoint; class trace_thread_registration; class native_trace_ui_lease; class miniblink_devtools_session; }
+namespace detail { class bridge_request_budget; class cursor_broker_endpoint; class trace_thread_registration; class native_trace_ui_lease; class miniblink_devtools_session; enum class miniblink_request_route : std::uint8_t; struct miniblink_admission_metadata; struct miniblink_native_admission_access; }
 
 inline constexpr std::uint32_t bridge_event_message = 0x84D2U;
 inline constexpr std::uint32_t ime_position_message = 0x84D3U;
@@ -155,6 +155,13 @@ class dynamic_miniblink_adapter final : public webview_host_adapter,
  private:
   friend class detail::engine_admission;
   friend class soui_miniblink_host;
+  friend struct detail::miniblink_native_admission_access;
+  [[nodiscard]] host_result try_enqueue_bridge_message_impl(std::string request,
+      bool native_user_gesture, std::uint64_t context_receipt,
+      const detail::miniblink_admission_metadata* metadata);
+  [[nodiscard]] std::string handle_message_impl(std::string_view request,
+      bool native_user_gesture, std::uint64_t context_receipt,
+      detail::miniblink_request_route route);
   [[nodiscard]] host_result mount_on_engine(const host_config& config, int width, int height);
   [[nodiscard]] host_result finish_mount_on_engine(const host_config& config, int width, int height);
   [[nodiscard]] host_result wait_for_cursor_registration();

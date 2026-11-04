@@ -13,3 +13,5 @@ W09 源码另外覆盖 cooperative_turn_budget 的 default-off/minimum/invalid-r
 `provider_cases.h` 检查不同 epoch 的剩余时长向下换算、过期和零 QPC 截止、采样/频率失败、算术溢出、旧 ABI 前缀及短表/capability/空指针回退。真实 Engine 覆盖默认/非法/有限预算、旧 callback、一次分派、已有事件续接、双 callback 替换、旧 setter 清除和锁外捕获退休。legacy 与 bounded callback 分别在执行中自行清除或替换，旧捕获在 setter 返回后仍存活，回调退出才退休；正常 turn 以局部 swap 保活，不逐轮复制或分配。`standalone/` 可编译实际 Engine、interaction protocol 和 trace 源码执行同一夹具，范围不含实际 Host/provider DLL，也不能替代完整 SDK/内核验证。执行收据见 ADR-0147 的集成记录。
 
 `visibility_cases.h` 使用实际 latest-visibility policy，覆盖失败不ACK、下一机会重试、稳定态不重复调用、hide/show合并后强制fresh、setter期间新intent，以及关闭/重建的unknown状态。实际Host专人用例还需 show/hide、parent minimize/restore、owner发布失败后重试，确认hidden不layout/record/composite、恢复首帧全脏且main/composite phase重置；源码fixture没有创建窗口或证明真实可见性。
+
+ADR-0153 的 `publication_cases.h` 覆盖私有通知 receipt：ordinary/cancel 首次发布、已有 pending、capacity/no_memory/ordinal 拒绝后首个 recovery，以及 stopped/recovering 无新发布。实际 Engine 覆盖最后一项 pop 后 callback 尚未结束时的新发布、拒绝首包的 recovery 唤醒、一次通知驱动32项各自过期截止的后续轮次、关闭后迟到通知。既有 `wake_cases.h` 改为按 receipt 通知，仍检查旧 producer 迟到唤醒、排空、下一 producer 的独立通知与实际进展。32项 burst 的单通知断言仅证明通知缩减及保序完成，不是 FPS/CPU/物理输入延迟证据。

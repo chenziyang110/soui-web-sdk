@@ -13,7 +13,7 @@ set(public_ctor_shell_fixture_pins
 )
 set(public_ctor_shell_source_pins
   "third_party/sources/miniblink/wke/wkeWebView.cpp|51529|ceaa4ac4ac1b53a585927ec1fc77a7d49fe75807ded6c70e4285d13a05ea2179"
-  "third_party/sources/miniblink/content/browser/WebPage.cpp|15670|76ba0665b50fd423c71cd81edee73942971b2c01358efb64709c8e94ef41c5f6"
+  "third_party/sources/miniblink/content/browser/WebPage.cpp|15879|30095284259aa07237b08b460d6e48b0a7aeae20b4e2107ece15a50ae15a68bc"
   "third_party/sources/miniblink/net/ActivatingObjCheck.cpp|3100|e2f04bfb9fb0e8ddcf9a7a8bbd9ca5598ce21dccd5f035863f8630702a64842b"
   "third_party/sources/miniblink/net/ActivatingObjCheck.h|660|6e85aca76332bc4fc2e5465501c97d76a240b9bee3021b0d24a88a8cedbe28f6"
   "third_party/sources/miniblink/content/common/PaintLifetime.h|7468|52d7f3da7239c59d7c4d2cd9e59186b71ef65047c0d233b5898eaddc0c8eed6e"

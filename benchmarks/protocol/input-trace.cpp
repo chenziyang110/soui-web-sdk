@@ -2,6 +2,7 @@
 #include <windows.h>
 #include "trace-identity.h"
 #include "desktop-observer.h"
+#include "passive-observation.h"
 
 #include <cstdint>
 #include <filesystem>
@@ -295,7 +296,21 @@ int run(int argc, wchar_t** argv) {
 
 int wmain(int argc, wchar_t** argv) {
   SetProcessDPIAware();
-  try { return run(argc, argv); }
+  try {
+    // Dispatch before every legacy HWND search, positioning and injected action.
+    // A malformed/unknown option fails here and cannot enter the active path.
+    if (argc > 1 && argv[1] && argv[1][0] == L'-') {
+      const auto options = soui::benchmark::parse_passive_options(argc, argv);
+      file_handle process{OpenProcess(PROCESS_QUERY_INFORMATION | SYNCHRONIZE, FALSE, options.pid)};
+      if (!process.value) throw std::runtime_error("Passive target process unavailable");
+      FILETIME creation{}, exited{}, kernel{}, user{};
+      if (!GetProcessTimes(process.value, &creation, &exited, &kernel, &user) ||
+          filetime(creation) != options.creation || WaitForSingleObject(process.value, 0) != WAIT_TIMEOUT)
+        throw std::runtime_error("Passive held process identity differs");
+      return soui::benchmark::observe_manual_desktop(process.value, options);
+    }
+    return run(argc, argv);
+  }
   catch (const std::exception& failure) {
     std::cerr << failure.what() << '\n';
     return 1;

@@ -150,6 +150,8 @@ int WKE_INPUT_UI_CALL setViewContext(void*, const void*, unsigned) { return 0; }
 int WKE_INPUT_UI_CALL setVisibility(void*, unsigned) { return 0; }
 int WKE_INPUT_UI_CALL retainTraceProducer() { return 0; }
 void WKE_INPUT_UI_CALL releaseTraceProducer() { }
+int WKE_INPUT_UI_CALL queryFramePolicy(void*, wkeInputUiFramePolicy*) { return WKE_INPUT_UI_OK; }
+int WKE_INPUT_UI_CALL applyFramePolicy(void*, unsigned, wkeInputUiFramePolicy*) { return WKE_INPUT_UI_OK; }
 }
 #include "api.inc"
 
@@ -309,7 +311,9 @@ void abi()
     require(offsetof(wkeInputUiApi, traceConfigure) == 16, "legacy prefix fixed");
     require(offsetof(wkeInputUiApi, serviceOwnerOpportunity) == 16 + 4 * sizeof(void*), "legacy owner offset fixed");
     require(offsetof(wkeInputUiApi, serviceOwnerOpportunityUntil) == 16 + 13 * sizeof(void*), "tail after all original fields");
-    require(sizeof(wkeInputUiApi) == 16 + 14 * sizeof(void*), "tail only grows by one pointer");
+    require(offsetof(wkeInputUiApi, queryFramePolicy) == 16 + 14 * sizeof(void*), "new frame query follows deadline tail");
+    require(offsetof(wkeInputUiApi, applyFramePolicy) == 16 + 15 * sizeof(void*), "new frame apply follows query");
+    require(sizeof(wkeInputUiApi) == 16 + 16 * sizeof(void*), "frame policy extends tail without moving deadline");
     unsigned more = 99;
     require(api->serviceOwnerOpportunityUntil(0, 1000000, &more) == WKE_INPUT_UI_OK && more == 0,
         "actual table tail uses correct calling convention");

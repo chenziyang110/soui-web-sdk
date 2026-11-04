@@ -398,7 +398,8 @@ class demo_soui_window final : public SOUI::SHostWnd, public SOUI::IMessageFilte
     const bool active = ::IsWindowVisible(m_hWnd) && !::IsIconic(m_hWnd) && eligible;
     // Keep requested scheduling and physical presentation distinct. Respect
     // the current monitor's integer rate without rounding it to a coarse tier.
-    const unsigned effective = soui::sdk::clamp_frame_rate_to_display(desired, display_refresh_hz_);
+    const unsigned effective = soui::sdk::clamp_frame_rate_to_limits(desired, display_refresh_hz_,
+        bridge_.backend_frame_rate_limit());
     const unsigned target = active ? effective : 0;
     if (pacer_.failed()) { pacer_.stop(); failed_target_ = target; }
     if (target == 0) { if (pacer_.target()) pacer_.stop(); failed_target_ = 0; }

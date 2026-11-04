@@ -1,15 +1,15 @@
 {
   "bomFormat": "CycloneDX",
   "specVersion": "1.5",
-  "serialNumber": "urn:uuid:0335e552-756f-459a-bd18-91176dbb300e",
+  "serialNumber": "urn:uuid:a9c43d19-9762-42c5-97f4-6c6b2f060f4e",
   "version": 1,
   "metadata": {
-    "timestamp": "2026-10-28T17:43:46.524Z",
+    "timestamp": "2026-11-03T05:22:24.005Z",
     "component": {
       "type": "framework",
-      "bom-ref": "urn:soui:sdk:native:0.6.0",
+      "bom-ref": "urn:soui:sdk:native:0.7.0-preview.2",
       "name": "SOUI Web SDK native delivery",
-      "version": "0.6.0",
+      "version": "0.7.0-preview.2",
       "properties": [
         {
           "name": "soui:releaseReady",
@@ -24,14 +24,14 @@
     "properties": [
       {
         "name": "soui:inventoryScope",
-        "value": "actual-delivered-native-files-and-observed-kernel-static-link-inputs"
+        "value": "actual-delivered-native-files-and-original-observed-kernel-static-link-inputs"
       },
       {
         "name": "soui:dependencyCompleteness",
         "value": "incomplete"
       },
       {
-        "name": "soui:historicalWholeExternalProviderBytesProven",
+        "name": "soui:fullTransitiveSourceGraphVerified",
         "value": "false"
       }
     ]
@@ -44,7 +44,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "d888637d5dd1476dde16b8c5bb28172d7b8ec3495b69c725fa3572013748139a"
+          "content": "8d84f0d0b307c4ee1fdee8d4ac27b8e67dec32545e9cf52dbfaf1a85d88904b6"
         }
       ],
       "properties": [
@@ -54,7 +54,7 @@
         },
         {
           "name": "soui:fileBytes",
-          "value": "39204352"
+          "value": "39211008"
         },
         {
           "name": "soui:distribution",
@@ -66,11 +66,15 @@
         },
         {
           "name": "soui:sourceInputSha256",
-          "value": "26c5b73e4915bb4539e87b987cd8e952005f0fe41d987138d8d8e3b13eb25c95"
+          "value": "bcbb83feaa391991d2eadb49fe53495bb54a4d0db1017cc072e47462ec80c933"
         },
         {
           "name": "soui:buildEvidence",
-          "value": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x64/summary.json"
+          "value": "third_party/manifests/kernel-frame-policy-build-070-preview2.json"
+        },
+        {
+          "name": "soui:kernelProvenance",
+          "value": "third_party/manifests/kernel-build-070-preview2.json"
         }
       ]
     },
@@ -103,7 +107,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -136,7 +140,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -169,7 +173,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -202,7 +206,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -235,7 +239,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -268,7 +272,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -301,7 +305,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -334,7 +338,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -367,7 +371,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -400,7 +404,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -433,7 +437,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -466,7 +470,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -499,7 +503,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -532,7 +536,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -565,7 +569,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -598,7 +602,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -631,7 +635,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -664,7 +668,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -697,7 +701,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -730,7 +734,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -763,7 +767,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -796,7 +800,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -829,7 +833,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -862,7 +866,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -895,7 +899,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -928,7 +932,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -961,7 +965,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -994,7 +998,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -1027,7 +1031,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -1060,7 +1064,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -1093,7 +1097,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -1126,7 +1130,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -1159,7 +1163,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -1192,7 +1196,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -1225,7 +1229,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -1258,7 +1262,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -1291,7 +1295,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -1324,7 +1328,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -1357,7 +1361,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -1390,7 +1394,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -1423,7 +1427,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -1456,7 +1460,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -1489,7 +1493,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -1522,7 +1526,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -1555,7 +1559,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -1588,7 +1592,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -1621,7 +1625,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -1654,7 +1658,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -1687,7 +1691,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -1720,7 +1724,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -1753,7 +1757,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -1786,7 +1790,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -1819,7 +1823,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -1852,7 +1856,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -1885,7 +1889,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -1918,7 +1922,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -1951,7 +1955,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -1984,7 +1988,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -2017,7 +2021,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -2050,7 +2054,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -2083,7 +2087,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -2116,7 +2120,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -2149,7 +2153,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -2182,7 +2186,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -2215,7 +2219,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -2248,7 +2252,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -2281,7 +2285,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -2292,7 +2296,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "dc8c37178f4bbd9260edc973d61af876cf8460178eaf89fa2994fdffc94abc9a"
+          "content": "367f1cd087bb5166c5b75f32fb76e7ca2950feae68dc15d05ec8f0ffcdc5b296"
         }
       ],
       "properties": [
@@ -2302,7 +2306,7 @@
         },
         {
           "name": "soui:fileBytes",
-          "value": "28318208"
+          "value": "28323840"
         },
         {
           "name": "soui:distribution",
@@ -2314,11 +2318,15 @@
         },
         {
           "name": "soui:sourceInputSha256",
-          "value": "26c5b73e4915bb4539e87b987cd8e952005f0fe41d987138d8d8e3b13eb25c95"
+          "value": "bcbb83feaa391991d2eadb49fe53495bb54a4d0db1017cc072e47462ec80c933"
         },
         {
           "name": "soui:buildEvidence",
-          "value": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x86/summary.json"
+          "value": "third_party/manifests/kernel-frame-policy-build-070-preview2.json"
+        },
+        {
+          "name": "soui:kernelProvenance",
+          "value": "third_party/manifests/kernel-build-070-preview2.json"
         }
       ]
     },
@@ -2351,7 +2359,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -2384,7 +2392,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -2417,7 +2425,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -2450,7 +2458,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -2483,7 +2491,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -2516,7 +2524,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -2549,7 +2557,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -2582,7 +2590,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -2615,7 +2623,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -2648,7 +2656,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -2681,7 +2689,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -2714,7 +2722,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -2747,7 +2755,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -2780,7 +2788,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -2813,7 +2821,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -2846,7 +2854,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -2879,7 +2887,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -2912,7 +2920,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -2945,7 +2953,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -2978,7 +2986,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -3011,7 +3019,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -3044,7 +3052,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -3077,7 +3085,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -3110,7 +3118,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -3143,7 +3151,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -3176,7 +3184,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -3209,7 +3217,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -3242,7 +3250,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -3275,7 +3283,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -3308,7 +3316,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -3341,7 +3349,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -3374,7 +3382,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -3407,7 +3415,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -3440,7 +3448,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -3473,7 +3481,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -3506,7 +3514,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -3539,7 +3547,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -3572,7 +3580,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -3605,7 +3613,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -3638,7 +3646,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -3671,7 +3679,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -3704,7 +3712,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -3737,7 +3745,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -3770,7 +3778,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -3803,7 +3811,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -3836,7 +3844,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -3869,7 +3877,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -3902,7 +3910,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -3935,7 +3943,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -3968,7 +3976,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -4001,7 +4009,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -4034,7 +4042,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -4067,7 +4075,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -4100,7 +4108,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -4133,7 +4141,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -4166,7 +4174,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -4199,7 +4207,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -4232,7 +4240,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -4265,7 +4273,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -4298,7 +4306,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -4331,7 +4339,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -4364,7 +4372,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -4397,7 +4405,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -4430,7 +4438,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -4463,7 +4471,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -4496,7 +4504,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -4529,7 +4537,7 @@
         },
         {
           "name": "soui:provenance",
-          "value": "unchanged historical artifact; not rebuilt by Source2 kernel producer"
+          "value": "actual delivered bytes only; not rebuilt by this F01 producer"
         }
       ]
     },
@@ -4537,7 +4545,7 @@
       "type": "file",
       "bom-ref": "urn:soui:kernel-link-input:x64:zlib.lib",
       "name": "x64/zlib.lib",
-      "description": "Actually observed link archive; reused, not recompiled; does not assert all archive members enter the DLL.",
+      "description": "Original producer observed archive input; does not assert that every archive member enters the DLL.",
       "hashes": [
         {
           "alg": "SHA-256",
@@ -4566,12 +4574,20 @@
           "value": "false"
         },
         {
-          "name": "soui:licenseReview",
-          "value": "not-complete"
+          "name": "soui:hashRecomputedBySbomAssembly",
+          "value": "false"
+        },
+        {
+          "name": "soui:identitySource",
+          "value": "original F01 r3 frozen-link-inputs"
         },
         {
           "name": "soui:buildEvidence",
-          "value": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x64/build-result.json"
+          "value": "third_party/manifests/kernel-frame-policy-build-070-preview2.json"
+        },
+        {
+          "name": "soui:licenseReview",
+          "value": "not-complete"
         }
       ]
     },
@@ -4579,7 +4595,7 @@
       "type": "file",
       "bom-ref": "urn:soui:kernel-link-input:x64:libjpeg.lib",
       "name": "x64/libjpeg.lib",
-      "description": "Actually observed link archive; reused, not recompiled; does not assert all archive members enter the DLL.",
+      "description": "Original producer observed archive input; does not assert that every archive member enters the DLL.",
       "hashes": [
         {
           "alg": "SHA-256",
@@ -4608,12 +4624,20 @@
           "value": "false"
         },
         {
-          "name": "soui:licenseReview",
-          "value": "not-complete"
+          "name": "soui:hashRecomputedBySbomAssembly",
+          "value": "false"
+        },
+        {
+          "name": "soui:identitySource",
+          "value": "original F01 r3 frozen-link-inputs"
         },
         {
           "name": "soui:buildEvidence",
-          "value": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x64/build-result.json"
+          "value": "third_party/manifests/kernel-frame-policy-build-070-preview2.json"
+        },
+        {
+          "name": "soui:licenseReview",
+          "value": "not-complete"
         }
       ]
     },
@@ -4621,7 +4645,7 @@
       "type": "file",
       "bom-ref": "urn:soui:kernel-link-input:x64:libpng.lib",
       "name": "x64/libpng.lib",
-      "description": "Actually observed link archive; reused, not recompiled; does not assert all archive members enter the DLL.",
+      "description": "Original producer observed archive input; does not assert that every archive member enters the DLL.",
       "hashes": [
         {
           "alg": "SHA-256",
@@ -4650,12 +4674,20 @@
           "value": "false"
         },
         {
-          "name": "soui:licenseReview",
-          "value": "not-complete"
+          "name": "soui:hashRecomputedBySbomAssembly",
+          "value": "false"
+        },
+        {
+          "name": "soui:identitySource",
+          "value": "original F01 r3 frozen-link-inputs"
         },
         {
           "name": "soui:buildEvidence",
-          "value": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x64/build-result.json"
+          "value": "third_party/manifests/kernel-frame-policy-build-070-preview2.json"
+        },
+        {
+          "name": "soui:licenseReview",
+          "value": "not-complete"
         }
       ]
     },
@@ -4663,7 +4695,7 @@
       "type": "file",
       "bom-ref": "urn:soui:kernel-link-input:x64:harfbuzz.lib",
       "name": "x64/harfbuzz.lib",
-      "description": "Actually observed link archive; reused, not recompiled; does not assert all archive members enter the DLL.",
+      "description": "Original producer observed archive input; does not assert that every archive member enters the DLL.",
       "hashes": [
         {
           "alg": "SHA-256",
@@ -4692,12 +4724,20 @@
           "value": "false"
         },
         {
-          "name": "soui:licenseReview",
-          "value": "not-complete"
+          "name": "soui:hashRecomputedBySbomAssembly",
+          "value": "false"
+        },
+        {
+          "name": "soui:identitySource",
+          "value": "original F01 r3 frozen-link-inputs"
         },
         {
           "name": "soui:buildEvidence",
-          "value": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x64/build-result.json"
+          "value": "third_party/manifests/kernel-frame-policy-build-070-preview2.json"
+        },
+        {
+          "name": "soui:licenseReview",
+          "value": "not-complete"
         }
       ]
     },
@@ -4705,7 +4745,7 @@
       "type": "file",
       "bom-ref": "urn:soui:kernel-link-input:x64:libxml.lib",
       "name": "x64/libxml.lib",
-      "description": "Actually observed link archive; reused, not recompiled; does not assert all archive members enter the DLL.",
+      "description": "Original producer observed archive input; does not assert that every archive member enters the DLL.",
       "hashes": [
         {
           "alg": "SHA-256",
@@ -4734,12 +4774,20 @@
           "value": "false"
         },
         {
-          "name": "soui:licenseReview",
-          "value": "not-complete"
+          "name": "soui:hashRecomputedBySbomAssembly",
+          "value": "false"
+        },
+        {
+          "name": "soui:identitySource",
+          "value": "original F01 r3 frozen-link-inputs"
         },
         {
           "name": "soui:buildEvidence",
-          "value": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x64/build-result.json"
+          "value": "third_party/manifests/kernel-frame-policy-build-070-preview2.json"
+        },
+        {
+          "name": "soui:licenseReview",
+          "value": "not-complete"
         }
       ]
     },
@@ -4747,7 +4795,7 @@
       "type": "file",
       "bom-ref": "urn:soui:kernel-link-input:x64:ots.lib",
       "name": "x64/ots.lib",
-      "description": "Actually observed link archive; reused, not recompiled; does not assert all archive members enter the DLL.",
+      "description": "Original producer observed archive input; does not assert that every archive member enters the DLL.",
       "hashes": [
         {
           "alg": "SHA-256",
@@ -4776,12 +4824,20 @@
           "value": "false"
         },
         {
-          "name": "soui:licenseReview",
-          "value": "not-complete"
+          "name": "soui:hashRecomputedBySbomAssembly",
+          "value": "false"
+        },
+        {
+          "name": "soui:identitySource",
+          "value": "original F01 r3 frozen-link-inputs"
         },
         {
           "name": "soui:buildEvidence",
-          "value": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x64/build-result.json"
+          "value": "third_party/manifests/kernel-frame-policy-build-070-preview2.json"
+        },
+        {
+          "name": "soui:licenseReview",
+          "value": "not-complete"
         }
       ]
     },
@@ -4789,7 +4845,7 @@
       "type": "file",
       "bom-ref": "urn:soui:kernel-link-input:x64:openssl.lib",
       "name": "x64/openssl.lib",
-      "description": "Actually observed link archive; reused, not recompiled; does not assert all archive members enter the DLL.",
+      "description": "Original producer observed archive input; does not assert that every archive member enters the DLL.",
       "hashes": [
         {
           "alg": "SHA-256",
@@ -4818,12 +4874,20 @@
           "value": "false"
         },
         {
-          "name": "soui:licenseReview",
-          "value": "not-complete"
+          "name": "soui:hashRecomputedBySbomAssembly",
+          "value": "false"
+        },
+        {
+          "name": "soui:identitySource",
+          "value": "original F01 r3 frozen-link-inputs"
         },
         {
           "name": "soui:buildEvidence",
-          "value": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x64/build-result.json"
+          "value": "third_party/manifests/kernel-frame-policy-build-070-preview2.json"
+        },
+        {
+          "name": "soui:licenseReview",
+          "value": "not-complete"
         }
       ]
     },
@@ -4831,7 +4895,7 @@
       "type": "file",
       "bom-ref": "urn:soui:kernel-link-input:x64:libcurl.lib",
       "name": "x64/libcurl.lib",
-      "description": "Actually observed link archive; reused, not recompiled; does not assert all archive members enter the DLL.",
+      "description": "Original producer observed archive input; does not assert that every archive member enters the DLL.",
       "hashes": [
         {
           "alg": "SHA-256",
@@ -4860,12 +4924,20 @@
           "value": "false"
         },
         {
-          "name": "soui:licenseReview",
-          "value": "not-complete"
+          "name": "soui:hashRecomputedBySbomAssembly",
+          "value": "false"
+        },
+        {
+          "name": "soui:identitySource",
+          "value": "original F01 r3 frozen-link-inputs"
         },
         {
           "name": "soui:buildEvidence",
-          "value": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x64/build-result.json"
+          "value": "third_party/manifests/kernel-frame-policy-build-070-preview2.json"
+        },
+        {
+          "name": "soui:licenseReview",
+          "value": "not-complete"
         }
       ]
     },
@@ -4873,7 +4945,7 @@
       "type": "file",
       "bom-ref": "urn:soui:kernel-link-input:x64:v8_5_7.lib",
       "name": "x64/v8_5_7.lib",
-      "description": "Actually observed link archive; reused, not recompiled; does not assert all archive members enter the DLL.",
+      "description": "Original producer observed archive input; does not assert that every archive member enters the DLL.",
       "hashes": [
         {
           "alg": "SHA-256",
@@ -4902,12 +4974,20 @@
           "value": "false"
         },
         {
-          "name": "soui:licenseReview",
-          "value": "not-complete"
+          "name": "soui:hashRecomputedBySbomAssembly",
+          "value": "false"
+        },
+        {
+          "name": "soui:identitySource",
+          "value": "original F01 r3 frozen-link-inputs"
         },
         {
           "name": "soui:buildEvidence",
-          "value": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x64/build-result.json"
+          "value": "third_party/manifests/kernel-frame-policy-build-070-preview2.json"
+        },
+        {
+          "name": "soui:licenseReview",
+          "value": "not-complete"
         }
       ]
     },
@@ -4915,7 +4995,7 @@
       "type": "file",
       "bom-ref": "urn:soui:kernel-link-input:x64:v8_5_7_1.lib",
       "name": "x64/v8_5_7_1.lib",
-      "description": "Actually observed link archive; reused, not recompiled; does not assert all archive members enter the DLL.",
+      "description": "Original producer observed archive input; does not assert that every archive member enters the DLL.",
       "hashes": [
         {
           "alg": "SHA-256",
@@ -4944,12 +5024,20 @@
           "value": "false"
         },
         {
-          "name": "soui:licenseReview",
-          "value": "not-complete"
+          "name": "soui:hashRecomputedBySbomAssembly",
+          "value": "false"
+        },
+        {
+          "name": "soui:identitySource",
+          "value": "original F01 r3 frozen-link-inputs"
         },
         {
           "name": "soui:buildEvidence",
-          "value": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x64/build-result.json"
+          "value": "third_party/manifests/kernel-frame-policy-build-070-preview2.json"
+        },
+        {
+          "name": "soui:licenseReview",
+          "value": "not-complete"
         }
       ]
     },
@@ -4957,7 +5045,7 @@
       "type": "file",
       "bom-ref": "urn:soui:kernel-link-input:x64:skia.lib",
       "name": "x64/skia.lib",
-      "description": "Actually observed link archive; reused, not recompiled; does not assert all archive members enter the DLL.",
+      "description": "Original producer observed archive input; does not assert that every archive member enters the DLL.",
       "hashes": [
         {
           "alg": "SHA-256",
@@ -4986,12 +5074,20 @@
           "value": "false"
         },
         {
-          "name": "soui:licenseReview",
-          "value": "not-complete"
+          "name": "soui:hashRecomputedBySbomAssembly",
+          "value": "false"
+        },
+        {
+          "name": "soui:identitySource",
+          "value": "original F01 r3 frozen-link-inputs"
         },
         {
           "name": "soui:buildEvidence",
-          "value": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x64/build-result.json"
+          "value": "third_party/manifests/kernel-frame-policy-build-070-preview2.json"
+        },
+        {
+          "name": "soui:licenseReview",
+          "value": "not-complete"
         }
       ]
     },
@@ -4999,7 +5095,7 @@
       "type": "file",
       "bom-ref": "urn:soui:kernel-link-input:x86:zlib.lib",
       "name": "x86/zlib.lib",
-      "description": "Actually observed link archive; reused, not recompiled; does not assert all archive members enter the DLL.",
+      "description": "Original producer observed archive input; does not assert that every archive member enters the DLL.",
       "hashes": [
         {
           "alg": "SHA-256",
@@ -5028,12 +5124,20 @@
           "value": "false"
         },
         {
-          "name": "soui:licenseReview",
-          "value": "not-complete"
+          "name": "soui:hashRecomputedBySbomAssembly",
+          "value": "false"
+        },
+        {
+          "name": "soui:identitySource",
+          "value": "original F01 r3 frozen-link-inputs"
         },
         {
           "name": "soui:buildEvidence",
-          "value": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x86/build-result.json"
+          "value": "third_party/manifests/kernel-frame-policy-build-070-preview2.json"
+        },
+        {
+          "name": "soui:licenseReview",
+          "value": "not-complete"
         }
       ]
     },
@@ -5041,7 +5145,7 @@
       "type": "file",
       "bom-ref": "urn:soui:kernel-link-input:x86:libjpeg.lib",
       "name": "x86/libjpeg.lib",
-      "description": "Actually observed link archive; reused, not recompiled; does not assert all archive members enter the DLL.",
+      "description": "Original producer observed archive input; does not assert that every archive member enters the DLL.",
       "hashes": [
         {
           "alg": "SHA-256",
@@ -5070,12 +5174,20 @@
           "value": "false"
         },
         {
-          "name": "soui:licenseReview",
-          "value": "not-complete"
+          "name": "soui:hashRecomputedBySbomAssembly",
+          "value": "false"
+        },
+        {
+          "name": "soui:identitySource",
+          "value": "original F01 r3 frozen-link-inputs"
         },
         {
           "name": "soui:buildEvidence",
-          "value": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x86/build-result.json"
+          "value": "third_party/manifests/kernel-frame-policy-build-070-preview2.json"
+        },
+        {
+          "name": "soui:licenseReview",
+          "value": "not-complete"
         }
       ]
     },
@@ -5083,7 +5195,7 @@
       "type": "file",
       "bom-ref": "urn:soui:kernel-link-input:x86:libpng.lib",
       "name": "x86/libpng.lib",
-      "description": "Actually observed link archive; reused, not recompiled; does not assert all archive members enter the DLL.",
+      "description": "Original producer observed archive input; does not assert that every archive member enters the DLL.",
       "hashes": [
         {
           "alg": "SHA-256",
@@ -5112,12 +5224,20 @@
           "value": "false"
         },
         {
-          "name": "soui:licenseReview",
-          "value": "not-complete"
+          "name": "soui:hashRecomputedBySbomAssembly",
+          "value": "false"
+        },
+        {
+          "name": "soui:identitySource",
+          "value": "original F01 r3 frozen-link-inputs"
         },
         {
           "name": "soui:buildEvidence",
-          "value": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x86/build-result.json"
+          "value": "third_party/manifests/kernel-frame-policy-build-070-preview2.json"
+        },
+        {
+          "name": "soui:licenseReview",
+          "value": "not-complete"
         }
       ]
     },
@@ -5125,7 +5245,7 @@
       "type": "file",
       "bom-ref": "urn:soui:kernel-link-input:x86:harfbuzz.lib",
       "name": "x86/harfbuzz.lib",
-      "description": "Actually observed link archive; reused, not recompiled; does not assert all archive members enter the DLL.",
+      "description": "Original producer observed archive input; does not assert that every archive member enters the DLL.",
       "hashes": [
         {
           "alg": "SHA-256",
@@ -5154,12 +5274,20 @@
           "value": "false"
         },
         {
-          "name": "soui:licenseReview",
-          "value": "not-complete"
+          "name": "soui:hashRecomputedBySbomAssembly",
+          "value": "false"
+        },
+        {
+          "name": "soui:identitySource",
+          "value": "original F01 r3 frozen-link-inputs"
         },
         {
           "name": "soui:buildEvidence",
-          "value": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x86/build-result.json"
+          "value": "third_party/manifests/kernel-frame-policy-build-070-preview2.json"
+        },
+        {
+          "name": "soui:licenseReview",
+          "value": "not-complete"
         }
       ]
     },
@@ -5167,7 +5295,7 @@
       "type": "file",
       "bom-ref": "urn:soui:kernel-link-input:x86:libxml.lib",
       "name": "x86/libxml.lib",
-      "description": "Actually observed link archive; reused, not recompiled; does not assert all archive members enter the DLL.",
+      "description": "Original producer observed archive input; does not assert that every archive member enters the DLL.",
       "hashes": [
         {
           "alg": "SHA-256",
@@ -5196,12 +5324,20 @@
           "value": "false"
         },
         {
-          "name": "soui:licenseReview",
-          "value": "not-complete"
+          "name": "soui:hashRecomputedBySbomAssembly",
+          "value": "false"
+        },
+        {
+          "name": "soui:identitySource",
+          "value": "original F01 r3 frozen-link-inputs"
         },
         {
           "name": "soui:buildEvidence",
-          "value": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x86/build-result.json"
+          "value": "third_party/manifests/kernel-frame-policy-build-070-preview2.json"
+        },
+        {
+          "name": "soui:licenseReview",
+          "value": "not-complete"
         }
       ]
     },
@@ -5209,7 +5345,7 @@
       "type": "file",
       "bom-ref": "urn:soui:kernel-link-input:x86:ots.lib",
       "name": "x86/ots.lib",
-      "description": "Actually observed link archive; reused, not recompiled; does not assert all archive members enter the DLL.",
+      "description": "Original producer observed archive input; does not assert that every archive member enters the DLL.",
       "hashes": [
         {
           "alg": "SHA-256",
@@ -5238,12 +5374,20 @@
           "value": "false"
         },
         {
-          "name": "soui:licenseReview",
-          "value": "not-complete"
+          "name": "soui:hashRecomputedBySbomAssembly",
+          "value": "false"
+        },
+        {
+          "name": "soui:identitySource",
+          "value": "original F01 r3 frozen-link-inputs"
         },
         {
           "name": "soui:buildEvidence",
-          "value": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x86/build-result.json"
+          "value": "third_party/manifests/kernel-frame-policy-build-070-preview2.json"
+        },
+        {
+          "name": "soui:licenseReview",
+          "value": "not-complete"
         }
       ]
     },
@@ -5251,7 +5395,7 @@
       "type": "file",
       "bom-ref": "urn:soui:kernel-link-input:x86:openssl.lib",
       "name": "x86/openssl.lib",
-      "description": "Actually observed link archive; reused, not recompiled; does not assert all archive members enter the DLL.",
+      "description": "Original producer observed archive input; does not assert that every archive member enters the DLL.",
       "hashes": [
         {
           "alg": "SHA-256",
@@ -5280,12 +5424,20 @@
           "value": "false"
         },
         {
-          "name": "soui:licenseReview",
-          "value": "not-complete"
+          "name": "soui:hashRecomputedBySbomAssembly",
+          "value": "false"
+        },
+        {
+          "name": "soui:identitySource",
+          "value": "original F01 r3 frozen-link-inputs"
         },
         {
           "name": "soui:buildEvidence",
-          "value": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x86/build-result.json"
+          "value": "third_party/manifests/kernel-frame-policy-build-070-preview2.json"
+        },
+        {
+          "name": "soui:licenseReview",
+          "value": "not-complete"
         }
       ]
     },
@@ -5293,7 +5445,7 @@
       "type": "file",
       "bom-ref": "urn:soui:kernel-link-input:x86:libcurl.lib",
       "name": "x86/libcurl.lib",
-      "description": "Actually observed link archive; reused, not recompiled; does not assert all archive members enter the DLL.",
+      "description": "Original producer observed archive input; does not assert that every archive member enters the DLL.",
       "hashes": [
         {
           "alg": "SHA-256",
@@ -5322,12 +5474,20 @@
           "value": "false"
         },
         {
-          "name": "soui:licenseReview",
-          "value": "not-complete"
+          "name": "soui:hashRecomputedBySbomAssembly",
+          "value": "false"
+        },
+        {
+          "name": "soui:identitySource",
+          "value": "original F01 r3 frozen-link-inputs"
         },
         {
           "name": "soui:buildEvidence",
-          "value": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x86/build-result.json"
+          "value": "third_party/manifests/kernel-frame-policy-build-070-preview2.json"
+        },
+        {
+          "name": "soui:licenseReview",
+          "value": "not-complete"
         }
       ]
     },
@@ -5335,7 +5495,7 @@
       "type": "file",
       "bom-ref": "urn:soui:kernel-link-input:x86:v8_5_7.lib",
       "name": "x86/v8_5_7.lib",
-      "description": "Actually observed link archive; reused, not recompiled; does not assert all archive members enter the DLL.",
+      "description": "Original producer observed archive input; does not assert that every archive member enters the DLL.",
       "hashes": [
         {
           "alg": "SHA-256",
@@ -5364,12 +5524,20 @@
           "value": "false"
         },
         {
-          "name": "soui:licenseReview",
-          "value": "not-complete"
+          "name": "soui:hashRecomputedBySbomAssembly",
+          "value": "false"
+        },
+        {
+          "name": "soui:identitySource",
+          "value": "original F01 r3 frozen-link-inputs"
         },
         {
           "name": "soui:buildEvidence",
-          "value": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x86/build-result.json"
+          "value": "third_party/manifests/kernel-frame-policy-build-070-preview2.json"
+        },
+        {
+          "name": "soui:licenseReview",
+          "value": "not-complete"
         }
       ]
     },
@@ -5377,7 +5545,7 @@
       "type": "file",
       "bom-ref": "urn:soui:kernel-link-input:x86:v8_5_7_1.lib",
       "name": "x86/v8_5_7_1.lib",
-      "description": "Actually observed link archive; reused, not recompiled; does not assert all archive members enter the DLL.",
+      "description": "Original producer observed archive input; does not assert that every archive member enters the DLL.",
       "hashes": [
         {
           "alg": "SHA-256",
@@ -5406,12 +5574,20 @@
           "value": "false"
         },
         {
-          "name": "soui:licenseReview",
-          "value": "not-complete"
+          "name": "soui:hashRecomputedBySbomAssembly",
+          "value": "false"
+        },
+        {
+          "name": "soui:identitySource",
+          "value": "original F01 r3 frozen-link-inputs"
         },
         {
           "name": "soui:buildEvidence",
-          "value": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x86/build-result.json"
+          "value": "third_party/manifests/kernel-frame-policy-build-070-preview2.json"
+        },
+        {
+          "name": "soui:licenseReview",
+          "value": "not-complete"
         }
       ]
     },
@@ -5419,7 +5595,7 @@
       "type": "file",
       "bom-ref": "urn:soui:kernel-link-input:x86:skia.lib",
       "name": "x86/skia.lib",
-      "description": "Actually observed link archive; reused, not recompiled; does not assert all archive members enter the DLL.",
+      "description": "Original producer observed archive input; does not assert that every archive member enters the DLL.",
       "hashes": [
         {
           "alg": "SHA-256",
@@ -5448,19 +5624,27 @@
           "value": "false"
         },
         {
-          "name": "soui:licenseReview",
-          "value": "not-complete"
+          "name": "soui:hashRecomputedBySbomAssembly",
+          "value": "false"
+        },
+        {
+          "name": "soui:identitySource",
+          "value": "original F01 r3 frozen-link-inputs"
         },
         {
           "name": "soui:buildEvidence",
-          "value": "verification/production-validation/0.6.0-source2-kernel-2026-10-29/x86/build-result.json"
+          "value": "third_party/manifests/kernel-frame-policy-build-070-preview2.json"
+        },
+        {
+          "name": "soui:licenseReview",
+          "value": "not-complete"
         }
       ]
     }
   ],
   "dependencies": [
     {
-      "ref": "urn:soui:sdk:native:0.6.0",
+      "ref": "urn:soui:sdk:native:0.7.0-preview.2",
       "dependsOn": [
         "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fminiblink%2Fnode.dll",
         "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fucrt%2Fx64%2Fapi-ms-win-core-console-l1-1-0.dll",
@@ -5659,7 +5843,7 @@
     {
       "aggregate": "incomplete",
       "assemblies": [
-        "urn:soui:sdk:native:0.6.0"
+        "urn:soui:sdk:native:0.7.0-preview.2"
       ]
     }
   ]

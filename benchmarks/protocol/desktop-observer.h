@@ -6,6 +6,9 @@
 #include <string>
 
 namespace soui::benchmark {
+struct passive_options;
+// Synchronous, measurement-only passive path. The caller owns the held process.
+int observe_manual_desktop(HANDLE process, const passive_options& options);
 // A measurement-only thread. It borrows the held host process until finish().
 // No HWND/SDK callback is executed on this thread.
 class desktop_observer final {

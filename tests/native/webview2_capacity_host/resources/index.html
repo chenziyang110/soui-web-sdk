@@ -8,12 +8,17 @@ import {SouiNativeClientImpl} from './soui-web-sdk/index.js';
   const require = (ok, why) => { if (!ok) throw Error(why); };
   const host = window.chrome.webview;
   const realPost = host.postMessage.bind(host);
+  // Test-only transport correlation, never document identity or authority.
+  // This raw native-boundary probe has no entry in the real preload's pending map.
+  const nativeExcessInvocation = '9007199254740991';
   let documentId, wireWork = 0, settled = 0, grant, controlsCompleted = 0;
   let ordinaryAtRenewal, ordinaryAtCleanup;
   // Observe the actual production preload wire. Do not supply another preload,
   // manufacture a document/session, or replace the transport implementation.
   host.postMessage = function (raw) {
     const wire = JSON.parse(raw), packet = JSON.parse(wire.request);
+    require(typeof wire.invocationId === 'string' && wire.invocationId !== nativeExcessInvocation,
+      'real preload invocation collided with the dedicated native probe');
     if (packet.method === 'capacity.work') {
       require(typeof wire.documentId === 'string' && wire.documentId.length > 0, 'real document identity absent');
       if (documentId !== undefined) require(documentId === wire.documentId, 'document changed during saturation');
@@ -93,12 +98,14 @@ import {SouiNativeClientImpl} from './soui-web-sdk/index.js';
       if (!data || data.kind !== 'response' || data.requestId !== 'native-excess') return;
       host.removeEventListener('message', observe); clearTimeout(timer);
       try {
-        require(data.documentId === documentId && settled === 0, 'overflow did not coincide with page occupancy');
+        require(data.documentId === documentId && data.invocationId === nativeExcessInvocation && settled === 0,
+          'overflow correlation or page occupancy changed');
         resolve(JSON.parse(data.raw));
       } catch (error) { reject(error); }
     }
     host.addEventListener('message', observe);
-    realPost(JSON.stringify({documentId, request:JSON.stringify(envelope('native-excess', 'capacity.work', {index:999}))}));
+    realPost(JSON.stringify({documentId, invocationId:nativeExcessInvocation,
+      request:JSON.stringify(envelope('native-excess', 'capacity.work', {index:999}))}));
   });
   require(nativeExcess.requestId === 'native-excess' && nativeExcess.ok === false &&
     nativeExcess.error.code === 'E_BUSY', 'real native ordinary 128 boundary was not refused');

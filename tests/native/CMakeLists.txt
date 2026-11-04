@@ -592,6 +592,12 @@ add_subdirectory(host_frame_policy)
 add_subdirectory(native_trace_ui_lease)
 
 add_subdirectory(webview2_owner_policy)
+add_subdirectory(webview2_request_metadata)
+add_subdirectory(miniblink_request_route)
+add_subdirectory(miniblink_admission_metadata)
+add_subdirectory(bridge_script_source)
+add_subdirectory(native_bridge_phase_observation)
+add_subdirectory(webview2_output_timing)
 add_subdirectory(provider_deadline)
 add_subdirectory(frame_buffer_copy_source)
 # Pure checks of the production WebView2 owner counters and preparation getter.

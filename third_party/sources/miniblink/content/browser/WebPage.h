@@ -113,6 +113,8 @@ public:
 
     void setDrawMinInterval(double drawMinInterval);
     void setMainFrameRate(int rate);
+    bool applyMainFrameRate(int rate);
+    int mainFrameRate() const;
     bool cancelInputState();
     void setUiMirrorConsumerRequired(bool required);
     bool setHostVisible(bool visible);

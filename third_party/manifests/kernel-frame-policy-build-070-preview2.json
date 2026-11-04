@@ -1,0 +1,270 @@
+{
+  "schema": "soui.miniblink-incremental-import-evidence/v1",
+  "sdkVersion": "0.7.0-preview.2",
+  "baselineCommit": "a4fc394427c99a3331abfb2e3e3307ae27503dd0",
+  "profile": "LLVM22MSVC142",
+  "sourceInput": {
+    "schema": "soui.kernel-source-files/v1",
+    "identity": "bcbb83feaa391991d2eadb49fe53495bb54a4d0db1017cc072e47462ec80c933",
+    "fileCount": 23066,
+    "directoryCount": 1323,
+    "totalBytes": 305396692,
+    "manifest": {
+      "evidenceRoot": "sdk-performance-implementation-20261102",
+      "path": "R01/default-kernel-import-r3/source-input-snapshot.json",
+      "bytes": 4389594,
+      "sha256": "abe1a36b8bece6bd368b4fbb4c585bbc20318b3a960c1f06b6ca78ddbdef619a"
+    },
+    "meaning": "Complete current physical source snapshot, reconciled to the original whole snapshot plus admitted buffer-retirement ancestor pins and six F01 changes; not a newly executed whole-source build"
+  },
+  "derivation": {
+    "historicalWholeSource": {
+      "bytes": 4389598,
+      "sha256": "330fda7e10ed33b08141e1b217f4a53c83d697caa94b8fe2c7b457811e884383"
+    },
+    "historicalWholeSourceIdentity": "4ac7c9e0ad10876a92e78c3bdf5047761e51f248a36d7d9f2350ab80fa674b79",
+    "admittedAncestorSourceLists": [
+      {
+        "bytes": 2741202,
+        "sha256": "e335db02b151f5bed78d3572f03b80bbebb5ddc90b36e86f585b0119219d8c3a"
+      },
+      {
+        "bytes": 2741199,
+        "sha256": "6afa003791464f12d46521cd0d9a2dd626abaeb66009c4f935d9a1c317981940"
+      }
+    ],
+    "reconstructedK0Identity": "65b5900374d69250d2b922e0cd10dc288af8566cdd877a66ebdf9008021172ca",
+    "reconstructedK0IsIndependentCapture": false,
+    "exactF01Deltas": [
+      {
+        "path": "content/browser/WebPage.cpp",
+        "before": {
+          "path": "content/browser/WebPage.cpp",
+          "bytes": 15670,
+          "sha256": "76ba0665b50fd423c71cd81edee73942971b2c01358efb64709c8e94ef41c5f6"
+        },
+        "after": {
+          "path": "content/browser/WebPage.cpp",
+          "bytes": 15879,
+          "sha256": "30095284259aa07237b08b460d6e48b0a7aeae20b4e2107ece15a50ae15a68bc"
+        }
+      },
+      {
+        "path": "content/browser/WebPage.h",
+        "before": {
+          "path": "content/browser/WebPage.h",
+          "bytes": 6806,
+          "sha256": "5d42084beb2f2d18479bf19ec49221391404928c59e2db16d25220d075a5759e"
+        },
+        "after": {
+          "path": "content/browser/WebPage.h",
+          "bytes": 6876,
+          "sha256": "cca9bcbd031d7f73d95c4b9deb48c3ad4ef4f5158ed875206f29c2cb3ee813a8"
+        }
+      },
+      {
+        "path": "content/browser/WebPageImpl.cpp",
+        "before": {
+          "path": "content/browser/WebPageImpl.cpp",
+          "bytes": 94094,
+          "sha256": "34b1d519010ee9200026f258f0a04806d47e5721dcaf85757ad1a235b1537850"
+        },
+        "after": {
+          "path": "content/browser/WebPageImpl.cpp",
+          "bytes": 94534,
+          "sha256": "8c045d6f184703294d3bac103b076086f8ab48d1a051c15f890d12083d8c1272"
+        }
+      },
+      {
+        "path": "content/browser/WebPageImpl.h",
+        "before": {
+          "path": "content/browser/WebPageImpl.h",
+          "bytes": 13243,
+          "sha256": "016afcd8ad9982f7edde33b3d27367abb6b9c22872b5e1af80b4d9b82291dba2"
+        },
+        "after": {
+          "path": "content/browser/WebPageImpl.h",
+          "bytes": 13345,
+          "sha256": "b6130b48277a91958442fd7f42a0f97de1241f546345d58e262373aa1ccfa992"
+        }
+      },
+      {
+        "path": "wke/InputUiApi.cpp",
+        "before": {
+          "path": "wke/InputUiApi.cpp",
+          "bytes": 15573,
+          "sha256": "3c6ffc5b7ef73d4766047bfee38f735ed84b0a1ca97d97a0891751712b1bf876"
+        },
+        "after": {
+          "path": "wke/InputUiApi.cpp",
+          "bytes": 17549,
+          "sha256": "30ec1f0d453b810d7c1b1a7f3e0e8ba4244cdee625ae8b28ed52a15fc4968967"
+        }
+      },
+      {
+        "path": "wke/InputUiApi.h",
+        "before": {
+          "path": "wke/InputUiApi.h",
+          "bytes": 5968,
+          "sha256": "e5a19a80863dd33b2900b48a79204e4d82fb7e33be186bcd050a50c3bab28401"
+        },
+        "after": {
+          "path": "wke/InputUiApi.h",
+          "bytes": 7014,
+          "sha256": "7acaf03ad77459426f048d92402394da00f5dca6c5c350b3a3b5d66d4b94e17e"
+        }
+      }
+    ]
+  },
+  "receipts": [
+    {
+      "role": "summary",
+      "evidenceRoot": "sdk-performance-implementation-20261102",
+      "path": "F01/kernel-current/summary.json",
+      "bytes": 2401,
+      "sha256": "631c5e028ecc6c64590331a77f798d233f2cd99b880de4f7fe4cdf77d39305d4"
+    },
+    {
+      "role": "affectedClosureResult",
+      "evidenceRoot": "sdk-performance-implementation-20261102",
+      "path": "F01/kernel-current/r3/result.json",
+      "bytes": 161495,
+      "sha256": "26c911ed82bb6e2a3d69d7a9ad0883c0ff1d77a78bbb99476cf5ed17a49095ee"
+    },
+    {
+      "role": "abiBatch",
+      "evidenceRoot": "sdk-performance-implementation-20261102",
+      "path": "R01/default-kernel-abi-r3/abi-result.json",
+      "bytes": 6808,
+      "sha256": "36dde0e207d811d8beff6d0c7f92121c5dab23baad53aac260faff20f4667eff"
+    }
+  ],
+  "architectures": [
+    {
+      "architecture": "x64",
+      "dll": {
+        "bytes": 39211008,
+        "sha256": "8d84f0d0b307c4ee1fdee8d4ac27b8e67dec32545e9cf52dbfaf1a85d88904b6"
+      },
+      "originalDllBasename": "miniblink.dll",
+      "runtimeBasename": "node.dll",
+      "completeAffectedTranslationUnits": 40,
+      "sourceEquivalentOriginalPrimaryCount": 2985,
+      "sourceList": {
+        "bytes": 4402986,
+        "sha256": "660b52a05ec1a7003f090480591b90db87914f0534b9f24184ee002a8ab0c34c"
+      },
+      "staticPE": {
+        "machine": 34404,
+        "exportCount": 9663,
+        "required": [
+          "wkeInitializeEx",
+          "wkeFinalize",
+          "wkeStage0GetDevToolsApi",
+          "wkeGetLocalResourceApi",
+          "wkeGetCursorBrokerApi",
+          "wkeGetViewDiagnosticsApi",
+          "wkeGetRendererDiagnosticsApi",
+          "wkeGetRendererModelDiagnosticsApi",
+          "wkeGetInteractionApi",
+          "wkeGetCacheDiagnosticsApi",
+          "wkeGetInputUiApi"
+        ],
+        "requiredPresent": true,
+        "imageExecuted": false,
+        "functionTableAbiExecuted": false
+      },
+      "actualTableAbi": {
+        "schema": "soui.kernel-import-table-abi/v1",
+        "pointerBytes": 8,
+        "abiVersion": 1,
+        "structBytes": 144,
+        "requiredTailBytes": 144,
+        "capabilities": 4095,
+        "framePolicyBytes": 32,
+        "queryPointerPresent": true,
+        "applyPointerPresent": true,
+        "wrongVersionsRejected": true,
+        "loadedPathMatchesArgument": true,
+        "rendererInitialized": false,
+        "viewCreated": false,
+        "desktopInput": false
+      },
+      "importLibrary": {
+        "bytes": 4837106,
+        "sha256": "9c0a08762aba7e751866aede65b7ffacd5b9a20f0274c7aad3cae07ab1225381"
+      },
+      "linkMap": {
+        "bytes": 55761289,
+        "sha256": "ca3d013848abeba1137eaa9418fe68fff6a88a68e851f9453747084c5f787821"
+      }
+    },
+    {
+      "architecture": "x86",
+      "dll": {
+        "bytes": 28323840,
+        "sha256": "367f1cd087bb5166c5b75f32fb76e7ca2950feae68dc15d05ec8f0ffcdc5b296"
+      },
+      "originalDllBasename": "node.dll",
+      "runtimeBasename": "node.dll",
+      "completeAffectedTranslationUnits": 40,
+      "sourceEquivalentOriginalPrimaryCount": 2984,
+      "sourceList": {
+        "bytes": 4402665,
+        "sha256": "37c92c3eb167b3f5d0d377facc5553a479fcb9e129edf9fe33fd51d94f02d95f"
+      },
+      "staticPE": {
+        "machine": 332,
+        "exportCount": 9875,
+        "required": [
+          "wkeInitializeEx",
+          "wkeFinalize",
+          "wkeStage0GetDevToolsApi",
+          "wkeGetLocalResourceApi",
+          "wkeGetCursorBrokerApi",
+          "wkeGetViewDiagnosticsApi",
+          "wkeGetRendererDiagnosticsApi",
+          "wkeGetRendererModelDiagnosticsApi",
+          "wkeGetInteractionApi",
+          "wkeGetCacheDiagnosticsApi",
+          "wkeGetInputUiApi"
+        ],
+        "requiredPresent": true,
+        "imageExecuted": false,
+        "functionTableAbiExecuted": false
+      },
+      "actualTableAbi": {
+        "schema": "soui.kernel-import-table-abi/v1",
+        "pointerBytes": 4,
+        "abiVersion": 1,
+        "structBytes": 80,
+        "requiredTailBytes": 80,
+        "capabilities": 4095,
+        "framePolicyBytes": 32,
+        "queryPointerPresent": true,
+        "applyPointerPresent": true,
+        "wrongVersionsRejected": true,
+        "loadedPathMatchesArgument": true,
+        "rendererInitialized": false,
+        "viewCreated": false,
+        "desktopInput": false
+      },
+      "importLibrary": {
+        "bytes": 4757974,
+        "sha256": "e4547a8cfa3cc72dc4c0c961b9111f1450350f249a4560d806b514238f201bb6"
+      },
+      "linkMap": {
+        "bytes": 49169364,
+        "sha256": "882173c13b5acaa173af53fda99559ca0d9036486c3c59461962d4d1bcdb9eba"
+      }
+    }
+  ],
+  "freshWholeKernel": false,
+  "publicBuildVerified": false,
+  "v143Qualified": false,
+  "fullSdkApplicationValidationComplete": false,
+  "binaryLicenseReviewComplete": false,
+  "transitiveDependencyCompleteness": "incomplete",
+  "performanceVerified": false,
+  "releaseReady": false
+}

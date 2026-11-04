@@ -30,9 +30,26 @@ class input_mailbox final : public engine_input_service {
   explicit input_mailbox(handler dispatch, order_committer commit = {}, cutoff_reader cutoff = {}, std::uint64_t view_id = 0)
       : dispatch_(std::make_shared<handler>(std::move(dispatch))), commit_(std::move(commit)), cutoff_(std::move(cutoff)), trace_view_id_(view_id) {}
 
-  [[nodiscard]] input_admission_result post(const input_packet& packet) noexcept {
+  struct post_receipt final {
+    input_admission_result result;
+    bool wake_required;
+  };
+  // A rejected event can still publish ordered recovery and need a wake.
+  // Decide under the same lock as empty publication; never arm a separate bit
+  // that a delayed producer notification could leave set after the queue drains.
+  [[nodiscard]] post_receipt post_with_notification(const input_packet& packet) noexcept {
     input_packet retired; // Rejected payload retirement follows mutex release.
     std::lock_guard<std::mutex> lock(mutex_);
+    const bool was_pending = pending_.load(std::memory_order_relaxed);
+    const auto result = post_locked(packet, retired);
+    return {result, !was_pending && pending_.load(std::memory_order_relaxed)};
+  }
+  [[nodiscard]] input_admission_result post(const input_packet& packet) noexcept {
+    return post_with_notification(packet).result;
+  }
+
+ private:
+  input_admission_result post_locked(const input_packet& packet, input_packet& retired) noexcept {
     if (closed_ || quiescing_) return input_admission_result::stopped;
     observed_generation_ = packet.generation;
     if (blocked_) {
@@ -75,6 +92,7 @@ class input_mailbox final : public engine_input_service {
     return input_admission_result::accepted;
   }
 
+ public:
   [[nodiscard]] bool pending() const noexcept override { return pending_.load(std::memory_order_acquire); }
   [[nodiscard]] std::uint64_t oldest_order() const noexcept override { return published_head_.load(std::memory_order_acquire); }
   void block_document(interaction_generation generation) noexcept {

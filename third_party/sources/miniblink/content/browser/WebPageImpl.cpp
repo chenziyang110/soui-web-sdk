@@ -229,6 +229,7 @@ WebPageImpl::WebPageImpl(COLORREF bdColor)
     m_executeMainFrameCount = 0;
     m_lastFrameTimeMonotonic = 0;
     m_mainFrameInterval = 0;
+    m_appliedMainFrameRate = 0;
     m_renderFrameId = 0;
     m_nextMainFrameTime = 0;
     m_popupHandle = nullptr;
@@ -1522,6 +1523,7 @@ void WebPageImpl::setMainFrameRate(int rate)
     ASSERT(isMainThread());
     if (rate != 0 && (rate < 30 || rate > 240)) return;
     const double interval = rate ? 1.0 / rate : 0;
+    m_appliedMainFrameRate = rate;
     if (interval == m_mainFrameInterval) return;
     m_mainFrameInterval = interval;
     if (m_layerTreeHost && interval > 0)
@@ -1529,6 +1531,20 @@ void WebPageImpl::setMainFrameRate(int rate)
     m_nextMainFrameTime = 0;
     if (pageInited == m_state) setNeedsCommit();
 }
+bool WebPageImpl::applyMainFrameRate(int rate)
+{
+    if (!isMainThread() || m_state != pageInited
+        || (rate != 0 && (rate < 30 || rate > 240)))
+        return false;
+    setMainFrameRate(rate);
+    return m_appliedMainFrameRate == rate;
+}
+
+int WebPageImpl::mainFrameRate() const
+{
+    return isMainThread() && m_state == pageInited ? m_appliedMainFrameRate : -1;
+}
+
 void WebPageImpl::setDrawMinInterval(double drawMinInterval)
 {
     if (m_layerTreeHost)

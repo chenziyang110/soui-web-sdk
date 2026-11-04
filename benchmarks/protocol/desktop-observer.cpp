@@ -1,14 +1,18 @@
 #define NOMINMAX
 #include "desktop-observer.h"
 #include "trace-identity.h"
+#include "passive-observation.h"
+#include "passive-wait-timer.h"
 #include <d3d11.h>
 #include <dxgi1_2.h>
+#include <algorithm>
 #include <array>
 #include <atomic>
 #include <chrono>
 #include <condition_variable>
 #include <mutex>
 #include <limits>
+#include <iostream>
 #include <stdexcept>
 #include <thread>
 
@@ -200,4 +204,400 @@ void desktop_observer::check(){std::lock_guard<std::mutex> lock(state_->mutex);i
 std::uint32_t desktop_observer::next_event(){check();std::lock_guard<std::mutex> lock(state_->mutex);require(state_->latest.ack==state_->acknowledged,"Desktop unexpected input ACK");require(state_->latest.ack+1<(1U<<20),"Desktop event counter exhausted");return state_->latest.ack+1;}
 void desktop_observer::wait_ack(std::uint32_t event){std::unique_lock<std::mutex> lock(state_->mutex);const bool ready=state_->changed.wait_for(lock,std::chrono::milliseconds(500),[this,event]{return state_->latest.ack>=event||state_->done;});require(ready&&state_->failure.empty()&&!state_->done&&state_->latest.ack==event,"Desktop visual ACK failed/timeout");state_->acknowledged=event;}
 void desktop_observer::finish(){state_->normal_stop=true;state_->stop=true;if(state_->thread.joinable())state_->thread.join();std::lock_guard<std::mutex> lock(state_->mutex);require(state_->failure.empty()&&state_->done,"Desktop observer failed at finish");}
+
+namespace {
+// No target messages, input, activation, geometry writes or SDK calls are used
+// below. Out-of-context WinEvents make a witnessed destroy/blur sticky, including
+// when the numeric HWND is reused before the next polling check.
+void passive_ok(HRESULT value, const char* reason) { passive_require(SUCCEEDED(value), reason); }
+struct passive_clock {
+  std::uint64_t last{};
+  std::uint64_t read() {
+    LARGE_INTEGER value{};
+    passive_require(QueryPerformanceCounter(&value) && value.QuadPart > 0, "observer-failed");
+    const auto now = static_cast<std::uint64_t>(value.QuadPart);
+    passive_require(now >= last, "observer-failed"); last = now; return now;
+  }
+};
+struct passive_watch {
+  HWND window{};
+  HWINEVENTHOOK destroy{}, foreground{}, geometry{}, hidden{};
+  bool destroyed{}, blurred{}, moved{}, concealed{}, active{};
+  DWORD armed_at{};
+  static thread_local passive_watch* current;
+  static void CALLBACK event(HWINEVENTHOOK, DWORD kind, HWND window, LONG object,
+                             LONG child, DWORD, DWORD time) {
+    auto* self = current;
+    if (!self) return;
+    if (kind == EVENT_OBJECT_DESTROY && window == self->window && object == OBJID_WINDOW && child == CHILDID_SELF)
+      self->destroyed = true;
+    if (!self->active || static_cast<LONG>(time - self->armed_at) < 0) return;
+    if (kind == EVENT_SYSTEM_FOREGROUND && window != self->window) self->blurred = true;
+    if (window == self->window && object == OBJID_WINDOW && child == CHILDID_SELF) {
+      if (kind == EVENT_OBJECT_LOCATIONCHANGE) self->moved = true;
+      if (kind == EVENT_OBJECT_HIDE) self->concealed = true;
+    }
+  }
+  passive_watch(HWND value, DWORD pid) : window(value) {
+    passive_require(current == nullptr, "observer-failed"); current = this;
+    destroy = SetWinEventHook(EVENT_OBJECT_DESTROY, EVENT_OBJECT_DESTROY, nullptr, event, pid, 0, WINEVENT_OUTOFCONTEXT);
+    foreground = SetWinEventHook(EVENT_SYSTEM_FOREGROUND, EVENT_SYSTEM_FOREGROUND, nullptr, event, 0, 0, WINEVENT_OUTOFCONTEXT);
+    geometry = SetWinEventHook(EVENT_OBJECT_LOCATIONCHANGE, EVENT_OBJECT_LOCATIONCHANGE, nullptr, event, pid, 0, WINEVENT_OUTOFCONTEXT);
+    hidden = SetWinEventHook(EVENT_OBJECT_HIDE, EVENT_OBJECT_HIDE, nullptr, event, pid, 0, WINEVENT_OUTOFCONTEXT);
+    if (!destroy || !foreground || !geometry || !hidden) { close(); throw passive_error("observer-failed"); }
+  }
+  void close() noexcept {
+    if (hidden) UnhookWinEvent(hidden); if (geometry) UnhookWinEvent(geometry);
+    if (foreground) UnhookWinEvent(foreground); if (destroy) UnhookWinEvent(destroy);
+    hidden = geometry = foreground = destroy = nullptr; current = nullptr;
+  }
+  ~passive_watch() { close(); }
+  void check_sticky() const {
+    passive_require(!destroyed, "window-destroyed");
+    passive_require(!blurred, "foreground-lost");
+    passive_require(!moved, "geometry-changed");
+    passive_require(!concealed, "window-hidden");
+  }
+  void pump() {
+    MSG message{};
+    unsigned messages{};
+    while (PeekMessageW(&message, nullptr, 0, 0, PM_REMOVE)) {
+      // A flooding event queue fails closed instead of extending the deadline.
+      passive_require(++messages <= 64, "observer-failed");
+      passive_require(message.message != WM_QUIT, "observer-failed");
+      TranslateMessage(&message); DispatchMessageW(&message);
+      check_sticky();
+    }
+    check_sticky();
+  }
+  void arm() { pump(); armed_at = GetTickCount(); active = true; }
+};
+thread_local passive_watch* passive_watch::current = nullptr;
+
+struct passive_binding {
+  HANDLE process; const passive_options& options; HWND window;
+  DWORD thread{}; POINT origin{}; RECT client{}; HMONITOR monitor{};
+  passive_binding(HANDLE held, const passive_options& selected)
+      : process(held), options(selected), window(reinterpret_cast<HWND>(static_cast<std::uintptr_t>(selected.hwnd))) {
+    DWORD pid{}; thread = GetWindowThreadProcessId(window, &pid);
+    passive_require(thread && pid == options.pid && IsWindow(window), "window-identity");
+    wchar_t name[64]{};
+    passive_require(GetClassNameW(window, name, 64) && std::wstring(name) == L"SouiInputUiHostV1", "window-identity");
+    passive_require(ClientToScreen(window, &origin) && GetClientRect(window, &client), "geometry-changed");
+    passive_require(client.left == 0 && client.top == 0 && client.right == 1100 && client.bottom == 720, "geometry-changed");
+    monitor = MonitorFromWindow(window, MONITOR_DEFAULTTONULL);
+    passive_require(monitor != nullptr, "geometry-changed");
+    check(false);
+  }
+  void check(bool foreground) const {
+    passive_require(WaitForSingleObject(process, 0) == WAIT_TIMEOUT, "target-closed");
+    DWORD pid{}; const DWORD current_thread = GetWindowThreadProcessId(window, &pid);
+    passive_require(IsWindow(window) && pid == options.pid && current_thread == thread, "window-identity");
+    passive_require(IsWindowVisible(window) && !IsIconic(window), "window-hidden");
+    passive_require(!foreground || GetForegroundWindow() == window, "foreground-lost");
+    POINT position{}; RECT area{};
+    passive_require(ClientToScreen(window, &position) && GetClientRect(window, &area) &&
+        position.x == origin.x && position.y == origin.y && EqualRect(&area, &client) &&
+        MonitorFromWindow(window, MONITOR_DEFAULTTONULL) == monitor, "geometry-changed");
+    HDC dc = GetDC(window); passive_require(dc != nullptr, "dpi-changed");
+    const int x = GetDeviceCaps(dc, LOGPIXELSX), y = GetDeviceCaps(dc, LOGPIXELSY); ReleaseDC(window, dc);
+    passive_require(x == 96 && y == 96, "dpi-changed");
+  }
+};
+
+// Cursor shape bounds are conservatively treated as occlusion even where a
+// transparent cursor pixel might leave the sampled color intact. Never move it.
+const char* passive_cursor(const POINT& origin) {
+  CURSORINFO cursor{}; cursor.cbSize = sizeof(cursor);
+  if (!GetCursorInfo(&cursor)) return "cursor-unavailable";
+  if (!(cursor.flags & CURSOR_SHOWING)) return nullptr;
+  ICONINFO icon{};
+  if (!GetIconInfo(cursor.hCursor, &icon)) return "cursor-unavailable";
+  struct bitmaps {
+    HBITMAP color, mask;
+    ~bitmaps() { if (color) DeleteObject(color); if (mask) DeleteObject(mask); }
+  } cleanup{icon.hbmColor, icon.hbmMask};
+  BITMAP bitmap{};
+  if (!GetObjectW(icon.hbmColor ? icon.hbmColor : icon.hbmMask, sizeof(bitmap), &bitmap) ||
+      bitmap.bmWidth <= 0 || bitmap.bmHeight <= 0) return "cursor-unavailable";
+  const auto left = static_cast<std::int64_t>(cursor.ptScreenPos.x) - icon.xHotspot;
+  const auto top = static_cast<std::int64_t>(cursor.ptScreenPos.y) - icon.yHotspot;
+  const auto height = icon.hbmColor ? bitmap.bmHeight : bitmap.bmHeight / 2;
+  return left < static_cast<std::int64_t>(origin.x) + 72 && left + bitmap.bmWidth > static_cast<std::int64_t>(origin.x) + 8 &&
+      top < static_cast<std::int64_t>(origin.y) + 368 && top + height > static_cast<std::int64_t>(origin.y) + 328 ? "cursor-overlap" : nullptr;
+}
+struct passive_desktop_pointer {
+  std::array<unsigned char, 65536> buffer{};
+  DXGI_OUTDUPL_POINTER_POSITION position{};
+  UINT width{}, height{};
+  bool shape_known{}, position_known{};
+  void update(IDXGIOutputDuplication* duplication, const DXGI_OUTDUPL_FRAME_INFO& frame) {
+    if (frame.LastMouseUpdateTime.QuadPart) { position = frame.PointerPosition; position_known = true; }
+    if (!shape_known || frame.PointerShapeBufferSize) {
+      UINT needed{}; DXGI_OUTDUPL_POINTER_SHAPE_INFO shape{};
+      const auto result = duplication->GetFramePointerShape(static_cast<UINT>(buffer.size()), buffer.data(), &needed, &shape);
+      shape_known = SUCCEEDED(result) && needed <= buffer.size() && shape.Width && shape.Width <= 4096 && shape.Height && shape.Height <= 8192 &&
+          (shape.Type == DXGI_OUTDUPL_POINTER_SHAPE_TYPE_COLOR || shape.Type == DXGI_OUTDUPL_POINTER_SHAPE_TYPE_MASKED_COLOR ||
+           (shape.Type == DXGI_OUTDUPL_POINTER_SHAPE_TYPE_MONOCHROME && shape.Height % 2 == 0));
+      if (shape_known) { width = shape.Width; height = shape.Type == DXGI_OUTDUPL_POINTER_SHAPE_TYPE_MONOCHROME ? shape.Height / 2 : shape.Height; }
+    }
+  }
+  const char* overlap(std::int64_t x, std::int64_t y) const {
+    if (!position_known) return "cursor-unavailable";
+    if (!position.Visible) return nullptr;
+    if (!shape_known) return "cursor-unavailable";
+    // DXGI's Position is the shape's top left in output coordinates; HotSpot
+    // is not subtracted. Conservatively include transparent shape pixels.
+    const auto left = static_cast<std::int64_t>(position.Position.x), top = static_cast<std::int64_t>(position.Position.y);
+    return left < x + 64 && left + width > x && top < y + 40 && top + height > y ? "cursor-overlap" : nullptr;
+  }
+};
+struct passive_writer {
+  HANDLE file; std::uint64_t bytes{};
+  void write(const std::string& text) {
+    passive_require(text.size() + 1 <= 4096 && bytes + text.size() + 1 <= 64U * 1024U * 1024U, "output-limit");
+    const auto raw = text + "\n"; DWORD written{};
+    passive_require(WriteFile(file, raw.data(), static_cast<DWORD>(raw.size()), &written, nullptr) && written == raw.size(), "persist-failed");
+    bytes += raw.size();
+  }
+};
+std::string passive_prefix(const passive_options& options, const char* event) {
+  return "{\"schema\":\"soui.manual-desktop-observation/v1\",\"event\":\"" + std::string(event) + "\",\"run_id\":\"" + options.run + "\"";
+}
+std::uint64_t passive_deadline(std::uint64_t begin, std::uint64_t frequency, unsigned ms) {
+  passive_require(frequency <= std::numeric_limits<std::uint64_t>::max() / 200000, "observer-failed");
+  const auto duration = frequency * ms / 1000;
+  passive_require(duration && begin <= std::numeric_limits<std::uint64_t>::max() - duration, "observer-failed");
+  return begin + duration;
+}
+void passive_wait(HANDLE process, passive_watch& watch, passive_clock& clock, passive_wait_timer& timer,
+                  std::uint64_t until, std::uint64_t frequency) {
+  passive_wait_until(process, clock, timer, until, frequency, [&watch] { watch.pump(); });
+}
+struct passive_counts {
+  std::uint64_t samples{}, startup{}, capture{}, valid{}, changes{}, marker_only{}, duplicates{}, pointers{}, timeouts{}, unknown{};
+  std::uint64_t accumulated{}, unobserved{}, frame_gaps{}, first{}, last{};
+};
+} // namespace
+
+int observe_manual_desktop(HANDLE process, const passive_options& options) {
+  handle file;
+  file.p = CreateFileW(options.output.c_str(), GENERIC_WRITE, FILE_SHARE_READ, nullptr, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, nullptr);
+  if (file.p == INVALID_HANDLE_VALUE) { std::cerr << "Cannot create new passive observation\n"; return 2; }
+  passive_writer writer{file.p}; passive_counts count; passive_clock clock; passive_wait_timer wait_timer;
+  std::uint64_t frequency{}, startup_begin{}, phase_begin{}, phase_deadline{}, phase_end{};
+  const auto end = [&](bool completed, const char* reason) {
+    passive_require(!phase_begin || (phase_end >= phase_begin && phase_end >= count.last), "observer-failed");
+    const bool qualified = completed && count.changes >= 2 && !count.unknown && !count.unobserved;
+    const auto optional_tick = [](std::uint64_t value) { return value ? quoted(value) : std::string("null"); };
+    wait_timer.close();
+    writer.write(passive_prefix(options, "manual-observation.end") +
+        ",\"phaseBeginQpc\":" + optional_tick(phase_begin) + ",\"phaseEndQpc\":" + optional_tick(phase_begin ? phase_end : 0) +
+        ",\"phaseDeadlineQpc\":" + optional_tick(phase_deadline) + ",\"samples\":" + std::to_string(count.samples) +
+        ",\"startupSamples\":" + std::to_string(count.startup) + ",\"captureSamples\":" + std::to_string(count.capture) +
+        ",\"validSamples\":" + std::to_string(count.valid) + ",\"contentChanges\":" + std::to_string(count.changes) +
+        ",\"markerOnlySamples\":" + std::to_string(count.marker_only) + ",\"duplicateSamples\":" + std::to_string(count.duplicates) +
+        ",\"pointerOnlySamples\":" + std::to_string(count.pointers) + ",\"timeoutPolls\":" + std::to_string(count.timeouts) +
+        ",\"unknownSamples\":" + std::to_string(count.unknown) + ",\"accumulatedDesktopFrames\":" + std::to_string(count.accumulated) +
+        ",\"unobservedDesktopFrames\":" + std::to_string(count.unobserved) + ",\"frameSequenceGapTotal\":" + std::to_string(count.frame_gaps) +
+        ",\"firstContentQpc\":" + optional_tick(count.first) + ",\"lastContentQpc\":" + optional_tick(count.last) +
+        ",\"headTicks\":" + (count.first ? quoted(count.first - phase_begin) : "null") +
+        ",\"tailTicks\":" + (count.last ? quoted(phase_end - count.last) : "null") +
+        ",\"completed\":" + (completed ? "true" : "false") + ",\"observationQualified\":" + (qualified ? "true" : "false") +
+        ",\"reason\":" + (reason ? "\"" + std::string(reason) + "\"" : "null") +
+        ",\"physicalPresentation\":false,\"inputToPhotonMeasured\":false,\"performanceGate\":false}");
+    passive_require(FlushFileBuffers(file.p) != FALSE, "persist-failed");
+    // A raw end line is not the process receipt: final close can still fail.
+    // Detach both references first so a failed close is never retried by RAII.
+    const HANDLE closing = file.p;
+    file.p = INVALID_HANDLE_VALUE; writer.file = INVALID_HANDLE_VALUE;
+    passive_require(CloseHandle(closing) != FALSE, "persist-failed");
+    return qualified ? 0 : 3;
+  };
+  try {
+    LARGE_INTEGER qpf{}; passive_require(QueryPerformanceFrequency(&qpf) && qpf.QuadPart >= 1000, "observer-failed");
+    frequency = static_cast<std::uint64_t>(qpf.QuadPart); startup_begin = clock.read();
+    const auto startup_deadline = passive_deadline(startup_begin, frequency, options.startup_ms);
+    wait_timer.create();
+    FILETIME creation{}, exited{}, kernel{}, user{};
+    passive_require(GetProcessTimes(GetCurrentProcess(), &creation, &exited, &kernel, &user) != FALSE, "observer-failed");
+    writer.write(passive_prefix(options, "manual-observation.begin") +
+        ",\"targetPid\":" + std::to_string(options.pid) + ",\"targetCreationFileTime\":" + quoted(options.creation) + ",\"hwnd\":" + quoted(options.hwnd) +
+        ",\"observerPid\":" + std::to_string(GetCurrentProcessId()) + ",\"observerCreationFileTime\":" + quoted(ft(creation)) +
+        ",\"qpcFrequency\":" + quoted(frequency) + ",\"startupBeginQpc\":" + quoted(startup_begin) + ",\"startupDeadlineQpc\":" + quoted(startup_deadline) +
+        ",\"intervalMs\":" + std::to_string(options.interval_ms) + ",\"durationMs\":" + std::to_string(options.duration_ms) + ",\"startupMs\":" + std::to_string(options.startup_ms) +
+        ",\"waitTimerBackend\":\"" + wait_timer.backend() + "\"" +
+        ",\"markerVersion\":\"manual-feedback-v1\",\"markerRegion\":[8,336,64,32],\"contentProbe\":[10,330],\"captureRegion\":[8,328,64,40]}");
+    const auto window = reinterpret_cast<HWND>(static_cast<std::uintptr_t>(options.hwnd));
+    passive_watch watch(window, options.pid); passive_binding binding(process, options);
+    while (GetForegroundWindow() != window) {
+      binding.check(false); passive_require(clock.read() < startup_deadline, "startup-timeout");
+      passive_wait(process, watch, clock, wait_timer, (std::min)(startup_deadline, passive_deadline(clock.read(), frequency, 20)), frequency);
+    }
+    binding.check(true); watch.arm(); binding.check(true);
+
+    library dxgi(L"dxgi.dll"), d3d(L"d3d11.dll");
+    using factory_fn = HRESULT (WINAPI*)(REFIID, void**);
+    using device_fn = HRESULT (WINAPI*)(IDXGIAdapter*, D3D_DRIVER_TYPE, HMODULE, UINT, const D3D_FEATURE_LEVEL*, UINT, UINT, ID3D11Device**, D3D_FEATURE_LEVEL*, ID3D11DeviceContext**);
+    const auto factory_api = reinterpret_cast<factory_fn>(GetProcAddress(dxgi.p, "CreateDXGIFactory1"));
+    const auto device_api = reinterpret_cast<device_fn>(GetProcAddress(d3d.p, "D3D11CreateDevice"));
+    passive_require(factory_api && device_api, "graphics-failed");
+    com<IDXGIFactory1> factory; passive_ok(factory_api(__uuidof(IDXGIFactory1), reinterpret_cast<void**>(factory.out())), "graphics-failed");
+    com<IDXGIAdapter1> adapter; com<IDXGIOutput> output; DXGI_OUTPUT_DESC description{};
+    for (UINT a = 0; a < 32 && !output.p; ++a) {
+      com<IDXGIAdapter1> candidate; const auto hr = factory.p->EnumAdapters1(a, candidate.out());
+      if (hr == DXGI_ERROR_NOT_FOUND) break; passive_ok(hr, "graphics-failed");
+      for (UINT o = 0; o < 32; ++o) {
+        com<IDXGIOutput> selected; const auto result = candidate.p->EnumOutputs(o, selected.out());
+        if (result == DXGI_ERROR_NOT_FOUND) break; passive_ok(result, "graphics-failed");
+        DXGI_OUTPUT_DESC desc{}; passive_ok(selected.p->GetDesc(&desc), "graphics-failed");
+        if (desc.Monitor == binding.monitor && desc.AttachedToDesktop) {
+          passive_require(desc.Rotation == DXGI_MODE_ROTATION_IDENTITY, "output-changed");
+          description = desc; output.p = selected.p; selected.p = nullptr; adapter.p = candidate.p; candidate.p = nullptr; break;
+        }
+      }
+    }
+    passive_require(output.p != nullptr, "graphics-failed");
+    RECT outer{}; passive_require(GetWindowRect(window, &outer) && outer.left >= description.DesktopCoordinates.left && outer.top >= description.DesktopCoordinates.top &&
+        outer.right <= description.DesktopCoordinates.right && outer.bottom <= description.DesktopCoordinates.bottom, "geometry-changed");
+    com<ID3D11Device> device; com<ID3D11DeviceContext> context; D3D_FEATURE_LEVEL feature{};
+    passive_ok(device_api(adapter.p, D3D_DRIVER_TYPE_UNKNOWN, nullptr, 0, nullptr, 0, D3D11_SDK_VERSION, device.out(), &feature, context.out()), "graphics-failed");
+    com<IDXGIOutput1> output1; passive_ok(output.p->QueryInterface(__uuidof(IDXGIOutput1), reinterpret_cast<void**>(output1.out())), "graphics-failed");
+    com<IDXGIOutputDuplication> duplication; passive_ok(output1.p->DuplicateOutput(device.p, duplication.out()), "graphics-failed");
+    const auto x = static_cast<std::int64_t>(binding.origin.x) - description.DesktopCoordinates.left + 8;
+    const auto y = static_cast<std::int64_t>(binding.origin.y) - description.DesktopCoordinates.top + 328;
+    passive_require(x >= 0 && y >= 0 && x <= std::numeric_limits<int>::max() - 64 && y <= std::numeric_limits<int>::max() - 40, "geometry-changed");
+    D3D11_TEXTURE2D_DESC staging_desc{};
+    staging_desc.Width = 64; staging_desc.Height = 40; staging_desc.MipLevels = 1; staging_desc.ArraySize = 1;
+    staging_desc.Format = DXGI_FORMAT_B8G8R8A8_UNORM; staging_desc.SampleDesc.Count = 1;
+    staging_desc.Usage = D3D11_USAGE_STAGING; staging_desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+    com<ID3D11Texture2D> staging; passive_ok(device.p->CreateTexture2D(&staging_desc, nullptr, staging.out()), "graphics-failed");
+    passive_sequence sequence; passive_desktop_pointer desktop_pointer;
+    auto next = clock.read(); std::uint64_t last_present{};
+    for (;;) {
+      const auto deadline = phase_begin ? phase_deadline : startup_deadline;
+      if (phase_begin && clock.read() >= deadline) break;
+      passive_require(phase_begin || clock.read() < deadline, "startup-timeout");
+      passive_wait(process, watch, clock, wait_timer, (std::min)(next, deadline), frequency);
+      watch.pump(); binding.check(true);
+      if (clock.read() >= deadline) { if (phase_begin) break; throw passive_error("startup-timeout"); }
+      DXGI_OUTPUT_DESC current{}; passive_ok(output.p->GetDesc(&current), "output-changed");
+      passive_require(current.Monitor == description.Monitor && current.AttachedToDesktop && current.Rotation == description.Rotation &&
+          EqualRect(&current.DesktopCoordinates, &description.DesktopCoordinates) && std::wstring(current.DeviceName) == description.DeviceName, "output-changed");
+      const bool capture = phase_begin != 0;
+      const auto before = clock.read();
+      if (before >= deadline) { if (capture) break; throw passive_error("startup-timeout"); }
+      const char* cursor_before = passive_cursor(binding.origin);
+      const auto acquire_now = clock.read();
+      if (acquire_now >= deadline) { if (capture) break; throw passive_error("startup-timeout"); }
+      auto remaining_ms = (deadline - acquire_now) * 1000 / frequency;
+      if (remaining_ms > 50) remaining_ms = 50;
+      DXGI_OUTDUPL_FRAME_INFO info{}; com<IDXGIResource> resource;
+      const HRESULT acquired = duplication.p->AcquireNextFrame(static_cast<UINT>(remaining_ms), &info, resource.out());
+      const bool timeout = acquired == DXGI_ERROR_WAIT_TIMEOUT;
+      if (!timeout) passive_ok(acquired, "capture-failed");
+      struct frame_release {
+        IDXGIOutputDuplication* duplication; bool active;
+        ~frame_release() { if (active) duplication->ReleaseFrame(); }
+        void release() { if (active) { const auto hr = duplication->ReleaseFrame(); active = false; passive_ok(hr, "capture-failed"); } }
+      } release{duplication.p, !timeout};
+      if (!timeout) desktop_pointer.update(duplication.p, info);
+      passive_pixels pixels; bool have_pixels{}; passive_transition transition;
+      const char* reason{}; const char* status = timeout ? "wait-timeout" : "pointer-only";
+      const bool pointer = !timeout && info.LastPresentTime.QuadPart == 0;
+      std::uint64_t present{};
+      if (!timeout && !pointer) {
+        passive_require(info.LastPresentTime.QuadPart > 0, "present-regressed");
+        present = static_cast<std::uint64_t>(info.LastPresentTime.QuadPart);
+        passive_require(present > last_present && present <= clock.read(), "present-regressed"); last_present = present;
+        passive_require(resource.p != nullptr, "capture-failed");
+        com<ID3D11Texture2D> texture;
+        passive_ok(resource.p->QueryInterface(__uuidof(ID3D11Texture2D), reinterpret_cast<void**>(texture.out())), "capture-failed");
+        D3D11_TEXTURE2D_DESC actual{}; texture.p->GetDesc(&actual);
+        passive_require(actual.Format == DXGI_FORMAT_B8G8R8A8_UNORM && x + 64 <= actual.Width && y + 40 <= actual.Height, "capture-failed");
+        const D3D11_BOX box{static_cast<UINT>(x), static_cast<UINT>(y), 0, static_cast<UINT>(x + 64), static_cast<UINT>(y + 40), 1};
+        context.p->CopySubresourceRegion(staging.p, 0, 0, 0, 0, texture.p, 0, &box); context.p->Flush();
+        D3D11_MAPPED_SUBRESOURCE map{}; HRESULT mapped{};
+        const auto map_deadline = (std::min)(deadline, passive_deadline(clock.read(), frequency, 100));
+        do {
+          mapped = context.p->Map(staging.p, 0, D3D11_MAP_READ, D3D11_MAP_FLAG_DO_NOT_WAIT, &map);
+          if (mapped != DXGI_ERROR_WAS_STILL_DRAWING) break;
+          passive_require(clock.read() < map_deadline, "gpu-read-timeout");
+          passive_wait(process, watch, clock, wait_timer, (std::min)(map_deadline, passive_deadline(clock.read(), frequency, 1)), frequency);
+        } while (true);
+        passive_ok(mapped, "capture-failed");
+        struct unmap { ID3D11DeviceContext* context; ID3D11Texture2D* texture; ~unmap() { context->Unmap(texture, 0); } } mapped_scope{context.p, staging.p};
+        pixels = decode_passive_pixels(map.pData, map.RowPitch, passive_nonce(options.run)); have_pixels = true;
+        reason = cursor_before ? cursor_before : passive_cursor(binding.origin);
+        if (!reason) reason = desktop_pointer.overlap(x, y);
+        if (!reason && info.ProtectedContentMaskedOut) reason = "protected-content";
+        if (!reason) reason = pixels.reason;
+        if (!reason) {
+          // Rejected startup acquisitions never establish a document epoch.
+          if (capture || info.AccumulatedFrames == 1) transition = sequence.accept(pixels);
+          if (info.AccumulatedFrames != 1) reason = "accumulated-frames";
+          else if (transition.reason) reason = transition.reason;
+          else if (capture && present < phase_begin) reason = "present-before-phase";
+        }
+        status = reason ? (capture ? "unknown" : "baseline-reject") : "valid";
+      } else if (pointer && info.AccumulatedFrames) { reason = "accumulated-frames"; status = capture ? "unknown" : "baseline-reject"; }
+      release.release(); watch.pump(); binding.check(true);
+      const auto after = clock.read();
+      if (!capture) passive_require(after < startup_deadline, "startup-timeout");
+      passive_require(present <= after, "present-regressed");
+      passive_require(++count.samples <= 250000, "output-limit");
+      if (capture) {
+        ++count.capture;
+        if (timeout) ++count.timeouts;
+        if (pointer) ++count.pointers;
+        count.accumulated += info.AccumulatedFrames;
+        if (info.AccumulatedFrames > 1) count.unobserved += info.AccumulatedFrames - 1;
+        count.frame_gaps += transition.frame_gap; // Local page renders, not desktop loss.
+        if (std::string(status) == "unknown") ++count.unknown;
+        if (!reason && have_pixels) {
+          ++count.valid;
+          if (transition.marker_only) ++count.marker_only;
+          if (transition.duplicate) ++count.duplicates;
+          if (transition.content_change) { ++count.changes; if (!count.first) count.first = present; count.last = present; }
+        }
+      } else ++count.startup;
+      const auto nullable_number = [have_pixels, &pixels](unsigned value) { return have_pixels && pixels.marker_readable ? std::to_string(value) : std::string("null"); };
+      writer.write(passive_prefix(options, "manual-observation.sample") +
+          ",\"phase\":\"" + (capture ? "capture" : "startup") + "\",\"sampleIndex\":" + std::to_string(count.samples) +
+          ",\"captureBeginQpc\":" + quoted(before) + ",\"captureEndQpc\":" + quoted(after) + ",\"lastPresentQpc\":" + quoted(present) +
+          ",\"accumulatedFrames\":" + std::to_string(info.AccumulatedFrames) + ",\"pointerOnly\":" + (pointer ? "true" : "false") +
+          ",\"status\":\"" + status + "\",\"reason\":" + (reason ? "\"" + std::string(reason) + "\"" : "null") +
+          ",\"markerHex\":" + (have_pixels && pixels.marker_readable ? "\"" + pixels.marker_hex() + "\"" : "null") +
+          ",\"contentRgb\":" + (have_pixels ? "[" + std::to_string(pixels.rgb[0]) + "," + std::to_string(pixels.rgb[1]) + "," + std::to_string(pixels.rgb[2]) + "]" : "null") +
+          ",\"captureBgraCrc32\":" + (have_pixels ? "\"" + passive_hex(pixels.crc32, 8) + "\"" : "null") +
+          ",\"revision\":" + nullable_number(pixels.revision) + ",\"frame\":" + nullable_number(pixels.frame) +
+          ",\"flags\":" + nullable_number(pixels.flags) + ",\"pageEpoch\":" + nullable_number(pixels.epoch) +
+          ",\"contentChange\":" + (capture && !reason && transition.content_change ? "true" : "false") +
+          ",\"markerOnly\":" + (transition.marker_only ? "true" : "false") + ",\"frameSequenceGap\":" + std::to_string(transition.frame_gap) +
+          ",\"revisionDelta\":" + std::to_string(transition.revision_delta) + "}");
+      if (!phase_begin && !reason && have_pixels) {
+        binding.check(true);
+        phase_begin = after; phase_deadline = passive_deadline(phase_begin, frequency, options.duration_ms);
+        writer.write(passive_prefix(options, "manual-observation.phase") + ",\"phase\":\"capture\",\"phaseBeginQpc\":" + quoted(phase_begin) + ",\"phaseDeadlineQpc\":" + quoted(phase_deadline) + "}");
+      }
+      // Keep the absolute interval lattice; a late acquisition skips due slots.
+      const auto period = frequency * options.interval_ms / 1000;
+      const auto now = clock.read();
+      if (next <= now) next += ((now - next) / period + 1) * period;
+    }
+    watch.pump(); binding.check(true); phase_end = clock.read();
+    const bool gaps = count.unknown || count.unobserved;
+    return end(true, gaps ? "observation-gaps" : count.changes < 2 ? "insufficient-content-changes" : nullptr);
+  } catch (const std::exception& error) {
+    const auto* known = dynamic_cast<const passive_error*>(&error);
+    const char* reason = known ? known->what() : "observer-failed";
+    // Pure sequence errors are fixed codes, never arbitrary target/page strings.
+    if (!known && (std::string(error.what()) == "epoch-changed" || std::string(error.what()) == "counter-regressed")) reason = error.what();
+    std::cerr << "Passive observation failed: " << reason << '\n';
+    try { wait_timer.close(); }
+    catch (const std::exception& cleanup) { std::cerr << "Passive cleanup failed: " << cleanup.what() << '\n'; }
+    try { phase_end = clock.read(); end(false, reason); } catch (...) {}
+    return 2;
+  }
+}
 } // namespace soui::benchmark

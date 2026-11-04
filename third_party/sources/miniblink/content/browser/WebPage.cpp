@@ -172,6 +172,16 @@ void WebPage::setMainFrameRate(int rate)
     if (m_pageImpl) m_pageImpl->setMainFrameRate(rate);
 }
 
+bool WebPage::applyMainFrameRate(int rate)
+{
+    return m_pageImpl && m_pageImpl->applyMainFrameRate(rate);
+}
+
+int WebPage::mainFrameRate() const
+{
+    return m_pageImpl ? m_pageImpl->mainFrameRate() : -1;
+}
+
 void WebPage::setNeedsCommit()
 {
     if (m_pageImpl)
