@@ -117,6 +117,13 @@ test('background trace repair preview has an exact tuple and rejects unlisted su
   assert.throws(() => gui.metadata(fixture(t, candidate, previousRange).source), /exact local SDK and framework peers/);
   assert.throws(() => gui.metadata(fixture(t, '0.7.0-preview.4', range).source), /exact local SDK and framework peers/);
 });
+test('runtime manifest repair preview preserves old exact tuples and rejects future previews', t => {
+  const previousRange = currentPeerRange + ' || 0.7.0-preview.1 || 0.7.0-preview.2 || 0.7.0-preview.3';
+  const candidate = '0.7.0-preview.4', range = previousRange + ' || ' + candidate;
+  assert.equal(gui.metadata(fixture(t, candidate, range).source), candidate);
+  assert.throws(() => gui.metadata(fixture(t, candidate, previousRange).source), /exact local SDK and framework peers/);
+  assert.throws(() => gui.metadata(fixture(t, '0.7.0-preview.5', range).source), /exact local SDK and framework peers/);
+});
 function historicalPackage(t, targetVersion = version, tool = legacyToolBytes()) {
   const f = fixture(t, targetVersion, previousPeerRange), packed = path.join(f.root, 'historical-package');
   f.write('tools/sdk/gui-bindings-delivery.cjs', tool);

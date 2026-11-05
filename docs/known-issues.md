@@ -4,6 +4,8 @@
 
 ## 0.6.0 后续源码候选
 
+最新 [preview.4 交付复验](performance/sdk-preview4-delivery-20261105.md)修正 preview.3 运行库清单的旧大小/散列，已通过 x64 SDK、两架构部署、源 SDK 安装和 MiniBlink 隔离短启动/正常关闭；此非输入样本的最终 SDK/kernel 诊断写入无丢失。真实输入与有效帧率性能仍待验，旧失败及旧版本结果保留，不扩大生产资格。
+
 2026-11-05 的 [PR129 输入与帧率验收](performance/sdk-input-frame-acceptance-20261105.md)已完成正式 v143 x64 安装消费者及限定桌面观测。WebView2 四轮变化在冻结噪声内，MiniBlink 基线 P95 漂移超阈值；输入基线内核有两次未注册诊断写入，按 source_loss 拒绝且停止重复对照。双后端短中文提交功能通过不覆盖完整 IME/输入/显示矩阵。性能和生产资格继续未通过，不更新已发布包。
 
 同日的 [preview.3 后续记录](performance/sdk-input-frame-followup-20261105.md)将上述未注册写入定位到 V8 Windows 线程池入口，加入只针对该入口的 producer scope；保留原 source_loss 拒绝。两架构单文件重编、重链接及 ABI 检查、x64 正式 SDK 构建和隔离安装已通过。它们不能替代新默认内核的实际输入、帧率与正常关闭复验；该轮界面工具返回物理 Esc 停止信号后已停止窗口操作，最终性能与完整 runtime/ZIP 门槛仍未关闭。旧输入失败、SDK2 观测及体积保留原身份，不改写为 preview.3 通过。

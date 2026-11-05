@@ -50,6 +50,14 @@ test('real x86/x64 manifests preserve the previous complete flat runtime sets an
     const expected = [...soui, ...crt, `${base}/miniblink/node.dll`].sort();
     const plan = runtime.resolve(sdkRoot, arch);
     assert.deepEqual(plan.files.map(file => file.source).sort(), expected);
+    // The deployed set must identify the actual shipped bytes, not just names.
+    // This catches a kernel update whose dependency manifest was refreshed but
+    // whose separate runtime deployment pins were left on the previous DLL.
+    for (const file of plan.files) {
+      const data = fs.readFileSync(path.join(sdkRoot, file.source));
+      assert.equal(data.length, file.bytes, `${arch} runtime bytes: ${file.source}`);
+      assert.equal(id.hash(data), file.sha256, `${arch} runtime SHA-256: ${file.source}`);
+    }
     assert.deepEqual(runtime.resolve(sdkRoot, arch, 'webview2').files.map(file => file.source).sort(), crt.sort());
     assert.equal(plan.files.length, 59);
   }

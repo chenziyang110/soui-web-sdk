@@ -20,6 +20,7 @@ const performancePreviewPeerRanges = new Map([
   ['0.7.0-preview.1', peerRange + ' || 0.7.0-preview.1'],
   ['0.7.0-preview.2', peerRange + ' || 0.7.0-preview.1 || 0.7.0-preview.2'],
     ['0.7.0-preview.3', peerRange + ' || 0.7.0-preview.1 || 0.7.0-preview.2 || 0.7.0-preview.3'],
+    ['0.7.0-preview.4', peerRange + ' || 0.7.0-preview.1 || 0.7.0-preview.2 || 0.7.0-preview.3 || 0.7.0-preview.4'],
 ]);
 const previewPeerRanges = new Map([
   ['0.6.0-preview.1', previousPeerRange + ' || 0.6.0-preview.1'],

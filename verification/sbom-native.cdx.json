@@ -1,15 +1,15 @@
 {
   "bomFormat": "CycloneDX",
   "specVersion": "1.5",
-  "serialNumber": "urn:uuid:33a351bc-44e1-4974-a14e-c649c0e526db",
+  "serialNumber": "urn:uuid:94598d1a-08b0-44fd-a5dd-0dc2369cb671",
   "version": 1,
   "metadata": {
-    "timestamp": "2026-11-05T01:58:11.952Z",
+    "timestamp": "2026-11-05T04:39:03.244Z",
     "component": {
       "type": "framework",
-      "bom-ref": "urn:soui:sdk:native:0.7.0-preview.3",
+      "bom-ref": "urn:soui:sdk:native:0.7.0-preview.4",
       "name": "SOUI Web SDK native delivery",
-      "version": "0.7.0-preview.3",
+      "version": "0.7.0-preview.4",
       "properties": [
         {
           "name": "soui:releaseReady",
@@ -74,7 +74,7 @@
         },
         {
           "name": "soui:kernelProvenance",
-          "value": "third_party/manifests/kernel-build-070-preview3.json"
+          "value": "third_party/manifests/kernel-build-070-preview4.json"
         }
       ]
     },
@@ -2326,7 +2326,7 @@
         },
         {
           "name": "soui:kernelProvenance",
-          "value": "third_party/manifests/kernel-build-070-preview3.json"
+          "value": "third_party/manifests/kernel-build-070-preview4.json"
         }
       ]
     },
@@ -5644,7 +5644,7 @@
   ],
   "dependencies": [
     {
-      "ref": "urn:soui:sdk:native:0.7.0-preview.3",
+      "ref": "urn:soui:sdk:native:0.7.0-preview.4",
       "dependsOn": [
         "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fminiblink%2Fnode.dll",
         "urn:soui:delivered:third_party%2Fprebuilt%2Fx64%2Fruntime%2Fucrt%2Fx64%2Fapi-ms-win-core-console-l1-1-0.dll",
@@ -5843,7 +5843,7 @@
     {
       "aggregate": "incomplete",
       "assemblies": [
-        "urn:soui:sdk:native:0.7.0-preview.3"
+        "urn:soui:sdk:native:0.7.0-preview.4"
       ]
     }
   ]

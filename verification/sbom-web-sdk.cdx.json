@@ -2,10 +2,10 @@
   "$schema": "http://cyclonedx.org/schema/bom-1.5.schema.json",
   "bomFormat": "CycloneDX",
   "specVersion": "1.5",
-  "serialNumber": "urn:uuid:eb1abde7-84b1-465b-b3c8-7786477d4f93",
+  "serialNumber": "urn:uuid:9861fe59-379a-4017-8edc-80cf73a58a91",
   "version": 1,
   "metadata": {
-    "timestamp": "2026-11-05T01:58:09.927Z",
+    "timestamp": "2026-11-05T04:39:01.310Z",
     "lifecycles": [
       {
         "phase": "pre-build"
@@ -19,12 +19,12 @@
       }
     ],
     "component": {
-      "bom-ref": "@soui/native-sdk@0.7.0-preview.3",
+      "bom-ref": "@soui/native-sdk@0.7.0-preview.4",
       "type": "library",
       "name": "web",
-      "version": "0.7.0-preview.3",
+      "version": "0.7.0-preview.4",
       "scope": "required",
-      "purl": "pkg:npm/%40soui/native-sdk@0.7.0-preview.3",
+      "purl": "pkg:npm/%40soui/native-sdk@0.7.0-preview.4",
       "properties": [
         {
           "name": "cdx:npm:package:private",
@@ -78,7 +78,7 @@
   ],
   "dependencies": [
     {
-      "ref": "@soui/native-sdk@0.7.0-preview.3",
+      "ref": "@soui/native-sdk@0.7.0-preview.4",
       "dependsOn": [
         "typescript@5.9.3"
       ]

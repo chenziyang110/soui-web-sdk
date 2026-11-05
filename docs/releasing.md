@@ -1,5 +1,7 @@
 # 交付与发布
 
+未发布的 `0.7.0-preview.4` 已刷新 Web、React/Vue 与 native 四份 SBOM，绑定当前 SDK 构建和复用的 preview.3 内核字节；七份源文档实际通过离线 schema 校验。源 SDK 首次发布 rename 失败与后续官方 retained-stage recovery 分开记录；正常安装和隔离 MiniBlink 启动/关闭不等于性能或生产验收，详见[本轮交付复验](performance/sdk-preview4-delivery-20261105.md)。历史 preview.3 段落保留当时身份，不作为当前资格。
+
 ## 0.6.0 本次授权与执行范围
 
 本轮目标为普通 GitHub Release `v0.6.0`，纳入本地受控 DevTools 与已合入主线的能力。两架构构建、有限回归、安装消费者、默认应用八次运行与九份供应/应用 ZIP 已有实际记录；受控 GUI 代表例已记录，完整对应源码及最终发布身份见附件清单，附件上传状态以实际发布页为准。用户于 2026-10-28 明确选择普通 Release 并后置低收益长测；该决定替代此前候选阶段要求立即执行全部长测的顺序，不修改各验收项或旧失败的事实。见 [ADR-0136](adr/0136-0.6.0-release-scope.md)和[0.6.0 发布说明](releases/0.6.0.md)。
