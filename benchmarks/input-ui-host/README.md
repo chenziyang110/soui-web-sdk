@@ -88,3 +88,7 @@ e2e 冷配置后、任何 Host/producer 注册前保存 `scalar-initial.json`（
 ## 冻结请求与人工采样
 
 操作步骤、请求字段、五类场景和未覆盖边界见 [MANUAL-SAMPLING.md](MANUAL-SAMPLING.md)。冻结操作只读输入并生成新 JSON，不启动窗口或注入输入。`run-input-ui.cjs` 接受 v2 冻结请求，启动前和结束后核对 EXE、SDK LIB、DLL、页面、配置、工具准备收据与测量源码；旧 v1 仅作模板输入，不再直接启动正式采样。
+
+`burst-input.cjs` 的 `software_frame_lineage` 是独立的补充观察：在来源完整时，将唯一输入及正常 handler 返回关联到同代际的显式 processed coverage、frame/scene 和软件提交调用边界。它保留 stage8 原始空输入范围，不把关系改写为继承的输入 coverage。缺失、歧义、时序或 scene 冲突均拒绝该关系；异步 resources_ready 可选，未记录时保留 unknown。报告只保存前1024条诊断行，聚合计数/分布仍覆盖整个映射样本；关联工作有固定上限。
+
+该字段不改变原 strict native stages、桌面输入分类、`fullCausalComplete` 或任何性能门槛。processed coverage 不能证明对应像素已变化，submit 调用返回也不证明 API 成功、可见反馈、GPU/DWM 完成或物理呈现。没有真实 microtask/visible terminal 证据时仍不得填补终态。新字段的合同可用 `node --test tests/benchmark/input-frame-trace/frame-lineage.test.cjs tests/benchmark/input-frame-trace/protocol.test.cjs` 验证；这些构造 trace 合同不代替真实输入测试。

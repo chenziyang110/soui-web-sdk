@@ -1,6 +1,7 @@
 'use strict';
 const trace = require('./input-frame-trace.cjs');
 const {isDeepStrictEqual} = require('node:util');
+const {analyzeSoftwareFrameLineage}=require('./input-frame-lineage.cjs');
 const {insist,exact,whole,milliseconds,distribution} = trace;
 const absentOrNull=(row,key)=>!Object.hasOwn(row,key)||row[key]===null;
 function decodeBurstMarkerHex(hex) {
@@ -294,6 +295,7 @@ function checkBurst(inputRows,streams,desktopRows,options={}) {
     proven_microtask_inputs:microtasksComplete,unknown_microtask_inputs:input.inputs.length-microtasksComplete,
     host_to_engine_ms:hostToEngine.length?distribution(hostToEngine):null,
     host_to_submit_ms:hostToSubmit.length?distribution(hostToSubmit):null,
+    software_frame_lineage:analyzeSoftwareFrameLineage(joined,mapping),
     stage_values_ms:{host_to_engine:hostToEngine,host_to_submit:hostToSubmit},
     // GDI supplies a software-visible sample upper bound, not presentation time.
     captured_image_upper_ms:desktop.captureBackend==='dxgi'?distribution(desktop.observations.map(value=>value.upper_ms)):null,

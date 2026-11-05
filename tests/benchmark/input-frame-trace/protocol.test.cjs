@@ -134,6 +134,25 @@ test('captured-image samples never inflate visible sample count or full native c
   assert.equal(result.unknown_microtask_inputs,3);assert.equal(result.host_to_submit_ms,null);
   assert.equal(result.physicalPresentation,false);assert.equal(result.performanceGate,false);assert.equal(result.releaseReady,false);
 });
+test('supplemental software frame relations do not change strict native or desktop qualification',()=>{
+  const f=fixture(),points=f.streams[0].slice(1,-1);
+  for(const host of [...points]){
+    const id=Number(host.input_first),tick=Number(host.qpc);
+    const admission=point(2,tick+1,id);admission.why=1;
+    points.push(admission,point(3,tick+2,id),point(4,tick+3,id));
+  }
+  for(const [code,tick]of [[27,1035],[25,1036],[6,1037],[28,1038],[8,1040]]){
+    const value=point(code,tick,code===25||code===6?101:0);
+    value.frame_id='99';
+    if(code===25||code===6){value.input_last='103';value.flags=1;}else value.related_id='44';
+    points.push(value);
+  }
+  points.sort((a,b)=>Number(a.qpc)-Number(b.qpc));f.streams=[traceRows(points)];
+  const result=check(f);assert.equal(result.software_frame_lineage.related_inputs,3);
+  assert.equal(result.software_frame_lineage.distinct_software_frames,1);
+  assert.equal(result.host_to_submit_ms,null);assert.equal(result.native_path_complete_inputs,0);
+  assert.equal(result.input_terminal_counts.unknown,1);assert.equal(result.fullCausalComplete,false);
+});
 test('explicit BitBlt samples are software-visible T7 bounds, never captured-image or physical frame counts',()=>{
   const f=asGdi(fixture()),result=check(f);
   assert.equal(result.captureBackend,'gdi-bitblt');

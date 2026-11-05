@@ -116,3 +116,4 @@
 - [ADR-0159：MiniBlink 原生 Bridge 的有界分段观测](0159-miniblink-native-phase-observation.md)
 - [ADR-0160：默认关闭的原生渲染阶段成本诊断](0160-private-render-phase-cost-observation.md)（独立 benchmark overlay，默认 SDK 载荷不变）
 - [ADR-0161：帧策略 provider 退避从操作完成时起算](0161-provider-retry-clock-origin.md)
+- [ADR-0163：合成唤醒提前接纳的受控实验](0163-compositor-draw-wake-promotion-experiment.md)（提议，仅外部原型；生产默认未改变）
