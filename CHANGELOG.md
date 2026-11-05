@@ -2,6 +2,7 @@
 
 ## 0.7.0-preview.4（未发布）：运行时部署身份修复
 
+- 修复性能消费者将 MiniBlink `E_RELOAD_PENDING` 误当终态失败并关窗的问题：在同一 UI owner 的后续机会续取原操作结果，保留关闭重入保护和其他错误；新增固定20秒合作式 caller 期限，不重置外层期限。49项合同及限定新文档/会话复验通过，SDK和冻结交付包不变，见[追加复验](docs/performance/sdk-preview4-continuation-20261106.md)。
 - 追加两后端各四轮画面观察与短输入诊断证据：WebView2 差异未超冻结噪声，MiniBlink 基线漂移，均不确认性能收益；输入延迟仍未验收。详见[MiniBlink 与输入追加报告](docs/performance/sdk-preview4-miniblink-input-20261105.md)。已有 SDK 包与历史失败保持不变。
 - 正式输入测试器保留输入器非零错误，同时允许 Host 在原监督期限内正常排空日志；Host 失败仍停止输入，原 watchdog、失败资格与自然退出判定保持。修复仅影响测试编排，不改变 SDK 载荷。
 - 正式输入测试器在原30秒 ready 截止内重读独占写入暂时不可读的 `EBUSY` 记录，避免误报启动失败；权限错误、非法内容和进程身份不符仍拒绝，不放宽输入或性能资格。

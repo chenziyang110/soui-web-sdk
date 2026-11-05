@@ -54,6 +54,8 @@ Windows SDK 必须为 10.0.19041.0，具体锁定方式沿用宿主工具链；C
 
 窗口显示使用 `SW_SHOWNOACTIVATE`；工具不调用 `SetForegroundWindow`、`SetActiveWindow`、`SendInput` 或 UIA。操作者自行切换、点击记录、输入和滚动。同一对比必须使用相同页面 hash、场景、负载、viewport、DPI、显示器和有效记录条件；跨后端/构建不得仅比较一个即时读数。
 
+“重新加载当前页”在原动作许可被领取的 UI owner 轮次调用 `reload()`；只有精确的 `E_RELOAD_PENDING` 才保留同一次操作，在后续 housekeeping 机会继续取结果。首次成功后停止续调；新文档 ready 与新 session 仍须另行观察。消费者新增从首次动作开始计算的固定20秒合作式期限，在调用前后检查，不能抢占单次调用，也不重置原外层运行期限；其他错误和超时仍失败并正常收尾。关闭会取消后续续调，在当前 reload 回调退栈前保留 Host/adapter。`action-completed` 仅表示原操作返回成功，不代表页面已经重连或性能验收通过。旧消费者曾把 pending 当失败关闭窗口，其失败证据保持原身份。
+
 `--engine-budget=0|1000|2000` 只在当前进程首次 Runtime 构造前设置，不能运行中切换。先以两边 0 对比 SDK；I02 三档仅重启同一候选应用比较。CMake 数值 package version 与 `<soui/version.h>` 的 raw 发行身份分别写入报告，例如候选 `0.7.0` / `0.7.0-preview.1`，不能与基线 `0.6.0` 冒充同一内容。
 
 `--observation=off|scalar` 默认 off，必须在配对记录中保持一致；当前进程记录影响调度的环境项。消费者不配置 detailed trace，不允许 `SOUI_ENTRY_FILE` 覆盖冻结页面。窗口客户区、DPI、实际已加载内核路径/散列或 WebView2 runtime/process 身份随报告保存。内存计数明确只有 native host 进程，不冒充完整 renderer process tree。

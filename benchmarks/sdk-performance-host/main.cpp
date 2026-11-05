@@ -77,6 +77,35 @@ json environment_snapshot(){
     result[key]=size>=value.size()?json("unavailable: exceeds 255 bytes"):size?json(std::string(value.data(),size)):json(nullptr);
   }return result;
 }
+enum class reload_step_kind { idle,pending,completed,failed,cancelled };
+struct reload_step_result final {reload_step_kind kind; sdk::host_result result{true,{},{}};};
+// UI-owned consumer continuation. Twenty seconds is a new fixed caller cap,
+// independent of the existing close/writer caps and the outer native deadline.
+class reload_continuation final {
+ public:
+  bool begin(ULONGLONG now)noexcept{if(active_||in_progress_)return false;started_at_=now;active_=true;return true;}
+  bool cancel()noexcept{const bool active=active_;active_=false;return active;}
+  bool in_progress()const noexcept{return in_progress_;}
+  template<class Clock,class Reload>reload_step_result advance(Clock&& clock,Reload&& reload){
+    if(!active_)return {reload_step_kind::idle};
+    if(in_progress_)return {reload_step_kind::pending};
+    in_progress_=true;struct release{bool& value;~release(){value=false;}} guard{in_progress_};
+    const auto expired=[&]{const auto now=clock();return now<started_at_||now-started_at_>=20000;};
+    const auto timeout=[&]{active_=false;return reload_step_result{reload_step_kind::failed,
+      {false,"E_RELOAD_TIMEOUT","The original reload exceeded the consumer's fixed 20-second deadline."}};};
+    if(expired())return timeout();
+    const auto result=reload();
+    // A reentrant close cancels continuation but cannot destroy the Host while
+    // this callback is on its stack. Never publish its late result as success.
+    if(!active_)return {reload_step_kind::cancelled};
+    if(expired())return timeout();
+    if(!result.ok&&result.code=="E_RELOAD_PENDING")return {reload_step_kind::pending,result};
+    active_=false;
+    return {result.ok?reload_step_kind::completed:reload_step_kind::failed,result};
+  }
+ private:
+  ULONGLONG started_at_{};bool active_{},in_progress_{};
+};
 class application;
 struct slot;
 class benchmark_bridge final:public sdk::bridge_adapter {
@@ -111,13 +140,14 @@ struct slot final {
   application& app;unsigned index;HWND window{};
   benchmark_bridge bridge;std::unique_ptr<sdk::webview_host> host;sdk::webview2_adapter* modern{};
   std::unique_ptr<sdk::webview2_runtime_exit_watch> runtime_watch;sdk::frame_pacer pacer;
+  reload_continuation reload;
   bool preparing{},prepared{},mounted{},closing{},controller_closed{},closed{},close_running{},display_dirty{true};
   ULONGLONG close_started{},restore_at{},snapshot_at{};
   mutable std::mutex snapshot_mutex;json snapshot=json::object();
   json runtime_identity=json::object();
   json copy_snapshot()const{std::lock_guard<std::mutex> lock(snapshot_mutex);return snapshot;}
   json copy_wire_snapshot()const{return native_phase_wire_snapshot(copy_snapshot());}
-  void publish_snapshot();void request_close();void close_step();void pulse();void housekeeping();
+  void publish_snapshot();void request_close();void close_step();void reload_step();void pulse();void housekeeping();
 };
 struct action final{unsigned slot_index;dispatch_gate::receipt receipt;ULONGLONG due;std::string name;};
 template<class Post,class Fallback>
@@ -269,7 +299,10 @@ class application final {
         if(posted)log({{"stage","action-close-posted"},{"slot",next.slot_index},{"requestGeneration",std::to_string(next.receipt.epoch)}});
       }
       else if(next.name=="second-host"){if(created_count.load()<2)create_slot();}
-      else if(next.name=="reload"){const auto result=item.host->reload();if(!result.ok)fail(item,result);}
+      else if(next.name=="reload"){
+        if(!item.reload.begin(GetTickCount64()))log({{"stage","action-cancelled"},{"action","reload"},{"slot",item.index},{"reason","original reload is still pending"}});
+        else item.reload_step(); // First SDK admission stays beside the original receipt claim.
+      }
       else{const auto result=item.host->hide();if(!result.ok){fail(item,result);continue;}ShowWindow(item.window,SW_HIDE);item.restore_at=GetTickCount64()+1500;}
     }
   }
@@ -338,10 +371,11 @@ void slot::publish_snapshot(){
   else if(mounted){sdk::diagnostics::renderer_observation renderer;(void)sdk::read_miniblink_renderer_metrics(renderer);value["loadedNodePath"]=renderer.module_path;value["loadedIdentityBound"]=renderer.identity_bound;value["loadedModuleMatches"]=renderer.module_matches;}
   std::lock_guard<std::mutex> lock(snapshot_mutex);snapshot=std::move(value);snapshot_at=GetTickCount64();
 }
-void slot::request_close(){if(closed)return;if(!closing){closing=true;close_started=GetTickCount64();restore_at=0;app.log({{"stage","close-requested"},{"slot",index}});} }
+void slot::request_close(){if(closed)return;if(!closing){closing=true;close_started=GetTickCount64();restore_at=0;reload.cancel();app.log({{"stage","close-requested"},{"slot",index}});} }
 void slot::close_step(){
   if(closed||!closing||close_running)return;close_running=true;struct release_close{bool& value;~release_close(){value=false;}} guard{close_running};
   if(GetTickCount64()-close_started>20000)app.fatal("E_HOST_CLOSE_DEADLINE");
+  if(reload.in_progress())return;
   if(host)host->pump();if(preparing&&!prepared)return;
   if(!controller_closed){auto result=host?host->destroy():sdk::host_result{true,{},{}};
     if(result.ok&&modern)result=modern->unmount();
@@ -358,6 +392,13 @@ void slot::close_step(){
   modern=nullptr;host.reset();KillTimer(window,1);DestroyWindow(window);window=nullptr;closed=true;
   app.log({{"stage","host-closed"},{"slot",index},{"natural",true}});
 }
+void slot::reload_step(){
+  if(closing||closed||!mounted||!host)return;
+  const auto result=reload.advance([]{return GetTickCount64();},[&]{return host->reload();});
+  if(result.kind==reload_step_kind::failed)app.fail(*this,result.result);
+  else if(result.kind==reload_step_kind::completed)app.log({{"stage","action-completed"},{"action","reload"},{"slot",index},
+    {"completion","reload returned ok; new document and session readiness require separate observation"}});
+}
 void slot::pulse(){
   if(closing){close_step();return;}if(!mounted||!host)return;
   if(display_dirty){bridge.display_rate(sdk::frame_pacer::query_display_refresh(window));display_dirty=false;}
@@ -365,13 +406,59 @@ void slot::pulse(){
   if(pacer.failed()){app.fail(*this,{false,"E_PACER","Pacer clock failed"});return;}host->pump();
 }
 void slot::housekeeping(){
-  if(closing){close_step();return;}app.process_actions();if(closing||closed)return;
+  if(closing){close_step();return;}reload_step();if(closing||closed)return;
+  app.process_actions();if(closing||closed)return;
   if(restore_at&&GetTickCount64()>=restore_at){restore_at=0;const auto shown=host->show();if(!shown.ok){app.fail(*this,shown);return;}ShowWindow(window,SW_SHOWNOACTIVATE);app.log({{"stage","hidden-restored"},{"slot",index},{"activatedByTool",false}});}
   if(GetTickCount64()-snapshot_at>=1000)publish_snapshot();
   if(modern&&prepared){const auto status=modern->status();if(!status.ok&&status.code!="E_PENDING")app.fail(*this,status);}
 }
 unsigned boundary_contracts(scalar_capture& capture,report_writer& writer){
   unsigned passed=0;
+  {
+    reload_continuation operation;ULONGLONG now=100;unsigned calls=0,successes=0;
+    require(operation.begin(now),"Reload did not start");
+    const auto poll=[&]{return operation.advance([&]{return now;},[&]{++calls;if(calls<3)return sdk::host_result{false,"E_RELOAD_PENDING","pending"};++successes;return sdk::host_result{true,{},{}};});};
+    require(poll().kind==reload_step_kind::pending&&!operation.begin(now),"Pending reload admitted a successor");now+=100;
+    require(poll().kind==reload_step_kind::pending,"Second pending reload became terminal");now+=100;
+    require(poll().kind==reload_step_kind::completed&&poll().kind==reload_step_kind::idle&&calls==3&&successes==1,"Successful reload was repeated or pending was failed");++passed;
+  }
+  {
+    reload_continuation operation;unsigned calls=0;require(operation.begin(0),"Reload did not start");
+    const auto poll=[&]{return operation.advance([]{return ULONGLONG{0};},[&]{return ++calls==1?sdk::host_result{false,"E_RELOAD_PENDING","pending"}:sdk::host_result{false,"E_REAL_RELOAD_FAILURE","original error"};});};
+    require(poll().kind==reload_step_kind::pending,"Pending reload failed before terminal error");const auto failure=poll();
+    require(failure.kind==reload_step_kind::failed&&failure.result.code=="E_REAL_RELOAD_FAILURE"&&failure.result.message=="original error"&&poll().kind==reload_step_kind::idle&&calls==2,"Terminal reload failure was lost or retried");++passed;
+  }
+  {
+    reload_continuation operation;unsigned calls=0;require(operation.begin(0)&&operation.cancel(),"Reload close cancellation failed");
+    const auto result=operation.advance([]{return ULONGLONG{0};},[&]{++calls;return sdk::host_result{true,{},{}};});
+    require(result.kind==reload_step_kind::idle&&calls==0,"Closing reload invoked the Host again");++passed;
+  }
+  {
+    reload_continuation operation;unsigned calls=0,nested_calls=0;require(operation.begin(0),"Reload did not start");
+    const auto outer=operation.advance([]{return ULONGLONG{0};},[&]{++calls;
+      const auto nested=operation.advance([]{return ULONGLONG{0};},[&]{++nested_calls;return sdk::host_result{true,{},{}};});
+      require(nested.kind==reload_step_kind::pending&&operation.in_progress(),"Reentrant reload lost its active stack guard");return sdk::host_result{false,"E_RELOAD_PENDING","pending"};});
+    const auto done=operation.advance([]{return ULONGLONG{1};},[&]{++calls;return sdk::host_result{true,{},{}};});
+    require(outer.kind==reload_step_kind::pending&&done.kind==reload_step_kind::completed&&calls==2&&nested_calls==0&&!operation.in_progress(),"Reentrant owner opportunity duplicated reload or lost continuation");++passed;
+  }
+  {
+    reload_continuation operation;bool destruction_was_blocked=false;require(operation.begin(0),"Reload did not start");
+    const auto result=operation.advance([]{return ULONGLONG{0};},[&]{operation.cancel();destruction_was_blocked=operation.in_progress();
+      require(!operation.begin(0),"Reentrant close started a successor before the original callback returned");return sdk::host_result{true,{},{}};});
+    require(result.kind==reload_step_kind::cancelled&&destruction_was_blocked&&!operation.in_progress(),"Reentrant close published success or retained a retired stack guard");++passed;
+  }
+  {
+    reload_continuation operation;ULONGLONG now=100;unsigned calls=0;require(operation.begin(now),"Reload did not start");
+    const auto poll=[&]{return operation.advance([&]{return now;},[&]{++calls;return sdk::host_result{false,"E_RELOAD_PENDING","pending"};});};
+    require(poll().kind==reload_step_kind::pending,"Reload failed before fixed deadline");now=20099;
+    require(poll().kind==reload_step_kind::pending,"Reload ended before fixed deadline");now=20100;const auto timed=poll();
+    require(timed.kind==reload_step_kind::failed&&timed.result.code=="E_RELOAD_TIMEOUT"&&calls==2&&poll().kind==reload_step_kind::idle,"Pending polling renewed the deadline or called Host after expiry");++passed;
+  }
+  {
+    reload_continuation operation;bool threw=false;require(operation.begin(0),"Reload did not start");
+    try{(void)operation.advance([]{return ULONGLONG{0};},[]{throw std::runtime_error("reload callback failure");return sdk::host_result{true,{},{}};});}catch(const std::runtime_error&){threw=true;}
+    require(threw&&!operation.in_progress()&&operation.cancel(),"Reload exception stranded the owner stack guard");++passed;
+  }
   bool fallback_called=false;
   const bool failed_close_post=post_close_or_fallback([]{return false;},[&]{fallback_called=true;});
   require(!failed_close_post&&fallback_called,"Failed WM_CLOSE post skipped the normal close fallback");++passed;
