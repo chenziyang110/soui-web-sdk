@@ -38,7 +38,9 @@ async function waitReady(root,subject,hostRun) {
         ready.creationFileTime===subject.creationFileTime,'Host ready identity differs from held subject');
       requireFormalHarness(ready); // Refuse before launching the injector.
       return ready;
-    }catch(error){if(error.code!=='ENOENT')throw error;}
+    // Native publication uses an exclusive handle through its final flush.
+    // File existence is not readiness; sharing conflicts consume this same deadline.
+    }catch(error){if(!['ENOENT','EBUSY'].includes(error.code))throw error;}
     await new Promise(resolve=>setTimeout(resolve,20));
   }
   throw new Error('Public SDK Host did not publish a valid ready record');

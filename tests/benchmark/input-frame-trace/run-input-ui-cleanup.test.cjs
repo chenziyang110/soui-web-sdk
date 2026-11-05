@@ -25,7 +25,9 @@ function fixture(t,options={}){
     frozen_inputs:{measurement_sources:[]},capture_backend:'gdi-bitblt'};
   const requestFile=write('request.json',request),output=path.join(directory,'run');
   const runs={},launched={host:deferred(),input:deferred()},timers=[],stopAttempts=[],actualStops=[];
-  let checks=0,freezes=0;
+  let checks=0,freezes=0,readyReads=0,clock=options.clock;
+  const readyReadErrors=[...(options.readyReadErrors||[])];
+  const Clock=clock===undefined?Date:class extends Date {static now(){return clock;}};
   function launch(name,executable,args,cwd,root,env,ownership){
     const complete=deferred(),subject={pid:name==='host'?41:42,creationFileTime:'134360000000000001'};
     let closed=false,stopThrows=options[name+'StopThrows']||0;
@@ -52,7 +54,15 @@ function fixture(t,options={}){
   const substitutions={
     './run-one.cjs':{launch,stop:items=>{for(const item of items)item.stop();}},
     './owned-trace-subject.cjs':{
-      readRunJson:(root,name)=>JSON.parse(fs.readFileSync(path.join(root,name),'utf8')),
+      readRunJson:(root,name)=>{
+        if(name==='host-ready.json'){
+          ++readyReads;
+          if(readyReadErrors.length){const error=Error('authored ready '+readyReadErrors[0]);error.code=readyReadErrors.shift();throw error;}
+        }
+        const value=JSON.parse(fs.readFileSync(path.join(root,name),'utf8'));
+        if(name==='host-ready.json'&&options.wrongReadyIdentity)value.pid=99;
+        return value;
+      },
       describe:(root,name)=>({path:name,bytes:fs.statSync(path.join(root,name)).size,sha256:'0'.repeat(64)}),
       captureOwnedEvidence:(root,processes)=>{if(processes.some(item=>item.completion_rejected))throw Error('Native completion proof unavailable');return [];}
     },
@@ -62,14 +72,40 @@ function fixture(t,options={}){
   };
   const requireSubstitute=name=>substitutions[name]||localRequire(name);
   const schedule=(callback,delay)=>{const token={callback,delay,cleared:false};timers.push(token);return token;};
-  vm.compileFunction(source,['module','require','process','setTimeout','clearTimeout','Buffer'],{filename})(module,requireSubstitute,
-    {platform:'win32',env:{}},schedule,token=>{token.cleared=true;},Buffer);
+  vm.compileFunction(source,['module','require','process','setTimeout','clearTimeout','Buffer','Date'],{filename})(module,requireSubstitute,
+    {platform:'win32',env:{}},schedule,token=>{token.cleared=true;},Buffer,Clock);
   const result=module.exports.runRequest(requestFile,output);
   // Tests deliberately leave the result pending while checking ordering.
   void result.catch(()=>{});
   return {runs,launched,timers,stopAttempts,actualStops,result,output,
-    checks:()=>checks,freezes:()=>freezes,record:()=>JSON.parse(fs.readFileSync(path.join(output,'input-ui-run.json'),'utf8'))};
+    checks:()=>checks,freezes:()=>freezes,readyReads:()=>readyReads,setClock:value=>{clock=value;},
+    record:()=>JSON.parse(fs.readFileSync(path.join(output,'input-ui-run.json'),'utf8'))};
 }
+test('exclusive native ready publication may become readable within the original wait',async t=>{
+  const f=fixture(t,{readyReadErrors:['EBUSY']});await tick();
+  assert.equal(f.readyReads(),1);assert.equal(f.runs.input,undefined);
+  assert.deepEqual(f.timers.map(timer=>timer.delay),[195000,20]);
+  f.timers[1].callback();await f.launched.input.promise;
+  assert.equal(f.readyReads(),2);f.runs.input.finish();f.runs.host.finish();
+  assert.equal((await f.result).status,'completed');assert.deepEqual(f.actualStops,[]);
+});
+test('a sharing conflict does not restart the original thirty second ready deadline',async t=>{
+  const started=1700000000000,f=fixture(t,{readyReadErrors:['EBUSY','EBUSY'],clock:started});await tick();
+  f.setClock(started+30001);f.timers[1].callback();await tick();f.runs.host.finish();
+  await assert.rejects(f.result,/did not publish a valid ready record/);
+  assert.equal(f.readyReads(),1);assert.equal(f.runs.input,undefined);
+  assert.equal(f.timers.filter(timer=>timer.delay===195000).length,1);assert.deepEqual(f.actualStops,[]);
+});
+test('non-sharing ready errors remain fatal without starting injection',async t=>{
+  const f=fixture(t,{readyReadErrors:['EACCES']});await tick();f.runs.host.finish();
+  await assert.rejects(f.result,/authored ready EACCES/);assert.equal(f.runs.input,undefined);
+  assert.equal(f.timers.length,1);assert.equal(f.readyReads(),1);
+});
+test('a readable ready record with the wrong held identity is never retried or accepted',async t=>{
+  const f=fixture(t,{wrongReadyIdentity:true});await tick();f.runs.host.finish();
+  await assert.rejects(f.result,/identity differs/);assert.equal(f.runs.input,undefined);
+  assert.equal(f.timers.length,1);assert.equal(f.readyReads(),1);
+});
 test('failed input retains failure while the Host drains naturally under the original deadlines',async t=>{
   const f=fixture(t);await f.launched.input.promise;
   f.runs.input.finish(1,'root-failed');await tick();

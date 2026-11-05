@@ -8,6 +8,8 @@
 
 输入器必须由 OwnedProcessRunner 持有，并使用它的真实 PID/创建 FILETIME；等待 `host-ready.json` 并与原生 start 复核，再启动 `BurstInput`。它仅接受 `SouiInputUiHostV1` 窗口，在 final ACK、桌面 collector 和输入原件持久化后设置绑定 run/PID/创建身份的本轮结束 event；不会向可能复用的 HWND 发送跨进程关闭消息。宿主收到后走真实 Host.destroy 和二十秒 Runtime 总期限，再 stop trace、等待 producer quiescent、排空和写完整结束；失败非零，不修改验收资格。
 
+原生 ready 文件在写入与 flush 期间使用独占句柄。正式运行器将 `ENOENT` 和临时共享冲突 `EBUSY` 视为尚未发布完成，在原30秒 ready 截止内等待；不重置截止时间。其余读取错误、非法内容和 held 身份不符仍立即拒绝，不启动输入器。
+
 冻结的 burst HTML 原样复制为 page-bundle/index.html；run/kind 放在新建的有界 burst-config.js。公共 SDK 仍只信任 index/react 本地入口，不放宽 query/navigation 检查。指针用唯一坐标编码输入序列；滚轮固定 -120 单位，在 DOM 按实际 wheelDelta 累积，OS 聚合不改写为丢事件。全模式缺少对应能力即拒绝；`--trace=e2e` 在旧内核明确缺少 API 时可正常关闭，但缺失的内部阶段和 scalar 源仍标 unavailable。
 
 consumer 每次最多1024项/源、4ms条件等待，两个64KiB缓冲文件均 CREATE_NEW。每 exporter 总计100000事件/小于64MiB；错误/超限/未静止不写完整 end。默认 SDK 不自动创建这个工具线程。窗口保留既有公共 benchmark 的16ms owner pump，不能将该工具的调度误称内核 deadline 优化收益。
