@@ -1,0 +1,1089 @@
+diff --git a/benchmarks/input-ui-host/CMakeLists.txt b/benchmarks/input-ui-host/CMakeLists.txt
+index 5a3188601d2b57a3e11763ad84b4957fd8f774f4..2908062eb1dc30a1c3d24fb07372a1a663f42443 100644
+--- a/benchmarks/input-ui-host/CMakeLists.txt
++++ b/benchmarks/input-ui-host/CMakeLists.txt
+@@ -8,6 +8,15 @@ include("${CMAKE_CURRENT_LIST_DIR}/sdk_version.cmake")
+ soui_input_ui_resolve_sdk()
+ set(SOUI_INPUT_UI_LEGACY_SUPPORT "" CACHE PATH "Isolated diagnostic-only support prepared for a pre-trace installed SDK")
+ add_executable(SouiInputUiHost main.cpp trace_capture.cpp)
++option(SOUI_IME_ENABLE_API_REPLAY "Compile the explicitly private broker-view API replay fixture" OFF)
++set(SOUI_IME_ENGINE_ADMISSION_ROOT "" CACHE PATH "Explicit frozen private engine_admission.h source directory for the optional test-only API probe")
++if(SOUI_IME_ENABLE_API_REPLAY)
++  if(NOT IS_ABSOLUTE "${SOUI_IME_ENGINE_ADMISSION_ROOT}" OR NOT EXISTS "${SOUI_IME_ENGINE_ADMISSION_ROOT}/engine_admission.h")
++    message(FATAL_ERROR "API replay requires an explicitly pinned SOUI_IME_ENGINE_ADMISSION_ROOT")
++  endif()
++  target_include_directories(SouiInputUiHost PRIVATE "${SOUI_IME_ENGINE_ADMISSION_ROOT}")
++  target_compile_definitions(SouiInputUiHost PRIVATE SOUI_IME_ENABLE_API_REPLAY=1)
++endif()
+ target_link_libraries(SouiInputUiHost PRIVATE Soui::Sdk Soui::ActionJson advapi32)
+ target_compile_features(SouiInputUiHost PRIVATE cxx_std_17)
+ target_compile_definitions(SouiInputUiHost PRIVATE UNICODE _UNICODE NOMINMAX WINVER=0x0601 _WIN32_WINNT=0x0601)
+diff --git a/benchmarks/input-ui-host/ime_api_replay.h b/benchmarks/input-ui-host/ime_api_replay.h
+new file mode 100644
+index 0000000000000000000000000000000000000000..4ff3bed7d4fd856ac4f8e6250218b9649d4c0358
+--- /dev/null
++++ b/benchmarks/input-ui-host/ime_api_replay.h
+@@ -0,0 +1,246 @@
++#pragma once
++#if defined(SOUI_IME_ENABLE_API_REPLAY) && SOUI_IME_ENABLE_API_REPLAY
++#include <soui/bridge_adapter.h>
++#include <soui/host/soui_miniblink_host.h>
++#include <soui/diagnostics/input_frame_trace.h>
++#include "engine_admission.h" // Explicit frozen SDK-private source include; no test macro.
++#include <json.hpp>
++#include <windows.h>
++#include <atomic>
++#include <cstdint>
++#include <filesystem>
++#include <memory>
++#include <mutex>
++#include <stdexcept>
++#include <string>
++#include <utility>
++
++namespace soui::benchmark {
++
++// Dedicated native-API payload replay. No SDK/OS IME packet is manufactured.
++// Application storage, delegate and adapter must outlive normal Runtime drain.
++class ime_api_replay final : public sdk::bridge_adapter {
++  using json=nlohmann::json;
++  using view=void*;
++  using exec=void*;
++  using js_value=std::int64_t; // wkedefine.h: jsValue=__int64, WKE_CALL_TYPE=__cdecl.
++  struct api final {
++    view (__cdecl* current_view)(){};
++    exec (__cdecl* global_exec)(view){};
++    int (__cdecl* view_id)(view){};
++    bool (__cdecl* alive)(int){};
++    HWND (__cdecl* hwnd)(view){};
++    js_value (__cdecl* run_js)(view,const char*){};
++    const char* (__cdecl* string)(exec,js_value){};
++    void (__cdecl* focus)(view){};
++    void (__cdecl* blur)(view){};
++    bool (__cdecl* compose)(view,const wchar_t*,int,int){};
++    bool (__cdecl* confirm)(view,const wchar_t*){};
++  };
++  struct state final {
++    explicit state(std::string run,std::filesystem::path binary)
++      :run(std::move(run)),binary(std::move(binary)),capture_id("ime-api-replay:"+this->run),ui(GetCurrentThreadId()){}
++    std::string run; std::filesystem::path binary; std::string capture_id; DWORD ui{};
++    sdk::dynamic_miniblink_adapter* adapter{}; HWND owner{};
++    std::atomic<sdk::engine_thread*> engine{nullptr};
++    api functions; HMODULE module{};
++    std::atomic<bool> attached{false},started{false},captured{false},recipe_posted{false};
++    std::atomic<bool> cancelled{false},done{false},failed{false};
++    view native_view{}; int native_id{}; std::uint64_t receipt{};
++    DWORD engine_tid{}; // Published before captured.release, never changed afterwards.
++    mutable std::mutex mutex;
++    json capture=json::object(),cases=json::array(); std::string error;
++  };
++  sdk::bridge_adapter& delegate_;
++  std::shared_ptr<state> state_;
++  static void require(bool value,const char* why){if(!value)throw std::runtime_error(why);}
++  static std::uint64_t qpc(){return sdk::diagnostics::input_frame_trace::now_qpc();}
++  static bool hex32(const std::string& s){return s.size()==32&&s.find_first_not_of("0123456789abcdef")==std::string::npos;}
++  static void fail(const std::shared_ptr<state>& s,const char* why) noexcept {
++    try {std::lock_guard<std::mutex> lock(s->mutex);if(s->done.load(std::memory_order_relaxed))return;
++      s->error=std::string(why?why:"E_IME_API_REPLAY_UNKNOWN").substr(0,256);
++      s->failed.store(true,std::memory_order_relaxed);s->done.store(true,std::memory_order_release);
++    }catch(...){s->failed.store(true,std::memory_order_relaxed);s->done.store(true,std::memory_order_release);}
++  }
++  template<class F> static F symbol(HMODULE module,const char* name){
++    const auto p=GetProcAddress(module,name);require(p!=nullptr,"E_IME_API_EXPORT");return reinterpret_cast<F>(p);
++  }
++  static void load_api(state& s){
++    s.module=GetModuleHandleW(s.binary.filename().c_str());require(s.module!=nullptr,"E_IME_API_MODULE");
++    wchar_t path[32768]{};const auto n=GetModuleFileNameW(s.module,path,32768);
++    require(n&&n<32768&&std::filesystem::equivalent(std::filesystem::path(path),s.binary),"E_IME_API_MODULE_IDENTITY");
++    auto& a=s.functions;
++    a.current_view=symbol<decltype(a.current_view)>(s.module,"wkeGetWebViewForCurrentContext");
++    a.global_exec=symbol<decltype(a.global_exec)>(s.module,"wkeGlobalExec");
++    a.view_id=symbol<decltype(a.view_id)>(s.module,"wkeGetWebviewId");
++    a.alive=symbol<decltype(a.alive)>(s.module,"wkeIsWebviewAlive");
++    a.hwnd=symbol<decltype(a.hwnd)>(s.module,"wkeGetHostHWND");
++    a.run_js=symbol<decltype(a.run_js)>(s.module,"wkeRunJS");
++    a.string=symbol<decltype(a.string)>(s.module,"jsToTempString");
++    a.focus=symbol<decltype(a.focus)>(s.module,"wkeSetFocus");
++    a.blur=symbol<decltype(a.blur)>(s.module,"wkeKillFocus");
++    a.compose=symbol<decltype(a.compose)>(s.module,"wkeSetComposition");
++    a.confirm=symbol<decltype(a.confirm)>(s.module,"wkeConfirmComposition");
++  }
++  static void owner(state& s){
++    const auto engine=s.engine.load(std::memory_order_acquire);
++    require(!s.cancelled.load(std::memory_order_acquire),"E_IME_API_CANCELLED");
++    require(engine&&engine->is_owner_thread(),"E_IME_API_ENGINE_OWNER");
++    require(s.adapter&&s.adapter->accepts_execution_context_receipt(s.receipt),"E_IME_API_CONTEXT_REVOKED");
++  }
++  // Fresh state on every step; no exec from the bootstrap callback is retained.
++  static exec checked(state& s){
++    owner(s);auto& a=s.functions;
++    require(s.native_view&&s.native_id&&a.alive(s.native_id),"E_IME_API_VIEW_RETIRED");
++    require(a.view_id(s.native_view)==s.native_id,"E_IME_API_VIEW_ID");
++    const auto e=a.global_exec(s.native_view);
++    require(e&&s.adapter->owns_execution_context(e,s.receipt),"E_IME_API_VIEW_CONTEXT");
++    owner(s);return e;
++  }
++  static json evaluate(state& s,const char* script){
++    require(script&&std::char_traits<char>::length(script)<=8192,"E_IME_API_SCRIPT_BOUND");
++    // wkeRunJS itself wraps its input in a function body. Return the controlled
++    // expression explicitly; an unreturned IIFE would execute yet yield undefined.
++    const std::string returning=std::string("return (")+script+");";
++    const auto e=checked(s);const auto value=s.functions.run_js(s.native_view,returning.c_str());
++    // Do not insert globalExec/opaque getters while the JS value/temp is live.
++    // Receipt/owner checks use native state; copy before the full revalidation.
++    owner(s);const auto bytes=s.functions.string(e,value);
++    require(bytes!=nullptr,"E_IME_API_JS_RESULT");std::size_t count=0;
++    while(count<=16384&&bytes[count])++count;
++    require(count&&count<=16384,"E_IME_API_JS_RESULT_BOUND");
++    const std::string copied(bytes,count);
++    (void)checked(s);return json::parse(copied);
++  }
++  static void phase(state& s,const char* script){
++    const auto result=evaluate(s,script);require(result.is_object()&&result.value("ok",false),"E_IME_API_PHASE");
++  }
++  static const char* setup_script(){return R"JS((function(){
++if(window.__souiImeApiReplay||document.getElementById('__soui_ime_api_probe'))throw Error('probe already exists');
++if(!document.body)throw Error('body unavailable');
++var box=document.createElement('div'),t=document.createElement('textarea');
++box.id='__soui_ime_api_probe';box.style.cssText='position:fixed;right:8px;bottom:8px;z-index:2147483647;background:white;padding:8px;border:1px solid #777';
++t.id='__soui_ime_api_text';t.setAttribute('aria-label','Native IME API replay');t.autocomplete='off';t.spellcheck=false;box.appendChild(t);document.body.appendChild(box);
++var p={area:t,rows:[],seq:0,phase:'setup',case_name:'',overflow:false};
++p.units=function(v,max){if(v.length>max)p.overflow=true;var a=[];for(var i=0;i<v.length&&i<max;i++)a.push(v.charCodeAt(i));return a;};
++p.snapshot=function(events){var r={schema:'soui.ime-api-dom/v1',case_name:p.case_name,phase:p.phase,value_utf16:p.units(t.value,16),selection_start:t.selectionStart,selection_end:t.selectionEnd,active_element:document.activeElement===t,document_has_focus:typeof document.hasFocus==='function'?!!document.hasFocus():null,event_count:p.rows.length,overflow:p.overflow};if(events)r.events=p.rows.slice();return r;};
++function record(e){if(p.rows.length>=32){p.overflow=true;return;}p.rows.push({seq:++p.seq,type:e.type,scope:e.target===window?'window':'textarea',data_utf16:typeof e.data==='string'?p.units(e.data,8):null,value_utf16:p.units(t.value,16),selection_start:t.selectionStart,selection_end:t.selectionEnd,active_element:document.activeElement===t,phase:p.phase});}
++var types=['focus','blur','input','compositionstart','compositionupdate','compositionend'];for(var i=0;i<types.length;i++)t.addEventListener(types[i],record,false);window.addEventListener('focus',record,false);window.addEventListener('blur',record,false);
++window.__souiImeApiReplay=p;return JSON.stringify({ok:true});})())JS";}
++  static const char* reset_script(bool refocus){return refocus?
++    R"JS((function(){var p=window.__souiImeApiReplay;if(!p)throw Error('probe missing');p.rows=[];p.seq=0;p.overflow=false;p.phase='reset';p.case_name='blur-refocus-final';p.area.value='';p.area.setSelectionRange(0,0);p.area.focus();return JSON.stringify({ok:true});})())JS":
++    R"JS((function(){var p=window.__souiImeApiReplay;if(!p)throw Error('probe missing');p.rows=[];p.seq=0;p.overflow=false;p.phase='reset';p.case_name='blur-final';p.area.value='';p.area.setSelectionRange(0,0);p.area.focus();return JSON.stringify({ok:true});})())JS";}
++  static json snapshot(state& s,bool full){
++    auto r=evaluate(s,full?"JSON.stringify(window.__souiImeApiReplay.snapshot(true))":"JSON.stringify(window.__souiImeApiReplay.snapshot(false))");
++    require(r.is_object()&&r.value("schema",std::string{})=="soui.ime-api-dom/v1"&&r.contains("overflow")&&!r.at("overflow").get<bool>(),"E_IME_API_DOM_SNAPSHOT");
++    return r;
++  }
++  static void capture(const std::shared_ptr<state>& s){
++    require(!s->cancelled.load(std::memory_order_acquire),"E_IME_API_CANCELLED");
++    const auto engine=s->engine.load(std::memory_order_acquire);
++    require(engine&&engine->is_owner_thread(),"E_IME_API_CAPTURE_OWNER");
++    require(!s->captured.load(std::memory_order_acquire),"E_IME_API_DUPLICATE_CAPTURE");
++    const auto receipt=s->adapter->execution_context_receipt();
++    require(receipt&&s->adapter->accepts_execution_context_receipt(receipt),"E_IME_API_CAPTURE_RECEIPT");
++    const auto v=s->functions.current_view();require(v!=nullptr,"E_IME_API_NO_CURRENT_VIEW");
++    const auto e=s->functions.global_exec(v);
++    require(e&&s->adapter->owns_execution_context(e,receipt),"E_IME_API_CAPTURE_NOT_OWNED");
++    const auto id=s->functions.view_id(v);require(id&&s->functions.alive(id),"E_IME_API_CAPTURE_NOT_ALIVE");
++    const auto hwnd=s->functions.hwnd(v);DWORD process=0;const auto thread=GetWindowThreadProcessId(hwnd,&process);
++    require(IsWindow(hwnd)&&process==GetCurrentProcessId()&&thread==s->ui&&(hwnd==s->owner||IsChild(s->owner,hwnd)),"E_IME_API_CAPTURE_HWND");
++    require(s->adapter->accepts_execution_context_receipt(receipt),"E_IME_API_CAPTURE_CHANGED");
++    s->native_view=v;s->native_id=id;s->receipt=receipt;s->engine_tid=GetCurrentThreadId();
++    {std::lock_guard<std::mutex> lock(s->mutex);s->capture={{"receipt",std::to_string(receipt)},{"view_id",id},{"hwnd",std::to_string(reinterpret_cast<std::uintptr_t>(hwnd))},{"engine_thread_id",s->engine_tid},{"qpc",std::to_string(qpc())},{"actual_adapter_context_owned",true}};}
++    s->captured.store(true,std::memory_order_release);
++  }
++  static void run_case(const std::shared_ptr<state>& s,bool refocus){
++    json row={{"name",refocus?"blur-refocus-final":"blur-final"},{"preedit_utf16",{110,105}},{"final_payload_utf16",{20320}},{"steps",json::array()}};
++    auto save=[&]{std::lock_guard<std::mutex> lock(s->mutex);s->cases.push_back(row);};
++    auto observed=[&](const char* operation,std::uint64_t begin,json returned,bool query=true){
++      row["steps"].push_back({{"operation",operation},{"qpc_begin",std::to_string(begin)},{"qpc_end",std::to_string(qpc())},{"returned",std::move(returned)}});
++      // Retain the actual call/return even if a later DOM/ownership query fails.
++      if(query)row["steps"].back()["after"]=snapshot(*s,false);
++    };
++    try {
++      phase(*s,reset_script(refocus));
++      phase(*s,"(function(){window.__souiImeApiReplay.phase='focus';return JSON.stringify({ok:true});})()");
++      (void)checked(*s);auto begin=qpc();s->functions.focus(s->native_view);observed("wkeSetFocus",begin,nullptr);
++      phase(*s,"(function(){window.__souiImeApiReplay.phase='preedit';return JSON.stringify({ok:true});})()");
++      (void)checked(*s);begin=qpc();const auto composed=s->functions.compose(s->native_view,L"ni",2,2);observed("wkeSetComposition",begin,composed);
++      require(composed,"E_IME_API_PREEDIT_REJECTED");
++      phase(*s,"(function(){window.__souiImeApiReplay.phase='blur';return JSON.stringify({ok:true});})()");
++      (void)checked(*s);begin=qpc();s->functions.blur(s->native_view);observed("wkeKillFocus",begin,nullptr);
++      if(refocus){
++        phase(*s,"(function(){window.__souiImeApiReplay.phase='refocus';return JSON.stringify({ok:true});})()");
++        (void)checked(*s);begin=qpc();s->functions.focus(s->native_view);observed("wkeSetFocus",begin,nullptr);
++      }
++      phase(*s,"(function(){window.__souiImeApiReplay.phase='confirm';return JSON.stringify({ok:true});})()");
++      (void)checked(*s);begin=qpc();const auto confirmed=s->functions.confirm(s->native_view,L"\x4f60");observed("wkeConfirmComposition",begin,confirmed,false);
++      row["final"]=snapshot(*s,true);row["native_sequence_observed"]=true;save();
++      // Do not reset another case over an unfinalized native composition.
++      require(confirmed,"E_IME_API_FINAL_COMMIT_REJECTED");
++    }catch(...){if(!row.contains("native_sequence_observed")){row["native_sequence_observed"]=false;save();}throw;}
++  }
++ public:
++  ime_api_replay(sdk::bridge_adapter& delegate,std::string run,std::filesystem::path kernel)
++    :delegate_(delegate),state_(std::make_shared<state>(std::move(run),std::move(kernel))){
++    require(hex32(state_->run)&&state_->binary.is_absolute(),"E_IME_API_CONFIG");
++  }
++  ~ime_api_replay() override {cancel();}
++  void attach_adapter(sdk::dynamic_miniblink_adapter& adapter,HWND owner_window){
++    auto& s=*state_;require(GetCurrentThreadId()==s.ui&&!s.attached.load(),"E_IME_API_ATTACH_OWNER");
++    DWORD process=0;require(IsWindow(owner_window)&&GetWindowThreadProcessId(owner_window,&process)==s.ui&&process==GetCurrentProcessId(),"E_IME_API_ATTACH_HWND");
++    s.adapter=&adapter;s.owner=owner_window;s.attached.store(true,std::memory_order_release);
++  }
++  // UI timer only, after document_ready. At most one arm task and one recipe task.
++  void start() noexcept {
++    const auto s=state_;if(s->started.load()||s->done.load())return;
++    try {require(GetCurrentThreadId()==s->ui&&s->attached.load(),"E_IME_API_START_OWNER");
++      require(s->adapter->document_ready(),"E_IME_API_DOCUMENT_NOT_READY");
++      auto engine=sdk::detail::engine_admission::host_engine(*s->adapter);require(engine,"E_IME_API_ENGINE_BORROW");
++      load_api(*s);s->engine.store(engine,std::memory_order_release);s->started.store(true);
++      const auto receipt=s->adapter->execution_context_receipt();require(receipt,"E_IME_API_ARM_RECEIPT");
++      const auto event=json{{"type","soui.ime-api-replay.capture"},{"run_id",s->run},{"request_id",s->capture_id}}.dump();
++      require(engine->post([s,receipt,event]{try{require(!s->cancelled.load()&&s->engine.load()->is_owner_thread()&&s->adapter->accepts_execution_context_receipt(receipt),"E_IME_API_ARM_REVOKED");s->adapter->dispatch_event_now(event);}catch(const std::exception& e){fail(s,e.what());}catch(...){fail(s,"E_IME_API_ARM_UNKNOWN");}}),"E_IME_API_ARM_ADMISSION");
++    }catch(const std::exception& e){fail(s,e.what());}catch(...){fail(s,"E_IME_API_START_UNKNOWN");}
++  }
++  void poll() noexcept {
++    const auto s=state_;if(s->done.load()||!s->captured.load(std::memory_order_acquire)||s->recipe_posted.load())return;
++    try {require(GetCurrentThreadId()==s->ui,"E_IME_API_POLL_OWNER");
++      require(!s->cancelled.load(),"E_IME_API_CANCELLED");s->recipe_posted.store(true);
++      auto engine=s->engine.load();require(engine&&engine==sdk::detail::engine_admission::host_engine(*s->adapter),"E_IME_API_ENGINE_CHANGED");
++      require(engine->post([s]{try{require(GetCurrentThreadId()==s->engine_tid,"E_IME_API_CAPTURE_THREAD_CHANGED");phase(*s,setup_script());run_case(s,false);run_case(s,true);(void)checked(*s);s->done.store(true,std::memory_order_release);}catch(const std::exception& e){fail(s,e.what());}catch(...){fail(s,"E_IME_API_REPLAY_UNKNOWN");}}),"E_IME_API_REPLAY_ADMISSION");
++    }catch(const std::exception& e){fail(s,e.what());}catch(...){fail(s,"E_IME_API_POLL_UNKNOWN");}
++  }
++  void cancel() noexcept {const auto s=state_;if(s->done.load(std::memory_order_acquire))return;s->cancelled.store(true,std::memory_order_release);fail(s,"E_IME_API_CANCELLED");}
++  [[nodiscard]] bool done() const noexcept{return state_->done.load(std::memory_order_acquire);}
++  [[nodiscard]] bool failed() const noexcept{return state_->failed.load(std::memory_order_acquire);}
++  [[nodiscard]] json result() const {
++    const auto s=state_;std::lock_guard<std::mutex> lock(s->mutex);
++    const bool complete=s->done.load()&&!s->failed.load()&&!s->cancelled.load()&&s->cases.size()==2;
++    return {{"schema","soui.ime-api-replay-result/v1"},{"run_id",s->run},{"mode","deterministic-native-api-payload-replay"},{"done",s->done.load()},{"failed",s->failed.load()},{"collectorIndependentComplete",complete},{"error",s->error.empty()?json(nullptr):json(s->error)},{"capture",s->capture},{"cases",s->cases},{"functionalPass",nullptr},{"sdkImePacketPipelineVerified",false},{"realOsImeVerified",false},{"physicalInputLatencyMeasured",false},{"performanceGate",false},{"releaseReady",false}};
++  }
++  std::string handle_json(std::string_view request,bool gesture=false) override {
++    auto response=delegate_.handle_json(request,gesture); // Original authorization/response untouched.
++    const auto s=state_;if(s->done.load()||request.size()>4096)return response;
++    try {const auto r=json::parse(request,nullptr,false);if(r.is_object()&&r.value("method",std::string{})=="bridge.bootstrap"&&r.value("requestId",std::string{})==s->capture_id){
++      require(response.size()<=8192,"E_IME_API_BOOTSTRAP_RESPONSE_BOUND");const auto granted=json::parse(response,nullptr,false);
++      require(granted.is_object()&&granted.value("ok",false)&&granted.value("requestId",std::string{})==s->capture_id,"E_IME_API_BOOTSTRAP_REJECTED");capture(s);
++    }
++    }catch(const std::exception& e){fail(s,e.what());}catch(...){fail(s,"E_IME_API_CAPTURE_UNKNOWN");}
++    return response;
++  }
++  void shutdown_session(const std::string& s) override{delegate_.shutdown_session(s);}
++  void set_owner_window(void* w) noexcept override{delegate_.set_owner_window(w);}
++  void set_event_sink(event_sink f) override{delegate_.set_event_sink(std::move(f));}
++  void record_paint() noexcept override{delegate_.record_paint();}
++  void set_present_count(std::uint64_t n) noexcept override{delegate_.set_present_count(n);}
++  void set_draw_interval(unsigned n) noexcept override{delegate_.set_draw_interval(n);}
++  void set_gpu_active(bool b) noexcept override{delegate_.set_gpu_active(b);}
++  unsigned active_frame_rate() const noexcept override{return delegate_.active_frame_rate();}
++  bool set_backend_frame_rate_limit(unsigned n) noexcept override{return delegate_.set_backend_frame_rate_limit(n);}
++  unsigned requested_frame_rate() const noexcept override{return delegate_.requested_frame_rate();}
++  std::string register_root(const soui::runtime::scan_request_context& c,const std::filesystem::path& p) override{return delegate_.register_root(c,p);}
++};
++} // namespace soui::benchmark
++#endif // SOUI_IME_ENABLE_API_REPLAY
+diff --git a/benchmarks/input-ui-host/ime_report_tests.h b/benchmarks/input-ui-host/ime_report_tests.h
+new file mode 100644
+index 0000000000000000000000000000000000000000..ad49e51d7b7b329e794af63154425a41f060cc60
+--- /dev/null
++++ b/benchmarks/input-ui-host/ime_report_tests.h
+@@ -0,0 +1,168 @@
++#pragma once
++#include "ime_report.h"
++#include <windows.h>
++#include <chrono>
++#include <filesystem>
++#include <fstream>
++#include <iostream>
++#include <iterator>
++#include <stdexcept>
++#include <string>
++
++namespace soui::benchmark {
++namespace ime_report_contract_detail {
++using json=nlohmann::json;
++inline void check(bool value,const char* message) {
++  if(!value)throw std::runtime_error(message);
++}
++template<class Call> inline void rejects(Call&& call,const char* message) {
++  bool rejected=false;
++  try {call();}catch(const std::exception&){rejected=true;}
++  check(rejected,message);
++}
++inline std::string params(const json& page) {
++  return json{{"snapshot_json",page.dump()}}.dump();
++}
++inline json sample(const std::string& run) {
++  // One BMP plus one supplementary character: three JS UTF-16 code units,
++  // seven UTF-8 bytes. Selection validation must use the former.
++  const std::string text="\xE6\xB1\x89\xF0\xA0\x80\x80";
++  json events=json::array();
++  for(unsigned seq=1;seq<=3;++seq)events.push_back({
++    {"seq",seq},{"time_ms",static_cast<double>(seq)},
++    {"type",seq==1?"compositionstart":seq==2?"compositionupdate":"checkpoint"},
++    {"data",seq==2?json(text):json(nullptr)},{"value",text},
++    {"selection_start",3},{"selection_end",3},{"selection_direction","none"},
++    {"active_element","test-input"},{"phase",seq==3?"after-focus-return":"preedit-observed"}});
++  return {{"schema","soui.ime-functional-page/v1"},{"run_id",run},
++    {"event_clock","performance.now-relative-ms"},{"events",events},{"checkpoints",json::array({3})},
++    {"final",{{"time_ms",4.0},{"value",text},{"selection_start",3},{"selection_end",3},
++      {"selection_direction","none"},{"active_element","test-input"}}},
++    {"overflow",false},{"classification",{{"os_ime","unknown"},{"native_late_commit","unknown"},
++      {"native_dual_flags","unknown"}}},{"performance_verified",false},{"physical_latency_measured",false}};
++}
++}
++
++// Production parser/collector contracts only. This does not run Blink, dispatch
++// input, recognize an OS IME, or qualify any text/focus/performance behavior.
++inline unsigned run_ime_report_contracts(const std::filesystem::path& root) {
++  using namespace ime_report_contract_detail;
++  const std::string run(32,'c');
++  const auto page=sample(run);
++  const auto body=params(page);
++  const auto identity=sdk::diagnostics::input_frame_trace::current_identity(
++    0xccccccccccccccccULL,0xccccccccccccccccULL);
++  unsigned cases=0;
++  check(ime_report_detail::parse(body,run)==page,"Legal observed UTF-16 selection was changed");++cases;
++  auto empty=page;empty["events"]=json::array();empty["checkpoints"]=json::array();
++  empty["final"]={{"time_ms",0.0},{"value",""},{"selection_start",nullptr},
++    {"selection_end",nullptr},{"selection_direction",nullptr},{"active_element","none"}};
++  check(ime_report_detail::parse(params(empty),run)==empty,"Unknown unobserved phase was fabricated/rejected");++cases;
++  auto mismatch=page;mismatch["final"]["value"]="observed failure";
++  mismatch["final"]["selection_start"]=16;mismatch["final"]["selection_end"]=16;
++  check(ime_report_detail::parse(params(mismatch),run)==mismatch,"Unexpected observed text was discarded");++cases;
++
++  // Each mutation independently exercises the production schema boundary.
++  for(unsigned failure=0;failure<14;++failure) {
++    auto invalid=page;
++    switch(failure) {
++      case 0:invalid["run_id"]=std::string(32,'d');break;
++      case 1:invalid["events"][1]["seq"]=3;break;
++      case 2:invalid["events"][1]["time_ms"]=0.5;break;
++      case 3:invalid["events"][0]["selection_end"]=4;break;
++      case 4:invalid["events"][0]["selection_start"]=nullptr;break;
++      case 5:invalid["events"][1]["data"]=std::string(65,'x');break;
++      case 6:invalid["final"]["value"]=std::string(129,'x');break;
++      case 7:invalid["overflow"]=true;break;
++      case 8:invalid["performance_verified"]=true;break;
++      case 9:invalid["physical_latency_measured"]=true;break;
++      case 10:invalid["classification"]["native_late_commit"]="verified";break;
++      case 11:invalid["final"]["time_ms"]=2.0;break;
++      case 12:invalid["checkpoints"]=json::array({2});break;
++      case 13:invalid["events"][0]["seq"]=true;break;
++    }
++    rejects([&]{ime_report_detail::parse(params(invalid),run);},"Malformed IME observation was accepted");++cases;
++  }
++  auto excessive=page;excessive["events"]=json::array();excessive["checkpoints"]=json::array();
++  for(unsigned seq=1;seq<=97;++seq) {
++    auto row=page["events"][0];row["seq"]=seq;row["time_ms"]=seq;row["type"]="input";
++    row["data"]=nullptr;row["value"]="";row["selection_start"]=nullptr;row["selection_end"]=nullptr;
++    row["selection_direction"]=nullptr;row["active_element"]="none";row["phase"]="initial";
++    excessive["events"].push_back(row);
++  }
++  excessive["final"]=empty["final"];excessive["final"]["time_ms"]=98;
++  check(params(excessive).size()<=ime_report_detail::byte_limit,"Array-bound contract hit byte limit first");
++  rejects([&]{ime_report_detail::parse(params(excessive),run);},"Unbounded IME event array accepted");++cases;
++  excessive=page;excessive["checkpoints"]=json::array({1,2,3,4,5});
++  rejects([&]{ime_report_detail::parse(params(excessive),run);},"Unbounded checkpoint array accepted");++cases;
++  rejects([&]{ime_report_detail::parse(std::string(24577,' '),run);},"Oversized IME envelope accepted");++cases;
++  const std::string deep="{\"events\":"+std::string(8,'[')+"0"+std::string(8,']')+"}";
++  rejects([&]{ime_report_detail::parse(json{{"snapshot_json",deep}}.dump(),run);},"Deep IME arrays accepted");++cases;
++  const auto raw=page.dump();
++  const auto duplicate=std::string("{\"run_id\":\"")+run+"\","+raw.substr(1);
++  rejects([&]{ime_report_detail::parse(json{{"snapshot_json",duplicate}}.dump(),run);},"Duplicate IME snapshot key folded");++cases;
++  auto row_duplicate=raw;const auto sequence=row_duplicate.find("\"seq\":1");
++  check(sequence!=std::string::npos,"Contract event sequence missing");row_duplicate.insert(sequence,"\"seq\":1,");
++  rejects([&]{ime_report_detail::parse(json{{"snapshot_json",row_duplicate}}.dump(),run);},"Duplicate IME event key folded");++cases;
++  const auto encoded=json(raw).dump();
++  rejects([&]{ime_report_detail::parse("{\"snapshot_json\":"+encoded+",\"snapshot_json\":"+encoded+"}",run);},
++    "Duplicate IME envelope key folded");++cases;
++
++  ime_report_collector accepted(run);
++  const auto receipt=json::parse(accepted.submit(body));
++  check(receipt.at("accepted")==true&&receipt.at("persisted")==false,"IME admission claimed persistence");++cases;
++  rejects([&]{accepted.submit(params(mismatch));},"IME second observation overwrote first admission");++cases;
++  ime_report_collector closed(run);closed.close();
++  rejects([&]{closed.submit(body);},"IME observation admitted after close");++cases;
++
++  const auto remaining=[] {return std::chrono::seconds(2);};
++  const ime_persistence_authority allowed{true,true};
++  ime_report_collector not_closed(run);not_closed.submit(body);bool premature_write=false;
++  rejects([&]{persist_ime_report(not_closed,identity,run,allowed,remaining,
++    [&](const std::string&){premature_write=true;});},"IME persistence silently closed a live collector");
++  check(!premature_write,"IME persistence wrote before explicit close");++cases;
++  for(const auto authority:{ime_persistence_authority{false,true},ime_persistence_authority{true,false}}) {
++    ime_report_collector unauthorized(run);unauthorized.submit(body);unauthorized.close();bool wrote=false;
++    rejects([&]{persist_ime_report(unauthorized,identity,run,authority,remaining,
++      [&](const std::string&){wrote=true;});},"IME persistence accepted missing shutdown/quiescence authority");
++    check(!wrote,"Unauthorized IME persistence reached writer");++cases;
++  }
++  ime_report_collector expired(run);expired.submit(body);expired.close();bool expired_write=false;
++  rejects([&]{persist_ime_report(expired,identity,run,allowed,[]{return std::chrono::milliseconds(0);},
++    [&](const std::string&){expired_write=true;});},"IME expired close budget accepted");
++  check(!expired_write,"Expired IME persistence reached writer");++cases;
++  ime_report_collector write_failure(run);write_failure.submit(body);write_failure.close();
++  rejects([&]{persist_ime_report(write_failure,identity,run,allowed,remaining,
++    [](const std::string&){throw std::runtime_error("injected write/flush failure");});},"IME writer failure reported persistence");++cases;
++
++  const auto file=root/L"ime-functional-result.json";
++  const auto writer=[&](const std::string& bytes) {
++    const auto handle=CreateFileW(file.c_str(),GENERIC_WRITE,0,nullptr,CREATE_NEW,FILE_ATTRIBUTE_NORMAL,nullptr);
++    check(handle!=INVALID_HANDLE_VALUE,"IME contract CREATE_NEW failed");DWORD count{};
++    const bool complete=WriteFile(handle,bytes.data(),static_cast<DWORD>(bytes.size()),&count,nullptr)
++      &&count==bytes.size()&&FlushFileBuffers(handle);
++    CloseHandle(handle);check(complete,"IME contract full write/flush failed");
++  };
++  accepted.close();const auto saved=persist_ime_report(accepted,identity,run,allowed,remaining,writer);
++  check(saved.at("persisted")==true&&saved.at("page_snapshot")==page
++    &&saved.at("functional_pass").is_null()&&saved.at("os_ime_coverage")=="unknown"
++    &&saved.at("native_late_commit_coverage")=="unknown"&&saved.at("native_dual_flags_coverage")=="unknown"
++    &&saved.at("performanceGate")==false&&saved.at("releaseReady")==false,
++    "IME first observation was lost or admission became qualification");++cases;
++  rejects([&]{accepted.take(identity,run);},"IME collector observation was taken twice");++cases;
++  const auto read_file=[&] {
++    std::ifstream input(file,std::ios::binary);check(input.good(),"IME persisted contract file missing");
++    return std::string(std::istreambuf_iterator<char>(input),{});
++  };
++  const auto first=read_file();ime_report_collector collision(run);collision.submit(body);collision.close();
++  rejects([&]{persist_ime_report(collision,identity,run,allowed,remaining,writer);},"IME CREATE_NEW collision reported success");
++  check(read_file()==first,"IME persistence collision overwrote evidence");++cases;
++  ime_report_collector unsubmitted(run);unsubmitted.close();std::string absent_bytes;
++  const auto absent=persist_ime_report(unsubmitted,identity,run,allowed,remaining,
++    [&](const std::string& bytes){absent_bytes=bytes;});
++  check(absent.at("submission")=="unsubmitted"&&absent.at("persisted")==false
++    &&absent.at("page_snapshot").is_null()&&!absent_bytes.empty(),"Missing IME observation was fabricated");++cases;
++  std::cout<<"IME report contracts: "<<cases<<"; parser/collector only, no Blink/OS IME/GUI\n";
++  return cases;
++}
++}
+diff --git a/benchmarks/input-ui-host/ime_report.h b/benchmarks/input-ui-host/ime_report.h
+new file mode 100644
+index 0000000000000000000000000000000000000000..e35390bfd959d101a2d5b34778b17638838d8c86
+--- /dev/null
++++ b/benchmarks/input-ui-host/ime_report.h
+@@ -0,0 +1,159 @@
++#pragma once
++#include <soui/diagnostics/input_frame_trace.h>
++#include <json.hpp>
++#include <algorithm>
++#include <cmath>
++#include <cstdint>
++#include <initializer_list>
++#include <mutex>
++#include <set>
++#include <stdexcept>
++#include <string>
++#include <string_view>
++#include <utility>
++#include <vector>
++
++namespace soui::benchmark {
++namespace ime_report_detail {
++using json=nlohmann::json;
++inline constexpr std::size_t byte_limit=24576;
++inline constexpr std::size_t persisted_byte_limit=32768;
++inline constexpr std::size_t maximum_events=96;
++inline constexpr std::size_t maximum_checkpoints=4;
++inline constexpr std::size_t text_unit_limit=128;
++inline constexpr std::size_t data_unit_limit=64;
++inline constexpr const char* capability="ime-functional-snapshot-v1";
++inline void require(bool value,const char* error){if(!value)throw std::runtime_error(error);}
++inline void keys(const json& value,std::initializer_list<const char*> expected) {
++  require(value.is_object()&&value.size()==expected.size(),"E_IME_REPORT_KEYS");
++  for(const auto* key:expected)require(value.contains(key),"E_IME_REPORT_KEYS");
++}
++inline bool integer(const json& value,std::uint64_t maximum) {
++  return value.is_number_integer()&&(value.is_number_unsigned()||value.get<std::int64_t>()>=0)&&value.get<std::uint64_t>()<=maximum;
++}
++inline double time(const json& value) {
++  require(value.is_number(),"E_IME_REPORT_TIME");const auto result=value.get<double>();
++  require(std::isfinite(result)&&result>=0&&result<=180000,"E_IME_REPORT_TIME");return result;
++}
++// json::parse validates UTF-8. Count decoded UTF-16 units, as textarea selection
++// offsets and JavaScript string.length do; supplementary characters take two.
++inline std::size_t text(const json& value,std::size_t limit) {
++  require(value.is_string(),"E_IME_REPORT_TEXT");const auto& bytes=value.get_ref<const std::string&>();
++  require(bytes.size()<=limit*4,"E_IME_REPORT_TEXT");std::size_t units=0;
++  for(std::size_t at=0;at<bytes.size();) {
++    const auto lead=static_cast<unsigned char>(bytes[at]);
++    const std::size_t width=lead<0x80?1:lead<0xe0?2:lead<0xf0?3:4;
++    require(at+width<=bytes.size(),"E_IME_REPORT_TEXT");at+=width;units+=width==4?2:1;
++    require(units<=limit,"E_IME_REPORT_TEXT");
++  }return units;
++}
++inline bool one_of(const json& value,std::initializer_list<const char*> choices) {
++  if(!value.is_string())return false;
++  for(const auto* choice:choices)if(value==choice)return true;return false;
++}
++inline void selection(const json& value,std::size_t units) {
++  const auto& begin=value.at("selection_start");const auto& end=value.at("selection_end");
++  const auto& direction=value.at("selection_direction");
++  if(begin.is_null()||end.is_null()) {
++    require(begin.is_null()&&end.is_null()&&direction.is_null(),"E_IME_REPORT_SELECTION");return;
++  }
++  require(integer(begin,units)&&integer(end,units)&&begin.get<std::uint64_t>()<=end.get<std::uint64_t>()&&
++    one_of(direction,{"forward","backward","none"}),"E_IME_REPORT_SELECTION");
++}
++inline void active(const json& value) {
++  require(one_of(value,{"test-input","finish","phase","other","none"}),"E_IME_REPORT_ACTIVE");
++}
++inline json parse(std::string_view params,const std::string& run) {
++  require(params.size()<=byte_limit,"E_IME_REPORT_SIZE");std::set<std::string> envelope_keys;
++  const auto envelope=json::parse(params.begin(),params.end(),[&](int depth,json::parse_event_t event,json& item) {
++    require(depth<=1&&event!=json::parse_event_t::array_start&&!(depth&&event==json::parse_event_t::object_start),"E_IME_REPORT_DEPTH");
++    if(event==json::parse_event_t::key)require(envelope_keys.insert(item.get<std::string>()).second,"E_IME_REPORT_DUPLICATE_KEY");
++    return true;
++  });keys(envelope,{"snapshot_json"});require(envelope.at("snapshot_json").is_string(),"E_IME_REPORT_TYPE");
++  const auto& raw=envelope.at("snapshot_json").get_ref<const std::string&>();require(raw.size()<=byte_limit,"E_IME_REPORT_SIZE");
++  std::vector<std::set<std::string>> objects;
++  auto report=json::parse(raw,[&](int depth,json::parse_event_t event,json& item) {
++    require(depth<=3,"E_IME_REPORT_DEPTH");
++    if(event==json::parse_event_t::object_start)objects.emplace_back();
++    else if(event==json::parse_event_t::key)require(!objects.empty()&&objects.back().insert(item.get<std::string>()).second,"E_IME_REPORT_DUPLICATE_KEY");
++    else if(event==json::parse_event_t::object_end)objects.pop_back();return true;
++  });
++  keys(report,{"schema","run_id","event_clock","events","checkpoints","final","overflow","classification",
++    "performance_verified","physical_latency_measured"});
++  require(report.at("schema")=="soui.ime-functional-page/v1"&&report.at("run_id")==run&&
++    report.at("event_clock")=="performance.now-relative-ms","E_IME_REPORT_IDENTITY");
++  require(report.at("overflow")==false,"E_IME_REPORT_OVERFLOW");
++  require(report.at("performance_verified")==false&&report.at("physical_latency_measured")==false,"E_IME_REPORT_CLAIM");
++  const auto& classification=report.at("classification");keys(classification,{"os_ime","native_late_commit","native_dual_flags"});
++  for(const auto* key:{"os_ime","native_late_commit","native_dual_flags"})require(classification.at(key)=="unknown","E_IME_REPORT_CLAIM");
++  const auto& events=report.at("events");require(events.is_array()&&events.size()<=maximum_events,"E_IME_REPORT_EVENTS");
++  std::uint64_t sequence=0;double previous_time=0;
++  for(const auto& event:events) {
++    keys(event,{"seq","time_ms","type","data","value","selection_start","selection_end","selection_direction","active_element","phase"});
++    require(integer(event.at("seq"),maximum_events)&&event.at("seq").get<std::uint64_t>()==++sequence,"E_IME_REPORT_SEQUENCE");
++    const auto observed=time(event.at("time_ms"));require(observed>=previous_time,"E_IME_REPORT_TIME");previous_time=observed;
++    require(one_of(event.at("type"),{"keydown","keyup","input","compositionstart","compositionupdate","compositionend","focus","blur",
++      "window-focus","window-blur","selectionchange","checkpoint"}),"E_IME_REPORT_EVENT_TYPE");
++    require(one_of(event.at("phase"),{"initial","preedit-observed","after-focus-return","final"}),"E_IME_REPORT_PHASE");
++    if(!event.at("data").is_null())(void)text(event.at("data"),data_unit_limit);
++    selection(event,text(event.at("value"),text_unit_limit));active(event.at("active_element"));
++  }
++  const auto& checkpoints=report.at("checkpoints");
++  require(checkpoints.is_array()&&checkpoints.size()<=maximum_checkpoints,"E_IME_REPORT_CHECKPOINTS");std::uint64_t last_checkpoint=0;
++  for(const auto& checkpoint:checkpoints) {
++    require(integer(checkpoint,events.size()),"E_IME_REPORT_CHECKPOINTS");const auto index=checkpoint.get<std::uint64_t>();
++    require(index>last_checkpoint&&events.at(static_cast<std::size_t>(index-1)).at("type")=="checkpoint","E_IME_REPORT_CHECKPOINTS");last_checkpoint=index;
++  }
++  const auto& final=report.at("final");keys(final,{"time_ms","value","selection_start","selection_end","selection_direction","active_element"});
++  require(time(final.at("time_ms"))>=previous_time,"E_IME_REPORT_TIME");
++  selection(final,text(final.at("value"),text_unit_limit));active(final.at("active_element"));
++  return report;
++}
++}
++struct ime_persistence_authority final {bool normal_runtime_close{},trace_quiescent{};};
++class ime_report_collector final {
++ public:
++  explicit ime_report_collector(std::string run):run_(std::move(run)){}
++  std::string submit(std::string_view params) {
++    const auto begin=sdk::diagnostics::input_frame_trace::now_qpc();auto report=ime_report_detail::parse(params,run_).dump();
++    const auto end=sdk::diagnostics::input_frame_trace::now_qpc();ime_report_detail::require(begin&&end>=begin,"E_IME_REPORT_CLOCK");
++    {std::lock_guard<std::mutex> lock(mutex_);ime_report_detail::require(!closing_,"E_IME_REPORT_CLOSING");
++      ime_report_detail::require(report_.empty(),"E_IME_REPORT_ALREADY_SUBMITTED");report_=std::move(report);begin_=begin;end_=end;}
++    return "{\"accepted\":true,\"persisted\":false,\"submission\":\"accepted\"}";
++  }
++  std::string submit_request(std::string_view params) {
++    try{return submit(params);}catch(const std::exception& failure) {
++      const std::string code=failure.what();const bool controlled=code.rfind("E_IME_REPORT_",0)==0&&code.size()<80;
++      return ime_report_detail::json{{"error",controlled?code:"E_IME_REPORT_INVALID"},{"message","IME functional snapshot rejected."}}.dump();
++    }
++  }
++  void close(){std::lock_guard<std::mutex> lock(mutex_);closing_=true;}
++  ime_report_detail::json take(const sdk::diagnostics::input_frame_trace::identity& identity,const std::string& run) {
++    std::string report;std::uint64_t begin{},end{};
++    {std::lock_guard<std::mutex> lock(mutex_);ime_report_detail::require(closing_&&!taken_,"E_IME_REPORT_NOT_CLOSED");
++      ime_report_detail::require(run==run_,"E_IME_REPORT_IDENTITY");taken_=true;report=std::move(report_);begin=begin_;end=end_;}
++    return {{"schema","soui.ime-functional-result/v1"},{"capability",ime_report_detail::capability},{"run_id",run},
++      {"process_id",identity.process_id},{"process_incarnation",std::to_string(identity.process_incarnation)},
++      {"qpc_frequency",std::to_string(identity.qpc_frequency)},{"submission",report.empty()?"unsubmitted":"accepted"},
++      {"accepted_begin_qpc",report.empty()?ime_report_detail::json(nullptr):ime_report_detail::json(std::to_string(begin))},
++      {"accepted_end_qpc",report.empty()?ime_report_detail::json(nullptr):ime_report_detail::json(std::to_string(end))},
++      {"page_snapshot",report.empty()?ime_report_detail::json(nullptr):ime_report_detail::json::parse(report)},
++      {"os_ime_coverage","unknown"},{"native_late_commit_coverage","unknown"},{"native_dual_flags_coverage","unknown"},
++      {"functional_pass",nullptr},{"performanceGate",false},{"releaseReady",false}};
++  }
++ private:
++  const std::string run_;std::mutex mutex_;std::string report_;std::uint64_t begin_{},end_{};bool closing_{},taken_{};
++};
++template<class Remaining,class Write>
++ime_report_detail::json persist_ime_report(ime_report_collector& collector,
++    const sdk::diagnostics::input_frame_trace::identity& identity,const std::string& run,
++    ime_persistence_authority authority,Remaining&& remaining,Write&& write) {
++  ime_report_detail::require(authority.normal_runtime_close&&authority.trace_quiescent,"E_IME_REPORT_PERSISTENCE_AUTHORITY");
++  ime_report_detail::require(remaining().count()>0,"E_IME_REPORT_CLOSE_DEADLINE");
++  auto value=collector.take(identity,run);value["normal_runtime_close_authorized"]=true;value["trace_quiescent_authorized"]=true;
++  const auto bytes=value.dump()+"\n";ime_report_detail::require(bytes.size()<=ime_report_detail::persisted_byte_limit,"E_IME_REPORT_SIZE");
++  write(bytes); // Caller supplies CREATE_NEW + full write/flush, after quiescence.
++  ime_report_detail::require(remaining().count()>0,"E_IME_REPORT_CLOSE_DEADLINE");value["persisted"]=value.at("submission")=="accepted";
++  return value;
++}
++}
+diff --git a/benchmarks/input-ui-host/main.cpp b/benchmarks/input-ui-host/main.cpp
+index 3fa8bf8ee890f3d056e5775cb8fddf17787cd494..9c2e870fcf2710301587f2264a75d9dc6654c93e 100644
+--- a/benchmarks/input-ui-host/main.cpp
++++ b/benchmarks/input-ui-host/main.cpp
+@@ -9,10 +9,15 @@
+ #include "harness_options.h"
+ #include "profile_options.h"
+ #include "manual_report.h"
++#include "ime_report.h"
++#if defined(SOUI_IME_ENABLE_API_REPLAY) && SOUI_IME_ENABLE_API_REPLAY
++#include "ime_api_replay.h"
++#endif
+ #include "manual-observation-gate.h"
+ 
+ #include <algorithm>
+ #include <chrono>
++#include <cstddef>
+ #include <cstdio>
+ #include <filesystem>
+ #include <iostream>
+@@ -24,6 +29,11 @@
+ namespace trace=soui::sdk::diagnostics::input_frame_trace;
+ namespace manual_gate=soui::benchmark::manual_observation;
+ namespace {
++#if defined(SOUI_IME_ENABLE_API_REPLAY) && SOUI_IME_ENABLE_API_REPLAY
++using replay_pointer=soui::benchmark::ime_api_replay*;
++#else
++using replay_pointer=std::nullptr_t;
++#endif
+ constexpr wchar_t window_class[]=L"SouiInputUiHostV1";
+ struct scoped_handle final {
+   explicit scoped_handle(HANDLE handle):value(handle){}~scoped_handle(){if(value)CloseHandle(value);}
+@@ -39,15 +49,18 @@ struct options final {
+   std::uint64_t high{0},low{0};
+   soui::benchmark::harness_options diagnostics;
+   soui::benchmark::profile_options profile;
++  bool ime_functional{},ime_api_replay{};
+ };
+ std::string ascii(const std::wstring& value) {
+   std::string result;for(wchar_t c:value){require(c>=32&&c<=126,"ASCII option required");result+=static_cast<char>(c);}return result;
+ }
+ options parse(int argc,wchar_t** argv) {
+-  require(argc>=7&&argc<=14,"Expected frozen path/run/kind/trace options and explicit optional switches");
++  require(argc>=7&&argc<=16,"Expected frozen path/run/kind/trace options and explicit optional switches");
+   options result;
+   for(int n=1;n<argc;++n) {
+     const std::wstring argument(argv[n]);
++    if(argument==L"--ime-functional"){require(!result.ime_functional,"Duplicate IME functional switch");result.ime_functional=true;continue;}
++    if(argument==L"--ime-api-replay"){require(!result.ime_api_replay,"Duplicate IME API replay switch");result.ime_api_replay=true;continue;}
+     auto path_option=[&](const wchar_t* name,std::filesystem::path& field){
+       const std::wstring prefix(name);if(argument.rfind(prefix,0)!=0)return false;
+       require(field.empty()&&argument.size()>prefix.size(),"Duplicate/missing path option");field=argument.substr(prefix.size());return true;
+@@ -62,8 +75,13 @@ options parse(int argc,wchar_t** argv) {
+       string_option(L"--manual-observation-owner=",result.observation_owner)||
+       result.diagnostics.consume(argument)||result.profile.consume(argument),"Unknown harness option");
+   }
+-  const auto page_html=result.profile.manual_input?L"manual-input-page.html":L"burst-page.html";
+-  const auto page_script=result.profile.manual_input?L"manual-input-page.js":L"burst-page.js";
++#if !defined(SOUI_IME_ENABLE_API_REPLAY) || !SOUI_IME_ENABLE_API_REPLAY
++  require(!result.ime_api_replay,"E_IME_API_REPLAY_UNSUPPORTED: this consumer was built without the optional private API replay fixture");
++#endif
++  require(!result.ime_functional||(result.profile.manual_input&&result.trace_mode=="full"),"IME functional mode requires manual-input and full trace");
++  require(!result.ime_api_replay||result.ime_functional,"IME API replay requires IME functional mode");
++  const auto page_html=result.ime_functional?L"ime-functional-page.html":result.profile.manual_input?L"manual-input-page.html":L"burst-page.html";
++  const auto page_script=result.ime_functional?L"ime-functional-page.js":result.profile.manual_input?L"manual-input-page.js":L"burst-page.js";
+   require(result.binary.is_absolute()&&result.page_root.is_absolute()&&result.output.is_absolute()&&
+     std::filesystem::is_regular_file(result.binary)&&std::filesystem::is_directory(result.output)&&
+     std::filesystem::is_regular_file(result.page_root/page_html)&&
+@@ -148,26 +166,31 @@ std::string cold_profile(const soui::benchmark::profile_options& profile) {
+ std::filesystem::path prepare_page(const options& settings) {
+   const auto bundle=settings.output/L"page-bundle";
+   require(std::filesystem::create_directory(bundle),"Page bundle already exists");
+-  const auto html=settings.profile.manual_input?L"manual-input-page.html":L"burst-page.html";
+-  const auto script=settings.profile.manual_input?L"manual-input-page.js":L"burst-page.js";
++  const auto html=settings.ime_functional?L"ime-functional-page.html":settings.profile.manual_input?L"manual-input-page.html":L"burst-page.html";
++  const auto script=settings.ime_functional?L"ime-functional-page.js":settings.profile.manual_input?L"manual-input-page.js":L"burst-page.js";
+   require(CopyFileW((settings.page_root/html).c_str(),(bundle/html).c_str(),TRUE)&&
+     CopyFileW((settings.page_root/html).c_str(),(bundle/L"index.html").c_str(),TRUE)&&
+     CopyFileW((settings.page_root/script).c_str(),(bundle/script).c_str(),TRUE),"Cannot freeze measurement page bytes");
+   // Public SDK's trusted entry remains index.html. Parameters are data in a
+   // bounded seed, not a new navigation privilege or raw WKE loadURL bypass.
+-  const auto seed=settings.profile.manual_input?L"manual-input-config.js":L"burst-config.js";
+-  const auto global=settings.profile.manual_input?"souiManualInputConfig":"souiBurstConfig";
+-  write_new(bundle/seed,std::string("window.")+global+"={run:'"+settings.run+"',kind:'"+settings.kind+"'};\n");
++  const auto seed=settings.ime_functional?L"ime-functional-config.js":settings.profile.manual_input?L"manual-input-config.js":L"burst-config.js";
++  const auto global=settings.ime_functional?"souiImeFunctionalConfig":settings.profile.manual_input?"souiManualInputConfig":"souiBurstConfig";
++  write_new(bundle/seed,std::string("window.")+global+"={run:'"+settings.run+"',kind:'"+settings.kind+"'"+
++    (settings.ime_functional?std::string(",apiReplay:")+(settings.ime_api_replay?"true":"false"):std::string{})+"};\n");
+   return bundle;
+ }
+ class harness_window final {
+  public:
+   harness_window(soui::sdk::soui_miniblink_host& host,const options& settings,const trace::identity& identity,bool capability,
+       soui::benchmark::manual_report_collector* manual_report,const manual_gate::gate* observation_gate,
+-      trace::trace_source* kernel_source)
++      trace::trace_source* kernel_source,soui::benchmark::ime_report_collector* ime_report,replay_pointer replay)
+       :host_(host),settings_(settings),identity_(identity),kernel_source_(kernel_source),manual_report_(manual_report),
+-       observation_gate_(observation_gate),detailed_capability_(capability){}
+-  void request_close(){if(!closing_){if(manual_report_)manual_report_->close();closing_=true;close_started_=GetTickCount64();}}
++       observation_gate_(observation_gate),ime_report_(ime_report),replay_(replay),detailed_capability_(capability){}
++  void request_close(){if(!closing_){
++#if defined(SOUI_IME_ENABLE_API_REPLAY) && SOUI_IME_ENABLE_API_REPLAY
++    if(replay_)replay_->cancel();
++#endif
++    if(manual_report_)manual_report_->close();if(ime_report_)ime_report_->close();closing_=true;close_started_=GetTickCount64();}}
+   int exit_code()const noexcept{return exit_code_;}
+   bool diagnostic_boundaries_ok()const noexcept{return !diagnostic_boundaries_failed_;}
+   void diagnostic_checkpoint(soui::benchmark::diagnostic_scalar_phase phase)noexcept {
+@@ -199,6 +222,9 @@ class harness_window final {
+         case WM_TIMER:
+           if(self->closing_){self->close_step(window);return 0;}
+           self->host_.pump();
++#if defined(SOUI_IME_ENABLE_API_REPLAY) && SOUI_IME_ENABLE_API_REPLAY
++          if(self->replay_&&self->host_.document_ready()){self->replay_->start();self->replay_->poll();}
++#endif
+           if(self->settings_.diagnostics.logging&&!self->timer_logged_){std::cerr<<"stage ui.timer.first\n";self->timer_logged_=true;}
+           if(!self->published_&&self->host_.document_ready()) {
+             self->diagnostic_checkpoint(soui::benchmark::diagnostic_scalar_phase::document_ready);
+@@ -220,6 +246,8 @@ class harness_window final {
+               "\",\"measurement_path\":\""+(self->settings_.diagnostics.diagnostic()?"diagnostic":"public-sdk")+
+               "\",\"diagnostics\":"+self->settings_.diagnostics.json()+","+self->settings_.profile.input_json()+
+               ","+compiled_sdk_identity()+(self->manual_report_?",\"manual_report_capability\":\"manual-page-snapshot-v1\"":"")+
++              (self->ime_report_?",\"ime_report_capability\":\"ime-functional-snapshot-v1\"":"")+
++              (self->settings_.ime_functional?std::string(",\"ime_functional_mode\":true,\"ime_api_replay_mode\":")+(self->settings_.ime_api_replay?"true":"false"):std::string{})+
+               observation_gate_metadata(self->observation_gate_)+"}\n");
+             if(self->settings_.diagnostics.logging)std::cerr<<"stage host-ready.write.after\n";
+             self->published_=true;
+@@ -262,6 +290,8 @@ class harness_window final {
+   trace::trace_source* kernel_source_;
+   soui::benchmark::manual_report_collector* manual_report_;
+   const manual_gate::gate* observation_gate_;
++  soui::benchmark::ime_report_collector* ime_report_;
++  replay_pointer replay_;
+   ULONGLONG started_{GetTickCount64()},close_started_{0};bool closing_{false},published_{false},timer_logged_{false};int exit_code_{0};
+   bool before_destroy_sampled_{false},after_destroy_sampled_{false},diagnostic_boundaries_failed_{false};
+   bool detailed_capability_{false};
+@@ -302,8 +332,22 @@ int run(const options& settings) {
+   manual_gate::gate observation_gate;
+   const bool observation_gated=!settings.observation_owner.empty();
+   soui::benchmark::manual_report_collector manual_report(settings.run,settings.kind);
++  soui::benchmark::ime_report_collector ime_report(settings.run);
+   soui::sdk::json_bridge bridge("app://input-ui-benchmark");
+-  if(settings.profile.manual_input) {
++  if(settings.ime_functional) {
++    require(bridge.register_contextual_method("benchmark.imeFunctionalReport","benchmark.imeFunctionalReport",
++      [&](const soui::runtime::bridge_request& request){
++        if(!observation_gated)return ime_report.submit_request(request.params_json);
++        const auto checked=observation_gate.check_now();
++        if(checked.status==manual_gate::state::pending)
++          return nlohmann::json{{"accepted",false},{"persisted",false},{"submission","pending"},{"retryable",true}}.dump();
++        if(checked.status!=manual_gate::state::released)
++          return nlohmann::json{{"accepted",false},{"persisted",false},{"submission","unavailable"},{"retryable",false},
++            {"code",checked.code},{"win32_error",checked.win32_error}}.dump();
++        auto response=nlohmann::json::parse(ime_report.submit_request(request.params_json));response["observationEnded"]=true;return response.dump();
++      }),"IME functional report registration failed");
++    require(bridge.set_session_capabilities({"benchmark.imeFunctionalReport"}),"IME report grant failed");
++  }else if(settings.profile.manual_input) {
+     require(bridge.register_contextual_method("benchmark.manualInputReport","benchmark.manualInputReport",
+       [&](const soui::runtime::bridge_request& request){
+         if(!observation_gated)return manual_report.submit_request(request.params_json);
+@@ -318,9 +362,24 @@ int run(const options& settings) {
+       }),"Manual report registration failed");
+     require(bridge.set_session_capabilities({"benchmark.manualInputReport"}),"Manual report grant failed");
+   }
+-  soui::sdk::soui_miniblink_host host(std::make_unique<soui::sdk::dynamic_miniblink_adapter>());
+-  harness_window window(host,settings,identity,detailed_capability,settings.profile.manual_input?&manual_report:nullptr,
+-    observation_gated?&observation_gate:nullptr,kernel.get());
++  // The probe decorates only the explicit API-model mode. Its state/Bridge
++  // outlive the Host and every task; cancellation precedes Host teardown.
++  replay_pointer active_replay=nullptr;
++#if defined(SOUI_IME_ENABLE_API_REPLAY) && SOUI_IME_ENABLE_API_REPLAY
++  std::unique_ptr<soui::benchmark::ime_api_replay> replay;
++  if(settings.ime_api_replay)replay=std::make_unique<soui::benchmark::ime_api_replay>(bridge,settings.run,settings.binary);
++  active_replay=replay.get();
++#endif
++  auto renderer=std::make_unique<soui::sdk::dynamic_miniblink_adapter>();
++#if defined(SOUI_IME_ENABLE_API_REPLAY) && SOUI_IME_ENABLE_API_REPLAY
++  auto* renderer_pointer=renderer.get();
++#endif
++  soui::sdk::soui_miniblink_host host(std::move(renderer));
++#if defined(SOUI_IME_ENABLE_API_REPLAY) && SOUI_IME_ENABLE_API_REPLAY
++  struct cancel_replay_on_exit final {soui::benchmark::ime_api_replay* value;~cancel_replay_on_exit(){if(value)value->cancel();}} replay_guard{replay.get()};
++#endif
++  harness_window window(host,settings,identity,detailed_capability,settings.profile.manual_input&&!settings.ime_functional?&manual_report:nullptr,
++    observation_gated?&observation_gate:nullptr,kernel.get(),settings.ime_functional?&ime_report:nullptr,active_replay);
+   WNDCLASSEXW description{};description.cbSize=sizeof(description);description.hInstance=GetModuleHandleW(nullptr);
+   description.lpfnWndProc=harness_window::procedure;description.lpszClassName=window_class;description.hCursor=LoadCursorW(nullptr,IDC_ARROW);
+   require(RegisterClassExW(&description)!=0,"Harness window class unavailable");
+@@ -331,6 +390,9 @@ int run(const options& settings) {
+   const auto handle=CreateWindowExW(0,window_class,L"SOUI input to visible content",style,
+     80,80,bounds.right-bounds.left,bounds.bottom-bounds.top,nullptr,nullptr,GetModuleHandleW(nullptr),&window);
+   require(handle!=nullptr,"Harness window unavailable");
++#if defined(SOUI_IME_ENABLE_API_REPLAY) && SOUI_IME_ENABLE_API_REPLAY
++  if(replay)replay->attach_adapter(*renderer_pointer,handle);
++#endif
+   if(observation_gated) {
+     DWORD owner_pid{};
+     require(GetWindowThreadProcessId(handle,&owner_pid)==GetCurrentThreadId()&&owner_pid==identity.process_id,
+@@ -376,6 +438,9 @@ int run(const options& settings) {
+   config.architecture="x86";
+ #endif
+   config.miniblink_binary=settings.binary;config.resource_root=bundle;config.owner_window=handle;config.bridge_adapter=&bridge;
++#if defined(SOUI_IME_ENABLE_API_REPLAY) && SOUI_IME_ENABLE_API_REPLAY
++  if(replay)config.bridge_adapter=replay.get();
++#endif
+   if(settings.diagnostics.logging)std::cerr<<"stage host.start.before\n";
+   window.diagnostic_checkpoint(soui::benchmark::diagnostic_scalar_phase::before_start);
+   const auto started=host.start(config);
+@@ -420,7 +485,17 @@ int run(const options& settings) {
+   if(settings.trace_mode=="e2e")scalar=soui::benchmark::finish_scalar_capture(settings.output,initial,
+     trace::process_recorder(),kernel.get(),window.remaining_close_budget());
+   std::string manual_status;
+-  if(settings.profile.manual_input) {
++  if(settings.ime_functional) {
++    const bool quiescent=backend_stopped&&trace_complete&&trace::process_recorder().snapshot().quiescent&&(!kernel||kernel->snapshot().quiescent);
++    const auto saved=soui::benchmark::persist_ime_report(ime_report,identity,settings.run,{closed.ok,quiescent},
++      [&]{return window.remaining_close_budget();},[&](const std::string& bytes){write_new(settings.output/L"ime-functional-result.json",bytes);});
++    manual_status=std::string(",\"ime_functional_mode\":true,\"ime_api_replay_mode\":")+(settings.ime_api_replay?"true":"false")+
++      ",\"ime_report_capability\":\"ime-functional-snapshot-v1\",\"ime_report_submission\":"+
++      saved.at("submission").dump()+",\"ime_report_persisted\":"+saved.at("persisted").dump();
++    // A direct API model cannot borrow success from an OS/manual page report;
++    // its separate probe result controls only that explicitly requested mode.
++    if(!settings.ime_api_replay&&(saved.at("submission")!="accepted"||saved.at("persisted")!=true))code=(std::max)(code,2);
++  }else if(settings.profile.manual_input) {
+     require(backend_stopped&&trace_complete&&trace::process_recorder().snapshot().quiescent&&
+       (!kernel||kernel->snapshot().quiescent),"Manual report requires stopped, quiescent trace producers");
+     const auto saved=soui::benchmark::persist_manual_report(manual_report,identity,settings.run,
+@@ -428,6 +503,18 @@ int run(const options& settings) {
+     manual_status=",\"manual_report_capability\":\"manual-page-snapshot-v1\",\"manual_report_submission\":"+
+       saved.at("submission").dump()+",\"manual_report_persisted\":"+saved.at("persisted").dump();
+   }
++#if defined(SOUI_IME_ENABLE_API_REPLAY) && SOUI_IME_ENABLE_API_REPLAY
++  if(replay) {
++    require(backend_stopped&&trace_complete&&trace::process_recorder().snapshot().quiescent&&
++      (!kernel||kernel->snapshot().quiescent),"IME API result requires stopped, quiescent trace producers");
++    require(window.remaining_close_budget().count()>0,"IME API close deadline exceeded");
++    const auto api_result=replay->result();write_new(settings.output/L"ime-api-replay-result.json",api_result.dump()+"\n");
++    require(window.remaining_close_budget().count()>0,"IME API close deadline exceeded");
++    const bool completed=replay->done()&&!replay->failed()&&api_result.at("collectorIndependentComplete")==true;
++    if(!completed)code=(std::max)(code,2);
++    manual_status+=std::string(",\"ime_api_replay_completed\":")+(completed?"true":"false");
++  }
++#endif
+   if(observation_gated) {
+     // Runtime shutdown above has quiesced all request callbacks. Never close
+     // these handles in request_close or concurrently with check_now.
+diff --git a/benchmarks/input-ui-host/tests/profile_contracts.cpp b/benchmarks/input-ui-host/tests/profile_contracts.cpp
+index 946c44954c5516eba99bc8e22ba516d9b5a25da0..17243f1fd01152016de2f4942fd9a259ae1253c3 100644
+--- a/benchmarks/input-ui-host/tests/profile_contracts.cpp
++++ b/benchmarks/input-ui-host/tests/profile_contracts.cpp
+@@ -1,6 +1,7 @@
+ #include "profile_options.h"
+ #include "trace_capture.h"
+ #include "manual_report.h"
++#include "ime_report_tests.h"
+ #include <soui/json_bridge.h>
+ #include <windows.h>
+ #include <array>
+@@ -268,6 +269,7 @@ int wmain(int argc,wchar_t** argv) {
+     check(argc==2,"Pass one new absolute evidence directory; no windows or DLL are used");
+     const std::filesystem::path root(argv[1]);check(root.is_absolute()&&std::filesystem::create_directory(root),"Evidence directory must be new and absolute");
+     options_contracts();scalar_contracts(root);diagnostic_boundary_contracts(root);manual_report_contracts(root);
++    const auto ime_cases=bench::run_ime_report_contracts(root);std::cout<<"IME functional report contracts: "<<ime_cases<<"; no Host/GUI/input\n";
+     std::cout<<"profile/scalar contracts passed; no Host, DLL, desktop or input execution\n";return 0;
+   }catch(const std::exception& error){std::cerr<<error.what()<<'\n';return 1;}
+ }
+diff --git a/benchmarks/protocol/ime-functional-page.html b/benchmarks/protocol/ime-functional-page.html
+new file mode 100644
+index 0000000000000000000000000000000000000000..2122dada0c03e6cb457c24eedd179925a52647bc
+--- /dev/null
++++ b/benchmarks/protocol/ime-functional-page.html
+@@ -0,0 +1,17 @@
++<!doctype html>
++<meta charset="utf-8">
++<title>SOUI IME functional observation</title>
++<style>html,body{margin:0;width:1100px;height:720px;overflow:hidden;font:18px sans-serif;background:#f5f6fa;color:#192030}main{padding:28px}textarea{display:block;width:1000px;height:170px;font:28px sans-serif;margin:20px 0}button,select{font:inherit;margin:8px 8px 8px 0}pre{white-space:pre-wrap;font-size:15px}#status{padding:12px;background:#e4eaf4}</style>
++<main>
++<h1>IME 功能观察</h1>
++<p>仅在下框输入本轮约定的测试文本。使用真实系统输入法；页面不注入文字、不触发合成事件。</p>
++<textarea id="test-input" spellcheck="false" autocomplete="off" aria-label="受控 IME 测试文本"></textarea>
++<label>阶段 <select id="phase-name"><option>initial</option><option>preedit-observed</option><option>after-focus-return</option><option>final</option></select></label>
++<button id="phase" type="button">保存阶段快照</button>
++<button id="finish" type="button">完成记录</button>
++<p id="status">尚未提交。阶段按钮本身可能改变焦点；记录保留实际顺序，不认定场景已覆盖。</p>
++<pre id="summary">事件 0 / 96；文本与选择区只保存本测试框。</pre>
++<p>最多 96 个事件、4 个阶段快照；文本最多 128 个 UTF-16 单位，事件数据最多 64 个单位。超限拒绝，不截断。OS IME、迟到提交及双标志覆盖须结合外部实际操作和原生 trace 判定。</p>
++</main>
++<script src="ime-functional-config.js"></script>
++<script src="ime-functional-page.js"></script>
+diff --git a/benchmarks/protocol/ime-functional-page.js b/benchmarks/protocol/ime-functional-page.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..5263e097362c52f11b4ff067d60713a4591735ae
+--- /dev/null
++++ b/benchmarks/protocol/ime-functional-page.js
+@@ -0,0 +1,155 @@
++(function () {
++  'use strict';
++  var config = window.souiImeFunctionalConfig, doc = window.document;
++  if (!config || !/^[a-f0-9]{32}$/.test(config.run) || /^0+$/.test(config.run) ||
++      typeof config.apiReplay !== 'boolean') throw new Error('Explicit IME functional run required');
++  var input = doc.getElementById('test-input'), finish = doc.getElementById('finish'), phaseButton = doc.getElementById('phase');
++  var phaseName = doc.getElementById('phase-name'), statusNode = doc.getElementById('status'), summary = doc.getElementById('summary');
++  var events = [], checkpoints = [], phase = 'initial', overflow = false;
++  var disposed = false, submitted = false, submissionAttempt = 0, finalCheckpointAdded = false, origin, lastTime = 0;
++  if (!input || !finish || !phaseButton || !phaseName || !statusNode || !summary ||
++      !window.performance || typeof window.performance.now !== 'function') throw new Error('IME observation controls/clock unavailable');
++  origin = window.performance.now();
++  function status(text) { if (!disposed) statusNode.textContent = text; }
++  function failObservation(reason) { overflow = true; finish.disabled = true; phaseButton.disabled = true; status('记录无效：' + reason + '。请正常关窗，原生端不得认定通过。'); }
++  function now() {
++    var value = window.performance.now() - origin;
++    if (!isFinite(value) || value < lastTime || value < 0 || value > 180000) throw new Error('DOM clock invalid');
++    lastTime = value; return value;
++  }
++  function active() {
++    var value = doc.activeElement;
++    return !value ? 'none' : value === input ? 'test-input' : value === finish ? 'finish' :
++      value === phaseButton || value === phaseName ? 'phase' : 'other';
++  }
++  function snapshot() {
++    var value = input.value, start = input.selectionStart, end = input.selectionEnd, direction = input.selectionDirection;
++    if (typeof value !== 'string' || value.length > 128) throw new Error('test text limit');
++    if (start == null && end == null) { start = end = direction = null; }
++    else if (typeof start !== 'number' || typeof end !== 'number' || start % 1 || end % 1 || start < 0 || end < start || end > value.length ||
++        (direction !== 'forward' && direction !== 'backward' && direction !== 'none')) throw new Error('selection unavailable/invalid');
++    return {time_ms:now(), value:value, selection_start:start, selection_end:end, selection_direction:direction, active_element:active()};
++  }
++  function record(type, data) {
++    if (disposed || submitted || overflow) return null;
++    try {
++      if (events.length >= 96) throw new Error('event capacity');
++      if (data != null && (typeof data !== 'string' || data.length > 64)) throw new Error('event text limit');
++      var value = snapshot();
++      var row = {seq:events.length + 1, time_ms:value.time_ms, type:type, data:data == null ? null : data, value:value.value,
++        selection_start:value.selection_start, selection_end:value.selection_end, selection_direction:value.selection_direction,
++        active_element:value.active_element, phase:phase};
++      events.push(row); summary.textContent = '事件 ' + events.length + ' / 96；阶段 ' + phase + '；本框值：' + value.value +
++        '\nselection ' + value.selection_start + '..' + value.selection_end + ' / ' + value.selection_direction + '；active ' + value.active_element;
++      return row;
++    } catch (error) { failObservation(String(error && error.message || error)); return null; }
++  }
++  function checkpoint(name) {
++    if (checkpoints.length >= 4) { failObservation('checkpoint capacity'); return false; }
++    phase = name; var row = record('checkpoint', null);
++    if (!row) return false; checkpoints.push(row.seq); return true;
++  }
++  ['keydown','keyup','input','compositionstart','compositionupdate','compositionend','focus','blur'].forEach(function (name) {
++    input.addEventListener(name, function (event) {
++      var data = name === 'keydown' || name === 'keyup' ? (typeof event.key === 'string' ? event.key : null) :
++        (typeof event.data === 'string' ? event.data : null);
++      record(name, data);
++    }, false);
++  });
++  window.addEventListener('focus', function () { record('window-focus', null); }, false);
++  window.addEventListener('blur', function () { record('window-blur', null); }, false);
++  doc.addEventListener('selectionchange', function () { record('selectionchange', null); }, false);
++  window.addEventListener('unload', function () { disposed = true; }, false);
++  phaseButton.addEventListener('click', function () {
++    if (['initial','preedit-observed','after-focus-return','final'].indexOf(phaseName.value) < 0) { failObservation('unknown phase'); return; }
++    checkpoint(phaseName.value);
++    if (checkpoints.length >= 3) { phaseButton.disabled = true; status('已保存三次阶段快照；最后一个槽位保留给完成记录。'); }
++  }, false);
++  function utf8Bytes(text) {
++    var count = 0, index, code;
++    for (index = 0; index < text.length; ++index) {
++      code = text.charCodeAt(index);
++      if (code < 128) count += 1;
++      else if (code < 2048) count += 2;
++      else if (code >= 55296 && code <= 56319 && index + 1 < text.length && text.charCodeAt(index + 1) >= 56320 && text.charCodeAt(index + 1) <= 57343) { count += 4; index += 1; }
++      else count += 3;
++    } return count;
++  }
++  window.souiImeFunctionalResult = function () {
++    return {schema:'soui.ime-functional-page/v1', run_id:config.run, event_clock:'performance.now-relative-ms', events:events.slice(), checkpoints:checkpoints.slice(),
++      final:snapshot(), overflow:overflow, classification:{os_ime:'unknown',native_late_commit:'unknown',native_dual_flags:'unknown'},
++      performance_verified:false, physical_latency_measured:false};
++  };
++  // Each explicit operation retains the old shared 5-second bootstrap/report
++  // budget. This is transport cleanup only, never an IME/performance observer.
++  function transport(snapshotText, prefix, bootstrapOnly, done, exactBootstrapId) {
++    var credentials = null, settled = false, deadline = window.performance.now() + 5000;
++    var timer = window.setTimeout(function () { failed(new Error('共同 5 秒提交期限已过')); }, 5000);
++    function failed(error) { if (settled) return; settled = true; window.clearTimeout(timer); done(error); }
++    function request(method, params, id, receivedResult) {
++      var remaining = Math.floor(deadline - window.performance.now());
++      if (remaining <= 0) { failed(new Error('共同 5 秒提交期限已过')); return; }
++      var packet = {requestId:id,sessionId:credentials ? credentials.sessionId : '',origin:credentials ? credentials.origin : '',
++        token:credentials ? credentials.token : '',method:method,params:params};
++      if (credentials) packet.timeoutMs = remaining;
++      function received(raw) {
++        if (settled || disposed) return;
++        try {
++          if (window.performance.now() >= deadline || typeof raw !== 'string' || raw.length > 8192) throw new Error('回执期限/大小无效');
++          var response = JSON.parse(raw);
++          if (!response || response.requestId !== id || response.ok !== true) throw new Error(response && response.error && response.error.code || '原生拒绝');
++          receivedResult(response.result);
++        } catch (error) { failed(error); }
++      }
++      try { var returned = window.__souiNativePostMessage(JSON.stringify(packet));
++        if (returned && typeof returned.then === 'function') returned.then(received, failed); else received(returned);
++      } catch (error) { failed(error); }
++    }
++    try {
++      if (typeof window.__souiNativePostMessage !== 'function') throw new Error('原生 Bridge 不可用');
++      request('bridge.bootstrap', {protocol:'soui.bridge/1'}, exactBootstrapId || prefix + ':bootstrap', function (value) {
++        if (!value || typeof value.sessionId !== 'string' || !value.sessionId || value.sessionId.length > 256 ||
++            typeof value.origin !== 'string' || !value.origin || typeof value.token !== 'string' || !value.token) throw new Error('Bootstrap 回执无效');
++        credentials = value;
++        if (bootstrapOnly) { settled = true; window.clearTimeout(timer); done(null, {bootstrapObserved:true}); return; }
++        request('benchmark.imeFunctionalReport', {snapshot_json:snapshotText}, prefix + ':report', function (result) {
++          settled = true; window.clearTimeout(timer); done(null, result);
++        });
++      });
++    } catch (error) { failed(error); }
++  }
++  finish.addEventListener('click', function () {
++    if (disposed || submitted || overflow) return;
++    if (!finalCheckpointAdded) { if (!checkpoint('final')) return; finalCheckpointAdded = true; }
++    var frozen;
++    try {
++      // Freeze before bootstrap or transport work, as the original Finish does.
++      frozen = JSON.stringify(window.souiImeFunctionalResult());
++      if (utf8Bytes(frozen) > 24576 || utf8Bytes(JSON.stringify({snapshot_json:frozen})) > 24576) throw new Error('snapshot byte limit');
++    } catch (error) { failObservation(String(error && error.message || error)); return; }
++    submitted = true; finish.disabled = true; phaseButton.disabled = true; submissionAttempt += 1;
++    if (submissionAttempt > 4294967295) { failObservation('submission capacity'); return; }
++    transport(frozen, 'ime:' + submissionAttempt, false, function (error, result) {
++      if (error) { status('未确认接纳：' + String(error && error.message || error) + '；请正常关窗。'); return; }
++      if (result && result.accepted === false && result.persisted === false && result.submission === 'pending' && result.retryable === true) {
++        submitted = false; finish.disabled = false; phaseButton.disabled = checkpoints.length >= 3; status('外部观察尚未结束，本次未接纳；不要把它计为通过。'); return;
++      }
++      if (!result || result.accepted !== true || result.persisted !== false || result.submission !== 'accepted') { status('接纳回执无效；请正常关窗。'); return; }
++      status('已接纳，尚未落盘；这不表示 IME 场景通过。请按指示正常关窗。');
++    });
++  }, false);
++  if (config.apiReplay) {
++    var captureRequested = false;
++    // Only this explicit API-model mode answers its owner's one-shot capture
++    // event. The original binding/bridge processes the bootstrap unmodified.
++    window.__souiNativeDispatchEvent = function (event) {
++      if (captureRequested || !event || event.type !== 'soui.ime-api-replay.capture' || event.run_id !== config.run ||
++          event.request_id !== 'ime-api-replay:' + config.run) return;
++      captureRequested = true;
++      transport(null, 'ime-api', true, function (error) {
++        status(error ? 'API 模式bootstrap失败：' + String(error.message || error) : 'API 模式bootstrap已完成；模型结果以独立原生报告为准，不代表真实系统 IME 或 SDK mailbox 通过。');
++      }, event.request_id);
++    };
++    status('独立 API 模型模式；不是真实 OS IME。受控消费者会单次启动回放，页面不模拟系统键盘输入。');
++  }
++}());
+diff --git a/IME-FUNCTIONAL.md b/IME-FUNCTIONAL.md
+new file mode 100644
+index 0000000000000000000000000000000000000000..aa382378df8a3ae1a79ca160aa12817bd7519880
+--- /dev/null
++++ b/IME-FUNCTIONAL.md
+@@ -0,0 +1,22 @@
++# R32 私有功能消费者
++
++此目录从当前 `input-ui-host` 逐字复制，只增加测试消费者。原 SDK、ABI、运行库、manual report 接口及原 19 项 manual 合同未改。构建、原生自测和真实窗口均尚未由此源码准备步骤执行。
++
++## 两种独立范围
++
++- `--ime-functional --manual-input --trace=full`：新被动页面和 `benchmark.imeFunctionalReport`。仅记录受控测试框，不注入文字或 composition 事件。报告中的 OS IME、native late commit、native dual flags 均保持 `unknown`，由实际操作与原生完整 trace 判定。
++- 再加 `--ime-api-replay`：独立真实 broker-view Blink API 模型，由 `ime_api_replay.h` 单次执行。页面只响应同 run 的 SDK capture 事件，发出未经改写的合法 bootstrap。它不是 OS IME、SDK mailbox 或物理输入验证。模型的完成/失败只由独立 `ime-api-replay-result.json` 判定，不能借页面报告成功。
++
++原 `--kind=pointer_move` 仍是冻结 harness 配置字段；IME 模式不把这个标签视为输入类别过滤或 IME 覆盖证明。仍需显式绝对 kernel/page/result 路径和非零 32 字符十六进制 run。此消费者原 result-dir 契约是预先存在的新空目录，与 performance Host 的“目录不能已存在”契约不同。
++
++## 被动页
++
++只输入约定测试文本，勿输入密码或私人内容。阶段按钮自己可能改变焦点，事件会如实保留；最多手动保存三个 checkpoint，Finish 保留最后一槽。事件包含递增 seq、相对 `performance.now` 时间、composition/key/input/focus/blur/selection、当时文本、UTF-16 selection 和活动元素。最终文本与预期不同仍可合法保存。
++
++硬上限：96 个事件、4 个 checkpoint、value 128 / data 64 个 UTF-16 单位、snapshot/envelope 24576 UTF-8 bytes、JSON depth 3。超限拒绝、不截断、不挑成功事件。Final snapshot 在 bootstrap/报告传输前冻结；原一次共同 5 秒提交期限和“接纳不等于落盘”语义保持。无周期性能观察器、rAF 绘制循环或重计算。
++
++## 关闭和证据
++
++原 Runtime/trace 停止并 quiescent 后，保留原 20 秒关闭期限，单独 CREATE_NEW 写 `ime-functional-result.json`。collector 必须先显式 close，persist 同时要求真实 normal-runtime-close 与 quiescence 授权；缺少页报告的 OS/manual 模式返回非零。API 模式允许页面未提交，但其独立模型不完整或失败仍返回非零。旧 manual 路径原样保留。
++
++测试目标沿用 `SouiInputUiHost`、`SouiInputUiProfileContracts`；后者追加直接调用新生产校验/collector/persist 的 `ime_report_tests.h`。`SOUI_IME_ENABLE_API_REPLAY` 默认 OFF，正常 manual/full/OSIME 仅依赖 installed SDK；未编入时 CLI 请求 replay 明确 unsupported 并非零。仅显式 ON 时，构建者另传 `SOUI_IME_ENGINE_ADMISSION_ROOT` 并冻结来源。它不能冒充 SDK 公共 API、SDK 重建或配对性能基线。SDK4 消费者与私有 DLL 的组合不继承冻结运行包资格。

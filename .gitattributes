@@ -444,3 +444,6 @@ tests/native/bridge_script_source/legacy-source.inc -text -eol whitespace=cr-at-
 verification/production-validation/current-link-members-0.6.0-2026-10-29/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
 verification/production-validation/current-license-crosswalk-0.6.0-2026-10-29/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
 verification/production-validation/open-issues-closeout-2026-10-29/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
+
+# A unified patch uses a space for an empty context line; preserve its LF form.
+docs/performance/patches/0164-ime-functional-consumer.patch text eol=lf whitespace=-blank-at-eol

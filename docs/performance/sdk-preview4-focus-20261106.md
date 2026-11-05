@@ -61,4 +61,6 @@ x64 私有 DLL 逐字复制到新测试目录后，复用原 R30 launcher、消�
 
 ## 仍需关闭的门槛
 
+后续[输入法追加验收](sdk-preview4-ime-20261106.md)补充正常中文提交/取消、真实失焦后 native commit 交付，以及 P≠F 的两个真实 Blink API 配方；本报告上述记录保留原执行范围，不据后续结果改写历史资格。
+
 普通焦点修复的默认采用与真实输入法验证、完整输入到可见反馈、有效帧与物理显示边界、I02完整对照、W02持续 owner 公平性、配对CPU/完整内存、拖放/DPI/多屏仍开放。冻结产品体积仍只适用原匹配载荷；私有候选若未打包，不给出新的 runtime/ZIP 增量。`performanceVerified=false`、`inputLatencyVerified=false`、`releaseReady=false`；PR129保持draft，不合并或发布。
