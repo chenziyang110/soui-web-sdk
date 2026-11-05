@@ -4,6 +4,8 @@
 
 ## 0.6.0 后续源码候选
 
+2026-11-06 的[焦点与预算追加验收](performance/sdk-preview4-focus-20261106.md)用无丢失 full trace 确认旧 MiniBlink 的 `wkeKillFocus` 已正常返回，累计页面快照仍没有 blur；内部具体分支未唯一定位。[ADR-0164](adr/0164-miniblink-keyboard-focus-loss.md)的私有候选已通过27项模型、两架构增量编译和一次 x64 窗口失焦限定复验（快照前 native blur 返回、页面 blur2、正常关闭）。补丁仅供审查，仓库默认实现/SDK4包未改；四项新冻结库历史等同性未知，完整输入法、焦点矩阵及性能未认证。R29 两个0预算基线虽采集完整，Bridge尾部噪声超原阈值，已停止2000候选和末轮，不重复追测；整体性能资格保持false。
+
 2026-11-06 的[追加复验](performance/sdk-preview4-continuation-20261106.md)确认性能消费者误处置 `E_RELOAD_PENDING`，修复后49项合同、新会话2→3、实际按键及正常关闭通过；SDK/内核和冻结包不变。切窗缺失页面失焦标记仍待归因，R26输入诊断在首故障/关闭期限后缺完整导出；不能据此关闭输入或帧率门槛。新WebView2输出准备短对照及I02探索也未建立默认策略收益，整体性能资格保持false。
 
 当前载荷的 [preview.4 交付复验](performance/sdk-preview4-delivery-20261105.md)修正 preview.3 运行库清单的旧大小/散列，已通过 x64 SDK、两架构部署、源 SDK 安装和 MiniBlink 隔离短启动/正常关闭；此非输入样本的最终 SDK/kernel 诊断写入无丢失。真实输入与有效帧率性能仍待验，旧失败及旧版本结果保留，不扩大生产资格。

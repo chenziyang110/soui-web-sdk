@@ -1,0 +1,88 @@
+diff --git a/third_party/sources/miniblink/content/browser/WebPageImpl.cpp b/third_party/sources/miniblink/content/browser/WebPageImpl.cpp
+--- a/third_party/sources/miniblink/content/browser/WebPageImpl.cpp
++++ b/third_party/sources/miniblink/content/browser/WebPageImpl.cpp
+@@ -1867,17 +1867,73 @@ void WebPageImpl::fireKillFocusEvent(HWND hWnd, UINT message, WPARAM wParam, LPA
+     CHECK_FOR_REENTER(this, (void)0);
+     freeV8TempObejctOnOneFrameBefore();
+-
++
+-    HWND currentFocus = ::GetFocus();
+-    if (currentFocus == m_popupHandle)
++    bool controlled = false;
++#if (defined ENABLE_WKE) && (ENABLE_WKE == 1)
++    controlled = wke::brokerOwnsView(m_pagePtr->wkeWebView());
++#endif
++    if (!controlled) {
++        // Preserve the original legacy behavior. In particular, do not add
++        // synchronous DOM callbacks to its uncertified destruction boundary.
++        HWND currentFocus = ::GetFocus();
++        if (currentFocus == m_popupHandle)
++            return;
++        if (m_popup)
++            m_popup->hide();
++        m_popupHandle = nullptr;
++        return;
++    }
++
++    if (!isMainThread() || m_state != pageInited || !m_webViewImpl)
+         return;
+-
++
+-    if (m_popup)
+-        m_popup->hide();
++    // WebViewImpl is RefCounted, not an Oilpan-only raw object. Retain the view
++    // while client callbacks can close it; its Page can still be cleared by close.
++    WTF::RefPtr<blink::WebViewImpl> view = m_webViewImpl;
++    blink::Page* const page = view->page(); // Identity only across callbacks.
++    if (!page || !page->mainFrame() || !page->mainFrame()->isLocalFrame())
++        return; // This provider's supported local-main-frame profile only.
++
++    // Retention prevents address reuse of the old frame/document during popup
++    // callbacks; equality below detects same-view navigation, not just close.
++    // RefPtrWillBeRawPtr retains under refcounting; CHECK_FOR_REENTER's existing
++    // AutoDisableGC scope protects these objects in the Oilpan configuration.
++    RefPtrWillBeRawPtr<blink::LocalFrame> mainFrame =
++        blink::toLocalFrame(page->mainFrame());
++    RefPtrWillBeRawPtr<blink::Document> document = mainFrame->document();
++    if (!document)
++        return;
+-
++
+-//     m_webViewImpl->setFocus(false);
+-//     m_webViewImpl->setFocusedFrame(nullptr);
+-//     m_webViewImpl->clearFocusedElement();
++    const HWND popupHandle = m_popupHandle;
++    if (popupHandle && ::GetFocus() == popupHandle)
++        return; // NULL/NULL is ordinary focus loss, never a popup certificate.
++
++    // Clear only the pre-callback marker. hide() can close/navigate/refocus or
++    // open another popup; no later unconditional assignment may erase that one.
++    PopupMenuWin* const popup = m_popup.get();
+     m_popupHandle = nullptr;
++    if (popup)
++        popup->hide();
++
++    // Short circuit before dereferencing Page: retaining WebViewImpl does not
++    // retain its cleared Page. mainFrame/document remain retained separately.
++    if (m_state != pageInited || m_webViewImpl != view.get()
++        || view->page() != page || page->mainFrame() != mainFrame.get()
++        || mainFrame->page() != page || mainFrame->document() != document.get())
++        return;
++
++    // Any callback-published popup marker/visible popup is a newer transition.
++    // Preserve it and stop this old blur. GetFocus()==NULL cannot certify that
++    // a new popup has not focused another native queue. An old popup normally
++    // hidden/cleared/replaced by a nonvisible object does not itself block blur.
++    if (m_popupHandle || (m_popup && m_popup->isVisible()))
++        return;
++
++    // Last explicit side effect. Normal Blink blur/selection/caret/control/JS
++    // callbacks run and may close, navigate, refocus or create a new popup.
++    // Do not inspect old DOM objects or write popup/focus flags after this call.
++    // The native IME pipeline retains finalization ownership: no full Widget
++    // setFocus(false), confirm/cancelComposition or IME-acceptance gate change.
++    page->focusController().setFocused(false);
+ }
+-
++
+ void WebPageImpl::fireTouchEvent(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
