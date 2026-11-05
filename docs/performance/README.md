@@ -1,5 +1,7 @@
 # 双后端性能候选
 
+当前未发布 `0.7.0-preview.4` 的[交付复验](sdk-preview4-delivery-20261105.md)和[追加验收状态](sdk-preview4-qualification-20261105.md)记录两架构限定构建、安装消费者、功能及实际体积。真实输入/有效帧率与条件策略验收尚未完成，`performanceVerified=false`；以下记录保留各自历史身份。
+
 2026-11-05 最新[SDK 输入与帧率验收报告](sdk-input-frame-acceptance-20261105.md)记录 v143 安装消费者、桌面内容观察、输入来源完整性失败和体积结果。WebView2 未检测到超过噪声的改善，MiniBlink 基线漂移；性能和发布门槛保持未通过，旧结果保留各自身份。
 
 SDK 输入与帧策略的新候选、当前构建身份、人工输入数据和未完成项见[SDK 实现与验证范围](sdk-input-frame-implementation.md)。下方记录保留各自历史版本与载荷，不替代当前候选验收。

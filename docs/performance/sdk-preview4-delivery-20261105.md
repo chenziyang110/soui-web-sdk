@@ -1,5 +1,7 @@
 # SDK preview.4 交付复验（2026-11-05）
 
+本页保留 `repair-r13` 交付检查点。新增的 x86 SDK/消费者、源码包 16 项 smoke、正常 probe ready 功能复验及诊断基线边界见[追加验收与交付状态](sdk-preview4-qualification-20261105.md)；后续证据不改变本页旧样本身份。
+
 `0.7.0-preview.4` 修复了 preview.3 运行时部署清单仍引用旧 MiniBlink 散列的问题。新版 x64 SDK、源 SDK 安装和两架构运行库部署已通过限定验证；隔离桌面的 MiniBlink 短启动、页面请求、保存与正常关闭也通过。真实输入尾延迟、有效呈现帧率及性能提升仍未验收，`performanceVerified=false`、`releaseReady=false`。
 
 旧[验收报告](sdk-input-frame-acceptance-20261105.md)和[preview.3 后续记录](sdk-input-frame-followup-20261105.md)保留当时身份与结论。当前机器记录为 `verification/performance/sdk-input-frame-20261105/preview4.json`，原始证据位于同一验收包的 `repair-r13/`。
