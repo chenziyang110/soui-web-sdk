@@ -3,6 +3,7 @@
 #include "manual_report.h"
 #include <soui/json_bridge.h>
 #include <windows.h>
+#include <array>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -124,6 +125,68 @@ void scalar_contracts(const std::filesystem::path& root) {
   auto wrong_clock=initial;wrong_clock.capture_begin_qpc=0;
   const auto clock=bench::finish_scalar_capture(directory(root,L"boundary-clock"),wrong_clock,sdk,&kernel,std::chrono::seconds(2));
   check(!clock.ok&&!clock.usable,"Invalid boundary QPC accepted");
+
+  fault_source lost_kernel;lost_kernel.value=initial.kernel;lost_kernel.value.unregistered_writes=2;
+  lost_kernel.value.stopped=true;lost_kernel.value.quiescent=true;lost_kernel.value.active_producers=0;
+  lost_kernel.value.pending_registrations=0;
+  const auto source_loss=bench::finish_scalar_capture(directory(root,L"baseline-kernel-unregistered-writes"),
+    initial,sdk,&lost_kernel,std::chrono::seconds(2));
+  check(!source_loss.ok&&source_loss.io_complete&&source_loss.sdk_usable&&!source_loss.kernel_usable,
+    "Kernel unregistered writes did not remain a kernel-only source_loss failure");
+  const auto source_loss_status=read(root/L"baseline-kernel-unregistered-writes"/L"scalar-final-status.json");
+  check(source_loss_status.find("\"source_loss\"")!=std::string::npos&&
+    source_loss_status.find("\"unregistered_writes\":\"2\"")!=std::string::npos,
+    "Kernel unregistered write evidence or source_loss reason was lost");
+}
+void diagnostic_boundary_contracts(const std::filesystem::path& root) {
+  struct expected_phase final {
+    bench::diagnostic_scalar_phase phase;
+    const wchar_t* file;
+    const char* label;
+  };
+  constexpr std::array<expected_phase,6> phases{{
+    {bench::diagnostic_scalar_phase::before_start,L"scalar-diagnostic-before-start.json","before_start"},
+    {bench::diagnostic_scalar_phase::after_start,L"scalar-diagnostic-after-start.json","after_start"},
+    {bench::diagnostic_scalar_phase::document_ready,L"scalar-diagnostic-document-ready.json","document_ready"},
+    {bench::diagnostic_scalar_phase::before_destroy,L"scalar-diagnostic-before-destroy.json","before_destroy"},
+    {bench::diagnostic_scalar_phase::after_destroy,L"scalar-diagnostic-after-destroy.json","after_destroy"},
+    {bench::diagnostic_scalar_phase::after_runtime_shutdown,L"scalar-diagnostic-after-runtime-shutdown.json","after_runtime_shutdown"}
+  }};
+  const auto identity=trace::current_identity(0x1122334455667788ULL,0x8877665544332211ULL);
+  bench::scalar_boundary boundary;boundary.expected=identity;boundary.capture_begin_qpc=9007199254740993ULL;
+  boundary.capture_end_qpc=9007199254740995ULL;boundary.kernel_present=true;
+  boundary.sdk.available=true;boundary.sdk.session=identity;boundary.sdk.recording_mode=trace::mode::scalar;
+  boundary.sdk.unregistered_writes=9007199254740993ULL;boundary.sdk.counter_saturated=true;boundary.sdk.owner_violation=true;
+  boundary.kernel.available=true;boundary.kernel.session=identity;boundary.kernel.recording_mode=trace::mode::scalar;
+  boundary.kernel.unregistered_writes=2;boundary.kernel.registration_rejections=3;boundary.kernel.invalid_event=true;
+  const auto output=directory(root,L"diagnostic-scalar-boundaries");
+  for(const auto& expected:phases) {
+    bench::write_diagnostic_scalar_boundary(output,boundary,expected.phase);
+    const auto body=read(output/expected.file);
+    check(body.find("\"schema\":\"soui.input-ui-scalar-diagnostic-boundary/v1\"")!=std::string::npos&&
+      body.find(std::string("\"phase\":\"")+expected.label+"\"")!=std::string::npos,
+      "Diagnostic phase mapping/schema changed");
+    check(body.find("\"performanceGate\":false")!=std::string::npos&&
+      body.find("\"releaseReady\":false")!=std::string::npos&&
+      body.find("\"usable\"")==std::string::npos&&body.find("\"passed\"")==std::string::npos,
+      "Diagnostic boundary claimed qualification or omitted explicit false gates");
+    check(body.find("\"capture_begin_qpc\":\"9007199254740993\"")!=std::string::npos&&
+      body.find("\"capture_end_qpc\":\"9007199254740995\"")!=std::string::npos&&
+      body.find("\"unregistered_writes\":\"9007199254740993\"")!=std::string::npos&&
+      body.find("\"unregistered_writes\":\"2\"")!=std::string::npos,
+      "Diagnostic scalar counters/QPC lost exact 64-bit string values");
+    check(body.find("\"counter_saturated\":true")!=std::string::npos&&
+      body.find("\"owner_violation\":true")!=std::string::npos&&
+      body.find("\"invalid_event\":true")!=std::string::npos,
+      "Diagnostic raw scalar flags were omitted");
+  }
+  const auto invalid=static_cast<bench::diagnostic_scalar_phase>(255);
+  rejects([&]{bench::write_diagnostic_scalar_boundary(output,boundary,invalid);},"Unknown diagnostic phase accepted");
+  const auto collision=directory(root,L"diagnostic-scalar-collision");
+  {std::ofstream file(collision/phases[0].file,std::ios::binary);file<<"original diagnostic evidence\n";}
+  rejects([&]{bench::write_diagnostic_scalar_boundary(collision,boundary,phases[0].phase);},
+    "Diagnostic boundary collision was accepted");
+  check(read(collision/phases[0].file)=="original diagnostic evidence\n","Diagnostic writer overwrote existing evidence");
 }
 void manual_report_contracts(const std::filesystem::path& root) {
   using json=nlohmann::json;
@@ -204,7 +267,7 @@ int wmain(int argc,wchar_t** argv) {
   try {
     check(argc==2,"Pass one new absolute evidence directory; no windows or DLL are used");
     const std::filesystem::path root(argv[1]);check(root.is_absolute()&&std::filesystem::create_directory(root),"Evidence directory must be new and absolute");
-    options_contracts();scalar_contracts(root);manual_report_contracts(root);
+    options_contracts();scalar_contracts(root);diagnostic_boundary_contracts(root);manual_report_contracts(root);
     std::cout<<"profile/scalar contracts passed; no Host, DLL, desktop or input execution\n";return 0;
   }catch(const std::exception& error){std::cerr<<error.what()<<'\n';return 1;}
 }

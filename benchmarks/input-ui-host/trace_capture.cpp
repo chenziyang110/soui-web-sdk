@@ -121,6 +121,43 @@ scalar_boundary capture_scalar_boundary(trace::identity expected,trace::trace_so
   value.sdk=sdk_source.snapshot();value.kernel_present=kernel_source!=nullptr;
   if(kernel_source)value.kernel=kernel_source->snapshot();value.capture_end_qpc=trace::now_qpc();return value;
 }
+void write_diagnostic_scalar_boundary(const std::filesystem::path& output,const scalar_boundary& value,
+    diagnostic_scalar_phase phase) {
+  const char* phase_name=nullptr;const wchar_t* file_name=nullptr;const char* semantics=nullptr;
+  switch(phase) {
+    case diagnostic_scalar_phase::before_start:
+      phase_name="before_start";file_name=L"scalar-diagnostic-before-start.json";
+      semantics="Immediately before the public Host start call.";break;
+    case diagnostic_scalar_phase::after_start:
+      phase_name="after_start";file_name=L"scalar-diagnostic-after-start.json";
+      semantics="After the public Host start call returned successfully.";break;
+    case diagnostic_scalar_phase::document_ready:
+      phase_name="document_ready";file_name=L"scalar-diagnostic-document-ready.json";
+      semantics="After the page reports ready and before host-ready publication.";break;
+    case diagnostic_scalar_phase::before_destroy:
+      phase_name="before_destroy";file_name=L"scalar-diagnostic-before-destroy.json";
+      semantics="Immediately before the first Host destroy attempt after close was requested.";break;
+    case diagnostic_scalar_phase::after_destroy:
+      phase_name="after_destroy";file_name=L"scalar-diagnostic-after-destroy.json";
+      semantics="After Host destroy returned success and before final runtime shutdown wait.";break;
+    case diagnostic_scalar_phase::after_runtime_shutdown:
+      phase_name="after_runtime_shutdown";file_name=L"scalar-diagnostic-after-runtime-shutdown.json";
+      semantics="After the public runtime shutdown wait returned success and before recorder stop.";break;
+    default:throw std::invalid_argument("Unknown diagnostic scalar boundary phase");
+  }
+  std::ostringstream out;out.imbue(std::locale::classic());
+  out<<"{\"schema\":\"soui.input-ui-scalar-diagnostic-boundary/v1\",\"phase\":\""<<phase_name
+    <<"\",\"scope\":\"diagnostic-only\",\"boundary_semantics\":\""<<semantics
+    <<"\",\"performanceGate\":false,\"releaseReady\":false,\"identity\":";
+  identity_json(out,value.expected);out<<",\"capture_begin_qpc\":\""<<value.capture_begin_qpc
+    <<"\",\"capture_end_qpc\":\""<<value.capture_end_qpc<<"\",\"sources\":{\"sdk\":{\"available\":"
+    <<boolean(value.sdk.available)<<",\"snapshot\":";
+  snapshot_json(out,value.sdk);out<<"},\"kernel\":{\"available\":"
+    <<boolean(value.kernel_present&&value.kernel.available)<<",\"backend_status\":\""
+    <<(value.kernel_present?"loaded":"api_unavailable")<<"\",\"snapshot\":";
+  if(value.kernel_present)snapshot_json(out,value.kernel);else out<<"null";
+  out<<"}}}\n";write_scalar_json(output/file_name,out.str());
+}
 void write_scalar_initial(const std::filesystem::path& output,const scalar_boundary& value,const std::string& cold) {
   std::ostringstream out;out.imbue(std::locale::classic());
   out<<"{\"schema\":\"soui.input-ui-scalar-boundary/v1\",\"phase\":\"initial\",\"scope\":\"whole-process-lifetime\",\"identity\":";

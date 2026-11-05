@@ -1,0 +1,157 @@
+{
+  "schema": "soui.miniblink-incremental-import-evidence/v1",
+  "sdkVersion": "0.7.0-preview.3",
+  "parentKernelProvenance": "third_party/manifests/kernel-build-070-preview2.json",
+  "profile": "LLVM22MSVC142",
+  "sourceInput": {
+    "schema": "soui.kernel-source-files/v1",
+    "identity": "dd53b24483eb824a2ab0854cfd308154f3190ed0f9720c2e9f81403ea967f11c",
+    "fileCount": 23067,
+    "directoryCount": 1323,
+    "totalBytes": 305398094,
+    "actualPhysicalSnapshot": true,
+    "evidence": {
+      "label": "v8-final-source-snapshot-r1/source-input-snapshot.json",
+      "bytes": 4389842,
+      "sha256": "502c14408e2293e11a743ed25648e3bf94d43c9fd18f5ea82e74d3865af83903"
+    },
+    "derivation": {
+      "label": "v8-final-source-snapshot-r1/derivation.json",
+      "bytes": 1341,
+      "sha256": "5d20df526468b24392c1e6d1ec79bab1cda06579ffc60485b7ebab69c39a5d31"
+    }
+  },
+  "scope": "Exactly one known V8 background callback translation unit recompiled per architecture, frozen K1 source-equivalent objects/libraries reused. No hot post/record auto-registration.",
+  "architectures": [
+    {
+      "architecture": "x64",
+      "dll": {
+        "path": "third_party/prebuilt/x64/miniblink/node.dll",
+        "bytes": 39212032,
+        "sha256": "56d460c0b4136d85d3fcb8d4e4f00c19a04ff56532228031b55368742ef54308"
+      },
+      "previous": {
+        "bytes": 39211008,
+        "sha256": "8d84f0d0b307c4ee1fdee8d4ac27b8e67dec32545e9cf52dbfaf1a85d88904b6"
+      },
+      "deltaBytes": 1024,
+      "importLibrary": {
+        "bytes": 4837106,
+        "sha256": "9c0a08762aba7e751866aede65b7ffacd5b9a20f0274c7aad3cae07ab1225381"
+      },
+      "build": {
+        "label": "v8-kernel-fix-r2/x64/result.json",
+        "bytes": 6036,
+        "sha256": "802e8df51faf001173fba79cbbbf204eee8370a6d8b6aa91e8df7c0ad1853ee4"
+      },
+      "plan": {
+        "label": "v8-kernel-fix-r2/x64/plan.json",
+        "bytes": 3319005,
+        "sha256": "95be7ed1e5b281f9c1d714348ec26d08bf102d19e11d60a6d85291560b705d5e"
+      },
+      "abi": {
+        "label": "v8-kernel-abi-x64-r2/summary.json",
+        "bytes": 943,
+        "sha256": "de369cf81a2508914db82f23b8949b359d5255792701c6278f8d2d295d212a6d"
+      },
+      "actualTableAbi": {
+        "schema": "soui.kernel-import-table-abi/v1",
+        "pointerBytes": 8,
+        "abiVersion": 1,
+        "structBytes": 144,
+        "requiredTailBytes": 144,
+        "capabilities": 4095,
+        "framePolicyBytes": 32,
+        "queryPointerPresent": true,
+        "applyPointerPresent": true,
+        "wrongVersionsRejected": true,
+        "loadedPathMatchesArgument": true,
+        "rendererInitialized": false,
+        "viewCreated": false,
+        "desktopInput": false
+      },
+      "translationUnitsRecompiled": 1,
+      "actualIncludes": {
+        "actualIncludeCount": 660,
+        "uniqueActualIncludes": 512,
+        "requiredHelperIncluded": true,
+        "requiredInputTraceHeaderIncluded": true
+      },
+      "pinnedSourceCount": 7483,
+      "pinnedToolCount": 2915,
+      "frozenLinkInputCount": 3021
+    },
+    {
+      "architecture": "x86",
+      "dll": {
+        "path": "third_party/prebuilt/x86/miniblink/node.dll",
+        "bytes": 28324352,
+        "sha256": "bf6fd0bcb892f2997489a60d059671c9a618f4f99418d41f2c41f10ceae4dfb9"
+      },
+      "previous": {
+        "bytes": 28323840,
+        "sha256": "367f1cd087bb5166c5b75f32fb76e7ca2950feae68dc15d05ec8f0ffcdc5b296"
+      },
+      "deltaBytes": 512,
+      "importLibrary": {
+        "bytes": 4757974,
+        "sha256": "e4547a8cfa3cc72dc4c0c961b9111f1450350f249a4560d806b514238f201bb6"
+      },
+      "build": {
+        "label": "v8-kernel-fix-r2/x86/result.json",
+        "bytes": 6019,
+        "sha256": "367ef09b5007e3ec15de4bea1fa4ea1f1fb92dce396ec921bb55d5a2a0aa805e"
+      },
+      "plan": {
+        "label": "v8-kernel-fix-r2/x86/plan.json",
+        "bytes": 3318549,
+        "sha256": "5d37709f07f4aff475224c0301d1c692f3ac40ecb03608a866edeac47acbcc17"
+      },
+      "abi": {
+        "label": "v8-kernel-abi-x86-r2/summary.json",
+        "bytes": 936,
+        "sha256": "a462ac322ee096bb34a4f3b67b31016434a0628c1d814a7707fd9a20042b2d3d"
+      },
+      "actualTableAbi": {
+        "schema": "soui.kernel-import-table-abi/v1",
+        "pointerBytes": 4,
+        "abiVersion": 1,
+        "structBytes": 80,
+        "requiredTailBytes": 80,
+        "capabilities": 4095,
+        "framePolicyBytes": 32,
+        "queryPointerPresent": true,
+        "applyPointerPresent": true,
+        "wrongVersionsRejected": true,
+        "loadedPathMatchesArgument": true,
+        "rendererInitialized": false,
+        "viewCreated": false,
+        "desktopInput": false
+      },
+      "translationUnitsRecompiled": 1,
+      "actualIncludes": {
+        "actualIncludeCount": 661,
+        "uniqueActualIncludes": 512,
+        "requiredHelperIncluded": true,
+        "requiredInputTraceHeaderIncluded": true
+      },
+      "pinnedSourceCount": 7482,
+      "pinnedToolCount": 2915,
+      "frozenLinkInputCount": 3019
+    }
+  ],
+  "patch": {
+    "path": "third_party/patches/miniblink/0034-v8-background-trace-producer.patch",
+    "bytes": 2478,
+    "sha256": "6fd48adba151df110d7b538ce081414f91e3610cea2a241835376c608b71b60b"
+  },
+  "freshWholeKernel": false,
+  "publicBuildVerified": false,
+  "v143Qualified": false,
+  "fullSdkApplicationValidationComplete": false,
+  "binaryLicenseReviewComplete": false,
+  "transitiveDependencyCompleteness": "incomplete",
+  "runtimeVerified": false,
+  "performanceVerified": false,
+  "releaseReady": false
+}

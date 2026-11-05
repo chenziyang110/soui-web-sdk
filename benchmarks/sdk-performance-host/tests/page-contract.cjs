@@ -197,9 +197,10 @@ test('histogram uses all intervals, strict long-frame threshold and explicit ove
 });
 
 function mountedPage(options = {}) {
-  const time = clock(), nodes = new Map(), listeners = {}, documentListeners = {}, reports = [], calls = [], echoReplies=[], frameRequests=[];
+  const time = clock(), nodes = new Map(), listeners = {}, documentListeners = {}, reports = [], calls = [], actions=[], echoReplies=[], echoPayloadSizes=[], frameRequests=[];
   let bootstrapPending=options.bootstrapPending || 0, identityCalls=0, identityReply, writesPending=options.writesPending || 0;
   let beginReply, endReply, scalarWritesPending=options.scalarWritesPending || 0;
+  let focused=options.focused!==false;
   const context = Object.fromEntries(['fillRect','save','restore','translate','rotate'].map(name => [name, () => {}]));
   function node(id) {
     if (!nodes.has(id)) nodes.set(id, {value:'',textContent:'',style:{},disabled:false,handlers:{},clientWidth:480,clientHeight:360,
@@ -207,9 +208,10 @@ function mountedPage(options = {}) {
     return nodes.get(id);
   }
   node('scene').value = 'input'; node('payload').value = '64';
-  const doc = {getElementById:node,createElement:() => node('row'+nodes.size),hidden:false,visibilityState:'visible',hasFocus:() => true,
+  const doc = {getElementById:node,createElement:() => node('row'+nodes.size),hidden:false,visibilityState:'visible',hasFocus:() => focused,
+    documentElement:{getAttribute(name){return name==='data-soui-autobench'&&options.autoMarker?'bridge4096-v1':null;}},
     addEventListener(name, fn) { documentListeners[name] = fn; }};
-  const win = {performance:{now:time.now},setTimeout:time.later,clearTimeout:time.cancel,innerWidth:1000,innerHeight:800,devicePixelRatio:1,
+  const win = {performance:{now:time.now},setTimeout(fn,delay){return options.dropFlood&&delay===4?0:time.later(fn,delay);},clearTimeout:time.cancel,innerWidth:1000,innerHeight:800,devicePixelRatio:1,
     requestAnimationFrame(fn) { this.nextFrame = fn; frameRequests.push(fn); return frameRequests.length; },
     cancelAnimationFrame() {},addEventListener(name, fn) { listeners[name] = fn; },
     __souiNativePostMessage(wire) {
@@ -220,9 +222,10 @@ function mountedPage(options = {}) {
           if(bootstrapPending-->0)return JSON.stringify({requestId:request.requestId,ok:false,error:{code:'E_CONTEXT_PENDING',message:'waiting'}});
           result = {sessionId:'session',origin:'local',token:'not-saved'}; break;
         case 'benchmark.identity':
-          result = {backend:'test-contract',sdkVersion:'test',buildIdentity:'test',pageHash:'test',identityCall:++identityCalls,
-            hostIndex:0,sessionGeneration:1,inputTrace:options.inputTrace || 'off',observation:'off',detailedTraceConfiguredByConsumer:false,
-            environment:{SOUI_WEBVIEW2_OUTPUT_TIMING:null},native:{windowVisible:true,windowIconic:false,pacerFailed:false,
+          result = {backend:options.backend||'test-contract',sdkVersion:'test',buildIdentity:'test',pageHash:'test',identityCall:++identityCalls,
+            hostIndex:0,sessionGeneration:1,inputTrace:options.inputTrace || 'off',observation:options.observation||'off',detailedTraceConfiguredByConsumer:false,
+            environment:{SOUI_WEBVIEW2_PREPARE_OUTPUT:options.prepareOutput===undefined?null:options.prepareOutput,
+              SOUI_WEBVIEW2_OUTPUT_TIMING:options.outputTiming===undefined?null:options.outputTiming},native:{windowVisible:true,windowIconic:false,pacerFailed:false,
               documentReady:true,applicationReady:true,pacerHz:60,pacerBackend:2,pid:123,creationFileTime:'123',clientWidth:1000,
               clientHeight:800,windowDpiX:96,windowDpiY:96,sessionGeneration:1,runtimeIdentity:{test:true}}};
           if(options.changeFixedIdentity && identityCalls>=3)result.native.pacerHz=75;
@@ -231,6 +234,7 @@ function mountedPage(options = {}) {
           break;
         case 'bridge.probe.report': result = {ready:true}; break;
         case 'benchmark.echo':
+          echoPayloadSizes.push(request.params.payload.length);
           if(options.echoCostMs)time.elapseBlocked(options.echoCostMs);
           if(options.deferEcho)return {then(resolve){echoReplies.push(()=>resolve(reply(wire,request.params)));}};
           result = request.params; break;
@@ -247,19 +251,101 @@ function mountedPage(options = {}) {
           break;
         case 'benchmark.reportStatus':
           if(request.params.id===options.scalarWriteFailure)result={state:'failed',error:'test writer failure'};
-          else if(request.params.id===10 || request.params.id===11)result={state:scalarWritesPending-->0?'pending':'saved',path:request.params.id===10?'native-begin.json':'native-end.json'};
-          else {assert.equal(request.params.id,1);result = {state:writesPending-->0?'pending':'saved',path:'test.json'};}
+          else if(request.params.id===10 || request.params.id===11)result={state:scalarWritesPending-->0?'pending':'saved',id:request.params.id,path:request.params.id===10?'native-begin.json':'native-end.json'};
+          else {assert.equal(request.params.id,1);result = {state:writesPending-->0?'pending':'saved',
+            id:options.badSavedReceipt?2:1,path:options.badSavedReceipt?'different.json':'test.json'};}
           break;
-        case 'benchmark.action': result = {accepted:true,action:request.params.action}; break;
+        case 'benchmark.action': actions.push(request.params.action); result = {accepted:true,action:request.params.action}; break;
         default: throw Error(request.method);
       }
       return reply(wire,result);
     }};
   if(options.messageChannel)win.MessageChannel=messageChannels(time).Constructor;
   page.mount(win,doc);
-  return {time,node,win,doc,listeners,documentListeners,reports,calls,echoReplies,frameRequests,
+  return {time,node,win,doc,listeners,documentListeners,reports,calls,actions,echoReplies,echoPayloadSizes,frameRequests,
+    focus(){focused=true;if(listeners.focus)listeners.focus();},
     resolveIdentity(){identityReply();},resolveBegin(){beginReply();},resolveEnd(){endReply();}};
 }
+
+test('only the W02 marker enables the fixed bridge workload; ordinary page remains manual',()=>{
+  const ordinary=mountedPage({inputTrace:'scalar'});
+  ordinary.time.advance(30000);
+  assert.equal(ordinary.node('scene').value,'input');assert.equal(ordinary.node('payload').value,'64');
+  assert.equal(ordinary.calls.includes('benchmark.measurementBegin'),false);
+  assert.equal(ordinary.reports.length,0);assert.deepEqual(ordinary.actions,[]);
+
+  const auto=mountedPage({autoMarker:true,focused:false,backend:'webview2',inputTrace:'scalar',observation:'scalar',
+    prepareOutput:'0',outputTiming:'1',writesPending:1});
+  assert.equal(auto.node('scene').value,'bridge');assert.equal(auto.node('payload').value,'4096');
+  assert.equal(auto.calls.includes('benchmark.measurementBegin'),false,'background windows must wait for real focus');
+  auto.focus();assert.equal(auto.calls.filter(method=>method==='benchmark.measurementBegin').length,1);
+  auto.time.advance(30000);
+  assert.equal(auto.reports.length,1);assert.equal(auto.reports[0].scenario,'bridge');
+  assert.equal(auto.reports[0].parameters.payloadBytes,4096);assert.equal(auto.reports[0].parameters.maxEchoOutstanding,7);
+  assert.equal(auto.reports[0].window.requestedMs,30000);assert.ok(auto.reports[0].bridge.attempted>0);
+  assert.ok(auto.echoPayloadSizes.length>0&&auto.echoPayloadSizes.every(bytes=>bytes===4096));
+  assert.equal(auto.reports[0].window.valid,true);assert.equal(auto.reports[0].nativeMeasurement.measurementUsable,true);
+  assert.deepEqual(auto.actions,[],'admission or pending writer status is not saved');
+  auto.time.advance(200);
+  assert.deepEqual(auto.actions,['close'],'the existing saved receipt triggers one private close action');
+  assert.equal(auto.calls.filter(method=>method==='benchmark.report').length,1);
+  assert.equal(auto.calls.filter(method=>method==='benchmark.action').length,1);
+  const lastStatus=auto.calls.lastIndexOf('benchmark.reportStatus'),close=auto.calls.lastIndexOf('benchmark.action');
+  assert.ok(lastStatus>=0&&lastStatus<close,'saved status must precede close request');
+  const host=fs.readFileSync(require.resolve('../main.cpp'),'utf8');
+  const claim=host.indexOf('item.bridge.dispatch().claim(next.receipt)'),closeDispatch=host.indexOf('if(next.name=="close")');
+  assert.ok(claim>=0&&closeDispatch>claim,'close must pass the existing original-receipt claim');
+  assert.match(host,/name=="hide-restore"\|\|name=="close"/);
+  assert.match(host,/PostMessageW\(item\.window,WM_CLOSE,0,0\)/);
+  assert.match(host,/case WM_CLOSE:item->request_close\(\);return 0;/,'queued close must use the normal WM_CLOSE lifecycle');
+});
+
+test('W02 errors and invalid focus/native results never save or close automatically',()=>{
+  const inFlight=mountedPage({autoMarker:true,backend:'webview2',inputTrace:'scalar',observation:'scalar',
+    prepareOutput:'0',outputTiming:'1',deferEcho:true});
+  inFlight.time.advance(4);
+  assert.equal(inFlight.echoReplies.length,7,'scalar Bridge workload reserves the eighth slot for End');
+  assert.ok(inFlight.echoPayloadSizes.every(bytes=>bytes===4096));
+  inFlight.node('stop').onclick();
+  inFlight.echoReplies.forEach(done=>done());
+  assert.equal(inFlight.reports.length,0);assert.deepEqual(inFlight.actions,[]);
+
+  const blur=mountedPage({autoMarker:true,backend:'webview2',inputTrace:'scalar',observation:'scalar',
+    prepareOutput:'1',outputTiming:'1',dropFlood:true});
+  assert.equal(blur.calls.filter(method=>method==='benchmark.measurementBegin').length,1);
+  blur.listeners.blur();blur.time.advance(30000);
+  assert.equal(blur.reports.length,0);assert.deepEqual(blur.actions,[]);
+  assert.equal(blur.calls.filter(method=>method==='benchmark.measurementEnd').length,1);
+
+  const unusable=mountedPage({autoMarker:true,backend:'webview2',inputTrace:'scalar',observation:'scalar',
+    prepareOutput:'0',outputTiming:'1',snapshotUsable:false,dropFlood:true});
+  unusable.time.advance(30000);
+  assert.equal(unusable.reports.length,0,'saved native files with unusable source do not qualify for auto-save');
+  assert.deepEqual(unusable.actions,[]);
+
+  const wrongProfile=mountedPage({autoMarker:true,backend:'webview2',inputTrace:'scalar',observation:'off',
+    prepareOutput:'0',outputTiming:'1'});
+  assert.equal(wrongProfile.calls.includes('benchmark.measurementBegin'),false);
+  assert.equal(wrongProfile.reports.length,0);assert.deepEqual(wrongProfile.actions,[]);
+
+  const wrongOutput=mountedPage({autoMarker:true,backend:'webview2',inputTrace:'scalar',observation:'scalar',
+    prepareOutput:'0',outputTiming:'0'});
+  assert.equal(wrongOutput.calls.includes('benchmark.measurementBegin'),false);
+  assert.equal(wrongOutput.reports.length,0);assert.deepEqual(wrongOutput.actions,[]);
+
+  const changedControls=mountedPage({autoMarker:true,focused:false,backend:'webview2',inputTrace:'scalar',observation:'scalar',
+    prepareOutput:'0',outputTiming:'1'});
+  changedControls.node('payload').value='64';changedControls.focus();
+  assert.equal(changedControls.calls.includes('benchmark.measurementBegin'),false);
+  assert.equal(changedControls.reports.length,0);assert.deepEqual(changedControls.actions,[]);
+
+  const falseSaved=mountedPage({autoMarker:true,backend:'webview2',inputTrace:'scalar',observation:'scalar',
+    prepareOutput:'0',outputTiming:'1',dropFlood:true,badSavedReceipt:true});
+  falseSaved.time.advance(30000);
+  assert.equal(falseSaved.reports.length,1);
+  assert.deepEqual(falseSaved.actions,[],'a saved label with mismatched write id/path cannot trigger close');
+  assert.match(falseSaved.node('status').textContent,/身份或路径不匹配/);
+});
 
 test('fixed-work UI saves its distinct schema through the existing writer and restores only one rAF chain',()=>{
   const h=mountedPage({messageChannel:true,echoCostMs:.02}),staleFrame=h.win.nextFrame;

@@ -100,6 +100,7 @@ if(SOUI_BUILD_VENDOR_TESTS)
   add_subdirectory(scheduler_continuation)
   add_subdirectory(scheduler_index)
   add_subdirectory(current_time_hot_path)
+  add_subdirectory(v8_background_trace)
   add_executable(soui_input_frame_trace_tests input_frame_trace/recorder_tests.cpp
     "${SOUI_DISTRIBUTION_ROOT}/sdk/src/runtime/diagnostics/input_frame_trace.cpp"
     "${SOUI_DISTRIBUTION_ROOT}/third_party/sources/miniblink/content/common/InputFrameTrace.cpp")

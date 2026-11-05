@@ -16,10 +16,22 @@ struct scalar_boundary final {
 struct scalar_export_result final {
   bool io_complete{false}, usable{false}, sdk_usable{false}, kernel_usable{false}, ok{false};
 };
+enum class diagnostic_scalar_phase {
+  before_start,
+  after_start,
+  document_ready,
+  before_destroy,
+  after_destroy,
+  after_runtime_shutdown
+};
 scalar_boundary capture_scalar_boundary(
     sdk::diagnostics::input_frame_trace::identity expected,
     sdk::diagnostics::input_frame_trace::trace_source& sdk_source,
     sdk::diagnostics::input_frame_trace::trace_source* kernel_source);
+// One-shot diagnostic checkpoints only. Files use CREATE_NEW and never
+// participate in the scalar finalizer or qualify a performance sample.
+void write_diagnostic_scalar_boundary(const std::filesystem::path& output,
+    const scalar_boundary& boundary,diagnostic_scalar_phase phase);
 void write_scalar_initial(const std::filesystem::path& output,const scalar_boundary& boundary,
     const std::string& cold_profile_json);
 // No worker or event-mode attachment. Call only after normal source shutdown.

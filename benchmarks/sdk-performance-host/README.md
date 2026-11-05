@@ -110,7 +110,9 @@ launcher 的 `soui.sdk-performance-manual-pair/v1` manifest 包含相对路径 `
 ## 生命周期与保存
 
 - Bridge 复用 `json_bridge` 的 bootstrap/session/origin/token 校验和原有异步 native transport，不加入 CDP、DevTools、文件选择器或其他权限。Echo 只接受固定边界内的 ASCII payload 和 uint32 sequence。
-- 页面 report 最多 60 KiB，保存到原生生成的唯一文件名；页面不能选择路径。独立有界 writer 返回 admission 后再提供 `reportStatus`，只有实际写入并 flush 成功才显示 saved。保存动作在记录结束后手动触发，不混入记录内热路径。
+- 页面 report 最多 60 KiB，保存到原生生成的唯一文件名；页面不能选择路径。独立有界 writer 返回 admission 后再提供 `reportStatus`，只有实际写入并 flush 成功才显示 saved。普通页面的保存仍由操作者触发，不混入记录内热路径。
+- 仅冻结的 W02 页面可在 `<html>` 上设置 `data-soui-autobench="bridge4096-v1"` 以启用一次性自动驱动。它选择现有 `bridge` 场景和 4096 字节负载；只在 WebView2、`inputTrace=scalar`、`observation=scalar`、`SOUI_WEBVIEW2_OUTPUT_TIMING=1`、`SOUI_WEBVIEW2_PREPARE_OUTPUT=0|1` 配置且文档可见、窗口前台时调用原有 `begin(true)`。窗口未前台时等待真实 focus/visibility 事件；运行中失焦/隐藏继续按原规则使报告无效。不会重试或更改期限。
+- 自动页只在 30 秒 DOM 窗口有效且 Begin/End 两份原生快照均实际保存并可用后调用原 `saveReport` 一次；只有 `reportStatus` 返回 `saved` 才经已有代际回执检查的 `benchmark.action` 队列请求 `close`。Host 将此私有 action 转成所属窗口的 `WM_CLOSE`，继续走原有 Host/Runtime 正常关闭路径。marker 缺失、配置错误、窗口失焦/隐藏、报告无效或写盘失败都不会自动关闭，也不会伪称报告已保存。该 marker 和 action 不属于 SDK 公共 API。
 - 原生 action 仅进入有界 UI owner 队列，绑定 handle_json 入口冻结的代际和 SDK contextual request 原始 session。可嵌套 TLS scope 绑定各 Bridge，不再读取处理过程中新代际给旧请求续期。发布与 shutdown 代际推进共用短 gate；UI 执行前 claim 同一 receipt。撤销开始先将入口 epoch 原子置零，实际 inner shutdown 成功且全部并发/嵌套撤销结束后才重新开放；期间请求永久持有无效 receipt，异常或计数溢出保持 fail-closed。claim 是执行线性化点，后续撤销不重贴身份；gate 不跨 Host/COM/shutdown_session 调用。measurement 的 snapshot/大 JSON 编码在 gate 外，只有有界内存 writer 接纳与 active id 发布在 gate 内。第二 Host 最多一个，使用独立 Bridge/profile；reload 撤销原会话；hide-restore 隐藏 1.5 秒后以不激活方式恢复，期间记录必须 invalid。
 - 关闭保留 adapter、Bridge、HWND 和 WebView2 exit watch 到其正常结束；MiniBlink 所有 Host 关闭后等待公共全局 runtime shutdown。writer 先停止接纳，再从 UI 非阻塞等待退出。期限失败保留失败并以非零 fail-stop，不把强制结束记成通过。
 

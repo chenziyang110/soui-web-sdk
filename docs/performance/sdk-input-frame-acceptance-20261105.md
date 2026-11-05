@@ -1,5 +1,7 @@
 # SDK 输入与帧率优化：2026-11-05 验收报告
 
+本页保留 SDK `0.7.0-preview.2` 的已执行验收及失败记录。后续 V8 来源定位、`preview.3` 构建与尚未关闭的门槛见[后续记录](sdk-input-frame-followup-20261105.md)，不将本页数据改挂到新版载荷。
+
 结论：**实现及定向正确性验证完成；性能改善未获验收通过。** WebView2 的桌面内容变化对照未显示超过预设噪声的变化；MiniBlink 的基线复测漂移，不能判定收益。输入基线出现两次未注册诊断写入，本轮输入 A/B 不合格。`performanceVerified=false`、`releaseReady=false`，PR 保持 draft。
 
 本报告补充既有记录，不覆盖历史失败、收据或主线验收状态。没有启动 Electron，没有改变 Scratch、画质、角色数量或 SDK 默认策略。

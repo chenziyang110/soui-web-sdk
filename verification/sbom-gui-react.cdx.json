@@ -2,10 +2,10 @@
   "$schema": "http://cyclonedx.org/schema/bom-1.5.schema.json",
   "bomFormat": "CycloneDX",
   "specVersion": "1.5",
-  "serialNumber": "urn:uuid:ec43d018-7bb0-4b05-a9a7-48f806fd11d6",
+  "serialNumber": "urn:uuid:2bb8fabe-d8c6-4b95-b0c7-26e564058df1",
   "version": 1,
   "metadata": {
-    "timestamp": "2026-11-03T05:22:22.987Z",
+    "timestamp": "2026-11-05T01:58:10.832Z",
     "lifecycles": [
       {
         "phase": "pre-build"
@@ -19,12 +19,12 @@
       }
     ],
     "component": {
-      "bom-ref": "@soui/gui-react@0.7.0-preview.2",
+      "bom-ref": "@soui/gui-react@0.7.0-preview.3",
       "type": "library",
       "name": "react",
-      "version": "0.7.0-preview.2",
+      "version": "0.7.0-preview.3",
       "scope": "required",
-      "purl": "pkg:npm/%40soui/gui-react@0.7.0-preview.2",
+      "purl": "pkg:npm/%40soui/gui-react@0.7.0-preview.3",
       "properties": [
         {
           "name": "cdx:npm:package:private",
@@ -43,12 +43,12 @@
   },
   "components": [
     {
-      "bom-ref": "@soui/native-sdk@0.7.0-preview.2",
+      "bom-ref": "@soui/native-sdk@0.7.0-preview.3",
       "type": "library",
       "name": "@soui/native-sdk",
-      "version": "0.7.0-preview.2",
+      "version": "0.7.0-preview.3",
       "scope": "required",
-      "purl": "pkg:npm/%40soui/native-sdk@0.7.0-preview.2",
+      "purl": "pkg:npm/%40soui/native-sdk@0.7.0-preview.3",
       "properties": [
         {
           "name": "cdx:npm:package:development",
@@ -303,16 +303,16 @@
   ],
   "dependencies": [
     {
-      "ref": "@soui/gui-react@0.7.0-preview.2",
+      "ref": "@soui/gui-react@0.7.0-preview.3",
       "dependsOn": [
-        "@soui/native-sdk@0.7.0-preview.2",
+        "@soui/native-sdk@0.7.0-preview.3",
         "@types/react@18.3.12",
         "react@18.3.1",
         "typescript@5.9.3"
       ]
     },
     {
-      "ref": "@soui/native-sdk@0.7.0-preview.2",
+      "ref": "@soui/native-sdk@0.7.0-preview.3",
       "dependsOn": []
     },
     {

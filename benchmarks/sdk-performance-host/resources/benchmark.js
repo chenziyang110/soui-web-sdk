@@ -6,6 +6,36 @@
 }(typeof window !== 'undefined' ? window : this, function () {
   'use strict';
   var LIMIT = 65536, DURATION = 30000, SEED = 1374772973, STEP = 1000 / 60;
+  var AUTO_BENCHMARK_MARKER = 'bridge4096-v1';
+  function hasAutoBenchmarkMarker(doc) {
+    return !!(doc && doc.documentElement && typeof doc.documentElement.getAttribute === 'function' &&
+      doc.documentElement.getAttribute('data-soui-autobench') === AUTO_BENCHMARK_MARKER);
+  }
+  function createAutoBenchmarkFlow(enabled, doc, begin, save, close, rejected) {
+    var startAttempted = false, saveAttempted = false, closeAttempted = false;
+    return {
+      tryStart: function (connected, eligible) {
+        if (!enabled || !connected || startAttempted || doc.hidden !== false ||
+            typeof doc.hasFocus !== 'function' || !doc.hasFocus()) return false;
+        startAttempted = true;
+        if (!eligible) { if (rejected) rejected(); return false; }
+        begin(); return true;
+      },
+      saveValidReport: function (report, nativeMeasurement) {
+        if (!enabled || saveAttempted || !report || !report.window || report.window.complete !== true ||
+            report.window.domValid !== true || report.window.valid !== true || !nativeMeasurement ||
+            nativeMeasurement.phase !== 'complete' || nativeMeasurement.measurementUsable !== true ||
+            !nativeMeasurement.begin || nativeMeasurement.begin.persisted !== true ||
+            !nativeMeasurement.end || nativeMeasurement.end.persisted !== true) return false;
+        saveAttempted = true;
+        save(function (saved) {
+          if (saved !== true || closeAttempted) return;
+          closeAttempted = true; close();
+        });
+        return true;
+      }
+    };
+  }
   function utf8Bytes(text) {
     var total = 0, i, c, next;
     for (i = 0; i < text.length; i += 1) {
@@ -393,22 +423,39 @@
     var recording = false, recordTimer = 0, floodTimer = 0, lastReport = null, invalid = [], input, echo, actions, payload = '', sequence = 0;
     var saving = false, starting = false, saveTimer = 0, lastRefresh = 0, liveStart = 0, liveFrames = 0, liveHz = 0;
     var measurement=null, measurementReport=null, actionPending=false;
+    var autoBenchmark=hasAutoBenchmarkMarker(doc), autoConfigurationValid=false, autoFlow;
     var fixedRun=null, fixedPreparing=false, fixedCancelled=null, fixedNeedsRestart=false, fixedTicket=0;
     var hasPerformance = !!(win.performance && typeof win.performance.now === 'function');
     function now() { return hasPerformance ? win.performance.now() : Date.now(); }
     function status(text) { ui.status.textContent = text; }
     function fault(error) { return String(error && error.code || 'E_PAGE') + ': ' + String(error && error.message || error).slice(0, 180); }
     for (index = 0; index < ids.length; index += 1) ui[ids[index]] = doc.getElementById(ids[index]);
+    if(autoBenchmark) {
+      ui.scene.value='bridge';ui.payload.value='4096';scene='bridge';
+      autoConfigurationValid=ui.scene.value==='bridge' && ui.payload.value==='4096';
+    }
     context = ui.canvas.getContext('2d');
     var bridge = createBridge(function (wire) {
       if (typeof win.__souiNativePostMessage !== 'function') throw failure('E_BRIDGE', '原生 Bridge 尚未就绪。');
       return win.__souiNativePostMessage(wire);
     }, function (fn, delay) { return win.setTimeout(fn, delay); }, function (timer) { win.clearTimeout(timer); }, now);
+    autoFlow=createAutoBenchmarkFlow(autoBenchmark,doc,function(){begin(true);},function(done){saveReport(done);},
+      function(){action('close');},function(){status('W02 自动页配置不匹配；未启动记录。');});
+    function autoIdentityEligible(value) {
+      var env=value && value.environment;
+      return !!(value && value.backend==='webview2' && value.inputTrace==='scalar' && value.observation==='scalar' && env &&
+        (env.SOUI_WEBVIEW2_PREPARE_OUTPUT==='0' || env.SOUI_WEBVIEW2_PREPARE_OUTPUT==='1') &&
+        env.SOUI_WEBVIEW2_OUTPUT_TIMING==='1');
+    }
+    function maybeAutoStart() {
+      autoFlow.tryStart(connected,autoConfigurationValid && ui.scene.value==='bridge' && ui.payload.value==='4096' &&
+        autoIdentityEligible(identity));
+    }
     function nativeBusy() { return !!measurement && measurement.busy(); }
     function fixedBusy() { return fixedPreparing || !!fixedRun && fixedRun.busy(); }
     function nativeView() { return measurement?measurement.view():{mode:'off',phase:'disabled',id:null}; }
     function nativeChanged() {
-      var value=nativeView();
+      var value=nativeView(), autoSaveReport=false;
       if(measurementReport) {
         measurementReport.nativeMeasurement=value; measurementReport.nativeMeasurementId=value.id;
         measurementReport.window.valid=measurementReport.window.domValid && value.phase==='complete' && value.measurementUsable===true;
@@ -416,7 +463,10 @@
           measurementReport.window.invalidReasons.push('native_measurement_incomplete');
         if(value.phase==='complete' && value.measurementUsable!==true && measurementReport.window.invalidReasons.indexOf('native_measurement_unusable')<0)
           measurementReport.window.invalidReasons.push('native_measurement_unusable');
-        if(measurementReport===lastReport)ui.reportPreview.textContent=JSON.stringify(lastReport,null,2);
+        if(measurementReport===lastReport) {
+          ui.reportPreview.textContent=JSON.stringify(lastReport,null,2);
+          autoSaveReport=true;
+        }
       }
       if(value.phase==='begin_pending')status('等待原生 scalar Begin 回执；DOM 计时尚未开始。');
       else if(value.phase==='waiting_capacity' || value.phase==='end_pending')status('DOM 记录已停止，正在结束原生 scalar 采样。');
@@ -426,6 +476,7 @@
         '原生快照已保存，但来源缺失或统计无效；本轮不用于性能对照。':measurementReport && measurementReport.window.valid?
         'DOM 记录及原生快照已完成，可以保存报告。':'原生快照已保存；已取消或失效的 DOM 记录仍然无效。');
       refresh(true);
+      if(autoSaveReport)autoFlow.saveValidReport(measurementReport,value);
     }
     function echoLimit() { return recording && measurement?7:8; }
     function resetCounters() {
@@ -713,21 +764,27 @@
       ui.feedback.style.backgroundColor=total%2?'#ceeedd':'#d8e8ff'; ui.feedback.textContent=type+' · '+total+' 次事件（未保存输入内容）';
       input.handlerTotalMs+=Math.max(0,now()-began);
     }
-    function saveReport() {
+    function saveReport(onComplete) {
       var ownReport=lastReport, polls=0;
-      if(!ownReport || saving || nativeBusy() || fixedBusy()) return;
-      if(utf8Bytes(JSON.stringify(ownReport))>60000) { status('报告超过保存预算，未截断或伪造身份字段。'); return; }
+      function complete(saved) { if(typeof onComplete==='function')onComplete(saved===true); }
+      if(!ownReport || saving || nativeBusy() || fixedBusy()) { complete(false); return; }
+      if(utf8Bytes(JSON.stringify(ownReport))>60000) { status('报告超过保存预算，未截断或伪造身份字段。'); complete(false); return; }
       saving=true; refresh(true);
       bridge.request('benchmark.report',{report:ownReport},credentials,function(error,result) {
         if(error || !result || !result.accepted || typeof result.id!=='number' || result.id<1 || result.id>4294967295 || Math.floor(result.id)!==result.id)
-          { saving=false; status(error?fault(error):'保存接纳回执无效。'); refresh(true); return; }
+          { saving=false; status(error?fault(error):'保存接纳回执无效。'); refresh(true); complete(false); return; }
         status('已接纳保存，正在等待写盘完成。');
         function poll() {
           polls+=1;
           bridge.request('benchmark.reportStatus',{id:result.id},credentials,function(checkError,receipt) {
-            if(checkError || !receipt || receipt.state==='failed') { saving=false; status(checkError?fault(checkError):'保存失败：'+String(receipt&&receipt.error||'未知错误')); refresh(true); return; }
-            if(receipt.state==='saved') { saving=false; status('已保存：'+receipt.path); refresh(true); return; }
-            if(receipt.state!=='pending' || polls>=50) { saving=false; status('尚未确认写盘完成；请按原生报告路径检查。'); refresh(true); return; }
+            if(checkError || !receipt || receipt.state==='failed') { saving=false; status(checkError?fault(checkError):'保存失败：'+String(receipt&&receipt.error||'未知错误')); refresh(true); complete(false); return; }
+            if(receipt.state==='saved') {
+              if(receipt.id!==result.id || typeof receipt.path!=='string' || receipt.path!==result.path) {
+                saving=false;status('保存终态身份或路径不匹配。');refresh(true);complete(false);return;
+              }
+              saving=false; status('已保存：'+receipt.path); refresh(true); complete(true); return;
+            }
+            if(receipt.state!=='pending' || polls>=50) { saving=false; status('尚未确认写盘完成；请按原生报告路径检查。'); refresh(true); complete(false); return; }
             saveTimer=win.setTimeout(poll,200);
           });
         }
@@ -771,7 +828,7 @@
             ' · input trace '+String(value.inputTrace || 'off')+' · page '+String(value.pageHash);
           bridge.request('bridge.probe.report',{ready:true},credentials,function(probeError) {
             if(probeError) { status(fault(probeError)); return; }
-            connected=true; status('已就绪。选择场景后手动运行或记录 30 秒。'); refresh(true);
+            connected=true; status('已就绪。选择场景后手动运行或记录 30 秒。'); refresh(true);maybeAutoStart();
           });
         });
       });
@@ -783,7 +840,8 @@
     (win.PointerEvent?['pointermove','pointerdown','pointerup']:['mousemove','mousedown','mouseup']).forEach(function(name){ui.feedback.addEventListener(name,inputEvent,false);});
     ui.scroll.addEventListener('wheel',inputEvent,false); ui.scroll.addEventListener('scroll',inputEvent,false);
     win.addEventListener('blur',function(){invalidate('window_blur');},false);
-    doc.addEventListener('visibilitychange',function(){if(doc.hidden)invalidate('document_hidden');},false);
+    win.addEventListener('focus',maybeAutoStart,false);
+    doc.addEventListener('visibilitychange',function(){if(doc.hidden)invalidate('document_hidden');else maybeAutoStart();},false);
     win.addEventListener('resize',function(){invalidate('viewport_changed');},false);
     win.addEventListener('beforeunload',function(){stop('navigation');win.clearTimeout(saveTimer);},false);
     ui.scene.onchange=function(){stop('scene_changed');scene=ui.scene.value;if(scene==='idle')stopFrames();else scheduleFrame();

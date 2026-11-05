@@ -13,6 +13,7 @@
 
 #include <algorithm>
 #include <chrono>
+#include <cstdio>
 #include <filesystem>
 #include <iostream>
 #include <memory>
@@ -162,10 +163,25 @@ std::filesystem::path prepare_page(const options& settings) {
 class harness_window final {
  public:
   harness_window(soui::sdk::soui_miniblink_host& host,const options& settings,const trace::identity& identity,bool capability,
-      soui::benchmark::manual_report_collector* manual_report,const manual_gate::gate* observation_gate)
-      :host_(host),settings_(settings),identity_(identity),manual_report_(manual_report),observation_gate_(observation_gate),detailed_capability_(capability){}
+      soui::benchmark::manual_report_collector* manual_report,const manual_gate::gate* observation_gate,
+      trace::trace_source* kernel_source)
+      :host_(host),settings_(settings),identity_(identity),kernel_source_(kernel_source),manual_report_(manual_report),
+       observation_gate_(observation_gate),detailed_capability_(capability){}
   void request_close(){if(!closing_){if(manual_report_)manual_report_->close();closing_=true;close_started_=GetTickCount64();}}
   int exit_code()const noexcept{return exit_code_;}
+  bool diagnostic_boundaries_ok()const noexcept{return !diagnostic_boundaries_failed_;}
+  void diagnostic_checkpoint(soui::benchmark::diagnostic_scalar_phase phase)noexcept {
+    if(!settings_.diagnostics.logging)return;
+    try {
+      const auto boundary=soui::benchmark::capture_scalar_boundary(identity_,trace::process_recorder(),kernel_source_);
+      soui::benchmark::write_diagnostic_scalar_boundary(settings_.output,boundary,phase);
+    }catch(...) {
+      // A failed diagnostic must not recurse through WndProc's fail/close path
+      // or skip normal Runtime shutdown. It still makes the final run fail.
+      diagnostic_boundaries_failed_=true;
+      std::fputs("Diagnostic scalar boundary persistence failed\n",stderr);
+    }
+  }
   ULONGLONG activity_expires_tick()const noexcept{return started_+150000;}
   std::chrono::milliseconds remaining_close_budget() const noexcept {
     const auto elapsed=closing_?GetTickCount64()-close_started_:0;
@@ -185,6 +201,7 @@ class harness_window final {
           self->host_.pump();
           if(self->settings_.diagnostics.logging&&!self->timer_logged_){std::cerr<<"stage ui.timer.first\n";self->timer_logged_=true;}
           if(!self->published_&&self->host_.document_ready()) {
+            self->diagnostic_checkpoint(soui::benchmark::diagnostic_scalar_phase::document_ready);
             if(self->settings_.diagnostics.logging)std::cerr<<"stage document.ready\n";
             if(self->settings_.diagnostics.foreground) {
               const auto foreground_ready=SetForegroundWindow(window)!=FALSE;
@@ -226,17 +243,27 @@ class harness_window final {
   }
  private:
   void close_step(HWND window) {
+    if(!before_destroy_sampled_) {
+      before_destroy_sampled_=true;
+      diagnostic_checkpoint(soui::benchmark::diagnostic_scalar_phase::before_destroy);
+    }
     const auto closed=host_.destroy();
     if(!closed.ok) {
       if((closed.code=="E_BUSY"||closed.code=="E_CURSOR_CLOSE_PENDING")&&GetTickCount64()-close_started_<20000)return;
       std::cerr<<closed.code<<": "<<closed.message<<'\n';exit_code_=2;KillTimer(window,1);PostQuitMessage(exit_code_);return;
     }
+    if(!after_destroy_sampled_) {
+      after_destroy_sampled_=true;
+      diagnostic_checkpoint(soui::benchmark::diagnostic_scalar_phase::after_destroy);
+    }
     KillTimer(window,1);DestroyWindow(window);
   }
   soui::sdk::soui_miniblink_host& host_;const options& settings_;trace::identity identity_;
+  trace::trace_source* kernel_source_;
   soui::benchmark::manual_report_collector* manual_report_;
   const manual_gate::gate* observation_gate_;
   ULONGLONG started_{GetTickCount64()},close_started_{0};bool closing_{false},published_{false},timer_logged_{false};int exit_code_{0};
+  bool before_destroy_sampled_{false},after_destroy_sampled_{false},diagnostic_boundaries_failed_{false};
   bool detailed_capability_{false};
 };
 int run(const options& settings) {
@@ -293,7 +320,7 @@ int run(const options& settings) {
   }
   soui::sdk::soui_miniblink_host host(std::make_unique<soui::sdk::dynamic_miniblink_adapter>());
   harness_window window(host,settings,identity,detailed_capability,settings.profile.manual_input?&manual_report:nullptr,
-    observation_gated?&observation_gate:nullptr);
+    observation_gated?&observation_gate:nullptr,kernel.get());
   WNDCLASSEXW description{};description.cbSize=sizeof(description);description.hInstance=GetModuleHandleW(nullptr);
   description.lpfnWndProc=harness_window::procedure;description.lpszClassName=window_class;description.hCursor=LoadCursorW(nullptr,IDC_ARROW);
   require(RegisterClassExW(&description)!=0,"Harness window class unavailable");
@@ -350,9 +377,11 @@ int run(const options& settings) {
 #endif
   config.miniblink_binary=settings.binary;config.resource_root=bundle;config.owner_window=handle;config.bridge_adapter=&bridge;
   if(settings.diagnostics.logging)std::cerr<<"stage host.start.before\n";
+  window.diagnostic_checkpoint(soui::benchmark::diagnostic_scalar_phase::before_start);
   const auto started=host.start(config);
   if(settings.diagnostics.logging)std::cerr<<"stage host.start.after ok="<<(started.ok?"true":"false")<<"\n";
   require(started.ok,"Public SDK Host failed to start");
+  window.diagnostic_checkpoint(soui::benchmark::diagnostic_scalar_phase::after_start);
   settings.profile.cursor_setup([&]{POINT setup{90,60};
     require(ClientToScreen(handle,&setup)&&SetCursorPos(setup.x,setup.y),"Harness initial cursor placement failed");});
   ShowWindow(handle,settings.profile.manual_input?SW_SHOWNOACTIVATE:SW_SHOW);UpdateWindow(handle);
@@ -383,6 +412,7 @@ int run(const options& settings) {
   require(trace::register_current_thread(),"Harness final UI trace registration failed");
   const auto closed=soui::sdk::wait_for_miniblink_runtime_shutdown(window.remaining_close_budget());
   require(closed.ok,"Public SDK runtime did not close normally");
+  window.diagnostic_checkpoint(soui::benchmark::diagnostic_scalar_phase::after_runtime_shutdown);
   trace::detach_current_thread();trace::process_recorder().stop();
   const bool backend_stopped=!kernel||kernel->stop();
   const bool trace_complete=!capture||capture->finish(window.remaining_close_budget());
@@ -418,8 +448,10 @@ int run(const options& settings) {
     ",\"scalar_usable\":"+(settings.trace_mode=="e2e"&&scalar.usable?"true":"false")+
     manual_status+",\"manual_observation_gate_enabled\":"+(observation_gated?"true":"false")+
     ",\"manual_observation_gate_checked_close\":"+(observation_gated?"true":"null")+
+    ",\"diagnostic_scalar_boundaries_ok\":"+(settings.diagnostics.logging?(window.diagnostic_boundaries_ok()?"true":"false"):"null")+
     ",\"performanceGate\":false,\"releaseReady\":false}\n");
-  if(!backend_stopped||!trace_complete||seen_capture_failure||(settings.trace_mode=="e2e"&&!scalar.ok)||window.remaining_close_budget().count()==0)return 2;
+  if(!backend_stopped||!trace_complete||seen_capture_failure||!window.diagnostic_boundaries_ok()||
+    (settings.trace_mode=="e2e"&&!scalar.ok)||window.remaining_close_budget().count()==0)return 2;
   return code?code:window.exit_code();
 }
 }

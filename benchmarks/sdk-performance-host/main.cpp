@@ -120,6 +120,11 @@ struct slot final {
   void publish_snapshot();void request_close();void close_step();void pulse();void housekeeping();
 };
 struct action final{unsigned slot_index;dispatch_gate::receipt receipt;ULONGLONG due;std::string name;};
+template<class Post,class Fallback>
+bool post_close_or_fallback(Post&& post,Fallback&& fallback){
+  if(post())return true;
+  fallback();return false;
+}
 class application final {
  public:
   explicit application(options settings):settings(std::move(settings)){}
@@ -176,7 +181,7 @@ class application final {
     require(methods.register_contextual_method("benchmark.action","benchmark.action",[this,&item](const soui::runtime::bridge_request& request){
       const auto original=item.bridge.dispatch().original(request.session_id);
       const auto value=parse_object(request.params_json);require(value.size()==1&&value.contains("action")&&value["action"].is_string(),"E_ACTION_PARAMS");
-      const auto name=value["action"].get<std::string>();require(name=="second-host"||name=="reload"||name=="hide-restore","E_ACTION_UNKNOWN");
+      const auto name=value["action"].get<std::string>();require(name=="second-host"||name=="reload"||name=="hide-restore"||name=="close","E_ACTION_UNKNOWN");
       if(!accepting.load())return json{{"accepted",false},{"error","E_ACTION_CLOSING"}}.dump();
       action queued{item.index,original,GetTickCount64()+150,name};bool accepted=false;
       const bool current=item.bridge.dispatch().publish(original,[&]{
@@ -257,7 +262,13 @@ class application final {
         std::lock_guard<std::mutex> lock(actions_mutex);if(actions.empty()||actions.front().due>GetTickCount64())return;next=std::move(actions.front());actions.pop_front();}
       auto& item=*slots.at(next.slot_index);if(item.closing||item.closed||!item.mounted||!item.bridge.dispatch().claim(next.receipt)){log({{"stage","action-cancelled"},{"action",next.name},{"slot",next.slot_index},{"requestGeneration",std::to_string(next.receipt.epoch)}});continue;}
       log({{"stage","action-begin"},{"action",next.name},{"slot",next.slot_index},{"requestGeneration",std::to_string(next.receipt.epoch)},{"authorization","original receipt claimed before reentrant Host call"}});
-      if(next.name=="second-host"){if(created_count.load()<2)create_slot();}
+      if(next.name=="close"){
+        const bool posted=post_close_or_fallback(
+          [&]{return IsWindow(item.window)&&PostMessageW(item.window,WM_CLOSE,0,0)!=FALSE;},
+          [&]{exit_code=3;log({{"stage","action-failed"},{"action",next.name},{"slot",next.slot_index},{"error","WM_CLOSE enqueue failed"}});item.request_close();});
+        if(posted)log({{"stage","action-close-posted"},{"slot",next.slot_index},{"requestGeneration",std::to_string(next.receipt.epoch)}});
+      }
+      else if(next.name=="second-host"){if(created_count.load()<2)create_slot();}
       else if(next.name=="reload"){const auto result=item.host->reload();if(!result.ok)fail(item,result);}
       else{const auto result=item.host->hide();if(!result.ok){fail(item,result);continue;}ShowWindow(item.window,SW_HIDE);item.restore_at=GetTickCount64()+1500;}
     }
@@ -361,6 +372,12 @@ void slot::housekeeping(){
 }
 unsigned boundary_contracts(scalar_capture& capture,report_writer& writer){
   unsigned passed=0;
+  bool fallback_called=false;
+  const bool failed_close_post=post_close_or_fallback([]{return false;},[&]{fallback_called=true;});
+  require(!failed_close_post&&fallback_called,"Failed WM_CLOSE post skipped the normal close fallback");++passed;
+  fallback_called=false;
+  const bool successful_close_post=post_close_or_fallback([]{return true;},[&]{fallback_called=true;});
+  require(successful_close_post&&!fallback_called,"Successful WM_CLOSE post invoked the failure fallback");++passed;
   struct tracked_adapter{explicit tracked_adapter(bool& value):destroyed(value){}bool& destroyed;~tracked_adapter(){destroyed=true;}};
   struct tracked_owner{std::unique_ptr<tracked_adapter> adapter;};
   bool destroyed=false,threw=false;std::unique_ptr<tracked_owner> owner;tracked_adapter* alias=nullptr;

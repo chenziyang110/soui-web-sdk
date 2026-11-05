@@ -110,6 +110,13 @@ test('performance successor has its own exact peer tuple without widening future
   assert.throws(() => gui.metadata(f.source), /exact local SDK and framework peers/);
   assert.throws(() => gui.metadata(fixture(t, '0.7.0-preview.3', range).source), /exact local SDK and framework peers/);
 });
+test('background trace repair preview has an exact tuple and rejects unlisted successors', t => {
+  const previousRange = currentPeerRange + ' || 0.7.0-preview.1 || 0.7.0-preview.2';
+  const candidate = '0.7.0-preview.3', range = previousRange + ' || ' + candidate;
+  assert.equal(gui.metadata(fixture(t, candidate, range).source), candidate);
+  assert.throws(() => gui.metadata(fixture(t, candidate, previousRange).source), /exact local SDK and framework peers/);
+  assert.throws(() => gui.metadata(fixture(t, '0.7.0-preview.4', range).source), /exact local SDK and framework peers/);
+});
 function historicalPackage(t, targetVersion = version, tool = legacyToolBytes()) {
   const f = fixture(t, targetVersion, previousPeerRange), packed = path.join(f.root, 'historical-package');
   f.write('tools/sdk/gui-bindings-delivery.cjs', tool);

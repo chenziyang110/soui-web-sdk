@@ -24,6 +24,10 @@ consumer 每次最多1024项/源、4ms条件等待，两个64KiB缓冲文件均 
 
 `--trace=full` 采集详细 trace；`--trace=e2e` 不启用详细 trace consumer，但仍使用现有 scalar 模式，不是完全无 instrumentation。二者的测量税需单独评估，不修改 recorder ABI 来伪造 `off`。
 
+`--diagnostic-log` 另保存固定生命周期边界 `scalar-diagnostic-*.json`：紧贴 Host start 前后、document ready 后且发布 ready 前、第一次 destroy 尝试前、destroy 成功后，以及 Runtime shutdown 成功后。每个阶段只读现有 scalar 一次，不轮询、不创建线程、不重设关闭期限。来源身份、QPC 包围值、原始 loss/registration 等字段保留；`before_destroy` 不表示 destroy 已完成，源仍运行时的计数不是原子跨线程快照。
+
+这些额外快照始终属于诊断路径，不构成性能样本、有效窗口或来源完整性豁免。写入失败会记为 `diagnostic_scalar_boundaries_ok:false` 并最终非零退出，正常关闭仍继续，不通过窗口异常路径递归重试。原来的 scalar 初末导出、source_loss 拒绝及全生命周期范围保持不变；旧原件不补写。定位未注册写入时可用 `--manual-input --diagnostic-log` 避免初始指针定位，按新的冻结身份启动关闭，不将隔离桌面结果冒充物理输入测试。
+
 ## 手动输入与冷预算 profile
 
 新增 `--manual-input` 才跳过上述指针定位，并以 `SW_SHOWNOACTIVATE` 显示窗口；正常焦点转发保持。它不能和 `--diagnostic-foreground` 组合。ready/result 明确记录 `input_mode:"manual"`、`deterministic_replay:false`；原默认记录 `burst-protocol/true`。手动模式没有输入器、校准或确定回放资格，不生成假的输入收据；新 profile 工具与旧 BurstInput runner/不同提交 pair 分开。

@@ -1,0 +1,47 @@
+{
+  "schema": "soui.miniblink-source-delta/v1",
+  "date": "2026-11-05",
+  "parentCommit": "c494b04f82a807f0f37e1772f688def0a0bacad7",
+  "scope": "Known gin::WorkItemCallback trace-producer registration only; no post/record hot-path registration",
+  "adr": "docs/adr/0162-v8-background-trace-producer.md",
+  "sourceFiles": [
+    {
+      "path": "third_party/sources/miniblink/gin/v8_platform.cc",
+      "normalization": "lf",
+      "before": {
+        "bytes": 3523,
+        "sha256": "772e085dc59bcac1e8aaefae50d50b113bae244b2e95a6b3fde264eba01d4af5"
+      },
+      "after": {
+        "bytes": 3809,
+        "sha256": "67a3fc3d0a1472f725462a4031a2459eeb2827a6330955b18e40c20622490d9f"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/content/common/V8BackgroundTraceScope.h",
+      "normalization": "lf",
+      "before": null,
+      "after": {
+        "bytes": 1116,
+        "sha256": "cebb7dde0d2a84e2c52d8b762b3ab7f0ed7204845e95b1972c136be96a2e83a5"
+      }
+    }
+  ],
+  "patch": {
+    "path": "third_party/patches/miniblink/0034-v8-background-trace-producer.patch",
+    "bytes": 2478,
+    "sha256": "6fd48adba151df110d7b538ce081414f91e3610cea2a241835376c608b71b60b"
+  },
+  "replay": {
+    "label": "repair-r12/v8-source-patch-r2/result.json",
+    "bytes": 1189,
+    "sha256": "72df794d45d3ed1eb88ece7809ffd163def37ec7caa0aa2ae289e270f1db1f95",
+    "forwardExact": true,
+    "reverseExact": true
+  },
+  "defaultPrebuiltUpdated": true,
+  "actualKernelRevalidation": "Both architectures linked and table ABI loaded; SDK/renderer/input runtime pending",
+  "performanceVerified": false,
+  "releaseReady": false,
+  "selectedKernelProvenance": "third_party/manifests/kernel-build-070-preview3.json"
+}

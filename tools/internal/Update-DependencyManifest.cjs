@@ -85,6 +85,8 @@ need(kernel.imports[0].sourceInputSha256 === kernel.imports[1].sourceInputSha256
  'Kernel imports must bind the same source-input identity');
 verifiedInputs.set(provenanceSource, provenanceBytes);
 const definitions = [
+ ['miniblink-v8-background-trace-source', 'third_party/manifests/miniblink-v8-background-trace-20261105.json', '20261105 known V8 callback producer source delta; selected kernel provenance states binary adoption', 'source identity record'],
+ ['miniblink-v8-background-trace-patch', 'third_party/patches/miniblink/0034-v8-background-trace-producer.patch', '20261105 known V8 callback producer source delta', 'same terms as Miniblink source'],
  ['miniblink-frame-policy-source', 'third_party/manifests/miniblink-frame-policy-state-20261102.json', '20261102 frame-policy source candidate; binary identity is in the selected kernel provenance', 'source identity record'],
  ['miniblink-frame-policy-patch', 'third_party/patches/miniblink/0033-frame-policy-applied-state.patch', '20261102 frame-policy source candidate; binary identity is in the selected kernel provenance', 'same terms as Miniblink source'],
  ['soui-source', 'third_party/sources/soui/SOURCE-MANIFEST.json', 'SOUI 2.9.0.3 historical import snapshot', 'upstream source notices'],

@@ -110,3 +110,7 @@
 `0033-frame-policy-applied-state.patch` 以 `a4fc394427c99a3331abfb2e3e3307ae27503dd0` 为前件，覆盖七个文件：InputUiApi 的两份镜像头、实现，以及 WebPage/WebPageImpl 的头和实现。函数表尾部新增可选 query/apply 与 capability，旧前缀保留；只读回配置状态，不表示帧已经呈现。非零主帧范围仍为30–240，0仍禁用该控制器。SDK协商、兼容性与重试规则见 [ADR-0154](../../../docs/adr/0154-frame-policy-applied-state.md)。
 
 七文件原始字节的正反向重放及当前树反向检查已通过，前后散列、外部候选内核与证据散列见 `third_party/manifests/miniblink-frame-policy-state-20261102.json`。两架构实际编译受影响头文件的完整40-TU reader闭包，再链接经验证的源等价旧对象/库；不是fresh整内核构建。历史 SOURCE-MANIFEST、prebuilt、许可证审查及已发布0.6.0证据不被改写。新候选载荷的应用、物理性能与完整包体积资格分别记录，不能由补丁或配置读回推断。
+
+## V8 系统线程池诊断登记：0034
+
+`0034-v8-background-trace-producer.patch` 仅覆盖已确认的 `gin::WorkItemCallback` 入口及内部作用域头。临时登记在回调结束时配对撤销，借用已有 producer 时保留调用方 context；登记拒绝或异常仍记录来源缺失。通用任务投递与 record 不自动登记。设计及复验边界见 [ADR-0162](../../../docs/adr/0162-v8-background-trace-producer.md)，源码前后身份及补丁重放见 `third_party/manifests/miniblink-v8-background-trace-20261105.json`。双架构作用域合同不替代实际内核、输入延迟或帧率验收；历史内核与收据不改挂到本修复。

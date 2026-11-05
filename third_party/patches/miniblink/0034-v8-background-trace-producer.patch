@@ -1,0 +1,63 @@
+diff --git a/third_party/sources/miniblink/content/common/V8BackgroundTraceScope.h b/third_party/sources/miniblink/content/common/V8BackgroundTraceScope.h
+new file mode 100644
+index 0000000000000000000000000000000000000000..96a8be8bc7483595436dcf7d1c70b990642b8e19
+--- /dev/null
++++ b/third_party/sources/miniblink/content/common/V8BackgroundTraceScope.h
+@@ -0,0 +1,35 @@
++#pragma once
++
++#include "content/common/InputFrameTrace.h"
++
++namespace content { namespace input_frame_trace {
++
++// Use only at the known V8 QueueUserWorkItem callback boundary. This is not a
++// general-purpose lazy registration hook for PostTask, record, or hot paths.
++class background_producer_scope final {
++ public:
++  background_producer_scope() noexcept {
++    if (current_thread_registered()) return;
++    try {
++      owns_registration_ = register_current_thread();
++    } catch (...) {
++      process_recorder().note_causal_loss();
++      return;
++    }
++    if (!owns_registration_) process_recorder().note_causal_loss();
++  }
++
++  ~background_producer_scope() noexcept {
++    if (owns_registration_) detach_current_thread();
++  }
++
++  background_producer_scope(const background_producer_scope&) = delete;
++  background_producer_scope& operator=(const background_producer_scope&) = delete;
++  background_producer_scope(background_producer_scope&&) = delete;
++  background_producer_scope& operator=(background_producer_scope&&) = delete;
++
++ private:
++  bool owns_registration_{false};
++};
++
++}} // namespace content::input_frame_trace
+diff --git a/third_party/sources/miniblink/gin/v8_platform.cc b/third_party/sources/miniblink/gin/v8_platform.cc
+index e20700edb7419c9d996dd8d074fb4f175a4fee95..61789521e5dd8ec478aab2cbb416a67aaccfa0ec 100644
+--- a/third_party/sources/miniblink/gin/v8_platform.cc
++++ b/third_party/sources/miniblink/gin/v8_platform.cc
+@@ -3,6 +3,7 @@
+ // found in the LICENSE file.
+ 
+ #include "gin/public/v8_platform.h"
++#include "content/common/V8BackgroundTraceScope.h"
+ #ifdef MINIBLINK_NOT_IMPLEMENTED
+ #include "base/bind.h"
+ #include "base/location.h"
+@@ -62,6 +63,9 @@ V8Platform::~V8Platform() {}
+ 
+ DWORD CALLBACK WorkItemCallback(void* param)
+ {
++    // QueueUserWorkItem is outside WebThread's registered thread entry. Only
++    // this known callback owns a temporary producer; posting never auto-registers.
++    content::input_frame_trace::background_producer_scope traceProducer;
+     v8::Task* task = (v8::Task*)param;
+     task->Run();
+     delete task;
