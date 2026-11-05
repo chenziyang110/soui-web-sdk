@@ -1,0 +1,577 @@
+{
+  "schema": "soui.sdk-preview4-miniblink-input-additional/v1",
+  "recordedAt": "2026-11-05T11:56:03.800Z",
+  "report": "docs/performance/sdk-preview4-miniblink-input-20261105.md",
+  "evidenceBundle": "PR129-performance-20261104",
+  "product": {
+    "version": "0.7.0-preview.4",
+    "sourceSha256": "e1d2dd8b7699930f678e21a77772b8fa4e371f5b67a53937d98470ee1659e87c",
+    "x64BuildId": "18e47fa2-69df-4530-b1f9-365f6b2aec28",
+    "productSourceModified": false,
+    "newSdkPackage": false,
+    "matchedConsumerSourceSha256": "53bad5158f3dc7290919717f3c93f0015ad9b6040544602d2e577ec46651d4cb",
+    "largeRuntimeRehashInThisSummary": false
+  },
+  "miniblink": {
+    "evidenceQualified": true,
+    "integratedNaturalCloseAllFour": true,
+    "display": {
+      "name": "DISPLAY1",
+      "refreshNumerator": 18559000,
+      "refreshDenominator": 247500,
+      "dpi": 96,
+      "dpr": 1
+    },
+    "requestedHostRateHz": 100,
+    "logicalSceneRateHz": 100,
+    "client": [
+      1920,
+      1009
+    ],
+    "roi": [
+      402,
+      425,
+      480,
+      360
+    ],
+    "thresholds": {
+      "rateHz": 3.730349629426502,
+      "p95Ms": 1
+    },
+    "conclusion": "inconclusive-baseline-drift",
+    "baselineDrift": {
+      "rateHz": -3.7440008766135406,
+      "p95Ms": 11.103499999999999,
+      "withinFrozenNumericNoise": false
+    },
+    "runs": [
+      {
+        "name": "miniblink-A1",
+        "role": "baseline",
+        "runId": "3931bc08e1e805388026d9bd6c9c53ec",
+        "seriesId": "171d33681c52d2f9e6af3f541d1d8f1f",
+        "readerQualified": true,
+        "integratedNaturalClose": true,
+        "desktopObservation": {
+          "elapsedMs": 30010.5918,
+          "sampleCount": 2249,
+          "changes": 2239,
+          "rateHzLowerBound": 74.60699258853003,
+          "changeIntervals": {
+            "samples": 2238,
+            "minimumMs": 9.3325,
+            "p50Ms": 13.3189,
+            "p95Ms": 14.1258,
+            "maximumMs": 27.4714
+          },
+          "sampleIntervals": {
+            "samples": 2248,
+            "minimumMs": 7.6998,
+            "p50Ms": 13.3317,
+            "p95Ms": 14.704,
+            "maximumMs": 24.5474
+          },
+          "gapsOver50Ms": 0,
+          "sampleGapsAbove50Ms": 0,
+          "observerCostsMs": {
+            "capture": {
+              "samples": 2249,
+              "minimumMs": 6.5019,
+              "p50Ms": 12.6356,
+              "p95Ms": 13.4919,
+              "maximumMs": 16.6719
+            },
+            "fullPixelCompare": {
+              "samples": 2249,
+              "minimumMs": 0,
+              "p50Ms": 0.0008,
+              "p95Ms": 0.0013,
+              "maximumMs": 0.0225
+            },
+            "sha256OnBaselineAndChanges": {
+              "samples": 2240,
+              "minimumMs": 0.2614,
+              "p50Ms": 0.2771,
+              "p95Ms": 0.3267,
+              "maximumMs": 0.5662
+            },
+            "preflightValidation": {
+              "samples": 2249,
+              "minimumMs": 0.0661,
+              "p50Ms": 0.0751,
+              "p95Ms": 0.7103,
+              "maximumMs": 4.752
+            },
+            "postflightValidation": {
+              "samples": 2249,
+              "minimumMs": 0.1033,
+              "p50Ms": 0.1528,
+              "p95Ms": 0.9352,
+              "maximumMs": 7.0115
+            }
+          },
+          "physicalFps": null,
+          "exactUniqueFps": null,
+          "omittedTransitions": null
+        }
+      },
+      {
+        "name": "miniblink-B1",
+        "role": "candidate",
+        "runId": "f40fae3802f7fd8c74f7a936ac70b1a7",
+        "seriesId": "171d33681c52d2f9e6af3f541d1d8f1f",
+        "readerQualified": true,
+        "integratedNaturalClose": true,
+        "desktopObservation": {
+          "elapsedMs": 30002.6444,
+          "sampleCount": 2246,
+          "changes": 2241,
+          "rateHzLowerBound": 74.6934160243555,
+          "changeIntervals": {
+            "samples": 2240,
+            "minimumMs": 5.5348,
+            "p50Ms": 13.3526,
+            "p95Ms": 14.3777,
+            "maximumMs": 40.3162
+          },
+          "sampleIntervals": {
+            "samples": 2245,
+            "minimumMs": 5.5294,
+            "p50Ms": 13.3369,
+            "p95Ms": 15.1156,
+            "maximumMs": 36.2397
+          },
+          "gapsOver50Ms": 0,
+          "sampleGapsAbove50Ms": 0,
+          "observerCostsMs": {
+            "capture": {
+              "samples": 2246,
+              "minimumMs": 5.0218,
+              "p50Ms": 12.5278,
+              "p95Ms": 13.6253,
+              "maximumMs": 19.7154
+            },
+            "fullPixelCompare": {
+              "samples": 2246,
+              "minimumMs": 0.0001,
+              "p50Ms": 0.001,
+              "p95Ms": 0.0017,
+              "maximumMs": 0.0349
+            },
+            "sha256OnBaselineAndChanges": {
+              "samples": 2242,
+              "minimumMs": 0.2676,
+              "p50Ms": 0.2848,
+              "p95Ms": 0.3305,
+              "maximumMs": 0.8063
+            },
+            "preflightValidation": {
+              "samples": 2246,
+              "minimumMs": 0.0668,
+              "p50Ms": 0.0953,
+              "p95Ms": 0.6602,
+              "maximumMs": 16.3926
+            },
+            "postflightValidation": {
+              "samples": 2246,
+              "minimumMs": 0.1066,
+              "p50Ms": 0.174,
+              "p95Ms": 1.5013,
+              "maximumMs": 5.8625
+            }
+          },
+          "physicalFps": null,
+          "exactUniqueFps": null,
+          "omittedTransitions": null
+        }
+      },
+      {
+        "name": "miniblink-B2",
+        "role": "candidate",
+        "runId": "8a84940cff6b0d4e55f8ea56653091b1",
+        "seriesId": "171d33681c52d2f9e6af3f541d1d8f1f",
+        "readerQualified": true,
+        "integratedNaturalClose": true,
+        "desktopObservation": {
+          "elapsedMs": 30011.1507,
+          "sampleCount": 2249,
+          "changes": 2193,
+          "rateHzLowerBound": 73.07283955626534,
+          "changeIntervals": {
+            "samples": 2192,
+            "minimumMs": 10.5639,
+            "p50Ms": 13.3365,
+            "p95Ms": 14.2798,
+            "maximumMs": 28.7025
+          },
+          "sampleIntervals": {
+            "samples": 2248,
+            "minimumMs": 7.4396,
+            "p50Ms": 13.3249,
+            "p95Ms": 14.7039,
+            "maximumMs": 22.6206
+          },
+          "gapsOver50Ms": 0,
+          "sampleGapsAbove50Ms": 0,
+          "observerCostsMs": {
+            "capture": {
+              "samples": 2249,
+              "minimumMs": 6.4801,
+              "p50Ms": 12.6022,
+              "p95Ms": 13.4719,
+              "maximumMs": 21.2905
+            },
+            "fullPixelCompare": {
+              "samples": 2249,
+              "minimumMs": 0,
+              "p50Ms": 0.0009,
+              "p95Ms": 0.0015,
+              "maximumMs": 0.0475
+            },
+            "sha256OnBaselineAndChanges": {
+              "samples": 2194,
+              "minimumMs": 0.2613,
+              "p50Ms": 0.2754,
+              "p95Ms": 0.3496,
+              "maximumMs": 0.9619
+            },
+            "preflightValidation": {
+              "samples": 2249,
+              "minimumMs": 0.066,
+              "p50Ms": 0.0744,
+              "p95Ms": 0.5775,
+              "maximumMs": 6.2304
+            },
+            "postflightValidation": {
+              "samples": 2249,
+              "minimumMs": 0.1019,
+              "p50Ms": 0.1493,
+              "p95Ms": 1.1747,
+              "maximumMs": 5.4038
+            }
+          },
+          "physicalFps": null,
+          "exactUniqueFps": null,
+          "omittedTransitions": null
+        }
+      },
+      {
+        "name": "miniblink-A2",
+        "role": "baseline",
+        "runId": "38fff1c897766f25c1558a4d1ae07195",
+        "seriesId": "171d33681c52d2f9e6af3f541d1d8f1f",
+        "readerQualified": true,
+        "integratedNaturalClose": true,
+        "desktopObservation": {
+          "elapsedMs": 30001.5558,
+          "sampleCount": 2249,
+          "changes": 2126,
+          "rateHzLowerBound": 70.8629917119165,
+          "changeIntervals": {
+            "samples": 2125,
+            "minimumMs": 10.7988,
+            "p50Ms": 13.3625,
+            "p95Ms": 25.2293,
+            "maximumMs": 28.5797
+          },
+          "sampleIntervals": {
+            "samples": 2248,
+            "minimumMs": 7.5358,
+            "p50Ms": 13.3012,
+            "p95Ms": 14.7582,
+            "maximumMs": 24.1078
+          },
+          "gapsOver50Ms": 0,
+          "sampleGapsAbove50Ms": 0,
+          "observerCostsMs": {
+            "capture": {
+              "samples": 2249,
+              "minimumMs": 6.1227,
+              "p50Ms": 12.6449,
+              "p95Ms": 13.8196,
+              "maximumMs": 17.8838
+            },
+            "fullPixelCompare": {
+              "samples": 2249,
+              "minimumMs": 0.0001,
+              "p50Ms": 0.0009,
+              "p95Ms": 0.0183,
+              "maximumMs": 0.0921
+            },
+            "sha256OnBaselineAndChanges": {
+              "samples": 2127,
+              "minimumMs": 0.2654,
+              "p50Ms": 0.2757,
+              "p95Ms": 0.3052,
+              "maximumMs": 0.6273
+            },
+            "preflightValidation": {
+              "samples": 2249,
+              "minimumMs": 0.066,
+              "p50Ms": 0.07,
+              "p95Ms": 0.5386,
+              "maximumMs": 3.4784
+            },
+            "postflightValidation": {
+              "samples": 2249,
+              "minimumMs": 0.1037,
+              "p50Ms": 0.1388,
+              "p95Ms": 0.9152,
+              "maximumMs": 6.319
+            }
+          },
+          "physicalFps": null,
+          "exactUniqueFps": null,
+          "omittedTransitions": null
+        }
+      }
+    ],
+    "physicalFps": null,
+    "exactUniqueFps": null,
+    "physicalInputLatencyMs": null,
+    "fullAppCpuQualified": false,
+    "fullAppMemoryQualified": false
+  },
+  "webview2": {
+    "priorRecord": "verification/performance/sdk-input-frame-20261105/frame-observation-r16.json",
+    "fourRunsComplete": true,
+    "differentDisplayFromMiniblink": true,
+    "crossBackendFpsComparisonQualified": false,
+    "benefitVerified": false
+  },
+  "e2e64Diagnostic": {
+    "formalHarness": false,
+    "count": 64,
+    "hz": 125,
+    "nativeCoordinatesMatch": true,
+    "pageSnapshotComplete": true,
+    "desktopCrcAndContentCheckedFrames": 20,
+    "hostAndInputNaturalExitZero": true,
+    "wrapperExit": 1,
+    "wrapperExitSource": "root actual execution output; independent review verified native receipts and EEXIST attribution only",
+    "wrapperFailure": "CREATE_NEW EEXIST on native-owned host-result.json; preserved",
+    "oldR15FailureFixed": false,
+    "inputLatencyQualified": false
+  },
+  "full64Diagnostic": {
+    "runId": "200eb715823c2b96159cce7022e5f89e",
+    "count": 64,
+    "hz": 125,
+    "trace": "full",
+    "formalHarness": false,
+    "diagnosticOnly": true,
+    "wrapperExit": 0,
+    "wrapperExitSource": "root actual execution output",
+    "hostExit": 0,
+    "inputExit": 0,
+    "inputNatural": true,
+    "hostNatural": true,
+    "traceCompleteReported": true,
+    "stageEvidence": "records-exported-links-unqualified",
+    "coordinateCaptureCompleteReported": true,
+    "coordinateMismatchReported": false,
+    "fullCausalQualified": false,
+    "inputLatencyQualified": false,
+    "offlineStageAnalysis": {
+      "sourceIntegrityAccepted": true,
+      "sourceEligibilityIsNotFullInputToVisibleCausality": true,
+      "stageCoverage": {
+        "1": 64,
+        "2": 64,
+        "3": 64,
+        "4": 64,
+        "5": 0,
+        "6": 64,
+        "7": 0,
+        "8": 0
+      },
+      "allSevenNativeStagePaths": 0,
+      "terminalMappedInputs": 0,
+      "hostReceiveToEngineBeginMs": {
+        "samples": 64,
+        "p50": 0.2377,
+        "p95": 0.9732,
+        "p99": 2.0373,
+        "min": 0.0303,
+        "max": 2.0373
+      },
+      "scope": "Same run/process/QPC and view/document/geometry/native input identity: SDK host_receive to engine_begin. Excludes OS delivery before T1 and is not physical latency.",
+      "p99Scope": "Descriptive maximum-near tail of only64 correlated events, no population p99 confidence claim",
+      "mailboxQueueHistogram": {
+        "samples": "119",
+        "p50": {
+          "bucket": 10,
+          "upper_ticks": "2047",
+          "unbounded": false,
+          "upper_ms": "0.204700000"
+        },
+        "p95": {
+          "bucket": 13,
+          "upper_ticks": "16383",
+          "unbounded": false,
+          "upper_ms": "1.638300000"
+        },
+        "p99": {
+          "bucket": 14,
+          "upper_ticks": "32767",
+          "unbounded": false,
+          "upper_ms": "3.276700000"
+        }
+      },
+      "mailboxQueueScope": "SDK whole-process-lifetime mailbox queued_qpc to consumer began, includes untagged/startup packets; histogram bucket upper bounds, not64tagged exact samples",
+      "t2Meaning": "Admission record occurs after route/post returns; not the enqueue timestamp. Never call T2-to-T3 mailbox queue wait."
+    }
+  },
+  "runnerRepair": {
+    "productSdkModified": false,
+    "originalTimeoutsMs": {
+      "host": 190000,
+      "input": 155000,
+      "overall": 195000
+    },
+    "targetedMockTests": {
+      "actualDirectExitCode": 0,
+      "pass": 11,
+      "fail": 0,
+      "skip": 0,
+      "gui": false,
+      "native": false
+    },
+    "independentReview": "input-runner-cleanup-independent-review-r2.json",
+    "actualNativeFailurePathRevalidation": false,
+    "full64UsedIndependentDriver": true,
+    "oldFailuresPreserved": true
+  },
+  "limitations": [
+    "GDI content-change lower bounds are not physical or exact unique FPS",
+    "Page and desktop observations cover separate intervals",
+    "Baseline drift prevents attributing MiniBlink differences to SDK",
+    "Short diagnostic modes do not replace a formal matched input A/B or prove old long-burst failure repaired",
+    "Full application resource attribution, GPU memory, IME/DPI/multiscreen and other applicable interaction gates remain open"
+  ],
+  "evidencePins": [
+    {
+      "path": "repair-r16/analysis-miniblink75/r16-miniblink75-four-run-analysis.json",
+      "bytes": 66539,
+      "sha256": "68e8c31fba6aecc336bee94cb62d16971bce8918e93c7b327c60c909112fe9ea"
+    },
+    {
+      "path": "repair-r16/analysis-miniblink75/R16-MINIBLINK75-FOUR-RUN-REPORT.md",
+      "bytes": 2291,
+      "sha256": "c314ba93fd897b7c7842758d7503c819c922b3a9a3894e6644c8fb997c8d87ec"
+    },
+    {
+      "path": "repair-r16/analysis-miniblink75/analyze-miniblink75-once.cjs",
+      "bytes": 23889,
+      "sha256": "74c568536463716ae3fc80c2ab201fa85e181a2e4b3431dffa96f25029a85eb0"
+    },
+    {
+      "path": "repair-r16/analysis-miniblink75/analysis-execution-r1.json",
+      "bytes": 1982,
+      "sha256": "2c2235c72d84a5b22a8062e081556f8e05829766d8b65604357ac201cfd04958"
+    },
+    {
+      "path": "repair-r16/mini-entry-monitor75-r1/study-plan.json",
+      "bytes": 9055,
+      "sha256": "13ea6f844da03d00bbf054c40bb618cda982ae6ddf19db27d63da4ffe2a2d5a8"
+    },
+    {
+      "path": "repair-r16/mini-entry-monitor75-r1/baseline-noise-thresholds.json",
+      "bytes": 3061,
+      "sha256": "758c9c749a94a2eaf40be8a96593b5c4bc7adb646c011de1803d9dfd6d1e1648"
+    },
+    {
+      "path": "repair-r16/mini-entry-monitor75-r1/display-calibration.json",
+      "bytes": 5258,
+      "sha256": "9f355697ef66e46dcc50334252efc7579669b9d7ed3a41bfc2bad91cce770dc5"
+    },
+    {
+      "path": "repair-r16/miniblink-four-run-independent-review-r2.json",
+      "bytes": 10438,
+      "sha256": "1ac47ef07ee7ec3adafb7596d0c6fb9e846e93bebf08f9bf852673448a0593b6"
+    },
+    {
+      "path": "repair-r16/input-diagnostic-review-r3.json",
+      "bytes": 8785,
+      "sha256": "502881953b8b8b0448f1873b2126b802874cd81317257a4afb244afdfea23a53"
+    },
+    {
+      "path": "repair-r16/input-coordinate-witness/diagnostic-64-r2/analysis/closeout.json",
+      "bytes": 18019,
+      "sha256": "0276ebab8112bf1bc75747bc7ed63722c693cc5569b6f9cfbfd5ca3d40c68753"
+    },
+    {
+      "path": "repair-r16/input-coordinate-witness/diagnostic-64-r2/analysis/closeout.md",
+      "bytes": 1462,
+      "sha256": "d235a09928faeeac3fcab61753192ccc61849003e7cd21a4fb34f7f906fc0880"
+    },
+    {
+      "path": "repair-r16/input-coordinate-witness/run-diagnostic-once-r4.cjs",
+      "bytes": 3877,
+      "sha256": "7ea09b7dcc9bb0a0b8758501138db26651835d5f64af7866fa9246e580f3f6df"
+    },
+    {
+      "path": "repair-r16/input-coordinate-witness/diagnostic-64-r4/execution-result.json",
+      "bytes": 242,
+      "sha256": "0408760cd7c69acea848df8baec600cf56c20cd7026f8fcd6683f8dacd0a9db5"
+    },
+    {
+      "path": "repair-r16/input-coordinate-witness/diagnostic-64-r4/host-result.json",
+      "bytes": 858,
+      "sha256": "bb40b4b37739e2045c181b2d3e3bb665b503404ac14688db156cf92d9a479061"
+    },
+    {
+      "path": "repair-r16/input-coordinate-witness/diagnostic-64-r4/host-owned-result.json",
+      "bytes": 1016,
+      "sha256": "c8ebc90659ba9a2a80a9764347a5d7e0d1e7a67c4c90873b12acd7271bee83b6"
+    },
+    {
+      "path": "repair-r16/input-coordinate-witness/diagnostic-64-r4/input-result.json",
+      "bytes": 1015,
+      "sha256": "fc45419605284bae82eb661842f2be74cd53ab35acc94cc3924a8cbedeb9280d"
+    },
+    {
+      "path": "repair-r16/input-coordinate-witness/diagnostic-64-r4/coordinate-witness-summary.json",
+      "bytes": 609,
+      "sha256": "e71b0981b7a27bc0c4ba44fccbc938bbeafd13fec9a50f14d795b8d79e0834be"
+    },
+    {
+      "path": "repair-r16/input-coordinate-witness/diagnostic-64-r4/analysis/closeout.json",
+      "bytes": 24332,
+      "sha256": "23c496542f7039c411c85ed9260dbd087265fe401df0ee16bad6021c1ca81380"
+    },
+    {
+      "path": "repair-r16/input-coordinate-witness/diagnostic-64-r4/analysis/closeout.md",
+      "bytes": 1353,
+      "sha256": "50e0622d25294e3d04e929ecfedd7175904bbc5e2d1a949e18be790398b05cb0"
+    },
+    {
+      "path": "repair-r16/input-coordinate-witness/diagnostic-64-r4/analysis/analyze-full.cjs",
+      "bytes": 13847,
+      "sha256": "4663c5908cff8e49238663018ad0f980b3159e41ff26ad19d78f3491368de6c8"
+    },
+    {
+      "path": "repair-r16/runner-fix-test-r2/result.json",
+      "bytes": 638,
+      "sha256": "90ce0a9c8215fcdf394111119d89c26184732b610ef70f1635b8e6b05e6c5f01"
+    },
+    {
+      "path": "repair-r16/runner-fix-test-r2/stdout.tap",
+      "bytes": 1294,
+      "sha256": "5612fe7fea403ab3aa1d231795f1902afc8e7f3eb07908494f72683b9c1fa824"
+    },
+    {
+      "path": "repair-r16/input-runner-cleanup-independent-review-r2.json",
+      "bytes": 5015,
+      "sha256": "2ef81e831c44f2f80de558dd1fc5f7f9d35969367ad6cd301c5c1cc1c40dfccc"
+    },
+    {
+      "path": "repair-r16/conditional-acceptance-gap-review-r1.json",
+      "bytes": 31847,
+      "sha256": "f85a96b75971da26da99a974ceceabcfd038f51f62c46629b4d0fcc9ed6de969"
+    }
+  ],
+  "performanceVerified": false,
+  "releaseReady": false,
+  "wholeGoalComplete": false
+}

@@ -1,7 +1,7 @@
 'use strict';
 // New bounded one-run orchestration. No build, VM or autonomous retry is run.
 const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
-const {launch,stop}=require('./run-one.cjs');
+const {launch}=require('./run-one.cjs');
 const owned=require('./owned-trace-subject.cjs');
 const trace=require('./input-frame-trace.cjs');
 const {checkRun}=require('./same-product-input-pair.cjs');
@@ -30,7 +30,7 @@ function json(filename) {
 }
 function write(root,name,value){fs.writeFileSync(path.join(root,name),JSON.stringify(value,null,2)+'\n',{flag:'wx'});}
 async function waitReady(root,subject,hostRun) {
-  const deadline=Date.now()+30000;let ended=false;void hostRun.finished.then(()=>{ended=true;});
+  const deadline=Date.now()+30000;let ended=false;void hostRun.finished.then(()=>{ended=true;},()=>{ended=true;});
   while(Date.now()<deadline&&!ended) {
     try {
       const ready=owned.readRunJson(root,'host-ready.json');
@@ -92,21 +92,41 @@ async function runRequest(requestFile,output) {
     tools:{input_sha256:identities.input.sha256,owned_runner_sha256:identities.runner.sha256},host_arguments:arguments_,
     frozen_request:owned.describe(output,'frozen-request.json'),
     processes:[],owned_evidence:[],traces:[],evidence:{},status:'incomplete',performanceGate:false,releaseReady:false};
-  const runs=[];let watchdog;
+  const runs=[],completions=[],stopErrors=[];let watchdog;
+  record.stop_errors=stopErrors;
+  const stopHeld=children=>{
+    for(const child of children)try{child.stop();}
+    catch(error){stopErrors.push({name:child.name,error:error.message||String(error)});}
+  };
+  const track=run=>{
+    runs.push(run);
+    const finished=run.finished.catch(error=>{
+      // A broken completion channel cannot prove natural Job closure. Request
+      // only its held supervisor to stop and retain the missing proof as failure.
+      stopHeld([run]);
+      return {name:run.name,pid:run.pid,code:null,signal:null,error:error.message||String(error),
+        completion_rejected:true};
+    });
+    completions.push(finished);return finished;
+  };
   try {
     const cleanEnvironment={...process.env};
     for(const name of ['SOUI_BRIDGE_TRACE','SOUI_INTERACTION_TRACE','SOUI_KERNEL_FRAME_TRACE'])delete cleanEnvironment[name];
-    const hostRun=launch('host',host,arguments_,path.dirname(host),output,cleanEnvironment,{runner,timeoutMs:190000});runs.push(hostRun);
-    watchdog=setTimeout(()=>stop(runs),195000);
+    const hostRun=launch('host',host,arguments_,path.dirname(host),output,cleanEnvironment,{runner,timeoutMs:190000});
+    const hostFinished=track(hostRun);
+    watchdog=setTimeout(()=>stopHeld(runs),195000);
     const subject=await hostRun.ready,ready=await waitReady(output,subject,hostRun);
     insist(ready.run_id===run&&ready.qpc_frequency===calibration.qpc_frequency,'Ready run/QPC differs from frozen calibration');
     const inputEnvironment={...cleanEnvironment,SOUI_DESKTOP_CAPTURE_BACKEND:captureBackend};
     const inputRun=launch('input',input,[String(subject.pid),subject.creationFileTime,run,String(request.hz),String(request.count),
       path.join(output,'burst-input.ndjson'),path.join(output,'burst-desktop.ndjson'),request.kind],
-      path.dirname(input),output,inputEnvironment,{runner,timeoutMs:155000});runs.push(inputRun);
-    for(const child of runs)void child.finished.then(result=>{if(result.code!==0||result.error)stop(runs);});
-    await inputRun.ready;record.processes=await Promise.all(runs.map(child=>child.finished));
-    insist(record.processes.every(child=>child.code===0&&!child.error),'Native owned Host/input run failed');
+      path.dirname(input),output,inputEnvironment,{runner,timeoutMs:155000});track(inputRun);
+    // A failed injector may already have signaled its FinishEvent. Do not
+    // preempt Host drain; leave its original owned deadline in force.
+    // A failed Host has no input target left; stop only the held injector.
+    void hostFinished.then(result=>{if(result.code!==0||result.error)stopHeld(runs.filter(child=>child.name==='input'));});
+    await inputRun.ready;record.processes=await Promise.all(completions);
+    insist(record.processes.every(child=>child.code===0&&!child.error)&&stopErrors.length===0,'Native owned Host/input run failed');
     record.owned_evidence=owned.captureOwnedEvidence(output,record.processes);
     for(const [key,name]of [['payload_manifest','payload-manifest.json'],['environment','environment.json'],
       ['configuration','configuration.json'],['workload','workload.json'],['calibration','calibration.json'],
@@ -122,7 +142,10 @@ async function runRequest(requestFile,output) {
     return {output,status:'completed',run_id:run,stage_evidence:checked.result.stage_evidence,
       classified_inputs:checked.result.classified_input_count,t7_samples:checked.result.desktop_samples,performanceGate:false,releaseReady:false};
   }catch(error) {
-    stop(runs);record.processes=await Promise.all(runs.map(child=>child.finished));
+    stopHeld(runs.filter(child=>child.name==='input'));
+    // Keep the original 190s Host supervision and 195s total watchdog alive
+    // through failure cleanup. Never restart a timer or turn failed input green.
+    record.processes=await Promise.all(completions);
     record.status='failed';record.error=error.message;
     try{record.owned_evidence=owned.captureOwnedEvidence(output,record.processes);}catch(evidenceError){record.evidence_error=evidenceError.message;}
     if(!fs.existsSync(path.join(output,'input-ui-run.json')))write(output,'input-ui-run.json',record);

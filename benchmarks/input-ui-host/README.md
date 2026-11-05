@@ -14,6 +14,8 @@ consumer 每次最多1024项/源、4ms条件等待，两个64KiB缓冲文件均 
 
 活动期限固定150秒；Host.destroy、最终Runtime关闭和trace收口共享从关闭请求开始的20秒剩余预算，不逐阶段重新计时。完成字段只证明实际capability/getter与导出闭合；各阶段关联仍由真实point/content证据判定，未知继续unknown。
 
+正式 `run-input-ui.cjs` 在输入器失败时保留非零结果，并允许 Host 在原 190 秒监督期限内完成既有收尾，避免立即强停截断 trace。若输入器未能发送结束 event，Host 仍受原活动/关闭期限约束；不会新计时或延长等待。Host 失败时停止仍存活的输入器，原 155 秒输入器监督与 195 秒总 watchdog 保持。完成通道拒绝、强清、停止请求错误或证据缺失均不能生成通过记录。针对编排的 mock 合同不冒充真实窗口或原生 Job 验收。更新测量源码后须重新生成新轮 v2 冻结请求，不修改旧请求的来源散列以冒充原版本。
+
 旧基线需使用其**匹配的 SDK 库和公共 Host 头**。如旧安装缺新诊断模块，可在开始物理采样前运行 prepare-legacy-support.ps1，从冻结候选仅复制六个中立诊断文件到全新目录，再向本目录 CMake 传 SOUI_INPUT_UI_LEGACY_SUPPORT。该 include 树没有 Host/输入/渲染类头，不会把旧对象与新 C++ 布局混用。旧内核没有新表时只运行 e2e；overlay/source manifest、旧核心库、DLL、宿主 EXE 与同一冻结量测源码都必须进本轮来源/载荷清单。不能把 overlay 描述为旧核心已经获得新生产优化。
 
 本目录 CMake 可独立 find_package，也可由集成根注册。初始源码交付时未运行编译或窗口测试；后续每轮必须分别记录编译、原生无目标/错误参数、真实窗口/关闭、overflow、trace 开关与实机性能的实际执行状态，不能从无窗口预检推断桌面通过。W02 的实际输入取消 oracle 与命名场景见 tests/native/input_frame_trace/INPUT-CANCEL-SCENARIOS.md。
