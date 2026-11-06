@@ -8,6 +8,8 @@ MSVC已固定工具集14.44.35207/Hostx64。匹配VCTIP自身帮助列出`-timeo
 
 原八次compiler失败保留，有例包含多个残留成员；新机制仅处理已证实的服务生命周期不匹配，不把它描述成所有旧失败的唯一根因。固定二进制pin不匹配则拒绝；工具集升级需重新核验帮助、配置、IPC及生命周期。
 
+正式 Build 和验证工具准备入口在修改输出、初始化构建身份、安装 Web 依赖或使旧测量收据失效前，先执行一次无等待的 MSVC admission 预检。预检持有同一共享 mutex 检查已有 compiler/service/ready event，随后立即释放；它不启动服务，也不授予后续编译资格。configure/build 各自仍重新取得原 lease 并执行完整检查，覆盖预检释放后的竞争。忙环境的提前失败仅减少无效工作，不关闭正式构建或性能验收门槛；LLVM 路径保持原行为。
+
 SDK默认发布清理与六次rename/450ms不变。显式`--retain-failed-publication`只在完整校验后rename被EPERM/EACCES拒绝时留下stage，并输出manifest SHA256。`recover-publication`是独立操作，要求原输出的UUID sibling stage、未变manifest、所有payload字节及完整文件闭集、无现有目标后才rename；失败保留stage，不先复制覆盖，不结束持有者或改ACL。原失败仍非零，恢复不追认它成功。保留模式由调用者控制，避免默认积累大stage；调查完成后只清理自己持有且核对过的stage。
 
 原EPERM现场已销毁，无法判定锁持有者。目录内打开的子文件可以阻止rename，所以root-CWD的EBUSY控制不足以排除子文件争用；不把它归因Defender或MAX_PATH。[Microsoft目录重命名约束](https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/ntifs/ns-ntifs-_file_rename_information)与[libuv错误映射](https://github.com/libuv/libuv/blob/v1.x/src/win/error.c)支持该边界，并不证明历史持有者身份。

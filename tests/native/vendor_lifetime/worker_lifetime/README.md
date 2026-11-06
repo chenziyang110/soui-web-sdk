@@ -1,5 +1,31 @@
 # Worker 生命周期真实源码回归
 
+## Provider 退休截止 RED 准备（2026-10-31）
+
+新增 `provider-retirement-deadline`，从真实 `serviceOwnerOpportunity(D,F)` 进入真实退休方法。每组先由真实 `fireForShutdown` 执行 128 个任务，其原有末尾 32 项退休后留下 96 个已完成捕获；不复制退休算法或伪造未执行任务。析构推进受控 QPC，并重入 owner/无参退休入口以检查既有重入屏障及锁外释放。过期整轮期望只退休一项且 ready callback 仍进展；未来截止期望在逐项之间停止；残留通过 provider 机会逐次恰好释放，真实已发布 continuation 只消费一次且空队列不再续发。最后检查旧无参入口仍为 32 项、无 QPC 采样和实际 shutdown 全部排空。
+
+原实现预期在 `provider-retirement-expired-count-assertion-failed` 失败。当前只准备测试与来源绑定，尚未配置、构建或执行，不能称作 RED 已实测。SharedTimer 绑定采用当前高精度实现；Win32 包装增加实际 waitable timer/threadpool wait 的计数，关闭断言同时接受原 fallback 与高精度路径，不关闭或跳过实际后端。
+
+## 绝对截止时间 GREEN 候选（2026-10-29）
+
+当前保留原 23 项与上述 RED 准备的 3 项精度回归，另增 8 项边界回归，共 34 项。此状态仅表示候选已准备；两架构 RED 实测由父任务保存，本目录未自行配置、构建或执行 GREEN。
+
+`scheduler-absolute-inputs-same-thread` / `scheduler-absolute-inputs-cross-thread` 将 past、等于 now、0、负数、负无穷、NaN、正无穷逐项同时送入真实 adapter 与内部 absolute 入口，核对前六类异步执行、正无穷消费并取消、active timer 不使用 0，以及恰好一次析构。`scheduler-absolute-huge-cancel` 保留超出整数毫秒范围的有限 D，确认真实 native arm 已调用、正常 fire 不提前，再通过真实 timer `stop()` 与 owner retirement 取消。
+
+`scheduler-absolute-oom-owner` 覆盖 reserve / timer / timer index 分配失败；`scheduler-absolute-oom-producer` 覆盖 TaskPair / pending index node / node vector / pending vector，且核对失败后真实队列可继续接纳；`scheduler-absolute-oom-admission` 覆盖跨线程 TaskPair 接纳转交后的 owner 分配失败。分配故障只扩展原全局 new 的受控 seam，Task 先分配再武装故障。Enter/Leave 包装只观察实际源锁深度，任务析构必须在其外。`scheduler-absolute-exit-rejection` 与 `scheduler-absolute-future-shutdown` 使用真实 worker/native join，分别核对已退出拒绝及 shutdown 允许 future Task 在 D 前执行的既有契约。所有 receipt 均存活到真实 owner 完成销毁。
+
+## 绝对截止时间 RED 准备（2026-10-29）
+
+保留原 23 项，新增 `scheduler-absolute-same-thread`、`scheduler-absolute-cross-thread`、`scheduler-absolute-late-admission`。从当前真实 `WebSchedulerImpl::postTimerTaskAt` 精确字节片段进入真实 `WebThreadImpl` / pending index / admission / `WebTimerBase`；仅增加依赖声明，不手写 adapter。当前固定 16 个 live inputs、16 个 exact copies 和 22 个 payloads，保留完整源文件 SHA 与逐字节 HEX 门禁。
+
+三个案例均投递相同小数目标 D=100.00025，并在两次 post 之间推进 producer clock。跨线程案例使用真实 CRT 原生 producer；late admission 在 D 之后、旧 ceil 目标之前才交给 owner 接纳。通过实际 timer 的 `nextFireInterval()` 检查保留 D（过期目标余量应为零），再检查异步、正常调度不提前、到期执行、等 D 顺序及任务恰好一次析构。RED 预期原因是 `absolute-deadline-retained-D-assertion-failed`，不是新 API 缺失；收尾先销毁真实 owner，使其 future shutdown drain 完成后才释放任务 receipt。
+
+本轮仅准备，未配置、构建或执行。后续采用 ADR-0146 生产变更时，必须先人工审查六文件 delta，逐项核对原始字节与本映射当前 SHA；本夹具固定其中 WebThreadImpl.h/.cpp、WebTimerBase.h/.cpp、WebSchedulerImpl.cpp，WebPageImpl.cpp 由其专属夹具绑定。只对已审查文件更新 whole-source pin 与 whole-file copy 的长度/SHA；scheduler adapter 必须重新定位完整函数区间并计算精确片段 SHA，ctor/dtor 片段原 SHA 应保持。其他 source pins/片段只允许确认未变，不能批量接纳未知 producer 字节；payload pin 仅更新本目录实际改动文件。
+
+## 主线性能集成（2026-10-29）
+
+当前保留 23 项注册及生命周期/trace 来源，`worker-scheduler-no-count-cap` 改为 `worker-scheduler-task-budget`：正常 worker admission 与 callback 共用 2ms/32 项合作预算，已就绪工作批次之间不额外等待 1ms；显式关闭仍为原有 50ms drain 且没有 32 项上限。主线程 owner 让步、FIFO、AVL 和原失败包装保留。当前映射固定 16 个 live inputs、15 个 exact copies 和 22 个 payloads；下文旧数量及实际结果仅对应各自日期，不继承为当前通过。本轮未执行构建或测试。
+
 ## 就绪任务续调度候选（2026-10-26）
 
 本轮在原 18 项上新增 4 项：`main-scheduler-continuation`、`main-scheduler-first-task-wake`、`main-scheduler-admission-budget` 和 `main-scheduler-admission-shutdown`。只在夹具中停用周期 timer，以真实窗口消息分发验证首任务唤醒、积压链完成、跨线程接纳预算及保留批次关闭；核对未来任务不提前和恰好一次清理。首任务案例还覆盖长回调后提交的正延时从实际 post 计时。源码映射更新三个完整 vendor 文件及夹具输入，原有关闭片段和其他输入保持原字节。最终候选按用户要求未继续编译或执行，交由后续人员验证；这些案例也不证明真实硬件输入公平性。

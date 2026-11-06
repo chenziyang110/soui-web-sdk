@@ -1,0 +1,39 @@
+{
+  "schema": "soui.kernel-import/v1",
+  "sdkVersion": "0.7.0-preview.4",
+  "profile": "LLVM22MSVC142",
+  "imports": [
+    {
+      "architecture": "x64",
+      "path": "third_party/prebuilt/x64/miniblink/node.dll",
+      "bytes": 39212032,
+      "sha256": "56d460c0b4136d85d3fcb8d4e4f00c19a04ff56532228031b55368742ef54308",
+      "sourceInputSha256": "dd53b24483eb824a2ab0854cfd308154f3190ed0f9720c2e9f81403ea967f11c",
+      "sourceIdentityMeaning": "Reuse of the unchanged preview.3 kernel: one callback TU was recompiled and frozen K1 remaining objects/libraries relinked. No preview.4 kernel compilation or fresh whole-kernel claim.",
+      "buildEvidence": "third_party/manifests/kernel-v8-background-build-070-preview3.json",
+      "functionTableAbiLoaded": true,
+      "rendererInitializedForAbiProbe": false,
+      "freshWholeKernel": false,
+      "publicBuildVerified": false
+    },
+    {
+      "architecture": "x86",
+      "path": "third_party/prebuilt/x86/miniblink/node.dll",
+      "bytes": 28324352,
+      "sha256": "bf6fd0bcb892f2997489a60d059671c9a618f4f99418d41f2c41f10ceae4dfb9",
+      "sourceInputSha256": "dd53b24483eb824a2ab0854cfd308154f3190ed0f9720c2e9f81403ea967f11c",
+      "sourceIdentityMeaning": "Reuse of the unchanged preview.3 kernel: one callback TU was recompiled and frozen K1 remaining objects/libraries relinked. No preview.4 kernel compilation or fresh whole-kernel claim.",
+      "buildEvidence": "third_party/manifests/kernel-v8-background-build-070-preview3.json",
+      "functionTableAbiLoaded": true,
+      "rendererInitializedForAbiProbe": false,
+      "freshWholeKernel": false,
+      "publicBuildVerified": false
+    }
+  ],
+  "fullSdkApplicationValidationComplete": false,
+  "toolchainQualification": false,
+  "binaryLicenseReviewComplete": false,
+  "releaseReady": false,
+  "transitiveDependencyCompleteness": "incomplete",
+  "note": "New preview.4 SDK metadata identity fixes runtime deployment pins while retaining exactly the preview.3 kernel binaries and their original build receipts. Runtime, input, frame, package and performance qualification are separate."
+}

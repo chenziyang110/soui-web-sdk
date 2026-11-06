@@ -1,0 +1,226 @@
+{
+  "schema": "soui.performance-continuation-r28/v1",
+  "recordedDate": "2026-11-06",
+  "parentCommit": "4af81bc943cba05b88ccc37da2f9bb1cb89da739",
+  "archiveRootName": "PR129-performance-20261104",
+  "scope": "SDK/kernel and frozen packages unchanged; benchmark reload caller fix and scoped additional evidence",
+  "sdk": {
+    "version": "0.7.0-preview.4",
+    "architecture": "x64",
+    "configuration": "Release",
+    "buildId": "18e47fa2-69df-4530-b1f9-365f6b2aec28",
+    "sourceSha256": "e1d2dd8b7699930f678e21a77772b8fa4e371f5b67a53937d98470ee1659e87c",
+    "sdkRebuilt": false,
+    "kernelRebuilt": false,
+    "newPackage": false
+  },
+  "reloadFix": {
+    "source": "benchmarks/sdk-performance-host/main.cpp",
+    "sourceSha256": "aebaa20590c2b7ec8939948a07ae00db3326e48825e376af6a03133efb19c2e7",
+    "firstCallAdjacentToOriginalClaim": true,
+    "pendingOnly": "E_RELOAD_PENDING",
+    "successNotRepeated": true,
+    "ownerContinuation": true,
+    "closeCancelsFuturePolls": true,
+    "stackGuardRetainsHost": true,
+    "newCallerDeadlineMs": 20000,
+    "singleCallPreemptible": false,
+    "outerDeadlinesExtended": false,
+    "otherErrorsPreserved": true
+  },
+  "build": {
+    "evidence": "repair-r28-reload-continuation/attempt-r1/build-aggregate-r28.json",
+    "sha256": "d98ad4994a1947f81f81e3b0e2a1943ef82b7328450a696030b45e479e7dd41d",
+    "sourceInputSha256": "f0c624b8cb9f1313840fa7432eb335d18e201709adec3c00e34e8ade60380872",
+    "toolchain": "MSVC v143 14.44.35207 / Windows SDK 10.0.19041.0",
+    "singleConsumerTu": true,
+    "buildExit": 0,
+    "buildElapsedMs": 61716,
+    "selfTestExit": 0,
+    "selfTestElapsedMs": 100,
+    "contractsPassed": 49,
+    "contractsAdded": 7,
+    "naturalJobsEmptyNoForce": true,
+    "consumerExeBytes": 1621504,
+    "consumerExeSha256": "0b4c297f1eb9a89db99a6a8190a4db1a266941045c34111ff626ca0e2e813e0e",
+    "toolChunk": "d668be"
+  },
+  "functional": {
+    "evidence": "repair-r28-reload-continuation/targeted-gui-r1/actual-functional-result-r1.json",
+    "sha256": "ee9c434604c189b3df8a148937b5c8b701dbf6f08a2eecfbe45156f2cc0b6d83",
+    "requestSha256": "17cdf90d42a4d39373bbf8be0c9eb0f735595106b0c1f641f6b8ed3d7da2df58",
+    "hostPid": 83192,
+    "hostBirth": "134383819508304122",
+    "hostIndex": 0,
+    "sessions": [
+      2,
+      3
+    ],
+    "pageAndNativeSessionsAgree": true,
+    "newDocumentReady": true,
+    "newApplicationReady": true,
+    "reloadCompletedExactlyOnce": true,
+    "newPageInput": {
+      "keydown": 1,
+      "keyup": 1,
+      "input": 2,
+      "compositionstart": 1,
+      "compositionupdate": 1,
+      "compositionend": 1
+    },
+    "oldWindow": {
+      "elapsedMs": 6462.07,
+      "complete": false,
+      "invalidReasons": [
+        "manual_stop"
+      ]
+    },
+    "newWindow": {
+      "complete": true,
+      "softwareValid": true,
+      "invalidReasons": [],
+      "windowBlurRecorded": false
+    },
+    "focusSwitchRelativeToActiveWindowTimeCorrelated": false,
+    "completeFocusRouteVerified": false,
+    "fullChineseImeVerified": false,
+    "hostExit": 0,
+    "supervisorExit": 0,
+    "driverExit": 0,
+    "elapsedMs": 220244,
+    "budgetMs": 240000,
+    "drainMs": 20000,
+    "allHostsClosed": true,
+    "runtimeShutdown": true,
+    "naturalJob0NoForce": true,
+    "toolChunk": "b856b7",
+    "qualifiedScope": "This reload, new session, visible key input and normal shutdown only"
+  },
+  "oldFunctionalFailure": {
+    "evidence": "repair-r27-standard-functional-r1/functional-result-r1.json",
+    "sha256": "e0690adf3735397767ceed7477e286e33d203192f9a2f2dd77db8b6a374822c1",
+    "hostExit": 3,
+    "driverExit": 1,
+    "elapsedMs": 268952,
+    "reason": "Benchmark incorrectly treated documented reload pending as terminal failure",
+    "supersededAsEvidence": false
+  },
+  "wv2OutputPair": {
+    "evidence": "repair-r22-wv2-prepare-output-compare-r3/comparison-report.json",
+    "sha256": "e2e614d815077211174ffebae22573f042ccd2e4997527f01effa17cd95e71f2",
+    "consumer": "Frozen FA578, not R28",
+    "fixedRuntime": "156.0.4314.58",
+    "eachWarmupSuccess": 32,
+    "eachMeasuredSuccess": 1024,
+    "payloadBytes": 4096,
+    "maxInFlight": 8,
+    "bothHostHelperExit0Jobs0": true,
+    "serializationP95BucketMs": {
+      "off": [
+        0.0128,
+        0.0255
+      ],
+      "on": [
+        0.0128,
+        0.0255
+      ]
+    },
+    "ownerP95BucketMs": {
+      "off": [
+        0.0512,
+        0.1023
+      ],
+      "on": [
+        0.0512,
+        0.1023
+      ]
+    },
+    "taskQueueP95BucketMs": {
+      "off": [
+        0.2048,
+        0.4095
+      ],
+      "on": [
+        0.1024,
+        0.2047
+      ]
+    },
+    "preparedFallbackThreadByteDistribution": null,
+    "continuousOwnerBacklog": null,
+    "noiseBaseline": false,
+    "causalBenefit": false,
+    "defaultPrepareOutput": 0
+  },
+  "inputDiagnosticFailure": {
+    "evidence": "repair-r26-wv2-input-attribution/native-sta-finish-r3-r2/run-once/independent-failure-closeout-r1.json",
+    "run": "49a503a92cb0d4c3c893ef69df1fe38c",
+    "requestSha256": "c8c1d136b51e1a3afafb4ecda32872534e3183d25016ed4df3865b5fefca0455",
+    "goAccepted": true,
+    "attemptedAndSent": 2527,
+    "required": 3750,
+    "completed": false,
+    "hostExit": 3,
+    "inputExit": 1,
+    "outerExit": 1,
+    "hostElapsedMs": 31658,
+    "inputElapsedMs": 20318,
+    "outerElapsedMs": 34368,
+    "job0NoExternalForce": true,
+    "earlierFailure": "E_NATIVE_PROBE_FAULT -> close -> original20s E_HOST_CLOSE_DEADLINE",
+    "firstFaultDetails": null,
+    "nativeLedgerExportComplete": false,
+    "normalSdkShutdownVerified": false,
+    "readerSecondaryError": "ENOENT native-sta-ledger.ndjson",
+    "lastDesktopAck": 16,
+    "lastDesktopFrame": 17,
+    "physicalInputLatency": null,
+    "measurementQualified": false,
+    "previousHandoffFailurePreserved": true,
+    "furtherNativeRunsThisBatch": 0
+  },
+  "policy": {
+    "i02Complete": false,
+    "defaultBudgetUs": 0,
+    "candidate1000ScreenAccepted": false,
+    "candidate1000BridgeP95Ms": 5.115,
+    "frozenLimitMs": 3.5145,
+    "candidate2000Measured": false,
+    "causalRegressionEstablished": false,
+    "w02ContinuousFairnessVerified": false
+  },
+  "size": {
+    "comparisonScope": "Previous frozen x64 same-layout product; no new runtime or ZIP generated",
+    "exeDeltaBytes": 34304,
+    "miniblinkDllDeltaBytes": 7680,
+    "miniblinkRuntimeDeltaBytes": 41984,
+    "miniblinkZipDeltaBytes": 19502,
+    "webview2AppRuntimeDeltaBytes": 34304,
+    "webview2AppZipDeltaBytes": 16636,
+    "externalBrowserRuntimeIncluded": false,
+    "x86MatchedDeltaBytes": null,
+    "strictZeroGrowth": false,
+    "newTestConsumerExtraBytesVsFa578": 13824,
+    "newTestConsumerRuntimeZipDelta": null,
+    "frozenSdkZipSha256": "e7fa6a221c0c31b9aa765f5d53789389f1058b7be5c55a275a766f6b7c76a4bd"
+  },
+  "checks": {
+    "sdkWebNpmAuditExit": 0,
+    "sdkWebNpmVulnerabilities": 0,
+    "auditToolChunk": "a7ac3b",
+    "consumerSourceIndependentReviewClear": true,
+    "buildIndependentReviewClear": true,
+    "functionalIndependentReviewClear": true
+  },
+  "remaining": [
+    "Complete valid input-to-visible cohort and actual frame boundary",
+    "Complete I02 comparison and default adoption decision",
+    "Continuous WebView2 owner fairness",
+    "Paired full resource costs",
+    "Focus route and applicable IME/drag/drop/DPI/multiple displays"
+  ],
+  "inputLatencyVerified": false,
+  "physicalFrameRateVerified": false,
+  "performanceVerified": false,
+  "releaseReady": false,
+  "wholeGoalComplete": false
+}

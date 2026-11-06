@@ -1,0 +1,214 @@
+{
+  "schema": "soui.miniblink-source-cleanup-candidate/v1",
+  "baselineCommit": "c88309fb9dabf643dae6d3f71c6de10098b03b38",
+  "hashScope": "raw-file-bytes",
+  "performanceVerified": false,
+  "packageSizeVerified": false,
+  "prebuiltReplaced": false,
+  "releaseReady": false,
+  "sourceGate": {
+    "passed": true,
+    "counts": {
+      "workerSelectedObjects": 1,
+      "total": 92,
+      "failed": 0,
+      "selectedObjects": 10,
+      "workerDerived": 17,
+      "derived": 57
+    },
+    "actualCompilationQualified": false
+  },
+  "design": "docs/adr/0151-provider-retirement-deadline.md",
+  "files": [
+    {
+      "path": "third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.h",
+      "before": {
+        "bytes": 5798,
+        "sha256": "62bad7aad629a91d4348bcffb4b68fe60f6a9685d186fa24208ee034b6b3f03c"
+      },
+      "after": {
+        "bytes": 5918,
+        "sha256": "7559fe9b040caf379660bfcf028858e810a2a054ef0c0e45d779682e4b8774f5"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp",
+      "before": {
+        "bytes": 33421,
+        "sha256": "bd0d3f79292bf880979895f5f314b88ce0a6bd901a2e5ac9a0eacea918a370b5"
+      },
+      "after": {
+        "bytes": 33991,
+        "sha256": "50d39c27a4dc6b675eac59f67a5a794a68ff618ff9393483bfc5581a8b3c2e29"
+      }
+    }
+  ],
+  "sourceDeltaBytes": 690,
+  "patch": {
+    "path": "third_party/patches/miniblink/0032-provider-retirement-deadline.patch",
+    "bytes": 4270,
+    "sha256": "24187907b05c5a3baf2982d87a6590120e3ba6a96b5deeaf8a1a8faea453b1df"
+  },
+  "verification": {
+    "architectures": [
+      "x86",
+      "x64"
+    ],
+    "casesPerArchitecture": 44,
+    "selectedSourceImmutable": true,
+    "selectedSources": 40,
+    "lanes": {
+      "x64": {
+        "buildPassed": true,
+        "testsPassed": true,
+        "buildMs": 16396,
+        "testMs": 3385,
+        "naturalClosure": true
+      },
+      "x86": {
+        "buildPassed": true,
+        "testsPassed": true,
+        "buildMs": 15618,
+        "testMs": 3473,
+        "naturalClosure": true
+      }
+    }
+  },
+  "limits": [
+    "Raw QPC controlled-source contracts are not physical input/clock/FPS qualification.",
+    "First GREEN remains failed at one pre-existing huge-deadline oracle pinned to the ordinary timer; final oracle verifies an actual armed ordinary or precise backend.",
+    "Bounded state is sampled after retirement to preserve destructor reentry semantics; existing no-argument method, worker/default/shutdown behavior and class layout remain.",
+    "Only the new combined kernel DLL delta is measured; no new full application/runtime/ZIP or FPS improvement claim. Historical normal Scratch r2 and manual69 remain separate."
+  ],
+  "evidence": {
+    "rootRole": "external-task-evidence",
+    "receipts": [
+      {
+        "path": "native/provider-retirement-baseline-r1/result.json",
+        "bytes": 6460,
+        "sha256": "c88f0bfe40b0b8fe9b67a548384a1b8660159b45a4263c923c4222acd5622d1f"
+      },
+      {
+        "path": "native/provider-retirement-green-r1/result.json",
+        "bytes": 12965,
+        "sha256": "0ca52d0e3bec161c98d3a17958263bf7e7edc1b261d3e7091d33936701274701"
+      },
+      {
+        "path": "native/provider-retirement-green-r2/result.json",
+        "bytes": 12954,
+        "sha256": "57b1f372f3e1493fcd60b2172f2857b8468c784f1ead86a58523794b95e3b385"
+      },
+      {
+        "path": "native/provider-retirement-preparation-r1/finalapplication-r2/finalapplication-r2.json",
+        "bytes": 5429,
+        "sha256": "5495aab4ac5f4c94fd488ad4e8f471d32f2dc05228426448a8599111787a880c"
+      },
+      {
+        "path": "native/source-cleanups-gate-r1/result.json",
+        "bytes": 1493,
+        "sha256": "13327a795db738fbda9ae5a0501fa535429c03e01845dc7ffa25dc3f150b32a6"
+      },
+      {
+        "path": "native/buffer-retirement-kernel-r2/result.json",
+        "bytes": 43513,
+        "sha256": "69caf5d64e3df94b50b27087bde05ae41ac701405f711ce347ea453c0db4797f"
+      },
+      {
+        "path": "native/buffer-retirement-kernel-r2/preparation.json",
+        "bytes": 7329,
+        "sha256": "d7818b4ddcb9b14047d3f209bdcd3c2ee46a1d18da8475d62248f2339d832a4c"
+      },
+      {
+        "path": "native/source-cleanups-smoke-r1/x64-budget1000/result.json",
+        "bytes": 6843,
+        "sha256": "95be82b583a1db562f15f3717c232a8b36b435d437f27f4d5d5bc95fea0aa966"
+      },
+      {
+        "path": "native/source-cleanups-smoke-r1/x86-budget1000/result.json",
+        "bytes": 6853,
+        "sha256": "60b8f0b9b84f85b1b56a2b21f97f8b7b1d21beae82c04f37acceda23040a3930"
+      },
+      {
+        "path": "native/source-cleanups-independent-review-r1/review.json",
+        "bytes": 63335,
+        "sha256": "ef8eba6f2566c91722360d8063477451ceee2e4d1478fba7d25564245e389c9a"
+      },
+      {
+        "path": "native/source-cleanups-independent-review-r1/review.md",
+        "bytes": 3380,
+        "sha256": "9535d9f40896db967e90d860076542bfd2a2ebb5a0fd362c9353449346158aa7"
+      }
+    ]
+  },
+  "nativeVerification": {
+    "scope": "Each architecture recompiles the complete observed 11-TU changed-header reader closure plus LayerTreeHost, disables the old PCH and relinks unchanged verified objects. Not a fresh public whole-kernel build.",
+    "publicBuildVerified": false,
+    "freshWholeKernel": false,
+    "translationUnitsPerArchitecture": 12,
+    "sourcePinRecords": 4511,
+    "toolAndHeaderPinRecords": 2912,
+    "uniqueToolAndHeaderPaths": 2499,
+    "architectures": {
+      "x64": {
+        "passed": true,
+        "naturalStages": 13,
+        "totalNativeMs": 21260,
+        "dll": {
+          "bytes": 39209984,
+          "sha256": "a172947c7ddd0b23ec294d7442bc51e22ccfb6e6460265261a4076358ecdbaa5"
+        },
+        "deltaFromC883Bytes": 1024,
+        "peMachine": 34404,
+        "selectedSourcesUnchanged": true,
+        "frozenInputsUnchanged": true
+      },
+      "x86": {
+        "passed": true,
+        "naturalStages": 13,
+        "totalNativeMs": 21104,
+        "dll": {
+          "bytes": 28322304,
+          "sha256": "4d91c279a1bf535d8799d211c5d8f88c5b4f4adc5cd3da4fa49991d99676024c"
+        },
+        "deltaFromC883Bytes": 512,
+        "peMachine": 332,
+        "selectedSourcesUnchanged": true,
+        "frozenInputsUnchanged": true
+      }
+    }
+  },
+  "runtimeSmoke": {
+    "scope": "Existing immutable clients and SDK source, full-SHA supported deployment to fresh directories, real loader plus public SDK owner DOM-timer/Bridge/normal close; no foreground/input/performance qualification.",
+    "architectures": {
+      "x64": {
+        "passed": true,
+        "budgetUs": 1000,
+        "domTimerBridgeRequests": 4,
+        "loaderNaturalClosure": true,
+        "ownerNaturalClosure": true,
+        "runtimeImmutable": true,
+        "loadedIdentityChecked": true,
+        "numericLoadedWin32FileIdentityEmitted": false,
+        "hostDestroyed": true,
+        "runtimeShutdown": true
+      },
+      "x86": {
+        "passed": true,
+        "budgetUs": 1000,
+        "domTimerBridgeRequests": 4,
+        "loaderNaturalClosure": true,
+        "ownerNaturalClosure": true,
+        "runtimeImmutable": true,
+        "loadedIdentityChecked": true,
+        "numericLoadedWin32FileIdentityEmitted": false,
+        "hostDestroyed": true,
+        "runtimeShutdown": true
+      }
+    }
+  },
+  "independentReview": {
+    "sourceStatus": "No blocking P1/P2 in separately assigned source review",
+    "incrementalKernelEvidenceStatus": "No P1/P2 or missing evidence in independent bounded audit; DLLs, key metadata pins and all native terminal observations checked. Unchanged original object set uses reviewed runner full pre/post verification, not a second independent full hash.",
+    "runtimeSmokeIndependentlyReviewed": false
+  }
+}

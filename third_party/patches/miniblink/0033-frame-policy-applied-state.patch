@@ -1,0 +1,265 @@
+diff --git a/third_party/include/miniblink/input_ui_api.h b/third_party/include/miniblink/input_ui_api.h
+index ab34262c9f667b7e82e232f976ca13bccf5cfad4..3d19ac55793606968dcfe099281200dc35a5fa15 100644
+--- a/third_party/include/miniblink/input_ui_api.h
++++ b/third_party/include/miniblink/input_ui_api.h
+@@ -21,6 +21,8 @@
+ #define WKE_INPUT_UI_CAP_VISIBILITY 0x100ULL
+ #define WKE_INPUT_UI_CAP_EXTERNAL_TRACE_PRODUCER 0x200ULL
+ #define WKE_INPUT_UI_CAP_OWNER_DEADLINE 0x400ULL
++#define WKE_INPUT_UI_CAP_FRAME_POLICY_STATE 0x800ULL
++#define WKE_INPUT_UI_FRAME_POLICY_ABI_VERSION 1U
+ 
+ #define WKE_INPUT_UI_OK 0
+ #define WKE_INPUT_UI_INVALID 1
+@@ -47,6 +49,18 @@
+ #define WKE_INPUT_UI_DURATION_BUCKETS 64U
+ 
+ #pragma pack(push, 8)
++/* Owner-affine main-frame policy, separate from host/display overrides.
++   appliedRate==0 disables managed main pacing; policyVersion1 supports30..240. */
++typedef struct _wkeInputUiFramePolicy {
++    unsigned int structSize;
++    unsigned int abiVersion;
++    unsigned int policyVersion;
++    unsigned int minRate;
++    unsigned int maxRate;
++    unsigned int appliedRate;
++    unsigned int reserved[2];
++} wkeInputUiFramePolicy;
++
+ typedef struct _wkeInputUiTraceConfig {
+     unsigned int structSize;
+     unsigned int abiVersion;
+@@ -121,6 +135,11 @@ typedef struct _wkeInputUiApi {
+        immediately resumable work; UNAVAILABLE guarantees no provider work ran. */
+     int (WKE_INPUT_UI_CALL* serviceOwnerOpportunityUntil)(unsigned long long deadlineQpc,
+         unsigned long long qpcFrequency, unsigned int* workRemaining);
++    /* Optional tail: validate size/version/capability AND both pointers.
++       Caller initializes structSize/abiVersion and zero reserved. Failure keeps
++       output unchanged. REJECTED may follow partial mutation: query to reconcile. */
++    int (WKE_INPUT_UI_CALL* queryFramePolicy)(void* view, wkeInputUiFramePolicy* output);
++    int (WKE_INPUT_UI_CALL* applyFramePolicy)(void* view, unsigned int rate, wkeInputUiFramePolicy* output);
+ } wkeInputUiApi;
+ #pragma pack(pop)
+ 
+@@ -128,6 +147,7 @@ typedef const wkeInputUiApi* (WKE_INPUT_UI_CALL* FN_wkeGetInputUiApi)(unsigned i
+ 
+ #ifdef __cplusplus
+ static_assert(sizeof(wkeInputUiTraceConfig) == 48, "Input trace config ABI changed");
++static_assert(sizeof(wkeInputUiFramePolicy) == 32, "Frame policy ABI changed");
+ static_assert(offsetof(wkeInputUiApi, traceConfigure) == 16, "Input UI API prefix changed");
+ static_assert(sizeof(wkeInputUiTraceSnapshot) < 16384, "Input trace snapshot must stay bounded");
+ #endif
+diff --git a/third_party/sources/miniblink/content/browser/WebPage.cpp b/third_party/sources/miniblink/content/browser/WebPage.cpp
+index 5a6cb9c9894040bc9ae7607c8c591569180687e3..7b073d7e0081ee900b88426d5018e4485278f3ae 100644
+--- a/third_party/sources/miniblink/content/browser/WebPage.cpp
++++ b/third_party/sources/miniblink/content/browser/WebPage.cpp
+@@ -172,6 +172,16 @@ void WebPage::setMainFrameRate(int rate)
+     if (m_pageImpl) m_pageImpl->setMainFrameRate(rate);
+ }
+ 
++bool WebPage::applyMainFrameRate(int rate)
++{
++    return m_pageImpl && m_pageImpl->applyMainFrameRate(rate);
++}
++
++int WebPage::mainFrameRate() const
++{
++    return m_pageImpl ? m_pageImpl->mainFrameRate() : -1;
++}
++
+ void WebPage::setNeedsCommit()
+ {
+     if (m_pageImpl)
+diff --git a/third_party/sources/miniblink/content/browser/WebPage.h b/third_party/sources/miniblink/content/browser/WebPage.h
+index c131ec9c82e50a4b0645bd3fba89e4350f9e73d1..009bfb2fd0ce0e4a26ea867c64c448aa9157b94e 100644
+--- a/third_party/sources/miniblink/content/browser/WebPage.h
++++ b/third_party/sources/miniblink/content/browser/WebPage.h
+@@ -113,6 +113,8 @@ public:
+ 
+     void setDrawMinInterval(double drawMinInterval);
+     void setMainFrameRate(int rate);
++    bool applyMainFrameRate(int rate);
++    int mainFrameRate() const;
+     bool cancelInputState();
+     void setUiMirrorConsumerRequired(bool required);
+     bool setHostVisible(bool visible);
+diff --git a/third_party/sources/miniblink/content/browser/WebPageImpl.cpp b/third_party/sources/miniblink/content/browser/WebPageImpl.cpp
+index 0b4ddab044ad1ae5ad88cbc78ecdbaa4353f83db..9fba99d83bdc4f403cadbf947432d5f7a705f303 100644
+--- a/third_party/sources/miniblink/content/browser/WebPageImpl.cpp
++++ b/third_party/sources/miniblink/content/browser/WebPageImpl.cpp
+@@ -229,6 +229,7 @@ WebPageImpl::WebPageImpl(COLORREF bdColor)
+     m_executeMainFrameCount = 0;
+     m_lastFrameTimeMonotonic = 0;
+     m_mainFrameInterval = 0;
++    m_appliedMainFrameRate = 0;
+     m_renderFrameId = 0;
+     m_nextMainFrameTime = 0;
+     m_popupHandle = nullptr;
+@@ -1522,6 +1523,7 @@ void WebPageImpl::setMainFrameRate(int rate)
+     ASSERT(isMainThread());
+     if (rate != 0 && (rate < 30 || rate > 240)) return;
+     const double interval = rate ? 1.0 / rate : 0;
++    m_appliedMainFrameRate = rate;
+     if (interval == m_mainFrameInterval) return;
+     m_mainFrameInterval = interval;
+     if (m_layerTreeHost && interval > 0)
+@@ -1529,6 +1531,20 @@ void WebPageImpl::setMainFrameRate(int rate)
+     m_nextMainFrameTime = 0;
+     if (pageInited == m_state) setNeedsCommit();
+ }
++bool WebPageImpl::applyMainFrameRate(int rate)
++{
++    if (!isMainThread() || m_state != pageInited
++        || (rate != 0 && (rate < 30 || rate > 240)))
++        return false;
++    setMainFrameRate(rate);
++    return m_appliedMainFrameRate == rate;
++}
++
++int WebPageImpl::mainFrameRate() const
++{
++    return isMainThread() && m_state == pageInited ? m_appliedMainFrameRate : -1;
++}
++
+ void WebPageImpl::setDrawMinInterval(double drawMinInterval)
+ {
+     if (m_layerTreeHost)
+diff --git a/third_party/sources/miniblink/content/browser/WebPageImpl.h b/third_party/sources/miniblink/content/browser/WebPageImpl.h
+index 4cad820ce7fc8c9191bbb6d860736d87ecbfaba1..06284989decef398506973b6a3807ca6e1f93a62 100644
+--- a/third_party/sources/miniblink/content/browser/WebPageImpl.h
++++ b/third_party/sources/miniblink/content/browser/WebPageImpl.h
+@@ -193,6 +193,8 @@ public:
+     cc::LayerTreeHost* layerTreeHost() { return m_layerTreeHost; }
+     void setDrawMinInterval(double drawMinInterval);
+     void setMainFrameRate(int rate);
++    bool applyMainFrameRate(int rate);
++    int mainFrameRate() const;
+     void setUiMirrorConsumerRequired(bool required);
+     bool setHostVisible(bool visible);
+     bool hasVisibilityOwnerRetry() const;
+@@ -326,6 +328,7 @@ public:
+     int m_executeMainFrameCount;
+     double m_lastFrameTimeMonotonic;
+     double m_mainFrameInterval;
++    int m_appliedMainFrameRate;
+     uint64_t m_renderFrameId;
+     cc::InputDispatchTraceStack m_inputTraceStack;
+     double m_nextMainFrameTime;
+diff --git a/third_party/sources/miniblink/wke/InputUiApi.cpp b/third_party/sources/miniblink/wke/InputUiApi.cpp
+index 68f5153952eeef277ff90c316ac2de52a231d475..ce96916f8fa657bdbca523dd70362bdcd0ad85b6 100644
+--- a/third_party/sources/miniblink/wke/InputUiApi.cpp
++++ b/third_party/sources/miniblink/wke/InputUiApi.cpp
+@@ -39,6 +39,47 @@ wke::CWebView* liveOwnerView(void* opaque)
+     return static_cast<wke::CWebView*>(view);
+ }
+ 
++bool framePolicyOutputValid(const wkeInputUiFramePolicy* output)
++{
++    return output && output->structSize == sizeof(*output)
++        && output->abiVersion == WKE_INPUT_UI_FRAME_POLICY_ABI_VERSION
++        && !output->reserved[0] && !output->reserved[1];
++}
++
++int WKE_INPUT_UI_CALL queryFramePolicy(void* opaque, wkeInputUiFramePolicy* output)
++{
++    if (!framePolicyOutputValid(output)) return WKE_INPUT_UI_INVALID;
++    auto* view = liveOwnerView(opaque);
++    if (!view || !view->webPage()) return WKE_INPUT_UI_UNAVAILABLE;
++    content::PaintActivityScope activity(view->webPage()->paintLifetimeState());
++    if (!activity) return WKE_INPUT_UI_REJECTED;
++    const int rate = view->webPage()->mainFrameRate();
++    if (rate < 0) return WKE_INPUT_UI_UNAVAILABLE;
++    const wkeInputUiFramePolicy result = { sizeof(*output), WKE_INPUT_UI_FRAME_POLICY_ABI_VERSION,
++        1U, 30U, 240U, static_cast<unsigned>(rate), {0U, 0U} };
++    *output = result;
++    return WKE_INPUT_UI_OK;
++}
++
++int WKE_INPUT_UI_CALL applyFramePolicy(void* opaque, unsigned rate, wkeInputUiFramePolicy* output)
++{
++    if (!framePolicyOutputValid(output) || (rate && (rate < 30U || rate > 240U)))
++        return WKE_INPUT_UI_INVALID;
++    auto* view = liveOwnerView(opaque);
++    if (!view || !view->webPage()) return WKE_INPUT_UI_UNAVAILABLE;
++    content::PaintActivityScope activity(view->webPage()->paintLifetimeState());
++    if (!activity) return WKE_INPUT_UI_REJECTED;
++    if (content::CheckReEnter::getEnterCount()) return WKE_INPUT_UI_BUSY;
++    try {
++        if (!view->webPage()->applyMainFrameRate(static_cast<int>(rate))) return WKE_INPUT_UI_REJECTED;
++        return queryFramePolicy(opaque, output);
++    } catch (...) {
++        // A scheduling allocation may fail after policy mutation. Do not claim
++        // success or replay: caller may query actual state before fallback.
++        return WKE_INPUT_UI_REJECTED;
++    }
++}
++
+ void WKE_INPUT_UI_CALL serviceOwner()
+ {
+     if (!wke::inputUiOwnerAvailable())
+@@ -333,9 +374,10 @@ const wkeInputUiApi* WKE_CALL_TYPE wkeGetInputUiApi(unsigned requestedVersion)
+             | WKE_INPUT_UI_CAP_INPUT_CONTEXT | WKE_INPUT_UI_CAP_CANCEL_INPUT
+             | WKE_INPUT_UI_CAP_VIEW_CONTEXT | WKE_INPUT_UI_CAP_SCENE_INPUT_IDENTITY
+             | WKE_INPUT_UI_CAP_VISIBILITY | WKE_INPUT_UI_CAP_EXTERNAL_TRACE_PRODUCER
+-            | WKE_INPUT_UI_CAP_OWNER_DEADLINE,
++            | WKE_INPUT_UI_CAP_OWNER_DEADLINE | WKE_INPUT_UI_CAP_FRAME_POLICY_STATE,
+         &configureTrace, &stopTrace, &snapshotTrace, &drainTrace,
+         &serviceOwner, &setMirror, &queryMirror, &setInputContext, &cancelInput, &setViewContext,
+-        &setVisibility, &retainTraceProducer, &releaseTraceProducer, &serviceOwnerUntil };
++        &setVisibility, &retainTraceProducer, &releaseTraceProducer, &serviceOwnerUntil,
++        &queryFramePolicy, &applyFramePolicy };
+     return requestedVersion == WKE_INPUT_UI_ABI_VERSION ? &api : nullptr;
+ }
+diff --git a/third_party/sources/miniblink/wke/InputUiApi.h b/third_party/sources/miniblink/wke/InputUiApi.h
+index ab34262c9f667b7e82e232f976ca13bccf5cfad4..3d19ac55793606968dcfe099281200dc35a5fa15 100644
+--- a/third_party/sources/miniblink/wke/InputUiApi.h
++++ b/third_party/sources/miniblink/wke/InputUiApi.h
+@@ -21,6 +21,8 @@
+ #define WKE_INPUT_UI_CAP_VISIBILITY 0x100ULL
+ #define WKE_INPUT_UI_CAP_EXTERNAL_TRACE_PRODUCER 0x200ULL
+ #define WKE_INPUT_UI_CAP_OWNER_DEADLINE 0x400ULL
++#define WKE_INPUT_UI_CAP_FRAME_POLICY_STATE 0x800ULL
++#define WKE_INPUT_UI_FRAME_POLICY_ABI_VERSION 1U
+ 
+ #define WKE_INPUT_UI_OK 0
+ #define WKE_INPUT_UI_INVALID 1
+@@ -47,6 +49,18 @@
+ #define WKE_INPUT_UI_DURATION_BUCKETS 64U
+ 
+ #pragma pack(push, 8)
++/* Owner-affine main-frame policy, separate from host/display overrides.
++   appliedRate==0 disables managed main pacing; policyVersion1 supports30..240. */
++typedef struct _wkeInputUiFramePolicy {
++    unsigned int structSize;
++    unsigned int abiVersion;
++    unsigned int policyVersion;
++    unsigned int minRate;
++    unsigned int maxRate;
++    unsigned int appliedRate;
++    unsigned int reserved[2];
++} wkeInputUiFramePolicy;
++
+ typedef struct _wkeInputUiTraceConfig {
+     unsigned int structSize;
+     unsigned int abiVersion;
+@@ -121,6 +135,11 @@ typedef struct _wkeInputUiApi {
+        immediately resumable work; UNAVAILABLE guarantees no provider work ran. */
+     int (WKE_INPUT_UI_CALL* serviceOwnerOpportunityUntil)(unsigned long long deadlineQpc,
+         unsigned long long qpcFrequency, unsigned int* workRemaining);
++    /* Optional tail: validate size/version/capability AND both pointers.
++       Caller initializes structSize/abiVersion and zero reserved. Failure keeps
++       output unchanged. REJECTED may follow partial mutation: query to reconcile. */
++    int (WKE_INPUT_UI_CALL* queryFramePolicy)(void* view, wkeInputUiFramePolicy* output);
++    int (WKE_INPUT_UI_CALL* applyFramePolicy)(void* view, unsigned int rate, wkeInputUiFramePolicy* output);
+ } wkeInputUiApi;
+ #pragma pack(pop)
+ 
+@@ -128,6 +147,7 @@ typedef const wkeInputUiApi* (WKE_INPUT_UI_CALL* FN_wkeGetInputUiApi)(unsigned i
+ 
+ #ifdef __cplusplus
+ static_assert(sizeof(wkeInputUiTraceConfig) == 48, "Input trace config ABI changed");
++static_assert(sizeof(wkeInputUiFramePolicy) == 32, "Frame policy ABI changed");
+ static_assert(offsetof(wkeInputUiApi, traceConfigure) == 16, "Input UI API prefix changed");
+ static_assert(sizeof(wkeInputUiTraceSnapshot) < 16384, "Input trace snapshot must stay bounded");
+ #endif

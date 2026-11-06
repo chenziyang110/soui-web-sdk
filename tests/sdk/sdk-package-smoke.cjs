@@ -23,12 +23,39 @@ const requiredDevtoolsDocs = [
   'docs/adr/0131-native-view-lifetime-observation.md',
   'docs/adr/0134-controlled-inspector-keyboard-snapshot.md',
   'docs/adr/0135-owned-local-resource-origin.md',
+  'docs/adr/0138-miniblink-frame-presentation.md',
+  'docs/adr/0139-webview2-scratch-performance.md',
+  'docs/adr/0140-performance-candidate-size-and-source.md',
+  'docs/adr/0141-input-ending-capacity.md',
+  'docs/adr/0142-isolated-local-editor.md',
+  'docs/adr/0143-miniblink-deadline-scheduler.md',
+  'docs/api.md',
+  'docs/adr/0153-input-publication-wake-receipt.md',
+  'docs/adr/0154-frame-policy-applied-state.md',
+  'docs/adr/0155-webview2-request-dispatch-metadata.md',
+  'docs/adr/0156-webview2-output-preparation-observation.md',
+  'docs/adr/0157-miniblink-queued-method-route.md',
+  'docs/adr/0158-miniblink-native-admission-metadata.md',
+  'docs/adr/0159-miniblink-native-phase-observation.md',
+  'docs/adr/0160-private-render-phase-cost-observation.md',
+  'docs/adr/0167-webview2-active-output-wake-coalescing.md',
+  'docs/performance/sdk-input-frame-implementation.md',
+  'docs/performance/main-integration.md',
 ];
+const patchPath = 'third_party/patches/miniblink/0033-frame-policy-applied-state.patch';
+const policyPath = 'third_party/manifests/miniblink-frame-policy-state-20261102.json';
+// A source provenance checksum covers original bytes, including CRLF. Packaging
+// and installation must not silently canonicalize a referenced patch.
+const patchBytes = Buffer.from('diff --git a/example b/example\r\n--- a/example\r\n+++ b/example\r\n@@ -1 +1 @@\r\n-before\r\n+after\r\n');
+const patchReference = {path: patchPath, bytes: patchBytes.length,
+  sha256: crypto.createHash('sha256').update(patchBytes).digest('hex')};
 let checks = 0;
 function check(fn) { fn(); ++checks; }
 try {
   for (const relative of sdk.managedRoots) write(path.join(source, relative, 'fixture.txt'), `SDK ${relative}\n`);
   for (const relative of sdk.managedFiles) write(path.join(source, relative), 'SDK notice\n');
+  write(path.join(source, patchPath), patchBytes);
+  write(path.join(source, policyPath), JSON.stringify({hashScope: 'raw-file-bytes', patch: patchReference}) + '\n');
   write(path.join(source, 'web/apps/business.tsx'), 'template business must not enter SDK');
   check(() => {
     const localPackage = path.join(source, 'dist/sdk/0.1.0-preview.1');
@@ -40,6 +67,13 @@ try {
     sdk.pack(source, first, '0.1.0-preview.1');
     const manifest = sdk.readPackage(first);
     assert.equal(manifest.releaseReady, false);
+    const packagedPatch = manifest.files.find(file => file.path === patchPath);
+    assert.ok(packagedPatch, 'Source SDK omits a referenced kernel patch');
+    assert.equal(packagedPatch.sourceNormalization, 'none');
+    assert.equal(packagedPatch.bytes, patchReference.bytes);
+    assert.equal(packagedPatch.sha256, patchReference.sha256);
+    assert.deepEqual(fs.readFileSync(path.join(first, 'payload', patchPath)), patchBytes);
+    assert.deepEqual(JSON.parse(read(path.join(first, 'payload', policyPath))).patch, patchReference);
     for (const relative of requiredDevtoolsDocs) {
       assert.ok(manifest.files.some(file => file.path === relative), `Missing packaged DevTools documentation: ${relative}`);
       assert.deepEqual(fs.readFileSync(path.join(first, 'payload', relative)), Buffer.from("SDK notice\n"));
@@ -96,6 +130,15 @@ try {
     assert.equal(read(path.join(project, 'THIRD_PARTY_NOTICES.md')), 'SDK notice\n');
     assert.equal(read(path.join(project, 'third_party/licenses/fixture.txt')), 'SDK third_party/licenses\n');
     assert.equal(read(path.join(project, 'web/apps/business.tsx')), 'business custom');
+    assert.deepEqual(fs.readFileSync(path.join(project, patchPath)), patchBytes);
+    assert.equal(JSON.parse(read(path.join(project, policyPath))).patch.sha256, fileHash(path.join(project, patchPath)));
+  });
+  check(() => {
+    const installedPatch = path.join(project, patchPath);
+    write(installedPatch, patchBytes.toString('utf8').replace(/\r\n/g, '\n'));
+    assert.throws(() => sdk.readLock(project), /modified/);
+    write(installedPatch, patchBytes);
+    sdk.readLock(project);
   });
   const touchedPath = path.join(project, 'sdk/fixture.txt');
   check(() => {

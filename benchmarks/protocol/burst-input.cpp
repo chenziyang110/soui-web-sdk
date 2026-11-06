@@ -28,6 +28,14 @@ std::uint64_t created(HANDLE process) {
   FILETIME c{},e{},k{},u{}; require(GetProcessTimes(process,&c,&e,&k,&u), "Process identity unavailable");
   return (static_cast<std::uint64_t>(c.dwHighDateTime) << 32) | c.dwLowDateTime;
 }
+std::wstring capture_backend_environment() {
+  wchar_t value[32]{};
+  SetLastError(ERROR_SUCCESS);
+  const DWORD size = GetEnvironmentVariableW(L"SOUI_DESKTOP_CAPTURE_BACKEND", value, _countof(value));
+  if (!size && GetLastError() == ERROR_ENVVAR_NOT_FOUND) return L"dxgi";
+  require(size > 0 && size < _countof(value), "SOUI_DESKTOP_CAPTURE_BACKEND is empty or too long");
+  return value;
+}
 std::uint32_t integer(const wchar_t* text, std::uint32_t maximum) {
   const auto value = soui::benchmark::parse_expected_filetime(text);
   require(value <= maximum, "Burst argument exceeds bound"); return static_cast<std::uint32_t>(value);
@@ -112,8 +120,13 @@ int wmain(int argc, wchar_t** argv) {
     const bool wheel = kind_arg == L"wheel";
     const char* kind = wheel ? "wheel" : "pointer_move";
     handle process(OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION|SYNCHRONIZE,FALSE,pid));
-    require(process.value && created(process.value) == expected && WaitForSingleObject(process.value,0) == WAIT_TIMEOUT,
-      "Held target identity differs or target is not live");
+    require(process.value, "Held target OpenProcess failed");
+    const auto actual_creation = created(process.value);
+    const auto live = WaitForSingleObject(process.value,0) == WAIT_TIMEOUT;
+    if (actual_creation != expected || !live) {
+      throw std::runtime_error("Held target identity differs: expected=" + std::to_string(expected) +
+        " actual=" + std::to_string(actual_creation) + " live=" + (live ? "true" : "false"));
+    }
     DWORD target_session{}, injector_session{};
     require(ProcessIdToSessionId(pid,&target_session) && ProcessIdToSessionId(GetCurrentProcessId(),&injector_session) &&
       target_session == injector_session && injector_session != 0, "Target has no matching interactive session");
@@ -133,6 +146,7 @@ int wmain(int argc, wchar_t** argv) {
     validate_target(process.value,search.found,pid,origin);
     const auto nonce_raw = std::stoul(run.substr(24),nullptr,16);
     const auto nonce = static_cast<std::uint32_t>(nonce_raw ? nonce_raw : 1);
+    const auto capture_backend = soui::benchmark::parse_desktop_capture_backend(capture_backend_environment().c_str());
     const int vx = GetSystemMetrics(SM_XVIRTUALSCREEN), vy = GetSystemMetrics(SM_YVIRTUALSCREEN);
     const int vw = GetSystemMetrics(SM_CXVIRTUALSCREEN), vh = GetSystemMetrics(SM_CYVIRTUALSCREEN);
     if(wheel) {
@@ -150,7 +164,7 @@ int wmain(int argc, wchar_t** argv) {
     const std::filesystem::path output(argv[6]), desktop(argv[7]);
     require(output.is_absolute() && desktop.is_absolute() && output != desktop, "Distinct absolute new outputs required");
     // Baseline marker must belong to this run before any tagged input is sent.
-    soui::benchmark::burst_desktop_observer observer(process.value,pid,expected,search.found,desktop,run,nonce);
+    soui::benchmark::burst_desktop_observer observer(process.value,pid,expected,search.found,desktop,run,nonce,capture_backend);
     handle file(CreateFileW(output.c_str(),GENERIC_WRITE,0,nullptr,CREATE_NEW,FILE_ATTRIBUTE_NORMAL,nullptr));
     require(file.value != INVALID_HANDLE_VALUE, "Cannot create new burst trace");
     const auto start = qpc();
@@ -158,7 +172,8 @@ int wmain(int argc, wchar_t** argv) {
       "\",\"target_pid\":"+std::to_string(pid)+",\"process_incarnation\":"+quoted(expected)+
       ",\"injector_pid\":"+std::to_string(GetCurrentProcessId())+",\"injector_incarnation\":"+quoted(created(GetCurrentProcess()))+
       ",\"qpc_frequency\":"+quoted(hz_qpc)+",\"started_qpc\":"+quoted(start)+",\"hz\":"+std::to_string(hz)+
-      ",\"requested\":"+std::to_string(count)+",\"kind\":\""+kind+"\",\"concurrent_injectors\":1,\"nonce\":"+std::to_string(nonce)+
+      ",\"requested\":"+std::to_string(count)+",\"kind\":\""+kind+"\",\"capture_backend\":\""+
+      soui::benchmark::desktop_capture_backend_name(capture_backend)+"\",\"concurrent_injectors\":1,\"nonce\":"+std::to_string(nonce)+
       ",\"injection_tag_magic\":1396703232,\"content_width\":1100,\"content_height\":720}");
     std::uint32_t attempted = 0, completed = 0; bool success = false;
     try {

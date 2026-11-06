@@ -4,6 +4,7 @@
 #include <filesystem>
 #include <memory>
 #include <string>
+#include "desktop-capture.h"
 
 namespace soui::benchmark {
 // Independent burst protocol. Borrows held target handle through finish();
@@ -12,7 +13,8 @@ class burst_desktop_observer final {
  public:
   burst_desktop_observer(HANDLE process, DWORD pid, std::uint64_t creation,
       HWND window, const std::filesystem::path& output,
-      const std::string& run_id, std::uint32_t expected_nonce);
+      const std::string& run_id, std::uint32_t expected_nonce,
+      desktop_capture_backend backend = desktop_capture_backend::dxgi);
   ~burst_desktop_observer();
   burst_desktop_observer(const burst_desktop_observer&) = delete;
   burst_desktop_observer& operator=(const burst_desktop_observer&) = delete;

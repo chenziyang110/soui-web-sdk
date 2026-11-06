@@ -74,6 +74,9 @@ class webview2_adapter final : public sdk::webview_host_adapter {
   ~webview2_adapter() override;
   webview2_adapter(const webview2_adapter&) = delete;
   webview2_adapter& operator=(const webview2_adapter&) = delete;
+  [[nodiscard]] bool supports_local_resource_policy(local_resource_policy policy) const noexcept override {
+    return policy == local_resource_policy::strict || policy == local_resource_policy::isolated_local_editor;
+  }
 
   // Exclusive mode is opt-in before prepare. It requires a successful owning
   // runtime watch finish before destruction. Controlled DevTools selects this

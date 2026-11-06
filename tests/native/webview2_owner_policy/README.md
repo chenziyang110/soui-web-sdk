@@ -2,6 +2,35 @@
 
 No build, test or WebView2 runtime was executed for this package.
 
+ADR-0167 adds `owner_output_wake.h` and ten new source contracts, directly
+using the production lazy `owner_output_drain_scope`. These additions have not
+yet been built or executed. All existing budget/callout assertions remain.
+The scope takes `(bool& active, std::mutex&, Queue&, noexcept notify)` by C++17
+CTAD, and `enter_locked()` is called only in the original pop critical section.
+An unused scope does not lock; a participating scope clears active and checks
+the same queue under that mutex on all exits, notifying once if items remain.
+`entered()` lets the caller preserve the old normal empty-pump tail check for
+an unused scope; it replaces that tail with RAII only after actual output work.
+Navigation/stop never owns or resets the active bit; non-output notifications
+remain independent.
+
+The new cases cover full same-slice consumption, budget remainder, actual
+producer-thread enqueue before/after scope exit, exception exit, rejected
+reentry preserving the outer guard, navigation clear/refill, stop clearing,
+and independent lifecycle notification. Thread ordering uses a promise and join,
+not sleeps; the unchanged CTest timeout is 15 seconds. The empty-scope case
+holds the actual mutex while constructing/destroying the lazy scope, so an
+unexpected lock fails by the existing bounded timeout. They test notification
+responsibility, not real PostMessage/COM delivery, OS wake counts, whole owner
+fairness, or application performance. The producer-side `!active` gate is the
+caller boundary; the production Host wiring is reviewed separately.
+
+The tenth case uses a real producer thread after an empty first pop and a
+notification dependency seam that fails its first attempt. The unchanged
+normal tail, selected through the production `entered()` accessor, retries
+once and recovers that simulated transient failure. This is source coverage,
+not an executed Win32 test or a guarantee for arbitrary PostMessage failures.
+
 `fixture.cpp` uses the actual `owner_output_policy.h`. Target
 `soui_webview2_owner_policy_tests`, CTest `sdk.native.webview2-owner-policy`;
 Root must register this subdirectory in the SDK's global native test entry.

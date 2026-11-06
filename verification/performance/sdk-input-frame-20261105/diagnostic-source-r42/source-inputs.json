@@ -1,0 +1,54 @@
+{
+  "schema": "soui.r42-source-copy/v1",
+  "frozenBuildInputSha256": "e3d4fc946fd9532f61d25c443115086ed83a916ecdf05acb3a3e5db4ff97dd5a",
+  "files": [
+    {
+      "path": "project/CMakeLists.txt",
+      "archiveSource": "repair-r42-native-cold-guard-diagnostic-r1/project/CMakeLists.txt",
+      "bytes": 1026,
+      "sha256": "826e71b6d1e1d7fcc8c85a2ec661994e116700500c8aae4162745dd07586fbc8"
+    },
+    {
+      "path": "project/input.cpp",
+      "archiveSource": "repair-r42-native-cold-guard-diagnostic-r1/project/input.cpp",
+      "bytes": 21184,
+      "sha256": "525b3d1f620a9af4851a68c541526c477ec044c7aaae8514a98561f872832cd3"
+    },
+    {
+      "path": "project/cold_guard.h",
+      "archiveSource": "repair-r42-native-cold-guard-diagnostic-r1/project/cold_guard.h",
+      "bytes": 3612,
+      "sha256": "93635da73dee038df218aa0c66dbcf99fde5198e616426705ffe033d9adb259e"
+    },
+    {
+      "path": "project/native_input_policy.h",
+      "archiveSource": "repair-r42-native-cold-guard-diagnostic-r1/project/native_input_policy.h",
+      "bytes": 2396,
+      "sha256": "dacdd94f237eaaf1c9e4c976300618e894e97a002beca1b7da3764fc3f986c0f"
+    }
+  ],
+  "actualCompilerStarted": false,
+  "buildAtCopyLocationExecuted": false,
+  "nativeExecuted": false,
+  "performanceVerified": false,
+  "releaseReady": false,
+  "adaptedStaticChecker": {
+    "path": "tests/cold-source-contracts.test.cjs",
+    "archiveSource": "repair-r42-native-cold-guard-diagnostic-r1/tests/cold-source-contracts.test.cjs",
+    "originalSha256": "79db74794476f06998292c2c876c72dd76900727b0c629145169fb00c4fbbe50",
+    "bytes": 2395,
+    "sha256": "47c43b90d393b50bbf637d0decae10f96da458f350c25ecf992dbb0f43631d13",
+    "onlyBaselineReferenceAdapted": true,
+    "lineEndingsMayDiffer": true
+  },
+  "snapshotStaticCheck": {
+    "actualExit": 0,
+    "tests": 3,
+    "pass": 3,
+    "fail": 0,
+    "skip": 0,
+    "durationMs": 88.1221,
+    "toolOutputChunk": "a7241e",
+    "Win32APIsExecuted": false
+  }
+}

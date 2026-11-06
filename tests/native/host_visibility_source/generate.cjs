@@ -30,7 +30,8 @@ save(page, 'visibility_state.inc', 'struct HostVisibilityWakeState {', 'int64_t 
 save(page, 'auto_record.inc', 'class AutoRecordActions {', '#if (defined ENABLE_WKE)');
 save(page, 'commit_task.inc', 'class CommitTask :', 'class VisibilityRestoreTask final');
 save(page, 'visibility_owner.inc', 'class VisibilityRestoreTask final', 'void WebPageImpl::setNeedsCommitAndNotLayout()');
-save(page, 'main_frame.inc', 'void WebPageImpl::setNeedsCommitAndNotLayout()', 'void WebPageImpl::onLayerTreeDirty()');
+save(page, 'schedule_commit.inc', 'void WebPageImpl::setNeedsCommitAndNotLayout()', 'void WebPageImpl::setNeedsCommit()');
+save(page, 'main_frame.inc', 'void WebPageImpl::setNeedsCommit()', 'void WebPageImpl::onLayerTreeDirty()');
 save('cc/trees/LayerTreeHost.cpp', 'host_visible.inc', 'void LayerTreeHost::setVisible(bool visible)', '// Sets the current page scale factor');
 fs.writeFileSync(path.join(output, 'source-binding.json'), JSON.stringify({
   schema: 'host-visibility-source/1', dependencyMode: 'actual-owner-and-record-with-fake-blink-resource-scheduler', entries

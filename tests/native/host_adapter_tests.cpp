@@ -241,6 +241,10 @@ void require_inactive(webview_host& host, const adapter_state& state, const char
 void test_optional_operations(const host_config& config) {
   auto adapter = std::make_unique<minimal_adapter>();
   auto* observed = adapter.get();
+  require(adapter->supports_local_resource_policy(soui::sdk::local_resource_policy::strict),
+          "existing custom adapters retain the strict resource policy");
+  require(!adapter->supports_local_resource_policy(soui::sdk::local_resource_policy::isolated_local_editor),
+          "an adapter must explicitly advertise the editor resource policy");
   webview_host host(std::move(adapter));
   require(host.start(config).ok, "mount-only adapter starts");
   const auto session_id = host.session()->session_id();
@@ -426,6 +430,8 @@ void test_destructor_retries_failed_close(const host_config& config) {
 }
 
 void test_validation(const host_config& config) {
+  require(config.resource_policy == soui::sdk::local_resource_policy::strict,
+          "native resource policy must default to strict");
   webview_host missing(nullptr);
   require_error(missing.start(config), "E_HOST_ADAPTER_MISSING", "missing adapter must be rejected");
   require(missing.destroy().ok, "missing adapter cleanup is harmless");
@@ -437,6 +443,11 @@ void test_validation(const host_config& config) {
   invalid = config;
   invalid.resource_root /= "missing";
   require_error(host.start(invalid), "E_RESOURCE_MISSING", "controlled local resource gate is retained");
+  invalid = config;
+  invalid.resource_policy = soui::sdk::local_resource_policy::isolated_local_editor;
+  require_error(host.start(invalid), "E_RESOURCE_POLICY_UNSUPPORTED", "native opt-in needs adapter capability");
+  invalid.resource_policy = static_cast<soui::sdk::local_resource_policy>(999);
+  require_error(host.start(invalid), "E_RESOURCE_POLICY_UNSUPPORTED", "unknown native resource policy must fail closed");
   require(state->mount_calls == 0, "invalid config must not mount custom adapter");
 }
 

@@ -29,6 +29,7 @@ if($NativeToolchain -eq 'MSVC143'){
     -WindowsSdkRoot $WindowsSdkRoot -NinjaExe $NinjaExe -WindowsCmdExe $WindowsCmdExe -PowerShellExe $PowerShellExe `
     -ToolIdentityBridge (Join-Path $PSScriptRoot 'Invoke-ToolFileIdentity.ps1') -ToolIdentityHelper (Join-Path $PSScriptRoot 'Tool-FileIdentity.ps1')
 }
+if(-not$llvm){Assert-SouiMsvcCompilerAdmission -Toolchain $toolchain -Architecture $Architecture}
 $llvmRemove=@('NODE_OPTIONS','NODE_PATH','NODE_REPL_EXTERNAL_MODULE','GIT_DIR','GIT_WORK_TREE','GIT_INDEX_FILE',
   'CL','_CL_','LINK','_LINK_','INCLUDE','LIB','LIBPATH','CPATH','C_INCLUDE_PATH','CPLUS_INCLUDE_PATH','OBJC_INCLUDE_PATH',
   'LIBRARY_PATH','CCC_OVERRIDE_OPTIONS','CLANG_CONFIG_FILE_USER_DIR','CLANG_CONFIG_FILE_SYSTEM_DIR',
@@ -93,7 +94,7 @@ try{
   $configureExitCode=$LASTEXITCODE
   Complete-SouiMsvcCompilerPhase $compilerPhase $configureExitCode "Validation tools configure failed: $validationBuild/configure.log"
   $buildArgs=@('--build',$validationBuild,'--config','Release','--target','OwnedProcessRunner','OwnedProcessAssignmentFixture',
-    'ProcessTreeSampler','InputTrace','NativeTraceIdentity','OwnedTailProcessFixture','OwnedTailMutationFixture','OwnedTailApiFixture','DisplayCalibration','--parallel','2')
+    'ProcessTreeSampler','InputTrace','NativeTraceIdentity','OwnedTailProcessFixture','OwnedTailMutationFixture','OwnedTailApiFixture','DisplayCalibration','BurstInput','--parallel','2')
   if($llvm){$buildArgs+='--verbose';if($FreshConfigure){$buildArgs+='--clean-first'}}else{$buildArgs+=@('--','/nr:false')}
   $nativeInvocation=[ordered]@{schema='soui.native-build-invocation/v1';nativeToolchain=$NativeToolchain;
     executable=$cmake;arguments=$buildArgs;

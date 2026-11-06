@@ -1,0 +1,239 @@
+{
+  "schema": "soui.native-webview2-owner-fairness-source-provenance/v1",
+  "sourcePortOnly": true,
+  "currentPortConfigured": false,
+  "currentPortCompiled": false,
+  "currentPortPolicyExecuted": false,
+  "currentPortSampled": false,
+  "origin": {
+    "project": "R50-sdk5-consumer-aggregation-r1/project",
+    "measurementSourceRevision": "R45 source-delta-r3 / r45-native-drain-strip-v2",
+    "consumerBuildId": "r50-sdk5-native-v2",
+    "sdkRawVersion": "0.7.0-preview.5",
+    "identityScope": "Historical source origin only; never defaults or current-port qualification"
+  },
+  "files": [
+    {
+      "path": "main.cpp",
+      "bytes": 28736,
+      "sha256": "91a9bff0cdc1dca72b943f34455ae137e74741feed6e007b3bdb02e84a7cb074",
+      "originPathWithinProject": "main.cpp",
+      "runtimeByteIdentical": false,
+      "originBytes": 26544,
+      "originSha256": "7176146da760f3301166aae7206b51106df110489edcb94a9d2b72e2017eff08"
+    },
+    {
+      "path": "paint_probe.cpp",
+      "bytes": 17480,
+      "sha256": "a1a30ce32f4f5fab383742913898d5e13ff356b6d3cc3c3e39c213fc6694e8ac",
+      "originPathWithinProject": "paint_probe.cpp",
+      "runtimeByteIdentical": true,
+      "originBytes": 17480,
+      "originSha256": "a1a30ce32f4f5fab383742913898d5e13ff356b6d3cc3c3e39c213fc6694e8ac"
+    },
+    {
+      "path": "paint_probe.h",
+      "bytes": 3848,
+      "sha256": "c38c379bc35b07663256d715a272ed70cb1a877c6cbd8983bc62fd31fc00ff24",
+      "originPathWithinProject": "paint_probe.h",
+      "runtimeByteIdentical": true,
+      "originBytes": 3848,
+      "originSha256": "c38c379bc35b07663256d715a272ed70cb1a877c6cbd8983bc62fd31fc00ff24"
+    },
+    {
+      "path": "input.cpp",
+      "bytes": 25712,
+      "sha256": "d2d2e901a945fa15a6f348345d97dd65012e708bfac7ca372ece5cceac246f2d",
+      "originPathWithinProject": "input.cpp",
+      "runtimeByteIdentical": true,
+      "originBytes": 25712,
+      "originSha256": "d2d2e901a945fa15a6f348345d97dd65012e708bfac7ca372ece5cceac246f2d"
+    },
+    {
+      "path": "native_input_policy.h",
+      "bytes": 4359,
+      "sha256": "a0d2ca33c2f46562e9cb1c0315de107509718ef9d3b2695d7880d147318002a2",
+      "originPathWithinProject": "native_input_policy.h",
+      "runtimeByteIdentical": true,
+      "originBytes": 4359,
+      "originSha256": "a0d2ca33c2f46562e9cb1c0315de107509718ef9d3b2695d7880d147318002a2"
+    },
+    {
+      "path": "input_message_metadata.h",
+      "bytes": 1753,
+      "sha256": "e22ef2366fea2a92237bdd5a3fe86ee6958e88783b5fe7630014fbd32c71c7d1",
+      "originPathWithinProject": "input_message_metadata.h",
+      "runtimeByteIdentical": true,
+      "originBytes": 1753,
+      "originSha256": "e22ef2366fea2a92237bdd5a3fe86ee6958e88783b5fe7630014fbd32c71c7d1"
+    },
+    {
+      "path": "cold_guard.h",
+      "bytes": 3612,
+      "sha256": "93635da73dee038df218aa0c66dbcf99fde5198e616426705ffe033d9adb259e",
+      "originPathWithinProject": "cold_guard.h",
+      "runtimeByteIdentical": true,
+      "originBytes": 3612,
+      "originSha256": "93635da73dee038df218aa0c66dbcf99fde5198e616426705ffe033d9adb259e"
+    },
+    {
+      "path": "job_resources.h",
+      "bytes": 2987,
+      "sha256": "f487357b770c20c437f76e68e130f15e7ef180fb4a303f904782a2757083d60e",
+      "originPathWithinProject": "job_resources.h",
+      "runtimeByteIdentical": true,
+      "originBytes": 2987,
+      "originSha256": "f487357b770c20c437f76e68e130f15e7ef180fb4a303f904782a2757083d60e"
+    },
+    {
+      "path": "scalar_snapshot.h",
+      "bytes": 2500,
+      "sha256": "00c7a4ec26204e119c023e843907b993d002286269c0b9ccfbfc7208c193e5b9",
+      "originPathWithinProject": "scalar_snapshot.h",
+      "runtimeByteIdentical": true,
+      "originBytes": 2500,
+      "originSha256": "00c7a4ec26204e119c023e843907b993d002286269c0b9ccfbfc7208c193e5b9"
+    },
+    {
+      "path": "native_burst_marker.h",
+      "bytes": 3618,
+      "sha256": "a15d42d69d6ce105a65328285dfe1d8b503ea118ac9f439e3c7bd0d2b8ec7276",
+      "originPathWithinProject": "native_burst_marker.h",
+      "runtimeByteIdentical": true,
+      "originBytes": 3618,
+      "originSha256": "a15d42d69d6ce105a65328285dfe1d8b503ea118ac9f439e3c7bd0d2b8ec7276"
+    },
+    {
+      "path": "tests/policy-contracts.cpp",
+      "bytes": 6726,
+      "sha256": "320c7a592152848d7f997630e0f4e1fca8c37b3dcd938a9d853932a215a72cb3",
+      "originPathWithinProject": "tests/policy-contracts.cpp",
+      "runtimeByteIdentical": true,
+      "originBytes": 6726,
+      "originSha256": "320c7a592152848d7f997630e0f4e1fca8c37b3dcd938a9d853932a215a72cb3"
+    },
+    {
+      "path": "resources/index.html",
+      "bytes": 353,
+      "sha256": "3d2e761b6e99f4eb05f06992de700cbe190de2dab0eb5213271b7f062652abd0",
+      "originPathWithinProject": "resources/index.html",
+      "runtimeByteIdentical": true,
+      "originBytes": 353,
+      "originSha256": "3d2e761b6e99f4eb05f06992de700cbe190de2dab0eb5213271b7f062652abd0"
+    },
+    {
+      "path": "resources/fairness.js",
+      "bytes": 12163,
+      "sha256": "c63c6a43f7a135f97f370caf0ffe816803f9e1e891cfc7521f64f61e70884c56",
+      "originPathWithinProject": "resources/fairness.js",
+      "runtimeByteIdentical": true,
+      "originBytes": 12163,
+      "originSha256": "c63c6a43f7a135f97f370caf0ffe816803f9e1e891cfc7521f64f61e70884c56"
+    }
+  ],
+  "versionHelper": {
+    "path": "../../../benchmarks/input-ui-host/sdk_version.cmake",
+    "bytes": 4318,
+    "sha256": "812acc215ab68ceef6d22d88a9df8fb87a7a76ecee21a45e4d27a6257316b912",
+    "sameBytesAsHistoricalLocalHelper": true
+  },
+  "historicalObservation": {
+    "run": "e6e02ea3be732dc39a982e6631c49762",
+    "profile": "r45-native-drain-strip-v2",
+    "source": "R54 / R48 entry-r4 existing immutable raw evidence",
+    "analysisSha256": "71a5a5361c297c6ab9089ce56f26ebfa41ec08c61eaa46e96b8a2ed2849de44f",
+    "positiveTags": 3125,
+    "rawCallbacks": 5244,
+    "unmarkedStrictCallbacks": 2108,
+    "firstFault": 5,
+    "finalAck": false,
+    "pageHiddenAtRecordedPoints": true,
+    "accepted": false,
+    "doesNotAuthorizeCurrentPort": true
+  },
+  "cmakeDelta": [
+    "Require explicit independently installed prefix, exact raw release and unique consumer BuildID; remove fixed historical SDK version guard.",
+    "Reuse existing repository version helper by relative default or explicit helper path, preserving raw/header/numeric EXACT checks.",
+    "Retain the two-TU Host, one-TU input tool and original23-case policy target; omit the separate capacity-host regression attachment and its development-machine path.",
+    "Add Loader path/header hash and optional receipt identity to generated cold metadata. SDKBuildId remains unknown and provenance unverified until existing runner/link/normal receipt validation.",
+    "Do not compile another diagnostics recorder or add multiple-definition linker exceptions.",
+    "Require explicit legacy/sdk mode; SDK mode requires the installed public loop header and compiles normal public loop use. No private SDK implementation or fallback stub."
+  ],
+  "otherPortDelta": [
+    "Local .gitattributes preserves the original353-byte CRLF index.html; runtime files otherwise remain source bytes.",
+    "main.cpp uses the shared passive retrieval snapshot and actual dispatch callback in both loop modes; common cold setup checks public Host show, adds optimizer/observer/legacy-pump/visibility scope metadata and rejects invalid retrieval observation. Workload/native ledger policies remain unchanged."
+  ],
+  "unchanged": {
+    "columns": 29,
+    "tag0Veto": true,
+    "allRawCallbacksRetained": true,
+    "senderDoneReceiverDrainFinishSeparated": true,
+    "bridgeMs": 30000,
+    "payloadBytes": 4096,
+    "echoInflight": 7,
+    "controlInflightAtMost": 1,
+    "nativeCount": 3125,
+    "nativeHz": 125,
+    "nativeNominalMs": 25000,
+    "coldInputReadyMs": 25000,
+    "applicationReadyMs": 15000,
+    "goMs": 30000,
+    "hostWorkMs": 70000,
+    "hostCloseMs": 20000,
+    "hostAbsoluteMs": 90000,
+    "inputMs": 45000,
+    "drainMs": 2000,
+    "ackMs": 500,
+    "noNewCaptureAfterSealRule": true
+  },
+  "newSamplingPlatform": false,
+  "SDKPublicVersionOrManifestModified": false,
+  "buildProvenanceVerified": false,
+  "performanceVerified": false,
+  "fairnessVerified": false,
+  "releaseReady": false,
+  "addedConsumerSources": [
+    {
+      "path": "message_retrieval_snapshot.h",
+      "bytes": 1759,
+      "sha256": "4a62216fb8ae2525f7b562ecba6a59f6d9920ea4ec6e6f8876b1e401add16a26",
+      "scope": "Public GetMessage observation metadata only; no private SDK scheduler copy"
+    }
+  ],
+  "ownerLoopIntegration": {
+    "modeParameter": "SOUI_FAIRNESS_OWNER_LOOP",
+    "allowedValues": [
+      "legacy",
+      "sdk"
+    ],
+    "default": null,
+    "publicAPI": "soui::sdk::windows_owner_loop",
+    "candidateConstructedBeforeHostPrepare": true,
+    "baselineDoesNotConstructSDKLoop": true,
+    "sharedObserver": "soui.owner-getmessage-snapshot/v1",
+    "earlySnapshotThroughPublicMessageRetrievedHook": true,
+    "legacyCallsSameObserverImmediatelyAfterGetMessage": true,
+    "observerCreatesNoGuardOrOrdinal": true,
+    "actualApplicationDispatchRetainsOriginalRAIIGuard": true,
+    "sdkPrivateMessagesDoNotCreateGuardOrOrdinal": true,
+    "missingSnapshotStaysUnknownAndInvalidates": true,
+    "legacyPumpObservationDoesNotClaimAllSDKPumps": true,
+    "SDKPrivateImplementationCopied": false,
+    "baselineCandidateSameObserverRequired": true,
+    "oldR54SamplesAreNotInstrumentationEquivalent": true,
+    "loopStatusSeparateFromNativeDiagnosticComplete": true,
+    "commonHostShow": {
+      "explicitPublicShowCheckedAfterStartResize": true,
+      "bothModes": true,
+      "SDKStartSemanticsUnchanged": true,
+      "DOMVisibilityInferredFromShow": false,
+      "pageFocusForced": false,
+      "oldR54EvidenceUnchanged": true
+    },
+    "limitLabel": {
+      "oldText": "One current-SDK4 Default-desktop native-strip diagnostic; no A/B or throughput improvement.",
+      "newText": "One exact-version, explicit-owner-loop Default-desktop native-strip diagnostic; no A/B or throughput improvement.",
+      "scope": "Result limitation label only; runtime SDK version remains exact compiled identity, no threshold/workload change"
+    }
+  }
+}

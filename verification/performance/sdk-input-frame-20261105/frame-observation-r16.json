@@ -1,0 +1,584 @@
+{
+  "schema": "soui.sdk-preview4-frame-observation/v1",
+  "recordedAt": "2026-11-05T10:42:43.5268932Z",
+  "report": "docs/performance/sdk-preview4-frame-observation-20261105.md",
+  "sdkVersion": "0.7.0-preview.4",
+  "sdkSourceSha256": "e1d2dd8b7699930f678e21a77772b8fa4e371f5b67a53937d98470ee1659e87c",
+  "sourceCommit": "f6b1c712eb283b9d100d76fb90aee4ca6123dd7d",
+  "evidenceBundle": "PR129-performance-20261104",
+  "analysis": {
+    "path": "repair-r16/analysis/r16-four-run-analysis.json",
+    "bytes": 66114,
+    "sha256": "519870fa4788ae230f1df438c79b9fb85212b8bdf295d9c23377bf28ad80005b"
+  },
+  "evidenceQualified": true,
+  "integratedNaturalCloseAllFour": true,
+  "profileAndRecordedPayloadIdentityMatched": true,
+  "studyPlanSha256": "23de4ac60a491f8569cc03de7c659f7d0d5f9c26b1445bb725a6b3ffb4cce77d",
+  "baselineNoiseSha256": "e840d35b2d608595c0bb649a00ea31638f1da5727c32b86aa637801b0f78e4e1",
+  "frozenThresholds": {
+    "rateHz": 34.400000000000006,
+    "p95Ms": 8.441400000000002
+  },
+  "pairedComparisons": [
+    {
+      "candidate": "webview2-B1",
+      "baseline": "webview2-A1",
+      "rateHzLowerBound": {
+        "absolute": 8.411693823643091,
+        "relative": 0.10171443904663602
+      },
+      "p95ObservedChangeIntervalMs": {
+        "absolute": -2.595700000000001,
+        "relative": -0.12896350248914423
+      },
+      "rateGainBeyondNoise": false,
+      "rateRegressionBeyondNoise": false,
+      "p95ImprovementBeyondNoise": false,
+      "p95RegressionBeyondNoise": false,
+      "captureP50Ms": {
+        "absolute": -0.6509999999999998,
+        "relative": -0.06841037820115381
+      },
+      "captureP95Ms": {
+        "absolute": -2.0851999999999986,
+        "relative": -0.1201885944182507
+      },
+      "sampleIntervalP50Ms": {
+        "absolute": -0.9167000000000005,
+        "relative": -0.083026147757017
+      },
+      "sampleIntervalP95Ms": {
+        "absolute": -2.9030000000000022,
+        "relative": -0.1491103714661408
+      }
+    },
+    {
+      "candidate": "webview2-B2",
+      "baseline": "webview2-A2",
+      "rateHzLowerBound": {
+        "absolute": -4.881497074948157,
+        "relative": -0.0513778640690965
+      },
+      "p95ObservedChangeIntervalMs": {
+        "absolute": 2.6693999999999996,
+        "relative": 0.17718981493773733
+      },
+      "rateGainBeyondNoise": false,
+      "rateRegressionBeyondNoise": false,
+      "p95ImprovementBeyondNoise": false,
+      "p95RegressionBeyondNoise": false,
+      "captureP50Ms": {
+        "absolute": 0.21220000000000105,
+        "relative": 0.024169115469600877
+      },
+      "captureP95Ms": {
+        "absolute": 2.0783000000000005,
+        "relative": 0.1557595743086262
+      },
+      "sampleIntervalP50Ms": {
+        "absolute": 0.2632000000000012,
+        "relative": 0.026337119127432862
+      },
+      "sampleIntervalP95Ms": {
+        "absolute": 1.595900000000002,
+        "relative": 0.10482032958732623
+      }
+    }
+  ],
+  "drift": {
+    "rateHzLowerBound": {
+      "absolute": 12.312565592127612,
+      "relative": 0.1488838905320229
+    },
+    "p95ObservedChangeIntervalMs": {
+      "absolute": -5.062200000000001,
+      "relative": -0.2515078947106929
+    },
+    "withinFrozenNumericNoise": true,
+    "observerCadenceAndCaptureCosts": {
+      "candidate": "webview2-A2",
+      "baseline": "webview2-A1",
+      "rateHzLowerBound": {
+        "absolute": 12.312565592127612,
+        "relative": 0.1488838905320229
+      },
+      "p95ObservedChangeIntervalMs": {
+        "absolute": -5.062200000000001,
+        "relative": -0.2515078947106929
+      },
+      "rateGainBeyondNoise": false,
+      "rateRegressionBeyondNoise": false,
+      "p95ImprovementBeyondNoise": false,
+      "p95RegressionBeyondNoise": false,
+      "captureP50Ms": {
+        "absolute": -0.7363,
+        "relative": -0.07737413436176588
+      },
+      "captureP95Ms": {
+        "absolute": -4.006399999999999,
+        "relative": -0.23092441237160932
+      },
+      "sampleIntervalP50Ms": {
+        "absolute": -1.047600000000001,
+        "relative": -0.09488185054025422
+      },
+      "sampleIntervalP95Ms": {
+        "absolute": -4.243700000000002,
+        "relative": -0.2179744000657463
+      }
+    },
+    "cadenceMaterialityThresholdPreregistered": false,
+    "limitation": "Numeric drift compliance alone does not certify unchanged observer overhead; report raw cost distributions."
+  },
+  "conclusion": "no-measurable-benefit-above-frozen-noise",
+  "runs": [
+    {
+      "name": "webview2-A1",
+      "role": "baseline",
+      "sdkVersion": "0.6.0",
+      "runId": "d49b3c8f1a96e48984f284faf087783b",
+      "hostSha256": "2b019f5e51da9c8bf635ef7c31d961380b558c02cf1789f2ff8a87ff3b5fe985",
+      "readerQualified": true,
+      "integratedNaturalClose": true,
+      "desktopObservation": {
+        "elapsedMs": 30000.322,
+        "sampleCount": 2492,
+        "changes": 2481,
+        "rateHzLowerBound": 82.69911236286063,
+        "changeIntervals": {
+          "samples": 2480,
+          "minimumMs": 6.2237,
+          "p50Ms": 10.6486,
+          "p95Ms": 20.1274,
+          "maximumMs": 30.0865
+        },
+        "sampleIntervals": {
+          "samples": 2491,
+          "minimumMs": 5.9107,
+          "p50Ms": 11.0411,
+          "p95Ms": 19.4688,
+          "maximumMs": 31.1529
+        },
+        "gapsOver50Ms": 0,
+        "sampleGapsAbove50Ms": 0,
+        "observerCostsMs": {
+          "capture": {
+            "samples": 2492,
+            "minimumMs": 4.9218,
+            "p50Ms": 9.5161,
+            "p95Ms": 17.3494,
+            "maximumMs": 23.2134
+          },
+          "fullPixelCompare": {
+            "samples": 2492,
+            "minimumMs": 0,
+            "p50Ms": 0.0008,
+            "p95Ms": 0.0012,
+            "maximumMs": 0.0524
+          },
+          "sha256OnBaselineAndChanges": {
+            "samples": 2482,
+            "minimumMs": 0.259,
+            "p50Ms": 0.2816,
+            "p95Ms": 0.3197,
+            "maximumMs": 0.6932
+          },
+          "preflightValidation": {
+            "samples": 2492,
+            "minimumMs": 0.0742,
+            "p50Ms": 0.2397,
+            "p95Ms": 1.2338,
+            "maximumMs": 6.5182
+          },
+          "postflightValidation": {
+            "samples": 2492,
+            "minimumMs": 0.1085,
+            "p50Ms": 0.4228,
+            "p95Ms": 2.6449,
+            "maximumMs": 10.9423
+          }
+        },
+        "physicalFps": null,
+        "exactUniqueFps": null,
+        "omittedTransitions": null
+      },
+      "precedingPageReport": {
+        "scope": "Separate preceding 30s page warmup/provenance; not the native pixel interval",
+        "callbackHz": 99.93333333333334,
+        "intervalHz": 99.93131181100433,
+        "p95IntervalMsUpperBound": 10.25,
+        "longIntervalsAbove50Ms": 0,
+        "steps": 2999,
+        "stateHash": "b72f3fa1",
+        "drawCalls": 2998,
+        "spriteDrawCalls": 719520,
+        "backlogWholeSteps": 0,
+        "parameters": {
+          "inputTrace": "off",
+          "logicalViewport": {
+            "height": 360,
+            "width": 480
+          },
+          "maxEchoOutstanding": 8,
+          "maxOutstandingRequests": 8,
+          "maxStepsPerCallback": 8,
+          "payloadBytes": 64,
+          "seed": 1374772973,
+          "sprites": 240,
+          "stepHz": 100
+        },
+        "valid": true,
+        "complete": true
+      },
+      "scopedCpuMachinePercent": 1.9738140667149155,
+      "fullAppCpuQualified": false,
+      "fullAppMemoryQualified": false,
+      "evidence": "repair-r16/frame-entry/sessions/webview2-A1",
+      "resultSha256": "4e73d81e8aa755537930e519a29a9b79c87d23a35cac28a847d1d397e7df24d3",
+      "reportSha256": "9afa24c8fdcbb382abf5076c6f807fd258f10a70c6cee3e90b7df63483d3431e",
+      "observerTraceSha256": "a0826e09f4a0d7dc8ac932cf13f966f210ad011c4d6187aa9761dd4767a4382b",
+      "samplerTraceSha256": "6f4c6e3b2f7d99f6a59d4b0c3fe475d573a609b81d8d1b65e82bc29287551930",
+      "selectedPageSha256": "ff06f3ebe3107a3c2b60689a78ed3070c5af49fe26ea00792b1bfa62aece3c75"
+    },
+    {
+      "name": "webview2-B1",
+      "role": "candidate",
+      "sdkVersion": "0.7.0-preview.4",
+      "runId": "0dbfbfe0cc8267b0ae440655ca0c69b5",
+      "hostSha256": "fa57844af3c0cff08ef724cc2e86ebfb6a59ae21b28d263eb9306a0442840071",
+      "readerQualified": true,
+      "integratedNaturalClose": true,
+      "desktopObservation": {
+        "elapsedMs": 30007.4175,
+        "sampleCount": 2758,
+        "changes": 2734,
+        "rateHzLowerBound": 91.11080618650372,
+        "changeIntervals": {
+          "samples": 2733,
+          "minimumMs": 5.7792,
+          "p50Ms": 9.9154,
+          "p95Ms": 17.5317,
+          "maximumMs": 34.0422
+        },
+        "sampleIntervals": {
+          "samples": 2757,
+          "minimumMs": 5.6484,
+          "p50Ms": 10.1244,
+          "p95Ms": 16.5658,
+          "maximumMs": 26.8138
+        },
+        "gapsOver50Ms": 0,
+        "sampleGapsAbove50Ms": 0,
+        "observerCostsMs": {
+          "capture": {
+            "samples": 2758,
+            "minimumMs": 4.6793,
+            "p50Ms": 8.8651,
+            "p95Ms": 15.2642,
+            "maximumMs": 20.7354
+          },
+          "fullPixelCompare": {
+            "samples": 2758,
+            "minimumMs": 0,
+            "p50Ms": 0.0007,
+            "p95Ms": 0.0012,
+            "maximumMs": 0.0329
+          },
+          "sha256OnBaselineAndChanges": {
+            "samples": 2735,
+            "minimumMs": 0.2612,
+            "p50Ms": 0.2781,
+            "p95Ms": 0.3421,
+            "maximumMs": 0.6525
+          },
+          "preflightValidation": {
+            "samples": 2758,
+            "minimumMs": 0.0741,
+            "p50Ms": 0.2156,
+            "p95Ms": 0.8996,
+            "maximumMs": 8.8539
+          },
+          "postflightValidation": {
+            "samples": 2758,
+            "minimumMs": 0.1079,
+            "p50Ms": 0.3752,
+            "p95Ms": 1.8823,
+            "maximumMs": 14.5095
+          }
+        },
+        "physicalFps": null,
+        "exactUniqueFps": null,
+        "omittedTransitions": null
+      },
+      "precedingPageReport": {
+        "scope": "Separate preceding 30s page warmup/provenance; not the native pixel interval",
+        "callbackHz": 99.93333333333334,
+        "intervalHz": 99.93131181105399,
+        "p95IntervalMsUpperBound": 10.25,
+        "longIntervalsAbove50Ms": 0,
+        "steps": 2999,
+        "stateHash": "b72f3fa1",
+        "drawCalls": 2998,
+        "spriteDrawCalls": 719520,
+        "backlogWholeSteps": 0,
+        "parameters": {
+          "inputTrace": "off",
+          "logicalViewport": {
+            "height": 360,
+            "width": 480
+          },
+          "maxEchoOutstanding": 8,
+          "maxOutstandingRequests": 8,
+          "maxStepsPerCallback": 8,
+          "payloadBytes": 64,
+          "seed": 1374772973,
+          "sprites": 240,
+          "stepHz": 100
+        },
+        "valid": true,
+        "complete": true
+      },
+      "scopedCpuMachinePercent": 1.9205385427666315,
+      "fullAppCpuQualified": false,
+      "fullAppMemoryQualified": false,
+      "evidence": "repair-r16/frame-entry/sessions/webview2-B1",
+      "resultSha256": "02c04f7ac4504541871472cce9ba90ebc2c008c3798379e4cfd8b756f76cb2f9",
+      "reportSha256": "50a9cc26773636fa8fad072bde6798562c3791e10d6e2519edf4a689ff36cfdc",
+      "observerTraceSha256": "acc24ed565004ed749c91fa029a5b884ece547360f65dbccd8a94c92d438f1c8",
+      "samplerTraceSha256": "9c85da2e332964233383fa9cb4c60cc1760acccd7c08b654524ab48e0bc42ef7",
+      "selectedPageSha256": "f1017888e93e6492db9c3da1d1d5f3a2474c33610f74999b5aa5d87b1c6c0115"
+    },
+    {
+      "name": "webview2-B2",
+      "role": "candidate",
+      "sdkVersion": "0.7.0-preview.4",
+      "runId": "2098c34fbf7e483833508053ce9c8fb0",
+      "hostSha256": "fa57844af3c0cff08ef724cc2e86ebfb6a59ae21b28d263eb9306a0442840071",
+      "readerQualified": true,
+      "integratedNaturalClose": true,
+      "desktopObservation": {
+        "elapsedMs": 30001.0493,
+        "sampleCount": 2722,
+        "changes": 2704,
+        "rateHzLowerBound": 90.13018088004009,
+        "changeIntervals": {
+          "samples": 2703,
+          "minimumMs": 5.4395,
+          "p50Ms": 9.969,
+          "p95Ms": 17.7346,
+          "maximumMs": 24.3713
+        },
+        "sampleIntervals": {
+          "samples": 2721,
+          "minimumMs": 5.2278,
+          "p50Ms": 10.2567,
+          "p95Ms": 16.821,
+          "maximumMs": 24.2134
+        },
+        "gapsOver50Ms": 0,
+        "sampleGapsAbove50Ms": 0,
+        "observerCostsMs": {
+          "capture": {
+            "samples": 2722,
+            "minimumMs": 4.7267,
+            "p50Ms": 8.992,
+            "p95Ms": 15.4213,
+            "maximumMs": 20.9439
+          },
+          "fullPixelCompare": {
+            "samples": 2722,
+            "minimumMs": 0,
+            "p50Ms": 0.0007,
+            "p95Ms": 0.0012,
+            "maximumMs": 0.0516
+          },
+          "sha256OnBaselineAndChanges": {
+            "samples": 2705,
+            "minimumMs": 0.2569,
+            "p50Ms": 0.2789,
+            "p95Ms": 0.3602,
+            "maximumMs": 0.671
+          },
+          "preflightValidation": {
+            "samples": 2722,
+            "minimumMs": 0.0739,
+            "p50Ms": 0.1857,
+            "p95Ms": 0.9276,
+            "maximumMs": 5.4781
+          },
+          "postflightValidation": {
+            "samples": 2722,
+            "minimumMs": 0.1052,
+            "p50Ms": 0.323,
+            "p95Ms": 1.6674,
+            "maximumMs": 7.3709
+          }
+        },
+        "physicalFps": null,
+        "exactUniqueFps": null,
+        "omittedTransitions": null
+      },
+      "precedingPageReport": {
+        "scope": "Separate preceding 30s page warmup/provenance; not the native pixel interval",
+        "callbackHz": 99.93333333333334,
+        "intervalHz": 99.9293125984019,
+        "p95IntervalMsUpperBound": 10.25,
+        "longIntervalsAbove50Ms": 0,
+        "steps": 2999,
+        "stateHash": "b72f3fa1",
+        "drawCalls": 2998,
+        "spriteDrawCalls": 719520,
+        "backlogWholeSteps": 0,
+        "parameters": {
+          "inputTrace": "off",
+          "logicalViewport": {
+            "height": 360,
+            "width": 480
+          },
+          "maxEchoOutstanding": 8,
+          "maxOutstandingRequests": 8,
+          "maxStepsPerCallback": 8,
+          "payloadBytes": 64,
+          "seed": 1374772973,
+          "sprites": 240,
+          "stepHz": 100
+        },
+        "valid": true,
+        "complete": true
+      },
+      "scopedCpuMachinePercent": 1.9908546147877908,
+      "fullAppCpuQualified": false,
+      "fullAppMemoryQualified": false,
+      "evidence": "repair-r16/frame-entry/sessions/webview2-B2",
+      "resultSha256": "b55cd5c490d813e7771e358644824fdf80e28cfe53f84e1cd23273d3601f7c2a",
+      "reportSha256": "5fba2ee2396e3d0457f6d9a254eb2dcd21b42a73b957218fd05a379f30aa3ada",
+      "observerTraceSha256": "477b72e233960dbf2101550d8ea0fdb118f160b830f8bf0ae67adfd1a38d0f38",
+      "samplerTraceSha256": "626cfa2e800868dfd0e652de2f9903107d10d498fa404dd2977981042e2a4320",
+      "selectedPageSha256": "470eed0a99b3809adae0aaeba9737cf9ded3e85e60cda936774948f1b9c8a113"
+    },
+    {
+      "name": "webview2-A2",
+      "role": "baseline",
+      "sdkVersion": "0.6.0",
+      "runId": "8bd8d212015c5016080419fa95e9e5e1",
+      "hostSha256": "2b019f5e51da9c8bf635ef7c31d961380b558c02cf1789f2ff8a87ff3b5fe985",
+      "readerQualified": true,
+      "integratedNaturalClose": true,
+      "desktopObservation": {
+        "elapsedMs": 30006.8377,
+        "sampleCount": 2856,
+        "changes": 2851,
+        "rateHzLowerBound": 95.01167795498824,
+        "changeIntervals": {
+          "samples": 2850,
+          "minimumMs": 5.915,
+          "p50Ms": 9.8465,
+          "p95Ms": 15.0652,
+          "maximumMs": 26.9723
+        },
+        "sampleIntervals": {
+          "samples": 2855,
+          "minimumMs": 5.4379,
+          "p50Ms": 9.9935,
+          "p95Ms": 15.2251,
+          "maximumMs": 28.949
+        },
+        "gapsOver50Ms": 0,
+        "sampleGapsAbove50Ms": 0,
+        "observerCostsMs": {
+          "capture": {
+            "samples": 2856,
+            "minimumMs": 4.6481,
+            "p50Ms": 8.7798,
+            "p95Ms": 13.343,
+            "maximumMs": 20.2634
+          },
+          "fullPixelCompare": {
+            "samples": 2856,
+            "minimumMs": 0,
+            "p50Ms": 0.0006,
+            "p95Ms": 0.0011,
+            "maximumMs": 0.0239
+          },
+          "sha256OnBaselineAndChanges": {
+            "samples": 2852,
+            "minimumMs": 0.2555,
+            "p50Ms": 0.273,
+            "p95Ms": 0.3418,
+            "maximumMs": 0.5802
+          },
+          "preflightValidation": {
+            "samples": 2856,
+            "minimumMs": 0.0732,
+            "p50Ms": 0.2041,
+            "p95Ms": 0.8944,
+            "maximumMs": 7.0606
+          },
+          "postflightValidation": {
+            "samples": 2856,
+            "minimumMs": 0.1083,
+            "p50Ms": 0.379,
+            "p95Ms": 1.8407,
+            "maximumMs": 15.8499
+          }
+        },
+        "physicalFps": null,
+        "exactUniqueFps": null,
+        "omittedTransitions": null
+      },
+      "precedingPageReport": {
+        "scope": "Separate preceding 30s page warmup/provenance; not the native pixel interval",
+        "callbackHz": 100,
+        "intervalHz": 99.99733251526494,
+        "p95IntervalMsUpperBound": 10.25,
+        "longIntervalsAbove50Ms": 0,
+        "steps": 2999,
+        "stateHash": "b72f3fa1",
+        "drawCalls": 3000,
+        "spriteDrawCalls": 720000,
+        "backlogWholeSteps": 0,
+        "parameters": {
+          "inputTrace": "off",
+          "logicalViewport": {
+            "height": 360,
+            "width": 480
+          },
+          "maxEchoOutstanding": 8,
+          "maxOutstandingRequests": 8,
+          "maxStepsPerCallback": 8,
+          "payloadBytes": 64,
+          "seed": 1374772973,
+          "sprites": 240,
+          "stepHz": 100
+        },
+        "valid": true,
+        "complete": true
+      },
+      "scopedCpuMachinePercent": 1.8518518518518519,
+      "fullAppCpuQualified": false,
+      "fullAppMemoryQualified": false,
+      "evidence": "repair-r16/frame-entry/sessions/webview2-A2",
+      "resultSha256": "390d9c1add84b585e1b6274af7cdf05fc86893382a5c39a04b3caf834597ecd1",
+      "reportSha256": "648add4a554d753d7cea5db0cf04c3a567216f9aa29345eac4cd277cba688879",
+      "observerTraceSha256": "27834fffaaf59928a2f11b441587b413a63c6e7327f01dde80fffe4c0fe66b21",
+      "samplerTraceSha256": "74fc80049ff088b59f0844576276c88267ea07e7989a98675d00ea412270a8a8",
+      "selectedPageSha256": "fd0323f2d5dcd07d0f832d3b2486557bf9a4654d2f524620e27d1ee9686a1131"
+    }
+  ],
+  "limitations": [
+    "Only the WebView2 Canvas240 100Hz fixture is covered; MiniBlink and input latency are not measured.",
+    "GDI sampled pixel transitions are lower bounds; physical presents, exact unique frames and omitted transitions remain unknown.",
+    "The 4ms requested poll does not imply 4ms capture cadence; capture costs and sampling gaps constrain resolution.",
+    "A1 six-bin range is within-run noise, not a statistical population confidence interval.",
+    "Preceding page RAF statistics are from a separate interval and cannot be substituted for desktop observations.",
+    "Scoped process-tree resource statistics do not certify complete lifetime/shared-process attribution or GPU memory.",
+    "No favorable-result retries or post-candidate threshold adjustment are permitted."
+  ],
+  "miniBlinkObservationPerformed": false,
+  "miniBlinkInterruptedByPhysicalEscape": true,
+  "inputLatencyQualified": false,
+  "performanceVerified": false,
+  "releaseReady": false,
+  "wholeGoalComplete": false
+}

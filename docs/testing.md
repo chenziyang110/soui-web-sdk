@@ -1,5 +1,9 @@
 # 测试与验收
 
+性能消费者的工具链准入可用 `node --test tests/sdk/performance-host-toolchain.test.cjs` 单独验证。测试实际执行消费者的 CMake guard，覆盖 Visual Studio 固定 SDK 和显式 LLVM 的缺失工具链、错误 SDK、错误 generator、真实语言验证失败等九种分支。显式 LLVM 仍调用产品工具链验证函数；该合同与编译结果不替代 MSVC143、进程监督、输入或显示性能验收。
+
+正式 MSVC 构建与测量工具准备在写输出、安装 Web 依赖或使原收据失效前先检查编译环境；环境占用时立即失败，实际 configure/build 仍执行原共享 lease 与完整隔离检查。`node --test tests/sdk/msvc-compiler-lifecycle.test.cjs` 用惰性进程和 mutex 替身覆盖预检拒绝、释放、预检后竞争和原自然退出/错误保留，不启动真实编译器。预检通过不能替代正式构建或自然 Job 收口证据。
+
 2026-10-26 的任务唤醒与有界接纳候选提供[确定性契约](../tests/native/scheduler_continuation/README.md)和扩展至 22 项的真实 worker fixture；首任务、跨线程积压、延时起点及关闭验证入口见[交接说明](maintenance/input-latency-20261026.md)。最终源码按维护者要求未继续编译或运行，早期实验不作为当前通过证据。默认 vendor 精确注册清单同步为实际 64 项。
 
 `kernel.native.scroll-ack-feedback` 的[独立入口](../tests/native/scroll_ack_feedback/README.md)直接使用生产 ACK helper、Controller、Snapshot 和默认 client 查询；旧方法对照通过机械提取保持真实生产逻辑。加强快照拒绝断言后的两架构当前 ACK 各 25/25，既有目标、边界、覆盖各 2/2、19/19、13/13，八个当前程序在隔离来宾全部退出 0；旧对照各 3/10 并真实退出 1，整个 suite 仍退出 1。当前记录见[维护说明](maintenance/scroll-ack-feedback-20261023.md)和[验证摘要](verification/scroll-ack-feedback-20261023.json)。完整 x86 内核已自然构建退出 0 并获独立 build-only 验收；另有 GUI21 协议页 800 请求位移及 GUI22 真实同值 CSS 取消的限定观察。helper 状态测试和构建不替代实际来源验证，100 ms 采样也不证明 setter 瞬时 target/velocity 或整体流畅度。

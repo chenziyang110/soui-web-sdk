@@ -11,8 +11,11 @@ constexpr DWORD boundMs = 5000;
 DWORD engineThreadId = 0;
 std::atomic<bool> failScheduler{false};
 thread_local bool failNextAllocation = false;
+thread_local int allocationsUntilFailure = -1;
+thread_local unsigned sourceLockDepth = 0;
 thread_local bool closingRegistry = false;
 const char* caseId = nullptr;
+const char* contractFailureReason = "actual-source-contract-failed";
 const char* waitFault = "wait";
 content::BlinkPlatformImpl* platform = nullptr;
 std::atomic<void*> schedulerStorage{nullptr}, workerStorage{nullptr};
@@ -23,6 +26,8 @@ std::atomic<int> sectionsInitialized{0}, sectionsDeleted{0}, tlsAttempts{0}, tls
 std::atomic<int> observedJoins{0}, exitQueries{0}, injectedWaitFailures{0}, injectedExitFailures{0};
 std::atomic<int> debugBreaks{0}, closeInspections{0}, inspectedCount{-1}, inspectedReady{-1};
 std::atomic<int> windowAcquired{0}, windowDestroyed{0}, timerAcquired{0}, timerKilled{0}, classUnregistered{0};
+std::atomic<int> poolTimerAcquired{0}, poolTimerArmed{0}, poolTimerCancelled{0}, poolTimerDrained{0}, poolTimerClosed{0};
+std::atomic<int> preciseTimerArmed{0}, preciseWaitAcquired{0}, preciseWaitDrained{0}, preciseWaitClosed{0};
 std::atomic<bool> failEvent{false}, failLaunch{false}, failTls{false}, failJoin{false};
 std::atomic<bool> holdStartup{false}, holdNativeReturn{false};
 std::atomic<bool> constructorReturned{false};
@@ -38,6 +43,15 @@ content::WebThreadImpl* committed = nullptr;
 constexpr UINT schedulerProbeMessage = WM_APP + 0x31;
 std::atomic<bool> controlledSchedulerClock{false}, workerSchedulerProbe{false};
 std::atomic<double> schedulerSeconds{100.0};
+std::atomic<bool> controlledProviderClock{false}, failProviderClock{false};
+std::atomic<unsigned long long> providerQpc{1000}, providerClockReads{0};
+BOOL WINAPI sourceQueryPerformanceCounter(LARGE_INTEGER* value) {
+    if (!controlledProviderClock) return ::QueryPerformanceCounter(value);
+    ++providerClockReads;
+    if (failProviderClock) return FALSE;
+    value->QuadPart = static_cast<LONGLONG>(providerQpc.load());
+    return TRUE;
+}
 std::atomic<unsigned> schedulerTaskRuns{0}, nativeProbeRuns{0}, nativeProbeSeen{0};
 std::atomic<unsigned> workerFirstYieldRuns{0}, workerMidChainWaits{0};
 
@@ -152,6 +166,7 @@ void WINAPI sourceEnterSection(LPCRITICAL_SECTION section) {
     const bool registry = platform && section == platform->m_lock;
     if (registry && closingRegistry) ::SetEvent(contenderAttempted);
     ::EnterCriticalSection(section);
+    ++sourceLockDepth;
     if (registry && closingRegistry) {
         ++closeInspections;
         inspectedCount = platform->m_threadNum;
@@ -159,6 +174,10 @@ void WINAPI sourceEnterSection(LPCRITICAL_SECTION section) {
             && platform->m_threads[0]->threadId() == workerNativeId ? 1 : 0;
         note("close-registry-acquired", static_cast<unsigned>(platform->m_threadNum));
     }
+}
+void WINAPI sourceLeaveSection(LPCRITICAL_SECTION section) {
+    if (sourceLockDepth) --sourceLockDepth;
+    ::LeaveCriticalSection(section);
 }
 void WINAPI sourceDebugBreak() {
     ++debugBreaks;
@@ -178,6 +197,42 @@ UINT_PTR WINAPI sourceSetTimer(HWND window, UINT_PTR id, UINT interval, TIMERPRO
     return result;
 }
 BOOL WINAPI sourceKillTimer(HWND window, UINT_PTR id) { const BOOL result = ::KillTimer(window, id); if (result) ++timerKilled; return result; }
+PTP_TIMER WINAPI sourceCreatePoolTimer(PTP_TIMER_CALLBACK callback, PVOID context, PTP_CALLBACK_ENVIRON environment) {
+    const PTP_TIMER result = ::CreateThreadpoolTimer(callback, context, environment);
+    if (result) ++poolTimerAcquired;
+    return result;
+}
+VOID WINAPI sourceSetPoolTimer(PTP_TIMER timer, PFILETIME due, DWORD period, DWORD window) {
+    ::SetThreadpoolTimer(timer, due, period, window);
+    if (due) ++poolTimerArmed; else ++poolTimerCancelled;
+}
+VOID WINAPI sourceDrainPoolTimer(PTP_TIMER timer, BOOL cancelPending) {
+    ::WaitForThreadpoolTimerCallbacks(timer, cancelPending);
+    ++poolTimerDrained;
+}
+VOID WINAPI sourceClosePoolTimer(PTP_TIMER timer) {
+    ::CloseThreadpoolTimer(timer);
+    ++poolTimerClosed;
+}
+BOOL WINAPI sourceSetWaitableTimer(HANDLE timer, const LARGE_INTEGER* due, LONG period,
+    PTIMERAPCROUTINE callback, LPVOID argument, BOOL resume) {
+    const BOOL result = ::SetWaitableTimer(timer, due, period, callback, argument, resume);
+    if (result) ++preciseTimerArmed;
+    return result;
+}
+PTP_WAIT WINAPI sourceCreatePoolWait(PTP_WAIT_CALLBACK callback, PVOID context, PTP_CALLBACK_ENVIRON environment) {
+    const PTP_WAIT result = ::CreateThreadpoolWait(callback, context, environment);
+    if (result) ++preciseWaitAcquired;
+    return result;
+}
+VOID WINAPI sourceDrainPoolWait(PTP_WAIT wait, BOOL cancelPending) {
+    ::WaitForThreadpoolWaitCallbacks(wait, cancelPending);
+    ++preciseWaitDrained;
+}
+VOID WINAPI sourceClosePoolWait(PTP_WAIT wait) {
+    ::CloseThreadpoolWait(wait);
+    ++preciseWaitClosed;
+}
 BOOL WINAPI sourceDestroyWindow(HWND window) { const BOOL result = ::DestroyWindow(window); if (result) ++windowDestroyed; return result; }
 BOOL WINAPI sourceUnregisterClass(LPCWSTR name, HINSTANCE instance) { const BOOL result = ::UnregisterClassW(name, instance); if (result) ++classUnregistered; return result; }
 LRESULT WINAPI sourceDefWindowProc(HWND window, UINT message, WPARAM first, LPARAM second) {
@@ -200,7 +255,11 @@ double fixtureSchedulerTime() {
 using WTF::fixtureSchedulerTime;
 
 void* operator new(std::size_t size) {
-    if (fixture::failNextAllocation) { fixture::failNextAllocation = false; ++fixture::allocationFailures; fixture::note("stl-bad-alloc"); throw std::bad_alloc(); }
+    if (fixture::failNextAllocation || fixture::allocationsUntilFailure == 0) {
+        fixture::failNextAllocation = false; fixture::allocationsUntilFailure = -1;
+        ++fixture::allocationFailures; fixture::note("stl-bad-alloc"); throw std::bad_alloc();
+    }
+    if (fixture::allocationsUntilFailure > 0) --fixture::allocationsUntilFailure;
     void* result = std::malloc(size ? size : 1);
     if (!result) throw std::bad_alloc();
     return result;
@@ -229,14 +288,24 @@ void operator delete[](void* pointer, std::size_t) noexcept { ::operator delete(
 #define InitializeCriticalSectionAndSpinCount fixture::sourceInitSectionSpin
 #define DeleteCriticalSection fixture::sourceDeleteSection
 #define EnterCriticalSection fixture::sourceEnterSection
+#define LeaveCriticalSection fixture::sourceLeaveSection
 #define DebugBreak fixture::sourceDebugBreak
 #define CreateWindowExW fixture::sourceCreateWindow
 #define SetTimer fixture::sourceSetTimer
 #define KillTimer fixture::sourceKillTimer
+#define CreateThreadpoolTimer fixture::sourceCreatePoolTimer
+#define SetThreadpoolTimer fixture::sourceSetPoolTimer
+#define WaitForThreadpoolTimerCallbacks fixture::sourceDrainPoolTimer
+#define CloseThreadpoolTimer fixture::sourceClosePoolTimer
+#define SetWaitableTimer fixture::sourceSetWaitableTimer
+#define CreateThreadpoolWait fixture::sourceCreatePoolWait
+#define WaitForThreadpoolWaitCallbacks fixture::sourceDrainPoolWait
+#define CloseThreadpoolWait fixture::sourceClosePoolWait
 #define DestroyWindow fixture::sourceDestroyWindow
 #define UnregisterClassW fixture::sourceUnregisterClass
 #undef DefWindowProc
 #define DefWindowProc fixture::sourceDefWindowProc
+#define QueryPerformanceCounter fixture::sourceQueryPerformanceCounter
 #define currentTime fixtureSchedulerTime
 #define monotonicallyIncreasingTime fixtureSchedulerTime
 #include "content/web_impl_win/WebThreadImpl.cpp"
@@ -246,6 +315,7 @@ namespace content {
 #include "fragments/tls.inc"
 #include "fragments/registry_and_tls_methods.inc"
 #include "fragments/scheduler_ctor_dtor.inc"
+#include "fragments/scheduler_post_timer_at.inc"
 int CheckReEnter::s_kEnterCount = 0;
 #include "fragments/reentry_static_methods.inc"
 }
@@ -260,13 +330,23 @@ int CheckReEnter::s_kEnterCount = 0;
 #undef InitializeCriticalSectionAndSpinCount
 #undef DeleteCriticalSection
 #undef EnterCriticalSection
+#undef LeaveCriticalSection
 #undef DebugBreak
 #undef CreateWindowExW
 #undef SetTimer
 #undef KillTimer
+#undef CreateThreadpoolTimer
+#undef SetThreadpoolTimer
+#undef WaitForThreadpoolTimerCallbacks
+#undef CloseThreadpoolTimer
+#undef SetWaitableTimer
+#undef CreateThreadpoolWait
+#undef WaitForThreadpoolWaitCallbacks
+#undef CloseThreadpoolWait
 #undef DestroyWindow
 #undef UnregisterClassW
 #undef DefWindowProc
+#undef QueryPerformanceCounter
 #undef currentTime
 #undef monotonicallyIncreasingTime
 
@@ -571,7 +651,7 @@ bool mainThreadCase() {
     const HWND window = nativeWindow;
     const bool nativeAlive = window && ::IsWindow(window) && windowAcquired == 1 && content::armedDeadline == 0;
     delete thread;
-    const bool nativeReleased = windowDestroyed == 1 && !::IsWindow(window) && !content::deadlineWait && !content::deadlineTimer && classUnregistered == 1;
+    const bool nativeReleased = windowDestroyed == 1 && !::IsWindow(window) && !content::deadlineTimer && !content::retryTimer && classUnregistered == 1;
     ::CloseHandle(receipt.ran);
     return mainIdentity && firstNativeTick && taskRan && receipt.disposed == 1 && nativeAlive && nativeReleased
         && launchAttempts == 0 && eventAttempts == 0 && platform->m_threadNum == 0 && platform->m_threads.empty()
@@ -630,7 +710,7 @@ bool mainSchedulerBudgetCase(bool clockBudget) {
     delete thread;
     ::CloseHandle(future.ran);
     return yielded && nativeTurn && futureNotEarly && futureCompleted && future.disposed == 1
-        && schedulerTasksExactlyOnce(receipt) && windowDestroyed == 1 && timerKilled >= 1
+        && schedulerTasksExactlyOnce(receipt) && windowDestroyed == 1 && !content::deadlineTimer && !content::retryTimer
         && platform->m_threadNum == 0 && platform->m_threads.empty();
 }
 bool mainSchedulerContinuationCase() {
@@ -763,10 +843,11 @@ bool workerSchedulerBudgetCase(bool clockBudget) {
     ::CloseHandle(receipt.completed);
     ::CloseHandle(receipt.retired);
     note("worker-first-yield-ready-tasks", workerFirstYieldRuns);
-    const bool originalBudget = clockBudget
-        ? workerFirstYieldRuns > 32 && workerFirstYieldRuns < SchedulerReceipt::taskCount
-        : workerMidChainWaits == 0;
-    return completed && retired_while_idle && originalBudget && schedulerTasksExactlyOnce(receipt) && cleanWorkerReceipt();
+    const bool cooperativeBudget = clockBudget
+        ? workerFirstYieldRuns >= 2 && workerFirstYieldRuns <= 3
+        : workerFirstYieldRuns > 0 && workerFirstYieldRuns <= 32;
+    return completed && retired_while_idle && cooperativeBudget && workerMidChainWaits > 0
+        && schedulerTasksExactlyOnce(receipt) && cleanWorkerReceipt();
 }
 bool mainSchedulerShutdownCase() {
     SchedulerReceipt receipt;
@@ -776,8 +857,23 @@ bool mainSchedulerShutdownCase() {
     const bool notRunEarly = schedulerTaskRuns == 0;
     delete thread;
     note("shutdown-drained-ready-tasks", schedulerTaskRuns);
+    note("shutdown-pool-timers-acquired", poolTimerAcquired);
+    note("shutdown-pool-timers-armed", poolTimerArmed);
+    note("shutdown-pool-timers-cancelled", poolTimerCancelled);
+    note("shutdown-pool-timers-drained", poolTimerDrained);
+    note("shutdown-pool-timers-closed", poolTimerClosed);
+    const bool nativeTimersClosed = poolTimerAcquired == 2 && poolTimerArmed + preciseTimerArmed >= 1
+        && poolTimerCancelled >= 2 && poolTimerDrained == poolTimerAcquired
+        && poolTimerClosed == poolTimerAcquired && timerKilled == timerAcquired
+        && preciseWaitDrained == preciseWaitAcquired && preciseWaitClosed == preciseWaitAcquired;
+    const bool publicationRetired = content::continuationClosed && !content::continuationWindow
+        && !content::timerWindowHandle && !content::deadlineTimer && !content::retryTimer
+        && !content::preciseDeadlineTimer && !content::preciseDeadlineWait
+        && !content::deadlineTicket && !content::pendingContinuation && !content::timerID
+        && content::armedDeadline == 0 && !content::sharedHighResolution;
     return notRunEarly && schedulerTaskRuns == SchedulerReceipt::taskCount
-        && schedulerTasksExactlyOnce(receipt) && windowDestroyed == 1 && timerKilled >= 1
+        && schedulerTasksExactlyOnce(receipt) && windowDestroyed == 1 && classUnregistered == 1
+        && nativeTimersClosed && publicationRetired
         && platform->m_threadNum == 0 && platform->m_threads.empty();
 }
 bool mainSchedulerPreShutdownCase() {
@@ -801,7 +897,562 @@ bool mainSchedulerPreShutdownCase() {
         && acceptedAfterDrain.disposed == 1 && schedulerTasksExactlyOnce(receipt)
         && platform->m_threadNum == 0 && platform->m_threads.empty();
 }
+struct AbsoluteDeadlineReceipt {
+    static constexpr unsigned taskCount = 2;
+    static constexpr double deadline = 100.00025;
+    std::array<std::atomic<unsigned>, taskCount> runs{};
+    std::array<unsigned, taskCount> order{};
+    std::atomic<unsigned> totalRuns{0}, disposed{0}, earlyRuns{0};
+    std::atomic<bool> posting{false}, inlineRun{false}, ownerMatches{true};
+};
+class AbsoluteDeadlineTask final : public blink::WebThread::Task {
+public:
+    AbsoluteDeadlineTask(AbsoluteDeadlineReceipt& receipt, content::WebThreadImpl* owner, unsigned index)
+        : receipt_(receipt), owner_(owner), index_(index) { }
+    ~AbsoluteDeadlineTask() override { ++receipt_.disposed; }
+    void run() override {
+        if (receipt_.posting) receipt_.inlineRun = true;
+        if (schedulerSeconds < AbsoluteDeadlineReceipt::deadline) ++receipt_.earlyRuns;
+        if (!owner_->isCurrentThread() || platform->currentThread() != owner_) receipt_.ownerMatches = false;
+        const unsigned position = receipt_.totalRuns++;
+        if (position < AbsoluteDeadlineReceipt::taskCount) receipt_.order[position] = index_;
+        ++receipt_.runs[index_];
+    }
+private:
+    AbsoluteDeadlineReceipt& receipt_;
+    content::WebThreadImpl* owner_;
+    unsigned index_;
+};
+struct AbsoluteDeadlineProducer {
+    content::WebThreadImpl* thread;
+    AbsoluteDeadlineReceipt* receipt;
+};
+unsigned __stdcall postAbsoluteDeadlineBatch(void* value) {
+    auto* producer = static_cast<AbsoluteDeadlineProducer*>(value);
+    auto* scheduler = static_cast<content::WebSchedulerImpl*>(producer->thread->scheduler());
+    for (unsigned index = 0; index < AbsoluteDeadlineReceipt::taskCount; ++index) {
+        // Equal D, but a different producer now for each call. Exercise the
+        // projected production adapter, never reproduce its delay arithmetic.
+        schedulerSeconds = 100.0 + static_cast<double>(index) * 0.0001;
+        producer->receipt->posting = true;
+        scheduler->postTimerTaskAt(FROM_HERE,
+            new AbsoluteDeadlineTask(*producer->receipt, producer->thread, index), AbsoluteDeadlineReceipt::deadline);
+        producer->receipt->posting = false;
+    }
+    return 0;
+}
+bool schedulerAbsoluteDeadlineCase(bool crossThread, bool lateAdmission) {
+    // Receipt outlives the actual owner even on RED: shutdown is allowed to
+    // run future tasks, whose captures must stay alive until delete completes.
+    AbsoluteDeadlineReceipt receipt;
+    auto* thread = schedulerMainThread();
+    if (!thread || !nativeWindow) return false;
+    AbsoluteDeadlineProducer producer{thread, &receipt};
+    bool producerClosed = true;
+    if (crossThread) {
+        HANDLE native = reinterpret_cast<HANDLE>(::_beginthreadex(nullptr, 0,
+            postAbsoluteDeadlineBatch, &producer, 0, nullptr));
+        if (!native || ::WaitForSingleObject(native, boundMs) != WAIT_OBJECT_0) ::ExitProcess(98);
+        DWORD exitCode = STILL_ACTIVE;
+        const bool returned = ::GetExitCodeThread(native, &exitCode) && exitCode == 0;
+        producerClosed = ::CloseHandle(native) != FALSE && returned;
+    } else {
+        producerClosed = postAbsoluteDeadlineBatch(&producer) == 0;
+    }
+    const bool asynchronous = receipt.totalRuns == 0 && receipt.disposed == 0 && !receipt.inlineRun;
+    const bool queuedOnProducer = !crossThread || thread->timerHeap().empty();
+    schedulerSeconds = lateAdmission ? 100.0005 : 100.0002;
+    thread->startTriggerTasks(); // Actual pending-index admission, without executing tasks.
+    const double ownerNow = schedulerSeconds.load();
+    const double expectedRemaining = std::max(0.0, AbsoluteDeadlineReceipt::deadline - ownerNow);
+    const bool bothAdmitted = thread->timerHeap().size() == AbsoluteDeadlineReceipt::taskCount;
+    bool retainedDeadline = bothAdmitted;
+    for (auto* timer : thread->timerHeap()) {
+        const double remaining = timer->nextFireInterval();
+        std::printf("{\"record\":\"absolute-deadline-target\",\"case\":\"%s\",\"expectedD\":%.17g,\"ownerNow\":%.17g,\"expectedRemaining\":%.17g,\"observedRemaining\":%.17g}\n",
+            caseId, AbsoluteDeadlineReceipt::deadline, ownerNow, expectedRemaining, remaining);
+        retainedDeadline = remaining == expectedRemaining && retainedDeadline;
+    }
+    if (!retainedDeadline) {
+        contractFailureReason = "absolute-deadline-retained-D-assertion-failed";
+        std::fprintf(stderr, "retained-D assertion failed: actual scheduler adapter rebuilt fractional absolute deadline %.17g\n",
+            AbsoluteDeadlineReceipt::deadline);
+    }
+    bool noEarlyRun = receipt.totalRuns == 0;
+    if (!lateAdmission) {
+        schedulerSeconds = AbsoluteDeadlineReceipt::deadline - 0.000001;
+        thread->fire();
+        noEarlyRun = receipt.totalRuns == 0 && noEarlyRun;
+        schedulerSeconds = AbsoluteDeadlineReceipt::deadline;
+    }
+    thread->fire();
+    const bool ranWhenDue = receipt.totalRuns == AbsoluteDeadlineReceipt::taskCount;
+    delete thread; // Also cleanly drains baseline's rebuilt future targets on RED.
+    bool exactlyOnce = receipt.disposed == AbsoluteDeadlineReceipt::taskCount;
+    for (unsigned index = 0; index < AbsoluteDeadlineReceipt::taskCount; ++index)
+        exactlyOnce = receipt.runs[index] == 1 && receipt.order[index] == index && exactlyOnce;
+    const bool cleanOwner = windowDestroyed == 1 && schedulerFrees == 1 && sectionsDeleted == 2
+        && !content::deadlineTimer && !content::retryTimer
+        && platform->m_threadNum == 0 && platform->m_threads.empty();
+    std::printf("{\"record\":\"absolute-deadline-receipt\",\"case\":\"%s\",\"retainedD\":%s,\"asynchronous\":%s,\"noEarlyRun\":%s,\"ranWhenDue\":%s,\"exactlyOnce\":%s,\"cleanOwner\":%s}\n",
+        caseId, retainedDeadline ? "true" : "false", asynchronous ? "true" : "false",
+        noEarlyRun ? "true" : "false", ranWhenDue ? "true" : "false", exactlyOnce ? "true" : "false", cleanOwner ? "true" : "false");
+    return producerClosed && asynchronous && queuedOnProducer && retainedDeadline && noEarlyRun && ranWhenDue
+        && receipt.earlyRuns == 0 && !receipt.inlineRun && receipt.ownerMatches && exactlyOnce && cleanOwner;
+}
+struct AbsoluteValueReceipt {
+    std::atomic<unsigned> runs{0}, disposed{0};
+    std::atomic<DWORD> runTid{0};
+    std::atomic<double> runTime{0};
+    std::atomic<bool> posting{false}, inlineRun{false}, underLock{false}, ownerMatches{true}, postThrew{false};
+};
+class AbsoluteValueTask final : public blink::WebThread::Task {
+public:
+    AbsoluteValueTask(AbsoluteValueReceipt& receipt, content::WebThreadImpl* owner)
+        : receipt_(receipt), owner_(owner) { }
+    ~AbsoluteValueTask() override {
+        if (sourceLockDepth) receipt_.underLock = true;
+        ++receipt_.disposed;
+    }
+    void run() override {
+        if (receipt_.posting) receipt_.inlineRun = true;
+        if (!owner_->isCurrentThread() || platform->currentThread() != owner_) receipt_.ownerMatches = false;
+        receipt_.runTid = ::GetCurrentThreadId();
+        receipt_.runTime = schedulerSeconds.load();
+        ++receipt_.runs;
+    }
+private:
+    AbsoluteValueReceipt& receipt_;
+    content::WebThreadImpl* owner_;
+};
+struct AbsoluteValuePost {
+    content::WebThreadImpl* thread;
+    AbsoluteValueReceipt* receipt;
+    double deadline;
+    bool adapter;
+    int failAfter = -1;
+};
+struct AbsoluteValueBatch { AbsoluteValuePost* posts; unsigned count; };
+unsigned __stdcall postAbsoluteValues(void* value) {
+    auto* batch = static_cast<AbsoluteValueBatch*>(value);
+    for (unsigned index = 0; index < batch->count; ++index) {
+        auto& post = batch->posts[index];
+        auto* task = new AbsoluteValueTask(*post.receipt, post.thread);
+        post.receipt->posting = true;
+        allocationsUntilFailure = post.failAfter; // Allocate the transferred task before arming OOM.
+        try {
+            if (post.adapter)
+                static_cast<content::WebSchedulerImpl*>(post.thread->scheduler())->postTimerTaskAt(FROM_HERE, task, post.deadline);
+            else
+                post.thread->postTaskAtWithPriorityCrossThread(FROM_HERE, task, post.deadline, content::WebThreadImpl::kDefaultPriority);
+        } catch (...) { post.receipt->postThrew = true; }
+        allocationsUntilFailure = -1;
+        post.receipt->posting = false;
+    }
+    return 0;
+}
+bool postAbsoluteValuesOnNativeThread(AbsoluteValuePost* posts, unsigned count) {
+    AbsoluteValueBatch batch{posts, count};
+    HANDLE native = reinterpret_cast<HANDLE>(::_beginthreadex(nullptr, 0, postAbsoluteValues, &batch, 0, nullptr));
+    if (!native || ::WaitForSingleObject(native, boundMs) != WAIT_OBJECT_0) ::ExitProcess(98);
+    DWORD exitCode = STILL_ACTIVE;
+    const bool returned = ::GetExitCodeThread(native, &exitCode) && exitCode == 0;
+    return ::CloseHandle(native) != FALSE && returned;
+}
+bool absoluteValueReleased(const AbsoluteValueReceipt& receipt, unsigned expectedRuns) {
+    return receipt.runs == expectedRuns && receipt.disposed == 1
+        && !receipt.inlineRun && !receipt.underLock && !receipt.postThrew && receipt.ownerMatches;
+}
+bool absoluteMainOwnerReleased() {
+    return windowDestroyed == 1 && schedulerFrees == 1 && sectionsDeleted == 2
+        && !content::deadlineTimer && !content::retryTimer
+        && platform->m_threadNum == 0 && platform->m_threads.empty();
+}
+bool schedulerAbsoluteInputsCase(bool crossThread) {
+    const std::array<double, 7> values{{99.5, 100.0, 0.0, -1.0,
+        -(std::numeric_limits<double>::infinity)(), (std::numeric_limits<double>::quiet_NaN)(),
+        (std::numeric_limits<double>::infinity)()}};
+    constexpr unsigned postCount = 14; // Each input through adapter and direct internal entry.
+    std::array<AbsoluteValueReceipt, postCount> receipts{};
+    std::array<AbsoluteValuePost, postCount> posts{};
+    auto* thread = schedulerMainThread();
+    for (unsigned index = 0; index < postCount; ++index)
+        posts[index] = {thread, &receipts[index], values[index / 2], (index % 2) == 0};
+    bool posted = true;
+    if (crossThread) posted = postAbsoluteValuesOnNativeThread(posts.data(), postCount);
+    else { AbsoluteValueBatch batch{posts.data(), postCount}; posted = postAbsoluteValues(&batch) == 0; }
+    bool asynchronous = !crossThread || thread->timerHeap().empty();
+    for (unsigned index = 0; index < postCount; ++index)
+        asynchronous = receipts[index].runs == 0
+            && receipts[index].disposed == (index >= postCount - 2 ? 1u : 0u) && asynchronous;
+    const bool pendingReady = thread->hasReadyTaskAtOrAbove(content::WebThreadImpl::kDefaultPriority);
+    thread->startTriggerTasks();
+    bool activeDueTimers = thread->timerHeap().size() == postCount - 2;
+    for (auto* timer : thread->timerHeap())
+        activeDueTimers = timer->isActive() && timer->nextFireInterval() == 0 && activeDueTimers;
+    for (const auto& receipt : receipts) asynchronous = receipt.runs == 0 && asynchronous;
+    thread->fire();
+    bool ranOnService = true;
+    for (unsigned index = 0; index < postCount - 2; ++index)
+        ranOnService = receipts[index].runs == 1 && receipts[index].runTid == engineThreadId
+            && receipts[index].runTime == 100.0 && ranOnService;
+    delete thread;
+    bool exactlyOnce = true;
+    for (unsigned index = 0; index < postCount; ++index)
+        exactlyOnce = absoluteValueReleased(receipts[index], index >= postCount - 2 ? 0 : 1) && exactlyOnce;
+    note("absolute-input-owned-payloads", postCount);
+    return posted && asynchronous && pendingReady && activeDueTimers && ranOnService && exactlyOnce && absoluteMainOwnerReleased();
+}
+bool schedulerAbsoluteHugeCancelCase() {
+    std::array<AbsoluteValueReceipt, 2> receipts{};
+    auto* thread = schedulerMainThread();
+    const double huge = (std::numeric_limits<double>::max)() / 2;
+    std::array<AbsoluteValuePost, 2> posts{{{thread, &receipts[0], huge, true}, {thread, &receipts[1], huge, false}}};
+    AbsoluteValueBatch ownerPost{posts.data(), 1};
+    const bool ownerPosted = postAbsoluteValues(&ownerPost) == 0;
+    const bool nativePosted = postAbsoluteValuesOnNativeThread(&posts[1], 1);
+    const bool asynchronous = receipts[0].runs == 0 && receipts[1].runs == 0;
+    thread->startTriggerTasks();
+    const bool backendArmed = (poolTimerArmed > 0 && content::deadlineTimer)
+        || (preciseTimerArmed > 0 && content::preciseDeadlineTimer && content::preciseDeadlineWait);
+    note("absolute-huge-pool-timer-arms", poolTimerArmed);
+    note("absolute-huge-precise-timer-arms", preciseTimerArmed);
+    note("absolute-huge-retained-timer-count", thread->timerHeap().size());
+    note("absolute-huge-deadline-retained", content::armedDeadline == huge);
+    bool retained = thread->timerHeap().size() == 2 && content::armedDeadline == huge && backendArmed;
+    for (auto* timer : thread->timerHeap())
+        retained = timer->nextFireInterval() == huge - schedulerSeconds.load() && retained;
+    thread->fire();
+    const bool notEarly = receipts[0].runs == 0 && receipts[1].runs == 0;
+    // stop() removes from the actual index/heap and queues ordinary owner retirement.
+    while (!thread->timerHeap().empty()) thread->timerHeap().front()->stop();
+    thread->retireCompletedTasksForOwner();
+    const bool cancelled = absoluteValueReleased(receipts[0], 0) && absoluteValueReleased(receipts[1], 0);
+    note("absolute-huge-not-early", notEarly);
+    note("absolute-huge-owned-payloads-cancelled", cancelled);
+    delete thread;
+    return ownerPosted && nativePosted && asynchronous && retained && notEarly && cancelled
+        && absoluteValueReleased(receipts[0], 0) && absoluteValueReleased(receipts[1], 0) && absoluteMainOwnerReleased();
+}
+bool schedulerAbsoluteOwnerOomCase() {
+    std::array<AbsoluteValueReceipt, 3> receipts{};
+    auto* thread = schedulerMainThread();
+    const int before = allocationFailures.load();
+    bool consumed = true;
+    for (unsigned index = 0; index < receipts.size(); ++index) {
+        if (index == 1) thread->timerHeap().reserve(16); // Isolate timer allocation from reserve failure.
+        AbsoluteValuePost post{thread, &receipts[index], 100.5, (index % 2) == 0, index == 2 ? 1 : 0};
+        AbsoluteValueBatch batch{&post, 1};
+        postAbsoluteValues(&batch); // Reserve, then timer allocation, then timer-index allocation.
+        consumed = absoluteValueReleased(receipts[index], 0) && thread->timerHeap().empty() && consumed;
+    }
+    delete thread;
+    return consumed && allocationFailures == before + 3 && absoluteMainOwnerReleased();
+}
+bool schedulerAbsoluteProducerOomCase() {
+    std::array<AbsoluteValueReceipt, 5> receipts{};
+    auto* thread = schedulerMainThread();
+    const int before = allocationFailures.load();
+    bool consumed = true;
+    // TaskPair, priority node, node vector, then pending vector. All four failed
+    // transfers must release the task after leaving the real producer lock.
+    for (unsigned index = 0; index < 4; ++index) {
+        AbsoluteValuePost post{thread, &receipts[index], 100.5, (index % 2) == 0, static_cast<int>(index)};
+        const bool posted = postAbsoluteValuesOnNativeThread(&post, 1);
+        consumed = posted && absoluteValueReleased(receipts[index], 0) && thread->timerHeap().empty() && consumed;
+    }
+    AbsoluteValuePost recovery{thread, &receipts[4], 99.5, true};
+    const bool recoveryPosted = postAbsoluteValuesOnNativeThread(&recovery, 1);
+    const bool recoveryAsync = receipts[4].runs == 0 && receipts[4].disposed == 0;
+    thread->fire();
+    const bool recovered = receipts[4].runs == 1;
+    delete thread;
+    return consumed && recoveryPosted && recoveryAsync && recovered && absoluteValueReleased(receipts[4], 1)
+        && allocationFailures == before + 4 && absoluteMainOwnerReleased();
+}
+bool schedulerAbsoluteAdmissionOomCase() {
+    std::array<AbsoluteValueReceipt, 2> receipts{};
+    auto* thread = schedulerMainThread();
+    const int before = allocationFailures.load();
+    AbsoluteValuePost post{thread, &receipts[0], 100.5, true};
+    const bool posted = postAbsoluteValuesOnNativeThread(&post, 1);
+    const bool heldByPending = receipts[0].runs == 0 && receipts[0].disposed == 0 && thread->timerHeap().empty();
+    failNextAllocation = true;
+    thread->startTriggerTasks(); // Real TaskPair transfers ownership before owner reserve fails.
+    failNextAllocation = false;
+    const bool consumed = absoluteValueReleased(receipts[0], 0) && thread->timerHeap().empty();
+    AbsoluteValuePost recovery{thread, &receipts[1], 99.5, false};
+    AbsoluteValueBatch batch{&recovery, 1};
+    postAbsoluteValues(&batch);
+    const bool recoveryAsync = receipts[1].runs == 0;
+    thread->fire();
+    const bool recovered = receipts[1].runs == 1;
+    delete thread;
+    return posted && heldByPending && consumed && recoveryAsync && recovered && absoluteValueReleased(receipts[1], 1)
+        && allocationFailures == before + 1 && absoluteMainOwnerReleased();
+}
+bool schedulerAbsoluteExitCase(bool futureDrain) {
+    std::array<AbsoluteValueReceipt, 2> receipts{};
+    controlledSchedulerClock = true;
+    auto* thread = static_cast<content::WebThreadImpl*>(platform->createThread("FixtureWorker"));
+    const DWORD ownerTid = workerNativeId.load();
+    if (!futureDrain) thread->shutdown();
+    std::array<AbsoluteValuePost, 2> posts{{{thread, &receipts[0], 100.50025, true}, {thread, &receipts[1], 100.50025, false}}};
+    const bool posted = postAbsoluteValuesOnNativeThread(posts.data(), static_cast<unsigned>(posts.size()));
+    const bool beforeShutdown = receipts[0].runs == 0 && receipts[1].runs == 0
+        && receipts[0].disposed == (futureDrain ? 0u : 1u) && receipts[1].disposed == (futureDrain ? 0u : 1u);
+    thread->shutdown();
+    const bool joined = thread->threadClosed();
+    bool ranOnWorker = true;
+    if (futureDrain) for (const auto& receipt : receipts)
+        ranOnWorker = receipt.runs == 1 && receipt.runTid == ownerTid && receipt.runTime == 100.0 && ranOnWorker;
+    delete thread;
+    return posted && beforeShutdown && joined && ranOnWorker
+        && absoluteValueReleased(receipts[0], futureDrain ? 1 : 0)
+        && absoluteValueReleased(receipts[1], futureDrain ? 1 : 0) && cleanWorkerReceipt();
+}
+struct ProviderReceipt {
+    std::atomic<unsigned> runs{0}, disposed{0};
+    std::atomic<DWORD> runTid{0};
+};
+class ProviderTask final : public blink::WebThread::Task {
+public:
+    ProviderTask(ProviderReceipt& receipt, unsigned qpcCost = 0) : receipt_(receipt), qpcCost_(qpcCost) {}
+    ~ProviderTask() override { ++receipt_.disposed; }
+    void run() override { ++receipt_.runs; receipt_.runTid = ::GetCurrentThreadId(); providerQpc += qpcCost_; }
+private:
+    ProviderReceipt& receipt_;
+    unsigned qpcCost_;
+};
+bool providerReceiptComplete(const ProviderReceipt& receipt) {
+    return receipt.runs == 1 && receipt.disposed == 1 && receipt.runTid == engineThreadId;
+}
+bool providerReadyCase(bool legacy, bool crossCutoff, bool qpcFailure, bool recovery) {
+    std::array<ProviderReceipt, 4> receipts{};
+    auto* thread = schedulerMainThread();
+    if (!thread || !nativeWindow) return false;
+    controlledProviderClock = true;
+    failProviderClock = qpcFailure;
+    for (unsigned i = 0; i < 3; ++i) thread->postTask(FROM_HERE, new ProviderTask(receipts[i], crossCutoff ? 2 : 0));
+    thread->postDelayedTask(FROM_HERE, new ProviderTask(receipts[3]), 1000);
+    const auto before = providerClockReads.load();
+    bool more = false;
+    if (recovery) {
+        content::continuationDeferred = true;
+        content::readyRetry = true;
+        content::serviceSharedTimerOwnerOpportunity(0, 1000);
+        more = true; // This entry has no result; observe remaining work below.
+    } else more = thread->serviceOwnerOpportunity(crossCutoff ? 1001 : 0, legacy ? 0 : 1000);
+    const bool first = receipts[0].runs == 1 && receipts[1].runs == (legacy ? 1u : 0u)
+        && receipts[2].runs == (legacy ? 1u : 0u) && receipts[3].runs == 0
+        && more == !legacy && (!recovery || (!content::continuationDeferred && !content::readyRetry));
+    bool drained = true;
+    if (!legacy) {
+        drained = thread->serviceOwnerOpportunity(0, 1000) && receipts[1].runs == 1 && receipts[2].runs == 0;
+        // The last ready callback leaves its completed capture for the next
+        // bounded retirement opportunity, which must still report work.
+        drained = thread->serviceOwnerOpportunity(0, 1000) && receipts[2].runs == 1 && drained;
+    }
+    const bool noFutureWake = !thread->serviceOwnerOpportunity(0, 1000) && receipts[3].runs == 0;
+    const bool bridgeClockUsed = legacy ? providerClockReads == before : providerClockReads > before;
+    const bool exactlyReady = providerReceiptComplete(receipts[0]) && providerReceiptComplete(receipts[1])
+        && providerReceiptComplete(receipts[2]);
+    failProviderClock = false;
+    delete thread; // The unchanged explicit drain owns the future task.
+    return first && drained && noFutureWake && bridgeClockUsed && exactlyReady
+        && providerReceiptComplete(receipts[3]) && absoluteMainOwnerReleased();
+}
+struct ProviderBatch {
+    content::WebThreadImpl* thread;
+    ProviderReceipt* receipts;
+    unsigned count;
+    long long delay;
+};
+unsigned __stdcall postProviderBatch(void* value) {
+    auto& batch = *static_cast<ProviderBatch*>(value);
+    for (unsigned i = 0; i < batch.count; ++i)
+        batch.thread->postDelayedTask(FROM_HERE, new ProviderTask(batch.receipts[i]), batch.delay);
+    return 0;
+}
+bool providerAdmissionCase(bool readyFirst, bool futureOnly) {
+    std::array<ProviderReceipt, 6> receipts{};
+    auto* thread = schedulerMainThread();
+    if (!thread || !nativeWindow) return false;
+    controlledProviderClock = true;
+    if (readyFirst) for (unsigned i = 0; i < 2; ++i) thread->postTask(FROM_HERE, new ProviderTask(receipts[i]));
+    ProviderBatch batch{thread, receipts.data() + 2, 4, futureOnly ? 1000 : 0};
+    HANDLE producer = reinterpret_cast<HANDLE>(::_beginthreadex(nullptr, 0, postProviderBatch, &batch, 0, nullptr));
+    if (!producer || ::WaitForSingleObject(producer, boundMs) != WAIT_OBJECT_0) ::ExitProcess(98);
+    DWORD code = STILL_ACTIVE;
+    bool passed = ::GetExitCodeThread(producer, &code) && code == 0 && ::CloseHandle(producer);
+    if (readyFirst) {
+        passed = thread->serviceOwnerOpportunity(0, 1000) && receipts[0].runs == 1 && receipts[1].runs == 0
+            && thread->timerHeap().size() == 1 && passed;
+        passed = thread->serviceOwnerOpportunity(0, 1000) && receipts[1].runs == 1
+            && thread->timerHeap().empty() && passed;
+    }
+    for (unsigned i = 0; i < 4; ++i) {
+        const bool more = thread->serviceOwnerOpportunity(0, 1000);
+        passed = more == (!futureOnly || i < 3) && receipts[i + 2].runs == (futureOnly ? 0u : 1u) && passed;
+        if (futureOnly) passed = thread->timerHeap().size() == i + 1 && passed;
+        else for (unsigned j = i + 1; j < 4; ++j) passed = receipts[j + 2].runs == 0 && passed;
+    }
+    passed = !thread->serviceOwnerOpportunity(0, 1000) && passed;
+    delete thread;
+    for (unsigned i = readyFirst ? 0 : 2; i < receipts.size(); ++i)
+        passed = providerReceiptComplete(receipts[i]) && passed;
+    return passed && absoluteMainOwnerReleased();
+}
+bool providerShutdownCase() {
+    std::array<ProviderReceipt, 96> receipts{};
+    auto* thread = schedulerMainThread();
+    if (!thread || !nativeWindow) return false;
+    controlledProviderClock = true;
+    for (auto& receipt : receipts) thread->postTask(FROM_HERE, new ProviderTask(receipt));
+    bool passed = thread->serviceOwnerOpportunity(0, 1000) && receipts[0].runs == 1 && receipts[1].runs == 0;
+    const auto reads = providerClockReads.load();
+    thread->fireForShutdown();
+    passed = providerClockReads == reads && passed;
+    unsigned completed = 0;
+    for (const auto& receipt : receipts) {
+        completed += receipt.runs.load();
+        passed = receipt.runs == 1 && receipt.runTid == engineThreadId && passed;
+    }
+    note("provider-shutdown-callbacks-drained", completed);
+    delete thread;
+    for (const auto& receipt : receipts) passed = providerReceiptComplete(receipt) && passed;
+    return passed && absoluteMainOwnerReleased();
+}
+struct ProviderRetirementBatch {
+    static constexpr unsigned count = 128;
+    std::array<ProviderReceipt, count> receipts{};
+    content::WebThreadImpl* owner = nullptr;
+    unsigned disposed = 0;
+    unsigned qpcCost = 0;
+    bool reenter = false;
+    bool valid = true;
+};
+class ProviderRetirementTask final : public blink::WebThread::Task {
+public:
+    ProviderRetirementTask(ProviderRetirementBatch& batch, unsigned index) : batch_(batch), index_(index) {}
+    void run() override {
+        ++batch_.receipts[index_].runs;
+        batch_.receipts[index_].runTid = ::GetCurrentThreadId();
+    }
+    ~ProviderRetirementTask() override {
+        auto& receipt = batch_.receipts[index_];
+        ++receipt.disposed;
+        ++batch_.disposed;
+        batch_.valid = receipt.runs == 1 && receipt.disposed == 1
+            && receipt.runTid == engineThreadId && !sourceLockDepth && batch_.valid;
+        providerQpc += batch_.qpcCost;
+        if (batch_.reenter) {
+            const unsigned before = batch_.disposed;
+            const bool nested = batch_.owner->serviceOwnerOpportunity(0, 1000);
+            batch_.owner->retireCompletedTasksForOwner();
+            batch_.valid = !nested && batch_.disposed == before && batch_.valid;
+        }
+    }
+private:
+    ProviderRetirementBatch& batch_;
+    unsigned index_;
+};
+bool prepareCompletedRetirementBatch(content::WebThreadImpl* thread, ProviderRetirementBatch& batch) {
+    batch.owner = thread;
+    for (unsigned i = 0; i < batch.count; ++i)
+        thread->postTask(FROM_HERE, new ProviderRetirementTask(batch, i));
+    // Real callbacks finish through the existing pre-shutdown fire entry. Its
+    // unchanged final 32-item retirement leaves 96 completed captures retained.
+    thread->fireForShutdown();
+    bool completed = batch.disposed == 32 && thread->timerHeap().empty() && batch.valid;
+    for (const auto& receipt : batch.receipts)
+        completed = receipt.runs == 1 && receipt.runTid == engineThreadId && completed;
+    return completed;
+}
+bool providerRetirementBatchComplete(const ProviderRetirementBatch& batch) {
+    bool complete = batch.disposed == batch.count && batch.valid;
+    for (const auto& receipt : batch.receipts) complete = providerReceiptComplete(receipt) && complete;
+    return complete;
+}
+bool drainRetirementThroughProvider(content::WebThreadImpl* thread, ProviderRetirementBatch& batch,
+    const ProviderReceipt* ready = nullptr) {
+    const unsigned total = batch.count + (ready ? 1u : 0u);
+    for (unsigned attempt = 0; attempt < total; ++attempt) {
+        const unsigned before = batch.disposed + (ready ? ready->disposed.load() : 0u);
+        if (before == total) break;
+        const bool more = thread->serviceOwnerOpportunity(0, 1000);
+        const unsigned after = batch.disposed + (ready ? ready->disposed.load() : 0u);
+        if (after != before + 1 || more != (after < total)) return false;
+    }
+    // Consume the actual outstanding continuation once after its work was
+    // drained through provider turns. It must neither repeat work nor rearm.
+    const UINT_PTR ticket = content::pendingContinuation;
+    MSG message{};
+    unsigned continuations = 0;
+    bool matchingTicket = ticket != 0;
+    while (::PeekMessageW(&message, nativeWindow, content::continuationMessage, content::continuationMessage, PM_REMOVE)) {
+        matchingTicket = message.wParam == ticket && matchingTicket;
+        ::DispatchMessageW(&message);
+        ++continuations;
+    }
+    note("provider-retirement-continuations-consumed", continuations);
+    return providerRetirementBatchComplete(batch) && (!ready || providerReceiptComplete(*ready))
+        && matchingTicket && continuations == 1 && !content::pendingContinuation
+        && !thread->serviceOwnerOpportunity(0, 1000);
+}
+bool providerRetirementDeadlineCase() {
+    ProviderRetirementBatch expired, future, legacy;
+    ProviderReceipt ready;
+    auto* thread = schedulerMainThread();
+    if (!thread || !nativeWindow) return false;
+    controlledProviderClock = true;
+    bool passed = prepareCompletedRetirementBatch(thread, expired);
+    expired.qpcCost = 2;
+    expired.reenter = true;
+    thread->postTask(FROM_HERE, new ProviderTask(ready));
+    const unsigned beforeExpired = expired.disposed;
+    const bool expiredMore = thread->serviceOwnerOpportunity(0, 1000);
+    const unsigned expiredRetired = expired.disposed - beforeExpired;
+    note("provider-retirement-expired-count", expiredRetired);
+    if (expiredRetired != 1) {
+        contractFailureReason = "provider-retirement-expired-count-assertion-failed";
+        delete thread;
+        return false;
+    }
+    passed = expiredMore && ready.runs == 1 && ready.disposed == 0 && expired.valid && passed;
+    passed = drainRetirementThroughProvider(thread, expired, &ready) && passed;
+    passed = prepareCompletedRetirementBatch(thread, future) && passed;
+    future.qpcCost = 2;
+    future.reenter = true;
+    providerQpc = 1000;
+    const unsigned beforeFuture = future.disposed;
+    const bool futureMore = thread->serviceOwnerOpportunity(1005, 1000);
+    const unsigned futureRetired = future.disposed - beforeFuture;
+    note("provider-retirement-future-count", futureRetired);
+    passed = futureMore && futureRetired == 3 && providerQpc == 1006 && future.valid && passed;
+    passed = drainRetirementThroughProvider(thread, future) && passed;
+    passed = prepareCompletedRetirementBatch(thread, legacy) && passed;
+    const auto beforeLegacyReads = providerClockReads.load();
+    const unsigned beforeLegacy = legacy.disposed;
+    thread->retireCompletedTasksForOwner();
+    note("provider-retirement-legacy-count", legacy.disposed - beforeLegacy);
+    passed = legacy.disposed == beforeLegacy + 32 && providerClockReads == beforeLegacyReads && passed;
+    delete thread; // Real shutdown drains every remaining completed capture.
+    return passed && providerRetirementBatchComplete(expired) && providerRetirementBatchComplete(future)
+        && providerRetirementBatchComplete(legacy) && providerClockReads == beforeLegacyReads
+        && providerReceiptComplete(ready) && absoluteMainOwnerReleased();
+}
 bool dispatch() {
+    if (isCase("provider-retirement-deadline")) return providerRetirementDeadlineCase();
+    if (isCase("provider-deadline-expired-ready")) return providerReadyCase(false, false, false, false);
+    if (isCase("provider-deadline-callback-crosses")) return providerReadyCase(false, true, false, false);
+    if (isCase("provider-deadline-clock-failure")) return providerReadyCase(false, false, true, false);
+    if (isCase("provider-deadline-shared-recovery")) return providerReadyCase(false, false, false, true);
+    if (isCase("provider-deadline-legacy-no-qpc")) return providerReadyCase(true, false, false, false);
+    if (isCase("provider-deadline-pending-minimum")) return providerAdmissionCase(false, false);
+    if (isCase("provider-deadline-ready-before-admission")) return providerAdmissionCase(true, false);
+    if (isCase("provider-deadline-future-no-spin")) return providerAdmissionCase(false, true);
+    if (isCase("provider-deadline-shutdown-drain")) return providerShutdownCase();
     if (isCase("scheduler-new-bad-alloc") || isCase("event-null") || isCase("native-launch-zero")
         || isCase("registry-reserve-bad-alloc") || isCase("startup-tls-failure")) return startupFailureCase();
     if (isCase("normal-worker-close")) return normalCase();
@@ -820,10 +1471,21 @@ bool dispatch() {
     if (isCase("main-scheduler-first-task-wake")) return mainSchedulerFirstWakeCase();
     if (isCase("main-scheduler-admission-budget")) return mainSchedulerAdmissionCase(false);
     if (isCase("main-scheduler-admission-shutdown")) return mainSchedulerAdmissionCase(true);
-    if (isCase("worker-scheduler-no-count-cap")) return workerSchedulerBudgetCase(false);
+    if (isCase("worker-scheduler-task-budget")) return workerSchedulerBudgetCase(false);
     if (isCase("worker-scheduler-clock-budget")) return workerSchedulerBudgetCase(true);
     if (isCase("main-scheduler-shutdown-drain")) return mainSchedulerShutdownCase();
     if (isCase("main-scheduler-pre-shutdown-drain")) return mainSchedulerPreShutdownCase();
+    if (isCase("scheduler-absolute-same-thread")) return schedulerAbsoluteDeadlineCase(false, false);
+    if (isCase("scheduler-absolute-cross-thread")) return schedulerAbsoluteDeadlineCase(true, false);
+    if (isCase("scheduler-absolute-late-admission")) return schedulerAbsoluteDeadlineCase(true, true);
+    if (isCase("scheduler-absolute-inputs-same-thread")) return schedulerAbsoluteInputsCase(false);
+    if (isCase("scheduler-absolute-inputs-cross-thread")) return schedulerAbsoluteInputsCase(true);
+    if (isCase("scheduler-absolute-huge-cancel")) return schedulerAbsoluteHugeCancelCase();
+    if (isCase("scheduler-absolute-oom-owner")) return schedulerAbsoluteOwnerOomCase();
+    if (isCase("scheduler-absolute-oom-producer")) return schedulerAbsoluteProducerOomCase();
+    if (isCase("scheduler-absolute-oom-admission")) return schedulerAbsoluteAdmissionOomCase();
+    if (isCase("scheduler-absolute-exit-rejection")) return schedulerAbsoluteExitCase(false);
+    if (isCase("scheduler-absolute-future-shutdown")) return schedulerAbsoluteExitCase(true);
     if (isCase("native-wait-fails")) {
         auto* thread = static_cast<content::WebThreadImpl*>(platform->createThread("FixtureWorker"));
         failJoin = true;
@@ -852,7 +1514,7 @@ int main(int argc, char** argv) {
     }
     fixture::Context context;
     const bool passed = fixture::dispatch();
-    fixture::summary(passed, passed ? "actual-source-contract-satisfied" : "actual-source-contract-failed");
+    fixture::summary(passed, passed ? "actual-source-contract-satisfied" : fixture::contractFailureReason);
     // Failed contracts can retain a blocked contender, even with an empty registry.
     // Never destroy its critical section/platform storage or certify cleanup.
     if (!passed) ::ExitProcess(3);

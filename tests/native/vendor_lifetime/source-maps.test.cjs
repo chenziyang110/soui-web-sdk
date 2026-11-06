@@ -12,7 +12,7 @@ function slice(buffer,start,end){assert.ok(Number.isSafeInteger(start)&&Number.i
 const workerDirectory='tests/native/vendor_lifetime/worker_lifetime/';
 const worker=JSON.parse(read(workerDirectory+'source-map.json'));
 function workerChecks(map=worker){
-  assert.equal(map.schema,'worker-lifetime-source-map/1');assert.equal(map.sources.length,13);assert.equal(map.copies.length,12);assert.equal(map.payloads.length,22);
+  assert.equal(map.schema,'worker-lifetime-source-map/1');assert.equal(map.sources.length,16);assert.equal(map.copies.length,15);assert.equal(map.payloads.length,22);
   const sources=new Map();
   for(const row of map.sources){assert.ok(!sources.has(row.path));const bytes=read(row.path);pin(bytes,row);sources.set(row.path,bytes);}
   for(const row of map.payloads)pin(read(workerDirectory+row.path),row);
@@ -33,16 +33,18 @@ function inlineChecks(directory,prefix){const text=read(directory+'CMakeLists.tx
     const actual=slice(read(source),begin,begin+size),expected=slice(read(directory+fixture),at,at+size);assert.deepEqual(actual,expected);}
   return ranges;
 }
-test('Worker current whole pins, all payloads and twelve exact outputs match',()=>workerChecks());
+test('Worker current whole pins, all payloads and fifteen exact outputs match',()=>workerChecks());
 test('Worker stale offsets or independently changed pins fail without disabling gates',()=>{
   for(const mutate of [m=>m.sources[0].sha256='0'.repeat(64),m=>m.copies[2].startByte++,m=>m.copies[0].endByteExclusive--,
     m=>m.payloads[0].bytes++,m=>m.copies.pop()]){const m=structuredClone(worker);mutate(m);assert.throws(()=>workerChecks(m));}
 });
-test('preserved registry and TLS bodies retain their original digests after relocation',()=>{
+test('registry and TLS bodies retain their reviewed current digests',()=>{
   const original={
     'fragments/registry_lock.inc':'f28320b3245b147e939fb7299797f00dd4276bf68eae722001cc55f2f1949c00',
     'fragments/tls.inc':'43594f649539ccaefe403d9a861a3366024b3aadec079618560beb2501b9129b',
-    'fragments/registry_and_tls_methods.inc':'d4d49c82a2c2a335b5641bbbce4cdf676fbb66aa678a586c26c48ee5c1e2649c'};
+    // Main added fail-closed termination for live registry owners. The old
+    // d4d49c82... digest described the body before that reviewed fence.
+    'fragments/registry_and_tls_methods.inc':'896b1c41f18d1c13d283420e078940c91571ef514cecc0ea053bf367350ca6a8'};
   for(const [output,sha256]of Object.entries(original)){const row=worker.copies.find(row=>row.output===output);assert.equal(row.sha256,sha256);
     assert.equal(digest(slice(read(row.source),row.startByte,row.endByteExclusive)),sha256);}
 });
@@ -54,14 +56,14 @@ test('new shutdown interface is actual declaration bytes used by the fixture pro
   assert.match(fragment,/virtual bool duplicateShutdownWitness\(ShutdownWitness&\)/);
   assert.match(read(workerDirectory+'fixture_support.h').toString('utf8'),/#include "fragments\/webthread_shutdown_interface.inc"/);
   const gate=read(workerDirectory+'source-bytes.cmake').toString('utf8');
-  assert.match(gate,/NOT copy_count EQUAL 12/);assert.match(gate,/NOT observed_hex STREQUAL expected_hex/);
+  assert.match(gate,/NOT copy_count EQUAL 15/);assert.match(gate,/NOT observed_hex STREQUAL expected_hex/);
   assert.match(gate,/Recheck every live input/);
 });
 test('dragdata all pins and ten source-to-fixture HEX ranges agree',()=>{
   assert.equal(inlineChecks('tests/native/vendor_lifetime/dragdata/','public_dragdata').length,10);
 });
-test('ctor-shell current pins and eight extracted ranges remain exact',()=>{
-  assert.equal(inlineChecks('tests/native/vendor_lifetime/ctor_shell/','public_ctor_shell').length,8);
+test('ctor-shell current pins and eleven extracted ranges remain exact',()=>{
+  assert.equal(inlineChecks('tests/native/vendor_lifetime/ctor_shell/','public_ctor_shell').length,11);
 });
 test('legacy-drag current pins and all three original ranges remain exact',()=>{
   const directory='tests/native/vendor_lifetime/legacy_drag/',m=JSON.parse(read(directory+'source-map.json'));

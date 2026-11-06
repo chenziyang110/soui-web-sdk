@@ -42,12 +42,115 @@ test('direct Windows compile argv preserves quoted input and rejects unterminate
   assert.throws(() => reader.argv('clang-cl.exe "unterminated'), /Unterminated/);
   assert.throws(() => reader.argv('clang-cl.exe\n/x'), /Invalid/);
 });
-test('measurement membership is nine real targets with thirteen original compile bindings', () => {
-  assert.equal(Object.keys(reader.targets).length, 9);
-  assert.equal(Object.values(reader.targets).flat().length, 13);
+test('measurement membership is ten real targets with fifteen original compile bindings', () => {
+  assert.equal(Object.keys(reader.targets).length, 10);
+  assert.equal(Object.values(reader.targets).flat().length, 15);
+  assert.deepEqual(reader.targets.BurstInput, ['benchmarks/protocol/burst-input.cpp', 'benchmarks/protocol/burst-desktop-observer.cpp']);
   assert.equal(reader.targets.OwnedProcessRunner.includes('benchmarks/protocol/owned-tail-evidence.cpp'), true);
   assert.equal(reader.targets.OwnedTailMutationFixture.includes('benchmarks/protocol/owned-tail-evidence.cpp'), true);
 });
+
+// Authored object headers and command records exercise the reader only. No
+// executable/compiler is launched and this fixture is never native evidence.
+function completeMeasurementFixture(t) {
+  const fs = require('node:fs'), path = require('node:path'), os = require('node:os'), vm = require('node:vm');
+  const profile = require('../../tools/internal/llvm-profile-inputs.cjs');
+  const temporaryRoot = fs.realpathSync(os.tmpdir());
+  const root = fs.mkdtempSync(path.join(temporaryRoot, 'soui-measurement-observer-'));
+  const build = path.join(root, 'out', 'benchmark-protocol');
+  t.after(() => {
+    assert.equal(fs.realpathSync(root), root);
+    assert.equal(path.dirname(root), temporaryRoot);
+    fs.rmSync(root, {recursive: true});
+  });
+  const write = (filename, bytes) => {fs.mkdirSync(path.dirname(filename), {recursive: true}); fs.writeFileSync(filename, bytes);};
+  const slash = value => value.replaceAll('\\', '/');
+  const ninja = value => slash(value).replaceAll('$', () => '$$').replaceAll(':', '$:').replaceAll(' ', '$ ');
+  const clang = path.join(root, 'tools', 'clang-cl.exe'), linker = path.join(root, 'tools', 'lld-link.exe');
+  write(clang, 'inert compiler fixture\n'); write(linker, 'inert linker fixture\n');
+  const discovery = {ToolPins: {CLANG: profile.pin(clang), LINKER: profile.pin(linker)},
+    Target: 'x86_64-pc-windows-msvc', IncludeDirectories: []};
+  const request = {value: {architecture: 'x64', discovery}};
+  write(path.join(build, 'CMakeCache.txt'), '# inert configured fixture\n');
+  const configured = {cache: profile.pin(path.join(build, 'CMakeCache.txt')), compilerRecords: [],
+    inputIdentity: 'authored-input-identity', target: discovery.Target};
+  const filename = require.resolve('../../tools/internal/llvm-measurement-observation.cjs');
+  const module = {exports: {}}, localRequire = require('node:module').createRequire(filename);
+  vm.compileFunction(fs.readFileSync(filename, 'utf8'), ['module', 'require'], {filename})(module, name =>
+    name === './llvm-profile-inputs.cjs' ? {...profile, inspectCache: () => configured,
+      toolPath(value, pin) {assert.equal(path.resolve(value), path.resolve(pin.path)); profile.verifyPin(pin); return pin;}} : localRequire(name));
+  const inventory = {
+    ProcessTreeSampler: ['benchmarks/protocol/process-tree-sampler.cpp'],
+    InputTrace: ['benchmarks/protocol/input-trace.cpp', 'benchmarks/protocol/desktop-observer.cpp'],
+    OwnedProcessRunner: ['benchmarks/protocol/owned-process-runner.cpp', 'benchmarks/protocol/owned-tail-evidence.cpp'],
+    OwnedProcessAssignmentFixture: ['tests/benchmark/owned-process-assignment-fixture.cpp', 'benchmarks/protocol/owned-tail-evidence.cpp'],
+    OwnedTailProcessFixture: ['tests/benchmark/owned-tail-process-fixture.cpp'],
+    OwnedTailMutationFixture: ['tests/benchmark/owned-tail-mutation-fixture.cpp', 'benchmarks/protocol/owned-tail-evidence.cpp'],
+    OwnedTailApiFixture: ['tests/benchmark/owned-tail-api-fixture.cpp'],
+    NativeTraceIdentity: ['tests/benchmark/native-trace-identity.cpp'],
+    DisplayCalibration: ['benchmarks/protocol/display-calibration.cpp'],
+    BurstInput: ['benchmarks/protocol/burst-input.cpp', 'benchmarks/protocol/burst-desktop-observer.cpp']
+  };
+  const commands = [], commandLines = [], edges = ['include CMakeFiles/common.ninja'], deps = [];
+  for (const [target, files] of Object.entries(inventory)) {
+    const objects = [];
+    for (const relative of files) {
+      const file = path.join(root, relative), output = `CMakeFiles/${target}.dir/Release/${path.basename(file)}.obj`;
+      const object = path.join(build, output), bytes = Buffer.alloc(20); bytes.writeUInt16LE(34404);
+      write(file, '// inert source fixture\n'); write(object, bytes); objects.push(output);
+      const command = `"${slash(clang)}" --no-default-config /X /clang:-fms-compatibility-version=19.29.30159 --target=${discovery.Target} /MD /Fo"${output}" -c "${slash(file)}"`;
+      commands.push({directory: build, output, file, command});
+      commandLines.push(command.replace(' /MD ', ' /showIncludes /MD '));
+      edges.push(`build ${output}: CXX_COMPILER__${target}_Release ${ninja(file)}`);
+      deps.push(`${output}: #deps 0, deps mtime 1 (VALID)`);
+    }
+    const executable = path.join(build, 'Release', target + '.exe'); write(executable, 'inert executable fixture\n');
+    edges.push(`build Release/${target}.exe: CXX_EXECUTABLE_LINKER__${target}_Release ${objects.join(' ')}`);
+    commandLines.push(`"${slash(linker)}" /out:"${slash(executable)}" ${objects.join(' ')}`);
+  }
+  write(path.join(build, 'compile_commands.json'), JSON.stringify(commands));
+  write(path.join(build, 'CMakeFiles/impl-Release.ninja'), edges.join('\n') + '\n');
+  write(path.join(build, 'CMakeFiles/common.ninja'), `include CMakeFiles/rules.ninja\ncmake_ninja_workdir = ${ninja(build)}/\n`);
+  write(path.join(build, 'CMakeFiles/rules.ninja'), '# inert rules fixture\n');
+  write(path.join(build, 'ninja-deps-Release.log'), deps.join('\n') + '\n');
+  write(path.join(build, 'ninja-commands-Release.log'), commandLines.join('\n') + '\n');
+  write(path.join(build, 'compile.log'), commandLines.map((line, i) => `[${i + 1}/${commandLines.length}] ${line}`).join('\n') + '\n');
+  return {reader: module.exports, request, build, root, commands, edges, write};
+}
+
+test('complete ten-target observation preserves both BurstInput objects and its actual link record', t => {
+  const f = completeMeasurementFixture(t), observation = f.reader.observe(f.request, f.build, f.root);
+  assert.equal(observation.compileObjects, 15);
+  assert.equal(observation.executableTargets, 10);
+  const bindings = observation.bindings.filter(row => row.target === 'BurstInput');
+  assert.deepEqual(bindings.map(row => require('node:path').basename(row.source.path)), ['burst-input.cpp', 'burst-desktop-observer.cpp']);
+  assert.equal(observation.links.filter(row => row.target === 'BurstInput').length, 1);
+  f.reader.verify(observation);
+});
+
+test('historical nine-target observations cannot authorize the current inventory', () => {
+  assert.throws(() => reader.verify({schema: 'soui.llvm-measurement-observation/v1', compileObjects: 13,
+    executableTargets: 9, bindings: Array(13), links: Array(9), compilerVerified: false,
+    nativeClosureVerified: false, qualificationPassed: false}), /scope/);
+});
+
+for (const change of ['missing-burst-object', 'foreign-compile-record', 'foreign-compile-edge', 'foreign-link-edge', 'missing-burst-link']) {
+  test(`${change} is rejected without filtering actual compiler evidence`, t => {
+    const f = completeMeasurementFixture(t), path = require('node:path');
+    if (change === 'missing-burst-object') {
+      f.commands.pop(); f.write(path.join(f.build, 'compile_commands.json'), JSON.stringify(f.commands));
+    } else if (change === 'foreign-compile-record') {
+      f.commands.push({...f.commands[0], file: path.join(f.root, 'foreign.cpp'), output: 'CMakeFiles/Foreign.dir/Release/foreign.cpp.obj'});
+      f.write(path.join(f.build, 'compile_commands.json'), JSON.stringify(f.commands));
+    } else {
+      const edges = change === 'foreign-compile-edge' ? [...f.edges, 'build foreign.obj: CXX_COMPILER__Foreign_Release foreign.cpp'] :
+        change === 'foreign-link-edge' ? [...f.edges, 'build Release/Foreign.exe: CXX_EXECUTABLE_LINKER__Foreign_Release foreign.obj'] :
+        f.edges.filter(line => !line.startsWith('build Release/BurstInput.exe:'));
+      f.write(path.join(f.build, 'CMakeFiles/impl-Release.ninja'), edges.join('\n') + '\n');
+    }
+    assert.throws(() => f.reader.observe(f.request, f.build, f.root), /15 Release compile records|edge count differs|linker edge/);
+  });
+}
 
 test('closed MSVC Ninja header-only record binds without inventing the translation unit as a dependency', () => {
   const fs = require('node:fs'), path = require('node:path');
@@ -98,7 +201,7 @@ test('common is mandatory in measurement and ordinary SDK snapshots and raw tamp
     fs.appendFileSync(records.common.path, '\n# changed after observation\n');
     assert.throws(() => reader.verifyNinjaWorkdirRecords(records, binding, build), /changed/);
     assert.throws(() => standard.validateNinjaScope(row, temporary, 'x86', 'Release', false), /changed/);
-    const scope = {schema: 'soui.llvm-measurement-observation/v1', compileObjects: 13, executableTargets: 9, bindings: Array(13), links: Array(9),
+    const scope = {schema: 'soui.llvm-measurement-observation/v1', compileObjects: 15, executableTargets: 10, bindings: Array(15), links: Array(10),
       compilerVerified: false, nativeClosureVerified: false, qualificationPassed: false, records: {ninja: records.ninja}};
     assert.throws(() => reader.verify(scope), /required/);
   } finally {

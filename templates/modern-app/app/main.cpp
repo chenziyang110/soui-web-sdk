@@ -1,4 +1,5 @@
 #include <soui/host/webview2_host.h>
+#include <soui/host/windows_owner_loop.h>
 #include <soui/json_bridge.h>
 #include "generated/actions.hpp"
 #include <windows.h>
@@ -187,6 +188,7 @@ int run(HINSTANCE instance, bool smoke) {
   const auto executable_length = GetModuleFileNameW(nullptr, executable, 32768);
   if (!executable_length || executable_length >= 32768 ||
       FAILED(SHGetFolderPathW(nullptr, CSIDL_LOCAL_APPDATA | CSIDL_FLAG_CREATE, nullptr, 0, local))) return 1;
+  soui::sdk::windows_owner_loop owner_loop;
   application app;
   app.smoke = smoke; app.root = std::filesystem::path(executable).parent_path();
   app.profile = std::filesystem::path(local) / "SouiModernStarter";
@@ -261,18 +263,21 @@ int run(HINSTANCE instance, bool smoke) {
     if (smoke && !SetTimer(window, 1, 100, nullptr)) { app.exit_code = 3; app.close(); }
   }
   } catch (...) { app.exit_code = 3; app.log("E_APPLICATION_START"); app.close(); }
-  MSG message{};
-  while (IsWindow(window)) {
-    const auto result = GetMessageW(&message, nullptr, 0, 0);
-    if (result > 0) { if(!app.translate_devtools(message)) {TranslateMessage(&message); DispatchMessageW(&message);} }
-    else {
-      // An early WM_QUIT or message failure cannot drop a live runtime watch.
-      app.exit_code = 3; app.close();
-      while (IsWindow(window)) {
-        for (unsigned count = 0; count != 32 && IsWindow(window) && PeekMessageW(&message, nullptr, 0, 0, PM_REMOVE); ++count)
-          if (message.message != WM_QUIT) { TranslateMessage(&message); DispatchMessageW(&message); }
-        if (IsWindow(window)) { app.close(); MsgWaitForMultipleObjects(0, nullptr, FALSE, 20, QS_ALLINPUT); }
-      }
+  soui::sdk::windows_owner_loop_callbacks callbacks;
+  callbacks.quit_requested = [window] { return !IsWindow(window); };
+  callbacks.dispatch = [&app](MSG& message) {
+    if (!app.translate_devtools(message)) { TranslateMessage(&message); DispatchMessageW(&message); }
+  };
+  try { (void)owner_loop.run(callbacks); }
+  catch (...) { app.exit_code = 3; app.log("E_OWNER_MESSAGE_LOOP"); }
+  if (IsWindow(window)) {
+    // An early WM_QUIT or message failure cannot drop a live runtime watch.
+    app.exit_code = 3; app.close();
+    MSG message{};
+    while (IsWindow(window)) {
+      for (unsigned count = 0; count != 32 && IsWindow(window) && PeekMessageW(&message, nullptr, 0, 0, PM_REMOVE); ++count)
+        if (message.message != WM_QUIT) { TranslateMessage(&message); DispatchMessageW(&message); }
+      if (IsWindow(window)) { app.close(); MsgWaitForMultipleObjects(0, nullptr, FALSE, 20, QS_ALLINPUT); }
     }
   }
   return app.exit_code;

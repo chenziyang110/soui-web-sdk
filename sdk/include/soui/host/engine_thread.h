@@ -74,7 +74,7 @@ class engine_thread final {
   void unregister_input_service(const std::shared_ptr<detail::engine_input_service>&);
   void notify_input_service() noexcept;
   bool has_pending_input_locked() const noexcept;
-  void service_one_input();
+  void service_one_input(std::chrono::steady_clock::time_point deadline);
   std::uint64_t commit_input_order(std::atomic<std::uint64_t>&, std::atomic<bool>&, bool, bool);
   std::uint64_t next_admission_order_locked() noexcept;
   bool older_input_locked(std::uint64_t) const noexcept;
@@ -100,6 +100,8 @@ class engine_thread final {
   std::size_t next_input_service_{0};
   std::uint64_t admission_order_{0}; // Serialized with FIFO/input head publication, never wraps.
   task owner_opportunity_;
+  std::function<bool(std::chrono::steady_clock::time_point)> owner_opportunity_until_;
+  bool owner_opportunity_in_flight_{false}, owner_opportunity_replaced_{false};
   std::shared_ptr<detail::engine_capacity_state> capacity_;
   std::uint64_t capacity_generation_{0};
   const diagnostics::mode metrics_mode_;

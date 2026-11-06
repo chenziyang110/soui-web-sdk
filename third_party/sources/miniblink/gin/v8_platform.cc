@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 #include "gin/public/v8_platform.h"
+#include "content/common/V8BackgroundTraceScope.h"
 #ifdef MINIBLINK_NOT_IMPLEMENTED
 #include "base/bind.h"
 #include "base/location.h"
@@ -62,6 +63,9 @@ V8Platform::~V8Platform() {}
 
 DWORD CALLBACK WorkItemCallback(void* param)
 {
+    // QueueUserWorkItem is outside WebThread's registered thread entry. Only
+    // this known callback owns a temporary producer; posting never auto-registers.
+    content::input_frame_trace::background_producer_scope traceProducer;
     v8::Task* task = (v8::Task*)param;
     task->Run();
     delete task;

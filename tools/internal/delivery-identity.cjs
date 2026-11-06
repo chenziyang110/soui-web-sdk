@@ -39,6 +39,8 @@ function walk(root, relative = '', exclude = () => false) {
   });
 }
 function normalization(name, data) {
+  // The candidate provenance record hashes this patch's original bytes.
+  if (name === 'third_party/patches/miniblink/0033-frame-policy-applied-state.patch') return 'none';
   if (name === 'sdk/resources/devtools/miniblink/baseline-manifest.json' ||
       name.startsWith('sdk/resources/devtools/miniblink/baseline/')) return 'none';
   if (name === 'LICENSE.md' || name.startsWith('third_party/licenses/')) return 'none';

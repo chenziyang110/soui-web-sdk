@@ -1,0 +1,53 @@
+cmake_minimum_required(VERSION 3.24)
+project(SouiWebView2OwnerFairness LANGUAGES CXX)
+if(NOT WIN32 OR NOT (MSVC OR CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC"))
+  message(FATAL_ERROR "Use the frozen Windows MSVC-front-end toolchain")
+endif()
+set(MATCHED_SDK_ROOT "" CACHE PATH "Exact installed candidate SDK prefix")
+set(MATCHED_SDK_VERSION "" CACHE STRING "Exact raw release; empty follows repository VERSION")
+set(SOUI_FAIRNESS_BUILD_ID "" CACHE STRING "Unique diagnostic consumer identity")
+if(NOT IS_ABSOLUTE "${MATCHED_SDK_ROOT}" OR NOT SOUI_FAIRNESS_BUILD_ID MATCHES "^[A-Za-z0-9_.-]+$")
+  message(FATAL_ERROR "Freeze MATCHED_SDK_ROOT and SOUI_FAIRNESS_BUILD_ID")
+endif()
+string(LENGTH "${SOUI_FAIRNESS_BUILD_ID}" _id_length)
+if(_id_length GREATER 80)
+  message(FATAL_ERROR "Build identity exceeds bound")
+endif()
+# Reuse the existing raw/numeric parser and imported version.h verification.
+# An external source copy must retain this relative helper, or set its path.
+set(SOUI_FAIRNESS_VERSION_HELPER "${CMAKE_CURRENT_LIST_DIR}/../input-ui-host/sdk_version.cmake" CACHE FILEPATH "Original SDK release identity helper")
+include("${SOUI_FAIRNESS_VERSION_HELPER}")
+if("${MATCHED_SDK_VERSION}" STREQUAL "")
+  file(READ "${CMAKE_CURRENT_LIST_DIR}/../../VERSION" _raw_version)
+  string(STRIP "${_raw_version}" _raw_version)
+else()
+  set(_raw_version "${MATCHED_SDK_VERSION}")
+endif()
+soui_input_ui_package_version("${_raw_version}" _package_version)
+find_package(SouiSdk ${_package_version} EXACT CONFIG REQUIRED COMPONENTS WebView2
+  PATHS "${MATCHED_SDK_ROOT}/lib/cmake/SouiSdk" NO_DEFAULT_PATH)
+file(REAL_PATH "${MATCHED_SDK_ROOT}" _requested)
+file(REAL_PATH "${SouiSdk_DIR}/../../.." _actual)
+if(NOT _actual STREQUAL _requested)
+  message(FATAL_ERROR "Resolved SDK prefix differs")
+endif()
+get_target_property(_imported Soui::Sdk IMPORTED)
+if(NOT _imported)
+  message(FATAL_ERROR "This diagnostic requires an independently installed SDK")
+endif()
+set(SOUI_INPUT_UI_SDK_VERSION "${_raw_version}")
+soui_input_ui_resolve_sdk()
+add_executable(SouiWebView2OwnerFairness main.cpp paint_probe.cpp)
+target_compile_features(SouiWebView2OwnerFairness PRIVATE cxx_std_17)
+target_compile_options(SouiWebView2OwnerFairness PRIVATE /W4 /EHsc /utf-8 /U_DEBUG)
+target_compile_definitions(SouiWebView2OwnerFairness PRIVATE UNICODE _UNICODE NOMINMAX WINVER=0x0601 _WIN32_WINNT=0x0601
+  SOUI_FAIRNESS_BUILD_ID="${SOUI_FAIRNESS_BUILD_ID}"
+  SOUI_FAIRNESS_RAW_VERSION="${SOUI_INPUT_UI_EFFECTIVE_SDK_VERSION}"
+  SOUI_FAIRNESS_PACKAGE_VERSION="${SOUI_INPUT_UI_PACKAGE_VERSION}")
+set_property(TARGET SouiWebView2OwnerFairness PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+target_link_libraries(SouiWebView2OwnerFairness PRIVATE Soui::WebView2 Soui::ActionJson user32 gdi32 ole32)
+file(GENERATE OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/sdk-identity-$<CONFIG>.txt"
+  CONTENT "raw=${SOUI_INPUT_UI_EFFECTIVE_SDK_VERSION}\npackage=${SOUI_INPUT_UI_PACKAGE_VERSION}\nheader=${SOUI_INPUT_UI_SDK_VERSION_HEADER}\nsdk=$<TARGET_FILE:Soui::Sdk>\nwebview2=$<TARGET_FILE:Soui::WebView2>\n")
+add_custom_command(TARGET SouiWebView2OwnerFairness POST_BUILD
+  COMMAND "${CMAKE_COMMAND}" -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/resources" "$<TARGET_FILE_DIR:SouiWebView2OwnerFairness>/resources"
+  VERBATIM)

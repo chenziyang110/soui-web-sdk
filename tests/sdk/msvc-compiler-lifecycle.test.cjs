@@ -18,6 +18,7 @@ $ErrorActionPreference='Stop'
 . (Join-Path $Repository 'tools/internal/CMake-Configure.ps1')
 . (Join-Path $Repository 'tools/internal/Msvc-CompilerLifecycle.ps1')
 $script:launches=0;$script:busy=$false;$script:mode='normal';$script:waited=@();$script:streams=@()
+$script:leases=@();$script:mutexMode='available'
 function Get-Process {param($Name,$ErrorAction);if($script:busy-or$script:mode-eq'replaced'){[pscustomobject]@{Id=999;ProcessName='vctip'}}}
 function Need([bool]$Value,[string]$Message){if(-not$Value){throw $Message}}
 function Must-Fail([scriptblock]$Action,[string]$Pattern){
@@ -44,6 +45,29 @@ function Open-SouiCompilerPhaseFile([string]$Path,[string]$ExpectedSha256){
 }
 function Assert-SouiCompilerPhaseIdle([string]$ReadyName){if($script:mode-eq'busy'){throw 'preexisting compiler fixture'}}
 function Wait-SouiCompilerPhaseReady($Process,[string]$ReadyName){if($script:mode-eq'readiness'){throw 'fixture readiness failed'}}
+class SouiFixtureCompilerMutex {
+  [bool]$held=$false
+  [int]$releases=0
+  [bool]$disposed=$false
+  [int[]]$waits=@()
+  [string]$mode
+  SouiFixtureCompilerMutex([string]$Mode) {$this.mode=$Mode}
+  [bool] WaitOne([int]$Milliseconds) {
+    $this.waits+=,$Milliseconds
+    if($this.mode-eq'abandoned'){$this.held=$true;throw [Threading.AbandonedMutexException]::new()}
+    $this.held=$this.mode-ne'denied';return $this.held
+  }
+  [void] ReleaseMutex() {
+    if(-not$this.held){throw 'A lease was released without ownership'}
+    $this.held=$false;$this.releases++
+  }
+  [void] Dispose() {$this.disposed=$true}
+}
+function New-SouiCompilerPhaseMutex {
+  $mutex=[SouiFixtureCompilerMutex]::new($script:mutexMode)
+  $script:leases+=,$mutex
+  return $mutex
+}
 function Start-Process {
   param($FilePath,$ArgumentList,$WorkingDirectory,$WindowStyle,[switch]$PassThru,$RedirectStandardOutput,$RedirectStandardError)
   Need (($ArgumentList-join' ')-ceq'-timeout:20') 'Wrong server CLI'
@@ -61,6 +85,46 @@ function Start-Process {
 $toolchain=[pscustomobject]@{MsvcRoot=(Join-Path $Evidence 'VS/VC/Tools/MSVC/14.44.35207');
   MsvcVersion='14.44.35207';HostArchitecture='x64';Toolset='v143'}
 $results=@()
+# Exercise the actual admission function with isolated lease and service
+# doubles; no production event or compiler process is created or queried.
+$before=$script:launches
+foreach($arch in @('x86','x64')){
+  Assert-SouiMsvcCompilerAdmission -Toolchain $toolchain -Architecture $arch
+  $lease=$script:leases[-1]
+  Need ($lease.disposed-and-not$lease.held-and$lease.releases-eq1-and$lease.waits.Count-eq1-and$lease.waits[0]-eq0) 'Admission did not release its zero-wait lease'
+}
+Need ($script:launches-eq$before) 'Admission launched a helper'
+$results+=@{case='admission-both-architectures';passed=$true}
+
+$script:mode='busy'
+$null=Must-Fail {Assert-SouiMsvcCompilerAdmission -Toolchain $toolchain -Architecture x64} 'preexisting compiler'
+Need ($script:leases[-1].disposed-and$script:leases[-1].releases-eq1-and-not$script:leases[-1].held) 'Busy admission leaked its lease'
+Need ($script:launches-eq$before) 'Busy admission launched a helper'
+$results+=@{case='admission-busy';passed=$true}
+
+$script:mode='normal';$script:mutexMode='denied'
+$null=Must-Fail {Assert-SouiMsvcCompilerAdmission -Toolchain $toolchain -Architecture x64} 'Another owned MSVC'
+Need ($script:leases[-1].disposed-and$script:leases[-1].releases-eq0-and-not$script:leases[-1].held) 'Denied admission released a foreign lease or leaked a handle'
+$results+=@{case='admission-contended';passed=$true}
+
+$script:mutexMode='abandoned'
+$null=Must-Fail {Assert-SouiMsvcCompilerAdmission -Toolchain $toolchain -Architecture x64} 'lease was abandoned'
+Need ($script:leases[-1].disposed-and$script:leases[-1].releases-eq1-and-not$script:leases[-1].held) 'Abandoned admission leaked acquired ownership'
+$results+=@{case='admission-abandoned';passed=$true}
+
+$script:mutexMode='available'
+Assert-SouiMsvcCompilerAdmission -Toolchain $toolchain -Architecture x64
+$script:mode='busy'
+$null=Must-Fail {Start-SouiMsvcCompilerPhase -Toolchain $toolchain -Architecture x64 -EvidenceRoot $Evidence -Phase configure} 'preexisting compiler'
+Need ($script:launches-eq$before-and$script:leases[-1].disposed-and$script:leases[-1].releases-eq1) 'Start trusted stale admission or leaked its lease'
+$results+=@{case='admission-does-not-bypass-start-recheck';passed=$true}
+
+$script:mode='normal';$beforeLeases=$script:leases.Count
+$unsupported=[pscustomobject]@{MsvcVersion='0';HostArchitecture='x64';Toolset='v143'}
+$null=Must-Fail {Assert-SouiMsvcCompilerAdmission -Toolchain $unsupported -Architecture x64} 'reviewed MSVC'
+Need ($script:leases.Count-eq$beforeLeases-and$script:launches-eq$before) 'Unsupported admission touched lifecycle resources'
+$results+=@{case='admission-unsupported-toolchain';passed=$true}
+
 foreach($arch in @('x86','x64')){
   $script:mode='normal'
   $state=Start-SouiMsvcCompilerPhase -Toolchain $toolchain -Architecture $arch -EvidenceRoot $Evidence -Phase configure
@@ -98,6 +162,7 @@ foreach($scenario in @('busy','readiness','nonzero','timeout','replaced','native
 }
 Need (@($script:waited|Where-Object{$_-ne30000}).Count-eq0) 'Natural wait was not fixed and bounded'
 Need (@($script:streams|Where-Object{$_.CanRead}).Count-eq0) 'File pin was not disposed'
+Need (@($script:leases|Where-Object{-not$_.disposed-or$_.held}).Count-eq0) 'A compiler admission or phase lease leaked'
 $results|ConvertTo-Json -Depth 5 -Compress
 `);
   const env={...process.env};for(const key of Object.keys(env))if(key.toLowerCase()==='psmodulepath')delete env[key];
@@ -107,5 +172,5 @@ $results|ConvertTo-Json -Depth 5 -Compress
   assert.equal(actual.status,0,`${actual.error||''}\n${actual.stderr}\n${actual.stdout}`);
   // PowerShell warning records are intentionally separate from the JSON payload.
   const line=actual.stdout.trim().split(/\r?\n/).findLast(row=>row.startsWith('[{'));
-  const cases=JSON.parse(line);assert.equal(cases.length,9);assert.equal(cases.every(row=>row.passed),true);
+  const cases=JSON.parse(line);assert.equal(cases.length,15);assert.equal(cases.every(row=>row.passed),true);
 });

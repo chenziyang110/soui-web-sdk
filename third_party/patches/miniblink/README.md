@@ -1,5 +1,11 @@
 # 导入之后的 Miniblink 修补
 
+## 2026-10-30 显式 provider 共享截止：0028
+
+`0028-provider-shared-deadline.patch` 以 `5dab3c948fbe35e725789c0b061af0a50358ae91` 为前件，记录 SDK/provider 两份私有 ABI 头及六个内核文件的原始字节差异。保留 v1 prefix，无参入口和默认预算 0；新尾能力为显式共享预算传入同一个 QPC 截止，scheduler 与关闭扫描各保最低进展，有限 sweep 结束后停止立即续接。
+
+八文件正反向原字节重放和当前树反向非写入检查通过；两架构相关源夹具、x64 SDK 编译通过，细节及保留失败见 ADR-0147 与 `third_party/manifests/miniblink-provider-deadline-20261030.json`。源码增加 5821B，不是 DLL/运行目录/ZIP 增量。用户要求减少耗时测试，本轮不启动完整内核重建，不替换 prebuilt 或用户安装；真实载荷、输入和性能另验。
+
 基线为本 SDK 的 `2d09a2ff` 中 `third_party/sources/miniblink`，其上游来源仍由 `SOURCE-MANIFEST.json` 和原有 `LOCAL-CHANGES.patch` 记录。历史导入清单不改写成后续补丁的验证结果。这里按顺序保存导入之后的源码和动态绑定头补丁；当前交付已经包含这些补丁，重新导入时先恢复原有本地改动，再依次应用。
 
 | 补丁 | 原因 | 当前验证状态 |
@@ -74,3 +80,37 @@
 有效的原有 `FontPlatformData`/typeface 继续使用原路径。具名候选为空或不含 typeface 时，直接向当前 `SkFontMgr` 请求真实系统默认字体，要求非空且包含 glyph；保留原有效字号、粗斜体合成、方向、subpixel、`ShouldRetain` 和字体缓存所有权。不调用可能生成 `SkEmptyTypeface` 的默认包装，不伪造行高或关闭 Inspector 高亮。
 
 若 OS 字体管理器、默认 typeface 或 glyph 仍不可用，函数明确返回空值；这保留极端系统字体失败边界，不宣称所有字体资源故障已恢复。下游仍要求主字体非空，因此不保证该环境能安全退出或正常启动。此次仅完成源修复和补丁原始字节核对，尚未编译、执行或复测。已有 0013 及其历史验证说明原样保留；新内核、配对与受影响应用的统一短测需另绑定真实产物。
+
+## 2026-10-29 主线性能增量：0024 / 0025
+
+`0024-main-integrated-frame-presentation.patch` 与 `0025-main-integrated-deadline-scheduling.patch` 均以主线 `0cdc0a9ace0cdce664ec4a9b54e5f8f71b97ba48` 为前件，覆盖的文件互不重叠；保留主线原有 0015–0023 输入、调度、资源、画布与 trace 实现。旧冻结候选中的 0016/0017 性能补丁不用于当前树，以免覆盖同号主线补丁。
+
+当前完整文件字节、来源和补丁散列分别记录于 `third_party/manifests/miniblink-frame-presentation-20261029.json`、`third_party/manifests/miniblink-deadline-scheduler-20261029.json`。第三方文件采用原始字节定点改写，保留混合行尾与编码；新头纳入补丁和完整源清单。设计取舍见 ADR-0138 / ADR-0143 及 `docs/performance/main-integration.md`。
+
+当前仅源码集成与静态身份检查；没有新内核 DLL、构建/测试、体积或性能通过结论。历史补丁、原导入清单、二进制及已发布 0.6.0 证据保持各自原始角色。
+
+## 稳定QPC路径UTC读取：0026
+
+`0026-steady-qpc-utc-read.patch` 以a00652824为前件，仅重排在用 `CurrentTimeImpl.cpp::currentTimeImpl()` 的UTC采样位置。稳定QPC路径原先每次读取但不使用低分辨率UTC；初次同步还会覆盖第一次读取。候选仅在QPC不可用和原首次精度窗口内读取，保留原elapsed/锚、返回单位、倒退保护和未调用旧函数，不改变WKE/provider ABI或时钟域。
+
+原字节前后SHA、源码减少50字节及补丁身份见 `third_party/manifests/miniblink-steady-clock-20261029.json`。保留旧编码/行尾，当前树反向非写入检查通过。x86/x64各实际复现一次稳定UTC冗余的RED，候选各5项函数体加Win32/CRT观测shim场景通过；旧union初始化样式告警仅在测试导入区局部处理。完整生产TU、DLL/消费者、真实时钟/并发和FPS尚未据此验证，原二进制导入与历史清单不重写。设计及独立既有风险见ADR0145。
+
+## 原生位图提交完成：0030
+
+`0030-complete-native-bitmap-submission.patch` 在源位图/DC仍有效时完成发起线程GDI批次，绘制失败仍刷新与清理。原字节前后与补丁身份见 `third_party/manifests/miniblink-native-bitmap-completion-20261031.json`。历史导入与正式prebuilt不重写；源码契约回归和x64限定验证见ADR-0149与其验证文档。历史CRC根因未证实，不声明完整桌面、性能或发布验收通过。
+
+## 透明备用槽与共享截止退休：0031–0032
+
+`0031-transparent-spare-clear.patch` 只省去新建/重建透明备用槽的重复clear，保留有效旧槽clear和完整copy。`0032-provider-retirement-deadline.patch` 将显式截止用于完成任务退休，保留一次最低进展、无参方法符号、默认32项与shutdown排空。独立设计见ADR-0150/0151；来源及真实方法回归分别见 `miniblink-transparent-spare-clear-20261031.json` 与 `miniblink-provider-retirement-20261031.json`。
+
+两架构受影响方法回归已执行，失败原件保留；92项SOURCE门禁仅为authored graph范围。匹配内核、实际载荷大小与真实性能以单独记录为准，不用源码字节变化代替DLL/包或FPS结论。
+
+## 主帧策略实际状态：0033
+
+`0033-frame-policy-applied-state.patch` 以 `a4fc394427c99a3331abfb2e3e3307ae27503dd0` 为前件，覆盖七个文件：InputUiApi 的两份镜像头、实现，以及 WebPage/WebPageImpl 的头和实现。函数表尾部新增可选 query/apply 与 capability，旧前缀保留；只读回配置状态，不表示帧已经呈现。非零主帧范围仍为30–240，0仍禁用该控制器。SDK协商、兼容性与重试规则见 [ADR-0154](../../../docs/adr/0154-frame-policy-applied-state.md)。
+
+七文件原始字节的正反向重放及当前树反向检查已通过，前后散列、外部候选内核与证据散列见 `third_party/manifests/miniblink-frame-policy-state-20261102.json`。两架构实际编译受影响头文件的完整40-TU reader闭包，再链接经验证的源等价旧对象/库；不是fresh整内核构建。历史 SOURCE-MANIFEST、prebuilt、许可证审查及已发布0.6.0证据不被改写。新候选载荷的应用、物理性能与完整包体积资格分别记录，不能由补丁或配置读回推断。
+
+## V8 系统线程池诊断登记：0034
+
+`0034-v8-background-trace-producer.patch` 仅覆盖已确认的 `gin::WorkItemCallback` 入口及内部作用域头。临时登记在回调结束时配对撤销，借用已有 producer 时保留调用方 context；登记拒绝或异常仍记录来源缺失。通用任务投递与 record 不自动登记。设计及复验边界见 [ADR-0162](../../../docs/adr/0162-v8-background-trace-producer.md)，源码前后身份及补丁重放见 `third_party/manifests/miniblink-v8-background-trace-20261105.json`。双架构作用域合同不替代实际内核、输入延迟或帧率验收；历史内核与收据不改挂到本修复。

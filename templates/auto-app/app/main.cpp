@@ -1,4 +1,5 @@
 #include <soui/host/auto_webview_host.h>
+#include <soui/host/windows_owner_loop.h>
 #include <soui/host/soui_miniblink_host.h>
 #include <soui/host/webview2_host.h>
 #include <soui/json_bridge.h>
@@ -192,6 +193,7 @@ int run(HINSTANCE instance, const arguments& options) {
   if (!length || length >= 32768 ||
       FAILED(SHGetFolderPathW(nullptr, CSIDL_LOCAL_APPDATA | CSIDL_FLAG_CREATE, nullptr, 0, local)))
     throw std::runtime_error("Cannot locate application directories.");
+  soui::sdk::windows_owner_loop owner_loop;
   application app;
   app.smoke = options.smoke;
   app.root = std::filesystem::path(executable).parent_path();
@@ -256,17 +258,17 @@ int run(HINSTANCE instance, const arguments& options) {
   } catch (const std::exception& error) {
     app.fail({false, "E_APPLICATION_START", error.what()});
   }
-  MSG message{};
-  while (IsWindow(window)) {
-    const auto result = GetMessageW(&message, nullptr, 0, 0);
-    if (result > 0) { TranslateMessage(&message); DispatchMessageW(&message); }
-    else {
-      app.exit_code = 3; app.log->write("E_EARLY_MESSAGE_LOOP_EXIT"); app.close();
-      while (IsWindow(window)) {
-        for (unsigned count = 0; count != 32 && IsWindow(window) && PeekMessageW(&message, nullptr, 0, 0, PM_REMOVE); ++count)
-          if (message.message != WM_QUIT) { TranslateMessage(&message); DispatchMessageW(&message); }
-        if (IsWindow(window)) { app.close(); MsgWaitForMultipleObjects(0, nullptr, FALSE, 16, QS_ALLINPUT); }
-      }
+  soui::sdk::windows_owner_loop_callbacks callbacks;
+  callbacks.quit_requested = [window] { return !IsWindow(window); };
+  try { (void)owner_loop.run(callbacks); }
+  catch (...) { app.exit_code = 3; app.log->write("E_OWNER_MESSAGE_LOOP"); }
+  if (IsWindow(window)) {
+    app.exit_code = 3; app.log->write("E_EARLY_MESSAGE_LOOP_EXIT"); app.close();
+    MSG message{};
+    while (IsWindow(window)) {
+      for (unsigned count = 0; count != 32 && IsWindow(window) && PeekMessageW(&message, nullptr, 0, 0, PM_REMOVE); ++count)
+        if (message.message != WM_QUIT) { TranslateMessage(&message); DispatchMessageW(&message); }
+      if (IsWindow(window)) { app.close(); MsgWaitForMultipleObjects(0, nullptr, FALSE, 16, QS_ALLINPUT); }
     }
   }
   app.host.reset();

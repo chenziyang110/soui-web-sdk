@@ -1,0 +1,27 @@
+cmake_minimum_required(VERSION 3.24)
+if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+  project(SouiOwnerContinuationContracts LANGUAGES CXX)
+  enable_testing()
+endif()
+if(NOT WIN32 OR NOT MSVC)
+  message(FATAL_ERROR "Owner-loop contracts require Windows and MSVC v143")
+endif()
+get_filename_component(owner_root "${CMAKE_CURRENT_LIST_DIR}/../../.." ABSOLUTE)
+add_executable(soui_owner_continuation_tests policy_tests.cpp loop_tests.cpp)
+if(TARGET Soui::Sdk)
+  target_link_libraries(soui_owner_continuation_tests PRIVATE Soui::Sdk)
+else()
+  # Focused source test: compile the actual Core implementation, not a copy.
+  # This mode does not qualify an installed SDK or a normal application link.
+  target_sources(soui_owner_continuation_tests PRIVATE
+    "${owner_root}/sdk/src/host/windows_owner_loop.cpp")
+  target_include_directories(soui_owner_continuation_tests PRIVATE "${owner_root}/sdk/include")
+  target_link_libraries(soui_owner_continuation_tests PRIVATE user32)
+endif()
+target_compile_features(soui_owner_continuation_tests PRIVATE cxx_std_17)
+target_compile_definitions(soui_owner_continuation_tests PRIVATE
+  UNICODE _UNICODE NOMINMAX WINVER=0x0601 _WIN32_WINNT=0x0601)
+target_compile_options(soui_owner_continuation_tests PRIVATE /W4 /EHsc /utf-8 /U_DEBUG)
+set_property(TARGET soui_owner_continuation_tests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+add_test(NAME sdk.native.owner-continuation COMMAND soui_owner_continuation_tests)
+set_tests_properties(sdk.native.owner-continuation PROPERTIES TIMEOUT 15 RUN_SERIAL TRUE)

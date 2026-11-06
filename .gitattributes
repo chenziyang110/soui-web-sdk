@@ -48,6 +48,9 @@ verification/production-validation/pr-integration-2026-10-08/README.md text eol=
 verification/production-validation/pr58-2026-10-08/** binary
 verification/production-validation/pr58-2026-10-08/README.md text eol=lf diff
 third_party/patches/miniblink/*.patch whitespace=-blank-at-eol
+third_party/patches/miniblink/0029-retain-precise-shared-timer-wait.patch -text -eol
+third_party/patches/miniblink/0031-transparent-spare-clear.patch -text -eol
+third_party/patches/miniblink/0032-provider-retirement-deadline.patch -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
 # Retain the exact historical records and the CRT regression's captured before source.
 third_party/manifests/provenance/preview14/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
 tests/fixtures/llvm-crt/before-Observe-LlvmBuild.ps1 -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
@@ -406,6 +409,13 @@ verification/production-validation/pr-short-merge-2026-10-28/raw/** -text -eol w
 # Preserve the kernel bytes used by source gates and compiler provenance.
 third_party/sources/miniblink/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
 
+# Main-integrated performance patches retain exact upstream context bytes.
+third_party/patches/miniblink/0024-main-integrated-frame-presentation.patch -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
+third_party/patches/miniblink/0025-main-integrated-deadline-scheduling.patch -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
+third_party/patches/miniblink/0026-steady-qpc-utc-read.patch -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
+third_party/patches/miniblink/0027-retain-absolute-task-deadlines.patch -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
+third_party/patches/miniblink/0028-provider-shared-deadline.patch -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
+
 # Preserve the externally pinned Chromium override's inherited end spaces.
 sdk/resources/devtools/miniblink/overrides/front_end/sdk/InspectorBackend.js whitespace=-blank-at-eol
 sdk/resources/devtools/miniblink/baseline/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab conflict-marker-size=32
@@ -424,7 +434,25 @@ verification/production-validation/production-tools-devtools-2026-10-29/** -text
 # Preserve the Windows tooling failure and short-verification raw bytes.
 verification/production-validation/windows-tooling-failure-closeout-2026-10-29/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
 
+# Preserve the frame-policy delta's exact upstream source bytes.
+third_party/patches/miniblink/0033-frame-policy-applied-state.patch -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+
+# This fixture binds captured production fragments by their original raw bytes.
+tests/native/bridge_script_source/legacy-source.inc -text -eol whitespace=cr-at-eol
+
 # Keep issue-specific current link-member and short-validation evidence exact.
 verification/production-validation/current-link-members-0.6.0-2026-10-29/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
 verification/production-validation/current-license-crosswalk-0.6.0-2026-10-29/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
 verification/production-validation/open-issues-closeout-2026-10-29/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
+
+# A unified patch uses a space for an empty context line; preserve its LF form.
+docs/performance/patches/0164-ime-functional-consumer.patch text eol=lf whitespace=-blank-at-eol
+docs/performance/patches/0165-sdk-ime-packet-boundary.patch text eol=lf whitespace=-blank-at-eol
+docs/performance/patches/0165-provider-no-composition-empty-guard.patch text eol=lf whitespace=-blank-at-eol
+
+# Freeze the exact sources used by the R35-R38 independent diagnostic tools.
+verification/performance/sdk-input-frame-20261105/diagnostic-source-r38/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
+verification/performance/sdk-input-frame-20261105/diagnostic-source-r39/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
+verification/performance/sdk-input-frame-20261105/diagnostic-source-r40/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
+verification/performance/sdk-input-frame-20261105/diagnostic-source-r41/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
+verification/performance/sdk-input-frame-20261105/diagnostic-source-r42/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab

@@ -1,0 +1,436 @@
+{
+  "schema": "soui.preview4-adoption-diagnostics/v1",
+  "recordedAt": "2026-11-05T17:34:36.853Z",
+  "report": "docs/performance/sdk-preview4-adoption-20261106.md",
+  "evidenceBundle": "PR129-performance-20261104",
+  "repositoryHeadBeforeReportBatch": "2e970d50aa733282450577ce9aff634d82e2ec32",
+  "product": {
+    "sdkVersion": "0.7.0-preview.4",
+    "sourceSha256": "e1d2dd8b7699930f678e21a77772b8fa4e371f5b67a53937d98470ee1659e87c",
+    "sdkBuildId": "18e47fa2-69df-4530-b1f9-365f6b2aec28",
+    "architecture": "x64",
+    "configuration": "Release",
+    "sdkOrKernelRebuiltInThisBatch": false,
+    "newSdkPackage": false
+  },
+  "readyPublicationFix": {
+    "scope": "Transcribed actual exec tool result for authored orchestration substitutes; not native sharing/GUI/input proof",
+    "command": "node --test tests/benchmark/input-frame-trace/run-input-ui-cleanup.test.cjs",
+    "actualDirectExitCode": 0,
+    "toolChunk": "1d9a19",
+    "tests": 15,
+    "pass": 15,
+    "fail": 0,
+    "skip": 0,
+    "nativeSharingRetryExercisedByCoordinateR2": false,
+    "originalDeadlinePreserved": true
+  },
+  "tasks": {
+    "path": "repair-r24-ready-sharing-race/task-closeout-audit-r1.json",
+    "sha256": "ff55596d5b5111fe17fc219a531150cfe04f87916a3518ff7b62814423507e5e",
+    "P00": "scoped-complete",
+    "M01": "implementation-and-fixes-done-final-input-not-qualified",
+    "I01_F01_W01": "implemented-correctness-evidence-benefits-not-qualified",
+    "I02": "baseline-invalid-default0-no-adoption-decision-yet",
+    "W02": "ordinary-short4KiB8-retainOff-continuous-trigger-open",
+    "I03": "light-cost-does-not-motivate-new-mechanism-heavy-unknown",
+    "F02": "limited-stock-direct-HWND-not-adopted",
+    "F03": "R21-not-adopted-this-round-with-source-risk-evidence",
+    "R01": "scoped-build-consumer-size-evidence-present-performance-open"
+  },
+  "conditionalDecisions": {
+    "F02": {
+      "decision": "No extra damage-history change for current measured stock opaque/DIRECT_HWND workload",
+      "evidence": "repair-r18-reader-integration/f02-public-sdk-scope-independent-review-r1.json",
+      "reviewSha256": "252ce4b126602d4b9ace446437ca339ab17c47dfafec39dd944946947b06f113",
+      "kernelFull64Observed": {
+        "copyOperations": 0,
+        "copyBytes": 0,
+        "internalBufferLeases": 911
+      },
+      "limits": "Only instrumented mirror/slot copies absent in this sample. Internal short leases can overlap and copy in other loads; no universal0copy claim. Raw WKE/custom adapter/native transparent/DC/long external lease paths are outside this stock configuration qualification. Capability fallback not covered.",
+      "reopen": "R20 heavy or any supported representative workload shows significant copy_operations/copy_bytes requiring attribution"
+    },
+    "F03": {
+      "decision": "defer-production-adoption-keep-current-default",
+      "newBuild": false,
+      "newProductCode": false
+    },
+    "I03": {
+      "evidence": "repair-r18-reader-integration/light-provider-bounds.json",
+      "rawSdkSha256": "0a8e664d261d10977909015c2b60b705f4b270893813d9dead23a105d833682d",
+      "readOnlyExtractorActualDirectExitCode": 0,
+      "toolChunk": "23f0b1",
+      "providerSamples": 1128,
+      "providerP95BucketUpperMs": 0.0127,
+      "providerP99BucketUpperMs": 0.0255,
+      "scope": "Existing light full64 whole-life histogram only, inclusive wall bins, not same-input prefix or CPU. Independent index/QPF/raw/hist review clear. No reordering justified by this narrow observation; heavy remains open."
+    },
+    "W02": {
+      "decision": "Do not prioritize PREPARE_OUTPUT for this ordinary short fixed4KiB8 workload; retain default0",
+      "measuredSuccess": 1024,
+      "warmup": 32,
+      "maxInFlight": 8,
+      "continuousOwnerFairnessQualified": false
+    }
+  },
+  "r20CoordinateWitness": {
+    "path": "repair-r20-budget-input-consumer/coordinate-diagnostic-r2/run-once",
+    "runId": "2125053342c19a3c624dff4e1f4afc3a",
+    "controllerDirectExit": 1,
+    "hostPid": 67176,
+    "hostActualExit": 2,
+    "inputActualExit": 1,
+    "bothNaturallyClosedJobs0NoForce": true,
+    "witnessCaptured": true,
+    "reproduced": true,
+    "callbackId": 1432,
+    "firstInvalidClient": [
+      101,
+      100
+    ],
+    "derivedGrid": 2,
+    "beforeLatest": 999,
+    "beforeObserved": 866,
+    "beforeRejected": 0,
+    "afterRejected": 1,
+    "precedingTwoCallbacks": [
+      99,
+      100
+    ],
+    "precedingTwoOutsideGrid": true,
+    "firstInvalidIsTrusted": null,
+    "lastDesktopAck": 998,
+    "lastDesktopDelivered": 865,
+    "lastDesktopFrame": 468,
+    "lastDesktopCapture": 386,
+    "sent": 1008,
+    "failedReportNativeAdmittedQpc": "1223043832894",
+    "failedReportAdmissionBound": "afterinput1002.after1223043797148 andbefore1003.before1223043859415; cannotbindDOMcallbacktoinjection1002",
+    "allScalarSourcesCompleteLossFault0": true,
+    "readyBusyRetries": 0,
+    "rootCauseAttributed": false,
+    "reportSha256": "36d0820a45f9866caedefef8e4620aef07debfb141b21fba884b2fab29f70cb0",
+    "independentReviewSha256": "8a3049c6040c92cc89150a0fe92a8811ade576a9573263c766a0b661c75fb093",
+    "mappingInvestigationSha256": "d1a18b53722fb6ed31adee813dd6864fdcb27cfcefda985a2aba3f3803c9482a",
+    "mappingLimit": "Configured2pathunion3840x1080/origin88,111 is not actualinjectorSMmetrics. No normalized/cursor/nativeLPARAM inthisrun. CurrentSDKsourcecopyhasnoexplicitWM_MOVEscaling, notbinarypacketproof. Waitnativeprobe."
+  },
+  "sameConsumerCoordinateWitness": {
+    "path": "repair-r20-budget-input-consumer/same-consumer-native-witness-r1/diagnostic-r1/run-once",
+    "runId": "0947b7a7fd5e379cd42d9be5e994db88",
+    "requestSha256": "0b8b5a9a985f063df06a9ff84d15d17f8e7ee4fdae982231c73148f0851e3e25",
+    "rootActualExitCode": 0,
+    "rootToolChunk": "ada29b",
+    "hostPid": 93276,
+    "hostCreationFileTime": "134383731669622387",
+    "hostNaturalExitCode": 0,
+    "hostElapsedMs": 32611,
+    "inputPid": 41904,
+    "inputCreationFileTime": "134383731684736991",
+    "inputNaturalExitCode": 0,
+    "inputElapsedMs": 30159,
+    "bothNaturalJob0NoForce": true,
+    "sent": 3750,
+    "pageObserved": 3750,
+    "pageRejected": 0,
+    "pageSamePositionRepeats": 1935,
+    "pageInvalid": false,
+    "nativeCallbacksBeforeFreeze": 5690,
+    "nativeTaggedCallbacksBeforeFreeze": 3750,
+    "nativeBoundedSnapshotComplete": true,
+    "nativeCoordinateMismatch": false,
+    "nativeInvalidMagicTag": false,
+    "nativeWholeHistoryRetained": false,
+    "nativeTagUniquenessAndOneToOneDomJoinQualified": false,
+    "firstNativeFault": null,
+    "normalRuntimeClose": true,
+    "originalChecksComplete": true,
+    "scalarSourcesComplete": true,
+    "warmupSuccess": 32,
+    "fixedMeasuredEchoSuccess": 1024,
+    "displayBeforeAfterIdentical": true,
+    "displayScope": "one1920x1080path/about75Hz; oldfaultusedtwo configuredpaths3840x1080",
+    "oldCoordinateFaultReproduced": false,
+    "oldCoordinateFaultFixedOrAttributed": false,
+    "formalPerformanceBaseline": false,
+    "independentReview": "repair-r20-budget-input-consumer/same-consumer-native-witness-r1/diagnostic-r1/run-once/independent-actual-diagnostic-review-r1.json",
+    "independentReviewSha256": "86a59fbcf431e2fb3158d1d4ec4d376f6458f00c589635fbdcacd90139f4b1ae",
+    "analysis": "read-only extraction in progress; no next native run authorized yet"
+  },
+  "r23ConsumerBuild": {
+    "actual": {
+      "configureNativeExitCode": 0,
+      "consumerBuildNativeExitCode": 0,
+      "buildOwnedRootExitCode": 0,
+      "selfTestOwnedRootExitCode": 0,
+      "originalSelfTestsPassed": 42,
+      "buildJobFinalActive": 0,
+      "selfTestJobFinalActive": 0,
+      "ownedVctipNaturallyExited": true,
+      "forcedJobTerminationUsed": false
+    },
+    "wrapperExitCode": 1,
+    "buildPipelineSucceeded": false,
+    "actualHostBytes": 1654784,
+    "actualHostSha256": "5e15b02f1f90b0d839d3f624c720e75ad316646e6c370f2e620c88e5be10bb2f",
+    "nativeTargetOnly": true
+  },
+  "r23": {
+    "firstAttempt": {
+      "run": "ed2aa79a53ddbf6ec0a76a66e8e6f45d",
+      "hostActualExitCode": 3,
+      "inputActualExitCode": 1,
+      "nativeElapsedMs": 19836,
+      "captureQualified": false,
+      "measurementQualified": false,
+      "acceptedNativeInputs": 0,
+      "echoCallbacks": 32,
+      "partialInput": null,
+      "firstFaultInput": null,
+      "scalarSourcesComplete": true
+    },
+    "handoffDeadlineFailure": {
+      "event": "terminal",
+      "reason": "root-failed",
+      "elapsedMs": 22542,
+      "rootExited": true,
+      "rootExitCode": 1,
+      "activeBeforeCleanup": 0,
+      "terminatedOwnedJob": false,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "totalProcesses": 16,
+      "limitTerminatedProcesses": 0,
+      "passed": false
+    },
+    "externalCompilerPrelaunchRejection": {
+      "event": "terminal",
+      "reason": "root-failed",
+      "elapsedMs": 2858,
+      "rootExited": true,
+      "rootExitCode": 1,
+      "activeBeforeCleanup": 0,
+      "terminatedOwnedJob": false,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "totalProcesses": 4,
+      "limitTerminatedProcesses": 0,
+      "passed": false
+    },
+    "nativeFirstFault": {
+      "run": "1d7465744e44b061975592eb96448c9a",
+      "hostActualExitCode": 3,
+      "inputActualExitCode": 1,
+      "nativeElapsedMs": 15092,
+      "captureQualified": true,
+      "measurementQualified": false,
+      "acceptedNativeInputs": 5,
+      "echoCallbacks": 32,
+      "partialInput": {
+        "requested": 3750,
+        "attempted": 69,
+        "sent": 69,
+        "completed": false
+      },
+      "firstFaultInput": {
+        "beginQpc": "1264673284255",
+        "currentLoop": 1204,
+        "currentPump": 0,
+        "decodedSequence": 0,
+        "event": "native.first-fault-input",
+        "expectedNext": 6,
+        "lastX": 104,
+        "lastY": 100,
+        "reason": "invalid_or_zero_tag_during_stream",
+        "reasonCode": 1,
+        "scope": "First native validation fault only; not an accepted input receipt",
+        "tag": "0",
+        "x": 105,
+        "y": 100
+      },
+      "scalarSourcesComplete": true
+    },
+    "nativeFirstFaultOuter": {
+      "event": "terminal",
+      "reason": "root-failed",
+      "elapsedMs": 18726,
+      "rootExited": true,
+      "rootExitCode": 1,
+      "activeBeforeCleanup": 0,
+      "terminatedOwnedJob": false,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "totalProcesses": 22,
+      "limitTerminatedProcesses": 0,
+      "passed": false
+    },
+    "tagZeroOriginKnown": false,
+    "fullTrajectoryQualified": false,
+    "r20CauseEstablished": false
+  },
+  "additionalEvidence": [
+    {
+      "path": "repair-r20-budget-input-consumer/same-consumer-native-witness-r1/v143-r1/closeout.json",
+      "bytes": 5300,
+      "sha256": "456f36c5ea8a6f53b4b7829be035c3349cf5712f2b11c388acc568f42c7cdc48"
+    },
+    {
+      "path": "repair-r20-budget-input-consumer/same-consumer-native-witness-r1/diagnostic-r1/run-once/diagnostic-result.json",
+      "bytes": 4148,
+      "sha256": "74368aeba19ce1e189210816da58fbb364f23681526a0437a4407a6e1f4bcad5"
+    },
+    {
+      "path": "repair-r20-budget-input-consumer/same-consumer-native-witness-r1/diagnostic-r1/run-once/independent-actual-diagnostic-review-r1.json",
+      "bytes": 3569,
+      "sha256": "86a59fbcf431e2fb3158d1d4ec4d376f6458f00c589635fbdcacd90139f4b1ae"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "repair-r24-ready-sharing-race/collect-adoption-r24.cjs",
+      "bytes": 6574,
+      "sha256": "7dd459d5f3e10d47d486ef67e37e475fbda5275fd80488fc052b41057124b71f"
+    },
+    {
+      "path": "repair-r24-ready-sharing-race/targeted-tests-result.json",
+      "bytes": 938,
+      "sha256": "27ea5f70373f44db6a78d9300958ff1e84080627f0880924185f27fbf353839e"
+    },
+    {
+      "path": "repair-r24-ready-sharing-race/independent-source-review-r1.json",
+      "bytes": 2025,
+      "sha256": "7cd4feda224a49d710bac93fa7023c5d51ec05a595b0bea78c6adf059a46df23"
+    },
+    {
+      "path": "repair-r24-ready-sharing-race/task-closeout-audit-r1.json",
+      "bytes": 7472,
+      "sha256": "ff55596d5b5111fe17fc219a531150cfe04f87916a3518ff7b62814423507e5e"
+    },
+    {
+      "path": "repair-r24-ready-sharing-race/report-source-review-r1.json",
+      "bytes": 2850,
+      "sha256": "8dfe8378f824e2980cd93db207de2bed49591aedfa0de33eadeb446da2a861b6"
+    },
+    {
+      "path": "repair-r20-budget-input-consumer/scalar-i02-r1/runs/0-B0/analysis-r1/report.json",
+      "bytes": 13800,
+      "sha256": "411e8b5e3b5886d38d961bead546ec716f4ae31f41f0740c90136cce37b61b36"
+    },
+    {
+      "path": "repair-r20-budget-input-consumer/coordinate-diagnostic-r2/run-once/analysis-r1/report.json",
+      "bytes": 14500,
+      "sha256": "36d0820a45f9866caedefef8e4620aef07debfb141b21fba884b2fab29f70cb0"
+    },
+    {
+      "path": "repair-r20-budget-input-consumer/coordinate-diagnostic-r2/run-once/analysis-r1/mapping-investigation.json",
+      "bytes": 10710,
+      "sha256": "d1a18b53722fb6ed31adee813dd6864fdcb27cfcefda985a2aba3f3803c9482a"
+    },
+    {
+      "path": "repair-r18-reader-integration/f02-public-sdk-scope-independent-review-r1.json",
+      "bytes": 5000,
+      "sha256": "252ce4b126602d4b9ace446437ca339ab17c47dfafec39dd944946947b06f113"
+    },
+    {
+      "path": "repair-r18-reader-integration/light-provider-bounds.json",
+      "bytes": 2646,
+      "sha256": "64115d23c8c4172cf6e44a80408adeba289700a267593b6ece6f6ff0e97b6925"
+    },
+    {
+      "path": "repair-r21-draw-promotion-prototype/F03-ADOPTION-DECISION-R1.json",
+      "bytes": 13998,
+      "sha256": "e039ab3ebd8a3bb721e0e1dd8347ecd6b0a7f2d052ea4afdc2bd00c9683a2410"
+    },
+    {
+      "path": "repair-r21-draw-promotion-prototype/independent-review-r1.json",
+      "bytes": 7773,
+      "sha256": "5246654589dbc3bb30cc5ede21d75c350cd477da6d48c0172e44140fdc7c7b96"
+    },
+    {
+      "path": "repair-r22-wv2-output-trigger-r1/report.json",
+      "bytes": 106802,
+      "sha256": "8d15aa933ada384fd6fdbc3f34a78589f78984a526f3c0e9456232890c32d6f1"
+    },
+    {
+      "path": "repair-r22-wv2-output-trigger-r1/execution-independent-review-r1.json",
+      "bytes": 9647,
+      "sha256": "1c6fd1f2d37d08d1471f1fe499a92b4943261e30a00b76b20bd9d3575a7deb6c"
+    },
+    {
+      "path": "repair-r23-wv2-sta-probe/attempt-r5-r2/actual-build-closeout-r5-r2a.json",
+      "bytes": 11970,
+      "sha256": "53a93e34a373a6fe4f6794aeeba618240bccd54ee77f96e4b58199c919ab3df4"
+    },
+    {
+      "path": "repair-r23-wv2-sta-probe/attempt-r5-r2/independent-actual-build-review-r5-r2a.json",
+      "bytes": 3484,
+      "sha256": "ba9d056fb14c48c28119e2b8f3b800926165b1a64c28c8e5da2d919063ff3e59"
+    },
+    {
+      "path": "repair-r23-wv2-sta-probe/native-sta-once-r1/run-once/diagnostic-result.json",
+      "bytes": 6774,
+      "sha256": "e6a054d2ad18116b24478eee04ab26517ce06465c217dd764e90c5cc6c24d68c"
+    },
+    {
+      "path": "repair-r23-wv2-sta-probe/native-sta-once-r2/outer-controller.owned.ndjson",
+      "bytes": 19522,
+      "sha256": "4a0d91ee0623628a4179b9c3a6776041a5765acc3425a56dd65383517619ea10"
+    },
+    {
+      "path": "repair-r23-wv2-sta-probe/native-sta-once-r2/run-once/diagnostic-failure.json",
+      "bytes": 643,
+      "sha256": "265d243b99ff0b105d07cacf7109bdc0d79f83b07062d9ec36aea32decc9fdeb"
+    },
+    {
+      "path": "repair-r23-wv2-sta-probe/native-sta-once-r3/outer-controller.owned.ndjson",
+      "bytes": 2868,
+      "sha256": "7711ca7ac85c833c3345a3ffbfb48671213dde09923c608afc35a4fb085c0259"
+    },
+    {
+      "path": "repair-r23-wv2-sta-probe/native-sta-once-r3/run-once/compiler-admission.json",
+      "bytes": 266,
+      "sha256": "6480645228c41e02e6bb806466c7484b45380859ade1e7da7e2b1ec94f065230"
+    },
+    {
+      "path": "repair-r23-wv2-sta-probe/native-sta-once-r4/prepared-request.json",
+      "bytes": 21360,
+      "sha256": "69cc4244a7db8c9043d65bb4d304ad3e5ab5dec989e873b69fde84677dc698b0"
+    },
+    {
+      "path": "repair-r23-wv2-sta-probe/native-sta-once-r4/outer-controller.owned.ndjson",
+      "bytes": 31658,
+      "sha256": "d3951ef0be230b1de7cd9033be064925862916a53d38a6abc9d1aa07235aef85"
+    },
+    {
+      "path": "repair-r23-wv2-sta-probe/native-sta-once-r4/run-once/diagnostic-result.json",
+      "bytes": 3959,
+      "sha256": "9049c1b9bad53db37a80ba24848526591860647c0cd3513b982111a1a6514ee7"
+    },
+    {
+      "path": "repair-r20-budget-input-consumer/same-consumer-native-witness-r1/v143-r1/closeout.json",
+      "bytes": 5300,
+      "sha256": "456f36c5ea8a6f53b4b7829be035c3349cf5712f2b11c388acc568f42c7cdc48"
+    },
+    {
+      "path": "repair-r20-budget-input-consumer/same-consumer-native-witness-r1/diagnostic-r1/run-once/diagnostic-result.json",
+      "bytes": 4148,
+      "sha256": "74368aeba19ce1e189210816da58fbb364f23681526a0437a4407a6e1f4bcad5"
+    },
+    {
+      "path": "repair-r20-budget-input-consumer/same-consumer-native-witness-r1/diagnostic-r1/run-once/independent-actual-diagnostic-review-r1.json",
+      "bytes": 3569,
+      "sha256": "86a59fbcf431e2fb3158d1d4ec4d376f6458f00c589635fbdcacd90139f4b1ae"
+    }
+  ],
+  "limitations": [
+    "No new valid policy baseline or budget pair",
+    "R23 first-fault capture is not performance success",
+    "No qualified full input-visible chain, CPU/full-process-tree memory pair or applicable complete interaction matrix"
+  ],
+  "physicalFps": null,
+  "physicalInputToPhotonMs": null,
+  "inputLatencyVerified": false,
+  "performanceVerified": false,
+  "releaseReady": false,
+  "wholeGoalComplete": false
+}

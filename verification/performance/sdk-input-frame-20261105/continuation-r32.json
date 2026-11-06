@@ -1,0 +1,270 @@
+{
+  "schema": "soui.performance-continuation-r32/v1",
+  "recordedDate": "2026-11-06",
+  "parentCommit": "5237282ed4cbb1fcb92f43d8f294bc504820d8d8",
+  "archiveRootName": "PR129-performance-20261104",
+  "scope": "Limited private x64 MiniBlink focus/IME correctness; no performance/default SDK qualification",
+  "sdk": {
+    "version": "0.7.0-preview.4",
+    "architecture": "x64",
+    "configuration": "Release",
+    "buildId": "18e47fa2-69df-4530-b1f9-365f6b2aec28",
+    "sourceSha256": "e1d2dd8b7699930f678e21a77772b8fa4e371f5b67a53937d98470ee1659e87c",
+    "privateKernelSha256": "a4f573415d0bc38d420088d3f70a14d66e42b5703707e6220015e5f476a147cd",
+    "frozenSdkPackageChanged": false,
+    "sdkRebuilt": false,
+    "kernelRebuilt": false,
+    "defaultKernelPatchApplied": false,
+    "strictAllHistoricalBuildInputsSingleDifferenceAuthenticated": false,
+    "pairedPerformanceQualified": false
+  },
+  "consumerBuild": {
+    "originalHostSha256": "a1fc59d7c8ce0eb6db40001e3ff8f34f9e379c811512fae7d761cba23eda1ece",
+    "originalNativeBuildExit": 0,
+    "originalOuterReaderExit": 1,
+    "originalReaderFailure": "CRLF identity rejected by LF-only reader after successful native build",
+    "originalFailureUnchanged": true,
+    "separatePostBuildVerificationExit": 0,
+    "oldManualContracts": 19,
+    "newImeContracts": 36,
+    "countedContracts": 55,
+    "profileScalarPassed": true,
+    "contractsNativeExit": 0,
+    "contractsJobsEmpty": true,
+    "repairedApiHostSha256": "32ed7a551045ead20519e8d6b83eee6c10e31aa9122af5c36a624803e444a64b",
+    "bothTestHostBytes": 1273344,
+    "repairedNativeBuildExit": 0,
+    "repairedBuildElapsedMs": 59234,
+    "repairedBuildJobsEmpty": true,
+    "contractsRepeatedAfterApiOnlyFix": false
+  },
+  "originalApiFailure": {
+    "run": "e5d6829bdf4d3fd025acf248a329030e",
+    "nativeExit": 2,
+    "entryExit": 1,
+    "normalRuntimeClose": true,
+    "jobsEmpty": true,
+    "forcedCleanup": false,
+    "compositionCasesStarted": 0,
+    "cause": "Consumer expression omitted outer return required by wkeRunJS closure wrapper",
+    "productCompositionRegressionDemonstrated": false,
+    "preserved": true
+  },
+  "osIme": {
+    "run": "d3de8df572cfe9556a2f4a3634200142",
+    "primary": {
+      "pid": 88660,
+      "creationFileTime": "134383946631684958"
+    },
+    "sink": {
+      "pid": 74204,
+      "creationFileTime": "134383946630946123"
+    },
+    "primaryAndSinkExit": 0,
+    "entryExit": 0,
+    "jobsEmpty": true,
+    "forcedCleanup": false,
+    "elapsedMs": 115725,
+    "sdkTracePoints": 13223,
+    "vendorTracePoints": 70262,
+    "bothTraceFullComplete": true,
+    "traceLoss": 0,
+    "traceFaults": [],
+    "pageEvents": 78,
+    "pageOverflow": false,
+    "finalText": "你ni",
+    "finalSelection": [
+      3,
+      3
+    ],
+    "normalChineseCommitObserved": true,
+    "explicitCancelPreservedPriorText": true,
+    "imeCohort": {
+      "start": 3,
+      "update": 7,
+      "commit": 2,
+      "end": 3,
+      "allAcceptedAndNormallyReturned": true
+    },
+    "lateNativeDeliveryObserved": true,
+    "latePacketIds": {
+      "blur": "151",
+      "commit": "152",
+      "end": "153",
+      "refocus": "154"
+    },
+    "lateQpc": {
+      "blurReturn": "1491881987553",
+      "commitIngress": "1491881995772",
+      "commitBegin": "1491881998366",
+      "commitReturn": "1491882009621",
+      "endBegin": "1491882028649",
+      "endReturn": "1491882028671",
+      "refocusIngress": "1491954078750"
+    },
+    "latePreeditAndFinalBoth": "ni",
+    "lateDistinctFinalPayloadPreservationVerified": false,
+    "perPacketDomMappingProven": false,
+    "nativeDualFlagsVerified": false,
+    "fullImeVerified": false
+  },
+  "repairedApi": {
+    "run": "36769db5916beec98693a1309e40d935",
+    "pid": 8756,
+    "creationFileTime": "134383953320327679",
+    "entryExit": 0,
+    "nativeExit": 0,
+    "jobsEmpty": true,
+    "forcedCleanup": false,
+    "elapsedMs": 22641,
+    "sdkTracePoints": 2629,
+    "vendorTracePoints": 15264,
+    "bothTraceFullComplete": true,
+    "traceLoss": 0,
+    "traceFaults": [],
+    "captureActualOwnedContext": true,
+    "cases": [
+      {
+        "name": "blur-final",
+        "preeditUtf16": [
+          110,
+          105
+        ],
+        "finalPayloadUtf16": [
+          20320
+        ],
+        "composeReturned": true,
+        "confirmReturned": true,
+        "finalValueUtf16": [
+          20320
+        ],
+        "finalSelection": [
+          1,
+          1
+        ],
+        "documentHasFocus": false,
+        "events": 8,
+        "overflow": false
+      },
+      {
+        "name": "blur-refocus-final",
+        "preeditUtf16": [
+          110,
+          105
+        ],
+        "finalPayloadUtf16": [
+          20320
+        ],
+        "composeReturned": true,
+        "confirmReturned": true,
+        "finalValueUtf16": [
+          20320
+        ],
+        "finalSelection": [
+          1,
+          1
+        ],
+        "documentHasFocus": true,
+        "events": 11,
+        "overflow": false
+      }
+    ],
+    "limitedRealBlinkCompositionCriterionMet": true,
+    "distinctFinalPayloadReplacementVerifiedForBothRecipes": true,
+    "noPrematureDomCompositionEndAtBlurOrRefocus": true,
+    "producerFunctionalPass": null,
+    "realOsImeVerifiedByThisMode": false,
+    "sdkImePacketPipelineVerifiedByThisMode": false
+  },
+  "reviewableSource": {
+    "patch": "docs/performance/patches/0164-ime-functional-consumer.patch",
+    "baseCommit": "5237282ed4cbb1fcb92f43d8f294bc504820d8d8",
+    "sourceFiles": 20,
+    "changedFiles": 9,
+    "unchangedFiles": 11,
+    "originalRawPatchSha256": "4805689ff9e8c04a6cf157c235b5176e614d96c8e49a0a004e0499b913c9cd77",
+    "repositoryLfPatchBytes": 79717,
+    "repositoryLfPatchSha256": "c4d081445c8d61d196bf26fda0dca1e2a77fefba4a15d274a6aa5d93d1da39cb",
+    "repositoryLfApplyCheckExit": 0,
+    "appliedToSdkRepository": false
+  },
+  "evidence": [
+    {
+      "archiveRelativePath": "repair-r32-ime-functional-r1/build-r1/post-build-verification-r2/recovery-result.json",
+      "bytes": 8562,
+      "sha256": "3a6daa0661993a681094ed0471c29eedbd1ea21495a17a6bae2ad2a321a5eafe"
+    },
+    {
+      "archiveRelativePath": "repair-r32-ime-functional-r1/recovery-independent-review-r1.json",
+      "bytes": 4490,
+      "sha256": "1a43e18a5747ece034f1a2d8c847d8dad378c65c09bf41017f2c78554628652c"
+    },
+    {
+      "archiveRelativePath": "repair-r32-ime-functional-r1/actual-api-failure-review-r1.json",
+      "bytes": 3861,
+      "sha256": "316f86bcb1bb2aab3a5951e3576910dd6b1b180de1dd71e497dc191d24c35255"
+    },
+    {
+      "archiveRelativePath": "repair-r32-ime-functional-r1/os-ime-actual-analysis-r1.json",
+      "bytes": 38071,
+      "sha256": "0b7c2ccc5e419b10a218229fc033af9ced9ce60078812ac0b8e18cfd33c948e2"
+    },
+    {
+      "archiveRelativePath": "repair-r32-ime-functional-r1/api-repair-r2/build-r1/build-aggregate-r32.json",
+      "bytes": 1851,
+      "sha256": "f6bf0f2bfa23f29dfbdd1dec9cfdec1262e2d673e1bf317465f9f5fd443db879"
+    },
+    {
+      "archiveRelativePath": "repair-r32-ime-functional-r1/api-repair-r2/actual-api-analysis-r1.json",
+      "bytes": 23457,
+      "sha256": "cca78a27c48d1b2278bca204fb244a28ee327a538c23ea892d985c1419f6b776"
+    },
+    {
+      "archiveRelativePath": "repair-r32-ime-functional-r1/root-os-ime-execution-receipt-r1.json",
+      "bytes": 1818,
+      "sha256": "6dbca3ac2e6f8e0070203786632817b568616cda78365efba7e4c778976eec7e"
+    },
+    {
+      "archiveRelativePath": "repair-r32-ime-functional-r1/root-api-repair-execution-receipt-r1.json",
+      "bytes": 1102,
+      "sha256": "856b2939fc38ebc87e5e023aa158ee2c579dcbbaf767f61d67bc578d33990870"
+    },
+    {
+      "archiveRelativePath": "repair-r32-ime-functional-r1/root-observation-plan-r1.json",
+      "bytes": 2324,
+      "sha256": "d9909a46efff7020557220016163423ed7071bda6d56c6bc48943a957ea4ec3d"
+    },
+    {
+      "archiveRelativePath": "repair-r32-ime-functional-r1/repro-source-r1/source-manifest-r2.json",
+      "bytes": 11276,
+      "sha256": "ff6df1a4088fca98cd18c4aff8a7a13e2462e651f631ce0ee3937ecc44e56286"
+    },
+    {
+      "archiveRelativePath": "repair-r32-ime-functional-r1/repro-source-r1/r32-ime-functional-consumer-r2.patch",
+      "bytes": 79732,
+      "sha256": "4805689ff9e8c04a6cf157c235b5176e614d96c8e49a0a004e0499b913c9cd77"
+    },
+    {
+      "archiveRelativePath": "repair-r32-ime-functional-r1/repro-source-r1/apply-check-r2.json",
+      "bytes": 984,
+      "sha256": "14dc9bb2a759d93900005b7b9ef35831e6c3b515e00da3d9d670c8b444b7fc7a"
+    }
+  ],
+  "remaining": [
+    "OS IME P!=F late-payload replacement through exact SDK packet cohort",
+    "Same native WM_IME_COMPOSITION dual-flags coverage",
+    "Noncollapsed selections, navigation and close reentrancy, popup/lifetime variants, x86 interactive and broader IME matrix",
+    "Qualified input-to-visible latency and frame rate, I02/W02 decision evidence, paired CPU/full-memory and DPI/multimonitor gates"
+  ],
+  "audit": {
+    "scope": "sdk/web",
+    "command": "npm --prefix sdk/web audit --json",
+    "exitCode": 0,
+    "vulnerabilities": 0
+  },
+  "taskWindowsClosed": true,
+  "performanceVerified": false,
+  "inputLatencyVerified": false,
+  "releaseReady": false,
+  "wholeGoalComplete": false
+}

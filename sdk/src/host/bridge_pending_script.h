@@ -5,7 +5,7 @@ namespace soui::sdk::detail {
 // Keep this function compatible with Chrome 49; the same source is exercised
 // by the resolver contract tests, including real timer ownership.
 // No leading line break: native code prefixes this expression with `return `.
-inline constexpr const char* create_bridge_pending_script = R"JS((function(id, timeoutMs, renewal) {
+inline constexpr char create_bridge_pending_script[] = R"JS((function(id, timeoutMs, renewal) {
   function error(code, message) {
     return JSON.stringify({requestId:id,ok:false,error:{code:code,message:message}});
   }

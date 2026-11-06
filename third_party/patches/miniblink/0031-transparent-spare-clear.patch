@@ -1,0 +1,13 @@
+diff --git a/third_party/sources/miniblink/cc/trees/LayerTreeHost.cpp b/third_party/sources/miniblink/cc/trees/LayerTreeHost.cpp
+index 7caf3c37a..56d21c3c2 100644
+--- a/third_party/sources/miniblink/cc/trees/LayerTreeHost.cpp
++++ b/third_party/sources/miniblink/cc/trees/LayerTreeHost.cpp
+@@ -3692,7 +3692,7 @@ bool LayerTreeHost::prepareWritableFrameBufferLocked()
+             SkBaseDevice* device = skia::GetTopDevice(*previous->canvas);
+             if (device) {
+                 const SkBitmap& bitmap = device->accessBitmap(false);
+-                if (m_hasTransparentBackground)
++                if (m_hasTransparentBackground && valid)
+                     clearCanvas(next->canvas.get(), m_clientRect, true);
+                 next->canvas->drawBitmap(bitmap, 0, 0, nullptr);
+                 trace::add(trace::counter::copy_operations);

@@ -85,6 +85,10 @@ need(kernel.imports[0].sourceInputSha256 === kernel.imports[1].sourceInputSha256
  'Kernel imports must bind the same source-input identity');
 verifiedInputs.set(provenanceSource, provenanceBytes);
 const definitions = [
+ ['miniblink-v8-background-trace-source', 'third_party/manifests/miniblink-v8-background-trace-20261105.json', '20261105 known V8 callback producer source delta; selected kernel provenance states binary adoption', 'source identity record'],
+ ['miniblink-v8-background-trace-patch', 'third_party/patches/miniblink/0034-v8-background-trace-producer.patch', '20261105 known V8 callback producer source delta', 'same terms as Miniblink source'],
+ ['miniblink-frame-policy-source', 'third_party/manifests/miniblink-frame-policy-state-20261102.json', '20261102 frame-policy source candidate; binary identity is in the selected kernel provenance', 'source identity record'],
+ ['miniblink-frame-policy-patch', 'third_party/patches/miniblink/0033-frame-policy-applied-state.patch', '20261102 frame-policy source candidate; binary identity is in the selected kernel provenance', 'same terms as Miniblink source'],
  ['soui-source', 'third_party/sources/soui/SOURCE-MANIFEST.json', 'SOUI 2.9.0.3 historical import snapshot', 'upstream source notices'],
  ['soui-llvm-patch', 'third_party/patches/soui/0001-llvm-conformance.patch', '0.5 LLVM C++ conformance fixes', 'same terms as SOUI source'],
  ['soui-llvm-source', 'third_party/manifests/soui-llvm-source-050.json', '0.5 source delta and replay identity', 'source identity record'],
@@ -97,6 +101,8 @@ const definitions = [
  ['miniblink-cache-source', 'third_party/manifests/kernel-cache-source-050.json', '0.5 exact retained-cache source delta', 'source identity record'],
  ['miniblink-input-latency-patch', 'third_party/patches/miniblink/0013-bound-main-thread-scheduler-batches.patch', 'historical main-thread batch and shutdown-dispatch source delta', 'same terms as Miniblink source'],
  ['miniblink-input-latency-source', 'third_party/manifests/kernel-input-latency-source.json', 'historical delta record; current DLL identity is in the selected kernel provenance', 'source identity record'],
+ ['miniblink-precise-deadline-patch', 'third_party/patches/miniblink/0029-retain-precise-shared-timer-wait.patch', 'PR129 precise deadline repair candidate; frozen prebuilt unchanged', 'same terms as Miniblink source'],
+ ['miniblink-precise-deadline-source', 'third_party/manifests/miniblink-precise-deadline-20261030.json', 'PR129 precise deadline repair candidate; frozen prebuilt unchanged', 'source identity record'],
  ['zlib-source', 'third_party/sources/zlib/source-manifest.json', '1.2.11', 'Zlib'],
  ['json', 'third_party/include/json/json.hpp', '3.11.3 with allocation-free destruction backport (9b179cee)', 'MIT'],
  ['tailwind-utility-css', 'demos/workbench/web/apps/react/utility.css', '3.4.17 generated utility subset', 'MIT; third_party/licenses/tailwindcss-3.4.17-LICENSE.txt'],

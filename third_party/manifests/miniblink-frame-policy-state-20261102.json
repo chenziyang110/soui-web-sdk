@@ -1,0 +1,171 @@
+{
+  "schema": "soui.miniblink-frame-policy-candidate/v1",
+  "sdkVersion": "0.7.0-preview.1",
+  "baselineCommit": "a4fc394427c99a3331abfb2e3e3307ae27503dd0",
+  "hashScope": "raw-file-bytes",
+  "design": "docs/adr/0154-frame-policy-applied-state.md",
+  "prebuiltReplaced": false,
+  "releaseReady": false,
+  "performanceVerified": false,
+  "packageSizeVerified": false,
+  "sourceIdentityScope": "Only the seven listed source changes; historical SOURCE-MANIFEST and prebuilt imports retain their original identities.",
+  "patch": {
+    "path": "third_party/patches/miniblink/0033-frame-policy-applied-state.patch",
+    "bytes": 12608,
+    "sha256": "1a0ec8bcc0d05a0dd72148349c7996eb139f12196fd098559d18a759cde9547a"
+  },
+  "files": [
+    {
+      "path": "third_party/include/miniblink/input_ui_api.h",
+      "before": {
+        "bytes": 5968,
+        "sha256": "e5a19a80863dd33b2900b48a79204e4d82fb7e33be186bcd050a50c3bab28401"
+      },
+      "after": {
+        "bytes": 7014,
+        "sha256": "7acaf03ad77459426f048d92402394da00f5dca6c5c350b3a3b5d66d4b94e17e"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/content/browser/WebPage.cpp",
+      "before": {
+        "bytes": 15670,
+        "sha256": "76ba0665b50fd423c71cd81edee73942971b2c01358efb64709c8e94ef41c5f6"
+      },
+      "after": {
+        "bytes": 15879,
+        "sha256": "30095284259aa07237b08b460d6e48b0a7aeae20b4e2107ece15a50ae15a68bc"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/content/browser/WebPage.h",
+      "before": {
+        "bytes": 6806,
+        "sha256": "5d42084beb2f2d18479bf19ec49221391404928c59e2db16d25220d075a5759e"
+      },
+      "after": {
+        "bytes": 6876,
+        "sha256": "cca9bcbd031d7f73d95c4b9deb48c3ad4ef4f5158ed875206f29c2cb3ee813a8"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/content/browser/WebPageImpl.cpp",
+      "before": {
+        "bytes": 94094,
+        "sha256": "34b1d519010ee9200026f258f0a04806d47e5721dcaf85757ad1a235b1537850"
+      },
+      "after": {
+        "bytes": 94534,
+        "sha256": "8c045d6f184703294d3bac103b076086f8ab48d1a051c15f890d12083d8c1272"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/content/browser/WebPageImpl.h",
+      "before": {
+        "bytes": 13243,
+        "sha256": "016afcd8ad9982f7edde33b3d27367abb6b9c22872b5e1af80b4d9b82291dba2"
+      },
+      "after": {
+        "bytes": 13345,
+        "sha256": "b6130b48277a91958442fd7f42a0f97de1241f546345d58e262373aa1ccfa992"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/wke/InputUiApi.cpp",
+      "before": {
+        "bytes": 15573,
+        "sha256": "3c6ffc5b7ef73d4766047bfee38f735ed84b0a1ca97d97a0891751712b1bf876"
+      },
+      "after": {
+        "bytes": 17549,
+        "sha256": "30ec1f0d453b810d7c1b1a7f3e0e8ba4244cdee625ae8b28ed52a15fc4968967"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/wke/InputUiApi.h",
+      "before": {
+        "bytes": 5968,
+        "sha256": "e5a19a80863dd33b2900b48a79204e4d82fb7e33be186bcd050a50c3bab28401"
+      },
+      "after": {
+        "bytes": 7014,
+        "sha256": "7acaf03ad77459426f048d92402394da00f5dca6c5c350b3a3b5d66d4b94e17e"
+      }
+    }
+  ],
+  "validation": {
+    "forwardRawByteReplay": true,
+    "reverseRawByteReplay": true,
+    "currentReversePatchCheck": true
+  },
+  "capability": {
+    "inputUiApiVersion": 1,
+    "optionalCapability": 2048,
+    "framePolicyStructBytes": 32,
+    "framePolicyAbiVersion": 1,
+    "currentNonzeroRange": {
+      "min": 30,
+      "max": 240
+    },
+    "zeroMeans": "main-frame-controller-disabled; not zero measured FPS",
+    "queryApplySuccessMeans": "configuration readback; not rendered or displayed frame"
+  },
+  "nativeVerification": {
+    "scope": "Recompile complete affected header-reader closure and link verified source-equivalent original objects/libraries.",
+    "freshWholeKernel": false,
+    "publicBuildVerified": false,
+    "architectures": {
+      "x64": {
+        "passed": true,
+        "affectedTranslationUnits": 40,
+        "sourceEquivalentOriginalPrimaryCount": 2985,
+        "selectedSourcesUnchanged": true,
+        "frozenInputsUnchanged": true,
+        "toolsUnchanged": true,
+        "dll": {
+          "name": "miniblink.dll",
+          "bytes": 39211008,
+          "sha256": "8d84f0d0b307c4ee1fdee8d4ac27b8e67dec32545e9cf52dbfaf1a85d88904b6"
+        },
+        "deltaFromBaselineBytes": 1024,
+        "peMachine": 34404
+      },
+      "x86": {
+        "passed": true,
+        "affectedTranslationUnits": 40,
+        "sourceEquivalentOriginalPrimaryCount": 2984,
+        "selectedSourcesUnchanged": true,
+        "frozenInputsUnchanged": true,
+        "toolsUnchanged": true,
+        "dll": {
+          "name": "node.dll",
+          "bytes": 28323840,
+          "sha256": "367f1cd087bb5166c5b75f32fb76e7ca2950feae68dc15d05ec8f0ffcdc5b296"
+        },
+        "deltaFromBaselineBytes": 1536,
+        "peMachine": 332
+      }
+    }
+  },
+  "evidence": {
+    "rootRole": "external-task-evidence",
+    "receipts": [
+      {
+        "path": "F01/kernel-current/summary.json",
+        "bytes": 2401,
+        "sha256": "631c5e028ecc6c64590331a77f798d233f2cd99b880de4f7fe4cdf77d39305d4"
+      },
+      {
+        "path": "F01/kernel-current/r3/result.json",
+        "bytes": 161495,
+        "sha256": "26c911ed82bb6e2a3d69d7a9ad0883c0ff1d77a78bbb99476cf5ed17a49095ee"
+      }
+    ]
+  },
+  "limits": [
+    "The recorded DLLs are external candidates, not replacements of repository prebuilt binaries.",
+    "Incremental kernel closure verification is not a fresh whole-kernel build or end-to-end performance qualification.",
+    "Runtime/SDK/consumer/page identities and final physical performance/size require separate final-payload evidence.",
+    "No new runtime dependency, license grant, production qualification or Electron parity claim."
+  ]
+}

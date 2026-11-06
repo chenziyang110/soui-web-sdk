@@ -20,6 +20,9 @@
 #define WKE_INPUT_UI_CAP_SCENE_INPUT_IDENTITY 0x80ULL
 #define WKE_INPUT_UI_CAP_VISIBILITY 0x100ULL
 #define WKE_INPUT_UI_CAP_EXTERNAL_TRACE_PRODUCER 0x200ULL
+#define WKE_INPUT_UI_CAP_OWNER_DEADLINE 0x400ULL
+#define WKE_INPUT_UI_CAP_FRAME_POLICY_STATE 0x800ULL
+#define WKE_INPUT_UI_FRAME_POLICY_ABI_VERSION 1U
 
 #define WKE_INPUT_UI_OK 0
 #define WKE_INPUT_UI_INVALID 1
@@ -46,6 +49,18 @@
 #define WKE_INPUT_UI_DURATION_BUCKETS 64U
 
 #pragma pack(push, 8)
+/* Owner-affine main-frame policy, separate from host/display overrides.
+   appliedRate==0 disables managed main pacing; policyVersion1 supports30..240. */
+typedef struct _wkeInputUiFramePolicy {
+    unsigned int structSize;
+    unsigned int abiVersion;
+    unsigned int policyVersion;
+    unsigned int minRate;
+    unsigned int maxRate;
+    unsigned int appliedRate;
+    unsigned int reserved[2];
+} wkeInputUiFramePolicy;
+
 typedef struct _wkeInputUiTraceConfig {
     unsigned int structSize;
     unsigned int abiVersion;
@@ -116,6 +131,15 @@ typedef struct _wkeInputUiApi {
        Borrowed internal writers require their loop to outlive the borrow. */
     int (WKE_INPUT_UI_CALL* retainTraceProducer)(void);
     void (WKE_INPUT_UI_CALL* releaseTraceProducer)(void);
+    /* Optional owner deadline in this process's QPC timebase. OK reports only
+       immediately resumable work; UNAVAILABLE guarantees no provider work ran. */
+    int (WKE_INPUT_UI_CALL* serviceOwnerOpportunityUntil)(unsigned long long deadlineQpc,
+        unsigned long long qpcFrequency, unsigned int* workRemaining);
+    /* Optional tail: validate size/version/capability AND both pointers.
+       Caller initializes structSize/abiVersion and zero reserved. Failure keeps
+       output unchanged. REJECTED may follow partial mutation: query to reconcile. */
+    int (WKE_INPUT_UI_CALL* queryFramePolicy)(void* view, wkeInputUiFramePolicy* output);
+    int (WKE_INPUT_UI_CALL* applyFramePolicy)(void* view, unsigned int rate, wkeInputUiFramePolicy* output);
 } wkeInputUiApi;
 #pragma pack(pop)
 
@@ -123,6 +147,7 @@ typedef const wkeInputUiApi* (WKE_INPUT_UI_CALL* FN_wkeGetInputUiApi)(unsigned i
 
 #ifdef __cplusplus
 static_assert(sizeof(wkeInputUiTraceConfig) == 48, "Input trace config ABI changed");
+static_assert(sizeof(wkeInputUiFramePolicy) == 32, "Frame policy ABI changed");
 static_assert(offsetof(wkeInputUiApi, traceConfigure) == 16, "Input UI API prefix changed");
 static_assert(sizeof(wkeInputUiTraceSnapshot) < 16384, "Input trace snapshot must stay bounded");
 #endif

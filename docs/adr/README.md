@@ -1,5 +1,7 @@
 # 架构决策记录（ADR）
 
+- [ADR-0147：显式共享预算的 provider 截止与有限续接](0147-provider-shared-deadline.md)（proposed；源码与限定回归通过，默认预算保持 0，完整内核/性能另验）
+
 2026-10-26：[ADR-0122 输入到可见反馈](0122-input-to-visible-feedback.md)定义分阶段实现、接口、兼容和专人验证边界，当前不代表编译、运行或性能验收。
 
 当公共 API、Bridge 协议、权限、线程与生命周期、兼容目标、SDK 包格式或核心依赖发生变化时，在本目录新增 ADR。
@@ -95,3 +97,23 @@
 
 - [ADR-0123：公共原生受控 DevTools](0123-public-devtools-candidate.md)（默认关闭与目标许可；本轮发布资格单列）
 - [ADR-0136：0.6.0 普通 Release 分类与限定范围](0136-0.6.0-release-scope.md)（用户本次授权；生产资格仍未完成）
+
+- [ADR-0137：有界 Windows 工具准备](0137-bounded-windows-tool-preparation.md)（主线工具修复保持原范围）
+- [ADR-0138：MiniBlink 帧与呈现性能候选](0138-miniblink-frame-presentation.md)（主线集成，待编译测试）
+- [ADR-0139：WebView2 与 Scratch 性能候选](0139-webview2-scratch-performance.md)（主线集成，待编译测试）
+- [ADR-0140：性能候选的体积与来源门禁](0140-performance-candidate-size-and-source.md)（三项预算尚待实际构建）
+- [ADR-0141：主线输入结束与恢复策略](0141-input-ending-capacity.md)（保留 mailbox/FIFO/ordered cancel）
+- [ADR-0142：显式本地编辑器资源策略](0142-isolated-local-editor.md)（默认 strict，原生 opt-in）
+- [ADR-0143：MiniBlink 截止唤醒与批次](0143-miniblink-deadline-scheduler.md)（主线索引保留，运行资格待验）
+- [ADR-0150：透明备用画布避免重复清屏](0150-transparent-frame-buffer-clear.md)
+- [ADR-0151：显式 provider 截止覆盖完成任务退休](0151-provider-retirement-deadline.md)
+- [ADR-0153：输入发布事务的唤醒 receipt](0153-input-publication-wake-receipt.md)
+- [ADR-0154：主帧策略协商与实际应用状态](0154-frame-policy-applied-state.md)
+- [ADR-0155：WebView2 有界请求调度元数据](0155-webview2-request-dispatch-metadata.md)
+- [ADR-0156：WebView2 输出准备分段观测](0156-webview2-output-preparation-observation.md)
+- [ADR-0157：MiniBlink 排队请求复用已解析的方法分类](0157-miniblink-queued-method-route.md)
+- [ADR-0158：MiniBlink 原生接纳复用同请求的同步解析视图](0158-miniblink-native-admission-metadata.md)
+- [ADR-0159：MiniBlink 原生 Bridge 的有界分段观测](0159-miniblink-native-phase-observation.md)
+- [ADR-0160：默认关闭的原生渲染阶段成本诊断](0160-private-render-phase-cost-observation.md)（独立 benchmark overlay，默认 SDK 载荷不变）
+- [ADR-0161：帧策略 provider 退避从操作完成时起算](0161-provider-retry-clock-origin.md)
+- [ADR-0163：合成唤醒提前接纳的受控实验](0163-compositor-draw-wake-promotion-experiment.md)（提议，仅外部原型；生产默认未改变）

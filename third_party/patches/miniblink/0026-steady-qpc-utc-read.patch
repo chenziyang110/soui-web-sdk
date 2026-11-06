@@ -1,0 +1,23 @@
+diff --git a/third_party/sources/miniblink/content/web_impl_win/CurrentTimeImpl.cpp b/third_party/sources/miniblink/content/web_impl_win/CurrentTimeImpl.cpp
+index 3c28043b7..019a581b9 100644
+--- a/third_party/sources/miniblink/content/web_impl_win/CurrentTimeImpl.cpp
++++ b/third_party/sources/miniblink/content/web_impl_win/CurrentTimeImpl.cpp
+@@ -137,16 +137,14 @@ double currentTimeImpl()
+     static double s_lastUTCTime = 0;
+     static bool s_isSyncedTime = false;
+ 
+-    double lowResTime = lowResUTCTime();
+-
+     if (!qpcAvailable())
+-        return lowResTime / 1000.0;
++        return lowResUTCTime() / 1000.0;
+ 
+     double highResTime = highResUpTime();
+ 
+     if (!s_isSyncedTime) {
+         timeBeginPeriod(1); // increase time resolution around low-res time getter
+-        s_syncLowResUTCTime = lowResTime = lowResUTCTime();
++        s_syncLowResUTCTime = lowResUTCTime();
+         timeEndPeriod(1); // restore time resolution
+         s_syncHighResUpTime = highResTime;
+         s_isSyncedTime = true;

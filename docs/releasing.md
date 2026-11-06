@@ -1,5 +1,7 @@
 # 交付与发布
 
+未发布的 `0.7.0-preview.4` 已刷新 Web、React/Vue 与 native 四份 SBOM，绑定当前 SDK 构建和复用的 preview.3 内核字节；七份源文档实际通过离线 schema 校验。源 SDK 首次发布 rename 失败与后续官方 retained-stage recovery 分开记录；正常安装和隔离 MiniBlink 启动/关闭不等于性能或生产验收，详见[本轮交付复验](performance/sdk-preview4-delivery-20261105.md)。历史 preview.3 段落保留当时身份，不作为当前资格。
+
 ## 0.6.0 本次授权与执行范围
 
 本轮目标为普通 GitHub Release `v0.6.0`，纳入本地受控 DevTools 与已合入主线的能力。两架构构建、有限回归、安装消费者、默认应用八次运行与九份供应/应用 ZIP 已有实际记录；受控 GUI 代表例已记录，完整对应源码及最终发布身份见附件清单，附件上传状态以实际发布页为准。用户于 2026-10-28 明确选择普通 Release 并后置低收益长测；该决定替代此前候选阶段要求立即执行全部长测的顺序，不修改各验收项或旧失败的事实。见 [ADR-0136](adr/0136-0.6.0-release-scope.md)和[0.6.0 发布说明](releases/0.6.0.md)。
@@ -69,6 +71,8 @@ node tools/Collect-Verification.cjs --record-unverified --evidence-reference ver
 除下面的原生清单外，`verification/sbom-*.cdx.json` 来自十个当前 npm 锁文件：Web SDK、React/Vue GUI 绑定、兼容和 Modern 模板、Workbench、兼容和 Modern 参考工作台，以及验收工具和 Electron 对照工具。后两项属于验证工具依赖，不属于 SDK 运行载荷；应用包版本独立于根 SDK 版本。生成使用 `npm sbom --package-lock-only --sbom-format=cyclonedx --offline --ignore-scripts --install-links`，版本冻结后需重新生成受影响清单。React/Vue 清单中本地 Web SDK 的 distribution URL 经核对对应 package 名称和版本后，转换为相对清单目录的 `../sdk/web`；保留原始生成记录，不把开发机位置写进交付清单。[CycloneDX 1.5](https://github.com/CycloneDX/specification/blob/1.5/schema/bom-1.5.schema.json) 的 externalReference URL 使用 `iri-reference`。
 
 `verification/sbom-native.cdx.json` 独立列出实际复算散列的 136 个原生交付文件及两架构共 22 个内核静态链接输入。链接输入仅表示该 archive 参与真实链接，不表示每个成员都进入最终 DLL；这些构建输入也不全是运行时分发文件。来源分别绑定 `third_party/manifests/dependencies.json`、`kernel-build-050.json` 和当前实际构建报告。清单不含首方编译产物和完整传递源码组成，composition 明确为 `incomplete`，未知叶依赖没有伪装成空集合。`sbom-native.validation.json` 保存实际官方 1.5 schema 校验结果及 schema 散列。版本或载荷变动后须重新生成、复算文件散列并校验。所有清单都不等同于漏洞已清零或授权审核完成；完整源码另由 `source-manifest.json` 及各来源记录约束。
+
+未发布的 `0.7.0-preview.3` 已刷新受影响的 Web SDK、React/Vue 和原生四份清单；旧 `0.6.0`、`0.7.0-preview.2` 生成及校验原件保持不变。当前原生来源绑定 `kernel-build-070-preview3.json` 及 V8 后台 producer scope 的两架构单 TU 重编、冻结 K1 输入重链接记录：136 个实际交付文件重新计算散列，22 个静态 archive 沿原 F01 producer 的 frozen-link-inputs/link.rsp 记录，明确没有由 SBOM 步骤重算或重建。三份 npm raw、三个交付副本和原生文档共七份实际通过官方 schema 离线校验；顶层验证摘要把当前交付字节对应到原始校验，不将其解释为完整依赖图、全内核重编、应用运行或发布资格。
 
 源码维护者先将审查过的源码加入 Git 暂存区，再执行 `node tools/internal/source-archive.cjs create` 和 `node tools/internal/source-archive.cjs verify`。除清单自身外存在未暂存修改时生成器会失败。v2 清单从 Git index blob 的原始字节生成；验证先比较原字节，再允许文本 checkout 的 CRLF 转换，保留 Git 中原有的特殊混合换行。二进制不转换；上游导入清单中的历史缓存不决定发布内容。
 

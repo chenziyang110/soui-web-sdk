@@ -1,0 +1,430 @@
+{
+  "schema": "soui.sdk-input-frame-limited-acceptance/v1",
+  "date": "2026-11-05",
+  "status": "implementation-verified-performance-not-qualified",
+  "performanceVerified": false,
+  "releaseReady": false,
+  "baselineCommit": "a4fc394427c99a3331abfb2e3e3307ae27503dd0",
+  "integrationParent": "e561ca0b8bc9284e7f2f4e03c7d32b31776964a2",
+  "testedCandidate": {
+    "sdkVersion": "0.7.0-preview.2",
+    "packageVersion": "0.7.0",
+    "localSourceSnapshot": "91f9c251c23ca8167c6824e646eb80d3d13c6dfd",
+    "sdkSourceSha256": "5bfcdf50c8e9a98e83c9d619afaf72712794c00608984d2b0e15c9df46c70c23",
+    "sdkBuildId": "c5da3a12-72b7-49e1-8195-2ceb1eda9985",
+    "sdkReceiptSha256": "745aeb3a16458925c06124c620c93496c03f919b894a2b55fcf99f6457c71e9a",
+    "architecture": "x64",
+    "configuration": "Release",
+    "compiler": "MSVC19.44.35226/v143",
+    "windowsSdk": "10.0.19041.0",
+    "sourceFileCount": 6092
+  },
+  "consumerArtifacts": {
+    "consumers.inputUi.baseline.executable": {
+      "file": "SouiInputUiHost.exe",
+      "bytes": 1168384,
+      "sha256": "7eb7056a83fb9763e5263f5fe51f5e1f674220ad7aad0484043988704cb53ca3"
+    },
+    "consumers.inputUi.candidate.executable": {
+      "file": "SouiInputUiHost.exe",
+      "bytes": 1198080,
+      "sha256": "264bda87a18f2f33956566bc2e6c01a82db7d55730430fe6338c1bdfb3f05c4a"
+    },
+    "consumers.performanceHost.baseline.executable": {
+      "file": "SouiSdkPerformanceHost.exe",
+      "bytes": 1569792,
+      "sha256": "539976f553dbd307526788391d2913ffc84a444b03a23c57d307680f52fb2b21"
+    },
+    "consumers.performanceHost.candidate.executable": {
+      "file": "SouiSdkPerformanceHost.exe",
+      "bytes": 1603584,
+      "sha256": "239936775ebf5342ee6bf4b2ce8cb294f5970c743fe4b07d4cfe1fde8abcb8fc"
+    },
+    "consumers.size.zipTool": {
+      "file": "7z.exe",
+      "bytes": 575488,
+      "sha256": "4cd7d776c686427226a151789d2d61f0b2ed2c392148cc4e69c0238362fafecf"
+    }
+  },
+  "sourceScope": "Local source snapshots identify actual build inputs. The curated integration preserves later remote changes; reader/test/docs updates after the SDK build do not relabel that original receipt as a rebuild of the final whole tree.",
+  "frames": {
+    "endpoint": "Sampled GDI BitBlt desktop content-change rate lower bound; not exact unique FPS or physical scanout",
+    "displayConfiguredHz": 60,
+    "webview2": {
+      "status": "no-detectable-change-above-frozen-noise",
+      "runtime": "156.0.4314.58",
+      "rounds": {
+        "A1": {
+          "runId": "3b785bae13ad5657db31f2451552a048",
+          "sdkVersion": "0.6.0",
+          "rateLowerBoundHz": 59.84376804726106,
+          "p95ObservedChangeMs": 20.8884,
+          "observedGapsOver50ms": 0
+        },
+        "B1": {
+          "runId": "33ef6ee3af27a59820906b7fa39fdc2f",
+          "sdkVersion": "0.7.0-preview.2",
+          "rateLowerBoundHz": 59.77029476120663,
+          "p95ObservedChangeMs": 21.0029,
+          "observedGapsOver50ms": 0
+        },
+        "B2": {
+          "runId": "db72d8c7ec0fa832c27816add28149d4",
+          "sdkVersion": "0.7.0-preview.2",
+          "rateLowerBoundHz": 59.90304415776222,
+          "p95ObservedChangeMs": 20.7302,
+          "observedGapsOver50ms": 0
+        },
+        "A2": {
+          "runId": "ecf77f345ea3ced408474757311cc2b6",
+          "sdkVersion": "0.6.0",
+          "rateLowerBoundHz": 59.93285806576887,
+          "p95ObservedChangeMs": 20.802,
+          "observedGapsOver50ms": 0
+        }
+      },
+      "noise": {
+        "rateHz": 2.992188402363053,
+        "p95Ms": 5.296999999999997
+      }
+    },
+    "miniblink": {
+      "status": "inconclusive-baseline-drift",
+      "localCandidateSource": "59ff143165a4146f423163d5463355936b96825f",
+      "rounds": {
+        "A1": {
+          "rateLowerBoundHz": 59.5732117,
+          "p95ObservedChangeMs": 20.8762
+        },
+        "B2": {
+          "rateLowerBoundHz": 59.8891934,
+          "p95ObservedChangeMs": 20.7344
+        },
+        "A2": {
+          "rateLowerBoundHz": 56.89548,
+          "p95ObservedChangeMs": 32.3817
+        }
+      },
+      "noise": {
+        "rateHz": 4.4,
+        "p95Ms": 1.1836
+      },
+      "baselineP95DriftMs": 11.5055
+    },
+    "exactUniqueFps": null,
+    "physicalFps": null
+  },
+  "input": {
+    "baselineE2e": {
+      "status": "failed-source-integrity",
+      "requested": 3750,
+      "sent": 3750,
+      "hostExitCode": 2,
+      "normalRuntimeClose": true,
+      "sdkScalarUsable": true,
+      "kernelScalarUsable": false,
+      "kernelReasons": [
+        "source_loss"
+      ],
+      "kernelUnregisteredWrites": "2",
+      "occurrencePhase": "unknown",
+      "remainingPairedRuns": "not-run-baseline-failed"
+    },
+    "candidateFullDiagnostic": {
+      "status": "limited-posthoc-reader-pass-not-performance-qualification",
+      "runId": "99e902b70953e5c91b535cb1fc59e00c",
+      "inputCount": 1250,
+      "mappedHostInputs": 1250,
+      "softwareVisibleSamples": 428,
+      "unresolvedInputs": 822,
+      "hostToEngineMs": {
+        "samples": 1250,
+        "p50": 0.2524,
+        "p95": 0.7185,
+        "p99": 1.0014,
+        "min": 0.0108,
+        "max": 3.3859
+      },
+      "softwareCaptureUpperMs": {
+        "samples": 428,
+        "p50": 22.9149,
+        "p95": 37.2117,
+        "p99": 44.6053,
+        "min": 11.7189,
+        "max": 57.9658
+      },
+      "fullCausalComplete": false,
+      "nativeStageSamples": {
+        "1": 1250,
+        "2": 1250,
+        "3": 1250,
+        "4": 1250,
+        "6": 1250,
+        "7": 0,
+        "8": 0
+      },
+      "p99Scope": "exploratory-insufficient-visible-samples"
+    },
+    "physicalInputToPhotonMs": null,
+    "endToEndImprovement": null
+  },
+  "functional": {
+    "webview2PinyinCommit": "observed-你-compositionend",
+    "miniblinkPinyinCommit": "observed-你-candidate-popup-and-commit",
+    "miniblinkInnerWheel": "observed-row1-to-row8",
+    "scope": "short functional observations; not exhaustive IME/conservation or physical timing"
+  },
+  "tests": {
+    "integrationSelectedNode": {
+      "passed": 190,
+      "failed": 0,
+      "skipped": 0,
+      "scope": "before final warmup-only reader changes"
+    },
+    "burstReaderTargeted": {
+      "passed": 28,
+      "failed": 0,
+      "skipped": 0
+    },
+    "desktopVisualTargeted": {
+      "passed": 21,
+      "failed": 0,
+      "skipped": 0
+    },
+    "performanceHostNativeContracts": {
+      "passed": 40
+    },
+    "inputUiProfileContracts": {
+      "baselinePassed": true,
+      "candidatePassed": true
+    },
+    "webview2OutputTimingCtest": {
+      "passed": 2
+    },
+    "sdkWebAuditKnownVulnerabilities": 0
+  },
+  "sizes": {
+    "status": "actual-matched-x64-runtime-and-zip",
+    "sdkInstalledBytes": {
+      "baseline": 79853600,
+      "candidate": 80244375,
+      "delta": 390775
+    },
+    "performanceExeBytes": {
+      "baseline": 1569792,
+      "candidate": 1603584,
+      "delta": 33792
+    },
+    "miniblinkDllBytes": {
+      "baseline": 39204352,
+      "candidate": 39211008,
+      "delta": 6656
+    },
+    "finalX86MatchedRuntimeDelta": null,
+    "comparisons": {
+      "miniblink": {
+        "deltas": {
+          "archiveBytes": 19601,
+          "runtimeBytes": 40448,
+          "kernelBytes": 40448
+        },
+        "baseline": {
+          "archiveBytes": 17013725,
+          "runtimeBytes": 46866217,
+          "kernelBytes": 40774144
+        },
+        "candidate": {
+          "archiveBytes": 17033326,
+          "runtimeBytes": 46906665,
+          "kernelBytes": 40814592
+        },
+        "interpretation": "Observed paired size deltas; small growth is reported without converting it into a release or performance pass."
+      },
+      "webview2": {
+        "deltas": {
+          "archiveBytes": 16307,
+          "runtimeBytes": 33792,
+          "kernelBytes": 33792
+        },
+        "baseline": {
+          "archiveBytes": 2613048,
+          "runtimeBytes": 6152443,
+          "kernelBytes": 1569792
+        },
+        "candidate": {
+          "archiveBytes": 2629355,
+          "runtimeBytes": 6186235,
+          "kernelBytes": 1603584
+        },
+        "interpretation": "Observed paired size deltas; small growth is reported without converting it into a release or performance pass."
+      }
+    }
+  },
+  "unqualified": [
+    "physical input/photon",
+    "high-refresh displays",
+    "DPI/multi-monitor",
+    "full final UnitOnly and architecture/configuration matrix",
+    "long-run resources and stability",
+    "full process-tree/shared-browser/GPU memory attribution",
+    "Electron comparison"
+  ],
+  "evidenceReferences": [
+    {
+      "label": "repair-r10/final-source-snapshot/result.json",
+      "bytes": 1773,
+      "sha256": "7531400b4973691770c581bdc104b66df8a6fce8c56ff4f55279847a7b5483c0"
+    },
+    {
+      "label": "repair-r10/consumers-v143/build-summary.json",
+      "bytes": 16734,
+      "sha256": "874ed7e89dd890c137bf02cddfa871e05be8b41f9412aab6226c2cd7e2388f32"
+    },
+    {
+      "label": "repair-r10/frame-preparation/four-round-overall-webview2-r1.json",
+      "bytes": 18016,
+      "sha256": "57132003459fb9ad95bf475afc95333bf2ef5e20307411002a8534677ca73282"
+    },
+    {
+      "label": "repair-r10/frame-preparation/a1-b2-a2-miniblink-final-status.json",
+      "bytes": 1687,
+      "sha256": "b0f76f8e75dd9ea0ceffadf1d89d467276eac7e02d14591bd692f55d82f98aa5"
+    },
+    {
+      "label": "repair-r10/frame-preparation/noise-thresholds-miniblink.json",
+      "bytes": 4661,
+      "sha256": "b629e068126636f28e06198f96cb146a3723fa5c3925d90021e12f9e90a25046"
+    },
+    {
+      "label": "repair-r10/frame-preparation/noise-thresholds-webview2.json",
+      "bytes": 4890,
+      "sha256": "157eb19bc8560d05d64b47f14e8dcebb7b5afdc506a8d6e0256d99ad40139359"
+    },
+    {
+      "label": "repair-r11/input-frame-posthoc/00-candidate-full-attribution-reader-reanalysis-r1.json",
+      "bytes": 353362,
+      "sha256": "f39f145658c4d1eaba8c0991c0dad6f24ccc57d61f2fea99ee7162e1cdcf874a"
+    },
+    {
+      "label": "repair-r10/input-preparation/runs-measurement-eb31-r2/results/01-baseline-e2e-a/input-ui-run.json",
+      "bytes": 6169,
+      "sha256": "e10aa4814d06c4707e704d4e9b157fefad4e4efc8fe04971c3154b7afa6a0318"
+    },
+    {
+      "label": "repair-r10/input-preparation/runs-measurement-eb31-r2/results/01-baseline-e2e-a/scalar-final-status.json",
+      "bytes": 10306,
+      "sha256": "c7be52dca2b36feb7febd0abb80478c9fa53c08c78c3b19c2771eb408e6def04"
+    },
+    {
+      "label": "repair-r10/input-preparation/runs-measurement-eb31-r2/results/01-baseline-e2e-a/host-result.json",
+      "bytes": 752,
+      "sha256": "aa01c9c0be18ab9634a5699e7c4e9ea64a7773c2ce3c4d600739fceace033ef9"
+    },
+    {
+      "label": "repair-r11/webview2-ime-functional-observation.json",
+      "bytes": 1344,
+      "sha256": "059b1c111916046814f25afd64624fcaba0fd65286248e6de21ae17e39767975"
+    },
+    {
+      "label": "repair-r11/miniblink-ime-functional-observation.json",
+      "bytes": 1571,
+      "sha256": "43fe3af2efa695d0ae477c937d5665a64e6ceb3c20df31211d2f3342e85e0a8a"
+    },
+    {
+      "label": "repair-r11/miniblink-ime-functional-r1/completion.json",
+      "bytes": 1000,
+      "sha256": "4032918a8d840fed2616410d8726d534f0d150e12c3eab00aa3403a1d8e78c8e"
+    },
+    {
+      "label": "repair-r11/final-independent-review.json",
+      "bytes": 6182,
+      "sha256": "ce1f404e3ed97467f3b03beac56a73e8f3fd6955515fba0c1091fe10393d3fd0"
+    },
+    {
+      "label": "repair-r11/sdk-web-npm-audit.json",
+      "bytes": 717,
+      "sha256": "3ef9ecea48b4407d3775e09f47a206422daf991b67634df0468c5e8f17e1bf8c"
+    },
+    {
+      "label": "repair-r11/final-product-source-projection.json",
+      "bytes": 580,
+      "sha256": "3ec246ca5ce3f95083ee4a2a3f95b6a2ea51b8e3f737165fc9c94c691f37597e"
+    },
+    {
+      "label": "repair-r10/w02-prepare-output-ab-r5/binding-91f9c5-r5.json",
+      "bytes": 190527,
+      "sha256": "2ea6f0435cd35f1d842692bafcf8a62154bbc8ca0a97f453a579a4bb8bb2bb57"
+    },
+    {
+      "label": "repair-r10/matched-runtime-artifacts-final-r1/size-reports/final-size-report.json",
+      "bytes": 11420,
+      "sha256": "22944d95872453db6eb0e23a8e957c462fced419f0057a6ebfa2a4db41c86190"
+    },
+    {
+      "label": "repair-r11/conditional-decisions.json",
+      "bytes": 9755,
+      "sha256": "82768b329574b5ead12391971c4b66fb315c8b5d1c93b8695fa89e36ccc318d2"
+    },
+    {
+      "label": "repair-r10/w02-prepare-output-ab-r5/runs-91f9c5-r5/off/run-summary.json",
+      "bytes": 812,
+      "sha256": "254080515e769a4fc1cfca5dcb9c1c2171d160d98700fd9a3b5b929b321f9e21"
+    },
+    {
+      "label": "repair-r10/w02-prepare-output-ab-r5/runs-91f9c5-r5/off/host-output/report-1.json",
+      "bytes": 21974,
+      "sha256": "b6f608224aaa98a6a0890fbbf310490ce99719247e9d6df65c6ea27c174e7dba"
+    },
+    {
+      "label": "repair-r10/w02-prepare-output-ab-r5/runs-91f9c5-r5/off/host-output/report-2.json",
+      "bytes": 22054,
+      "sha256": "82429bbeb099d0d868da7cbf2f52e06f18233d1cb7aab2798f0af4c07089bd41"
+    }
+  ],
+  "evidenceLocation": "Original local execution bundle retained by maintainer; labels are bundle-relative references, not repository files. Hashes bind originals without publishing local machine paths.",
+  "taskDecisions": {
+    "I01": "retain-publication-receipt-notification",
+    "F01": "retain-negotiation-fix-retry-completion-clock",
+    "W01": "retain-ingress-metadata-reuse",
+    "I02": "default-budget-remains0-no-qualified-adoption-evidence",
+    "W02": "default-prepare-output-off-owner2ms16-no-qualified-pair",
+    "I03": "no-new-thread-or-queue-provider-prefix-dominance-unknown",
+    "F02": "limited-default-direct-hwnd-non-adoption-special-copy-paths-unknown",
+    "F03": "retain-existing-fallback-no-phase-lock-or-new-present-owner"
+  },
+  "w02Diagnostic": {
+    "status": "invalid-raw-retained",
+    "runId": "0aaf781a2b1e4d77bce0589e6510b4c1",
+    "side": "off",
+    "onSideRun": false,
+    "qualifiedPair": false,
+    "phase": "Page displayed complete30s,38784 successful/0failed/0pending; total operator watchdog expired before save and normal close",
+    "hostExitCode": 124,
+    "samplerExitCode": 2,
+    "hostOwnedNatural": false,
+    "hostJobClosed": true,
+    "partialScalarBucketUpperP95Ms": {
+      "task_queue": 0.4095,
+      "webview2_owner": 0.2047,
+      "serialization": 0.0255
+    },
+    "partialScalarScope": "Process-cumulative bracket deltas only, not per-request attribution or a qualified closed run",
+    "decision": "Keep prepare-output disabled, owner2ms/16; no performance qualification"
+  },
+  "productSourceProjection": {
+    "schema": "soui.final-product-source-projection/v1",
+    "sourceLocalSnapshot": "91f9c251c23ca8167c6824e646eb80d3d13c6dfd",
+    "integrationParent": "e561ca0b8bc9284e7f2f4e03c7d32b31776964a2",
+    "scope": [
+      "sdk",
+      "cmake",
+      "third_party/include",
+      "third_party/manifests"
+    ],
+    "files": 1063,
+    "lineEndings": "CRLF→LF for listed UTF8 text extensions only; binaries exact",
+    "differences": [],
+    "missing": [],
+    "claims": "Source projection equivalence only. Not an executed build of the final whole repository; original build receipts keep their identities."
+  }
+}

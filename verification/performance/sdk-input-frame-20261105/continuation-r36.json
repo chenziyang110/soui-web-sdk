@@ -1,0 +1,172 @@
+{
+  "schema": "soui.sdk-input-frame-continuation/r36",
+  "recordedAtUtc": "2026-11-06T04:57:16.018Z",
+  "entryHead": "1021d5c32d327726a85fa2313cc793546ae3e489",
+  "archiveRoot": "PR129-performance-20261104",
+  "scope": "One frozen native-input preflight and GO orchestration; no SDK/kernel/consumer/tool/page/reader change or rebuild",
+  "sdk": {
+    "version": "0.7.0-preview.4",
+    "architecture": "x64",
+    "configuration": "Release",
+    "buildId": "18e47fa2-69df-4530-b1f9-365f6b2aec28",
+    "sourceSha256": "e1d2dd8b7699930f678e21a77772b8fa4e371f5b67a53937d98470ee1659e87c",
+    "kernelSha256": "56d460c0b4136d85d3fcb8d4e4f00c19a04ff56532228031b55368742ef54308",
+    "modified": false
+  },
+  "priorColdAndBuildRecord": "continuation-r35.json",
+  "entryRequest": {
+    "archivePath": "repair-r35-sync-input-witness-r1/recovery-single-bootstrap-r2/entry-r4-native-go/prepared-request.json",
+    "bytes": 26991,
+    "sha256": "c26514cc20f04f2fe99d8f90f2130caaf02c42e1532aa8f8883d4d2a28ffc274"
+  },
+  "entryReview": {
+    "archivePath": "repair-r35-sync-input-witness-r1/recovery-single-bootstrap-r2/entry-r4-native-go/independent-entry-review-r1.json",
+    "bytes": 5202,
+    "sha256": "4a2bdf1acc00a9e973e021ee95573418f9e34815d3acc5b860c9770b6e5e645d"
+  },
+  "actualReview": {
+    "archivePath": "repair-r35-sync-input-witness-r1/recovery-single-bootstrap-r2/entry-r4-native-go/actual-native-preflight-review-r1.json",
+    "bytes": 9186,
+    "sha256": "0a6e48cde133a71c2cb150df84a796a1043350a5f38af69ed73d9a30adfcb513"
+  },
+  "rootTerminal": {
+    "archivePath": "repair-r35-sync-input-witness-r1/recovery-single-bootstrap-r2/entry-r4-native-go/root-native-preflight-terminal-r1.json",
+    "bytes": 3935,
+    "sha256": "84bbabfa114384cadc2a860fc09d9ff22556732c44b66b03921922003ef9e4a8"
+  },
+  "goContract": {
+    "schema": "soui.r35-native-input-go/v1",
+    "activationPolicy": "frozen-input-tool-restore-and-verify",
+    "taskScopedNativeInputAuthorized": true,
+    "observedOrActivatedAssertionMade": false,
+    "originalAbsolute30sUnchanged": true,
+    "goAcceptedAfterEntryStartMs": 9878,
+    "remainingBeforeOriginalDeadlineMs": 20122
+  },
+  "actualRun": "2b149ce5ae51d51a218b21bc082a671a",
+  "outcome": {
+    "entryExitCode": 1,
+    "host": {
+      "pid": 42224,
+      "birth": "134384141204721111",
+      "exitCode": 2,
+      "elapsedMs": 150578
+    },
+    "input": {
+      "pid": 33492,
+      "birth": "134384141303387191",
+      "exitCode": 1,
+      "elapsedMs": 66
+    },
+    "bothNaturalJob0": true,
+    "forcedTermination": false,
+    "normalRuntimeClose": true
+  },
+  "initialization": {
+    "soleBootstrapTraceCount": 1,
+    "setupPhase": 16,
+    "receipt": "4",
+    "installed": true,
+    "pageReady": true,
+    "coldSeen": true,
+    "errorCode": 0,
+    "cookieMatch": true,
+    "ownerAuthorized": true,
+    "stableTls": true,
+    "returnedId": 0,
+    "actualThread": 12412,
+    "taskId": "9",
+    "taskBeginQpc": "1685745194133",
+    "getterBeginQpc": "1685745198535",
+    "getterEndQpc": "1685745198587",
+    "exactActualSdkTaskMatch": true,
+    "finalizeCount": 1,
+    "finalizedWhileArmed": false
+  },
+  "preflight": {
+    "stderr": "Target foreground, geometry or held process changed",
+    "locationInference": "Frozen source first validate_target:146 follows restore/SetForegroundWindow and precedes observer:167, both output creations and pointer SendInput:194. The later same-error call occurs only after file creation; both expected burst files are absent.",
+    "inputSource": {
+      "path": "C:\\soui-perf-continuation\\PR129-performance-20261104\\repair-r35-sync-input-witness-r1\\project\\benchmarks\\protocol\\burst-input.cpp",
+      "bytes": 14704,
+      "sha256": "92bb2474f3d922e34fe9480b5850a6620a7ac42001ed64aa0794d8895367967f"
+    },
+    "intendedBurstInputsSent": 0,
+    "desktopObserverStarted": false,
+    "crcNonceZeroBaselineValidated": false,
+    "nativeCoordinateEvents": 0,
+    "taggedNativeEvents": 0,
+    "whichForegroundGeometryOrHeldPredicateFailed": "unknown",
+    "notAGlobalNativeInputAbsenceClaim": true
+  },
+  "trace": [
+    {
+      "source": "sdk",
+      "points": 17875,
+      "complete": true,
+      "loss": "0",
+      "faults": [],
+      "fullCausalEligible": true
+    },
+    {
+      "source": "vendor",
+      "points": 83944,
+      "complete": true,
+      "loss": "0",
+      "faults": [],
+      "fullCausalEligible": true
+    }
+  ],
+  "unverified": {
+    "collectorComplete": false,
+    "deferredControlDone": false,
+    "positivePoint3InputJoinVerified": false,
+    "firstSlotT1JoinVerified": false,
+    "persistentAckDesktopVerified": false,
+    "note": "Cold point12/task9 is not the independent positive-triggered deferred control."
+  },
+  "priorLateGo": {
+    "run": "4685eaf2fc991140bcb86513df0101dc",
+    "entryExitCode": 1,
+    "hostExitCode": 2,
+    "hostElapsedMs": 36527,
+    "goPublished": false,
+    "inputStarted": false,
+    "rootReceipt": {
+      "archivePath": "repair-r35-sync-input-witness-r1/recovery-single-bootstrap-r2/entry-r3-native-go/root-late-go-terminal-r1.json",
+      "bytes": 2126,
+      "sha256": "ee8fc37ca1e77c9b691758fb2bfc972ceb4380b79e3d4c5aaa11d9ea10e2166b"
+    },
+    "sameOldSourceReused": true
+  },
+  "sameConditionAutomaticRetryStopped": true,
+  "specificEnvironmentPredicateUnknown": true,
+  "allNativeForegroundIdentityMarkerChecksPreserved": true,
+  "originalTimeoutsMs": {
+    "readyGo": 30000,
+    "host": 190000,
+    "input": 155000,
+    "overall": 195000,
+    "drain": 2000,
+    "finalAck": 500
+  },
+  "defaultPolicyChanged": false,
+  "defaults": {
+    "sharedBudgetUs": 0,
+    "prepareOutput": false
+  },
+  "packageChanged": false,
+  "newProductVolumeMeasured": false,
+  "audit": {
+    "exitCode": 1,
+    "toolChunk": "7f8c50",
+    "scope": "sdk/web; dependencies unchanged",
+    "failure": "TLS disconnected before audit endpoint response",
+    "currentAuditPass": false
+  },
+  "formalPerformanceBaseline": false,
+  "performanceVerified": false,
+  "inputLatencyVerified": false,
+  "releaseReady": false,
+  "wholeGoalComplete": false
+}

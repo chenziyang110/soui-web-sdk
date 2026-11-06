@@ -90,6 +90,14 @@ Host pump 不再扫描 SOUI_GPU_PRESENT_TRACE 文件或依赖 swapped 文本判�
 
 新增 native/provider/input/FIFO/serialization 成本直方图。`SOUI_ENGINE_SHARED_TURN_BUDGET_US=100..5000` 是默认关闭的协作总预算候选：native/FIFO 截止取组件与总剩余的较早值；provider/input/FIFO 每轮至少保留一次有界服务以保证进展。单次 provider/输入批次或用户回调仍可超时，候选不能冒充抢占。没有 profile 时不默认采用、不凭常数推算收益；跨 MiniBlink provider 批次的更细剩余预算协议仍待数据决定。
 
+#### 输入批次接收同一 turn 的截止时间
+
+既有候选把共享 deadline 传给 native/FIFO，却在输入批次重新取得独立的 1ms；共享预算已消耗完时，输入仍可能连续执行最多八项。新增私有 `service_before_until` 入口，将同一单调截止时间传到 mailbox，实际取共享截止和原 1ms 上限的较早值。旧派生服务默认委派到既有 `service_before`，公共 Engine API 和 WKE ABI 不变。
+
+选择到的服务即使预算已过期也保留一个符合 ordinal cutoff 的输入机会；然后在安全回调边界让出，保留八项上限、多 Host 轮转、剩余 pending、按序 cancel/recovery、锁外 handler/capture 及停止排空。不抢占回调，不跳过 FIFO/document/geometry 屏障。该机制避免已耗尽共享预算后继续整批输入，不能承诺硬实时的整个 turn 上限；provider 仍保留原独立机会，跨 DLL 的预算协议未实现。
+
+共享预算默认仍为 0；禁用或非法配置不再为预算对象本身读取单调时钟。仅对显式启用的配置使用共享截止，原输入批次 1ms/8 项保持。以已过期 deadline 的真实 mailbox 调用验证至少一项进展、后续让出、cutoff 和关闭/恢复；正常 ordinal、IME、分配失败、重入及多 Host 回归继续适用。实际构建、输入可见延迟与体积差另记，源码候选不等于性能通过。
+
 ### W10 WebView2 owner candidates
 
 `SOUI_WEBVIEW2_OWNER_BUDGET_US=100..5000` 默认0/off，输出批次保留16项硬数量界限并至少给首项一次机会；单次 COM/序列化仍不抢占。`SOUI_WEBVIEW2_PREPARE_OUTPUT=1` 默认off，只把纯 JSON/UTF16 准备放到 output mutex 外，所有 WebView2 COM 仍在实际 owner STA。两条路径使用同一 serializer；缓存 raw+UTF16 总量计入原64KiB item/lane payload额度，装不下或准备失败就回原 owner转换，不新增队列或借用关键lane。

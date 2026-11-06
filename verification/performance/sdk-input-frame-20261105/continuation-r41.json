@@ -1,0 +1,131 @@
+{
+  "schema": "soui.sdk-input-frame-continuation-r41/v1",
+  "recordedAt": "2026-11-06T11:24:45.187Z",
+  "sdk": {
+    "version": "0.7.0-preview.4",
+    "buildId": "18e47fa2-69df-4530-b1f9-365f6b2aec28",
+    "architecture": "x64",
+    "configuration": "Release",
+    "sourceSha256": "e1d2dd8b7699930f678e21a77772b8fa4e371f5b67a53937d98470ee1659e87c",
+    "rebuilt": false,
+    "payloadChanged": false
+  },
+  "build": {
+    "summary": {
+      "archiveRelativePath": "repair-r41-wv2-native-fairness-r1/build-r1/build-summary.json",
+      "bytes": 2113,
+      "sha256": "0e71191263663fa5d9ccd7d490e9673f3f83adb79e71c093e67086155790c826"
+    },
+    "contractsPassed": 14,
+    "hostBytes": 901632,
+    "hostSha256": "00fecb76fcd51c2379cd65e68b7fe03a6bb17541a0f5a27dc6347d197eb65e12",
+    "inputBytes": 113664,
+    "inputSha256": "d16cabf70ccc84bd4bac9977b4711663502404ccd4ef1f50ae83bda60b732b9d",
+    "SDKRebuilt": false,
+    "kernelRebuilt": false
+  },
+  "run": "0112f4abdaf1a610b0cbe8769a5ec74c",
+  "request": {
+    "archiveRelativePath": "repair-r41-wv2-native-fairness-r1/entry-r2/prepared-request.json",
+    "bytes": 38967,
+    "sha256": "2b64addd1365f80973e67f924d346f99758cedc8fce2b2748410b5b528d743a1"
+  },
+  "preexecutionReviews": [
+    {
+      "archiveRelativePath": "repair-r41-wv2-native-fairness-r1/entry-r2/independent-entry-review-r1.json",
+      "bytes": 6551,
+      "sha256": "bea510f58a48c64f85b442a6cd5b31e367726dd182f2438118e2e0a6b4289c7b"
+    },
+    {
+      "archiveRelativePath": "repair-r41-wv2-native-fairness-r1/entry-r2/entry-process-independent-review-r1.json",
+      "bytes": 5242,
+      "sha256": "6662b4449870b8fe0df4cce99af2506c43f33c2fc7d9e1a91c08909f0fe84f3e"
+    }
+  ],
+  "actual": {
+    "controllerExit": 1,
+    "host": {
+      "pid": 93952,
+      "birth": "134384373772478406",
+      "exit": 3,
+      "elapsedMs": 26425,
+      "jobFinalActive": 0,
+      "forced": false
+    },
+    "input": {
+      "pid": 12844,
+      "birth": "134384373845562827",
+      "exit": 1,
+      "elapsedMs": 190,
+      "jobFinalActive": 0,
+      "forced": false
+    },
+    "attempted": 0,
+    "sent": 0,
+    "inputReadySent": false,
+    "inputError": "R41 target foreground/geometry/class/child/session/held process changed",
+    "exactFailedPredicate": null,
+    "exactColdCheckpoint": null,
+    "pageError": "E_COLD_INPUT_READY_DEADLINE",
+    "phaseStage": 0,
+    "nativeTagged": 0,
+    "nativeRows": 10,
+    "echoCalls": "0",
+    "normalRuntimeClose": true,
+    "scalarUsable": false,
+    "finalScalarOnly": {
+      "available": true,
+      "stopped": true,
+      "quiescent": true,
+      "dropped": "0",
+      "unregistered": "0",
+      "causalLost": "0"
+    },
+    "jobQueriesAttempted": false,
+    "fullAppCpu": null,
+    "fullAppMemory": null,
+    "inputLatency": null,
+    "throughput": null,
+    "sourceSDKRegressionProven": false
+  },
+  "evidence": [
+    {
+      "archiveRelativePath": "repair-r41-wv2-native-fairness-r1/entry-r2/run-once/host-result.json",
+      "bytes": 34130,
+      "sha256": "2a5dcb3a8451ad7a7787a653d7bae01e85d2f8a24a2075cce011fdd8d6bc3bc2"
+    },
+    {
+      "archiveRelativePath": "repair-r41-wv2-native-fairness-r1/entry-r2/run-once/input-result.json",
+      "bytes": 249,
+      "sha256": "5f62194fff463e616970a22eb2b14793abcbbdf964848be06ab302d58e6795f8"
+    },
+    {
+      "archiveRelativePath": "repair-r41-wv2-native-fairness-r1/entry-r2/run-once/host-owned-result.json",
+      "bytes": 1019,
+      "sha256": "67e2550d20de6b3742ff8547697a64d0663968d63bbd9bda4185f5b65d0e1d96"
+    },
+    {
+      "archiveRelativePath": "repair-r41-wv2-native-fairness-r1/entry-r2/run-once/input-owned-result.json",
+      "bytes": 1018,
+      "sha256": "bdf5a2aa5749a84d4e608c74de1a18d12044a4e3071ef618e2285d65e20496a7"
+    },
+    {
+      "archiveRelativePath": "repair-r41-wv2-native-fairness-r1/entry-r2/run-once/execution-failure.json",
+      "bytes": 6030,
+      "sha256": "26aa1348870b8545913583efc4aef35b9badfc3d68515ddd8603035da514431d"
+    }
+  ],
+  "coldPrecisionEntryCorrection": {
+    "originalEntryPreserved": true,
+    "nativeRunOfOriginalEntry": false,
+    "actualFullBirthPreserved": true,
+    "CIMCandidateComparedAsIntegerMicroseconds": true
+  },
+  "sameConditionAutomaticRetry": false,
+  "diagnosticCohortAccepted": false,
+  "fairnessVerified": false,
+  "inputLatencyVerified": false,
+  "performanceVerified": false,
+  "releaseReady": false,
+  "wholeGoalComplete": false
+}

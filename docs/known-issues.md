@@ -4,6 +4,38 @@
 
 ## 0.6.0 后续源码候选
 
+2026-11-06 的[preview.5集成验收](performance/sdk-preview5-integration-acceptance-20261106.md)新增WebView2活动输出通知合并，完成全新源码SDK打包/安装、标准v143 x64构建及471文件安装闭集。静态SDK增量8,290 B，128个固定依赖DLL清单无变化；最终应用runtime/ZIP增量和真实性能仍待验。原编译接纳失败、外层清单误判及后续纯文件核验分别保留，未扩大性能或生产资格。
+
+2026-11-06 的[持续owner入口验收](performance/sdk-preview4-owner-fairness-20261106.md)保留R41冷守卫拒绝及R42开窗前资源拒绝。R42最新单轮已通过全部三个冷检查并进入持续负载：3125次标记输入均有原始回调，但400项落在Finish关闭cohort之后；账本因tag0回调失败，页面fence亦超原30秒期限。绘制/定时器原始长间隔约26.205秒需定位，不直接归因SDK；未取得合格延迟或公平性结论。Host/Input自然非零、Job0，编译合作锁原90秒到期并释放；不放宽守卫、不重试同一run，SDK及默认值不变。
+
+2026-11-06 的[匹配输入诊断](performance/sdk-preview4-matched-input-20261106.md)追加0.6.0私有trace-scope基线的完整64项通过；与preview.4相同v5夹具的软件捕获结束上界P95分别35.3206/35.0122ms，尚无可比测量税/噪声资格，不据此宣称收益。R39原件64输入关联44个软件frame，只证明软件阶段关系；精确请求点偏差、物理T8和整个性能门槛保持未关闭。
+
+2026-11-06 的[当前验收报告](performance/sdk-preview4-final-acceptance-20261106.md)追加R39新cell轻页的64项完整输入/DOM/软件反馈诊断通过：T1→T3 P95为0.6111ms，T1→首次正捕获结束上界P95为35.0122ms；不是物理输入延迟或性能收益。首次入口被基线前tag0置位正确拒绝，安静条件确认后才同载荷复验；旧精准点失败保留。帧对照仍为WebView2未超噪声、MiniBlink漂移不确定，整体性能及发布门槛false。
+
+2026-11-06 的[输入覆盖与坐标诊断](performance/sdk-preview4-input-coverage-20261106.md)保留两次旧轨迹64输入短轮次：原生入口均只记录56个标签，最终反馈55/64及0/64，旧严格验收继续失败。新增冷坐标旁证确认实际归一化参数符合原公式，但原生点存在1px偏差，原因未知；不将未收到标签归因SDK或将缺失DOM补齐。该历史轮次时独立cell夹具仅获有条件设计审查，尚未运行；后续R39限定通过见上，默认载荷与整体性能资格不变。
+
+2026-11-06 的[原生输入入口复验](performance/sdk-preview4-native-preflight-20261106.md)已消除窗口工具与分步GO依赖；GO在原30秒内接纳，但冻结输入器在首个综合目标检查失败，未注入预定burst、未启动marker采集。Host2/Input1/入口1自然收尾且Job0，具体前台/几何/进程失败项未知；实际帧率和输入延迟仍未验收，不在相同条件下重复启动。
+
+2026-11-06 的[同步输入旁证检查](performance/sdk-preview4-sync-witness-20261106.md)修复独立测量夹具的重复 bootstrap，完成 v143 x64 实际编译与真实冷初始化；两次窗口激活均失败，未发布 GO、未启动输入器，原期限内正常关闭且保留非零。窗口工具/系统根因未知，正输入归因、实际帧率及收益仍未验收；默认 SDK、内核和包体积不变。
+
+2026-11-06 的[输入法消息边界复验](performance/sdk-preview4-ime-boundary-20261106.md)确认原生空 composition/cancel 在无活动组合时会误删普通选中文本；四行私有 provider 保护的两架构增量构建和一次 x64 实际复验满足限定条件。SDK 顺序/状态提案通过20项源码场景及三个指定负对照，旧夹具失败保留。两个补丁均未默认采用；活动回调/ABA、旧 provider 兼容性、系统双标志、x86交互及性能未认证，冻结 preview.4 包不变。
+
+2026-11-06 的[输入法追加验收](performance/sdk-preview4-ime-20261106.md)完成一次 x64 系统输入法观察和两个真实 Blink API 配方：正常中文提交/取消符合预期，full trace 确认失焦返回后才进入的 native commit/end；API 配方均将 ni 替换成最终“你”，未记录失焦或重新聚焦时提前 compositionend。OS 场景的预编辑/最终文字相同，不能外推不同最终文字经完整 SDK 链保真；双 flags、选择区/导航/关闭重入、输入法矩阵仍未认证。55项报告合同与修复后限定回放通过，原夹具失败保留；默认 SDK/内核未采用，帧率、输入延迟及生产资格保持false。
+
+2026-11-06 的[焦点与预算追加验收](performance/sdk-preview4-focus-20261106.md)用无丢失 full trace 确认旧 MiniBlink 的 `wkeKillFocus` 已正常返回，累计页面快照仍没有 blur；内部具体分支未唯一定位。[ADR-0164](adr/0164-miniblink-keyboard-focus-loss.md)的私有候选已通过27项模型、两架构增量编译和一次 x64 窗口失焦限定复验（快照前 native blur 返回、页面 blur2、正常关闭）。补丁仅供审查，仓库默认实现/SDK4包未改；四项新冻结库历史等同性未知，完整输入法、焦点矩阵及性能未认证。R29 两个0预算基线虽采集完整，Bridge尾部噪声超原阈值，已停止2000候选和末轮，不重复追测；整体性能资格保持false。
+
+2026-11-06 的[追加复验](performance/sdk-preview4-continuation-20261106.md)确认性能消费者误处置 `E_RELOAD_PENDING`，修复后49项合同、新会话2→3、实际按键及正常关闭通过；SDK/内核和冻结包不变。切窗缺失页面失焦标记仍待归因，R26输入诊断在首故障/关闭期限后缺完整导出；不能据此关闭输入或帧率门槛。新WebView2输出准备短对照及I02探索也未建立默认策略收益，整体性能资格保持false。
+
+当前载荷的 [preview.4 交付复验](performance/sdk-preview4-delivery-20261105.md)修正 preview.3 运行库清单的旧大小/散列，已通过 x64 SDK、两架构部署、源 SDK 安装和 MiniBlink 隔离短启动/正常关闭；此非输入样本的最终 SDK/kernel 诊断写入无丢失。真实输入与有效帧率性能仍待验，旧失败及旧版本结果保留，不扩大生产资格。
+
+2026-11-06 的[条件优化与输入诊断](performance/sdk-preview4-adoption-20261106.md)追加当前单屏3,750输入/固定Bridge负载成功及原生坐标旁证，保留旧双屏坐标回退未归因、稀疏ACK和物理帧率unknown的边界。I02首轮策略探索在启动前因其他编译活动被拒绝，没有冻结基线或运行候选预算；默认预算0和PREPARE_OUTPUT关闭。源码与已冻结SDK载荷不因测试报告改变，性能和生产资格仍未通过。
+
+2026-11-05 的 [PR129 输入与帧率验收](performance/sdk-input-frame-acceptance-20261105.md)已完成正式 v143 x64 安装消费者及限定桌面观测。WebView2 四轮变化在冻结噪声内，MiniBlink 基线 P95 漂移超阈值；输入基线内核有两次未注册诊断写入，按 source_loss 拒绝且停止重复对照。双后端短中文提交功能通过不覆盖完整 IME/输入/显示矩阵。性能和生产资格继续未通过，不更新已发布包。
+
+同日的 [preview.3 后续记录](performance/sdk-input-frame-followup-20261105.md)将上述未注册写入定位到 V8 Windows 线程池入口，加入只针对该入口的 producer scope；保留原 source_loss 拒绝。两架构单文件重编、重链接及 ABI 检查、x64 正式 SDK 构建和隔离安装已通过。它们不能替代新默认内核的实际输入、帧率与正常关闭复验；该轮界面工具返回物理 Esc 停止信号后已停止窗口操作，最终性能与完整 runtime/ZIP 门槛仍未关闭。旧输入失败、SDK2 观测及体积保留原身份，不改写为 preview.3 通过。
+
+PR129 原生位图提交已补发起线程 GDI 完成边界，两架构源码契约回归和增量内核编译、x64 隔离桌面短测通过。历史 CRC 坏帧根因仍未确认；原 VM 被其他任务占用，新内核尚未复测真实桌面 CRC、x86 实际运行或完整公开构建。范围见[限定验证](performance/native-bitmap-completion-20261031.md)，不更新已发布预编译包或生产门槛。
+
 PR127之后的工具遗留项已新增自有VCTIP自然idle生命周期、显式SDK失败stage保留/校验恢复，以及checked ZIP准备入口。当前两架构微型CMake自然收尾、实际子文件句柄EPERM恢复、候选canonical pack与实际PS5中文长路径短验已过；原失败与完整范围见[后续收尾](maintenance/windows-tooling-failure-closeout-20261029.md)。旧EPERM锁持有者及PS5原失败原因仍未知，完整构建负载与生产资格不据此关闭。
 
 当前工作分支已补 ZIP UTF-8 参数、MSVC 节点复用策略及 source SDK 发布失败诊断，

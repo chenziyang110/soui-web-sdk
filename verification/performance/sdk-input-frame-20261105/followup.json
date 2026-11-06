@@ -1,0 +1,770 @@
+{
+  "schema": "soui.sdk-input-frame-followup/v1",
+  "recordedAt": "2026-11-05",
+  "status": "preview3-build-and-prefix-installed-performance-pending",
+  "report": "docs/performance/sdk-input-frame-followup-20261105.md",
+  "evidenceBundle": "PR129-performance-20261104",
+  "productIdentities": {
+    "w02Product": {
+      "sdkVersion": "0.7.0-preview.2",
+      "sdkBuildId": "c5da3a12-72b7-49e1-8195-2ceb1eda9985",
+      "buildIdentity": "91f9c251-v143",
+      "sdkSourceSha256": "5bfcdf50c8e9a98e83c9d619afaf72712794c00608984d2b0e15c9df46c70c23",
+      "kernelLabel": "K1",
+      "kernelChangedInThisFollowup": false
+    },
+    "w02MeasurementConsumer": {
+      "sourceSnapshot": "8e0221000f3af368d52decb9e751dd364edced5e",
+      "hostSha256": "4d12d29f381afa00d78c4235190729ed3e50e27ab442f1385f6fe45ca10c1b6c",
+      "isProductSdk": false
+    },
+    "inputDiagnosticBaseline": {
+      "sdkVersion": "0.6.0",
+      "kernelLabel": "K0",
+      "hostSourceSnapshot": "6f01e8d6be620f12d1115994c866a9f9069045b6",
+      "hostSha256": "7222d056c7424c423d3bb4d9258f1a9384e9ef1c51103d46694d5c948703dfe1",
+      "kernelDllSha256": "d888637d5dd1476dde16b8c5bb28172d7b8ec3495b69c725fa3572013748139a"
+    },
+    "preview3Product": {
+      "sdkVersion": "0.7.0-preview.3",
+      "sdkBuildId": "b6684abd-4dc3-4fd2-916f-f4f73673090e",
+      "sdkSourceSha256": "554cf9b7bf8da27752f59e3a303311472d8de0bf99a3006f299bbc86da343ec1",
+      "kernelSourceIdentity": "dd53b24483eb824a2ab0854cfd308154f3190ed0f9720c2e9f81403ea967f11c",
+      "kernelScope": "One known V8 background callback translation unit per architecture; frozen K1-equivalent remaining inputs reused; not a fresh whole-kernel build"
+    }
+  },
+  "w02": {
+    "status": "paired-diagnostic-only",
+    "backend": "webview2",
+    "runtimeVersion": "156.0.4314.58",
+    "scenario": "bridge-echo",
+    "payloadBytes": 4096,
+    "maxOutstanding": 7,
+    "windowMs": 30000,
+    "prepareOutput": {
+      "off": 0,
+      "on": 1,
+      "defaultDecision": "remain-off"
+    },
+    "sameProductHostPageRuntimeWorkload": true,
+    "offRawInitiallyReaderInvalid": true,
+    "offSameRawPosthocReaderAccepted": true,
+    "onReaderQualifiedDiagnostic": true,
+    "naturalHostAndSamplerExitBothSides": true,
+    "successes": {
+      "off": 38638,
+      "on": 38682,
+      "perSecond": {
+        "off": 1287.9333333333334,
+        "on": 1289.4
+      },
+      "relativeChangePercent": 0.11387752989284738
+    },
+    "errorsTimeoutsMismatchesPending": {
+      "off": 0,
+      "on": 0
+    },
+    "bridgeRoundTripMeanMs": {
+      "off": 0.9494564936006191,
+      "on": 0.9969184633596154
+    },
+    "bridgeRoundTripObservedMaximumMs": {
+      "off": 11.2,
+      "on": 11.2
+    },
+    "webview2OwnerDurationBucketUpperBoundMs": {
+      "p95": {
+        "off": 0.2047,
+        "on": 0.1023
+      },
+      "p99": {
+        "off": 0.4095,
+        "on": 0.2047
+      },
+      "valuesAreBucketUpperBounds": true
+    },
+    "inputQueueSamples": {
+      "off": 0,
+      "on": 0
+    },
+    "weightedObservedProcessCpuPercent": {
+      "off": 2.67886526689923,
+      "on": 2.5528356642783363
+    },
+    "observedProcessMemoryBytes": {
+      "privateBytesP50P95": {
+        "off": [
+          293867520,
+          301293568
+        ],
+        "on": [
+          302997504,
+          308649984
+        ]
+      },
+      "workingSetP50P95": {
+        "off": [
+          497270784,
+          505454592
+        ],
+        "on": [
+          501673984,
+          509431808
+        ]
+      },
+      "allLifetimeProcessesObserved": false,
+      "sharedBrowserAttributionVerified": false
+    },
+    "qualification": {
+      "repeatCountPerSide": 1,
+      "statisticalPass": false,
+      "performanceGate": false,
+      "releaseReady": false,
+      "inputLatencyMeasured": false,
+      "physicalPresentationMeasured": false
+    },
+    "measurementHarnessContracts": {
+      "nodeTestsPassed": 34,
+      "nodeTestsSkipped": 0,
+      "coverage": "33 page contracts plus 1 close-fallback contract",
+      "consumerOnly": true,
+      "newCppHost42SelfTests": "not-built-or-run",
+      "compiledConsumerIdentityUnchanged": true
+    },
+    "sdkBuildReceiptSha256": "745aeb3a16458925c06124c620c93496c03f919b894a2b55fcf99f6457c71e9a",
+    "sdkLibrarySha256": "0caec28b8b39b0855e2a1ac322ec4ddb5e94bac217856cca1f8d68b4d28fa571",
+    "pageBundleSha256": "3c2ce56b92adb19f504b2bdb690beb0e606ed09fbee006385435cd8a79d45472"
+  },
+  "inputSourceLoss": {
+    "status": "baseline-failure-remains-open",
+    "lifecycleDiagnostic": {
+      "runId": "ebdda5ec8b97c1d101830078327b8fc5",
+      "pointerInputs": 3750,
+      "inputRateHz": 125,
+      "inputExitCode": 0,
+      "hostExitCode": 2,
+      "hostNormalRuntimeClose": true,
+      "jobClosed": true,
+      "unregisteredWrites": {
+        "beforeStart": 0,
+        "afterStart": 0,
+        "documentReady": 0,
+        "beforeDestroy": 0,
+        "afterDestroy": 0,
+        "afterRuntimeShutdown": 2
+      },
+      "performanceGate": false
+    },
+    "debuggerDiagnostic": {
+      "runId": "85501c714214b2076e9c389b7c4f056a",
+      "pointerInputs": 3750,
+      "successfulInputs": 3750,
+      "watchpointHits": 2,
+      "sameWindowsThreadpoolThread": true,
+      "hostNormalRuntimeClose": true,
+      "jobClosed": true,
+      "hostScalarUsable": false,
+      "debuggerExitCode": 2,
+      "performanceEvidence": false,
+      "producerEvidence": "K0 counter increments occurred on the V8 background WorkItemCallback path; the callback invokes v8::Task::Run; concrete child task and inner trace operation remain unknown"
+    }
+  },
+  "traceScopeFixture": {
+    "status": "corrected-current-source-x64-and-x86-complete-production-kernel-pending",
+    "toolchain": "MSVC v143 14.44.35207 / Windows SDK 10.0.19041.0",
+    "sourcePinsUnchangedAcrossBuild": true,
+    "x64": {
+      "fixture": "repair-r12/trace-scope-fixture-x64-r3",
+      "buildExitCode": 0,
+      "negativeExitCode": 23,
+      "negativeUnregisteredWrites": 2,
+      "positiveExitCode": 0,
+      "naturalJobClosureAllCases": true,
+      "fallbackUsed": false,
+      "forcedTermination": false
+    },
+    "x86": {
+      "fixture": "repair-r12/trace-scope-fixture-x86-r4",
+      "buildExitCode": 0,
+      "negativeExitCode": 23,
+      "negativeUnregisteredWrites": 2,
+      "positiveExitCode": 0,
+      "naturalJobClosureAllCases": true,
+      "fallbackUsed": false,
+      "forcedTermination": false
+    },
+    "productionKernelRebuilt": false,
+    "productionKernelRevalidated": false,
+    "performanceEvidence": false,
+    "testSourceSha256": "d4a09f95f33714730807a77b73a3a9f9c0413916d7eca1d5ca06caf71636422d",
+    "reviewedTimeoutFix": {
+      "timeoutMs": 10000,
+      "failureExitCode": 24,
+      "scope": "test fixture failure path only",
+      "productSourceChanged": false
+    },
+    "previousPreFixFixtureRuns": [
+      "repair-r12/trace-scope-fixture-x64-r2",
+      "repair-r12/trace-scope-fixture-x86-r3"
+    ],
+    "productSourcePins": {
+      "ginV8PlatformSha256": "67a3fc3d0a1472f725462a4031a2459eeb2827a6330955b18e40c20622490d9f",
+      "scopeHelperSha256": "cebb7dde0d2a84e2c52d8b762b3ab7f0ed7204845e95b1972c136be96a2e83a5",
+      "inputFrameTraceHeaderSha256": "ac2ed9b913e4fb28e3b9cec1ef7446780b601f3ac84d08fd02b85ab60720c854",
+      "inputFrameTraceSourceSha256": "b49639dd384a3ebe987c870744ded360c48d4b2bc9c04f9a77e4c3da6e049cd2",
+      "unchangedAcrossFixtureBuilds": true
+    }
+  },
+  "fix": {
+    "adr": "docs/adr/0162-v8-background-trace-producer.md",
+    "status": "preview3-kernel-built-and-imported-runtime-revalidation-pending",
+    "scope": "internal registration for identified gin::WorkItemCallback only; keep source-loss strict",
+    "newKernelDll": "Preview3 x64/x86 node.dll imported into integration default prebuilt",
+    "newKernelSha256": "See kernelArtifacts for per-architecture SHA-256",
+    "newBuildReceipt": "No fresh whole-kernel receipt exists; the per-architecture one-translation-unit relink is recorded in newKernelBuildEvidence. The official SDK x64 receipt is recorded under sdkPreview3 and is separate from W02's Preview2 receipt.",
+    "newKernelBuildEvidence": {
+      "sourceSnapshotIdentity": "dd53b24483eb824a2ab0854cfd308154f3190ed0f9720c2e9f81403ea967f11c",
+      "scope": "One identified callback translation unit relinked per architecture; frozen K1-equivalent remaining objects/libraries reused",
+      "freshWholeKernel": false,
+      "x64Result": "repair-r12/v8-kernel-fix-r2/x64/result.json",
+      "x86Result": "repair-r12/v8-kernel-fix-r2/x86/result.json",
+      "abiProbes": [
+        "repair-r12/v8-kernel-abi-x64-r2/summary.json",
+        "repair-r12/v8-kernel-abi-x86-r2/summary.json"
+      ],
+      "importResult": "repair-r12/v8-kernel-default-import-r1/result.json"
+    },
+    "kernelArtifacts": {
+      "x64": {
+        "path": "third_party/prebuilt/x64/miniblink/node.dll",
+        "bytes": 39212032,
+        "sha256": "56d460c0b4136d85d3fcb8d4e4f00c19a04ff56532228031b55368742ef54308",
+        "deltaBytes": 1024
+      },
+      "x86": {
+        "path": "third_party/prebuilt/x86/miniblink/node.dll",
+        "bytes": 28324352,
+        "sha256": "bf6fd0bcb892f2997489a60d059671c9a618f4f99418d41f2c41f10ceae4dfb9",
+        "deltaBytes": 512
+      },
+      "freshWholeKernel": false,
+      "functionTableAbiLoaded": true,
+      "rendererInitializedForProbe": false,
+      "runtimeVerified": false
+    },
+    "rootCauseReport": {
+      "path": "repair-r12/k0-v8-background-producer-root-cause-r1.json",
+      "bytes": 6991,
+      "sha256": "40dd26fb955d6fab5c9b2393aec79ea374e289a2486352b61f8b08eba6094891",
+      "numericVaCorrectionPath": "repair-r12/k0-v8-background-producer-root-cause-r1-correction.json",
+      "numericVaCorrectionBytes": 601,
+      "numericVaCorrectionSha256": "cf237b02023304ccd6d0130ff3183fc4d73c9ec748b0c6e5efac70a04a58ecf1",
+      "correctionApplied": true
+    },
+    "revalidation": "pending: Preview3 runtime, R4/R12 shutdown boundary, and strict source-loss counter require real revalidation"
+  },
+  "sdkPreview3": {
+    "officialX64ReleaseBuild": {
+      "buildId": "b6684abd-4dc3-4fd2-916f-f4f73673090e",
+      "sourceSha256": "554cf9b7bf8da27752f59e3a303311472d8de0bf99a3006f299bbc86da343ec1",
+      "architecture": "x64",
+      "configuration": "Release",
+      "toolchain": "MSVC v143",
+      "windowsSdk": "10.0.19041.0",
+      "naturalExitCode": 0,
+      "naturalJobClosure": true,
+      "officialPosthocVerification": true,
+      "originalWrapperFieldMisclassificationRetained": true,
+      "receiptPath": "repair-r11/integration/out/sdk-x64/build-Release.json",
+      "receiptSha256": "1b7809984ee35fcdbd12b9d08e05f8cd77c404636e6cbc7eefaf8b41879b5424"
+    },
+    "isolatedCmakePrefix": {
+      "installed": true,
+      "naturalJobClosure": true,
+      "fileCount": 471,
+      "bytes": 80247144,
+      "comparedSdk2PrefixBytes": 80244375,
+      "deltaBytes": 2769,
+      "sizeEvidence": "repair-r12/preview3-cmake-prefix-size-r1.json",
+      "scope": "Static CMake library/header/config prefix; excludes kernel/runtime DLLs, application runtime, and ZIP",
+      "runtimeQualification": false,
+      "performanceVerified": false,
+      "releaseReady": false
+    },
+    "x86SdkPrefixAndConsumers": "pending",
+    "runtimeAndForegroundInput": "pending; no Preview3 real input or frame-rate capture was run after physical Escape stopped window input",
+    "consumerContracts": {
+      "inputUi": {
+        "buildExitCode": 0,
+        "naturalJobClosure": true,
+        "matchedSdkVersion": "0.7.0-preview.3",
+        "profileScalarContractsPassed": true,
+        "manualReportContracts": 19,
+        "guiOrInputExecuted": false
+      },
+      "performanceHost": {
+        "configureNativeExitCode": 0,
+        "consumerAttemptExitCode": 1,
+        "naturalJobClosure": true,
+        "configurationLifecyclePassed": false,
+        "nativeBuildExecutedInR1": false,
+        "selfTestExecuted": false,
+        "reason": "Owned VCTIP did not retire naturally within the 30s configure phase closure limit; original failure retained. A separate cache-pinned first build may run without repeating configure, but this original attempt remains failed."
+      },
+      "webSdk": {
+        "passed": 31,
+        "failed": 0,
+        "skipped": 0
+      },
+      "npmAudit": {
+        "projects": 3,
+        "allExitCodes": 0
+      },
+      "independentSourceReview": {
+        "path": "repair-r12/preview3-final-source-review-r1.json",
+        "blockingFindings": 0,
+        "scope": "Production source, version, binaries/provenance, SBOM and report at review time; does not qualify runtime/performance"
+      }
+    }
+  },
+  "sbomPreview3": {
+    "sourceDocumentsSchemaValidated": 7,
+    "sourceSchemaErrors": 0,
+    "promotedDeliveryDocuments": 4,
+    "promotedDocumentsMatchPreviouslyValidatedBytes": true,
+    "schemaValidatorRerunAtPromotion": false,
+    "currentValidationRecordErrors": 0,
+    "deliveredFilesRehashed": 136,
+    "observedStaticArchives": 22,
+    "staticArchivesRehashed": false,
+    "transitiveCompleteness": "incomplete",
+    "licenseReviewComplete": false,
+    "runtimeQualificationInferred": false,
+    "verificationPromoted": true,
+    "releaseReady": false
+  },
+  "volume": {
+    "repackaged": false,
+    "newSizeVerification": false,
+    "priorVolumeEvidenceChanged": false,
+    "isolatedCmakePrefixBytes": 80247144,
+    "isolatedCmakePrefixFiles": 471,
+    "sdk2PrefixBytes": 80244375,
+    "isolatedPrefixDeltaBytes": 2769,
+    "prefixIsNotFinalPackageSize": true,
+    "withGuiPackageAttempt": "rejected before output because official GUI build record was absent",
+    "sourceOnlyPackageAttempt": "failed after six bounded publication rename attempts with EPERM; no package published and no retry",
+    "failureEvidenceSource": "Conversation tool output summarized by repair-r12/preview3-delivery-limitations-r1.json; no disk raw log",
+    "failureRawLogOnDisk": false
+  },
+  "qualification": {
+    "preview3RuntimeVerified": false,
+    "preview3InputLatencyMeasured": false,
+    "preview3FrameRateMeasured": false,
+    "preview3PerformanceGate": false,
+    "performanceVerified": false,
+    "releaseReady": false
+  },
+  "evidence": [
+    {
+      "path": "repair-r12/delivery-progress-snapshot-r1.json",
+      "bytes": 14235,
+      "sha256": "dfcd3a098fb80228c149d908b2673143ae7bb9627f9bc397d5e8bcbec21af7ab",
+      "note": "Immutable progress snapshot; live progress.json may advance independently"
+    },
+    {
+      "path": "repair-r12/k0-v8-background-producer-root-cause-r1.json",
+      "bytes": 6991,
+      "sha256": "40dd26fb955d6fab5c9b2393aec79ea374e289a2486352b61f8b08eba6094891"
+    },
+    {
+      "path": "repair-r12/k0-counter-watchpoint-static-proof.json",
+      "bytes": 8005,
+      "sha256": "5ea27ffc1f62b7c6c8f901d4ce4cf8288f5ccbea2e945d43e96ef9fe4b16c009"
+    },
+    {
+      "path": "repair-r12/pointer-lifecycle-baseline-r4/summary.json",
+      "bytes": 315,
+      "sha256": "2032296fac31e3d65f1dc40cf45a39b1ac4f23933fb860a7bcd0f7f64150ecb8"
+    },
+    {
+      "path": "repair-r12/pointer-lifecycle-baseline-r4/host-output/scalar-diagnostic-before-start.json",
+      "bytes": 9796,
+      "sha256": "8e6b077855d3a4b69394912a3305f02ae4df4275bbba898fb908259306cd2e25"
+    },
+    {
+      "path": "repair-r12/pointer-lifecycle-baseline-r4/host-output/scalar-diagnostic-after-start.json",
+      "bytes": 9818,
+      "sha256": "77b4f1016e6590c60663a640c9c7a13fbc2d8fcef16c50074f135bd72d1f098b"
+    },
+    {
+      "path": "repair-r12/pointer-lifecycle-baseline-r4/host-output/scalar-diagnostic-document-ready.json",
+      "bytes": 9831,
+      "sha256": "9e8037ee5abc2c500f061001366c2ccc83858aea11ee14c4e8e599d54869e740"
+    },
+    {
+      "path": "repair-r12/pointer-lifecycle-baseline-r4/host-output/scalar-diagnostic-before-destroy.json",
+      "bytes": 10133,
+      "sha256": "9e8529a2f060a7e90acc58f7ef5ed392fe78a025392a07c39357ecbf318b145b"
+    },
+    {
+      "path": "repair-r12/pointer-lifecycle-baseline-r4/host-output/scalar-diagnostic-after-destroy.json",
+      "bytes": 10131,
+      "sha256": "9897192fecadb8fc93d9162ced6438aa280491516d839c4921ba20d55a1f83a5"
+    },
+    {
+      "path": "repair-r12/pointer-lifecycle-baseline-r4/host-output/scalar-diagnostic-after-runtime-shutdown.json",
+      "bytes": 10146,
+      "sha256": "d80d8cc97b5d5faf9586918e94cd7d61d60a4bead0929dc4dd355172e3de3a3d"
+    },
+    {
+      "path": "repair-r12/pointer-cdb-baseline-r12/summary.json",
+      "bytes": 542,
+      "sha256": "67a3d94052bf448ba58665a8585c01e1f1d0423f581278091c4142849982764c"
+    },
+    {
+      "path": "repair-r12/pointer-cdb-baseline-r12/debugger.log",
+      "bytes": 22150,
+      "sha256": "d1156704451a0558d81c2fcdde3b0ce36b4846b7b87d05e512e8df7fc7a34949"
+    },
+    {
+      "path": "repair-r12/pointer-cdb-baseline-r12/host-output/host-result.json",
+      "bytes": 790,
+      "sha256": "e77477d2bf4b955fe1df5c3bceba5886a999e3c4650654985473f5febce988f8"
+    },
+    {
+      "path": "repair-r12/pointer-cdb-baseline-r12/host-output/scalar-diagnostic-after-runtime-shutdown.json",
+      "bytes": 10160,
+      "sha256": "a7efec845b76782fbcbfe21260c7f7b3e5ab5f14fbbd53ab8577d570c2e1bd6a"
+    },
+    {
+      "path": "repair-r12/trace-scope-fixture-x64-r2/inputs.json",
+      "bytes": 4880,
+      "sha256": "30f5c1e64b0602c96932dc55091456facbc1fb4ed1b73e219a58e088da6d4d54",
+      "note": "pre-timeout-fix historical fixture raw; preserve original identity"
+    },
+    {
+      "path": "repair-r12/trace-scope-fixture-x64-r2/build.result.json",
+      "bytes": 1649,
+      "sha256": "b347c0a997e7124e697fdc3d1e7a4126ddf360d197238c4b377171abfce7b404",
+      "note": "pre-timeout-fix historical fixture raw; preserve original identity"
+    },
+    {
+      "path": "repair-r12/trace-scope-fixture-x64-r2/negative.result.json",
+      "bytes": 1471,
+      "sha256": "e2a4a492fa8c71062bce684cc0f99144aec384a534c0ebed084149439b315a02",
+      "note": "pre-timeout-fix historical fixture raw; preserve original identity"
+    },
+    {
+      "path": "repair-r12/trace-scope-fixture-x64-r2/positive.result.json",
+      "bytes": 1455,
+      "sha256": "2ef8f1b7f5dcbd9cc4200be84fda331c3d7beeed8a5c8aff2de3872e4bf7b396",
+      "note": "pre-timeout-fix historical fixture raw; preserve original identity"
+    },
+    {
+      "path": "repair-r12/trace-scope-fixture-x86-r3/inputs.json",
+      "bytes": 5210,
+      "sha256": "959b2e45b5f51edde559f698b5ae2e2652f3e9db6113fb0fff544c988dc7a366",
+      "note": "pre-timeout-fix historical fixture raw; preserve original identity"
+    },
+    {
+      "path": "repair-r12/trace-scope-fixture-x86-r3/build.result.json",
+      "bytes": 1650,
+      "sha256": "655ac82710bf61d57cb517066d12f7bcdff949d64995ce4fa4bc72bd53f317c7",
+      "note": "pre-timeout-fix historical fixture raw; preserve original identity"
+    },
+    {
+      "path": "repair-r12/trace-scope-fixture-x86-r3/negative.result.json",
+      "bytes": 1471,
+      "sha256": "e03965e9f9961fe8c2d7770b186f7ce8122456903c38145927e8786e22e176f6",
+      "note": "pre-timeout-fix historical fixture raw; preserve original identity"
+    },
+    {
+      "path": "repair-r12/trace-scope-fixture-x86-r3/positive.result.json",
+      "bytes": 1455,
+      "sha256": "edb1415b6c7d04fb8c0e77808eb4ee71d579543e450d0663d5bc9409d4f4fe0a",
+      "note": "pre-timeout-fix historical fixture raw; preserve original identity"
+    },
+    {
+      "path": "repair-r12/w02-reader-r1/pair-comparison-r2.json",
+      "bytes": 15500,
+      "sha256": "d440284ae790a682de61fcbee627ebe793d46559028e80f8f91fc0a905d87483"
+    },
+    {
+      "path": "repair-r12/w02-reader-r1/off-postflight-sidecar.json",
+      "bytes": 14309,
+      "sha256": "900483be73dc784a794d807eb27b94e1a2bd9d1e99a5598b16f4af791b28258f"
+    },
+    {
+      "path": "repair-r12/w02-auto-results-r2/off/run-summary.json",
+      "bytes": 2720,
+      "sha256": "61b3ff98f79bae331d61a561110d01e45bff3e746afe34872d84743fe1bbc9e3"
+    },
+    {
+      "path": "repair-r12/w02-auto-results-r2/on/run-summary.json",
+      "bytes": 17523,
+      "sha256": "e5439453a24c241018b4b4068459504ff95c8cd28a9a6e9e01d33e6ee6732fbc"
+    },
+    {
+      "path": "repair-r12/w02-auto-results-r2/off/host-output/report-3.json",
+      "bytes": 20265,
+      "sha256": "c27e85bb59b90b3542638d23b3129f17642fcb08a97bcc641dacf96ea414c7b5"
+    },
+    {
+      "path": "repair-r12/w02-auto-results-r2/on/host-output/report-3.json",
+      "bytes": 20288,
+      "sha256": "831c28abafb6e09887136112358521634aa98bd0723716e6f6c4b1ca8e7251f4"
+    },
+    {
+      "sha256": "cf237b02023304ccd6d0130ff3183fc4d73c9ec748b0c6e5efac70a04a58ecf1",
+      "path": "repair-r12/k0-v8-background-producer-root-cause-r1-correction.json",
+      "bytes": 601
+    },
+    {
+      "sha256": "27aa9bdc6804a19e486a5f0222263541822979534fd573a5c872f7264f551f20",
+      "path": "repair-r12/v8-background-scope-independent-review-r1.json",
+      "bytes": 11566
+    },
+    {
+      "sha256": "024c6f1c8c3769228f87f39b8546994f4b1639f61c046ea7f74206700f312590",
+      "path": "repair-r12/v8-background-scope-independent-review-r2-addendum.json",
+      "bytes": 3991
+    },
+    {
+      "sha256": "83146bbff6f2f95ad566fcb2694d108cfb0e4e9511ac9fbf9b5d4ce05d400bee",
+      "path": "repair-r12/trace-scope-fixture-x64-r3/inputs.json",
+      "bytes": 5129,
+      "note": "corrected fixture, current source pin"
+    },
+    {
+      "sha256": "c7f8994efa4e87993091d50c7a1c57a29de7fd7ff3acaad02ec386563ad572fa",
+      "path": "repair-r12/trace-scope-fixture-x64-r3/build.result.json",
+      "bytes": 1649,
+      "note": "corrected fixture, current source pin"
+    },
+    {
+      "sha256": "cc9691c4eb9cbe533c1510ebfd113c1bfa99f0addfe0b5c63a5668b51d5087cd",
+      "path": "repair-r12/trace-scope-fixture-x64-r3/negative.result.json",
+      "bytes": 1471,
+      "note": "corrected fixture, current source pin"
+    },
+    {
+      "sha256": "5ca4486809288401a9eed35ab87043a045867f7f93942579d9bde484b06fee37",
+      "path": "repair-r12/trace-scope-fixture-x64-r3/positive.result.json",
+      "bytes": 1455,
+      "note": "corrected fixture, current source pin"
+    },
+    {
+      "sha256": "77fc2a204e9cae1f732ff04033c84b3bace3e212f9a6053666c5540470ba1dc5",
+      "path": "repair-r12/trace-scope-fixture-x86-r4/inputs.json",
+      "bytes": 5459,
+      "note": "corrected fixture, current source pin"
+    },
+    {
+      "sha256": "d25e83484d8a9996b86f9c27b92ade709ede68195d292ded51199edd7de20557",
+      "path": "repair-r12/trace-scope-fixture-x86-r4/build.result.json",
+      "bytes": 1650,
+      "note": "corrected fixture, current source pin"
+    },
+    {
+      "sha256": "f073e8a12469d83fbbd002a1648970951b9d008b1413b7533b812f5b78e68c4f",
+      "path": "repair-r12/trace-scope-fixture-x86-r4/negative.result.json",
+      "bytes": 1471,
+      "note": "corrected fixture, current source pin"
+    },
+    {
+      "sha256": "69654091d325b053ae557bf3b017955d66df5b04e4c258a9e3d7cedc5c8e415e",
+      "path": "repair-r12/trace-scope-fixture-x86-r4/positive.result.json",
+      "bytes": 1453,
+      "note": "corrected fixture, current source pin"
+    },
+    {
+      "sha256": "443209661690046a44b11080aaa4b2afe43aabcb6ce44e5956404974d666ff0e",
+      "path": "repair-r12/v8-scope-fixture-summary-r1.json",
+      "bytes": 8306
+    },
+    {
+      "path": "repair-r12/preview3-installed-x64-r1/summary.json",
+      "bytes": 95568,
+      "sha256": "0cc02f4862574fb6a0a7700edfd5c70669edbaa80946c6df941408de67122319"
+    },
+    {
+      "path": "repair-r12/preview3-installed-x64-r1/install.result.json",
+      "bytes": 995,
+      "sha256": "628613653dc43c10b65e626fa1d725af75ad690998dd3eed722754f116acffec"
+    },
+    {
+      "path": "repair-r12/preview3-installed-x64-r1/sbom-promotion.json",
+      "bytes": 1617,
+      "sha256": "264c5b990a7acca8d325db3f73d9b95981f7b5ff4fde7495c7b1e37234a91368"
+    },
+    {
+      "path": "repair-r12/preview3-cmake-prefix-size-r1.json",
+      "bytes": 209207,
+      "sha256": "7e0a4a5a60786144322fde5d82269855312da3c5aebf9cec1807fc3f75f1cade"
+    },
+    {
+      "path": "repair-r12/preview3-delivery-limitations-r1.json",
+      "bytes": 1437,
+      "sha256": "a791a2e484acb854b1438b28af5033453bf28567b8e775a341d5845107e4c559"
+    },
+    {
+      "path": "repair-r11/integration/verification/sbom-native.validation.json",
+      "bytes": 2623,
+      "sha256": "dfa5a2b86b8f0ebed283e4192982f1b5885c815f60639a48a159dbd50e1aac1b"
+    },
+    {
+      "path": "repair-r11/integration/verification/sbom-web-sdk.cdx.json",
+      "bytes": 2032,
+      "sha256": "de1757a09b307f5879de9aab41a3c2b6c9e4d09074120e6469d31be7b2fadb6e"
+    },
+    {
+      "path": "repair-r11/integration/verification/sbom-gui-react.cdx.json",
+      "bytes": 8377,
+      "sha256": "e7d189c9366be887efc5163008e7a5fa6d9e5421308297c4da4188e499c9e373"
+    },
+    {
+      "path": "repair-r11/integration/verification/sbom-gui-vue.cdx.json",
+      "bytes": 25600,
+      "sha256": "55bec25338b3954c899f10529b7cec2d2f75d3d0007d061ee51068783afb5c91"
+    },
+    {
+      "path": "repair-r11/integration/verification/sbom-native.cdx.json",
+      "bytes": 177328,
+      "sha256": "bd8857822812d2576468fb1be25c323fb512c188cbe0f3f924be95dfc4a0f68d"
+    },
+    {
+      "path": "repair-r11/integration/third_party/manifests/kernel-build-070-preview3.json",
+      "bytes": 2091,
+      "sha256": "50381f92fe6ea6fe7246b4658f0ccbb1283c3cf9720351699b6e96328cfdd7c2"
+    },
+    {
+      "path": "repair-r11/integration/third_party/manifests/kernel-v8-background-build-070-preview3.json",
+      "bytes": 5539,
+      "sha256": "3a66f48b3a240c87168dce47a7dfdb0fca658c0ca5c324c0485a9fc79eb9d90e"
+    },
+    {
+      "path": "repair-r12/v8-kernel-fix-r2/x64/result.json",
+      "bytes": 6036,
+      "sha256": "802e8df51faf001173fba79cbbbf204eee8370a6d8b6aa91e8df7c0ad1853ee4"
+    },
+    {
+      "path": "repair-r12/v8-kernel-fix-r2/x86/result.json",
+      "bytes": 6019,
+      "sha256": "367ef09b5007e3ec15de4bea1fa4ea1f1fb92dce396ec921bb55d5a2a0aa805e"
+    },
+    {
+      "path": "repair-r12/v8-kernel-abi-x64-r2/summary.json",
+      "bytes": 943,
+      "sha256": "de369cf81a2508914db82f23b8949b359d5255792701c6278f8d2d295d212a6d"
+    },
+    {
+      "path": "repair-r12/v8-kernel-abi-x86-r2/summary.json",
+      "bytes": 936,
+      "sha256": "a462ac322ee096bb34a4f3b67b31016434a0628c1d814a7707fd9a20042b2d3d"
+    },
+    {
+      "path": "repair-r12/v8-kernel-default-import-r1/result.json",
+      "bytes": 882,
+      "sha256": "9a2242d15537058ef56d5bec1ade741d2da6300ded08984db54683ca58544060"
+    },
+    {
+      "path": "repair-r12/preview3-sdk-x64-r1/posthoc-build-verification-r1.json",
+      "bytes": 1556,
+      "sha256": "399fff8e20aa0ebb58478f58625c7897f9e97765776d5930984aa0d7118e54ab"
+    },
+    {
+      "path": "repair-r12/preview3-sdk-x64-r1/build.result.json",
+      "bytes": 995,
+      "sha256": "3b43a6311c9861118d46a729f979411a04d19995399cc4d09a2676131c994967"
+    },
+    {
+      "path": "repair-r11/integration/out/sdk-x64/build-Release.json",
+      "bytes": 606823,
+      "sha256": "1b7809984ee35fcdbd12b9d08e05f8cd77c404636e6cbc7eefaf8b41879b5424"
+    },
+    {
+      "path": "repair-r12/preview3-consumers-r1/preparation.json",
+      "bytes": 4498,
+      "sha256": "ade31e0ac972acbc93a77b75d1a09e1d6ec25ab61c1b7130ebe922c500beaf20"
+    },
+    {
+      "path": "repair-r12/preview3-consumers-r1/input-ui-host/inputs.json",
+      "bytes": 12815,
+      "sha256": "4b85d1bb05696917848ef1ffde4dd0f2801f1f3a36e3b0518633e26af7a45bc8"
+    },
+    {
+      "path": "repair-r12/preview3-consumers-r1/input-ui-host/build.result.json",
+      "bytes": 1553,
+      "sha256": "c49e3450c38b359b2bde3bd498ce1ee51c52407a6bb6f694c5cbcd241e5eb23a"
+    },
+    {
+      "path": "repair-r12/preview3-consumers-r1/input-ui-host/build.stdout.bin",
+      "bytes": 7580,
+      "sha256": "2b6c390764441137c0515f22ed51819090d05f86d830f67867663d45b60ef7cc"
+    },
+    {
+      "path": "repair-r12/preview3-consumers-r1/input-ui-host/profile-contracts.stdout-stderr.log",
+      "bytes": 248,
+      "sha256": "454487804db1fcfc345531593209c470aa3cd2a927bdfd219623b09bf75987d6"
+    },
+    {
+      "path": "repair-r12/preview3-consumers-r1/performance-host/inputs.json",
+      "bytes": 15406,
+      "sha256": "d017629d24e79eb6810bd03512c99133bbf582c9ec37a229e0bc71968c8bbd71"
+    },
+    {
+      "path": "repair-r12/preview3-consumers-r1/performance-host/build.result.json",
+      "bytes": 1563,
+      "sha256": "af9dfe5cb348105336f643a8cd8ff666e62281608cdc4bed101d08bdc77285e9"
+    },
+    {
+      "path": "repair-r12/preview3-consumers-r1/performance-host/build.stderr.bin",
+      "bytes": 657,
+      "sha256": "d195e56e8c3880a57c45d009d447d8212fd1396603c130b83234a3decdfeff4b"
+    },
+    {
+      "path": "repair-r12/preview3-web-client-r1/result.json",
+      "bytes": 196,
+      "sha256": "4d98d5c2e40462e3aeb109b189845805ecb3325e04ed1ce9cd21bc8b8b9d4fef"
+    },
+    {
+      "path": "repair-r12/preview3-web-client-r1/stdout.log",
+      "bytes": 2805,
+      "sha256": "ab5520719d342a44302d94f6d1792ce927f4f2f67def3cc3af7696a72042843b"
+    },
+    {
+      "path": "repair-r12/preview3-npm-audit-r1/result.json",
+      "bytes": 230,
+      "sha256": "47be546b028f7946709bd7b6059c34634aa88687bb78bab4dad171f55b3d258c"
+    },
+    {
+      "path": "repair-r12/preview3-npm-audit-r1/web.stdout.json",
+      "bytes": 358,
+      "sha256": "06c18d6ae5bb95560b3aaf924119c2ecbd29a69e9f4f8a67dc2bb1d7bc726c5e"
+    },
+    {
+      "path": "repair-r12/preview3-npm-audit-r1/react.stdout.json",
+      "bytes": 358,
+      "sha256": "e8bbc82d0d656ca6c5d561fcb794dae7591893e0a9812ba4d5dcc40258af1ad3"
+    },
+    {
+      "path": "repair-r12/preview3-npm-audit-r1/vue.stdout.json",
+      "bytes": 360,
+      "sha256": "d779408e46397a81b73737e06ea904cb9b8bb82ad1efff44f3e59f363fe8c5f3"
+    },
+    {
+      "path": "repair-r12/preview3-final-source-review-r1.json",
+      "bytes": 12353,
+      "sha256": "68eade0fbe89eb450c73ba56fa7e46c1c71bf48c28ee94ff0ca49009d1c877f5"
+    }
+  ],
+  "pending": [
+    "x86 SDK prefix and final SDK consumer build/qualification state",
+    "Preview3 runtime and Host identity bound to the imported kernel and x64 SDK receipt",
+    "R4/R12 source-loss lifecycle revalidation on Preview3 with strict counter zero after Runtime shutdown",
+    "Preview3 foreground input, frame rate, full-trace qualification and any applicable performance gate; physical Escape stopped this round and no input bypass was used",
+    "final complete SDK/runtime/ZIP package and size verification; current 80,247,144 B value is only the x64 CMake prefix",
+    "Performance Host current 42-contract native build/self-test: first r1 build was never reached because configure compiler-helper closure failed; no successful whole consumer attempt is inferred"
+  ]
+}

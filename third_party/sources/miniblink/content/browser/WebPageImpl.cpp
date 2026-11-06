@@ -229,6 +229,7 @@ WebPageImpl::WebPageImpl(COLORREF bdColor)
     m_executeMainFrameCount = 0;
     m_lastFrameTimeMonotonic = 0;
     m_mainFrameInterval = 0;
+    m_appliedMainFrameRate = 0;
     m_renderFrameId = 0;
     m_nextMainFrameTime = 0;
     m_popupHandle = nullptr;
@@ -911,14 +912,14 @@ void WebPageImpl::scheduleCommit(long long minimumDelayMs)
         atomicIncrement(&m_commitCount);
         blink::Platform* platfrom = blink::Platform::current();
         WebThreadImpl* threadImpl = (WebThreadImpl*)platfrom->mainThread();
-        const double remainingMs = (m_nextMainFrameTime - WTF::monotonicallyIncreasingTime()) * 1000.0;
-        long long delayMs = minimumDelayMs;
-        if (m_mainFrameInterval > 0 && remainingMs > 0) {
-            const long long frameDelayMs = remainingMs >= 34 ? 34 : static_cast<long long>(remainingMs + 0.999);
-            delayMs = (std::max)(delayMs, frameDelayMs > 0 ? frameDelayMs : 1);
-        }
-        if (delayMs > 0) {
-            threadImpl->postDelayedTask(FROM_HERE, new CommitTask(this), delayMs);
+        const double now = WTF::monotonicallyIncreasingTime();
+        const double minimumDue = now + static_cast<double>((std::max)(minimumDelayMs, 0LL)) / 1000.0;
+        double commitDue = minimumDue;
+        if (m_mainFrameInterval > 0 && m_nextMainFrameTime > now)
+            commitDue = (std::max)(commitDue, (std::min)(m_nextMainFrameTime, now + 0.034));
+        if (commitDue > now) {
+            threadImpl->postTaskAtWithPriorityCrossThread(FROM_HERE, new CommitTask(this), commitDue,
+                WebThreadImpl::kDefaultPriority);
         } else {
             threadImpl->postTask(FROM_HERE, new CommitTask(this));
         }
@@ -1123,7 +1124,8 @@ HDC WebPageImpl::viewDC()
     bool useLayeredBuffer = m_layerTreeHost->getHasTransparentBackground();
     if (!m_memoryCanvasForUi && !m_viewportSize.isEmpty()) {
         m_memoryCanvasForUi = skia::CreatePlatformCanvas(m_viewportSize.width(), m_viewportSize.height(), !useLayeredBuffer);
-        cc::LayerTreeHost::clearCanvas(m_memoryCanvasForUi, IntRect(0, 0, m_viewportSize.width(), m_viewportSize.height()), useLayeredBuffer);
+        if (m_memoryCanvasForUi)
+            cc::LayerTreeHost::clearCanvas(m_memoryCanvasForUi, IntRect(0, 0, m_viewportSize.width(), m_viewportSize.height()), useLayeredBuffer);
     }
     if (!m_memoryCanvasForUi)
         return nullptr;
@@ -1213,11 +1215,13 @@ void WebPageImpl::copyToMemoryCanvasForUi(const IntRect& paintRect, SkCanvas* so
     int height = memoryCanvas->imageInfo().height();
     if (0 != width && 0 != height) {
         if ((!m_memoryCanvasForUi && 0 != width * height) || 
-            (m_memoryCanvasForUi && (width != m_memoryCanvasForUi->imageInfo().width() || height != m_memoryCanvasForUi->imageInfo().height()))) {
+            (m_memoryCanvasForUi && (width != m_memoryCanvasForUi->imageInfo().width() || height != m_memoryCanvasForUi->imageInfo().height()
+                || m_memoryCanvasForUi->imageInfo().isOpaque() != !useLayeredBuffer))) {
             if (m_memoryCanvasForUi)
                 delete m_memoryCanvasForUi;
             m_memoryCanvasForUi = skia::CreatePlatformCanvas(width, height, !useLayeredBuffer);
-            cc::LayerTreeHost::clearCanvas(m_memoryCanvasForUi, IntRect(0, 0, width, height), useLayeredBuffer);
+            if (m_memoryCanvasForUi)
+                cc::LayerTreeHost::clearCanvas(m_memoryCanvasForUi, IntRect(0, 0, width, height), useLayeredBuffer);
             isCreatedThisTime = true;
         }
     } else if (m_memoryCanvasForUi) {
@@ -1519,6 +1523,7 @@ void WebPageImpl::setMainFrameRate(int rate)
     ASSERT(isMainThread());
     if (rate != 0 && (rate < 30 || rate > 240)) return;
     const double interval = rate ? 1.0 / rate : 0;
+    m_appliedMainFrameRate = rate;
     if (interval == m_mainFrameInterval) return;
     m_mainFrameInterval = interval;
     if (m_layerTreeHost && interval > 0)
@@ -1526,6 +1531,20 @@ void WebPageImpl::setMainFrameRate(int rate)
     m_nextMainFrameTime = 0;
     if (pageInited == m_state) setNeedsCommit();
 }
+bool WebPageImpl::applyMainFrameRate(int rate)
+{
+    if (!isMainThread() || m_state != pageInited
+        || (rate != 0 && (rate < 30 || rate > 240)))
+        return false;
+    setMainFrameRate(rate);
+    return m_appliedMainFrameRate == rate;
+}
+
+int WebPageImpl::mainFrameRate() const
+{
+    return isMainThread() && m_state == pageInited ? m_appliedMainFrameRate : -1;
+}
+
 void WebPageImpl::setDrawMinInterval(double drawMinInterval)
 {
     if (m_layerTreeHost)

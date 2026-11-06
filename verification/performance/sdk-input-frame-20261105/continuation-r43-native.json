@@ -1,0 +1,151 @@
+{
+  "schema": "soui.sdk-input-frame-r43-native/v1",
+  "independentActualReview": {"archiveRelativePath":"repair-r42-native-cold-guard-diagnostic-r1/entry-r3/actual-independent-review-r1.json","bytes":20735,"sha256":"2b13dd07c11c388c43fcc7394ec3228ba98d99b5ef23fc499b940aebc3c015f2"},
+  "preGoConservativeLeaseAnchorIndependentlyPersisted": false,
+  "recordedAt": "2026-11-06T13:21:50.439Z",
+  "run": "1e3c9fbd4e104b2da1282332a68ee5a6",
+  "sdkVersion": "0.7.0-preview.4",
+  "sdkSourceSha256": "e1d2dd8b7699930f678e21a77772b8fa4e371f5b67a53937d98470ee1659e87c",
+  "buildId": "18e47fa2-69df-4530-b1f9-365f6b2aec28",
+  "architecture": "x64",
+  "configuration": "Release",
+  "browserRuntime": "156.0.4314.58",
+  "controllerExit": 1,
+  "Host": {
+    "pid": 32624,
+    "birth": "134384444126712062",
+    "exit": 3,
+    "elapsedMs": 59119
+  },
+  "input": {
+    "pid": 93100,
+    "birth": "134384444366898474",
+    "exit": 1,
+    "elapsedMs": 28612,
+    "attempted": 3125,
+    "sent": 3125,
+    "allColdCheckpointsPass": true,
+    "inputReadySent": true,
+    "error": "marker nonce/counters/content"
+  },
+  "bothNativeNaturalJob0": true,
+  "forced": false,
+  "nativeLedger": {
+    "rows": 5460,
+    "rawPositiveTags": 3125,
+    "positiveTagsUniqueOrdered1Through3125": true,
+    "reportedCohortTagged": 2725,
+    "positiveTagsAfterCohortClosed": 400,
+    "firstFault": 5,
+    "firstFaultRawOrdinal": 2,
+    "firstFaultTag": 0,
+    "firstFaultExtraInfo": "0",
+    "untaggedSource": null,
+    "complete": false,
+    "lastTagSendReturnToWndProcMs": 1386.9659,
+    "qualifiedInputPercentiles": null
+  },
+  "page": {
+    "success": 90247,
+    "failed": 0,
+    "timeouts": 0,
+    "mismatches": 0,
+    "peakInflight": 7,
+    "finishError": "E_INPUT_FINISH_FENCE_LATE",
+    "finishRequestedAfterLoadStartMs": 31000.9,
+    "loadStageDurationMs": 31003.0861,
+    "fullLoadQualification": false
+  },
+  "rawDiagnosticOnly": {
+    "maxPaintGapMs": 26205.3452,
+    "maxTimerGapMs": 26205.871,
+    "SDKCauseEstablished": false,
+    "physicalPresentationMeasured": false,
+    "notUniqueFPS": true
+  },
+  "cooperativeSlot": {
+    "holderPid": 49384,
+    "holderBirth": "134384443925900905",
+    "helperExit": 2,
+    "helperNaturalJob0": true,
+    "expired": true,
+    "rootStopObserved": false,
+    "releaseSucceeded": true,
+    "readyQpc": "1988501637440",
+    "loadBeginQpc": "1988950130938",
+    "loadEndQpc": "1989260161799",
+    "releaseQpc": "1989392093415",
+    "qpcFrequency": "10000000",
+    "loadNumericallyInsideReadyToRelease": true,
+    "successfulCoordinationQualified": false,
+    "fullMachineIsolationVerified": false,
+    "rootStopAfterNativeTerminalsError": "OpenExisting event no longer exists"
+  },
+  "SDKChanged": false,
+  "HostRebuilt": false,
+  "kernelRebuilt": false,
+  "payloadChanged": false,
+  "sameRunRetried": false,
+  "evidence": [
+    {
+      "archiveRelativePath": "repair-r42-native-cold-guard-diagnostic-r1/entry-r3/prepared-request.json",
+      "bytes": 45047,
+      "sha256": "bf255d16f6f554afc6441453395cab22c0cdea783d39268f105536842cefce43"
+    },
+    {
+      "archiveRelativePath": "repair-r42-native-cold-guard-diagnostic-r1/entry-r3/run-once/go-accepted.json",
+      "bytes": 325,
+      "sha256": "e815e4abfc8846c502d43fa8ce8888ed0e637c1a2ffbafd7a57481c57b7c617c"
+    },
+    {
+      "archiveRelativePath": "repair-r42-native-cold-guard-diagnostic-r1/entry-r3/run-once/host-result.json",
+      "bytes": 507470,
+      "sha256": "f3230ee35cb8f45410ce58abbad84bdb49891e19f2f6c73a1a993ed25774c1b9"
+    },
+    {
+      "archiveRelativePath": "repair-r42-native-cold-guard-diagnostic-r1/entry-r3/run-once/input-result.json",
+      "bytes": 220928,
+      "sha256": "ac1572ce06e54a65dac07067d0b28dfc5a95e5ebbcecd44d04f96bc4108133a3"
+    },
+    {
+      "archiveRelativePath": "repair-r42-native-cold-guard-diagnostic-r1/entry-r3/run-once/host-owned-result.json",
+      "bytes": 1028,
+      "sha256": "9b35f320f6932c509f975d684d9ab1b2addb93387069b8acf54112724255eb1f"
+    },
+    {
+      "archiveRelativePath": "repair-r42-native-cold-guard-diagnostic-r1/entry-r3/run-once/input-owned-result.json",
+      "bytes": 1029,
+      "sha256": "5eed964d37612354c3de51d61c3c52c6bc9c3a34e42b5df34521f918fdd366ec"
+    },
+    {
+      "archiveRelativePath": "repair-r42-native-cold-guard-diagnostic-r1/entry-r3/run-once/execution-failure.json",
+      "bytes": 6095,
+      "sha256": "4ada429f7b5bc9f56d633c5a88e66eaa3b198034184d1dc44eda49faf25aae3e"
+    },
+    {
+      "archiveRelativePath": "repair-r42-native-cold-guard-diagnostic-r1/entry-r3/operator-slot-once/ready.json",
+      "bytes": 932,
+      "sha256": "ff2fd305718b760b330d4fe32e213afe123fc417d300650792f5c8587ef98a80"
+    },
+    {
+      "archiveRelativePath": "repair-r42-native-cold-guard-diagnostic-r1/entry-r3/operator-slot-once/release.json",
+      "bytes": 1169,
+      "sha256": "3b933100aff3bc27dfc6014200486fad2dc61018ec51caf3703b43ff8f91c2ce"
+    },
+    {
+      "archiveRelativePath": "repair-r42-native-cold-guard-diagnostic-r1/entry-r3/operator-slot-once/helper-result.json",
+      "bytes": 1040,
+      "sha256": "7417272b9b70b74e740e44d846c886efb0d345f9f8fe52852525f56b5ca96a2a"
+    },
+    {
+      "archiveRelativePath": "repair-r42-native-cold-guard-diagnostic-r1/entry-r3/operator-slot-once/failure.json",
+      "bytes": 1773,
+      "sha256": "8718d317e18d7e520c12664433ffb00a983cbd6a8fae9725ae83f814830d421e"
+    }
+  ],
+  "performanceVerified": false,
+  "inputLatencyVerified": false,
+  "fairnessVerified": false,
+  "releaseReady": false,
+  "wholeGoalComplete": false
+}

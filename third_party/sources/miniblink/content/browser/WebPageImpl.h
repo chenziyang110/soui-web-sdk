@@ -193,6 +193,8 @@ public:
     cc::LayerTreeHost* layerTreeHost() { return m_layerTreeHost; }
     void setDrawMinInterval(double drawMinInterval);
     void setMainFrameRate(int rate);
+    bool applyMainFrameRate(int rate);
+    int mainFrameRate() const;
     void setUiMirrorConsumerRequired(bool required);
     bool setHostVisible(bool visible);
     bool hasVisibilityOwnerRetry() const;
@@ -326,6 +328,7 @@ public:
     int m_executeMainFrameCount;
     double m_lastFrameTimeMonotonic;
     double m_mainFrameInterval;
+    int m_appliedMainFrameRate;
     uint64_t m_renderFrameId;
     cc::InputDispatchTraceStack m_inputTraceStack;
     double m_nextMainFrameTime;

@@ -261,6 +261,14 @@ int WebTimerBase::refCount() const
     return m_ref;
 }
 
+void WebTimerBase::startAt(double deadline, unsigned* heapInsertionOrder)
+{
+    ASSERT(m_thread == currentThread());
+    ASSERT(deadline > 0);
+    m_repeatInterval = 0;
+    setNextFireTime(deadline, heapInsertionOrder);
+}
+
 void WebTimerBase::startFromOtherThread(double interval, double* createTimeOnOtherThread, unsigned* heapInsertionOrder)
 {
     if (!createTimeOnOtherThread || !heapInsertionOrder) {

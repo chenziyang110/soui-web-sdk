@@ -1,0 +1,389 @@
+{
+  "schema": "soui.preview4-software-lineage-native-phases/v1",
+  "recordedAt": "2026-11-05T13:31:04.479Z",
+  "report": "docs/performance/sdk-preview4-lineage-native-phases-20261105.md",
+  "evidenceBundle": "PR129-performance-20261104",
+  "product": {
+    "sdkVersion": "0.7.0-preview.4",
+    "sdkSourceSha256": "e1d2dd8b7699930f678e21a77772b8fa4e371f5b67a53937d98470ee1659e87c",
+    "sdkBuildId": "18e47fa2-69df-4530-b1f9-365f6b2aec28",
+    "nodeSha256": "56d460c0b4136d85d3fcb8d4e4f00c19a04ff56532228031b55368742ef54308",
+    "sdkOrKernelImplementationModified": false,
+    "newSdkPackage": false
+  },
+  "officialReader": {
+    "targetedTests": {
+      "command": "node --test tests/benchmark/input-frame-trace/frame-lineage.test.cjs tests/benchmark/input-frame-trace/protocol.test.cjs",
+      "directExit": 0,
+      "pass": 40,
+      "fail": 0,
+      "skip": 0,
+      "evidenceScope": "Actual exec tool result transcribed; authored trace tests, not native inputs"
+    },
+    "rawReplayDirectExit": 0,
+    "rawReplayReferenceMatches": true,
+    "legacyStrictGatesUnchanged": true
+  },
+  "softwareLineage": {
+    "sampleRunId": "200eb715823c2b96159cce7022e5f89e",
+    "taggedInputs": 64,
+    "softwareFrames": 42,
+    "timings": {
+      "scope": "Descriptive current candidate light/full64 software frame lineage; shared frame observations are not independent frames/visible events.",
+      "hostReceiveToEngineBeginMs": {
+        "samples": 64,
+        "p50": 0.2377,
+        "p95": 0.9732,
+        "p99": 2.0373,
+        "min": 0.0303,
+        "max": 2.0373
+      },
+      "hostReceiveToFrameSubmitBoundaryMs": {
+        "samples": 64,
+        "p50": 12.0823,
+        "p95": 24.8714,
+        "p99": 33.1723,
+        "min": 1.3611,
+        "max": 33.1723
+      },
+      "processedCoverageToFrameSubmitBoundaryMs": {
+        "samples": 64,
+        "p50": 4.8842,
+        "p95": 14.1219,
+        "p99": 25.1711,
+        "min": 0.5856,
+        "max": 25.1711
+      }
+    },
+    "sourceExpectedRequestedHz": 60,
+    "actualAppliedHz": null,
+    "compositeTimingP95Ms": {
+      "processedCoverageToCompositeEntry": 13.3021,
+      "activeSceneToSubmit": 1.1939,
+      "wholeCompositeInclusive": 1.4724
+    },
+    "sourceEndpoint": "Processed input-to-frame relation and software native draw/submit call return; no visible content or API success proof",
+    "preQueuedExecutorFrames": 15,
+    "postQueuedExecutorFrames": 27,
+    "scheduledDueOrDelayRecorded": false,
+    "doubleWaitOrGdiCauseProved": false,
+    "fullInputToVisibleCausalComplete": false
+  },
+  "feedback": {
+    "rawCaptures": 21,
+    "exactAckAdvances": 18,
+    "repeatedAckCaptures": 3,
+    "unknownExactInputFeedback": 46,
+    "sendInputCallToThisCaptureEndUpperRangeMs": [
+      24.1342,
+      52.5518
+    ],
+    "calibrationBorrowed": false,
+    "physicalOrFirstUiLatency": false,
+    "baselineMarkerCorrection": "Append-only R2 finds matching raw baseline frame; R1 retained; counts/bounds unchanged"
+  },
+  "nativePhases": {
+    "identity": {
+      "pid": 75472,
+      "creationFileTime": "134383554210395731",
+      "hostSha256": "fa57844af3c0cff08ef724cc2e86ebfb6a59ae21b28d263eb9306a0442840071",
+      "nodeSha256": "56d460c0b4136d85d3fcb8d4e4f00c19a04ff56532228031b55368742ef54308",
+      "sdkVersion": "0.7.0-preview.4",
+      "sdkBuildId": "18e47fa2-69df-4530-b1f9-365f6b2aec28",
+      "sdkSourceSha256": "e1d2dd8b7699930f678e21a77772b8fa4e371f5b67a53937d98470ee1659e87c",
+      "consumerSourceFileCount": 14,
+      "consumerSourceSetSha256": "53bad5158f3dc7290919717f3c93f0015ad9b6040544602d2e577ec46651d4cb",
+      "pageHash": "6d3dc9886bab679a5c0ac3107bb867ce6f9531a39779296c05cfd3f17759726d",
+      "coldEnvironment": {
+        "SOUI_DIAGNOSTIC_BRIDGE_PHASES": "1",
+        "SOUI_DIAGNOSTIC_SCRIPT": "0"
+      },
+      "observation": "scalar",
+      "inputTrace": "scalar"
+    },
+    "fixedWarmup": 32,
+    "fixedMeasuredSuccess": 1024,
+    "maximumInFlight": 8,
+    "phaseSamplesEach": 1065,
+    "includesExtraNativeCalls": 9,
+    "baselineCompared": false,
+    "phases": [
+      {
+        "phase": "native_first_parse",
+        "started": "1065",
+        "completed": "1065",
+        "beginInFlight": "0",
+        "endInFlight": "0",
+        "meanInclusiveMs": 0.021645633802816904,
+        "p95BucketMs": {
+          "bucket": 8,
+          "lower": 0.0256,
+          "upper": 0.0511,
+          "inclusive": true
+        },
+        "p99BucketMs": {
+          "bucket": 8,
+          "lower": 0.0256,
+          "upper": 0.0511,
+          "inclusive": true
+        },
+        "samplesCompleteWithinPhaseCaptureWindow": false
+      },
+      {
+        "phase": "resolver_create_js",
+        "started": "1065",
+        "completed": "1065",
+        "beginInFlight": "0",
+        "endInFlight": "0",
+        "meanInclusiveMs": 0.09154892018779343,
+        "p95BucketMs": {
+          "bucket": 10,
+          "lower": 0.1024,
+          "upper": 0.2047,
+          "inclusive": true
+        },
+        "p99BucketMs": {
+          "bucket": 11,
+          "lower": 0.2048,
+          "upper": 0.4095,
+          "inclusive": true
+        },
+        "samplesCompleteWithinPhaseCaptureWindow": false
+      },
+      {
+        "phase": "reply_run_js",
+        "started": "1065",
+        "completed": "1065",
+        "beginInFlight": "0",
+        "endInFlight": "0",
+        "meanInclusiveMs": 0.09150394366197183,
+        "p95BucketMs": {
+          "bucket": 10,
+          "lower": 0.1024,
+          "upper": 0.2047,
+          "inclusive": true
+        },
+        "p99BucketMs": {
+          "bucket": 12,
+          "lower": 0.4096,
+          "upper": 0.8191,
+          "inclusive": true
+        },
+        "samplesCompleteWithinPhaseCaptureWindow": false
+      }
+    ],
+    "cacheAges": [
+      {
+        "phase": "begin",
+        "cacheAgeAtBoundaryBeginMs": 102.203,
+        "captureBeginQpc": "1098751848601",
+        "captureEndQpc": "1098751848603",
+        "publicationSequence": "28",
+        "qualified": true
+      },
+      {
+        "phase": "end",
+        "cacheAgeAtBoundaryBeginMs": 51.4266,
+        "captureBeginQpc": "1098762309684",
+        "captureEndQpc": "1098762309688",
+        "publicationSequence": "12808",
+        "qualified": true
+      }
+    ],
+    "scope": "Delta of native cumulative inclusive wall-time histograms at cached UI capture points, surrounding the unchanged 32 warmup + 1024 measured generic fixture and diagnostic requests. Not exactly 1024 isolated operations.",
+    "traceOffFixedUiQualified": false,
+    "hostNaturalExitZeroJobEmpty": true,
+    "helperNaturalExitZero": true,
+    "payloadFilesVerifiedUnchanged": 267
+  },
+  "sourceWakeFixture": {
+    "profile": "LLVM22MSVC142",
+    "clangVersion": "22.1.3",
+    "msvcHeadersLibraries": "14.29.30133",
+    "windowsSdk": "10.0.19041.0",
+    "v143Qualified": false,
+    "buildNaturalExit0": true,
+    "fixtureNaturalExit0": true,
+    "actualCpuRuns": 1,
+    "jobFinalActiveProcesses": 0,
+    "assertionsFailed": 0,
+    "rawOutputs": [
+      {
+        "case": "current-queued-delayed",
+        "readyMs": 1004,
+        "actualFakeDrawMs": 1016,
+        "oldDueRetained": true
+      },
+      {
+        "case": "control-no-old-queued",
+        "readyMs": 1004,
+        "actualFakeDrawMs": 1004
+      },
+      {
+        "schema": "soui.draw-wake-source-fixture/v1",
+        "assertionsFailed": 0,
+        "currentCounterexampleSupported": true,
+        "virtualOnly": true,
+        "newSdkOrKernel": false,
+        "performanceVerified": false
+      }
+    ],
+    "virtualClockAndFakeRasterTail": true,
+    "nativeBuildRepeated": false,
+    "originalFailuresPreserved": true,
+    "productionPromotionImplemented": false,
+    "actualWindowsLatencyBenefitProved": false,
+    "full64TailCauseProved": false,
+    "decision": "Proposed ADR0163; bounded policy/lifetime prototype requires independent review before vendor changes"
+  },
+  "limitations": [
+    "Candidate-only short software/native diagnostics, no A/B gain",
+    "Input sample shares42frames; software submit is not visibility or physical latency",
+    "Inclusive Bridge phases are cached aggregate wall intervals, not CPU share or pure echo",
+    "Budget, owner fairness, provider prefix, phase adoption and full resource/interaction gates remain open"
+  ],
+  "evidencePins": [
+    {
+      "root": "repository",
+      "path": "benchmarks/protocol/input-frame-lineage.cjs",
+      "bytes": 7639,
+      "sha256": "22144a550d6946ebae4cb72dbacb3de28f1fe87c5c67a44ef0d6498b1ad73a7d"
+    },
+    {
+      "root": "repository",
+      "path": "benchmarks/protocol/burst-input.cjs",
+      "bytes": 23373,
+      "sha256": "98cb49ce4a3f1f24dc7ca7e46c02cb4536e834dcd89760f221cc2451258d7562"
+    },
+    {
+      "root": "repository",
+      "path": "tests/benchmark/input-frame-trace/frame-lineage.test.cjs",
+      "bytes": 6567,
+      "sha256": "a873db0174be7c5cf31323237be344fd24285657f5ea9145ea6c1514f71dcc5a"
+    },
+    {
+      "root": "repository",
+      "path": "tests/benchmark/input-frame-trace/protocol.test.cjs",
+      "bytes": 18764,
+      "sha256": "eed7815befa5ffec0d6ea3b8ed23052bead39350a03f5b04bb017b69d9717358"
+    },
+    {
+      "root": "repository",
+      "path": "docs/adr/0163-compositor-draw-wake-promotion-experiment.md",
+      "bytes": 5912,
+      "sha256": "21ec4febc4aa9cd6be40af861f428385bad3b00437514bb8fa0a76559c4f7065"
+    },
+    {
+      "root": "evidence",
+      "path": "repair-r18-reader-integration/replay-result.json",
+      "bytes": 33054,
+      "sha256": "f06dfcf65985acd83b691b72f7df6c84bed6667388e9fd36f02314bec63901d9"
+    },
+    {
+      "root": "evidence",
+      "path": "repair-r18-reader-integration/replay-execution.json",
+      "bytes": 335,
+      "sha256": "e196c41a271797fd04079133d1a752770d0cafb9ce7c511ea8560439070e9710"
+    },
+    {
+      "root": "evidence",
+      "path": "repair-r18-reader-integration/targeted-tests-result.json",
+      "bytes": 549,
+      "sha256": "0b7cf485930d6701f87527fa7718f7c0b800a63ba8610ee01331554c957e1047"
+    },
+    {
+      "root": "evidence",
+      "path": "repair-r16/official-frame-lineage-independent-review-r1.json",
+      "bytes": 5968,
+      "sha256": "031c5b048b55ac5547df26f860d0513b26f3d662dd33707fd9bf9e4065d0eff2"
+    },
+    {
+      "root": "evidence",
+      "path": "repair-r16/full64-frame-lineage-r1/frame-lineage-report.json",
+      "bytes": 312161,
+      "sha256": "1ad45af974db8551f71c1ef502b877076b34519c81cb0e419242968644809248"
+    },
+    {
+      "root": "evidence",
+      "path": "repair-r16/full64-frame-lineage-r2/phase-split-report.json",
+      "bytes": 55628,
+      "sha256": "ee238265d7e506deb5ee6839bd3f3aa0ebc0331d7a85ae885b62d3075a7c204d"
+    },
+    {
+      "root": "evidence",
+      "path": "repair-r16/full64-frame-lineage-r3/composite-boundary-report.json",
+      "bytes": 284503,
+      "sha256": "b4030c17dd4908832e17fcab89079b82334b9441e11c2cfc2ef3992554379342"
+    },
+    {
+      "root": "evidence",
+      "path": "repair-r16/full64-task-queue-context-r1/task-queue-context-report.json",
+      "bytes": 206398,
+      "sha256": "0ddc4799be8b17890cf8419f632ca7f09213f665087be0c4418760a521250ed1"
+    },
+    {
+      "root": "evidence",
+      "path": "repair-r16/full64-frame-lineage-independent-review-r1.json",
+      "bytes": 5281,
+      "sha256": "641e92143eb80677f3c61746799fc64c81e358973620a2b0d61e3862de9569e9"
+    },
+    {
+      "root": "evidence",
+      "path": "repair-r16/phase-feedback-independent-review-r1.json",
+      "bytes": 8657,
+      "sha256": "be0f7e275930f95a781157bbc5733c6304134812d2ed5c05a23728dfde5725c7"
+    },
+    {
+      "root": "evidence",
+      "path": "repair-r16/composite-boundary-independent-review-r1.json",
+      "bytes": 3999,
+      "sha256": "6f04f2d5bca4067465aaa88d1b48277f2a7f57d0fd8096a30fd478c248ffcb23"
+    },
+    {
+      "root": "evidence",
+      "path": "repair-r16/full64-feedback-bounds-r1/report.json",
+      "bytes": 26868,
+      "sha256": "6dbcd0c0fdf912cca40c634e4350da6de768c58295ec6d996776a7f8e7519a3b"
+    },
+    {
+      "root": "evidence",
+      "path": "repair-r16/full64-feedback-bounds-r2/report.json",
+      "bytes": 28079,
+      "sha256": "d0b9dfe2d21a970dee65772e1f2ba831c2b2f75d3130c74ed6c93eafd32a4e6e"
+    },
+    {
+      "root": "evidence",
+      "path": "repair-r18-native-phases/report.json",
+      "bytes": 15361,
+      "sha256": "e1bb5811a6aad7618620515684db03115c3de918fa60c76ceef1fb7165d251a6"
+    },
+    {
+      "root": "evidence",
+      "path": "repair-r18-native-phases/execution-tool-receipt.json",
+      "bytes": 881,
+      "sha256": "79a4215b890c90f5c35635b9e3321f153860e3e62c81f40def6729f3a3592df1"
+    },
+    {
+      "root": "evidence",
+      "path": "repair-r18-native-phases/independent-review-r1.json",
+      "bytes": 6662,
+      "sha256": "c9a9fcf99265f213488538dff2dc2eed332453e4718911d200d03b393870dc15"
+    },
+    {
+      "root": "evidence",
+      "path": "repair-r19-draw-wake-source-fixture/llvm-r3/closeout-r3a.json",
+      "bytes": 7272,
+      "sha256": "cbf13f601f0b5d5a31bec0ea61dcfa919f8d998c7dd459e38777e7d3934031be"
+    },
+    {
+      "root": "evidence",
+      "path": "repair-r19-draw-wake-source-fixture/llvm-r3/execution-independent-review-r1.json",
+      "bytes": 5803,
+      "sha256": "05ff526d74384e5d78a149b60d72922d3958a96e23c743f8787c344297362e37"
+    }
+  ],
+  "inputLatencyVerified": false,
+  "performanceVerified": false,
+  "releaseReady": false,
+  "wholeGoalComplete": false
+}

@@ -77,6 +77,9 @@ class engine_admission final {
   [[nodiscard]] static bool register_input(engine_thread&, const std::shared_ptr<engine_input_service>&);
   static void unregister_input(engine_thread&, const std::shared_ptr<engine_input_service>&);
   static void notify_input(engine_thread&) noexcept;
+  // Cold owner/startup transaction. Both captures retire outside the Engine mutex.
+  [[nodiscard]] static bool install_owner_opportunity(engine_thread&, engine_thread::task,
+      std::function<bool(std::chrono::steady_clock::time_point)>);
   [[nodiscard]] static std::uint64_t commit_input(engine_thread&, std::atomic<std::uint64_t>& head,
       std::atomic<bool>& pending, bool publish_head, bool recovery);
   [[nodiscard]] static std::uint64_t input_cutoff(const engine_thread&);

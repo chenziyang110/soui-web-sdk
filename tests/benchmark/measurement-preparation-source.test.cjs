@@ -16,7 +16,11 @@ const tailInputs = ['benchmarks/protocol/owned-tail-evidence.cpp', 'benchmarks/p
   'tests/benchmark/owned-tail-process-fixture.cpp', 'tests/benchmark/owned-tail-mutation-fixture.cpp',
   'tests/benchmark/owned-tail-api-fixture.cpp'];
 const toolNames = ['OwnedProcessRunner', 'OwnedProcessAssignmentFixture', 'ProcessTreeSampler', 'InputTrace', 'NativeTraceIdentity',
-  'OwnedTailProcessFixture', 'OwnedTailMutationFixture', 'OwnedTailApiFixture', 'DisplayCalibration'];
+  'OwnedTailProcessFixture', 'OwnedTailMutationFixture', 'OwnedTailApiFixture', 'DisplayCalibration', 'BurstInput'];
+const burstInputs = ['benchmarks/protocol/burst-input.cpp', 'benchmarks/protocol/burst-desktop-observer.cpp',
+  'benchmarks/protocol/burst-desktop-observer.h'];
+const observerHeaderInputs = ['benchmarks/protocol/desktop-capture.h', 'benchmarks/protocol/passive-observation.h',
+  'benchmarks/protocol/passive-wait-timer.h', 'benchmarks/protocol/rejected-frame-evidence.h'];
 const displayInput = 'benchmarks/protocol/display-calibration.cpp';
 const cohortInput = 'benchmarks/protocol/owned-process-cohort.h';
 const hash = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
@@ -39,7 +43,8 @@ function load(workspace, launches) {
   })();
   // Match the real caller's realm, so strict native-context array equality is
   // tested without changing the reviewed provenance verifier for a VM fixture.
-  vm.compileFunction(helperSource, ['module', 'require', '__dirname', 'process', 'console', 'Buffer'], {filename: helperPath})
+  // Expose the CLI's existing private seal only in this inert unit harness.
+  vm.compileFunction(helperSource + '\nmodule.exports.seal = seal;\n', ['module', 'require', '__dirname', 'process', 'console', 'Buffer'], {filename: helperPath})
     (module, localRequire, path.join(workspace, 'tools/internal'), process, console, Buffer);
   return module.exports;
 }
@@ -62,7 +67,8 @@ function fixture(t, architecture) {
   const existing = load(repository, {count: 0}).fingerprint();
   for (const entry of existing.files) write(entry.path, fs.readFileSync(path.join(repository, entry.path)));
   write(sdkCheck, fs.readFileSync(path.join(repository, sdkCheck)));
-  for (const name of [...tailInputs, cohortInput]) write(name, fs.readFileSync(path.join(repository, name)));
+  for (const name of [...tailInputs, cohortInput, ...burstInputs, ...observerHeaderInputs])
+    write(name, fs.readFileSync(path.join(repository, name)));
   for (const name of [displayInput, 'benchmarks/protocol/display-calibration.cjs', 'benchmarks/protocol/owned-trace-subject.cjs'])
     write(name, fs.readFileSync(path.join(repository, name)));
   write('tools/internal/owned-process.cjs', '// pure fixture client\n');
@@ -85,6 +91,23 @@ function fixture(t, architecture) {
   return {workspace, write, validation, launches, directory, sdkFile: path.join(workspace, sdkCheck)};
 }
 
+test('observer inline headers are frozen inputs and changed or missing headers reject the old receipt', t => {
+  const f = fixture(t, 'x64'), initial = f.validation.fingerprint();
+  f.validation.prepared('x64');
+  const included = new Set(initial.files.map(item => item.path));
+  assert.deepEqual(observerHeaderInputs.filter(name => included.has(name)), observerHeaderInputs);
+  for (const name of observerHeaderInputs) {
+    const before = f.validation.fingerprint().sha256;
+    fs.appendFileSync(path.join(f.workspace, name), '\n// changed inline measurement dependency\n');
+    assert.notEqual(f.validation.fingerprint().sha256, before, `Changing ${name} must change the prepared source fingerprint`);
+    assert.throws(() => f.validation.prepared('x64'), /missing or stale/);
+  }
+  fs.unlinkSync(path.join(f.workspace, observerHeaderInputs[0]));
+  assert.throws(() => f.validation.fingerprint(), /ENOENT/);
+  assert.throws(() => f.validation.prepared('x64'), /ENOENT/);
+  assert.equal(f.launches.count, 0);
+});
+
 for (const architecture of ['x86', 'x64']) {
   for (const name of ['tools/internal/Find-Toolchain.ps1', 'tools/internal/Msvc-CompilerLifecycle.ps1']) {
     test(`${architecture}: compiler lifecycle input drift invalidates preparation: ${name}`, t => {
@@ -100,6 +123,22 @@ for (const architecture of ['x86', 'x64']) {
     assert.equal(prepared.report.prepared, true);
     assert.equal(prepared.report.source.sha256, f.validation.fingerprint().sha256);
     assert.deepEqual(Object.keys(prepared.tools).sort(), [...toolNames].sort());
+    assert.equal(f.launches.count, 0);
+  });
+
+  test(`${architecture}: sealing enumerates all ten bounded tools including BurstInput`, t => {
+    const f = fixture(t, architecture);
+    f.write(`${f.directory}/CMakeCache.txt`, `CMAKE_HOME_DIRECTORY:INTERNAL=${path.join(f.workspace, 'benchmarks/protocol')}\n`);
+    f.write(`${f.directory}/configure.log`, 'authored configure fixture; no native command\n');
+    f.write(`${f.directory}/compile.log`, 'authored compile fixture; no native command\n');
+    const sealed = f.validation.seal(architecture, f.validation.fingerprint().sha256);
+    assert.deepEqual(sealed.executables.map(row => row.name).sort(), [...toolNames].sort());
+    assert.equal(sealed.executables.length, 10);
+    assert.deepEqual(sealed.source.files.filter(row => burstInputs.includes(row.path)).map(row => row.path), burstInputs);
+    assert.equal(f.launches.count, 0);
+    fs.unlinkSync(path.join(f.workspace, f.directory, 'Release/BurstInput.exe'));
+    assert.throws(() => f.validation.seal(architecture, f.validation.fingerprint().sha256), /ENOENT/);
+    assert.throws(() => f.validation.prepared(architecture), /ENOENT/);
     assert.equal(f.launches.count, 0);
   });
 
@@ -129,11 +168,11 @@ for (const architecture of ['x86', 'x64']) {
     }
   });
 
-  for (const input of [...tailInputs, cohortInput]) {
+  for (const input of [...tailInputs, cohortInput, ...burstInputs]) {
     test(`${architecture}: changed ${input} invalidates preparation`, t => {
       const f = fixture(t, architecture), before = f.validation.fingerprint().sha256;
-      fs.appendFileSync(path.join(f.workspace, input), '\n// changed Tail compilation input fixture\n');
-      assert.notEqual(f.validation.fingerprint().sha256, before, 'Every actual Runner compilation dependency is a build input');
+      fs.appendFileSync(path.join(f.workspace, input), '\n// changed measurement compilation input fixture\n');
+      assert.notEqual(f.validation.fingerprint().sha256, before, 'Every actual measurement compilation dependency is a build input');
       assert.throws(() => f.validation.prepared(architecture), /missing or stale/);
       assert.equal(f.launches.count, 0);
     });
@@ -149,11 +188,11 @@ for (const architecture of ['x86', 'x64']) {
     test(`${architecture}: changed or missing ${input} rejects the native group before launch`, async t => {
       for (const mode of ['changed', 'missing']) {
         const f = fixture(t, architecture), filename = path.join(f.workspace, input);
-        if (mode === 'changed') fs.appendFileSync(filename, '\n// changed Tail compilation input fixture\n');
+        if (mode === 'changed') fs.appendFileSync(filename, '\n// changed measurement compilation input fixture\n');
         else fs.unlinkSync(filename);
         for (const group of ['native','tail-native','tail-protocol'])
           await assert.rejects(f.validation.runGroup(group, architecture), /missing or stale|ENOENT/);
-        assert.equal(f.launches.count, 0, `${mode} Tail input must fail before any owned subject is started`);
+        assert.equal(f.launches.count, 0, `${mode} measurement input must fail before any owned subject is started`);
       }
     });
   }
@@ -176,13 +215,13 @@ for (const architecture of ['x86', 'x64']) {
     assert.equal(f.launches.count, 0);
   });
 
-  for (const change of ['missing-entry', 'missing-file', 'wrong-architecture', 'changed-bytes']) {
-    test(`${architecture}: ${change} DisplayCalibration fails closed before launch`, async t => {
-      const f = fixture(t, architecture), executable = path.join(f.workspace, f.directory, 'Release/DisplayCalibration.exe');
+  for (const name of ['DisplayCalibration', 'BurstInput']) for (const change of ['missing-entry', 'missing-file', 'wrong-architecture', 'changed-bytes']) {
+    test(`${architecture}: ${change} ${name} fails closed before launch`, async t => {
+      const f = fixture(t, architecture), executable = path.join(f.workspace, f.directory, 'Release', name + '.exe');
       if (change === 'missing-entry') {
         const record = path.join(f.workspace, f.directory, 'measurement-tools.json');
         const value = JSON.parse(fs.readFileSync(record));
-        value.executables = value.executables.filter(item => item.name !== 'DisplayCalibration');
+        value.executables = value.executables.filter(item => item.name !== name);
         fs.writeFileSync(record, JSON.stringify(value));
       } else if (change === 'missing-file') fs.unlinkSync(executable);
       else {

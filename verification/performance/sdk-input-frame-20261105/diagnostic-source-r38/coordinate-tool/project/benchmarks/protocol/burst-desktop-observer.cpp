@@ -1,0 +1,322 @@
+// Derived from desktop-observer.cpp at44eff565; intentionally independent
+// protocol. Accumulated images and ACK jumps are retained as omissions, never
+// invented intermediate observations. Legacy collector/reader bytes unchanged.
+#define NOMINMAX
+#include "burst-desktop-observer.h"
+#include "trace-identity.h"
+#include "rejected-frame-evidence.h"
+#include <d3d11.h>
+#include <dxgi1_2.h>
+#include <array>
+#include <atomic>
+#include <chrono>
+#include <condition_variable>
+#include <mutex>
+#include <limits>
+#include <stdexcept>
+#include <thread>
+
+namespace soui::benchmark {
+namespace {
+template<class T> struct com {
+  T* p{};
+  ~com() { if (p) p->Release(); }
+  com() = default; com(const com&) = delete; com& operator=(const com&) = delete;
+  T** out() { if (p) { p->Release(); p = nullptr; } return &p; }
+};
+struct handle {
+  HANDLE p{INVALID_HANDLE_VALUE};
+  ~handle() { if (p && p != INVALID_HANDLE_VALUE) CloseHandle(p); }
+};
+struct library {
+  HMODULE p{};
+  explicit library(const wchar_t* name) {
+    wchar_t system[MAX_PATH]{};
+    const UINT size = GetSystemDirectoryW(system, MAX_PATH);
+    if (!size || size >= MAX_PATH) throw std::runtime_error("Desktop system directory unavailable");
+    const std::wstring full = std::wstring(system) + L"\\" + name;
+    p = LoadLibraryW(full.c_str());
+    if (!p) { const DWORD error=GetLastError(); throw std::runtime_error("Desktop graphics component unavailable: win32="+std::to_string(error)); }
+  }
+  ~library() { if (p) FreeLibrary(p); }
+  library(const library&) = delete; library& operator=(const library&) = delete;
+};
+void require(bool condition, const char* text) { if (!condition) throw std::runtime_error(text); }
+void ok(HRESULT hr, const char* text) {
+  if(FAILED(hr))throw std::runtime_error(std::string(text)+": HRESULT="+std::to_string(static_cast<std::uint32_t>(hr)));
+}
+std::uint64_t tick() { LARGE_INTEGER q{}; require(QueryPerformanceCounter(&q) != FALSE, "Desktop QPC failed"); return static_cast<std::uint64_t>(q.QuadPart); }
+std::uint64_t ft(FILETIME q) { return (static_cast<std::uint64_t>(q.dwHighDateTime) << 32) | q.dwLowDateTime; }
+std::string quoted(std::uint64_t q) { return "\"" + std::to_string(q) + "\""; }
+std::string output_name(const wchar_t* text) {
+  std::string result="\"";
+  for(unsigned n=0;text[n];++n){require(n<32&&text[n]>=32&&text[n]<127,"Desktop output name invalid");if(text[n]=='\\'||text[n]=='\"')result+='\\';result+=static_cast<char>(text[n]);}
+  return result+'\"';
+}
+void line(HANDLE output, const std::string& text) {
+  const std::string raw = text + "\n"; DWORD written{};
+  require(raw.size() <= 4096 && WriteFile(output, raw.data(), static_cast<DWORD>(raw.size()), &written, nullptr) && written == raw.size(), "Desktop trace write failed");
+}
+std::uint16_t crc(const std::array<unsigned char,24>& data) {
+  std::uint16_t value = 0xffff;
+  for (unsigned n = 0; n < 24; ++n) {
+    if(n==12||n==13)continue;
+    value ^= static_cast<std::uint16_t>(data[n]) << 8;
+    for (unsigned b = 0; b < 8; ++b) value = static_cast<std::uint16_t>((value << 1) ^ ((value & 0x8000) ? 0x1021 : 0));
+  }
+  return value;
+}
+struct marker { std::uint32_t nonce{}, ack{}, frame{}; unsigned scene{}; bool motion{}; std::array<unsigned char,24> bytes{}; std::uint32_t content_sequence{},delivered_units{}; };
+std::string marker_hex(const marker& value) {
+  std::string result; result.reserve(48); constexpr char digits[]="0123456789abcdef";
+  for(auto byte:value.bytes){result+=digits[byte>>4];result+=digits[byte&15];}
+  return result;
+}
+marker decode(const void* pixels, std::size_t row_pitch) {
+  require(row_pitch >= 64 * 4 && pixels, "Desktop pixel buffer invalid");
+  std::array<unsigned char,24> data{};
+  for (unsigned i = 0; i < 192; ++i) {
+    const unsigned y = i < 128 ? (i / 16) * 4 + 2 : 36 + ((i - 128) / 16) * 4 + 2;
+    const auto* pixel = static_cast<const unsigned char*>(pixels) + y * row_pitch + ((i % 16) * 4 + 2) * 4;
+    const bool dark = pixel[0] <= 32 && pixel[1] <= 32 && pixel[2] <= 32;
+    const bool light = pixel[0] >= 223 && pixel[1] >= 223 && pixel[2] >= 223;
+    require(dark || light, "Desktop marker has ambiguous pixels");
+    if (light) data[i / 8] |= static_cast<unsigned char>(1U << (i % 8));
+  }
+  require(data[0] == 0xa7 && data[1] == 0x53, "Burst marker magic invalid");
+  require(crc(data) == (static_cast<unsigned>(data[12]) | (static_cast<unsigned>(data[13]) << 8)), "Desktop marker CRC invalid");
+  auto little = [&data](unsigned start, unsigned count) { std::uint32_t value{}; for (unsigned n=0;n<count;++n) value |= static_cast<std::uint32_t>(data[start+n]) << (n*8); return value; };
+  const unsigned flags = data[11];
+  require((flags & 15)==2, "Persistent ACK v2 marker flags invalid");
+  marker result{little(2,4),little(6,3),little(9,2),1,false};
+  // ACK uses 24 bits in the wire marker; only 20 are admitted. Frame uses 16.
+  require(result.nonce && result.ack <= 64, "Desktop marker counter invalid");
+  result.bytes=data;
+  result.delivered_units=data[14]|(static_cast<std::uint32_t>(data[15])<<8)|((flags>>4)<<16);
+  require(result.delivered_units==result.ack&&result.delivered_units<=64,"Burst delivery counter exceeds ACK");
+  const auto* content=static_cast<const unsigned char*>(pixels)+34*row_pitch+2*4;
+  result.content_sequence=content[2]|(static_cast<std::uint32_t>(content[1])<<8)|(static_cast<std::uint32_t>(content[0])<<16);
+  unsigned count=0;
+  for(unsigned n=16;n<24;++n)for(unsigned bit=0;bit<8;++bit)count+=(data[n]>>bit)&1U;
+  require(count==result.delivered_units,"Persistent ACK mask/count disagree");
+  return result;
+}
+marker decode(const D3D11_MAPPED_SUBRESOURCE& map) { return decode(map.pData, map.RowPitch); }
+bool zero_mask(const marker& value){for(unsigned n=16;n<24;++n)if(value.bytes[n])return false;return true;}
+bool full_mask(const marker& value){for(unsigned n=16;n<24;++n)if(value.bytes[n]!=255)return false;return true;}
+bool mask_contains(const marker& before,const marker& after){for(unsigned n=16;n<24;++n)if((before.bytes[n]&after.bytes[n])!=before.bytes[n])return false;return true;}
+} // namespace
+
+struct burst_desktop_observer::state {
+  HANDLE process; DWORD pid; std::uint64_t creation; HWND window;
+  std::filesystem::path output; unsigned scene{1}; bool probe{false}; desktop_capture_backend backend;
+  std::string run_id; std::uint32_t expected_nonce;
+  std::thread thread; std::mutex mutex; std::condition_variable changed;
+  std::atomic<bool> stop{false}, normal_stop{false}; bool ready{}, done{}; std::string failure;
+  std::uint32_t acknowledged{};
+  marker latest{}; std::uint64_t frames{}, pointer_only{}, started{}, frequency{};
+  POINT origin{}; HMONITOR monitor{};
+  state(HANDLE p,DWORD id,std::uint64_t c,HWND w,const std::filesystem::path& out,const std::string& run,std::uint32_t nonce,desktop_capture_backend selected)
+      :process(p),pid(id),creation(c),window(w),output(out),run_id(run),expected_nonce(nonce),backend(selected) {}
+  void accept(const marker& value) {
+    std::lock_guard<std::mutex> lock(mutex);
+    if(ready){
+      require(value.nonce==latest.nonce&&value.ack>=latest.ack&&value.frame>=latest.frame&&value.delivered_units>=latest.delivered_units,"Desktop marker lifetime/counters changed");
+      if(value.ack>latest.ack)require(value.frame>latest.frame,"New ACK lacks a new rendered marker frame");
+      require(mask_contains(latest,value),"Persistent ACK bit reverted");
+    }else require(value.ack==0&&value.delivered_units==0&&zero_mask(value),"Persistent ACK baseline mask must be zero");
+    latest=value;ready=true;
+  }
+  void bind_window() {
+    DWORD current{}; GetWindowThreadProcessId(window,&current);
+    require(IsWindow(window) && IsWindowVisible(window) && !IsIconic(window) && current == pid && WaitForSingleObject(process,0) == WAIT_TIMEOUT, "Desktop owner window/process changed");
+    require(GetForegroundWindow() == window, "Desktop foreground changed");
+    POINT current_origin{}; require(ClientToScreen(window,&current_origin) != FALSE,"Desktop geometry unavailable");
+    require(current_origin.x == origin.x && current_origin.y == origin.y && MonitorFromWindow(window,MONITOR_DEFAULTTONULL) == monitor,"Desktop output/region changed");
+    RECT client{}; require(GetClientRect(window,&client) && ((client.right==1100&&client.bottom==720)||(scene==4&&client.right==1060&&client.bottom==700)),"Desktop client geometry changed");
+    HDC dc=GetDC(window); require(dc != nullptr,"Desktop DPI unavailable"); const int dpi=GetDeviceCaps(dc,LOGPIXELSX); ReleaseDC(window,dc); require(dpi==96,"Desktop observation requires 96 DPI");
+  }
+  void run_gdi(HANDLE file, FILETIME collector_creation) {
+    MONITORINFOEXW monitor_info{};monitor_info.cbSize=sizeof(monitor_info);
+    require(GetMonitorInfoW(monitor,reinterpret_cast<MONITORINFO*>(&monitor_info))!=FALSE,"Desktop monitor information unavailable");
+    require(desktop_output_has_identity_rotation(monitor_info.szDevice),"Desktop rotated output unsupported");
+    RECT bounds{};require(GetWindowRect(window,&bounds)&&bounds.left>=monitor_info.rcMonitor.left&&bounds.top>=monitor_info.rcMonitor.top&&
+      bounds.right<=monitor_info.rcMonitor.right&&bounds.bottom<=monitor_info.rcMonitor.bottom,"Desktop owner must fit one output");
+    const auto x64=static_cast<std::int64_t>(origin.x)+8,y64=static_cast<std::int64_t>(origin.y)+8;
+    require(x64>=monitor_info.rcMonitor.left&&y64>=monitor_info.rcMonitor.top&&x64+64<=monitor_info.rcMonitor.right&&y64+52<=monitor_info.rcMonitor.bottom,
+      "Desktop marker coordinates invalid");
+    const int x=static_cast<int>(x64),y=static_cast<int>(y64);
+    gdi_screen_roi_capture capture(64,52);
+    line(file,"{\"event\":\"desktop.begin\",\"schema\":\"soui.persistent-ack-desktop/v2\",\"captureBackend\":\"gdi-bitblt\",\"run_id\":\""+run_id+
+      "\",\"expectedNonce\":"+std::to_string(expected_nonce)+",\"pid\":"+std::to_string(pid)+",\"creationFileTime\":"+quoted(creation)+
+      ",\"collectorPid\":"+std::to_string(GetCurrentProcessId())+",\"collectorCreationFileTime\":"+quoted(ft(collector_creation))+
+      ",\"hwnd\":"+quoted(reinterpret_cast<std::uintptr_t>(window))+",\"scene\":"+std::to_string(scene)+",\"probe\":false,\"qpcFrequency\":"+quoted(frequency)+
+      ",\"startedQpc\":"+quoted(started)+",\"originX\":"+std::to_string(origin.x)+",\"originY\":"+std::to_string(origin.y)+
+      ",\"dpi\":96,\"rotation\":0,\"region\":[8,8,64,52],\"contentProbe\":[10,42],\"adapterLow\":null,\"adapterHigh\":null}");
+    line(file,"{\"event\":\"desktop.output\",\"deviceName\":"+output_name(monitor_info.szDevice)+",\"left\":"+std::to_string(monitor_info.rcMonitor.left)+
+      ",\"top\":"+std::to_string(monitor_info.rcMonitor.top)+",\"right\":"+std::to_string(monitor_info.rcMonitor.right)+
+      ",\"bottom\":"+std::to_string(monitor_info.rcMonitor.bottom)+",\"adapterLow\":null,\"adapterHigh\":null}");
+    const auto deadline=GetTickCount64()+140000;
+    std::uint64_t sample_sequence{};
+    while(!stop.load()) {
+      require(GetTickCount64()<deadline,"Desktop observation exceeded its deadline");bind_window();
+      MONITORINFOEXW current{};current.cbSize=sizeof(current);
+      require(GetMonitorInfoW(monitor,reinterpret_cast<MONITORINFO*>(&current))!=FALSE&&current.rcMonitor.left==monitor_info.rcMonitor.left&&
+        current.rcMonitor.top==monitor_info.rcMonitor.top&&current.rcMonitor.right==monitor_info.rcMonitor.right&&
+        current.rcMonitor.bottom==monitor_info.rcMonitor.bottom&&std::wstring(current.szDevice)==monitor_info.szDevice&&
+        desktop_output_has_identity_rotation(current.szDevice),
+        "Desktop output configuration changed");
+      require(!desktop_cursor_overlaps(x,y,64,52),"Desktop cursor overlaps marker ROI");
+      const auto capture_begin=tick();capture.capture(x,y);const auto capture_end=tick();
+      require(capture_end>=capture_begin&&capture_end-capture_begin<=frequency/10,"Desktop GDI capture exceeded the 100ms observation budget");
+      require(GetTickCount64()<deadline,"Desktop observation exceeded its deadline");
+      require(!desktop_cursor_overlaps(x,y,64,52),"Desktop cursor overlaps marker ROI");
+      marker value;
+      try{value=decode(capture.pixels(),capture.pitch());}
+      catch(...){
+        if(!ready&&capture_end-started<frequency*5){
+          line(file,"{\"event\":\"desktop.baseline-reject\",\"captureBeginQpc\":"+quoted(capture_begin)+
+            ",\"captureEndQpc\":"+quoted(capture_end)+",\"visibleQpc\":"+quoted(capture_end)+"}");Sleep(4);continue;
+        }
+        throw;
+      }
+      require(value.nonce==expected_nonce,"Burst marker does not bind the requested run");
+      require(value.content_sequence==value.ack,"Burst content pixel differs from marker ACK");
+      if(!ready)line(file,"{\"event\":\"desktop.ready\",\"captureBeginQpc\":"+quoted(capture_begin)+
+        ",\"captureEndQpc\":"+quoted(capture_end)+",\"visibleQpc\":"+quoted(capture_end)+
+        ",\"observedQpc\":"+quoted(tick())+",\"nonce\":"+std::to_string(value.nonce)+",\"ack\":"+std::to_string(value.ack)+"}");
+      accept(value);
+      changed.notify_all();
+      require(++sample_sequence<=200000,"Desktop GDI sample limit exceeded");++frames;
+      RECT client{};require(GetClientRect(window,&client),"Desktop client dimensions unavailable");
+      line(file,"{\"event\":\"desktop.frame\",\"captureSequence\":"+std::to_string(sample_sequence)+
+        ",\"captureBeginQpc\":"+quoted(capture_begin)+",\"captureEndQpc\":"+quoted(capture_end)+
+        ",\"visibleQpc\":"+quoted(capture_end)+",\"observedQpc\":"+quoted(tick())+
+        ",\"lastPresentQpc\":null,\"accumulatedFrames\":null,\"protected\":null,\"nonce\":"+std::to_string(value.nonce)+
+        ",\"ack\":"+std::to_string(value.ack)+",\"frame\":"+std::to_string(value.frame)+",\"scene\":"+std::to_string(value.scene)+
+        ",\"motion\":"+(value.motion?"true":"false")+",\"markerHex\":\""+marker_hex(value)+"\",\"contentSequence\":"+
+        std::to_string(value.content_sequence)+",\"deliveredUnits\":"+std::to_string(value.delivered_units)+
+        ",\"width\":"+std::to_string(client.right)+",\"height\":"+std::to_string(client.bottom)+"}");
+      Sleep(1);
+    }
+    line(file,"{\"event\":\"desktop.end\",\"completed\":"+std::string(normal_stop.load()?"true":"false")+
+      ",\"frames\":"+quoted(frames)+",\"pointerOnly\":null,\"captureSamples\":"+quoted(sample_sequence)+",\"endedQpc\":"+quoted(tick())+"}");
+    require(FlushFileBuffers(file)!=FALSE,"Desktop trace flush failed");
+  }
+  void run() noexcept {
+    handle file;
+    try {
+      file.p=CreateFileW(output.c_str(),GENERIC_WRITE,FILE_SHARE_READ,nullptr,CREATE_NEW,FILE_ATTRIBUTE_NORMAL,nullptr);
+      require(file.p != INVALID_HANDLE_VALUE,"Cannot create new desktop trace");
+      LARGE_INTEGER f{}; require(QueryPerformanceFrequency(&f) && f.QuadPart>0,"Desktop QPC frequency unavailable"); frequency=static_cast<std::uint64_t>(f.QuadPart); started=tick();
+      FILETIME c{},e{},k{},u{};require(GetProcessTimes(GetCurrentProcess(),&c,&e,&k,&u),"Desktop collector identity unavailable");
+      origin={};require(ClientToScreen(window,&origin),"Desktop region unavailable");monitor=MonitorFromWindow(window,MONITOR_DEFAULTTONULL);require(monitor != nullptr,"Desktop monitor unavailable");bind_window();
+      if(backend==desktop_capture_backend::gdi_bitblt){run_gdi(file.p,c);{std::lock_guard<std::mutex> lock(mutex);done=true;}changed.notify_all();return;}
+      library dxgi(L"dxgi.dll"), d3d(L"d3d11.dll");
+      using factory_fn=HRESULT (WINAPI*)(REFIID,void**);
+      using device_fn=HRESULT (WINAPI*)(IDXGIAdapter*,D3D_DRIVER_TYPE,HMODULE,UINT,const D3D_FEATURE_LEVEL*,UINT,UINT,ID3D11Device**,D3D_FEATURE_LEVEL*,ID3D11DeviceContext**);
+      auto factory_api=reinterpret_cast<factory_fn>(GetProcAddress(dxgi.p,"CreateDXGIFactory1")); auto device_api=reinterpret_cast<device_fn>(GetProcAddress(d3d.p,"D3D11CreateDevice"));require(factory_api&&device_api,"Desktop graphics API unavailable");
+      com<IDXGIFactory1> factory;ok(factory_api(__uuidof(IDXGIFactory1),reinterpret_cast<void**>(factory.out())),"Desktop factory failed");
+      com<IDXGIAdapter1> adapter;com<IDXGIOutput> selected;DXGI_OUTPUT_DESC description{};DXGI_ADAPTER_DESC1 adapter_description{};
+      bool found=false;
+      for(UINT a=0;a<32&&!found;++a){com<IDXGIAdapter1> candidate;HRESULT hr=factory.p->EnumAdapters1(a,candidate.out());if(hr==DXGI_ERROR_NOT_FOUND)break;ok(hr,"Desktop adapter enumeration failed");
+        for(UINT o=0;o<32;++o){com<IDXGIOutput> candidate_output;hr=candidate.p->EnumOutputs(o,candidate_output.out());if(hr==DXGI_ERROR_NOT_FOUND)break;ok(hr,"Desktop output enumeration failed");DXGI_OUTPUT_DESC desc{};ok(candidate_output.p->GetDesc(&desc),"Desktop output description failed");
+          if(desc.Monitor==monitor&&desc.AttachedToDesktop){require(desc.Rotation==DXGI_MODE_ROTATION_IDENTITY,"Desktop rotated output unsupported");description=desc;selected.p=candidate_output.p;candidate_output.p=nullptr;adapter.p=candidate.p;candidate.p=nullptr;found=true;break;}}}
+      require(found,"Desktop owning output not found");ok(adapter.p->GetDesc1(&adapter_description),"Desktop adapter description failed");
+      RECT bounds{}; require(GetWindowRect(window,&bounds) && bounds.left>=description.DesktopCoordinates.left && bounds.top>=description.DesktopCoordinates.top && bounds.right<=description.DesktopCoordinates.right && bounds.bottom<=description.DesktopCoordinates.bottom,"Desktop owner must fit one output");
+      com<ID3D11Device> device;com<ID3D11DeviceContext> context;D3D_FEATURE_LEVEL level{};ok(device_api(adapter.p,D3D_DRIVER_TYPE_UNKNOWN,nullptr,0,nullptr,0,D3D11_SDK_VERSION,device.out(),&level,context.out()),"Desktop D3D device failed");
+      com<IDXGIOutput1> output1;ok(selected.p->QueryInterface(__uuidof(IDXGIOutput1),reinterpret_cast<void**>(output1.out())),"Desktop duplication unavailable");
+      com<IDXGIOutputDuplication> duplication;ok(output1.p->DuplicateOutput(device.p,duplication.out()),"Desktop duplication unsupported/unavailable");
+      const auto x64=static_cast<std::int64_t>(origin.x)-description.DesktopCoordinates.left+8;
+      const auto y64=static_cast<std::int64_t>(origin.y)-description.DesktopCoordinates.top+8;
+      require(x64>=0&&y64>=0&&x64<=std::numeric_limits<int>::max()-64&&y64<=std::numeric_limits<int>::max()-52,"Desktop marker coordinates invalid");
+      const int x=static_cast<int>(x64),y=static_cast<int>(y64);
+      D3D11_TEXTURE2D_DESC staging_desc{};staging_desc.Width=64;staging_desc.Height=52;staging_desc.MipLevels=1;staging_desc.ArraySize=1;staging_desc.Format=DXGI_FORMAT_B8G8R8A8_UNORM;staging_desc.SampleDesc.Count=1;staging_desc.Usage=D3D11_USAGE_STAGING;staging_desc.CPUAccessFlags=D3D11_CPU_ACCESS_READ;
+      com<ID3D11Texture2D> staging;ok(device.p->CreateTexture2D(&staging_desc,nullptr,staging.out()),"Desktop staging texture failed");
+      line(file.p,"{\"event\":\"desktop.begin\",\"schema\":\"soui.persistent-ack-desktop/v2\",\"run_id\":\""+run_id+"\",\"expectedNonce\":"+std::to_string(expected_nonce)+",\"pid\":"+std::to_string(pid)+",\"creationFileTime\":"+quoted(creation)+",\"collectorPid\":"+std::to_string(GetCurrentProcessId())+",\"collectorCreationFileTime\":"+quoted(ft(c))+",\"hwnd\":"+quoted(reinterpret_cast<std::uintptr_t>(window))+",\"scene\":"+std::to_string(scene)+",\"probe\":"+(probe?"true":"false")+",\"qpcFrequency\":"+quoted(frequency)+",\"startedQpc\":"+quoted(started)+",\"originX\":"+std::to_string(origin.x)+",\"originY\":"+std::to_string(origin.y)+",\"dpi\":96,\"rotation\":0,\"region\":[8,8,64,52],\"contentProbe\":[10,42],\"adapterLow\":"+std::to_string(adapter_description.AdapterLuid.LowPart)+",\"adapterHigh\":"+std::to_string(adapter_description.AdapterLuid.HighPart)+"}");
+      line(file.p,"{\"event\":\"desktop.output\",\"deviceName\":"+output_name(description.DeviceName)+",\"left\":"+std::to_string(description.DesktopCoordinates.left)+",\"top\":"+std::to_string(description.DesktopCoordinates.top)+",\"right\":"+std::to_string(description.DesktopCoordinates.right)+",\"bottom\":"+std::to_string(description.DesktopCoordinates.bottom)+",\"adapterLow\":"+std::to_string(adapter_description.AdapterLuid.LowPart)+",\"adapterHigh\":"+std::to_string(adapter_description.AdapterLuid.HighPart)+"}");
+      const auto deadline=GetTickCount64()+140000;
+      std::uint64_t last{}, acquisitions{};
+      while(!stop.load()) {
+        require(GetTickCount64()<deadline,"Desktop observation exceeded its deadline");bind_window();
+        DXGI_OUTPUT_DESC current_output{};
+        ok(selected.p->GetDesc(&current_output),"Desktop output recheck failed");
+        require(current_output.Monitor==monitor && current_output.AttachedToDesktop &&
+            current_output.Rotation==description.Rotation &&
+            EqualRect(&current_output.DesktopCoordinates,&description.DesktopCoordinates) &&
+            std::wstring(current_output.DeviceName)==description.DeviceName,
+            "Desktop output configuration changed");
+        DXGI_OUTDUPL_FRAME_INFO info{};com<IDXGIResource> resource;
+        const HRESULT acquired=duplication.p->AcquireNextFrame(50,&info,resource.out());if(acquired==DXGI_ERROR_WAIT_TIMEOUT)continue;ok(acquired,"Desktop frame acquisition failed");
+        struct frame_release {IDXGIOutputDuplication* p;bool active{true};~frame_release(){if(active)p->ReleaseFrame();}void release(){const auto hr=p->ReleaseFrame();active=false;ok(hr,"Desktop frame release failed");}} release{duplication.p};
+        require(++acquisitions<=200000,"Desktop acquisition sample limit exceeded");
+        if(!info.LastPresentTime.QuadPart){++pointer_only;require(pointer_only<=120000,"Desktop pointer sample limit exceeded");line(file.p,"{\"event\":\"desktop.pointer\",\"observedQpc\":"+quoted(tick())+",\"lastPresentQpc\":\"0\",\"accumulatedFrames\":"+std::to_string(info.AccumulatedFrames)+"}");require(info.AccumulatedFrames==0,"Desktop pointer-only metadata invalid");release.release();continue;}
+        const auto present=static_cast<std::uint64_t>(info.LastPresentTime.QuadPart);
+        require(present>last,"Desktop timestamps reordered");last=present;
+        line(file.p,"{\"event\":\"desktop.acquire\",\"lastPresentQpc\":"+quoted(present)+",\"accumulatedFrames\":"+std::to_string(info.AccumulatedFrames)+",\"protected\":"+(info.ProtectedContentMaskedOut?"true":"false")+"}");
+        require(info.AccumulatedFrames>=1&&info.AccumulatedFrames<=4096&&!info.ProtectedContentMaskedOut,"Desktop protected/invalid accumulated frame invalidates observation");
+        require(resource.p!=nullptr,"Desktop frame resource unavailable");
+        com<ID3D11Texture2D> texture;ok(resource.p->QueryInterface(__uuidof(ID3D11Texture2D),reinterpret_cast<void**>(texture.out())),"Desktop frame texture unavailable");D3D11_TEXTURE2D_DESC actual{};texture.p->GetDesc(&actual);require(actual.Format==DXGI_FORMAT_B8G8R8A8_UNORM&&actual.Width<=static_cast<UINT>(std::numeric_limits<int>::max())&&actual.Height<=static_cast<UINT>(std::numeric_limits<int>::max())&&x+64<=static_cast<int>(actual.Width)&&y+52<=static_cast<int>(actual.Height),"Desktop texture region invalid");
+        const auto capture_begin=tick();
+        const D3D11_BOX box{static_cast<UINT>(x),static_cast<UINT>(y),0,static_cast<UINT>(x+64),static_cast<UINT>(y+52),1};context.p->CopySubresourceRegion(staging.p,0,0,0,0,texture.p,0,&box);context.p->Flush();
+        D3D11_MAPPED_SUBRESOURCE map{};HRESULT mapped{};const auto map_deadline=GetTickCount64()+100;
+        do {mapped=context.p->Map(staging.p,0,D3D11_MAP_READ,D3D11_MAP_FLAG_DO_NOT_WAIT,&map);if(mapped!=DXGI_ERROR_WAS_STILL_DRAWING)break;require(GetTickCount64()<map_deadline,"Desktop GPU read timeout");Sleep(1);}while(true);ok(mapped,"Desktop GPU read failed");
+        struct mapped_release {
+          ID3D11DeviceContext* context; ID3D11Texture2D* texture; bool active{true};
+          ~mapped_release(){if(active)context->Unmap(texture,0);}
+          void unmap(){if(active){context->Unmap(texture,0);active=false;}}
+        } mapped_scope{context.p,staging.p};
+        const auto capture_end=tick();
+        require(capture_end>=capture_begin&&capture_end-capture_begin<=frequency/10,"Desktop capture exceeded the 100ms observation budget");
+        marker value;
+        try{value=decode(map);}catch(const std::exception& error){
+          if(!ready&&tick()-started<frequency*5){mapped_scope.unmap();line(file.p,"{\"event\":\"desktop.baseline-reject\",\"lastPresentQpc\":"+quoted(present)+"}");release.release();continue;}
+          // Diagnostic sidecar only: never accept, retry, or replace a rejected observation.
+          // Persist before unmapping, and retain the original decode exception on I/O failure.
+          try {
+            const auto rejected_observed=tick();
+            const auto rejected=rejected_frame::inspect(map.pData,map.RowPitch);
+            auto raw_path=output;raw_path+=L".reject.bgra";
+            rejected_frame::save_new(raw_path,rejected.bgra);
+            line(file.p,rejected_frame::metadata(rejected,raw_path.filename().u8string(),error.what(),present,rejected_observed,ready));
+            require(FlushFileBuffers(file.p),"Rejected frame metadata flush failed");
+          }catch(const std::exception& capture_error){
+            try{line(file.p,"{\"event\":\"desktop.reject-capture-error\",\"reason\":"+rejected_frame::json_string(error.what())+",\"captureError\":"+rejected_frame::json_string(capture_error.what())+"}");FlushFileBuffers(file.p);}catch(...){}
+          }
+          throw;
+        }
+        mapped_scope.unmap();
+        require(value.nonce==expected_nonce,"Burst marker does not bind the requested run");
+        require(value.content_sequence==value.ack,"Burst content pixel differs from marker ACK");
+        if(!ready)line(file.p,"{\"event\":\"desktop.ready\",\"lastPresentQpc\":"+quoted(present)+",\"nonce\":"+std::to_string(value.nonce)+",\"ack\":"+std::to_string(value.ack)+"}");
+        accept(value);changed.notify_all();
+        ++frames;require(frames<=40000,"Desktop sample limit exceeded");
+        RECT client{};require(GetClientRect(window,&client),"Desktop client dimensions unavailable");
+        line(file.p,"{\"event\":\"desktop.frame\",\"captureSequence\":"+std::to_string(frames)+",\"captureBeginQpc\":"+quoted(capture_begin)+",\"captureEndQpc\":"+quoted(capture_end)+",\"lastPresentQpc\":"+quoted(present)+",\"observedQpc\":"+quoted(tick())+",\"nonce\":"+std::to_string(value.nonce)+",\"ack\":"+std::to_string(value.ack)+",\"frame\":"+std::to_string(value.frame)+",\"scene\":"+std::to_string(value.scene)+",\"motion\":"+(value.motion?"true":"false")+",\"markerHex\":\""+marker_hex(value)+"\",\"contentSequence\":"+std::to_string(value.content_sequence)+",\"deliveredUnits\":"+std::to_string(value.delivered_units)+",\"width\":"+std::to_string(client.right)+",\"height\":"+std::to_string(client.bottom)+"}");
+        release.release();
+      }
+      line(file.p,"{\"event\":\"desktop.end\",\"completed\":"+std::string(normal_stop.load()?"true":"false")+",\"frames\":"+quoted(frames)+",\"pointerOnly\":"+quoted(pointer_only)+",\"endedQpc\":"+quoted(tick())+"}");require(FlushFileBuffers(file.p),"Desktop trace flush failed");
+    } catch(const std::exception& error) {
+      {std::lock_guard<std::mutex> lock(mutex);failure=error.what();}
+      if(file.p!=INVALID_HANDLE_VALUE){try{line(file.p,"{\"event\":\"desktop.end\",\"completed\":false,\"frames\":"+quoted(frames)+
+        ",\"pointerOnly\":"+(backend==desktop_capture_backend::dxgi?quoted(pointer_only):"null")+
+        (backend==desktop_capture_backend::gdi_bitblt?",\"captureSamples\":"+quoted(frames):"")+",\"endedQpc\":"+quoted(tick())+"}");FlushFileBuffers(file.p);}catch(...){}}
+    } catch(...) {std::lock_guard<std::mutex> lock(mutex);failure="Desktop observation failed";}
+    {std::lock_guard<std::mutex> lock(mutex);done=true;}changed.notify_all();
+  }
+};
+burst_desktop_observer::burst_desktop_observer(HANDLE p,DWORD id,std::uint64_t c,HWND w,const std::filesystem::path& out,const std::string& run_id,std::uint32_t nonce,desktop_capture_backend backend)
+    :state_(std::make_unique<state>(p,id,c,w,out,run_id,nonce,backend)) {
+  require(run_id.size()==32 && nonce!=0,"Burst run identity invalid");
+  for(char digit:run_id)require((digit>='0'&&digit<='9')||(digit>='a'&&digit<='f'),"Burst run identity invalid");
+  state_->thread=std::thread([s=state_.get()]{s->run();});
+  std::unique_lock<std::mutex> lock(state_->mutex);
+  const bool ready=state_->changed.wait_for(lock,std::chrono::seconds(5),[this]{return state_->ready||state_->done;});
+  if(!ready||!state_->failure.empty()||!state_->ready||(state_->latest.ack!=0||!zero_mask(state_->latest))){const std::string reason=state_->failure.empty()?"Burst marker baseline invalid/timed out":state_->failure;lock.unlock();state_->stop=true;state_->thread.join();throw std::runtime_error(reason);}
+  state_->acknowledged=state_->latest.ack;
+}
+burst_desktop_observer::~burst_desktop_observer(){if(state_){state_->stop=true;if(state_->thread.joinable())state_->thread.join();}}
+void burst_desktop_observer::check(){std::lock_guard<std::mutex> lock(state_->mutex);if(!state_->failure.empty())throw std::runtime_error(state_->failure);require(!state_->done,"Desktop observer stopped early");}
+void burst_desktop_observer::wait_final_ack(std::uint32_t event){require(event==64,"Persistent ACK v2 requires exactly64 inputs");std::unique_lock<std::mutex> lock(state_->mutex);const bool ready=state_->changed.wait_for(lock,std::chrono::milliseconds(500),[this,event]{return (state_->latest.ack==event&&full_mask(state_->latest))||state_->done;});require(ready&&state_->failure.empty()&&!state_->done&&state_->latest.ack==event&&full_mask(state_->latest),"Desktop persistent visual ACK failed/timeout");state_->acknowledged=event;}
+void burst_desktop_observer::finish(){state_->normal_stop=true;state_->stop=true;if(state_->thread.joinable())state_->thread.join();std::lock_guard<std::mutex> lock(state_->mutex);require(state_->failure.empty()&&state_->done,"Desktop observer failed at finish");}
+} // namespace soui::benchmark

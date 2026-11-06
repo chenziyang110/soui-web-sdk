@@ -2,6 +2,7 @@
 #include <windows.h>
 #include "trace-identity.h"
 #include "desktop-observer.h"
+#include "passive-observation.h"
 
 #include <cstdint>
 #include <filesystem>
@@ -189,7 +190,7 @@ class trace final {
 };
 
 int run(int argc, wchar_t** argv) {
-  if (argc != 5 && argc != 6) throw std::runtime_error("Usage: InputTrace PID S01|S02|S03|S04|S05 ABSOLUTE_NEW_OUTPUT.ndjson full|probe|full-desktop|probe-desktop [EXPECTED_CREATION_FILETIME]");
+  if (argc != 5 && argc != 6) throw std::runtime_error("Usage: InputTrace PID S01|S02|S03|S04|S05 ABSOLUTE_NEW_OUTPUT.ndjson full|probe|full-desktop|probe-desktop|full-desktop-gdi|probe-desktop-gdi [EXPECTED_CREATION_FILETIME]");
   const std::optional<std::uint64_t> expected = argc == 6 ?
       std::optional<std::uint64_t>{soui::benchmark::parse_expected_filetime(argv[5])} : std::nullopt;
   const DWORD pid = parse_pid(argv[1]);
@@ -201,10 +202,11 @@ int run(int argc, wchar_t** argv) {
   // Probe is a short capability check. Desktop capture is explicitly optional
   // and requires the real held host FILETIME even for a probe.
   const std::wstring duration_mode(argv[4]);
-  const bool desktop = duration_mode == L"full-desktop" || duration_mode == L"probe-desktop";
-  const bool probe = duration_mode == L"probe" || duration_mode == L"probe-desktop";
+  const bool gdi_capture = duration_mode == L"full-desktop-gdi" || duration_mode == L"probe-desktop-gdi";
+  const bool desktop = duration_mode == L"full-desktop" || duration_mode == L"probe-desktop" || gdi_capture;
+  const bool probe = duration_mode == L"probe" || duration_mode == L"probe-desktop" || duration_mode == L"probe-desktop-gdi";
   if (duration_mode != L"full" && duration_mode != L"probe" && !desktop)
-    throw std::runtime_error("Expected full/probe or full-desktop/probe-desktop duration mode");
+    throw std::runtime_error("Expected full/probe or explicit desktop observation mode");
   if (desktop && (!expected || scene == L"S03")) throw std::runtime_error("Desktop observation requires expected FILETIME and does not qualify IME");
   file_handle process{OpenProcess(PROCESS_QUERY_INFORMATION | SYNCHRONIZE, FALSE, pid)};
   if (!process.value) throw std::runtime_error("Benchmark process is unavailable");
@@ -255,7 +257,8 @@ int run(int argc, wchar_t** argv) {
     // Keep a possibly composited pointer out of the marker during baseline.
     input.cursor(550, 500);
     observer = std::make_unique<soui::benchmark::desktop_observer>(process.value, pid, filetime(creation), search.found,
-        std::filesystem::path(output.wstring() + L".desktop.ndjson"), static_cast<unsigned>(scene[2] - L'0'), probe);
+        std::filesystem::path(output.wstring() + L".desktop.ndjson"), static_cast<unsigned>(scene[2] - L'0'), probe,
+        gdi_capture ? soui::benchmark::desktop_capture_backend::gdi_bitblt : soui::benchmark::desktop_capture_backend::dxgi);
     input.observer(observer.get());
     input.restart_clock();
     begin_input();
@@ -295,7 +298,21 @@ int run(int argc, wchar_t** argv) {
 
 int wmain(int argc, wchar_t** argv) {
   SetProcessDPIAware();
-  try { return run(argc, argv); }
+  try {
+    // Dispatch before every legacy HWND search, positioning and injected action.
+    // A malformed/unknown option fails here and cannot enter the active path.
+    if (argc > 1 && argv[1] && argv[1][0] == L'-') {
+      const auto options = soui::benchmark::parse_passive_options(argc, argv);
+      file_handle process{OpenProcess(PROCESS_QUERY_INFORMATION | SYNCHRONIZE, FALSE, options.pid)};
+      if (!process.value) throw std::runtime_error("Passive target process unavailable");
+      FILETIME creation{}, exited{}, kernel{}, user{};
+      if (!GetProcessTimes(process.value, &creation, &exited, &kernel, &user) ||
+          filetime(creation) != options.creation || WaitForSingleObject(process.value, 0) != WAIT_TIMEOUT)
+        throw std::runtime_error("Passive held process identity differs");
+      return soui::benchmark::observe_manual_desktop(process.value, options);
+    }
+    return run(argc, argv);
+  }
   catch (const std::exception& failure) {
     std::cerr << failure.what() << '\n';
     return 1;

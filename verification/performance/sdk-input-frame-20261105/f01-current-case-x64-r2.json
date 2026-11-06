@@ -1,0 +1,124 @@
+{
+  "schema": "soui.f01-current-synthetic-case-x64/v1",
+  "recordedAt": "2026-11-06T13:36:03.778Z",
+  "scope": "Current 150ms completion-based backoff synthetic contract; original one-TU fixture exactly once; not full Host or real slow provider",
+  "architecture": "x64",
+  "configuration": "Release",
+  "toolset": "v143",
+  "msvcVersion": "19.44.35226.0",
+  "msvcDirectory": "14.44.35207",
+  "windowsSdk": "10.0.19041.0",
+  "negotiationCasesSha256": "3e551baee22727a46828f4d6f81b7ad7b04a649c89b949ad1dfbac83cdc06b20",
+  "build": {
+    "pid": 95700,
+    "birth": "134384454536117566",
+    "exit": 0,
+    "elapsedMs": 63050,
+    "oneTU": "fixture.obj",
+    "naturalJob0": true
+  },
+  "test": {
+    "pid": 77116,
+    "birth": "134384455168828882",
+    "exit": 0,
+    "elapsedMs": 71,
+    "fixtureRuns": 1,
+    "originalTimeoutMs": 15000,
+    "naturalJob0": true,
+    "expectedCompletionText": true,
+    "individualAssertionCount": null
+  },
+  "executable": {
+    "bytes": 52224,
+    "sha256": "2e5451bfbfd40306e3fa3049ea203498d8c763e893a379cda44eed8cdc317f53"
+  },
+  "firstAttempt": {
+    "wrapperDefect": "PowerShell joined two CMake -D definitions into one argument",
+    "buildWrapperExit": 1,
+    "elapsedMs": 34199,
+    "naturalJob0": true,
+    "fixtureCompiled": false,
+    "fixtureExecuted": false,
+    "observedPowerShellLastExitCode": -1,
+    "trustedCMakeNativeExitCode": null,
+    "preserved": true
+  },
+  "changedBetweenAttempts": "Two -D definitions separated and fresh attempt paths/bindings; no source/assertion/deadline changes",
+  "evidence": [
+    {
+      "archiveRelativePath": "F01-current-case-x64-r2/source-inputs.json",
+      "bytes": 12976,
+      "sha256": "478847c58cbc0b7ce8496a14a2bbb128c9a4bbef23134be649dbb14f070c299c"
+    },
+    {
+      "archiveRelativePath": "F01-current-case-x64-r2/result.json",
+      "bytes": 1567,
+      "sha256": "1441bf8df2ec7fba3af618b7f16e3800d61700d3f47889e165f5358fa397339c"
+    },
+    {
+      "archiveRelativePath": "F01-current-case-x64-r2/build.result.json",
+      "bytes": 1092,
+      "sha256": "459610b920fedad8fd040dde11a2bd7928bd7cfff06f3f27294ef58b4bfb7fac"
+    },
+    {
+      "archiveRelativePath": "F01-current-case-x64-r2/test.result.json",
+      "bytes": 1087,
+      "sha256": "1710a544c54e4c8d978f1fddd34445889b28ff866bc88ee2fe7cb3c7a38a5566"
+    },
+    {
+      "archiveRelativePath": "F01-current-case-x64-r2/build.owned.ndjson",
+      "bytes": 93426,
+      "sha256": "889155d872833b2821ce35c8f08315d3a12960303cbb0873ed462f6db7a3883f"
+    },
+    {
+      "archiveRelativePath": "F01-current-case-x64-r2/test.owned.ndjson",
+      "bytes": 1552,
+      "sha256": "e0ddaf9a86bb0b36c69f08b17457f11b4a5e9de375610e29be5df2fd5349772e"
+    },
+    {
+      "archiveRelativePath": "F01-current-case-x64-r2/configured-profile.json",
+      "bytes": 1660,
+      "sha256": "99279cadd9817172a18eabca805a669986c79eb984ff55802a39fd4b5bacba57"
+    },
+    {
+      "archiveRelativePath": "F01-current-case-x64-r2/out/f01-x64-r2/host_frame_policy/generated/source-binding.json",
+      "bytes": 2012,
+      "sha256": "0111fd942d24ccb4392cd693618d5e01f87e167dc65c1eebfda5c40cb6482986"
+    },
+    {
+      "archiveRelativePath": "F01-current-case-x64-r1/source-inputs.json",
+      "bytes": 11987,
+      "sha256": "388f15df9d4adca9c9494effd6cc3e2f7350964c156f4d2a82ac830ce1cb082d"
+    },
+    {
+      "archiveRelativePath": "F01-current-case-x64-r1/build.result.json",
+      "bytes": 1096,
+      "sha256": "7ec6fff2e7f56e1a7e24e6f7050c09a2bd8514eaa493592e677d3511494c8a78"
+    },
+    {
+      "archiveRelativePath": "F01-current-case-x64-r1/failure.json",
+      "bytes": 587,
+      "sha256": "31150847579671ae1dcd4a7407d31c1e4ef4c20c3aeb50e19ddb6992cc095e7e"
+    },
+    {
+      "archiveRelativePath": "F01-current-case-x64-r1/configure-invocation-f01.json",
+      "bytes": 1404,
+      "sha256": "9a264f9f8b9d92685e398b2f9e46584e3b902ada67a57294b6b8c6f77aadd07a"
+    }
+  ],
+  "SDKRebuilt": false,
+  "kernelRebuilt": false,
+  "GUIExecuted": false,
+  "x86NewCaseVerified": false,
+  "realSlowProviderLatencyVerified": false,
+  "performanceVerified": false,
+  "inputLatencyVerified": false,
+  "releaseReady": false,
+  "wholeGoalComplete": false,
+  "independentReview": {
+    "archiveRelativePath": "F01-current-case-x64-r2/independent-actual-review-r1.json",
+    "bytes": 12721,
+    "sha256": "b9aabbb40895c7d26f4535779392b2061b6b5ad505d14967ecbf41e1f6c36923"
+  },
+  "currentX64SyntheticExecutionIndependentlyBound": true
+}

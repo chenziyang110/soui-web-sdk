@@ -40,8 +40,16 @@ foreach(case IN ITEMS scheduler-new-bad-alloc event-null native-launch-zero regi
     worker-self-delete normal-worker-close concurrent-registry-close registry-live-fence main-thread-compatibility
     main-scheduler-task-budget main-scheduler-clock-budget main-scheduler-continuation
     main-scheduler-first-task-wake main-scheduler-admission-budget main-scheduler-admission-shutdown
-    worker-scheduler-no-count-cap
-    worker-scheduler-clock-budget main-scheduler-shutdown-drain main-scheduler-pre-shutdown-drain)
+    worker-scheduler-task-budget
+    worker-scheduler-clock-budget main-scheduler-shutdown-drain main-scheduler-pre-shutdown-drain
+    scheduler-absolute-same-thread scheduler-absolute-cross-thread scheduler-absolute-late-admission
+    scheduler-absolute-inputs-same-thread scheduler-absolute-inputs-cross-thread scheduler-absolute-huge-cancel
+    scheduler-absolute-oom-owner scheduler-absolute-oom-producer scheduler-absolute-oom-admission
+    scheduler-absolute-exit-rejection scheduler-absolute-future-shutdown
+    provider-deadline-expired-ready provider-deadline-callback-crosses provider-deadline-clock-failure
+    provider-deadline-shared-recovery provider-deadline-legacy-no-qpc provider-deadline-pending-minimum
+    provider-deadline-ready-before-admission provider-deadline-future-no-spin provider-deadline-shutdown-drain
+    provider-retirement-deadline)
   if(case STREQUAL "native-wait-fails" OR case STREQUAL "worker-self-delete"
       OR case STREQUAL "concurrent-registry-close" OR case STREQUAL "registry-live-fence")
     add_test(NAME kernel.native.worker-lifetime.${case} COMMAND "${CMAKE_COMMAND}"

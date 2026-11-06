@@ -7,6 +7,8 @@ const {isDeepStrictEqual} = require('node:util');
 const owned = require('./owned-trace-subject.cjs');
 const trace = require('./input-frame-trace.cjs');
 const {checkBurst} = require('./burst-input.cjs');
+const {requireFormalHarness} = require('./input-ui-harness-policy.cjs');
+const {sourceDigest} = require('./freeze-input-ui-request.cjs');
 const {insist} = trace;
 const digest=value=>typeof value==='string' && /^[a-f0-9]{64}$/.test(value);
 function verifiedDescriptor(root,item,expectedPath) {
@@ -27,6 +29,26 @@ function traceRows(root,item) {
     return trace.parseNdjson(raw);
   } finally {fs.closeSync(file);}
 }
+function validateCaptureBackendPair(begin,workload,record,frozenRequest) {
+  const sources=[
+    ['burst.begin',begin,'capture_backend'],
+    ['workload',workload,'capture_backend'],
+    ['run record',record,'capture_backend'],
+    ['frozen request',frozenRequest,'capture_backend'],
+    ['frozen inputs',frozenRequest?.frozen_inputs,'capture_backend']
+  ];
+  const declared=sources.map(([name,value,key])=>{
+    const present=value!=null&&Object.hasOwn(value,key),backend=present?value[key]:'dxgi';
+    insist(backend==='dxgi'||backend==='gdi-bitblt','Unknown capture_backend in '+name);
+    return {name,present,backend};
+  });
+  const backend=declared[0].backend;
+  if(declared.some(item=>item.backend==='gdi-bitblt'))
+    insist(declared.every(item=>item.present),
+      'Explicit gdi-bitblt selection must be present in burst trace, workload, run record and frozen request');
+  insist(declared.every(item=>item.backend===backend),'Capture backend differs between burst trace, workload, run record and frozen request');
+  return backend;
+}
 function checkRun(root) {
   const record=owned.readRunJson(root,'input-ui-run.json');
   insist(record?.schema==='soui.same-product-input-run/v1' && typeof record.product_id==='string' &&
@@ -37,8 +59,18 @@ function checkRun(root) {
     ['miniblink-software','webview2'].includes(record.renderer) &&
     typeof record.runtime_version==='string' && record.runtime_version.length>0 && record.runtime_version.length<=256 &&
     ['full','e2e'].includes(record.trace_mode) &&
-    digest(record.host_exe_sha256) && digest(record.tools?.input_sha256) && digest(record.tools?.owned_runner_sha256),
+    digest(record.host_exe_sha256) && digest(record.measurement_sources_sha256) && digest(record.tools?.input_sha256) && digest(record.tools?.owned_runner_sha256),
     'Invalid same-product source/payload identity');
+  verifiedDescriptor(root,record.frozen_request,'frozen-request.json');
+  const frozenRequest=owned.readRunJson(root,'frozen-request.json');
+  insist(frozenRequest?.schema==='soui.input-ui-run-request/v2'&&frozenRequest.source_commit===record.source_commit&&
+    frozenRequest.measurement_source_commit===record.measurement_source_commit&&
+    Array.isArray(frozenRequest.frozen_inputs?.measurement_sources)&&
+    sourceDigest(frozenRequest.frozen_inputs.measurement_sources)===record.measurement_sources_sha256&&
+    frozenRequest.frozen_inputs?.files?.host_executable?.sha256===record.host_exe_sha256&&
+    frozenRequest.frozen_inputs?.files?.input_executable?.sha256===record.tools.input_sha256&&
+    frozenRequest.frozen_inputs?.files?.owned_runner?.sha256===record.tools.owned_runner_sha256,
+    'Frozen request differs from launched source/tools');
   for (const [key,filename] of [['payload_manifest','payload-manifest.json'],['environment','environment.json'],
     ['configuration','configuration.json'],['workload','workload.json'],['calibration','calibration.json'],
     ['host_ready','host-ready.json'],['host_result','host-result.json'],
@@ -58,6 +90,11 @@ function checkRun(root) {
   }
   const hostFiles=payload.files.filter(file=>file.role==='host');
   insist(hostFiles.length===1 && hostFiles[0].sha256===record.host_exe_sha256, 'Host payload is not bound to owned launch');
+  for(const [role,key]of [['runtime','miniblink_binary'],['sdk-library','sdk_library']]){
+    const matches=payload.files.filter(file=>file.role===role),expected=frozenRequest.frozen_inputs.files[key];
+    insist(matches.length===1&&matches[0].sha256===expected?.sha256&&matches[0].bytes===expected?.bytes,
+      'Frozen request differs from SDK/runtime payload');
+  }
   const select=(items,name)=>{
     insist(Array.isArray(items) && items.length===2, 'Two owned processes required');
     const matches=items.filter(item=>item?.name===name);
@@ -76,6 +113,7 @@ function checkRun(root) {
     path.join(record.capture_root,'burst-desktop.ndjson'),begin.kind];
   insist(isDeepStrictEqual(processes.input.context.args,expectedArgs), 'Owned burst launch did not bind held target/session');
   const ready=owned.readRunJson(root,'host-ready.json'),closed=owned.readRunJson(root,'host-result.json');
+  requireFormalHarness(ready);requireFormalHarness(closed);
   insist(ready?.schema==='soui.input-ui-host-ready/v1'&&ready.run_id===record.run_id&&ready.pid===processes.host.subject.pid&&
     ready.creationFileTime===processes.host.subject.creationFileTime&&closed?.schema==='soui.input-ui-host-result/v1'&&
     closed.run_id===record.run_id&&closed.process_id===processes.host.subject.pid&&
@@ -94,6 +132,7 @@ function checkRun(root) {
     names.add(item.path); return traceRows(root,item);
   });
   const workload=owned.readRunJson(root,'workload.json');
+  const captureBackend=validateCaptureBackendPair(begin,workload,record,frozenRequest);
   insist(workload?.schema==='soui.burst-workload/v1' && workload.kind===begin.kind && workload.hz===begin.hz &&
     workload.requested===begin.requested && workload.content_width===1100 && workload.content_height===720 &&
     digest(workload.page_html_sha256) && digest(workload.page_script_sha256), 'Workload differs from frozen injection/page');
@@ -110,11 +149,12 @@ function checkRun(root) {
     {ownedTarget:processes.host.subject,ownedInjector:processes.input.subject,
       allowUnavailableStages:record.trace_mode==='e2e',controlledWorkload:true,
       calibration:owned.readRunJson(root,'calibration.json')});
-  return {record,result,workload,environment,closed};
+  return {record,result,workload,environment,closed,captureBackend};
 }
 function compareRuns(baseline,candidate) {
   const before=baseline.record, after=candidate.record;
   for(const key of ['product_id','renderer','runtime_version','trace_mode','measurement_source_commit']) insist(before[key]===after[key], 'Different products/renderers/runtime/trace modes/measurement sources cannot form this pair');
+  insist(before.measurement_sources_sha256===after.measurement_sources_sha256,'Pair measurement source bytes differ despite commit label');
   insist(before.source_commit!==after.source_commit && before.run_id!==after.run_id, 'Two distinct source commits/runs required');
   for(const key of ['environment','configuration','workload'])
     insist(before.evidence[key].sha256===after.evidence[key].sha256, 'Pair environment/configuration/workload differs');
@@ -135,4 +175,4 @@ if(require.main===module) {
     console.log(JSON.stringify(checkPair(process.argv[2],process.argv[3]),null,2));
   } catch(error) { console.error(error.message); process.exitCode=1; }
 }
-module.exports={checkRun,checkPair,compareRuns,verifiedDescriptor};
+module.exports={checkRun,checkPair,compareRuns,verifiedDescriptor,validateCaptureBackendPair};

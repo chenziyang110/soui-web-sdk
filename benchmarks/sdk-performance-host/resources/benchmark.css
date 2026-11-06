@@ -1,0 +1,33 @@
+* { box-sizing: border-box; }
+body { margin: 0; background: #f4f6fa; color: #17233d; font: 14px/1.55 "Segoe UI", "Microsoft YaHei", sans-serif; }
+header { padding: 18px 28px; background: #183759; color: white; }
+h1 { margin: 0 0 4px; font-size: 23px; }
+header p { margin: 0; word-break: break-all; color: #d9e6f5; }
+main { max-width: 1180px; margin: 0 auto; padding: 18px 22px; }
+h2 { font-size: 16px; margin: 0 0 10px; }
+section { background: white; border: 1px solid #dae1eb; border-radius: 8px; padding: 16px; }
+button, select, textarea { font: inherit; }
+button, select { padding: 7px 10px; border: 1px solid #adbed3; border-radius: 4px; background: white; color: #183759; margin: 3px 6px 3px 0; }
+button { cursor: pointer; }
+button:disabled { color: #8793a4; background: #f2f4f7; cursor: default; }
+button:focus, select:focus, textarea:focus, [tabindex]:focus { outline: 2px solid #1c77c3; outline-offset: 2px; }
+#record { background: #185f9e; border-color: #185f9e; color: white; }
+#record:disabled { background: #849bb1; border-color: #849bb1; }
+.controls label { margin-right: 10px; white-space: nowrap; }
+#status { margin: 8px 0 0; min-height: 22px; color: #315476; }
+.measurements { display: flex; flex-wrap: wrap; margin: 14px 0; padding: 8px; }
+.measurements div { flex: 1 1 145px; padding: 8px 12px; border-right: 1px solid #edf0f5; }
+.measurements span { display: block; color: #68748a; font-size: 12px; }
+.measurements strong { display: block; font-size: 20px; font-weight: 600; }
+.workspace { display: flex; flex-wrap: wrap; margin: 0 -7px; }
+.stage, .interaction { margin: 0 7px 14px; flex: 1 1 450px; min-width: 0; }
+canvas { width: 480px; height: auto; max-width: 100%; background: #101b31; display: block; border-radius: 4px; }
+.stage p, .lifecycle p, .note { color: #647189; font-size: 12px; }
+textarea { display: block; margin: 7px 0; width: 100%; resize: vertical; border: 1px solid #b9c7d8; padding: 8px; border-radius: 4px; }
+#feedback { padding: 12px; border: 1px solid #b4cbdc; border-radius: 4px; background: #e1effa; min-height: 48px; }
+#scroll { height: 150px; margin-top: 12px; overflow: auto; border: 1px solid #cbd6e3; }
+#scrollContent p { margin: 0; height: 30px; padding: 4px 10px; border-bottom: 1px solid #e4eaf1; }
+#scrollContent p:nth-child(even) { background: #f0f5fb; }
+#inputCounts { margin-bottom: 0; color: #526880; }
+pre { padding: 14px; background: #eaf0f6; overflow: auto; max-height: 260px; white-space: pre-wrap; word-break: break-all; border-radius: 6px; }
+@media (max-width: 700px) { main { padding: 12px; } header { padding: 16px; } .measurements div { flex-basis: 130px; } }

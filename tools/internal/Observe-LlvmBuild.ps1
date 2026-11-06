@@ -271,21 +271,45 @@ function GeneratedTestMarker([byte[]]$source,[string]$begin,[string]$end){
  Need ($start%2-eq0-and$stop%2-eq0-and$stop-gt$start) 'Generated test marker byte alignment/order';return [ordered]@{startByte=$start/2;endByteExclusive=$stop/2;bytes=(GeneratedTestInterval $source ($start/2) ($stop/2) $false)}
 }
 function GeneratedTestActual($derived,$actual,[byte[]]$bytes){
- Need ((Norm $actual.path)-ceq(Norm $derived.pin.path)-and$actual.bytes-eq$derived.pin.bytes-and$actual.sha256-ceq$derived.pin.sha256-and$bytes.Length-eq$derived.pin.bytes-and(GeneratedTestHash $bytes)-ceq$derived.pin.sha256-and[BitConverter]::ToString($bytes)-ceq[BitConverter]::ToString($derived.expectedBytes)) 'Generated test compiler dependency differs from frozen exact source bytes'
+ $reason=$(if($derived.derivationSchema-ceq'soui.worker-shutdown-entrypoint-macro/1'){'Generated test compiler dependency differs from frozen derived macro bytes'}else{'Generated test compiler dependency differs from frozen exact source bytes'})
+ Need ((Norm $actual.path)-ceq(Norm $derived.pin.path)-and$actual.bytes-eq$derived.pin.bytes-and$actual.sha256-ceq$derived.pin.sha256-and$bytes.Length-eq$derived.pin.bytes-and(GeneratedTestHash $bytes)-ceq$derived.pin.sha256-and[BitConverter]::ToString($bytes)-ceq[BitConverter]::ToString($derived.expectedBytes)) $reason
  return $actual
+}
+function GeneratedTestWorkerShutdown([byte[]]$source,$proof){
+ Need ($null-ne$proof) 'Worker shutdown proof is required'
+ $relative=GeneratedTestRelative $proof.source;$output=GeneratedTestRelative $proof.output
+ Need ($relative-ceq'third_party/sources/miniblink/content/web_impl_win/BlinkPlatformImpl.cpp'-and$output-ceq'fragments/platform_shutdown.proof.cpp') 'Exact worker shutdown proof identity'
+ Need (($proof.startByte-is[long]-or$proof.startByte-is[int])-and($proof.endByteExclusive-is[long]-or$proof.endByteExclusive-is[int])) 'Worker shutdown proof byte integers'
+ $raw=GeneratedTestInterval $source $proof.startByte $proof.endByteExclusive $false
+ Need ($raw.Length-eq$proof.bytes-and(GeneratedTestHash $raw)-ceq$proof.sha256) 'Worker shutdown proof source range differs from map'
+ # Match the frozen CMake writer's ASCII route transform with one character per
+ # raw byte. Vendor comments are never decoded, normalized or compiled here.
+ $text=[Text.Encoding]::GetEncoding(28591).GetString($raw)
+ $commit=$text.IndexOf('((WebThreadImpl*)m_mainThread)->shutdown();',[StringComparison]::Ordinal)
+ Need ($text.StartsWith(('void BlinkPlatformImpl::shutdown()'+[char]10+'{'),[StringComparison]::Ordinal)-and$commit-ge0) 'Worker shutdown proof must bind the actual lifecycle function'
+ $pattern='\(\(WebThreadImpl\*\)currentThread\(\)\)->(fire|fireForShutdown)\(\)'
+ $routes=[regex]::Matches($text,$pattern);$before=[regex]::Matches($text.Substring(0,$commit),$pattern)
+ Need ($routes.Count-eq3-and$before.Count-eq3) 'Worker shutdown owner must bind exactly three pre-shutdown fire routes'
+ foreach($route in $routes){Need ($route.Value-ceq$routes[0].Value) 'Worker shutdown owner fire routes disagree'}
+ $entrypoint=$routes[0].Groups[1].Value
+ $token=[Text.Encoding]::UTF8.GetBytes(('#define FIXTURE_PRE_SHUTDOWN_FIRE_ENTRYPOINT '+$entrypoint+[char]10))
+ return [ordered]@{output='fragments/shutdown_fire_entrypoint.inc';bytes=$token;proof=[ordered]@{
+  source=$relative;output=$output;startByte=$proof.startByte;endByteExclusive=$proof.endByteExclusive;
+  bytes=$raw.Length;sha256=(GeneratedTestHash $raw);entrypoint=$entrypoint;transform='three-equal-pre-shutdown-routes-to-entrypoint-macro/1'}}
 }
 function GeneratedTestRecipes {
  # These are literal recipes for the hash-locked writers below, never commands
  # or post-build source-binding manifests. Whole files preserve every raw byte.
  @(
-  [ordered]@{kind='scheduler-continuation';directory='tests/native/scheduler_continuation';target='scheduler_continuation_contract';units=@('fixture.cpp');cmake='d261554a2ed23ff9fc0b115ea1e3b50134ae6e6b2ca5d4d9fc91058a60619e8a';writer='8d679c914c63ab5237d2ff724933414ace82b7e02be7c0b48d1f6f2e49599de6';whole=[ordered]@{
+  [ordered]@{kind='scheduler-continuation';directory='tests/native/scheduler_continuation';target='scheduler_continuation_contract';units=@('fixture.cpp');cmake='96d2887b5a5acd718863c56a6200a4fbbcb79492a7d092edf73d24e97bf03744';writer='22aafe3f326a458c0d55ab42c780035f189a50879bd47f31da0c3d872ec1bf49';whole=[ordered]@{
    'content/browser/SharedTimerWin.h'='SharedTimerWin.h';'content/web_impl_win/TaskSchedulingPolicy.h'='TaskSchedulingPolicy.h';'content/web_impl_win/TaskSchedulingIndex.h'='TaskSchedulingIndex.h'};fragments=@(
    @('content/web_impl_win/WebThreadImpl.cpp','budgets.inc','static const double maxDurationOfFiringTimers','namespace {'),
    @('content/web_impl_win/WebThreadImpl.cpp','scheduler.inc','void WebThreadImpl::schedulerTasks()','std::vector<WebTimerBase*>& WebThreadImpl::timerHeap()'),
-   @('content/web_impl_win/WebThreadImpl.cpp','enable.inc','void WebThreadImpl::enableScheduler()','void WebThreadImpl::fire()'),
+   @('content/web_impl_win/WebThreadImpl.cpp','provider-cutoff.inc','bool providerDeadlineReached(','class WebThreadCriticalSectionOwner'),
+   @('content/web_impl_win/WebThreadImpl.cpp','enable.inc','void WebThreadImpl::enableScheduler()','void WebThreadImpl::fire('),
    @('content/web_impl_win/WebThreadImpl.cpp','retire.inc','void WebThreadImpl::retireCompletedTasksForOwner()','void WebThreadImpl::deleteTimersOnExit()'))},
   [ordered]@{kind='scheduler-index';directory='tests/native/scheduler_index';target='scheduler_index_contract';units=@('fixture.cpp');cmake='c3c0b9d272a043930f3e6b427cfbd3f883bca948267deef8a51352c57adae570';writer=$null;whole=[ordered]@{};fragments=@()},
-  [ordered]@{kind='window-close-lifetime';directory='tests/native/window_close_lifetime';target='soui_window_close_lifetime_source_tests';units=@('fixture.cpp');cmake='57dc321e2eed41bb94ac6720f159d0662aa1a9ed9d0e145d4e43c90ec374dfa9';writer='fda11eda8a53a34d7eb12abf7fcb597a50ac2a557dd36cd8095ab6030227c16c';whole=[ordered]@{'content/common/PaintLifetime.h'='PaintLifetime.h'};fragments=@(
+  [ordered]@{kind='window-close-lifetime';directory='tests/native/window_close_lifetime';target='soui_window_close_lifetime_source_tests';units=@('fixture.cpp');cmake='2955af9895fc0da4efea067b77bbb3b10d12eb3d22dc7f5b4392cb95bd1ce12b';writer='fda11eda8a53a34d7eb12abf7fcb597a50ac2a557dd36cd8095ab6030227c16c';whole=[ordered]@{'content/common/PaintLifetime.h'='PaintLifetime.h'};fragments=@(
    @('wke/wkeWebWindow.cpp','window_helpers.inc',('namespace {'+[char]10+'static bool isOwnedCloseWindow'),'CWebWindow::CWebWindow(COLORREF c)'),
    @('wke/wkeWebWindow.cpp','native_close.inc','bool CWebWindow::_destroyWindow()','void CWebWindow::_initCallbacks()'),
    @('wke/wkeWebWindow.cpp','native_receipt.inc','    case WM_NCDESTROY:','    case WM_TIMER:'),
@@ -306,29 +330,47 @@ function GeneratedTestRecipes {
    @('cc/trees/LayerTreeHost.cpp','draw_wake.inc','void LayerTreeHost::requestDrawFrameToRunIntoCompositeThread()','bool LayerTreeHost::addCompositorAnimation('),
    @('cc/trees/LayerTreeHost.cpp','owner_retry.inc','void LayerTreeHost::retryPendingOwnerWork()','void LayerTreeHost::beginRecordActions('),
    @('cc/trees/LayerTreeHost.cpp','wheel.inc','bool LayerTreeHost::handleCompositorWheelInput(','bool LayerTreeHost::captureCompositorScrollBarrier('))},
-  [ordered]@{kind='host-visibility';directory='tests/native/host_visibility_source';target='soui_host_visibility_source_tests';units=@('fixture.cpp');cmake='c98b1844ce847eeea2f8c18c57259ab252e3a9b4632a8ad12948c04eee4f0ae7';writer='a7a1326fdbc1bfd039bf11fa852decde9d731dd7c8b9c163618a9d979e8accb2';whole=[ordered]@{
+  [ordered]@{kind='host-visibility';directory='tests/native/host_visibility_source';target='soui_host_visibility_source_tests';units=@('fixture.cpp');cmake='dffbe3ba9cfce0aaac00a54358eac1b06901390ec710141ac244661e01e8e1a0';writer='a2087c944e5704238523407b0988ac5c79c2894987ed0a2924a6b6120ac7f252';whole=[ordered]@{
    'content/browser/HostVisibilityPolicy.h'='content/browser/HostVisibilityPolicy.h';'cc/trees/DrawFrameWakePolicy.h'='cc/trees/DrawFrameWakePolicy.h';
    'content/common/PaintLifetime.h'='content/common/PaintLifetime.h';'content/common/InputFrameTrace.h'='content/common/InputFrameTrace.h'};fragments=@(
    @('content/browser/WebPageImpl.cpp','visibility_state.inc','struct HostVisibilityWakeState {','int64_t WebPageImpl::m_firstFrameId'),
    @('content/browser/WebPageImpl.cpp','auto_record.inc','class AutoRecordActions {','#if (defined ENABLE_WKE)'),
    @('content/browser/WebPageImpl.cpp','commit_task.inc','class CommitTask :','class VisibilityRestoreTask final'),
    @('content/browser/WebPageImpl.cpp','visibility_owner.inc','class VisibilityRestoreTask final','void WebPageImpl::setNeedsCommitAndNotLayout()'),
-   @('content/browser/WebPageImpl.cpp','main_frame.inc','void WebPageImpl::setNeedsCommitAndNotLayout()','void WebPageImpl::onLayerTreeDirty()'),
+   @('content/browser/WebPageImpl.cpp','schedule_commit.inc','void WebPageImpl::setNeedsCommitAndNotLayout()','void WebPageImpl::setNeedsCommit()'),
+   @('content/browser/WebPageImpl.cpp','main_frame.inc','void WebPageImpl::setNeedsCommit()','void WebPageImpl::onLayerTreeDirty()'),
    @('cc/trees/LayerTreeHost.cpp','host_visible.inc','void LayerTreeHost::setVisible(bool visible)','// Sets the current page scale factor'))},
   [ordered]@{kind='render-diagnostic';directory='tests/native/render_diagnostic_source';target='soui_render_diagnostic_source_tests';units=@('fixture.cpp');cmake='2f6a02940e8954f3f2512cf2ba74692723f0a3d6e2cc7cc547e2e97367cf00d6';writer='174e6b972f02be0f14d8921630e8c81e3f1b6a6e579380bb326d34b690cbce3f';whole=[ordered]@{
    'content/common/InputFrameTrace.h'='content/common/InputFrameTrace.h';'cc/trees/RenderDiagnosticTrace.h'='cc/trees/RenderDiagnosticTrace.h'};fragments=@(
-   ,@('cc/trees/GpuSkiaSurface.cpp','gpu_present.inc','bool GpuSkiaSurface::present()','void GpuSkiaSurface::recordPresented()'))}
+   ,@('cc/trees/GpuSkiaSurface.cpp','gpu_present.inc','bool GpuSkiaSurface::present()','void GpuSkiaSurface::recordPresented()'))},
+  [ordered]@{kind='frame-buffer-copy';directory='tests/native/frame_buffer_copy_source';target='frame_buffer_copy_contract';units=@('fixture.cpp');cmake='8b7363d8b619764d681a4e6a6517f783214354f05ac9271882055e78d181a42e';writer='d1e825d29282eca9c8726cc191d69019625e95c5498b4488caadc699c0ed2092';whole=[ordered]@{
+   'cc/trees/FrameBufferLeasePolicy.h'='cc/trees/FrameBufferLeasePolicy.h'};fragments=@(
+   @('cc/trees/LayerTreeHost.cpp','frame_buffer_constructor.inc','LayerTreeHost::FrameBuffer::FrameBuffer(','LayerTreeHost::FrameBufferLease::FrameBufferLease() = default;'),
+   @('cc/trees/LayerTreeHost.cpp','clear_canvas.inc','void LayerTreeHost::clearCanvas(','void LayerTreeHost::setDrawMinInterval('),
+   @('cc/trees/LayerTreeHost.cpp','prepare_writable_frame_buffer.inc','bool LayerTreeHost::prepareWritableFrameBufferLocked()','SkCanvas* LayerTreeHost::getMemoryCanvasLocked()'))},
+  [ordered]@{kind='provider-deadline';directory='tests/native/provider_deadline';target='provider_deadline_contract';units=@('fixture.cpp');cmake='722e7540731d3f7166c24c40a0f30a3afbcbbf8c07713b7550a18401e2415bb6';writer='e8feabb132b3f65a98a8c0d31389b0931a864fb748a98e995e186c3b76a0d39c';whole=[ordered]@{
+   'wke/InputUiApi.h'='input_ui_api.h'};fragments=@(
+   @('content/common/PaintLifetime.h','cursor.inc','template<class Key> class PaintCloseServiceCursor {','inline PaintLifetimeRuntime& paintLifetimeRuntime()'),
+   @('wke/wkeWebView.cpp','sweep.inc','bool CWebView::serviceDeferredPaintCloses(','bool CWebView::resumePaintRuntime()'),
+   @('wke/InputUiApi.cpp','provider.inc','void WKE_INPUT_UI_CALL serviceOwner()','int WKE_INPUT_UI_CALL cancelInput(void* opaque)'),
+   @('wke/InputUiApi.cpp','api.inc','const wkeInputUiApi* WKE_CALL_TYPE wkeGetInputUiApi(unsigned requestedVersion)',''))}
  )
 }
-function GeneratedTestRecipeMarker([byte[]]$source,[string]$begin,[string]$end){
+function GeneratedTestRecipeMarker([byte[]]$source,[string]$begin,[string]$end,[bool]$strictWriter=$false){
  # The locked JS writers require a unique begin and the first following end.
- # Slice bytes directly: unlike the older CMake writers, these accept raw GBK,
- # CRLF and NUL bytes without decoding or normalizing a generated fragment.
+ # Slice bytes directly: existing raw writers accept GBK, CRLF and NUL without
+ # decoding. The frame-buffer writer additionally validates strict UTF-8 and a
+ # unique following end; validation never rewrites its raw output bytes.
  $hex=[BitConverter]::ToString($source).Replace('-','').ToLowerInvariant();$a=[BitConverter]::ToString([Text.Encoding]::UTF8.GetBytes($begin)).Replace('-','').ToLowerInvariant();$b=[BitConverter]::ToString([Text.Encoding]::UTF8.GetBytes($end)).Replace('-','').ToLowerInvariant()
- Need ($a.Length-gt0-and$b.Length-gt0-and[regex]::Matches($hex,$a).Count-eq1) 'Generated recipe requires one unique begin marker'
- $start=$hex.IndexOf($a,[StringComparison]::Ordinal);$stop=$hex.IndexOf($b,$start+$a.Length,[StringComparison]::Ordinal)
+ Need ($a.Length-gt0-and[regex]::Matches($hex,$a).Count-eq1) 'Generated recipe requires one unique begin marker'
+ $start=$hex.IndexOf($a,[StringComparison]::Ordinal)
+ # The provider writer has one declared suffix ending at EOF. Its unique begin
+ # and full frozen source identity bind the range just like a following marker.
+ $stop=$(if($end.Length-eq0){$hex.Length}else{$hex.IndexOf($b,$start+$a.Length,[StringComparison]::Ordinal)})
  Need ($start%2-eq0-and$stop-gt$start-and$stop%2-eq0) 'Generated recipe following end marker/alignment'
+ if($strictWriter){Need ($end.Length-gt0-and$hex.IndexOf($b,$stop+2,[StringComparison]::Ordinal)-lt0) 'Generated recipe strict writer requires one following end marker'}
  $first=[int]($start/2);$last=[int]($stop/2);$bytes=[byte[]]::new($last-$first);[Array]::Copy($source,$first,$bytes,0,$bytes.Length)
+ if($strictWriter){$validUtf8=$true;try{[void][Text.UTF8Encoding]::new($false,$true).GetString($bytes)}catch{$validUtf8=$false};Need $validUtf8 'Generated recipe strict UTF-8 required'}
  return [ordered]@{startByte=$first;endByteExclusive=$last;bytes=$bytes}
 }
 function GeneratedTestRecipeDependencies($role,[string]$root,[string]$build,[string]$configuration,$allowed,$selected,[scriptblock]$readBytes,$bindings){
@@ -353,11 +395,12 @@ function GeneratedTestRecipeDependencies($role,[string]$root,[string]$build,[str
  if($null-ne$role.writer){[void](GeneratedTestWriter $root ($role.directory+'/generate.cjs') $role.writer $allowed $readBytes);$support.Add($allowed[(Norm (Join-Path $root ($role.directory+'/generate.cjs')))])}
  foreach($source in $role.whole.Keys){
   $value=Join-Path $root ($prefix+(GeneratedTestRelative $source));$raw=GeneratedTestFrozen $value $allowed $readBytes;$output=GeneratedTestRelative $role.whole[$source];$key=Norm (Join-Path $base $output)
+  if($role.kind-ceq'frame-buffer-copy'){$validUtf8=$true;try{[void][Text.UTF8Encoding]::new($false,$true).GetString($raw)}catch{$validUtf8=$false};Need $validUtf8 'Generated recipe strict UTF-8 required'}
   Need (-not$candidates.ContainsKey($key)) 'Unique generated recipe output';$support.Add($allowed[(Norm $value)])
   $candidates[$key]=[ordered]@{source=$allowed[(Norm $value)];range=[ordered]@{startByte=0;endByteExclusive=$raw.Length;bytes=$raw};output=$output;exactWholeFile=$true}
  }
  foreach($part in $role.fragments){
-  $value=Join-Path $root ($prefix+(GeneratedTestRelative $part[0]));$raw=GeneratedTestFrozen $value $allowed $readBytes;$range=GeneratedTestRecipeMarker $raw $part[2] $part[3];$output=GeneratedTestRelative $part[1];$key=Norm (Join-Path $base $output)
+  $value=Join-Path $root ($prefix+(GeneratedTestRelative $part[0]));$raw=GeneratedTestFrozen $value $allowed $readBytes;$range=GeneratedTestRecipeMarker $raw $part[2] $part[3] ($role.kind-ceq'frame-buffer-copy');$output=GeneratedTestRelative $part[1];$key=Norm (Join-Path $base $output)
   Need (-not$candidates.ContainsKey($key)) 'Unique generated recipe output';$support.Add($allowed[(Norm $value)])
   $candidates[$key]=[ordered]@{source=$allowed[(Norm $value)];range=$range;output=$output;exactWholeFile=$false}
  }
@@ -392,24 +435,30 @@ function GeneratedTestDependencies([string]$root,[string]$build,[string]$configu
    $sourcePath=Join-Path $root 'third_party/sources/miniblink/wke/wke.cpp';$sourceBytes=GeneratedTestFrozen $sourcePath $allowed $readBytes;$range=GeneratedTestMarker $sourceBytes 'struct InteractionEndpointImpl {' 'void WKE_CALL_TYPE retainInteractionEndpoint('
    $candidates[(Norm (Join-Path $base 'interaction_endpoint_source.inc'))]=[ordered]@{source=$allowed[(Norm $sourcePath)];range=$range;output='interaction_endpoint_source.inc'}
   }elseif($role.kind-ceq'worker'){
-   [void](GeneratedTestWriter $root ($role.directory+'/CMakeLists.txt') '11383ab178986c14403e83d3c5222de5ca9166614750092b6e0de339de72f9ae' $allowed $readBytes)
-   [void](GeneratedTestWriter $root ($role.directory+'/source-bytes.cmake') '29685942bd5710ffc93523a4bb7ecafa618f8cde63832d54c2cb01194ccb0c66' $allowed $readBytes)
-   $mapText=GeneratedTestWriter $root ($role.directory+'/source-map.json') 'e5f75593a5f8956b724cc011cdc7972df27cb5a07c433191d6fb733d0d0c62e8' $allowed $readBytes;$map=$mapText|ConvertFrom-Json
-   Need ($map.schema-ceq'worker-lifetime-source-map/1'-and$map.sources.Count-eq16-and$map.copies.Count-eq15-and$map.payloads.Count-eq22) 'Exact frozen worker source map'
+   [void](GeneratedTestWriter $root ($role.directory+'/CMakeLists.txt') 'cd328ca6ac5c249379c4475c1e8c2fed77b8e57983f476e45a6cf86ddc84b960' $allowed $readBytes)
+   [void](GeneratedTestWriter $root ($role.directory+'/source-bytes.cmake') '12febdd96416c86b2d79da9ff41472f5c84b4c0f7cef3f7b82393a37948fa0ad' $allowed $readBytes)
+   $mapText=GeneratedTestWriter $root ($role.directory+'/source-map.json') '77ba71e8acbee8dca695c7d4aba4eb5131eeba491b89df643102a88360ebfb8e' $allowed $readBytes;$map=$mapText|ConvertFrom-Json
+   Need ($map.schema-ceq'worker-lifetime-source-map/1'-and$map.sources.Count-eq16-and$map.copies.Count-eq16-and$map.payloads.Count-eq22) 'Exact frozen worker source map'
    foreach($relative in @('CMakeLists.txt','source-bytes.cmake','source-map.json')){$support.Add($allowed[(Norm (Join-Path $root ($role.directory+'/'+$relative)))])}
    $sources=@{};foreach($p in $map.sources){$relative=GeneratedTestRelative $p.path;$value=Join-Path $root $relative;Need (-not$sources.ContainsKey((Norm $value))) 'Unique frozen worker source';$raw=GeneratedTestFrozen $value $allowed $readBytes;Need ($raw.Length-eq$p.bytes-and(GeneratedTestHash $raw)-ceq$p.sha256) 'Worker map whole-source pin differs';$sources[(Norm $value)]=$raw;$support.Add($allowed[(Norm $value)])}
    foreach($p in $map.payloads){$relative=GeneratedTestRelative $p.path;$value=Join-Path $root ($role.directory+'/'+$relative);$raw=GeneratedTestFrozen $value $allowed $readBytes;Need ($raw.Length-eq$p.bytes-and(GeneratedTestHash $raw)-ceq$p.sha256) 'Worker map payload pin differs';$support.Add($allowed[(Norm $value)])}
    foreach($copy in $map.copies){$relative=GeneratedTestRelative $copy.source;$output=GeneratedTestRelative $copy.output;$value=Join-Path $root $relative;Need ($sources.ContainsKey((Norm $value))-and$copy.exactWholeFile-is[bool]) 'Worker copy needs exact frozen source and boolean kind';$raw=$sources[(Norm $value)];Need ($copy.startByte-is[long]-or$copy.startByte-is[int]) 'Worker start-byte integer';Need ($copy.endByteExclusive-is[long]-or$copy.endByteExclusive-is[int]) 'Worker end-byte integer';$bytes=GeneratedTestInterval $raw $copy.startByte $copy.endByteExclusive $copy.exactWholeFile
     Need ($bytes.Length-eq$copy.bytes-and(GeneratedTestHash $bytes)-ceq$copy.sha256) 'Worker exact source range differs from map';$key=Norm (Join-Path $base $output);Need (-not$candidates.ContainsKey($key)) 'Unique worker generated output';$candidates[$key]=[ordered]@{source=$allowed[(Norm $value)];range=[ordered]@{startByte=$copy.startByte;endByteExclusive=$copy.endByteExclusive;bytes=$bytes};output=$output;exactWholeFile=$copy.exactWholeFile}
    }
+   $proof=$map.shutdownProof;$relative=GeneratedTestRelative $proof.source;$value=Join-Path $root $relative
+   Need ($sources.ContainsKey((Norm $value))) 'Worker shutdown owner has no whole-source pin'
+   $token=GeneratedTestWorkerShutdown $sources[(Norm $value)] $proof;$key=Norm (Join-Path $base $token.output)
+   Need (-not$candidates.ContainsKey($key)) 'Unique worker generated output'
+   $candidates[$key]=[ordered]@{source=$allowed[(Norm $value)];bytes=$token.bytes;output=$token.output;transformation=$token.proof}
   }else{
    $text=GeneratedTestWriter $root ($role.directory+'/CMakeLists.txt') '4c74467ea0349b1a2a5efb0f8893fa5c972ad770023c8c861ee2e0d08318f1a6' $allowed $readBytes;$support.Add($allowed[(Norm $writerPath)])
    $matches=[regex]::Matches($text,'(?m)^close_extract\(([a-z0-9-]+) "\$\{(close_source|close_header)\}" "([^"\r\n]+)" "([^"\r\n]+)"\)$');Need ($matches.Count-eq13) 'Exact request-close extraction declarations'
    foreach($match in $matches){$extension=$(if($match.Groups[2].Value-ceq'close_source'){'.cpp'}else{'.h'});$value=Join-Path $root ('third_party/sources/miniblink/wke/CursorDescriptorBroker'+$extension);$raw=GeneratedTestFrozen $value $allowed $readBytes;$range=GeneratedTestMarker $raw $match.Groups[3].Value $match.Groups[4].Value;$output=$match.Groups[1].Value+'.inc';$key=Norm (Join-Path $base $output);Need (-not$candidates.ContainsKey($key)) 'Unique request-close output';$candidates[$key]=[ordered]@{source=$allowed[(Norm $value)];range=$range;output=$output}}
   }
   $seen=@{};foreach($header in $records[0].headers){$key=Norm $header.resolved;if(-not$key.StartsWith(((Norm $base).TrimEnd('/')+'/'),[StringComparison]::Ordinal)){continue}
-   Need ($candidates.ContainsKey($key)) ('Unknown generated test dependency: '+$header.resolved);Need (-not$allowed.ContainsKey($key)) 'Generated test output cannot masquerade as pre-Build frozen input';Need (-not$seen.ContainsKey($key)) 'Duplicate selected generated test dependency';$seen[$key]=$true;$entry=$candidates[$key];$bytes=$entry.range.bytes
-   $result.Add([ordered]@{pin=[ordered]@{path=(Join-Path $base $entry.output);bytes=$bytes.Length;sha256=(GeneratedTestHash $bytes)};kind='exact test source bytes from frozen writer';derivationSchema='soui.generated-test-source-bytes/1';preBuildFrozen=$false;writerFamily=$role.kind;selectedObject=$object;source=$entry.source;writerPins=$support.ToArray();startByte=$entry.range.startByte;endByteExclusive=$entry.range.endByteExclusive;exactWholeFile=$(if($entry.Contains('exactWholeFile')){$entry.exactWholeFile}else{$false});expectedBytes=$bytes})
+   Need ($candidates.ContainsKey($key)) ('Unknown generated test dependency: '+$header.resolved);Need (-not$allowed.ContainsKey($key)) 'Generated test output cannot masquerade as pre-Build frozen input';Need (-not$seen.ContainsKey($key)) 'Duplicate selected generated test dependency';$seen[$key]=$true;$entry=$candidates[$key];$transformed=$entry.Contains('transformation');[byte[]]$bytes=$(if($transformed){$entry.bytes}else{$entry.range.bytes})
+   $row=[ordered]@{pin=[ordered]@{path=(Join-Path $base $entry.output);bytes=$bytes.Length;sha256=(GeneratedTestHash $bytes)};kind=$(if($transformed){'checked shutdown entrypoint macro from frozen writer and owner routes'}else{'exact test source bytes from frozen writer'});derivationSchema=$(if($transformed){'soui.worker-shutdown-entrypoint-macro/1'}else{'soui.generated-test-source-bytes/1'});preBuildFrozen=$false;writerFamily=$role.kind;selectedObject=$object;source=$entry.source;writerPins=$support.ToArray();startByte=$(if($transformed){$null}else{$entry.range.startByte});endByteExclusive=$(if($transformed){$null}else{$entry.range.endByteExclusive});exactWholeFile=$(if($entry.Contains('exactWholeFile')){$entry.exactWholeFile}else{$false});expectedBytes=$bytes}
+   if($transformed){$row['sourceProof']=$entry.transformation};$result.Add($row)
   };Need ($seen.Count-eq$candidates.Count) 'Complete selected generated test dependency set required'
  }
  return $result.ToArray()

@@ -1,0 +1,53 @@
+{
+  "schema": "soui.bridge-script-legacy-reference/v1",
+  "sources": [
+    {
+      "path": "sdk/src/host/soui_miniblink_host.cpp",
+      "bytes": 295019,
+      "sha256": "6e62eb8ef679a859b646e61a2c75ba433c718de66d88c3e1633da76a1697c803"
+    },
+    {
+      "path": "sdk/src/host/bridge_pending_script.h",
+      "bytes": 2166,
+      "sha256": "9672b98ffc6de2e4a0287b4c414ad43764c89fa00fed5f5721ee0e98aec02213"
+    }
+  ],
+  "fragments": [
+    {
+      "name": "json-literal",
+      "startByte": 20216,
+      "endByteExclusive": 21041,
+      "sha256": "fd4a0cf2c446506b01f1e163c679a4847bc45e0e3cad4222e159e544daaede87"
+    },
+    {
+      "name": "response",
+      "startByte": 22304,
+      "endByteExclusive": 22585,
+      "sha256": "7533bcb415d682c3f314c3f78485931d3a3e571aef8c3d3d8ef702ea588b8fb5"
+    },
+    {
+      "name": "pending-expression",
+      "startByte": 279778,
+      "endByteExclusive": 280017,
+      "sha256": "24a365aee7fac829ba146d29291661aa3ac72df985a334b785626017f2667829"
+    },
+    {
+      "name": "immediate-expression",
+      "startByte": 281168,
+      "endByteExclusive": 281254,
+      "sha256": "45facc11c1dc7b2bb45bc02fd28737d2197aedac869e2f205ee9e88bb03b3433"
+    },
+    {
+      "name": "pending-expression-source",
+      "startByte": 342,
+      "endByteExclusive": 2131,
+      "sha256": "c6532b7e5d22a61df860d791fa2f52fd1f34721207878d0c57b4bbaa028c3ca9"
+    }
+  ],
+  "reference": {
+    "path": "legacy-source.inc",
+    "bytes": 3680,
+    "sha256": "4ca6c5cbfb4102df6d9e620d9318259b4f07e895750afcba6b2001c1d8b4344f"
+  },
+  "scope": "Actual old production functions/expressions; only namespace and callable wrappers added. No copied Host execution or GUI."
+}

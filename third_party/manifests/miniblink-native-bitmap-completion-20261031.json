@@ -1,0 +1,52 @@
+{
+  "schema": "soui.miniblink-native-bitmap-completion-candidate/v1",
+  "baselineCommit": "5527ba4822cdf0bda5400964af2c50b66e29d046",
+  "hashScope": "raw-file-bytes",
+  "status": "source-contract-and-dual-architecture-incremental-validation",
+  "prebuiltReplaced": false,
+  "publicBuildVerified": false,
+  "performanceVerified": false,
+  "historicalCrcCauseProven": false,
+  "historicalImportUnchanged": true,
+  "patch": {
+    "path": "third_party/patches/miniblink/0030-complete-native-bitmap-submission.patch",
+    "bytes": 1671,
+    "sha256": "8b0b02c0f003ed208f2ca511e6381f1f8a6f73e4322efd124fb22b693372a184"
+  },
+  "files": [
+    {
+      "path": "third_party/sources/miniblink/skia/ext/bitmap_platform_device_win.cc",
+      "before": {
+        "bytes": 14382,
+        "sha256": "eed33c593fd5b6cdf7a4d0c07563f3db457a90fd42f45567cab55204fa7d7d47"
+      },
+      "after": {
+        "bytes": 14744,
+        "sha256": "76f013bb0af84c119168acb6a096e90bfe2cf5ef741f92f012676fa3cf2738b9"
+      }
+    }
+  ],
+  "verification": {
+    "contractCases": 32,
+    "contractChecks": 272,
+    "oldFailures": 152,
+    "newFailures": 0,
+    "fakeGdiModel": true,
+    "kernelCompileExit": 0,
+    "kernelLinkExit": 0,
+    "hiddenDesktopSmokePassed": true,
+    "realDesktopCrcRetested": false,
+    "contractArchitectures": [
+      "x64",
+      "x86"
+    ],
+    "kernelArchitectures": [
+      "x64",
+      "x86"
+    ],
+    "hiddenDesktopArchitecture": "x64",
+    "x86RuntimeRetested": false
+  },
+  "design": "docs/adr/0149-complete-native-bitmap-submission.md",
+  "verificationDocument": "docs/performance/native-bitmap-completion-20261031.md"
+}

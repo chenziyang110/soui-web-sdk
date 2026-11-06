@@ -1,0 +1,41 @@
+{
+  "schema": "soui.kernel-import/v1",
+  "sdkVersion": "0.7.0-preview.2",
+  "profile": "LLVM22MSVC142",
+  "imports": [
+    {
+      "architecture": "x64",
+      "path": "third_party/prebuilt/x64/miniblink/node.dll",
+      "bytes": 39211008,
+      "sha256": "8d84f0d0b307c4ee1fdee8d4ac27b8e67dec32545e9cf52dbfaf1a85d88904b6",
+      "sourceInputSha256": "bcbb83feaa391991d2eadb49fe53495bb54a4d0db1017cc072e47462ec80c933",
+      "sourceIdentityMeaning": "Complete current physical source snapshot, reconciled to the original whole snapshot plus admitted buffer-retirement ancestor pins and six F01 changes; not a newly executed whole-source build",
+      "buildEvidence": "third_party/manifests/kernel-frame-policy-build-070-preview2.json",
+      "requiredExportsStaticallyPresent": true,
+      "functionTableAbiLoaded": true,
+      "rendererInitializedForAbiProbe": false,
+      "freshWholeKernel": false,
+      "publicBuildVerified": false
+    },
+    {
+      "architecture": "x86",
+      "path": "third_party/prebuilt/x86/miniblink/node.dll",
+      "bytes": 28323840,
+      "sha256": "367f1cd087bb5166c5b75f32fb76e7ca2950feae68dc15d05ec8f0ffcdc5b296",
+      "sourceInputSha256": "bcbb83feaa391991d2eadb49fe53495bb54a4d0db1017cc072e47462ec80c933",
+      "sourceIdentityMeaning": "Complete current physical source snapshot, reconciled to the original whole snapshot plus admitted buffer-retirement ancestor pins and six F01 changes; not a newly executed whole-source build",
+      "buildEvidence": "third_party/manifests/kernel-frame-policy-build-070-preview2.json",
+      "requiredExportsStaticallyPresent": true,
+      "functionTableAbiLoaded": true,
+      "rendererInitializedForAbiProbe": false,
+      "freshWholeKernel": false,
+      "publicBuildVerified": false
+    }
+  ],
+  "fullSdkApplicationValidationComplete": false,
+  "toolchainQualification": false,
+  "binaryLicenseReviewComplete": false,
+  "releaseReady": false,
+  "transitiveDependencyCompleteness": "incomplete",
+  "note": "New preview.2 controlled default import of the original affected-header closure candidates. Prior records remain historical and unchanged. ABI loading alone is not renderer, consumer, desktop, input or performance verification."
+}

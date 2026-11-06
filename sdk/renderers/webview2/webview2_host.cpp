@@ -2,10 +2,15 @@
 #include <soui/host/runtime_profile.h>
 #include "webview2_preload.h"
 #include "request_capacity.h"
+#include "request_dispatch_metadata.h"
+#include "output_timing_policy.h"
 #include "preparation_lifetime.h"
 #include "owner_output_policy.h"
 #include "owner_callout_policy.h"
+#include "owner_work_policy.h"
+#include "owner_output_wake.h"
 #include "../../src/host/input_trace_hooks.h"
+#include "../../src/host/owner_continuation.h"
 #include <soui/diagnostics/input_frame_trace.h>
 #include "loader_policy.h"
 #include "native_observation.h"
@@ -22,6 +27,7 @@
 #include <iterator>
 #include <limits>
 #include <json.hpp>
+#include <algorithm>
 #include <atomic>
 #include <chrono>
 #include <condition_variable>
@@ -42,6 +48,7 @@ using clock_type = std::chrono::steady_clock;
 using sdk::host_result;
 namespace capacity = detail::webview2_capacity;
 namespace input_trace = diagnostics::input_frame_trace;
+namespace output_timing = detail::webview2_output_timing;
 
 namespace {
 constexpr wchar_t entry_url[] = L"https://soui-webview2.invalid/index.html";
@@ -463,6 +470,7 @@ struct webview2_adapter::state {
     clock_type::time_point deadline;
     bool revoke{false};
     std::shared_ptr<capacity::request_budget::lease> slot;
+    detail::request_dispatch_metadata dispatch;
   };
   struct output {
     std::uint64_t generation{};
@@ -473,6 +481,7 @@ struct webview2_adapter::state {
     std::wstring prepared_json;
     std::size_t charged_bytes{0};
     std::uint64_t trace_task{0}, queued_qpc{0};
+    output_timing::metadata timing;
   };
   HWND owner{};
   DWORD ui_thread{GetCurrentThreadId()};
@@ -496,6 +505,7 @@ struct webview2_adapter::state {
   std::string preload, runtime_version, script_id;
   ComPtr<ICoreWebView2Environment> environment;
   ComPtr<ICoreWebView2Controller> controller;
+  detail::controller_updates controller_updates;
   ComPtr<ICoreWebView2> core;
   ComPtr<ICoreWebView2_3> core3;
   ComPtr<ICoreWebView2_4> core4;
@@ -503,11 +513,13 @@ struct webview2_adapter::state {
   phase current{phase::created};
   host_result failure;
   bool allow_navigation{false}, document_ready{false}, application_ready{false};
+  local_resource_policy resource_policy{local_resource_policy::strict};
   bool reload_preparing{false};
   bool diagnostic_query_pending{false};
   bool pump_running{false}; // Actual UI owner; COM reentry cannot start a second drain batch.
-  unsigned owner_budget_us{0}; // Candidate: zero preserves the existing16-item policy.
+  unsigned owner_budget_us{0}; // Optional tighter profile budget; the fixed 2ms/16-item cap still applies.
   bool prepare_output{false}; // Candidate: disabled until paired profile selects it.
+  bool trace_outputs{false}; // Explicit cold diagnostic; no implicit producer attach.
   std::unique_ptr<detail::trace_thread_registration> trace_owner;
   // Actual ExecuteScript/protocol completions, including those delivered after
   // Controller.Close. A cancelled generation does not settle native callbacks.
@@ -523,6 +535,10 @@ struct webview2_adapter::state {
   std::condition_variable wake;
   std::deque<request> requests;
   std::deque<output> outputs;
+  bool output_pump_active{false}; // Output queue mutex; owned by the outer drain scope only.
+  // Workers use this object under the output mutex; only the UI owner retires
+  // it. service_legacy pins its Pimpl before any potentially reentrant call.
+  std::unique_ptr<detail::owner_continuation_registration> owner_continuation;
   capacity::request_budget request_slots;
   capacity::output_budget output_slots;
   capacity::priority_policy request_priority, output_priority;
@@ -652,6 +668,7 @@ void finish_preparation(const std::shared_ptr<state>& value, const host_result& 
   }
 }
 void wake_owner(const std::shared_ptr<state>& value);
+void pump_owner_state(const std::shared_ptr<state>& value);
 void stop_bridge_admission(const std::shared_ptr<state>& value);
 void fail(const std::shared_ptr<state>& value, std::string detail) {
   value->failure = error("E_WEBVIEW2", std::move(detail));
@@ -693,6 +710,89 @@ void wake_owner(const std::shared_ptr<state>& value) {
       !PostMessageW(value->owner, sdk::webview2_event_message, 0, 0))
     value->wake_pending.store(false, std::memory_order_release);
 }
+void wake_output_locked(const std::shared_ptr<state>& value, capacity::lane category) {
+  if (category == capacity::lane::ordinary && value->owner_continuation)
+    value->owner_continuation->request();
+  else
+    wake_owner(value); // Control and lifecycle retain their actual Host notice.
+}
+void wake_remaining_outputs_locked(const std::shared_ptr<state>& value) {
+  bool ordinary = false, immediate = false;
+  for (const auto& output : value->outputs) {
+    const auto category = output.slot ? output.slot->category : capacity::lane::ordinary;
+    if (category == capacity::lane::ordinary) ordinary = true;
+    else immediate = true;
+    if (ordinary && immediate) break;
+  }
+  if (ordinary && value->owner_continuation) value->owner_continuation->request();
+  if (immediate || (ordinary && !value->owner_continuation)) wake_owner(value);
+}
+void bind_owner_continuation(const std::shared_ptr<state>& value) noexcept {
+  try {
+    const std::weak_ptr<state> weak(value);
+    auto attached = detail::attach_current_owner_continuation(value, [weak] {
+      const auto current = weak.lock();
+      if (!current) return false;
+      pump_owner_state(current); // The original bounded pump, without acknowledging a Host MSG.
+      std::lock_guard<std::mutex> lock(current->mutex);
+      return !current->stop_requested && current->current == state::phase::mounted &&
+          std::any_of(current->outputs.begin(), current->outputs.end(), [](const state::output& output) {
+            return !output.slot || output.slot->category == capacity::lane::ordinary;
+          });
+    }, [weak] {
+      if (const auto current = weak.lock()) wake_owner(current);
+    });
+    std::unique_ptr<detail::owner_continuation_registration> retired;
+    {
+      std::lock_guard<std::mutex> lock(value->mutex);
+      retired = std::move(value->owner_continuation);
+      value->owner_continuation = std::move(attached);
+    }
+    if (retired) retired->reset();
+  } catch (...) {
+    // Optional scheduling admission cannot invalidate a normally mounted Host.
+    // The unchanged Host notification path remains available.
+  }
+}
+void release_owner_continuation(const std::shared_ptr<state>& value) noexcept {
+  std::unique_ptr<detail::owner_continuation_registration> retired;
+  {
+    std::lock_guard<std::mutex> lock(value->mutex);
+    retired = std::move(value->owner_continuation);
+  }
+  if (retired) retired->reset(); // No Host mutex across unregister/fallback notification.
+}
+void note_output(const std::shared_ptr<state>& value, const state::output& output,
+    input_trace::stage point, input_trace::reason why = input_trace::reason::none) noexcept {
+  (void)output_timing::emit(value->trace_outputs,
+      [](const input_trace::event& event) { (void)input_trace::record(event); },
+      point, output.trace_task, output.generation, output.timing, why);
+}
+void initialize_output_timing(const std::shared_ptr<state>& value, state::output& output,
+    output_timing::origin origin) noexcept {
+  if (!value->trace_outputs) return;
+  output.timing = {origin, GetCurrentThreadId() == value->ui_thread ? output_timing::executor::owner :
+      origin == output_timing::origin::bridge_reply ? output_timing::executor::bridge_worker : output_timing::executor::other,
+      value->prepare_output ? output_timing::preparation::limit_fallback : output_timing::preparation::disabled,
+      static_cast<std::uint32_t>(output.raw.size())};
+}
+void note_discarded_outputs(const std::shared_ptr<state>& value, input_trace::reason why) noexcept {
+  if (value->trace_outputs) for (const auto& output : value->outputs)
+    note_output(value, output, input_trace::stage::task_cancelled, why);
+}
+// The selected output is no longer in the queue when serialization/COM throws.
+// Account for that local failure too, without moving any credit or COM boundary.
+struct output_observation final {
+  const std::shared_ptr<state>& owner;
+  const state::output& output;
+  bool finished{false};
+  ~output_observation() { cancel(input_trace::reason::invalid); }
+  void cancel(input_trace::reason why) noexcept {
+    if (finished) return;
+    finished = true;
+    note_output(owner, output, input_trace::stage::task_cancelled, why);
+  }
+};
 void stop_bridge_admission(const std::shared_ptr<state>& value) {
   value->native_grant = false;
   ++value->grant_epoch;
@@ -701,6 +801,7 @@ void stop_bridge_admission(const std::shared_ptr<state>& value) {
     if (!value->stop_requested) ++value->generation;
     value->stop_requested = true;
     value->requests.clear();
+    note_discarded_outputs(value, input_trace::reason::stopped);
     value->outputs.clear();
     value->output_slots = capacity::output_budget{};
   }
@@ -738,7 +839,7 @@ class async_completion final {
   std::shared_ptr<state> value_;
   bool accepted_;
 };
-void push_output(const std::shared_ptr<state>& value, state::output output) {
+void push_output(const std::shared_ptr<state>& value, state::output output, output_timing::origin origin) {
   {
     std::lock_guard<std::mutex> lock(value->mutex);
     if (value->stop_requested || output.generation != value->generation) return;
@@ -751,7 +852,10 @@ void push_output(const std::shared_ptr<state>& value, state::output output) {
   }
   output.trace_task = input_trace::next_task_id();
   output.charged_bytes = output.raw.size();
-  if (value->prepare_output) {
+  initialize_output_timing(value, output, origin);
+  note_output(value, output, input_trace::stage::task_posted);
+  note_output(value, output, input_trace::stage::task_begin);
+  if (output_timing::should_prepare(value->prepare_output, output.event, output.raw.size(), message_limit)) {
     const detail::trace_duration serialization_cost(input_trace::duration_metric::serialization);
     try {
       const auto encoded = serialize_output(output);
@@ -760,21 +864,35 @@ void push_output(const std::shared_ptr<state>& value, state::output output) {
         if (detail::owner_output_budget::may_cache(output.raw.size(), prepared.size(), message_limit)) {
           output.charged_bytes += prepared.size() * sizeof(wchar_t);
           output.prepared_json = std::move(prepared);
+          output.timing.prepared = output_timing::preparation::cached;
         }
       }
-    } catch (...) { output.prepared_json.clear(); } // Exact legacy owner path remains available.
+    } catch (...) {
+      output.prepared_json.clear(); // Exact legacy owner path remains available.
+      output.timing.prepared = output_timing::preparation::exception_fallback;
+    }
   }
+  note_output(value, output, input_trace::stage::task_end);
   std::lock_guard<std::mutex> lock(value->mutex);
-  if (value->stop_requested || output.generation != value->generation) return;
+  if (value->stop_requested || output.generation != value->generation) {
+    note_output(value, output, input_trace::stage::task_cancelled,
+        value->stop_requested ? input_trace::reason::stopped : input_trace::reason::stale_generation);
+    return;
+  }
   const auto category = output.slot ? output.slot->category : capacity::lane::ordinary;
   const auto bytes = output.charged_bytes;
   if (!value->output_slots.reserve(category, bytes)) {
+    note_output(value, output, input_trace::stage::task_cancelled, input_trace::reason::capacity);
     return; // the page's bounded request timer observes missing delivery
   }
   output.queued_qpc = input_trace::now_qpc(); // Actual queue admission follows preparation.
   try { value->outputs.push_back(std::move(output)); }
-  catch (...) { value->output_slots.release(category, bytes); throw; }
-  wake_owner(value);
+  catch (...) {
+    value->output_slots.release(category, bytes);
+    note_output(value, output, input_trace::stage::task_cancelled, input_trace::reason::invalid);
+    throw;
+  }
+  if (!value->output_pump_active) wake_output_locked(value, category);
 }
 void bridge_worker(const std::shared_ptr<state>& value) noexcept {
   const bool trace_attached = input_trace::register_current_thread();
@@ -816,10 +934,15 @@ void bridge_worker(const std::shared_ptr<state>& value) noexcept {
         if (clock_type::now() >= request.deadline) {
           response = response_error(request.id, "E_TIMEOUT", "Request expired before native dispatch.");
         } else {
-          const auto packet = parse_bounded(request.raw);
-          const auto method = packet.value("method", std::string{});
+          // Keep the old field access/short-circuit order. Over-cache-limit or
+          // failed preparation uses the original bounded parser, not rejection.
+          const auto fallback = request.dispatch.available() ? json{} : parse_bounded(request.raw);
+          const auto method = request.dispatch.available() ? request.dispatch.method()
+              : fallback.value("method", std::string{});
           if ((method == "bridge.bootstrap" && !session.empty()) ||
-              (method != "bridge.bootstrap" && (session.empty() || packet.value("sessionId", std::string{}) != session))) {
+              (method != "bridge.bootstrap" && (session.empty() ||
+                  (request.dispatch.available() ? request.dispatch.session()
+                      : fallback.value("sessionId", std::string{})) != session))) {
             response = response_error(request.id, "E_UNAUTHORIZED", "Request belongs to another document session.");
           } else {
             // Handlers must be bounded; long operations use the SDK task service.
@@ -852,7 +975,7 @@ void bridge_worker(const std::shared_ptr<state>& value) noexcept {
         value->scope_ownership_uncertain.store(true, std::memory_order_release);
       }
       push_output(value, {request.generation, request.document_id, request.id, request.invocation_id, std::move(response),
-          false, ready, std::move(request.slot)});
+          false, ready, std::move(request.slot)}, output_timing::origin::bridge_reply);
     }
   } catch (...) {
     ownership_unknown = true; // Preserve missing ownership/drain evidence.
@@ -880,6 +1003,7 @@ void invalidate_document(const std::shared_ptr<state>& value) {
     value->active_session.clear();
     value->session_digest.clear();
     value->requests.clear();
+    note_discarded_outputs(value, input_trace::reason::navigation);
     value->outputs.clear();
     value->request_slots = capacity::request_budget{};
     value->output_slots = capacity::output_budget{};
@@ -946,6 +1070,7 @@ void receive_message(const std::shared_ptr<state>& value, ICoreWebView2WebMessag
     timeout = packet["timeoutMs"].get<unsigned>();
   }
   const auto category = capacity::classify(packet);
+  auto dispatch = detail::request_dispatch_metadata::capture(packet);
   std::uint64_t generation = 0;
   const char* rejection = nullptr;
   {
@@ -957,11 +1082,11 @@ void receive_message(const std::shared_ptr<state>& value, ICoreWebView2WebMessag
     if (!slot) rejection = rejected == capacity::request_budget::rejection::duplicate ? "E_DUPLICATE_REQUEST" : "E_BUSY";
     else {
       value->requests.push_back({generation, identity, id, invocation, request,
-          clock_type::now() + std::chrono::milliseconds(timeout), false, std::move(slot)});
+          clock_type::now() + std::chrono::milliseconds(timeout), false, std::move(slot), std::move(dispatch)});
     }
   }
   if (rejection) push_output(value, {generation, identity, id, invocation,
-      response_error(id, rejection, "Request was not admitted."), false, false, {}});
+      response_error(id, rejection, "Request was not admitted."), false, false, {}}, output_timing::origin::admission_rejection);
   else value->wake.notify_one();
 }
 void install_policy(const std::shared_ptr<state>& value) {
@@ -997,7 +1122,14 @@ void install_policy(const std::shared_ptr<state>& value) {
   check(value->core->add_FrameNavigationStarting(Callback<ICoreWebView2NavigationStartingEventHandler>(
       [weak](ICoreWebView2*, ICoreWebView2NavigationStartingEventArgs* args) -> HRESULT {
         native_policy_borrow observation{weak};
-        return args->put_Cancel(TRUE);
+        return boundary(weak, [&](const auto& current) {
+          task_string uri;
+          check(args->get_Uri(&uri.value), "Frame navigation URI");
+          const bool allowed = current->resource_policy == local_resource_policy::isolated_local_editor &&
+              current->current == state::phase::mounted && !current->retirement_required && uri.value &&
+              (std::wstring{uri.value} == L"about:blank" || std::wstring{uri.value} == L"about:srcdoc");
+          check(args->put_Cancel(allowed ? FALSE : TRUE), "Frame navigation policy");
+        });
       }
       ).Get(), &token), "Frame policy registration");
   check(value->core->add_NavigationCompleted(Callback<ICoreWebView2NavigationCompletedEventHandler>(
@@ -1209,6 +1341,8 @@ webview2_adapter::webview2_adapter(void* owner, std::filesystem::path profile, s
   state_->owner_budget_us = detail::owner_output_budget::parse_microseconds(owner_budget, owner_budget_length);
   wchar_t prepare[2]{};
   state_->prepare_output = GetEnvironmentVariableW(L"SOUI_WEBVIEW2_PREPARE_OUTPUT", prepare, 2) == 1 && prepare[0] == L'1';
+  wchar_t output_trace[2]{};
+  state_->trace_outputs = GetEnvironmentVariableW(L"SOUI_WEBVIEW2_OUTPUT_TIMING", output_trace, 2) == 1 && output_trace[0] == L'1';
   try { state_->trace_owner = std::make_unique<detail::trace_thread_registration>(); }
   catch (...) { input_trace::note_causal_loss(); }
   if (state_->native_counters.enabled()) {
@@ -1309,6 +1443,7 @@ webview2_adapter::~webview2_adapter() {
     std::lock_guard<std::mutex> lock(value->mutex);
     value->stop_requested = true;
     value->requests.clear();
+    note_discarded_outputs(value, input_trace::reason::cancelled);
     value->outputs.clear();
     value->output_slots = capacity::output_budget{};
   }
@@ -1483,7 +1618,10 @@ host_result webview2_adapter::mount(const sdk::host_config& config) {
   if (GetCurrentThreadId() != value->ui_thread || value->current != state::phase::prepared ||
       config.owner_window != value->owner || !config.bridge_adapter)
     return error("E_INVALID_STATE", "Mount requires the prepared owner and a live Bridge.");
+  if (!supports_local_resource_policy(config.resource_policy))
+    return error("E_RESOURCE_POLICY_UNSUPPORTED", "WebView2 does not support the selected local resource policy.");
   try {
+    value->resource_policy = config.resource_policy;
     const auto resources = std::filesystem::canonical(config.resource_root);
     const auto profile = std::filesystem::weakly_canonical(value->profile);
     auto resource_prefix = resources.native();
@@ -1494,11 +1632,25 @@ host_result webview2_adapter::mount(const sdk::host_config& config) {
          CompareStringOrdinal(profile_text.data(), static_cast<int>(resource_prefix.size()),
                               resource_prefix.data(), static_cast<int>(resource_prefix.size()), TRUE) == CSTR_EQUAL))
       throw std::runtime_error("Browser profile must be outside the served resource directory");
-    check(value->core3->SetVirtualHostNameToFolderMapping(L"soui-webview2.invalid", resources.c_str(),
-        COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND_DENY), "Map controlled resources");
+    const auto mounted_controller = value->controller;
+    const auto mounted_core = value->core;
+    const auto mounted_core3 = value->core3;
+    const auto preparation_current = [&] {
+      return value->current == state::phase::prepared &&
+          value->controller.Get() == mounted_controller.Get() && value->core.Get() == mounted_core.Get() &&
+          value->core3.Get() == mounted_core3.Get();
+    };
+    const auto mapped = mounted_core3->SetVirtualHostNameToFolderMapping(L"soui-webview2.invalid", resources.c_str(),
+        COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND_DENY);
+    if (!preparation_current()) return error("E_CANCELLED", "WebView2 mount was cancelled during resource mapping.");
+    check(mapped, "Map controlled resources");
     RECT bounds{};
     if (!GetClientRect(value->owner, &bounds)) throw std::runtime_error("Owner bounds unavailable");
-    check(value->controller->put_Bounds(bounds), "Set initial bounds");
+    const auto bounded = value->controller_updates.bounds(bounds.right, bounds.bottom, [mounted_controller](int width, int height) {
+      return mounted_controller ? mounted_controller->put_Bounds(RECT{0, 0, width, height}) : E_ABORT;
+    });
+    if (!preparation_current()) return error("E_CANCELLED", "WebView2 mount was cancelled during initial bounds.");
+    check(bounded, "Set initial bounds");
     value->bridge = config.bridge_adapter;
     value->bridge->set_owner_window(value->owner);
     const std::weak_ptr<state> weak(value);
@@ -1514,7 +1666,7 @@ host_result webview2_adapter::mount(const sdk::host_config& config) {
               packet.value("sessionId", std::string{}) != current->active_session) return;
           output = {current->generation, current->document_id, {}, {}, std::string(raw), true, false};
         }
-        push_output(current, std::move(output));
+        push_output(current, std::move(output), output_timing::origin::event_sink);
       } catch (...) {}
     });
     value->worker_done.store(false, std::memory_order_release);
@@ -1525,11 +1677,13 @@ host_result webview2_adapter::mount(const sdk::host_config& config) {
     }
     catch (...) { value->worker_done.store(true, std::memory_order_release); throw; }
     value->current = state::phase::mounted;
+    bind_owner_continuation(value);
     value->allow_navigation = true;
     check(value->core->Navigate(entry_url), "Navigate controlled entry");
     return ok();
   } catch (const std::exception& exception) {
     fail(value, exception.what());
+    release_owner_continuation(value);
     // No work has been admitted before the initial Navigate callback.
     {
       std::lock_guard<std::mutex> lock(value->mutex);
@@ -1563,6 +1717,7 @@ host_result webview2_adapter::unmount() {
   finish_preparation(value, error("E_CANCELLED", "WebView2 preparation was cancelled."));
   value->document_ready = value->application_ready = false;
   stop_bridge_admission(value);
+  release_owner_continuation(value);
   if (!value->preparation.settled())
     return error("E_BUSY", "WebView2 initialization callbacks are finishing bounded teardown.");
   if (!value->worker_done.load(std::memory_order_acquire)) return error("E_BUSY", "Bridge worker is finishing bounded teardown.");
@@ -1633,16 +1788,24 @@ host_result webview2_adapter::unmount() {
 }
 
 host_result webview2_adapter::show(bool visible) {
-  const auto active = require_mounted(state_);
+  const auto value = state_;
+  const auto active = require_mounted(value);
   if (!active.ok) return active;
-  const auto result = state_->controller->put_IsVisible(visible ? TRUE : FALSE);
+  const auto controller = value->controller;
+  const auto result = value->controller_updates.visibility(visible, [controller](bool next) {
+    return controller ? controller->put_IsVisible(next ? TRUE : FALSE) : E_ABORT;
+  });
   return SUCCEEDED(result) ? ok() : error("E_WEBVIEW2", hresult_text(result));
 }
 host_result webview2_adapter::resize(int width, int height) {
-  const auto active = require_mounted(state_);
+  const auto value = state_;
+  const auto active = require_mounted(value);
   if (!active.ok) return active;
   if (width < 0 || height < 0 || width > 32768 || height > 32768) return error("E_INVALID_PARAMS", "Invalid WebView2 bounds.");
-  const auto result = state_->controller->put_Bounds(RECT{0, 0, width, height});
+  const auto controller = value->controller;
+  const auto result = value->controller_updates.bounds(width, height, [controller](int next_width, int next_height) {
+    return controller ? controller->put_Bounds(RECT{0, 0, next_width, next_height}) : E_ABORT;
+  });
   return SUCCEEDED(result) ? ok() : error("E_WEBVIEW2", hresult_text(result));
 }
 host_result webview2_adapter::focus() {
@@ -1673,14 +1836,15 @@ host_result webview2_adapter::reload() {
   } catch (const std::exception& exception) { fail(value, exception.what()); return value->failure; }
 }
 
-void webview2_adapter::pump() {
-  auto value = state_;
-  value->wake_pending.store(false, std::memory_order_release);
+namespace {
+void pump_owner_state(const std::shared_ptr<state>& value) {
   if (!require_mounted(value).ok) return;
   const detail::owner_pump_guard pumping(value->pump_running);
   if (!pumping) return;
   const detail::trace_thread_borrow trace_operation;
   const detail::trace_duration owner_cost(input_trace::duration_metric::webview2_owner);
+  detail::owner_output_drain_scope output_drain(value->output_pump_active, value->mutex,
+      value->outputs, [&value]() noexcept { wake_remaining_outputs_locked(value); });
   try {
     if (value->worker_done.load(std::memory_order_acquire)) throw std::runtime_error("Bridge worker exited unexpectedly");
     if (!value->application_ready && !value->diagnostic_query_pending &&
@@ -1720,30 +1884,47 @@ void webview2_adapter::pump() {
       }
       }
     }
-    // Owner notification drains a bounded batch; workers never invoke WebView2 COM.
+    // Always cap cooperative owner work at 2ms. Preserve the existing optional
+    // profile budget as an additional limit, including a tighter value.
+    const detail::owner_work_budget work_budget(clock_type::now());
     const detail::owner_output_budget output_budget(value->owner_budget_us);
-    for (unsigned batch = 0; output_budget.allows_next(batch); ++batch) {
+    for (unsigned batch = 0; work_budget.allows(batch, clock_type::now()) && output_budget.allows_next(batch); ++batch) {
       state::output output;
       {
         std::lock_guard<std::mutex> lock(value->mutex);
         if (value->outputs.empty()) break;
+        output_drain.enter_locked();
         auto selected = capacity::next(value->outputs, value->output_priority,
             [](const state::output& item) { return item.slot ? item.slot->category : capacity::lane::ordinary; });
         output = std::move(*selected);
         value->outputs.erase(selected);
         value->output_slots.release(output.slot ? output.slot->category : capacity::lane::ordinary, output.charged_bytes);
-        // Release before notifying the page; its completion may send new work.
-        if (output.slot) output.slot->release();
-        if (output.generation != value->generation || output.document_id != value->document_id) continue;
       }
-      if (!current_source(value)) continue;
+      // Request-budget release takes its own lock. Do it outside the Host lock
+      // and before page delivery can reenter and admit new work.
+      output_observation observation{value, output};
+      if (output.slot) output.slot->release();
+      if (output.generation != value->generation || output.document_id != value->document_id) {
+        observation.cancel(input_trace::reason::stale_generation);
+        continue;
+      }
+      const auto target = value->core; // Pin the target across get_Source and Post.
+      const auto delivery_current = [&] {
+        return value->current == state::phase::mounted && value->core.Get() == target.Get() &&
+            output.generation == value->generation && output.document_id == value->document_id;
+      };
+      if (!target || !current_source(value) || !delivery_current()) {
+        observation.cancel(input_trace::reason::stale_generation);
+        continue;
+      }
       {
         std::lock_guard<std::mutex> lock(value->mutex);
         if (value->stop_requested || value->current != state::phase::mounted
-            || output.generation != value->generation || output.document_id != value->document_id) continue;
+            || output.generation != value->generation || output.document_id != value->document_id) {
+          observation.cancel(value->stop_requested ? input_trace::reason::stopped : input_trace::reason::stale_generation);
+          continue;
+        }
       }
-      const auto target = value->core; // Keep the actual STA target alive until Post returns.
-      if (!target) continue;
       input_trace::event delivered;
       delivered.point = input_trace::stage::bridge_response;
       delivered.task_id = output.trace_task;
@@ -1758,19 +1939,55 @@ void webview2_adapter::pump() {
         const detail::trace_duration serialization_cost(input_trace::duration_metric::serialization);
         wire = wide(serialize_output(output));
       }
-      check(target->PostWebMessageAsJson(wire.c_str()), "Deliver native response");
+      if (!delivery_current()) {
+        observation.cancel(input_trace::reason::stale_generation);
+        continue;
+      }
+      const auto posted = target->PostWebMessageAsJson(wire.c_str());
+      if (!delivery_current()) {
+        observation.cancel(input_trace::reason::stale_generation);
+        continue;
+      }
+      if (FAILED(posted)) observation.cancel(input_trace::reason::post_failed);
+      check(posted, "Deliver native response");
+      bool became_ready = false;
       {
         std::lock_guard<std::mutex> lock(value->mutex);
         if (output.ready && !value->stop_requested && value->current == state::phase::mounted
-            && output.generation == value->generation && output.document_id == value->document_id)
+            && output.generation == value->generation && output.document_id == value->document_id) {
+          became_ready = !value->application_ready;
           value->application_ready = true;
+        }
       }
+      if (became_ready) wake_owner(value); // Readiness is still observable through the public Host notice.
+      observation.finished = true; // COM returned successfully; no page/pixel claim.
     }
-    {
+    if (!output_drain.entered()) {
+      // Preserve the original empty-pump tail check: a producer may have
+      // enqueued after the empty observation and failed its first native post.
       std::lock_guard<std::mutex> lock(value->mutex);
-      if (!value->outputs.empty()) wake_owner(value);
+      if (!value->outputs.empty()) wake_remaining_outputs_locked(value);
     }
   } catch (const std::exception& exception) { fail(value, exception.what()); }
+}
+}  // namespace
+
+void webview2_adapter::pump() {
+  const auto value = state_;
+  // Only the public Host notification acknowledges this independent queue bit.
+  value->wake_pending.store(false, std::memory_order_release);
+  // Keep the original wrong-thread no-op; registration retirement belongs to
+  // this UI owner. Workers retain it under the same output mutex.
+  if (GetCurrentThreadId() != value->ui_thread) return;
+  detail::owner_continuation_registration* continuation = nullptr;
+  {
+    std::lock_guard<std::mutex> lock(value->mutex);
+    continuation = value->owner_continuation.get();
+  }
+  // No reentrant call between this handoff and service_legacy's first Pimpl
+  // pin. The service then uses only that retained state, even if COM closes us.
+  if (continuation && continuation->service_legacy()) return;
+  pump_owner_state(value);
 }
 bool webview2_adapter::document_ready() const noexcept { return state_->current == state::phase::mounted && state_->document_ready; }
 bool webview2_adapter::application_ready() { return state_->current == state::phase::mounted && state_->application_ready; }

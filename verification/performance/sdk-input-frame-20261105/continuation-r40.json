@@ -1,0 +1,97 @@
+{
+  "schema": "soui.sdk-input-frame-continuation-r40/v1",
+  "recordedLocalDate": "2026-11-06",
+  "sdkCandidate": {
+    "version": "0.7.0-preview.4",
+    "sourceSha256": "e1d2dd8b7699930f678e21a77772b8fa4e371f5b67a53937d98470ee1659e87c",
+    "buildId": "18e47fa2-69df-4530-b1f9-365f6b2aec28",
+    "architecture": "x64",
+    "configuration": "Release",
+    "rebuilt": false,
+    "payloadChanged": false
+  },
+  "baseline": {
+    "version": "0.6.0",
+    "sourceSha256": "4b9104883d43acbab96a20f477eb6bd22643bca858c14ea725ac2894a11070c5",
+    "buildId": "e3ecec57-2ec7-48ba-817e-5a749b8e2e17",
+    "runtime": "private-K0-trace-scope-diagnostic",
+    "nodeSha256": "76df23c64507f3e8fa6d9bf1a2417f2ed04b812443511feec582089c80a98253",
+    "releasedBinaryIdentityClaimed": false,
+    "SDKRebuilt": false,
+    "kernelRebuilt": false,
+    "inputToolRebuilt": false,
+    "consumerBuild": {
+      "exit": 0,
+      "elapsedMs": 69681,
+      "translationUnits": 2,
+      "bytes": 1251328,
+      "sha256": "8266533c21aaddd56b9c71cff2dbe449f45454dcb032cd0fa1516e1837b65bbf",
+      "allJobsEmpty": true,
+      "forced": false,
+      "summarySha256": "fc96eac449b1f22e6781ff05ff4092f0713a44a8d8226c217da67234f586cd10"
+    },
+    "versionCases": { "passed": 3, "exit": 0 },
+    "run": "e83827c74fcae98b5cfd3da58178198b",
+    "requestSha256": "a02f360b6116f702429d2f5c0b66a4df4f0afd4f669bac5bb1aada096c43b92b",
+    "host": { "pid": 57328, "birth": "134384318550839252", "exit": 0, "elapsedMs": 10933 },
+    "input": { "pid": 81288, "birth": "134384318648904396", "exit": 0, "elapsedMs": 654 },
+    "controllerExit": 0,
+    "strictV5DiagnosticFull64": true,
+    "count": 64,
+    "nativeRows": 67,
+    "domRows": 66,
+    "getterCalls": 68,
+    "captureSamples": 36,
+    "loss": 0,
+    "allJobsEmpty": true,
+    "forced": false,
+    "exactRequestedCenters": 0,
+    "legacyPrecisePointFailureClosed": false,
+    "formalPerformanceQualified": false,
+    "actualIndependentReview": {
+      "archiveRelativePath": "repair-r40-matched-baseline-r1/entry-r1/actual-baseline-full64-review-r1.json",
+      "sha256": "f28d86507e0a2cef126fb3917b4400a2317699edb9a670728c5737c55c9e888c"
+    }
+  },
+  "diagnosticP95Ms": {
+    "sampleCountPerSide": 64,
+    "estimator": "nearest-rank",
+    "baseline": { "T1ToT3": 1.1096, "T3ToNormalT4": 0.3988, "T1ToFirstPositiveCaptureEndUpper": 35.3206 },
+    "candidate": { "T1ToT3": 0.6111, "T3ToNormalT4": 0.3664, "T1ToFirstPositiveCaptureEndUpper": 35.0122 },
+    "differenceIsQualifiedBenefit": false,
+    "measurementTaxQualified": false,
+    "formalNoiseQualified": false,
+    "physicalT8": null
+  },
+  "candidateOfflineFramePhases": {
+    "newNativeRun": false,
+    "inputCount": 64,
+    "distinctSoftwareFrames": 44,
+    "rejected": 0,
+    "T1ToSubmitP95Ms": 17.0821,
+    "normalT4ToProcessedP95Ms": 12.0109,
+    "normalT4ToSubmitP95Ms": 16.7785,
+    "inputWeightedProcessedToSubmitP95Ms": 9.7617,
+    "distinctFrameProcessedToSubmitP95Ms": 10.8939,
+    "distinctFrameActivatedToSubmitP95Ms": 1.0356,
+    "pixelFrameIdentityProven": false,
+    "delayedTaskDueObserved": false,
+    "lineage": {
+      "archiveRelativePath": "repair-r40-matched-baseline-r1/current64-software-frame-lineage-r1.json",
+      "sha256": "12b60cabf2646362622d5f2b599e94b5d958efede475257f9965105512c282c2"
+    },
+    "derived": {
+      "archiveRelativePath": "repair-r40-matched-baseline-r1/current64-derived-frame-phases-r1.json",
+      "sha256": "b42b9f4182fb3a81fc1be8c046c4613ead6bb5002368fb8bbd3f0d764a90d094"
+    },
+    "independentReview": {
+      "archiveRelativePath": "repair-r40-matched-baseline-r1/current64-frame-phase-independent-review-r1.json",
+      "sha256": "5ebe551f7b671f37dab0a52fa2df9f1b7089faa17334de028d10ffe3945622b0"
+    }
+  },
+  "unchangedFrameMatrixRepeated": false,
+  "inputLatencyVerified": false,
+  "performanceVerified": false,
+  "releaseReady": false,
+  "wholeGoalComplete": false
+}

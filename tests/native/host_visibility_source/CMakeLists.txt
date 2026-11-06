@@ -1,4 +1,15 @@
 # Production fragments retain their original UTF-8 bytes; explicit dependencies are faked.
+if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+  cmake_minimum_required(VERSION 3.24)
+  project(SouiHostVisibilitySourceRegression LANGUAGES CXX)
+  enable_testing()
+endif()
+if(NOT WIN32 OR NOT MSVC)
+  message(FATAL_ERROR "Host visibility source regressions require Windows and MSVC")
+endif()
+if(NOT DEFINED SOUI_DISTRIBUTION_ROOT OR SOUI_DISTRIBUTION_ROOT STREQUAL "")
+  get_filename_component(SOUI_DISTRIBUTION_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/../../.." ABSOLUTE)
+endif()
 find_program(NODE_EXECUTABLE node REQUIRED)
 set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
   "${CMAKE_CURRENT_SOURCE_DIR}/generate.cjs"

@@ -16,6 +16,14 @@ const previousPeerRange = '>=0.4.0-0 <0.5.0 || >=0.5.0-0 <0.6.0';
 const mitPeerRange = '>=0.4.0-0 <0.5.0 || >=0.5.0-0 <0.5.1 || >=0.5.1-0 <0.6.0';
 const mainPreviewPeerRange = mitPeerRange + ' || 0.6.0-preview.3';
 const peerRange = mainPreviewPeerRange + ' || 0.6.0';
+const performancePreviewPeerRanges = new Map([
+  ['0.7.0-preview.1', peerRange + ' || 0.7.0-preview.1'],
+  ['0.7.0-preview.2', peerRange + ' || 0.7.0-preview.1 || 0.7.0-preview.2'],
+    ['0.7.0-preview.3', peerRange + ' || 0.7.0-preview.1 || 0.7.0-preview.2 || 0.7.0-preview.3'],
+    ['0.7.0-preview.4', peerRange + ' || 0.7.0-preview.1 || 0.7.0-preview.2 || 0.7.0-preview.3 || 0.7.0-preview.4'],
+    ['0.7.0-preview.5', peerRange + ' || 0.7.0-preview.1 || 0.7.0-preview.2 || 0.7.0-preview.3 || 0.7.0-preview.4 || 0.7.0-preview.5'],
+    ['0.7.0-preview.6', peerRange + ' || 0.7.0-preview.1 || 0.7.0-preview.2 || 0.7.0-preview.3 || 0.7.0-preview.4 || 0.7.0-preview.5 || 0.7.0-preview.6'],
+]);
 const previewPeerRanges = new Map([
   ['0.6.0-preview.1', previousPeerRange + ' || 0.6.0-preview.1'],
   ['0.6.0-preview.2', previousPeerRange + ' || 0.6.0-preview.2'],
@@ -46,6 +54,7 @@ function metadata(root, version = versionOf(root)) {
     /^0\.[45]\.0-(preview|rc)\.(0|[1-9][0-9]*)$/.test(version);
   const acceptsMitPeer = acceptsPreviousPeer || /^0\.5\.1-(preview|rc)\.(0|[1-9][0-9]*)$/.test(version);
   const previewPeer = previewPeerRanges.get(version);
+  const performancePeer = performancePreviewPeerRanges.get(version);
   for (const entry of packages) {
     const meta = read(root, `${entry.root}/package.json`), lock = read(root, `${entry.root}/package-lock.json`);
     if (meta.name !== entry.name || meta.version !== version || lock.version !== version ||
@@ -59,11 +68,12 @@ function metadata(root, version = versionOf(root)) {
         (acceptsPreviousPeer && (nativePeer === previousPeerRange || nativePeer === previewPeerRanges.get('0.6.0-preview.1'))) ||
         (acceptsMitPeer && [mitPeerRange, mainPreviewPeerRange, peerRange].includes(nativePeer)) ||
         (version === '0.6.0-preview.3' && nativePeer === mainPreviewPeerRange) ||
-        (version === '0.6.0' && nativePeer === peerRange);
+        (version === '0.6.0' && nativePeer === peerRange) ||
+        (performancePeer !== undefined && nativePeer === performancePeer);
       const lockPeers = lock.packages[''].peerDependencies;
       // Preserve old producer spellings/lock shapes. Only the exact p9 preview
       // contracts from .3 onward and the new stable contract require root peers.
-      const requiresLockPeers = version === '0.6.0' || (nativePeer === previewPeer &&
+      const requiresLockPeers = version === '0.6.0' || performancePeer !== undefined || (nativePeer === previewPeer &&
         ['0.6.0-preview.3', '0.6.0-preview.4', '0.6.0-preview.5', '0.6.0-preview.6', '0.6.0-preview.7', '0.6.0-preview.8', '0.6.0-preview.9'].includes(version));
       const matchingLockPeers = lockPeers === undefined ? !requiresLockPeers :
         lockPeers && typeof lockPeers === 'object' && !Array.isArray(lockPeers) &&

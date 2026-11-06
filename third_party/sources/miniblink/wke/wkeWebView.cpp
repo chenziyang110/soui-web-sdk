@@ -161,20 +161,24 @@ bool CWebView::paintCallbacksDrained() const
     std::lock_guard<std::mutex> lock(runtime.mutex);
     return m_paintLifetime->policy.active == 0;
 }
-void CWebView::serviceDeferredPaintCloses()
+bool CWebView::serviceDeferredPaintCloses(unsigned long long deadlineQpc, unsigned long long qpcFrequency)
 {
     if (!paintOwner())
-        return;
+        return false;
     static content::PaintCloseServiceCursor<wkeWebView> cursor;
+    static size_t remaining = 0; // The interrupted finite sweep, not a count of live work.
     if (!cursor.enterService())
-        return;
+        return false;
     struct ServiceExit {
         content::PaintCloseServiceCursor<wkeWebView>& cursor;
         ~ServiceExit() { cursor.leaveService(); }
     } serviceExit{cursor};
-    const size_t budget = (std::min)(size_t(32), g_liveWebViews.size());
-    for (size_t count = 0; count < budget && !g_liveWebViews.empty(); ++count) {
+    const bool bounded = qpcFrequency != 0;
+    if (!bounded || !remaining)
+        remaining = (std::min)(size_t(32), g_liveWebViews.size());
+    while (remaining && !g_liveWebViews.empty()) {
         CWebView* const target = cursor.next(g_liveWebViews);
+        --remaining; // Retire this visit before any deleting or reentrant callout.
         const auto state = target->m_paintLifetime;
         PaintKind kind = PaintKind::none;
         {
@@ -187,7 +191,16 @@ void CWebView::serviceDeferredPaintCloses()
             invokePaintClose(target, kind);
         else
             target->webPage()->retryRejectedDrawWake();
+        if (bounded) {
+            LARGE_INTEGER now;
+            if (!QueryPerformanceCounter(&now) || now.QuadPart < 0
+                || static_cast<unsigned long long>(now.QuadPart) >= deadlineQpc)
+                break; // One live visit remains possible even at an expired cutoff.
+        }
     }
+    if (g_liveWebViews.empty() || !bounded)
+        remaining = 0;
+    return remaining != 0;
 }
 bool CWebView::preparePaintShutdown()
 {

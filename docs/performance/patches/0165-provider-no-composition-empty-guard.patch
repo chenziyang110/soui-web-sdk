@@ -1,0 +1,15 @@
+diff --git a/third_party/sources/miniblink/third_party/WebKit/Source/core/editing/InputMethodController.cpp b/third_party/sources/miniblink/third_party/WebKit/Source/core/editing/InputMethodController.cpp
+index 1d2150c..6469830 100644
+--- a/third_party/sources/miniblink/third_party/WebKit/Source/core/editing/InputMethodController.cpp
++++ b/third_party/sources/miniblink/third_party/WebKit/Source/core/editing/InputMethodController.cpp
+@@ -208,6 +208,10 @@ bool InputMethodController::finishComposition(const String& text, FinishComposit
+ 
+ void InputMethodController::setComposition(const String& text, const Vector<CompositionUnderline>& underlines, unsigned selectionStart, unsigned selectionEnd)
+ {
++    // Empty requests clear marked text, never an ordinary selection.
++    if (text.isEmpty() && !hasComposition())
++        return;
++
+     Editor::RevealSelectionScope revealSelectionScope(&editor());
+ 
+     // Updates styles before setting selection for composition to prevent

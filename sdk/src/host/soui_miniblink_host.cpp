@@ -2,14 +2,20 @@
 #include <soui/host/window_chrome_script.h>
 #include <soui/runtime/host/trusted_document.h>
 #include <soui/runtime/services/desktop/window_commands.h>
-#include "bridge_pending_script.h"
+#include "bridge_script_source.h"
 #include "bridge_request_budget.h"
 #include "engine_admission.h"
+#include "provider_owner_deadline.h"
 #include "input_mailbox.h"
 #include "input_sequence.h"
 #include "applied_input_identity.h"
 #include "host_visibility_policy.h"
 #include "host_frame_policy.h"
+#include "frame_policy_negotiation.h"
+#include "miniblink_request_route.h"
+#include "miniblink_admission_metadata.h"
+#include "native_bridge_phase_observation.h"
+#include <soui/host/frame_pacer.h>
 #include "input_trace_hooks.h"
 #include "cursor_broker.h"
 #include "main_context_gate.h"
@@ -40,6 +46,7 @@
 #include <fstream>
 #include <functional>
 #include <future>
+#include <limits>
 #include <regex>
 #include <stdexcept>
 #include <string_view>
@@ -79,6 +86,69 @@ namespace {
 
 // Never reset: a later mount cannot make an old native lookup current again.
 std::atomic<std::uint64_t> native_context_lookup_revision{0};
+
+struct miniblink_phase_clock final {
+  static std::uint64_t qpc() noexcept { return input_trace::now_qpc(); }
+  static std::uint32_t thread_id() noexcept {
+#ifdef _WIN32
+    return GetCurrentThreadId();
+#else
+    return 0;
+#endif
+  }
+};
+using miniblink_phase_recorder = detail::basic_native_phase_recorder<miniblink_phase_clock>;
+using miniblink_phase_scope = detail::basic_native_phase_scope<miniblink_phase_clock>;
+
+std::uint64_t reserve_native_phase_incarnation() noexcept {
+  if constexpr (!std::atomic<std::uint64_t>::is_always_lock_free) return 0;
+  static std::atomic<std::uint64_t> next{1};
+  auto value = next.load();
+  for (unsigned attempt = 0; attempt < 3; ++attempt) {
+    if (!value || value == (std::numeric_limits<std::uint64_t>::max)()) return 0;
+    if (next.compare_exchange_strong(value, value + 1)) return value;
+  }
+  return 0; // Cold concurrent allocation is unavailable, never an unbounded spin.
+}
+
+std::string native_bridge_phase_json(const detail::native_phase_snapshot& value,
+    bool enabled, bool closing, const char* status) {
+  using json = nlohmann::json;
+  const auto known = [](std::uint64_t number) -> json {
+    return number ? json(std::to_string(number)) : json(nullptr);
+  };
+  json result{{"schema", "soui.miniblink-native-phases/v1"},
+      {"requested", true}, {"enabled", enabled}, {"status", status},
+      {"usable", value.usable}, {"coherent", value.coherent},
+      {"observerIncarnation", known(value.observer_incarnation)},
+      {"qpcFrequency", known(value.qpc_frequency)},
+      {"captureBeginQpc", known(value.capture_begin_qpc)},
+      {"captureEndQpc", known(value.capture_end_qpc)},
+      {"publicationSequence", value.coherent ? json(std::to_string(value.publication_sequence)) : json(nullptr)},
+      {"snapshotAttempts", value.snapshot_attempts}, {"faultMask", value.faults},
+      {"counterSaturated", (value.faults & detail::native_phase_counter_saturated) != 0},
+      {"clockInvalid", (value.faults & detail::native_phase_clock_invalid) != 0},
+      {"ownerViolation", (value.faults & detail::native_phase_owner_violation) != 0},
+      {"sequenceExhausted", (value.faults & detail::native_phase_sequence_exhausted) != 0},
+      {"closing", closing}, {"inclusiveWallTime", true},
+      {"wholeHostAtomic", false}, {"quiescent", false}, {"phases", nullptr}};
+  if (value.usable && value.coherent) {
+    result["phases"] = json::array();
+    for (std::size_t n = 0; n < detail::native_phase_count; ++n) {
+      const auto& phase = value.phases[n];
+      json row{{"phase", detail::native_phase_name(static_cast<detail::native_bridge_phase>(n))},
+          {"started", std::to_string(phase.started)}, {"completed", std::to_string(phase.completed)},
+          {"returned", std::to_string(phase.returned)}, {"unwound", std::to_string(phase.unwound)},
+          {"inFlight", std::to_string(phase.in_flight)}, {"nestedStarts", std::to_string(phase.nested_starts)},
+          {"sumElapsedQpc", std::to_string(phase.sum_elapsed_qpc)}, {"buckets", json::array()}};
+      for (const auto count : phase.buckets) row["buckets"].push_back(std::to_string(count));
+      result["phases"].push_back(std::move(row));
+    }
+  }
+  auto encoded = result.dump();
+  if (encoded.size() > 8192) throw std::length_error("Native phase diagnostics exceed 8 KiB.");
+  return encoded;
+}
 
 // Owner-thread reentrancy guard: native lifecycle calls may dispatch window
 // messages while waiting. This does not make host calls thread-safe.
@@ -390,30 +460,7 @@ struct pending_event {
 };
 
 std::string json_string_literal(std::string_view value) {
-  std::string result;
-  result.reserve(value.size() + 2U);
-  result.push_back('"');
-  for (const unsigned char character : value) {
-    switch (character) {
-      case '\\': result += "\\\\"; break;
-      case '"': result += "\\\""; break;
-      case '\r': result += "\\r"; break;
-      case '\n': result += "\\n"; break;
-      case '\t': result += "\\t"; break;
-      default:
-        if (character < 0x20U) {
-          static constexpr char hex[] = "0123456789abcdef";
-          result += "\\u00";
-          result.push_back(hex[(character >> 4U) & 0x0FU]);
-          result.push_back(hex[character & 0x0FU]);
-        } else {
-          result.push_back(static_cast<char>(character));
-        }
-        break;
-    }
-  }
-  result.push_back('"');
-  return result;
+  return detail::bridge_json_string_literal(value);
 }
 
 std::filesystem::path canonical_path(const std::filesystem::path& value) {
@@ -448,8 +495,7 @@ std::string bridge_error(const std::string& id, const char* code, const char* me
 }
 
 std::string bridge_resolution_script(const std::string& id, const std::string& response) {
-  return "(function(){var p=window.__souiBridgePending;var id=" + json_string_literal(id)
-      + ";if(!p||!p[id])return;return p[id].finish(" + json_string_literal(response) + ");})()";
+  return detail::bridge_resolution_source(id, response);
 }
 
 std::uint32_t bridge_wait_timeout(const nlohmann::json& packet) {
@@ -752,11 +798,32 @@ host_result acquire_runtime(const host_config& config, engine_thread*& thread, v
 #ifdef WKE_INPUT_UI_ABI_VERSION
       if (wkeGetInputUiApi) {
         const auto* scheduling = wkeGetInputUiApi(WKE_INPUT_UI_ABI_VERSION);
-        if (scheduling && scheduling->abiVersion == WKE_INPUT_UI_ABI_VERSION
-            && scheduling->structSize >= offsetof(wkeInputUiApi, serviceOwnerOpportunity) + sizeof(scheduling->serviceOwnerOpportunity)
-            && (scheduling->capabilities & WKE_INPUT_UI_CAP_OWNER_OPPORTUNITY) && scheduling->serviceOwnerOpportunity) {
-          const auto opportunity = scheduling->serviceOwnerOpportunity;
-          if (!engine_owner->set_owner_opportunity([opportunity] { opportunity(); })) return false;
+        const auto callbacks = detail::select_provider_owner_callbacks(scheduling);
+        if (callbacks.legacy) {
+          std::function<bool(std::chrono::steady_clock::time_point)> bounded;
+          if (callbacks.bounded) {
+            bounded = [callbacks, fallback_reported = false](std::chrono::steady_clock::time_point deadline) mutable {
+              const auto serviced = detail::service_provider_owner_until(callbacks, deadline,
+                  [](std::uint64_t& qpc_before, std::uint64_t& frequency,
+                      std::chrono::steady_clock::time_point& steady_after) noexcept {
+                    LARGE_INTEGER qpc{}, qpc_frequency{};
+                    if (!QueryPerformanceFrequency(&qpc_frequency) || qpc_frequency.QuadPart <= 0
+                        || !QueryPerformanceCounter(&qpc) || qpc.QuadPart < 0) return false;
+                    steady_after = std::chrono::steady_clock::now();
+                    qpc_before = static_cast<std::uint64_t>(qpc.QuadPart);
+                    frequency = static_cast<std::uint64_t>(qpc_frequency.QuadPart);
+                    return true;
+                  });
+              if (!fallback_reported && (serviced.status == detail::provider_owner_service_status::bridge_fallback
+                  || serviced.status == detail::provider_owner_service_status::provider_fallback)) {
+                OutputDebugStringA("SOUI: provider shared deadline unavailable; legacy owner opportunity used.\n");
+                fallback_reported = true;
+              }
+              return serviced.work_remaining;
+            };
+          } else OutputDebugStringA("SOUI: loaded kernel has no provider shared deadline; legacy owner opportunity retained.\n");
+          if (!detail::engine_admission::install_owner_opportunity(*engine_owner,
+              [opportunity = callbacks.legacy] { opportunity(); }, std::move(bounded))) return false;
         }
       }
 #endif
@@ -853,6 +920,21 @@ dynamic_miniblink_adapter* adapter_for_context(jsExecState state) {
 #endif
 
 }  // namespace
+
+namespace detail {
+struct miniblink_native_admission_access final {
+  static std::shared_ptr<miniblink_phase_recorder> phase_recorder(
+      const dynamic_miniblink_adapter& adapter) noexcept;
+  static void append_phase_diagnostics(const dynamic_miniblink_adapter& adapter,
+      std::string& diagnostics, bool closing) noexcept;
+  static host_result submit(dynamic_miniblink_adapter& adapter,
+      const miniblink_admission_metadata& metadata,
+      bool native_user_gesture, std::uint64_t context_receipt) {
+    return adapter.try_enqueue_bridge_message_impl(std::move(metadata.request()),
+        native_user_gesture, context_receipt, &metadata);
+  }
+};
+}  // namespace detail
 
 host_result shutdown_miniblink_runtime() {
 #ifdef _WIN32
@@ -1216,7 +1298,61 @@ struct dynamic_miniblink_adapter::event_dispatch_lifetime {
   std::mutex mutex;
   dynamic_miniblink_adapter* adapter{nullptr};
   std::shared_ptr<detail::owned_local_resource_session> local_origin;
+  // UI initializes once before the mount is published to Engine. Only the
+  // metrics block (never this lifetime/adapter) is retained by measured scopes.
+  detail::native_phase_option bridge_phase_option{detail::native_phase_option::disabled};
+  const char* bridge_phase_unavailable{"observer_unavailable"};
+  std::uint32_t bridge_phase_initial_faults{};
+  std::shared_ptr<miniblink_phase_recorder> bridge_phases;
+  // Engine-only negotiation state. Per-mount storage fences old views without
+  // exposing policy layout in the public adapter class.
+  detail::frame_policy_attempts frame_policy;
+  wkeInputUiFramePolicy frame_backend{};
+  std::uintptr_t frame_monitor{};
+  int frame_display{}, frame_requested{-1}, frame_effective{-1};
+  unsigned frame_feedback_limit{~0U};
+  bool frame_feedback_supported{};
+  std::atomic<bool> frame_display_dirty{true};
+  // Snapshot shares the lifetime mutex and is constructed only on changes.
+  std::string frame_report;
+  int frame_report_pulse{-1}, frame_report_desired{-1}, frame_report_effective{-1}, frame_report_display{-1};
+  int frame_report_actual{-2}, frame_report_result{-1}, frame_report_backend{-1};
+  unsigned frame_report_attempts{~0U}, frame_report_mode{~0U};
+  bool frame_report_feedback{}, frame_report_negotiated{};
 };
+
+std::shared_ptr<miniblink_phase_recorder>
+detail::miniblink_native_admission_access::phase_recorder(
+    const dynamic_miniblink_adapter& adapter) noexcept {
+  return adapter.event_lifetime_ ? adapter.event_lifetime_->bridge_phases : nullptr;
+}
+
+void detail::miniblink_native_admission_access::append_phase_diagnostics(
+    const dynamic_miniblink_adapter& adapter, std::string& diagnostics, bool closing) noexcept {
+  const auto* lifetime = adapter.event_lifetime_.get(); // Existing UI-owner contract.
+  if (!lifetime || lifetime->bridge_phase_option == native_phase_option::disabled) return;
+  const auto metrics = lifetime->bridge_phases;
+  try {
+    native_phase_snapshot value;
+    value.faults = lifetime->bridge_phase_initial_faults;
+    const char* status = lifetime->bridge_phase_option == native_phase_option::invalid
+        ? "configuration_invalid" : lifetime->bridge_phase_unavailable;
+    if (metrics) {
+      value = metrics->snapshot();
+      switch (value.status) {
+        case native_phase_status::ready: status = "ready"; break;
+        case native_phase_status::busy: status = "busy"; break;
+        case native_phase_status::not_started: status = "not_started"; break;
+        default: status = "unavailable"; break;
+      }
+    }
+    const auto extension = native_bridge_phase_json(value, static_cast<bool>(metrics), closing, status);
+    diagnostics += std::string{",native_phases="} + extension;
+  } catch (...) {
+    // Allocation/formatting failure must not fail the product getter. A frozen
+    // requested-on consumer treats a missing extension as unavailable, not zero.
+  }
+}
 
 engine_thread* detail::engine_admission::host_engine(dynamic_miniblink_adapter& adapter) noexcept {
   // The immutable construction owner must be checked before plain lifecycle fields.
@@ -1379,6 +1515,8 @@ dynamic_miniblink_adapter::~dynamic_miniblink_adapter() {
 }
 
 host_result dynamic_miniblink_adapter::mount(const host_config& config) {
+  if (config.resource_policy != local_resource_policy::strict)
+    return failure("E_RESOURCE_POLICY_UNSUPPORTED", "Miniblink requires the strict local resource policy.");
 #ifdef _WIN32
   if (config.owner_window == nullptr)
     return failure("E_HOST_WINDOW_MISSING", "A SOUI host window is required for the child WebView.");
@@ -1416,6 +1554,22 @@ host_result dynamic_miniblink_adapter::mount(const host_config& config) {
   const bool owned_local = event_lifetime_ && event_lifetime_->owned_local_resources;
   event_lifetime_ = std::make_shared<event_dispatch_lifetime>(owned_local);
   event_lifetime_->adapter = this;
+  char bridge_phase_option[2] = {};
+  const auto bridge_phase_length = GetEnvironmentVariableA("SOUI_DIAGNOSTIC_BRIDGE_PHASES",
+      bridge_phase_option, sizeof(bridge_phase_option));
+  event_lifetime_->bridge_phase_option = bridge_phase_length < sizeof(bridge_phase_option)
+      ? detail::parse_native_phase_option(std::string_view(bridge_phase_option, bridge_phase_length))
+      : detail::native_phase_option::invalid;
+  if (event_lifetime_->bridge_phase_option == detail::native_phase_option::enabled) {
+    if constexpr (std::atomic<std::uint64_t>::is_always_lock_free) {
+      if (const auto incarnation = reserve_native_phase_incarnation()) {
+        try { event_lifetime_->bridge_phases = std::make_shared<miniblink_phase_recorder>(incarnation); }
+        catch (...) { event_lifetime_->bridge_phase_unavailable = "allocation_failed"; }
+      } else event_lifetime_->bridge_phase_initial_faults = detail::native_phase_incarnation_invalid;
+    } else {
+      event_lifetime_->bridge_phase_initial_faults = detail::native_phase_atomic_unavailable;
+    }
+  }
   if (owned_local) {
     auto origin = std::make_shared<detail::owned_local_resource_session>();
     event_lifetime_->local_origin = origin;
@@ -1628,6 +1782,9 @@ host_result dynamic_miniblink_adapter::mount_on_engine(const host_config& config
       compositor_rate_option[0] == '1';
   configured_wake_interval_ = -1;
   configured_draw_min_interval_ = -1;
+  configured_draw_frame_rate_ = -1;
+  resource_wake_failed_ = false;
+  resource_status_query_at_ = {};
   configured_main_frame_rate_ = -1;
 #ifdef SOUI_SOURCE_KERNEL_HOST
   char main_frame_option[2] = {};
@@ -1696,8 +1853,12 @@ host_result dynamic_miniblink_adapter::mount_on_engine(const host_config& config
     if (!cursor_broker_) { wkeDestroyWebView(view); webview_ = nullptr; }
     return failure("E_INTERACTION_ENDPOINT", "Miniblink could not create the compositor interaction endpoint.");
   }
-  if (!interaction_api->configurePresentation(interaction_endpoint_,
-          WKE_INTERACTION_PRESENT_DIRECT_HWND)) {
+  auto presentation_flags = WKE_INTERACTION_PRESENT_DIRECT_HWND;
+#if !defined(SOUI_BRIDGE_BENCHMARK)
+  if (interaction_api->capabilities & WKE_INTERACTION_CAP_ON_DEMAND_UI_MIRROR)
+    presentation_flags |= WKE_INTERACTION_PRESENT_UI_MIRROR_ON_DEMAND;
+#endif
+  if (!interaction_api->configurePresentation(interaction_endpoint_, presentation_flags)) {
     interaction_api->releaseEndpoint(interaction_endpoint_);
     interaction_endpoint_ = nullptr;
     if (!cursor_broker_) { wkeDestroyWebView(view); webview_ = nullptr; }
@@ -1736,6 +1897,12 @@ host_result dynamic_miniblink_adapter::finish_mount_on_engine(const host_config&
   } admission{bridge_accepting_};
   const auto view = static_cast<wkeWebView>(webview_);
   if (!view) return failure("E_WEBVIEW_CREATE", "The startup view is unavailable.");
+  if (event_lifetime_ && event_lifetime_->bridge_phases) {
+    LARGE_INTEGER frequency{};
+    const bool known = QueryPerformanceFrequency(&frequency) && frequency.QuadPart > 0;
+    (void)event_lifetime_->bridge_phases->bind_on_current_thread(
+        known ? static_cast<std::uint64_t>(frequency.QuadPart) : 0);
+  }
   wkeSetNavigationToNewWindowEnable(view, false);
   wkeSetContextMenuEnabled(view, false);
   if (cursor_broker_) wkeOnDocumentReady2(view, &main_document_ready_callback, this);
@@ -2278,6 +2445,11 @@ host_result dynamic_miniblink_adapter::close_cursor_endpoint() {
 }
 
 void dynamic_miniblink_adapter::unmount_on_engine() {
+  if (event_lifetime_) {
+    event_lifetime_->frame_policy.invalidate();
+    event_lifetime_->frame_feedback_limit = 0;
+    if (bridge_adapter_) (void)bridge_adapter_->set_backend_frame_rate_limit(0);
+  }
   detail::host_visibility_policy::invalidate(host_visibility_dirty_, host_visibility_applied_);
   engine_document_confirmed_ = false;
   publish_applied_input_identity_on_engine();
@@ -2733,6 +2905,19 @@ void dynamic_miniblink_adapter::sync_cursor_input_generation() noexcept {
 void dynamic_miniblink_adapter::pump_on_engine() {
 #ifdef _WIN32
   if (unmount_requested_.load(std::memory_order_acquire)) return;
+  const auto* status_api = static_cast<const wkeInteractionApi*>(interaction_api_);
+  const auto status_now = std::chrono::steady_clock::now();
+  if (webview_ && !resource_wake_failed_.load(std::memory_order_acquire) && status_api &&
+      (status_api->capabilities & WKE_INTERACTION_CAP_RESOURCE_WAKE_STATUS) != 0 &&
+      status_now - resource_status_query_at_ >= std::chrono::milliseconds(250)) {
+    resource_status_query_at_ = status_now;
+    const char* status = wkeGetDebugConfig ? static_cast<const char*>(wkeGetDebugConfig(
+        static_cast<wkeWebView>(webview_), "resourceWakeStatus")) : nullptr;
+    if (!status || std::string_view(status) == "notification-failed") {
+      resource_wake_failed_.store(true, std::memory_order_release);
+      application_ready_.store(false, std::memory_order_release);
+    }
+  }
   apply_host_visibility_on_engine();
   if (event_lifetime_ && event_lifetime_->local_origin)
     event_lifetime_->local_origin->observe_on_engine();
@@ -2750,8 +2935,8 @@ void dynamic_miniblink_adapter::pump_on_engine() {
           : 0;
       static_cast<bridge_adapter*>(bridge_adapter_)->set_present_count(present_count);
     }
-    const int rate = bridge_adapter_ ? static_cast<bridge_adapter*>(bridge_adapter_)->active_frame_rate() : 60;
-    const bool high_rate = rate > 60;
+    int rate = bridge_adapter_ ? static_cast<bridge_adapter*>(bridge_adapter_)->active_frame_rate() : 60;
+    const int pulse_rate = rate;
     char cpu_interval_override[16] = {};
     const DWORD cpu_interval_length = GetEnvironmentVariableA("SOUI_CPU_DRAW_INTERVAL_MS",
         cpu_interval_override, sizeof(cpu_interval_override));
@@ -2766,19 +2951,145 @@ void dynamic_miniblink_adapter::pump_on_engine() {
     }
 #endif
 #ifdef SOUI_SOURCE_KERNEL_HOST
-    const int main_rate = detail::host_frame_policy::main_rate(rate, fractional_frame_policy, experimental_main_frame_scheduler_,
+    int main_rate = detail::host_frame_policy::main_rate(rate, fractional_frame_policy, experimental_main_frame_scheduler_,
         gpu_active, has_cpu_interval_override, experimental_compositor_rate_);
-    if (managed_frame_timing_ && wkeSetDebugConfig) {
-      if (configured_main_frame_rate_ != main_rate) {
-        const auto value = std::to_string(main_rate);
-        wkeSetDebugConfig(static_cast<wkeWebView>(webview_), "mainFrameRate", value.c_str());
-        configured_main_frame_rate_ = main_rate;
-        // Fractional mode may have cached this number without sending it.
-        // Reapply the actual legacy gate after a controller transition.
+    const auto lifetime = event_lifetime_;
+    if (managed_frame_timing_ && lifetime) {
+      const auto view = webview_;
+      const auto receipt = execution_context_receipt();
+      const auto still_current = [&] {
+        return webview_ == view && event_lifetime_ == lifetime &&
+            !unmount_requested_.load(std::memory_order_acquire) && execution_context_receipt() == receipt;
+      };
+      const auto* api = wkeGetInputUiApi ? wkeGetInputUiApi(WKE_INPUT_UI_ABI_VERSION) : nullptr;
+      const bool negotiated = detail::frame_policy_api_available(api);
+      const bool unified = main_rate > 0 && fractional_frame_policy && !experimental_compositor_rate_
+          && (gpu_active || !has_cpu_interval_override);
+      const unsigned mode = main_rate == 0 ? 0U : unified ? 1U : 2U;
+      const int requested = bridge_adapter_ ? bridge_adapter_->requested_frame_rate() : rate;
+      const auto display_window = static_cast<HWND>(owner_window_ ? owner_window_ : webview_window_);
+      const auto monitor = reinterpret_cast<std::uintptr_t>(MonitorFromWindow(
+          display_window, MONITOR_DEFAULTTONEAREST));
+      const bool display_dirty = lifetime->frame_display_dirty.exchange(false, std::memory_order_acq_rel);
+      if (monitor != lifetime->frame_monitor || lifetime->frame_requested != requested ||
+          lifetime->frame_report_pulse != pulse_rate || display_dirty) {
+        lifetime->frame_display = static_cast<int>(frame_pacer::query_display_refresh(display_window));
+        lifetime->frame_monitor = monitor;
+        lifetime->frame_requested = requested;
+      }
+      const int display = unified ? lifetime->frame_display : 1000;
+      const detail::frame_policy_key key{receipt, reinterpret_cast<std::uintptr_t>(api),
+          api && api->structSize >= offsetof(wkeInputUiApi, capabilities) + sizeof(api->capabilities) ? api->capabilities : 0,
+          api ? api->structSize : 0, api ? api->abiVersion : 0,
+          mode, requested, display, main_rate};
+      const auto started_at = std::chrono::steady_clock::now();
+      if (const auto ticket = lifetime->frame_policy.begin(key, started_at)) {
+        int status = WKE_INPUT_UI_UNAVAILABLE, observed = -1, effective = main_rate;
+        lifetime->frame_effective = -1;
+        if (negotiated) {
+          wkeInputUiFramePolicy snapshot{};
+          snapshot.structSize = sizeof(snapshot);
+          snapshot.abiVersion = WKE_INPUT_UI_FRAME_POLICY_ABI_VERSION;
+          status = api->queryFramePolicy(view, &snapshot);
+          if (!still_current()) return;
+          if (status == WKE_INPUT_UI_OK && detail::valid_frame_policy_snapshot(snapshot)) {
+            lifetime->frame_backend = snapshot;
+            const auto selected = detail::select_frame_policy_rate(requested, display, main_rate,
+                static_cast<int>(snapshot.minRate), static_cast<int>(snapshot.maxRate));
+            effective = selected.effective;
+            lifetime->frame_effective = selected.valid ? selected.effective : -1;
+            observed = static_cast<int>(snapshot.appliedRate);
+            status = selected.valid ? (observed == effective ? WKE_INPUT_UI_OK
+                                        : api->applyFramePolicy(view, static_cast<unsigned>(effective), &snapshot))
+                                    : WKE_INPUT_UI_INVALID;
+            if (!still_current()) return;
+            if (status == WKE_INPUT_UI_OK && detail::valid_frame_policy_snapshot(snapshot)) {
+              lifetime->frame_backend = snapshot;
+              observed = static_cast<int>(snapshot.appliedRate);
+            } else {
+              if (status == WKE_INPUT_UI_OK) status = WKE_INPUT_UI_REJECTED;
+              // apply can fail after a scheduling mutation. Query actual state
+              // without repeating the operation or claiming apply succeeded.
+              snapshot = {};
+              snapshot.structSize = sizeof(snapshot);
+              snapshot.abiVersion = WKE_INPUT_UI_FRAME_POLICY_ABI_VERSION;
+              const auto queried = api->queryFramePolicy(view, &snapshot);
+              if (!still_current()) return;
+              if (queried == WKE_INPUT_UI_OK && detail::valid_frame_policy_snapshot(snapshot)) {
+                lifetime->frame_backend = snapshot;
+                observed = static_cast<int>(snapshot.appliedRate);
+              }
+            }
+          } else if (status == WKE_INPUT_UI_OK) status = WKE_INPUT_UI_REJECTED;
+          const auto completed_at = std::chrono::steady_clock::now();
+          (void)lifetime->frame_policy.complete(ticket, status, effective, observed, completed_at);
+          configured_main_frame_rate_ = lifetime->frame_policy.observed_applied();
+        } else if (wkeSetDebugConfig) {
+          // The matching legacy fractional setter is known to reject >240.
+          // Other unknown legacy paths retain their original selection.
+          effective = fractional_frame_policy ? detail::select_frame_policy_rate(requested, display, main_rate, 30, 240).effective : main_rate;
+          lifetime->frame_effective = effective;
+          const auto value = std::to_string(effective);
+          try {
+            wkeSetDebugConfig(static_cast<wkeWebView>(view), "mainFrameRate", value.c_str());
+          } catch (...) {
+            if (!still_current()) return;
+            const auto completed_at = std::chrono::steady_clock::now();
+            (void)lifetime->frame_policy.complete(ticket, WKE_INPUT_UI_REJECTED, effective, -1, completed_at);
+            return;
+          }
+          if (!still_current()) return;
+          (void)lifetime->frame_policy.complete_legacy(ticket, effective);
+          configured_main_frame_rate_ = -1; // Void setter cannot confirm applied.
+        } else {
+          const auto completed_at = std::chrono::steady_clock::now();
+          (void)lifetime->frame_policy.complete(ticket, status, -1, -1, completed_at);
+        }
         configured_draw_min_interval_ = -1;
+        configured_draw_frame_rate_ = -1;
+      }
+      const auto actual = lifetime->frame_policy.observed_applied();
+      if (negotiated) main_rate = actual >= 0 ? actual : 0;
+      else if (fractional_frame_policy) main_rate = (std::max)(0, lifetime->frame_policy.attempted_rate());
+      if (unified && main_rate > 0) rate = main_rate;
+      const unsigned feedback = negotiated && unified && actual > 0
+          ? lifetime->frame_backend.maxRate : 0U;
+      if (lifetime->frame_feedback_limit != feedback) {
+        lifetime->frame_feedback_limit = feedback;
+        lifetime->frame_feedback_supported = bridge_adapter_ && bridge_adapter_->set_backend_frame_rate_limit(feedback);
+        if (!still_current()) return;
+      }
+      const auto& attempts = lifetime->frame_policy;
+      const int backend_limit = negotiated ? static_cast<int>(lifetime->frame_backend.maxRate) : 0;
+      if (lifetime->frame_report_pulse != pulse_rate || lifetime->frame_report_desired != requested ||
+          lifetime->frame_report_effective != lifetime->frame_effective || lifetime->frame_report_actual != actual ||
+          lifetime->frame_report_display != lifetime->frame_display ||
+          lifetime->frame_report_backend != backend_limit || lifetime->frame_report_feedback != lifetime->frame_feedback_supported ||
+          lifetime->frame_report_negotiated != negotiated ||
+          lifetime->frame_report_result != attempts.last_result() ||
+          lifetime->frame_report_attempts != attempts.attempts() || lifetime->frame_report_mode != mode) {
+        std::lock_guard<std::mutex> lock(lifetime->mutex);
+        lifetime->frame_report = ",frame_mode=" + std::to_string(mode) +
+            ",frame_requested_hz=" + std::to_string(requested) + ",frame_display_limit_hz=" +
+                std::to_string(is_supported_frame_rate(static_cast<unsigned>(lifetime->frame_display)) ? lifetime->frame_display : 60) +
+            ",frame_backend_limit_hz=" + std::to_string(backend_limit) +
+            ",frame_effective_hz=" + std::to_string(lifetime->frame_effective) + ",frame_attempted_hz=" + std::to_string(attempts.attempted_rate()) +
+            ",frame_applied_hz=" + std::to_string(actual) + ",frame_apply_result=" + std::to_string(attempts.last_result()) +
+            ",frame_negotiated=" + (negotiated ? "true" : "false") +
+            ",frame_feedback_supported=" + (lifetime->frame_feedback_supported ? "true" : "false") +
+            ",frame_pulse_synchronized=" + (negotiated && unified && lifetime->frame_feedback_supported &&
+                actual > 0 && pulse_rate == actual ? "true" : "false");
+        lifetime->frame_report_pulse = pulse_rate; lifetime->frame_report_desired = requested;
+        lifetime->frame_report_effective = lifetime->frame_effective; lifetime->frame_report_actual = actual;
+        lifetime->frame_report_display = lifetime->frame_display;
+        lifetime->frame_report_backend = backend_limit; lifetime->frame_report_feedback = lifetime->frame_feedback_supported;
+        lifetime->frame_report_negotiated = negotiated;
+        lifetime->frame_report_result = attempts.last_result(); lifetime->frame_report_attempts = attempts.attempts();
+        lifetime->frame_report_mode = mode;
       }
     }
 #endif
+    const bool high_rate = rate > 60;
     if (managed_frame_timing_ && wkeSetDebugConfig) {
       const int desired = high_rate ? 0 : 5;
       if (configured_wake_interval_ != desired) {
@@ -2807,11 +3118,23 @@ void dynamic_miniblink_adapter::pump_on_engine() {
                                 : ((cpu_high_refresh || rate > 60) && rate > 60
                                     ? detail::host_frame_policy::rounded_interval(rate)
                                     : 17)));
-      if (configured_draw_min_interval_ != interval) {
+      const auto* frame_api = static_cast<const wkeInteractionApi*>(interaction_api_);
+      const bool precise_rate = !fractional_cpu_cadence && !gpu_active && frame_api &&
+          (frame_api->capabilities & WKE_INTERACTION_CAP_PRECISE_FRAME_RATE) != 0 &&
+          interval > 0 && !has_cpu_interval_override;
+      if (precise_rate) {
+        if (configured_draw_frame_rate_ != rate) {
+          const auto value = std::to_string(rate);
+          wkeSetDebugConfig(static_cast<wkeWebView>(webview_), "drawFrameRate", value.c_str());
+          configured_draw_frame_rate_ = rate;
+        }
+        configured_draw_min_interval_ = interval; // Diagnostic approximation of the fractional phase.
+      } else if (configured_draw_min_interval_ != interval || configured_draw_frame_rate_ != -1) {
         const auto value = std::to_string(interval);
         if (!fractional_cpu_cadence)
           wkeSetDebugConfig(static_cast<wkeWebView>(webview_), "drawMinInterval", value.c_str());
         configured_draw_min_interval_ = interval;
+        configured_draw_frame_rate_ = -1;
       }
       if (bridge_adapter_ != nullptr)
         static_cast<bridge_adapter*>(bridge_adapter_)->set_draw_interval(
@@ -2962,10 +3285,12 @@ bool dynamic_miniblink_adapter::post_input(const input_packet& packet) {
 input_admission_result dynamic_miniblink_adapter::post_input_typed(const input_packet& packet) {
   if (unmount_requested_.load(std::memory_order_acquire) || !engine_thread_ || !input_mailbox_)
     return input_admission_result::stopped;
+  if (packet.kind != input_kind::cancel && resource_wake_failed_.load(std::memory_order_acquire))
+    return input_admission_result::stopped;
   const auto mailbox = std::static_pointer_cast<detail::input_mailbox>(input_mailbox_);
-  const auto result = mailbox->post(packet);
-  if (mailbox->pending()) detail::engine_admission::notify_input(*engine_thread_); // Native auto-reset event coalesces notifications.
-  return result;
+  const auto receipt = mailbox->post_with_notification(packet);
+  if (receipt.wake_required) detail::engine_admission::notify_input(*engine_thread_);
+  return receipt.result;
 }
 
 void dynamic_miniblink_adapter::cancel_input_on_engine() {
@@ -3298,6 +3623,10 @@ bool dynamic_miniblink_adapter::handle_native_window_message(
       break;
     case WM_SETTINGCHANGE:
       refresh_wheel_settings();
+      break;
+    case WM_DISPLAYCHANGE:
+    case WM_DPICHANGED:
+      if (event_lifetime_) event_lifetime_->frame_display_dirty.store(true, std::memory_order_release);
       break;
     case WM_NCHITTEST: {
       // The full-client child must not swallow SOUI's native resize border.
@@ -3839,6 +4168,7 @@ host_result dynamic_miniblink_adapter::finish_devtools_retirement() {
 }
 
 bool dynamic_miniblink_adapter::application_ready() {
+  if (resource_wake_failed_.load(std::memory_order_acquire)) return false;
   const auto receipt = execution_context_receipt();
   if (!accepts_execution_context_receipt(receipt)) return false;
 #if defined(SOUI_BRIDGE_BENCHMARK) || defined(SOUI_PERFORMANCE_DIAGNOSTICS)
@@ -3870,20 +4200,35 @@ bool dynamic_miniblink_adapter::application_ready() {
 }
 
 std::string dynamic_miniblink_adapter::application_diagnostics() {
+  const auto failed_diagnostics = [this](std::string value) {
+    detail::miniblink_native_admission_access::append_phase_diagnostics(*this, value,
+        unmount_requested_.load(std::memory_order_acquire));
+    return value;
+  };
+  if (resource_wake_failed_.load(std::memory_order_acquire))
+    return failed_diagnostics("document=failed,render=E_RESOURCE_WAKE,requires_target_recreation=true");
   if (event_lifetime_ && event_lifetime_->local_origin && event_lifetime_->local_origin->failed())
-    return "document=failed,local_resources=" + event_lifetime_->local_origin->terminal_result().code;
-  if (unmount_requested_.load(std::memory_order_acquire)) return "document=waiting,bridge=waiting";
+    return failed_diagnostics("document=failed,local_resources=" + event_lifetime_->local_origin->terminal_result().code);
+  if (unmount_requested_.load(std::memory_order_acquire))
+    return failed_diagnostics("document=waiting,bridge=waiting");
   const auto receipt = execution_context_receipt();
   const bool bridge_ready = accepts_execution_context_receipt(receipt) && application_ready_ &&
       application_ready_receipt_.load(std::memory_order_acquire) == receipt;
   std::string diagnostics = std::string{"document="} + (document_ready() ? "ready" : "waiting") +
          ",bridge=" + (bridge_ready ? "ready" : "waiting") +
          ",draw_interval_ms=" + std::to_string(configured_draw_min_interval_.load()) +
+         ",draw_rate_hz=" + std::to_string(configured_draw_frame_rate_.load()) +
          ",input_recovery_limited=" + (input_recovery_limited_.load(std::memory_order_acquire) ? "true" : "false");
+  if (event_lifetime_) {
+    std::lock_guard<std::mutex> lock(event_lifetime_->mutex);
+    diagnostics += event_lifetime_->frame_report;
+  }
   {
     std::lock_guard<std::mutex> lock(state_mutex_);
     if (!probe_report_.empty()) diagnostics += "," + probe_report_;
   }
+  // Keep the original ,script= JSON as the final suffix for existing readers.
+  detail::miniblink_native_admission_access::append_phase_diagnostics(*this, diagnostics, false);
   char script_diagnostics[2] = {};
   if (engine_thread_ != nullptr &&
       GetEnvironmentVariableA("SOUI_DIAGNOSTIC_SCRIPT", script_diagnostics,
@@ -4292,12 +4637,22 @@ std::string dynamic_miniblink_adapter::handle_message(std::string_view request,
 
 std::string dynamic_miniblink_adapter::handle_message(std::string_view request,
     bool native_user_gesture, std::uint64_t context_receipt) {
+  return handle_message_impl(request, native_user_gesture, context_receipt,
+      detail::miniblink_request_route::unknown);
+}
+
+std::string dynamic_miniblink_adapter::handle_message_impl(std::string_view request,
+    bool native_user_gesture, std::uint64_t context_receipt,
+    detail::miniblink_request_route route) {
   if (!bridge_accepting_.load(std::memory_order_acquire) || !accepts_execution_context_receipt(context_receipt))
     return bridge_error({}, "E_CONTEXT_PENDING", "The native context is not current and completed.");
   if (bridge_adapter_ == nullptr) {
     return R"({"ok":false,"error":{"code":"E_BRIDGE_UNAVAILABLE","message":"The native bridge is not connected."}})";
   }
-  const std::string method = bridge_request_method(request);
+  // Only an admitted worker may reuse its immutable request's classification.
+  // Direct callers retain the original guard -> bounded parse -> guard order.
+  if (route == detail::miniblink_request_route::unknown)
+    route = detail::classify_miniblink_request_route(bridge_request_method(request));
   if (!bridge_accepting_.load(std::memory_order_acquire) || !accepts_execution_context_receipt(context_receipt))
     return bridge_error({}, "E_CONTEXT_PENDING", "The native context is no longer current.");
   auto* const bridge = static_cast<bridge_adapter*>(bridge_adapter_);
@@ -4307,7 +4662,7 @@ std::string dynamic_miniblink_adapter::handle_message(std::string_view request,
   // if a concurrent close invalidates the reply. Other native effects are not
   // rolled back, and no response body or token is retained for diagnostics.
   std::string pending_bootstrap_session;
-  if (method == "bridge.bootstrap") {
+  if (route == detail::miniblink_request_route::bootstrap) {
     const auto packet = bounded_bridge_packet(response);
     if (packet.is_object()) {
       const auto ok = packet.find("ok"), result = packet.find("result");
@@ -4352,7 +4707,7 @@ std::string dynamic_miniblink_adapter::handle_message(std::string_view request,
     }
 #endif
   }
-  if (method == "bridge.probe.report" &&
+  if (route == detail::miniblink_request_route::probe &&
       response.find("\"ok\":true") != std::string::npos) {
     {
       std::lock_guard<std::mutex> lock(state_mutex_);
@@ -4386,6 +4741,13 @@ host_result dynamic_miniblink_adapter::try_enqueue_bridge_message(
 
 host_result dynamic_miniblink_adapter::try_enqueue_bridge_message(
     std::string request, bool native_user_gesture, std::uint64_t context_receipt) {
+  return try_enqueue_bridge_message_impl(std::move(request), native_user_gesture,
+      context_receipt, nullptr);
+}
+
+host_result dynamic_miniblink_adapter::try_enqueue_bridge_message_impl(
+    std::string request, bool native_user_gesture, std::uint64_t context_receipt,
+    const detail::miniblink_admission_metadata* metadata) {
   if (!accepts_execution_context_receipt(context_receipt))
     return failure("E_CONTEXT_PENDING", "The native context is not current and completed.");
   if (!bridge_accepting_.load(std::memory_order_acquire))
@@ -4394,16 +4756,34 @@ host_result dynamic_miniblink_adapter::try_enqueue_bridge_message(
     return failure("E_BRIDGE_QUEUE", "The asynchronous native bridge queue is unavailable.");
   if (request.empty() || request.size() > max_bridge_message_bytes)
     return failure("E_LIMIT_MESSAGE_SIZE", "Bridge message exceeds 64 KiB.");
-  const auto packet = [&] {
-    const detail::trace_duration serialization_cost(input_trace::duration_metric::serialization);
-    return bounded_bridge_packet(request);
-  }();
-  const auto request_id = packet_string(packet, "requestId");
-  const auto method = packet_string(packet, "method");
-  if (request_id.empty() || method.empty())
-    return failure("E_INVALID_PARAMS", "Expected bounded requestId, method and JSON envelope.");
-  const auto timeout = bridge_wait_timeout(packet);
-  if (!timeout) return failure("E_INVALID_PARAMS", "timeoutMs must be between 1 and 60000.");
+  std::string request_id;
+  std::string method_storage;
+  std::string_view method;
+  std::uint32_t timeout = 0;
+  auto route = detail::miniblink_request_route::unknown;
+  if (metadata) {
+    request_id = std::string(metadata->request_id()); // Queued work keeps its own ID.
+    method = metadata->method(); // Synchronous use only; never capture this view.
+    timeout = metadata->timeout_ms();
+    route = metadata->route();
+    if (request_id.empty() || request_id.size() > 512 || method.empty() || method.size() > 512)
+      return failure("E_INVALID_PARAMS", "Expected bounded requestId, method and JSON envelope.");
+    if (!timeout || timeout > 60000)
+      return failure("E_INVALID_PARAMS", "timeoutMs must be between 1 and 60000.");
+  } else {
+    const auto packet = [&] {
+      const detail::trace_duration serialization_cost(input_trace::duration_metric::serialization);
+      return bounded_bridge_packet(request);
+    }();
+    request_id = packet_string(packet, "requestId");
+    method_storage = packet_string(packet, "method");
+    method = method_storage;
+    if (request_id.empty() || method.empty())
+      return failure("E_INVALID_PARAMS", "Expected bounded requestId, method and JSON envelope.");
+    timeout = bridge_wait_timeout(packet);
+    if (!timeout) return failure("E_INVALID_PARAMS", "timeoutMs must be between 1 and 60000.");
+    route = detail::classify_miniblink_request_route(method);
+  }
   const std::uint64_t generation =
       bridge_generation_.load(std::memory_order_acquire);
   detail::bridge_request_budget::rejection rejected;
@@ -4431,7 +4811,7 @@ host_result dynamic_miniblink_adapter::try_enqueue_bridge_message(
     bridge_diagnostic_trace(this,"engine.resolve-end",request_id);
   };
   engine_thread::task worker=[this, request=std::move(request), request_id,
-      native_user_gesture,generation,context_receipt,deadline,lease,budget,reply,
+      native_user_gesture,generation,context_receipt,deadline,lease,budget,reply,route,
       resolver=std::move(resolver)]() mutable {
     bridge_diagnostic_trace(this,"worker.begin",request_id);
     if (generation != bridge_generation_.load(std::memory_order_acquire) ||
@@ -4444,7 +4824,7 @@ host_result dynamic_miniblink_adapter::try_enqueue_bridge_message(
       budget->record_drop(detail::bridge_request_budget::drop::queue_expired);
       response=bridge_error(request_id,"E_TIMEOUT","The request expired in the native queue before execution.");
     } else try {
-      response=handle_message(request,native_user_gesture,context_receipt);
+      response=handle_message_impl(request,native_user_gesture,context_receipt,route);
       if (response.size() > max_bridge_message_bytes)
         response=bridge_error(request_id,"E_LIMIT_MESSAGE_SIZE","Native response exceeds 64 KiB.");
     } catch (...) { response=bridge_error(request_id,"E_NATIVE_EXCEPTION","The native handler failed."); }
@@ -4494,7 +4874,12 @@ void dynamic_miniblink_adapter::resolve_bridge_response(
   if (!accepts_execution_context_receipt(context_receipt) ||
       generation != bridge_generation_.load(std::memory_order_acquire)) return;
   const auto view = static_cast<wkeWebView>(webview_);
-  (void)wkeRunJS(view, script.c_str());
+  {
+    const miniblink_phase_scope observed(
+        detail::miniblink_native_admission_access::phase_recorder(*this),
+        detail::native_bridge_phase::reply_run_js);
+    (void)wkeRunJS(view, script.c_str());
+  }
   if (webview_ != view || !accepts_execution_context_receipt(context_receipt) ||
       generation != bridge_generation_.load(std::memory_order_acquire)) {
     bridge_diagnostic_trace(this, "resolver.context-changed", request_id);
@@ -4876,10 +5261,15 @@ jsValue WKE_CALL_TYPE native_post_message(jsExecState es, void*) {
       const auto response = bridge_error({}, "E_LIMIT_MESSAGE_SIZE", "Bridge message exceeds 64 KiB.");
       return jsString(es, response.c_str());
     }
-    const std::string request(raw_request); // jsEval can invalidate Miniblink's temporary string.
+    std::string request(raw_request); // Keep ownership before jsEval can invalidate JS temporaries.
     if (!adapter->owns_execution_context(es, context_receipt))
       return jsString(es, R"({"requestId":"","ok":false,"error":{"code":"E_UNAUTHORIZED","message":"Bridge calls are restricted to the trusted WebView context."}})");
-    const auto packet = bounded_bridge_packet(request);
+    const auto packet = [&] {
+      const miniblink_phase_scope observed(
+          detail::miniblink_native_admission_access::phase_recorder(*adapter),
+          detail::native_bridge_phase::native_first_parse);
+      return bounded_bridge_packet(request);
+    }();
     request_id = packet_string(packet, "requestId");
     const auto method = packet_string(packet, "method");
     if (request_id.empty() || method.empty()) {
@@ -4900,27 +5290,32 @@ jsValue WKE_CALL_TYPE native_post_message(jsExecState es, void*) {
       const auto response = bridge_error(request_id, "E_INVALID_PARAMS", "timeoutMs must be between 1 and 60000.");
       return jsString(es, response.c_str());
     }
+    const detail::miniblink_admission_metadata metadata(request, request_id, method, timeout);
     const bool native_user_gesture = adapter->processing_user_gesture();
     if (!adapter->owns_execution_context(es, context_receipt)) return jsUndefined();
     // Reserve the document resolver before admitting any side effects. Both
     // creation and response delivery run on this same engine owner.
-    const auto create = std::string{"return "} + detail::create_bridge_pending_script
-        + "(" + json_string_literal(request_id) + "," + std::to_string(timeout) + ","
-        + (method == "bridge.session.renew" ? "true" : "false") + ");";
-    const auto waiting = jsEval(es, create.c_str());
+    const auto create = detail::bridge_pending_source(
+        request_id, timeout, method == "bridge.session.renew");
+    const auto waiting = [&] {
+      const miniblink_phase_scope observed(
+          detail::miniblink_native_admission_access::phase_recorder(*adapter),
+          detail::native_bridge_phase::resolver_create_js);
+      return jsEval(es, create.c_str());
+    }();
     if (!adapter->accepts_execution_context_receipt(context_receipt)) return jsUndefined();
     const bool waiting_is_string = jsIsString(waiting);
     if (!adapter->owns_execution_context(es, context_receipt)) return jsUndefined();
     bridge_diagnostic_trace(adapter, "binding.resolver-created", request_id);
     if (waiting_is_string) return waiting;
     host_result admitted;
-    try { admitted = adapter->try_enqueue_bridge_message(std::string(request), native_user_gesture, context_receipt); }
+    try { admitted = detail::miniblink_native_admission_access::submit(*adapter, metadata, native_user_gesture, context_receipt); }
     catch (...) { admitted = failure("E_NATIVE_EXCEPTION", "The native bridge could not admit this request."); }
     bridge_diagnostic_trace(adapter, admitted.ok ? "binding.admitted" : "binding.rejected",
         request_id, admitted.code);
     if (!admitted.ok) {
       const auto response = bridge_error(request_id, admitted.code.c_str(), admitted.message.c_str());
-      const auto resolve = "return " + bridge_resolution_script(request_id, response) + ";";
+      const auto resolve = detail::bridge_resolution_source(request_id, response, true);
       if (!adapter->owns_execution_context(es, context_receipt)) return jsUndefined();
       return jsEval(es, resolve.c_str());
     }
@@ -4947,12 +5342,16 @@ host_result soui_miniblink_host::start(const host_config& config) {
   if (session_ != nullptr && !session_->terminal()) return failure("E_ALREADY_STARTED", "Host is already running.");
   if (adapter_cleanup_pending_) return failure("E_CLEANUP_PENDING", "Release the previous mount attempt before starting again.");
   if (!adapter_) return failure("E_HOST_ADAPTER_MISSING", "A renderer host adapter is required.");
+  if ((config.resource_policy != local_resource_policy::strict &&
+       config.resource_policy != local_resource_policy::isolated_local_editor) ||
+      !adapter_->supports_local_resource_policy(config.resource_policy))
+    return failure("E_RESOURCE_POLICY_UNSUPPORTED", "The renderer does not support the selected local resource policy.");
   const auto architecture = validate_architecture(config);
   if (!architecture.ok) return architecture;
   const auto* mini = dynamic_cast<const dynamic_miniblink_adapter*>(adapter_.get());
   const bool owned_local = mini && mini->event_lifetime_ && mini->event_lifetime_->owned_local_resources;
   if (!owned_local) {
-    const auto resources = validate_local_resources(config.resource_root);
+    const auto resources = validate_local_resources(config.resource_root, config.resource_policy);
     if (!resources.ok) return resources;
   } // Explicit Mini mode validates the same content policy on its bounded publication worker.
   const auto diagnostic_mount = reset_devtools_for_mount();
@@ -5145,7 +5544,8 @@ host_result soui_miniblink_host::request_memory_recovery() {
 
 const soui::runtime::webview_session* soui_miniblink_host::session() const noexcept { return session_.get(); }
 
-host_result soui_miniblink_host::validate_local_resources(const std::filesystem::path& root) {
+host_result soui_miniblink_host::validate_local_resources(const std::filesystem::path& root,
+    local_resource_policy policy) {
   std::error_code error;
   auto readable_root = root;
 #ifdef _WIN32
@@ -5173,6 +5573,10 @@ host_result soui_miniblink_host::validate_local_resources(const std::filesystem:
     if (!file.is_regular_file(error)) continue;
     std::ifstream input(file.path(), std::ios::binary);
     if (!input) return failure("E_RESOURCE_READ", "A local Web resource could not be read.");
+    // This native-only mode is for reviewed application code. Its renderer
+    // enforces runtime request/navigation policy; bundled fallback text is not
+    // evidence that its remote expression executes.
+    if (policy == local_resource_policy::isolated_local_editor) continue;
     const std::string content((std::istreambuf_iterator<char>(input)), std::istreambuf_iterator<char>());
     if (contains_untrusted_frame_surface(file.path(), content)) {
       return failure("E_UNTRUSTED_FRAME", "Embedded frame surfaces are forbidden in local Web resources.");

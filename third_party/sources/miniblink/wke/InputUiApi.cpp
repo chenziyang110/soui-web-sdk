@@ -39,6 +39,47 @@ wke::CWebView* liveOwnerView(void* opaque)
     return static_cast<wke::CWebView*>(view);
 }
 
+bool framePolicyOutputValid(const wkeInputUiFramePolicy* output)
+{
+    return output && output->structSize == sizeof(*output)
+        && output->abiVersion == WKE_INPUT_UI_FRAME_POLICY_ABI_VERSION
+        && !output->reserved[0] && !output->reserved[1];
+}
+
+int WKE_INPUT_UI_CALL queryFramePolicy(void* opaque, wkeInputUiFramePolicy* output)
+{
+    if (!framePolicyOutputValid(output)) return WKE_INPUT_UI_INVALID;
+    auto* view = liveOwnerView(opaque);
+    if (!view || !view->webPage()) return WKE_INPUT_UI_UNAVAILABLE;
+    content::PaintActivityScope activity(view->webPage()->paintLifetimeState());
+    if (!activity) return WKE_INPUT_UI_REJECTED;
+    const int rate = view->webPage()->mainFrameRate();
+    if (rate < 0) return WKE_INPUT_UI_UNAVAILABLE;
+    const wkeInputUiFramePolicy result = { sizeof(*output), WKE_INPUT_UI_FRAME_POLICY_ABI_VERSION,
+        1U, 30U, 240U, static_cast<unsigned>(rate), {0U, 0U} };
+    *output = result;
+    return WKE_INPUT_UI_OK;
+}
+
+int WKE_INPUT_UI_CALL applyFramePolicy(void* opaque, unsigned rate, wkeInputUiFramePolicy* output)
+{
+    if (!framePolicyOutputValid(output) || (rate && (rate < 30U || rate > 240U)))
+        return WKE_INPUT_UI_INVALID;
+    auto* view = liveOwnerView(opaque);
+    if (!view || !view->webPage()) return WKE_INPUT_UI_UNAVAILABLE;
+    content::PaintActivityScope activity(view->webPage()->paintLifetimeState());
+    if (!activity) return WKE_INPUT_UI_REJECTED;
+    if (content::CheckReEnter::getEnterCount()) return WKE_INPUT_UI_BUSY;
+    try {
+        if (!view->webPage()->applyMainFrameRate(static_cast<int>(rate))) return WKE_INPUT_UI_REJECTED;
+        return queryFramePolicy(opaque, output);
+    } catch (...) {
+        // A scheduling allocation may fail after policy mutation. Do not claim
+        // success or replay: caller may query actual state before fallback.
+        return WKE_INPUT_UI_REJECTED;
+    }
+}
+
 void WKE_INPUT_UI_CALL serviceOwner()
 {
     if (!wke::inputUiOwnerAvailable())
@@ -49,6 +90,50 @@ void WKE_INPUT_UI_CALL serviceOwner()
     static_cast<content::WebThreadImpl*>(platform->mainThread())->serviceOwnerOpportunity();
     if (wke::inputUiOwnerAvailable() && !content::CheckReEnter::getEnterCount())
         wke::CWebView::serviceDeferredPaintCloses();
+}
+
+int WKE_INPUT_UI_CALL serviceOwnerUntil(unsigned long long deadlineQpc,
+    unsigned long long qpcFrequency, unsigned int* workRemaining)
+{
+    if (!workRemaining)
+        return WKE_INPUT_UI_INVALID;
+    *workRemaining = 0;
+    if (!qpcFrequency)
+        return WKE_INPUT_UI_INVALID;
+    if (!wke::inputUiOwnerAvailable())
+        return WKE_INPUT_UI_UNAVAILABLE;
+    if (content::CheckReEnter::getEnterCount())
+        return WKE_INPUT_UI_BUSY;
+    static bool servicing = false; // Owner-only, guarded before all callback work.
+    if (servicing)
+        return WKE_INPUT_UI_BUSY;
+    auto* platform = blink::Platform::current();
+    if (!platform || !platform->mainThread())
+        return WKE_INPUT_UI_UNAVAILABLE;
+    LARGE_INTEGER frequency, now;
+    if (!QueryPerformanceFrequency(&frequency) || frequency.QuadPart <= 0
+        || !QueryPerformanceCounter(&now) || now.QuadPart < 0)
+        return WKE_INPUT_UI_UNAVAILABLE; // No provider work has run; legacy fallback is safe.
+    if (static_cast<unsigned long long>(frequency.QuadPart) != qpcFrequency)
+        return WKE_INPUT_UI_INVALID;
+    struct ServiceExit {
+        bool& servicing;
+        ~ServiceExit() { servicing = false; }
+    } serviceExit{servicing};
+    servicing = true;
+    try {
+        bool more = static_cast<content::WebThreadImpl*>(platform->mainThread())
+            ->serviceOwnerOpportunity(deadlineQpc, qpcFrequency);
+        if (wke::inputUiOwnerAvailable() && !content::CheckReEnter::getEnterCount()) {
+            const bool closes = wke::CWebView::serviceDeferredPaintCloses(deadlineQpc, qpcFrequency);
+            more = more || closes; // Scheduler cost never skips the close lane's minimum visit.
+        }
+        *workRemaining = more ? 1U : 0U;
+        return WKE_INPUT_UI_OK;
+    } catch (...) {
+        // Partial work must not be replayed through the old entrypoint.
+        return WKE_INPUT_UI_REJECTED;
+    }
 }
 
 int WKE_INPUT_UI_CALL cancelInput(void* opaque)
@@ -288,9 +373,11 @@ const wkeInputUiApi* WKE_CALL_TYPE wkeGetInputUiApi(unsigned requestedVersion)
             | WKE_INPUT_UI_CAP_FRACTIONAL_FRAME_POLICY | WKE_INPUT_UI_CAP_MIRROR_CONSUMER
             | WKE_INPUT_UI_CAP_INPUT_CONTEXT | WKE_INPUT_UI_CAP_CANCEL_INPUT
             | WKE_INPUT_UI_CAP_VIEW_CONTEXT | WKE_INPUT_UI_CAP_SCENE_INPUT_IDENTITY
-            | WKE_INPUT_UI_CAP_VISIBILITY | WKE_INPUT_UI_CAP_EXTERNAL_TRACE_PRODUCER,
+            | WKE_INPUT_UI_CAP_VISIBILITY | WKE_INPUT_UI_CAP_EXTERNAL_TRACE_PRODUCER
+            | WKE_INPUT_UI_CAP_OWNER_DEADLINE | WKE_INPUT_UI_CAP_FRAME_POLICY_STATE,
         &configureTrace, &stopTrace, &snapshotTrace, &drainTrace,
         &serviceOwner, &setMirror, &queryMirror, &setInputContext, &cancelInput, &setViewContext,
-        &setVisibility, &retainTraceProducer, &releaseTraceProducer };
+        &setVisibility, &retainTraceProducer, &releaseTraceProducer, &serviceOwnerUntil,
+        &queryFramePolicy, &applyFramePolicy };
     return requestedVersion == WKE_INPUT_UI_ABI_VERSION ? &api : nullptr;
 }

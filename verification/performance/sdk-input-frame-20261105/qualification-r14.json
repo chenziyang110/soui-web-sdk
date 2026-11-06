@@ -1,0 +1,310 @@
+{
+  "schema": "soui.sdk-preview4-qualification-addendum/v1",
+  "recordedAt": "2026-11-05T07:09:22.558Z",
+  "report": "docs/performance/sdk-preview4-qualification-20261105.md",
+  "priorReport": "verification/performance/sdk-input-frame-20261105/preview4.json",
+  "evidenceBundle": "PR129-performance-20261104",
+  "scope": "Additional x86 build/consumer/package correctness and non-input diagnostic-baseline qualification only",
+  "sdkVersion": "0.7.0-preview.4",
+  "sdkSourceSha256": "e1d2dd8b7699930f678e21a77772b8fa4e371f5b67a53937d98470ee1659e87c",
+  "x86": {
+    "architecture": "x86",
+    "configuration": "Release",
+    "toolchain": "MSVC v143 14.44.35207 / Windows SDK 10.0.19041.0",
+    "buildId": "d010788e-0390-4fa4-89ee-5a9912459583",
+    "receiptSha256": "9b67f7123b5f948c617b6ba91e7755c40596923604095d0667be08279df98b98",
+    "installedFiles": 471,
+    "installedBytes": 58116494,
+    "performanceConsumerSourceFiles": 14,
+    "consumerSourceFileSetSha256": "53bad5158f3dc7290919717f3c93f0015ad9b6040544602d2e577ec46651d4cb",
+    "consumer": {
+      "bytes": 1426944,
+      "sha256": "896082da87efbbf6926bde5fa6a5ded2cf1cb7e221fba15a49277200579568d3"
+    },
+    "nativeContractCases": 42,
+    "buildNaturalExit": true,
+    "installNaturalExit": true
+  },
+  "packageSmoke": {
+    "passed": 16,
+    "failed": 0,
+    "skipped": 0,
+    "naturalExitCode": 0,
+    "forcedTermination": false
+  },
+  "functional": [
+    {
+      "name": "preview4-functional-x86-r1",
+      "normalExitCode": 0,
+      "ownedProcessesAfterClose": 0,
+      "forcedTermination": false,
+      "nativeApplicationReady": true,
+      "windowVisibleFlag": true,
+      "drawCalls": 30,
+      "allRequestedTraceSourcesComplete": true,
+      "physicalInputSent": false,
+      "performanceSample": false
+    },
+    {
+      "name": "k0-trace-scope-functional-r1",
+      "normalExitCode": 0,
+      "ownedProcessesAfterClose": 0,
+      "forcedTermination": false,
+      "nativeApplicationReady": true,
+      "windowVisibleFlag": true,
+      "drawCalls": 30,
+      "allRequestedTraceSourcesComplete": true,
+      "physicalInputSent": false,
+      "performanceSample": false
+    }
+  ],
+  "diagnosticKernel": {
+    "classification": "K0 instrumentation-repaired diagnostic variant; not released SDK 0.6.0 or original d888 DLL",
+    "architecture": "x64",
+    "dll": {
+      "bytes": 39205888,
+      "sha256": "76df23c64507f3e8fa6d9bf1a2417f2ed04b812443511feec582089c80a98253"
+    },
+    "translationUnitsCompiled": 1,
+    "inputFiles": 3536,
+    "wholeKernelRebuilt": false,
+    "originalReleasedDllUnchanged": true,
+    "publishedSdkOrDefaultRuntimeReplaced": false,
+    "old3750PointerSourceLossFailureRetained": true,
+    "old3750PointerRegressionExecuted": false,
+    "traceOffIsZeroCost": false,
+    "overhead": "first worker registration allocation, per-callback registration/detach synchronization and bounded slot reuse must be evaluated",
+    "usableAsReleasedSdk060PerformanceBaseline": false,
+    "usableForMatchedTraceEnabledDiagnosis": "same-source input consumer now built; foreground input qualification pending"
+  },
+  "inputBaseline": {
+    "sameConsumerSourceFiles": 10,
+    "sourceFileSetSha256": "6950caccc479f823e034beb2e2ad2b4b279ca757f4c1b9aa0086548af2e0b1e6",
+    "firstAttempt": "refused-before-configure-and-build",
+    "reason": "another compiler or VCTIP was present",
+    "exitCode": 1,
+    "preservedEvidence": true,
+    "foreignProcessesStopped": false,
+    "currentBuildStatus": "r2-passed-natural0-job0-after-compiler-lane-became-idle",
+    "sourceFreezeCommitLabel": "4ee74e412291e0c0c21da658ea1aa232235f9202",
+    "qualification": "consumer byte set matches the current source; source freeze commit label is not a claim that current HEAD is unchanged",
+    "sdkBuildId": "e3ecec57-2ec7-48ba-817e-5a749b8e2e17",
+    "sdkProductSourceSha256": "4b9104883d43acbab96a20f477eb6bd22643bca858c14ea725ac2894a11070c5",
+    "installedPrefixFiles": 471,
+    "executableSha256": "efefa2de23f33e6f4efb85db2788ced1f7a80c41bb64f8c2c0a8ff2767671b90",
+    "artifact": {
+      "repositoryOutput": "out/input-ui-baseline-current-r2/Release/SouiInputUiHost.exe",
+      "bytes": 1171968,
+      "sha256": "efefa2de23f33e6f4efb85db2788ced1f7a80c41bb64f8c2c0a8ff2767671b90",
+      "producerEvidence": "repair-r14/input-ui-baseline-current-r2/result/build.stdout.bin",
+      "wrapperHashIsNotHostHash": true
+    },
+    "legacySupportOverlay": false,
+    "profileScalarContractsPassed": true,
+    "manualReportContractCases": 19,
+    "guiExecuted": false
+  },
+  "matchedX64Size": {
+    "sourceFiles": 14,
+    "pairs": [
+      {
+        "name": "host-exe",
+        "baselineBytes": 1573376,
+        "candidateBytes": 1607680,
+        "deltaBytes": 34304,
+        "deltaPercent": 2.1802798568174424
+      },
+      {
+        "name": "miniblink-node",
+        "baselineBytes": 39204352,
+        "candidateBytes": 39212032,
+        "deltaBytes": 7680,
+        "deltaPercent": 0.01958966188243591
+      },
+      {
+        "name": "miniblink-runtime",
+        "baselineBytes": 46869801,
+        "candidateBytes": 46911785,
+        "deltaBytes": 41984,
+        "deltaPercent": 0.0895758016979846
+      },
+      {
+        "name": "miniblink-zip",
+        "baselineBytes": 17015120,
+        "candidateBytes": 17034622,
+        "deltaBytes": 19502,
+        "deltaPercent": 0.11461570650104143
+      },
+      {
+        "name": "webview2-app-runtime",
+        "baselineBytes": 6156027,
+        "candidateBytes": 6190331,
+        "deltaBytes": 34304,
+        "deltaPercent": 0.5572425202163668
+      },
+      {
+        "name": "webview2-app-zip",
+        "baselineBytes": 2614443,
+        "candidateBytes": 2631079,
+        "deltaBytes": 16636,
+        "deltaPercent": 0.6363114437759783
+      }
+    ],
+    "externalWebview2RuntimeIncluded": false,
+    "strictZeroGrowthComparatorPassed": false,
+    "userAllowsSmallExplainedGrowth": true,
+    "numericGrowthBudgetFrozen": false
+  },
+  "tasks": {
+    "P00": "source protection and provenance evidenced; PR remains reviewable draft",
+    "M01": "fixtures and identity corrected; final foreground input/frame pair pending",
+    "I01": "implemented with local correctness evidence; current macroscopic gain unverified",
+    "F01": "implemented with local correctness evidence; current macroscopic gain unverified",
+    "W01": "implemented with local correctness evidence; current macroscopic gain unverified",
+    "I02": "trigger/default adoption unresolved; shared budget remains 0",
+    "W02": "current trigger/adoption unresolved; PREPARE_OUTPUT remains disabled",
+    "I03": "current provider/callback causal-cost trigger unresolved",
+    "F02": "narrow default opaque DIRECT_HWND path not adopted; specialized copy paths remain unresolved",
+    "F03": "frame phase/GPU trigger unresolved; no new default present owner",
+    "R01": "scoped build/consumer/delivery evidenced; performance and interaction acceptance pending"
+  },
+  "notMeasured": {
+    "currentRealInputTailLatency": null,
+    "currentValidFrameAB": false,
+    "uniquePhysicalFps": null,
+    "inputToPhotonMs": null,
+    "completeCurrentProcessTreeMemoryAB": null,
+    "imeFocusMultiwindowDpiMultiscreenRegression": "pending"
+  },
+  "control": {
+    "physicalInputResumedAfterEscape": false,
+    "hiddenDesktopInputWorkaroundUsed": false
+  },
+  "performanceVerified": false,
+  "releaseReady": false,
+  "wholeGoalComplete": false,
+  "independentReview": {
+    "path": "repair-r14/final-report-review-r1.json",
+    "sha256": "698bb6b1cc90ffbdbd8178f2b834984d481b1d73647001b4a1c0af0d98912b1c",
+    "blockingFindings": 0,
+    "scope": "report and evidence qualification before adding this review reference and the explicit Host artifact metadata",
+    "nonBlockingArtifactPinNoteAddressed": true
+  },
+  "evidence": [
+    {
+      "path": "repair-r14/x86-qualification-review-r1.json",
+      "bytes": 11234,
+      "sha256": "62bfea905dffd597ba3fe7b053badfaf338b1832fd332a12637af3136951e9eb"
+    },
+    {
+      "path": "repair-r14/preview4-sdk-x86-r1/summary.json",
+      "bytes": 790,
+      "sha256": "c35c28b43dba434c07b77a7fb87ab6ed4a59c9d19e6e1e6aa3d1a18a8b0edcdb"
+    },
+    {
+      "path": "repair-r14/preview4-sdk-x86-r1/build.result.json",
+      "bytes": 994,
+      "sha256": "4ea39cf3e28ae7cec32a649b1fe66770a82281d423133a4fd299b3e575db7602"
+    },
+    {
+      "path": "repair-r14/preview4-installed-x86-r1/summary.json",
+      "bytes": 95740,
+      "sha256": "77dcfe2a2f99850b4b10a6ab585a5f8abc15fc47151ca5cbbeb2365d4e08a17f"
+    },
+    {
+      "path": "repair-r14/preview4-performance-consumer-x86-r1/performance-host/build.result.json",
+      "bytes": 1608,
+      "sha256": "8d326fbada885915c9b69bf38c478b5d293e374545e4a4752a0f0bb25a477fd8"
+    },
+    {
+      "path": "repair-r14/preview4-performance-consumer-x86-r1/performance-host/self-test.result.json",
+      "bytes": 1446,
+      "sha256": "0d03cd014af6259a0a5e79f3eadfd7b0eaaf5e98eac9a88f11c9868a07e93d15"
+    },
+    {
+      "path": "repair-r14/preview4-functional-x86-r1/summary.json",
+      "bytes": 38440,
+      "sha256": "721e066d540324c39bd6a8777ec96c721ca18e96b5643a4e7b4a43146780a9cc"
+    },
+    {
+      "path": "repair-r14/preview4-functional-x86-r1/host-output/report-1.json",
+      "bytes": 6786,
+      "sha256": "c17344a0b129feffc17614ea42fb1b0fb0d1a32638b5abaff3018d81ea60b9aa"
+    },
+    {
+      "path": "repair-r14/preview4-sdk-package-smoke-r1/result.json",
+      "bytes": 997,
+      "sha256": "946a03eecb8f4b1d101e4678293cfb8e1113bfedbcb8f2d0caace5cec4323625"
+    },
+    {
+      "path": "repair-r14/preview4-sdk-package-smoke-r1/smoke-stdout.bin",
+      "bytes": 121,
+      "sha256": "7ee006544ae3c91b9fe817ab6c290f258033f55e85fcdb0eff8f2ecc2a84418b"
+    },
+    {
+      "path": "repair-r14/k0-trace-scope-build-r1/run/result.json",
+      "bytes": 4222,
+      "sha256": "dfdbca450b9d09cc90243acc6115ca4b6e9b035b3e927d2a3d6f83bff3dbcb20"
+    },
+    {
+      "path": "repair-r14/k0-trace-scope-functional-r1/summary.json",
+      "bytes": 38518,
+      "sha256": "56a41d55322d4f22f02eae9d13c0dc6bde963a958e56bbe6f63b33813e213cbb"
+    },
+    {
+      "path": "repair-r14/k0-trace-scope-functional-r1/host-output/report-1.json",
+      "bytes": 6513,
+      "sha256": "cd0ac3bc4851401eae6e34be89b5226bb217a27a5bd107f917e0e5e7ac45b52d"
+    },
+    {
+      "path": "repair-r14/k0-trace-scope-comparability-addendum-r1.json",
+      "bytes": 12225,
+      "sha256": "86e7057792732dd19e3ffeb803b8186a3167a3adc9874d51e05d40c6e6c79242"
+    },
+    {
+      "path": "repair-r14/benchmark-readiness-audit-r1.json",
+      "bytes": 5710,
+      "sha256": "1087c34715bbf506bf94dfc8053dbd0b1fc0fe8676a0eec73a0bd95e6eb1c6d2"
+    },
+    {
+      "path": "repair-r14/remaining-gates-audit-r1.json",
+      "bytes": 15834,
+      "sha256": "9d585bb695575a1664b839f6c0123372d955b46d8c9705150e857defaf69aa98"
+    },
+    {
+      "path": "repair-r14/input-ui-baseline-current-r1/result/build.result.json",
+      "bytes": 1576,
+      "sha256": "86f565ca0bff0b2e010b1744ac92238b3d27a72153ef54082d8f074c6160ba2d"
+    },
+    {
+      "path": "repair-r14/input-ui-baseline-current-r1/result/build.stderr.bin",
+      "bytes": 585,
+      "sha256": "f5ce38681a1e054913ee0253a1924725eab07bc9758d363896f9f33e7a3ba9c8"
+    },
+    {
+      "path": "repair-r14/input-ui-baseline-current-r2/result/inputs.json",
+      "bytes": 12075,
+      "sha256": "a97347a90ea5ace84b613d9fd89c9b7f3127166ffe79f633302922ef27f4131f"
+    },
+    {
+      "path": "repair-r14/input-ui-baseline-current-r2/result/build.result.json",
+      "bytes": 1574,
+      "sha256": "d3adaa86213412cacfc478756348e26bbb9cafd500e53d35c024fad85c9ceeb3"
+    },
+    {
+      "path": "repair-r14/input-ui-baseline-current-r2/result/build.stdout.bin",
+      "bytes": 6827,
+      "sha256": "5899e3452c04e502244d19d06221385de85eafebdde94d187017910b7de83388"
+    },
+    {
+      "path": "repair-r14/input-ui-baseline-current-r2/result/profile-contracts.stdout-stderr.log",
+      "bytes": 248,
+      "sha256": "454487804db1fcfc345531593209c470aa3cd2a927bdfd219623b09bf75987d6"
+    },
+    {
+      "path": "repair-r13/preview4-matched-runtime-preparation-r1/reports/review.json",
+      "bytes": 10306,
+      "sha256": "80e04b7daa9c642d7cf5c51a560b71a5bd15b502d0aa666f071c8e97d78b0a48"
+    }
+  ]
+}

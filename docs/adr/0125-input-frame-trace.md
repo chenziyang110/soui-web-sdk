@@ -1,7 +1,7 @@
 # ADR-0125：有界的输入、任务与可见帧关联记录
 
 - 日期：2026-10-26。
-- 状态：实施决定；代码、回归源码及静态审查交付，编译和执行未运行。
+- 状态：实施决定；原始交接仅含源码和静态审查，本次桶索引的限定实际验证见末节。
 - 上位契约：ADR-0122；源码基线 `44eff565bf9ab7778a8b9fdaa5403cc3b6f568ed`。
 
 ## 背景
@@ -24,6 +24,33 @@
 
 不采用跨 DLL 任意 callback sink、热路径 lazy TLS 分配、逐事件落盘、无界日志或自动占用引擎 FIFO 的 exporter。既有 scalar DTO 和 input_packet 布局保持兼容，新 recorder 是独立诊断契约。关闭 detailed 恢复固定 scalar 开销；所有生产行为不依赖 trace 是否成功。完整 C++ 变更仍需匹配重编，旧预编译载荷不包含本实现。
 
-## 验证交接
+### 2026-10-29：保持样本的桶索引细化
 
-回归源码覆盖容量、drain、缺注册、错误 owner、stop/handle 存活、完整导出拒绝、精确身份/时钟、截断/溢出、coverage/终态和多帧关系。工具预检由专人对相同载荷做 trace 开关配对；预算见实施方案第 4 节。当前不执行构建、测试、VM 或性能工具，不据源码或 Draft PR 宣称性能通过。
+SDK 的 64 桶索引以私有 C++17 helper 计算：`ticks` 为 0 或 1 时返回 0，其余返回 `floor(log2(ticks))`。MSVC/clang-cl 的 x64 使用位扫描，x86 先检查高 32 位；其他平台固定六步二分，避免原逐位右移的最多 63 次循环。零值不进入要求非零参数的内建操作。没有新增运行时依赖、Windows 导入或 CPU 特性要求。
+
+该调整保留原 QPC、scalar/detailed 样本、所有 metric、无注册计数、错误 owner、停止和饱和处理。默认 scalar 不是关闭诊断，因此不通过跳过 QPC、删除样本或修改线程注册来获得收益。vendor 源码和内核保持原实现，其桶边界相同；此项验证只证明算法与计量语义，不构成 FPS 或输入可见延迟结论。
+
+## 原始验证交接（2026-10-26）
+
+回归源码覆盖容量、drain、缺注册、错误 owner、stop/handle 存活、完整导出拒绝、精确身份/时钟、截断/溢出、coverage/终态和多帧关系。工具预检由专人对相同载荷做 trace 开关配对；预算见实施方案第 4 节。原始交接阶段未执行构建、测试、VM 或性能工具，不据源码或 Draft PR 宣称性能通过。
+
+## 2026-10-29 桶索引限定验证
+
+- 在 `c4ba38b7` 加显式源码快照上，先给原算法运行新增边界回归，再替换 SDK 算法；x64 使用现有 SDK 构建，x86 另建独立三编译单元夹具，均为 Release、显式 LLVM22/MSVC142、Windows SDK 19041。两架构前后各一次 `kernel.native.input-frame-trace`，实际均 1/1、自然退出 0/0，无强制结束；并非完整 x86 SDK 构建或默认 MSVC143 资格。
+- recorder 回归在 SDK/vendor、scalar/detailed、全部 15 个 metric 上验证 195 个零值/最大值/二进制边界样本，共 11700 次 duration 写入；同时验证错误 owner、非法 metric、缺注册、stop 后拒绝及 producer 释放。候选另将 native 与 portable helper 的 100000 个确定性样本和旧逐位算法对照。所有调用仍保留原 QPC 与计数。
+- 实际候选 OBJ 的 duration 方法中，x64 使用 1 条 BSR，x86 使用 2 条 BSR，无 LZCNT/TZCNT/POPCNT；原逐位回跳消除。x64 SDK 静态库从 14199244B 变为 14199190B（-54B）；尚未据此重新编译完整应用或重封 ZIP，不能推广为运行包体积结论。
+- 首次 x86 尝试因不存在预期缓存而在编译前失败，第二次被标准配置 helper 的 workspace/out 边界拒绝；均保留。随后在全新 workspace/out 夹具目录按同一工具链完成实际构建与运行，没有放宽原 helper。
+
+原始监督证据键及 SHA-256：
+
+| 证据 | SHA-256 |
+|---|---|
+| `native/trace-bucket-x64-baseline-r1/result.json` | `6ede72f43bf3f08519e60e721082798d11f26ebf08a7e06573af8dd777d50a3d` |
+| `native/trace-bucket-x86-baseline-r3/result.json` | `ffb7b5ceeb20b34469822c3f74739704d66c8bb8a767c062f58bd21d7d8cf38a` |
+| `native/trace-bucket-x64-candidate-r1/result.json` | `9e9ecb2b613ea118f8e72dc953ecfebc6a853e2aa299e38f542711293807d25a` |
+| `native/trace-bucket-x86-candidate-r1/result.json` | `0d00efa1b1f4f7f9541d97a2efa8ed8bfafbfea25c674912b6fe51361b15a41c` |
+| `native/trace-bucket-codegen-r1/result.json` | `9d88e54ad56e3778c3b828ffab113236d4bb7d810c0106476f9bc887a96c936d` |
+
+随后用同一SDK库重链实际x64 MiniBlink手动消费者，`manual-preview-candidate-x64-r3`在6596ms自然0/0，编译输入前后SHA一致。EXE为1506816B，SHA `ebb4aa0f93247ebd86cc716f9f256f3a13955c033d0f229b0e8f31a0cfbb52ba`。受支持的独立runtime部署入口校验同一页面、同一内核后，r2/r3按同一清单口径都为45856205B，EXE和runtime增加0B；没有重新打完整Scratch ZIP或启动r3。SDK静态库差值不能外推到其他消费者或完整包。
+
+这些结果证明桶算法等价和所列生命周期边界；没有测得页面 FPS、trace 扰动预算或物理输入可见延迟，不更新性能资格。

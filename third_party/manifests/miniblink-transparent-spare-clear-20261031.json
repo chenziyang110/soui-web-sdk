@@ -1,0 +1,197 @@
+{
+  "schema": "soui.miniblink-source-cleanup-candidate/v1",
+  "baselineCommit": "c88309fb9dabf643dae6d3f71c6de10098b03b38",
+  "hashScope": "raw-file-bytes",
+  "performanceVerified": false,
+  "packageSizeVerified": false,
+  "prebuiltReplaced": false,
+  "releaseReady": false,
+  "sourceGate": {
+    "passed": true,
+    "counts": {
+      "workerSelectedObjects": 1,
+      "total": 92,
+      "failed": 0,
+      "selectedObjects": 10,
+      "workerDerived": 17,
+      "derived": 57
+    },
+    "actualCompilationQualified": false
+  },
+  "design": "docs/adr/0150-transparent-frame-buffer-clear.md",
+  "files": [
+    {
+      "path": "third_party/sources/miniblink/cc/trees/LayerTreeHost.cpp",
+      "before": {
+        "bytes": 144359,
+        "sha256": "6b08b5279ec0a36f80b261a59357b385dbd4bf8594466ebe1282fec7a6bcca5b"
+      },
+      "after": {
+        "bytes": 144368,
+        "sha256": "2f1522b6c9fc47e9fcd121c828adc551794748b757effdef162495125eb9fedf"
+      }
+    }
+  ],
+  "sourceDeltaBytes": 9,
+  "patch": {
+    "path": "third_party/patches/miniblink/0031-transparent-spare-clear.patch",
+    "bytes": 848,
+    "sha256": "c76986655e54044b1ed52ceb8076316c77c6ad5bfd7fda79517a26f552e2083b"
+  },
+  "verification": {
+    "architectures": [
+      "x86",
+      "x64"
+    ],
+    "casesPerArchitecture": 6,
+    "selectedSourceImmutable": true,
+    "selectedSources": 6,
+    "lanes": {
+      "x64": {
+        "buildPassed": true,
+        "testsPassed": true,
+        "buildMs": 18531,
+        "testMs": 200,
+        "naturalClosure": true
+      },
+      "x86": {
+        "buildPassed": true,
+        "testsPassed": true,
+        "buildMs": 24497,
+        "testMs": 226,
+        "naturalClosure": true
+      }
+    }
+  },
+  "limits": [
+    "Deterministic fake Skia pixels and complete production method projections do not qualify actual GDI/Skia/native publication or FPS.",
+    "Only new/recreated transparent spare-slot redundant clear is removed; old-slot clearing and full previous-frame copy remain.",
+    "Only the new combined kernel DLL delta is measured; no new full application/runtime/ZIP or FPS improvement claim. Historical normal Scratch r2 and manual69 remain separate."
+  ],
+  "evidence": {
+    "rootRole": "external-task-evidence",
+    "receipts": [
+      {
+        "path": "native/frame-buffer-copy-baseline-r1/result.json",
+        "bytes": 4007,
+        "sha256": "8b8e121a6fa25c576e73a5101e57701f5234f9253e16ab304ab2d4390f0de7b7"
+      },
+      {
+        "path": "native/frame-buffer-copy-green-r1/result.json",
+        "bytes": 7963,
+        "sha256": "90d19b8125207d0abd02137711b0b4cbccad1462494ea38b2efe16d9fc4d142c"
+      },
+      {
+        "path": "native/frame-buffer-copy-preparation-r1/application.json",
+        "bytes": 742,
+        "sha256": "da9b9bb6bf25e4ba383f241d299f981f97ce7204d373ab012d7d5d76e4b9298c"
+      },
+      {
+        "path": "native/source-cleanups-gate-r1/result.json",
+        "bytes": 1493,
+        "sha256": "13327a795db738fbda9ae5a0501fa535429c03e01845dc7ffa25dc3f150b32a6"
+      },
+      {
+        "path": "native/buffer-retirement-kernel-r2/result.json",
+        "bytes": 43513,
+        "sha256": "69caf5d64e3df94b50b27087bde05ae41ac701405f711ce347ea453c0db4797f"
+      },
+      {
+        "path": "native/buffer-retirement-kernel-r2/preparation.json",
+        "bytes": 7329,
+        "sha256": "d7818b4ddcb9b14047d3f209bdcd3c2ee46a1d18da8475d62248f2339d832a4c"
+      },
+      {
+        "path": "native/source-cleanups-smoke-r1/x64-budget1000/result.json",
+        "bytes": 6843,
+        "sha256": "95be82b583a1db562f15f3717c232a8b36b435d437f27f4d5d5bc95fea0aa966"
+      },
+      {
+        "path": "native/source-cleanups-smoke-r1/x86-budget1000/result.json",
+        "bytes": 6853,
+        "sha256": "60b8f0b9b84f85b1b56a2b21f97f8b7b1d21beae82c04f37acceda23040a3930"
+      },
+      {
+        "path": "native/source-cleanups-independent-review-r1/review.json",
+        "bytes": 63335,
+        "sha256": "ef8eba6f2566c91722360d8063477451ceee2e4d1478fba7d25564245e389c9a"
+      },
+      {
+        "path": "native/source-cleanups-independent-review-r1/review.md",
+        "bytes": 3380,
+        "sha256": "9535d9f40896db967e90d860076542bfd2a2ebb5a0fd362c9353449346158aa7"
+      }
+    ]
+  },
+  "nativeVerification": {
+    "scope": "Each architecture recompiles the complete observed 11-TU changed-header reader closure plus LayerTreeHost, disables the old PCH and relinks unchanged verified objects. Not a fresh public whole-kernel build.",
+    "publicBuildVerified": false,
+    "freshWholeKernel": false,
+    "translationUnitsPerArchitecture": 12,
+    "sourcePinRecords": 4511,
+    "toolAndHeaderPinRecords": 2912,
+    "uniqueToolAndHeaderPaths": 2499,
+    "architectures": {
+      "x64": {
+        "passed": true,
+        "naturalStages": 13,
+        "totalNativeMs": 21260,
+        "dll": {
+          "bytes": 39209984,
+          "sha256": "a172947c7ddd0b23ec294d7442bc51e22ccfb6e6460265261a4076358ecdbaa5"
+        },
+        "deltaFromC883Bytes": 1024,
+        "peMachine": 34404,
+        "selectedSourcesUnchanged": true,
+        "frozenInputsUnchanged": true
+      },
+      "x86": {
+        "passed": true,
+        "naturalStages": 13,
+        "totalNativeMs": 21104,
+        "dll": {
+          "bytes": 28322304,
+          "sha256": "4d91c279a1bf535d8799d211c5d8f88c5b4f4adc5cd3da4fa49991d99676024c"
+        },
+        "deltaFromC883Bytes": 512,
+        "peMachine": 332,
+        "selectedSourcesUnchanged": true,
+        "frozenInputsUnchanged": true
+      }
+    }
+  },
+  "runtimeSmoke": {
+    "scope": "Existing immutable clients and SDK source, full-SHA supported deployment to fresh directories, real loader plus public SDK owner DOM-timer/Bridge/normal close; no foreground/input/performance qualification.",
+    "architectures": {
+      "x64": {
+        "passed": true,
+        "budgetUs": 1000,
+        "domTimerBridgeRequests": 4,
+        "loaderNaturalClosure": true,
+        "ownerNaturalClosure": true,
+        "runtimeImmutable": true,
+        "loadedIdentityChecked": true,
+        "numericLoadedWin32FileIdentityEmitted": false,
+        "hostDestroyed": true,
+        "runtimeShutdown": true
+      },
+      "x86": {
+        "passed": true,
+        "budgetUs": 1000,
+        "domTimerBridgeRequests": 4,
+        "loaderNaturalClosure": true,
+        "ownerNaturalClosure": true,
+        "runtimeImmutable": true,
+        "loadedIdentityChecked": true,
+        "numericLoadedWin32FileIdentityEmitted": false,
+        "hostDestroyed": true,
+        "runtimeShutdown": true
+      }
+    }
+  },
+  "independentReview": {
+    "sourceStatus": "No blocking P1/P2 in separately assigned source review",
+    "incrementalKernelEvidenceStatus": "No P1/P2 or missing evidence in independent bounded audit; DLLs, key metadata pins and all native terminal observations checked. Unchanged original object set uses reviewed runner full pre/post verification, not a second independent full hash.",
+    "runtimeSmokeIndependentlyReviewed": false
+  }
+}

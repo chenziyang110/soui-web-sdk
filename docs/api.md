@@ -1,6 +1,47 @@
 # SDK API
 
-本页描述 0.6.0 集成后的源码接口。新发布的构建、消费者与 Runtime 结果正在收口，见[发布说明](releases/0.6.0.md)；带 preview 标识的旧记录仍保留各自身份。
+本页描述 0.7.0-preview.6 开发候选源码接口，尚未发布。新增可选帧策略反馈和owner loop需要 SDK 与应用配套重编；已发布0.6.0及其他旧记录保留各自身份，不继承为本候选验证。preview.3 的 V8 后台诊断登记修复不新增公共接口，见 ADR-0162；preview.4 同步修正运行时部署清单并保留相同内核字节；preview.5 合并 WebView2 活动drain内的重复输出通知，见[ADR-0167](adr/0167-webview2-active-output-wake-coalescing.md)。preview.6增加下面的显式消息循环接入；旧包与旧测量仍绑定各自原始身份，新候选的最终性能资格待验。
+
+## Windows owner loop（preview.6候选）
+
+`<soui/host/windows_owner_loop.h>` 提供 `windows_owner_loop`，链接原 `Soui::Sdk`。在准备同线程Host之前构造，并以 `run()` 替代应用自有GetMessage循环；默认仍用TranslateMessage/DispatchMessage。应用负责原来的COM初始化、窗口通知转发及Host关闭排空。未接入的应用保留原通知路径，不要求替换消息循环。
+
+`windows_owner_loop_callbacks` 可转发应用dispatch、idle、idle分类、被动退出谓词与明确的GetMessage失败重试策略。`message_retrieved` 在GetMessage返回后、SDK工作和其他hook前被动观察原MSG，可捕获队列元数据；它和退出谓词均不得取走/投递消息、派发回调或重入循环。其他回调可正常执行应用逻辑，仍应有界返回。无错误重试hook时，实际GetMessage失败抛出 `std::system_error`。同一对象Run重入或错线程调用Run抛出 `std::logic_error`，错线程析构是契约错误；不同对象可在同一owner线程嵌套。
+
+普通WebView2输出在无过滤Peek确认没有可用系统消息时继续处理，保留原有界pump、lane优先级、admission credit、deadline和owner STA。紧急控制与legacy通知保持原路径。持续外部消息、未合作modal和不返回的回调没有有限延迟保证；该入口不保证实际帧率或输入延迟改善。
+
+`status()` 报告continuation资源可用性，失败为 `E_OWNER_CONTINUATION_UNAVAILABLE`，错线程查询为 `E_WRONG_THREAD`；可用不等于Run正在执行或性能通过。资源故障保留普通应用循环与原Host通知，不伪报优化启用。Run退出恢复legacy责任，不能代替Host关闭。
+
+使用SOUI时，可选 `<soui/host/soui_owner_application.h>` 的 `soui_owner_application` 在新应用构造时安装SDK main/dialog loop；构造参数为renderer、instance、host class和IME开关。该可选头需要应用本来的SOUI头/库，Core不依赖SOUI。普通桌面模板已使用该类型。它保留filter、OnMsg/OnIdle与Quit路径，不提供覆盖任意现有自定义factory的helper。应用之后替换factory使主SDK loop消失时，`owner_loop_status()` 返回 `E_OWNER_LOOP_REPLACED`。
+
+回退时将SOUI便利类型改回 `SApplication`，或恢复原Win32循环，并配套回退完整SDK头/库；不得混用preview.5与preview.6。设计及验证边界见[ADR-0169](adr/0169-sdk-owned-owner-loop-integration.md)。
+
+## 帧策略反馈（后续源码候选）
+
+公共 `bridge_adapter::requested_frame_rate()` 默认返回 `active_frame_rate()`，应用可覆盖返回原始目标。`bool set_backend_frame_rate_limit(unsigned) noexcept` 在 Engine owner 上通知应用后端上限；0清除限制，默认返回false。true只确认接纳反馈，不能证明显示帧率或UI时钟已经改变。实现只发布原子等有界状态，不在回调中操作UI、stop/join frame_pacer或阻塞。
+
+应用在原有UI pulse/配置机会，用 `clamp_frame_rate_to_limits(requested, display, backend)` 重算时钟，必要时重启pacer，并用active_frame_rate报告真实选择。旧adapter默认no-op继续运行；诊断中的requested默认可能只是reported active，未接入者不可据此宣称原用户意图或pulse自动同步。新增虚函数需要SDK/消费者整体重编，不能混用已发布0.6.0二进制。
+
+MiniBlink匹配内核通过可选尾扩展query/apply返回实际主帧策略；当前非零范围30..240，0禁用主帧控制器。host区分模式、尝试、实际应用、后端能力与pulse同步；旧内核保留unverified回退。完整设计见[ADR0154](adr/0154-frame-policy-applied-state.md)。这不代表实际FPS已提升。
+
+managed显示查询及monitor缓存使用`host_config.owner_window`，为空才回退child；应用pacer应使用同一参考。未知显示仍沿用60Hz并等待既有失效机会重查，不能据owner参考一致推导外部时钟已同步。
+
+MiniBlink可用冷环境变量`SOUI_DIAGNOSTIC_BRIDGE_PHASES=1`显式请求三个原生调用的固定直方图；unset/空值/0关闭，其他值为无效配置。每次mount单独配置，不热切换，不记录请求内容。UI owner的既有`application_diagnostics()`在旧`,script=`前追加`,native_phases=`JSON，默认关闭时旧输出保持；它不打开SCRIPT或另等Engine。既有getter自身的锁/SCRIPT行为不因此改变。JSON的64位数据为十进制字符串，不可用数据为null；scope为inclusive wall-time，非CPU或输入到屏幕耗时。消费者缓存的captureQPC/age必须保留，不能把缓存当新鲜边界。此功能已通过x86/x64 Release相关编译和每架构31项CPU合同，限定LLVM22/MSVC142/19041；不代表物理输入或呈现验收。见[ADR0159](adr/0159-miniblink-native-phase-observation.md)。
+
+## 本地编辑器资源模式（后续源码候选）
+
+`host_config.resource_policy` 默认是 `local_resource_policy::strict`。
+经应用方审核的本地编辑器可在原生配置中选择 `isolated_local_editor`；目前仅
+WebView2 声明支持，MiniBlink 和未声明支持的适配器会拒绝。应用与 SDK 必须一起重编。
+该模式保留目录、入口、文件可读性检查，使用现代后端的运行时来源控制，跳过静态
+JS 中框架与远程表达式的启发式扫描。WebView2 允许 `about:blank`、`about:srcdoc`
+子框架，顶层入口与远程请求限制继续执行，原生 preload 仍只装在顶层。
+
+此模式信任封装的应用代码；SDK 不检查 DOM 的 sandbox 属性，也不承诺任意 srcdoc
+安全。Scratch Demo 使用上游 `sandbox="allow-scripts"` 的不透明绘图沙盒。
+它不授予第三方内容原生权限，也不启用 DevTools。公共配置和 adapter 虚表已扩展，
+须配套重编，不能混用已发布 0.6.0 二进制。主线集成未编译或运行，详见
+[ADR 0142](adr/0142-isolated-local-editor.md)。
 
 ## 可选自动后端宿主
 

@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SOUI SDK 性能实验</title>
+  <link rel="stylesheet" href="benchmark.css">
+</head>
+<body>
+  <header><h1>SOUI SDK 性能实验</h1><p id="identity">正在连接本地 Host…</p></header>
+  <main>
+    <section class="controls" aria-label="实验控制">
+      <label>场景 <select id="scene"><option value="input">1 · 输入反馈（含 rAF 观察器）</option><option value="canvas">2 · Canvas 240 角色</option><option value="bridge">3 · Bridge echo 压力</option><option value="pointer">4 · 指针与滚动</option><option value="lifecycle">5 · 多 Host / 导航 / 恢复</option><option value="idle">0 · 真空闲（无周期页面观察器）</option></select></label>
+      <label>消息载荷 <select id="payload"><option value="64">64 字节</option><option value="4096">4 KiB</option><option value="60000">60,000 字节</option></select></label>
+      <button id="start" disabled>运行场景</button><button id="stop">暂停</button>
+      <button id="record" disabled>记录完整 30 秒</button><button id="save" disabled>保存报告</button>
+      <button id="fixed" disabled>固定工作量：1024 次 Bridge</button>
+      <p id="fixedSummary">固定工作量使用上方载荷，先暖机 32 次；测端到端耗时与 RTT，不测 FPS。请使用 trace 关闭的 Host。</p>
+      <p id="status" role="status" aria-live="polite">等待 Bridge 初始化。</p>
+    </section>
+    <section class="measurements" aria-label="即时观测">
+      <div><span>rAF 回调频率</span><strong id="fps">—</strong></div>
+      <div><span>已观测间隔 P95</span><strong id="p95">—</strong></div>
+      <div><span>间隔 &gt; 50 ms</span><strong id="longFrames">—</strong></div>
+      <div><span>固定步 / 绘制帧</span><strong id="steps">0 / 0</strong></div>
+      <div><span>Echo 成功 / 失败</span><strong id="echo">0 / 0</strong></div>
+      <div><span>未结请求</span><strong id="pending">0 / 8</strong></div>
+    </section>
+    <div class="workspace">
+      <section class="stage"><h2>固定场景画布</h2><canvas id="canvas" width="480" height="360" aria-label="480×360 逻辑尺寸的 Canvas 测试画布"></canvas><p>固定种子、240 角色、60 Hz 模拟步；屏幕刷新与模拟步分别计数。</p></section>
+      <section class="interaction"><h2>手动输入与反馈</h2>
+        <label for="input">在此输入中英文、使用输入法或持续按键</label><textarea id="input" rows="3" spellcheck="false" placeholder="不会保存输入内容"></textarea>
+        <div id="feedback" tabindex="0">等待键盘 / IME / 指针事件</div>
+        <div id="scroll" tabindex="0" aria-label="滚动测试区域"><div id="scrollContent"></div></div>
+        <p id="inputCounts">键盘 0 · IME 0 · 指针 0 · 滚动 0</p>
+      </section>
+    </div>
+    <section class="lifecycle"><h2>生命周期操作</h2><button id="second" disabled>打开第二个 Host</button><button id="reload" disabled>重新加载当前页</button><button id="hide" disabled>隐藏 1.5 秒后恢复</button><p>只在点击后执行。导航会清除本页未保存报告；请先保存。隐藏或失焦会使正在记录的对照无效，恢复不会抢占前台。</p></section>
+    <p class="note">rAF 是页面回调调度，不是物理呈现 FPS；事件计数和 DOM 修改不代表输入到屏幕延迟。分位数来自全部已观测间隔的 0.25 ms 直方图，记录边界未观测区间单列。保持同一窗口尺寸、前台状态、场景和载荷再比较；本页不自动发系统输入。</p>
+    <pre id="reportPreview" aria-label="最近报告摘要">尚未完成记录。</pre>
+  </main>
+  <script src="benchmark.js"></script>
+</body>
+</html>
