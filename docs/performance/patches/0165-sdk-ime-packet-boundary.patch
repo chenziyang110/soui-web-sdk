@@ -1,0 +1,55 @@
+diff --git a/sdk/src/host/soui_miniblink_host.cpp b/sdk/src/host/soui_miniblink_host.cpp
+index 337d100..81d1a31 100644
+--- a/sdk/src/host/soui_miniblink_host.cpp
++++ b/sdk/src/host/soui_miniblink_host.cpp
+@@ -3495,9 +3495,13 @@ void dynamic_miniblink_adapter::dispatch_input_on_engine(const input_packet& pac
+     case input_kind::ime_update:
+       if (wkeSetComposition != nullptr) {
+         const std::wstring text(packet.text.begin(), packet.text.end());
++        // A combined native message can start another preedit immediately
++        // after committing the previous one. Publish state before callbacks
++        // so synchronous cleanup is not overwritten when the call returns.
++        ime_composing_ = !packet.text.empty();
++        ime_committed_ = false;
+         (void)wkeSetComposition(view, text.c_str(), packet.selection_start,
+                                 packet.selection_end);
+-        ime_composing_ = true;
+       }
+       break;
+     case input_kind::ime_end:
+@@ -3784,6 +3788,18 @@ bool dynamic_miniblink_adapter::handle_native_window_message(
+           }
+           return text;
+         };
++        // Result and current composition may both be present. Commit the
++        // previous composition before publishing the next preedit.
++        if ((lparam & GCS_RESULTSTR) != 0) {
++          input_packet packet = make_input_packet(input_kind::ime_commit);
++          packet.text = copy_text(GCS_RESULTSTR);
++          if (text_rejected) {
++            reject_text(packet, text_error);
++            ImmReleaseContext(child, context);
++            result = 0; return true;
++          }
++          route(std::move(packet));
++        }
+         if ((lparam & GCS_COMPSTR) != 0) {
+           input_packet packet = make_input_packet(input_kind::ime_update);
+           packet.text = copy_text(GCS_COMPSTR);
+@@ -3799,16 +3815,6 @@ bool dynamic_miniblink_adapter::handle_native_window_message(
+           packet.selection_end = packet.selection_start;
+           route(std::move(packet));
+         }
+-        if ((lparam & GCS_RESULTSTR) != 0) {
+-          input_packet packet = make_input_packet(input_kind::ime_commit);
+-          packet.text = copy_text(GCS_RESULTSTR);
+-          if (text_rejected) {
+-            reject_text(packet, text_error);
+-            ImmReleaseContext(child, context);
+-            result = 0; return true;
+-          }
+-          route(std::move(packet));
+-        }
+         ImmReleaseContext(child, context);
+       } else if (lparam & (GCS_COMPSTR | GCS_RESULTSTR)) {
+         const auto packet = make_input_packet((lparam & GCS_RESULTSTR) ? input_kind::ime_commit : input_kind::ime_update);

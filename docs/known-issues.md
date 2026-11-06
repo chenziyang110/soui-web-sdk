@@ -4,6 +4,8 @@
 
 ## 0.6.0 后续源码候选
 
+2026-11-06 的[输入法消息边界复验](performance/sdk-preview4-ime-boundary-20261106.md)确认原生空 composition/cancel 在无活动组合时会误删普通选中文本；四行私有 provider 保护的两架构增量构建和一次 x64 实际复验满足限定条件。SDK 顺序/状态提案通过20项源码场景及三个指定负对照，旧夹具失败保留。两个补丁均未默认采用；活动回调/ABA、旧 provider 兼容性、系统双标志、x86交互及性能未认证，冻结 preview.4 包不变。
+
 2026-11-06 的[输入法追加验收](performance/sdk-preview4-ime-20261106.md)完成一次 x64 系统输入法观察和两个真实 Blink API 配方：正常中文提交/取消符合预期，full trace 确认失焦返回后才进入的 native commit/end；API 配方均将 ni 替换成最终“你”，未记录失焦或重新聚焦时提前 compositionend。OS 场景的预编辑/最终文字相同，不能外推不同最终文字经完整 SDK 链保真；双 flags、选择区/导航/关闭重入、输入法矩阵仍未认证。55项报告合同与修复后限定回放通过，原夹具失败保留；默认 SDK/内核未采用，帧率、输入延迟及生产资格保持false。
 
 2026-11-06 的[焦点与预算追加验收](performance/sdk-preview4-focus-20261106.md)用无丢失 full trace 确认旧 MiniBlink 的 `wkeKillFocus` 已正常返回，累计页面快照仍没有 blur；内部具体分支未唯一定位。[ADR-0164](adr/0164-miniblink-keyboard-focus-loss.md)的私有候选已通过27项模型、两架构增量编译和一次 x64 窗口失焦限定复验（快照前 native blur 返回、页面 blur2、正常关闭）。补丁仅供审查，仓库默认实现/SDK4包未改；四项新冻结库历史等同性未知，完整输入法、焦点矩阵及性能未认证。R29 两个0预算基线虽采集完整，Bridge尾部噪声超原阈值，已停止2000候选和末轮，不重复追测；整体性能资格保持false。

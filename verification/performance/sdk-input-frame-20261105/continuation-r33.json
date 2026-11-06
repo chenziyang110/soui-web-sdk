@@ -1,0 +1,158 @@
+{
+  "schema": "soui.performance-continuation-r33/v1",
+  "recordedAt": "2026-11-06T01:39:07.577Z",
+  "sourceBaseCommit": "130f7df69af4137a5dd69b787ace9512cce2c6e3",
+  "sdk": {
+    "version": "0.7.0-preview.4",
+    "architecture": "x64",
+    "configuration": "Release",
+    "buildId": "18e47fa2-69df-4530-b1f9-365f6b2aec28",
+    "sourceSha256": "e1d2dd8b7699930f678e21a77772b8fa4e371f5b67a53937d98470ee1659e87c",
+    "newSdkBuilt": false,
+    "defaultSdkChanged": false,
+    "packagesChanged": false
+  },
+  "sourceCpu": {
+    "candidateScenarios": 20,
+    "actualRawExits": [
+      0,
+      1,
+      1,
+      1
+    ],
+    "firstFixtureFailurePreserved": true,
+    "recoveryOnly": "static WinAPI read fake throughHIMC; raw production fragments/assertions unchanged",
+    "summary": {
+      "path": "C:/soui-perf-continuation/PR129-performance-20261104/repair-r33-ime-packet-boundary-r1\\fixture-read-seam-r2\\build-r2\\fixture-summary.json",
+      "bytes": 5886,
+      "sha256": "7349a615b9106f14b90c28857d270b83dd42bf127b9d9c6ae6d9bbde21baa87a"
+    },
+    "independentReview": {
+      "path": "C:/soui-perf-continuation/PR129-performance-20261104/repair-r33-ime-packet-boundary-r1\\fixture-read-seam-r2\\actual-independent-review-r1.json",
+      "bytes": 4854,
+      "sha256": "416310d8928c60198f00aaef82dabb7d38987e4f5b751980293734a9ed97e11e"
+    },
+    "sdkMailboxVerified": false,
+    "osImeVerified": false
+  },
+  "providerCounterexample": {
+    "run": "b71a2fbc88863525af89b81e1f99b9ed",
+    "actualSelectedCommittedTextDeleted": true,
+    "nativeAndEntryExit": 0,
+    "allJobsEmpty": true,
+    "forced": false,
+    "independentAnalysis": {
+      "path": "C:/soui-perf-continuation/PR129-performance-20261104/repair-r33-ime-packet-boundary-r1\\api-empty-probe\\actual-empty-analysis-r1.json",
+      "bytes": 17294,
+      "sha256": "6420f7365fd7b113d86f262d415fcb62d6dbd80c9ee0e1871a53ebb844b3c07d"
+    }
+  },
+  "privateBuild": {
+    "profile": "LLVM22MSVC142",
+    "freshWholeKernel": false,
+    "v143Qualified": false,
+    "strictAllHistoricalInputsSingleDifference": false,
+    "oldPchIdentityUnknown": true,
+    "unpairedInheritedLibraries": 4,
+    "architectures": [
+      {
+        "architecture": "x64",
+        "compileExit": 0,
+        "linkExit": 0,
+        "naturalJobs0": true,
+        "actualIncludes": {
+          "actualIncludeCount": 1172,
+          "uniqueActualIncludes": 1002,
+          "unadmitted": 0,
+          "allActualBytesMatched": true,
+          "forcedConfigRead": true,
+          "pchBinaryRead": false,
+          "historicalMapScope": "Actual IMC and PCH-creator observed dependency superset; original all-map false/PCH unknown preserved"
+        },
+        "artifact": {
+          "path": "C:\\soui-perf-continuation\\PR129-performance-20261104\\repair-r33-ime-packet-boundary-r1\\provider-nocomp-guard-build\\plan-r3\\x64\\output\\miniblink.dll",
+          "bytes": 39212544,
+          "sha256": "7bc30e80f25b50fb11ac7a943de37fb7f499f8bcc7c9533037ac43172a4cf626"
+        },
+        "exportNamesMatch": true
+      },
+      {
+        "architecture": "x86",
+        "compileExit": 0,
+        "linkExit": 0,
+        "naturalJobs0": true,
+        "actualIncludes": {
+          "actualIncludeCount": 1173,
+          "uniqueActualIncludes": 1002,
+          "unadmitted": 0,
+          "allActualBytesMatched": true,
+          "forcedConfigRead": true,
+          "pchBinaryRead": false,
+          "historicalMapScope": "Actual IMC and PCH-creator observed dependency superset; original all-map false/PCH unknown preserved"
+        },
+        "artifact": {
+          "path": "C:\\soui-perf-continuation\\PR129-performance-20261104\\repair-r33-ime-packet-boundary-r1\\provider-nocomp-guard-build\\plan-r3\\x86\\output\\node.dll",
+          "bytes": 28324864,
+          "sha256": "4b33e44621ec607739e17375e858afb65e87be5f9ad1fce4c38097c3d9d882e9"
+        },
+        "exportNamesMatch": true
+      }
+    ],
+    "result": {
+      "path": "C:/soui-perf-continuation/PR129-performance-20261104/repair-r33-ime-packet-boundary-r1\\provider-nocomp-guard-build\\build-result-r1.json",
+      "bytes": 16047,
+      "sha256": "5d52347491d30624fe8f7320583133b8bd027fdba6ac1cb35e92b54f37ccb66a"
+    },
+    "independentReview": {
+      "path": "C:/soui-perf-continuation/PR129-performance-20261104/repair-r33-ime-packet-boundary-r1\\provider-nocomp-guard-build\\actual-build-review-r1.json",
+      "bytes": 6337,
+      "sha256": "8bc231c46e1a5e0634cbcbe4f4847fc82c5b1d7f0e63c6cff8deefad2e974fac"
+    }
+  },
+  "guardedNative": {
+    "run": "417b30d72e813850164f0b717511905f",
+    "limitedNoActiveProtectionVerified": true,
+    "nativeAndEntryExit": 0,
+    "allJobsEmpty": true,
+    "forced": false,
+    "hostSha256": "5d87be06ad675800d2107870c57538f8a03faa2127719a620f6b4ab2cb6a518f",
+    "defaultAdopted": false,
+    "independentAnalysis": {
+      "path": "C:/soui-perf-continuation/PR129-performance-20261104/repair-r33-ime-packet-boundary-r1\\guard-probe-entry-r1\\actual-guard-analysis-r1.json",
+      "bytes": 17144,
+      "sha256": "55a1eb5847cddb44e4e75738ec8ec84800b3f69eadea5748a72733b1e0280c3b"
+    },
+    "rootReceipt": {
+      "path": "C:/soui-perf-continuation/PR129-performance-20261104/repair-r33-ime-packet-boundary-r1\\root-native-guard-execution-r1.json",
+      "bytes": 2471,
+      "sha256": "8bfa0fb58f9c36d9ea7b9c1907abdc4fa81a1a59e0975cd3baa2896abd20ea1a"
+    }
+  },
+  "unappliedPatches": [
+    {
+      "path": "C:\\sp4\\docs\\performance\\patches\\0165-sdk-ime-packet-boundary.patch",
+      "bytes": 2653,
+      "sha256": "262e001e67f77b7ff230f2319ec2d4f70e85892fba5d5688b7c172d6bdd9e2ba"
+    },
+    {
+      "path": "C:\\sp4\\docs\\performance\\patches\\0165-provider-no-composition-empty-guard.patch",
+      "bytes": 984,
+      "sha256": "ce7cefdca8560e70b6b585cb7975ac04d959612bc9f651f230e3cb8bc383a74f"
+    }
+  ],
+  "reproManifest": {
+    "path": "C:/soui-perf-continuation/PR129-performance-20261104/repair-r33-ime-packet-boundary-r1\\repro-r1\\SHA256-MANIFEST.json",
+    "bytes": 7595,
+    "sha256": "880cc1bda06adfb694ec36325776b6de51e5847b95211a51e9cef3bcd3b94405"
+  },
+  "activeReentryABAQualified": false,
+  "legacySafeClearQualified": false,
+  "fullOsDualFlagsVerified": false,
+  "x86InteractionVerified": false,
+  "performanceVerified": false,
+  "inputLatencyVerified": false,
+  "releaseReady": false,
+  "wholeGoalComplete": false,
+  "windowsClosed": true,
+  "next": "Return toM01 persistent T7 observation; no repeatedFPS/IME matrix"
+}
