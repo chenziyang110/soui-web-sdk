@@ -94,6 +94,8 @@ foreach(cursor_target soui_cursor_resource_tests soui_cursor_broker_scope_tests)
 endforeach()
 
 add_subdirectory(input_frame_trace_backend)
+add_subdirectory(owner_continuation)
+add_subdirectory(soui_owner_loop)
 add_subdirectory(input_admission)
 if(SOUI_BUILD_VENDOR_TESTS)
   include(input_ui_policies.cmake)

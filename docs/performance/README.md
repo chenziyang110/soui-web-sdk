@@ -1,6 +1,8 @@
 # 双后端性能候选
 
-当前未发布 `0.7.0-preview.4` 的[交付复验](sdk-preview4-delivery-20261105.md)和[追加验收状态](sdk-preview4-qualification-20261105.md)记录两架构限定构建、安装消费者、功能及实际体积。真实输入/有效帧率与条件策略验收尚未完成，`performanceVerified=false`；以下记录保留各自历史身份。
+当前源码为未发布的 `0.7.0-preview.6` owner-loop实现候选，接入及回退契约见[ADR-0169](../adr/0169-sdk-owned-owner-loop-integration.md)，37项Core源码合同的实际结果见[当前报告](sdk-preview6-owner-loop-20261107.md)。实际SDK5持续负载仍未通过输入/反馈资格：完整发送后存在晚到标签、tag0 veto和约29秒paint/timer间隔，见[preview.5集成报告](sdk-preview5-integration-acceptance-20261106.md)。SDK6必须完成自己的正常SDK构建、功能与匹配性能验证，不继承旧结果。
+
+历史 `0.7.0-preview.4` 的[交付复验](sdk-preview4-delivery-20261105.md)和[追加验收状态](sdk-preview4-qualification-20261105.md)记录两架构限定构建、安装消费者、功能及实际体积。真实输入/有效帧率与条件策略验收尚未完成，`performanceVerified=false`；以下记录保留各自历史身份。
 
 2026-11-05 最新[SDK 输入与帧率验收报告](sdk-input-frame-acceptance-20261105.md)记录 v143 安装消费者、桌面内容观察、输入来源完整性失败和体积结果。WebView2 未检测到超过噪声的改善，MiniBlink 基线漂移；性能和发布门槛保持未通过，旧结果保留各自身份。
 

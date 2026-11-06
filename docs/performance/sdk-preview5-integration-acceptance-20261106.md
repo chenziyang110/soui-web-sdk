@@ -58,7 +58,21 @@ R48新版入口据此绑定R50，保留原v2读数口径、3125输入和全部�
 
 后续R52/R53/entry-r3的自动收尾实际通过：原stop-trigger在所有原生Job0后返回0，资源助手同线程、未到期自然释放0。采样仍失败且输入为0：Root错误地用两个false请求窗口快照，被工具拒绝；修正参数的额外往返耗掉准备时间，GO到达Host启动后25,010.6ms，页面仍以25秒InputReady到期报告退出。Host26.363秒自然3、输入器15.109秒自然1，均Job0/无强清，负载阶段未开始。这个调用错误不归因为SDK性能；下一轮仅合并Root的启动、唯一窗口选择、激活、正确快照和显式GO为一次调用，不更改源码SDK、负载或期限。
 
-## 体积边界
+## R54：完整发送后的实际失效诊断
+
+合并开窗、激活、状态校验与GO后，entry-r4在Host启动后4,779.1784ms接纳GO。SDK5与R50消费者未重编，3125次SendInput均返回1，3125个正标签最终全部收到；并非输入丢失。Host自然3、40.974秒，输入器自然1、29.575秒，原期限不变，所有Job0、无强清；stop-trigger与资源助手自然0，实际负载QPC在未到期资源保护内。
+
+该轮仍不具备输入或帧率资格：共2119条tag0，其中2108条处于严格cohort，保持原veto；最终ACK500失败。最后正标签比最后SendInput晚3,960.6827ms，比最终软件捕获结束晚3,458.7366ms，990个正标签晚于该捕获。所有标签最终接收不能替代原窗口内及时反馈门槛。页面也报告 `E_INPUT_FINISH_FENCE_FALSE`，不把完整排空改判为strictValid。
+
+真实load阶段约30.9987515秒，74315次Bridge成功与native echo一致，0失败/超时/错配、peak7。观测到的Host pump为28382次，最长1.7679ms；paint67次、timer66次，最大间隔分别28.9639945与28.9644325秒。单次pump短不证明整条UI调用链公平，也不排除COM或其他回调。页面各阶段观测点hidden=true、hasFocus=false，与原生输入器当时的前台守卫成功分别保留，不能据其rAF推算物理帧率。
+
+tag0均为extra=0、来源API的SYSTEM类别，同前一行坐标及MSG元组相同。Windows可能因窗口状态变化生成同坐标鼠标消息，但这些旁证不能认证2119条的唯一来源，也不能自动豁免veto。没有新增过滤、global hook或把origin类别当 actor 身份。
+
+该失效支持继续研究持续posted请求/回复链：有限inflight与每次有界pump不排除队列长期非空，无法据此保证input/paint/timer机会。它不是SDK某一行代码的唯一因果证明。后续SDK6在[ADR-0169](../adr/0169-sdk-owned-owner-loop-integration.md)实施独立owner-loop候选，只在无过滤消息队列为空时服务普通输出；旧SDK5载荷与失败保持不变，不立即重跑同一入口。
+
+原件位于 `R48-sdk5-native-entry-r1/entry-r4/`：独立实际审查SHA`b3057a39b097fe46e8ee78521298e47bbb5161028c04d099c51d76cbfb56e2de`，输入故障分析SHA`71a5a5361c297c6ab9089ce56f26ebfa41ec08c61eaa46e96b8a2ed2849de44f`。原 `performanceVerified=false`、`inputLatencyVerified=false` 保留。
+
+## 体积边界（SDK5）
 
 同为v143/x64 Release的471文件静态SDK安装，preview.4→preview.5为80,244,800→80,253,090 B，**+8,290 B（0.010331%）**。其中Core +2,772 B、WebView2 archive +5,518 B，Loader不变；公共头仅版本内容改变、大小相同。包含源码目录/版本身份差异，不能将全部archive增长归因通知逻辑，也不能把静态库增量当最终EXE增量。
 

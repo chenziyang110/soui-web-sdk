@@ -10,6 +10,7 @@
 #include "owner_work_policy.h"
 #include "owner_output_wake.h"
 #include "../../src/host/input_trace_hooks.h"
+#include "../../src/host/owner_continuation.h"
 #include <soui/diagnostics/input_frame_trace.h>
 #include "loader_policy.h"
 #include "native_observation.h"
@@ -26,6 +27,7 @@
 #include <iterator>
 #include <limits>
 #include <json.hpp>
+#include <algorithm>
 #include <atomic>
 #include <chrono>
 #include <condition_variable>
@@ -534,6 +536,9 @@ struct webview2_adapter::state {
   std::deque<request> requests;
   std::deque<output> outputs;
   bool output_pump_active{false}; // Output queue mutex; owned by the outer drain scope only.
+  // Workers use this object under the output mutex; only the UI owner retires
+  // it. service_legacy pins its Pimpl before any potentially reentrant call.
+  std::unique_ptr<detail::owner_continuation_registration> owner_continuation;
   capacity::request_budget request_slots;
   capacity::output_budget output_slots;
   capacity::priority_policy request_priority, output_priority;
@@ -663,6 +668,7 @@ void finish_preparation(const std::shared_ptr<state>& value, const host_result& 
   }
 }
 void wake_owner(const std::shared_ptr<state>& value);
+void pump_owner_state(const std::shared_ptr<state>& value);
 void stop_bridge_admission(const std::shared_ptr<state>& value);
 void fail(const std::shared_ptr<state>& value, std::string detail) {
   value->failure = error("E_WEBVIEW2", std::move(detail));
@@ -703,6 +709,58 @@ void wake_owner(const std::shared_ptr<state>& value) {
   if (!value->wake_pending.exchange(true, std::memory_order_acq_rel) &&
       !PostMessageW(value->owner, sdk::webview2_event_message, 0, 0))
     value->wake_pending.store(false, std::memory_order_release);
+}
+void wake_output_locked(const std::shared_ptr<state>& value, capacity::lane category) {
+  if (category == capacity::lane::ordinary && value->owner_continuation)
+    value->owner_continuation->request();
+  else
+    wake_owner(value); // Control and lifecycle retain their actual Host notice.
+}
+void wake_remaining_outputs_locked(const std::shared_ptr<state>& value) {
+  bool ordinary = false, immediate = false;
+  for (const auto& output : value->outputs) {
+    const auto category = output.slot ? output.slot->category : capacity::lane::ordinary;
+    if (category == capacity::lane::ordinary) ordinary = true;
+    else immediate = true;
+    if (ordinary && immediate) break;
+  }
+  if (ordinary && value->owner_continuation) value->owner_continuation->request();
+  if (immediate || (ordinary && !value->owner_continuation)) wake_owner(value);
+}
+void bind_owner_continuation(const std::shared_ptr<state>& value) noexcept {
+  try {
+    const std::weak_ptr<state> weak(value);
+    auto attached = detail::attach_current_owner_continuation(value, [weak] {
+      const auto current = weak.lock();
+      if (!current) return false;
+      pump_owner_state(current); // The original bounded pump, without acknowledging a Host MSG.
+      std::lock_guard<std::mutex> lock(current->mutex);
+      return !current->stop_requested && current->current == state::phase::mounted &&
+          std::any_of(current->outputs.begin(), current->outputs.end(), [](const state::output& output) {
+            return !output.slot || output.slot->category == capacity::lane::ordinary;
+          });
+    }, [weak] {
+      if (const auto current = weak.lock()) wake_owner(current);
+    });
+    std::unique_ptr<detail::owner_continuation_registration> retired;
+    {
+      std::lock_guard<std::mutex> lock(value->mutex);
+      retired = std::move(value->owner_continuation);
+      value->owner_continuation = std::move(attached);
+    }
+    if (retired) retired->reset();
+  } catch (...) {
+    // Optional scheduling admission cannot invalidate a normally mounted Host.
+    // The unchanged Host notification path remains available.
+  }
+}
+void release_owner_continuation(const std::shared_ptr<state>& value) noexcept {
+  std::unique_ptr<detail::owner_continuation_registration> retired;
+  {
+    std::lock_guard<std::mutex> lock(value->mutex);
+    retired = std::move(value->owner_continuation);
+  }
+  if (retired) retired->reset(); // No Host mutex across unregister/fallback notification.
 }
 void note_output(const std::shared_ptr<state>& value, const state::output& output,
     input_trace::stage point, input_trace::reason why = input_trace::reason::none) noexcept {
@@ -834,7 +892,7 @@ void push_output(const std::shared_ptr<state>& value, state::output output, outp
     note_output(value, output, input_trace::stage::task_cancelled, input_trace::reason::invalid);
     throw;
   }
-  if (!value->output_pump_active) wake_owner(value);
+  if (!value->output_pump_active) wake_output_locked(value, category);
 }
 void bridge_worker(const std::shared_ptr<state>& value) noexcept {
   const bool trace_attached = input_trace::register_current_thread();
@@ -1619,11 +1677,13 @@ host_result webview2_adapter::mount(const sdk::host_config& config) {
     }
     catch (...) { value->worker_done.store(true, std::memory_order_release); throw; }
     value->current = state::phase::mounted;
+    bind_owner_continuation(value);
     value->allow_navigation = true;
     check(value->core->Navigate(entry_url), "Navigate controlled entry");
     return ok();
   } catch (const std::exception& exception) {
     fail(value, exception.what());
+    release_owner_continuation(value);
     // No work has been admitted before the initial Navigate callback.
     {
       std::lock_guard<std::mutex> lock(value->mutex);
@@ -1657,6 +1717,7 @@ host_result webview2_adapter::unmount() {
   finish_preparation(value, error("E_CANCELLED", "WebView2 preparation was cancelled."));
   value->document_ready = value->application_ready = false;
   stop_bridge_admission(value);
+  release_owner_continuation(value);
   if (!value->preparation.settled())
     return error("E_BUSY", "WebView2 initialization callbacks are finishing bounded teardown.");
   if (!value->worker_done.load(std::memory_order_acquire)) return error("E_BUSY", "Bridge worker is finishing bounded teardown.");
@@ -1775,16 +1836,15 @@ host_result webview2_adapter::reload() {
   } catch (const std::exception& exception) { fail(value, exception.what()); return value->failure; }
 }
 
-void webview2_adapter::pump() {
-  auto value = state_;
-  value->wake_pending.store(false, std::memory_order_release);
+namespace {
+void pump_owner_state(const std::shared_ptr<state>& value) {
   if (!require_mounted(value).ok) return;
   const detail::owner_pump_guard pumping(value->pump_running);
   if (!pumping) return;
   const detail::trace_thread_borrow trace_operation;
   const detail::trace_duration owner_cost(input_trace::duration_metric::webview2_owner);
   detail::owner_output_drain_scope output_drain(value->output_pump_active, value->mutex,
-      value->outputs, [&value]() noexcept { wake_owner(value); });
+      value->outputs, [&value]() noexcept { wake_remaining_outputs_locked(value); });
   try {
     if (value->worker_done.load(std::memory_order_acquire)) throw std::runtime_error("Bridge worker exited unexpectedly");
     if (!value->application_ready && !value->diagnostic_query_pending &&
@@ -1890,21 +1950,44 @@ void webview2_adapter::pump() {
       }
       if (FAILED(posted)) observation.cancel(input_trace::reason::post_failed);
       check(posted, "Deliver native response");
+      bool became_ready = false;
       {
         std::lock_guard<std::mutex> lock(value->mutex);
         if (output.ready && !value->stop_requested && value->current == state::phase::mounted
-            && output.generation == value->generation && output.document_id == value->document_id)
+            && output.generation == value->generation && output.document_id == value->document_id) {
+          became_ready = !value->application_ready;
           value->application_ready = true;
+        }
       }
+      if (became_ready) wake_owner(value); // Readiness is still observable through the public Host notice.
       observation.finished = true; // COM returned successfully; no page/pixel claim.
     }
     if (!output_drain.entered()) {
       // Preserve the original empty-pump tail check: a producer may have
       // enqueued after the empty observation and failed its first native post.
       std::lock_guard<std::mutex> lock(value->mutex);
-      if (!value->outputs.empty()) wake_owner(value);
+      if (!value->outputs.empty()) wake_remaining_outputs_locked(value);
     }
   } catch (const std::exception& exception) { fail(value, exception.what()); }
+}
+}  // namespace
+
+void webview2_adapter::pump() {
+  const auto value = state_;
+  // Only the public Host notification acknowledges this independent queue bit.
+  value->wake_pending.store(false, std::memory_order_release);
+  // Keep the original wrong-thread no-op; registration retirement belongs to
+  // this UI owner. Workers retain it under the same output mutex.
+  if (GetCurrentThreadId() != value->ui_thread) return;
+  detail::owner_continuation_registration* continuation = nullptr;
+  {
+    std::lock_guard<std::mutex> lock(value->mutex);
+    continuation = value->owner_continuation.get();
+  }
+  // No reentrant call between this handoff and service_legacy's first Pimpl
+  // pin. The service then uses only that retained state, even if COM closes us.
+  if (continuation && continuation->service_legacy()) return;
+  pump_owner_state(value);
 }
 bool webview2_adapter::document_ready() const noexcept { return state_->current == state::phase::mounted && state_->document_ready; }
 bool webview2_adapter::application_ready() { return state_->current == state::phase::mounted && state_->application_ready; }

@@ -73,7 +73,6 @@ string(REPLACE "](third_party/licenses/" "](licenses/"
 file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/THIRD_PARTY_NOTICES.install.md" "${_soui_install_notices}")
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/THIRD_PARTY_NOTICES.install.md"
   DESTINATION share/SouiSdk RENAME THIRD_PARTY_NOTICES.md)
-install(FILES "${SOUI_DISTRIBUTION_ROOT}/LICENSE.md" DESTINATION share/SouiSdk)
 install(DIRECTORY "${SOUI_DISTRIBUTION_ROOT}/third_party/licenses/" DESTINATION share/SouiSdk/licenses)
 install(DIRECTORY "${SOUI_DISTRIBUTION_ROOT}/third_party/licenses/" DESTINATION share/SouiSdk/third_party/licenses)
 set(_soui_redistribution_doc "docs/licenses/v0.6.0-redistribution.md")

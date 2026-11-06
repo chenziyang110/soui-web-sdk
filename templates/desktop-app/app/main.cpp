@@ -7,6 +7,7 @@
 #include <com-cfg.h>
 #include <helper/SAdapterBase.h>
 #include <soui/host/soui_miniblink_host.h>
+#include <soui/host/soui_owner_application.h>
 #include <soui/json_bridge.h>
 #ifdef SOUI_DEVTOOLS_PACKAGE_AVAILABLE
 #include <soui_devtools_package.h>
@@ -211,7 +212,7 @@ int run(HINSTANCE instance,bool smoke) {
   components.SetDllPath(SOUI::SStringT(root.wstring().c_str()));
   SOUI::CAutoRefPtr<SOUI::IRenderFactory> render;
   if(!components.CreateRender_GDI(reinterpret_cast<IObjRef**>(&render)))return 3;
-  SOUI::SApplication app(render,instance,_T("SOUI_STARTER"));
+  soui::sdk::soui_owner_application app(render,instance,_T("SOUI_STARTER"));
   app.SetAppDir(SOUI::SStringT(root.wstring().c_str()));
   SOUI::CAutoRefPtr<SOUI::IResProvider> resources;
   SOUI::CreateResProvider(SOUI::RES_PE,reinterpret_cast<IObjRef**>(&resources));

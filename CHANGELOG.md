@@ -1,5 +1,12 @@
 # 变更记录
 
+## 0.7.0-preview.6（实现中，未发布）：SDK owner-loop 接入
+
+- 新增SDK自有Win32 owner-loop候选接口及可选SOUI接入，普通输出在系统队列为空时以有限continuation推进，保留legacy应用循环和即时生命周期通知；设计、嵌套和回退门槛见[ADR-0169](docs/adr/0169-sdk-owned-owner-loop-integration.md)。v143/x86和x64 Release正常安装消费者的Core37项、SOUI3项均通过并经独审，三模板main编译为OBJECT；性能及模板链接/启动仍待验，见[当前报告](docs/performance/sdk-preview6-owner-loop-20261107.md)。不继承私有原型20项或preview.5构建资格。
+- 同步C++、Web、React/Vue和锁文件的6版身份，增加独立精确peer元组，5版及更早元组保持不变；不覆盖已冻结preview.5载荷。
+- 将实际持续负载使用的v2测量源码接回仓库，保留原标签/终态/期限及失败。R54的3125输入和74315响应为失效诊断，不能当输入或FPS通过。
+- 去除CMake安装清单中同一LICENSE的重复登记，实际许可证内容和安装路径保持一致；旧SDK5重复导致的外层验收失败继续保留。
+
 ## 0.7.0-preview.5（未发布）：WebView2活动输出通知合并
 
 - 活动owner drain内到达的输出由当前slice接续，只有尾部仍有输出时补通知；保留独立生命周期通知和原空pump尾部的瞬时post失败重查机会，见[ADR-0167](docs/adr/0167-webview2-active-output-wake-coalescing.md)。不改变公开API、lane优先级、COM前额度释放、业务deadline、线程或输入消息。

@@ -133,6 +133,15 @@ test('active output wake preview has an exact tuple without accepting future pre
   assert.throws(() => gui.metadata(fixture(t, candidate, previousRange).source), /exact local SDK and framework peers/);
   assert.throws(() => gui.metadata(fixture(t, '0.7.0-preview.6', range).source), /exact local SDK and framework peers/);
 });
+test('owner loop preview preserves prior tuples and requires its exact peer range', t => {
+  const previousRange = currentPeerRange + ' || 0.7.0-preview.1 || 0.7.0-preview.2 || 0.7.0-preview.3 || 0.7.0-preview.4 || 0.7.0-preview.5';
+  const candidate = '0.7.0-preview.6', range = previousRange + ' || ' + candidate;
+  assert.equal(gui.metadata(fixture(t, candidate, range).source), candidate);
+  assert.equal(gui.metadata(fixture(t, '0.7.0-preview.5', previousRange).source), '0.7.0-preview.5');
+  assert.throws(() => gui.metadata(fixture(t, '0.7.0-preview.5', range).source), /exact local SDK and framework peers/);
+  assert.throws(() => gui.metadata(fixture(t, candidate, previousRange).source), /exact local SDK and framework peers/);
+  assert.throws(() => gui.metadata(fixture(t, '0.7.0-preview.7', range).source), /exact local SDK and framework peers/);
+});
 function historicalPackage(t, targetVersion = version, tool = legacyToolBytes()) {
   const f = fixture(t, targetVersion, previousPeerRange), packed = path.join(f.root, 'historical-package');
   f.write('tools/sdk/gui-bindings-delivery.cjs', tool);

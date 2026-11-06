@@ -1,6 +1,20 @@
 # SDK API
 
-本页描述 0.7.0-preview.5 开发候选源码接口，尚未发布。新增可选帧策略反馈需要 SDK 与应用配套重编；已发布0.6.0及其他旧记录保留各自身份，不继承为本候选验证。preview.3 的 V8 后台诊断登记修复不新增公共接口，见 ADR-0162；preview.4 同步修正运行时部署清单并保留相同内核字节；preview.5 合并 WebView2 活动drain内的重复输出通知，不新增公开接口，见[ADR-0167](adr/0167-webview2-active-output-wake-coalescing.md)。旧包与旧测量仍绑定各自原始身份，新候选的最终性能资格待验。
+本页描述 0.7.0-preview.6 开发候选源码接口，尚未发布。新增可选帧策略反馈和owner loop需要 SDK 与应用配套重编；已发布0.6.0及其他旧记录保留各自身份，不继承为本候选验证。preview.3 的 V8 后台诊断登记修复不新增公共接口，见 ADR-0162；preview.4 同步修正运行时部署清单并保留相同内核字节；preview.5 合并 WebView2 活动drain内的重复输出通知，见[ADR-0167](adr/0167-webview2-active-output-wake-coalescing.md)。preview.6增加下面的显式消息循环接入；旧包与旧测量仍绑定各自原始身份，新候选的最终性能资格待验。
+
+## Windows owner loop（preview.6候选）
+
+`<soui/host/windows_owner_loop.h>` 提供 `windows_owner_loop`，链接原 `Soui::Sdk`。在准备同线程Host之前构造，并以 `run()` 替代应用自有GetMessage循环；默认仍用TranslateMessage/DispatchMessage。应用负责原来的COM初始化、窗口通知转发及Host关闭排空。未接入的应用保留原通知路径，不要求替换消息循环。
+
+`windows_owner_loop_callbacks` 可转发应用dispatch、idle、idle分类、被动退出谓词与明确的GetMessage失败重试策略。`message_retrieved` 在GetMessage返回后、SDK工作和其他hook前被动观察原MSG，可捕获队列元数据；它和退出谓词均不得取走/投递消息、派发回调或重入循环。其他回调可正常执行应用逻辑，仍应有界返回。无错误重试hook时，实际GetMessage失败抛出 `std::system_error`。同一对象Run重入或错线程调用Run抛出 `std::logic_error`，错线程析构是契约错误；不同对象可在同一owner线程嵌套。
+
+普通WebView2输出在无过滤Peek确认没有可用系统消息时继续处理，保留原有界pump、lane优先级、admission credit、deadline和owner STA。紧急控制与legacy通知保持原路径。持续外部消息、未合作modal和不返回的回调没有有限延迟保证；该入口不保证实际帧率或输入延迟改善。
+
+`status()` 报告continuation资源可用性，失败为 `E_OWNER_CONTINUATION_UNAVAILABLE`，错线程查询为 `E_WRONG_THREAD`；可用不等于Run正在执行或性能通过。资源故障保留普通应用循环与原Host通知，不伪报优化启用。Run退出恢复legacy责任，不能代替Host关闭。
+
+使用SOUI时，可选 `<soui/host/soui_owner_application.h>` 的 `soui_owner_application` 在新应用构造时安装SDK main/dialog loop；构造参数为renderer、instance、host class和IME开关。该可选头需要应用本来的SOUI头/库，Core不依赖SOUI。普通桌面模板已使用该类型。它保留filter、OnMsg/OnIdle与Quit路径，不提供覆盖任意现有自定义factory的helper。应用之后替换factory使主SDK loop消失时，`owner_loop_status()` 返回 `E_OWNER_LOOP_REPLACED`。
+
+回退时将SOUI便利类型改回 `SApplication`，或恢复原Win32循环，并配套回退完整SDK头/库；不得混用preview.5与preview.6。设计及验证边界见[ADR-0169](adr/0169-sdk-owned-owner-loop-integration.md)。
 
 ## 帧策略反馈（后续源码候选）
 
