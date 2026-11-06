@@ -29,7 +29,7 @@
 - 源码SDK小合同16/16通过；SDK5真实1594文件打包、正常安装及原GUI交付校验通过。
 - Web客户端31项在首轮通过。首轮Web/GUI合计60通过、2失败：新版本交付映射缺项及新测试对旧元组不可变性的预期错误；修正后两项定向2/2通过。中间1/2失败原件保留，没有声称重新跑过全部62项。
 - 官方GUI构建入口对Web/React/Vue执行各自正常安装和编译，实际六条命令均通过；版本、锁文件及精确peer元组为preview.5，未声明preview.6。首次React/Vue使用错误安装模式的失败与后续官方 `--install-links` 成功分别保留，没有升级第三方依赖。
-- SDK5匹配消费者已实际编译、链接5TU/4个目标；整体消费者构建因原编译助手退场门失败。现有产物单独核验后，既有23项v2策略合同和最终官方renderer的隐藏容量回归各执行一次通过；该独立功能诊断不把整体构建改为通过。
+- SDK5匹配消费者首轮整体构建因原编译助手退场门失败；保留产物经单独核验后，既有23项v2策略合同和最终官方renderer的隐藏容量回归各执行一次通过。后续同源5TU/4目标在新目录自然构建成功，详见下文；旧失败不改写。
 
 ## 最终消费者：构建失败与功能结果分开
 
@@ -46,6 +46,18 @@
 
 固定WebView2 Runtime156.0.4314.58，browser79256/birth`134384537779713629`正常结束；没有激活窗口或注入输入。原15/60秒和2秒drain、容量内部55秒均保留。它直接链接正常SDK5三库，不是R44私有renderer，也没有重建SDK或内核。源码/链路及实际功能结果均经非作者审查。`functionalChecksPassed=true`与`buildGatePassed=false`同时保留，**不授权新输入入口冻结或启动**。
 
+## 后续同源消费者构建与零输入失败
+
+R49仅在任务私有的编译助手启动参数中增加官方支持的 `-aggtimeout:5 -trace`，原idle20秒、Ready3秒、退场30秒及总监督期限不变，SDK和仓库构建工具未修改。一TU探针自然通过，记录到真实CL/C2/LINK指标；没有证据证明aggregation计时实际触发，也不能据此认定R47失败的唯一原因。
+
+R50使用与R47逐文件相同的16个消费者源码文件、同一官方SDK5三库，在全新目录实际构建5TU/4目标：PID92356/birth`134384554011062311`，76.567秒自然0、Job0、无强清，原180秒及2秒drain保留。Build ID为`r50-sdk5-native-v2`，Host920,064 B、SHA`6bd5607db1d7e07ff5ad033cee1e39c900e5d0e7314ae2ddaf303573c6d2503e`，输入器159,744 B、SHA`e246af8bab664ad67282d8b8d7744ecf3254e14b6329157599febb87c02408f6`。实际CL/link、五个obj、四个PE、头/库、资源和唯一recorder经独立审查。没有重建SDK/内核，也没有重复执行前述功能合同或把R47功能执行重新标成R50执行。
+
+R48新版入口据此绑定R50，保留原v2读数口径、3125输入和全部期限。第一次实际启动在GO前失败：页面自己的25秒InputReady等待先到期（页面时间43.7→25,833.5ms），报告`E_COLD_INPUT_READY_DEADLINE`后经report/done正常关闭；Host93836/birth`134384587575616915`，27.102秒自然3、Job0、无强清，Host deadline/monitor/counterFault均未触发。没有GO文件、没有输入器、输入和重负载阶段均未开始。这是采样准备时序失败，不能据此宣称SDK卡死、吞吐或输入延迟。
+
+原90秒资源保护也自然到期，迟到的停止调用发现事件已消失，故本轮不具备资源覆盖资格。原失败和独审收据保留。下一次仅修复调用方的启动等待和自动收尾：以进程实际Ready继续、正常闭合后立即释放资源，保留页面25秒、GO30秒和资源90秒等原期限，不为采样延长期限或重新编译相同SDK。
+
+后续R52/R53/entry-r3的自动收尾实际通过：原stop-trigger在所有原生Job0后返回0，资源助手同线程、未到期自然释放0。采样仍失败且输入为0：Root错误地用两个false请求窗口快照，被工具拒绝；修正参数的额外往返耗掉准备时间，GO到达Host启动后25,010.6ms，页面仍以25秒InputReady到期报告退出。Host26.363秒自然3、输入器15.109秒自然1，均Job0/无强清，负载阶段未开始。这个调用错误不归因为SDK性能；下一轮仅合并Root的启动、唯一窗口选择、激活、正确快照和显式GO为一次调用，不更改源码SDK、负载或期限。
+
 ## 体积边界
 
 同为v143/x64 Release的471文件静态SDK安装，preview.4→preview.5为80,244,800→80,253,090 B，**+8,290 B（0.010331%）**。其中Core +2,772 B、WebView2 archive +5,518 B，Loader不变；公共头仅版本内容改变、大小相同。包含源码目录/版本身份差异，不能将全部archive增长归因通知逻辑，也不能把静态库增量当最终EXE增量。
@@ -54,11 +66,13 @@
 
 ## 性能与剩余门槛
 
-旧R43已发送的3125个正标签在原始回调中全到，但400项晚于旧Finish边界；tag0拒绝及页面fence超时使该轮失败，约26.205秒绘制/定时器间隔仍需归因。新v2工具分开发送完成、接收排空与最终Finish，增加来源/早晚extra/可见性旁证，保留tag0 veto、原负载、3125输入和原期限。其源码审查通过不代表已经编译或采样；无标签消息的来源仍未知，不按推测过滤。
+旧R43已发送的3125个正标签在原始回调中全到，但400项晚于旧Finish边界；tag0拒绝及页面fence超时使该轮失败，约26.205秒绘制/定时器间隔仍需归因。新v2工具分开发送完成、接收排空与最终Finish，增加来源/早晚extra/可见性旁证，保留tag0 veto、原负载、3125输入和原期限。它已经匹配SDK5编译，但首轮实际入口在GO前失败，未产生合格性能样本；无标签消息的来源仍未知，不按推测过滤。
 
 既有WebView2帧对照未超冻结噪声，MiniBlink基线漂移超阈值；I02的0/0噪声门仍失败，默认预算0及输出准备关闭保持。MiniBlink默认focus/IME缺口及私有补丁未默认采用的边界见[preview.4报告](sdk-preview4-final-acceptance-20261106.md)。本轮不对这些未改动路径继承新资格。
 
-新v2 reader/入口的单次Node合同5/5通过，源码独审通过，仅为纯软件合同；消费者构建门失败时默认冻结/启动仍拒绝。最后软件反馈捕获与owner排空封口是独立见证，允许合法先后，不把行政封口强行变成绘制前置条件；完整标签、marker、严格窗口和Finish/fence门保留。下一步先解决编译助手收口的具体原因，取得完整消费者资格，再在读取入口确实就绪后安排一次有新假设的原生采样；不机械复跑相同失败或为了好看数字重复矩阵。输入分位、可见有效帧、CPU/完整内存/成功吞吐与必要交互仍须绑定最终载荷及合格样本。本轮没有执行x86/Debug、MiniBlink新载荷交互或新帧矩阵，不从旧版本继承通过。
+持续普通输出的后续路线限于[ADR-0168小型正确性原型](../adr/0168-sdk-owner-continuation-loop-prototype.md)：把普通pending与queued poke分开，评估SDK自有loop及modal回退。该原型尚未并入公开SDK；无初始poke、取消息内sent重入、timer及注销风险均为采用门槛，不能把原型或default-off开关当本Goal完成。
+
+新v2 reader/入口的单次Node合同5/5通过，源码独审通过，仅为纯软件合同；R47失败时入口正确拒绝，R50自然成功及独审后才重新冻结。最后软件反馈捕获与owner排空封口是独立见证，允许合法先后，不把行政封口强行变成绘制前置条件；完整标签、marker、严格窗口和Finish/fence门保留。下一步完成上述调用方时序修复，再安排一次原生采样；不机械复跑相同失败或为了好看数字重复矩阵。输入分位、可见有效帧、CPU/完整内存/成功吞吐与必要交互仍须绑定最终载荷及合格样本。本轮没有执行x86/Debug、MiniBlink新载荷交互或新帧矩阵，不从旧版本继承通过。
 
 ## 原件定位与独审
 
@@ -74,5 +88,9 @@
 | `R47-sdk5-native-consumer-r1/functional-diagnostic-r2/diagnostic-result.json` | `d5b5236ef226612160651a28f21a8a913dc834e06eabc7f2e20eec19ad66e2ec` |
 | `R47-sdk5-native-consumer-r1/functional-diagnostic-r2/actual-independent-review-r1.json` | `99fc1d63154c0fad18f45d4e60604d82048110b13a359c45013abfb3600bf059` |
 | `R48-sdk5-native-entry-r1/source-independent-review-r1.json` | `32e8aacf2fa23b55f29a3863f8255615ae6de742ba21e9bf6bd91dbefef80fb1` |
+| `R49-helper-aggregation-probe-r1/actual-independent-review-r1.json` | `b9bc6bd602ee5eecafd7d58e8b1127163daaaa2323bb2b07d1c8c689d7262faf` |
+| `R50-sdk5-consumer-aggregation-r1/actual-independent-review-r1.json` | `98e6bca847e9242afeb1e84cedea336ba62ea39068fa4361a8986c433936bf6b` |
+| `R48-sdk5-native-entry-r1/entry-r2/actual-independent-review-r1.json` | `6d437f97ab6e9e4ada7a199fe6295e215dea8758010bb1666f90f631ebe5e920` |
+| `R48-sdk5-native-entry-r1/entry-r3/actual-independent-review-r1.json` | `d59cd0c83bcae3014c20c0b3f08003bd48aa40308b64ea56785142aae4358366` |
 
 R44源码、R44实际结果及R46实际结果分别由非实现作者独审。R46独审限定正常SDK构建/安装，不授予GUI、runtime、FPS或输入资格。`performanceVerified=false`、`inputLatencyVerified=false`、`releaseReady=false`、`wholeGoalComplete=false`。
