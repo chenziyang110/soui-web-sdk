@@ -2,6 +2,7 @@
 
 ## 0.7.0-preview.4（未发布）：运行时部署身份修复
 
+- 追加[WebView2持续owner入口验收](docs/performance/sdk-preview4-owner-fairness-20261106.md)：新工具实际局部构建与14项纯合同通过，唯一窗口在发送输入前被冷守卫拒绝；自然非零与0输入保留，不将编译、最终scalar收尾或空资源值改为公平性通过，SDK和包不变。
 - 追加[匹配输入诊断与软件帧阶段](docs/performance/sdk-preview4-matched-input-20261106.md)：0.6.0私有诊断基线和候选均通过同v5全部64项，保存消费者兼容适配及严格版本读取源码；单轮软件捕获上界约35ms，不认证性能收益、测量税或物理显示。复用R39原件关联44个软件frame，没有重复原帧矩阵或改SDK包。
 - 追加[当前验收报告](docs/performance/sdk-preview4-final-acceptance-20261106.md)及冻结诊断源码：独立v5轻页的64项输入/DOM/软件捕获关联通过，原zero门、完整性及自然退出保持；保留旧精准点失败，软件捕获上界不代表物理延迟或宏观收益，SDK及包未重建。
 - 追加[输入覆盖与坐标诊断](docs/performance/sdk-preview4-input-coverage-20261106.md)：独立页面兼容旧引擎缺失的DOM信任属性且保持unknown；两轮64输入均仅收到56原生标签，完整反馈失败。坐标旁证工具不改变SDK、内核或默认输入策略，不能作为性能改善结论。

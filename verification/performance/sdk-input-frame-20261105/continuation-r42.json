@@ -1,0 +1,80 @@
+{
+  "schema": "soui.sdk-input-frame-continuation-r42/v1",
+  "recordedAt": "2026-11-06T11:44:37.864Z",
+  "sourcePlan": {
+    "archiveRelativePath": "repair-r42-native-cold-guard-diagnostic-r1/source-plan-r1.json",
+    "bytes": 3766,
+    "sha256": "eb318744606a8f8d7546a3a19b15262eeb8c0840ea3ecdc66d3d45dc21a3c95a"
+  },
+  "frozenBuildInput": {
+    "archiveRelativePath": "repair-r42-native-cold-guard-diagnostic-r1/build-r1/source-inputs.json",
+    "bytes": 10099,
+    "sha256": "e3d4fc946fd9532f61d25c443115086ed83a916ecdf05acb3a3e5db4ff97dd5a"
+  },
+  "independentColdSourceReview": {
+    "archiveRelativePath": "repair-r42-native-cold-guard-diagnostic-r1/source-cold-independent-review-r1.json",
+    "bytes": 6113,
+    "sha256": "32186b7f29e86eaadc35684e31eb91e0f1bb73c82d0d2a9d54ff1b09bb3c3e9a"
+  },
+  "independentBuildReview": {
+    "archiveRelativePath": "repair-r42-native-cold-guard-diagnostic-r1/build-source-independent-review-r1.json",
+    "bytes": 6907,
+    "sha256": "7c3c00386fa517c888b2cf270403b68da656086b62f0dd7a170f9f608a52a5d0"
+  },
+  "sourceBehavior": {
+    "SDKModified": false,
+    "HostModified": false,
+    "kernelModified": false,
+    "hotGuardByteEqual": true,
+    "hotInputLoopByteEqual": true,
+    "originalColdPredicates": 38,
+    "coldCheckpoints": 3,
+    "WindowsAPIsAddedToHotPath": false,
+    "failureTimeRequery": false,
+    "unknownUnqueriedFieldsRemainNull": true
+  },
+  "originalStaticChecks": {
+    "tests": 3,
+    "pass": 3,
+    "exit": 0,
+    "scope": "source-equivalence and designated static counterexamples, not Win32 behavior"
+  },
+  "actualBuildAttempt": {
+    "controllerExit": 1,
+    "controllerWallSeconds": 2.3481362,
+    "admission": "compiler-occupancy-rejected",
+    "compilerStarted": false,
+    "configureExit": null,
+    "compileExit": null,
+    "toolBuilt": false,
+    "ownedBuildJobStarted": false,
+    "existingProcessesTerminated": false,
+    "retryExecuted": false,
+    "cim": {
+      "archiveRelativePath": "repair-r42-native-cold-guard-diagnostic-r1/build-r1/cim-before.json",
+      "bytes": 989,
+      "sha256": "79e16071c87654ca3779a801deac8978579f26b48d54854771b38b3de5d021a9"
+    },
+    "failure": {
+      "archiveRelativePath": "repair-r42-native-cold-guard-diagnostic-r1/build-r1/failure.json",
+      "bytes": 1083,
+      "sha256": "b666a4ab8de8f37aeca9190d2b0e5e0c845e016aa5b3188445960a133d162410"
+    }
+  },
+  "copy": {
+    "manifestSha256": "bde9f05a3d55b6b5cf9f4dc5eeeda92127de7d48912d660ea98f187d1aaf29c2",
+    "originalProjectFiles": 4,
+    "originalProjectBytes": 28218,
+    "staticCheckerBaselinePathAdapted": true,
+    "snapshotStaticChecks": 3,
+    "snapshotStaticExit": 0,
+    "newLocationNativeBuildExecuted": false
+  },
+  "GUIExecuted": false,
+  "nativeInputExecuted": false,
+  "inputLatencyVerified": false,
+  "performanceVerified": false,
+  "fairnessVerified": false,
+  "releaseReady": false,
+  "wholeGoalComplete": false
+}
