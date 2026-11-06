@@ -2,9 +2,9 @@
   <img src="docs/assets/readme-hero.svg" alt="SOUI Web SDK — Web 的表达力，C++ 的掌控力。" width="100%">
 </p>
 
-<h1 align="center">SOUI Web SDK 0.7.0-preview.4 开发候选</h1>
+<h1 align="center">SOUI Web SDK 0.7.0-preview.5 开发候选</h1>
 
-本分支正在实施 SDK 输入响应、帧策略及 WebView2 宿主优化，未发布、未完成物理性能或生产资格。新增可选公共接口需要配套重编；下文 0.6.0 获取入口和发布事实保留已发布版本的历史身份，不是本候选的运行证据。当前候选内容见 `CHANGELOG.md`、ADR0153–0159 及[实现与验证范围](docs/performance/sdk-input-frame-implementation.md)。
+本分支正在实施 SDK 输入响应、帧策略及 WebView2 宿主优化，未发布、未完成物理性能或生产资格。新增可选公共接口需要配套重编；下文 0.6.0 获取入口和发布事实保留已发布版本的历史身份，不是本候选的运行证据。当前候选内容见 `CHANGELOG.md`、[实现与验证范围](docs/performance/sdk-input-frame-implementation.md)及[preview.5集成验收](docs/performance/sdk-preview5-integration-acceptance-20261106.md)。
 
 <p align="center">
   <strong>用 Web 构建界面，用 C++ 掌握桌面业务、权限与生命周期。</strong><br>

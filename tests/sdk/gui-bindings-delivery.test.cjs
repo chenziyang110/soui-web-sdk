@@ -124,6 +124,15 @@ test('runtime manifest repair preview preserves old exact tuples and rejects fut
   assert.throws(() => gui.metadata(fixture(t, candidate, previousRange).source), /exact local SDK and framework peers/);
   assert.throws(() => gui.metadata(fixture(t, '0.7.0-preview.5', range).source), /exact local SDK and framework peers/);
 });
+test('active output wake preview has an exact tuple without accepting future previews', t => {
+  const previousRange = currentPeerRange + ' || 0.7.0-preview.1 || 0.7.0-preview.2 || 0.7.0-preview.3 || 0.7.0-preview.4';
+  const candidate = '0.7.0-preview.5', range = previousRange + ' || ' + candidate;
+  assert.equal(gui.metadata(fixture(t, candidate, range).source), candidate);
+  assert.equal(gui.metadata(fixture(t, '0.7.0-preview.4', previousRange).source), '0.7.0-preview.4');
+  assert.throws(() => gui.metadata(fixture(t, '0.7.0-preview.4', range).source), /exact local SDK and framework peers/);
+  assert.throws(() => gui.metadata(fixture(t, candidate, previousRange).source), /exact local SDK and framework peers/);
+  assert.throws(() => gui.metadata(fixture(t, '0.7.0-preview.6', range).source), /exact local SDK and framework peers/);
+});
 function historicalPackage(t, targetVersion = version, tool = legacyToolBytes()) {
   const f = fixture(t, targetVersion, previousPeerRange), packed = path.join(f.root, 'historical-package');
   f.write('tools/sdk/gui-bindings-delivery.cjs', tool);

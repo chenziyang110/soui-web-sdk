@@ -38,6 +38,7 @@ const requiredDevtoolsDocs = [
   'docs/adr/0158-miniblink-native-admission-metadata.md',
   'docs/adr/0159-miniblink-native-phase-observation.md',
   'docs/adr/0160-private-render-phase-cost-observation.md',
+  'docs/adr/0167-webview2-active-output-wake-coalescing.md',
   'docs/performance/sdk-input-frame-implementation.md',
   'docs/performance/main-integration.md',
 ];

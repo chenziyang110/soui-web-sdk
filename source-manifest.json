@@ -1,6 +1,6 @@
 {
   "schema": "soui.full-source/v2",
-  "version": "0.7.0-preview.4",
+  "version": "0.7.0-preview.5",
   "releaseReady": false,
   "identity": "Git index blob bytes; checkout CRLF tolerated for text; binaries unchanged.",
   "files": [
@@ -61,14 +61,14 @@
     {
       "path": "AGENTS.md",
       "normalization": "lf",
-      "bytes": 11363,
-      "sha256": "6aeccf3569f01eafee5358904eaedf20fd6563bc2d73f8c8639f4aeb429088e0"
+      "bytes": 11377,
+      "sha256": "6bc0dfbea5eb67ab6824c165ff304fe263c2da8e62a2d4a70130db03539098ed"
     },
     {
       "path": "CHANGELOG.md",
       "normalization": "lf",
-      "bytes": 82671,
-      "sha256": "8e6b4e6a2cebe41e7d1a5ae0a285e3584180cc5d69ee366a0d95476736ad5604"
+      "bytes": 84353,
+      "sha256": "61ec2e7ccb5c05e562d398d4b18c90a8d809827205ef1d42ed99e79f27ced1b3"
     },
     {
       "path": "CMakeLists.txt",
@@ -97,8 +97,8 @@
     {
       "path": "README.md",
       "normalization": "lf",
-      "bytes": 15214,
-      "sha256": "653a9cfad181930407c80b2f9a7cd713a9f6ed30c3f4d9ccf3a8e8bc5afe4159"
+      "bytes": 15288,
+      "sha256": "9acc86f9a8eae8e373dcfdf512982964db21fd99d05cc38e47b09d70d0ea78e9"
     },
     {
       "path": "SECURITY.md",
@@ -122,7 +122,7 @@
       "path": "VERSION",
       "normalization": "lf",
       "bytes": 16,
-      "sha256": "a625fa44884efbb9609d7d069cc98e74fc752a4a12135cbe6af0946b59acbbb7"
+      "sha256": "0794aaad359143284cc02293ca44c88cf2fb38ebf176ee1fd2ebdf90345379a8"
     },
     {
       "path": "benchmarks/README.md",
@@ -3923,6 +3923,12 @@
       "sha256": "91021012dd4332dbed1be3639d184c8fcfffb506bfca44dfd439975ca290ad01"
     },
     {
+      "path": "docs/adr/0167-webview2-active-output-wake-coalescing.md",
+      "normalization": "lf",
+      "bytes": 4511,
+      "sha256": "678faaa36c4e884d9b41eb0f13f104c9d1a5b1d9daa723324b4d4f7903b1505e"
+    },
+    {
       "path": "docs/adr/README.md",
       "normalization": "lf",
       "bytes": 12788,
@@ -3937,8 +3943,8 @@
     {
       "path": "docs/api.md",
       "normalization": "lf",
-      "bytes": 49226,
-      "sha256": "7f3d942539224385d83946256e5d88137371249f49242edff341ece3b2a5f9ba"
+      "bytes": 49421,
+      "sha256": "75d982eae9dc1f80f392a3225869832a3319f56716f343e58abac98ab4cc4579"
     },
     {
       "path": "docs/architecture.md",
@@ -4021,8 +4027,8 @@
     {
       "path": "docs/known-issues.md",
       "normalization": "lf",
-      "bytes": 40463,
-      "sha256": "b6c0bc317fafba6adcfb2dac15896efc70e741f3f030dec1c674bf47e8ae706d"
+      "bytes": 40922,
+      "sha256": "d6e4b523484efca1ff2042c04cfa3851684f8cecb18d0deb2290d5e26a24202d"
     },
     {
       "path": "docs/licenses/v0.6.0-redistribution.md",
@@ -4207,8 +4213,8 @@
     {
       "path": "docs/performance/sdk-input-frame-implementation.md",
       "normalization": "lf",
-      "bytes": 29174,
-      "sha256": "bb505fbdca86e5ad74dac1368568fc725eac5ad2cea9dde8072ead16411f62b8"
+      "bytes": 30063,
+      "sha256": "4666016e1f07a0cbfb88d94540d9b7aabc43b61f3376414178ed5831f9aa6515"
     },
     {
       "path": "docs/performance/sdk-preview4-adoption-20261106.md",
@@ -4305,6 +4311,18 @@
       "normalization": "lf",
       "bytes": 5381,
       "sha256": "00765e482ee9e19ff1dced3df369de033f8fd7941e306391e1b3759c365438e2"
+    },
+    {
+      "path": "docs/performance/sdk-preview5-integration-acceptance-20261106.md",
+      "normalization": "lf",
+      "bytes": 10501,
+      "sha256": "f940290cf436c92c9177046e93f52ad4670341bc3b5f25c75ab3d6916e459a70"
+    },
+    {
+      "path": "docs/performance/sdk-preview5-owner-output-wake-20261106.md",
+      "normalization": "lf",
+      "bytes": 3778,
+      "sha256": "b9369f5b275e89204d6460d98f34b558e89707ffaeb7af1098301133f373fac1"
     },
     {
       "path": "docs/performance/shared-timer-precision-20261030.md",
@@ -4777,14 +4795,14 @@
     {
       "path": "sdk/bindings/react/package-lock.json",
       "normalization": "lf",
-      "bytes": 3488,
-      "sha256": "0077b46d4b277357ed4afd1f95d9eb6a271326ac2aaea2ca65a6486ed040c2f0"
+      "bytes": 3507,
+      "sha256": "efb6704f517c9b1c722d761f1129a52205c311186d9e9b2213a26986224b2121"
     },
     {
       "path": "sdk/bindings/react/package.json",
       "normalization": "lf",
-      "bytes": 777,
-      "sha256": "5fab5d3b0fdf1dd50d30d64ce10d76563a2a055d61e77d843f8823ea6c6bbb72"
+      "bytes": 796,
+      "sha256": "0486aa8d1c9374e4b2143c3f60ebd006de0779462943b8b8c87bd7cfc4160e0f"
     },
     {
       "path": "sdk/bindings/react/src/index.ts",
@@ -4813,14 +4831,14 @@
     {
       "path": "sdk/bindings/vue/package-lock.json",
       "normalization": "lf",
-      "bytes": 11834,
-      "sha256": "61f1530ae77088b06eda3ab74cd96c2c2df437521682a7283152c21870475399"
+      "bytes": 11853,
+      "sha256": "957ea71b5d193daf0cc890cba321210f503fe28f4b7885affd3561ea21cbf30d"
     },
     {
       "path": "sdk/bindings/vue/package.json",
       "normalization": "lf",
-      "bytes": 724,
-      "sha256": "891fa62812b550c56317179c840536f79d1501e2619a65c9c5db578bf4bd4c3a"
+      "bytes": 743,
+      "sha256": "6c9557eb0c54064461de7d2dc01fad6b491556c3ee980338cb8477ab6a7d420f"
     },
     {
       "path": "sdk/bindings/vue/src/index.ts",
@@ -5144,7 +5162,7 @@
       "path": "sdk/include/soui/version.h",
       "normalization": "lf",
       "bytes": 250,
-      "sha256": "0f0983f65542882a9e79100021566e065671f213f103dbd1a239e1b6858aaa20"
+      "sha256": "c50dda33abcf33af6776c45ba5db34ebf57addb6004375ad7f3fdefe6164e820"
     },
     {
       "path": "sdk/renderers/auto/auto_host_policy.h",
@@ -5207,6 +5225,12 @@
       "sha256": "ddb8b79acdfadb97be3625d028a74dbb7c6f3fd1cd2468a767355200a7cbc67d"
     },
     {
+      "path": "sdk/renderers/webview2/owner_output_wake.h",
+      "normalization": "lf",
+      "bytes": 1818,
+      "sha256": "670a6b56df6f5adf1a6c19d48b10a828ea7bb155bcbb9a31dbe8ea1294e8a002"
+    },
+    {
       "path": "sdk/renderers/webview2/owner_work_policy.h",
       "normalization": "lf",
       "bytes": 1914,
@@ -5239,8 +5263,8 @@
     {
       "path": "sdk/renderers/webview2/webview2_host.cpp",
       "normalization": "lf",
-      "bytes": 123593,
-      "sha256": "da36725b3236a8078c0969ead5ed0ac6daa293705a7600bb7f61325a04eec38c"
+      "bytes": 124126,
+      "sha256": "b4a74e7329cc4fa93b93cb41566d2de54cafa45c923d878669519e1703df579d"
     },
     {
       "path": "sdk/renderers/webview2/webview2_preload.h.in",
@@ -9716,13 +9740,13 @@
       "path": "sdk/web/package-lock.json",
       "normalization": "lf",
       "bytes": 759,
-      "sha256": "ffb8fa77a3ad1d389f23f0334170acb088123942e47b10a7b63731417792a6dd"
+      "sha256": "dbe40e423208cd68f8d449dfde09d607a5fe917dd4697266dd7cde4bbda67999"
     },
     {
       "path": "sdk/web/package.json",
       "normalization": "lf",
       "bytes": 442,
-      "sha256": "f9a22a4f01b9e77568fe9bdef84a5b419b85d78f4097f9dad5e288801021f408"
+      "sha256": "2b5bef5cf8962b571f25275f085731a185d8942e2e764e709833c741c1d3867e"
     },
     {
       "path": "sdk/web/src/action-contract-core.d.ts",
@@ -12979,14 +13003,14 @@
     {
       "path": "tests/native/webview2_owner_policy/README.md",
       "normalization": "lf",
-      "bytes": 2416,
-      "sha256": "c195e61713188e11c4147562be425a5c8c41022ae8822727dc3872f1ed035fbb"
+      "bytes": 4356,
+      "sha256": "89751952ff4c9527b838e1fecde77dda147e49f5c4b6c590573c159e6f71acb2"
     },
     {
       "path": "tests/native/webview2_owner_policy/fixture.cpp",
       "normalization": "lf",
-      "bytes": 3678,
-      "sha256": "33b7a080e825794197eb9e00cc958f70ecf2cced3d2c000c73f85e4f8e62ca69"
+      "bytes": 12667,
+      "sha256": "cb81cad9fe64b78df2400ec7950042d63a34d8d81b1aa8aff34e2ee04bd651e1"
     },
     {
       "path": "tests/native/webview2_preparation_lifetime_tests.cpp",
@@ -13273,8 +13297,8 @@
     {
       "path": "tests/sdk/gui-bindings-delivery.test.cjs",
       "normalization": "lf",
-      "bytes": 30192,
-      "sha256": "5a5e972cd27c9d231a1f47e468ae0aab2f733dc2c32a684fd8b165d843b5fec9"
+      "bytes": 31040,
+      "sha256": "080a8141952f135131231b1c1888ededca7ed981d8dc16a2b6bffb541c63f772"
     },
     {
       "path": "tests/sdk/gui-bindings-entrypoints.test.cjs",
@@ -13501,8 +13525,8 @@
     {
       "path": "tests/sdk/sdk-package-smoke.cjs",
       "normalization": "lf",
-      "bytes": 13142,
-      "sha256": "e1733fa29b213af1c2cfd7c34ec002b8385ceb011fb7c5b2f1dd99b0f1a9c1c2"
+      "bytes": 13203,
+      "sha256": "4431c91e64aa95c032ac9e285fd3cb54d53bb8d5ce805757f977d7480c9de523"
     },
     {
       "path": "tests/sdk/sdk-publication-diagnostics.test.cjs",
@@ -184093,8 +184117,8 @@
     {
       "path": "tools/sdk/gui-bindings-delivery.cjs",
       "normalization": "lf",
-      "bytes": 18262,
-      "sha256": "f8c09f422d9600f11762c176335aada4ce368c742054daf948c0a62447cd90c3"
+      "bytes": 18398,
+      "sha256": "a9d20015b5bf2e265dee3f826834a0a839916b02619b0d3e01f80c50e8e9ae80"
     },
     {
       "path": "tools/sdk/install-transaction.cjs",
@@ -184105,8 +184129,8 @@
     {
       "path": "tools/sdk/soui-sdk.cjs",
       "normalization": "lf",
-      "bytes": 22088,
-      "sha256": "4c7a5b68cd5c3b1eba51c126d2cfc28154e3edbc877264ca5eb8798707480990"
+      "bytes": 22149,
+      "sha256": "8b4d4fc45b88e54e84f6e4e97e5d16dd902b45c71051f6b5c5db9fc5a5f020ec"
     },
     {
       "path": "tools/verification-status.cjs",

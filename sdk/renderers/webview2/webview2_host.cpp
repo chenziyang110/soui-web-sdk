@@ -8,6 +8,7 @@
 #include "owner_output_policy.h"
 #include "owner_callout_policy.h"
 #include "owner_work_policy.h"
+#include "owner_output_wake.h"
 #include "../../src/host/input_trace_hooks.h"
 #include <soui/diagnostics/input_frame_trace.h>
 #include "loader_policy.h"
@@ -532,6 +533,7 @@ struct webview2_adapter::state {
   std::condition_variable wake;
   std::deque<request> requests;
   std::deque<output> outputs;
+  bool output_pump_active{false}; // Output queue mutex; owned by the outer drain scope only.
   capacity::request_budget request_slots;
   capacity::output_budget output_slots;
   capacity::priority_policy request_priority, output_priority;
@@ -832,7 +834,7 @@ void push_output(const std::shared_ptr<state>& value, state::output output, outp
     note_output(value, output, input_trace::stage::task_cancelled, input_trace::reason::invalid);
     throw;
   }
-  wake_owner(value);
+  if (!value->output_pump_active) wake_owner(value);
 }
 void bridge_worker(const std::shared_ptr<state>& value) noexcept {
   const bool trace_attached = input_trace::register_current_thread();
@@ -1781,6 +1783,8 @@ void webview2_adapter::pump() {
   if (!pumping) return;
   const detail::trace_thread_borrow trace_operation;
   const detail::trace_duration owner_cost(input_trace::duration_metric::webview2_owner);
+  detail::owner_output_drain_scope output_drain(value->output_pump_active, value->mutex,
+      value->outputs, [&value]() noexcept { wake_owner(value); });
   try {
     if (value->worker_done.load(std::memory_order_acquire)) throw std::runtime_error("Bridge worker exited unexpectedly");
     if (!value->application_ready && !value->diagnostic_query_pending &&
@@ -1829,6 +1833,7 @@ void webview2_adapter::pump() {
       {
         std::lock_guard<std::mutex> lock(value->mutex);
         if (value->outputs.empty()) break;
+        output_drain.enter_locked();
         auto selected = capacity::next(value->outputs, value->output_priority,
             [](const state::output& item) { return item.slot ? item.slot->category : capacity::lane::ordinary; });
         output = std::move(*selected);
@@ -1893,7 +1898,9 @@ void webview2_adapter::pump() {
       }
       observation.finished = true; // COM returned successfully; no page/pixel claim.
     }
-    {
+    if (!output_drain.entered()) {
+      // Preserve the original empty-pump tail check: a producer may have
+      // enqueued after the empty observation and failed its first native post.
       std::lock_guard<std::mutex> lock(value->mutex);
       if (!value->outputs.empty()) wake_owner(value);
     }
