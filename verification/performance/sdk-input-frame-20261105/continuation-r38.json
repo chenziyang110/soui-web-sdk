@@ -1,0 +1,94 @@
+{
+  "schema": "soui.sdk-input-frame-continuation-r38/v1",
+  "recordedAt": "2026-11-06T07:34:45.853Z",
+  "scope": "Two completed input coverage diagnostics, independent test fixture only",
+  "sdkVersion": "0.7.0-preview.4",
+  "architecture": "x64",
+  "configuration": "Release",
+  "sdkSourceSha256": "e1d2dd8b7699930f678e21a77772b8fa4e371f5b67a53937d98470ee1659e87c",
+  "sdkBuildId": "18e47fa2-69df-4530-b1f9-365f6b2aec28",
+  "nodeSha256": "56d460c0b4136d85d3fcb8d4e4f00c19a04ff56532228031b55368742ef54308",
+  "productPayloadChanged": false,
+  "r37": {
+    "run": "0790ebfd55add348ec99cab8eb956ff5",
+    "sent": 64,
+    "nativeTagged": 56,
+    "sdkTaggedT1T3T4Getter": 56,
+    "domTagged": 56,
+    "visibleSlots": 55,
+    "exactFirstSetterTags": 35,
+    "hostExit": 0,
+    "inputExit": 1,
+    "entryExit": 1,
+    "actualReview": {
+      "archiveRelativePath": "repair-r35-sync-input-witness-r1/recovery-dom-capability-r3/entry-r1/actual-v4-coverage-review-r1.json",
+      "sha256": "d8a42fe73ab0fcb3f45c328cca2870eb577edf814d1a5b025ca04cf9a6e8a991"
+    }
+  },
+  "r38": {
+    "run": "8ab6255a5078de0682e6758151dc59ce",
+    "sent": 64,
+    "nativeTagged": 56,
+    "sdkTaggedT1T3T4Getter": 56,
+    "domTagged": null,
+    "pageSnapshotSaved": false,
+    "visibleSlots": 0,
+    "exactFirstSetterTags": null,
+    "hostExit": 2,
+    "inputExit": 1,
+    "entryExit": 1,
+    "actual64NormalizedParametersMatchOriginalFormula": true,
+    "coordinateMappingValidated": false,
+    "cause": null,
+    "actualReview": {
+      "archiveRelativePath": "repair-r38-input-coordinate-evidence-r1/entry-r2/actual-coordinate-environment-review-r1.json",
+      "sha256": "63dba54ec3ccfe3a57947f3d542be904a307fb56fe153f1c785963a25d26fcff"
+    }
+  },
+  "missingNativeTags": [
+    9,
+    16,
+    24,
+    31,
+    39,
+    46,
+    54,
+    61
+  ],
+  "bothRuns": {
+    "sdkAndVendorTraceComplete": true,
+    "loss": "0",
+    "faults": [],
+    "allOwnedJobsEmpty": true,
+    "forcedTermination": false,
+    "normalRuntimeClose": true,
+    "finalAckWaitMs": 500,
+    "full64Qualified": false
+  },
+  "r39": {
+    "designOnly": true,
+    "conditionalIndependentReview": true,
+    "oldFailuresClosed": false,
+    "sameOldTrajectory": false,
+    "all64TagsAndExactIdentityRequired": true,
+    "nativeDomActualXYMustMatch": true,
+    "legacyHostMismatchPreserved": true,
+    "newBaselineRequiredForAnyRelativeBenefit": true
+  },
+  "performanceVerified": false,
+  "inputLatencyVerified": false,
+  "physicalPresentationQualified": false,
+  "formalPerformanceBaseline": false,
+  "releaseReady": false,
+  "wholeGoalComplete": false,
+  "reviewableSourceSnapshot": {
+    "repositoryRelativePath": "verification/performance/sdk-input-frame-20261105/diagnostic-source-r38",
+    "files": 29,
+    "bytes": 279101,
+    "sourceFiles": 27,
+    "byteEqual": true,
+    "manifestSha256": "5663e750d4f11fdc9e71a4f8eb1b0a644a10375c8effe59181186e30d6da1590",
+    "newLocationBuildQualified": false,
+    "binariesCopied": false
+  }
+}

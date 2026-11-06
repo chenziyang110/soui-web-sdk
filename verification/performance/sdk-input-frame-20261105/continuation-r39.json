@@ -1,0 +1,209 @@
+{
+  "schema": "soui.sdk-input-frame-continuation-r39/v1",
+  "recordedAt": "2026-11-06T08:28:13.697Z",
+  "sdk": {
+    "version": "0.7.0-preview.4",
+    "sourceSha256": "e1d2dd8b7699930f678e21a77772b8fa4e371f5b67a53937d98470ee1659e87c",
+    "buildId": "18e47fa2-69df-4530-b1f9-365f6b2aec28",
+    "architecture": "x64",
+    "configuration": "Release",
+    "productRebuilt": false,
+    "payloadChanged": false
+  },
+  "sourceReview": {
+    "archiveRelativePath": "repair-r39-cell-feedback-r1/source-independent-review-r1.json",
+    "sha256": "8fe103fbd31388ed40a3a61dcf1b311aaef67674e53afa66f2f47dafb5d04df0"
+  },
+  "actualBuild": {
+    "exit": 0,
+    "elapsedMs": 64359,
+    "onlyInputTool": true,
+    "translationUnits": 2,
+    "jobFinalActive": 0,
+    "forced": false,
+    "tool": {
+      "bytes": 152064,
+      "sha256": "b9a4a2405527740c91b4ce2cf5ea74deb1d13d0952304270b47776fd0ba16ed3"
+    },
+    "buildSummarySha256": "ce0e037a181a67b35ed78f486aae325ea448e878787d5f908190304dbdb839f3"
+  },
+  "cpuEvidence": {
+    "firstRun": {
+      "pass": 8,
+      "exit": 0
+    },
+    "affectedOrderAndOldSchema": {
+      "pass": 2,
+      "exit": 0
+    },
+    "hostSortedGeometry": {
+      "pass": 1,
+      "exit": 0
+    },
+    "finalWholeSuiteRerun": false
+  },
+  "actualRun": {
+    "run": "cf97342591c64f891053b55800e18c27",
+    "requestSha256": "e9cd23a9e97df56533cb07f7517548acf6f5f4d88d169b09a9df7030ea645a98",
+    "host": {
+      "pid": 50428,
+      "birth": "134384260954654572",
+      "exit": 2,
+      "elapsedMs": 150605
+    },
+    "input": {
+      "pid": 86548,
+      "birth": "134384261053566174",
+      "exit": 1,
+      "elapsedMs": 98
+    },
+    "entryExit": 1,
+    "intendedBurstSent": 0,
+    "burstInputFileCreated": false,
+    "initialAck": 1,
+    "initialMask": "0000000004000000",
+    "firstSetter": {
+      "cell": 35,
+      "domCallback": 2,
+      "getterOrdinal": 3,
+      "inputId": 3,
+      "nativeX": 577,
+      "nativeY": 125,
+      "tag": 0,
+      "tagOrigin": null
+    },
+    "zeroGuardCorrectlyRejected": true,
+    "allOwnedJobsEmpty": true,
+    "forced": false,
+    "normalRuntimeClose": true,
+    "actualReviewSha256": "1ff498e136a93484515533e0c4246fc4e5022bac748da2dd1112a0e36d3ea92e"
+  },
+  "freshEntry": {
+    "archiveRelativePath": "repair-r39-cell-feedback-r1/entry-r2",
+    "run": "538fa62cb96eed9d6b9efe12bcae9180",
+    "requestSha256": "51146c22677c0641e18a56a0db4a476d236e2c30e82aab57271130afa668b185",
+    "reviewSha256": "dd0a4309cc7480a361a354969be85cde485aeeb585aa933792e704e3298c0385",
+    "waitingForUserQuietWindow": false,
+    "nativeStarted": true,
+    "sourceToolPageReaderUnchanged": true,
+    "automaticRetry": false,
+    "executionFinished": true,
+    "actualReviewSha256": "6113b6b7bdf90e5f7272aa90bf16ce2d4dd88ddb7260d54f96a6bcedd72cc7bc"
+  },
+  "sourceSnapshots": [
+    {
+      "path": "diagnostic-source-r38",
+      "files": 29,
+      "bytes": 279101,
+      "manifestSha256": "5663e750d4f11fdc9e71a4f8eb1b0a644a10375c8effe59181186e30d6da1590"
+    },
+    {
+      "path": "diagnostic-source-r39",
+      "files": 18,
+      "bytes": 154463,
+      "manifestSha256": "d0394ac076699be162eded2a9fadd8347f1a17129cb8c47425703d5ce0e5ddb3"
+    }
+  ],
+  "currentFrameSummary": {
+    "actualArchiveRelativePath": "repair-r16/final-observation-report-r17.json",
+    "sha256": "2551de42f25cec51e91a2b6c6ff526b83215510fc86a1ea5beefbea30c871304",
+    "webview2": "no-measurable-benefit-above-frozen-noise",
+    "miniblink": "inconclusive-baseline-drift",
+    "physicalFps": null,
+    "physicalInputLatencyMs": null,
+    "fullAppCpuQualified": false,
+    "fullAppMemoryQualified": false
+  },
+  "performanceVerified": false,
+  "inputLatencyVerified": false,
+  "releaseReady": false,
+  "wholeGoalComplete": false,
+  "full64Diagnostic": {
+    "run": "538fa62cb96eed9d6b9efe12bcae9180",
+    "host": {
+      "pid": 10412,
+      "birth": "134384268922010781",
+      "exit": 0,
+      "elapsedMs": 11017
+    },
+    "input": {
+      "pid": 95344,
+      "birth": "134384269020733019",
+      "exit": 0,
+      "elapsedMs": 646
+    },
+    "entryExit": 0,
+    "allOwnedJobsEmpty": true,
+    "forced": false,
+    "sent": 64,
+    "nativeTags": 64,
+    "exactT1T3NormalT4GetterDomFirstSetter": 64,
+    "nativeDomActualXYEqual": 64,
+    "firstSetterOrderExact": true,
+    "initialMaskZero": true,
+    "finalMaskFull64": true,
+    "legacyMismatchPreserved": true,
+    "exactRequestedCenterReached": 0,
+    "rawNative": 71,
+    "rawDom": 70,
+    "rawGetter": 72,
+    "untaggedDom": 6,
+    "captureSamples": 36,
+    "distinctFirstPositiveCaptureSamples": 25,
+    "independentPresentedFrames": null,
+    "physicalT8": null,
+    "sdkPoints": 1570,
+    "vendorPoints": 8389,
+    "tracesComplete": true,
+    "loss": "0",
+    "coldAndDeferredControls": true,
+    "fullCausalComplete": false,
+    "formalPerformanceBaseline": false,
+    "statistics": {
+      "receiveToEngineMs": {
+        "samples": 64,
+        "p50": 0.1527,
+        "p95": 0.6111,
+        "p99": 0.7367,
+        "min": 0.0399,
+        "max": 0.7367
+      },
+      "engineHandlerMs": {
+        "samples": 64,
+        "p50": 0.1326,
+        "p95": 0.3664,
+        "p99": 1.0287,
+        "min": 0.0762,
+        "max": 1.0287
+      },
+      "receiveToCaptureEndUpperMs": {
+        "samples": 64,
+        "p50": 19.4572,
+        "p95": 35.0122,
+        "p99": 37.436,
+        "min": 5.112,
+        "max": 37.436
+      },
+      "handlerReturnToCaptureEndUpperMs": {
+        "samples": 64,
+        "p50": 19.1264,
+        "p95": 34.763,
+        "p99": 36.0191,
+        "min": 4.8411,
+        "max": 36.0191
+      }
+    },
+    "exact64MetricsSha256": "4622da36e2bb569795d527bb244dd640bd08e75599287a1ba70d2ccf82ca5ee2"
+  },
+  "dependencyAudit": {
+    "scope": "sdk/web only",
+    "exit": 0,
+    "vulnerabilities": 0,
+    "dependencyChanges": false,
+    "evidence": {
+      "archiveRelativePath": "repair-r39-cell-feedback-r1/npm-audit-execution-r1.json",
+      "bytes": 695,
+      "sha256": "67e11cadb490620a5b9de14d94576b155e2c27aebbfec2a00c475b506d7f46e9"
+    }
+  }
+}

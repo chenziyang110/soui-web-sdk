@@ -2,6 +2,8 @@
 
 ## 0.7.0-preview.4（未发布）：运行时部署身份修复
 
+- 追加[当前验收报告](docs/performance/sdk-preview4-final-acceptance-20261106.md)及冻结诊断源码：独立v5轻页的64项输入/DOM/软件捕获关联通过，原zero门、完整性及自然退出保持；保留旧精准点失败，软件捕获上界不代表物理延迟或宏观收益，SDK及包未重建。
+- 追加[输入覆盖与坐标诊断](docs/performance/sdk-preview4-input-coverage-20261106.md)：独立页面兼容旧引擎缺失的DOM信任属性且保持unknown；两轮64输入均仅收到56原生标签，完整反馈失败。坐标旁证工具不改变SDK、内核或默认输入策略，不能作为性能改善结论。
 - 追加同步输入归因原型的实际编译、单次会话修复与原生入口检查：GO在原期限内接纳，但输入器首个目标守卫拒绝，未发送预定输入；保留非零与正常收尾，SDK及冻结载荷不变。见[当前验收结论](docs/performance/sdk-preview4-native-preflight-20261106.md)，帧率与输入延迟仍待验。
 - 修复性能消费者将 MiniBlink `E_RELOAD_PENDING` 误当终态失败并关窗的问题：在同一 UI owner 的后续机会续取原操作结果，保留关闭重入保护和其他错误；新增固定20秒合作式 caller 期限，不重置外层期限。49项合同及限定新文档/会话复验通过，SDK和冻结交付包不变，见[追加复验](docs/performance/sdk-preview4-continuation-20261106.md)。
 - 追加两后端各四轮画面观察与短输入诊断证据：WebView2 差异未超冻结噪声，MiniBlink 基线漂移，均不确认性能收益；输入延迟仍未验收。详见[MiniBlink 与输入追加报告](docs/performance/sdk-preview4-miniblink-input-20261105.md)。已有 SDK 包与历史失败保持不变。

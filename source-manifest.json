@@ -7,8 +7,8 @@
     {
       "path": ".gitattributes",
       "normalization": "lf",
-      "bytes": 43028,
-      "sha256": "b7e81704ffbf869703b5649a5c06d16df227bf87a7e0097e232b4822c06088c7"
+      "bytes": 43412,
+      "sha256": "954b8348047c6a94cbfa917c42a6076739c20143f974c326bd6cd2667b1ba1d6"
     },
     {
       "path": ".github/CODEOWNERS",
@@ -67,8 +67,8 @@
     {
       "path": "CHANGELOG.md",
       "normalization": "lf",
-      "bytes": 80205,
-      "sha256": "f5877138e1f745fc7cd4d122ca12e9f3b67e80ce9a96af87a37fc627d65f7752"
+      "bytes": 80858,
+      "sha256": "e55b271b09673c7d28d9253fbd80fbd9e365f280cf8ac3364b13530e6f65236a"
     },
     {
       "path": "CMakeLists.txt",
@@ -3919,8 +3919,8 @@
     {
       "path": "docs/adr/0166-synchronous-input-dispatch-witness.md",
       "normalization": "lf",
-      "bytes": 6040,
-      "sha256": "c57f8d46759de5504f77dfc19408421f3622ebd37804dfc8dade562bebddd3df"
+      "bytes": 10283,
+      "sha256": "91021012dd4332dbed1be3639d184c8fcfffb506bfca44dfd439975ca290ad01"
     },
     {
       "path": "docs/adr/README.md",
@@ -4021,8 +4021,8 @@
     {
       "path": "docs/known-issues.md",
       "normalization": "lf",
-      "bytes": 38367,
-      "sha256": "c77150a494b55cff867cb5605d114e344eb16a87eb4ff5cf3a3533e244e450d4"
+      "bytes": 39417,
+      "sha256": "f349c68ef5031c1fcc32ca423a3548c5df1615a7ff4d7c01378249b17e001c10"
     },
     {
       "path": "docs/licenses/v0.6.0-redistribution.md",
@@ -4223,6 +4223,12 @@
       "sha256": "c3cb7d00af25c44c58d77e5c3cedefa4bd9f6e7615b3aadb742f13c4981e20f4"
     },
     {
+      "path": "docs/performance/sdk-preview4-final-acceptance-20261106.md",
+      "normalization": "lf",
+      "bytes": 10533,
+      "sha256": "0bad22aad9c270fdc078a0857865f7950a920a1ea9f1efc2420278e14f90dafc"
+    },
+    {
       "path": "docs/performance/sdk-preview4-focus-20261106.md",
       "normalization": "lf",
       "bytes": 10447,
@@ -4245,6 +4251,12 @@
       "normalization": "lf",
       "bytes": 5680,
       "sha256": "38fc72c212be9a69f0810225d247c3c30a3ed00459e78622d281e2d451f35743"
+    },
+    {
+      "path": "docs/performance/sdk-preview4-input-coverage-20261106.md",
+      "normalization": "lf",
+      "bytes": 6346,
+      "sha256": "39cd75b543101448de9077b3416da76db22e23f605d86565fa48687883b72d5f"
     },
     {
       "path": "docs/performance/sdk-preview4-lineage-native-phases-20261105.md",
@@ -184373,10 +184385,304 @@
       "sha256": "6ac13b5eb8d288b43ae39e0b96ab352152f119f50e7349e4a1eeb6378b7bb4e7"
     },
     {
+      "path": "verification/performance/sdk-input-frame-20261105/continuation-r38.json",
+      "normalization": "lf",
+      "bytes": 2975,
+      "sha256": "658c36ae975f46e5e990c97921a429e42a3eaef105348bc2af38c3ed97f52e06"
+    },
+    {
+      "path": "verification/performance/sdk-input-frame-20261105/continuation-r39.json",
+      "normalization": "lf",
+      "bytes": 6029,
+      "sha256": "ff547ba22d55452afb7120b86ea9960e6c5b4f9b4ff6d9bdd780526225c127bc"
+    },
+    {
       "path": "verification/performance/sdk-input-frame-20261105/current-costs-r25.json",
       "normalization": "lf",
       "bytes": 11814,
       "sha256": "b674328dfffb39786dbf2b2b868557df42f9765fcff3e2cf66a9e60379b568df"
+    },
+    {
+      "path": "verification/performance/sdk-input-frame-20261105/diagnostic-source-r38/README.md",
+      "normalization": "none",
+      "bytes": 3717,
+      "sha256": "8c15ea45ac94739d6b2c62e94869f904d82b3587e138ba402cabca8dbf8f4336"
+    },
+    {
+      "path": "verification/performance/sdk-input-frame-20261105/diagnostic-source-r38/consumer/CMakeLists.txt",
+      "normalization": "none",
+      "bytes": 248,
+      "sha256": "ba316a9e492c02dba046fc007897b73ce36245588776b4e56f2d872d435fbb7b"
+    },
+    {
+      "path": "verification/performance/sdk-input-frame-20261105/diagnostic-source-r38/consumer/benchmarks/input-ui-host/CMakeLists.txt",
+      "normalization": "none",
+      "bytes": 2051,
+      "sha256": "d146295dd8d067a9050cfbd6cedcd74aac3e266aa4a253861d13a99e276cc747"
+    },
+    {
+      "path": "verification/performance/sdk-input-frame-20261105/diagnostic-source-r38/consumer/benchmarks/input-ui-host/coordinate_witness.h",
+      "normalization": "none",
+      "bytes": 8099,
+      "sha256": "fc90e3ea4c4c9f6a84a209a0a1345c2a220e60dcb9b4e3a07ba19c43b9c3094e"
+    },
+    {
+      "path": "verification/performance/sdk-input-frame-20261105/diagnostic-source-r38/consumer/benchmarks/input-ui-host/harness_options.h",
+      "normalization": "none",
+      "bytes": 1280,
+      "sha256": "0f65ba514562d64ebd283f12eaa9621f831ae97f667838fefaef07083ead0597"
+    },
+    {
+      "path": "verification/performance/sdk-input-frame-20261105/diagnostic-source-r38/consumer/benchmarks/input-ui-host/main.cpp",
+      "normalization": "none",
+      "bytes": 37801,
+      "sha256": "b03f70012dbc4321ed22ae24fcf886eb1b9a638e550cd0b944c2cfbe1601fe1e"
+    },
+    {
+      "path": "verification/performance/sdk-input-frame-20261105/diagnostic-source-r38/consumer/benchmarks/input-ui-host/manual-observation-gate.h",
+      "normalization": "none",
+      "bytes": 10667,
+      "sha256": "ac487da6c58da56974600e5a9612fa27cabeac4ad1d7855681300fef2565409e"
+    },
+    {
+      "path": "verification/performance/sdk-input-frame-20261105/diagnostic-source-r38/consumer/benchmarks/input-ui-host/manual_report.h",
+      "normalization": "none",
+      "bytes": 8751,
+      "sha256": "add0b1ea921358d3575e139d27203e06e5560254488587e83fe39383e0e02f5b"
+    },
+    {
+      "path": "verification/performance/sdk-input-frame-20261105/diagnostic-source-r38/consumer/benchmarks/input-ui-host/profile_options.h",
+      "normalization": "none",
+      "bytes": 1514,
+      "sha256": "d69a4a0742488444127a5233e3df25b3bc3f3e2c086abaa47ba85c0eb6d820b5"
+    },
+    {
+      "path": "verification/performance/sdk-input-frame-20261105/diagnostic-source-r38/consumer/benchmarks/input-ui-host/sdk_version.cmake",
+      "normalization": "none",
+      "bytes": 4318,
+      "sha256": "812acc215ab68ceef6d22d88a9df8fb87a7a76ecee21a45e4d27a6257316b912"
+    },
+    {
+      "path": "verification/performance/sdk-input-frame-20261105/diagnostic-source-r38/consumer/benchmarks/input-ui-host/sync_input_witness.h",
+      "normalization": "none",
+      "bytes": 25730,
+      "sha256": "5da57ea0ecb5687176a037db06835e7764fb8ba6413dac65ca2cd38ad4d8c8fd"
+    },
+    {
+      "path": "verification/performance/sdk-input-frame-20261105/diagnostic-source-r38/consumer/benchmarks/input-ui-host/trace_capture.cpp",
+      "normalization": "none",
+      "bytes": 20326,
+      "sha256": "432cbce776f347f74a8ee9d20d03fd5feec40943da54257c64e0259289f1d20b"
+    },
+    {
+      "path": "verification/performance/sdk-input-frame-20261105/diagnostic-source-r38/consumer/benchmarks/input-ui-host/trace_capture.h",
+      "normalization": "none",
+      "bytes": 2487,
+      "sha256": "7bfe1c704f981740077a40912ef15d5f59ececda0fa7fc8ef49d6b7154a1f773"
+    },
+    {
+      "path": "verification/performance/sdk-input-frame-20261105/diagnostic-source-r38/coordinate-tool/CMakeLists.txt",
+      "normalization": "none",
+      "bytes": 776,
+      "sha256": "3f043a67241e33e1eb6bd4e87d7e0f9a6176d657e50445ff3c55668813040caf"
+    },
+    {
+      "path": "verification/performance/sdk-input-frame-20261105/diagnostic-source-r38/coordinate-tool/project/benchmarks/protocol/burst-desktop-observer.cpp",
+      "normalization": "none",
+      "bytes": 30140,
+      "sha256": "1df30c07f381b93cbb8124f5dedf3d1ee8401c0317afaea16d15539b8f44a7b9"
+    },
+    {
+      "path": "verification/performance/sdk-input-frame-20261105/diagnostic-source-r38/coordinate-tool/project/benchmarks/protocol/burst-desktop-observer.h",
+      "normalization": "none",
+      "bytes": 960,
+      "sha256": "8db5de2836ca3922e961b09733c875ec2e03935d0353f11dddd4bb877e911981"
+    },
+    {
+      "path": "verification/performance/sdk-input-frame-20261105/diagnostic-source-r38/coordinate-tool/project/benchmarks/protocol/burst-input.cpp",
+      "normalization": "none",
+      "bytes": 15490,
+      "sha256": "f349d8eb63eec922e8641f237be35073d3f589cc11782979477229e0930429e1"
+    },
+    {
+      "path": "verification/performance/sdk-input-frame-20261105/diagnostic-source-r38/coordinate-tool/project/benchmarks/protocol/coordinate-environment.h",
+      "normalization": "none",
+      "bytes": 8919,
+      "sha256": "6cdf032289ba89c6c0c2dbf68ad51a6dac8fb44a3b2ffad0a63bcfd454e4d24c"
+    },
+    {
+      "path": "verification/performance/sdk-input-frame-20261105/diagnostic-source-r38/coordinate-tool/project/benchmarks/protocol/desktop-capture.h",
+      "normalization": "none",
+      "bytes": 5104,
+      "sha256": "d355e5521cb513fcacb950df6dc4499cd2718179c040ef103ff708ae1fe0172d"
+    },
+    {
+      "path": "verification/performance/sdk-input-frame-20261105/diagnostic-source-r38/coordinate-tool/project/benchmarks/protocol/rejected-frame-evidence.h",
+      "normalization": "none",
+      "bytes": 3690,
+      "sha256": "5bba8788dadfa02378e70862b719d551b61df7cbf6a5f40ba8bc1c692da175f9"
+    },
+    {
+      "path": "verification/performance/sdk-input-frame-20261105/diagnostic-source-r38/coordinate-tool/project/benchmarks/protocol/trace-identity.h",
+      "normalization": "none",
+      "bytes": 3162,
+      "sha256": "31f5105382abfb8cb26145d5a7a6f15d3e8eb9ab22c964b0a72c83a09143c50f"
+    },
+    {
+      "path": "verification/performance/sdk-input-frame-20261105/diagnostic-source-r38/matched-private/engine_admission.h",
+      "normalization": "none",
+      "bytes": 6064,
+      "sha256": "683f851d3785d02dd27f2732df3b0137771d2175bcc09096f1ad21abd6606cb2"
+    },
+    {
+      "path": "verification/performance/sdk-input-frame-20261105/diagnostic-source-r38/runtime-page/burst-page.html",
+      "normalization": "none",
+      "bytes": 354,
+      "sha256": "727bfcccd06542d2f341565fe6fb58ad5d9b0ec98bd77284510e613fed155f55"
+    },
+    {
+      "path": "verification/performance/sdk-input-frame-20261105/diagnostic-source-r38/runtime-page/burst-page.js",
+      "normalization": "none",
+      "bytes": 14573,
+      "sha256": "bb6637ef86825c73746f81d9a346a9e260fd9e87c204a44606bc776f597947d3"
+    },
+    {
+      "path": "verification/performance/sdk-input-frame-20261105/diagnostic-source-r38/runtime-page/dom-capability.test.cjs",
+      "normalization": "none",
+      "bytes": 9084,
+      "sha256": "9d0d8bdea8b9dd8c5dd741c225481375183757b69f0de75e53aa4e2e708bba6d"
+    },
+    {
+      "path": "verification/performance/sdk-input-frame-20261105/diagnostic-source-r38/runtime-page/input-frame-trace.cjs",
+      "normalization": "none",
+      "bytes": 10860,
+      "sha256": "5194b011a13a2170a8a31fb3c964f7544d76362b8762d0f0974f8e55cda2d5d0"
+    },
+    {
+      "path": "verification/performance/sdk-input-frame-20261105/diagnostic-source-r38/runtime-page/persistent-ack-reader.cjs",
+      "normalization": "none",
+      "bytes": 13726,
+      "sha256": "7c22707c9bbdd66a85d1d7766b7cfbef5d3365bc9131d9a177a6ff5c790186b7"
+    },
+    {
+      "path": "verification/performance/sdk-input-frame-20261105/diagnostic-source-r38/runtime-page/sync-input-reader.cjs",
+      "normalization": "none",
+      "bytes": 15100,
+      "sha256": "d3ca07a34f4324ae31866bddac58e85216499250c49e7bc79765384ee7832c2c"
+    },
+    {
+      "path": "verification/performance/sdk-input-frame-20261105/diagnostic-source-r38/source-inputs.json",
+      "normalization": "none",
+      "bytes": 14110,
+      "sha256": "5663e750d4f11fdc9e71a4f8eb1b0a644a10375c8effe59181186e30d6da1590"
+    },
+    {
+      "path": "verification/performance/sdk-input-frame-20261105/diagnostic-source-r39/CMakeLists.txt",
+      "normalization": "none",
+      "bytes": 729,
+      "sha256": "1e6695bddd8796a7892d8bbd5a1b63c548e54b614f2594c134ec085c0d98eb32"
+    },
+    {
+      "path": "verification/performance/sdk-input-frame-20261105/diagnostic-source-r39/README.md",
+      "normalization": "none",
+      "bytes": 4150,
+      "sha256": "1f79893ed86b03400fff76612ec48e00fad467cd746635a773e052e2b4f212a6"
+    },
+    {
+      "path": "verification/performance/sdk-input-frame-20261105/diagnostic-source-r39/copied-sources-draft.json",
+      "normalization": "none",
+      "bytes": 5117,
+      "sha256": "374d82b9d1f0a0e05fe849d7169f7a47ca6843c47a0028c3de1bac4632340f7d"
+    },
+    {
+      "path": "verification/performance/sdk-input-frame-20261105/diagnostic-source-r39/page/burst-page.html",
+      "normalization": "none",
+      "bytes": 354,
+      "sha256": "727bfcccd06542d2f341565fe6fb58ad5d9b0ec98bd77284510e613fed155f55"
+    },
+    {
+      "path": "verification/performance/sdk-input-frame-20261105/diagnostic-source-r39/page/burst-page.js",
+      "normalization": "none",
+      "bytes": 14639,
+      "sha256": "9a2d4dc19a40e268013aff8bc4e6c3346bb7430d9b30ad64cb012ba0b6bc0939"
+    },
+    {
+      "path": "verification/performance/sdk-input-frame-20261105/diagnostic-source-r39/project/benchmarks/protocol/burst-desktop-observer.cpp",
+      "normalization": "none",
+      "bytes": 30140,
+      "sha256": "1df30c07f381b93cbb8124f5dedf3d1ee8401c0317afaea16d15539b8f44a7b9"
+    },
+    {
+      "path": "verification/performance/sdk-input-frame-20261105/diagnostic-source-r39/project/benchmarks/protocol/burst-desktop-observer.h",
+      "normalization": "none",
+      "bytes": 960,
+      "sha256": "8db5de2836ca3922e961b09733c875ec2e03935d0353f11dddd4bb877e911981"
+    },
+    {
+      "path": "verification/performance/sdk-input-frame-20261105/diagnostic-source-r39/project/benchmarks/protocol/burst-input.cpp",
+      "normalization": "none",
+      "bytes": 15648,
+      "sha256": "bb7da1382bf9975cc7937be793209600ca2c7019598253416ad23265957f9b2e"
+    },
+    {
+      "path": "verification/performance/sdk-input-frame-20261105/diagnostic-source-r39/project/benchmarks/protocol/coordinate-environment.h",
+      "normalization": "none",
+      "bytes": 8919,
+      "sha256": "6cdf032289ba89c6c0c2dbf68ad51a6dac8fb44a3b2ffad0a63bcfd454e4d24c"
+    },
+    {
+      "path": "verification/performance/sdk-input-frame-20261105/diagnostic-source-r39/project/benchmarks/protocol/desktop-capture.h",
+      "normalization": "none",
+      "bytes": 5104,
+      "sha256": "d355e5521cb513fcacb950df6dc4499cd2718179c040ef103ff708ae1fe0172d"
+    },
+    {
+      "path": "verification/performance/sdk-input-frame-20261105/diagnostic-source-r39/project/benchmarks/protocol/rejected-frame-evidence.h",
+      "normalization": "none",
+      "bytes": 3690,
+      "sha256": "5bba8788dadfa02378e70862b719d551b61df7cbf6a5f40ba8bc1c692da175f9"
+    },
+    {
+      "path": "verification/performance/sdk-input-frame-20261105/diagnostic-source-r39/project/benchmarks/protocol/trace-identity.h",
+      "normalization": "none",
+      "bytes": 3162,
+      "sha256": "31f5105382abfb8cb26145d5a7a6f15d3e8eb9ab22c964b0a72c83a09143c50f"
+    },
+    {
+      "path": "verification/performance/sdk-input-frame-20261105/diagnostic-source-r39/reader/cells.cjs",
+      "normalization": "none",
+      "bytes": 890,
+      "sha256": "a79820d0692897d66127183d8367ec7e8604694dd159ad5a1e1e0e2c611e1bc2"
+    },
+    {
+      "path": "verification/performance/sdk-input-frame-20261105/diagnostic-source-r39/reader/input-frame-trace.cjs",
+      "normalization": "none",
+      "bytes": 10860,
+      "sha256": "5194b011a13a2170a8a31fb3c964f7544d76362b8762d0f0974f8e55cda2d5d0"
+    },
+    {
+      "path": "verification/performance/sdk-input-frame-20261105/diagnostic-source-r39/reader/persistent-ack-reader.cjs",
+      "normalization": "none",
+      "bytes": 13901,
+      "sha256": "2c7ebbae91deee43021767ed53d3ce0033422f343acf9df326c0ffbb5049c074"
+    },
+    {
+      "path": "verification/performance/sdk-input-frame-20261105/diagnostic-source-r39/reader/sync-input-reader.cjs",
+      "normalization": "none",
+      "bytes": 17308,
+      "sha256": "ce4b910370fa324222d49553c11ab567da8ea92831d866bc4db4b6e736d05ae3"
+    },
+    {
+      "path": "verification/performance/sdk-input-frame-20261105/diagnostic-source-r39/source-inputs.json",
+      "normalization": "none",
+      "bytes": 6347,
+      "sha256": "d0394ac076699be162eded2a9fadd8347f1a17129cb8c47425703d5ce0e5ddb3"
+    },
+    {
+      "path": "verification/performance/sdk-input-frame-20261105/diagnostic-source-r39/tests/cell-feedback.test.cjs",
+      "normalization": "none",
+      "bytes": 12545,
+      "sha256": "0af90bd2e44da017e47ed8ef012890d74ee286ef93c6f80c5a0d5eb91e678cf8"
     },
     {
       "path": "verification/performance/sdk-input-frame-20261105/followup.json",

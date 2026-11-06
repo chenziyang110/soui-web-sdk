@@ -1,0 +1,303 @@
+{
+  "schema": "soui.input-diagnostic-source-handoff/v1",
+  "status": "unadopted-source-snapshot",
+  "pathBase": "this-directory",
+  "originArchivePathBase": "PR129-performance-20261104",
+  "copiedSourceFiles": 27,
+  "generatedDocumentationFiles": 1,
+  "copiedByteEqual": true,
+  "noBinaryOrLogCopied": true,
+  "SDKRebuilt": false,
+  "HostRebuilt": false,
+  "toolRebuilt": false,
+  "buildOrTestsExecutedForSnapshot": false,
+  "newLocationBuildQualified": false,
+  "complete64InputQualified": false,
+  "physicalInputOrDisplayQualified": false,
+  "performanceGate": false,
+  "defaultAdoptionQualified": false,
+  "releaseReady": false,
+  "matchedSdk": {
+    "version": "0.7.0-preview.4",
+    "buildId": "18e47fa2-69df-4530-b1f9-365f6b2aec28",
+    "sourceSha256": "e1d2dd8b7699930f678e21a77772b8fa4e371f5b67a53937d98470ee1659e87c",
+    "librarySha256": "15fc3e935c6defc4cae649eac91caa9179f391e9b5b2042dd9b7ef61d8dec0d6",
+    "libraryReferenceOnlyNotRehashed": true,
+    "privateHeaderSha256": "683f851d3785d02dd27f2732df3b0137771d2175bcc09096f1ad21abd6606cb2"
+  },
+  "binaryProvenanceOnly": [
+    {
+      "component": "R2 Host",
+      "sha256": "c4320c14cc641b904e920bd6a1eff918cb002a560e430837b4a0fde9a9339aaa",
+      "copied": false
+    },
+    {
+      "component": "R38 coordinate tool",
+      "sha256": "850566483a1c211ee42b5c365f27f62a226c8bf24ad72b9c3f29ef0d65058777",
+      "copied": false
+    }
+  ],
+  "sourceReceiptReferences": [
+    "repair-r35-sync-input-witness-r1/recovery-single-bootstrap-r2/build-r1/source-inputs.json",
+    "repair-r35-sync-input-witness-r1/recovery-single-bootstrap-r2/consumer-closure-plan-r2.json",
+    "repair-r35-sync-input-witness-r1/recovery-dom-capability-r3/runtime-source-inputs.json",
+    "repair-r38-input-coordinate-evidence-r1/build-r1/source-inputs.json"
+  ],
+  "files": [
+    {
+      "path": "consumer/CMakeLists.txt",
+      "bytes": 248,
+      "sha256": "ba316a9e492c02dba046fc007897b73ce36245588776b4e56f2d872d435fbb7b",
+      "copyByteEqual": true,
+      "matchesFrozenOriginPin": true,
+      "originArchiveRelativePath": "repair-r35-sync-input-witness-r1/recovery-single-bootstrap-r2/project/CMakeLists.txt",
+      "originKind": "source-file"
+    },
+    {
+      "path": "consumer/benchmarks/input-ui-host/CMakeLists.txt",
+      "bytes": 2051,
+      "sha256": "d146295dd8d067a9050cfbd6cedcd74aac3e266aa4a253861d13a99e276cc747",
+      "copyByteEqual": true,
+      "matchesFrozenOriginPin": true,
+      "originArchiveRelativePath": "repair-r35-sync-input-witness-r1/recovery-single-bootstrap-r2/project/benchmarks/input-ui-host/CMakeLists.txt",
+      "originKind": "source-file"
+    },
+    {
+      "path": "consumer/benchmarks/input-ui-host/coordinate_witness.h",
+      "bytes": 8099,
+      "sha256": "fc90e3ea4c4c9f6a84a209a0a1345c2a220e60dcb9b4e3a07ba19c43b9c3094e",
+      "copyByteEqual": true,
+      "matchesFrozenOriginPin": true,
+      "originArchiveRelativePath": "repair-r35-sync-input-witness-r1/recovery-single-bootstrap-r2/project/benchmarks/input-ui-host/coordinate_witness.h",
+      "originKind": "source-file"
+    },
+    {
+      "path": "consumer/benchmarks/input-ui-host/harness_options.h",
+      "bytes": 1280,
+      "sha256": "0f65ba514562d64ebd283f12eaa9621f831ae97f667838fefaef07083ead0597",
+      "copyByteEqual": true,
+      "matchesFrozenOriginPin": true,
+      "originArchiveRelativePath": "repair-r35-sync-input-witness-r1/recovery-single-bootstrap-r2/project/benchmarks/input-ui-host/harness_options.h",
+      "originKind": "source-file"
+    },
+    {
+      "path": "consumer/benchmarks/input-ui-host/main.cpp",
+      "bytes": 37801,
+      "sha256": "b03f70012dbc4321ed22ae24fcf886eb1b9a638e550cd0b944c2cfbe1601fe1e",
+      "copyByteEqual": true,
+      "matchesFrozenOriginPin": true,
+      "originArchiveRelativePath": "repair-r35-sync-input-witness-r1/recovery-single-bootstrap-r2/project/benchmarks/input-ui-host/main.cpp",
+      "originKind": "source-file"
+    },
+    {
+      "path": "consumer/benchmarks/input-ui-host/manual-observation-gate.h",
+      "bytes": 10667,
+      "sha256": "ac487da6c58da56974600e5a9612fa27cabeac4ad1d7855681300fef2565409e",
+      "copyByteEqual": true,
+      "matchesFrozenOriginPin": true,
+      "originArchiveRelativePath": "repair-r35-sync-input-witness-r1/recovery-single-bootstrap-r2/project/benchmarks/input-ui-host/manual-observation-gate.h",
+      "originKind": "source-file"
+    },
+    {
+      "path": "consumer/benchmarks/input-ui-host/manual_report.h",
+      "bytes": 8751,
+      "sha256": "add0b1ea921358d3575e139d27203e06e5560254488587e83fe39383e0e02f5b",
+      "copyByteEqual": true,
+      "matchesFrozenOriginPin": true,
+      "originArchiveRelativePath": "repair-r35-sync-input-witness-r1/recovery-single-bootstrap-r2/project/benchmarks/input-ui-host/manual_report.h",
+      "originKind": "source-file"
+    },
+    {
+      "path": "consumer/benchmarks/input-ui-host/profile_options.h",
+      "bytes": 1514,
+      "sha256": "d69a4a0742488444127a5233e3df25b3bc3f3e2c086abaa47ba85c0eb6d820b5",
+      "copyByteEqual": true,
+      "matchesFrozenOriginPin": true,
+      "originArchiveRelativePath": "repair-r35-sync-input-witness-r1/recovery-single-bootstrap-r2/project/benchmarks/input-ui-host/profile_options.h",
+      "originKind": "source-file"
+    },
+    {
+      "path": "consumer/benchmarks/input-ui-host/sdk_version.cmake",
+      "bytes": 4318,
+      "sha256": "812acc215ab68ceef6d22d88a9df8fb87a7a76ecee21a45e4d27a6257316b912",
+      "copyByteEqual": true,
+      "matchesFrozenOriginPin": true,
+      "originArchiveRelativePath": "repair-r35-sync-input-witness-r1/recovery-single-bootstrap-r2/project/benchmarks/input-ui-host/sdk_version.cmake",
+      "originKind": "source-file"
+    },
+    {
+      "path": "consumer/benchmarks/input-ui-host/sync_input_witness.h",
+      "bytes": 25730,
+      "sha256": "5da57ea0ecb5687176a037db06835e7764fb8ba6413dac65ca2cd38ad4d8c8fd",
+      "copyByteEqual": true,
+      "matchesFrozenOriginPin": true,
+      "originArchiveRelativePath": "repair-r35-sync-input-witness-r1/recovery-single-bootstrap-r2/project/benchmarks/input-ui-host/sync_input_witness.h",
+      "originKind": "source-file"
+    },
+    {
+      "path": "consumer/benchmarks/input-ui-host/trace_capture.cpp",
+      "bytes": 20326,
+      "sha256": "432cbce776f347f74a8ee9d20d03fd5feec40943da54257c64e0259289f1d20b",
+      "copyByteEqual": true,
+      "matchesFrozenOriginPin": true,
+      "originArchiveRelativePath": "repair-r35-sync-input-witness-r1/recovery-single-bootstrap-r2/project/benchmarks/input-ui-host/trace_capture.cpp",
+      "originKind": "source-file"
+    },
+    {
+      "path": "consumer/benchmarks/input-ui-host/trace_capture.h",
+      "bytes": 2487,
+      "sha256": "7bfe1c704f981740077a40912ef15d5f59ececda0fa7fc8ef49d6b7154a1f773",
+      "copyByteEqual": true,
+      "matchesFrozenOriginPin": true,
+      "originArchiveRelativePath": "repair-r35-sync-input-witness-r1/recovery-single-bootstrap-r2/project/benchmarks/input-ui-host/trace_capture.h",
+      "originKind": "source-file"
+    },
+    {
+      "path": "runtime-page/burst-page.html",
+      "bytes": 354,
+      "sha256": "727bfcccd06542d2f341565fe6fb58ad5d9b0ec98bd77284510e613fed155f55",
+      "copyByteEqual": true,
+      "matchesFrozenOriginPin": true,
+      "originArchiveRelativePath": "repair-r35-sync-input-witness-r1/recovery-dom-capability-r3/project/benchmarks/protocol/burst-page.html",
+      "originKind": "source-file"
+    },
+    {
+      "path": "runtime-page/burst-page.js",
+      "bytes": 14573,
+      "sha256": "bb6637ef86825c73746f81d9a346a9e260fd9e87c204a44606bc776f597947d3",
+      "copyByteEqual": true,
+      "matchesFrozenOriginPin": true,
+      "originArchiveRelativePath": "repair-r35-sync-input-witness-r1/recovery-dom-capability-r3/project/benchmarks/protocol/burst-page.js",
+      "originKind": "source-file"
+    },
+    {
+      "path": "runtime-page/dom-capability.test.cjs",
+      "bytes": 9084,
+      "sha256": "9d0d8bdea8b9dd8c5dd741c225481375183757b69f0de75e53aa4e2e708bba6d",
+      "copyByteEqual": true,
+      "matchesFrozenOriginPin": true,
+      "originArchiveRelativePath": "repair-r35-sync-input-witness-r1/recovery-dom-capability-r3/project/benchmarks/protocol/dom-capability.test.cjs",
+      "originKind": "source-file"
+    },
+    {
+      "path": "runtime-page/input-frame-trace.cjs",
+      "bytes": 10860,
+      "sha256": "5194b011a13a2170a8a31fb3c964f7544d76362b8762d0f0974f8e55cda2d5d0",
+      "copyByteEqual": true,
+      "matchesFrozenOriginPin": true,
+      "originArchiveRelativePath": "repair-r35-sync-input-witness-r1/recovery-dom-capability-r3/project/benchmarks/protocol/input-frame-trace.cjs",
+      "originKind": "source-file"
+    },
+    {
+      "path": "runtime-page/persistent-ack-reader.cjs",
+      "bytes": 13726,
+      "sha256": "7c22707c9bbdd66a85d1d7766b7cfbef5d3365bc9131d9a177a6ff5c790186b7",
+      "copyByteEqual": true,
+      "matchesFrozenOriginPin": true,
+      "originArchiveRelativePath": "repair-r35-sync-input-witness-r1/recovery-dom-capability-r3/project/benchmarks/protocol/persistent-ack-reader.cjs",
+      "originKind": "source-file"
+    },
+    {
+      "path": "runtime-page/sync-input-reader.cjs",
+      "bytes": 15100,
+      "sha256": "d3ca07a34f4324ae31866bddac58e85216499250c49e7bc79765384ee7832c2c",
+      "copyByteEqual": true,
+      "matchesFrozenOriginPin": true,
+      "originArchiveRelativePath": "repair-r35-sync-input-witness-r1/recovery-dom-capability-r3/project/benchmarks/protocol/sync-input-reader.cjs",
+      "originKind": "source-file"
+    },
+    {
+      "path": "coordinate-tool/CMakeLists.txt",
+      "bytes": 776,
+      "sha256": "3f043a67241e33e1eb6bd4e87d7e0f9a6176d657e50445ff3c55668813040caf",
+      "copyByteEqual": true,
+      "matchesFrozenOriginPin": true,
+      "originArchiveRelativePath": "repair-r38-input-coordinate-evidence-r1/CMakeLists.txt",
+      "originKind": "source-file"
+    },
+    {
+      "path": "coordinate-tool/project/benchmarks/protocol/burst-input.cpp",
+      "bytes": 15490,
+      "sha256": "f349d8eb63eec922e8641f237be35073d3f589cc11782979477229e0930429e1",
+      "copyByteEqual": true,
+      "matchesFrozenOriginPin": true,
+      "originArchiveRelativePath": "repair-r38-input-coordinate-evidence-r1/project/benchmarks/protocol/burst-input.cpp",
+      "originKind": "source-file"
+    },
+    {
+      "path": "coordinate-tool/project/benchmarks/protocol/burst-desktop-observer.cpp",
+      "bytes": 30140,
+      "sha256": "1df30c07f381b93cbb8124f5dedf3d1ee8401c0317afaea16d15539b8f44a7b9",
+      "copyByteEqual": true,
+      "matchesFrozenOriginPin": true,
+      "originArchiveRelativePath": "repair-r38-input-coordinate-evidence-r1/project/benchmarks/protocol/burst-desktop-observer.cpp",
+      "originKind": "source-file"
+    },
+    {
+      "path": "coordinate-tool/project/benchmarks/protocol/burst-desktop-observer.h",
+      "bytes": 960,
+      "sha256": "8db5de2836ca3922e961b09733c875ec2e03935d0353f11dddd4bb877e911981",
+      "copyByteEqual": true,
+      "matchesFrozenOriginPin": true,
+      "originArchiveRelativePath": "repair-r38-input-coordinate-evidence-r1/project/benchmarks/protocol/burst-desktop-observer.h",
+      "originKind": "source-file"
+    },
+    {
+      "path": "coordinate-tool/project/benchmarks/protocol/desktop-capture.h",
+      "bytes": 5104,
+      "sha256": "d355e5521cb513fcacb950df6dc4499cd2718179c040ef103ff708ae1fe0172d",
+      "copyByteEqual": true,
+      "matchesFrozenOriginPin": true,
+      "originArchiveRelativePath": "repair-r38-input-coordinate-evidence-r1/project/benchmarks/protocol/desktop-capture.h",
+      "originKind": "source-file"
+    },
+    {
+      "path": "coordinate-tool/project/benchmarks/protocol/rejected-frame-evidence.h",
+      "bytes": 3690,
+      "sha256": "5bba8788dadfa02378e70862b719d551b61df7cbf6a5f40ba8bc1c692da175f9",
+      "copyByteEqual": true,
+      "matchesFrozenOriginPin": true,
+      "originArchiveRelativePath": "repair-r38-input-coordinate-evidence-r1/project/benchmarks/protocol/rejected-frame-evidence.h",
+      "originKind": "source-file"
+    },
+    {
+      "path": "coordinate-tool/project/benchmarks/protocol/trace-identity.h",
+      "bytes": 3162,
+      "sha256": "31f5105382abfb8cb26145d5a7a6f15d3e8eb9ab22c964b0a72c83a09143c50f",
+      "copyByteEqual": true,
+      "matchesFrozenOriginPin": true,
+      "originArchiveRelativePath": "repair-r38-input-coordinate-evidence-r1/project/benchmarks/protocol/trace-identity.h",
+      "originKind": "source-file"
+    },
+    {
+      "path": "coordinate-tool/project/benchmarks/protocol/coordinate-environment.h",
+      "bytes": 8919,
+      "sha256": "6cdf032289ba89c6c0c2dbf68ad51a6dac8fb44a3b2ffad0a63bcfd454e4d24c",
+      "copyByteEqual": true,
+      "matchesFrozenOriginPin": true,
+      "originArchiveRelativePath": "repair-r38-input-coordinate-evidence-r1/project/benchmarks/protocol/coordinate-environment.h",
+      "originKind": "source-file"
+    },
+    {
+      "path": "matched-private/engine_admission.h",
+      "bytes": 6064,
+      "sha256": "683f851d3785d02dd27f2732df3b0137771d2175bcc09096f1ad21abd6606cb2",
+      "copyByteEqual": true,
+      "matchesFrozenOriginPin": true,
+      "originArchiveRelativePath": "repair-r35-sync-input-witness-r1/recovery-single-bootstrap-r2/consumer-closure-plan-r2.json",
+      "originKind": "external-private-header-described-by-archive-pin",
+      "originRecordPointer": "/privateEngineAdmission",
+      "originRepositoryRelativePath": "sdk/src/host/engine_admission.h"
+    },
+    {
+      "path": "README.md",
+      "bytes": 3717,
+      "sha256": "8c15ea45ac94739d6b2c62e94869f904d82b3587e138ba402cabca8dbf8f4336",
+      "copyByteEqual": null,
+      "matchesFrozenOriginPin": null,
+      "originArchiveRelativePath": null,
+      "originKind": "new-snapshot-documentation"
+    }
+  ],
+  "manifestSelfHashExcluded": true
+}
