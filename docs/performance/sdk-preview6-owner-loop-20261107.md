@@ -74,4 +74,61 @@ R60已另从不可变正常安装SDK5链接同新版仪表的legacy Host，只�
 
 R62已冻结同仪表SDK5/legacy与SDK6/sdk两个入口，保留全部3125输入、30秒负载、ACK500、tag0否决、运行时身份和原绝对时限。reader的8个合成合同通过；双入口源、构建绑定、真实请求及资源槽均已事前复核。实际第一轮在资源槽取得前返回`mutex-busy`：辅助进程85128自然退出1、Job0、无强清，尚未执行CIM门、开窗、Host、输入或GO。后续只读CIM另证实其他工作区当时存在真实编译；没有终止它。该次是开窗前资源拒绝，没有产生新输入或帧率数据，不能算候选失败或通过。
 
-输入尾延迟、有效画面间隔、长帧、完整CPU/内存、成功吞吐与必要交互仍须合格样本；物理显示不可观测时保持unknown。EXE、DLL、完整runtime及ZIP增量也须分别绑定实际交付，不用旧SDK5静态库增量补齐。MiniBlink既有资格缺口不因这次WebView2循环改动而关闭。`performanceVerified=false`、`inputLatencyVerified=false`、`releaseReady=false`、`wholeGoalComplete=false`。
+资源可用后，已实际执行SDK5/legacy与SDK6/sdk各一轮。两次负载均位于各自资源槽Ready至释放区间内，Host/Input均以3/1自然关闭、Job0，无强清；运行时正常关闭，资源槽均在原期限内同线程释放。两轮输入合同均失败，因此取消第二次基线，不进行原样重测，不计算噪声或合格性能增益。
+
+| 原始诊断量 | SDK5 / legacy | SDK6 / sdk |
+|---|---:|---:|
+| 实际发送的带标签输入 | 3125 | 3125 |
+| 接收账本中的正标签 | 3075 | 3055 |
+| tag0消息 | 1922 | 1976 |
+| 第一个合同错误 | 5 | 5 |
+| 完成的4KiB echo | 79601 | 64865 |
+| echo失败 / 超时 / mismatch | 0 / 0 / 0 | 0 / 0 / 0 |
+| 原生strip WM_PAINT入口次数 | 40 | 918 |
+| 原生strip最大paint入口间隔 | 28.7882565秒 | 399.8114ms |
+
+以上paint入口不是WebView2唯一渲染帧、present或物理FPS；echo数量差约−18.5123%，不能隐去吞吐代价。SDK6循环状态前后均ok，load中legacy Host wake-handler的pump为0，但该计数不覆盖SDK内部continuation，不能说SDK没有pump。两轮所有已记录DOM mark及fence均visible；fence失败中止后续mark，不能补写完整可见性。SDK6输入器另报`marker nonce/counters/content`，SDK5为ACK500失败；均不改成通过。
+
+后续只读调查发现：50/70个缺号附近均有注入来源的tag0及对应预设坐标，但坐标不能恢复身份；另有98/173行检索时正标签、窗口入口标签已为0，legacy也存在。NOCOALESCE已设置。Windows允许额外鼠标通知，线程队列关联的extra information不是消息来源认证，因此不能将其唯一归因于用户干扰、OS或SDK丢输入。严格失败保持，下一步应定位元数据变化边界或另建明确协议的键盘测量；不得删除tag0否决后重标本轮成功。
+
+原始双轮摘要`R62-matched-native-input-entry-r1/actual-diagnostic-pair-r1.json` SHA`e3c3e2c386a25ddb6a0a6b2ea020a63eb334e7cc1f3380cc181c98d4d2cb82fa`；鼠标合同调查SHA`68098132efe1f2deb0e3f7cb934becb1f7e2e084cd6f0b90bf15aa7495f9edf0`。原始Host、Input、Owned及资源槽收据均保留。
+
+## 当前MiniBlink桌面观察
+
+R64使用同一现有测量Host源码、正常SDK6安装库与默认发布内核，未改工作量或替换私有DLL。单TU原生编译64.752秒自然0、Job0，EXE1,644,032 B，SHA`d488e69404501710e26bad42c4c145e11ac187ab45f29099038d41bbd6e8d331`。原外层核验器错误地把CL.read的caret主源行排除后又要求其存在，返回1；新只读恢复单独核对两日志唯一caret及真实CL命令，42项普通依赖加主源均在冻结集，保留原失败而不重编。恢复SHA`039bf6d243897c25c64cc7f4dfe1542e7eb309cc758630e43403f2601ae4bff6`，独立实际审查SHA`c1634a7dbf85e4f0e18d041967c86fc028db3b43df54b715c43760b1e1e17681`；上游SDK历史输入冻结限制保持。
+
+实际正常部署59个默认DLL，共44,337,376 B；node.dll39,212,032 B、SHA`56d460c0b4136d85d3fcb8d4e4f00c19a04ff56532228031b55368742ef54308`。新建独立series，不沿用旧噪声或显示校准；本轮DISPLAY1实际配置`18559000/247500 Hz`，约74.98586Hz，96DPI，client1920×1009，整数Canvas ROI为402,425,480,360。
+
+先完成并保存原30秒页面记录，再从固定seed重新运行240角色、480×360、100Hz逻辑场景，执行独立30秒GDI桌面观察。原读取器实际0并给出`qualified=true`，限于它声明的内容变化观测范围：
+
+| 指标 | 当前实测 |
+|---|---:|
+| 实际桌面观察时长 | 30005.2341ms |
+| 采样 / 内容变化次数 | 2244 / 2241 |
+| 内容变化速率下界 | 74.68697次/秒 |
+| 相邻变化捕获结束时刻间隔 P50 / P95 / P99 | 13.3197 / 14.2817 / 15.2484ms |
+| 间隔超过2T / 50ms | 5 / 0 |
+| 最大观测变化间隔 | 28.4908ms |
+
+P99和2T来自原输出连续upperQpc的只读派生；采用相同nearest-rank算法，P50/P95先严格匹配原读取器，未改旧输出或重测。观察器自身BitBlt成本P50/P95为12.3789/13.4689ms，请求4ms并不代表实际4ms采样；其开销可能遗漏变化。没有序列标记，精确唯一帧数、遗漏转换、物理FPS均unknown，不能把74.69直接当作完整实际帧率或相对旧版提升。
+
+Host108456、观察器68196、轮询采样器60276均自然0、Job0，无强清，窗口正常关闭，controller未主动stop。页面rAF与后续桌面观察属于不同时间窗。原始帧报告`R64-sdk6-miniblink-frame-host-r1/frame-sessions/miniblink-current-r1/canvas-report.json` SHA`a951e7e252f83cc822c73d6eacfb101e510e7fce783e9171321797750181cea3`。仅本轮当前候选绝对特征有效；完整应用CPU/内存归属、输入延迟、IME/多Host和长期稳定性资格仍未关闭。
+
+独立实际审查SHA`f50c5d1fb366638067813b67ae84cffb5aa78d1c23ea3690a9d2d704cd9026c1`另核实际加载默认内核路径、writer排空、allHostsClosed/runtimeShutdown以及额外统计，结论仅覆盖上述单轮软件内容观察。
+
+## 同源M01分发体积
+
+R67从实际SDK5/legacy与SDK6/sdk两个EXE创建全新对照目录，资源逐字相同，使用正常部署工具放入53个相同CRT DLL和同字节部署收据。固定WebView2 156仍外置，Windows/WV2等外部依赖不计入分发目录；本闭集不代表脱离目标环境可独立运行，也不是正式模板或整个SDK源码包体积。
+
+| 项目 | SDK5 | SDK6 | 增量 |
+|---|---:|---:|---:|
+| 测试应用EXE | 926,720 B | 967,680 B | +40,960 B / 4.4199% |
+| 53个部署DLL合计 | 3,617,504 B | 3,617,504 B | 0 |
+| 完整应用分发闭集，57文件 | 4,572,169 B | 4,613,129 B | +40,960 B / 0.8959% |
+| 相同方法的ZIP | 2,062,397 B | 2,080,686 B | +18,289 B / 0.8868% |
+
+ZIP固定文件排序、1980时间、属性及deflate9，记录Node24.14.0/zlib1.3.1-e00f703；只声明同工具/输入的可重复构造，不声明跨zlib版本相同。除脚本逐文件SHA/CRC回读，独立Python3.13.11标准库也实际读取两包各57项，验证内容SHA、CRC和固定元数据，不重新压缩、不运行应用。
+
+体积收据`R67-matched-m01-size-r1/output/result.json` SHA`1eb29c7ccf3084700472c2ceba58fa9773022f2fcc3f05252958cebeedf6aa2c`；独立ZIP读取收据SHA`42b9e3707199dd3777aa8d0340d1e7538da04d23e2b897bc5cea9eee1c22b45b`。测试用载荷体积增量已实测；正式模板、完整SDK源码包仍需各自交付证据。
+
+输入尾延迟、有效帧的同源收益、完整CPU/内存、成功吞吐及必要交互仍须合格证据；不可观测项保持unknown。MiniBlink既有资格缺口不因这次WebView2循环改动而关闭。`performanceVerified=false`、`inputLatencyVerified=false`、`releaseReady=false`、`wholeGoalComplete=false`。
