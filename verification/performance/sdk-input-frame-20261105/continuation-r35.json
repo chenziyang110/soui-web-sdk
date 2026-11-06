@@ -1,0 +1,182 @@
+{
+  "schema": "soui.sdk-input-frame-continuation/r35",
+  "recordedAtUtc": "2026-11-06T04:32:51.945Z",
+  "repository": "chenziyang110/soui-web-sdk",
+  "entryHead": "1021d5c32d327726a85fa2313cc793546ae3e489",
+  "scope": "test-only synchronous input attribution; not a formal performance baseline",
+  "archiveRoot": "PR129-performance-20261104",
+  "sdk": {
+    "version": "0.7.0-preview.4",
+    "architecture": "x64",
+    "configuration": "Release",
+    "buildId": "18e47fa2-69df-4530-b1f9-365f6b2aec28",
+    "sourceSha256": "e1d2dd8b7699930f678e21a77772b8fa4e371f5b67a53937d98470ee1659e87c",
+    "kernelSha256": "56d460c0b4136d85d3fcb8d4e4f00c19a04ff56532228031b55368742ef54308",
+    "modified": false
+  },
+  "recoveryBuild": {
+    "input": {
+      "archivePath": "repair-r35-sync-input-witness-r1/recovery-single-bootstrap-r2/build-r1/source-inputs.json",
+      "bytes": 21455,
+      "sha256": "9096177dd678168a41c1d0ce0c8ff6c4df77b03ac1fd8014dc975d4ae9a3ff8d"
+    },
+    "summary": {
+      "archivePath": "repair-r35-sync-input-witness-r1/recovery-single-bootstrap-r2/build-r1/build-summary.json",
+      "bytes": 4635,
+      "sha256": "a50fa695f287b1760936d691277c96c51b309d9827319bae380d57783a94a901"
+    },
+    "result": {
+      "archivePath": "repair-r35-sync-input-witness-r1/recovery-single-bootstrap-r2/build-r1/build.result.json",
+      "bytes": 1141,
+      "sha256": "47bf233a9f41795d0b4d16f270a68764d94bad7e3146862fad64ca8472bec674"
+    },
+    "exitCode": 0,
+    "elapsedMs": 58447,
+    "jobFinalActive": 0,
+    "forced": false,
+    "newConsumerTranslationUnits": 2,
+    "inputToolRebuilt": false,
+    "sdkRebuilt": false,
+    "kernelRebuilt": false,
+    "host": {
+      "path": "C:\\soui-perf-continuation\\PR129-performance-20261104\\repair-r35-sync-input-witness-r1\\recovery-single-bootstrap-r2\\out\\sync-consumer-x64-r2\\benchmarks\\input-ui-host\\Release\\SouiInputUiHost.exe",
+      "sha256": "c4320c14cc641b904e920bd6a1eff918cb002a560e430837b4a0fde9a9339aaa",
+      "bytes": 1281536
+    },
+    "inputTool": {
+      "path": "C:\\soui-perf-continuation\\PR129-performance-20261104\\repair-r35-sync-input-witness-r1\\out\\sync-x64-r1\\benchmarks\\protocol\\Release\\BurstInputSync64.exe",
+      "sha256": "e54cfffcded416431c991f22706a0e4c354221cc2338b9a5827db76324d66c7c",
+      "bytes": 131072
+    },
+    "sourceReview": {
+      "archivePath": "repair-r35-sync-input-witness-r1/recovery-single-bootstrap-r2/source-independent-review-r1.json",
+      "bytes": 7501,
+      "sha256": "0ddd0f62e6707e1ecbd54db5fb4fdec4ce0fa0efe1d70dd33ff3813aff7c0523"
+    }
+  },
+  "originalFailure": {
+    "run": "a881df0c74a114935b4283db84864c17",
+    "cause": "Test page requested two bootstrap sessions in one document",
+    "hostExitCode": 2,
+    "entryExitCode": 1,
+    "elapsedMs": 5932,
+    "review": {
+      "archivePath": "repair-r35-sync-input-witness-r1/entry-r1/actual-setup-failure-review-r1.json",
+      "bytes": 5047,
+      "sha256": "00989e59022753bb8ee6d40b5c90a459e754638d767f54baec312467cc4e2cef"
+    }
+  },
+  "correctedActuals": [
+    {
+      "run": "0a092a1828a0d749af3f22fe3200e7a6",
+      "request": "09da24f5688f3e3fc997d612d0f3e0ef911168719d062af101ed175e1ed503ea",
+      "hostPid": 72852,
+      "birth": "134384120939519858",
+      "hostExitCode": 2,
+      "entryExitCode": 1,
+      "elapsedMs": 36970,
+      "jobFinalActive": 0,
+      "forced": false,
+      "normalRuntimeClose": true,
+      "coldSetupPassed": true,
+      "goPublished": false,
+      "inputToolStarted": false,
+      "trace": {
+        "sdkPoints": 4812,
+        "vendorPoints": 20741,
+        "complete": true,
+        "loss": "0"
+      },
+      "review": {
+        "archivePath": "repair-r35-sync-input-witness-r1/recovery-single-bootstrap-r2/actual-cold-handshake-analysis-r1.json",
+        "bytes": 12125,
+        "sha256": "ba6da1ce024996fa25dfad1c22622eea391ba8f15cf32725ae11b82ec3a92be0"
+      }
+    },
+    {
+      "run": "9c80743cbc86810371aae3d39faf1d2f",
+      "request": "d165167af954f2a7dcf35b4583ee1a119ba7368392962a1870df6ca76cda9db3",
+      "held": {
+        "pid": 107616,
+        "birth": "134384126377369250"
+      },
+      "hostExitCode": 2,
+      "entryExitCode": 1,
+      "elapsedMs": 36462,
+      "jobFinalActive": 0,
+      "forced": false,
+      "normalRuntimeClose": true,
+      "coldSetupPassed": true,
+      "goPublished": false,
+      "inputToolStarted": false,
+      "trace": [
+        {
+          "source": "sdk",
+          "points": 4752,
+          "complete": true,
+          "loss": "0",
+          "faults": [],
+          "fullCausalEligible": true
+        },
+        {
+          "source": "vendor",
+          "points": 20538,
+          "complete": true,
+          "loss": "0",
+          "faults": [],
+          "fullCausalEligible": true
+        }
+      ],
+      "review": {
+        "archivePath": "repair-r35-sync-input-witness-r1/recovery-single-bootstrap-r2/entry-r2/actual-cold-handshake-review-r1.json",
+        "bytes": 7309,
+        "sha256": "a274034f38c2f341c0eb813e249ae2307f088a5c5f8d9ffd396cd05579a4b157"
+      },
+      "rootGuiObservation": {
+        "archivePath": "repair-r35-sync-input-witness-r1/recovery-single-bootstrap-r2/root-second-actual-environment-terminal-r1.json",
+        "bytes": 2405,
+        "sha256": "d75104ee1554a58241e00e9ec409323f3ce75f019af7ef68e2b9fe50fcc7790c"
+      }
+    }
+  ],
+  "desktopControl": {
+    "userScopeRestored": true,
+    "scope": "Task SOUI windows only",
+    "activationError": "failed to activate captured window",
+    "firstRefreshError": "foreground window did not report a process id",
+    "latestFreshSelectionAfterFailureCount": 0,
+    "osCause": "unknown",
+    "goDeadlineMs": 30000,
+    "deadlineChanged": false,
+    "allSdkUiInputEventsAbsent": false
+  },
+  "handoff": {
+    "archivePath": "repair-r35-sync-input-witness-r1/handoff-r1/README.md",
+    "bytes": 4912,
+    "sha256": "5dac41939cc0a76e476a89360a1a5ee276e0cb31bf25e7296dd77b95533dc80f"
+  },
+  "defaults": {
+    "sharedBudgetUs": 0,
+    "prepareOutputEnabled": false,
+    "changed": false
+  },
+  "size": {
+    "productPayloadChanged": false,
+    "diagnosticConsumerOnlyDeltaBytes": 512,
+    "officialRuntimeOrZipDeltaNewlyMeasured": false
+  },
+  "unverified": [
+    "positive point3 getter identity and exact T1 tag join",
+    "positive-triggered independent deferred point12 negative control",
+    "retained ACK firstslot to actual desktop capture interval",
+    "measurement tax and paired input-tail latency",
+    "effective frame interval and long frames",
+    "paired CPU/full memory and applicable DPI/multi-monitor"
+  ],
+  "performanceVerified": false,
+  "inputLatencyVerified": false,
+  "formalPerformanceBaseline": false,
+  "physicalLatencyQualified": false,
+  "releaseReady": false,
+  "wholeGoalComplete": false
+}
