@@ -1,6 +1,6 @@
 # ADR-0161：帧策略 provider 退避从操作完成时起算
 
-状态：implemented，待维护者评审；Host 接线、双架构定向构建、独立调用点复核和合成时钟回归通过。真实慢 provider 时延与宏观性能收益未测，不授予发布资格。
+状态：implemented，待维护者评审。2026-11-06 对当前新增150ms用例完成标准v143/19041、x64 Release单TU构建及原fixture一次执行，71ms、自然退出0、Job0。该结果不外推新增用例的x86资格，也不继承旧双架构测试。真实慢 provider 时延与宏观性能收益未测，不授予发布资格。
 
 ## 背景
 
@@ -18,4 +18,4 @@ ADR-0154 为 `BUSY` / `UNAVAILABLE` provider 结果规定最多三次 100/200/40
 
 ## 验证
 
-合成时钟回归模拟耗时 150ms 的 provider 尝试：以操作完成时刻安排 100ms 退避，完成后的 99ms 不允许重试，100ms 才允许下一次 owner 机会；再覆盖 generation 变化时旧 ticket 不得回写。该测试验证状态机时间语义。Host 源码审查确认 query/apply/失败读回都位于 `completed_at` 采样之前。它不测实际 provider 阻塞时长、显示帧率或输入到物理呈现延迟。
+新增合成时钟用例模拟耗时 150ms 的 provider 尝试：以操作完成时刻安排 100ms 退避，完成后的 99ms 不允许重试，100ms 才允许下一次 owner 机会；再覆盖 generation 变化时旧 ticket 不得回写。当前x64原fixture包含并实际执行该用例，源码/二进制/退出绑定与首轮包装器失败见[实施资格核对](../performance/sdk-core-implementation-gates-20261106.md)。Host 源码审查确认 query/apply/失败读回都位于 `completed_at` 采样之前。该测试不测实际 provider 阻塞时长、显示帧率或输入到物理呈现延迟。
